@@ -3,9 +3,8 @@ id: KI-HARNESS-RTP-010
 title: Evaluate Fly.io hosting
 area: RTP
 theme: runtime-portability
-horizon: future
+horizon: triage
 status: draft
-candidate: true
 blocks: []
 blocked_by: [KI-HARNESS-RTP-012]
 baseline_ref: null
@@ -35,4 +34,4 @@ After Techne names a concrete proof workload, test the portable contract's requi
 
 Require both an accepted Techne direction in `TECHNE-GOV-005` and the portable contract from `KI-HARNESS-RTP-012` before promoting this provider-specific proof.
 
-Before promoting beyond Future, name the bounded workload and its current constraint, the Fly.io surface proposed for it, an acceptable cost and trust boundary, and reversible proof with explicit pass, fail, and cleanup criteria.
+Before adopting beyond Triage, name the bounded workload and its current constraint, the Fly.io surface proposed for it, an acceptable cost and trust boundary, and reversible proof with explicit pass, fail, and cleanup criteria.

@@ -3,14 +3,13 @@ id: KI-HARNESS-REV-002
 area: REV
 title: Explore Agentic Standards Radar
 theme: regular-reviews
-horizon: future
+horizon: triage
 status: draft
-candidate: true
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T01:43:10Z
-updated_at: 2026-09-14T01:43:10Z
+updated_at: 2026-09-14T02:09:58Z
 ---
 
 # Explore Agentic Standards Radar
@@ -41,7 +40,7 @@ The initial comparison should cover execution loops, branching or tree-shaped or
 
 ### Capability shape
 
-Shaping should compare a standalone radar skill with a recurring housekeeping review, a shared source registry, or composition of existing skill REFRESH modes. Any output should route to the narrowest durable owner—a source list, decision record, existing standard, or roadmap candidate—rather than becoming a second governance authority.
+Shaping should compare a standalone radar skill with a recurring housekeeping review, a shared source registry, or composition of existing skill REFRESH modes. Any output should route to the narrowest durable owner—a source list, decision record, existing standard, or roadmap intake record—rather than becoming a second governance authority.
 
 ### Open questions
 

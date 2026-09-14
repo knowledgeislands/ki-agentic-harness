@@ -4,12 +4,12 @@ area: GOV
 title: Separate Capture From Adoption
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 654ded9770680a8e720a729430d343503f9e58e0
 created_at: 2026-09-14T01:45:26Z
-updated_at: 2026-09-14T02:21:57Z
+updated_at: 2026-09-14T13:44:00Z
 ---
 
 # Separate Capture From Adoption
@@ -34,13 +34,13 @@ The portable roadmap vocabulary has no explicit intake boundary. `future` curren
 
 ## Steps
 
-- [ ] Amend the living repository-roadmap decision and portable work-item standards so `triage` means captured but not adopted, `future` means adopted long-term work, and `draft` remains delivery maturity.
-- [ ] Remove `candidate` from the work-item contract and migrate current uncommitted candidates to `triage` without adopting or otherwise reprioritising them.
-- [ ] Make `ki-next` capture substantive prospective work into triage by default after deduplication, while requiring human approval before adoption into another horizon or rejection.
-- [ ] Reconcile the Knowledge Base Streams proposal path with the same default-capture and human-adoption boundary, keeping triage as metadata rather than a state directory.
-- [ ] Define an evidence-backed human-approved Triage disposition that reaches `done` before any later prune, without pretending rejected or merged intake was adopted or implemented.
-- [ ] Extend the roadmap checker and process decision helpers with triage validation, transition guards, and focused tests.
-- [ ] Republish generated rubric and capability documentation, then reconcile the outcome guide, scenario evaluation, and lifecycle diagram.
+- [x] Amend the living repository-roadmap decision and portable work-item standards so `triage` means captured but not adopted, `future` means adopted long-term work, and `draft` remains delivery maturity.
+- [x] Remove `candidate` from the work-item contract and migrate current uncommitted candidates to `triage` without adopting or otherwise reprioritising them.
+- [x] Make `ki-next` capture substantive prospective work into triage by default after deduplication, while requiring human approval before adoption into another horizon or rejection.
+- [x] Reconcile the Knowledge Base Streams proposal path with the same default-capture and human-adoption boundary, keeping triage as metadata rather than a state directory.
+- [x] Define an evidence-backed human-approved Triage disposition that reaches `done` before any later prune, without pretending rejected or merged intake was adopted or implemented.
+- [x] Extend the roadmap checker and process decision helpers with triage validation, transition guards, and focused tests.
+- [x] Republish generated rubric and capability documentation, then reconcile the outcome guide, scenario evaluation, and lifecycle diagram.
 
 ## Files touched
 
@@ -88,11 +88,41 @@ Update the skills-by-outcome guide only where it describes capture and adoption 
 
 Migrate existing `candidate: true` records to triage as a semantic preservation change. Leave their lifecycle state, content, dependencies, and relative priority otherwise unchanged.
 
+## Review
+
+### Delivered
+
+Delivered the approved local-adapter intake lifecycle from immutable baseline `654ded9770680a8e720a729430d343503f9e58e0`. Triage captures unadopted work automatically after deduplication; adoption remains human-approved. Exact human-approved rejected, duplicate, or merged intake closes as retained done before any later prune. No intake record was closed, pruned, or adopted during delivery.
+
+### Summary of changes
+
+Updated the living repository-roadmap ADR, roadmap standards and checker, `ki-next`, `ki-plan`, `ki-accept`, KB Streams, focused fixtures, scenario evaluation, outcome guide, lifecycle diagram, and generated rubric and catalogue. Migrated GOV-058, OPS-003, REV-002, and RTP-010 from the retired candidate marker to Triage. Terminal intake keeps a null execution baseline, forbids delivery sections, and requires a distinct retained canonical target for duplicate or merged outcomes. Batch closure authority cannot close intake.
+
+### Verification
+
+- Full `bun run test`: 622 passed, 0 failed, 2808 assertions across 119 files.
+- `bunx tsc --noEmit`: passed after correcting a discriminated-union test fixture; the affected acceptance tests were rerun successfully.
+- `ki repo audit` for `ki-work-roadmap`, `ki-skills`, `ki-decision-records`, `ki-authoring`, and `ki-repo-harness`: passed.
+- KB Streams audit: passed read-only against `ki-techne-principal`, where that skill is declared; Harness does not declare it for its own repository structure.
+- Generated roadmap rubric parity passed; the lifecycle SVG and capability catalogue were regenerated from their sources.
+
+### Outstanding concerns
+
+No unresolved implementation findings. Human acceptance of GOV-060 remains outstanding. Remote adapter execution remains outside this delivery.
+
+### Post-change review
+
+Independent review identified missing target validation, unwanted delivery sections in terminal intake, and stale lifecycle wording and relationship-map coverage. All were corrected with focused evidence. The resulting contract preserves shared-tree change ownership, human adoption and disposition authority, and done-before-prune history. No cross-repository write, push, acceptance, or pruning occurred.
+
+### Mini recap
+
+GOV-060 establishes automatic durable capture with explicit adoption and terminal disposition gates across both local adapters. Verification is clean. The design learning belongs in the amended roadmap standard and existing ADR; no additional learning promotion is proposed.
+
 ## Discussion
 
 ### Selected representation
 
-Use an explicit `triage` horizon. It names queue position and adoption state directly, leaves lifecycle status to describe delivery maturity, avoids a second local record surface, and can project cleanly to provider-native triage concepts. A triage record must remain `draft`; leaving triage is the adoption event and requires human approval. `future` remains available for adopted long-term work and no longer carries `candidate: true`.
+Use an explicit `triage` horizon. It names queue position and adoption state directly, leaves lifecycle status to describe delivery maturity, avoids a second local record surface, and can project cleanly to provider-native triage concepts. Open Triage remains `draft`; adoption requires human approval. An explicitly approved terminal disposition may instead close intake as retained Triage / done. `future` remains available for adopted long-term work and no longer carries `candidate: true`.
 
 ### Separate axes
 
@@ -112,4 +142,4 @@ Automatic capture still needs a bounded trigger: substantive prospective work sh
 
 ### Process ownership
 
-`ki-work-roadmap` should own the portable intake state and record shape. `ki-next` should own automatic capture, triage review, adoption, rejection, and promotion authority. `ki-plan`, `ki-implement`, and `ki-accept` should continue to operate only after the applicable adoption and readiness gates.
+`ki-work-roadmap` owns portable intake state and record shape. `ki-next` owns automatic capture, triage review, adoption, and promotion. `ki-accept` owns delivery closure and exact human-approved rejected, duplicate, or merged intake closure; `ki-plan` and `ki-implement` retain their adoption and readiness gates.

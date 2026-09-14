@@ -50,8 +50,11 @@ digraph roadmap_implementation_cycles {
     style="rounded"
 
     recap [fillcolor="#e8edf3", label=< <b>ki-recap</b><br/><font point-size="10">ground live session state</font> >]
-    candidate [fillcolor="#e1e9fb", label=< <b>Future / Soon</b><br/><font point-size="10">open roadmap item</font> >]
-    next [fillcolor="#e8edf3", label=< <b>ki-next</b><br/><font point-size="10">triage · rank · select</font> >]
+    capture [fillcolor="#e1e9fb", label=< <b>Triage / draft</b><br/><font point-size="10">captured · unadopted</font> >]
+    candidate [fillcolor="#e1e9fb", label=< <b>Future / Soon</b><br/><font point-size="10">adopted roadmap item</font> >]
+    next [fillcolor="#e8edf3", label=< <b>ki-next</b><br/><font point-size="10">capture · adopt · rank · select</font> >]
+    adopt_gate [fillcolor="#fff0b8", label=< <b>Manual adoption</b><br/><font point-size="10">destination · boundary</font> >, shape=diamond]
+    disposition_gate [fillcolor="#fff0b8", label=< <b>Manual intake disposition</b><br/><font point-size="10">outcome · rationale · target</font> >, shape=diamond]
     select_gate [fillcolor="#fff0b8", label=< <b>Manual selection</b><br/><font point-size="10">priority · horizon · scope</font> >, shape=diamond]
     planned [fillcolor="#e1e9fb", label=< <b>Next / open</b><br/><font point-size="10">selected roadmap item</font> >]
     plan [fillcolor="#e8edf3", label=< <b>ki-plan</b><br/><font point-size="10">shape executable plan</font> >]
@@ -59,6 +62,10 @@ digraph roadmap_implementation_cycles {
     ready [fillcolor="#d9f0e2", label=< <b>Ready</b><br/><font point-size="10">execution-ready item</font> >]
 
     recap -> next [style=dashed]
+    capture -> next
+    next -> adopt_gate
+    adopt_gate -> candidate [xlabel="approve"]
+    next -> disposition_gate [xlabel="reject / duplicate / merge"]
     candidate -> next
     next -> select_gate
     select_gate -> planned [xlabel="confirm"]
@@ -94,13 +101,14 @@ digraph roadmap_implementation_cycles {
     style="rounded"
 
     acceptance_gate [fillcolor="#fff0b8", label=< <b>Manual acceptance</b><br/><font point-size="10">review evidence + concerns</font> >, shape=diamond]
-    accept [fillcolor="#e8edf3", label=< <b>ki-accept</b><br/><font point-size="10">approval · closure · retained record</font> >]
+    accept [fillcolor="#e8edf3", label=< <b>ki-accept</b><br/><font point-size="10">delivery or intake closure · retained record</font> >]
     done [fillcolor="#efe5c4", label=< <b>Done</b><br/><font point-size="10">retained completion record</font> >]
     prune [fillcolor="#efe5c4", label=< <b>ki-accept prune</b><br/><font point-size="10">explicit confirmed cleanup</font> >]
     pruned [fillcolor="#f1f3f5", label=< <b>Pruned</b><br/><font point-size="10">removed after retention</font> >]
 
     acceptance -> acceptance_gate
     acceptance_gate -> accept [xlabel="approve"]
+    disposition_gate -> accept [lhead=cluster_acceptance, xlabel="approve"]
     accept -> done
     done -> prune [xlabel="recap / next may recommend"]
     prune -> pruned [xlabel="confirm exact items"]

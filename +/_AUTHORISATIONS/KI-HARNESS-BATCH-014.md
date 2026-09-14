@@ -45,3 +45,11 @@ GOV-060 must reach `awaiting-review` with its canonical six-heading delivery pac
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-014-RUN-001 767bd9d5de39e4415cecda93d7f4766f9697dddb45b2fba78d828c0333929482 -->
+
+### Delivery handoff
+
+- GOV-060 reached awaiting-review from baseline `654ded9770680a8e720a729430d343503f9e58e0` with the canonical six-heading review packet.
+- Mechanical checker, KB Streams, and acceptance-helper work was delegated in disjoint file lanes; the coordinator retained integration, documentation, lifecycle, and commit ownership.
+- The run was interrupted before final integration and commit. The user's later explicit instruction to commit the work authorised completion of the remaining recorded findings and verification; it did not extend acceptance or pruning authority.
+- Final verification: 622 full-suite tests passed; TypeScript passed; roadmap, skills, Decision Records, authoring, and harness audits passed. KB Streams passed read-only in the declared Techne repository.
+- Target validation, terminal-intake delivery-section exclusion, and stale lifecycle guidance were corrected. No unresolved implementation concern remains; no intake was adopted, closed, or pruned, and no push or release occurred.

@@ -16,17 +16,19 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-work-roadmap',
-    id: 'repo-roadmap-id-theme-and-horizon',
+    id: 'repo-roadmap-id-theme-and-triage',
     prompt:
-      "Set up a Future item for 'replace stale links' in the seo theme. I want a generic filename and no candidate field. Anything to correct?",
+      "Capture 'replace stale links' in the seo theme, but do not adopt it yet. I want a generic filename and a candidate field. Anything to correct?",
     assertions: [
       { name: 'repository-scoped issue identifier', re: /<REPO>-<NNN>|SEO|001/i },
       { name: 'flat placement', re: /docs\/roadmap\//i },
       { name: 'explicit theme field', re: /theme/i },
-      { name: 'future candidate field', re: /candidate/i }
+      { name: 'unadopted triage horizon', re: /triage/i },
+      { name: 'draft delivery maturity', re: /draft/i },
+      { name: 'retired candidate field', re: /candidate.*(retired|remove|absent|invalid|unsupported)/i }
     ],
     rubric:
-      'House fact: each item is docs/roadmap/<REPO>-<NNN>-<slug>.md and carries explicit theme, horizon, status, dependencies, and candidate: true for Future work.'
+      'House fact: each item is docs/roadmap/<REPO>-<NNN>-<slug>.md and carries explicit theme, horizon, status, and dependencies. Captured but unadopted work is draft in Triage; the candidate field is retired.'
   },
   {
     skill: 'ki-work-roadmap',
@@ -41,6 +43,21 @@ export const scenarios: Scenario[] = [
     ],
     rubric:
       'House fact: each item has one authoritative flat Markdown file. Root ROADMAP.md is a concise orientation, never a second prose home or a duplicated queue.'
+  },
+  {
+    skill: 'ki-work-roadmap',
+    id: 'repo-roadmap-terminal-triage-disposition',
+    prompt:
+      'This Triage item duplicates KI-WEB-SEO-005. The human approved closing it. Should I delete it now or add delivery evidence first?',
+    assertions: [
+      { name: 'retained done closure', re: /done|retain/i },
+      { name: 'intake disposition evidence', re: /intake.disposition|duplicate/i },
+      { name: 'canonical retained target', re: /KI-WEB-SEO-005/i },
+      { name: 'no fabricated delivery', re: /not|do not|without.*(delivery|implementation)|no.*review/i },
+      { name: 'later prune boundary', re: /later|prior commit|before.*prun|done.*prun/i }
+    ],
+    rubric:
+      'House fact: exact human-approved rejected, duplicate, or merged intake closes through ki-accept as retained Triage / done. Duplicate and merged dispositions name the retained canonical item. The closure has intake evidence, not fabricated implementation evidence, and must land before a later prune-only commit.'
   },
   {
     skill: 'ki-work-roadmap',

@@ -30,9 +30,8 @@ id: KI-HARNESS-FND-001
 area: FND
 title: Compact descriptive title
 theme: foundation-tooling
-horizon: future
+horizon: triage
 status: draft
-candidate: true
 blocks: []
 blocked_by: []
 baseline_ref: null
@@ -45,11 +44,13 @@ updated_at: 2026-08-12T09:30:00Z
 
 `title` contains at most four words. It is a compact human label for lists and reports; put scope and nuance in the Goal and Context rather than extending the title.
 
-`candidate` is required for Future items and must be `true`; it is absent from every other horizon.
+`candidate` is retired and must be absent.
 
-`horizon` is one of `now`, `next`, `soon`, `waiting-for`, `parked`, or `future`.
+`horizon` is one of `now`, `next`, `soon`, `waiting-for`, `parked`, `future`, or `triage`. Triage is unadopted intake and normally permits only `status: draft`; Future is adopted long-term work. The sole exception is a human-approved terminal intake disposition recorded as Triage / done.
 
 `status` is `draft`, `ready`, `in-progress`, `awaiting-review`, or `done`.
+
+`intake_disposition` and `intake_disposition_target` are optional terminal-intake fields. They are forbidden on open Triage and every adopted delivery record. A Triage / done record requires `intake_disposition: rejected`, `intake_disposition: duplicate`, or `intake_disposition: merged`. `intake_disposition_target` is the identifier of another retained canonical work item and is required for `duplicate` or `merged`, but forbidden for `rejected`; it must use the canonical identifier grammar, differ from the closing record, and resolve in the selected roadmap.
 
 `blocks` and `blocked_by` are arrays of item identifiers and use `[]` when empty.
 
@@ -123,11 +124,19 @@ The roadmap item is the durable handoff record until its work is planned; extern
 
 ## Detail by stage
 
-### Future / draft
+### Triage or Future / draft
 
 `Goal`, `Context`, `Boundary`, and final `Discussion` are sufficient.
 
-They preserve the intended outcome, why the item exists, its deliberate exclusion, and the reasoning needed to shape it later without pretending that it is planned.
+They preserve the intended outcome, why the item exists, its deliberate exclusion, and the reasoning needed to shape it later without pretending that it is planned. Triage additionally means the item is captured but not adopted; Future means it has been adopted as long-term work.
+
+### Triage / done
+
+An exact human-approved `rejected`, `duplicate`, or `merged` disposition may close Triage without adopting or implementing the work. Insert `## Intake disposition` after `Boundary`, then terminal `## Done`, then the final `Discussion`. Do not add execution sections or a delivery Review packet merely to close intake.
+
+`## Intake disposition` records the approved Outcome and Rationale. For `duplicate` or `merged`, it also names the retained canonical work-item identifier recorded by `intake_disposition_target`; for `rejected`, it states that no retained target applies. It records the human Approval explicitly. The section must be non-empty and must not claim delivery evidence.
+
+Keep `baseline_ref: null`: no implementation baseline exists. Set `status: done` only in the coherent closure change owned by `ki-accept`.
 
 ### Soon / draft
 
@@ -217,6 +226,8 @@ This is the required evidence and review packet for an explicit acceptance decis
 After explicit acceptance, insert terminal `## Done` immediately before `Discussion` and set `status: done`. Keep the reviewed record until an explicitly selected prune path or glob removes it.
 
 `## Done` is required, not optional decoration: the checker rejects a `done` record without it, so a record cannot reach the terminal state by changing `status` alone. It records who accepted the work and when, against the review packet above — `Accepted <date> by <name> on the review packet above.` — and nothing else. Evidence belongs in `## Review`, and anything learned during acceptance belongs in `Discussion`.
+
+For terminal Triage, `## Done` instead records who approved the disposition and when — `Disposed <date> by <name> as <intake_disposition> on the intake evidence above.` — and nothing else. Evidence belongs in `## Intake disposition`.
 
 Retain the accepted record until an explicitly selected prune path or glob.
 

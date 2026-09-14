@@ -3,7 +3,7 @@ name: ki-accept
 ki-kind: process
 ki-depends-on: []
 description: >
-  Closes one evidence-backed canonical local work record from awaiting-review to done, retains done records, and prunes explicitly selected eligible done records. A process skill: human approval is required by default for closure, and it is the sole owner of lifecycle closure. Remote execution fails closed pending KI-HARNESS-FND-014. Use when asked to "accept this work", "mark this work done", "close this review", "prune selected done work", or "remove these completed records". For delivery use ki-implement; for plan shape use ki-plan; for work selection use ki-next; for session findings use ki-recap.
+  Closes one evidence-backed canonical local work record from awaiting-review to done, or records a human-approved rejected, duplicate, or merged Triage disposition as done; retains done records; and prunes explicitly selected eligible done records. A process skill: human approval is required by default for closure, and it is the sole owner of lifecycle closure. Remote execution fails closed pending KI-HARNESS-FND-014. Use when asked to "accept this work", "reject this intake", "mark this duplicate", "merge this intake", "mark this work done", "close this review", "prune selected done work", or "remove these completed records". For delivery use ki-implement; for plan shape use ki-plan; for work selection or adoption use ki-next; for session findings use ki-recap.
 argument-hint: 'accept <work> | prune <work-record-or-glob>... | help'
 ---
 
@@ -11,7 +11,7 @@ argument-hint: 'accept <work> | prune <work-record-or-glob>... | help'
 
 **Kind:** process.
 
-Reviews the required review packet, records approved closure, retains done records, and prunes explicitly selected done records.
+Reviews the required delivery or intake-disposition evidence, records approved closure, retains done records, and prunes explicitly selected done records.
 
 Read [the review-closure procedure](references/standards-acceptance.md) and [the local authority notes](references/sources.md) before acting.
 
@@ -19,8 +19,8 @@ Read [the review-closure procedure](references/standards-acceptance.md) and [the
 
 `ki-accept` is the only process skill that closes a work-record lifecycle. It also owns its explicitly selected done-record prune procedure.
 
-1. Resolve the selected adapter and confirm one exact canonical local record at its physical root is `awaiting-review` with the roadmap-owned six-heading review packet. Remote adapters stop pending `KI-HARNESS-FND-014`.
-2. Present the review packet and require human approval by default.
+1. Resolve the selected adapter and confirm one exact canonical local record at its physical root is either `awaiting-review` with the roadmap-owned six-heading review packet or open Triage with an exact proposed rejected, duplicate, or merged disposition. Remote adapters stop pending `KI-HARNESS-FND-014`.
+2. Present the delivery review packet or proposed intake disposition and require human approval. Batch closure authority may close only the named delivery record, never Triage intake.
 3. Record approved closure as `done`, retain the done record, and ensure that state lands before any later pruning.
 4. Prune only fully resolved regular `done` records selected beneath the exact adapter root, excluding records retained by an unresolved completion-observation trade; selection is deletion authority. A prune-only commit may remove several eligible records together but contains no lifecycle transition or unrelated work.
 
@@ -30,7 +30,7 @@ It never chooses work, starts implementation, edits plan scope, reconstructs mis
 
 `ki-recap` identifies unfinished work and may recommend a review-closure action; it never closes or deletes a record.
 
-`ki-next` selects forward work and may surface retained records; it never accepts or invokes deletion.
+`ki-next` captures and adopts forward work and may surface retained records. It routes an approved rejected, duplicate, or merged Triage disposition here; it never closes or invokes deletion.
 
 `ki-plan` owns plan shape and the ongoing record, but terminal closure and explicitly selected pruning belong here.
 
@@ -44,7 +44,7 @@ Runtime subagents can help execute bounded review preparation only when separate
 
 `help` / `-h` / `?` explains this skill and stops, taking no action.
 
-`accept <work>` resolves the selected adapter, then reviews one canonical local work record at `awaiting-review`. It stops for human authority unless an approval-bound batch authorisation explicitly permits that named closure. Remote execution stops pending `KI-HARNESS-FND-014`.
+`accept <work>` resolves the selected adapter, then reviews one canonical local work record. Delivery closure requires `awaiting-review` and stops for human authority unless an approval-bound batch authorisation explicitly permits that named closure. Terminal Triage closure requires exact human approval of `rejected`, `duplicate`, or `merged`, with the retained canonical target named for duplicate or merged; batch authority never substitutes. Remote execution stops pending `KI-HARNESS-FND-014`.
 
 `prune <work-record-or-glob>...` resolves each explicit pathname or glob only under the selected local adapter's canonical root (`docs/roadmap/` or `Streams/Roadmap/`), rejects traversal, symlinks, incomplete resolution, and retained trade-linked records, verifies every resolved regular work record is `done`, then deletes exactly that set. Quote shell globs. The invocation is the deletion authority: do not ask for a second confirmation. Remote execution stops pending `KI-HARNESS-FND-014`. Use `ki repo roadmap prune` only for the non-KB deterministic repository-roadmap sweep.
 

@@ -3,9 +3,8 @@ id: KI-HARNESS-OPS-003
 title: Define OTLP observability
 area: OPS
 theme: operations
-horizon: future
+horizon: triage
 status: draft
-candidate: true
 blocks: []
 blocked_by: []
 baseline_ref: null
@@ -39,4 +38,4 @@ An enabled endpoint must be explicit repository or user configuration with a def
 
 ### Evidence for promotion
 
-Before this moves beyond Future, name one operational question that current local logs cannot answer, one consent and configuration owner, the exact event fields needed to answer it, and a test proving that disabled mode makes no network attempt.
+Before this is adopted beyond Triage, name one operational question that current local logs cannot answer, one consent and configuration owner, the exact event fields needed to answer it, and a test proving that disabled mode makes no network attempt.

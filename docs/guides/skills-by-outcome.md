@@ -30,10 +30,10 @@ Keep these instruments separate. A guide may link to the decision or specificati
 
 The standard local delivery journey is:
 
-1. Use `ki-next` to select, capture, promote, defer, or spawn work from the shared queue. It can identify and confirm an independent batch candidate when the adapter and candidates support one; `ki-batch` requires separate explicit authorisation before execution.
+1. Use `ki-next` to deduplicate and capture substantive prospective work into draft Triage without prior approval, then explicitly adopt, select, promote, defer, or spawn work from the shared queue. Leaving Triage requires human approval. It can identify and confirm an independent batch candidate when the adapter and candidates support one; `ki-batch` requires separate explicit authorisation before execution.
 2. Use `ki-plan` to make selected Now or Next work honestly ready. It enriches the canonical record and stops at `ready`.
 3. Use `ki-implement` to deliver one explicitly approved ready record through the local adapter. It establishes a baseline, applies bounded changes, verifies them, and stops at `awaiting-review`.
-4. Use `ki-accept` after human approval to close the evidence-backed record and optionally prune an explicitly selected eligible done record.
+4. Use `ki-accept` after human approval to close an evidence-backed delivery record or a rejected, duplicate, or merged Triage disposition as retained done, and optionally prune an explicitly selected eligible done record later.
 
 Use `ki-batch` only for an explicitly authorised, single-repository set of independent work records. It plans the named candidates first and then runs bounded cycles; it does not select or reshape backlog work. Use `ki-recap` at a session boundary to summarise completed changes, surface only genuinely unfinished work, and route durable learning.
 

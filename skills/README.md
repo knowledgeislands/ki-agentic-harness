@@ -54,7 +54,7 @@ Project an approved portable KI subagent role into Codex standalone TOML and aud
 
 #### `ki-accept`
 
-Closes one evidence-backed canonical local work record from awaiting-review to done, retains done records, and prunes explicitly selected eligible done records. A process skill: human approval is required by default for closure, and it is the sole owner of lifecycle closure. Remote execution fails closed pending KI-HARNESS-FND-014. Use when asked to "accept this work", "mark this work done", "close this review", "prune selected done work", or "remove these completed records". For delivery use ki-implement; for plan shape use ki-plan; for work selection use ki-next; for session findings use ki-recap.
+Closes one evidence-backed canonical local work record from awaiting-review to done, or records a human-approved rejected, duplicate, or merged Triage disposition as done; retains done records; and prunes explicitly selected eligible done records. A process skill: human approval is required by default for closure, and it is the sole owner of lifecycle closure. Remote execution fails closed pending KI-HARNESS-FND-014. Use when asked to "accept this work", "reject this intake", "mark this duplicate", "merge this intake", "mark this work done", "close this review", "prune selected done work", or "remove these completed records". For delivery use ki-implement; for plan shape use ki-plan; for work selection or adoption use ki-next; for session findings use ki-recap.
 
 - **Kind:** Process
 - **Arguments:** `accept <work> | prune <work-record-or-glob>... | help`
@@ -81,7 +81,7 @@ Implements one explicitly approved ready work record through the selected locall
 
 #### `ki-next`
 
-Selects, captures, promotes, defers, and spawns the next work through one shared queue: now, next, soon, future, waiting-for, and parked. It also records the receiver's confirmed disposition of validated inbound trades, including direct application of a trivial local work change versus a separately prioritised work record. Use when asked "what should we do next", "review these inbound trades", "apply this trade directly", "promote this work", or "defer this". It resolves the selected local roadmap or KB Streams adapter and refuses unavailable remote execution; local trade transport belongs to ki-trades.
+Captures substantive prospective work into unadopted triage by default, then selects, adopts, promotes, defers, and spawns work through one shared queue: triage, now, next, soon, future, waiting-for, and parked. It also records the receiver's confirmed disposition of validated inbound trades, including direct application of a trivial local work change versus a separately prioritised work record. Use when new work emerges, or when asked "what should we do next", "review these inbound trades", "apply this trade directly", "promote this work", or "defer this". It resolves the selected local roadmap or KB Streams adapter and refuses unavailable remote execution; local trade transport belongs to ki-trades.
 
 - **Kind:** Process
 - **Arguments:** `next [--review] | defer <item> <horizon> | help`

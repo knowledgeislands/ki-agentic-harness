@@ -7,6 +7,8 @@ export const REVIEW_PACKET_HEADINGS = [
   'Mini recap'
 ] as const
 
+const WORK_ITEM_ID_RE = /^[A-Z][A-Z0-9-]{1,23}-\d{3,}$/
+
 export type AcceptanceAdapter =
   | { kind: 'local'; adapter: 'roadmap' | 'kb-streams'; root: 'docs/roadmap' | 'Streams/Roadmap' }
   | { kind: 'remote-execution-unavailable'; adapter: 'github-issues' | 'linear' }
@@ -46,17 +48,32 @@ export type HousekeepingCompletion =
       replacementMatches: boolean
     }
 
+export type AcceptanceCycleItem =
+  | {
+      kind: 'delivery'
+      id: string
+      canonical: boolean
+      pathWithinRoot: boolean
+      status: 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done'
+      stepsComplete: boolean
+      deliveryEvidencePresent: boolean
+      reviewHeadings: readonly string[]
+    }
+  | {
+      kind: 'triage'
+      id: string
+      canonical: boolean
+      pathWithinRoot: boolean
+      horizon: 'triage'
+      status: 'draft'
+      disposition: 'rejected' | 'duplicate' | 'merged'
+      dispositionEvidence: string
+      targetId: string | null
+    }
+
 export type AcceptanceCycleInput = {
   adapter: AcceptanceAdapter
-  item: {
-    id: string
-    canonical: boolean
-    pathWithinRoot: boolean
-    status: 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done'
-    stepsComplete: boolean
-    deliveryEvidencePresent: boolean
-    reviewHeadings: readonly string[]
-  }
+  item: AcceptanceCycleItem
   authority: ClosureAuthority
   housekeeping: HousekeepingCompletion
 }
@@ -73,6 +90,12 @@ export type AcceptanceCycleOutcome =
   | {
       kind: 'replace-housekeeping-link'
       templateUpdate: { activeRun: string; lastRunUnchanged: true }
+      writes: false
+    }
+  | {
+      kind: 'triage-to-done'
+      disposition: 'rejected' | 'duplicate' | 'merged'
+      targetId: string | null
       writes: false
     }
   | { kind: 'stop'; reason: string; writes: false }
@@ -105,6 +128,41 @@ export const evaluateAcceptanceCycle = ({
     }
   if (!item.canonical || !item.pathWithinRoot)
     return { kind: 'stop', reason: 'work record is not canonical beneath the selected adapter root', writes: false }
+
+  if (item.kind === 'triage') {
+    if (housekeeping.kind !== 'none')
+      return { kind: 'stop', reason: 'triage disposition cannot reconcile housekeeping state', writes: false }
+    if (authority.kind !== 'human' || !authority.explicitApproval)
+      return { kind: 'stop', reason: 'exact explicit human approval is required for triage disposition', writes: false }
+    if (!item.dispositionEvidence.trim())
+      return { kind: 'stop', reason: 'triage disposition evidence is required', writes: false }
+    if (item.disposition === 'rejected' && item.targetId !== null)
+      return { kind: 'stop', reason: 'rejected triage disposition must not name a target record', writes: false }
+    if (item.disposition !== 'rejected' && !item.targetId?.trim())
+      return {
+        kind: 'stop',
+        reason: `${item.disposition} triage disposition must name its target record`,
+        writes: false
+      }
+    if (item.disposition !== 'rejected' && !WORK_ITEM_ID_RE.test(item.targetId as string))
+      return {
+        kind: 'stop',
+        reason: `${item.disposition} triage disposition target must be a canonical work-item identifier`,
+        writes: false
+      }
+    if (item.disposition !== 'rejected' && item.targetId === item.id)
+      return {
+        kind: 'stop',
+        reason: `${item.disposition} triage disposition target must differ from the intake item`,
+        writes: false
+      }
+    return {
+      kind: 'triage-to-done',
+      disposition: item.disposition,
+      targetId: item.targetId,
+      writes: false
+    }
+  }
 
   if (housekeeping.kind === 'non-successful')
     return {
