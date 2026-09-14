@@ -3,14 +3,13 @@ id: KI-HARNESS-GOV-060
 area: GOV
 title: Separate Capture From Adoption
 theme: governance-consistency
-horizon: future
-status: draft
-candidate: true
+horizon: next
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T01:45:26Z
-updated_at: 2026-09-14T01:45:26Z
+updated_at: 2026-09-14T01:56:05Z
 ---
 
 # Separate Capture From Adoption
@@ -29,7 +28,65 @@ Issue trackers such as Linear distinguish triage from the adopted team backlog. 
 
 Do not grant automatic authority to prioritise, plan, implement, batch, accept, or prune work. Do not assume the final representation must be a new lifecycle status, horizon, directory, or frontmatter field before comparing those options. Do not create duplicate records when an existing candidate already owns the concern.
 
+## Current state
+
+The portable roadmap vocabulary has no explicit intake boundary. `future` currently combines adopted long-term work with uncommitted candidates, while `candidate: true` is required on every Future record. `ki-next` requires confirmation for ordinary capture and queue changes, so useful work can remain only in conversation. The roadmap checker, process guidance, decision helpers, and current candidate records encode that combined model.
+
+## Steps
+
+- [ ] Amend the living repository-roadmap decision and portable work-item standards so `triage` means captured but not adopted, `future` means adopted long-term work, and `draft` remains delivery maturity.
+- [ ] Remove `candidate` from the work-item contract and migrate current uncommitted candidates to `triage` without adopting or otherwise reprioritising them.
+- [ ] Make `ki-next` capture substantive prospective work into triage by default after deduplication, while requiring human approval before adoption into another horizon or rejection.
+- [ ] Extend the roadmap checker and process decision helpers with triage validation, transition guards, and focused tests.
+- [ ] Republish generated rubric documentation and reconcile affected skill and outcome guidance.
+
+## Files touched
+
+Expected scope is the living repository-roadmap Decision Record; `ki-work-roadmap` standards, checker, focused tests, and generated rubric; `ki-next` and `ki-plan` process guidance, helpers, and focused tests; the skills-by-outcome guide; current `candidate: true` roadmap records; this item; and the batch authorisation record. Generated capability publication may change only when the skill audit requires it.
+
+## Verify
+
+- `bun test skills/change-management/ki-work-roadmap/scripts/rubric/items/index.test.ts`
+- `bun test skills/change-management/ki-next/scripts/decisions.test.ts skills/change-management/ki-plan/scripts/decisions.test.ts`
+- `ki dev skill rubric ki-work-roadmap --write`
+- `ki repo audit --skill ki-work-roadmap --repo .`
+- `ki repo audit --skill ki-skills --repo .`
+- `ki repo audit --skill ki-decision-records --repo .`
+- `ki repo audit --skill ki-authoring --repo .`
+- `bun run test`
+- `bunx tsc --noEmit`
+
+## Dependencies / blocks
+
+No build-order dependency blocks delivery. The user explicitly supplied outcome authority to progress roadmap work and previously established that capture should require no approval while adoption should. This plan resolves the representation as a seventh `triage` horizon because it keeps intake position separate from delivery maturity and projects directly to provider-native triage concepts. Moving this record from Future directly to Next is appropriate because the outcome, authority boundary, compatibility migration, affected surfaces, and verification are all understood; Soon adds no useful shaping stage.
+
+## Delegation
+
+One same-session read-only inventory may inspect cross-skill impact. Any implementation delegation must use non-overlapping file-level lanes, must not stage or commit, and must return focused verification evidence. The coordinator retains roadmap lifecycle, Decision Record, generated publication, integration, and Git write authority.
+
+## Documentation impact
+
+### Decision Records
+
+Amend `ADR-KI-HARNESS-SKILLS-011` in place because it already owns the canonical repository-roadmap architecture; do not create a competing GDR.
+
+### Specifications
+
+No separate specification changes are needed. The accepted portable behaviour belongs to the work-item and next-work standards.
+
+### Guides
+
+Update the skills-by-outcome guide only where it describes capture and adoption authority.
+
+### Roadmap
+
+Migrate existing `candidate: true` records to triage as a semantic preservation change. Leave their lifecycle state, content, dependencies, and relative priority otherwise unchanged.
+
 ## Discussion
+
+### Selected representation
+
+Use an explicit `triage` horizon. It names queue position and adoption state directly, leaves lifecycle status to describe delivery maturity, avoids a second local record surface, and can project cleanly to provider-native triage concepts. A triage record must remain `draft`; leaving triage is the adoption event and requires human approval. `future` remains available for adopted long-term work and no longer carries `candidate: true`.
 
 ### Separate axes
 
