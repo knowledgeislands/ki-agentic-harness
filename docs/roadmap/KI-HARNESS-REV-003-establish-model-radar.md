@@ -3,13 +3,13 @@ id: KI-HARNESS-REV-003
 area: REV
 title: Establish Model Radar
 theme: regular-reviews
-horizon: soon
-status: draft
+horizon: next
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T01:50:45Z
-updated_at: 2026-09-14T02:17:28Z
+updated_at: 2026-09-14T13:47:18Z
 ---
 
 # Establish Model Radar
@@ -36,7 +36,7 @@ Do not use “open” as an unqualified Boolean, infer local practicality from p
 
 The first delivery need not build a visual polar chart, a continuous monitor, or a benchmark runner. It should establish the durable governance, evidence shape, current snapshot, refresh procedure, and hand-off boundaries first.
 
-## Shaping
+## Current state
 
 ### Intended approach
 
@@ -50,13 +50,72 @@ Add a `ki-work-housekeeping` template for a lightweight weekly signal and deprec
 
 The skill should compose with `ki-pulse`, `ki-tokenomics`, `ki-work-housekeeping`, `ki-next`, `ki-skills`, and runtime-specific adapters without taking over their authority. No delivery dependency on `KI-HARNESS-REV-002` is required, but the two radars should share terminology where doing so does not merge their distinct subjects.
 
-### Decisions to settle during planning
+### Planning questions and resolution
 
 Choose the smallest authoritative data representation that is readable when installed with the skill and mechanically validatable in the source harness. Decide whether the benchmark registry and model snapshot should be authored directly as Markdown/TOML or generated into a readable reference from one structured source. Define the initial Knowledge Islands evaluation set and its permitted use of public or synthetic repositories before any private-repository evaluation is attempted.
+
+Use `references/radar.toml` as the single diffable current snapshot for model identities, executable routes, recommendation rings, support state, retirement state, evidence references, and review dates. Keep benchmark semantics and evidence policy in `references/standards-model-radar.md`, with refresh inputs and source-review dates in `references/sources.md`. Begin local-fit evaluation with public or synthetic repositories; private repository evaluation is outside the first delivery.
 
 ### Promotion conditions
 
 Move this item to Next when the planned artifact boundary, schema authority, refresh inputs, benchmark applicability vocabulary, and verification commands are explicit; the relationship with `KI-HARNESS-REV-002` is collision-checked; and the first snapshot can be produced without credentials or paid infrastructure.
+
+### Readiness summary
+
+The adjacent owners and source boundaries are available locally, and the initial snapshot can be assembled from public primary sources without credentials or paid infrastructure. The first delivery is bounded to one governance skill, one committed snapshot, two housekeeping templates, deterministic structural checks, and an evaluation scenario. It does not change runtime defaults or adopt any newly assessed model.
+
+## Steps
+
+- [ ] Create `ki-model-radar` as a runtime-neutral governance skill with AUDIT, CONFORM, EDUCATE, and REFRESH modes, plus explicit off-ramps to `ki-pulse`, `ki-tokenomics`, runtime adapters, `ki-next`, and `ki-skills`.
+- [ ] Define the TOML snapshot schema and Markdown evidence contract for stable model identities, executable routes, benchmark applicability, recommendation ring, support state, retirement state, movement, provenance, counter-evidence, and review dates.
+- [ ] Seed the reviewed benchmark registry and initial model-route snapshot from the public sources named in this record, preserving uncertainty and keeping provider claims corroborating rather than decisive evidence.
+- [ ] Add deterministic no-write validation for identity uniqueness, closed vocabularies, required dates, evidence linkage, and internally consistent lifecycle combinations; limit CONFORM to safe structural repairs.
+- [ ] Add weekly signal/deprecation and monthly material-release housekeeping templates whose spawned work routes consequential changes through the normal roadmap lifecycle.
+- [ ] Register and publish the skill, add an evaluation scenario, and verify its boundaries against `ki-pulse`, `ki-tokenomics`, `KI-HARNESS-REV-002`, and runtime-specific configuration owners.
+
+## Files touched
+
+- `.ki.toml`
+- `skills/governance/ki-model-radar/`
+- `docs/housekeeping/KI-HARNESS-HK-003-weekly-model-signal-review.md`
+- `docs/housekeeping/KI-HARNESS-HK-004-monthly-model-release-review.md`
+- `evals/scenarios/ki-model-radar.ts`
+- Generated capability and rubric publications affected by registering the skill
+- This roadmap item
+
+## Verify
+
+- Focused validator tests cover duplicate identities, invalid vocabularies, missing or stale review dates, broken evidence references, contradictory lifecycle states, and safe-CONFORM boundaries.
+- `ki repo audit --skill ki-model-radar --repo .`
+- `ki repo audit --skill ki-skills --repo .`
+- `ki repo audit --skill ki-work-housekeeping --repo .`
+- `ki repo audit --skill ki-authoring --repo .`
+- `bun run test`
+- `bunx tsc --noEmit`
+
+## Dependencies / blocks
+
+All delivery dependencies are locally available. `KI-HARNESS-REV-002` is a terminology and boundary cross-check, not a delivery prerequisite. Current public sources are sufficient for the first snapshot; paid endpoints, private repositories, runtime-default changes, and provider deployment are excluded.
+
+## Documentation impact
+
+### Decision Records
+
+Add or revise a Decision Record only if implementation changes an existing skill-authority or lifecycle contract.
+
+### Specifications
+
+No repository-wide specification change is expected in the first delivery; the skill standard and snapshot schema own the new contract.
+
+### Guides
+
+Update an existing skills guide only when the generated catalogue does not give users a sufficient task-oriented route to the new capability.
+
+### Roadmap
+
+Keep this item as the implementation and review authority. Any approved runtime-default, adapter, or private-evaluation consequence becomes separate owner-local work through `ki-next`.
+
+**Delegation:** one bounded lane may prepare the public-source snapshot and benchmark evidence while another implements the schema validator and fixtures. The coordinator retains schema authority, skill-boundary review, generated publication updates, final verification, and all roadmap lifecycle changes.
 
 ## Discussion
 
