@@ -49,3 +49,10 @@ Run the focused registry test, complete isolated suite, TypeScript, engineering,
 - Delivered focused source-only registry coverage, test-root integration, and contributor guidance in `110421e2`.
 - Verified two focused tests, the complete isolated repository suite, TypeScript, engineering, roadmap, authoring, formatting, and diff hygiene.
 - Moved `KI-HARNESS-FND-024` to Awaiting review with the canonical packet; no mandatory stop or external action was encountered.
+
+### Batch recap
+
+- Closed `KI-HARNESS-FND-024` Done under exact consolidated-acceptance authority.
+- Added deterministic no-provider coverage for physical modules, static imports, registry spreads, and literal scenario identities.
+- Kept the live Harness static and advisory while making omission and duplication part of ordinary CI.
+- Performed no push, release, provider call, external write, destructive action, or public-contract change.

@@ -4,12 +4,12 @@ area: FND
 title: Verify eval scenario registration
 theme: foundation-tooling
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 193d82ab30cf9a262698ca83caf7ee124106f023
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-14T20:18:00Z
+updated_at: 2026-09-14T20:21:00Z
 ---
 
 # Verify eval scenario registration
@@ -106,6 +106,10 @@ The change closes the silent-orphan failure without introducing dynamic loading,
 ### Mini recap
 
 Adding a scenario remains a clear two-point edit, but omission, duplicate registration, and duplicate IDs now fail deterministically in the normal local and CI suite.
+
+## Done
+
+Accepted 2026-09-14 through `KI-HARNESS-BATCH-020` on the review packet above.
 
 ## Discussion
 
