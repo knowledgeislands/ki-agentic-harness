@@ -4,12 +4,12 @@ area: FND
 title: Verify eval scenario registration
 theme: foundation-tooling
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 193d82ab30cf9a262698ca83caf7ee124106f023
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-14T20:04:00Z
+updated_at: 2026-09-14T20:08:00Z
 ---
 
 # Verify eval scenario registration
@@ -28,7 +28,7 @@ Prefer a deterministic coverage test over dynamic loading. The check must not in
 
 ## Current state
 
-Ready. `evals/harness.ts` statically imports and spreads 26 scenario modules. The repository test script searches only `skills` and `hooks`, so a focused `evals/registry.test.ts` also requires adding `./evals` to the existing test roots. Scenario identities are literal object fields and can be inspected without importing the live Harness.
+In progress from immutable baseline `193d82ab30cf9a262698ca83caf7ee124106f023`. `evals/harness.ts` statically imports and spreads 26 scenario modules. The repository test script searches only `skills` and `hooks`, so a focused `evals/registry.test.ts` also requires adding `./evals` to the existing test roots. Scenario identities are literal object fields and can be inspected without importing the live Harness.
 
 ## Steps
 
