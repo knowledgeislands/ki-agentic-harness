@@ -276,6 +276,8 @@ describe('ki-repo session', () => {
     expect(write?.path).toBe('+/README.md')
     expect(write?.create).toBeUndefined()
     expect(write?.content).toContain('[the matching outbound working area](../-/README.md)')
+    expect(write?.content).toContain('inputs to further repository work')
+    expect(write?.content).toContain('whether received from elsewhere or created locally')
     expect(write?.content).not.toContain('_TRADES')
   })
 

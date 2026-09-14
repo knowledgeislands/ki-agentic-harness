@@ -18,7 +18,7 @@ A Knowledge Islands base is one markdown store with a fixed set of five zones, f
 
 | Folder       | Holds                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------- |
-| `+/`         | Inbound staging - unfiled captures awaiting routing.† Exempt from most conventions. Not a zone. |
+| `+/`         | Inbound staging - inputs to further local work.† Exempt from most conventions. Not a zone. |
 | `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
 | `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
 | `Resources/` | External reference material that exists independently of this base.                             |
@@ -30,9 +30,9 @@ A Knowledge Islands base is one markdown store with a fixed set of five zones, f
 
 ※ Migrates to `Pillars/` once settled. Its internal structure and process are owned by the `ki-repo-kb-streams` skill.
 
-† `+/_TRADES/` receives cross-repository briefs; their shared repository lifecycle belongs to `ki-repo`.
+† `+/` holds inputs to further local work, including locally created records. `ki-trades` owns received cross-repository records under `+/_TRADES/`.
 
-‡ `-/_TRADES/` holds cross-repository briefs; their shared repository lifecycle belongs to `ki-repo`.
+‡ `ki-trades` owns outgoing cross-repository records under `-/_TRADES/<owner>/<repo>/TRD-<eight-hex>.md`, including their format and lifecycle.
 
 ### Admin/ subdivisions
 

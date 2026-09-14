@@ -26,7 +26,7 @@ Substantive prospective work is captured without approval only after deduplicati
 5. **Select or spawn** one dependency-ready immediate record, or a small, explicitly confirmed synergistic group to plan independently before it can become a `ki-batch` candidate.
 6. **Defer** an explicitly named record only after presenting its exact destination horizon, wording, and affected lifecycle state.
 7. **Hand off for planning** selected Now or Next drafts to `ki-plan`; its adapter creates the right in-place execution detail.
-8. **Recommend cleanup** when done records are eligible for explicit pruning, without deleting them.
+8. **Maintain temporary batches** through the batch-owned retention rule, and recommend eligible roadmap cleanup without deleting roadmap records.
 
 `ki-next` owns intake review and adoption. It does not close rejected, duplicate, or merged Triage records; after exact human confirmation it hands that disposition to `ki-accept`.
 

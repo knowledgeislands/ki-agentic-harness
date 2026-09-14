@@ -74,9 +74,11 @@ This skill coordinates these siblings; it does not duplicate their procedures or
 
 When `ki-delegation` is active, read its packet standard before creating a durable delegation packet.
 
-`run <batch-authorisation>` resolves one regular authority record directly below `+/_AUTHORISATIONS/`, validates its approval-bound payload and run record, one local repository identity, selected-adapter support, active timebox, completion target, mandatory stops, duplicate-free IDs, and named canonical work records, then reports known questions before delivery and coordinates one bounded cycle in dependency order. It never treats a clean gate, silence, or an unreviewed draft as authority.
+`run <batch-authorisation>` resolves one regular authority record directly below `+/_BATCHES/`, validates its approval-bound payload and run record, one local repository identity, selected-adapter support, active timebox, completion target, mandatory stops, duplicate-free IDs, and named canonical work records, then reports known questions before delivery and coordinates one bounded cycle in dependency order. It never treats a clean gate, silence, or an unreviewed draft as authority.
 
 With no target, identify whether a candidate set or an approved authorisation is required and stop.
+
+Batch storage and routine cleanup belong to [the batch retention rule](references/standards-batch.md#batch-retention). Read it when `ki-next` or `ki-recap` supplies cleanup evidence to the pure selector; approval semantics remain unchanged.
 
 ## Notes
 

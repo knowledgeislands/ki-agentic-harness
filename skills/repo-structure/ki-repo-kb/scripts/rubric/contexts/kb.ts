@@ -26,9 +26,16 @@ const delegatedNoteTypeRecord = (
   const segments = relativePath.split('/')
   if (
     segments[0] === zones.inbound &&
-    segments[1] === '_AUTHORISATIONS' &&
+    segments[1] === '_BATCHES' &&
     segments.length === 3 &&
     segments[2]?.endsWith('.md')
+  )
+    return true
+  if (
+    segments[0] === zones.inbound &&
+    segments[1] === '_CHECKPOINTS' &&
+    ((segments.length === 3 && segments[2]?.endsWith('.md')) ||
+      (segments.length === 4 && segments[2] === '_RETIRED' && segments[3]?.endsWith('.md')))
   )
     return true
 
@@ -343,6 +350,7 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
   const missingNoteType: string[] = []
   const legacyType: string[] = []
   const misplacedOutputs: string[] = []
+  const retiredHandoffs: string[] = []
   const inboundZone = zoneOf('+')
   const outboundZone = zoneOf('-')
   const outbound = `${outboundZone}/`
@@ -361,8 +369,8 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       if (!value.noteType) missingNoteType.push(relative)
       if (value.keys.includes('type')) legacyType.push(relative)
     }
-    if ((value.noteType === 'session-digest' || value.noteType === 'handoff') && !relative.startsWith(outbound))
-      misplacedOutputs.push(relative)
+    if (value.noteType === 'handoff') retiredHandoffs.push(relative)
+    if (value.noteType === 'session-digest' && !relative.startsWith(outbound)) misplacedOutputs.push(relative)
   }
   add(
     malformedFrontmatter.length ? 'FAIL' : 'PASS',
@@ -386,12 +394,13 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
     badKeys.length ? `Non-snake_case frontmatter keys: ${sample(badKeys)}.` : 'Frontmatter keys use snake_case.'
   )
   add(
-    missingNoteType.length || legacyType.length ? 'FAIL' : 'PASS',
+    missingNoteType.length || legacyType.length || retiredHandoffs.length ? 'FAIL' : 'PASS',
     'NOTE-1c',
-    missingNoteType.length || legacyType.length
+    missingNoteType.length || legacyType.length || retiredHandoffs.length
       ? `Invalid note-type metadata: ${[
           missingNoteType.length ? `missing note_type: ${sample(missingNoteType)}` : '',
-          legacyType.length ? `legacy type: ${sample(legacyType)}` : ''
+          legacyType.length ? `legacy type: ${sample(legacyType)}` : '',
+          retiredHandoffs.length ? `retired handoff note_type (use ki-trades): ${sample(retiredHandoffs)}` : ''
         ]
           .filter(Boolean)
           .join('; ')}.`

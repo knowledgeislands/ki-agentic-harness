@@ -40,3 +40,9 @@ The user's agreed direction and naming are locked. Use the GOV-061 packet's two 
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-015-RUN-001 bd4ee623fcea5270cd5ee9bc755478607c33e2c851d15681cd7ce223ccc10182 -->
+
+### 2026-09-14T14:43:28Z — GOV-061 delivered
+
+KI-HARNESS-GOV-061 moved from ready through in-progress to awaiting-review against baseline `c5cd90274ce82a9c107f1500318bd1c3c504bd14`. The canonical record retains the full review and outcome evidence. Both authorised worker lanes completed, were reviewed, and integrated without scope expansion. The active record moved to `+/_BATCHES/` with the approved payload hash unchanged.
+
+Verification: 630 tests passed with 2903 assertions; TypeScript, skills, authoring, harness, delegation, and roadmap audits passed; generated publication parity and targeted formatting checks passed. No material review concern remains. Consumer migration and live old-batch cleanup were not performed. No acceptance, roadmap pruning, push, or release occurred. This run is inactive pending human review; REV-003 public-source feasibility was inspected read-only and remains independently ready.

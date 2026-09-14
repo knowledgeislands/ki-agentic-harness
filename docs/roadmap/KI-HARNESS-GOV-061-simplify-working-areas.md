@@ -4,12 +4,12 @@ area: GOV
 title: Simplify Working Areas
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: c5cd90274ce82a9c107f1500318bd1c3c504bd14
 created_at: 2026-09-14T14:30:19Z
-updated_at: 2026-09-14T14:35:00Z
+updated_at: 2026-09-14T14:43:28Z
 ---
 
 # Simplify Working Areas
@@ -34,11 +34,11 @@ The generic scaffold limits inbound material to external sources, while checkpoi
 
 ## Steps
 
-- [ ] Clarify inbound inputs and outbound outputs in the generic standard, canonical READMEs, and focused scaffold checks.
-- [ ] Rename batch storage to `+/_BATCHES/` across the resolver, tests, guidance, KB delegation, and current repository artifacts without changing protected approval payloads.
-- [ ] Define one conservative seven-day inactive-batch cleanup rule and reusable no-write selection helper, consumed by regular `ki-next` and `ki-recap` procedures.
-- [ ] Remove the KB-specific handoff format, route cross-repository handoffs through trades, and delegate checkpoint metadata to its owner.
-- [ ] Refresh affected generated publications, run focused and full verification, and produce the canonical review packet.
+- [x] Clarify inbound inputs and outbound outputs in the generic standard, canonical READMEs, and focused scaffold checks.
+- [x] Rename batch storage to `+/_BATCHES/` across the resolver, tests, guidance, KB delegation, and current repository artifacts without changing protected approval payloads.
+- [x] Define one conservative seven-day inactive-batch cleanup rule and reusable no-write selection helper, consumed by regular `ki-next` and `ki-recap` procedures.
+- [x] Remove the KB-specific handoff format, route cross-repository handoffs through trades, and delegate checkpoint metadata to its owner.
+- [x] Refresh affected generated publications, run focused and full verification, and produce the canonical review packet.
 
 ## Files touched
 
@@ -110,6 +110,37 @@ Update process guidance where cleanup or handoff ownership changes. Keep one ret
 ### Roadmap
 
 This record retains delivery and review evidence. The model radar remains independently evaluated work.
+
+## Review
+
+### Delivered
+
+Delivered the agreed working-area simplification from immutable baseline `c5cd90274ce82a9c107f1500318bd1c3c504bd14`. Scope is this Harness's contracts, tests, generated rubric, working-area READMEs, and current batch migration. No sibling repository, actual expired-batch cleanup, roadmap acceptance or pruning, push, or runtime default was changed.
+
+### Summary of changes
+
+`ki-repo` now defines incoming material as inputs to further local work regardless of origin, and outgoing material as produced outputs awaiting use or delivery. `ki-batch` resolves only `+/_BATCHES/`; the active record moved without changing its protected approval hash. Its single retention rule and pure selector conservatively identify inactive records with preserved outcomes after strictly more than seven days. Regular `ki-next` and `ki-recap` consume that rule without another confirmation. KB DIGEST retains local session digests but delegates cross-repository handoffs to `ki-trades`; the KB checker rejects the retired handoff type and delegates exact checkpoint and batch metadata paths.
+
+### Verification
+
+- `bun run test`: 630 passed, 0 failed, 2903 assertions across 120 files.
+- `bunx tsc --noEmit`: passed.
+- Focused batch tests: 19 passed, 112 assertions; focused KB tests: 14 passed, 70 assertions. Full suite includes the working-area scaffold regressions.
+- Skills, authoring, harness, delegation, and roadmap audits passed.
+- Regenerated affected rubrics; repository rubric and capability catalogue already match their sources. Biome, rumdl, and diff whitespace checks passed.
+- Migrated BATCH-015 resolves with unchanged protected hash `bd4ee623fcea5270cd5ee9bc755478607c33e2c851d15681cd7ce223ccc10182`. Remaining legacy names are explicit retirement guidance, rejection fixtures, or historical migration evidence.
+
+### Outstanding concerns
+
+Human acceptance remains outstanding. Consumer repositories may retain old batch paths or KB handoff notes; their migration is outside this delivery. The retention helper is a no-write selector, not a background scheduler: process callers must gather current evidence and revalidate before exact-path deletion. No live old-batch cleanup was performed.
+
+### Post-change review
+
+The two bounded worker lanes were integrated and independently reviewed for ownership, cross-skill consistency, and deletion safety; no material findings remain. Cleanup preserves active, dirty, malformed, unbound, or uncertain records and never implies work-item pruning. The change maintains file-level shared-tree ownership and introduces no new skill, generic lifecycle, or configuration surface. The record is ready for human review.
+
+### Mini recap
+
+GOV-061 simplifies directionality and naming, gives short-lived batches one conservative cleanup policy, and removes the duplicate KB handoff format. Checks are clean. Durable guidance is already in the owning skill standards; no additional learning promotion is proposed.
 
 ## Discussion
 

@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync } from 'node:fs'
 import { relative, resolve } from 'node:path'
 
-const AUTHORISATION_DIRECTORY = '+/_AUTHORISATIONS'
+const AUTHORISATION_DIRECTORY = '+/_BATCHES'
 const AUTHORISATION_FIELDS = new Set([
   'id',
   'repository',
@@ -146,6 +146,22 @@ export const resolveBatchAuthorisation = ({
     return stop('batch authorisation does not exist')
   }
 
+  const resolution = parseBatchAuthorisation({ contents, filename: pathWithinDirectory, repositoryIdentity })
+  if (resolution.kind === 'resolved' && Date.parse(resolution.authorisation.timeboxEndsAt) <= now.getTime())
+    return stop('batch authorisation timebox has expired')
+  return resolution
+}
+
+/** Validates immutable approval and ledger binding without interpreting execution or retention time. */
+export const parseBatchAuthorisation = ({
+  contents,
+  filename,
+  repositoryIdentity
+}: {
+  contents: string
+  filename: string
+  repositoryIdentity: string
+}): BatchAuthorisationResolution => {
   const parsed = frontmatter(contents)
   if (!parsed) return stop('batch authorisation has invalid frontmatter')
   const { fields, body } = parsed
@@ -167,7 +183,7 @@ export const resolveBatchAuthorisation = ({
   const actualPayloadHash = approvedPayloadSha256(contents)
   const binding = runBinding(body)
 
-  if (typeof id !== 'string' || !/^[A-Z][A-Z0-9-]*-BATCH-\d{3}$/.test(id) || pathWithinDirectory !== `${id}.md`)
+  if (typeof id !== 'string' || !/^[A-Z][A-Z0-9-]*-BATCH-\d{3}$/.test(id) || filename !== `${id}.md`)
     return stop('batch authorisation has an invalid identity or filename')
   if (typeof repository !== 'string' || !repository) return stop('batch authorisation must name one repository')
   if (typeof approved !== 'boolean') return stop('batch authorisation must declare approval')
@@ -200,7 +216,6 @@ export const resolveBatchAuthorisation = ({
     return stop('done completion target must grant closure for every named item')
   if (repository !== repositoryIdentity) return stop('batch authorisation names another repository')
   if (!approved) return stop('batch authorisation is not approved')
-  if (Date.parse(timeboxEndsAt) <= now.getTime()) return stop('batch authorisation timebox has expired')
 
   return {
     kind: 'resolved',

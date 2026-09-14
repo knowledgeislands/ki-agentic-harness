@@ -15,12 +15,23 @@ const record = (overrides: readonly string[] = [], ledger = ''): string => {
 
 const fixture = (contents = record()): { root: string; path: string } => {
   const root = mkdtempSync(join(tmpdir(), 'ki-batch-authorisation-'))
-  const directory = join(root, '+', '_AUTHORISATIONS')
+  const directory = join(root, '+', '_BATCHES')
   mkdirSync(directory, { recursive: true })
   const path = join(directory, 'KI-HARNESS-BATCH-001.md')
   writeFileSync(path, contents)
   return { root, path }
 }
+
+test('rejects the retired storage path even when a valid batch exists there', () => {
+  const { root } = fixture()
+  const directory = join(root, '+', '_AUTHORISATIONS')
+  mkdirSync(directory)
+  const path = join(directory, 'KI-HARNESS-BATCH-001.md')
+  writeFileSync(path, record())
+  expect(
+    resolveBatchAuthorisation({ repositoryRoot: root, authorisationPath: path, repositoryIdentity: repository, now })
+  ).toMatchObject({ kind: 'stop', reason: 'batch authorisation is not a canonical local record', writes: false })
+})
 
 const resolveFixture = (contents?: string) => {
   const { root, path } = fixture(contents)

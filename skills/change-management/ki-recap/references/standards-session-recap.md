@@ -41,6 +41,8 @@ The comparison qualifies transcript-derived tool tallies and high-cost suggestio
 
 ## 2. Summarise
 
+Before reporting the final repository state, apply the `ki-batch` “Batch retention” rule to `+/_BATCHES/`. Delete only the eligible inactive records under that owner's rule, without another confirmation, then refresh Git grounding and report the exact removals and Git recovery. This maintenance exception does not select work, promote learnings, or prune roadmap items; proposed Actions remain a user checklist.
+
 Using warm context plus the helper's `filesTouched` / `diffStat`: state what changed, what was decided, and why — in the order it happened, not a topic reshuffle. Keep it to what a reader picking this up cold would need: no blow-by-blow tool narration.
 
 ## 3. Surface what is outstanding
