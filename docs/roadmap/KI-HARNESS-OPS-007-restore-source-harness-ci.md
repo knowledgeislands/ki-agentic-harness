@@ -4,12 +4,12 @@ area: OPS
 title: Restore source Harness CI
 theme: operations
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: b2746ee7f7cb03ea0969861bd8f9d969444a9403
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-14T19:39:00Z
+updated_at: 2026-09-14T19:43:00Z
 ---
 
 # Restore source Harness CI
@@ -30,7 +30,7 @@ Do not publish or install a replacement CLI, weaken released-binary checks, muta
 
 ## Current state
 
-Ready. GitHub Actions runs `34855978255` and `34884015566` establish the source-versus-embedded-contract failure. The workflow already isolates KI data, configuration, cache, and state under `${{ runner.temp }}`, verifies the released executable and version, bootstraps the runner, registers this repository, repairs it, and audits it. Released `ki` v0.3.6 supports explicit `ki dev local set/on`; official checkout tags confirm `v7.0.1` as the current v7 release.
+In progress from immutable baseline `b2746ee7f7cb03ea0969861bd8f9d969444a9403`. GitHub Actions runs `34855978255` and `34884015566` establish the source-versus-embedded-contract failure. The workflow already isolates KI data, configuration, cache, and state under `${{ runner.temp }}`, verifies the released executable and version, bootstraps the runner, registers this repository, repairs it, and audits it. Released `ki` v0.3.6 supports explicit `ki dev local set/on`; official checkout tags confirm `v7.0.1` as the current v7 release.
 
 ## Steps
 
