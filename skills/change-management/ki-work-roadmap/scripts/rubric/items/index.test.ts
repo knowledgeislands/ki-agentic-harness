@@ -45,6 +45,8 @@ status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
+created_at: 2026-09-13T12:00:00Z
+updated_at: 2026-09-13T12:00:00Z
 ---
 
 ## Goal
@@ -219,15 +221,19 @@ test('frontmatter keys use snake_case', () => {
   )
 })
 
-test('optional work-item timestamps are paired, canonical, ordered, and clock-independent', () => {
+test('work-item timestamps are mandatory, paired, canonical, ordered, and clock-independent', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
-  const source = readFileSync(item, 'utf8')
+  const source = readFileSync(item, 'utf8').replace(
+    '\ncreated_at: 2026-09-13T12:00:00Z\nupdated_at: 2026-09-13T12:00:00Z',
+    ''
+  )
+  writeFileSync(item, source)
   expect(inspectRoadmap(repository)).toContainEqual(
     expect.objectContaining({
-      level: 'INFO',
-      area: 'ITEM-2',
-      msg: 'created_at and updated_at are absent during compatibility rollout'
+      level: 'FAIL',
+      area: 'ITEM-1',
+      msg: "frontmatter is missing 'created_at'"
     })
   )
   const timestamped = source.replace(

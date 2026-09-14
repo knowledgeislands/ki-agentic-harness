@@ -155,7 +155,7 @@ An explicit later prune path or glob removes only the resolved `done` items; the
 
 A done work item linked from an adopted completion-observation trade remains retained until sender release is observable. Roadmap review and pruning report that external reference as a guard and refuse to remove the linked work record while it is unresolved.
 
-When the optional compatibility timestamp pair is present, every process-owned lifecycle or semantic work-item mutation preserves `created_at`, advances `updated_at` monotonically, and refuses to replace a changed source revision. Remote adapters project provider-native timestamps rather than duplicating them into remote bodies. The work-item format owns the precise timestamp contract.
+Every process-owned lifecycle or semantic work-item mutation preserves `created_at`, advances `updated_at` monotonically, and refuses to replace a changed source revision. Remote adapters project provider-native timestamps rather than duplicating them into remote bodies. The work-item format owns the precise timestamp contract.
 
 ## Lifecycle commit boundaries
 

@@ -382,7 +382,18 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   const intakeDispositionTarget = value('intake_disposition_target')
   const createdAt = value('created_at')
   const updatedAt = value('updated_at')
-  for (const key of ['id', 'title', 'theme', 'horizon', 'status', 'blocks', 'blocked_by', 'baseline_ref']) {
+  for (const key of [
+    'id',
+    'title',
+    'theme',
+    'horizon',
+    'status',
+    'blocks',
+    'blocked_by',
+    'baseline_ref',
+    'created_at',
+    'updated_at'
+  ]) {
     if (!(key in parsed.values)) add('FAIL', 'ITEM-1', `frontmatter is missing '${key}'`, FORMAT, display)
   }
   const unexpected = Object.keys(parsed.values).filter(
@@ -460,8 +471,6 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   }
   if (baselineRef !== null && (typeof baselineRef !== 'string' || !COMMIT_RE.test(baselineRef)))
     add('FAIL', 'ITEM-2', 'baseline_ref must be null or a full lowercase commit ID', FORMAT, display)
-  if (createdAt === undefined && updatedAt === undefined)
-    add('INFO', 'ITEM-2', 'created_at and updated_at are absent during compatibility rollout', FORMAT, display)
   if ((createdAt === undefined) !== (updatedAt === undefined))
     add('FAIL', 'ITEM-2', 'created_at and updated_at must be present together', FORMAT, display)
   if (createdAt !== undefined && updatedAt !== undefined) {

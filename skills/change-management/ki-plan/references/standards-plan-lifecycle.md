@@ -1,6 +1,6 @@
 # Readiness procedure
 
-For every shaped local record whose optional compatibility timestamp pair is present, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value. An absent pair may remain absent until a separately reviewed backfill. Compare the observed source revision immediately before publication and refuse a one-sided or malformed pair or any source drift. Read-only planning does not advance timestamps; remote adapters project provider-native values.
+For every shaped local record, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value. Compare the observed source revision immediately before publication and refuse absent or malformed timestamps or any source drift. Read-only planning does not advance timestamps; remote adapters project provider-native values.
 
 `ki-plan <work>...` operates only records that `ki-next` has selected into `now` or `next`.
 
