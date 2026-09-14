@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T01:50:45Z
-updated_at: 2026-09-14T01:50:45Z
+updated_at: 2026-09-14T02:17:28Z
 ---
 
 # Establish Model Radar
@@ -22,7 +22,7 @@ The capability should preserve why each model, benchmark, and execution route ma
 
 ## Context
 
-The current workstation already selects two leading coding-agent combinations: Claude Fable 5.1 through Claude ACP and GPT-6 Astra through Codex ACP. Gemini 3.8 Flash, GLM-5.3 and GLM-5.3 Flash, Kimi K3, Qwen3.8 Max, and Grok 4.6 are credible candidates for broader coverage. Claude Opus 5 and GPT-5.6 Sol remain relevant comparison or fallback models within already supported provider routes.
+The current workstation uses Claude Opus 5 through Claude ACP and GPT-5.6 Sol through Codex ACP as its standard-purpose defaults. Higher-tier Claude Fable 5.1 and GPT-6 Astra routes remain available for work that justifies them. Gemini 3.8 Flash, GLM-5.3 and GLM-5.3 Flash, Kimi K3, Qwen3.8 Max, and Grok 4.6 are credible candidates for broader coverage.
 
 Raw model rankings do not establish harness performance. Coding and terminal evaluations often measure a model-agent combination, while provider availability, subscription access, tool protocol, cost, latency, context, privacy, licence, and feasible execution hardware all affect whether a nominally capable model adds useful support.
 
@@ -111,14 +111,15 @@ Record practical locality as laptop, workstation, server, cluster, or unavailabl
 
 The first reviewed snapshot should include:
 
-- **Claude Fable 5.1** — initial Adopt / Default candidate through Claude Code and ACP; proprietary and hosted.
-- **GPT-6 Astra** — initial Adopt / Default candidate through Codex and ACP; proprietary and hosted.
+- **Claude Opus 5** — initial Adopt / Default candidate through Claude Code and ACP; proprietary and hosted, and the standard-purpose Claude default.
+- **GPT-5.6 Sol** — initial Adopt / Default candidate through Codex and ACP; proprietary and hosted, and the standard-purpose Codex default.
+- **Claude Fable 5.1** — initial Adopt / Available candidate through Claude Code and ACP; proprietary and hosted, retained as a higher-tier option rather than the everyday default.
+- **GPT-6 Astra** — initial Adopt / Available candidate through Codex and ACP; proprietary and hosted, retained as a higher-tier option rather than the everyday default.
 - **Gemini 3.8 Flash** — initial Assess and first Trial candidate through Gemini CLI ACP; proprietary and hosted, with multimodal and cost/speed differentiation.
 - **GLM-5.3 and GLM-5.3 Flash** — initial Assess candidates through OpenCode or compatible APIs; open-weight, with distinct licences and server-class self-hosting profiles. Flash should be assessed separately for its lower-cost, faster route.
 - **Kimi K3** — initial Assess candidate; open-weight under the Kimi licence, available through hosted access or cluster-scale self-hosting.
 - **Qwen3.8 Max** — initial Assess candidate; proprietary hosted model. Track an appropriately sized open-weight Qwen variant separately for local execution.
 - **Grok 4.6** — initial Assess candidate through xAI-hosted access; proprietary.
-- **Claude Opus 5 and GPT-5.6 Sol** — comparison and fallback candidates already reachable through supported provider families, without treating another selectable model as a new agent integration.
 - **Workstation-local lane** — at least one appropriately sized Qwen variant and relevant Gemma 4 variants, evaluated separately from the frontier-hosted lane for privacy, offline operation, latency, and total-cost value.
 
 Initial ring positions are hypotheses to verify against current sources and local experience during the first REFRESH. No model enters Trial without controlled real use, and no model enters Adopt solely from external rankings.
