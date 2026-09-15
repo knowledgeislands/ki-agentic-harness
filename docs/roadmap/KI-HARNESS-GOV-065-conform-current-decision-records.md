@@ -4,12 +4,12 @@ area: GOV
 title: Conform current Decision Records
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 2b34d951560dbc800348e42c8398af4a28ede2b3
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T12:20:22Z
+updated_at: 2026-09-15T12:25:33Z
 ---
 
 # Conform current Decision Records
@@ -123,6 +123,10 @@ The four records now state present authority without losing their architectural 
 ### Mini recap
 
 Delivered four bounded living-record corrections, verified their retained owners and current binding source, and found no additional automatically actionable cleanup. No new durable learning or roadmap item is required.
+
+## Done
+
+Accepted 2026-09-15 under the approved completion authority in `KI-HARNESS-BATCH-022` after the aggregate repository gate passed.
 
 ## Discussion
 

@@ -4,12 +4,12 @@ area: FND
 title: Verify capability publication counts
 theme: foundation-tooling
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 97a2348a7a641f8572714a7ec58caca262d22c0f
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T12:18:00Z
+updated_at: 2026-09-15T12:25:33Z
 ---
 
 # Verify capability publication counts
@@ -108,6 +108,10 @@ The goal is met within the approved boundary: the implementation reuses canonica
 ### Mini recap
 
 Delivered optional root README count verification and safe repair, with focused tests and repository audits clean for this lane. No remedial item or additional durable-learning route is indicated; the compatible-Harness standard now owns the invariant.
+
+## Done
+
+Accepted 2026-09-15 under the approved completion authority in `KI-HARNESS-BATCH-022` after the aggregate repository gate passed.
 
 ## Discussion
 

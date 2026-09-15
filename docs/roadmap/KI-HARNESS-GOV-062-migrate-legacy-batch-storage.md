@@ -4,12 +4,12 @@ area: GOV
 title: Migrate legacy batch storage
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 97a2348a7a641f8572714a7ec58caca262d22c0f
 created_at: 2026-09-14T19:04:19Z
-updated_at: 2026-09-15T12:15:46Z
+updated_at: 2026-09-15T12:25:33Z
 ---
 
 # Migrate legacy batch storage
@@ -116,6 +116,10 @@ The classifier meets the stated four-outcome goal without weakening legacy non-e
 ### Mini recap
 
 Legacy batch evidence can now be classified as relocate, prune, reauthorise, or retain without writes or inferred authority. Focused code, type, authoring, roadmap, and skill checks pass; no unresolved defect remains. The durable learning is already placed in the batch standard, while native execution remains a tools-ki concern.
+
+## Done
+
+Accepted 2026-09-15 under the approved completion authority in `KI-HARNESS-BATCH-022` after the aggregate repository gate passed.
 
 ## Discussion
 

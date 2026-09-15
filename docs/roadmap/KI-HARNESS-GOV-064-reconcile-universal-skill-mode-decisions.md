@@ -4,12 +4,12 @@ area: GOV
 title: Reconcile Universal Skill Modes
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 97a2348a7a641f8572714a7ec58caca262d22c0f
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T12:18:23Z
+updated_at: 2026-09-15T12:25:33Z
 ---
 
 # Reconcile universal skill mode decisions
@@ -121,6 +121,10 @@ The records and enforceable terminology now agree on the accepted distinction, w
 ### Mini recap
 
 Delivered the authority reconciliation, regenerated the rubric, and proved the focused contract. No durable learning needs routing beyond this item; the only follow-up is the coordinator-owned aggregate count reconciliation already surfaced by the concurrent batch.
+
+## Done
+
+Accepted 2026-09-15 under the approved completion authority in `KI-HARNESS-BATCH-022` after the aggregate repository gate passed.
 
 ## Discussion
 
