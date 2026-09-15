@@ -4,12 +4,12 @@ area: GOV
 title: Expand Housekeeping Coverage
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b333daaa3356e827429104d7b7783c0e939e8e76
 created_at: 2026-09-15T05:31:18Z
-updated_at: 2026-09-15T11:57:29Z
+updated_at: 2026-09-15T12:03:55Z
 ---
 
 # Expand Housekeeping Coverage
@@ -134,6 +134,10 @@ Independent file-bounded review confirmed that model consolidation retains evide
 ### Mini recap
 
 The requested four-review structure, optional change-volume scheduling, weekly radar cadence, and historical-review retirement are implemented and verified. Routine working-area maintenance remains under existing specialist guards; no new generic retention policy, substantive review, external write, acceptance, roadmap prune, or push occurred.
+
+## Done
+
+Accepted 2026-09-15 by Kris Brown on the review packet above.
 
 ## Discussion
 
