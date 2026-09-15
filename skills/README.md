@@ -111,7 +111,7 @@ Capture a submitted link or scan bounded public sources, then triage current sig
 Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work and housekeeping skills for historical session acquisition.
 
 - **Kind:** Process
-- **Arguments:** `recap [--runtime detect|claude|codex] [--transcript <session-file>] | help`
+- **Arguments:** `checkpoint <thread> | help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
 - **Dependencies:** `ki-authoring`
 - **Runtime:** Portable
 

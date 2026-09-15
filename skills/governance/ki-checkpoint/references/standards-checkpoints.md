@@ -2,6 +2,19 @@
 
 A checkpoint is a concise repository-owned reconstruction snapshot for one active human-named thread. It lets a fresh agent continue useful work without relying on a transcript, private runtime state, or a vendor session.
 
+## Contents
+
+- [Activation and ownership](#activation-and-ownership)
+- [Record location and identity](#record-location-and-identity)
+- [Exact record form](#exact-record-form)
+- [Optional runtime reminder consumers](#optional-runtime-reminder-consumers)
+- [Update lifecycle](#update-lifecycle)
+  - [Recap-supplied hand-off evidence](#recap-supplied-hand-off-evidence)
+- [Resume lifecycle](#resume-lifecycle)
+- [Removal lifecycle](#removal-lifecycle)
+- [Prohibited payloads and claims](#prohibited-payloads-and-claims)
+- [Audit and conform boundary](#audit-and-conform-boundary)
+
 ## Activation and ownership
 
 The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; declaration requires the owned physical `+/_CHECKPOINTS/` subarea and exact `README.md` scaffold, retained even when no checkpoint records exist. `ki-repo` owns the generic `+/` scaffold and detects an undeclared specialist subarea, while `ki-checkpoint` alone interprets checkpoint records.
@@ -68,6 +81,12 @@ Create or update a checkpoint only on explicit user request or a documented repo
 An update replaces the active snapshot in place, preserves `created_at`, and advances `updated_at`. It never appends timestamped copies or transcript history. Git is the history mechanism.
 
 Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a checkpoint. The checkpoint may name those canonical artifacts; it must not become their only copy.
+
+### Recap-supplied hand-off evidence
+
+An explicit `ki-recap checkpoint <thread>` invocation may supply grounded evidence to this update lifecycle. The composition does not grant write authority or weaken validation: the repository must declare a valid `ki-checkpoint` capability, the user must select exactly one human-named thread and explicitly authorise its update, and the checkpoint procedure must refuse any repository mismatch, stale baseline, ambiguous thread, interrupted update, or incomplete work state.
+
+The supplied hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available to the caller but is never required evidence and cannot replace those portable inputs. The checkpoint records concise reconstruction state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
 
 ## Resume lifecycle
 

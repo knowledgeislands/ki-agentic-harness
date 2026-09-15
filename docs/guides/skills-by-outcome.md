@@ -22,7 +22,7 @@ A normal repository-governance journey is `ki-repo` plus the structure skill mat
 - **How does a reader use, operate, contribute to, or maintain it?** Use `ki-guides` for practical instructions under `docs/guides/`.
 - **When should repository work happen?** Use `ki-work` to select the adapter, then the matching adapter skill: `ki-work-roadmap`, `ki-work-github-issues`, or `ki-work-linear`.
 - **What recurring maintenance is due?** Use `ki-work-housekeeping` to govern templates and due-run spawning.
-- **How can a live thread resume in fresh context?** Use `ki-checkpoint` for one concise repository-owned reconstruction snapshot. Use `ki-recap` instead when summarising the current live session and routing durable learning.
+- **How can a live thread resume in fresh context?** Use `ki-checkpoint` for one concise repository-owned reconstruction snapshot. Use `ki-recap` instead when summarising the current live session and routing durable learning. When explicitly authorised, `ki-recap checkpoint <thread>` supplies grounded recap evidence to the separately owned checkpoint update procedure and refuses an incomplete hand-off.
 
 Keep these instruments separate. A guide may link to the decision or specification that supports it, but it should not become a second copy of either. A future action belongs in the selected work adapter rather than a Decision Record.
 

@@ -25,6 +25,8 @@ This governance skill owns the portable checkpoint contract: one concise reposit
 
 `ki-checkpoint` remains the portable reconstruction record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid checkpoint under `ki-checkpoint`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
 
+The optional `ki-recap checkpoint <thread>` composition is a caller of the existing UPDATE procedure, never a second checkpoint implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact thread, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-checkpoint` still validates the record and owns every write or refusal.
+
 ## Operating modes
 
 The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **REMOVE · RESUME · UPDATE** modes. Invoked as `help` / `-h` / `?`, it emits generated HELP and stops. With no recognised mode, it emits the same HELP and, only in an interactive session, offers the mode choice and prompts for any target shown in `argument-hint`.

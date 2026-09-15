@@ -4,12 +4,12 @@ area: RTP
 title: Portable agent hand-off
 theme: runtime-portability
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 8073d4f52de716eb47de9a05442ec328c2893321
 created_at: 2026-09-07T23:33:50Z
-updated_at: 2026-09-15T13:16:47Z
+updated_at: 2026-09-15T13:35:30Z
 ---
 
 # Define portable agent hand-off
@@ -38,23 +38,24 @@ A hand-off must carry an immutable committed baseline or a complete portable pat
 
 ## Steps
 
-- [ ] Register `docs/specs/agent-handoff.md` with prefix `AHO` and accepted requirements for hand-off inputs, validation, refusal, reconstruction, and result evidence.
-- [ ] Define the optional `ki-recap checkpoint <thread>` composition while keeping `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and removal.
-- [ ] Require a declared, valid checkpoint capability, exact human-selected thread, current repository identity, explicit user authority, and complete committed or portable-patch work state before any write.
-- [ ] Define portable outputs: the updated checkpoint, immutable baseline or complete patch reference, scoped authority, verification expectation, result destination, and explicit refusal evidence.
-- [ ] Add focused fixtures for valid recap-to-checkpoint hand-off, undeclared or malformed checkpoint capability, missing or ambiguous thread identity, stale baseline, incomplete uncommitted state, absent authority, repository mismatch, interrupted update, and fresh-agent reconstruction without transcript access.
-- [ ] Update the skills-by-outcome guide and generated capability publication only where the new composition changes their current surface.
-- [ ] Run focused and aggregate verification and record the six-heading review packet.
+- [x] Register `docs/specs/agent-handoff.md` with prefix `AHO` and accepted requirements for hand-off inputs, validation, refusal, reconstruction, and result evidence.
+- [x] Define the optional `ki-recap checkpoint <thread>` composition while keeping `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and removal.
+- [x] Require a declared, valid checkpoint capability, exact human-selected thread, current repository identity, explicit user authority, and complete committed or portable-patch work state before any write.
+- [x] Define portable outputs: the updated checkpoint, immutable baseline or complete patch reference, scoped authority, verification expectation, result destination, and explicit refusal evidence.
+- [x] Add focused fixtures for valid recap-to-checkpoint hand-off, undeclared or malformed checkpoint capability, missing or ambiguous thread identity, stale baseline, incomplete uncommitted state, absent authority, repository mismatch, interrupted update, and fresh-agent reconstruction without transcript access.
+- [x] Update the skills-by-outcome guide and generated capability publication only where the new composition changes their current surface.
+- [x] Run focused and aggregate verification and record the six-heading review packet.
 
 ## Files touched
 
 - `docs/specs/index.md` and `docs/specs/agent-handoff.md`
 - `skills/change-management/ki-recap/SKILL.md`
 - `skills/change-management/ki-recap/references/standards-session-recap.md`
-- `skills/change-management/ki-recap/scripts/recap-grounding.test.ts`
+- `skills/change-management/ki-recap/scripts/internal/checkpoint-handoff.ts`
+- `skills/change-management/ki-recap/scripts/checkpoint-handoff.test.ts`
 - `skills/governance/ki-checkpoint/SKILL.md`
 - `skills/governance/ki-checkpoint/references/standards-checkpoints.md`
-- `skills/governance/ki-checkpoint/scripts/rubric/contexts/checkpoints.test.ts`
+- `skills/governance/ki-checkpoint/scripts/rubric/contexts/checkpoint-handoff.test.ts`
 - `docs/guides/skills-by-outcome.md` and generated `skills/README.md` only when mechanically affected
 - This roadmap record
 
@@ -96,6 +97,41 @@ Update the outcome guide so a user can deliberately convert a grounded recap int
 ### Roadmap
 
 Keep substrate architecture, remote working practices, technology comparison, and provider proofs in Techne. Any tools-ki adapter implementation requires separately adopted work in that repository after the portable contract is accepted.
+
+## Review
+
+### Delivered
+
+From immutable baseline `8073d4f52de716eb47de9a05442ec328c2893321`, delivered the Harness-owned portable hand-off contract while leaving provider architecture, controller, substrate, lifecycle, provider evaluation, and remote working-style proof in Techne. The implementation adds the explicit `ki-recap checkpoint <thread>` composition, a fail-closed no-write preflight model, accepted `AHO` requirements, focused fixtures, and the updated user-facing capability routes.
+
+### Summary of changes
+
+Added `docs/specs/agent-handoff.md` and registered prefix `AHO`; extended `ki-recap` and `ki-checkpoint` without merging their ownership; added the pure `checkpoint-handoff.ts` decision model and focused recap and checkpoint fixtures; updated the skills-by-outcome guide; and regenerated the marker-bounded capability catalogue because `ki-recap`'s argument hint changed. The focused fixtures live in dedicated test files rather than expanding the two existing broad suites named in the draft plan, preserving the same evidence boundary with clearer test ownership.
+
+### Verification
+
+- `bun test skills/change-management/ki-recap/scripts/checkpoint-handoff.test.ts` — PASS, 4 tests and 13 assertions.
+- `bun test skills/governance/ki-checkpoint/scripts/rubric/contexts/checkpoint-handoff.test.ts` — PASS, 1 test and 2 assertions.
+- `ki repo audit --skill ki-specs --repo .` — PASS.
+- `ki repo audit --skill ki-checkpoint --repo .` — PASS.
+- `ki repo audit --skill ki-skills --repo .` — PASS.
+- `ki repo audit --skill ki-repo-harness --repo .` — PASS, including exact generated capability publication.
+- `ki repo audit --skill ki-work-roadmap --repo .` — PASS.
+- `ki repo audit --skill ki-authoring --repo .` — PASS.
+- `bunx tsc --noEmit && bun run test && bunx biome check` — PASS across the complete Harness suite and source tree.
+- `git diff --check` — PASS.
+
+### Outstanding concerns
+
+None in the approved Harness boundary. A future native host or remote execution adapter may automate this procedure only through separately adopted work in its owning repository; this record does not authorise such an implementation.
+
+### Post-change review
+
+The delivered contract meets the narrowed goal: a fresh agent can receive one recoverable repository work state, exact authority and destination, and expected verification without relying on a transcript or shared filesystem. Negative paths refuse without writes, `ki-checkpoint` retains all record authority, and the Techne records already cover the excluded substrate and working-style concerns. Regression risk is limited to instruction routing and the pure decision projection, covered by focused fixtures, full tests, TypeScript, Biome, and the relevant governance audits. The item is ready for human acceptance.
+
+### Mini recap
+
+Delivered the portable Harness projection of remote-agent hand-off and verified it at specification, skill, fixture, catalogue, and repository levels. The material learning is the ownership split itself: Techne owns execution environments and operating proofs; Harness owns only reusable portable evidence contracts. That split is now explicit in the work record and accepted specification, so no new follow-on roadmap item is needed here.
 
 ## Discussion
 

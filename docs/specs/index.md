@@ -27,9 +27,10 @@ Requirements are organised as user-observable behaviours or quality properties. 
 
 ## Areas
 
-| File          | Prefix | Covers                                                                 |
-| ------------- | ------ | ---------------------------------------------------------------------- |
-| bootstrap.md  | `BOOT` | User bootstrap, activation scopes, native repository operations        |
+| File             | Prefix | Covers                                                                 |
+| ---------------- | ------ | ---------------------------------------------------------------------- |
+| agent-handoff.md | `AHO`  | Portable fresh-agent hand-off inputs, refusals, result evidence        |
+| bootstrap.md     | `BOOT` | User bootstrap, activation scopes, native repository operations        |
 | governance.md | `GOV`  | Universal modes, mechanical-first, severity, composition, checker root |
 | harness.md    | `HARN` | Five-part bundle, root anchors, toolchain, skills naming               |
 | modes.md      | `MODE` | The four universal modes and HELP behavioural contract                 |

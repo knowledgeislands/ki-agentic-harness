@@ -14,6 +14,7 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
   - [6. Actions](#6-actions)
   - [7. Route future-work selection to `ki-next`](#7-route-future-work-selection-to-ki-next)
   - [8. Preserve the handoff and compact at the boundary](#8-preserve-the-handoff-and-compact-at-the-boundary)
+  - [9. Create a portable checkpoint hand-off](#9-create-a-portable-checkpoint-hand-off)
 
 **Ground every claim in reality, not memory.** Warm in-session context, compaction summaries, and recalled memory entries are hypotheses about state, not evidence of it — concurrent sessions, background processes, and elapsed time all make them stale. Before the recap asserts a checkable fact — a commit landed, a gate passed, a file contains something, a plan is open — check it now (`git log`, re-run the read-only gate, read the file). What cannot be cheaply re-checked, state as recollection ("as of when it ran"), not as fact.
 
@@ -176,3 +177,16 @@ Write a carry-forward digest of the recapped span:
 ```
 
 State plainly that this digest is a **carry-forward artefact**, not a context-window reduction. Runtime- or vendor-specific compaction remains the applicable `ki-tokenomics` adapter's boundary; this procedure offers the documented mechanism at the safe recap-to-new-work boundary, with the aim of retaining only the next cycle's scope.
+
+## 9. Create a portable checkpoint hand-off
+
+Run this composition only when the user explicitly invokes `ki-recap checkpoint <thread>`. It is optional and separate from ordinary recap. `ki-recap` supplies grounded source evidence; `ki-checkpoint` remains the sole owner of checkpoint identity, schema, update, resume, and removal.
+
+1. Resolve the physical Git root and expected repository identity. Require the repository to declare `ki-checkpoint`, then run its read-only audit and stop if the capability or target record is invalid.
+2. Require the exact human-selected `<thread>` and explicit authority to update it. Resolve only `+/_CHECKPOINTS/<thread>.md`; refuse missing, ambiguous, nested, runtime-derived, or mismatched identity.
+3. Ground the hand-off in the current immutable `HEAD`. If required work is uncommitted, require one complete portable patch against that exact baseline; a partial diff, shared working tree, transcript, runtime session, or provider snapshot is insufficient.
+4. Require the scoped authority, result destination, and expected verification that the receiving agent needs. Refuse repository mismatch, stale baseline, missing input, or an interrupted prior update without writing; re-ground all evidence before any retry.
+5. Invoke the existing `ki-checkpoint` UPDATE procedure with concise reconstruction state and references to durable owners. Never embed a transcript or make the checkpoint the only copy of a decision, accepted work state, patch, or result.
+6. Return a hand-off containing repository identity, thread, authority scope, result destination, verification plan, and committed baseline or portable-patch reference. A fresh agent must be able to reconstruct the governed task from those portable inputs without the originating transcript or shared filesystem.
+
+The pure [`checkpoint-handoff.ts`](../scripts/internal/checkpoint-handoff.ts) model exercises this no-write preflight. It is evidence for the procedure, not a host command or a replacement for live repository and checkpoint validation.
