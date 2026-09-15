@@ -4,12 +4,12 @@ area: GOV
 title: Migrate legacy batch storage
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 97a2348a7a641f8572714a7ec58caca262d22c0f
 created_at: 2026-09-14T19:04:19Z
-updated_at: 2026-09-15T05:45:25Z
+updated_at: 2026-09-15T12:15:46Z
 ---
 
 # Migrate legacy batch storage
@@ -41,14 +41,14 @@ The transition uses four outcomes:
 
 ## Steps
 
-- [ ] Add a transition section to the batch standard defining the four outcomes and their no-inference boundary.
-- [ ] Add a pure legacy-record classifier that consumes caller-supplied path, file, Git, lifecycle, canonical-outcome, and age evidence without reading, moving, or deleting anything.
-- [ ] Reuse the existing retired-shape parser and batch-retention rule rather than creating a second legacy schema or weaker age calculation.
-- [ ] Require relocation to preserve exact bytes and filename beneath `+/_BATCHES/`, reject destination collisions, and re-parse the result as retained non-executable evidence.
-- [ ] Require active work to stop with `reauthorise`; document that only a newly approved lean exact-set envelope can resume execution.
-- [ ] Add fixtures for completed young records, completed expired records, active work, missing canonical outcomes, malformed payloads, unsafe paths, symlinks, uncommitted bytes, collisions, and empty legacy directories.
-- [ ] Record the observed receiver repositories as migration evidence without writing them; route native filesystem mechanics to the existing tools-ki batch automation owner if the pure contract proves useful.
-- [ ] Run focused batch tests, skill audits, Markdown checks, and repository-wide gates.
+- [x] Add a transition section to the batch standard defining the four outcomes and their no-inference boundary.
+- [x] Add a pure legacy-record classifier that consumes caller-supplied path, file, Git, lifecycle, canonical-outcome, and age evidence without reading, moving, or deleting anything.
+- [x] Reuse the existing retired-shape parser and batch-retention rule rather than creating a second legacy schema or weaker age calculation.
+- [x] Require relocation to preserve exact bytes and filename beneath `+/_BATCHES/`, reject destination collisions, and re-parse the result as retained non-executable evidence.
+- [x] Require active work to stop with `reauthorise`; document that only a newly approved lean exact-set envelope can resume execution.
+- [x] Add fixtures for completed young records, completed expired records, active work, missing canonical outcomes, malformed payloads, unsafe paths, symlinks, uncommitted bytes, collisions, and empty legacy directories.
+- [x] Record the observed receiver repositories as migration evidence without writing them; route native filesystem mechanics to the existing tools-ki batch automation owner if the pure contract proves useful.
+- [x] Run focused batch tests, skill audits, Markdown checks, and repository-wide gates.
 
 ## Files touched
 
@@ -90,6 +90,32 @@ Keep the transition in the batch reference unless a native user-facing migration
 ### Roadmap
 
 Close this Harness item when the classifier and transition procedure are verified. Any receiver-specific migration becomes a receiver-owned item only where its local evidence requires work.
+
+## Review
+
+### Delivered
+
+Delivered the approved portable transition classifier and reference procedure from immutable baseline `97a2348a7a641f8572714a7ec58caca262d22c0f`. Receiver repositories, native filesystem mutations, execution discovery, and old-authority translation remained excluded.
+
+### Summary of changes
+
+Added `legacy-batch-migration.ts` as a pure four-outcome classifier over caller-supplied evidence. It reuses the retained legacy parser and canonical retention selector, binds relocation to an exact whole-file hash and unchanged filename, rejects destination collisions, requires fresh authority for active work, and safely classifies a verified empty retired directory. Added focused fixtures and updated the batch standard with transition policy, observed receiver evidence, and tools-ki ownership of native mechanics. No approved deviation was needed.
+
+### Verification
+
+`bun test skills/change-management/ki-batch/scripts/legacy-batch-migration.test.ts skills/change-management/ki-batch/scripts/authorisation.test.ts skills/change-management/ki-batch/scripts/batch-retention.test.ts` passed 19 tests and 111 assertions. `bunx tsc --noEmit`, focused Biome, `git diff --check`, and the `ki-skills` and `ki-authoring` audits passed. The roadmap audit reported no GOV-062 finding but remained non-zero on concurrent transient GOV-064 state; the batch coordinator owns its clean aggregate rerun and the single aggregate `bun run test` gate before consolidated acceptance.
+
+### Outstanding concerns
+
+No implementation concerns. Any native cross-repository migration still requires receiver authority and immediate filesystem and Git revalidation; this delivery deliberately supplies no mutation executor.
+
+### Post-change review
+
+The classifier meets the stated four-outcome goal without weakening legacy non-execution or retention age rules. Scope held to the batch contract, pure helper, focused tests, and this record. Regression risk is bounded by reuse of the existing parser and retention selector, with focused coverage of every planned stop class. The item is ready for acceptance after the aggregate batch gate.
+
+### Mini recap
+
+Legacy batch evidence can now be classified as relocate, prune, reauthorise, or retain without writes or inferred authority. Focused code, type, authoring, roadmap, and skill checks pass; no unresolved defect remains. The durable learning is already placed in the batch standard, while native execution remains a tools-ki concern.
 
 ## Discussion
 

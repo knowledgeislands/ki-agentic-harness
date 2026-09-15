@@ -2,6 +2,18 @@
 
 This is the on-demand procedure for `ki-batch`. The skill owns the process boundary; this reference owns the authorisation shape and execution rules.
 
+## Contents
+
+- [1. Select and freeze the set](#1-select-and-freeze-the-set)
+- [2. Prepare the lean authorisation](#2-prepare-the-lean-authorisation)
+- [3. Validate before implementation](#3-validate-before-implementation)
+- [4. Run the exact set](#4-run-the-exact-set)
+- [5. Verify and close](#5-verify-and-close)
+- [Safe-local policy](#safe-local-policy)
+- [Batch retention](#batch-retention)
+- [Legacy storage transition](#legacy-storage-transition)
+- [Pure validation model](#pure-validation-model)
+
 ## 1. Select and freeze the set
 
 Use `ki-next` to select candidates and `ki-plan` to make every admitted record honestly Ready. For reviewed-item authority, admit only the exact approved set. For outcome authority, scan the eligible repository queue first, prepare the complete non-contentious set that fits the instruction and window, record exclusions, then freeze the set once.
@@ -94,6 +106,19 @@ The caller must prove the exact flat path is a regular file within the physical 
 
 `scripts/internal/batch-retention.ts` is a pure selector and never reads or deletes files. Immediately before deletion, revalidate all evidence. Delete only the selected exact paths, commit only owned deletions under `ki-git`, and report Git-history recovery. This policy never authorises work-item pruning.
 
+## Legacy storage transition
+
+`+/_AUTHORISATIONS/` is retired storage, not a discovery fallback. Classify each legacy entry from fresh caller-supplied filesystem, Git, lifecycle, canonical-outcome, destination, and age evidence before any mutation:
+
+- **Relocate** a committed, unchanged, contained regular completed record that is not yet retention-eligible. Preserve its exact filename and bytes beneath `+/_BATCHES/`, stop on an existing or unknown destination, verify the whole-file hash after moving, and re-parse it as `retained-legacy` non-executable evidence.
+- **Prune** a completed record only when `selectExpiredBatches` selects the byte-identical canonical-path projection under the ordinary inactivity, retained-outcome, containment, commit, and strictly-more-than-seven-days rule. A verified empty exact `+/_AUTHORISATIONS` directory contains no evidence and may also be pruned.
+- **Reauthorise** valid active or resumable legacy work through a newly approved lean exact-set record. Never translate an old approval, policy, run identity, or closure scope into current authority.
+- **Retain** malformed, uncommitted, symlinked, misplaced, destination-colliding, unknown, or incompletely evidenced entries at their existing path with the classifier's reason.
+
+The pure `scripts/internal/legacy-batch-migration.ts` classifier performs no reads or writes. Native filesystem mechanics belong to the existing tools-ki batch automation owner; a receiving repository retains authority for its own relocate, prune, retain, or fresh-authorisation action and must revalidate immediately before mutation.
+
+The transition was motivated by observed legacy records in Techne, KI Website, tools-ki, mcp-acquire-whatsapp, mcp-git-audit, mcp-gsuite, and mcp-m365. This inventory is migration evidence, not authority to write those repositories.
+
 ## Pure validation model
 
-`scripts/internal/authorisation.ts`, `batch-cycle.ts`, and `batch-retention.ts` expose no-write helpers. Their fixtures prove payload integrity, current-shape validation, narrow retained-record readability, derived run and closure scope, adapter and work-item eligibility, dependency order, working-tree hygiene, stop handling, and conservative retention. A pure helper may report coordination eligibility; it never invokes a skill, runs a command, writes a file, accepts work, or removes a record.
+`scripts/internal/authorisation.ts`, `batch-cycle.ts`, `batch-retention.ts`, and `legacy-batch-migration.ts` expose no-write helpers. Their fixtures prove payload integrity, current-shape validation, narrow retained-record readability, derived run and closure scope, adapter and work-item eligibility, dependency order, working-tree hygiene, stop handling, conservative retention, and the four legacy transition outcomes. A pure helper may report coordination or migration eligibility; it never invokes a skill, runs a command, writes a file, accepts work, moves evidence, or removes a record.
