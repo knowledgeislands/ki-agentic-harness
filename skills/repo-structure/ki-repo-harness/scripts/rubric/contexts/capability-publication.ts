@@ -25,8 +25,15 @@ export type CapabilityParseResult = { entry: CapabilityEntry; issue?: never } | 
 export type CapabilityPublicationDraft = {
   state: 'missing' | 'stale' | 'in-sync' | 'unsafe'
   issues: readonly string[]
+  counts?: CapabilityCounts
   rendered?: string
   merged?: string
+}
+
+export type CapabilityCounts = {
+  total: number
+  governance: number
+  process: number
 }
 
 type Frontmatter = Record<string, unknown>
@@ -169,13 +176,18 @@ export const prepareCapabilityPublication = (
       if (!names.has(dependency)) issues.push(`${entry.path} depends on unknown capability ${dependency}`)
   if (issues.length > 0) return { state: 'unsafe', issues: [...new Set(issues)].sort() }
 
+  const counts: CapabilityCounts = {
+    total: entries.length,
+    governance: entries.filter((entry) => entry.kind === 'governance').length,
+    process: entries.filter((entry) => entry.kind === 'process').length
+  }
   const rendered = renderCapabilityCatalogue(entries)
-  if (readme === undefined) return { state: 'missing', issues: [], rendered, merged: rendered }
+  if (readme === undefined) return { state: 'missing', issues: [], counts, rendered, merged: rendered }
   const startCount = markerCount(readme, CAPABILITY_CATALOGUE_START)
   const endCount = markerCount(readme, CAPABILITY_CATALOGUE_END)
   if (startCount === 0 && endCount === 0) {
     const prefix = readme.replace(/\s*$/, '')
-    return { state: 'missing', issues: [], rendered, merged: `${prefix}\n\n${rendered}` }
+    return { state: 'missing', issues: [], counts, rendered, merged: `${prefix}\n\n${rendered}` }
   }
   if (startCount !== 1 || endCount !== 1)
     return { state: 'unsafe', issues: ['skills/README.md has ambiguous capability-catalogue markers'] }
@@ -184,5 +196,5 @@ export const prepareCapabilityPublication = (
   if (start > end) return { state: 'unsafe', issues: ['skills/README.md capability-catalogue markers are reversed'] }
   const existing = readme.slice(start, end + CAPABILITY_CATALOGUE_END.length + 1)
   const merged = `${readme.slice(0, start)}${rendered}${readme.slice(end + CAPABILITY_CATALOGUE_END.length + (readme[end + CAPABILITY_CATALOGUE_END.length] === '\n' ? 1 : 0))}`
-  return { state: existing === rendered ? 'in-sync' : 'stale', issues: [], rendered, merged }
+  return { state: existing === rendered ? 'in-sync' : 'stale', issues: [], counts, rendered, merged }
 }

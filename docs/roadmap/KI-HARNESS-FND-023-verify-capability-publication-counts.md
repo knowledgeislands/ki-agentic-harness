@@ -4,12 +4,12 @@ area: FND
 title: Verify capability publication counts
 theme: foundation-tooling
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 97a2348a7a641f8572714a7ec58caca262d22c0f
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T05:40:45Z
+updated_at: 2026-09-15T12:18:00Z
 ---
 
 # Verify capability publication counts
@@ -34,12 +34,12 @@ Use valid canonical skill frontmatter as the deterministic source. Do not requir
 
 ## Steps
 
-- [ ] Extend the compatible-Harness context with a parsed root README capability-count observation derived from the existing canonical skill inventory.
-- [ ] Add a capability-publication criterion that passes a matching explicit claim, remains not applicable when no numeric claim exists, and reports incomplete, ambiguous, or unequal claims without guessing.
-- [ ] Add one bounded CONFORM proposal that replaces only the total, governance, and process number tokens when exactly one recognised claim is present.
-- [ ] Cover matching, stale, absent, incomplete, ambiguous, malformed-frontmatter, and idempotent-repair cases through the existing Harness session boundary.
-- [ ] Update the compatible-Harness standard and generated rubric publication for the new authored-summary invariant.
-- [ ] Regenerate the capability catalogue only if the skill description or published rubric surface changes.
+- [x] Extend the compatible-Harness context with a parsed root README capability-count observation derived from the existing canonical skill inventory.
+- [x] Add a capability-publication criterion that passes a matching explicit claim, remains not applicable when no numeric claim exists, and reports incomplete, ambiguous, or unequal claims without guessing.
+- [x] Add one bounded CONFORM proposal that replaces only the total, governance, and process number tokens when exactly one recognised claim is present.
+- [x] Cover matching, stale, absent, incomplete, ambiguous, malformed-frontmatter, and idempotent-repair cases through the existing Harness session boundary.
+- [x] Update the compatible-Harness standard and generated rubric publication for the new authored-summary invariant.
+- [x] Regenerate the capability catalogue only if the skill description or published rubric surface changes.
 
 ## Files touched
 
@@ -82,6 +82,32 @@ No user guide change is expected because the existing AUDIT and CONFORM workflow
 ### Roadmap
 
 Close this item after the generated publication, focused fixtures, and repository-wide gates agree. Route any broader README composition concern separately.
+
+## Review
+
+### Delivered
+
+Implemented the approved authored-summary invariant from immutable baseline `97a2348a7a641f8572714a7ec58caca262d22c0f`. `CAP-3` now checks an optional root README count claim against the canonical skill inventory and offers a numeric-only repair for one complete stale claim. The change does not require a numeric summary, rewrite incomplete or ambiguous prose, or alter capability semantics.
+
+### Summary of changes
+
+Added a focused root-summary parser and fixtures, exposed the existing inventory's total and kind counts to the Harness context, added the `CAP-3` audit and CONFORM criterion, extended the session-boundary tests, and updated the compatible-Harness standard and generated rubric. `skills/README.md` did not require regeneration because no skill frontmatter or capability-catalogue content changed. Under the approved batch delegation, the coordinator retains the single aggregate `bun run test` gate; there was no implementation-scope deviation.
+
+### Verification
+
+Focused capability-publication, root-summary, and item tests passed with 24 tests and 99 assertions. `bunx tsc --noEmit` and `git diff --check` passed. `ki repo conform --skill ki-repo-harness --repo . --dry-run` and `ki repo audit --skill ki-repo-harness --repo .` reported no failures; their one warning was the concurrent `KI-HARNESS-GOV-062` lane's batch-standard edit. Focused `ki-skills` likewise reported no failures and the same unrelated warning, while `ki-authoring` passed. The batch coordinator will run the intentionally consolidated full `bun run test` gate after integrating every lane.
+
+### Outstanding concerns
+
+No item-scoped concern. Batch closure remains conditional on the coordinator's aggregate full-suite result.
+
+### Post-change review
+
+The goal is met within the approved boundary: the implementation reuses canonical parsed counts, leaves absent claims valid, fails closed when authorship or source evidence is ambiguous, and exposes only an exact deterministic write. Regression risk is concentrated in the recognised sentence grammar and is covered through the pure parser and hosted session boundary. The item is ready for consolidated acceptance after the aggregate batch gate.
+
+### Mini recap
+
+Delivered optional root README count verification and safe repair, with focused tests and repository audits clean for this lane. No remedial item or additional durable-learning route is indicated; the compatible-Harness standard now owns the invariant.
 
 ## Discussion
 

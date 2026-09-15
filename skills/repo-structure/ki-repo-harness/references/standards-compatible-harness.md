@@ -51,6 +51,8 @@ A populated skills shelf publishes one generated capability catalogue between th
 
 AUDIT compares the marker-bounded bytes with the deterministic rendering. Missing, renamed, removed, or changed skills therefore stale the publication mechanically. CONFORM may add a missing generated section or replace one exact marker-bounded section while preserving authored content around it. It refuses malformed skill frontmatter, unknown dependencies, duplicate capability names, unsafe files, and missing, duplicate, partial, or reversed markers rather than guessing at a repair. `ki-skills` remains the owner of individual skill quality and frontmatter semantics; this standard uses those source facts only to publish the Harness inventory.
 
+The root `README.md` does not have to repeat a numeric skill summary. When it uses the recognised complete claim — total Agent Skills followed by governance and process counts — AUDIT compares all three values with the same canonical frontmatter inventory. CONFORM replaces only those three numeric tokens when exactly one complete claim is present and stale, preserving its links and surrounding authored prose. An absent claim is not applicable; incomplete or multiple numeric claims, unreadable source evidence, and malformed canonical frontmatter remain diagnostic because a safe replacement cannot be inferred.
+
 ## Source-harness layout
 
 Every source harness has all five directories at its physical repository root, each with a physical `README.md` explaining its purpose and status:
