@@ -4,7 +4,7 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
-owns: ['+/_CHECKPOINTS/']
+owns: ['+/_CHECKPOINTS/README.md']
 description: >
   Governs concise, repository-owned checkpoints for resuming one human-named active thread in a fresh agent context without a transcript or vendor session. Use when asked to checkpoint current work, update or remove a checkpoint, resume a named thread, audit `+/_CHECKPOINTS/`, or explain portable reconstruction state. It keeps one active snapshot per thread and leaves historical recovery to Git while decisions, roadmap state, knowledge, recap, runtime hooks, and session continuity remain with their proper owners.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <thread> | resume <thread> | update <thread>'
@@ -29,13 +29,13 @@ The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-checkpoint --repo <repo>`. The structured catalogue treats an absent `_CHECKPOINTS` subarea as not applicable; otherwise it checks the flat active layout, filenames, closed metadata, timestamp chronology, exact heading set, non-empty sections, single-record lifecycle, and mechanically recognisable transcript or session dependencies.
+Run `ki repo audit --skill ki-checkpoint --repo <repo>`. A declared capability requires the retained canonical `+/_CHECKPOINTS/README.md` scaffold; the structured catalogue also checks the flat active layout, filenames, closed metadata, timestamp chronology, exact heading set, non-empty sections, single-record lifecycle, and mechanically recognisable transcript or session dependencies.
 
 Review the judgment aspects: whether each snapshot is concise and current, the thread name is human-selected rather than runtime-derived, durable facts already live with their proper owners, and the record can reconstruct the work for a fresh agent.
 
 ### Mode CONFORM
 
-Run AUDIT first, then `ki repo conform --skill ki-checkpoint --repo <repo> --dry-run`. CONFORM may publish the generated rubric but never creates a checkpoint directory, chooses a thread, edits authored checkpoint content, removes a record, infers completion, or writes a runtime-session identifier.
+Run AUDIT first, then `ki repo conform --skill ki-checkpoint --repo <repo> --dry-run`. CONFORM may safely create or restore the exact retained scaffold, but never chooses a thread, edits authored checkpoint content, removes a record, infers completion, or writes a runtime-session identifier.
 
 Correct authored records only through an explicit UPDATE or REMOVE request, then re-run AUDIT.
 
@@ -53,7 +53,7 @@ REFRESH writes only in `ki-agentic-harness`. When invoked from an installed copy
 
 ### Mode REMOVE
 
-REMOVE is an agent procedure, not a current `ki repo` host command. Require explicit user direction for one valid active `<thread>` record. Confirm durable decisions, work status, and knowledge have reached their canonical owners; then delete that exact active record. If it was the final record, the empty `_CHECKPOINTS` directory may also disappear. Stop on uncertainty. Removal does not infer completion; Git remains the recovery history.
+REMOVE is an agent procedure, not a current `ki repo` host command. Require explicit user direction for one valid active `<thread>` record. Confirm durable decisions, work status, and knowledge have reached their canonical owners; then delete that exact active record. Retain `+/_CHECKPOINTS/README.md` as the declared capability boundary even after the final record is removed. Stop on uncertainty. Removal does not infer completion; Git remains the recovery history.
 
 ### Mode RESUME
 

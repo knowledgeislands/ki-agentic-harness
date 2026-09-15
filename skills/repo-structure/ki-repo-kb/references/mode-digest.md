@@ -11,6 +11,8 @@ A digest is a **produced artefact** that documents a session — it has left the
 
 Once the content it holds is extracted, a digest can be deleted. Test: if you deleted this note today, would knowledge be lost? If yes, extract first; if no, delete.
 
+Retain `-/_DIGESTS/README.md` while `ki-repo-kb` is declared. It is the capability scaffold, not a digest record, and EXTRACT or retention cleanup must never remove it.
+
 ## Session digest
 
 1. Write the digest to `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case).

@@ -21,6 +21,8 @@ This skill governs a repo's **configuration and Knowledge Islands compliance** �
 
 ## The standard at a glance
 
+Declared specialist capabilities own, require, and retain their exact working-area README scaffolds. `ki-repo` owns only the generic working areas; each declaring owner governs its specialist scaffold and record lifecycle.
+
 1. **Files** — every repo carries `README.md`, `LICENSE`, `.gitignore`, and `.ki.toml` (its declared config, with the exact opening conformance header and source-aware structure diagnostics for substantial files). `ki-repo` composes `.gitignore` from declared skill blocks, reserves `reports/` for disposable generated reports, and retains repository-specific rules under a terminal unmanaged header for later reconciliation. A local target reads its checkout first; an `--org` or other filesystem-free run reads the GitHub default branch. (`.editorconfig` is owned by `ki-authoring`, not this skill.)
 2. **GitHub** (repos on github.com): default branch `main`, declared SPDX licence and independent declared visibility, **squash-only merge + linear history**, auto-delete branch on merge, Issues **on**, Wiki & Projects **off**, and the configured description synced with GitHub and `package.json` where one exists; public repos also carry a non-empty topic set synced with `package.json` `"keywords"` where present — topics are per-repo discovery keywords, not a fixed org list. **`main` is open by default** — branch protection is an _optional_ check a repo opts into (below).
 3. **Deeper GitHub**: Dependabot alerts + security updates **on** everywhere; secret scanning + push protection **on** for public repos; Actions `allowed-actions = all`.

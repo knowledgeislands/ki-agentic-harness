@@ -4,7 +4,7 @@ A checkpoint is a concise repository-owned reconstruction snapshot for one activ
 
 ## Activation and ownership
 
-The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; only then may it use the owned `+/_CHECKPOINTS/` subarea. `ki-repo` owns the generic `+/` scaffold and detects an undeclared specialist subarea, while `ki-checkpoint` alone interprets checkpoint records. An absent `_CHECKPOINTS` directory is quiet and means there is no active checkpoint scope.
+The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; declaration requires the owned physical `+/_CHECKPOINTS/` subarea and exact `README.md` scaffold, retained even when no checkpoint records exist. `ki-repo` owns the generic `+/` scaffold and detects an undeclared specialist subarea, while `ki-checkpoint` alone interprets checkpoint records.
 
 The repository owns its active checkpoint content. Explicit removal deletes a record after durable information has been routed; Git supplies any recovery history.
 
@@ -82,7 +82,7 @@ Do not search archived or nested paths as a fallback. Resume creates a fresh wor
 
 ## Removal lifecycle
 
-Removal requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts have reached their proper owners. Then delete the exact active file. If it was the final record, the empty `+/_CHECKPOINTS/` directory may also be removed.
+Removal requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners. Then delete the exact active file. Retain the exact `+/_CHECKPOINTS/README.md` scaffold while `ki-checkpoint` remains declared.
 
 No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested checkpoint layouts are invalid.
 
@@ -94,6 +94,6 @@ It is also not a completion signal, roadmap, decision record, knowledge store, o
 
 ## Audit and conform boundary
 
-AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT checks only the declared repository's physical checkpoint subarea. It reports absent scope as not applicable and rejects symlinks, unsupported nesting, and any retired-record layout.
+AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT requires the declared repository's physical checkpoint subarea and exact retained README scaffold. It reports absent scope as not applicable only when `ki-checkpoint` is undeclared, and rejects symlinks, unsupported nesting, and any retired-record layout.
 
-CONFORM never authors checkpoint content or lifecycle transitions. It may publish the generated rubric, but it cannot create, update, or remove a checkpoint because those actions need a human-selected thread and explicit write authority.
+CONFORM never authors checkpoint-record content or lifecycle transitions. It may create or restore the retained README scaffold and publish the generated rubric, but it cannot create, update, or remove a checkpoint record because those actions need a human-selected thread and explicit write authority.

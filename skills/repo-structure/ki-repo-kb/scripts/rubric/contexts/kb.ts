@@ -15,6 +15,11 @@ const CONFIG = '.ki.toml'
 const CONFIG_TABLE = 'ki-repo-kb'
 const SNAKE_CASE = /^[a-z][a-z0-9_]*$/
 const TRADE_RECORD = /^TRD-[0-9a-f]{8}\.md$/
+export const digestReadme = {
+  path: '-/_DIGESTS/README.md',
+  content:
+    '# Session digests\n\nThis directory holds temporary session digests while `ki-repo-kb` is declared. Digests are produced outputs awaiting extraction or routing; delete a digest after its useful content reaches the proper owner. This README remains as the capability boundary.\n'
+} as const
 
 const delegatedNoteTypeRecord = (
   relativePath: string,
@@ -162,8 +167,10 @@ export type KbZoneContext = {
   readonly memoryIndex: KbCheck
   readonly stagingAreas: KbCheck
   readonly outboundPlacement: KbCheck
+  readonly digestScaffold: KbCheck
   readonly scaffoldZoneIndexes?: () => void
   readonly scaffoldMemoryIndex?: () => void
+  readonly scaffoldDigestArea?: () => void
 }
 
 export type KbConfigContext = {
@@ -330,6 +337,22 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       `${folder}/`
     )
   }
+  const digestDirectory = join(root, zoneOf('-'), '_DIGESTS')
+  const digestPath = join(root, zoneOf('-'), '_DIGESTS', 'README.md')
+  if (!config) add('NOT_APPLICABLE', 'ZONE-6', 'ki-repo-kb is not declared; no digest scaffold is required.')
+  else if (!isDirectory(digestDirectory))
+    add('FAIL', 'ZONE-6', 'The session-digest directory is absent or unsafe.', digestReadme.path)
+  else if (!isFile(digestPath))
+    add('FAIL', 'ZONE-6', 'The session-digest README is absent or unsafe.', digestReadme.path)
+  else
+    add(
+      readFileSync(digestPath, 'utf8') === digestReadme.content ? 'PASS' : 'FAIL',
+      'ZONE-6',
+      readFileSync(digestPath, 'utf8') === digestReadme.content
+        ? 'The retained session-digest scaffold is canonical.'
+        : 'The session-digest README differs from canonical ki-repo-kb orientation.',
+      digestReadme.path
+    )
   const anchor = ['CLAUDE.md', 'AGENTS.md'].find((name) => isFile(join(root, name)))
   if (!anchor) add('WARN', 'MEM-2', 'No root CLAUDE.md or AGENTS.md anchors the memory cascade.')
   else {
@@ -434,6 +457,7 @@ const outcomesFor = (findings: readonly KbEvidenceFinding[], code: string): Rubr
 type KbDraft = {
   scaffoldZoneIndexes: () => void
   scaffoldMemoryIndex: () => void
+  scaffoldDigestArea: () => void
   proposal: () => ConformProposal
 }
 
@@ -479,10 +503,22 @@ const createKbDraft = (repository: string): KbDraft | undefined => {
       if (!contained(admin) || !safeDirectory(admin)) return
       stageCreate(join(admin, 'MEMORY.md'), '# MEMORY\n\n## Active Pillars\n\n<!-- list active Pillars here -->\n')
     },
+    scaffoldDigestArea: () => {
+      if (!parsed.value) return
+      const outbound = resolve(root, zoneOf('-'))
+      const directory = join(outbound, '_DIGESTS')
+      const path = join(directory, 'README.md')
+      if (!contained(outbound) || !safeDirectory(outbound)) return
+      if (existsSync(directory) && !isDirectory(directory)) return
+      if (existsSync(path) && !isFile(path)) return
+      if (isFile(path) && readFileSync(path, 'utf8') === digestReadme.content) return
+      const output = contained(path)
+      if (output) creates.set(output, digestReadme.content)
+    },
     proposal: () => ({
       writes: [...creates]
         .sort(([left], [right]) => left.localeCompare(right))
-        .map(([path, content]) => ({ path, content, create: true }))
+        .map(([path, content]) => ({ path, content, create: !existsSync(join(root, path)) }))
     })
   }
 }
@@ -503,10 +539,12 @@ export const createKbSession = ({
       memoryIndex: check('ZONE-3'),
       stagingAreas: check('ZONE-4'),
       outboundPlacement: check('ZONE-5'),
+      digestScaffold: check('ZONE-6'),
       ...(draft
         ? {
             scaffoldZoneIndexes: draft.scaffoldZoneIndexes,
-            scaffoldMemoryIndex: draft.scaffoldMemoryIndex
+            scaffoldMemoryIndex: draft.scaffoldMemoryIndex,
+            scaffoldDigestArea: draft.scaffoldDigestArea
           }
         : {})
     },

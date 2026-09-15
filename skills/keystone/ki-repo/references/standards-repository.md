@@ -102,6 +102,13 @@ Every KI repository carries this fixed working-area scaffold:
 
 `ki-trades` owns the optional `_TRADES` subdirectories, their README files, cross-repository records, reciprocal routes, and submission lifecycle only in a repository that declares that skill. `ki-repo` neither creates nor interprets those subdirectories. Knowledge Bases retain their own fixed `+/` and `-/` staging model under `ki-repo-kb`; a declared `ki-trades` capability remains the separate owner of repository-level cross-repository submissions.
 
+A declared capability with a stable specialist working-area subarea owns an exact README scaffold, requires it while declared, retains it when no records remain, and safely restores it through its own CONFORM. The scaffold is the visible capability boundary; records inside retain their shorter owner-defined lifecycle. Before removing the declaration, resolve or remove owned records and then remove the now-undeclared scaffold. `ki-repo` owns only the generic working-area scaffold and neither creates, interprets, nor retains specialist subareas.
+
+- `ki-work` owns `+/_BATCHES/README.md`; `ki-batch` owns temporary batch records.
+- `ki-checkpoint` owns `+/_CHECKPOINTS/README.md` and active checkpoint records.
+- `ki-trades` owns `+/_TRADES/README.md`, `-/_TRADES/README.md`, and cross-repository trade records.
+- `ki-repo-kb` owns `-/_DIGESTS/README.md` and session digests in a Knowledge Base.
+
 ## Layer 2 — core GitHub settings
 
 For every repo on github.com:

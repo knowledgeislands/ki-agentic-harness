@@ -63,7 +63,9 @@ Rules, following the `.ki.toml` contract:
 
 ## Session digest structure
 
-Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case). Frontmatter `note_type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days from the write date). Body sections:
+Declaring `[skills.ki-repo-kb]` requires the exact retained `-/_DIGESTS/README.md` scaffold. It remains as the visible capability boundary after the last digest is deleted; digest records themselves remain temporary outputs.
+
+Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case), beside the retained `README.md` scaffold. Frontmatter is `note_type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days from the write date). Body sections are:
 
 - **Context** - what the session was about.
 - **Decisions** - choices made and their rationale.

@@ -30,7 +30,7 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 → [standard](standards-knowledge-base.md)
 
-Required zones, indexes, staging, and output placement.
+Required zones, indexes, staging, output placement, and retained digest scaffold.
 
 - **ZONE-1 [M] — required zone layout** — Calendar/, Pillars/, Resources/, Streams/, and Admin/ resolve through any declared zone alias to readable directories, including directory symlinks. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the required zone layout or placement, then rerun the audit.
@@ -42,6 +42,8 @@ Required zones, indexes, staging, and output placement.
   - _Remediation:_ diagnostic — Correct the required zone layout or placement, then rerun the audit.
 - **ZONE-5 [M] — produced outputs use outbound staging** — Notes with note_type session-digest reside under the resolved -/ staging area; cross-repository handoffs belong to ki-trades. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the required zone layout or placement, then rerun the audit.
+- **ZONE-6 [M] — session-digest scaffold is canonical** — A declared ki-repo-kb capability retains the exact -/_DIGESTS/README.md scaffold after digest records are removed. (standards-knowledge-base.md)
+  - _Remediation:_ automatic
 
 ## CONFIG — KB configuration
 

@@ -2,6 +2,7 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, extname, join, relative, resolve } from 'node:path'
 import type {
   AuditOutcome,
+  ConformWrite,
   RubricContextOptions,
   RubricPublicationContext,
   RubricSession
@@ -35,13 +36,14 @@ type ParsedCheckpoint = {
 }
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
+export type ScaffoldContext = OutcomeContext & { readonly ensureScaffold?: () => void }
 export type RecordContext = { readonly identity: readonly AuditOutcome[]; readonly schema: readonly AuditOutcome[] }
 export type LifecycleContext = { readonly mechanical: readonly AuditOutcome[] }
 
 export type CheckpointsRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly configuration: OutcomeContext
-  readonly structure: OutcomeContext
+  readonly structure: ScaffoldContext
   readonly records: RecordContext
   readonly lifecycle: LifecycleContext
   readonly boundary: OutcomeContext
@@ -52,6 +54,8 @@ const table = (value: unknown): Readonly<Record<string, unknown>> | null =>
 
 const physicalDirectory = (path: string): boolean =>
   existsSync(path) && !lstatSync(path).isSymbolicLink() && lstatSync(path).isDirectory()
+const physicalFile = (path: string): boolean =>
+  existsSync(path) && !lstatSync(path).isSymbolicLink() && lstatSync(path).isFile()
 
 const one = (outcomes: readonly AuditOutcome[], pass: string, absent?: string): readonly AuditOutcome[] => {
   if (absent) return [{ status: 'NOT_APPLICABLE', message: absent }]
@@ -87,6 +91,7 @@ const inspectDirectory = (
     left.name.localeCompare(right.name)
   )) {
     const path = join(directory, entry.name)
+    if (entry.name === 'README.md') continue
     if (!entry.isFile() || entry.isSymbolicLink() || extname(entry.name) !== '.md') {
       violations.push({
         status: 'VIOLATION',
@@ -256,19 +261,35 @@ const recordEvidence = (
   }
 }
 
+export const checkpointReadme = {
+  path: '+/_CHECKPOINTS/README.md',
+  content:
+    '# Checkpoints\n\nThis directory retains active, human-named reconstruction snapshots while `ki-checkpoint` is declared. Checkpoint records are temporary inputs to further repository work. Removing a checkpoint deletes its record after durable information is routed; this README remains as the capability boundary. Git supplies recovery history.\n'
+} as const
+
 export const createCheckpointsSession = ({
+  mode,
   repository,
   configuration,
   publication
 }: RubricContextOptions): RubricSession<CheckpointsRubricContext> => {
   const root = resolve(repository)
   const checkpointDirectory = join(root, '+', '_CHECKPOINTS')
+  const readmePath = join(root, checkpointReadme.path)
+  const configured = table(table(configuration.skills)?.[CONFIG_TABLE])
   const checkpointExists = existsSync(checkpointDirectory)
   const checkpointSafe = physicalDirectory(checkpointDirectory)
-  const absent = !checkpointExists ? 'The optional +/_CHECKPOINTS/ subarea is absent.' : undefined
+  const undeclaredAbsent =
+    !configured && !checkpointExists ? 'The undeclared +/_CHECKPOINTS/ subarea is absent.' : undefined
   const structureViolations: AuditOutcome[] = []
   const records: ParsedCheckpoint[] = []
 
+  if (configured && !checkpointExists)
+    structureViolations.push({
+      status: 'VIOLATION',
+      message: '+/_CHECKPOINTS/ is required while ki-checkpoint is declared',
+      subject: checkpointReadme.path
+    })
   if (checkpointExists && !checkpointSafe)
     structureViolations.push({
       status: 'VIOLATION',
@@ -276,12 +297,23 @@ export const createCheckpointsSession = ({
       subject: relative(root, checkpointDirectory)
     })
   if (checkpointSafe) {
+    if (!physicalFile(readmePath))
+      structureViolations.push({
+        status: 'VIOLATION',
+        message: '+/_CHECKPOINTS/README.md is absent or unsafe',
+        subject: checkpointReadme.path
+      })
+    else if (readFileSync(readmePath, 'utf8') !== checkpointReadme.content)
+      structureViolations.push({
+        status: 'VIOLATION',
+        message: '+/_CHECKPOINTS/README.md differs from canonical ki-checkpoint orientation',
+        subject: checkpointReadme.path
+      })
     const active = inspectDirectory(checkpointDirectory, root)
     records.push(...active.records)
     structureViolations.push(...active.violations)
   }
 
-  const configured = table(table(configuration.skills)?.[CONFIG_TABLE])
   const configOutcomes: AuditOutcome[] = configured
     ? Object.keys(configured).map((key) => ({
         status: 'VIOLATION' as const,
@@ -292,11 +324,17 @@ export const createCheckpointsSession = ({
     : []
   const evidence = recordEvidence(
     records,
-    absent ??
+    undeclaredAbsent ??
       (checkpointExists && !checkpointSafe
         ? 'Checkpoint records are unavailable until the subarea is safe.'
         : undefined)
   )
+  const canConformScaffold =
+    Boolean(configured) &&
+    physicalDirectory(join(root, '+')) &&
+    (!checkpointExists || checkpointSafe) &&
+    (!existsSync(readmePath) || physicalFile(readmePath))
+  let scaffoldRequested = false
   const context: CheckpointsRubricContext = {
     rubric: { publication },
     configuration: {
@@ -308,7 +346,12 @@ export const createCheckpointsSession = ({
       )
     },
     structure: {
-      outcomes: one(structureViolations, 'The active checkpoint location is canonical.', absent)
+      outcomes: one(
+        structureViolations,
+        'The retained checkpoint scaffold and active location are canonical.',
+        undeclaredAbsent
+      ),
+      ...(mode === 'conform' && canConformScaffold ? { ensureScaffold: () => (scaffoldRequested = true) } : {})
     },
     records: { identity: evidence.identity, schema: evidence.schema },
     lifecycle: { mechanical: evidence.lifecycle },
@@ -323,6 +366,18 @@ export const createCheckpointsSession = ({
         context: () => context
       }
     ],
-    proposal: () => ({ writes: [] })
+    proposal: () => {
+      const writes: ConformWrite[] = []
+      if (
+        scaffoldRequested &&
+        (!physicalFile(readmePath) || readFileSync(readmePath, 'utf8') !== checkpointReadme.content)
+      )
+        writes.push({
+          path: checkpointReadme.path,
+          content: checkpointReadme.content,
+          ...(!existsSync(readmePath) ? { create: true } : {})
+        })
+      return { writes }
+    }
   }
 }

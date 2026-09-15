@@ -3,6 +3,7 @@ name: ki-work
 ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
+owns: ['+/_BATCHES/README.md']
 contributes: ['.ki.toml']
 description: >
   Governs repository selection of a forward-work adapter and the shared lifecycle vocabulary used by change-management processes. Use when choosing or auditing a work tracker, configuring roadmap, KB Streams, GitHub Issues, or Linear change management, or mapping repository work to a common lifecycle. The selected adapter owns its records; use ki-work-roadmap, ki-repo-kb-streams, ki-work-github-issues, or ki-work-linear.
@@ -17,6 +18,8 @@ Read [the change-management adapter standard](references/standards-change-manage
 
 ## Shared model
 
+The declaration also activates the retained `+/_BATCHES/README.md` capability scaffold. `ki-work` owns that boundary; `ki-batch` owns temporary batch record form and retention.
+
 `[skills.ki-work]` declares exactly one adapter and the matching adapter table is declared beside it. `roadmap` is the default for an ordinary Project repository; `kb-streams` is the default for a Knowledge Base; `github-issues` and `linear` are explicit alternatives. Resolution has no fallback: an absent, unknown, undeclared, or inapplicable declaration stops the process rather than guessing from a directory. This skill owns abstract lifecycle terms, while the owning adapter retains concrete status mapping, record storage, identity, and structural rules.
 
 ## Operating modes
@@ -29,7 +32,7 @@ Run `ki repo audit --skill ki-work --repo <repo>`. It verifies that the local ta
 
 ### Mode CONFORM
 
-Run `ki repo conform --skill ki-work --repo <repo> --dry-run`. CONFORM makes no selection, creates no tracker, and changes no work record. It never infers an adapter from repository shape; set the declaration deliberately, then audit the selected adapter.
+Run `ki repo conform --skill ki-work --repo <repo> --dry-run`. CONFORM may safely create or restore the exact retained batch scaffold. It makes no adapter selection, creates no tracker or batch record, and changes no work record. It never infers an adapter from repository shape; set the declaration deliberately, then audit the selected adapter.
 
 ### Mode EDUCATE
 

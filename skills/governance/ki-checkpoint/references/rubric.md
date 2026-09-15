@@ -37,10 +37,10 @@ The repository opts into one portable contract without embedding runtime or rete
 
 → [standard](standards-checkpoints.md)
 
-One optional subarea has a flat active record set; Git supplies history.
+A retained capability scaffold contains one flat active record set; Git supplies history.
 
-- **STRUCTURE-1 [M] — active location is canonical** — When present, `+/_CHECKPOINTS/` is a physical directory containing only flat active Markdown records. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid; an absent subarea is not applicable. (standards-checkpoints.md)
-  - _Remediation:_ diagnostic — Repair the checkpoint directory structure without creating or moving records, then rerun the audit.
+- **STRUCTURE-1 [M] — declared checkpoint scaffold is canonical** — A repository declaring `ki-checkpoint` retains an exact `+/_CHECKPOINTS/README.md` scaffold and permits only flat active Markdown records beside it. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid. (standards-checkpoints.md)
+  - _Remediation:_ automatic
 
 ## RECORD — Checkpoint record
 

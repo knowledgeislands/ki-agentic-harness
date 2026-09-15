@@ -7,7 +7,7 @@ import { BOUNDARY } from '../items/boundary.ts'
 import { LIFECYCLE } from '../items/lifecycle.ts'
 import { RECORD } from '../items/records.ts'
 import { STRUCTURE } from '../items/structure.ts'
-import { type CheckpointsRubricContext, createCheckpointsSession } from './checkpoints.ts'
+import { type CheckpointsRubricContext, checkpointReadme, createCheckpointsSession } from './checkpoints.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -20,6 +20,7 @@ const fixture = (): { repository: string; checkpointDirectory: string } => {
   temporaryDirectories.push(repository)
   const checkpointDirectory = join(repository, '+', '_CHECKPOINTS')
   mkdirSync(checkpointDirectory, { recursive: true })
+  writeFileSync(join(repository, checkpointReadme.path), checkpointReadme.content)
   return { repository, checkpointDirectory }
 }
 
@@ -92,6 +93,27 @@ test('absence is not applicable and audit never proposes authored writes', () =>
       ?.status
   ).toBe('NOT_APPLICABLE')
   expect(session.proposal()).toEqual({ writes: [] })
+})
+
+test('a declared capability requires and can restore the retained scaffold', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-declared-'))
+  temporaryDirectories.push(repository)
+  mkdirSync(join(repository, '+'), { recursive: true })
+  const session = createCheckpointsSession({
+    mode: 'conform',
+    repository,
+    userHome: tmpdir(),
+    configuration: { skills: { 'ki-checkpoint': {} } }
+  })
+  const value = session.subjects[0]?.context()
+  if (!value) throw new Error('ki-checkpoint session did not expose repository subject')
+  const item = mechanical(STRUCTURE, 'STRUCTURE-1')
+
+  expect(item.audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('VIOLATION')
+  item.conform?.run(STRUCTURE.selectContext(value))
+  expect(session.proposal()).toEqual({
+    writes: [{ path: checkpointReadme.path, content: checkpointReadme.content, create: true }]
+  })
 })
 
 test('rejects retired storage, lifecycle collisions, and session locators', () => {

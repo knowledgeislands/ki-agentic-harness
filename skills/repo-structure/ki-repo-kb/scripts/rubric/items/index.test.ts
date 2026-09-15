@@ -12,7 +12,7 @@ import {
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import { collectKbAuditEvidence, type KbRubricContext, ZONES } from '../contexts/kb.ts'
+import { collectKbAuditEvidence, digestReadme, type KbRubricContext, ZONES } from '../contexts/kb.ts'
 import catalogue from './index.ts'
 
 const temporaryDirectories: string[] = []
@@ -35,6 +35,8 @@ const createBase = (): string => {
   writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo-kb]\n')
   writeFileSync(join(repository, 'AGENTS.md'), '# Base guidance\n\nLoad Admin/MEMORY.md before work.\n')
   for (const zone of ZONES) mkdirSync(join(repository, zone), { recursive: true })
+  mkdirSync(join(repository, '-', '_DIGESTS'), { recursive: true })
+  writeFileSync(join(repository, digestReadme.path), digestReadme.content)
   return repository
 }
 
@@ -58,6 +60,7 @@ test('the structured catalogue preserves every KB criterion', () => {
     'ZONE-3',
     'ZONE-4',
     'ZONE-5',
+    'ZONE-6',
     'CONFIG-0',
     'CONFIG-1',
     'CONFIG-2',
@@ -146,6 +149,24 @@ test('a symlinked output is never proposed or followed', () => {
 
   expect(session.proposal().writes.some((write) => write.path === 'Admin/Admin.md')).toBe(false)
   expect(readFileSync(outside, 'utf8')).toBe('outside\n')
+})
+
+test('a declared KB can restore the retained session-digest scaffold', () => {
+  const repository = createBase()
+  rmSync(join(repository, '-', '_DIGESTS'), { recursive: true })
+  const session = catalogue.createSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+  const context = session.subjects[1]?.context() as KbRubricContext
+  const zone = families.find((family) => family.code === 'ZONE')
+  const zoneContext = zone?.selectContext(context)
+  const item = zone?.items.find((candidate) => candidate.code === 'ZONE-6')
+
+  expect(item?.mechanical?.audit.run(zoneContext)[0]?.status).toBe('VIOLATION')
+  item?.mechanical?.conform?.run(zoneContext)
+  expect(session.proposal().writes).toContainEqual({
+    path: digestReadme.path,
+    content: digestReadme.content,
+    create: true
+  })
 })
 
 test('a zone alias through an intermediate symlink produces no unsafe proposal', () => {
