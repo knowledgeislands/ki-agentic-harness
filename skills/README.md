@@ -303,10 +303,10 @@ Defines Knowledge Islands Markdown, TOML, README composition, and knowledge-plac
 
 #### `ki-checkpoint`
 
-Governs concise, repository-owned checkpoints for resuming one human-named active thread in a fresh agent context without a transcript or vendor session. Use when asked to checkpoint current work, update or retire a checkpoint, resume a named thread, audit `+/_CHECKPOINTS/`, or explain portable reconstruction state. It keeps one active snapshot per thread, retains explicit retired evidence, and leaves decisions, roadmap state, knowledge, recap, runtime hooks, and session continuity to their proper owners.
+Governs concise, repository-owned checkpoints for resuming one human-named active thread in a fresh agent context without a transcript or vendor session. Use when asked to checkpoint current work, update or remove a checkpoint, resume a named thread, audit `+/_CHECKPOINTS/`, or explain portable reconstruction state. It keeps one active snapshot per thread and leaves historical recovery to Git while decisions, roadmap state, knowledge, recap, runtime hooks, and session continuity remain with their proper owners.
 
 - **Kind:** Governance
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | resume <thread> | retire <thread> | update <thread>`
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <thread> | resume <thread> | update <thread>`
 - **Dependencies:** None
 - **Runtime:** Portable
 

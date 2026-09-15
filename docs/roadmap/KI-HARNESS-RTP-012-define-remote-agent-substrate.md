@@ -48,7 +48,7 @@ Require a conformance proof that the same bootstrap profile can create a fresh c
 
 - [ ] Add an accepted runtime-portability specification for execution inputs, lifecycle states, evidence, recovery, and result artifacts.
 - [ ] Define `ki-recap checkpoint <thread>` as the explicit, user-authorised bridge that creates or updates one valid active `ki-checkpoint` from the grounded recap and then applies the existing compaction safety boundary.
-- [ ] Keep `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and retirement while allowing `ki-recap` to invoke its update procedure only for the exact human-selected thread.
+- [ ] Keep `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and removal while allowing `ki-recap` to invoke its update procedure only for the exact human-selected thread.
 - [ ] Require cloud handoffs to carry a repository identity, immutable baseline or portable patch containing all required work state and the checkpoint, scoped authority, bootstrap profile, credential and network boundaries, result destination, and cleanup responsibility.
 - [ ] Define adapter results for commits or patches, the updated checkpoint, verification and review evidence, recovery state, and explicit refusal; keep vendor sessions and snapshots optional and non-authoritative.
 - [ ] Add focused fixtures and rubric coverage for valid recap-to-checkpoint handoff, missing or ambiguous thread identity, uncommitted-only state, stale baselines, absent authority, unsafe credentials, interrupted transfer, and fresh-agent resume without transcript access.

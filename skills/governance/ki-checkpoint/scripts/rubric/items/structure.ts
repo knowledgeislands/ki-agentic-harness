@@ -5,9 +5,9 @@ const SOURCE = 'standards-checkpoints.md'
 
 const STRUCTURE_1: RubricItem<OutcomeContext> = {
   code: 'STRUCTURE-1',
-  title: 'active and retired locations are canonical',
+  title: 'active location is canonical',
   description:
-    'When present, `+/_CHECKPOINTS/` is a physical directory containing only flat active Markdown records and the optional physical `_RETIRED/` directory, which contains only flat retired Markdown records. Symlinks, unsupported files, and nested or timestamped layouts are invalid; an absent subarea is not applicable.',
+    'When present, `+/_CHECKPOINTS/` is a physical directory containing only flat active Markdown records. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid; an absent subarea is not applicable.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -22,7 +22,7 @@ const STRUCTURE_1: RubricItem<OutcomeContext> = {
 export const STRUCTURE: RubricFamily<CheckpointsRubricContext, OutcomeContext> = {
   code: 'STRUCTURE',
   title: 'Checkpoint locations',
-  description: 'One optional subarea has a flat active set and one explicitly retired set.',
+  description: 'One optional subarea has a flat active record set; Git supplies history.',
   standard: SOURCE,
   selectContext: (context) => context.structure,
   items: [STRUCTURE_1]

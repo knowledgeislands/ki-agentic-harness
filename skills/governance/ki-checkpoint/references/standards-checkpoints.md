@@ -6,13 +6,13 @@ A checkpoint is a concise repository-owned reconstruction snapshot for one activ
 
 The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; only then may it use the owned `+/_CHECKPOINTS/` subarea. `ki-repo` owns the generic `+/` scaffold and detects an undeclared specialist subarea, while `ki-checkpoint` alone interprets checkpoint records. An absent `_CHECKPOINTS` directory is quiet and means there is no active checkpoint scope.
 
-The repository owns its checkpoint content and retention. The portable standard neither writes a sibling repository nor imposes deletion.
+The repository owns its active checkpoint content. Explicit removal deletes a record after durable information has been routed; Git supplies any recovery history.
 
-## Record locations and identity
+## Record location and identity
 
-An active checkpoint is one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`. A retired checkpoint is one regular Markdown file at `+/_CHECKPOINTS/_RETIRED/<thread>.md`.
+An active checkpoint is one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`. There is no retired-record state or `_RETIRED` directory.
 
-`<thread>` is a non-empty, human-selected single path component. It cannot be `.` or `..`, contain a path separator, or encode an opaque runtime-session identifier. The filename stem, `thread` field, and H1 must agree exactly. There is at most one active record for a thread; nested, timestamped, symlinked, and alternate active layouts are invalid.
+`<thread>` is a non-empty, human-selected single path component. It cannot be `.` or `..`, contain a path separator, or encode an opaque runtime-session identifier. The filename stem, `thread` field, and H1 must agree exactly. There is at most one active record for a thread; nested, timestamped, symlinked, archived, and alternate layouts are invalid.
 
 ## Exact record form
 
@@ -28,9 +28,9 @@ updated_at: 2026-08-06T14:30:00Z
 ---
 ```
 
-A retired record has the same fields, changes `state` to `retired`, and adds `retired_at` as the retirement timestamp. Timestamps use UTC RFC 3339 second precision. `created_at` is no later than `updated_at`; `retired_at` is no earlier than `updated_at`.
+Timestamps use UTC RFC 3339 second precision. `created_at` is no later than `updated_at`.
 
-After frontmatter, both states use exactly this heading sequence, with substantive content beneath every H2:
+After frontmatter, the record uses exactly this heading sequence, with substantive content beneath every H2:
 
 ```markdown
 # portable-checkpoints
@@ -56,18 +56,18 @@ A runtime-specific reminder consumer is separately opt-in. It may act only when 
 
 1. The repository declares `ki-checkpoint` and resolves to one physical repository root.
 2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-checkpoint` declaration remains an empty capability marker.
-3. The adapter receives one exact, human-selected thread name from that explicit runtime configuration. It resolves only `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and retired fallback are forbidden.
+3. The adapter receives one exact, human-selected thread name from that explicit runtime configuration. It resolves only `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
 4. The resolved record is a regular active checkpoint that satisfies this standard's identity and closed-schema requirements.
 
-The only first-delivery action is a compact reminder that this already-selected record may need an explicit update. The consumer does not create, update, retire, select, or reword a checkpoint; infer work status or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. A native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; this portable contract supplies no shared hook or fallback.
+The only first-delivery action is a compact reminder that the already-selected record may need an explicit update. The consumer does not create, update, remove, select, or reword a checkpoint; infer work status or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
 
 ## Update lifecycle
 
-Create or update a checkpoint only at an explicit user request or a documented repository-local trigger, such as before context compaction, after a substantive decision, after a repository commit, or before a known pause. A generic Stop event is not authority to create or choose a checkpoint.
+Create or update a checkpoint only on explicit user request or a documented repository-local trigger, such as before context compaction, after a substantive decision, after a repository commit, or before a known pause. A generic Stop event is not authority to create or choose a checkpoint.
 
 An update replaces the active snapshot in place, preserves `created_at`, and advances `updated_at`. It never appends timestamped copies or transcript history. Git is the history mechanism.
 
-Write durable decisions, accepted work state, and reusable knowledge to their canonical owners first; the checkpoint records only the compact state and references needed to resume. When the thread name, current facts, or authority to write is uncertain, make no checkpoint change.
+Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a checkpoint. The checkpoint may name those canonical artifacts; it must not become their only copy.
 
 ## Resume lifecycle
 
@@ -78,22 +78,22 @@ The manual portable flow is deliberately small:
 3. Read the whole record and validate its identity and `state: active`.
 4. Reconstruct the work from the six sections and continue from `Next step`.
 
-Do not search `_RETIRED` as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that produced the checkpoint.
+Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that produced the checkpoint.
 
-## Retirement lifecycle
+## Removal lifecycle
 
-Retirement requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm that durable facts have reached their proper owners. Then move the active file to `_RETIRED/<thread>.md`, change the state, and add `retired_at` without inventing a new summary.
+Removal requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts have reached their proper owners. Then delete the exact active file. If it was the final record, the empty `+/_CHECKPOINTS/` directory may also be removed.
 
-A retired record is inspectable recovery evidence and never an active resume candidate. Repository policy may later retain, archive, or delete it, but this standard does not choose that policy.
+No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested checkpoint layouts are invalid.
 
 ## Prohibited payloads and claims
 
 A checkpoint contains reconstruction state, not a transcript. It has no vendor-session field, conversation URL, runtime identifier, message log, or role-by-role dialogue. Its prose must not claim that a future agent can access or reopen the originating session.
 
-It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. `ki-recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#optional-runtime-reminder-consumers). It does not grant write authority, choose a thread, invoke recap, read session material, or turn this portable procedure into a native host operation.
+It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. `ki-recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#optional-runtime-reminder-consumers). It does not grant write authority, choose a thread, invoke recap, read session material, or turn a portable procedure into a native host operation.
 
 ## Audit and conform boundary
 
-AUDIT, CONFORM, and EDUCATE are the currently hosted `ki repo` operations. RESUME, UPDATE, and RETIRE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT checks only the declared repository's physical checkpoint subarea. It reports absent scope as not applicable, rejects symlinks and unsupported nesting, and treats retired records as non-active.
+AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT checks only the declared repository's physical checkpoint subarea. It reports absent scope as not applicable and rejects symlinks, unsupported nesting, and any retired-record layout.
 
-CONFORM never creates content, selects a thread, repairs prose or metadata, moves or retires a record, or infers lifecycle state. Authored corrections require an explicit UPDATE or RETIRE operation because automation cannot safely supply reconstruction judgment.
+CONFORM never authors checkpoint content or lifecycle transitions. It may publish the generated rubric, but it cannot create, update, or remove a checkpoint because those actions need a human-selected thread and explicit write authority.

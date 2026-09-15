@@ -9,7 +9,6 @@ import type {
 
 const CONFIG_TABLE = 'ki-checkpoint'
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
-const RETIRED_FIELDS = [...ACTIVE_FIELDS, 'retired_at'] as const
 const UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const OPAQUE_SESSION_NAME = /^(?:sess(?:ion)?|conversation)[_-][a-z0-9]{12,}$/i
@@ -28,11 +27,8 @@ const HEADINGS = [
   'Next step'
 ] as const
 
-type CheckpointState = 'active' | 'retired'
-
 type ParsedCheckpoint = {
   readonly path: string
-  readonly location: CheckpointState
   readonly stem: string
   readonly fields: Readonly<Record<string, unknown>> | null
   readonly body: string
@@ -62,7 +58,7 @@ const one = (outcomes: readonly AuditOutcome[], pass: string, absent?: string): 
   return outcomes.length > 0 ? outcomes : [{ status: 'PASS', message: pass }]
 }
 
-const parseCheckpoint = (path: string, location: CheckpointState, root: string): ParsedCheckpoint => {
+const parseCheckpoint = (path: string, root: string): ParsedCheckpoint => {
   const text = readFileSync(path, 'utf8')
   const lines = text.split(/\r?\n/)
   let fields: Readonly<Record<string, unknown>> | null = null
@@ -78,12 +74,11 @@ const parseCheckpoint = (path: string, location: CheckpointState, root: string):
       body = lines.slice(closing + 1).join('\n')
     }
   }
-  return { path: relative(root, path), location, stem: basename(path, '.md'), fields, body }
+  return { path: relative(root, path), stem: basename(path, '.md'), fields, body }
 }
 
 const inspectDirectory = (
   directory: string,
-  location: CheckpointState,
   root: string
 ): { records: ParsedCheckpoint[]; violations: AuditOutcome[] } => {
   const records: ParsedCheckpoint[] = []
@@ -91,17 +86,16 @@ const inspectDirectory = (
   for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) =>
     left.name.localeCompare(right.name)
   )) {
-    if (location === 'active' && entry.name === '_RETIRED' && entry.isDirectory() && !entry.isSymbolicLink()) continue
     const path = join(directory, entry.name)
     if (!entry.isFile() || entry.isSymbolicLink() || extname(entry.name) !== '.md') {
       violations.push({
         status: 'VIOLATION',
-        message: `${location} checkpoint scope permits only flat regular Markdown records${location === 'active' ? ' and the _RETIRED directory' : ''}`,
+        message: 'checkpoint scope permits only flat regular Markdown records',
         subject: relative(root, path)
       })
       continue
     }
-    records.push(parseCheckpoint(path, location, root))
+    records.push(parseCheckpoint(path, root))
   }
   return { records, violations }
 }
@@ -127,7 +121,6 @@ const recordEvidence = (
   const lifecycle: AuditOutcome[] = []
   const boundary: AuditOutcome[] = []
   const activeThreads = new Set<string>()
-  const retiredThreads = new Set<string>()
 
   for (const record of records) {
     const fields = record.fields
@@ -189,59 +182,43 @@ const recordEvidence = (
         })
     }
 
-    const expectedFields = record.location === 'active' ? ACTIVE_FIELDS : RETIRED_FIELDS
+    const expectedFields = ACTIVE_FIELDS
     const actualFields = Object.keys(fields).sort()
     if (actualFields.join('\n') !== [...expectedFields].sort().join('\n'))
       schema.push({
         status: 'VIOLATION',
-        message: `${record.location} checkpoint frontmatter must use only its closed field set`,
+        message: 'active checkpoint frontmatter must use only its closed field set',
         subject: record.path
       })
     if (fields.type !== 'ki-checkpoint')
       schema.push({ status: 'VIOLATION', message: 'type must be ki-checkpoint', subject: record.path })
-    if (fields.state !== record.location)
+    if (fields.state !== 'active')
       lifecycle.push({
         status: 'VIOLATION',
-        message: `state must be ${record.location} at this location`,
+        message: 'state must be active at the checkpoint location',
         subject: record.path
       })
 
     const created = fields.created_at
     const updated = fields.updated_at
-    const retired = fields.retired_at
     if (!validTimestamp(created))
       schema.push({ status: 'VIOLATION', message: 'created_at must be a UTC RFC 3339 timestamp', subject: record.path })
     if (!validTimestamp(updated))
       schema.push({ status: 'VIOLATION', message: 'updated_at must be a UTC RFC 3339 timestamp', subject: record.path })
-    if (record.location === 'retired' && !validTimestamp(retired))
-      schema.push({ status: 'VIOLATION', message: 'retired_at must be a UTC RFC 3339 timestamp', subject: record.path })
     if (validTimestamp(created) && validTimestamp(updated) && Date.parse(created) > Date.parse(updated))
       lifecycle.push({
         status: 'VIOLATION',
         message: 'created_at must not be later than updated_at',
         subject: record.path
       })
-    if (
-      record.location === 'retired' &&
-      validTimestamp(updated) &&
-      validTimestamp(retired) &&
-      Date.parse(updated) > Date.parse(retired)
-    )
-      lifecycle.push({
-        status: 'VIOLATION',
-        message: 'retired_at must not be earlier than updated_at',
-        subject: record.path
-      })
-
     if (typeof thread === 'string' && thread.length > 0) {
-      const selected = record.location === 'active' ? activeThreads : retiredThreads
-      if (selected.has(thread))
+      if (activeThreads.has(thread))
         lifecycle.push({
           status: 'VIOLATION',
-          message: `thread ${thread} has more than one ${record.location} record`,
+          message: `thread ${thread} has more than one active record`,
           subject: record.path
         })
-      selected.add(thread)
+      activeThreads.add(thread)
     }
 
     const forbiddenFields = Object.keys(fields).filter((key) => FORBIDDEN_KEY.test(key))
@@ -271,15 +248,6 @@ const recordEvidence = (
       })
   }
 
-  for (const thread of activeThreads) {
-    if (retiredThreads.has(thread))
-      lifecycle.push({
-        status: 'VIOLATION',
-        message: `thread ${thread} is simultaneously active and retired`,
-        subject: thread
-      })
-  }
-
   return {
     identity: one(identity, 'Every checkpoint has one consistent human-selected thread identity.'),
     schema: one(schema, 'Every checkpoint uses the closed metadata and heading schema.'),
@@ -295,7 +263,6 @@ export const createCheckpointsSession = ({
 }: RubricContextOptions): RubricSession<CheckpointsRubricContext> => {
   const root = resolve(repository)
   const checkpointDirectory = join(root, '+', '_CHECKPOINTS')
-  const retiredDirectory = join(checkpointDirectory, '_RETIRED')
   const checkpointExists = existsSync(checkpointDirectory)
   const checkpointSafe = physicalDirectory(checkpointDirectory)
   const absent = !checkpointExists ? 'The optional +/_CHECKPOINTS/ subarea is absent.' : undefined
@@ -309,22 +276,9 @@ export const createCheckpointsSession = ({
       subject: relative(root, checkpointDirectory)
     })
   if (checkpointSafe) {
-    const active = inspectDirectory(checkpointDirectory, 'active', root)
+    const active = inspectDirectory(checkpointDirectory, root)
     records.push(...active.records)
     structureViolations.push(...active.violations)
-    if (existsSync(retiredDirectory)) {
-      if (!physicalDirectory(retiredDirectory))
-        structureViolations.push({
-          status: 'VIOLATION',
-          message: '_RETIRED must be a physical directory',
-          subject: relative(root, retiredDirectory)
-        })
-      else {
-        const retired = inspectDirectory(retiredDirectory, 'retired', root)
-        records.push(...retired.records)
-        structureViolations.push(...retired.violations)
-      }
-    }
   }
 
   const configured = table(table(configuration.skills)?.[CONFIG_TABLE])
@@ -354,7 +308,7 @@ export const createCheckpointsSession = ({
       )
     },
     structure: {
-      outcomes: one(structureViolations, 'The active and retired checkpoint locations are canonical.', absent)
+      outcomes: one(structureViolations, 'The active checkpoint location is canonical.', absent)
     },
     records: { identity: evidence.identity, schema: evidence.schema },
     lifecycle: { mechanical: evidence.lifecycle },

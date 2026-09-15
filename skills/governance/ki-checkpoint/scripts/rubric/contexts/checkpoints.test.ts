@@ -26,12 +26,10 @@ const fixture = (): { repository: string; checkpointDirectory: string } => {
 const record = ({
   thread = 'release-audit',
   state = 'active',
-  retiredAt,
   body = ''
 }: {
   thread?: string
-  state?: 'active' | 'retired'
-  retiredAt?: string
+  state?: string
   body?: string
 } = {}) =>
   [
@@ -41,7 +39,6 @@ const record = ({
     `state: ${state}`,
     'created_at: 2026-08-12T10:00:00Z',
     'updated_at: 2026-08-12T11:00:00Z',
-    ...(retiredAt ? [`retired_at: ${retiredAt}`] : []),
     '---',
     '',
     `# ${thread}`,
@@ -97,7 +94,7 @@ test('absence is not applicable and audit never proposes authored writes', () =>
   expect(session.proposal()).toEqual({ writes: [] })
 })
 
-test('rejects unsafe structure, lifecycle collisions, and session locators', () => {
+test('rejects retired storage, lifecycle collisions, and session locators', () => {
   const { repository, checkpointDirectory } = fixture()
   const retiredDirectory = join(checkpointDirectory, '_RETIRED')
   mkdirSync(retiredDirectory)
@@ -105,10 +102,8 @@ test('rejects unsafe structure, lifecycle collisions, and session locators', () 
     join(checkpointDirectory, 'release-audit.md'),
     record({ body: 'Resume https://example.test/conversation/abc.' })
   )
-  writeFileSync(
-    join(retiredDirectory, 'release-audit.md'),
-    record({ state: 'retired', retiredAt: '2026-08-12T12:00:00Z' })
-  )
+  writeFileSync(join(retiredDirectory, 'release-audit.md'), record({ state: 'retired' }))
+  writeFileSync(join(checkpointDirectory, 'alternate.md'), record())
   const outside = join(repository, 'outside.md')
   writeFileSync(outside, record())
   symlinkSync(outside, join(checkpointDirectory, 'linked.md'))
@@ -117,7 +112,7 @@ test('rejects unsafe structure, lifecycle collisions, and session locators', () 
   expect(mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('VIOLATION')
   expect(mechanical(LIFECYCLE, 'LIFECYCLE-1').audit.run(LIFECYCLE.selectContext(value))).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ message: expect.stringContaining('simultaneously active and retired') })
+      expect.objectContaining({ message: expect.stringContaining('more than one active record') })
     ])
   )
   expect(mechanical(BOUNDARY, 'BOUNDARY-1').audit.run(BOUNDARY.selectContext(value))).toEqual(

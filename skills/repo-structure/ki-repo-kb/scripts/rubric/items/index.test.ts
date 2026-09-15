@@ -242,7 +242,6 @@ test('adapter and protocol records delegate note-type metadata to their owning s
     'Streams/Housekeeping/TEMPLATE.md',
     '+/_BATCHES/KI-EXAMPLE-BATCH-001.md',
     '+/_CHECKPOINTS/active-thread.md',
-    '+/_CHECKPOINTS/_RETIRED/retired-thread.md',
     '+/_TRADES/sender/repository/TRD-01234567.md',
     '-/_TRADES/receiver/repository/TRD-89abcdef.md'
   ]
@@ -305,14 +304,13 @@ test('retired handoff classification fails even in a valid trade path while loca
   for (const relativePath of records) expect(finding?.message).toContain(relativePath)
 })
 
-test('checkpoint delegation preserves YAML and configured field validation', () => {
+test('active checkpoint delegation preserves YAML and configured field validation', () => {
   const repository = createBase()
   writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo-kb]\nrequired_frontmatter = ["author"]\n')
   const active = join(repository, '+', '_CHECKPOINTS', 'Active.md')
-  const retired = join(repository, '+', '_CHECKPOINTS', '_RETIRED', 'Retired.md')
-  mkdirSync(dirname(retired), { recursive: true })
+  mkdirSync(dirname(active), { recursive: true })
   writeFileSync(active, '---\ntype: ki-checkpoint\ninvalidKey: value\n---\n\n# Active\n')
-  writeFileSync(retired, '---\ntype: [\n---\n\n# Retired\n')
+  writeFileSync(join(dirname(active), 'Malformed.md'), '---\ntype: [\n---\n\n# Malformed\n')
   const findings = collectKbAuditEvidence(repository)
   expect(findings.find((finding) => finding.code === 'NOTE-1c')?.level).toBe('PASS')
   expect(findings.find((finding) => finding.code === 'NOTE-1a')?.level).toBe('FAIL')
@@ -326,6 +324,7 @@ test('delegation does not cover obsolete batch paths or noncanonical checkpoint 
     '+/_AUTHORISATIONS/KI-EXAMPLE-BATCH-001.md',
     '+/_BATCHES/nested/KI-EXAMPLE-BATCH-002.md',
     '+/_CHECKPOINTS/nested/Thread.md',
+    '+/_CHECKPOINTS/_RETIRED/Thread.md',
     '+/_CHECKPOINTS/_RETIRED/nested/Thread.md',
     '-/_CHECKPOINTS/Thread.md'
   ]

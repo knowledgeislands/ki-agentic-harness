@@ -34,8 +34,8 @@ const delegatedNoteTypeRecord = (
   if (
     segments[0] === zones.inbound &&
     segments[1] === '_CHECKPOINTS' &&
-    ((segments.length === 3 && segments[2]?.endsWith('.md')) ||
-      (segments.length === 4 && segments[2] === '_RETIRED' && segments[3]?.endsWith('.md')))
+    segments.length === 3 &&
+    segments[2]?.endsWith('.md')
   )
     return true
 
