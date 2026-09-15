@@ -173,6 +173,7 @@ order = [
   "https://github.com/knowledgeislands/ki-agentic-harness",
   "https://github.com/knowledgeislands/tools-ki",
   "https://github.com/knowledgeislands/tools-mgit",
+  "https://github.com/knowledgeislands/tools-rig",
   "https://github.com/knowledgeislands/homebrew-tap",
 ]
 
@@ -196,6 +197,7 @@ order = [
 "https://github.com/knowledgeislands/tools-git-almanac" = "maintainer"
 "https://github.com/knowledgeislands/tools-ki" = "maintainer"
 "https://github.com/knowledgeislands/tools-mgit" = "maintainer"
+"https://github.com/knowledgeislands/tools-rig" = "maintainer"
 
 [skills.ki-agora.homes.ki-fnd]
 owner = "https://github.com/knowledgeislands/ki-agentic-harness"
@@ -209,6 +211,7 @@ purpose = "Knowledge Islands foundation repositories"
 "https://github.com/knowledgeislands/ki-website" = "maintainer"
 "https://github.com/knowledgeislands/tools-ki" = "maintainer"
 "https://github.com/knowledgeislands/tools-mgit" = "maintainer"
+"https://github.com/knowledgeislands/tools-rig" = "maintainer"
 
 [skills.ki-agora.homes.ki-mcps]
 owner = "https://github.com/knowledgeislands/ki-agentic-harness"
