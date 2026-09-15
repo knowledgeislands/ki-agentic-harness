@@ -2,7 +2,8 @@ import type { AuditOutcome, RubricFamily, RubricItem, RubricOutcomes } from '../
 import { AUTOMATIC_REMEDIATION, judgment } from '../../shared/rubric.ts'
 import { type KiShapeRubricContext, type KiSkillsRubricContext, selectKiSkillsContext } from '../contexts/contexts.ts'
 
-const UNIVERSAL_VERBS = ['AUDIT', 'CONFORM', 'EDUCATE', 'REFRESH', 'HELP'] as const
+const UNIVERSAL_MODES = ['AUDIT', 'CONFORM', 'EDUCATE', 'REFRESH'] as const
+const REQUIRED_GOVERNANCE_VERBS = [...UNIVERSAL_MODES, 'HELP'] as const
 
 const KI_SHAPE_1: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-1',
@@ -51,7 +52,7 @@ const KI_SHAPE_3: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-3',
   title: 'the skill declares its kind',
   description:
-    'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance` or `ki-kind: process`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the universal modes (KI-SHAPE-5). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. Both kinds use the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and are dual-invocable (`/<name>` and model-triggered).',
+    'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance` or `ki-kind: process`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the four universal acting modes plus the required HELP entry point (KI-SHAPE-5, KI-SHAPE-11). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. Both kinds use the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and are dual-invocable (`/<name>` and model-triggered).',
   sources: ['ki-agentic-harness README', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'FAIL',
@@ -216,9 +217,9 @@ const KI_SHAPE_10: RubricItem<KiShapeRubricContext> = {
 
 const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-11',
-  title: 'governance skills expose HELP',
+  title: 'governance skills expose the HELP entry point',
   description:
-    "_Exposes the universal HELP mode._ Every governance skill's `argument-hint` lists a `help` verb, so the no-mode default and the `help` / `-h` / `?` pure-explain form are discoverable (ADR-KI-HARNESS-SKILLS-001). A skill derives its help from its own frontmatter and operating-mode prose; it carries no generated wrapper or separate HELP payload. The linter verifies the `help` token; the prose HELP semantics are KI-INVOKE-1 **[J]**.",
+    "_Exposes the required non-acting HELP entry point._ Every governance skill's `argument-hint` lists a `help` verb, so the no-mode default and the `help` / `-h` / `?` pure-explain form are discoverable (ADR-KI-HARNESS-SKILLS-001). A skill derives its help from its own frontmatter and operating-mode prose; it carries no generated wrapper or separate HELP payload. The linter verifies the `help` token; the prose HELP semantics are KI-INVOKE-1 **[J]**.",
   sources: ['ADR-KI-HARNESS-SKILLS-001'],
   mechanical: {
     level: 'FAIL',
@@ -227,13 +228,15 @@ const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
       phase: 'INSPECT',
       run: ({ skill }) => {
         if (!skill || skill.argumentHint === undefined)
-          return [{ status: 'NOT_APPLICABLE', message: '`argument-hint` is unavailable for HELP-mode inspection' }]
+          return [
+            { status: 'NOT_APPLICABLE', message: '`argument-hint` is unavailable for HELP-entry-point inspection' }
+          ]
         return skill.hintVerbs.includes('HELP')
-          ? [{ status: 'PASS', message: 'governance skills expose HELP' }]
+          ? [{ status: 'PASS', message: 'governance skills expose the HELP entry point' }]
           : [
               {
                 status: 'VIOLATION',
-                message: '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)'
+                message: '`argument-hint` does not expose the required `help` entry point (ADR-KI-HARNESS-SKILLS-001)'
               }
             ]
       }
@@ -251,11 +254,11 @@ const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
 const auditKiShape12 = ({ skill }: KiShapeRubricContext): RubricOutcomes<AuditOutcome> => {
   if (!skill?.governanceSkill) return [{ status: 'NOT_APPLICABLE', message: 'the target is not a governance skill' }]
   const violations: AuditOutcome[] = []
-  const missing = UNIVERSAL_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
+  const missing = REQUIRED_GOVERNANCE_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
   if (missing.length > 0)
     violations.push({
       status: 'VIOLATION',
-      message: `\`argument-hint\` is missing the universal verb(s) ${missing.map((verb) => verb.toLowerCase()).join(', ')} — a governance skill exposes AUDIT, CONFORM, EDUCATE, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
+      message: `\`argument-hint\` is missing the required verb(s) ${missing.map((verb) => verb.toLowerCase()).join(', ')} — a governance skill exposes the four acting modes AUDIT, CONFORM, EDUCATE, and REFRESH plus the HELP entry point (ADR-KI-HARNESS-SKILLS-001)`
     })
   const [first, ...rest] = violations
   return first
@@ -267,7 +270,7 @@ const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-12',
   title: 'governance mode vocabulary is canonical and complete',
   description:
-    '_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The current source-entrypoint migration invariant is validated by KI-SHAPE-15; direct delivery resolves registered operations from the verified collection. Process skills are exempt throughout.',
+    '_Mode vocabulary is canonical and complete._ A governance skill exposes the four acting modes **AUDIT**, **CONFORM**, **EDUCATE**, and **REFRESH**, plus the non-acting **HELP** entry point, all spelled exactly so — a governance skill missing any required verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The current source-entrypoint migration invariant is validated by KI-SHAPE-15; direct delivery resolves registered operations from the verified collection. Process skills are exempt throughout.',
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'WARN',
@@ -277,7 +280,7 @@ const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
       phase: 'PRIMARY',
       run: ({ skill, addArgumentHintVerbs }) => {
         if (!skill?.governanceSkill || !skill.argumentHint || !addArgumentHintVerbs) return
-        const missing = UNIVERSAL_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
+        const missing = REQUIRED_GOVERNANCE_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
         if (missing.length > 0) addArgumentHintVerbs(missing.map((verb) => verb.toLowerCase()))
       }
     }
