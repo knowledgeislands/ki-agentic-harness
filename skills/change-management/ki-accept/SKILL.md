@@ -38,7 +38,7 @@ Runtime subagents can help execute bounded review preparation only when separate
 
 `ki-batch` may request batched closure only when its approval-bound explicit authorisation grants it for the named record. It never grants pruning authority.
 
-`ki-work-housekeeping` owns template shape and `ki-next` owns spawning. After a linked run is accepted, this skill alone advances `last-run` and clears `active-run`. Failed, abandoned, and superseded runs retain the active link until an explicit disposition clears it or a replacement atomically substitutes a new linked identity; neither advances successful-run evidence.
+`ki-work-housekeeping` owns template shape and `ki-next` owns spawning. After a linked run is accepted, this skill alone advances the evidenced completion date `last-run` and reviewed revision `last-run-ref`, then clears `active-run`. Failed, abandoned, and superseded runs retain the active link until an explicit disposition clears it or a replacement atomically substitutes a new linked identity; neither advances successful-run evidence.
 
 ## Invocation
 

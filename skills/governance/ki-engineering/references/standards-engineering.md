@@ -53,7 +53,7 @@ Tests remain part of this design discipline: coverage is evidence only when it b
 
 ## Change-aware consistency review
 
-A repository MAY record a completed, focused consistency review when a maintainer judges that accumulated code change warrants one. There is no calendar cadence, numeric threshold, CI gate, or automatic finding: the reviewer decides whether review is worthwhile after inspecting the actual change.
+A repository MAY record a completed, focused consistency review when a maintainer judges that accumulated code change warrants one. This standard imposes no calendar cadence, numeric threshold, CI gate, or automatic finding: the reviewer decides whether review is worthwhile after inspecting the actual change. A repository may independently adopt a time- or change-triggered review template through `ki-work-housekeeping`; that schedules a review, not an engineering verdict or automatic remediation.
 
 When completed, the outcome commit carries one final contiguous trailer block in this exact order. Its commit is the reviewed result; `Base` is the exclusive lower boundary of the inspected range.
 

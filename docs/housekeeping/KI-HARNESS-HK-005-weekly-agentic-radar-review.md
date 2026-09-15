@@ -1,16 +1,16 @@
 ---
 id: KI-HARNESS-HK-005
-title: Monthly agentic radar review
+title: Weekly agentic radar review
 status: active
-cadence: P1M
+cadence: P1W
 last-run: null
-grace: P7D
+grace: P2D
 spawn-policy: when-due
 spawn-horizon: now
 active-run: null
 ---
 
-# Monthly agentic radar review
+# Weekly agentic radar review
 
 ## Goal
 

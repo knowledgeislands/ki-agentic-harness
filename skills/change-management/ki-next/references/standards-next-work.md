@@ -146,9 +146,9 @@ That handoff does not permit `ki-next` to infer batch, selection, or implementat
 
 ## 7. Spawn due housekeeping work
 
-After grounding and before ordinary candidate selection, evaluate each active housekeeping template under the adapter's template horizon. A template is due only when its cadence, last-run evidence, grace period, and spawn policy say so, and it has no active run.
+After grounding and before ordinary candidate selection, evaluate each active housekeeping template under the adapter's template horizon. Use `ki-work-housekeeping`'s read-only `evaluateHousekeepingSchedule({ repository, schedule, today })` capability with freshly read template fields and an explicit UTC date. Its owner standard defines calendar-or-commit eligibility, first-parent evidence, missing-history diagnostics, initial runs, and grace. Do not reimplement that calculation or treat unknown volume as zero; preserve manual confirmation, paused, and active-run guards.
 
-For each due template, present the exact proposed work record, destination (normally Now or Next), template link, and policy effect. Spawn automatically only when the template expressly permits automatic spawning; otherwise require confirmation. The spawned record enters as `draft` and follows the ordinary shared lifecycle. In the same coherent change, set only `active-run` to the linked record identity; never change `last-run` at spawn. `ki-accept` records successful completion by updating `last-run` and clearing `active-run` only after the linked run is accepted as `done`.
+For each due template, present the exact proposed work record, destination (normally Now or Next), template link, and policy effect. Spawn automatically only when the template expressly permits automatic spawning; otherwise require confirmation. The spawned record enters as `draft` and follows the ordinary shared lifecycle. In the same coherent change, set only `active-run` to the linked record identity; never change `last-run` or `last-run-ref` at spawn. `ki-accept` records successful completion by recording the actual successful completion date in `last-run`, the evidenced reviewed revision in `last-run-ref`, and clearing `active-run` only after the linked run is accepted as `done`.
 
 Never implement a template directly, spawn a duplicate active run, or leave a due run in `Streams/Housekeeping`.
 

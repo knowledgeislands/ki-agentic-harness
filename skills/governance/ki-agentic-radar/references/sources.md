@@ -1,6 +1,6 @@
 # Tracked sources
 
-**Refresh:** external-spec · monthly
+**Refresh:** external-spec · weekly
 
 This ledger records the primary and corroborating sources accepted into the agentic radar. Evidence identities and claim-level notes live in `radar.toml`; inclusion here does not by itself establish maturity, implementation, interoperability, or adoption.
 

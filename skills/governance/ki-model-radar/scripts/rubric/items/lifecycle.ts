@@ -7,7 +7,7 @@ const LIFECYCLE_1: RubricItem<RadarLifecycleContext> = {
   code: 'LIFECYCLE-1',
   title: 'vocabulary and review dates are valid',
   description:
-    'Model, route, benchmark, and evidence classifications use the closed vocabularies; dates are real, non-future ISO calendar dates; reviews older than 45 days warn without invalidating historical evidence.',
+    'Model, route, benchmark, and evidence classifications use the closed vocabularies; dates are real, non-future ISO calendar dates; reviews older than 9 days warn without invalidating historical evidence.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

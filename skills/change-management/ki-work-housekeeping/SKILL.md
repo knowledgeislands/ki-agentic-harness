@@ -14,11 +14,11 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 ## Shared model
 
-A housekeeping template is a durable instruction to create ordinary work when its cadence becomes due. It has a small lifecycle: `active` templates are evaluated, `paused` templates are retained but never spawn work, and a retired template is deleted. Due and overdue are calculated from `cadence`, `last-run`, and `grace`; they are not stored states.
+A housekeeping template is a durable instruction to create ordinary work when its cadence becomes due. It has a small lifecycle: `active` templates are evaluated, `paused` templates are retained but never spawn work, and a retired template is deleted. Calendar due and overdue are calculated from `cadence`, `last-run`, and `grace`; an optional `commit-threshold` also makes work due from verified first-parent history after `last-run-ref`. These are computed evidence, not stored states. Use the owner's [read-only schedule capability](scripts/rubric/contexts/schedule.ts) for evaluation; it never creates runs.
 
 In a non-KB repository templates live directly below `docs/housekeeping/`. In a KB, the equivalent template notes live at `Streams/Housekeeping/`; it is an operational area, not a delivery state. `ki-next` reads active templates and atomically creates a linked `draft` run at the template's declared horizon while setting `active-run`. The run then follows the common `draft` → `ready` → `in-progress` → `awaiting-review` → `done` lifecycle.
 
-`ki-accept` records successful run evidence on the template only after the run is `done`. It never marks a template as run merely because a draft was created. An unfinished linked run prevents a duplicate spawn.
+`ki-accept` records the actual successful completion date and evidenced reviewed revision on the template only after the run is `done`. It never marks a template as run merely because a draft was created. An unfinished linked run prevents a duplicate spawn.
 
 ## Operating modes
 

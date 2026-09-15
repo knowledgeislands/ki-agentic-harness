@@ -4,12 +4,12 @@ area: GOV
 title: Expand Housekeeping Coverage
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: b333daaa3356e827429104d7b7783c0e939e8e76
 created_at: 2026-09-15T05:31:18Z
-updated_at: 2026-09-15T05:31:18Z
+updated_at: 2026-09-15T05:47:55Z
 ---
 
 # Expand Housekeeping Coverage
@@ -32,16 +32,16 @@ The repository is clean at `8be51b28a44f9df5c5621dbf8d3dfbbe213c2904`; work, roa
 
 ## Steps
 
-- [ ] Extend housekeeping with an optional commit threshold and verified reviewed-revision anchor, a read-only due evaluator, and boundary tests.
-- [ ] Align spawning and acceptance instructions with the owner contract without weakening active-run or approval guards.
-- [ ] Consolidate five local templates into four, broaden engineering and knowledge coverage, and make both radar reviews weekly.
-- [ ] Align radar source cadence and freshness warnings with weekly review.
-- [ ] Reconcile review evidence, preserve unresolved routes and recovery references, remove redundant committed reports, and repair live links.
-- [ ] Regenerate affected publications, run focused and full verification, and record the review packet.
+- [x] Extend housekeeping with an optional commit threshold and verified reviewed-revision anchor, a read-only due evaluator, and boundary tests.
+- [x] Align spawning and acceptance instructions with the owner contract without weakening active-run or approval guards.
+- [x] Consolidate five local templates into four, broaden engineering and knowledge coverage, and make both radar reviews weekly.
+- [x] Align radar source cadence and freshness warnings with weekly review.
+- [ ] Finish the exact report-retirement decision. Navigation, stale routing labels, broken live links, and evidence preservation are cleaned up; wholesale consolidation of the completed REV-001 report folder awaits the requested confirmation.
+- [x] Regenerate affected publications, run focused and full verification, and record the review packet.
 
 ## Files touched
 
-`skills/change-management/ki-work-housekeeping/`; housekeeping paragraphs in `ki-next` and `ki-accept`; cadence and freshness policy in `skills/governance/ki-model-radar/` and `ki-agentic-radar/`; an engineering scheduling clarification if needed; `docs/housekeeping/`; `docs/reviews/`; affected live links, this work record, and the issue ledger. No batch implementation files.
+`skills/change-management/ki-work-housekeeping/`; housekeeping paragraphs in `ki-next` and `ki-accept`; cadence and freshness policy in `skills/governance/ki-model-radar/` and `ki-agentic-radar/`; an engineering scheduling clarification if needed; `docs/housekeeping/`; `docs/reviews/`; affected live links, this work record, and the issue ledger. The source-loaded remediation-inventory test is updated only for the added HOUSE-2 criterion. No batch implementation files.
 
 ## Verify
 
@@ -101,6 +101,41 @@ Retained review orientation explains what remains useful, where unresolved work 
 
 This item owns the delivery and review evidence. Existing done review records remain unchanged; no new substantive review is claimed by this maintenance.
 
+## Review
+
+### Delivered
+
+Implemented the housekeeping and radar changes against immutable baseline `b333daaa3356e827429104d7b7783c0e939e8e76`. Five local templates become four independent obligations: monthly-or-100-commits engineering and knowledge reviews, and weekly model and agentic reviews. This is not evidence that any substantive review ran. The record remains in-progress because the exact bulk report-retirement choice is outstanding.
+
+### Summary of changes
+
+The housekeeping owner now provides optional `commit-threshold` and `last-run-ref` metadata, a read-only first-parent schedule evaluator, schema validation, and HOUSE-2 diagnostics. Calendar and volume triggers are alternatives; manual, paused, active-run, and acceptance guards remain. Successful acceptance records the actual completion date and verified reviewed revision in one coherent closure/template commit. Both radar policies warn after nine days and retain their evidence and movement gates.
+
+The combined HK-003 incorporates both signal and release reassessment; HK-004 is retired with its history preserved. HK-001 and HK-002 broaden existing purposes instead of multiplying records. Review navigation now distinguishes retained historical evidence from active work, removes obsolete progress duplication, fixes an absent trade link, and preserves four unresolved routes or observations. Detailed historical reports have not been deleted.
+
+### Verification
+
+- Final `bun run test`: 676 passed, 0 failed, 3060 assertions across 127 files.
+- `bunx tsc --noEmit`: passed.
+- Trigger and acceptance focused suite: 22 tests and 104 assertions passed. Radar focused suite: 25 tests and 61 assertions passed.
+- Housekeeping audit: no failures; two intentional HOUSE-2 warnings for missing historical anchors. Model radar, agentic radar, skills, authoring, roadmap, delegation, and harness audits passed.
+- Three changed rubrics regenerated; scoped Biome, rumdl, and whitespace checks passed. Local Markdown targets throughout `docs/reviews` resolve.
+- The first full suite exposed the new criterion's expected inventory-count delta; that assertion was updated and the full suite passed. Independent review found initial-run grace, future-completion-date, and atomic-closure edge cases, all corrected with focused regression tests.
+
+### Outstanding concerns
+
+The exact consolidation of `docs/reviews/KI-HARNESS-REV-001/` into one retained summary awaits the user's answer to the explicit pruning question required by `ki-repo`. Existing detailed reports and runtime-binding evidence remain intact.
+
+The prior accepted REV-004 and REV-005 records cite a baseline unavailable in this checkout's non-shallow Git object database. The broadened templates retain their historical dates and disclose narrower prior scope, but intentionally leave `last-run-ref: null`. Monthly scheduling remains active; volume is unknown until a successful review supplies a verified revision. No current HEAD, date-derived guess, or historical implementation baseline was substituted.
+
+### Post-change review
+
+Independent file-bounded review confirmed that model consolidation retains evidence, evaluated-unit, counter-evidence, and human movement gates. Disposable-Git scenarios verified exact thresholds, merge counting, missing-history handling, and manual/paused/reserved guards. The coordinator integrated and corrected the reported edge cases. Unrelated work advanced HEAD and pruned older records during this delivery; historical review links were pinned to retained commits, and no unrelated file is included in the commit.
+
+### Mini recap
+
+The requested four-review structure, optional change-volume scheduling, weekly radar cadence, and non-destructive review cleanup are implemented and verified. Finish the explicit historical-report retirement choice before closing this delivery. Routine working-area maintenance remains under existing specialist guards; no new generic retention policy, substantive review, external write, acceptance, roadmap prune, or push occurred.
+
 ## Discussion
 
 ### Partition and retention
@@ -110,3 +145,7 @@ Partition by independent purpose and cost, not by each artifact type. Engineerin
 ### Counting and baseline
 
 First-parent counting measures integrated repository change and avoids double-counting merged branch history. The accepted run records the full reviewed revision as the next count anchor. A missing, shallow, or divergent history cannot prove the threshold has not been reached; independently due calendar work remains visible. Existing narrower reviews may seed an anchor only through their retained evidence, with the expanded scope disclosed.
+
+### Successful-run evidence migration
+
+The former calendar policy advanced to the scheduled date. New acceptance deliberately advances to the evidenced actual successful completion date, so a late review is measured from when it finished. Existing dates are not backfilled. Missing historic Git anchors remain visible warnings; acquiring a usable anchor requires a real evidenced review, not a reset disguised as completion.

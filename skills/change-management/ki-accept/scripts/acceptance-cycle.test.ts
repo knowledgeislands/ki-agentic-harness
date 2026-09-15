@@ -60,14 +60,47 @@ test('accepts an approval-bound named batch closure and reconciles one successfu
           activeRun: 'KI-HARNESS-001',
           itemId: 'KI-HARNESS-001',
           templateMatches: true,
-          scheduledFor: '2026-08-12'
+          scheduledFor: '2026-08-12',
+          completedOn: '2026-08-15',
+          reviewedRevision: { ref: 'a'.repeat(40), verified: true }
         }
       })
     )
   ).toEqual({
     kind: 'accept',
     transition: 'awaiting-review-to-done',
-    templateUpdate: { lastRun: '2026-08-12', activeRun: null },
+    templateUpdate: { lastRun: '2026-08-15', lastRunRef: 'a'.repeat(40), activeRun: null },
+    writes: false
+  })
+})
+
+test('housekeeping completion requires actual completion and verified reviewed-revision evidence', () => {
+  const accepted = {
+    kind: 'accepted' as const,
+    activeRun: 'KI-HARNESS-001',
+    itemId: 'KI-HARNESS-001',
+    templateMatches: true,
+    scheduledFor: '2026-08-12',
+    completedOn: '2026-08-15',
+    commitThreshold: 100,
+    reviewedRevision: { ref: 'a'.repeat(40), verified: true }
+  }
+  for (const housekeeping of [
+    { ...accepted, completedOn: null },
+    { ...accepted, completedOn: '2026-02-30' },
+    { ...accepted, reviewedRevision: null },
+    { ...accepted, reviewedRevision: { ref: 'a'.repeat(40), verified: false } },
+    { ...accepted, reviewedRevision: { ref: 'HEAD', verified: true } },
+    { ...accepted, itemId: 'wrong-id' }
+  ])
+    expect(evaluateAcceptanceCycle(input({ housekeeping }))).toMatchObject({ kind: 'stop', writes: false })
+  expect(
+    evaluateAcceptanceCycle(
+      input({ housekeeping: { ...accepted, commitThreshold: undefined, reviewedRevision: null } })
+    )
+  ).toMatchObject({
+    kind: 'accept',
+    templateUpdate: { lastRun: '2026-08-15', lastRunRef: null, activeRun: null },
     writes: false
   })
 })
@@ -199,7 +232,9 @@ test('advances last-run only for accepted completion and requires an explicit re
     activeRun: 'wrong-id',
     itemId: 'KI-HARNESS-001',
     templateMatches: true,
-    scheduledFor: '2026-08-12'
+    scheduledFor: '2026-08-12',
+    completedOn: '2026-08-15',
+    reviewedRevision: { ref: 'a'.repeat(40), verified: true }
   }
   expect(evaluateAcceptanceCycle(input({ housekeeping: accepted }))).toMatchObject({
     kind: 'stop',

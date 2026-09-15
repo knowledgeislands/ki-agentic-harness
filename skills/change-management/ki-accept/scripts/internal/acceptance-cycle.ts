@@ -32,6 +32,9 @@ export type HousekeepingCompletion =
       itemId: string
       templateMatches: boolean
       scheduledFor: string | null
+      completedOn: string | null
+      reviewedRevision: { ref: string; verified: boolean } | null
+      commitThreshold?: number
     }
   | {
       kind: 'non-successful'
@@ -83,7 +86,7 @@ export type AcceptanceCycleOutcome =
   | {
       kind: 'accept'
       transition: 'awaiting-review-to-done'
-      templateUpdate: { lastRun: string; activeRun: null }
+      templateUpdate: { lastRun: string; lastRunRef: string | null; activeRun: null }
       writes: false
     }
   | { kind: 'clear-housekeeping-link'; templateUpdate: { activeRun: null; lastRunUnchanged: true }; writes: false }
@@ -207,16 +210,26 @@ export const evaluateAcceptanceCycle = ({
     }
 
   if (housekeeping.kind === 'accepted') {
+    const validDate = (value: string | null): value is string => {
+      if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+      const date = new Date(`${value}T00:00:00.000Z`)
+      return Number.isFinite(date.valueOf()) && date.toISOString().slice(0, 10) === value
+    }
+    const revision = housekeeping.reviewedRevision
     if (
       housekeeping.activeRun !== item.id ||
+      housekeeping.itemId !== item.id ||
       !housekeeping.templateMatches ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(housekeeping.scheduledFor ?? '')
+      !validDate(housekeeping.scheduledFor) ||
+      !validDate(housekeeping.completedOn) ||
+      (housekeeping.commitThreshold !== undefined && revision === null) ||
+      (revision !== null && (!revision.verified || !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(revision.ref)))
     )
       return { kind: 'stop', reason: 'linked housekeeping completion evidence is incomplete', writes: false }
     return {
       kind: 'accept',
       transition: 'awaiting-review-to-done',
-      templateUpdate: { lastRun: housekeeping.scheduledFor as string, activeRun: null },
+      templateUpdate: { lastRun: housekeeping.completedOn, lastRunRef: revision?.ref ?? null, activeRun: null },
       writes: false
     }
   }

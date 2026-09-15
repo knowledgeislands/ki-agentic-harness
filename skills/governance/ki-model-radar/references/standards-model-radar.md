@@ -53,7 +53,7 @@ Every evidence or counter-evidence reference resolves to one evidence record. Co
 
 ## Dates and freshness
 
-All dates use real `YYYY-MM-DD` calendar values. The snapshot and each record must not be future-dated. A review older than 45 days warns: the monthly review has elapsed plus operational grace, but elapsed time alone does not invalidate historical evidence.
+All dates use real `YYYY-MM-DD` calendar values. The snapshot and each record must not be future-dated. REFRESH runs weekly, or earlier when a material release or deprecation warrants it. A review older than 9 days warns: the seven-day cadence has elapsed plus two days of operational grace, but elapsed time alone does not invalidate historical evidence.
 
 ## Evidence and movement review
 

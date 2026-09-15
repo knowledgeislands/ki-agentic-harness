@@ -1,22 +1,18 @@
 # Review action routing
 
-This table is the durable action list for `KI-HARNESS-REV-001`. It separates completed review work, captured Harness work, external receiver work, and external observations.
+This is the remaining-use map for the completed skill review, reconciled on 2026-09-15. It is not a second work tracker. Historical grades, proposals, and delivery claims remain in [the committed original action list](https://github.com/knowledgeislands/ki-agentic-harness/blob/b333daaa3356e827429104d7b7783c0e939e8e76/docs/reviews/KI-HARNESS-REV-001/actions.md).
 
-| Action | Outcome | Route | State |
-| --- | --- | --- | --- |
-| `ACCEPT-REV-001` | Close the review. | [REV-001][rev-001-record] | Done |
-| `RENAME-KI-WORK` | Rename the parent. | [GOV-039][gov-039-record] | Now, draft |
-| `DECIDE-KB-AUTHORITY` | Choose KB metadata and principal authority. | [GOV-040][gov-040-record] | Next, draft |
-| `DECIDE-SPECS-IDENTITY` | Choose Specification identity and activation. | GOV-041 | Done; record pruned |
-| `EXTEND-REMOTE-ADAPTERS` | Add remote process execution. | [FND-014](../../roadmap/KI-HARNESS-FND-014-implement-remote-adapters.md) | Future, draft |
-| `ROUTE-TOOLS-KI` | Deliver host evidence improvements. | [`TRD-4a875479`](../../../-/_TRADES/knowledgeislands/tools-ki/TRD-4a875479.md) | Preparing † |
-| `FIX-USER-MCP` | Repair one MCP transport mapping. | User-owned MCP source | External observation |
-| `FIX-CLAUDE-MEMORY` | Repair Claude memory index/date evidence. | User-owned memory; [OPS-002](../../roadmap/KI-HARNESS-OPS-002-reconcile-memory-store-defects.md) | External observation |
+## Retained follow-ups
 
-† The preparation remains unsent until `tools-ki` accepts and prioritises it. It does not change the asynchronous trade protocol.
+- **Remote adapter execution:** [FND-014](../../roadmap/KI-HARNESS-FND-014-implement-remote-adapters.md) remains the canonical owner. Consult that record for its current state rather than the old review's Future label.
+- **Memory defects:** [OPS-002](../../roadmap/KI-HARNESS-OPS-002-reconcile-memory-store-defects.md) retains the user-owned memory concern. This cleanup did not inspect or alter runtime memory.
+- **Host evidence improvements:** the historical review named preparation `TRD-4a875479` for `tools-ki`. No record at its cited path is present in this checkout; submission, receiver acceptance, and delivery are unverified. Preserve the observation for owner reconciliation rather than recreating a trade or assuming completion.
+- **User MCP transport mapping:** the historical review recorded a user-owned source defect. Its present disposition is not established by this document cleanup; retain the observation pending a separately authorised check.
 
-[rev-001-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/38b47cdb5cd5d2618e31c40e55cf652cd77aa5c7/docs/roadmap/KI-HARNESS-REV-001-review-skill-effectiveness.md
+## Historical routing
 
-[gov-039-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/66871c50d2ec1015108ba3d4ff37b19682ef5b69/docs/roadmap/KI-HARNESS-GOV-039-rename-change-management.md
+The review itself and its historical work-family, KB authority, Specification identity, Decision Record normalisation, and generated-exclusion follow-ups no longer have live records under the originally cited paths. Their old queue labels are not current work status; retain the original locators in the committed archive rather than duplicating stale tasks here. Absence alone is not fresh proof of delivery, and this cleanup neither prunes nor reopens a roadmap item.
 
-[gov-040-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/3cfaa28926a781474b61d7b0592e2ede30814902/docs/roadmap/KI-HARNESS-GOV-040-resolve-kb-authority.md
+## Evidence limits
+
+The review did not establish assisted-versus-baseline effectiveness for the complete skill set. Reassessment belongs to engineering alignment housekeeping, with current sources and bounded outcome evidence, not to replaying old grades as current results.

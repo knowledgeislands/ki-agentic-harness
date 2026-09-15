@@ -10,7 +10,7 @@ import type {
 const RADAR_PATH = fileURLToPath(new URL('../../../references/radar.toml', import.meta.url))
 const ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/
-const FRESHNESS_DAYS = 45
+const FRESHNESS_DAYS = 9
 
 const TABLES = ['benchmarks', 'evidence', 'models', 'routes'] as const
 const TOP_LEVEL = new Set(['schema', 'reviewed_on', ...TABLES])
@@ -126,7 +126,7 @@ const checkDate = (outcomes: AuditOutcome[], value: unknown, label: string, toda
   }
   const age = Math.floor((today.getTime() - Date.parse(`${value}T00:00:00Z`)) / 86_400_000)
   if (stale && age > FRESHNESS_DAYS)
-    outcomes.push(violation(`${label} is ${age} days old; refresh after 45 days`, 'WARN'))
+    outcomes.push(violation(`${label} is ${age} days old; refresh after 9 days`, 'WARN'))
 }
 
 const checkRecordShape = (

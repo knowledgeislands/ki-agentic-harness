@@ -85,6 +85,6 @@ One system may contain several structures. Classification names the aspect being
 
 ## Dates and refresh
 
-The snapshot and every record carry a review date. Reviews older than 45 days warn without invalidating historical evidence. REFRESH runs monthly or when a recorded return trigger fires, including a new specification version, governance transfer, independent implementation, conformance result, interoperability demonstration, material operational adoption, deprecation, or locally relevant use case.
+The snapshot and every record carry a review date. Reviews older than 9 days warn: the seven-day cadence has elapsed plus two days of operational grace, without invalidating historical evidence. REFRESH runs weekly or when a recorded return trigger fires, including a new specification version, governance transfer, independent implementation, conformance result, interoperability demonstration, material operational adoption, deprecation, or locally relevant use case.
 
 REFRESH is bounded to current subjects and explicit return triggers. It creates no standing inbox and routes material consequences through the owning process.

@@ -1,6 +1,6 @@
 # Tracked sources
 
-**Refresh:** external-spec · monthly
+**Refresh:** external-spec · weekly
 
 This is the refresh ledger for the reviewed sources used by the current snapshot. Evidence identities and claim-level notes live in `radar.toml`.
 
@@ -44,7 +44,7 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 - The KI recommendation vocabulary is a documented local adaptation of Thoughtworks' four rings: it preserves Adopt, Trial, Assess, and Caution as Hold rather than claiming an exact reproduction.
 - HELM entered maintenance mode on 2026-06-01 and remains watch-level corroborating evidence, not a current frontier-primary source.
 - All named initial model identities were substantiated. Hosted-only variants retain a conservative proprietary distribution classification; no public weights licence was found for those exact variants.
-- Open watch-item: reassess provider availability, retirement notices, pricing, route support, benchmark versions, and data dates during every monthly refresh.
+- Open watch-item: reassess provider availability, retirement notices, pricing, route support, benchmark versions, and data dates during every weekly refresh.
 - Open watch-item: do not promote an open-weight model to Open Source AI Definition conformance without evidence for the definition's data-information, code, and parameter requirements.
 - Open watch-item: keep hosted `qwen3.8-max` separate from Apache-2.0 Qwen3.8 open-weight checkpoints.
 

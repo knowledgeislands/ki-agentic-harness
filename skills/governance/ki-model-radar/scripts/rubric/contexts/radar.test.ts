@@ -71,6 +71,19 @@ const violations = (outcomes: readonly { status: string; message: string; level?
   outcomes.filter((outcome) => outcome.status === 'VIOLATION')
 
 describe('model radar inspection', () => {
+  test.each([
+    ['2026-09-06', false],
+    ['2026-09-05', false],
+    ['2026-09-04', true]
+  ] as const)('weekly freshness boundary for review date %s', (reviewedOn, warns) => {
+    const radar = populatedRadar.replaceAll('2026-09-14', reviewedOn)
+    const outcomes = violations(inspectRadar(radar, TODAY).lifecycle.vocabularyAndDates)
+    const stale = outcomes.filter(({ level }) => level === 'WARN')
+    expect(stale).toHaveLength(warns ? 5 : 0)
+    expect(outcomes).toHaveLength(stale.length)
+    for (const outcome of stale) expect(outcome.message).toContain('refresh after 9 days')
+  })
+
   test('accepts the intentionally empty initial snapshot', () => {
     const inspected = inspectRadar(emptyRadar, TODAY)
     expect(violations(inspected.schema.outcomes)).toEqual([])
@@ -104,7 +117,7 @@ describe('model radar inspection', () => {
   test('warns on stale review dates using a deterministic clock', () => {
     const stale = populatedRadar.replace('reviewed_on = "2026-09-14"', 'reviewed_on = "2026-06-01"')
     expect(violations(inspectRadar(stale, TODAY).lifecycle.vocabularyAndDates)).toContainEqual(
-      expect.objectContaining({ level: 'WARN', message: expect.stringContaining('refresh after 45 days') })
+      expect.objectContaining({ level: 'WARN', message: expect.stringContaining('refresh after 9 days') })
     )
   })
 

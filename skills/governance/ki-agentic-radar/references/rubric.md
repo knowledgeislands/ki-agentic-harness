@@ -61,7 +61,7 @@ Maturity, implementation, interoperability, and structural terms retain precise 
 
 Dates, Knowledge Islands stance, movement, ownership, and return triggers remain current and coherent.
 
-- **LIFECYCLE-1 [M + J] — dates, stances, and movements are coherent** — Review dates are real non-future ISO calendar dates and warn after 45 days; stance and movement use closed vocabularies; inward movement cannot accompany Hold, outward movement cannot accompany Adopt, and Trial or Adopt requires local-evaluation evidence. (standards-agentic-radar.md#dates-and-refresh, standards-agentic-radar.md#subjects)
+- **LIFECYCLE-1 [M + J] — dates, stances, and movements are coherent** — Review dates are real non-future ISO calendar dates and warn after 9 days; stance and movement use closed vocabularies; inward movement cannot accompany Hold, outward movement cannot accompany Adopt, and Trial or Adopt requires local-evaluation evidence. (standards-agentic-radar.md#dates-and-refresh, standards-agentic-radar.md#subjects)
   - _Remediation:_ guarded — Refresh evidence and decide the authoritative stance, movement, or date; do not infer a recommendation from mechanical consistency.
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does each stance and movement express a defensible Knowledge Islands decision, concrete use case, explicit uncertainty, owner, and actionable return trigger?

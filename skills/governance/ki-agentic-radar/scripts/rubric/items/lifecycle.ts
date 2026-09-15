@@ -7,7 +7,7 @@ const LIFECYCLE_1: RubricItem<RadarOutcomeContext> = {
   code: 'LIFECYCLE-1',
   title: 'dates, stances, and movements are coherent',
   description:
-    'Review dates are real non-future ISO calendar dates and warn after 45 days; stance and movement use closed vocabularies; inward movement cannot accompany Hold, outward movement cannot accompany Adopt, and Trial or Adopt requires local-evaluation evidence.',
+    'Review dates are real non-future ISO calendar dates and warn after 9 days; stance and movement use closed vocabularies; inward movement cannot accompany Hold, outward movement cannot accompany Adopt, and Trial or Adopt requires local-evaluation evidence.',
   sources: [SOURCE, 'standards-agentic-radar.md#subjects'],
   mechanical: {
     level: 'FAIL',

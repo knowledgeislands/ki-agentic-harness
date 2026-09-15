@@ -42,7 +42,7 @@ Evidence is linked, classified, applicable, and proportionate to its use.
 
 Dates, classifications, and consequential state combinations remain current and coherent.
 
-- **LIFECYCLE-1 [M] — vocabulary and review dates are valid** — Model, route, benchmark, and evidence classifications use the closed vocabularies; dates are real, non-future ISO calendar dates; reviews older than 45 days warn without invalidating historical evidence. (standards-model-radar.md#dates-and-freshness)
+- **LIFECYCLE-1 [M] — vocabulary and review dates are valid** — Model, route, benchmark, and evidence classifications use the closed vocabularies; dates are real, non-future ISO calendar dates; reviews older than 9 days warn without invalidating historical evidence. (standards-model-radar.md#dates-and-freshness)
   - _Remediation:_ diagnostic — Refresh stale evidence or correct malformed vocabulary and dates only after checking the authored source and intended classification.
 - **LIFECYCLE-2 [M + J] — support and lifecycle combinations are coherent** — Default routes are adopted and use active models; retired models have only hold and not-integrated routes; benchmark retirement and applicability agree; successors resolve. Mechanical contradictions are reported, but their repair requires an explicit recommendation or lifecycle decision. (standards-model-radar.md#executable-routes, standards-model-radar.md#benchmarks)
   - _Remediation:_ guarded — Review the supporting evidence and decide which recommendation, support, retirement, or benchmark state is authoritative before editing.
