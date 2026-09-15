@@ -6,34 +6,32 @@ theme: runtime-portability
 horizon: triage
 status: draft
 blocks: []
-blocked_by: [KI-HARNESS-RTP-012]
+blocked_by: []
 baseline_ref: null
 created_at: 2026-09-01T10:24:06Z
-updated_at: 2026-09-14T13:44:33Z
+updated_at: 2026-09-15T13:16:47Z
 ---
 
 ## Goal
 
-If Techne identifies Fly.io as a useful proof candidate, determine whether it can satisfy the Harness portable execution contract for one bounded Knowledge Islands workload.
+Retain the Fly.io signal until Techne decides whether it warrants a provider proof, without creating a duplicate Harness evaluation.
 
 ## Context
 
-Techne proposal `TECHNE-GOV-005` owns the engineering model, provider landscape, comparison criteria, and any technology recommendation. This record is a downstream Harness adapter proof, not the canonical Fly.io evaluation.
+`TECHNE-GOV-005` already owns the engineering model, provider landscape, comparison criteria, proving sequence, and any technology recommendation. It records Fly.io as one materially different remote candidate while deliberately selecting no provider. The narrowed `KI-HARNESS-RTP-012` owns only portable agent hand-off behaviour and is no longer a prerequisite for provider investigation.
 
-If Techne selects Fly.io for proof, evaluate the provider claims recorded there through `KI-HARNESS-RTP-012` rather than treating Fly.io's API as the standard itself.
+No Harness-local delivery remains in this intake. It stays in Triage until the user explicitly approves a terminal disposition; any Fly.io experiment belongs in a Techne-owned operational record, and only a proven reusable hand-off consequence should return to the Harness as newly scoped work.
 
 ## Boundary
 
-Do not select or recommend Fly.io, duplicate Techne's technology landscape, create an account, provision infrastructure, incur spend, or introduce a dependency while this remains an investigation. Keep a bounded Harness conformance proof distinct from general service hosting, durable agent workspaces, and remote-development needs.
+Do not select or recommend Fly.io, duplicate Techne's technology landscape, create an account, provision infrastructure, incur spend, or introduce a dependency from this Harness intake. Do not use this record to define general service hosting, durable agent workspaces, or remote-development practice.
 
 ## Discussion
 
-### Evaluation questions
+### Evaluation route
 
-After Techne names a concrete proof workload, test the portable contract's required isolation, state recovery, credential and egress controls, lifecycle operations, evidence return, and provider exit boundary. Feed provider-specific operational findings back to Techne rather than turning them into Harness policy.
+If Techne names a concrete Fly.io proof workload, create the experiment in Techne with its isolation, recovery, credential, egress, lifecycle, evidence, cost, cleanup, and exit criteria. Route only demonstrated changes to the portable hand-off contract back to a separately adopted Harness item.
 
-### Promotion evidence
+### Triage disposition
 
-Require both an accepted Techne direction in `TECHNE-GOV-005` and the portable contract from `KI-HARNESS-RTP-012` before promoting this provider-specific proof.
-
-Before adopting beyond Triage, name the bounded workload and its current constraint, the Fly.io surface proposed for it, an acceptable cost and trust boundary, and reversible proof with explicit pass, fail, and cleanup criteria.
+Do not promote this Harness record. The appropriate next action is an explicit merged or rejected Triage disposition after confirming the Techne ownership link. Any adopted provider proof must be a Techne record with a bounded workload, acceptable cost and trust boundary, and reversible pass, fail, and cleanup criteria.
