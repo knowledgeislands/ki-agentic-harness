@@ -6,7 +6,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 owns: ['+/_BATCHES/README.md']
 contributes: ['.ki.toml']
 description: >
-  Governs repository selection of a forward-work adapter and the shared lifecycle vocabulary used by change-management processes. Use when choosing or auditing a work tracker, configuring roadmap, KB Streams, GitHub Issues, or Linear change management, or mapping repository work to a common lifecycle. The selected adapter owns its records; use ki-work-roadmap, ki-repo-kb-streams, ki-work-github-issues, or ki-work-linear.
+  Select and audit a repository's KI forward-work adapter and shared lifecycle vocabulary. Use when choosing
+  between local roadmap, KB Streams, GitHub Issues, or Linear; the selected adapter owns record shape and
+  process skills own lifecycle actions.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

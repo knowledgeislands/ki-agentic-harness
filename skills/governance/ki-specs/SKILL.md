@@ -4,7 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Codify, audit, and maintain Specifications — the accepted behaviour and quality contract of a system — in any Knowledge Islands repo. Specifications live in `docs/specs/`, flat one-file-per-feature-area, with an `index.md` that defines the ID scheme and areas table. Each requirement carries one BCP-14 statement, a conformance state, a verification plan, and current evidence when conforming; IDs are append-only and never reused; an unnumbered `## Gaps` section holds unaccepted candidates. Decisions capture why (`ki-decision-records`), specifications what, guides how (`ki-guides`), and roadmap items when (`ki-work-roadmap`). Use when writing or auditing a specification. Triggers: "write specification", "spec the behaviour", "audit specifications", "add a requirement", "what does the system do". Off-ramps: ki-decision-records (governing decisions a requirement cites), ki-guides (practical procedure), ki-work-roadmap (planned work), ki-authoring (Markdown/TOML style).
+  Create, audit, and maintain repository Specifications as the accepted behaviour and quality contract, with
+  stable requirements, conformance state, verification plans, and evidence. Use to specify what a system must
+  do; `ki-decision-records` owns why, `ki-guides` how, and `ki-work-roadmap` future delivery.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh'
 ---
 

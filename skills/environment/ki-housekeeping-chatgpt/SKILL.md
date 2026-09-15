@@ -6,7 +6,9 @@ ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Governs safe acquisition of installed ChatGPT session material through opaque, read-only local-store evidence. Use for "acquire ChatGPT sessions", "import ChatGPT sessions", or "audit ChatGPT sessions". It guides discovery, listing, faithful source reads, checkpoints, staging, and later harvest without treating source-session deletion as part of acquisition.
+  Acquire and audit installed ChatGPT session material through opaque, read-only local-store evidence. Use to
+  import ChatGPT sessions for one repository, with faithful reads, checkpoints, staging, and later harvest;
+  acquisition never authorises source-session deletion.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

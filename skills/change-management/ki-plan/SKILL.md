@@ -4,7 +4,8 @@ ki-kind: process
 ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
 description: >
-  Shapes selected Now or Next draft work through readiness in the selected local roadmap or KB Streams adapter. It enriches the canonical record in place, including an item under `Streams/Roadmap/` in a Knowledge Base, then stops at ready. Use when asked "plan this", "make this ready", or "prepare this work for implementation". It refuses unavailable remote execution and does not capture work, implement it, or close it.
+  Shape selected Now or Next draft work in the local roadmap or KB Streams adapter until it is Ready. Use to
+  plan or prepare implementation; it does not capture, select, implement, close, or prune work.
 argument-hint: 'plan <work>... | help'
 ---
 

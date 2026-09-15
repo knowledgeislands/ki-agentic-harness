@@ -5,7 +5,10 @@ ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-repo-website]
 contributes: ['.gitignore']
 description: >
-  Governs Cloudflare hosting for either Knowledge Islands website implementation using Workers Static Assets, never Pages as the deployment target. Audits `wrangler.jsonc`, rejects the legacy `pages_build_output_dir` marker and any `main` server entry, matches `assets.directory` to `dist/`, and covers Workers Builds, workers.dev, custom domains, and deploy scripts. Use when publishing a content site or interactive app on Cloudflare or diagnosing a static deployment failure. Depends only on the neutral `ki-repo-website` seam.
+  Govern Cloudflare Workers Static Assets hosting for either KI website implementation, including
+  `wrangler.jsonc`, `dist/`, Workers Builds, workers.dev, custom domains, and deploy scripts. Use for
+  Cloudflare publication or static-deployment diagnosis; it never selects the site generator and does not use
+  Pages.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

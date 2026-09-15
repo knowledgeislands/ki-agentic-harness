@@ -5,7 +5,9 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['ROADMAP.md']
 description: >
-  Governs flat repository work items and their concise root orientation in project repositories. Use for "audit the roadmap", "audit plans", roadmap horizons, theme grouping, work-item identity, lifecycle detail, lifecycle and pruning commit boundaries, plan dependencies, or root-orientation drift. Project work items live directly under docs/roadmap; Knowledge Bases apply the same record model under Streams/Roadmap through ki-repo-kb-streams. Records gain detail in place as they move from draft through readiness, delivery, required review, and retained completion. Process skills apply the shared lifecycle; ki-decision-records owns durable decisions.
+  Govern flat local work items, roadmap horizons, lifecycle detail, dependencies, root orientation, and
+  done-before-prune commit boundaries. Use to audit or shape roadmap records; `ki-next`, `ki-plan`,
+  `ki-implement`, and `ki-accept` apply the lifecycle, while Decision Records own durable rationale.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

@@ -6,7 +6,10 @@ ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Audit direct, non-secret Codex filesystem observations in the selected repository: trusted project configuration, AGENTS.md, skill, and custom-agent source directories. Use when a Codex repository needs bounded runtime evidence for portable `ki-tokenomics` policy. Effective model, loaded instructions, active MCP, trust, memory use, transcripts, and compaction remain unavailable without authorised session evidence. For portable budgets use `ki-tokenomics`; for Claude Code use `ki-tokenomics-claude`.
+  Audit direct non-secret Codex filesystem evidence in one repository: trusted configuration, AGENTS.md,
+  skills, and custom-agent sources. Use for Codex runtime evidence supporting portable tokenomics; effective
+  session state remains unavailable, portable budgets belong to `ki-tokenomics`, and Claude evidence to
+  `ki-tokenomics-claude`.
 argument-hint: 'audit | conform | educate | refresh | help'
 ---
 

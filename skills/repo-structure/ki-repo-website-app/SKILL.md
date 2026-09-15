@@ -6,8 +6,10 @@ ki-depends-on: [ki-repo-website]
 owns: [vite.config.ts, vite.config.js, vite.config.mjs, vite.config.mts]
 contributes: ['.ki.toml', package.json]
 requires: []
-description: >-
-  Governs the Knowledge Islands interactive website implementation: one client-side React application bundled by Vite to `dist/`. Use for dashboards and single interactive SPAs whose primary artifact is an application rather than a Markdown/data page collection. This is the legitimate alternative to `ki-repo-website-content`; never select both. Cloudflare hosting remains an independent adapter.
+description: >
+  Govern the KI interactive website implementation: one client-side React application bundled by Vite to
+  `dist/`. Use for dashboards or single SPAs; select it instead of `ki-repo-website-content`, with
+  `ki-repo-website` owning the neutral site lifecycle and hosting handled separately.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

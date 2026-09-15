@@ -4,7 +4,9 @@ ki-kind: governance
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-authoring]
 description: >
-  Codifies, audits, and conforms the chezmoi dotfiles-management standard. Use for a chezmoi source repo, app-mutated configuration, shell or `bin/` layout, or preserving config comments. Covers source-vs-target editing, prefix semantics, fragment binding, and reverse merges; not a specific repo's personal tool choices.
+  Audit or conform the KI chezmoi dotfiles-management standard: source-versus-target editing, app-mutated
+  configuration, shell and `bin/` layout, prefix semantics, fragments, comment preservation, and reverse
+  merges. Use for a chezmoi source repository, not a specific repository's personal tool choices.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

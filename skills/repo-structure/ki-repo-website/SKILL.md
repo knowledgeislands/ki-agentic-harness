@@ -6,8 +6,11 @@ ki-depends-on: []
 owns: []
 contributes: ['.ki.toml', '.gitignore', package.json]
 requires: []
-description: >-
-  Governs the generator-neutral Knowledge Islands website seam: one site source root, a reproducible `dist/` output, and the `ki:site:build`, `ki:site:dev`, and `ki:site:clean` lifecycle. Use for any repository that publishes a website, before selecting exactly one purpose-specific implementation: `ki-repo-website-content` for Markdown/data page collections or `ki-repo-website-app` for a single interactive React/Vite app. Hosting is orthogonal; add `ki-repo-website-cloudflare` only when Cloudflare serves the output.
+description: >
+  Govern the generator-neutral KI website seam: one site source root, reproducible `dist/`, and
+  `ki:site:build`, `ki:site:dev`, and `ki:site:clean`. Use for any website repository before selecting exactly
+  one implementation, `ki-repo-website-content` or `ki-repo-website-app`; add Cloudflare hosting
+  independently.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

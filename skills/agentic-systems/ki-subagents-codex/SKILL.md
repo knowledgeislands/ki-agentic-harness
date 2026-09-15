@@ -5,7 +5,10 @@ ki-depends-on: [ki-subagents]
 ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
-description: Project an approved portable KI subagent role into Codex standalone TOML and audit its native source mechanics. Use after ki-subagents establishes runtime-neutral identity, selection, instructions, lane, grounding, hand-offs, orchestration, and evidence. This skill does not prove installation, publication, activation, effective settings, or execution; current Harness host support is unavailable and must be routed.
+description: >
+  Audit or write Codex TOML projections of approved portable KI subagent roles. Use for Codex-native agent
+  source shape and fields; use `ki-subagents` for runtime-neutral role design and `ki-subagents-claude` for
+  Claude Markdown/YAML.
 argument-hint: 'audit | conform | educate | refresh | help'
 ---
 

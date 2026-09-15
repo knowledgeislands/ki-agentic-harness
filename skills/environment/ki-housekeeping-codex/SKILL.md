@@ -6,7 +6,9 @@ ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Governs repository-scoped Codex session acquisition and later housekeeping. Use for "acquire Codex sessions", "import Codex sessions", "audit Codex sessions", "clean up Codex sessions", or "delete old Codex threads". It guides discover, list, faithful read, checkpoint, staging, harvest, and safe later cleanup for one exact physical repository; it performs no automatic retention and never substitutes for portable repository maintenance owned by ki-work-housekeeping.
+  Acquire, audit, and later clean repository-scoped Codex sessions for one physical repository. Use for Codex
+  session import, thread review, or old-thread cleanup with explicit retention; portable recurring repository
+  maintenance belongs to `ki-work-housekeeping`.
 argument-hint: 'audit <repo> | conform <artifact> <thread-id>... | educate <repo> | help | refresh'
 ---
 

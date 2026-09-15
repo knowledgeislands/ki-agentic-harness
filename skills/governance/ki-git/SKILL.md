@@ -4,7 +4,10 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Governs portable Knowledge Islands Git working and commit conventions: Conventional Commit messages, shared-working-tree touched-path tracking, selection between single-working-copy main, single-working-copy branch with PR, and worktrees with PRs, safe Git hygiene, and the stale-lock guard's semantics. Use when preparing or reviewing a commit, coordinating human or agent changes in one working tree, choosing a working and review approach, recovering a stale Git lock, or clarifying who owns hook payload versus runtime registration. Does not configure GitHub repository settings, install hooks, or write agent settings; use ki-repo for repository configuration and ki-repo-dotfiles-chezmoi for runtime bindings.
+  Govern KI Git commits and safe shared-working-tree practice: Conventional Commit messages, touched-path
+  tracking, branch or worktree selection, explicit staging, and stale-lock semantics. Use when preparing a
+  commit or coordinating concurrent human or agent edits; `ki-repo` owns GitHub settings and environment
+  skills own hook registration.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

@@ -4,7 +4,10 @@ ki-kind: governance
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
 description: >
-  Governs the Streams operational container of a Knowledge Islands base: Streams/Roadmap for flat forward work and Streams/Housekeeping for recurring-work templates. It is the KB placement adapter for the shared change-management lifecycle, not a second Focus-based queue. Use to establish or audit KB Streams structure, route roadmap or housekeeping work, or migrate legacy Active/Background/Dormant stream trees. For common selection, planning, delivery, review, and closure use ki-next, ki-plan, ki-implement, and ki-accept; for the five-zone model and note CRUD use ki-repo-kb.
+  Govern the KI knowledge-base Streams container: flat `Streams/Roadmap` work records and
+  `Streams/Housekeeping` templates. Use to establish, audit, route, or migrate KB forward-work structure;
+  shared lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept`, while `ki-repo-kb`
+  owns the zone model.
 argument-hint: 'audit | conform | help | educate | iterate | propose | ready | refresh | rollout'
 ---
 

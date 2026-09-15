@@ -3,7 +3,9 @@ name: ki-recap
 ki-kind: process
 ki-depends-on: [ki-authoring]
 description: >
-  Recaps a live session: summarises changes, decisions, and files; surfaces only unfinished session work; and routes durable learnings. Use for "recap this session", "what's outstanding", or "harvest what we learned". It does not select backlog work—that is `ki-next`—or mechanically mine historical transcripts.
+  Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable
+  learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work
+  and housekeeping skills for historical session acquisition.
 argument-hint: 'recap [--runtime detect|claude|codex] [--transcript <session-file>] | help'
 ---
 

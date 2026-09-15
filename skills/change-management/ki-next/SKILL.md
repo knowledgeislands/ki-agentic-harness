@@ -3,7 +3,9 @@ name: ki-next
 ki-kind: process
 ki-depends-on: []
 description: >
-  Captures substantive prospective work into unadopted triage by default, then selects, adopts, promotes, defers, and spawns work through one shared queue: triage, now, next, soon, future, waiting-for, and parked. It also records the receiver's confirmed disposition of validated inbound trades, including direct application of a trivial local work change versus a separately prioritised work record. Use when new work emerges, or when asked "what should we do next", "review these inbound trades", "apply this trade directly", "promote this work", or "defer this". It resolves the selected local roadmap or KB Streams adapter and refuses unavailable remote execution; local trade transport belongs to ki-trades.
+  Capture substantive prospective work into unadopted Triage, or select, adopt, promote, and defer work in the
+  shared queue. Use when new work emerges or deciding what comes next; use `ki-plan` for readiness and
+  `ki-trades` for trade transport.
 argument-hint: 'next [--review] | defer <item> <horizon> | help'
 ---
 

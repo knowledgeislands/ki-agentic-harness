@@ -3,7 +3,9 @@ name: ki-accept
 ki-kind: process
 ki-depends-on: []
 description: >
-  Closes one evidence-backed canonical local work record from awaiting-review to done, or records a human-approved rejected, duplicate, or merged Triage disposition as done; retains done records; and prunes explicitly selected eligible done records. A process skill: human approval is required by default for closure, and it is the sole owner of lifecycle closure. Remote execution fails closed pending KI-HARNESS-FND-014. Use when asked to "accept this work", "reject this intake", "mark this duplicate", "merge this intake", "mark this work done", "close this review", "prune selected done work", or "remove these completed records". For delivery use ki-implement; for plan shape use ki-plan; for work selection or adoption use ki-next; for session findings use ki-recap.
+  Close a reviewed local work record as done, record an approved terminal Triage disposition, or prune
+  explicitly selected eligible done records. Use only with human approval; use `ki-implement` for delivery,
+  `ki-plan` for readiness, and `ki-next` for selection or adoption.
 argument-hint: 'accept <work> | prune <work-record-or-glob>... | help'
 ---
 

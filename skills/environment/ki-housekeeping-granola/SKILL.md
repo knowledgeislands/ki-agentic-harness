@@ -4,13 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Governs read-only Granola meeting acquisition and later housekeeping. Use
-  "acquire Granola meetings", "import Granola meetings", "audit Granola
-  acquisition", or "reconcile Granola changes". It defines complete
-  date-window discovery, folder and unfoldered routing evidence, faithful MCP
-  reads, content checkpoints, amendment detection, and a separate
-  human-approved retirement gate. CLI staging belongs to tools-ki; canonical
-  acquisition lifecycle belongs to Arcadia.
+  Acquire and reconcile Granola meetings through read-only MCP evidence, including complete date windows,
+  folder routing, faithful reads, checkpoints, and amendment detection. Use for Granola meeting import or
+  audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

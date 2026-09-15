@@ -4,7 +4,9 @@ ki-kind: process
 ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
 description: >
-  Prepares and runs one lean, bounded, single-repository authority envelope over an exact set of Ready work records. Reviewed-item authority uses a human-reviewed set; explicit outcome authority such as "crack on with the roadmap" lets the orchestrator select the complete eligible set, deliver it, and consolidate acceptance without another pre-run gate. The items remain the canonical plans and review evidence. The batch records approval, expiry, safe-local policy, exact IDs, payload integrity, and a concise run ledger. Use for autonomous roadmap windows or several approved independent items; use ki-next for selection, ki-plan for readiness, ki-implement for one item, and ki-accept for closure.
+  Prepare and run one bounded authority envelope over an exact set of Ready work records in one repository.
+  Use for an approved autonomous roadmap window or synergistic independent set; individual planning, delivery,
+  and closure remain governed by `ki-plan`, `ki-implement`, and `ki-accept`.
 argument-hint: 'batch <work>... | batch outcome <outcome> | run <batch-authorisation> | help'
 ---
 

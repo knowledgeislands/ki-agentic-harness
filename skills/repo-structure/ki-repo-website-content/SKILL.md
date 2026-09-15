@@ -6,8 +6,10 @@ ki-depends-on: [ki-repo-website]
 owns: [eleventy.config.ts, eleventy.config.js, eleventy.config.mjs, eleventy.config.cjs]
 contributes: ['.ki.toml', package.json]
 requires: [ROADMAP.md]
-description: >-
-  Governs the Knowledge Islands content-led website implementation: Eleventy 3 generates a collection of pages from Markdown and structured data, with Nunjucks, Tailwind 4 semantic tokens, and portable `dist/` output. Use for documentation, publication, and marketing sites whose primary artifact is a page collection. Do not use for a single interactive SPA; select `ki-repo-website-app` instead because Eleventy does not bundle React application JavaScript and combining them creates two build systems. Depends on the neutral `ki-repo-website` seam; Cloudflare hosting remains independent.
+description: >
+  Govern the KI content-led website implementation: Eleventy 3, Markdown or structured data, Nunjucks,
+  Tailwind 4 semantic tokens, and portable `dist/` output. Use for documentation, publication, or marketing
+  page collections; select `ki-repo-website-app` for a single React/Vite SPA and keep hosting separate.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

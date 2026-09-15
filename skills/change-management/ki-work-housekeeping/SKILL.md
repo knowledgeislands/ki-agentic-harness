@@ -4,7 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 contributes: ['.ki.toml']
 description: >
-  Governs recurring repository housekeeping templates: their placement, identity, cadence, last-run evidence, and safe due-run spawning through ki-next. Use for "add recurring maintenance", "define housekeeping", "audit housekeeping", or "create a monthly repository check". In a non-KB repository templates live in docs/housekeeping; in a Knowledge Base they live in Streams/Housekeeping. It does not perform runtime-specific state cleanup, which is ki-housekeeping-claude.
+  Govern recurring repository-housekeeping templates, cadence or commit-volume eligibility, last-run evidence,
+  and due-run spawning through `ki-next`. Use to define or audit recurring maintenance; runtime state cleanup
+  belongs to the relevant `ki-housekeeping-*` skill.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

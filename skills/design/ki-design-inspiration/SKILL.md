@@ -3,7 +3,9 @@ name: ki-design-inspiration
 ki-kind: process
 ki-depends-on: []
 description: >
-  Finds website design inspiration in curated galleries and translates selected examples into practical design directions. Use for website inspiration, visual references, or ideas for navigation, footers, calls to action, page sections, 404 pages, bento grids, and motion. Produces cited observations and adaptation suggestions; website repository configuration belongs to ki-repo-website.
+  Find website design inspiration in curated galleries and turn selected examples into practical directions
+  for navigation, sections, calls to action, grids, motion, and other UI patterns. Use for visual references
+  and adaptation ideas; website repository structure belongs to `ki-repo-website`.
 argument-hint: 'help | inspire <website-or-component> | refresh'
 ---
 

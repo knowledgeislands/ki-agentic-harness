@@ -6,7 +6,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
 owns: ['+/_CHECKPOINTS/README.md']
 description: >
-  Governs concise, repository-owned checkpoints for resuming one human-named active thread in a fresh agent context without a transcript or vendor session. Use when asked to checkpoint current work, update or remove a checkpoint, resume a named thread, audit `+/_CHECKPOINTS/`, or explain portable reconstruction state. It keeps one active snapshot per thread and leaves historical recovery to Git while decisions, roadmap state, knowledge, recap, runtime hooks, and session continuity remain with their proper owners.
+  Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active
+  thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions,
+  roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <thread> | resume <thread> | update <thread>'
 ---
 

@@ -7,7 +7,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 owns: ['.gitignore']
 contributes: ['.ki.toml']
 description: >
-  Audits, conforms, and reviews the Knowledge Islands standard for any Git repo with `.ki.toml`. Use for "audit this repo", "apply the repo standard", or "review this repository". Covers repository setup, GitHub settings, and `+` / `-` areas; use `ki-engineering`, `ki-repo-harness`, or `ki-work-roadmap` for toolchain, bundle, or delivery work.
+  Audit or conform the universal KI repository contract declared by `.ki.toml`, including setup, GitHub
+  settings, and top-level `+` and `-` working areas. Use for whole-repository review; specialised `ki-repo-*`,
+  `ki-engineering`, and `ki-work-roadmap` skills own their narrower structures.
 argument-hint: 'audit | conform <repo> | educate <repo> | help | refresh | review [scope] | review close <REV-NNN>'
 ---
 

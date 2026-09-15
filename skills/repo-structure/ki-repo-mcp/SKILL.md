@@ -5,7 +5,10 @@ ki-runtime-binding: true
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
 description: >
-  Codify and audit Knowledge Islands MCP servers against the canonical "workspace MCP" standard. Use when scaffolding a new MCP server, bringing an existing one up to standard, or reviewing one for compliance: project layout, config injection (no module-level singleton), the `<app>_<resource>_<action>` tool-naming scheme, the annotation-driven access-level gate, audit logging, and security invariants. The separately coverage-detected `ki-engineering` standard owns the common build/lint/test toolchain. Also refreshes the standard itself against the latest published MCP specification. Triggers: "audit this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** — not a repo's GitHub configuration, nor a `SKILL.md`'s prose (for that, use `ki-skills`).
+  Audit or scaffold KI MCP server repositories against the workspace-MCP standard: layout, dependency
+  injection, tool naming, annotations, access gates, audit logging, and security invariants. Use for MCP
+  server code or standard refresh; `ki-engineering` owns common toolchains, `ki-skills` SKILL.md quality, and
+  `ki-repo` settings.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
