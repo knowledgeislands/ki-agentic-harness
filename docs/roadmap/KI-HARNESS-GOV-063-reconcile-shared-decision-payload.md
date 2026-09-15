@@ -9,14 +9,14 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T05:47:28Z
+updated_at: 2026-09-15T12:33:36Z
 ---
 
 # Reconcile shared Decision Record payload
 
 ## Goal
 
-Establish one valid canonical fundamentals decision across all six primary repositories while preserving required Knowledge Base metadata and independent repository acceptance.
+Establish a deterministic shared Decision Record projection, conform the Harness copy of the fundamentals decision, and prepare receiver-owned reconciliation without claiming estate-wide acceptance.
 
 ## Context
 
@@ -30,35 +30,35 @@ The only content difference between the current project payload and Knowledge Ba
 
 ## Boundary
 
-Do not rewrite receiver copies from this repository, silently weaken `shared_record: true`, discard Knowledge Base classification, treat one repository's local acceptance as estate-wide authority, or preserve stale repository names merely to achieve byte identity. The Harness owns the portable decision-record contract; every receiver owns its local payload update and acceptance.
+Do not rewrite receiver copies from this repository, silently weaken `shared_record: true`, discard Knowledge Base classification, treat one repository's local acceptance as estate-wide authority, or preserve stale repository names merely to achieve byte identity. The Harness owns the portable decision-record contract and its own copy; every receiver owns its local payload update and acceptance, while a later observation owns the estate-wide comparison.
 
 ## Current state
 
-The work is adopted into Next because the conflict is real and affects current authority, but it is not Ready until one public metadata model is explicitly chosen. The choice must distinguish decision identity from container-required metadata and state what “shared payload” compares.
+The work is adopted into Next because the conflict is real and affects current authority. Model B is the recommended approval gate: shared identity compares a canonical decision-owned projection, excludes only the explicitly allowlisted `note_type` container field initially, and fails closed on every unknown frontmatter field. The item remains Draft until that public governance change is explicitly approved.
 
 ## Steps
 
-- [ ] Choose one of the explicit shared-metadata models in Discussion and record the decision in the existing `ki-decision-records` authority or a new governance Decision Record.
-- [ ] Define the canonical comparison projection, including exact included and excluded fields, ordering or serialization rules, and failure behaviour.
-- [ ] Update `ki-decision-records` standards, context parser, rubric, and fixtures so shared-record drift is mechanically detectable without reading peer repositories during an ordinary local audit.
-- [ ] Produce one canonical current `GDR-KI-FUNDAMENTALS-001` content payload using the accepted repository names and metadata rule.
-- [ ] Update the Harness copy only after the contract is accepted, then prepare exact receiver-owned work for Arcadia, Techne, tools-ki, KI Specifications, and KI Website.
-- [ ] Verify each receiver independently accepts and commits its projection before claiming estate-wide reconciliation.
+- [ ] Approve Model B with `note_type` as the initial and only excluded container field, unknown frontmatter failing closed, and amend `GDR-KI-HARNESS-007` as the living decision that already owns metadata authority.
+- [ ] Define the canonical comparison projection: fixed decision-owned fields, explicit exclusions, deterministic ordering and serialization, body normalization, and failure behaviour.
+- [ ] Update `ki-decision-records` standards, context parser, rubric, and fixtures so an ordinary local audit validates projection eligibility without claiming to observe peer-repository equality.
+- [ ] Produce the canonical current `GDR-KI-FUNDAMENTALS-001` decision projection using the accepted repository names and conform the Harness copy only.
+- [ ] Prepare exact receiver-owned work for Arcadia, Techne, tools-ki, KI Specifications, and KI Website without changing those repositories from the Harness.
+- [ ] Prepare a later observation item whose explicit six-repository projection comparison is the only work allowed to claim estate-wide reconciliation.
 - [ ] Regenerate affected rubric and capability publications and run repository-wide gates.
 
 ## Files touched
 
 - `skills/governance/ki-decision-records/` standards, parser, rubric, and fixtures
 - `docs/decisions/GDR-KI-FUNDAMENTALS-001-knowledge-islands-ecosystem-fundamentals.md`
-- A new or amended Harness governance Decision Record for the accepted shared-metadata model
+- `docs/decisions/GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md`
 - Generated `ki-decision-records` rubric and capability catalogue only when mechanically affected
 - This roadmap record
-- Receiver-owned copies only through independently approved repository work
 
 ## Verify
 
-- Focused `ki-decision-records` shared-record and metadata fixtures
-- Byte or canonical-projection comparison of all six accepted copies
+- Focused `ki-decision-records` shared-record, allowlist, unknown-field, serialization, and metadata fixtures
+- Local canonical-projection eligibility check for the Harness copy
+- Explicit six-repository canonical-projection comparison in the later observation item
 - `ki repo audit --skill ki-decision-records --repo .`
 - `ki repo audit --skill ki-skills --repo .`
 - `ki repo audit --skill ki-authoring --repo .`
@@ -68,13 +68,13 @@ The work is adopted into Next because the conflict is real and affects current a
 
 ## Dependencies / blocks
 
-No build dependency blocks decision preparation. Readiness is gated by the explicit metadata-model choice below because it changes the public meaning of `shared_record: true` and the permitted Decision Record frontmatter.
+No build dependency blocks decision preparation. Readiness is gated by explicit approval of Model B, the initial `note_type`-only exclusion allowlist, and fail-closed handling of every unknown field because those choices change the public meaning of `shared_record: true`.
 
 ## Documentation impact
 
 ### Decision Records
 
-Record the accepted shared-metadata model durably, then update the shared fundamentals decision under independent repository acceptance.
+Amend `GDR-KI-HARNESS-007`, the living decision that already owns metadata authority, then update the Harness fundamentals copy under the accepted projection contract.
 
 ### Specifications
 
@@ -86,7 +86,7 @@ Update Decision Record authoring guidance if maintainers must produce or compare
 
 ### Roadmap
 
-Prepare receiver-local items only after the model and canonical payload are accepted. Keep each repository's implementation and closure independent.
+Prepare receiver-local items only after the model and canonical payload are accepted. Keep each repository's implementation and closure independent, then use a distinct observation item for the explicit six-repository comparison.
 
 ## Discussion
 
@@ -96,7 +96,7 @@ Add the Knowledge Base `note_type` to all six files and preserve literal byte id
 
 ### Model B — canonical decision projection
 
-Define shared identity over decision-owned fields and body while permitting explicitly named container metadata such as `note_type` outside the comparison. This respects repository containers but requires a deterministic projection and replaces the current plain-language promise of verbatim copies.
+Define shared identity over a deterministic projection of decision-owned fields and body while excluding only explicitly allowlisted container metadata. The recommended initial allowlist contains only `note_type`; every unknown frontmatter field fails closed. This respects repository containers while retaining a narrow, reviewable exception to the current verbatim-copy promise.
 
 ### Model C — external container metadata
 
@@ -104,4 +104,4 @@ Keep files byte-identical and move Knowledge Base classification to an external 
 
 ### Readiness decision
 
-Model B best separates portable decision content from repository container metadata, but it is a public governance change and needs explicit approval before this record can become Ready. Whichever model is chosen must also decide whether unknown repository-local fields fail closed or are excluded only through an allowlist.
+Approve Model B with `note_type` as the sole initial exclusion and fail-closed treatment for every unknown field. That exact choice is the remaining public governance gate before this record can become Ready; no general category of repository-local metadata is implicitly excluded.

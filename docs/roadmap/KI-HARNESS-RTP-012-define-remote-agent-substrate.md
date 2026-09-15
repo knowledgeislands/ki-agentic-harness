@@ -9,7 +9,7 @@ blocks: [KI-HARNESS-RTP-010]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-07T23:33:50Z
-updated_at: 2026-09-14T14:04:29Z
+updated_at: 2026-09-15T12:33:43Z
 ---
 
 # Define Remote Agent Substrate
@@ -22,7 +22,7 @@ Define a portable execution contract in which autonomous agents can run independ
 
 Same-filesystem worktrees are useful local isolation but need not be the portable coordination model. A deployed agent should own an independent filesystem and fresh repository clone while the selected change manager, Git remote, and review boundary coordinate work. Local installation, credentials, capability projection, recovery, and result integration therefore need explicit executable contracts.
 
-`TECHNE-GOV-005` is accountable for the isolated-agent-execution principle, layer taxonomy, technology landscape, and cross-repository coherence. `TECHNE-OPS-002` owns the attached, persistent supervised, and unattended working modes and the remote-session evidence formerly held by `KI-HARNESS-RTP-004`. This item consumes those models to define reusable sandbox capability semantics and conformance tests. `DOTFILES-UE-020` retains the residual implementation of Cheztoi as one personal bootstrap profile.
+`ADR-TECHNE-001` and the enacted canonical Techne notes are the normative upstream contract for the isolated-agent-execution principle, working-mode taxonomy, layer model, and cross-repository responsibility boundary. `TECHNE-GOV-005` retains the delivery provenance and technology landscape, while `TECHNE-OPS-002` owns a later, non-blocking hands-on proof of persistent supervised sessions. This item projects the accepted architecture into reusable sandbox capability semantics and conformance tests without waiting for that operational proof. `DOTFILES-UE-020` retains the residual implementation of Cheztoi as one personal bootstrap profile.
 
 ## Boundary
 
@@ -33,6 +33,8 @@ Do not redefine the Techne engineering model or remote-agent working style, beco
 `ki-recap` produces a user-facing session summary and carry-forward digest, while `ki-checkpoint` owns concise repository reconstruction state for a human-named active thread. They are deliberately separate, but no explicit operation currently turns a recap into a portable checkpoint before compaction or a fresh local or cloud agent starts.
 
 This record already identifies the broader remote substrate topology and provider-neutral lifecycle. It does not yet bind an immutable repository baseline, a named `ki-checkpoint`, scoped authority, bootstrap requirements, result transport, and verification evidence into one executable handoff contract. A vendor thread, transcript, provider snapshot, or uncommitted working tree therefore remains an accidental continuity dependency.
+
+The proposed `ki-recap checkpoint <thread>` composition is the sole remaining readiness decision. It would be an optional, explicit user-authorised operation: it is available only when the target repository declares a valid `ki-checkpoint` capability and the user supplies the exact human-selected thread, and it refuses before writing when either condition or the portable work-state boundary is not satisfied.
 
 ### Existing contract direction
 
@@ -46,19 +48,19 @@ Require a conformance proof that the same bootstrap profile can create a fresh c
 
 ## Steps
 
-- [ ] Add an accepted runtime-portability specification for execution inputs, lifecycle states, evidence, recovery, and result artifacts.
-- [ ] Define `ki-recap checkpoint <thread>` as the explicit, user-authorised bridge that creates or updates one valid active `ki-checkpoint` from the grounded recap and then applies the existing compaction safety boundary.
-- [ ] Keep `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and removal while allowing `ki-recap` to invoke its update procedure only for the exact human-selected thread.
-- [ ] Require cloud handoffs to carry a repository identity, immutable baseline or portable patch containing all required work state and the checkpoint, scoped authority, bootstrap profile, credential and network boundaries, result destination, and cleanup responsibility.
+- [ ] Register `docs/specs/runtime-portability.md` with prefix `RTP`, then add accepted requirements for execution inputs, lifecycle states, evidence, recovery, and result artifacts.
+- [ ] After explicit approval of the public composition, define `ki-recap checkpoint <thread>` as an optional bridge that creates or updates one valid active `ki-checkpoint` from the grounded recap and then applies the existing compaction safety boundary.
+- [ ] Keep `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and removal; require its repository declaration and valid scaffold, the exact human-selected thread, and explicit user authority before `ki-recap` invokes its update procedure.
+- [ ] Require cloud handoffs to carry a repository identity, immutable baseline or complete portable patch containing all required work state and the checkpoint, scoped authority, bootstrap profile, credential and network boundaries, result destination, and cleanup responsibility; refuse an uncommitted-only handoff when no complete portable patch exists.
 - [ ] Define adapter results for commits or patches, the updated checkpoint, verification and review evidence, recovery state, and explicit refusal; keep vendor sessions and snapshots optional and non-authoritative.
-- [ ] Add focused fixtures and rubric coverage for valid recap-to-checkpoint handoff, missing or ambiguous thread identity, uncommitted-only state, stale baselines, absent authority, unsafe credentials, interrupted transfer, and fresh-agent resume without transcript access.
+- [ ] Add focused coverage in the existing recap grounding and checkpoint rubric-context tests for a valid recap-to-checkpoint handoff, undeclared or malformed checkpoint capability, missing or ambiguous thread identity, uncommitted-only state without a complete patch, stale baselines, absent authority, unsafe credentials, interrupted transfer, and fresh-agent resume without transcript access.
 - [ ] Update the capability catalogue and outcome guide, then leave provider-specific proof to the dependent adapter records.
 
 ## Files touched
 
-- `docs/specs/index.md` and a new runtime-portability specification
-- `skills/change-management/ki-recap/`
-- `skills/governance/ki-checkpoint/`
+- `docs/specs/index.md` and `docs/specs/runtime-portability.md`
+- `skills/change-management/ki-recap/SKILL.md`, `skills/change-management/ki-recap/references/standards-session-recap.md`, and `skills/change-management/ki-recap/scripts/recap-grounding.test.ts`
+- `skills/governance/ki-checkpoint/SKILL.md`, `skills/governance/ki-checkpoint/references/standards-checkpoints.md`, and `skills/governance/ki-checkpoint/scripts/rubric/contexts/checkpoints.test.ts`
 - `docs/guides/skills-by-outcome.md` and generated `skills/README.md`
 - this roadmap record
 
@@ -67,24 +69,25 @@ Require a conformance proof that the same bootstrap profile can create a fresh c
 - `ki repo audit --skill ki-specs --repo .`
 - `ki repo audit --skill ki-checkpoint --repo .`
 - `ki repo audit --skill ki-skills --repo .`
-- Focused `ki-recap` and `ki-checkpoint` tests
+- `bun test skills/change-management/ki-recap/scripts/recap-grounding.test.ts`
+- `bun test skills/governance/ki-checkpoint/scripts/rubric/contexts/checkpoints.test.ts`
 - `bun run test`
 - `bunx tsc --noEmit`
 - `ki repo audit --skill ki-work-roadmap --repo .`
 
 ## Dependencies / blocks
 
-The contract consumes the accepted responsibility model from `TECHNE-GOV-005` and remote working-mode evidence from `TECHNE-OPS-002` without changing either owner. This record blocks `KI-HARNESS-RTP-010`; provider-specific proof remains downstream and is not required to define the provider-neutral handoff. No vendor account, remote mutation, push, spend, or secret migration is authorised by this plan.
+The contract consumes the current `ADR-TECHNE-001` responsibility and working-mode model. `TECHNE-GOV-005` remains its delivery provenance, while results from `TECHNE-OPS-002` may refine later supervised-session guidance but are not a build-order dependency. This record blocks `KI-HARNESS-RTP-010`; provider-specific proof remains downstream and is not required to define the provider-neutral handoff. The only remaining readiness gate is explicit approval of the public `ki-recap checkpoint <thread>` composition and its optional fail-closed dependency on `ki-checkpoint`. No vendor account, remote mutation, push, spend, or secret migration is authorised by this plan.
 
 ## Documentation impact
 
 ### Decision Records
 
-Add a Decision Record only if implementation changes the accepted Techne responsibility boundary rather than projecting it into Harness.
+No new Decision Record is planned because this work projects current `ADR-TECHNE-001` into Harness. Return to Techne for a new decision only if implementation would change that accepted responsibility boundary.
 
 ### Specifications
 
-Register the runtime-portability area and its accepted behavioural requirements in `docs/specs/`.
+Register `docs/specs/runtime-portability.md` with prefix `RTP` and its accepted behavioural requirements.
 
 ### Guides
 
@@ -98,7 +101,11 @@ Record provider-specific proof only in dependent adapter items such as `KI-HARNE
 
 ### Upstream engineering model
 
-`TECHNE-GOV-005` owns the durable technique, comparison of Agent Sandbox, Docker Sandboxes, Cheztoi, Dev Container, OCI, and provider candidates, and the recommended proving sequence. This item should reference that analysis rather than duplicate it. Changes in provider evidence should return to Techne when they affect the engineering model and remain local here when they affect only the executable contract or adapter conformance.
+`ADR-TECHNE-001` and the enacted canonical Techne notes own the durable provider-neutral model. `TECHNE-GOV-005` retains the comparison of Agent Sandbox, Docker Sandboxes, Cheztoi, Dev Container, OCI, and provider candidates and the recommended proving sequence. This item should reference that analysis rather than duplicate it. Changes in provider evidence should return to Techne when they affect the engineering model and remain local here when they affect only the executable contract or adapter conformance.
+
+### Public composition approval
+
+Approve or reject one public composition before this item becomes Ready: `ki-recap checkpoint <thread>` may optionally invoke the existing `ki-checkpoint` update procedure only for an explicitly selected thread in a repository with a declared, valid checkpoint capability. Approval adds no checkpoint schema ownership to `ki-recap`; rejection keeps recap and checkpoint as two explicitly sequenced user operations and requires the handoff specification to describe that sequence instead.
 
 ### Bootstrap profile
 
@@ -118,4 +125,4 @@ Expose the accepted Techne coordination model through identifiers and evidence n
 
 ### Evaluation route
 
-Implement the proving sequence and evaluation criteria governed by `TECHNE-GOV-005`, including provider proofs already represented by `KI-HARNESS-RTP-010`. Consume the remote working modes and personal-server continuity conclusions from `TECHNE-OPS-002`; do not recreate their Zed, Herdr, or Mosh evaluation in the Harness.
+Implement the proving sequence and evaluation criteria governed by `TECHNE-GOV-005`, including provider proofs already represented by `KI-HARNESS-RTP-010`. Accept later remote-session and personal-server continuity conclusions from `TECHNE-OPS-002` as non-blocking evidence for refinement; do not recreate its Zed, Herdr, or Mosh evaluation in the Harness.

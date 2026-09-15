@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-13T15:45:43Z
-updated_at: 2026-09-14T18:53:27Z
+updated_at: 2026-09-15T12:34:01Z
 ---
 
 # Classify Skill Applicability
@@ -32,32 +32,37 @@ Do not activate skills automatically, infer policy from prose or directory place
 
 `ki-kind: governance | process` already owns lifecycle classification. `ki-repo-harness` parses every canonical skill and is the natural collection-level completeness owner; `ki-skills` can validate one skill's metadata shape. `ki-repo` currently carries 20 hard-coded coverage detectors, but executable detector rubrics have no agreed portable registry that a harness-wide audit can compare bidirectionally with skill metadata.
 
-The leading design is an orthogonal applicability policy such as `baseline | detected | declaration-only | invocation-only`, with a detector owner required only for `detected`. The exact vocabulary, registry location, and Decision Record shape remain approval gates before Ready.
+The proposed contract adds one orthogonal `ki-applicability` field with the exact values `baseline | detected | declaration-only | invocation-only`. `baseline` is limited to `ki-repo` and `ki-authoring`; every process skill is `invocation-only`; a governance skill named in the detector registry is `detected`; every other governance skill is `declaration-only`.
+
+For this version, `ki-repo` is the sole repository-applicability detector owner and declares the complete canonical target list in `ki-detects: [...]` frontmatter. Its local executable coverage paths must agree bidirectionally with that list. `ki-skills` validates each skill's metadata and local consistency, while `ki-repo-harness` proves collection completeness, exact baseline membership, process classification, and registry-to-skill agreement. Downstream skills retain their specialised evidence and shape validation without becoming independent applicability selectors.
 
 ## Steps
 
-- [ ] Decide the public applicability vocabulary and explicitly separate it from `ki-kind` and host activation.
-- [ ] Decide the canonical detector-registry location and bidirectional ownership contract.
-- [ ] Record the accepted public contract in a new Decision Record or an explicit amendment to the existing skill-shape decision.
-- [ ] Add per-skill metadata validation to `ki-skills` and exhaustive collection enforcement and publication to `ki-repo-harness`.
-- [ ] Make each detector-owning skill's declarative registry agree with executable detector coverage, with `ki-repo` retaining repository-wide evidence and downstream shape skills retaining specialised evidence.
-- [ ] Migrate all canonical skills only after the vocabulary and registry contract are accepted.
-- [ ] Regenerate rubric and capability publications and add focused behavioural coverage.
+- [ ] Record the approved `ki-applicability` and `ki-detects` contract in `ADR-KI-HARNESS-SKILLS-014`, dependent on ADR-005, ADR-SKILLS-006, and ADR-012.
+- [ ] Add `ki-applicability` syntax and kind-consistency validation to `ki-skills`, including exact process-to-`invocation-only` enforcement.
+- [ ] Give `ki-repo` the sole `ki-detects` registry and make its current coverage, primary-structure, runtime, and adapter-selection targets agree with the declared list in both directions.
+- [ ] Extend `ki-repo-harness` to require classification on every canonical skill, enforce the exact two-skill baseline, resolve every detector target, and publish applicability in the generated capability catalogue.
+- [ ] Classify all 60 canonical skills from the accepted rules without changing `ki-kind`, dependency, runtime-binding, or host-activation semantics.
+- [ ] Add the accepted collection and coverage invariants to the Harness and governance Specifications.
+- [ ] Regenerate the affected rubrics and `skills/README.md`, then run focused and aggregate verification.
 
 ## Files touched
 
-- Decision Record under `docs/decisions/`
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-014-*.md`
+- `docs/specs/governance.md` and `docs/specs/harness.md`
 - canonical `skills/**/SKILL.md` metadata
-- `skills/keystone/ki-skills/` metadata validation and tests
-- `skills/keystone/ki-repo/` coverage registry and tests
-- `skills/repo-structure/ki-repo-harness/` completeness publication and tests
+- `skills/keystone/ki-skills/` metadata validation, rubric, and tests
+- `skills/keystone/ki-repo/` detector registry, rubric, and tests
+- `skills/repo-structure/ki-repo-harness/` completeness publication, rubric, and tests
 - generated rubrics and `skills/README.md`
-- focused `ki-skills` evaluation scenario when useful
+- this roadmap record
 
 ## Verify
 
-- Focused `ki-skills`, `ki-repo`, and `ki-repo-harness` tests
-- Generated rubric publication checks
+- Focused `ki-skills` frontmatter tests prove all four values, reject missing or invalid metadata, and require every process skill to be `invocation-only`.
+- Focused `ki-repo` tests prove its declared detector targets and executable coverage targets are equal, unique, and resolvable.
+- Focused `ki-repo-harness` tests prove all 60 skills are classified, only `ki-repo` and `ki-authoring` are `baseline`, every process skill is `invocation-only`, and every `detected` skill appears in `ki-repo`'s registry.
+- Generated rubric and capability publications are exact.
 - `ki repo audit --skill ki-skills --repo .`
 - `ki repo audit --skill ki-repo --repo .`
 - `ki repo conform --skill ki-repo-harness --repo .`
@@ -68,21 +73,25 @@ The leading design is an orthogonal applicability policy such as `baseline | det
 
 ## Dependencies / blocks
 
-Readiness requires explicit approval of the applicability vocabulary, detector-registry owner, bidirectional coverage contract, and Decision Record approach. These are public contract choices affecting every canonical skill and downstream consumer, so implementation remains outside autonomous batch authority until resolved.
+**Approval gate:** the user must explicitly approve the exact proposed contract in Current state: the four-value `ki-applicability` vocabulary, the exact two-skill baseline, process-to-`invocation-only`, `ki-repo` as sole detector owner with `ki-detects`, bidirectional registry enforcement, and a new `ADR-KI-HARNESS-SKILLS-014`. Until that single gate is confirmed, this item remains Draft and has no implementation or batch authority. After approval, no known build dependency blocks delivery.
+
+## Delegation
+
+After approval, bounded workers may classify disjoint canonical skill roots only after the metadata validator and detector target set pass their focused gate. The orchestrator exclusively owns the Decision Record, shared validators, detector integration, Specifications, generated rubrics, `skills/README.md`, aggregate verification, and final review so concurrent workers do not collide on shared publications.
 
 ## Documentation impact
 
 ### Decision Records
 
-Add `ADR-KI-HARNESS-SKILLS-014` or explicitly amend the existing skill-shape Decision Record before implementation.
+Add `ADR-KI-HARNESS-SKILLS-014` for the new public applicability contract, dependent on ADR-KI-HARNESS-005, ADR-KI-HARNESS-SKILLS-006, and ADR-KI-HARNESS-012. Preserve those records as the owners of validate-down configuration, skill kind, and compatible capability publication.
 
 ### Specifications
 
-Update repository or harness specifications only if the accepted contract changes their observable conformance requirements.
+Update `docs/specs/governance.md` with the per-skill classification and detector-registry invariants, and `docs/specs/harness.md` with exhaustive collection enforcement and publication requirements.
 
 ### Guides
 
-Update authoring or repository guidance only after the metadata contract is accepted and implemented.
+No guide change is planned. The Decision Record, skill standards, Specifications, and generated capability catalogue are the authoritative surfaces; add user guidance only if implementation reveals a distinct workflow.
 
 ### Roadmap
 
@@ -92,12 +101,12 @@ Keep this item as the decision and migration authority. Consumer migrations, if 
 
 ### Applicability vocabulary
 
-The earlier candidates `baseline`, `repository-detected`, `downstream-detected`, `explicit`, and `process` mix several axes. A cleaner public contract keeps lifecycle in `ki-kind`, describes applicability separately, and records a detector owner only where detection exists.
+The earlier candidates `repository-detected`, `downstream-detected`, `explicit`, and `process` mix detection ownership, lifecycle, and invocation. The proposed closed vocabulary keeps lifecycle in `ki-kind`, host activation outside this field, and repository applicability in one independently checkable axis.
 
 ### Mechanical completeness
 
-`ki-repo-harness` should fail when a canonical skill lacks a valid applicability classification. `ki-skills` should validate the field syntax and per-skill consistency. Detector owners should fail when their declared registry and executable coverage disagree in either direction.
+`ki-repo-harness` should fail when a canonical skill lacks a valid classification, the baseline set differs from the accepted pair, a process skill is not `invocation-only`, or the detected set differs from `ki-repo`'s declared registry. `ki-skills` should reject invalid per-skill metadata, and `ki-repo` should fail when its declarative and executable detector targets disagree in either direction.
 
 ### Downstream ownership
 
-Repository-wide evidence remains with `ki-repo`; shape-specific evidence remains with the active parent skill. For example, a Knowledge Base capability can be detected by `ki-repo-kb`, but a repository that deliberately declines the corresponding standard should retain an explicit coverage opt-out rather than silent absence.
+Repository applicability remains with `ki-repo`; shape-specific evidence remains with the selected downstream skill. A repository that deliberately declines a mechanically detected standard retains the existing explicit coverage opt-out and audit note rather than creating a second detector registry or allowing silent absence.
