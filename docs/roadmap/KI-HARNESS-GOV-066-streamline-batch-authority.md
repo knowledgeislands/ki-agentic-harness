@@ -4,12 +4,12 @@ area: GOV
 title: Streamline Batch Authority
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 597762d65adcf69402fad8a3df8287b8acc95174
 created_at: 2026-09-15T05:00:57Z
-updated_at: 2026-09-15T05:16:00Z
+updated_at: 2026-09-15T05:20:14Z
 ---
 
 # Streamline Batch Authority
@@ -112,7 +112,11 @@ Implement the prepared `tools-ki` item when that repository next takes CLI deliv
 
 ### Mini recap
 
-The lean authority envelope is delivered and verified from baseline `597762d6`. The user explicitly approved implementation and subsequently directed that the pre-publication v1 be replaced in place rather than introducing v2. The only follow-up is independently owned CLI automation.
+The lean authority envelope is delivered and accepted from baseline `597762d6` in implementation commit `60090c26`. The user explicitly approved implementation and subsequently directed that the pre-publication v1 be replaced in place rather than introducing v2. The only follow-up is independently owned CLI automation.
+
+## Done
+
+Accepted through the explicitly approved `KI-HARNESS-BATCH-021` consolidated completion target after the full test suite, TypeScript, focused batch tests, generated-publication check, and all named audits passed.
 
 ## Discussion
 

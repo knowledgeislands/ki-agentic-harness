@@ -26,3 +26,4 @@ Deliver the explicitly approved lean exact-set batch contract in this Harness re
 | Item | Result | Baseline | Result commit | Exception |
 | --- | --- | --- | --- | --- |
 | KI-HARNESS-GOV-066 | awaiting-review | `597762d6` | pending | None |
+| KI-HARNESS-GOV-066 | done | `597762d6` | `60090c26` | Consolidated acceptance under approved completion target |
