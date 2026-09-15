@@ -4,12 +4,12 @@ area: GOV
 title: Expand Housekeeping Coverage
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: b333daaa3356e827429104d7b7783c0e939e8e76
 created_at: 2026-09-15T05:31:18Z
-updated_at: 2026-09-15T05:47:55Z
+updated_at: 2026-09-15T11:57:29Z
 ---
 
 # Expand Housekeeping Coverage
@@ -36,7 +36,7 @@ The repository is clean at `8be51b28a44f9df5c5621dbf8d3dfbbe213c2904`; work, roa
 - [x] Align spawning and acceptance instructions with the owner contract without weakening active-run or approval guards.
 - [x] Consolidate five local templates into four, broaden engineering and knowledge coverage, and make both radar reviews weekly.
 - [x] Align radar source cadence and freshness warnings with weekly review.
-- [ ] Finish the exact report-retirement decision. Navigation, stale routing labels, broken live links, and evidence preservation are cleaned up; wholesale consolidation of the completed REV-001 report folder awaits the requested confirmation.
+- [x] Finish the exact report-retirement decision. Retire the stale REV-001 working evidence after confirming its live follow-ups have canonical owners and its committed archive remains recoverable.
 - [x] Regenerate affected publications, run focused and full verification, and record the review packet.
 
 ## Files touched
@@ -95,7 +95,7 @@ The housekeeping standard and executable checks gain the optional trigger contra
 
 ### Guides
 
-Retained review orientation explains what remains useful, where unresolved work lives, and how removed historical evidence is recovered. Existing process instructions consume the owner contract.
+Review orientation explains the retained evidence and how removed historical evidence is recovered. Existing process instructions consume the owner contract.
 
 ### Roadmap
 
@@ -105,28 +105,27 @@ This item owns the delivery and review evidence. Existing done review records re
 
 ### Delivered
 
-Implemented the housekeeping and radar changes against immutable baseline `b333daaa3356e827429104d7b7783c0e939e8e76`. Five local templates become four independent obligations: monthly-or-100-commits engineering and knowledge reviews, and weekly model and agentic reviews. This is not evidence that any substantive review ran. The record remains in-progress because the exact bulk report-retirement choice is outstanding.
+Implemented the housekeeping and radar changes against immutable baseline `b333daaa3356e827429104d7b7783c0e939e8e76`. Five local templates become four independent obligations: monthly-or-100-commits engineering and knowledge reviews, and weekly model and agentic reviews. This is not evidence that any substantive review ran. Retired the stale REV-001 working evidence after the user confirmed it no longer had concrete use; its live follow-ups remain canonically owned and its historical evidence remains recoverable from Git.
 
 ### Summary of changes
 
 The housekeeping owner now provides optional `commit-threshold` and `last-run-ref` metadata, a read-only first-parent schedule evaluator, schema validation, and HOUSE-2 diagnostics. Calendar and volume triggers are alternatives; manual, paused, active-run, and acceptance guards remain. Successful acceptance records the actual completion date and verified reviewed revision in one coherent closure/template commit. Both radar policies warn after nine days and retain their evidence and movement gates.
 
-The combined HK-003 incorporates both signal and release reassessment; HK-004 is retired with its history preserved. HK-001 and HK-002 broaden existing purposes instead of multiplying records. Review navigation now distinguishes retained historical evidence from active work, removes obsolete progress duplication, fixes an absent trade link, and preserves four unresolved routes or observations. Detailed historical reports have not been deleted.
+The combined HK-003 incorporates both signal and release reassessment; HK-004 is retired with its history preserved. HK-001 and HK-002 broaden existing purposes instead of multiplying records. Review navigation now distinguishes retained historical evidence from active work, removes obsolete progress duplication, and fixes an absent trade link. The detailed REV-001 reports are retired: FND-014 and OPS-002 remain the canonical live follow-ups, while two unverified historical observations were not promoted into new work merely to preserve stale review material.
 
 ### Verification
 
-- Final `bun run test`: 676 passed, 0 failed, 3060 assertions across 127 files.
-- `bunx tsc --noEmit`: passed.
+- Final `bun run test`: passed after review retirement.
+- `bunx tsc --noEmit` and `bunx biome check`: passed.
 - Trigger and acceptance focused suite: 22 tests and 104 assertions passed. Radar focused suite: 25 tests and 61 assertions passed.
 - Housekeeping audit: no failures; two intentional HOUSE-2 warnings for missing historical anchors. Model radar, agentic radar, skills, authoring, roadmap, delegation, and harness audits passed.
-- Three changed rubrics regenerated; scoped Biome, rumdl, and whitespace checks passed. Local Markdown targets throughout `docs/reviews` resolve.
+- Post-retirement focused audits for `ki-repo`, `ki-authoring`, `ki-work-roadmap`, `ki-work-housekeeping`, and `ki-trades`: passed; the two intentional HOUSE-2 warnings remain.
+- Three changed rubrics regenerated; scoped Biome, rumdl, and whitespace checks passed. Local Markdown targets throughout retained `docs/reviews` evidence resolve.
 - The first full suite exposed the new criterion's expected inventory-count delta; that assertion was updated and the full suite passed. Independent review found initial-run grace, future-completion-date, and atomic-closure edge cases, all corrected with focused regression tests.
 
 ### Outstanding concerns
 
-The exact consolidation of `docs/reviews/KI-HARNESS-REV-001/` into one retained summary awaits the user's answer to the explicit pruning question required by `ki-repo`. Existing detailed reports and runtime-binding evidence remain intact.
-
-The prior accepted REV-004 and REV-005 records cite a baseline unavailable in this checkout's non-shallow Git object database. The broadened templates retain their historical dates and disclose narrower prior scope, but intentionally leave `last-run-ref: null`. Monthly scheduling remains active; volume is unknown until a successful review supplies a verified revision. No current HEAD, date-derived guess, or historical implementation baseline was substituted.
+No delivery concern remains. The prior accepted REV-004 and REV-005 records cite a baseline unavailable in this checkout's non-shallow Git object database. The broadened templates retain their historical dates and disclose narrower prior scope, but intentionally leave `last-run-ref: null`. Monthly scheduling remains active; volume is unknown until a successful review supplies a verified revision. No current HEAD, date-derived guess, or historical implementation baseline was substituted.
 
 ### Post-change review
 
@@ -134,9 +133,13 @@ Independent file-bounded review confirmed that model consolidation retains evide
 
 ### Mini recap
 
-The requested four-review structure, optional change-volume scheduling, weekly radar cadence, and non-destructive review cleanup are implemented and verified. Finish the explicit historical-report retirement choice before closing this delivery. Routine working-area maintenance remains under existing specialist guards; no new generic retention policy, substantive review, external write, acceptance, roadmap prune, or push occurred.
+The requested four-review structure, optional change-volume scheduling, weekly radar cadence, and historical-review retirement are implemented and verified. Routine working-area maintenance remains under existing specialist guards; no new generic retention policy, substantive review, external write, acceptance, roadmap prune, or push occurred.
 
 ## Discussion
+
+### Historical review retirement
+
+REV-001 was bounded working evidence, not a standing standard or current assurance claim. Its live remote-adapter and memory follow-ups remain in FND-014 and OPS-002. The old host-evidence and user-MCP observations were never verified into current work, and the user confirmed the review no longer had concrete use, so this delivery does not manufacture new roadmap items from them. The exact committed review remains recoverable from Git at `b333daaa3356e827429104d7b7783c0e939e8e76`.
 
 ### Partition and retention
 
