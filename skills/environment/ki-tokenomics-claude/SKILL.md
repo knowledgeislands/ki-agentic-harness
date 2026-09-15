@@ -6,10 +6,9 @@ ki-runtime-binding: true
 ki-supported-runtimes: [claude-code]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Audit direct non-secret Claude Code filesystem evidence in one repository: instructions, imports, rules,
-  settings, and MCP declarations. Use for Claude runtime evidence supporting portable tokenomics; effective
-  session state remains unavailable, portable budgets belong to `ki-tokenomics`, and Codex evidence to
-  `ki-tokenomics-codex`.
+  Audit non-secret Claude Code repository evidence—instructions, rules, settings, imports, and MCP
+  declarations—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-codex` for Codex
+  evidence; effective session state is outside this filesystem audit.
 argument-hint: 'audit | conform | educate | refresh | help'
 ---
 

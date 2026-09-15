@@ -4,9 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Audit or scaffold a KI Homebrew tap repository and its `Formula/*.rb` distribution surface against Homebrew
-  rules. Use when adding a formula, checking tap shape, sources, README publication, `brew audit`, or `brew
-  style`; `ki-repo-tools` owns CLI repositories and `ki-repo` universal files and settings.
+  Audit or scaffold a KI Homebrew tap and its `Formula/*.rb` distribution surface. Use for formula sources,
+  tap shape, README publication, `brew audit`, or `brew style`; `ki-repo-tools` owns CLI repositories and
+  `ki-repo` universal files.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

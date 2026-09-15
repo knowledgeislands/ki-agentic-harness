@@ -4,10 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern KI Git commits and safe shared-working-tree practice: Conventional Commit messages, touched-path
-  tracking, branch or worktree selection, explicit staging, and stale-lock semantics. Use when preparing a
-  commit or coordinating concurrent human or agent edits; `ki-repo` owns GitHub settings and environment
-  skills own hook registration.
+  Govern KI Git commits and shared-tree safety: Conventional Commits, touched-path tracking, explicit staging,
+  branch or worktree choice, and stale locks. Use when preparing commits or coordinating concurrent edits;
+  `ki-repo` owns GitHub settings.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

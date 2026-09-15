@@ -4,10 +4,8 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern portable agent-context costs: standing-surface attribution, budget guide-rails, model-purpose
-  taxonomy, and `[skills.ki-tokenomics]` configuration. Use for runtime-neutral context or model-purpose
-  policy; runtime evidence belongs to `ki-tokenomics-claude` or `ki-tokenomics-codex`, and description quality
-  to `ki-skills`.
+  Govern portable agent-context budgets, standing-surface attribution, and model-purpose policy. Use runtime
+  adapters for observed Claude or Codex evidence and `ki-skills` for description quality.
 argument-hint: 'audit | conform | help | educate | refresh'
 ---
 

@@ -4,9 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-modules: [rubric]
 description: >
-  Create, audit, review, extract, or optimise Agent Skills against current portable and KI authoring practice.
-  Use for SKILL.md scope, descriptions, progressive disclosure, scripts, references, rubric checks, or
-  reusable capability analysis; use `ki-subagents` for agent roles and `ki-repo-harness` for bundle layout.
+  Create, audit, review, extract, or optimise Agent Skills. Use for SKILL.md scope, descriptions, progressive
+  disclosure, scripts, references, rubrics, or reusable capability analysis; use `ki-subagents` for agent
+  roles and `ki-repo-harness` for bundle layout.
 argument-hint: 'audit <skill-or-repo> | conform <skill> | educate <description> | extract <repo> [--history <path>...] | help | optimise <skill> | refresh | review <skill-or-repo>'
 ---
 

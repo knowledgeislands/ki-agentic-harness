@@ -6,10 +6,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 contributes: [".ki.toml"]
 owns: ["+/_TRADES/README.md", "-/_TRADES/README.md"]
 description: >
-  Govern typed directional work and knowledge trades between registered KI repositories, including routes,
-  identities, immutable submission, receipt, receiver decisions, observation, release, and pruning. Use to
-  design or audit the trade system; `ki-trade` performs one side's actions and the receiver retains priority
-  and acceptance authority.
+  Govern directional work and knowledge trades between KI repositories: routes, records, authority, receipt,
+  decisions, release, and pruning. Use to design or audit the system; `ki-trade` performs one side and
+  `ki-next` owns receiver disposition.
 argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 ---
 

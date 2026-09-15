@@ -4,9 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Create, audit, and maintain repository-local guides for the practical how of using, operating, contributing
-  to, or maintaining a system. Use for procedures and contributor guidance; `ki-decision-records` owns why,
-  `ki-specs` owns accepted behaviour, `ki-work-roadmap` owns future work, and `ki-authoring` owns style.
+  Create or audit repository-local guides for the practical how of using, operating, contributing to, or
+  maintaining a system. Use `ki-decision-records` for why, `ki-specs` for accepted behaviour,
+  `ki-work-roadmap` for future work, and `ki-authoring` for style.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | refresh'
 ---
 

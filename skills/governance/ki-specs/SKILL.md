@@ -4,9 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Create, audit, and maintain repository Specifications as the accepted behaviour and quality contract, with
-  stable requirements, conformance state, verification plans, and evidence. Use to specify what a system must
-  do; `ki-decision-records` owns why, `ki-guides` how, and `ki-work-roadmap` future delivery.
+  Create or audit repository Specifications: accepted behaviour and quality requirements with conformance
+  state, verification plans, and evidence. Use `ki-decision-records` for why, `ki-guides` for procedures, and
+  `ki-work-roadmap` for future delivery.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh'
 ---
 

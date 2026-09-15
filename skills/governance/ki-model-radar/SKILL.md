@@ -4,10 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Maintain an evidence-backed radar for models and model-agent routes. Use to compare routes, assess benchmark
-  relevance, or review recommendation and retirement movement; `ki-pulse` discovers public signals,
-  `ki-tokenomics` owns purpose categories, runtime adapters own effective configuration, and
-  `ki-agentic-radar` owns broader agentic standards.
+  Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark
+  relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse`
+  for signal discovery, and `ki-tokenomics` for model purpose.
 argument-hint: "audit | conform | educate | help | refresh"
 ---
 

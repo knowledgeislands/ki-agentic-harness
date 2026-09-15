@@ -5,10 +5,9 @@ ki-depends-on: []
 ki-runtime-binding: true
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Audit, conform, or scaffold the generated KI Claude plugin-marketplace projection: manifests, verbatim
-  skills, flattened agents, deferred MCP configuration, and generated-only integrity. Use for the
-  marketplace's on-disk shape; `ki-binding-claude` owns generation and Cowork enablement, while `ki-repo` owns
-  universal files.
+  Audit or scaffold the generated KI Claude plugin marketplace: manifests, copied skills, flattened agents,
+  deferred MCP configuration, and generated integrity. Use `ki-binding-claude` for generation or Cowork
+  enablement and `ki-repo` for universal files.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

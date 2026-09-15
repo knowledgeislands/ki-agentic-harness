@@ -4,10 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern durable delegation packets for approved high-risk agent work, including locked decisions, authority,
-  isolation, escalation, verification, and return boundaries. Use when a cross-agent brief must survive a
-  runtime handoff; active process skills own worker selection and execution, while `ki-trades` owns
-  cross-repository transfer.
+  Govern durable packets for approved high-risk agent delegation: authority, isolation, locked decisions,
+  escalation, verification, and return. Use when a cross-agent brief must survive a handoff; process skills
+  own execution and `ki-trades` cross-repository transfer.
 argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | refresh'
 ---
 

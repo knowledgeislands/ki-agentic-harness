@@ -5,9 +5,9 @@ ki-depends-on: []
 ki-shared-modules: [binding]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern the portable KI MCP inventory in canonical XDG `mcp-servers.yaml`, including schema, client
-  targeting, and vendor-neutral mcporter drift. Use for shared MCP source or targeting; runtime surfaces
-  belong to `ki-binding-claude` and `ki-binding-codex`, and chezmoi rendering to `ki-binding-chezmoi`.
+  Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client targeting, and mcporter
+  drift. Use runtime binding skills for Claude or Codex surfaces and `ki-binding-chezmoi` for chezmoi
+  rendering.
 argument-hint: 'audit [project] | conform [project] | help | educate [project] | refresh'
 ---
 

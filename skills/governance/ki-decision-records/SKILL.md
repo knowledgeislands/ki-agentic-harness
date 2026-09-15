@@ -4,9 +4,8 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Create, audit, and maintain typed KI Decision Records for durable rationale and authority. Use to record or
-  review a governance, architecture, knowledge, strategy, product, data, people, legal, or policy decision;
-  use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future work.
+  Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted
+  behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <scope> "<title>" | refresh'
 ---
 

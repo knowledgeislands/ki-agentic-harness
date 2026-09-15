@@ -5,10 +5,9 @@ ki-runtime-binding: true
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
 description: >
-  Audit or scaffold KI MCP server repositories against the workspace-MCP standard: layout, dependency
-  injection, tool naming, annotations, access gates, audit logging, and security invariants. Use for MCP
-  server code or standard refresh; `ki-engineering` owns common toolchains, `ki-skills` SKILL.md quality, and
-  `ki-repo` settings.
+  Audit or scaffold KI MCP server code for workspace-MCP layout, dependency injection, tool naming, access
+  gates, logging, and security. Use `ki-engineering` for common toolchains, `ki-skills` for SKILL.md, and
+  `ki-repo` for repository settings.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

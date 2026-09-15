@@ -6,9 +6,9 @@ ki-depends-on: [ki-skills, ki-subagents, ki-decision-records, ki-work-roadmap]
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: [skills/README.md]
 description: >
-  Audit, conform, or design a KI-compatible harness that co-locates skills, subagents, MCP servers, evals, and
-  hooks and publishes a verified installed payload. Use for harness source layout, prefix identity,
-  declarations, or catalogue publication; content quality belongs to the relevant capability skill.
+  Audit or design a KI-compatible harness that publishes skills, subagents, MCP servers, evals, and hooks as a
+  verified installed payload. Use for source layout, prefix identity, declarations, or catalogue publication;
+  each capability skill owns content quality.
 argument-hint: 'audit [path] | conform [path] | educate <name> | help | refresh'
 ---
 

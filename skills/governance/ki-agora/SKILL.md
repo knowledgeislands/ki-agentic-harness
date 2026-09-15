@@ -5,9 +5,9 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: [".ki.toml"]
 description: >
-  Govern reciprocal Agora membership between KI repositories: a home declares purpose, canonical members, and
-  roles, while each member independently consents. Use to define, audit, or conform Agora declarations; the
-  `ki` CLI owns local resolution and environment tooling owns editor or client projections.
+  Govern reciprocal Agora membership: a KI home declares purpose, canonical members, and roles, while each
+  member independently consents. Use to define or audit declarations; the `ki` CLI owns local resolution and
+  environment tooling owns client projections.
 argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 ---
 

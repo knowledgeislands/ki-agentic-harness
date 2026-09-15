@@ -4,9 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research
-  claims, and vendor terms. Use to compare maturity, interoperability, stance, or movement; `ki-model-radar`
-  owns models and routes, `ki-pulse` discovers current signals, and `ki-next` owns follow-on work.
+  Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research,
+  and vendor terms. Use for maturity, interoperability, or stance; `ki-model-radar` owns models, `ki-pulse`
+  discovers signals, and `ki-next` owns follow-on work.
 argument-hint: "audit | conform | educate | help | refresh"
 ---
 

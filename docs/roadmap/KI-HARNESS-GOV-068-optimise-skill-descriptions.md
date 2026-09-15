@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 5b89ed13ab32c2491634f60422150a8f70150b6d
 created_at: 2026-09-15T12:11:12Z
-updated_at: 2026-09-15T12:43:40Z
+updated_at: 2026-09-15T13:20:07Z
 ---
 
 # Optimise Skill Descriptions
@@ -80,11 +80,11 @@ This item records the implementation and review evidence; no follow-on roadmap i
 
 ### Delivered
 
-From immutable baseline `5b89ed13ab32c2491634f60422150a8f70150b6d`, optimised the complete 60-skill description surface, refreshed the generated capability catalogue, and recorded the current Codex initial-list budget without changing skill behaviour, ownership, or invocation policy. The implementation retained the approved exclusions: no arbitrary universal length cap, no removal of essential sibling boundaries, and no claim that description work can eliminate every runtime warning.
+From immutable baseline `5b89ed13ab32c2491634f60422150a8f70150b6d`, optimised the complete 60-skill description surface, refreshed the generated capability catalogue, and recorded the current Codex initial-list budget without changing skill behaviour, ownership, or invocation policy. A human review then requested and approved a targeted second pass over the 27 descriptions that remained above 300 characters, moving their decisive triggers and sibling boundaries earlier without imposing a universal cap. The implementation retained the approved exclusions: no removal of essential sibling boundaries and no claim that description work can eliminate every runtime warning.
 
 ### Summary of changes
 
-Rewrote the `description` frontmatter in all 60 canonical `skills/**/SKILL.md` files around primary capability, realistic activation language, and only material sibling off-ramps. Added the Codex shared-list budget and its interpretation to `standards-agent-skills.md`, refreshed the targeted OpenAI source evidence date in `sources.md`, and regenerated `skills/README.md` from canonical frontmatter. Total description text fell from 34,852 to 17,517 characters, average length from 581 to 292, and the maximum from 1,015 to 348; no description now exceeds 400 characters.
+Rewrote the `description` frontmatter in all 60 canonical `skills/**/SKILL.md` files around primary capability, realistic activation language, and only material sibling off-ramps, then tightened the 27 longest descriptions again after review. Added the Codex shared-list budget and its interpretation to `standards-agent-skills.md`, refreshed the targeted OpenAI source evidence date in `sources.md`, and regenerated `skills/README.md` from canonical frontmatter. Total description text fell from 34,852 to 15,578 characters, average length from 581 to 260, and the maximum from 1,015 to 300; no description now exceeds 300 characters.
 
 ### Verification
 
@@ -92,6 +92,7 @@ Rewrote the `description` frontmatter in all 60 canonical `skills/**/SKILL.md` f
 - `ki repo conform --skill ki-repo-harness --repo .` — regenerated the exact marker-bounded capability catalogue; the final audit confirms publication remains exact.
 - `bunx tsc --noEmit && bun run test && bunx biome check` — PASS; 693 tests across 129 files and 571 Biome-checked files.
 - `bunx rumdl check` on every touched Markdown file and `git diff --check` — PASS after the final review packet.
+- Second-pass inventory — PASS; 27 descriptions received targeted changes, all 60 descriptions remain present, and body plus non-description frontmatter content is unchanged.
 - Work-lifecycle prompts distinguish selection (`ki-next`), readiness (`ki-plan`), delivery (`ki-implement`), and closure or pruning (`ki-accept`).
 - Documentation prompts distinguish durable rationale (`ki-decision-records`), accepted behaviour (`ki-specs`), practical procedure (`ki-guides`), and future delivery (`ki-work-roadmap`).
 - Website prompts distinguish the neutral lifecycle (`ki-repo-website`), Eleventy content sites (`ki-repo-website-content`), React/Vite applications (`ki-repo-website-app`), and Cloudflare hosting (`ki-repo-website-cloudflare`).
@@ -100,15 +101,15 @@ Rewrote the `description` frontmatter in all 60 canonical `skills/**/SKILL.md` f
 
 ### Outstanding concerns
 
-No blocking concern remains. The 17,517-character Harness description set still exceeds Codex's 8,000-character fallback before names and paths are counted, so a large combined system, user, repository, and plugin skill set may still produce shortening or omission warnings. Codex exposes no deterministic local selector harness here, so the family routing evidence is a semantic positive-and-negative prompt review rather than a claim about every model or installed-skill combination.
+No blocking concern remains. The 15,578-character Harness description set still exceeds Codex's 8,000-character fallback before names and paths are counted, so a large combined system, user, repository, and plugin skill set may still produce shortening or omission warnings. Codex exposes no deterministic local selector harness here, so the family routing evidence is a semantic positive-and-negative prompt review rather than a claim about every model or installed-skill combination.
 
 ### Post-change review
 
-The goal and approved boundary are met. Every description now states its capability and activation context early, the closest families retain reciprocal ownership cues, the generated catalogue is exact, and no skill behaviour or authority changed. Regression risk is limited to implicit selection wording and is mitigated by complete mechanical audit plus the family routing review; the item is ready for human acceptance.
+The goal and approved boundary are met after the targeted review iteration. Every description now states its capability and activation context early, no description exceeds 300 characters, the closest families retain reciprocal ownership cues, the generated catalogue is exact, and no skill behaviour or authority changed. Regression risk is limited to implicit selection wording and is mitigated by complete mechanical audit plus the family routing review; the item is ready for human acceptance.
 
 ### Mini recap
 
-Delivered a catalogue-wide metadata optimisation with a 49.7 per cent description-footprint reduction, current Codex budget guidance, exact regenerated publication, and clean repository gates. The remaining runtime-budget caveat is recorded as an expected platform constraint, not follow-on implementation work.
+Delivered a catalogue-wide metadata optimisation with a 55.3 per cent description-footprint reduction, current Codex budget guidance, exact regenerated publication, and clean repository gates. The targeted second pass moved long-description routing signal earlier; the remaining runtime-budget caveat is recorded as an expected platform constraint, not follow-on implementation work.
 
 ## Discussion
 

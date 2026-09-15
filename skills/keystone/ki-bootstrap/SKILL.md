@@ -3,9 +3,9 @@ name: ki-bootstrap
 ki-kind: process
 ki-depends-on: []
 description: >
-  Explain first-time KI activation through the `ki` CLI: bootstrap a user, select a verified harness, and
-  distinguish user skills from repository governance. Use for setup, skill activation, local development, or
-  why an audit will not run; `ki --help` owns command mechanics and `ki-repo` owns repository coverage.
+  Explain first-time KI activation through the `ki` CLI: user bootstrap, verified harness selection, skills,
+  and repository governance. Use for setup or audit-activation problems; `ki --help` owns command mechanics
+  and `ki-repo` repository coverage.
 argument-hint: 'help | refresh'
 ---
 

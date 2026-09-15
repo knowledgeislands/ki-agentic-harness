@@ -7,10 +7,9 @@ owns: []
 contributes: ['.ki.toml', '.gitignore', package.json]
 requires: []
 description: >
-  Govern the generator-neutral KI website seam: one site source root, reproducible `dist/`, and
-  `ki:site:build`, `ki:site:dev`, and `ki:site:clean`. Use for any website repository before selecting exactly
-  one implementation, `ki-repo-website-content` or `ki-repo-website-app`; add Cloudflare hosting
-  independently.
+  Govern the generator-neutral KI website seam: source root, reproducible `dist/`, and `ki:site:build`,
+  `ki:site:dev`, and `ki:site:clean`. Use before choosing `ki-repo-website-content` or `ki-repo-website-app`;
+  hosting is independent.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

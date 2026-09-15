@@ -6,10 +6,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json]
 contributes: ['.ki.toml', '.gitignore', package.json]
 description: >
-  Audit or conform the shared KI TypeScript/Bun engineering standard: comprehension-first modularity, reuse,
-  boundary testing, package scripts, tsconfig, Biome, and toolchain consistency. Use for code or toolchain
-  quality; `ki-repo` owns repository configuration, `ki-authoring` document style, and `ki-repo-mcp` MCP
-  specifics.
+  Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,
+  tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for
+  documents, and `ki-repo-mcp` for MCP specifics.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

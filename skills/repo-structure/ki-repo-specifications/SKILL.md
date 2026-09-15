@@ -5,10 +5,9 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: [.ki.toml]
 description: >
-  Audit, conform, or scaffold the minimal repository structure for KI Specifications: marker configuration
-  plus proposals, specifications, schemas, templates, examples, docs, and tooling. Use for the specifications
-  repository container; `ki-specs` owns requirement records, `ki-decision-records` decisions, and `ki-repo`
-  universal files.
+  Audit or scaffold the KI Specifications repository container: proposals, specifications, schemas, templates,
+  examples, docs, and tooling. Use `ki-specs` for requirement records, `ki-decision-records` for decisions,
+  and `ki-repo` for universal files.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 

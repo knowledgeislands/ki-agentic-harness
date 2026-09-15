@@ -7,9 +7,9 @@ owns: [eleventy.config.ts, eleventy.config.js, eleventy.config.mjs, eleventy.con
 contributes: ['.ki.toml', package.json]
 requires: [ROADMAP.md]
 description: >
-  Govern the KI content-led website implementation: Eleventy 3, Markdown or structured data, Nunjucks,
-  Tailwind 4 semantic tokens, and portable `dist/` output. Use for documentation, publication, or marketing
-  page collections; select `ki-repo-website-app` for a single React/Vite SPA and keep hosting separate.
+  Govern KI content sites built with Eleventy 3, Markdown or data, Nunjucks, Tailwind 4 tokens, and portable
+  `dist/`. Use for documentation, publication, or marketing pages; use `ki-repo-website-app` for a React/Vite
+  SPA and choose hosting separately.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

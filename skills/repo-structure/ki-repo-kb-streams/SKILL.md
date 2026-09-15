@@ -4,10 +4,9 @@ ki-kind: governance
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
 description: >
-  Govern the KI knowledge-base Streams container: flat `Streams/Roadmap` work records and
-  `Streams/Housekeeping` templates. Use to establish, audit, route, or migrate KB forward-work structure;
-  shared lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept`, while `ki-repo-kb`
-  owns the zone model.
+  Govern the KI knowledge-base Streams container: flat Roadmap records and Housekeeping templates. Use for KB
+  forward-work structure or migration; lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and
+  `ki-accept`, while `ki-repo-kb` owns zones.
 argument-hint: 'audit | conform | help | educate | iterate | propose | ready | refresh | rollout'
 ---
 

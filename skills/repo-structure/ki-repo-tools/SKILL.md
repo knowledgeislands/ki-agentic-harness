@@ -4,10 +4,9 @@ ki-kind: governance
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Audit or scaffold a KI `tools-*` repository containing one standalone CLI, its installer, release and
-  changelog flow, CI, help, completion, and optional manual. Use for CLI repository shape;
-  `ki-repo-homebrew-tap` owns formulae, `ki-engineering` TypeScript/Bun toolchains, and `ki-repo` universal
-  files.
+  Audit or scaffold a KI `tools-*` repository containing one CLI, installer, releases, changelog, CI, help,
+  completion, and optional manual. Use `ki-repo-homebrew-tap` for formulae, `ki-engineering` for
+  TypeScript/Bun, and `ki-repo` for universal files.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 

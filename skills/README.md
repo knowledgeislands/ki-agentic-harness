@@ -175,7 +175,7 @@ Find website design inspiration in curated galleries and turn selected examples 
 
 #### `ki-binding`
 
-Govern the portable KI MCP inventory in canonical XDG `mcp-servers.yaml`, including schema, client targeting, and vendor-neutral mcporter drift. Use for shared MCP source or targeting; runtime surfaces belong to `ki-binding-claude` and `ki-binding-codex`, and chezmoi rendering to `ki-binding-chezmoi`.
+Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client targeting, and mcporter drift. Use runtime binding skills for Claude or Codex surfaces and `ki-binding-chezmoi` for chezmoi rendering.
 
 - **Kind:** Governance
 - **Arguments:** `audit [project] | conform [project] | help | educate [project] | refresh`
@@ -247,7 +247,7 @@ Acquire and reconcile Granola meetings through read-only MCP evidence, including
 
 #### `ki-tokenomics`
 
-Govern portable agent-context costs: standing-surface attribution, budget guide-rails, model-purpose taxonomy, and `[skills.ki-tokenomics]` configuration. Use for runtime-neutral context or model-purpose policy; runtime evidence belongs to `ki-tokenomics-claude` or `ki-tokenomics-codex`, and description quality to `ki-skills`.
+Govern portable agent-context budgets, standing-surface attribution, and model-purpose policy. Use runtime adapters for observed Claude or Codex evidence and `ki-skills` for description quality.
 
 - **Kind:** Governance
 - **Arguments:** `audit | conform | help | educate | refresh`
@@ -256,7 +256,7 @@ Govern portable agent-context costs: standing-surface attribution, budget guide-
 
 #### `ki-tokenomics-claude`
 
-Audit direct non-secret Claude Code filesystem evidence in one repository: instructions, imports, rules, settings, and MCP declarations. Use for Claude runtime evidence supporting portable tokenomics; effective session state remains unavailable, portable budgets belong to `ki-tokenomics`, and Codex evidence to `ki-tokenomics-codex`.
+Audit non-secret Claude Code repository evidence—instructions, rules, settings, imports, and MCP declarations—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-codex` for Codex evidence; effective session state is outside this filesystem audit.
 
 - **Kind:** Governance
 - **Arguments:** `audit | conform | educate | refresh | help`
@@ -265,7 +265,7 @@ Audit direct non-secret Claude Code filesystem evidence in one repository: instr
 
 #### `ki-tokenomics-codex`
 
-Audit direct non-secret Codex filesystem evidence in one repository: trusted configuration, AGENTS.md, skills, and custom-agent sources. Use for Codex runtime evidence supporting portable tokenomics; effective session state remains unavailable, portable budgets belong to `ki-tokenomics`, and Claude evidence to `ki-tokenomics-claude`.
+Audit non-secret Codex repository evidence—configuration, AGENTS.md, skills, and custom agents—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-claude` for Claude evidence; effective session state is outside this filesystem audit.
 
 - **Kind:** Governance
 - **Arguments:** `audit | conform | educate | refresh | help`
@@ -276,7 +276,7 @@ Audit direct non-secret Codex filesystem evidence in one repository: trusted con
 
 #### `ki-agentic-radar`
 
-Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research claims, and vendor terms. Use to compare maturity, interoperability, stance, or movement; `ki-model-radar` owns models and routes, `ki-pulse` discovers current signals, and `ki-next` owns follow-on work.
+Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-model-radar` owns models, `ki-pulse` discovers signals, and `ki-next` owns follow-on work.
 
 - **Kind:** Governance
 - **Arguments:** `audit | conform | educate | help | refresh`
@@ -285,7 +285,7 @@ Maintain an evidence-backed radar for agentic protocols, interfaces, organisatio
 
 #### `ki-agora`
 
-Govern reciprocal Agora membership between KI repositories: a home declares purpose, canonical members, and roles, while each member independently consents. Use to define, audit, or conform Agora declarations; the `ki` CLI owns local resolution and environment tooling owns editor or client projections.
+Govern reciprocal Agora membership: a KI home declares purpose, canonical members, and roles, while each member independently consents. Use to define or audit declarations; the `ki` CLI owns local resolution and environment tooling owns client projections.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
@@ -312,7 +312,7 @@ Create, update, resume, audit, or remove a concise repository-owned checkpoint f
 
 #### `ki-decision-records`
 
-Create, audit, and maintain typed KI Decision Records for durable rationale and authority. Use to record or review a governance, architecture, knowledge, strategy, product, data, people, legal, or policy decision; use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future work.
+Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
 
 - **Kind:** Governance
 - **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | new <scope> "<title>" | refresh`
@@ -321,7 +321,7 @@ Create, audit, and maintain typed KI Decision Records for durable rationale and 
 
 #### `ki-delegation`
 
-Govern durable delegation packets for approved high-risk agent work, including locked decisions, authority, isolation, escalation, verification, and return boundaries. Use when a cross-agent brief must survive a runtime handoff; active process skills own worker selection and execution, while `ki-trades` owns cross-repository transfer.
+Govern durable packets for approved high-risk agent delegation: authority, isolation, locked decisions, escalation, verification, and return. Use when a cross-agent brief must survive a handoff; process skills own execution and `ki-trades` cross-repository transfer.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <work-item> | help | refresh`
@@ -330,7 +330,7 @@ Govern durable delegation packets for approved high-risk agent work, including l
 
 #### `ki-engineering`
 
-Audit or conform the shared KI TypeScript/Bun engineering standard: comprehension-first modularity, reuse, boundary testing, package scripts, tsconfig, Biome, and toolchain consistency. Use for code or toolchain quality; `ki-repo` owns repository configuration, `ki-authoring` document style, and `ki-repo-mcp` MCP specifics.
+Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts, tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for documents, and `ki-repo-mcp` for MCP specifics.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
@@ -339,7 +339,7 @@ Audit or conform the shared KI TypeScript/Bun engineering standard: comprehensio
 
 #### `ki-git`
 
-Govern KI Git commits and safe shared-working-tree practice: Conventional Commit messages, touched-path tracking, branch or worktree selection, explicit staging, and stale-lock semantics. Use when preparing a commit or coordinating concurrent human or agent edits; `ki-repo` owns GitHub settings and environment skills own hook registration.
+Govern KI Git commits and shared-tree safety: Conventional Commits, touched-path tracking, explicit staging, branch or worktree choice, and stale locks. Use when preparing commits or coordinating concurrent edits; `ki-repo` owns GitHub settings.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
@@ -348,7 +348,7 @@ Govern KI Git commits and safe shared-working-tree practice: Conventional Commit
 
 #### `ki-guides`
 
-Create, audit, and maintain repository-local guides for the practical how of using, operating, contributing to, or maintaining a system. Use for procedures and contributor guidance; `ki-decision-records` owns why, `ki-specs` owns accepted behaviour, `ki-work-roadmap` owns future work, and `ki-authoring` owns style.
+Create or audit repository-local guides for the practical how of using, operating, contributing to, or maintaining a system. Use `ki-decision-records` for why, `ki-specs` for accepted behaviour, `ki-work-roadmap` for future work, and `ki-authoring` for style.
 
 - **Kind:** Governance
 - **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
@@ -357,7 +357,7 @@ Create, audit, and maintain repository-local guides for the practical how of usi
 
 #### `ki-model-radar`
 
-Maintain an evidence-backed radar for models and model-agent routes. Use to compare routes, assess benchmark relevance, or review recommendation and retirement movement; `ki-pulse` discovers public signals, `ki-tokenomics` owns purpose categories, runtime adapters own effective configuration, and `ki-agentic-radar` owns broader agentic standards.
+Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse` for signal discovery, and `ki-tokenomics` for model purpose.
 
 - **Kind:** Governance
 - **Arguments:** `audit | conform | educate | help | refresh`
@@ -366,7 +366,7 @@ Maintain an evidence-backed radar for models and model-agent routes. Use to comp
 
 #### `ki-specs`
 
-Create, audit, and maintain repository Specifications as the accepted behaviour and quality contract, with stable requirements, conformance state, verification plans, and evidence. Use to specify what a system must do; `ki-decision-records` owns why, `ki-guides` how, and `ki-work-roadmap` future delivery.
+Create or audit repository Specifications: accepted behaviour and quality requirements with conformance state, verification plans, and evidence. Use `ki-decision-records` for why, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
 
 - **Kind:** Governance
 - **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh`
@@ -384,7 +384,7 @@ Operate one repository's side of a declared cross-repository trade: prepare, ins
 
 #### `ki-trades`
 
-Govern typed directional work and knowledge trades between registered KI repositories, including routes, identities, immutable submission, receipt, receiver decisions, observation, release, and pruning. Use to design or audit the trade system; `ki-trade` performs one side's actions and the receiver retains priority and acceptance authority.
+Govern directional work and knowledge trades between KI repositories: routes, records, authority, receipt, decisions, release, and pruning. Use to design or audit the system; `ki-trade` performs one side and `ki-next` owns receiver disposition.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
@@ -395,7 +395,7 @@ Govern typed directional work and knowledge trades between registered KI reposit
 
 #### `ki-bootstrap`
 
-Explain first-time KI activation through the `ki` CLI: bootstrap a user, select a verified harness, and distinguish user skills from repository governance. Use for setup, skill activation, local development, or why an audit will not run; `ki --help` owns command mechanics and `ki-repo` owns repository coverage.
+Explain first-time KI activation through the `ki` CLI: user bootstrap, verified harness selection, skills, and repository governance. Use for setup or audit-activation problems; `ki --help` owns command mechanics and `ki-repo` repository coverage.
 
 - **Kind:** Process
 - **Arguments:** `help | refresh`
@@ -413,7 +413,7 @@ Audit or conform the universal KI repository contract declared by `.ki.toml`, in
 
 #### `ki-skills`
 
-Create, audit, review, extract, or optimise Agent Skills against current portable and KI authoring practice. Use for SKILL.md scope, descriptions, progressive disclosure, scripts, references, rubric checks, or reusable capability analysis; use `ki-subagents` for agent roles and `ki-repo-harness` for bundle layout.
+Create, audit, review, extract, or optimise Agent Skills. Use for SKILL.md scope, descriptions, progressive disclosure, scripts, references, rubrics, or reusable capability analysis; use `ki-subagents` for agent roles and `ki-repo-harness` for bundle layout.
 
 - **Kind:** Governance
 - **Arguments:** `audit <skill-or-repo> | conform <skill> | educate <description> | extract <repo> [--history <path>...] | help | optimise <skill> | refresh | review <skill-or-repo>`
@@ -424,7 +424,7 @@ Create, audit, review, extract, or optimise Agent Skills against current portabl
 
 #### `ki-repo-dotfiles-chezmoi`
 
-Audit or conform the KI chezmoi dotfiles-management standard: source-versus-target editing, app-mutated configuration, shell and `bin/` layout, prefix semantics, fragments, comment preservation, and reverse merges. Use for a chezmoi source repository, not a specific repository's personal tool choices.
+Audit or conform KI chezmoi source repositories: source-versus-target editing, app-mutated configuration, shell and `bin/` layout, prefixes, fragments, comments, and reverse merges. Use for dotfiles structure, not a repository's personal tool choices.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
@@ -433,7 +433,7 @@ Audit or conform the KI chezmoi dotfiles-management standard: source-versus-targ
 
 #### `ki-repo-harness`
 
-Audit, conform, or design a KI-compatible harness that co-locates skills, subagents, MCP servers, evals, and hooks and publishes a verified installed payload. Use for harness source layout, prefix identity, declarations, or catalogue publication; content quality belongs to the relevant capability skill.
+Audit or design a KI-compatible harness that publishes skills, subagents, MCP servers, evals, and hooks as a verified installed payload. Use for source layout, prefix identity, declarations, or catalogue publication; each capability skill owns content quality.
 
 - **Kind:** Governance
 - **Arguments:** `audit [path] | conform [path] | educate <name> | help | refresh`
@@ -442,7 +442,7 @@ Audit, conform, or design a KI-compatible harness that co-locates skills, subage
 
 #### `ki-repo-homebrew-tap`
 
-Audit or scaffold a KI Homebrew tap repository and its `Formula/*.rb` distribution surface against Homebrew rules. Use when adding a formula, checking tap shape, sources, README publication, `brew audit`, or `brew style`; `ki-repo-tools` owns CLI repositories and `ki-repo` universal files and settings.
+Audit or scaffold a KI Homebrew tap and its `Formula/*.rb` distribution surface. Use for formula sources, tap shape, README publication, `brew audit`, or `brew style`; `ki-repo-tools` owns CLI repositories and `ki-repo` universal files.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
@@ -487,7 +487,7 @@ Audit or conform the local structural overlay for a designated principal KI know
 
 #### `ki-repo-kb-streams`
 
-Govern the KI knowledge-base Streams container: flat `Streams/Roadmap` work records and `Streams/Housekeeping` templates. Use to establish, audit, route, or migrate KB forward-work structure; shared lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept`, while `ki-repo-kb` owns the zone model.
+Govern the KI knowledge-base Streams container: flat Roadmap records and Housekeeping templates. Use for KB forward-work structure or migration; lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept`, while `ki-repo-kb` owns zones.
 
 - **Kind:** Governance
 - **Arguments:** `audit | conform | help | educate | iterate | propose | ready | refresh | rollout`
@@ -496,7 +496,7 @@ Govern the KI knowledge-base Streams container: flat `Streams/Roadmap` work reco
 
 #### `ki-repo-mcp`
 
-Audit or scaffold KI MCP server repositories against the workspace-MCP standard: layout, dependency injection, tool naming, annotations, access gates, audit logging, and security invariants. Use for MCP server code or standard refresh; `ki-engineering` owns common toolchains, `ki-skills` SKILL.md quality, and `ki-repo` settings.
+Audit or scaffold KI MCP server code for workspace-MCP layout, dependency injection, tool naming, access gates, logging, and security. Use `ki-engineering` for common toolchains, `ki-skills` for SKILL.md, and `ki-repo` for repository settings.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
@@ -505,7 +505,7 @@ Audit or scaffold KI MCP server repositories against the workspace-MCP standard:
 
 #### `ki-repo-plugins`
 
-Audit, conform, or scaffold the generated KI Claude plugin-marketplace projection: manifests, verbatim skills, flattened agents, deferred MCP configuration, and generated-only integrity. Use for the marketplace's on-disk shape; `ki-binding-claude` owns generation and Cowork enablement, while `ki-repo` owns universal files.
+Audit or scaffold the generated KI Claude plugin marketplace: manifests, copied skills, flattened agents, deferred MCP configuration, and generated integrity. Use `ki-binding-claude` for generation or Cowork enablement and `ki-repo` for universal files.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
@@ -523,7 +523,7 @@ Explain the baseline and composable structures for a non-Knowledge-Base KI Proje
 
 #### `ki-repo-specifications`
 
-Audit, conform, or scaffold the minimal repository structure for KI Specifications: marker configuration plus proposals, specifications, schemas, templates, examples, docs, and tooling. Use for the specifications repository container; `ki-specs` owns requirement records, `ki-decision-records` decisions, and `ki-repo` universal files.
+Audit or scaffold the KI Specifications repository container: proposals, specifications, schemas, templates, examples, docs, and tooling. Use `ki-specs` for requirement records, `ki-decision-records` for decisions, and `ki-repo` for universal files.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
@@ -532,7 +532,7 @@ Audit, conform, or scaffold the minimal repository structure for KI Specificatio
 
 #### `ki-repo-tools`
 
-Audit or scaffold a KI `tools-*` repository containing one standalone CLI, its installer, release and changelog flow, CI, help, completion, and optional manual. Use for CLI repository shape; `ki-repo-homebrew-tap` owns formulae, `ki-engineering` TypeScript/Bun toolchains, and `ki-repo` universal files.
+Audit or scaffold a KI `tools-*` repository containing one CLI, installer, releases, changelog, CI, help, completion, and optional manual. Use `ki-repo-homebrew-tap` for formulae, `ki-engineering` for TypeScript/Bun, and `ki-repo` for universal files.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
@@ -541,7 +541,7 @@ Audit or scaffold a KI `tools-*` repository containing one standalone CLI, its i
 
 #### `ki-repo-website`
 
-Govern the generator-neutral KI website seam: one site source root, reproducible `dist/`, and `ki:site:build`, `ki:site:dev`, and `ki:site:clean`. Use for any website repository before selecting exactly one implementation, `ki-repo-website-content` or `ki-repo-website-app`; add Cloudflare hosting independently.
+Govern the generator-neutral KI website seam: source root, reproducible `dist/`, and `ki:site:build`, `ki:site:dev`, and `ki:site:clean`. Use before choosing `ki-repo-website-content` or `ki-repo-website-app`; hosting is independent.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
@@ -559,7 +559,7 @@ Govern the KI interactive website implementation: one client-side React applicat
 
 #### `ki-repo-website-cloudflare`
 
-Govern Cloudflare Workers Static Assets hosting for either KI website implementation, including `wrangler.jsonc`, `dist/`, Workers Builds, workers.dev, custom domains, and deploy scripts. Use for Cloudflare publication or static-deployment diagnosis; it never selects the site generator and does not use Pages.
+Govern Cloudflare Workers Static Assets hosting—not Pages—for either KI website implementation. Use for `wrangler.jsonc`, `dist/`, Workers Builds, workers.dev, domains, deploy scripts, or static-deployment diagnosis; site-generator choice remains independent.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
@@ -568,7 +568,7 @@ Govern Cloudflare Workers Static Assets hosting for either KI website implementa
 
 #### `ki-repo-website-content`
 
-Govern the KI content-led website implementation: Eleventy 3, Markdown or structured data, Nunjucks, Tailwind 4 semantic tokens, and portable `dist/` output. Use for documentation, publication, or marketing page collections; select `ki-repo-website-app` for a single React/Vite SPA and keep hosting separate.
+Govern KI content sites built with Eleventy 3, Markdown or data, Nunjucks, Tailwind 4 tokens, and portable `dist/`. Use for documentation, publication, or marketing pages; use `ki-repo-website-app` for a React/Vite SPA and choose hosting separately.
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`

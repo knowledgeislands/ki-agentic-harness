@@ -5,10 +5,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-repo-website]
 contributes: ['.gitignore']
 description: >
-  Govern Cloudflare Workers Static Assets hosting for either KI website implementation, including
-  `wrangler.jsonc`, `dist/`, Workers Builds, workers.dev, custom domains, and deploy scripts. Use for
-  Cloudflare publication or static-deployment diagnosis; it never selects the site generator and does not use
-  Pages.
+  Govern Cloudflare Workers Static Assets hosting—not Pages—for either KI website implementation. Use for
+  `wrangler.jsonc`, `dist/`, Workers Builds, workers.dev, domains, deploy scripts, or static-deployment
+  diagnosis; site-generator choice remains independent.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
