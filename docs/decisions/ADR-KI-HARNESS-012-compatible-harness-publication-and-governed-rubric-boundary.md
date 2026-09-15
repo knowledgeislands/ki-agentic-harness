@@ -28,7 +28,7 @@ A skill is addressed as `<harness-id>:<skill-name>`. Other capability kinds rese
 
 The harness defines this payload and capability semantics only. `tools-ki` owns acquisition evidence, installation layout, capability activation, repository resolution, public commands, governed-rubric execution, reporting, migration, release delivery, and support diagnostics. The host selects, validates, orders, and runs compatible rubric definitions through one generic runtime. Missing, incompatible, undeclared, or untrusted capabilities fail before a write.
 
-Repository vendoring ends. Existing `.ki` runner and manifest state is a migration input only: it is never an execution fallback and is never removed without complete ownership proof. Current activation uses managed links from the verified installed payload; a copied projection or a version-selection model is future work, not part of this contract.
+Repository vendoring ends. Existing `.ki` runner and manifest state is a migration input only: it is never an execution fallback and is never removed without complete ownership proof. Current activation uses managed links from the verified installed payload. Copied projection and version selection are outside the Harness payload contract.
 
 The one repository-local exception is an explicitly declared `ki-self` at the canonical physical `.agents/skills/ki-self/` source. Its direct catalogue uses the same native rubric contract and repository-scoped transaction, but remains repository-owned, reports distinct provenance, and grants no authority to another local skill or caller-selected path.
 

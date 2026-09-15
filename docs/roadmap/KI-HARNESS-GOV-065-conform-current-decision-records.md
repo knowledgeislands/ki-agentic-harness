@@ -4,12 +4,12 @@ area: GOV
 title: Conform current Decision Records
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 2b34d951560dbc800348e42c8398af4a28ede2b3
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T05:40:45Z
+updated_at: 2026-09-15T12:20:22Z
 ---
 
 # Conform current Decision Records
@@ -39,13 +39,13 @@ The candidate set is bounded:
 
 ## Steps
 
-- [ ] Re-read each complete current record and classify every candidate sentence as current rationale, historical narration, future obligation, or semantic conflict before editing.
-- [ ] Rewrite only the four bounded passages so each record states current authority directly and retains its original rationale.
-- [ ] Confirm `KI-HARNESS-GOV-058` and `KI-HARNESS-RTP-002` still retain the two material forward-work outcomes before removing tracker narration.
-- [ ] Keep compatible-Harness version selection outside the Harness payload contract unless a separate adopted owner already exists; do not create speculative work merely to preserve the phrase.
-- [ ] Remove obsolete legacy-source wording from `ADR-KI-HARNESS-TOOLCHAIN-003` only after checking the current `ki-binding` source contract.
-- [ ] Search all current Decision Records for equivalent `ROADMAP`, “future work”, supersession, or migration narration and report any additional semantic candidate rather than widening this cleanup automatically.
-- [ ] Run Decision Record, authoring, roadmap, and repository-wide verification.
+- [x] Re-read each complete current record and classify every candidate sentence as current rationale, historical narration, future obligation, or semantic conflict before editing.
+- [x] Rewrite only the four bounded passages so each record states current authority directly and retains its original rationale.
+- [x] Confirm `KI-HARNESS-GOV-058` and `KI-HARNESS-RTP-002` still retain the two material forward-work outcomes before removing tracker narration.
+- [x] Keep compatible-Harness version selection outside the Harness payload contract unless a separate adopted owner already exists; do not create speculative work merely to preserve the phrase.
+- [x] Remove obsolete legacy-source wording from `ADR-KI-HARNESS-TOOLCHAIN-003` only after checking the current `ki-binding` source contract.
+- [x] Search all current Decision Records for equivalent `ROADMAP`, “future work”, supersession, or migration narration and report any additional semantic candidate rather than widening this cleanup automatically.
+- [x] Run Decision Record, authoring, roadmap, and repository-wide verification.
 
 ## Files touched
 
@@ -87,6 +87,42 @@ No guide change is expected because no user workflow changes.
 ### Roadmap
 
 Retain the existing applicability and Cowork/MCP owners. Capture only a newly proven, non-duplicate forward obligation; do not create a record for an explicitly excluded possibility.
+
+## Review
+
+### Delivered
+
+From immutable baseline `2b34d951560dbc800348e42c8398af4a28ede2b3`, conformed the four approved current Decision Records to present-state authority. The delivery removes tracker narration, excluded future-model language, and superseded source-transition wording without changing the enacted decisions or their retained rationale.
+
+### Summary of changes
+
+- Recast ADR-007 applicability as the current selected-audit and coverage boundary while leaving implementation ownership with `KI-HARNESS-GOV-058`.
+- Kept copied projection and version selection explicitly outside ADR-012's Harness payload contract without promising later work.
+- Retained house-mcp-manager as prior art in TOOLCHAIN-002 while stating that the decision does not adopt cross-surface enablement; `KI-HARNESS-RTP-002` remains its roadmap owner.
+- Stated TOOLCHAIN-003's renderer-neutral XDG source directly and removed the obsolete source-transition and fallback narration.
+- Searched all current Decision Records for equivalent wording. Other matches describe current compatibility boundaries, retained migration safety, present rationale, or reading-order relationships; changing them would exceed this bounded cleanup.
+
+### Verification
+
+- Focused Decision Record search classified the approved passages and found no additional in-scope rewrite.
+- `ki repo audit --skill ki-decision-records --repo .` — passed.
+- `ki repo audit --skill ki-binding --repo .` — passed.
+- `ki repo audit --skill ki-work-roadmap --repo .` — passed.
+- `ki repo audit --skill ki-authoring --repo .` — passed.
+- `bun run test` and `bunx tsc --noEmit` — reserved for the aggregate batch gate after all independent delivery commits.
+- `git diff --check` — passed.
+
+### Outstanding concerns
+
+None within the approved boundary. The broader search found current migration language in other Decision Records, but those passages state active fail-closed compatibility and ownership constraints rather than superseded narrative.
+
+### Post-change review
+
+The four records now state present authority without losing their architectural rationale or hiding forward work. The edits are prose-only and retain the existing owners, so regression risk is limited to accidental semantic drift; focused audits and the aggregate batch gate cover the relevant document contracts. The item is ready for consolidated acceptance.
+
+### Mini recap
+
+Delivered four bounded living-record corrections, verified their retained owners and current binding source, and found no additional automatically actionable cleanup. No new durable learning or roadmap item is required.
 
 ## Discussion
 

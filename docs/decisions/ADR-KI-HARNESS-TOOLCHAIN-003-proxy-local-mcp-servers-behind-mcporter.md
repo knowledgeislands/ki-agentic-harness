@@ -25,7 +25,7 @@ KI-owned local stdio MCP servers are proxied behind mcporter and consume a singl
 ## Consequences
 
 - The 19 KI servers occupy one Claude Code slot, leaving headroom for third-party servers within the active-server budget.
-- The server set lives in one renderer-neutral, XDG-located source (`$XDG_CONFIG_HOME/ki/mcp-servers.yaml`), which feeds mcporter's config and the Claude Desktop config alike; `~/.claude.json` carries only the single proxy entry plus any third-party servers. (This superseded an earlier state where mcporter's own `mcporter.json` was the source — see `ki-binding`'s 2026-07-13 renderer-neutral reframing.)
+- The server set lives in one renderer-neutral, XDG-located source (`$XDG_CONFIG_HOME/ki/mcp-servers.yaml`), which feeds mcporter's config and the Claude Desktop config alike; `~/.claude.json` carries only the single proxy entry plus any third-party servers.
 - mcporter's typed clients for the `mcp-*` repos are generated per-repo via each repo's `ki:generate:client` script (ki-repo-mcp conform).
 - The `ki-tokenomics` checks confirm the KB-FS-adjacent servers are distinct capabilities, not redundant.
 
@@ -33,4 +33,4 @@ KI-owned local stdio MCP servers are proxied behind mcporter and consume a singl
 
 - [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
 - [mcporter](https://github.com/steipete/mcporter) — MCP proxy daemon and typed-client toolkit.
-- [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/) — governs the canonical source's location (`$XDG_CONFIG_HOME/ki/mcp-servers.yaml`) and the `ki-binding-chezmoi` legacy fallback path (`$XDG_DATA_HOME/chezmoi/.chezmoidata/mcps.yaml`).
+- [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/) — governs the canonical source's location (`$XDG_CONFIG_HOME/ki/mcp-servers.yaml`).

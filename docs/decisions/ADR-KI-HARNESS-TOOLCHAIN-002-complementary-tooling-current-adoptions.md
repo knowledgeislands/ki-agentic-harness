@@ -42,7 +42,7 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 ### Prior art — house-mcp-manager
 
-house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by editing Claude Code's `~/.claude.json`. It is Claude-Code-only; the Code surface's MCP cost is now handled by the mcporter proxy (TOOLCHAIN-003). It is noted as prior art for MCP-surface enablement. The live, unmet need — managing enablement across claude.ai web connectors and Cowork per-workspace — is a ROADMAP item, not an adoption here.
+house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by editing Claude Code's `~/.claude.json`. It is Claude-Code-only; the Code surface's MCP cost is handled by the mcporter proxy (TOOLCHAIN-003). It remains prior art for MCP-surface enablement. This decision makes no adoption for web-connector or Cowork workspace enablement.
 
 ## Consequences
 
@@ -50,7 +50,7 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 - The KI skills paradigm remains the single skill-governance layer; no competing monolithic-skill install conventions (superpowers, gstack, Caveman) are introduced.
 - The file-based `memory/` + `MEMORY.md` convention is the single persistent-memory mechanism (Engram declined); the `mcp/` shelf stays KI-authored-only (MarkItDown's server excluded).
 - The `subagents/` shelf has a validated reference pattern (house-agents); house-code adds active pruning as a personal tool.
-- Cross-surface MCP/skill enablement (claude.ai, Cowork) is carried as a ROADMAP item.
+- Cross-surface MCP/skill enablement for claude.ai and Cowork is not adopted by this decision.
 
 ## References
 
