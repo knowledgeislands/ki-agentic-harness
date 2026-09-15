@@ -12,8 +12,7 @@ const input = (overrides: Partial<BatchCycleInput> = {}): BatchCycleInput => ({
     itemIds: ['TEST-001'],
     approvedPayloadSha256: hash,
     runBinding: { id: 'TEST-BATCH-RUN-001', approvedPayloadSha256: hash },
-    completionTarget: 'awaiting-review',
-    closureItemIds: []
+    completionTarget: 'awaiting-review'
   },
   adapter: { kind: 'local', adapter: 'roadmap' },
   repository: {
@@ -158,13 +157,12 @@ test('admits a named dependent item only after its in-batch dependency', () => {
   })
 })
 
-test('coordinates outcome-authorised delivery only with evidence and complete closure scope', () => {
+test('coordinates outcome-authorised delivery with evidence and derives all-item closure from done', () => {
   const outcome = {
     ...input().authorisation,
     authorityMode: 'outcome' as const,
     authorityEvidence: 'Current human authority.',
-    completionTarget: 'done' as const,
-    closureItemIds: ['TEST-001']
+    completionTarget: 'done' as const
   }
   expect(evaluateBatchCycle(input({ authorisation: outcome }))).toEqual({
     kind: 'coordinate',
@@ -175,12 +173,6 @@ test('coordinates outcome-authorised delivery only with evidence and complete cl
   expect(evaluateBatchCycle(input({ authorisation: { ...outcome, authorityEvidence: null } }))).toMatchObject({
     kind: 'stop',
     reason: 'outcome-authorised batch lacks current human authority evidence',
-    writes: false
-  })
-
-  expect(evaluateBatchCycle(input({ authorisation: { ...outcome, closureItemIds: [] } }))).toMatchObject({
-    kind: 'stop',
-    reason: 'done completion target lacks closure authority for every item',
     writes: false
   })
 })

@@ -72,6 +72,7 @@ The records are living, compact, and independent. The order below is a **curated
 43. [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-reciprocal-agora-membership.md) — portable consent for named repository collections and explicit local target selection.
 44. [GDR-KI-HARNESS-007](GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md) — ownership of document metadata and principal authority.
 45. [GDR-KI-HARNESS-008](GDR-KI-HARNESS-008-portable-work-item-timestamps.md) — portable work-item creation and semantic-update timestamps.
+46. [GDR-KI-HARNESS-009](GDR-KI-HARNESS-009-lean-exact-set-batch-authority.md) — lean exact-set authority for autonomous batch delivery and consolidated acceptance.
 
 ## Template
 

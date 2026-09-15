@@ -54,7 +54,7 @@ const retentionReason = (
     record.items.some((item) => item.state !== 'inactive' || !item.retainedOutcomeEvidence?.trim())
   )
     return 'running work or missing retained canonical outcome evidence'
-  const activity = [record.lastGitChangeAt, record.lastRecordedActivityAt, batch.approvedAt, batch.timeboxEndsAt].map(
+  const activity = [record.lastGitChangeAt, record.lastRecordedActivityAt, batch.approvedAt, batch.expiresAt].map(
     instant
   )
   if (!Number.isFinite(now) || activity.some((time) => time === undefined)) return 'unverifiable activity timestamps'

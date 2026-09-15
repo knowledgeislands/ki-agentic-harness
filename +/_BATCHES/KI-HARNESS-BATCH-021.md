@@ -22,3 +22,7 @@ Deliver the explicitly approved lean exact-set batch contract in this Harness re
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-021-RUN-001 7cd8a87daa9fe8dddad506c8be7b84cd12f1e184cb1b6e56b681036ee87f94d1 -->
+
+| Item | Result | Baseline | Result commit | Exception |
+| --- | --- | --- | --- | --- |
+| KI-HARNESS-GOV-066 | awaiting-review | `597762d6` | pending | None |

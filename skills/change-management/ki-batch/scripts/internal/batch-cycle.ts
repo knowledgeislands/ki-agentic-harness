@@ -29,7 +29,6 @@ export type BatchCycleInput = {
     approvedPayloadSha256: string
     runBinding: { id: string; approvedPayloadSha256: string } | null
     completionTarget: 'awaiting-review' | 'done'
-    closureItemIds: readonly string[]
   }
   adapter: AdapterResolution
   repository: {
@@ -72,12 +71,6 @@ export const evaluateBatchCycle = ({
     return stop('batch run is not bound to the approved payload')
   if (new Set(authorisation.itemIds).size !== authorisation.itemIds.length)
     return stop('batch authorisation repeats an item identifier')
-  if (
-    authorisation.completionTarget === 'done' &&
-    (authorisation.closureItemIds.length !== authorisation.itemIds.length ||
-      authorisation.itemIds.some((item) => !authorisation.closureItemIds.includes(item)))
-  )
-    return stop('done completion target lacks closure authority for every item')
   if (new Set(items.map((item) => item.id)).size !== items.length)
     return stop('canonical item resolution repeats an item identifier')
   if (!repository.expectedHeadMatches) return stop('repository HEAD moved after batch preflight')

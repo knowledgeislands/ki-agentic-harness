@@ -13,18 +13,13 @@ repository: ${repositoryIdentity}
 approved: true
 approved_at: ${approvedAt}
 approved_payload_sha256: pending
-run_id: PROJECT-BATCH-001-RUN-001
-timebox_ends_at: ${timebox}
+expires_at: ${timebox}
 item_ids: [PROJECT-001]
 completion_target: awaiting-review
-mandatory_stops: [unapproved-decision]
+policy: safe-local-v1
 ---
 
-# Completed batch
-
-## Scope
-
-Deliver PROJECT-001.
+# PROJECT-BATCH-001
 `
   const hash = approvedPayloadSha256(unsigned)
   const contents = `${unsigned.replace('pending', hash as string)}
@@ -105,7 +100,7 @@ test('retains malformed records, altered authority, absent ledgers and mismatche
   const batch = record()
   for (const contents of [
     'invalid',
-    batch.contents.replace('Deliver PROJECT-001.', 'Deliver PROJECT-002.'),
+    batch.contents.replace('PROJECT-BATCH-001', 'PROJECT-BATCH-002'),
     batch.contents.replace('ki-batch-run: PROJECT-BATCH-001-RUN-001', 'ki-batch-run: PROJECT-BATCH-001-RUN-002'),
     batch.contents.split('\n## Run ledger')[0]
   ]) {

@@ -35,7 +35,7 @@ The standard local delivery journey is:
 3. Use `ki-implement` to deliver one explicitly approved ready record through the local adapter. It establishes a baseline, applies bounded changes, verifies them, and stops at `awaiting-review`.
 4. Use `ki-accept` after human approval to close an evidence-backed delivery record or a rejected, duplicate, or merged Triage disposition as retained done, and optionally prune an explicitly selected eligible done record later.
 
-Use `ki-batch` only for an explicitly authorised, single-repository set of independent work records. It plans the named candidates first and then runs bounded cycles; it does not select or reshape backlog work. Use `ki-recap` at a session boundary to summarise completed changes, surface only genuinely unfinished work, and route durable learning.
+Use `ki-batch` for one explicitly authorised, single-repository autonomous window over an exact set of Ready work records. Reviewed-item authority uses the approved set; explicit outcome authority lets the orchestrator complete selection and readiness, freeze the eligible set, deliver it, and consolidate acceptance without another gate. The batch is a lean authority envelope and ledger; canonical items retain their plans and evidence. Use `ki-recap` at a session boundary to summarise completed changes, surface only genuinely unfinished work, and route durable learning.
 
 ## Delegate work or define a subagent
 
