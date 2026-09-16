@@ -4,12 +4,12 @@ title: Reconcile memory-store defects
 area: OPS
 theme: operations
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a20371601f95ea46a0602713429e7816be31486a
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-16T12:58:00Z
+updated_at: 2026-09-16T13:18:45Z
 ---
 
 ## Goal
@@ -107,6 +107,10 @@ The result meets the goal: the retained runtime-strategy memory now points to th
 ### Mini recap
 
 Reconciled the known legacy memory-store defects and preserved the path-split evidence for the broader state-routing decision. No backend redesign, bulk migration, or additional cleanup was performed.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on the review packet above.
 
 ## Discussion
 
