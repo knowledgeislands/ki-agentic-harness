@@ -4,12 +4,12 @@ area: GOV
 title: Expand Ignore Coverage
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: cac2e15033424b4b5d0c883f8486791268b6f313
 created_at: 2026-09-16T20:28:46Z
-updated_at: 2026-09-16T21:06:48Z
+updated_at: 2026-09-16T21:42:10Z
 ---
 
 # Expand Ignore Coverage
@@ -122,6 +122,10 @@ The narrow addition closes the only evidenced coverage gap in the supported stac
 ### Mini recap
 
 Turborepo local cache is now governed, attributable, normalized, tested, and documented; all planned verification passes and the item is ready for human acceptance.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on the review packet above.
 
 ## Discussion
 
