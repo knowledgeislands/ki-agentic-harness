@@ -1,136 +1,110 @@
 ---
 id: KI-HARNESS-OPS-005
-title: Acquire AI sessions
+title: Acquire AI session residuals
 area: OPS
 theme: operations
 horizon: now
-status: awaiting-review
+status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-16T21:56:56Z
+updated_at: 2026-09-16T22:05:58Z
 ---
 
 ## Goal
 
-Give Knowledge Islands a provider-neutral way to discover and faithfully stage repository-relevant AI sessions so durable knowledge can later be harvested and the source can eventually be retired safely.
+Give Knowledge Islands a selective, provider-neutral way to review AI sessions for useful residual knowledge that was not captured during the original work, then faithfully acquire only the source material needed for later harvesting.
 
 ## Context
 
-Claude and Codex currently hold accumulated local working state through different mechanisms. Both providers need a comparable read-only discovery, listing, reading, and checkpoint surface. The KI command owns acquisition into a repository working area; the provider MCPs supply only source mechanics.
+AI-session acquisition is not bulk preservation and is not synonymous with housekeeping. Most agentic Codex and Claude sessions complete work directly in repositories, so their normal outcome should be no residual acquisition. ChatGPT chat-mode conversations are more likely to contain useful reasoning, decisions, or source material that has not reached a repository and therefore deserve a stronger review path.
+
+The provider MCPs currently expose read-only source mechanics under `mcp-housekeeping-claude`, `mcp-housekeeping-codex`, and `mcp-housekeeping-chatgpt`. The corresponding Harness skills are also still named `ki-housekeeping-*`, even where their content describes acquisition. The action-first `tools-ki` contract now discovers machine-readable `ki-acquire-*` adapter declarations instead of inferring acquisition from housekeeping prose or provider names.
 
 ## Boundary
 
-This first delivery does not archive or delete source sessions, infer durable knowledge automatically, decrypt or reverse-engineer opaque provider stores, or make MCP a knowledge store. It preserves provider-specific tools and does not require perfect repository routing.
+This item owns selective session review and acquisition contracts. It does not acquire every session, infer that a completed agent session contains residual value, classify opaque ChatGPT application records as decoded conversations, harvest durable knowledge automatically, or archive or delete source sessions. Housekeeping may consume verified acquisition evidence before a later cleanup decision, but cleanup remains a separate concern and authority boundary.
 
 ## Current state
 
-Arcadia owns the provider-neutral acquisition lifecycle. `mcp-housekeeping-claude` and `mcp-housekeeping-codex` expose comparable read-only session surfaces. `tools-ki` commit `5c49e8a` adds `ki space acquire chatgpt import` for a validated, user-prepared local capture, staged content-addressably at `+/_ACQUIRE/chatgpt/`.
+The source-mechanics groundwork is real but the end-to-end capability is incomplete. The Claude, Codex, and ChatGPT MCP repositories expose comparable read-only discovery, listing, reading, and checkpoint operations, and their tests and builds pass. The ChatGPT local-store adapter safely inventories opaque `*.data` records and can return exact bytes, but those bytes do not provide a semantic conversation review surface.
 
-The installed ChatGPT application has been inventoried at `~/Library/Application Support/com.openai.chat`: 185 conversation records across 33 project roots. Its project-scoped `conversations-v3-*/<session>.data` records are opaque, so the direct adapter must preserve their bytes and metadata rather than assume a private plaintext format. No source material has been changed.
+`tools-ki` commit `a49ff67` provides the action-first `ki acquire list|import|status|reconcile|reset` framework. Its adapter registry expects `ki-acquire-chatgpt`, `ki-acquire-claude`, and `ki-acquire-codex`; only `ki-acquire-granola` is currently published by the Harness. The executable ChatGPT path accepts a user-prepared local capture and produces a verified KEP, but it does not discover ChatGPT chat conversations, decide which sessions contain residual knowledge, or stage selected conversation material directly into a receiving repository.
 
-The 2026-09-02 resumption revalidated the clean `mcp-housekeeping-chatgpt` checkout: its opaque local-store adapter and three focused tests pass with TypeScript. The repository is registered and declares reciprocal `ki-all` and `ki-mcps` Agora memberships. Its engineering audit still reports missing shared toolchain/Knip/coverage configuration, so final cross-provider integration verification remains open and the engineering baseline is routed to receiver-owned `MCP-HG-FND-001` in commit `6d02148`.
+The former Awaiting review packet proved the read-only MCP mechanics, bindings, registry entries, Agora membership, and prepared-capture packaging. It did not prove the selective residual-review workflow now required, so this record has returned to In progress.
 
 ## Steps
 
-- [x] Define the shared session adapter result and checkpoint contract.
-- [x] Add matching read-only session discovery surfaces to the Claude and Codex MCPs.
-- [x] Align the Claude and Codex housekeeping skills with the acquisition lifecycle.
-- [x] Extend `tools-ki` with provider-context staging for validated local ChatGPT captures.
-- [x] Inventory the installed ChatGPT application's local session-store shape without reading or changing conversation contents.
-- [x] Create and register `mcp-housekeeping-chatgpt` as the third provider MCP, with the same `discover`, `list`, `read`, and `checkpoint` semantics.
-- [x] Implement read-only ChatGPT local-store discovery, including stable project/session identities, paths, byte counts, modification times, content hashes, and opaque-payload status.
-- [x] Implement faithful byte-for-byte ChatGPT record acquisition into the `tools-ki` Harbour path, retaining provenance and explicit media/interpretation omissions.
-- [x] Add isolated fixtures for direct ChatGPT-store discovery, checkpoint incrementality, unsafe-path rejection, and opaque-record preservation.
-- [x] Verify each provider surface, skill, binding, registry entry, Agora membership, and repository-context working-area import together.
+- [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
+- [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
+- [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
+- [ ] Define the selective residual-review contract, including explicit `no residual value`, `acquire selected source`, `already captured`, and `needs human review` outcomes.
+- [ ] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear relationship to `ki-housekeeping-chatgpt`.
+- [ ] Separate Claude and Codex acquisition guidance from their housekeeping skills, using exception-based residual review rather than routine bulk import.
+- [ ] Decide whether the existing `mcp-housekeeping-*` repositories remain shared read-only source adapters or need acquisition-specific names or projections.
+- [ ] Connect ChatGPT chat-mode review to a readable, authorised source path; treat the opaque installed-application store as provenance evidence only unless its format becomes officially supported.
+- [ ] Add end-to-end fixtures proving selective acquisition, no-op disposition, already-captured detection, explicit uncertainty, repository routing, repeatable checkpoints, and untouched provider state.
+- [ ] Verify one representative ChatGPT residual acquisition and one completed agent-session no-op without archiving or deleting either source session.
 
 ## Files touched
 
 - `docs/decisions/ADR-KI-HARNESS-SKILLS-007-provider-neutral-ai-session-acquisition-and-adapter-pairing.md`
+- `skills/acquire/ki-acquire-chatgpt/`
+- prospective `skills/acquire/ki-acquire-claude/` and `skills/acquire/ki-acquire-codex/`
+- `skills/environment/ki-housekeeping-chatgpt/`
 - `skills/environment/ki-housekeeping-claude/`
 - `skills/environment/ki-housekeeping-codex/`
-- sibling `mcp-housekeeping-claude`, `mcp-housekeeping-codex`, `mcp-housekeeping-chatgpt`, and `tools-ki` repositories
+- sibling `mcp-housekeeping-claude`, `mcp-housekeeping-codex`, `mcp-housekeeping-chatgpt`, and `tools-ki` repositories where their owners adopt the revised contract
 
 ## Verify
 
-- The three provider MCPs expose equivalent read-only `discover`, `list`, `read`, and `checkpoint` operations.
-- Direct ChatGPT discovery returns only path-derived metadata and never reads credentials, changes the application store, or presents opaque bytes as decoded conversation text.
-- A ChatGPT acquisition retains original bytes, source identity, project/session paths, timestamps, hashes, and provenance before any harvesting action.
-- Fixture tests cover new, unchanged, changed, missing, symlinked, and malformed local-store entries; `tools-ki` verifies KEP checksums and repeatable Harbour checkpoints.
-- Each affected repository passes its test suite and focused `ki repo audit`; the existing `tools-ki` implementation passes 672 tests with 100% coverage.
+- `ki acquire list` reports declared `ki-acquire-*` capabilities from machine-readable Harness metadata and does not infer adapters from `ki-housekeeping-*` names.
+- A review can enumerate candidate sessions without acquiring all of them or reading unrelated repository material.
+- A `no residual value` or `already captured` outcome writes no acquired payload and remains distinguishable from an unreadable or uncertain session.
+- A selected ChatGPT chat acquisition preserves readable source material, source identity, timestamps, assets, omissions, hashes, and receiving-repository provenance before harvesting.
+- Claude and Codex default to no acquisition when repository work already contains the material; any exception names the specific residual knowledge and source evidence selected.
+- Opaque ChatGPT `*.data` bytes are never presented as decoded conversation content.
+- Acquisition never grants archive or deletion authority, and every affected repository passes its focused tests and KI audits.
 
 ## Dependencies / blocks
 
-Provider implementation depends on the available local Claude state and Codex app-server protocol. The direct ChatGPT work requires a new provider-MCP checkout and must accept that the installed application's cache is opaque. It is not blocked on a manually requested export: raw cache records can be acquired faithfully, while any unavailable generated-image or attachment bytes remain explicit omissions. Granola and communication-source acquisition remain follow-on adapters.
+The action-first executor and read-only provider mechanics exist. The principal unresolved dependency is a readable, authorised ChatGPT chat source: the current installed-application records are opaque, while the existing executable path begins from a user-prepared capture. The design must choose an official export, user-prepared capture, supported API, or another authorised readable surface without reverse-engineering private storage.
+
+The existing housekeeping skills must remain usable while acquisition-specific capabilities are introduced. Any MCP rename or repository split requires separately coordinated receiver work; this Harness record can define the intended capability boundary without silently renaming sibling repositories.
 
 ## Documentation impact
 
 ### Decision Records
 
-Arcadia's `ADR-KI-ARCADIA-001` records the provider-neutral acquisition architecture. ADR-KI-HARNESS-SKILLS-007 records this item's provider-adapter boundary.
+Amend or supersede `ADR-KI-HARNESS-SKILLS-007` because it still assigns acquisition semantics to housekeeping skills and names the retired `ki space acquire <provider> import` grammar.
 
 ### Specifications
 
-No as-built KI acquisition specification exists until repository-context staging is implemented and verified.
+Specify the residual-review dispositions and the boundary between candidate discovery, selected acquisition, later harvesting, and separately authorised source cleanup.
 
 ### Guides
 
-Add an operational guide once the direct ChatGPT acquisition command is usable, including its opaque-payload boundary and checkpoint interpretation.
+Document the ChatGPT-first review workflow and the lighter exception-based posture for Claude and Codex once a readable source path and repository staging flow are verified.
 
 ### Roadmap
 
-This item holds the cross-repository delivery sequence and future provider work.
-
-## Review
-
-### Delivered
-
-The approved provider-neutral AI-session acquisition boundary is implemented across the Harness, the three provider MCP repositories, and `tools-ki`. Claude, Codex, and ChatGPT expose comparable read-only discovery, listing, faithful-read, and checkpoint operations; the ChatGPT path preserves its local records as opaque bytes. The source-retirement boundary remains explicitly outside acquisition.
-
-The immutable implementation baseline was `7373e7c496caa223f5e2dce988ab41bb700f31ad`. The current verification pass was performed against Harness revision `06be13320d5ffe7d57a565a86d90f6ba58e37c29` and the clean provider-repository revisions recorded by their respective `HEAD`s.
-
-### Summary of changes
-
-- Added the shared provider-adapter acquisition contract and aligned the Claude and Codex housekeeping skills with it.
-- Added the read-only `mcp-housekeeping-chatgpt` adapter and Harness skill for opaque installed-application records.
-- Added repository-context ChatGPT capture staging in `tools-ki`, with provenance, checksums, and omission evidence.
-- Registered all three provider repositories locally and in the Harness Agora; the ChatGPT MCP is present in the canonical MCP binding for `chatgpt-codex` and `mcporter`.
-
-### Verification
-
-- `mcp-housekeeping-claude`: 315 tests passed and `tsc -p tsconfig.build.json` passed.
-- `mcp-housekeeping-codex`: 8 tests passed and `tsc -p tsconfig.build.json` passed.
-- `mcp-housekeeping-chatgpt`: 3 tests passed and `tsc -p tsconfig.build.json` passed.
-- `ki repo audit --skill ki-housekeeping-claude --repo .` passed.
-- `ki repo audit --skill ki-housekeeping-codex --repo .` passed.
-- `ki repo audit --skill ki-housekeeping-chatgpt --repo .` passed.
-- `ki repo audit --skill ki-agora --repo .` passed.
-- `MCPORTER_CONFIG=~/.config/mcporter/mcporter.json ki repo audit --skill ki-binding --repo .` passed against the canonical binding source.
-- The local KI registry contains `mcp-housekeeping-claude`, `mcp-housekeeping-codex`, and `mcp-housekeeping-chatgpt` with their physical repository paths.
-
-### Outstanding concerns
-
-None within this item. The action-first adapter migration subsequently landed in `tools-ki` commit `a49ff67` and passed 139 focused acquisition tests plus TypeScript; its acceptance remains independently owned by `KI-TOOL-CLI-072`.
-
-### Post-change review
-
-The implementation satisfies the item goal without broadening MCP authority or treating opaque ChatGPT records as decoded content. Verification covers the provider source mechanics, Harness governance, registry, Agora, and portable binding evidence. The now-delivered CLI migration confirms the provider-neutral boundary without adding unfinished scope to this item. OPS-005 is ready for human acceptance.
-
-### Mini recap
-
-AI-session acquisition now has a verified three-provider, read-only source layer, repository-context staging path, and action-first adapter surface. No source session was changed, archived, or deleted.
+Keep this item open through acquisition-skill separation and one verified selective workflow. Receiver-owned executor or MCP changes remain independently planned and accepted in their repositories.
 
 ## Discussion
 
-### Direct installed-application acquisition
+### Acquisition and housekeeping
 
-Provider MCPs are the source-mechanics layer. The direct ChatGPT adapter will inspect the installed application's working directory with no credentials, network requests, cache mutation, or private-format decryption. Its `read` operation may return a faithful opaque record rather than claim a decoded conversation. `tools-ki` owns the subsequent repository-context capture and Harbour staging.
+Acquisition asks whether a source contains useful material not yet held by the receiving Knowledge Island and, if so, stages selected evidence faithfully. Housekeeping asks what can be retained, archived, or removed after that evidence and its durable consequences have been reviewed. The same read-only MCP may support both processes, but one skill name and one lifecycle must not collapse their different intent or authority.
 
-### Provider vocabulary
+### Selectivity
 
-The comparable operations are `discover`, `list`, `read`, and `checkpoint`. `import` is deliberately not an MCP operation: `ki space acquire <provider> import` is the repository-context command that turns a provider read into staged KI material.
+The unit of work is not every session. It is a reviewable candidate session plus an explicit disposition. A completed coding session that already committed its decisions, implementation, tests, and follow-up work should normally produce `already captured` or `no residual value`. Acquisition is warranted only when identifiable reasoning, decisions, sources, unresolved work, or reusable knowledge would otherwise disappear from the repository record.
 
-### Safety boundary
+### Provider posture
 
-Archive and deletion require a later verified acquisition and harvest decision. A checkpoint is evidence for incremental selection, not authority to destroy a source session.
+ChatGPT chat-mode deserves the first complete workflow because it is used for exploratory conversation and therefore has the highest likelihood of uncaptured residual knowledge. Codex and Claude agent sessions should use the same contract but a lighter exception-based review because their work is usually resolved into repository files, commits, roadmap records, or recaps during execution.
+
+### Source fidelity
+
+The opaque ChatGPT installed-application store is useful for identity, timestamps, byte counts, and change detection, but not for deciding semantic value. Until an authorised readable source exists, it cannot satisfy the residual-review goal by itself. A user-prepared capture remains safe and useful, but the workflow must clearly distinguish preparing a readable source from selecting and acquiring residual knowledge.
