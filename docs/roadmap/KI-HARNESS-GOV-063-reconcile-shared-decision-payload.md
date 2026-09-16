@@ -4,12 +4,12 @@ area: GOV
 title: Reconcile Shared Decision Payload
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 8d2b9767634c78b09da41bb5bf610ef01eb033ea
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-16T09:20:26Z
+updated_at: 2026-09-16T12:53:49Z
 ---
 
 # Reconcile shared Decision Record payload
@@ -113,6 +113,10 @@ The implementation keeps container metadata ownership narrow and explicit withou
 ### Mini recap
 
 GOV-063 now has a stable local contract, a canonical Harness payload, five independently owned receiver proposals, and a distinct observation gate. No automatic promotion of receiver work or estate-wide completion claim was made.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on the review packet above.
 
 ## Discussion
 

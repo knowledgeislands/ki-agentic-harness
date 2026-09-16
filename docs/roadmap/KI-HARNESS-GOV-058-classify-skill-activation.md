@@ -4,12 +4,12 @@ area: GOV
 title: Classify Skill Applicability
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 93d05b983345c3289daa4401a1f883b3e3b04566
 created_at: 2026-09-13T15:45:43Z
-updated_at: 2026-09-16T08:55:11Z
+updated_at: 2026-09-16T12:53:49Z
 ---
 
 # Classify Skill Applicability
@@ -122,6 +122,10 @@ The implementation makes collection omissions and detector drift mechanically vi
 ### Mini recap
 
 The Harness now publishes an exhaustive applicability route for every canonical skill and proves its detector registry matches executable repository coverage. No automatic learning promotion or follow-on work is required from this delivery.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on the review packet above.
 
 ## Discussion
 

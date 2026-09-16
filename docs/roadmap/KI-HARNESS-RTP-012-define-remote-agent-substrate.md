@@ -4,12 +4,12 @@ area: RTP
 title: Portable agent hand-off
 theme: runtime-portability
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 8073d4f52de716eb47de9a05442ec328c2893321
 created_at: 2026-09-07T23:33:50Z
-updated_at: 2026-09-15T13:35:30Z
+updated_at: 2026-09-16T12:53:49Z
 ---
 
 # Define portable agent hand-off
@@ -132,6 +132,10 @@ The delivered contract meets the narrowed goal: a fresh agent can receive one re
 ### Mini recap
 
 Delivered the portable Harness projection of remote-agent hand-off and verified it at specification, skill, fixture, catalogue, and repository levels. The material learning is the ownership split itself: Techne owns execution environments and operating proofs; Harness owns only reusable portable evidence contracts. That split is now explicit in the work record and accepted specification, so no new follow-on roadmap item is needed here.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on the review packet above.
 
 ## Discussion
 
