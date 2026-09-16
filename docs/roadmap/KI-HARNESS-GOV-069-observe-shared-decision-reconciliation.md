@@ -4,12 +4,12 @@ title: Observe Shared Decision Reconciliation
 area: GOV
 theme: governance-consistency
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-16T08:55:11Z
-updated_at: 2026-09-16T21:28:23Z
+updated_at: 2026-09-16T21:38:16Z
 ---
 
 # Observe Shared Decision Reconciliation
@@ -28,14 +28,16 @@ Read all six records without mutating them. Compare only the approved canonical 
 
 ## Current state
 
-Harness and tools-ki have accepted revisions. The remaining receiver projections now match the approved content in committed, independently owned Awaiting review records:
+All six owners now have accepted decision projections. The receiver delivery and acceptance evidence is:
 
-- [KI-ARCADIA-GOV-008](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Streams/Roadmap/KI-ARCADIA-GOV-008-reconcile-shared-fundamentals-decision.md) at `2d9a48e`, retaining only `note_type: admin/governance/decision`.
-- [KI-TECHNE-GOV-010](https://github.com/knowledgeislands/ki-techne-principal/blob/main/Streams/Roadmap/KI-TECHNE-GOV-010-reconcile-shared-fundamentals-decision.md) at `96288f2`, retaining only `note_type: admin/governance/decision`.
-- [KI-SPEC-RGV-002](https://github.com/knowledgeislands/ki-specifications/blob/main/docs/roadmap/KI-SPEC-RGV-002-reconcile-shared-fundamentals-decision.md) at `67e1004`, byte-identical to the canonical projection.
-- [KI-WEB-SITE-006](https://github.com/knowledgeislands/ki-website/blob/main/docs/roadmap/KI-WEB-SITE-006-reconcile-shared-fundamentals-decision.md) at `41d9600`, byte-identical to the canonical projection.
+- Harness delivered the canonical projection at `6f1f95b9` and accepted GOV-063 at `86d40ba0`.
+- tools-ki delivered its projection at `7c016c6`, accepted CLI-071 at `9c0f9eb`, and later pruned the completed record at `77eda29`.
+- [KI-ARCADIA-GOV-008](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Streams/Roadmap/KI-ARCADIA-GOV-008-reconcile-shared-fundamentals-decision.md) delivered at `2d9a48e` and was accepted at `cacd960`.
+- KI-TECHNE-GOV-010 delivered at `96288f2`, was accepted at `fbf73b9`, and was pruned at `f049644`.
+- [KI-SPEC-RGV-002](https://github.com/knowledgeislands/ki-specifications/blob/main/docs/roadmap/KI-SPEC-RGV-002-reconcile-shared-fundamentals-decision.md) delivered at `67e1004` and was accepted at `f9ad01d`.
+- [KI-WEB-SITE-006](https://github.com/knowledgeislands/ki-website/blob/main/docs/roadmap/KI-WEB-SITE-006-reconcile-shared-fundamentals-decision.md) delivered at `41d9600` and was accepted at `710b8b7`.
 
-Matching committed content does not satisfy the receiver-acceptance condition. Each review packet still needs explicit human acceptance before this observation can run.
+The receiver-acceptance condition is satisfied. The observation can now compare the six accepted repository revisions without mutating their Decision Records.
 
 ## Steps
 
@@ -61,7 +63,7 @@ Matching committed content does not satisfy the receiver-acceptance condition. E
 
 ## Dependencies / blocks
 
-No build-order blocker belongs in `blocked_by`: all receiver content exists. Execution is deliberately gated on explicit acceptance of the four receiver-owned Awaiting review records because the shared-decision contract forbids inferring acceptance from matching content.
+No dependency or acceptance gate remains. All six receiver projections exist and all four receiver-owned reconciliation records have explicit acceptance evidence.
 
 ## Documentation impact
 
