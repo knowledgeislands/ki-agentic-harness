@@ -1,6 +1,7 @@
 ---
 name: ki-binding-chezmoi
 ki-kind: governance
+ki-applicability: declaration-only
 ki-shared-dependencies: [ki-binding:binding, ki-skills:rubric]
 ki-depends-on: [ki-binding, ki-repo-dotfiles-chezmoi]
 description: >

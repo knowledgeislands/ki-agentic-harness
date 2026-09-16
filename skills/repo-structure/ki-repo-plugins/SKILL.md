@@ -1,6 +1,7 @@
 ---
 name: ki-repo-plugins
 ki-kind: governance
+ki-applicability: detected
 ki-depends-on: []
 ki-runtime-binding: true
 ki-shared-dependencies: [ki-skills:rubric]

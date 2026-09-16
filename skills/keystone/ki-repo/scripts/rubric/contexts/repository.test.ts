@@ -1,16 +1,24 @@
 import { afterEach, describe, expect, test } from 'bun:test'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { FILES } from '../items/files.ts'
 import { RUNTIMES } from '../items/runtimes.ts'
 import { WORK } from '../items/working-areas.ts'
-import { collectAuditFindings, KI_CONFIGURATION_HEADER, localTreePaths } from './audit.ts'
+import { collectAuditFindings, detectedCoverageSkills, KI_CONFIGURATION_HEADER, localTreePaths } from './audit.ts'
 import { createRepoSession, type FilesRubricContext, type WorkingAreasRubricContext } from './repository.ts'
 
 const roots: string[] = []
+
+test('ki-detects registry exactly matches executable coverage targets', () => {
+  const text = readFileSync(join(import.meta.dir, '../../../SKILL.md'), 'utf8')
+  const document = text.match(/^---\n([\s\S]*?)\n---/)?.[1]
+  if (!document) throw new Error('ki-repo SKILL.md has no frontmatter')
+  const frontmatter = Bun.YAML.parse(document) as Record<string, unknown>
+  expect(frontmatter['ki-detects']).toEqual(detectedCoverageSkills())
+})
 
 afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })

@@ -1,6 +1,7 @@
 ---
 name: ki-housekeeping-codex
 ki-kind: governance
+ki-applicability: declaration-only
 ki-depends-on: []
 ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]

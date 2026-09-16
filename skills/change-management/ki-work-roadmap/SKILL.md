@@ -1,6 +1,7 @@
 ---
 name: ki-work-roadmap
 ki-kind: governance
+ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['ROADMAP.md']

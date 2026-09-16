@@ -1,6 +1,7 @@
 ---
 name: ki-accept
 ki-kind: process
+ki-applicability: invocation-only
 ki-depends-on: []
 description: >
   Close a reviewed local work record as done, record an approved terminal Triage disposition, or prune

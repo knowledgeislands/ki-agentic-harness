@@ -443,6 +443,8 @@ The common shape of a Knowledge Islands governance skill.
   - _Remediation:_ diagnostic — Determine the skill’s genuine governance prerequisites and author ki-depends-on as a single-line flow list, using [] only when none are required.
 - **KI-SHAPE-18 [M] — runtime compatibility is explicit and bounded** — A vendor-bound skill declares `ki-supported-runtimes:` as a non-empty, duplicate-free flow list of recognised repository runtime identifiers and also declares `ki-runtime-binding: true`; an absent list means the skill is portable across supported runtimes. (standards-knowledge-islands.md §2)
   - _Remediation:_ diagnostic — Decide whether the skill is portable or vendor-bound; for a binding, declare the recognised runtime list and ki-runtime-binding: true without duplicates.
+- **KI-SHAPE-19 [M] — repository applicability is explicit** — Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo` and `ki-authoring` are baseline; every process skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list. (ADR-KI-HARNESS-SKILLS-014, standards-knowledge-islands.md §2)
+  - _Remediation:_ diagnostic — Classify the skill against the approved applicability vocabulary; keep detector ownership solely on ki-repo and reconcile its registry through ki-repo-harness.
 
 ## KI-INVOKE — Invocation protocol
 

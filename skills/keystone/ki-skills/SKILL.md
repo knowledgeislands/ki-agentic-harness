@@ -1,6 +1,7 @@
 ---
 name: ki-skills
 ki-kind: governance
+ki-applicability: detected
 ki-depends-on: []
 ki-shared-modules: [rubric]
 description: >

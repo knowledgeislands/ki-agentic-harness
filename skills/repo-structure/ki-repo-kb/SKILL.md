@@ -1,6 +1,7 @@
 ---
 name: ki-repo-kb
 ki-kind: governance
+ki-applicability: detected
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-repo-kb-activities, ki-repo-kb-live-artifacts, ki-repo-kb-streams]
 owns: ['-/_DIGESTS/README.md']

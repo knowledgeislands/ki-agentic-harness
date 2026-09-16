@@ -1,6 +1,7 @@
 ---
 name: ki-repo-website-content
 ki-kind: governance
+ki-applicability: detected
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-repo-website]
 owns: [eleventy.config.ts, eleventy.config.js, eleventy.config.mjs, eleventy.config.cjs]

@@ -1,6 +1,7 @@
 ---
 name: ki-pulse
 ki-kind: process
+ki-applicability: invocation-only
 ki-depends-on: []
 description: >
   Capture a submitted link or scan bounded public sources, then triage current signals into read or learn,

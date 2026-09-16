@@ -1,6 +1,7 @@
 ---
 name: ki-plan
 ki-kind: process
+ki-applicability: invocation-only
 ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
 description: >

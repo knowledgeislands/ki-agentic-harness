@@ -1,6 +1,7 @@
 ---
 name: ki-recap
 ki-kind: process
+ki-applicability: invocation-only
 ki-depends-on: [ki-authoring]
 description: >
   Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable

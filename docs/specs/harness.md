@@ -114,6 +114,16 @@ _Verify:_ `bun hooks/git-lock-check.test.ts` exercises repository, process, path
 
 _Evidence:_ `bun hooks/git-lock-check.test.ts` exercises repository, process, path, and symlink safety; compatible-harness inventory checks confirm the hook is present in the published payload.
 
+### HARN-011 — Exhaustive capability applicability publication
+
+A populated compatible Harness skills shelf MUST classify every canonical skill with valid applicability metadata, MUST reject collection-level baseline or detector-registry inconsistency, and MUST publish each capability's applicability in its generated catalogue.
+
+_Conformance:_ conforming
+
+_Verify:_ `ki-repo-harness` capability-publication tests exercise valid publication and reject missing classification, invalid baseline membership, kind inconsistency, unknown detector targets, and registry-to-skill drift.
+
+_Evidence:_ `skills/README.md` is generated from the complete canonical skill collection and carries an applicability line for every entry.
+
 ## Gaps
 
 - The `mcp/` shelf is scaffolded but empty; no requirement yet describes a populated MCP server because none ships here.

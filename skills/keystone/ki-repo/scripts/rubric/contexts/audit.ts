@@ -672,6 +672,7 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   }
 ]
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
+export const detectedCoverageSkills = (): readonly string[] => COVERAGE.map((entry) => entry.table).sort()
 // A primary structure is exclusive; all other ki-repo-* skills are composable
 // specialisations. Project is the non-KB default, while KB owns the KB primary.
 const PRIMARY_STRUCTURE_TABLES = [skillTable('ki-repo-project'), skillTable('ki-repo-kb')]

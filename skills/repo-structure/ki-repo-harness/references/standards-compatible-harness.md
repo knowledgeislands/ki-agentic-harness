@@ -39,6 +39,8 @@ The source repository therefore defines capability semantics and carries their s
 
 ## Capability publication
 
+The collection pass requires every skill to carry a valid `ki-applicability` classification and publishes that classification for each capability. It enforces exactly `ki-repo` and `ki-authoring` as baseline, every process as invocation-only, and governance capabilities outside invocation-only. It also requires `ki-repo` to be the sole owner of a non-empty `ki-detects` registry, resolves every target, and proves bidirectional agreement between the registry and all skills classified as detected. Missing or contradictory applicability metadata makes publication unsafe rather than silently omitting a capability.
+
 A compatible harness publishes typed capabilities. The current recognised capability kind is `skill`; the other source shelves reserve their kinds until host support lands.
 
 The installed Harness identity derives from its verified `<owner>/<repository>` installation path. Its source declaration supplies one stable capability prefix. A valid local estate contains at most one installed Harness for each prefix, so repository capabilities use their names directly without a second qualified identity.

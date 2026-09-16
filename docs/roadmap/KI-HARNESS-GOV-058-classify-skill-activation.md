@@ -4,12 +4,12 @@ area: GOV
 title: Classify Skill Applicability
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 93d05b983345c3289daa4401a1f883b3e3b04566
 created_at: 2026-09-13T15:45:43Z
-updated_at: 2026-09-16T08:14:46Z
+updated_at: 2026-09-16T08:55:11Z
 ---
 
 # Classify Skill Applicability
@@ -38,13 +38,13 @@ For this version, `ki-repo` is the sole repository-applicability detector owner 
 
 ## Steps
 
-- [ ] Record the approved `ki-applicability` and `ki-detects` contract in `ADR-KI-HARNESS-SKILLS-014`, dependent on ADR-005, ADR-SKILLS-006, and ADR-012.
-- [ ] Add `ki-applicability` syntax and kind-consistency validation to `ki-skills`, including exact process-to-`invocation-only` enforcement.
-- [ ] Give `ki-repo` the sole `ki-detects` registry and make its current coverage, primary-structure, runtime, and adapter-selection targets agree with the declared list in both directions.
-- [ ] Extend `ki-repo-harness` to require classification on every canonical skill, enforce the exact two-skill baseline, resolve every detector target, and publish applicability in the generated capability catalogue.
-- [ ] Classify all 60 canonical skills from the accepted rules without changing `ki-kind`, dependency, runtime-binding, or host-activation semantics.
-- [ ] Add the accepted collection and coverage invariants to the Harness and governance Specifications.
-- [ ] Regenerate the affected rubrics and `skills/README.md`, then run focused and aggregate verification.
+- [x] Record the approved `ki-applicability` and `ki-detects` contract in `ADR-KI-HARNESS-SKILLS-014`, dependent on ADR-005, ADR-SKILLS-006, and ADR-012.
+- [x] Add `ki-applicability` syntax and kind-consistency validation to `ki-skills`, including exact process-to-`invocation-only` enforcement.
+- [x] Give `ki-repo` the sole `ki-detects` registry and make its current coverage, primary-structure, runtime, and adapter-selection targets agree with the declared list in both directions.
+- [x] Extend `ki-repo-harness` to require classification on every canonical skill, enforce the exact two-skill baseline, resolve every detector target, and publish applicability in the generated capability catalogue.
+- [x] Classify all 60 canonical skills from the accepted rules without changing `ki-kind`, dependency, runtime-binding, or host-activation semantics.
+- [x] Add the accepted collection and coverage invariants to the Harness and governance Specifications.
+- [x] Regenerate the affected rubrics and `skills/README.md`, then run focused and aggregate verification.
 
 ## Files touched
 
@@ -96,6 +96,32 @@ No guide change is planned. The Decision Record, skill standards, Specifications
 ### Roadmap
 
 Keep this item as the decision and migration authority. Consumer migrations, if required, become separately reviewable owner-local work.
+
+## Review
+
+### Delivered
+
+Delivered the approved applicability contract against immutable baseline `93d05b983345c3289daa4401a1f883b3e3b04566`. The boundary remains classification, detector ownership, validation, and publication; it does not activate skills or migrate consumer repositories.
+
+### Summary of changes
+
+Added `ADR-KI-HARNESS-SKILLS-014`, governance and Harness Specification requirements, `ki-applicability` across all 60 canonical skills, and the sole `ki-repo` `ki-detects` registry. Extended `ki-skills`, `ki-repo`, and `ki-repo-harness` validation and tests, then regenerated their rubrics and the capability catalogue.
+
+### Verification
+
+Focused applicability, publication, and detector-registry tests pass. Audits for `ki-skills`, `ki-repo`, `ki-repo-harness`, `ki-decision-records`, `ki-specs`, `ki-work-roadmap`, and `ki-authoring` pass. `bunx tsc --noEmit`, `bun run test`, `bunx biome check`, and `git diff --check` pass.
+
+### Outstanding concerns
+
+None within the approved boundary. Consumer repositories may need separately owned declaration changes only when their installed Harness and local policy adopt this metadata contract.
+
+### Post-change review
+
+The implementation makes collection omissions and detector drift mechanically visible without coupling applicability to skill kind or runtime activation. Regression risk is concentrated in adding or renaming detector targets and is covered bidirectionally by focused tests. The item is ready for acceptance review.
+
+### Mini recap
+
+The Harness now publishes an exhaustive applicability route for every canonical skill and proves its detector registry matches executable repository coverage. No automatic learning promotion or follow-on work is required from this delivery.
 
 ## Discussion
 

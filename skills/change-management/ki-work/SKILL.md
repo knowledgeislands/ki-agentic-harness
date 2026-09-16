@@ -1,6 +1,7 @@
 ---
 name: ki-work
 ki-kind: governance
+ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['+/_BATCHES/README.md']

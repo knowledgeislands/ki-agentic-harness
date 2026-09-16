@@ -1,6 +1,7 @@
 ---
 name: ki-subagents
 ki-kind: governance
+ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >

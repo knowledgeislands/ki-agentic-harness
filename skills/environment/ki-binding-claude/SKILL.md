@@ -1,6 +1,7 @@
 ---
 name: ki-binding-claude
 ki-kind: governance
+ki-applicability: declaration-only
 ki-depends-on: [ki-binding]
 ki-runtime-binding: true
 ki-supported-runtimes: [claude-code]

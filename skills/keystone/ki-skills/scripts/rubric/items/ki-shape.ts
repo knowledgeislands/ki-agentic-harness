@@ -574,6 +574,97 @@ const KI_SHAPE_18: RubricItem<KiShapeRubricContext> = {
   }
 }
 
+const APPLICABILITY = new Set(['baseline', 'detected', 'declaration-only', 'invocation-only'])
+const BASELINE_SKILLS = new Set(['ki-repo', 'ki-authoring'])
+
+const flowList = (value: string): string[] | null => {
+  if (!/^\[[^\]]*]$/.test(value)) return null
+  const entries = value
+    .slice(1, -1)
+    .split(',')
+    .map((entry) => entry.trim().replace(/^(?:"([\s\S]*)"|'([\s\S]*)')$/, '$1$2'))
+    .filter(Boolean)
+  return entries
+}
+
+const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-19',
+  title: 'repository applicability is explicit',
+  description:
+    'Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo` and `ki-authoring` are baseline; every process skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list.',
+  sources: ['ADR-KI-HARNESS-SKILLS-014', 'standards-knowledge-islands.md §2'],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Classify the skill against the approved applicability vocabulary; keep detector ownership solely on ki-repo and reconcile its registry through ki-repo-harness.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ skill }) => {
+        if (!skill?.knowledgeIslandsSkill)
+          return [{ status: 'NOT_APPLICABLE', message: 'the target is not a Knowledge Islands skill' }]
+
+        const violations: AuditOutcome[] = []
+        if (!skill.applicabilityPresent)
+          violations.push({ status: 'VIOLATION', message: 'missing required `ki-applicability:` metadata' })
+        else if (!APPLICABILITY.has(skill.applicability))
+          violations.push({
+            status: 'VIOLATION',
+            message: '`ki-applicability:` must be exactly baseline, detected, declaration-only, or invocation-only'
+          })
+
+        const baseline = BASELINE_SKILLS.has(skill.name)
+        if (baseline && skill.applicability !== 'baseline')
+          violations.push({
+            status: 'VIOLATION',
+            message: `${skill.name} must declare \`ki-applicability: baseline\``
+          })
+        if (!baseline && skill.applicability === 'baseline')
+          violations.push({
+            status: 'VIOLATION',
+            message: 'baseline applicability is reserved for ki-repo and ki-authoring'
+          })
+        if (skill.kiKind === 'process' && skill.applicability !== 'invocation-only')
+          violations.push({
+            status: 'VIOLATION',
+            message: 'every process skill must declare `ki-applicability: invocation-only`'
+          })
+        if (skill.kiKind === 'governance' && skill.applicability === 'invocation-only')
+          violations.push({
+            status: 'VIOLATION',
+            message: 'a governance skill cannot declare invocation-only applicability'
+          })
+
+        if (skill.name === 'ki-repo') {
+          if (!skill.detectsPresent)
+            violations.push({ status: 'VIOLATION', message: 'ki-repo must declare `ki-detects:`' })
+          else {
+            const detects = flowList(skill.detects)
+            if (!detects || detects.length === 0)
+              violations.push({
+                status: 'VIOLATION',
+                message: '`ki-detects:` must be a non-empty single-line flow list'
+              })
+            else if (new Set(detects).size !== detects.length)
+              violations.push({ status: 'VIOLATION', message: '`ki-detects:` must not repeat a skill' })
+          }
+        } else if (skill.detectsPresent)
+          violations.push({
+            status: 'VIOLATION',
+            message: '`ki-detects:` is reserved for the sole detector owner ki-repo'
+          })
+
+        const [first, ...rest] = violations
+        return first
+          ? [first, ...rest]
+          : [{ status: 'PASS', message: 'repository applicability is explicit and locally consistent' }]
+      }
+    }
+  }
+}
+
 export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext> = {
   code: 'KI-SHAPE',
   title: 'Knowledge Islands skill shape',
@@ -597,6 +688,7 @@ export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext>
     KI_SHAPE_15,
     KI_SHAPE_16,
     KI_SHAPE_17,
-    KI_SHAPE_18
+    KI_SHAPE_18,
+    KI_SHAPE_19
   ]
 }

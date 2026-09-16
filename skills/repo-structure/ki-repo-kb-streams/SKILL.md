@@ -1,6 +1,7 @@
 ---
 name: ki-repo-kb-streams
 ki-kind: governance
+ki-applicability: detected
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
 description: >

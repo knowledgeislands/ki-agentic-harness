@@ -1,6 +1,7 @@
 ---
 name: ki-bootstrap
 ki-kind: process
+ki-applicability: invocation-only
 ki-depends-on: []
 description: >
   Explain first-time KI activation through the `ki` CLI: user bootstrap, verified harness selection, skills,

@@ -1,6 +1,7 @@
 ---
 name: ki-repo-harness
 ki-kind: governance
+ki-applicability: declaration-only
 ki-runtime-binding: true
 ki-depends-on: [ki-skills, ki-subagents, ki-decision-records, ki-work-roadmap]
 ki-shared-dependencies: [ki-skills:rubric]

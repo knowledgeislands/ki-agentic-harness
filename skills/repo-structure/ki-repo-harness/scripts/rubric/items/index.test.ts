@@ -33,9 +33,19 @@ const fixture = (): string => {
   writeFileSync(join(repository, 'ROADMAP.md'), '# Roadmap\n')
   writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\n')
   mkdirSync(join(repository, 'skills', 'group', 'example'), { recursive: true })
+  mkdirSync(join(repository, 'skills', 'group', 'ki-authoring'), { recursive: true })
+  mkdirSync(join(repository, 'skills', 'group', 'ki-repo'), { recursive: true })
   writeFileSync(
     join(repository, 'skills', 'group', 'example', 'SKILL.md'),
-    '---\nname: example\nki-kind: governance\nki-depends-on: []\ndescription: Use example for fixture work.\nargument-hint: help\n---\n\n# Example\n'
+    '---\nname: example\nki-kind: governance\nki-applicability: detected\nki-depends-on: []\ndescription: Use example for fixture work.\nargument-hint: help\n---\n\n# Example\n'
+  )
+  writeFileSync(
+    join(repository, 'skills', 'group', 'ki-authoring', 'SKILL.md'),
+    '---\nname: ki-authoring\nki-kind: governance\nki-applicability: baseline\nki-depends-on: []\ndescription: Use ki-authoring for fixture work.\nargument-hint: help\n---\n\n# KI authoring\n'
+  )
+  writeFileSync(
+    join(repository, 'skills', 'group', 'ki-repo', 'SKILL.md'),
+    '---\nname: ki-repo\nki-kind: governance\nki-applicability: baseline\nki-detects: [example]\nki-depends-on: []\ndescription: Use ki-repo for fixture work.\nargument-hint: help\n---\n\n# KI repo\n'
   )
   return repository
 }
@@ -135,7 +145,9 @@ test('the session discovers grouped skills once and coalesces marker requests', 
   const context = session.subjects[0]?.context() as HarnessRubricContext
   expect(session.subjects[0]?.context()).toBe(context)
   expect(context.skills.skills).toEqual([
-    { path: 'skills/group/example', directory: 'example', declaredName: 'example' }
+    { path: 'skills/group/example', directory: 'example', declaredName: 'example' },
+    { path: 'skills/group/ki-authoring', directory: 'ki-authoring', declaredName: 'ki-authoring' },
+    { path: 'skills/group/ki-repo', directory: 'ki-repo', declaredName: 'ki-repo' }
   ])
   const { family, item } = configItem()
   const config = family.selectContext(context) as HarnessConfigContext
@@ -210,7 +222,9 @@ test('a missing catalogue produces an exact finding and one marker-bounded confo
   const proposal = session.proposal().writes.find((write) => write.path === 'skills/README.md')
   expect(proposal?.content).toStartWith('# skills\n\n')
   expect(proposal?.content).toContain('<!-- ki-repo-harness:capability-catalogue:start -->')
-  expect(proposal?.content).toContain('This source harness publishes 1 skill: 1 governance skill and 0 process skills.')
+  expect(proposal?.content).toContain(
+    'This source harness publishes 3 skills: 3 governance skills and 0 process skills.'
+  )
   expect(proposal?.content).toContain('<!-- ki-repo-harness:capability-catalogue:end -->')
 })
 
@@ -239,22 +253,22 @@ test('one stale complete root capability summary produces one numeric-only confo
   expect(item.mechanical?.audit.run(family.selectContext(context))).toEqual([
     {
       status: 'VIOLATION',
-      message: 'README.md publishes 9/8/7 total/governance/process skills; canonical skill frontmatter requires 1/1/0.',
+      message: 'README.md publishes 9/8/7 total/governance/process skills; canonical skill frontmatter requires 3/3/0.',
       subject: 'README.md'
     }
   ])
   item.mechanical?.conform?.run(family.selectContext(context))
   expect(session.proposal().writes.find((write) => write.path === 'README.md')?.content).toBe(
     original
-      .replace('9 reusable', '1 reusable')
-      .replace('8 governance', '1 governance')
+      .replace('9 reusable', '3 reusable')
+      .replace('8 governance', '3 governance')
       .replace('7 process', '0 process')
   )
 })
 
 test('matching, incomplete, ambiguous, and malformed root summaries do not produce writes', () => {
   const cases = [
-    '1 reusable [Agent Skills](https://agentskills.io/specification): 1 governance skills that hold standards and 0 process skills that drive workflows.',
+    '3 reusable [Agent Skills](https://agentskills.io/specification): 3 governance skills that hold standards and 0 process skills that drive workflows.',
     '1 reusable [Agent Skills](https://agentskills.io/specification): see the catalogue.',
     '1 reusable [Agent Skills](https://agentskills.io/specification): 1 governance skills that hold standards and 0 process skills that drive workflows.\n\n1 reusable [Agent Skills](https://agentskills.io/specification): 1 governance skills that hold standards and 0 process skills that drive workflows.'
   ]

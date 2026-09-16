@@ -103,3 +103,23 @@ _Conformance:_ conforming
 _Verify:_ the `ki-skills` catalogue tests cover phase ordering and invalid plans; the CLI runtime tests prove one host invocation per selected skill and strict catalogue/result validation.
 
 _Evidence:_ the `ki-skills` catalogue tests cover phase ordering and invalid plans; the CLI runtime tests prove one host invocation per selected skill and strict catalogue/result validation.
+
+### GOV-010 — Explicit skill applicability
+
+Every canonical skill MUST declare exactly one `ki-applicability` value from `baseline`, `detected`, `declaration-only`, or `invocation-only`. The baseline set MUST contain exactly `ki-repo` and `ki-authoring`. Every process skill MUST be invocation-only, and a governance skill MUST NOT be invocation-only.
+
+_Conformance:_ conforming
+
+_Verify:_ `ki-skills` frontmatter tests reject missing, unknown, and kind-inconsistent applicability; `ki-repo-harness` collection tests reject an incorrect baseline.
+
+_Evidence:_ All canonical `SKILL.md` files carry validated applicability metadata and the generated capability catalogue publishes it.
+
+### GOV-011 — Sole bidirectional detector registry
+
+`ki-repo` MUST be the sole owner of `ki-detects`. Its registry MUST be non-empty and duplicate-free; every target MUST exist and declare `ki-applicability: detected`; every detected skill MUST appear in the registry; and the registry MUST equal the executable `ki-repo` coverage target set.
+
+_Conformance:_ conforming
+
+_Verify:_ focused `ki-repo` tests compare `ki-detects` with executable coverage targets, while `ki-skills` and `ki-repo-harness` reject invalid ownership or registry drift.
+
+_Evidence:_ `ki-repo` frontmatter, its coverage catalogue, and the canonical skill collection agree bidirectionally.

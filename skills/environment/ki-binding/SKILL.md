@@ -1,6 +1,7 @@
 ---
 name: ki-binding
 ki-kind: governance
+ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-modules: [binding]
 ki-shared-dependencies: [ki-skills:rubric]
