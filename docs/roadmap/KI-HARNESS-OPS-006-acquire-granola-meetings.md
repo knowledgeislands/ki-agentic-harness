@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
 created_at: 2026-08-24T15:11:06Z
-updated_at: 2026-09-16T21:55:52Z
+updated_at: 2026-09-16T22:08:31Z
 ---
 
 ## Goal
@@ -38,6 +38,8 @@ The reusable `ki-acquire-granola` skill, provider contract, receiver selectors, 
 
 The accepted capability evidence proves custom historical date windows, folder-scoped listing, UUID lookup, generated summaries, participants, and non-empty raw transcripts. It also proves material gaps: no native pagination or completeness indicator, no folder identity on meeting results, no direct unfoldered classification, no creation or update timestamp, no source URL, no tags, no attachment or media surface, no content-version signal, and no deletion tombstone. Meeting details can be fetched in batches of ten; transcripts are fetched one meeting at a time.
 
+The intended steady state now includes retiring Granola source meetings after their complete acquired copies are verified in the correct repositories. That changes the retirement gate from “harvest everything first” to “prove a recoverable complete move first”; it does not grant acquisition code any mutation authority. No safe provider-supported deletion operation has yet been verified.
+
 ## Steps
 
 - [x] Author `ki-acquire-granola` with the provider-neutral lifecycle, read-only source boundary, fidelity requirements, explicit omissions, receiver-selection semantics, completeness reconciliation, checkpoint semantics, and separate retirement gate.
@@ -62,6 +64,7 @@ The accepted capability evidence proves custom historical date windows, folder-s
 - [x] Define the future release-manifest contract and prove the retirement gates without adding a source-mutation tool to the acquisition provider.
 - [x] Replace the published skill's initial `kit-principal` catch-all wording with a receiver-neutral contract: folder selectors choose the best-served repository, while unfoldered, unmatched, and conflicting meetings remain explicit reconciliation outcomes.
 - [ ] Deliver the first direct-ingress mappings through receiver-owned work: Granola `Legal` folder to `kit-legal` and Granola `Personal` folder to `kit-principal`, using stable folder IDs as selectors and folder names as review evidence.
+- [ ] Implement a provider-supported Granola retirement operation that consumes an exact verified move manifest and remains unavailable from ordinary acquisition paths.
 
 ## Files touched
 
@@ -220,7 +223,7 @@ Granola discovery snapshot
   -> optionally become a separately approved retirement candidate
 ```
 
-Acquisition establishes a faithful local observation; it is not harvesting and does not imply source retirement. Harvesting promotes durable knowledge and records a disposition. A meeting may remain in Granola indefinitely while recurring acquisition observes changes. Retirement is an optional later release operation, not the successful end state of every import.
+Complete acquisition establishes a recoverable receiver-local source copy; harvesting can then occur after the source meeting has been retired. The intended steady state is to delete Granola source meetings after a complete verified move into the correct repository, rather than retain duplicate provider history indefinitely. Retirement remains a separately invoked release operation and is unavailable until its safety gate passes.
 
 ### CLI reconciliation
 
@@ -300,10 +303,10 @@ Granola retirement is a separate future operation and remains unavailable until 
 2. Stable source identities and hashes for every meeting version in scope.
 3. A repeat acquisition with no unexplained new, changed, missing, failed, overlapping, unmatched, or unverifiable meeting.
 4. Successful checksum and source-identity verification for every acquired meeting document.
-5. A recorded harvest, retention, or routing disposition for every meeting.
-6. Confirmed `ki-trades` receipts for material routed to other islands.
+5. A complete receiver-local representation at a named committed Git revision, preserving enough source content and provenance for later triage and harvesting without Granola.
+6. No unresolved acquisition failure, omission requiring source access, receiver conflict, or uncommitted acquired document for any manifest entry.
 7. A recoverable provider export or archive where Granola supports one.
 8. An exact deletion manifest naming every source identity and reviewed hash.
 9. Explicit human approval of that exact manifest immediately before mutation.
 
-Any source amendment after manifest generation invalidates the manifest and its approval. If Granola exposes no safe archive or delete API, the system emits a verified manual-release manifest and stops. Browser automation is not an acceptable substitute. Choosing never to delete is valid and leaves recurring incremental reconciliation as the permanent operating model.
+Any source amendment after manifest generation invalidates the manifest and its approval. If Granola exposes no safe archive or delete API, the system emits a verified manual-release manifest and stops; the preference to retire moved meetings does not authorise browser automation or an unverified manual deletion. Until a safe operation is available and approved, recurring incremental reconciliation remains the operating model.
