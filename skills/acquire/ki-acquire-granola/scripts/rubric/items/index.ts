@@ -7,8 +7,8 @@ import { ROUTING } from './routing.ts'
 
 export default {
   contract: 1,
-  name: 'ki-housekeeping-granola',
-  concern: 'Safe complete Granola meeting acquisition and later housekeeping',
+  name: 'ki-acquire-granola',
+  concern: 'Safe and complete Granola meeting acquisition',
   createSession: createGranolaSession,
   families: [ACQUIRE, ROUTING, RETIRE, RUBRIC]
 } satisfies SkillRubricDefinition<GranolaRubricContext>

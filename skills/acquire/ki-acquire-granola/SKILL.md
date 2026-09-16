@@ -1,5 +1,5 @@
 ---
-name: ki-housekeeping-granola
+name: ki-acquire-granola
 ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: []
@@ -11,7 +11,7 @@ description: >
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
-# Granola acquisition housekeeping
+# Granola acquisition
 
 Use the provider-neutral lifecycle: **acquire → stage → harvest → durable knowledge → optional source retirement**. Read [the Granola acquisition standard](references/standards-granola-acquisition.md) for enumeration, fidelity, routing, and checkpoint semantics; read [the retirement standard](references/standards-granola-retirement.md) only when evaluating eventual source release. The generated [rubric](references/rubric.md) provides the checkable review contract, and [sources](references/sources.md) tracks the volatile official MCP surface.
 
@@ -19,7 +19,7 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 
 This skill governs how Knowledge Islands interprets Granola as a mutable communication source. It requires complete identity enumeration, faithful read-only source projections, explicit omissions, immutable acquired versions, visible receiver conflicts, repeatable checkpoints, and separation between acquisition and retirement.
 
-Granola's official remote MCP is the selected source adapter. It supplies authentication and source reads; it does not own KI package construction, repository routing, ledgers, harvesting, trades, or retirement authority. `tools-ki` owns `ki acquire granola import`, provider-neutral KEP construction, Harbour staging, and executable reconciliation. Arcadia owns the provider-neutral lifecycle.
+Granola's official remote MCP is the selected source adapter. It supplies authentication and source reads; it does not own KI package construction, repository routing, ledgers, harvesting, trades, or retirement authority. `tools-ki` owns `ki acquire import --adapter granola`, provider-neutral KEP construction, Harbour staging, and executable reconciliation. Arcadia owns the provider-neutral lifecycle.
 
 ## Verified provider boundary
 
@@ -35,11 +35,11 @@ Explain the skill's purpose, invocation, modes, source boundary, and off-ramps, 
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-housekeeping-granola --repo <repo>` and apply the judgment criteria in the generated rubric. Review separately supplied runtime evidence for complete date-window enumeration, UUID reconciliation, source-projection hashes, receiver selection, explicit omissions, and absence of source mutation. Do not contact Granola merely to make an audit look complete; unavailable runtime evidence remains a named gap.
+Run `ki repo audit --skill ki-acquire-granola --repo <repo>` and apply the judgment criteria in the generated rubric. Review separately supplied runtime evidence for complete date-window enumeration, UUID reconciliation, source-projection hashes, receiver selection, explicit omissions, and absence of source mutation. Do not contact Granola merely to make an audit look complete; unavailable runtime evidence remains a named gap.
 
 ### Mode CONFORM
 
-Run AUDIT first. `ki repo conform --skill ki-housekeeping-granola --repo <repo> --dry-run` may publish host-owned generated rubric material but cannot invent folder mappings, choose a receiver, contact Granola, write a KEP, change a checkpoint, or alter retirement authority. Apply authored configuration or contract corrections only after their owner approves them, then re-run AUDIT.
+Run AUDIT first. `ki repo conform --skill ki-acquire-granola --repo <repo> --dry-run` may publish host-owned generated rubric material but cannot invent folder mappings, choose a receiver, contact Granola, write a KEP, change a checkpoint, or alter retirement authority. Apply authored configuration or contract corrections only after their owner approves them, then re-run AUDIT.
 
 ### Mode EDUCATE
 

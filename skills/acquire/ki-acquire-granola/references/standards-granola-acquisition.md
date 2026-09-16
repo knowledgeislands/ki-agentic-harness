@@ -2,7 +2,7 @@
 
 ## Scope
 
-This standard defines the provider-specific contract for faithfully acquiring Granola meetings into one or more Knowledge Islands repositories. It governs the read-only source adapter and the evidence an executable `ki acquire granola import` implementation must preserve. Arcadia remains the authority for the provider-neutral lifecycle; `tools-ki` owns executable KEP construction and repository staging.
+This standard defines the provider-specific contract for faithfully acquiring Granola meetings into one or more Knowledge Islands repositories. It governs the read-only source adapter and the evidence an executable `ki acquire import --adapter granola` implementation must preserve. Arcadia remains the authority for the provider-neutral lifecycle; `tools-ki` owns executable KEP construction and repository staging.
 
 ## Contents
 

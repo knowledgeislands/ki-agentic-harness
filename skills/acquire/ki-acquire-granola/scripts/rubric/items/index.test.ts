@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import definition from './index.ts'
 
-describe('Granola housekeeping catalogue', () => {
+describe('Granola acquisition catalogue', () => {
   test('owns acquisition routing retirement and publication judgments', () => {
     expect(definition.families.flatMap((family) => family.items.map((item) => item.code))).toEqual([
       'ACQUIRE-1',

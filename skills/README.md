@@ -21,6 +21,18 @@ Use the [skills-by-outcome guide](../docs/guides/skills-by-outcome.md) when you 
 
 This source harness publishes 60 skills: 50 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
+### Acquire
+
+#### `ki-acquire-granola`
+
+Acquire and reconcile Granola meetings through read-only MCP evidence, including complete date windows, folder routing, faithful reads, checkpoints, and amendment detection. Use for Granola meeting import or audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 ### Agentic Systems
 
 #### `ki-subagents`
@@ -258,16 +270,6 @@ Acquire, audit, and later clean repository-scoped Codex sessions for one physica
 - **Arguments:** `audit <repo> | conform <artifact> <thread-id>... | educate <repo> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Runtime-bound: `chatgpt-codex`
-
-#### `ki-housekeeping-granola`
-
-Acquire and reconcile Granola meetings through read-only MCP evidence, including complete date windows, folder routing, faithful reads, checkpoints, and amendment detection. Use for Granola meeting import or audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
 
 #### `ki-tokenomics`
 

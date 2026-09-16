@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
 created_at: 2026-08-24T15:11:06Z
-updated_at: 2026-09-16T00:00:00Z
+updated_at: 2026-09-16T21:24:22Z
 ---
 
 ## Goal
@@ -20,7 +20,7 @@ Give Knowledge Islands a governed, repeatable way to acquire every historical an
 
 [ADR-KI-ARCADIA-001](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/ADR-KI-ARCADIA-001-provider-neutral-knowledge-acquisition.md) defines provider-neutral discovery, acquisition, staging, harvesting, durable knowledge, and separate source retirement. [ADR-KI-HARNESS-SKILLS-007](../decisions/ADR-KI-HARNESS-SKILLS-007-provider-neutral-ai-session-acquisition-and-adapter-pairing.md) places reusable provider skills and read-only adapter contracts in Harness, while [KI-HARNESS-OPS-005](KI-HARNESS-OPS-005-acquire-ai-sessions.md) applies that boundary to AI-session providers. Granola is the first communication-source provider and therefore needs its own work record rather than widening the AI-session item.
 
-The public command is `ki acquire <provider> import`; the additional `space` segment in earlier language was a transcription artefact, not a second architectural layer. `tools-ki` now implements repository-context `ki acquire granola import` and stages into the selected repository's Harbour.
+The approved public grammar is action-first: `ki acquire <action> --adapter <provider>`, including `ki acquire import --adapter granola`. The additional `space` segment in earlier language was a transcription artefact, and the provider-first `ki acquire granola import` form is superseded without a compatibility requirement.
 
 Legacy Granola activities in `kit-legal` and `kit-principal` prove useful source operations and routing evidence: folder listing, folder-scoped and unfiltered meeting listing, stable meeting IDs, generated summaries, participants, and unfoldered-meeting detection. They also expose limitations this work must replace: recent or today-only windows, one-folder ownership, one-meeting-at-a-time classification, note creation before faithful staging, and source tag mutation. The activities disagree on raw-transcript availability, so transcript entitlement remains unproven.
 
@@ -32,7 +32,7 @@ Any locally registered repository that declares and resolves the Granola skill m
 
 ## Current state
 
-The reusable `ki-housekeeping-granola` skill, provider contract, receiver selectors, official read-only MCP binding, and repository-context `ki acquire granola import` operation now exist. `tools-ki` commit `9161ab8` replaces the initial content-addressed directory presentation with one readable Markdown file per meeting plus one provider-level incremental ledger. Completed legacy acquisitions can migrate in place after their existing evidence verifies; unstarted receivers acquire directly into the readable form.
+The reusable `ki-acquire-granola` skill, provider contract, receiver selectors, official read-only MCP binding, and repository-context Granola acquisition implementation now exist. The Harness skill has moved to `skills/acquire/ki-acquire-granola/`. `tools-ki` still needs to migrate its provider-first command to `ki acquire import --adapter granola`; that CLI delivery remains owned by its handed-off work.
 
 `DOTFILES-UE-015` registered and authenticated Granola's official `https://mcp.granola.ai/mcp` endpoint through the chezmoi-managed mcporter binding. A live schema check on 2026-08-27 reports healthy HTTP transport and six read-only tools: account information, folder listing, meeting listing, meeting details, transcript retrieval, and natural-language notes query. The official endpoint is therefore the selected source adapter; do not create a local MCP wrapper without an evidenced normalization or checkpoint requirement.
 
@@ -40,10 +40,11 @@ The accepted capability evidence proves custom historical date windows, folder-s
 
 ## Steps
 
-- [x] Author `ki-housekeeping-granola` with the provider-neutral lifecycle, read-only source boundary, fidelity requirements, explicit omissions, receiver-selection semantics, completeness reconciliation, checkpoint semantics, and separate retirement gate.
+- [x] Author `ki-acquire-granola` with the provider-neutral lifecycle, read-only source boundary, fidelity requirements, explicit omissions, receiver-selection semantics, completeness reconciliation, checkpoint semantics, and separate retirement gate.
+- [x] Establish the acquisition skill family layout by moving Granola to `skills/acquire/ki-acquire-granola/` and publishing it under the `ki-acquire-granola` identity.
 - [x] Define the Granola provider contract as `discover`, `list`, `read`, and `checkpoint`, including complete date-window enumeration across global, folder, and inferred-unfoldered populations, stable identity, canonical content hashes, returned source projections, folder evidence, participants, notes, transcript, and omissions.
 - [x] Prove available Granola API or MCP capabilities through authoritative documentation and a separately approved read-only test, recording unsupported or account-tier-restricted fields without inventing fallbacks.
-- [x] Reconcile the public CLI as one `ki acquire granola import` operation that resolves the current or explicitly selected repository and stages verified meeting documents in its Harbour.
+- [ ] Reconcile the public CLI as the action-first `ki acquire import --adapter granola` operation, with no compatibility requirement for `ki acquire granola import`.
 - [x] Implement a provider-neutral Granola renderer in `tools-ki` with one Markdown document per meeting, source-projection hashes, document checksum, version history, and provider-level ledger.
 - [x] Define receiver-local selectors by stable Granola folder identity plus first-class unfoldered and residual policies; report inclusion, exclusion, overlap, and unmatched outcomes.
 - [x] Configure direct ingress by best-served repository while retaining `kit-principal` for Personal, unfoldered, and residual meetings.
@@ -62,7 +63,7 @@ The accepted capability evidence proves custom historical date windows, folder-s
 
 Harness-owned expected files:
 
-- `skills/environment/ki-housekeeping-granola/`
+- `skills/acquire/ki-acquire-granola/`
 - `.ki.toml` only when the new skill is approved and trade routes are ready to declare
 - this roadmap record and approved outbound records under `-/_TRADES/`
 - ADR-KI-HARNESS-SKILLS-007 only if implementation proves that its adapter-pairing decision genuinely extends beyond AI sessions
@@ -84,7 +85,7 @@ Harness planning contract gates:
 ki repo audit --skill ki-work-roadmap --repo .
 ki repo audit --skill ki-delegation --repo .
 ki repo audit --skill ki-trades --repo .
-ki repo audit --skill ki-housekeeping-granola --repo .
+ki repo audit --skill ki-acquire-granola --repo .
 ki repo audit --skill ki-skills --repo .
 bun run test
 bunx tsc --noEmit
@@ -92,7 +93,7 @@ bunx tsc --noEmit
 
 Receiver delivery must additionally prove:
 
-- `ki acquire granola import` stages into the current or explicitly selected eligible repository without requiring a `space` segment;
+- `ki acquire import --adapter granola` stages into the current or explicitly selected eligible repository without requiring a `space` segment;
 - caller-managed custom date windows enumerate global history and every live folder, split every saturated 100-result window, and fail closed when a minimum-granularity window remains saturated;
 - repository selectors include configured folders only, treat unfoldered as an explicit selector, and report unmatched, overlapping, and excluded meetings;
 - the union of configured receiver scopes reconciles with the complete discovery snapshot, with `kit-principal` initially covering the residual set;
@@ -116,7 +117,7 @@ The exact conflict policy for a meeting belonging to multiple mapped folders is 
 
 ### Locked decisions
 
-- `ki acquire <provider> import` is the public acquisition grammar; the earlier `space` segment is not a second public architecture.
+- `ki acquire <action> --adapter <provider>` is the public acquisition grammar; the earlier `space` segment is not a second architecture, and provider-first forms require no compatibility.
 - Any eligible repository may acquire Granola meetings according to its declared selector; `kit-principal` is the initial catch-all and residual receiver, not the permanent exclusive destination.
 - Acquisition covers complete historical and future meetings across folder and unfoldered results; recent windows and one-folder importers are insufficient.
 - Unfoldered meetings are a first-class selection category and remain visible to human review even when a configured receiver includes them.
@@ -141,7 +142,7 @@ The exact conflict policy for a meeting belonging to multiple mapped folders is 
 
 ### Worker: granola-provider-contract
 
-- **Deliverable:** A reviewable `ki-housekeeping-granola` skill and provider-capability contract, plus draft receiver-specific trade payloads that preserve this record's ownership boundaries.
+- **Deliverable:** A reviewable `ki-acquire-granola` skill and provider-capability contract, plus draft receiver-specific trade payloads that preserve this record's ownership boundaries.
 - **Inputs:** ADR-KI-ARCADIA-001, ADR-KI-HARNESS-SKILLS-007, KI-HARNESS-OPS-005, this record, the existing provider skills, current `tools-ki` acquisition and document-rendering implementation, and named legacy Granola activities.
 - **Scope:** Harness skill files and explicitly approved Harness outbound trade preparations only; no sibling-repository writes, provider-repository creation, live Granola calls, or source mutation.
 - **Authority:** Read named local evidence and author the bounded Harness contract. Do not infer unavailable provider fields, submit trades, contact external systems, or grant receiver implementation authority.
@@ -219,9 +220,9 @@ Acquisition establishes a faithful local observation; it is not harvesting and d
 
 ### CLI reconciliation
 
-The public operation is `ki acquire granola import`. It resolves the current repository by default, supports the existing explicit repository-selection convention, validates the Granola receiver scope, and stages one verified Markdown document per meeting in the repository's Harbour. Source hashing, ledgering, and document rendering are internal reusable capabilities, not reasons for a second `space` command.
+The approved public operation is `ki acquire import --adapter granola`. It resolves the current repository by default, supports the existing explicit repository-selection convention, validates the Granola receiver scope, and stages one verified Markdown document per meeting in the repository's Harbour. Source hashing, ledgering, and document rendering are internal reusable capabilities, not reasons for a second `space` command.
 
-The earlier `ki space acquire` wording remains migration context, not a second Granola command. Granola uses the implemented `ki acquire granola import` grammar; any broader ChatGPT compatibility cleanup remains governed separately.
+The earlier `ki space acquire` wording remains migration context, not a second Granola command. The existing provider-first implementation must migrate to the action-first grammar without a compatibility layer; broader provider-family migrations remain governed separately.
 
 ### Receiver selection and coverage
 
@@ -255,7 +256,7 @@ Verified omissions currently include Granola URL, creation and update timestamps
 
 ### Repository responsibilities and trades
 
-- **Harness:** Owns `ki-housekeeping-granola`, the reusable four-operation contract, receiver-selection and reconciliation semantics, fidelity requirements, retirement-safety standards, fixtures, and outbound trade preparations.
+- **Harness:** Owns `ki-acquire-granola`, the reusable four-operation contract, receiver-selection and reconciliation semantics, fidelity requirements, retirement-safety standards, fixtures, and outbound trade preparations.
 - **Granola adapter:** Granola's official remote MCP owns authentication, source schemas, read-only meeting projections, and its no-mutation tool surface. It does not provide KI checkpoints, completeness proof, or change detection.
 - **tools-ki:** Owns the single public CLI, repository resolution, one-file-per-meeting Markdown renderer, source hashing, Granola profile, caller-managed date-window enumeration, rate-limit handling, content revalidation, atomic Harbour staging, provider-level checkpoint and ledger mechanics, coverage reporting, and verification. Delivery remains receiver-controlled.
 - **Arcadia:** Remains the authority for the provider-neutral lifecycle, corrects the public command language, and decides when Granola evidence is sufficient to shape a portable acquisition specification. Delivery is a knowledge trade linked to `KI-ARCADIA-MOD-006`, not a Harness edit to Arcadia.
