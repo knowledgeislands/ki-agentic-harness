@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-16T22:16:03Z
+updated_at: 2026-09-16T22:24:46Z
 ---
 
 ## Goal
@@ -31,6 +31,10 @@ This item owns complete-session acquisition, project-to-repository routing, rece
 Deletion is a separate, destructive release operation. It requires a current exact manifest, a verified recoverable repository copy, and explicit human approval immediately before source mutation. Until that gate exists and passes, acquisition remains read-only.
 
 ## Current state
+
+The first readable acquisition pilot landed in `kit-principal` as commit `79b9279`. It staged the four-message `Fitness health discussion` conversation from the unprefixed `Fitness and Wellbeing` project, its project and conversation identities, a content-minimised checkpoint covering 182 local session records, and the matching 490-byte opaque original with a verified SHA-256. No ChatGPT source state changed.
+
+The pilot also found that the installed Codex MCP binding passes `MCP_HOUSEKEEPING_CHATGPT_PATH=~/Library/Application Support/com.openai.chat` literally. The adapter consequently resolved the source beneath the working repository and failed discovery; invoking the same read-only adapter with an absolute source path succeeded. Repeatable automation therefore still needs the binding renderer or adapter boundary to materialise the user-home path before launch.
 
 The source-mechanics groundwork is real but the end-to-end move is incomplete. The Claude, Codex, and ChatGPT MCP repositories expose comparable read-only discovery, listing, reading, and checkpoint operations, and their tests and builds pass. The ChatGPT local-store adapter safely inventories opaque `*.data` records and returns exact bytes, but those bytes do not provide a readable conversation surface or reliable project-name routing.
 
