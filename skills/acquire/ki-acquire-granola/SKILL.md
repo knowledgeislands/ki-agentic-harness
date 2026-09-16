@@ -4,6 +4,15 @@ ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
+ki-acquire-adapter: granola
+ki-acquire-actions: [import, status, reconcile, reset]
+ki-acquire-repository-properties: [folder_ids, duplicate_folder_ids, unfoldered, residual]
+ki-acquire-invocation-properties: [refresh-transcripts]
+ki-acquire-capabilities: [account, folders, meetings, details, transcripts]
+ki-acquire-omissions: [source-url, source-timestamps, tags, attachments, media, source-version, deletion-tombstone]
+ki-acquire-mutation-boundary: read-only
+ki-acquire-checkpoint: detail-transcript
+ki-acquire-reset-scopes: [adapter, source, component, rebuild]
 description: >
   Acquire and reconcile Granola meetings through read-only MCP evidence, including complete date windows,
   folder routing, faithful reads, checkpoints, and amendment detection. Use for Granola meeting import or
@@ -20,6 +29,8 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 This skill governs how Knowledge Islands interprets Granola as a mutable communication source. It requires complete identity enumeration, faithful read-only source projections, explicit omissions, immutable acquired versions, visible receiver conflicts, repeatable checkpoints, and separation between acquisition and retirement.
 
 Granola's official remote MCP is the selected source adapter. It supplies authentication and source reads; it does not own KI package construction, repository routing, ledgers, harvesting, trades, or retirement authority. `tools-ki` owns `ki acquire import --adapter granola`, provider-neutral KEP construction, Harbour staging, and executable reconciliation. Arcadia owns the provider-neutral lifecycle.
+
+The `ki-acquire-*` frontmatter is the machine-readable adapter declaration consumed by `tools-ki`. It names the public actions, repository and invocation properties, source capabilities and omissions, read-only mutation boundary, checkpoint model, and reset scopes without requiring an executor to parse prose or infer behaviour from the skill name.
 
 ## Verified provider boundary
 
