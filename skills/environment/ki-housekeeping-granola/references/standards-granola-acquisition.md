@@ -50,14 +50,14 @@ Discovery MUST NOT retain meeting notes, summaries, transcripts, participants, o
 
 ### Read
 
-`read` retrieves the structured meeting-detail projection and, when entitled, the transcript projection for one stable UUID. A caller MAY batch detail reads up to the provider's verified maximum but treats every meeting as an independent acquisition identity. The read result preserves the exact returned projections before any canonical rendering.
+`read` retrieves the structured meeting-detail projection and, when entitled, the transcript projection for one stable UUID. A caller MAY batch detail reads up to the provider's verified maximum but treats every meeting as an independent acquisition identity. Acquisition hashes the exact returned projections, then renders their metadata, notes, participants, and transcript into one human-readable Markdown file for that meeting.
 
 ### Checkpoint
 
 `checkpoint` records two distinct evidence layers:
 
 - **Identity checkpoint:** complete enumerated UUID set, window and folder-query hashes, schema hash, account/workspace evidence, saturation outcomes, and omissions.
-- **Content checkpoint:** for each UUID, hashes of exact detail and transcript projections, observed acquisition time, KEP identity, and explicit omissions.
+- **Content checkpoint:** for each UUID, hashes of exact detail and transcript projections, observed acquisition time, Markdown path, document checksum, version history, and explicit omissions.
 
 An identity checkpoint cannot prove existing content unchanged because the verified provider supplies no update timestamp, ETag, or version identifier.
 
@@ -86,7 +86,7 @@ When one meeting's mapped folders imply different receivers, acquisition MUST st
 
 ## Incremental acquisition and amendments
 
-An initial import MUST exhaustively enumerate and read every selected meeting, create immutable content-addressed KEPs, verify them, and then repeat exhaustive enumeration and content hashing. A clean verification repeat has no unexplained identity or content delta.
+An initial import MUST exhaustively enumerate and read every selected meeting, create one checksummed Markdown file per meeting, verify the documents and ledger, then repeat exhaustive enumeration and content hashing. A clean verification repeat has no unexplained identity or content delta.
 
 Routine acquisition combines:
 
@@ -96,27 +96,27 @@ Routine acquisition combines:
 
 The initial routine cadence is operating policy and MAY change from measured history size, rate limits, runtime, and amendment evidence. The ledger records the cadence and last exhaustive sweep. A pre-retirement verification MUST always perform exhaustive content revalidation regardless of routine cadence.
 
-Changed detail or transcript hashes create a new immutable KEP version linked to the same provider account and meeting UUID. Previous packages remain unchanged. A folder-scope exit, missing identity, inaccessible transcript, or changed entitlement is a reported delta, never evidence authorising deletion of source or acquired material.
+Changed detail or transcript hashes update the meeting's Markdown file and append the new content hash to its ledger history. Git retains the prior acquired version. A folder-scope exit, missing identity, inaccessible transcript, or changed entitlement is a reported delta, never evidence authorising deletion of source or acquired material.
 
 ## Acquisition fidelity
 
-Each acquired package preserves everything the official MCP faithfully returns:
+Each acquired meeting document preserves everything the official MCP faithfully returns in readable form:
 
 - provider account and active-workspace provenance in a privacy-minimised stable form;
 - stable meeting UUID;
 - title and returned meeting date;
 - participant and involvement evidence;
 - folder IDs and names derived from query context;
-- exact meeting-detail projection and generated summary;
-- exact transcript projection with its returned speaker representation;
+- generated notes or summary and returned participants;
+- raw transcript with the returned speaker representation;
 - schema, request, response, and content hashes;
 - acquisition timestamps, window evidence, and checkpoint identity;
 - explicit omissions.
 
-The returned MCP projection is the original available source for acquisition; it MUST NOT be represented as Granola's undocumented internal record. Verified current omissions include source URL, creation timestamp, update timestamp, tags, native folder membership on a meeting result, transcript timestamps, attachments, audio, recording references or bytes, content version, and deletion tombstone. Later provider fields are acquired only after the schema is refreshed and their fidelity is verified.
+The exact returned MCP projections are hashed as source evidence rather than published as separate machine-oriented payload files. The readable Markdown rendering is the acquired working document and MUST NOT be represented as Granola's undocumented internal record. Verified current omissions include source URL, creation timestamp, update timestamp, tags, native folder membership on a meeting result, transcript timestamps, attachments, audio, recording references or bytes, content version, and deletion tombstone. Later provider fields are acquired only after the schema is refreshed and their fidelity is verified.
 
 ## Staging and harvesting boundary
 
-`tools-ki` stages one immutable KEP per meeting version beneath the current receiver's `+/_ACQUIRE/granola/<payload-sha256>/`. A receiver ledger advances only after package checksum and manifest verification. The ledger records stable source identity, every acquired KEP, latest verified hashes, omissions, scope evidence, and later triage disposition.
+`tools-ki` stages one Markdown file per meeting beneath the current receiver's `+/_ACQUIRE/granola/`, using a collision-resistant human-readable name such as `<date>--<title>--<uuid>.md`. YAML frontmatter carries identity, provenance, folder evidence, hashes, acquisition metadata, and omissions; the body carries `Notes` and `Transcript` sections. One provider-level `ledger.json` advances only after document checksum and identity verification and records the stable source identity, current path and hashes, prior content hashes, scope evidence, and later triage disposition.
 
 Acquisition does not classify durable knowledge, rewrite source notes, or move files between repositories. Correct direct ingress avoids unnecessary trades. Material acquired into the wrong repository, corrections affecting another island, and knowledge with wider applicability move only through governed harvesting and `ki-trades`.
