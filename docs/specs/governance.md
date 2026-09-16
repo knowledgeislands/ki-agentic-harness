@@ -123,3 +123,13 @@ _Conformance:_ conforming
 _Verify:_ focused `ki-repo` tests compare `ki-detects` with executable coverage targets, while `ki-skills` and `ki-repo-harness` reject invalid ownership or registry drift.
 
 _Evidence:_ `ki-repo` frontmatter, its coverage catalogue, and the canonical skill collection agree bidirectionally.
+
+### GOV-012 — Fail-closed shared Decision Record projection
+
+For `shared_record: true`, shared identity MUST be the deterministic projection of decision-owned fields in the order `id`, `title`, `date`, `status`, `decision_type`, `decision_type_url`, optional `decision_depends_on`, and `shared_record`, followed by the complete body with LF line endings. The projection MUST exclude only `note_type` and MUST fail closed on every unknown frontmatter field.
+
+_Conformance:_ conforming
+
+_Verify:_ focused `ki-decision-records` tests prove frontmatter-order independence, `note_type` equivalence, complete-body sensitivity, and unknown-field refusal; its repository audit rejects an ineligible shared record.
+
+_Evidence:_ `ki-decision-records` publishes the projection contract and exposes deterministic projection evidence for every eligible shared record.

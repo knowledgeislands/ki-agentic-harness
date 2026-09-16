@@ -1,7 +1,7 @@
 ---
 id: GDR-KI-FUNDAMENTALS-001
 title: 'Knowledge Islands ecosystem fundamentals'
-date: 2026-08-06
+date: 2026-09-16
 status: current
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
 decision_type: governance
@@ -22,8 +22,8 @@ The six primary repositories have distinct authority:
 - `ki-techne-principal` is the canonical source of the Knowledge Islands engineering discipline. It translates the philosophy into engineering architecture, operating models, workflows, technology posture, and implementation patterns; it informs implementation repositories without owning their executable behaviour or portable normative contracts.
 - `ki-agentic-harness` is the canonical source of reusable agentic capabilities and compatible harnesses. A capability is a typed published harness member: a skill, agent, MCP server, hook, eval, or future registered kind. The harness defines capability content and semantics; it does not implement the public `ki` executable or originate normative portable contracts.
 - `tools-ki` is the canonical source of the `ki` executable platform. It implements harness installation, capability inventory and activation, repository resolution, registered native operation hosting, reporting, migration, and public command grammar. It consumes compatible harness artifacts but does not own their standards or define portable normative contracts.
-- `ki-repo-specifications` is the canonical source of normative portable contracts, including KIPs, KIS documents, schemas, templates, conformance rules, reference examples, and portable capability identity and inventory contracts. It formalises proven concepts and implementation evidence; an Active KIS governs implementations that claim conformance within its scope.
-- `ki-repo-website` is the autonomous public publication layer. It owns public user-guide prose and routes, and vendors source-labelled material from the other five repositories so it can build and deploy independently, but publication never transfers canonical ownership.
+- `ki-specifications` is the canonical source of normative portable contracts, including KIPs, KIS documents, schemas, templates, conformance rules, reference examples, and portable capability identity and inventory contracts. It formalises proven concepts and implementation evidence; an Active KIS governs implementations that claim conformance within its scope.
+- `ki-website` is the autonomous public publication layer. It owns public user-guide prose and routes, and vendors source-labelled material from the other five repositories so it can build and deploy independently, but publication never transfers canonical ownership.
 
 The authority and publication structure is:
 
@@ -32,34 +32,34 @@ ki-arcadia-principal
 |-- informs -------------------> ki-techne-principal
 |-- informs -------------------> ki-agentic-harness
 |-- informs -------------------> tools-ki
-|-- informs -------------------> ki-repo-specifications
-`-- publishes through --------> ki-repo-website
+|-- informs -------------------> ki-specifications
+`-- publishes through --------> ki-website
 
 ki-techne-principal
 |-- informs engineering ------> ki-agentic-harness
 |-- informs engineering ------> tools-ki
-|-- informs engineering ------> ki-repo-specifications
-`-- publishes through --------> ki-repo-website
+|-- informs engineering ------> ki-specifications
+`-- publishes through --------> ki-website
 
 ki-agentic-harness
 |-- publishes compatible
 |   harness and capability semantics -> tools-ki
-|-- informs/validates ---------> ki-repo-specifications
-`-- publishes through --------> ki-repo-website
+|-- informs/validates ---------> ki-specifications
+`-- publishes through --------> ki-website
 
 tools-ki
 |-- supplies implementation
-|   evidence ------------------> ki-repo-specifications
-`-- publishes through --------> ki-repo-website
+|   evidence ------------------> ki-specifications
+`-- publishes through --------> ki-website
 
-ki-repo-specifications
+ki-specifications
 |-- constrains conforming -----> ki-agentic-harness and tools-ki
-`-- publishes through --------> ki-repo-website
+`-- publishes through --------> ki-website
 ```
 
 `homebrew-tap` is a delivery repository for package-manager formulae, not a primary ecosystem authority. It implements the release transport owned by `tools-ki`.
 
-This file is copied verbatim into `ki-arcadia-principal`, `ki-techne-principal`, `ki-agentic-harness`, `tools-ki`, `ki-repo-specifications`, and `ki-repo-website`; the six paths are one shared record, not repository-specific variants. Any proposed modification must consider its effect on all six repositories and update every copy coherently.
+This decision is shared by `ki-arcadia-principal`, `ki-techne-principal`, `ki-agentic-harness`, `tools-ki`, `ki-specifications`, and `ki-website`. Its canonical decision projection is one shared identity; the Knowledge Base copies may additionally carry the excluded `note_type` container field. Any proposed modification must consider its effect on all six repositories and update every decision projection coherently.
 
 Cross-repository work is choreographed rather than centrally orchestrated. Each repository owns its priorities, plans, workspace, verification, and commits. A repository may place a concrete handoff in another repository's Stream or roadmap, naming its origin and whether it blocks or is blocked by the local item. Work should remain non-blocking and independently executable unless a genuine prerequisite requires otherwise.
 

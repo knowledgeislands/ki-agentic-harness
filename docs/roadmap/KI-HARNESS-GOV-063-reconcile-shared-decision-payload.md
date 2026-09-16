@@ -4,12 +4,12 @@ area: GOV
 title: Reconcile Shared Decision Payload
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 8d2b9767634c78b09da41bb5bf610ef01eb033ea
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-16T08:14:46Z
+updated_at: 2026-09-16T09:20:26Z
 ---
 
 # Reconcile shared Decision Record payload
@@ -38,13 +38,13 @@ The user approved Model B on 2026-09-16: shared identity compares a canonical de
 
 ## Steps
 
-- [ ] Record approved Model B with `note_type` as the initial and only excluded container field, unknown frontmatter failing closed, and amend `GDR-KI-HARNESS-007` as the living decision that already owns metadata authority.
-- [ ] Define the canonical comparison projection: fixed decision-owned fields, explicit exclusions, deterministic ordering and serialization, body normalization, and failure behaviour.
-- [ ] Update `ki-decision-records` standards, context parser, rubric, and fixtures so an ordinary local audit validates projection eligibility without claiming to observe peer-repository equality.
-- [ ] Produce the canonical current `GDR-KI-FUNDAMENTALS-001` decision projection using the accepted repository names and conform the Harness copy only.
-- [ ] Prepare exact receiver-owned work for Arcadia, Techne, tools-ki, KI Specifications, and KI Website without changing those repositories from the Harness.
-- [ ] Prepare a later observation item whose explicit six-repository projection comparison is the only work allowed to claim estate-wide reconciliation.
-- [ ] Regenerate affected rubric and capability publications and run repository-wide gates.
+- [x] Record approved Model B with `note_type` as the initial and only excluded container field, unknown frontmatter failing closed, and amend `GDR-KI-HARNESS-007` as the living decision that already owns metadata authority.
+- [x] Define the canonical comparison projection: fixed decision-owned fields, explicit exclusions, deterministic ordering and serialization, body normalization, and failure behaviour.
+- [x] Update `ki-decision-records` standards, context parser, rubric, and fixtures so an ordinary local audit validates projection eligibility without claiming to observe peer-repository equality.
+- [x] Produce the canonical current `GDR-KI-FUNDAMENTALS-001` decision projection using the accepted repository names and conform the Harness copy only.
+- [x] Prepare exact receiver-owned work for Arcadia, Techne, tools-ki, KI Specifications, and KI Website without changing those repositories from the Harness.
+- [x] Prepare a later observation item whose explicit six-repository projection comparison is the only work allowed to claim estate-wide reconciliation.
+- [x] Regenerate affected rubric and capability publications and run repository-wide gates.
 
 ## Files touched
 
@@ -87,6 +87,32 @@ Update Decision Record authoring guidance if maintainers must produce or compare
 ### Roadmap
 
 Prepare receiver-local items only after the model and canonical payload are accepted. Keep each repository's implementation and closure independent, then use a distinct observation item for the explicit six-repository comparison.
+
+## Review
+
+### Delivered
+
+Delivered approved Model B against immutable baseline `8d2b9767634c78b09da41bb5bf610ef01eb033ea`. Shared identity now projects fixed Decision Record-owned fields and the complete LF-normalised body, excludes only `note_type`, and fails closed on unknown frontmatter. The Harness copy alone was reconciled; no peer shared record was changed.
+
+### Summary of changes
+
+Amended `GDR-KI-HARNESS-007`, updated the Harness `GDR-KI-FUNDAMENTALS-001` copy to current repository names and projection wording, added the portable Specification requirement, and extended `ki-decision-records` with deterministic projection, eligibility audit, tests, standard, audit guidance, and generated rubric. Captured [KI-HARNESS-GOV-069](KI-HARNESS-GOV-069-observe-shared-decision-reconciliation.md) for the later estate observation. Created and committed receiver-owned draft records in Arcadia (`3f3f91c`), Techne (`6ab3176`), tools-ki (`7618912`), KI Specifications (`fc8a871`), and KI Website (`6b909e3`); KI Website's pre-existing retired candidate metadata was repaired separately in `2ad43a9` so its roadmap gate passed.
+
+### Verification
+
+Projection tests prove frontmatter-order independence, `note_type` equivalence, unknown-field refusal, and complete-body sensitivity. Current inspection finds one new Harness projection and one matching projection across the five unchanged receiver copies, which is the expected pre-reconciliation state. Focused `ki-decision-records` and remediation-inventory tests pass; the six relevant Harness audits pass; `bunx tsc --noEmit`, all 714 tests, `bunx biome check`, and `git diff --check` pass. Each receiver record passed its local roadmap or Streams audit before commit.
+
+### Outstanding concerns
+
+The five receiver records remain unadopted Triage proposals under their owners' authority. Estate-wide equality is intentionally not claimed until those repositories accept and deliver their records and `KI-HARNESS-GOV-069` observes all six accepted revisions.
+
+### Post-change review
+
+The implementation keeps container metadata ownership narrow and explicit without weakening shared decision identity. Unknown-field refusal prevents silent divergence when future metadata appears. The projection implementation is directly testable and the local audit reports eligibility without pretending it can observe peer state. The approved Harness boundary is ready for acceptance review.
+
+### Mini recap
+
+GOV-063 now has a stable local contract, a canonical Harness payload, five independently owned receiver proposals, and a distinct observation gate. No automatic promotion of receiver work or estate-wide completion claim was made.
 
 ## Discussion
 
