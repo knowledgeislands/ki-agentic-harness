@@ -23,6 +23,15 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 
 ❡ The Markdown mechanical pass.
 
+## Supported generated-artifact locations
+
+These upstream locations determine whether the shared ignore contract needs an additional rule. A tool output already nested beneath an existing managed rule must not create a duplicate pattern.
+
+| Tool | Source | Generated location | Managed coverage | Last reviewed |
+| --- | --- | --- | --- | --- |
+| Turborepo | [Caching][turbo-cache] | `.turbo/cache` | `.turbo/` from `ki-engineering` | 2026-09-16 |
+| Vite | [Shared options][vite-cache] | `node_modules/.vite` | `node_modules/` from `ki-engineering` | 2026-09-16 |
+
 ## In-house (the workspace convention)
 
 The standard is a **deliberately selected house shape**, not a vote count. Current configured repositories and this harness's committed tool files are supporting implementation evidence; the normative rules live in the standard and its registered rubric.
@@ -56,3 +65,5 @@ REFRESH last run **2026-09-04**. Cadence: monthly, alongside the other governanc
 [syncpack]: https://github.com/JamieMason/syncpack/releases
 [rumdl]: https://github.com/rvben/rumdl/releases
 [knip]: https://github.com/webpro-nl/knip/releases
+[turbo-cache]: https://turborepo.com/docs/crafting-your-repository/caching
+[vite-cache]: https://vite.dev/config/shared-options#cachedir

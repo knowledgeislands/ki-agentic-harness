@@ -4,12 +4,12 @@ area: GOV
 title: Expand Ignore Coverage
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: cac2e15033424b4b5d0c883f8486791268b6f313
 created_at: 2026-09-16T20:28:46Z
-updated_at: 2026-09-16T21:02:20Z
+updated_at: 2026-09-16T21:06:48Z
 ---
 
 # Expand Ignore Coverage
@@ -39,14 +39,15 @@ Retain `ki-repo` as the sole `.gitignore` writer and the existing dependency-sta
 
 ## Steps
 
-- [ ] Add `.turbo/` to the `ki-engineering` managed block and normalize common unmanaged root variants into that canonical rule.
-- [ ] Extend focused composition tests to prove ownership, stable rendering, and legacy-rule retirement.
-- [ ] Record the official Turborepo cache source and the engineering convention that generated local cache belongs below `.turbo/`.
-- [ ] Record why Vite, Eleventy, TypeScript, test reports, Bun logs, and Cloudflare need no duplicate rule.
-- [ ] Run focused tests, TypeScript and repository audits, then publish the exact review packet.
+- [x] Add `.turbo/` to the `ki-engineering` managed block and normalize common unmanaged root variants into that canonical rule.
+- [x] Extend focused composition tests to prove ownership, stable rendering, and legacy-rule retirement.
+- [x] Record the official Turborepo cache source and the engineering convention that generated local cache belongs below `.turbo/`.
+- [x] Record why Vite, Eleventy, TypeScript, test reports, Bun logs, and Cloudflare need no duplicate rule.
+- [x] Run focused tests, TypeScript and repository audits, then publish the exact review packet.
 
 ## Files touched
 
+- `.gitignore`
 - `skills/keystone/ki-repo/scripts/rubric/contexts/gitignore.ts`
 - `skills/keystone/ki-repo/scripts/rubric/contexts/gitignore.test.ts`
 - `skills/governance/ki-engineering/references/sources.md`
@@ -89,6 +90,38 @@ No guide change is required; conforming repositories receive the rule through ex
 ### Roadmap
 
 Update this record through implementation and Awaiting review; any estate rollout remains separately selectable work.
+
+## Review
+
+### Delivered
+
+From immutable baseline `cac2e15033424b4b5d0c883f8486791268b6f313`, expanded the compositional ignore contract for the supported engineering stack without changing its single-writer architecture or introducing rules for unsupported frameworks.
+
+### Summary of changes
+
+Added `.turbo/` to the `ki-engineering` managed block, reconciled common root variants, updated this repository's generated `.gitignore`, and extended focused tests. Added primary-source evidence for Turborepo and Vite and made their cache treatment explicit in the engineering standard. Existing coverage for Eleventy, TypeScript, test reports, Bun logs, and Cloudflare remains unchanged because their generated paths were already governed.
+
+### Verification
+
+- `bun test skills/keystone/ki-repo/scripts/rubric/contexts/gitignore.test.ts` — PASS, 4 tests and 25 expectations.
+- `bunx tsc --noEmit && bun run test && bunx biome check` — PASS.
+- `ki repo audit --skill ki-repo --repo .` — PASS using the clean committed `tools-ki` baseline because the active linked checkout contains unrelated in-progress acquisition edits.
+- `ki repo audit --skill ki-engineering --repo .` — PASS using the same baseline.
+- `ki repo audit --skill ki-authoring --repo .` — PASS using the same baseline.
+- `ki repo audit --skill ki-work-roadmap --repo .` — PASS using the same baseline.
+- `git diff --check` — PASS.
+
+### Outstanding concerns
+
+No concern remains inside the approved boundary. The separately linked development `ki` command cannot currently start because another session has deleted `tools-ki/src/core/acquire/granola-import.ts` while refactoring acquisition; the audits were therefore run from an isolated archive of that repository's current committed baseline and shared installed dependencies.
+
+### Post-change review
+
+The narrow addition closes the only evidenced coverage gap in the supported stack. Keeping the rule in the existing central composer preserves deterministic ordering and sole-writer behaviour; avoiding `.cache/` and `.vite/` prevents ambiguous or redundant exclusions. Estate rollout remains separate work.
+
+### Mini recap
+
+Turborepo local cache is now governed, attributable, normalized, tested, and documented; all planned verification passes and the item is ready for human acceptance.
 
 ## Discussion
 
