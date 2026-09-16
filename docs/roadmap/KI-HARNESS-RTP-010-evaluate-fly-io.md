@@ -4,12 +4,13 @@ title: Evaluate Fly.io hosting
 area: RTP
 theme: runtime-portability
 horizon: triage
-status: draft
+status: done
+intake_disposition: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-01T10:24:06Z
-updated_at: 2026-09-15T13:16:47Z
+updated_at: 2026-09-16T11:15:38Z
 ---
 
 ## Goal
@@ -25,6 +26,20 @@ No Harness-local delivery remains in this intake. It stays in Triage until the u
 ## Boundary
 
 Do not select or recommend Fly.io, duplicate Techne's technology landscape, create an account, provision infrastructure, incur spend, or introduce a dependency from this Harness intake. Do not use this record to define general service hosting, durable agent workspaces, or remote-development practice.
+
+## Intake disposition
+
+### Outcome
+
+Rejected as Harness intake after transferring the distinct Fly.io substrate investigation to `TECHNE-OPS-006` in Techne.
+
+### Rationale
+
+No Harness-owned outcome remains. Techne owns provider comparison and operational proof, while any demonstrated reusable hand-off consequence must return as separately adopted Harness work.
+
+## Done
+
+Disposed 2026-09-16 by Kris Brown as rejected on the intake evidence above.
 
 ## Discussion
 
