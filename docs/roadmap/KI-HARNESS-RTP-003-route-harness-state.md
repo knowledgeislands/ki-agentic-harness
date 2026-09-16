@@ -4,12 +4,12 @@ title: Route harness state
 area: RTP
 theme: runtime-portability
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 89e9387c0391105a672c1d67e2244f7487bd5ee6
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-16T13:19:33Z
+updated_at: 2026-09-16T13:22:58Z
 ---
 
 ## Goal
@@ -34,12 +34,12 @@ The first concrete contradiction is bounded and reproducible: a checkout-path ch
 
 ## Steps
 
-- [ ] Inventory the finite Harness state classes: repository source and generated projections; installed harness registry, configuration, and cache; managed user-runtime settings and hooks; project memory and learned preferences; active checkpoints and acquired sessions; credentials; logs, caches, and temporary execution state.
-- [ ] Map each class to one canonical authority, its derived or disposable projections, required durability and sharing, sensitivity boundary, regeneration path, and recovery expectation.
-- [ ] Add `ADR-KI-HARNESS-014` with the rule that durable authority must not depend solely on a checkout path, runtime session, provider snapshot, generated projection, or cache.
-- [ ] Reconcile the decision with existing repository-documentation, installation, user-environment binding, checkpoint, housekeeping, and runtime-portability ownership without restating their detailed contracts.
-- [ ] Add the decision to the curated construction reading order and identify separately scoped migration work only where the inventory proves current state is misrouted.
-- [ ] Run focused Decision Record, authoring, and roadmap audits plus repository-wide Markdown integrity checks.
+- [x] Inventory the finite Harness state classes: repository source and generated projections; installed harness registry, configuration, and cache; managed user-runtime settings and hooks; project memory and learned preferences; active checkpoints and acquired sessions; credentials; logs, caches, and temporary execution state.
+- [x] Map each class to one canonical authority, its derived or disposable projections, required durability and sharing, sensitivity boundary, regeneration path, and recovery expectation.
+- [x] Add `ADR-KI-HARNESS-014` with the rule that durable authority must not depend solely on a checkout path, runtime session, provider snapshot, generated projection, or cache.
+- [x] Reconcile the decision with existing repository-documentation, installation, user-environment binding, checkpoint, housekeeping, and runtime-portability ownership without restating their detailed contracts.
+- [x] Add the decision to the curated construction reading order and identify separately scoped migration work only where the inventory proves current state is misrouted.
+- [x] Run focused Decision Record, authoring, and roadmap audits plus repository-wide Markdown integrity checks.
 
 ## Files touched
 
@@ -78,6 +78,36 @@ No guide is planned because this item does not define a migration or operator pr
 ### Roadmap
 
 Create follow-on work only for a concrete state class the completed inventory proves is currently misrouted. `KI-HARNESS-OPS-002` remains the independently completed narrow legacy-memory repair.
+
+## Review
+
+### Delivered
+
+From immutable baseline `89e9387c0391105a672c1d67e2244f7487bd5ee6`, delivered the approved state-routing Architecture Decision Record and its decision-index entry without migrating state or changing external configuration, credentials, sessions, caches, providers, or runtime bindings.
+
+### Summary of changes
+
+Added `ADR-KI-HARNESS-014-route-state-by-authority-and-durability.md` with a finite routing inventory for repository source, installed Harness state, managed user-runtime bindings, project knowledge and learned preferences, work and session continuity, credentials, and disposable runtime evidence. Updated the curated Decision Record reading order and retained existing standards as the detailed owners of their established contracts.
+
+### Verification
+
+- `ki repo audit --skill ki-decision-records --repo .` — PASS.
+- `ki repo audit --skill ki-authoring --repo .` — PASS before review publication.
+- `ki repo audit --skill ki-work-roadmap --repo .` — PASS before implementation and scheduled after review publication.
+- `git diff --check` — PASS for the decision and index before review publication.
+- Manual review confirmed every planned state class names one canonical authority plus its projection, durability, sensitivity, regeneration, and recovery treatment.
+
+### Outstanding concerns
+
+None in the approved decision boundary. No additional misrouted state class was evidenced, so the implementation creates no speculative migration item.
+
+### Post-change review
+
+The decision resolves the observed ambiguity without turning one runtime path into a universal storage design. It makes authority and recovery explicit, keeps secrets and disposable state outside durable owners, and preserves the existing installation, binding, documentation, checkpoint, and housekeeping contracts. The item is ready for acceptance review.
+
+### Mini recap
+
+Established one durable rule for routing Harness state by authority and durability, grounded in the observed checkout-path memory split. No state was moved and no follow-on work is required unless future evidence identifies another concrete misroute.
 
 ## Discussion
 
