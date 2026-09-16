@@ -4,12 +4,12 @@ title: Reconcile memory-store defects
 area: OPS
 theme: operations
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-16T12:51:00Z
+updated_at: 2026-09-16T12:55:26Z
 ---
 
 ## Goal
