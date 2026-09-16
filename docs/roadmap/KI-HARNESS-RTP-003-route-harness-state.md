@@ -4,12 +4,12 @@ title: Route harness state
 area: RTP
 theme: runtime-portability
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 89e9387c0391105a672c1d67e2244f7487bd5ee6
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-16T13:22:58Z
+updated_at: 2026-09-16T16:44:17Z
 ---
 
 ## Goal
@@ -108,6 +108,10 @@ The decision resolves the observed ambiguity without turning one runtime path in
 ### Mini recap
 
 Established one durable rule for routing Harness state by authority and durability, grounded in the observed checkout-path memory split. No state was moved and no follow-on work is required unless future evidence identifies another concrete misroute.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on the review packet above.
 
 ## Discussion
 
