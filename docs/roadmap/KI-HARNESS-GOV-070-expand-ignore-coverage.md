@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-16T20:28:46Z
-updated_at: 2026-09-16T20:28:46Z
+updated_at: 2026-09-16T20:32:06Z
 ---
 
 # Expand Ignore Coverage
@@ -33,6 +33,8 @@ Do not add a blanket catalogue for unsupported frameworks, ignore ambiguous dire
 ### Ownership shape
 
 Keep marker names and explanatory comments skill-specific. A default belongs in `ki-engineering` only when it follows the common TypeScript/Bun toolchain; a website or hosting-specific artifact belongs in that declared capability's block. This preserves the compositional decision while making generated ignores auditable at a glance.
+
+No dedicated operation or configuration surface is needed for unmanaged entries. Repository authors may continue editing the preserved unmanaged tail directly; this work concerns the completeness and clear demarcation of skill-managed defaults.
 
 ### Coverage method
 
