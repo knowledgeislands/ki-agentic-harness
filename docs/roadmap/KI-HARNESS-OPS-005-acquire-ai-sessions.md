@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-16T22:14:32Z
+updated_at: 2026-09-16T22:16:03Z
 ---
 
 ## Goal
@@ -43,7 +43,7 @@ The former Awaiting review packet proved the read-only MCP mechanics, bindings, 
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
-- [ ] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, an unprefixed Personal / Kit default, and retained prior names as migration aliases.
+- [ ] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
 - [ ] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
 - [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
 - [ ] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
@@ -113,15 +113,15 @@ Acquisition moves a complete selected source into a receiving repository with en
 
 ### Project routing inventory
 
-The visible ChatGPT projects provide the first routing inventory. An unprefixed project belongs to Personal / Kit and routes to `kit-principal`. Use the controlled display form `<Domain>: <Topic>` only for non-personal domains so related projects group visibly and routing intent remains legible. Names are still review evidence rather than identity: acquisition configuration must bind the immutable source project ID, record the current name, and retain any earlier name as an alias.
+The visible ChatGPT projects provide the first routing inventory. For the initial migration, an unprefixed project defaults to Personal / Kit and routes to `kit-principal`; this avoids moving or renaming every existing project before acquisition and is not a permanent taxonomy decision. Use the controlled display form `<Domain>: <Topic>` for projects already identified with a non-personal domain so related projects group visibly and routing intent remains legible. Names are still review evidence rather than identity: acquisition configuration must bind the immutable source project ID, record the current name, and retain any earlier name as an alias.
 
 - **Knowledge Islands:** rename `Knowledge Islands: General` as the general architecture project and `Engineering` to `Knowledge Islands: Engineering`. Proposed receivers are Arcadia for General and Techne for Engineering; create a distinct `Knowledge Islands: Harness` project if Harness-specific conversations become substantial rather than silently splitting one project's sessions during import.
 - **Legal:** keep `Legal: General`; rename `Equal Remedy` to the legally accurate `Legal: Financial Remedy`. Both map to `kit-legal`.
 - **HNR:** retain `HNR: 5G Emerge` and `HNR: Product`; both map to `kit-hnr`.
-- **Personal / Kit default:** leave `Festivals`, `Tattoos`, `Travel Ideas`, `Relationships`, `Van Build`, `Fitness and Wellbeing`, `Costa Rica`, `Productivity`, `Spirituality`, `Home Improvement`, and `Side Hustle Ideas` unprefixed; all route to `kit-principal`.
+- **Provisional Personal / Kit default:** leave `Festivals`, `Tattoos`, `Travel Ideas`, `Relationships`, `Van Build`, `Fitness and Wellbeing`, `Costa Rica`, `Productivity`, `Spirituality`, `Home Improvement`, and `Side Hustle Ideas` unprefixed during the initial migration; all route to `kit-principal` for now.
 - **Creative or game work:** rename `The Tower Game` to `Creative: The Tower Game`, but leave its receiver unresolved until an existing or new repository is selected.
 
-Add or correct only non-personal prefixes before the first acquisition checkpoint, then freeze project identity and names until the move and deletion manifest are complete. Do not consolidate or move conversations between ChatGPT projects during that window: consolidation happens safely in the receiving repositories after full acquisition, while future ChatGPT projects can start with the reduced taxonomy.
+Add or correct only the non-personal prefixes already worth distinguishing before the first acquisition checkpoint, then freeze project identity and names until the move and deletion manifest are complete. Do not consolidate or move conversations between ChatGPT projects during that window. After full acquisition, revisit whether the remaining projects should be prefixed, consolidated, or routed elsewhere from the safety of the receiving repositories.
 
 `New project` is an interface action rather than a source project and is excluded from the inventory.
 
