@@ -4,12 +4,12 @@ title: Route harness state
 area: RTP
 theme: runtime-portability
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-16T12:59:39Z
+updated_at: 2026-09-16T13:19:33Z
 ---
 
 ## Goal
@@ -59,7 +59,7 @@ The first concrete contradiction is bounded and reproducible: a checkout-path ch
 
 ## Dependencies / blocks
 
-No external dependency blocks planning. Readiness requires approval of the Architecture Decision Record outcome and the finite state-class vocabulary above. Implementation creates no external configuration, migration, credential, session, cache, or provider change.
+No dependency or block remains. The user approved the Architecture Decision Record outcome and finite state-class vocabulary. Implementation creates no external configuration, migration, credential, session, cache, or provider change.
 
 ## Documentation impact
 
