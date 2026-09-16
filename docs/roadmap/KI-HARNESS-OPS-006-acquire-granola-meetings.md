@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
 created_at: 2026-08-24T15:11:06Z
-updated_at: 2026-09-16T21:53:34Z
+updated_at: 2026-09-16T21:55:52Z
 ---
 
 ## Goal
@@ -32,7 +32,7 @@ Any locally registered repository that declares and resolves the Granola skill m
 
 ## Current state
 
-The reusable `ki-acquire-granola` skill, provider contract, receiver selectors, official read-only MCP binding, and repository-context Granola acquisition implementation now exist. The Harness skill has moved to `skills/acquire/ki-acquire-granola/` and now publishes a machine-readable `granola` adapter declaration: supported actions, repository and invocation properties, capabilities, omissions, read-only boundary, checkpoint model, and reset scopes. `kit-principal` and `kit-legal` now resolve that renamed skill with their existing stable `Personal` and `Legal` folder IDs, and their work, Streams, and Granola audits pass. `tools-ki` still needs to complete and commit its action-first migration to `ki acquire import --adapter granola`; that CLI delivery remains receiver-owned.
+The reusable `ki-acquire-granola` skill, provider contract, receiver selectors, official read-only MCP binding, and repository-context Granola acquisition implementation now exist. The Harness skill has moved to `skills/acquire/ki-acquire-granola/` and now publishes a machine-readable `granola` adapter declaration: supported actions, repository and invocation properties, capabilities, omissions, read-only boundary, checkpoint model, and reset scopes. `kit-principal` and `kit-legal` now resolve that renamed skill with their existing stable `Personal` and `Legal` folder IDs, and their work, Streams, and Granola audits pass. `tools-ki` commit `a49ff67` implements the action-first adapter inventory and `list`, `import`, `status`, `reconcile`, and `reset` commands; its 139 focused acquisition tests and TypeScript gate pass.
 
 `DOTFILES-UE-015` registered and authenticated Granola's official `https://mcp.granola.ai/mcp` endpoint through the chezmoi-managed mcporter binding. A live schema check on 2026-08-27 reports healthy HTTP transport and six read-only tools: account information, folder listing, meeting listing, meeting details, transcript retrieval, and natural-language notes query. The official endpoint is therefore the selected source adapter; do not create a local MCP wrapper without an evidenced normalization or checkpoint requirement.
 
@@ -45,7 +45,7 @@ The accepted capability evidence proves custom historical date windows, folder-s
 - [x] Publish the machine-readable Granola adapter declaration so executors can discover and validate the contract without parsing prose or inferring behaviour from the skill name.
 - [x] Define the Granola provider contract as `discover`, `list`, `read`, and `checkpoint`, including complete date-window enumeration across global, folder, and inferred-unfoldered populations, stable identity, canonical content hashes, returned source projections, folder evidence, participants, notes, transcript, and omissions.
 - [x] Prove available Granola API or MCP capabilities through authoritative documentation and a separately approved read-only test, recording unsupported or account-tier-restricted fields without inventing fallbacks.
-- [ ] Reconcile the public CLI as the action-first `ki acquire import --adapter granola` operation, with no compatibility requirement for `ki acquire granola import`.
+- [x] Reconcile the public CLI as the action-first `ki acquire import --adapter granola` operation, with no compatibility requirement for `ki acquire granola import`.
 - [x] Implement a provider-neutral Granola renderer in `tools-ki` with one Markdown document per meeting, source-projection hashes, document checksum, version history, and provider-level ledger.
 - [x] Define receiver-local selectors by stable Granola folder identity plus first-class unfoldered and residual policies; report inclusion, exclusion, overlap, and unmatched outcomes.
 - [x] Configure direct ingress by best-served repository while retaining `kit-principal` for Personal, unfoldered, and residual meetings.
@@ -54,7 +54,7 @@ The accepted capability evidence proves custom historical date windows, folder-s
 - [x] Preserve generated notes, raw transcripts, participants, folder evidence, hashes, explicit omissions in readable lint-clean Markdown: meeting title H1, optional Attendees H2, source sections H2 with nested H3+, final Transcript H2.
 - [x] Model source amendments explicitly: changed source hashes update the meeting document, append ledger version history, and retain the previous acquired form in Git; scope exit never implies source or local deletion.
 - [x] Make interrupted imports resumable: publish each document atomically, never advance the ledger before verification, and recover an orphan document's acquisition timestamp on retry.
-- [ ] Add fixtures for saturated and split date windows, new, unchanged and changed meetings, multiple-folder membership, folder reassignment, unmatched folders, duplicate identities, inferred-unfoldered meetings, unsafe paths, unavailable transcript or media, interrupted writes, corrupted existing stages, and repeatable checkpoints.
+- [x] Add fixtures for saturated and split date windows, new, unchanged and changed meetings, multiple-folder membership, folder reassignment, unmatched folders, duplicate identities, inferred-unfoldered meetings, unsafe paths, unavailable transcript or media, interrupted writes, corrupted existing stages, and repeatable checkpoints.
 - [x] Give `tools-ki` ownership of the action-first adapter migration in `KI-TOOL-CLI-072`, without retaining or submitting a trade for this rollout.
 - [x] Give `kit-principal` ownership of Personal, unfoldered, and residual receiver rollout in `KIT-007`.
 - [ ] Commit the prepared `KIT-LEGAL-OPS-018` intake after Kit Legal's required mechanical-phase review boundary.
