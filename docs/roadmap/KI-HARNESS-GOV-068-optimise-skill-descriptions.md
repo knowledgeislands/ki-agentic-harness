@@ -4,12 +4,12 @@ area: GOV
 title: Optimise Skill Descriptions
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 5b89ed13ab32c2491634f60422150a8f70150b6d
 created_at: 2026-09-15T12:11:12Z
-updated_at: 2026-09-15T13:20:07Z
+updated_at: 2026-09-16T08:26:35Z
 ---
 
 # Optimise Skill Descriptions
@@ -110,6 +110,10 @@ The goal and approved boundary are met after the targeted review iteration. Ever
 ### Mini recap
 
 Delivered a catalogue-wide metadata optimisation with a 55.3 per cent description-footprint reduction, current Codex budget guidance, exact regenerated publication, and clean repository gates. The targeted second pass moved long-description routing signal earlier; the remaining runtime-budget caveat is recorded as an expected platform constraint, not follow-on implementation work.
+
+## Done
+
+Accepted 2026-09-16 by Kris Brown on review packet above.
 
 ## Discussion
 
