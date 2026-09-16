@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-16T21:47:55Z
+updated_at: 2026-09-16T21:56:56Z
 ---
 
 ## Goal
@@ -111,15 +111,15 @@ The immutable implementation baseline was `7373e7c496caa223f5e2dce988ab41bb700f3
 
 ### Outstanding concerns
 
-The current committed `tools-ki` surface still uses provider-first `ki acquire <provider> import` grammar. Its already-planned action-first adapter migration is owned by `KI-TOOL-CLI-072`; it does not invalidate the acquisition and source-safety boundary delivered here.
+None within this item. The action-first adapter migration subsequently landed in `tools-ki` commit `a49ff67` and passed 139 focused acquisition tests plus TypeScript; its acceptance remains independently owned by `KI-TOOL-CLI-072`.
 
 ### Post-change review
 
-The implementation satisfies the item goal without broadening MCP authority or treating opaque ChatGPT records as decoded content. Verification covers the provider source mechanics, Harness governance, registry, Agora, and portable binding evidence. The separately owned CLI grammar migration is an explicit follow-on rather than unfinished scope in this item. OPS-005 is ready for human acceptance.
+The implementation satisfies the item goal without broadening MCP authority or treating opaque ChatGPT records as decoded content. Verification covers the provider source mechanics, Harness governance, registry, Agora, and portable binding evidence. The now-delivered CLI migration confirms the provider-neutral boundary without adding unfinished scope to this item. OPS-005 is ready for human acceptance.
 
 ### Mini recap
 
-AI-session acquisition now has a verified three-provider, read-only source layer and a repository-context staging path. No source session was changed, archived, or deleted. The only remaining related work is the independently tracked action-first CLI migration.
+AI-session acquisition now has a verified three-provider, read-only source layer, repository-context staging path, and action-first adapter surface. No source session was changed, archived, or deleted.
 
 ## Discussion
 
