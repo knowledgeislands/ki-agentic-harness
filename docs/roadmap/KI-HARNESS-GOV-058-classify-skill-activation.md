@@ -4,12 +4,12 @@ area: GOV
 title: Classify Skill Applicability
 theme: governance-consistency
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-13T15:45:43Z
-updated_at: 2026-09-15T12:34:01Z
+updated_at: 2026-09-16T08:14:46Z
 ---
 
 # Classify Skill Applicability
@@ -32,7 +32,7 @@ Do not activate skills automatically, infer policy from prose or directory place
 
 `ki-kind: governance | process` already owns lifecycle classification. `ki-repo-harness` parses every canonical skill and is the natural collection-level completeness owner; `ki-skills` can validate one skill's metadata shape. `ki-repo` currently carries 20 hard-coded coverage detectors, but executable detector rubrics have no agreed portable registry that a harness-wide audit can compare bidirectionally with skill metadata.
 
-The proposed contract adds one orthogonal `ki-applicability` field with the exact values `baseline | detected | declaration-only | invocation-only`. `baseline` is limited to `ki-repo` and `ki-authoring`; every process skill is `invocation-only`; a governance skill named in the detector registry is `detected`; every other governance skill is `declaration-only`.
+The approved contract adds one orthogonal `ki-applicability` field with the exact values `baseline | detected | declaration-only | invocation-only`. `baseline` is limited to `ki-repo` and `ki-authoring`; every process skill is `invocation-only`; a governance skill named in the detector registry is `detected`; every other governance skill is `declaration-only`.
 
 For this version, `ki-repo` is the sole repository-applicability detector owner and declares the complete canonical target list in `ki-detects: [...]` frontmatter. Its local executable coverage paths must agree bidirectionally with that list. `ki-skills` validates each skill's metadata and local consistency, while `ki-repo-harness` proves collection completeness, exact baseline membership, process classification, and registry-to-skill agreement. Downstream skills retain their specialised evidence and shape validation without becoming independent applicability selectors.
 
@@ -73,7 +73,7 @@ For this version, `ki-repo` is the sole repository-applicability detector owner 
 
 ## Dependencies / blocks
 
-**Approval gate:** the user must explicitly approve the exact proposed contract in Current state: the four-value `ki-applicability` vocabulary, the exact two-skill baseline, process-to-`invocation-only`, `ki-repo` as sole detector owner with `ki-detects`, bidirectional registry enforcement, and a new `ADR-KI-HARNESS-SKILLS-014`. Until that single gate is confirmed, this item remains Draft and has no implementation or batch authority. After approval, no known build dependency blocks delivery.
+The user approved the exact contract on 2026-09-16: the four-value `ki-applicability` vocabulary, the exact two-skill baseline, process-to-`invocation-only`, `ki-repo` as sole detector owner with `ki-detects`, bidirectional registry enforcement, and a new `ADR-KI-HARNESS-SKILLS-014`. No known build dependency blocks delivery.
 
 ## Delegation
 

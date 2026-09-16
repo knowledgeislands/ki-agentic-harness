@@ -4,12 +4,12 @@ area: GOV
 title: Reconcile Shared Decision Payload
 theme: governance-consistency
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-15T12:33:36Z
+updated_at: 2026-09-16T08:14:46Z
 ---
 
 # Reconcile shared Decision Record payload
@@ -34,11 +34,11 @@ Do not rewrite receiver copies from this repository, silently weaken `shared_rec
 
 ## Current state
 
-The work is adopted into Next because the conflict is real and affects current authority. Model B is the recommended approval gate: shared identity compares a canonical decision-owned projection, excludes only the explicitly allowlisted `note_type` container field initially, and fails closed on every unknown frontmatter field. The item remains Draft until that public governance change is explicitly approved.
+The user approved Model B on 2026-09-16: shared identity compares a canonical decision-owned projection, excludes only the explicitly allowlisted `note_type` container field initially, and fails closed on every unknown frontmatter field. No general category of repository-local metadata is excluded.
 
 ## Steps
 
-- [ ] Approve Model B with `note_type` as the initial and only excluded container field, unknown frontmatter failing closed, and amend `GDR-KI-HARNESS-007` as the living decision that already owns metadata authority.
+- [ ] Record approved Model B with `note_type` as the initial and only excluded container field, unknown frontmatter failing closed, and amend `GDR-KI-HARNESS-007` as the living decision that already owns metadata authority.
 - [ ] Define the canonical comparison projection: fixed decision-owned fields, explicit exclusions, deterministic ordering and serialization, body normalization, and failure behaviour.
 - [ ] Update `ki-decision-records` standards, context parser, rubric, and fixtures so an ordinary local audit validates projection eligibility without claiming to observe peer-repository equality.
 - [ ] Produce the canonical current `GDR-KI-FUNDAMENTALS-001` decision projection using the accepted repository names and conform the Harness copy only.
@@ -68,7 +68,7 @@ The work is adopted into Next because the conflict is real and affects current a
 
 ## Dependencies / blocks
 
-No build dependency blocks decision preparation. Readiness is gated by explicit approval of Model B, the initial `note_type`-only exclusion allowlist, and fail-closed handling of every unknown field because those choices change the public meaning of `shared_record: true`.
+The user approved Model B, the initial `note_type`-only exclusion allowlist, and fail-closed handling of every unknown field on 2026-09-16. No build dependency blocks delivery.
 
 ## Documentation impact
 
@@ -104,4 +104,4 @@ Keep files byte-identical and move Knowledge Base classification to an external 
 
 ### Readiness decision
 
-Approve Model B with `note_type` as the sole initial exclusion and fail-closed treatment for every unknown field. That exact choice is the remaining public governance gate before this record can become Ready; no general category of repository-local metadata is implicitly excluded.
+Model B is approved with `note_type` as the sole initial exclusion and fail-closed treatment for every unknown field. No general category of repository-local metadata is implicitly excluded.
