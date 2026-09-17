@@ -74,7 +74,8 @@ The records are living, compact, and independent. The order below is a **curated
 45. [GDR-KI-HARNESS-007](GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md) — ownership of document metadata and principal authority.
 46. [GDR-KI-HARNESS-008](GDR-KI-HARNESS-008-portable-work-item-timestamps.md) — portable work-item creation and semantic-update timestamps.
 47. [GDR-KI-HARNESS-009](GDR-KI-HARNESS-009-lean-exact-set-batch-authority.md) — lean exact-set authority for autonomous batch delivery and consolidated acceptance.
-48. [ADR-KI-HARNESS-SKILLS-014](ADR-KI-HARNESS-SKILLS-014-explicit-skill-applicability.md) — exhaustive repository applicability classification and detector ownership.
+48. [GDR-KI-HARNESS-010](GDR-KI-HARNESS-010-named-multi-site-governance.md) — named website registries, overlay subsets, and the primary command seam.
+49. [ADR-KI-HARNESS-SKILLS-014](ADR-KI-HARNESS-SKILLS-014-explicit-skill-applicability.md) — exhaustive repository applicability classification and detector ownership.
 
 ## Template
 

@@ -2,7 +2,7 @@
 name: ki-repo-website-content
 ki-kind: governance
 ki-applicability: detected
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-repo-website:site-selection, ki-skills:rubric]
 ki-depends-on: [ki-repo-website]
 owns: [eleventy.config.ts, eleventy.config.js, eleventy.config.mjs, eleventy.config.cjs]
 contributes: ['.ki.toml', package.json]
@@ -15,6 +15,8 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands content website standard
+
+The keyless content table covers every core-selected site. A named multi-site repository may use only `sites = ["name"]` to select a non-empty subset; each selected site is audited independently.
 
 You are applying the **Knowledge Islands content website standard** — the shared way every static website in this work is built: **Eleventy 3, Nunjucks and Markdown; TypeScript run natively on Bun; Tailwind 4 config-less with design tokens**, compiling to a **portable `dist/`**. A new site is scaffolded to it; an existing one is audited and conformed against it. This skill carries that standard and the procedure.
 

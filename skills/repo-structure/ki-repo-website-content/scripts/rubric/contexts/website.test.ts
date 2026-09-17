@@ -495,3 +495,35 @@ test('rejects unreferenced development fan-out keys', () => {
       .every((outcome) => outcome.status === 'VIOLATION')
   ).toBe(true)
 })
+
+test('named registry audits every selected content site and honours a subset', () => {
+  const repository = temporaryDirectory('ki-repo-website-content-multi-')
+  for (const site of ['site-apex', 'site-tower']) {
+    mkdirSync(join(repository, 'apps', site), { recursive: true })
+    writeFileSync(join(repository, 'apps', site, 'eleventy.config.ts'), sharedBehaviour)
+    writeFileSync(join(repository, 'apps', site, 'package.json'), '{"scripts":{},"dependencies":{}}\n')
+  }
+  writeFileSync(join(repository, 'package.json'), '{"workspaces":["apps/*"]}\n')
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    '[skills.ki-repo-website]\nprimary-site = "apex"\n\n[skills.ki-repo-website.sites]\napex = "apps/site-apex"\ntower = "apps/site-tower"\n\n[skills.ki-repo-website-content]\n'
+  )
+
+  const all = createWebsiteSession(options(repository, 'audit')).subjects.filter((subject) =>
+    subject.families.includes('WEB')
+  )
+  expect(all.map((subject) => subject.context().siteName)).toEqual(['apex', 'tower'])
+  expect(all.every((subject) => item('WEB-12').audit.run(subject.context())[0]?.status === 'PASS')).toBe(true)
+
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    '[skills.ki-repo-website]\nprimary-site = "apex"\n\n[skills.ki-repo-website.sites]\napex = "apps/site-apex"\ntower = "apps/site-tower"\n\n[skills.ki-repo-website-content]\nsites = ["tower"]\n'
+  )
+  const subset = createWebsiteSession(options(repository, 'audit')).subjects.filter((subject) =>
+    subject.families.includes('WEB')
+  )
+  expect(subset.map((subject) => subject.context().siteName)).toEqual(['tower'])
+  const tower = subset[0]
+  if (!tower) throw new Error('content subset did not expose tower')
+  expect(item('WEB-42').audit.run(tower.context())[0]?.status).toBe('PASS')
+})

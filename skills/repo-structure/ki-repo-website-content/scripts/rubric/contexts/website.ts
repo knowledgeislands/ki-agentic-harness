@@ -6,11 +6,15 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import {
+  inspectWebsiteOverlay,
+  inspectWebsiteSelection,
+  type WebsiteOverlaySelection,
+  type WebsiteSite
+} from '../../shared/site-selection.ts'
 
 const CONFIG_NAMES = ['eleventy.config.ts', 'eleventy.config.js', 'eleventy.config.mjs', 'eleventy.config.cjs'] as const
 const KI_SECTION = 'ki-repo-website-content'
-const KI_WEBSITE_SECTION = 'ki-repo-website'
-const DEFAULT_SITE_ROOT = 'apps/site'
 
 type Draft = {
   path: string
@@ -28,6 +32,9 @@ export type WebsiteContext = {
   target: string
   available: boolean
   applicable: boolean
+  siteName: string | null
+  primary: boolean
+  overlayViolations: readonly string[]
   siteRoot: string
   rootPackageOk: boolean
   workspaceCoversSiteRoot: boolean
@@ -58,15 +65,6 @@ const parseToml = (text: string): { document: Record<string, unknown> | null; ma
 
 const asTable = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
-
-const safeSiteRoot = (value: unknown): value is string =>
-  typeof value === 'string' &&
-  (value === '.' ||
-    (value.length > 0 &&
-      !isAbsolute(value) &&
-      !/^[A-Za-z]:[\\/]/.test(value) &&
-      !value.includes('\\') &&
-      value.split('/').every((part) => part.length > 0 && part !== '.' && part !== '..')))
 
 const workspaceEntryCovers = (entry: string, siteRoot: string): boolean => {
   if (entry === siteRoot) return true
@@ -115,11 +113,11 @@ const sourceCandidates = (path: string): readonly string[] => {
   return [path, ...['ts', 'js', 'mts', 'mjs', 'cts', 'cjs'].map((extension) => `${path}.${extension}`)]
 }
 
-export const createWebsiteSession = ({
-  mode,
-  repository,
-  publication
-}: RubricContextOptions): RubricSession<WebsiteContext> => {
+const createWebsiteSiteSession = (
+  { mode, repository, publication }: RubricContextOptions,
+  site: WebsiteSite,
+  overlay: WebsiteOverlaySelection
+): RubricSession<WebsiteContext> => {
   const root = resolve(repository)
   const available = physicalDirectory(root)
   const at = (...parts: string[]) => join(root, ...parts)
@@ -136,13 +134,10 @@ export const createWebsiteSession = ({
   const ki = configSafe ? parseToml(configRaw) : { document: null, malformed: true }
   const skillTables = asTable(ki.document?.skills)
   const kiWebsiteTable = asTable(skillTables?.[KI_SECTION])
-  const kiWebsiteCoreTable = asTable(skillTables?.[KI_WEBSITE_SECTION])
-  const configuredSiteRoot = kiWebsiteCoreTable?.['site-root']
-  const siteRoot =
-    configuredSiteRoot === undefined || !safeSiteRoot(configuredSiteRoot) ? DEFAULT_SITE_ROOT : configuredSiteRoot
+  const siteRoot = site.root
   const siteAt = (...parts: string[]) => (siteRoot ? join(siteRoot, ...parts) : join(...parts))
   const cfgName = CONFIG_NAMES.find((name) => containedPhysical(root, at(siteAt(name)), 'file')) ?? ''
-  const applicable = available && kiWebsiteTable !== null
+  const applicable = available && overlay.applicable
 
   const rootPackageSource = read('package.json')
   let rootPackageOk = true
@@ -292,6 +287,9 @@ export const createWebsiteSession = ({
     target: root,
     available,
     applicable,
+    siteName: site.name,
+    primary: site.primary,
+    overlayViolations: overlay.violations,
     siteRoot,
     rootPackageOk,
     workspaceCoversSiteRoot,
@@ -324,5 +322,38 @@ export const createWebsiteSession = ({
           : [{ path: draft.path, content: draft.content, ...(draft.original === null ? { create: true } : {}) }]
       )
     })
+  }
+}
+
+export const createWebsiteSession = (options: RubricContextOptions): RubricSession<WebsiteContext> => {
+  const selection = inspectWebsiteSelection(options.repository)
+  const overlay = inspectWebsiteOverlay(options.repository, KI_SECTION, selection)
+  const selectedSites = overlay.sites.length > 0 ? overlay.sites : selection.sites.slice(0, 1)
+  const sessions = selectedSites.map((site) => createWebsiteSiteSession(options, site, overlay))
+  const contexts = sessions.flatMap((session) =>
+    session.subjects.filter((subject) => subject.families.includes('WEB')).map((subject) => subject.context())
+  )
+  const primary = contexts.find((context) => context.primary) ?? contexts[0]
+  if (!primary) throw new Error('website-content selection produced no site context')
+  return {
+    subjects: [
+      { families: ['RUBRIC'], context: () => primary },
+      ...contexts.map((context) => ({
+        families: ['WEB'],
+        subject: context.siteName ?? context.siteRoot,
+        context: () => context
+      }))
+    ],
+    proposal: () => {
+      const writes = sessions.flatMap((session) => session.proposal().writes)
+      const byPath = new Map<string, ConformWrite>()
+      const conflicts = new Set<string>()
+      for (const write of writes) {
+        const previous = byPath.get(write.path)
+        if (previous && previous.content !== write.content) conflicts.add(write.path)
+        else byPath.set(write.path, write)
+      }
+      return { writes: [...byPath.values()].filter((write) => !conflicts.has(write.path)) }
+    }
   }
 }

@@ -633,11 +633,10 @@ const WEB_42 = mechanical(
     if (stop) return stop
     if (!context.kiWebsiteTable)
       return [{ status: 'NOT_APPLICABLE', message: '[skills.ki-repo-website-content] table is absent' }]
-    const keys = Object.keys(context.kiWebsiteTable)
-    return keys.length
-      ? keys.map((key) => ({
+    return context.overlayViolations.length
+      ? context.overlayViolations.map((message) => ({
           status: 'VIOLATION' as const,
-          message: `unknown key under [skills.ki-repo-website-content]: ${key}`,
+          message,
           subject: '.ki.toml'
         }))
       : [

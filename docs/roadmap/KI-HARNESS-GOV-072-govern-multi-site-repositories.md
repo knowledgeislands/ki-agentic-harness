@@ -4,12 +4,12 @@ area: GOV
 title: Govern multi-site repositories
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: f97e34017e7d58a17d83f422be7f15859b9b3db8
+baseline_ref: 050a4179f31fde9361782e50bd842e500bb5be8d
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T18:22:51Z
+updated_at: 2026-09-17T21:27:54Z
 ---
 
 # Govern multi-site repositories
@@ -56,13 +56,13 @@ All three website contexts expose one `siteRoot`. Their rubric families produce 
 
 ## Steps
 
-- [ ] Record the multi-site registry, overlay selection, primary seam, and one-hop alias rationale in a Decision Record.
-- [ ] Add a shared typed site-selection model and validation fixtures, then consume it from the website core, content, and Cloudflare contexts without copying parsers.
-- [ ] Generalise core rubric subjects and path checks across every declared site while preserving the legacy single-site output.
-- [ ] Generalise content and Cloudflare overlays across all or explicitly selected site names, including per-site packages, configuration, generated output, and Wrangler evidence.
-- [ ] Resolve one primary `self:` alias hop before the existing exact command comparisons; reject missing, mismatched, chained, or cyclic aliases.
-- [ ] Update standards, mode documentation, generated rubrics, and `.ki.toml` examples for single-site and multi-site forms.
-- [ ] Prove the contract with synthetic one-site, two-site, subset-overlay, malformed-registry, and alias fixtures, then audit `kit-midnight.ninja`.
+- [x] Record the multi-site registry, overlay selection, primary seam, and one-hop alias rationale in a Decision Record.
+- [x] Add a shared typed site-selection model and validation fixtures, then consume it from the website core, content, and Cloudflare contexts without copying parsers.
+- [x] Generalise core rubric subjects and path checks across every declared site while preserving the legacy single-site output.
+- [x] Generalise content and Cloudflare overlays across all or explicitly selected site names, including per-site packages, configuration, generated output, and Wrangler evidence.
+- [x] Resolve one primary `self:` alias hop before the existing exact command comparisons; reject missing, mismatched, chained, or cyclic aliases.
+- [x] Update standards, mode documentation, generated rubrics, and `.ki.toml` examples for single-site and multi-site forms.
+- [x] Prove the contract with synthetic one-site, two-site, subset-overlay, malformed-registry, and alias fixtures, then audit `kit-midnight.ninja`.
 
 ## Files touched
 
@@ -102,6 +102,40 @@ Update EDUCATE and configuration examples for the named registry, overlay subset
 ### Roadmap
 
 Keep [KI-HARNESS-GOV-071](KI-HARNESS-GOV-071-follow-shared-website-config.md) separate. Capture mixed implementation or hosting adapters only if implementation proves the overlay-subset model insufficient.
+
+## Review
+
+### Delivered
+
+From baseline `050a4179f31fde9361782e50bd842e500bb5be8d`, the website core and both overlays now support validated named multi-site repositories while retaining the complete legacy single-site contract. Configuration synthesis and cross-repository migration remain excluded.
+
+### Summary of changes
+
+- Added the shared, locally materialised `site-selection` module with single-site, named-registry, and overlay-subset validation.
+- Published per-site core, content, and Cloudflare subjects with site-specific packages, source configuration, output, and Wrangler evidence.
+- Kept the unqualified public command seam on the primary site and allowed exactly one verified repository-owned `self:site:<primary>:<verb>` hop.
+- Added GDR-KI-HARNESS-010, updated three standards and skill guidance, and regenerated all three rubrics.
+
+### Verification
+
+- Focused website selection, core, content, and Cloudflare suites — 46 pass, 0 fail.
+- `bun run test` — 725 pass, 0 fail.
+- `bunx tsc --noEmit` — pass.
+- `ki dev skill rubric` for all three website skills — generated publications in sync.
+- `ki repo audit --skill ki-skills --repo .`, `ki repo audit --skill ki-decision-records --repo .`, and `ki repo audit --skill ki-work-roadmap --repo .` — pass.
+- A disposable projection of the real `kit-midnight.ninja` tree exposed `apex` and `tower` as separate subjects in all three skills; both sites passed core selection, Eleventy configuration and shared-behaviour evidence, and Cloudflare Worker/configuration placement checks without moving or duplicating shared code.
+
+### Outstanding concerns
+
+The real `kit-midnight.ninja` declaration remains single-site; adopting the registry there is intentionally outside this same-repository batch and can proceed as its own reviewable repository change.
+
+### Post-change review
+
+The goal and locked decisions are met. Legacy tests remain green, malformed and unsafe registries fail closed, overlays cannot invent paths, and one-hop command resolution validates the terminal command rather than treating delegation as sufficient. The shared module is published through the existing materialised-module contract so every dependent skill remains standalone.
+
+### Mini recap
+
+Multi-site governance is viable and stable across the website stack, with real two-site evidence and no unresolved Harness defect. The only follow-on is optional adoption by repositories that currently use the single-site form.
 
 ## Discussion
 

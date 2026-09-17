@@ -2,6 +2,7 @@
 name: ki-repo-website
 ki-kind: governance
 ki-applicability: detected
+ki-shared-modules: [site-selection]
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
 owns: []
@@ -15,6 +16,8 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands website core
+
+The core supports either the existing single-site `site-root` contract or an explicit named registry using `primary-site` and `[skills.ki-repo-website.sites]`. Overlays may select a named subset; the unqualified `ki:site:*` commands remain the primary public seam and may resolve through one exact `self:site:<primary>:<verb>` hop.
 
 Apply the generator- and provider-neutral website contract. A website declares `[skills.ki-repo-website]`, selects exactly one of `ki-repo-website-content` or `ki-repo-website-app`, and may independently select a hosting adapter such as `ki-repo-website-cloudflare`.
 
