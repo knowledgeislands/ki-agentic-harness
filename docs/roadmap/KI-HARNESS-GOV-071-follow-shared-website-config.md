@@ -3,82 +3,98 @@ id: KI-HARNESS-GOV-071
 area: GOV
 title: Follow shared site config
 theme: governance-consistency
-horizon: future
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: f97e34017e7d58a17d83f422be7f15859b9b3db8
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T16:53:09Z
+updated_at: 2026-09-17T18:22:51Z
 ---
 
 # Follow shared site config
 
 ## Goal
 
-`ki-repo-website-content` should recognise required Eleventy behaviour wherever a site actually obtains it, including from a shared workspace package, rather than only when it is written inline in the site's own config file.
+`ki-repo-website-content` should recognise required Eleventy behaviour when a selected site's configuration obtains that behaviour from a repository-local shared module, without weakening WEB-12 through WEB-16.
 
 ## Context
 
-WEB-12 through WEB-16 are built by one helper, `configRule` in `skills/repo-structure/ki-repo-website-content/scripts/rubric/items/web.ts`, which regex-tests `context.config`. That context field is the raw text of the selected site's config file and nothing else — `contexts/website.ts:203` reads exactly one path. The checks therefore assert that five specific code shapes appear literally in that file: an absolute-to-relative URL transform, `addDataExtension('ts')`, `addDataExtension('json5')`, an `eleventy.before` hook invoking Tailwind, and an `addWatchTarget` for the compiled CSS.
+WEB-12 through WEB-16 use `configRule` in `skills/repo-structure/ki-repo-website-content/scripts/rubric/items/web.ts`, which currently regex-tests only the selected site's raw Eleventy configuration text. The checks require an absolute-to-relative URL transform, TypeScript and JSON5 data extensions, the Tailwind build hook, and the compiled-CSS watch target.
 
-That holds for a single-site repository where the config is the only place such code could be. It stops holding the moment a repository has two sites, because the correct response to two sites is to extract the shared behaviour into a package that both call.
-
-`krisb/kit-midnight.ninja` is the concrete case, and it is named in `ki-repo-website-content`'s own documentation as a canonical reference for this skill. It split its Tower dashboard onto a second Worker, moved the shared Eleventy behaviour into `packages/view-common`, and reduced each site's `eleventy.config.ts` to a call to `applyViewCommon()` plus that site's own asset roots. Every behaviour WEB-12..16 requires is present and was evidenced by a byte-comparison of the built output across the migration. The audit nonetheless reports WEB-12 as FAIL and WEB-13..16 as WARN against `apps/site-apex/eleventy.config.ts`.
-
-The failure mode is the one that matters most for a rubric's credibility: it is not that a check is too strict, but that doing the better thing scores worse than not doing it. A repository can clear all five by copying the same code into both site configs. The rubric currently rewards duplication.
+That model works for an inline single-site configuration. It produces false findings when several sites correctly share the same behaviour through a workspace package. `krisb/kit-midnight.ninja`, a named reference for the skill, imports `applyViewCommon()` from `packages/view-common`; byte-comparison evidence showed unchanged built output, but WEB-12 fails and WEB-13 through WEB-16 warn because the current context never reads the imported module.
 
 ## Boundary
 
-This is about how the five content checks locate the behaviour they require, not about what behaviour is required. Do not relax or remove any of WEB-12..16, and do not extend this to checks that legitimately concern the site config file as a file.
+Keep every behavioural requirement and its existing severity. Do not require duplicated inline code, traverse installed `node_modules`, execute configuration, interpret dynamic imports, or build a general TypeScript dependency graph. Checks that genuinely concern the site configuration file itself remain single-file checks.
 
 ## Current state
 
-`configRule` takes a `RegExp` and tests it against `context.config`. The context builds `config` from a single `read(siteAt(cfgName))`. There is no representation of the site's import graph, of workspace packages, or of any file other than the config itself.
+`WebsiteContext.config` contains one file. The context has repository-bounded readers and workspace evidence but no collection of configuration sources. `configRule` cannot distinguish absent behaviour from behaviour supplied by a direct repository-local import.
+
+## Locked decisions
+
+- Add an ordered `configSources` collection containing the site configuration and directly imported repository-local configuration modules.
+- Resolve static relative imports and static workspace-package imports from the selected site configuration by using the root workspace declarations and each package's `name` and `exports` or entry-point metadata.
+- Follow one import edge only. Accept TypeScript and JavaScript source extensions and index files, require physical repository-contained files, and report unresolved or unsafe imports as evidence rather than following them.
+- Evaluate WEB-12 through WEB-16 across the source collection with `some`; do not concatenate files or change their severities.
+- Preserve `config` as the selected site's own text for checks whose contract is explicitly file-local.
 
 ## Steps
 
-- [ ] Decide the detection seam: follow relative and workspace-package imports from the site config one level, or read a declared list of shared config modules, or treat a call into a workspace package as sufficient evidence that the rubric cannot see inside and downgrade to judgment.
-- [ ] Extend `WebsiteContext` with whatever that decision needs, keeping the existing single-file case unchanged.
-- [ ] Rework `configRule` to search the resolved set rather than one string.
-- [ ] Cover the multi-site shape in `website.test.ts`: behaviour inline (passes today), behaviour in a shared package (must pass after), behaviour absent from both (must still fail).
+- [ ] Extend `WebsiteContext` with path-qualified configuration sources and a bounded direct-import resolver.
+- [ ] Rework only WEB-12 through WEB-16 to inspect the resolved source collection while keeping their current outcomes when behaviour is absent.
+- [ ] Add focused fixtures for inline behaviour, a relative shared module, a workspace-package export, an unresolved or unsafe import, and behaviour absent from every source.
+- [ ] Update the website-content standard and generated rubric to state the repository-local direct-import evidence boundary.
+- [ ] Verify the real `kit-midnight.ninja` shape without moving shared code back into either site configuration.
 
 ## Files touched
 
-`skills/repo-structure/ki-repo-website-content/scripts/rubric/items/web.ts`, `scripts/rubric/contexts/website.ts`, the matching tests, and `references/standards-website-content.md` plus the generated `references/rubric.md` if the standard's wording changes.
+- `skills/repo-structure/ki-repo-website-content/scripts/rubric/contexts/website.ts`
+- `skills/repo-structure/ki-repo-website-content/scripts/rubric/contexts/website.test.ts`
+- `skills/repo-structure/ki-repo-website-content/scripts/rubric/items/web.ts`
+- Focused WEB item tests if needed by the existing test layout
+- `skills/repo-structure/ki-repo-website-content/references/standards-eleventy-site.md`
+- Generated `skills/repo-structure/ki-repo-website-content/references/rubric.md`
+- This work item
 
 ## Verify
 
-`ki repo audit --skill ki-repo-website-content --repo .` against `kit-midnight.ninja` reports PASS for WEB-12..16 without any code moving back into the site configs, and a synthetic fixture with the behaviour genuinely missing still fails.
+- Focused website-content context and rubric tests pass.
+- Inline, relative-module, and workspace-package fixtures pass WEB-12 through WEB-16.
+- A fixture missing the behaviour everywhere retains the current FAIL and WARN outcomes.
+- Unsafe, external, dynamic, and installed-package imports are not followed.
+- `ki repo audit --skill ki-repo-website-content --repo <kit-midnight.ninja>` passes WEB-12 through WEB-16 without duplicating configuration code.
+- `ki dev skill rubric ki-repo-website-content`, `bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-skills --repo .` pass.
 
 ## Dependencies / blocks
 
-None. Related to `KI-HARNESS-GOV-072`, which records the same single-site assumption in the website core and hosting skills; the two are separable.
+No delivery blocker. Implement before [KI-HARNESS-GOV-072](KI-HARNESS-GOV-072-govern-multi-site-repositories.md) when convenient because the later context generalisation can then preserve this resolved-source seam, but neither item depends on the other's output.
 
 ## Documentation impact
 
 ### Decision Records
 
-A Decision Record is warranted if the answer is "the rubric does not follow imports and says so", because that is a durable statement about how far mechanical checks reach into a codebase.
+No Decision Record is required: this restores existing WEB-12 through WEB-16 behaviour across an already-supported workspace composition without changing the required outcome.
 
 ### Specifications
 
-None.
+Update the website-content standard to define which repository-local imports count as configuration evidence and which imports remain outside the mechanical audit boundary.
 
 ### Guides
 
-None.
+No guide change is required; repository authors keep importing shared configuration normally.
 
 ### Roadmap
 
-Sibling of `KI-HARNESS-GOV-072`.
+Keep [KI-HARNESS-GOV-072](KI-HARNESS-GOV-072-govern-multi-site-repositories.md) independent and ready; record any need for recursive dependency analysis as separate prospective work rather than expanding this item.
 
 ## Discussion
 
-### Why not just require the code inline
+### Detection seam
 
-Because the standard's own logic points the other way. `ki-engineering` requires workspace repositories to run stages through Turborepo, which presumes shared packages with a dependency graph; `ki-repo-website` documents `apps/site` as the canonical site root, which presumes an `apps/*` layout with siblings. A rubric that then requires each sibling to carry its own copy of the shared behaviour contradicts the structure the rest of the harness asks for.
+Following direct static repository-local imports is the cheapest honest seam. A declared list would duplicate the import graph in `.ki.toml`, while treating any workspace call as sufficient would turn missing behaviour into an unearned pass. One bounded edge covers the evidenced shared-helper shape without pretending to be a compiler or package manager.
 
-### The cheapest honest fix
+### Safety and fidelity
 
-If following imports is too much machinery, the smaller move is to detect that the site config calls into a workspace package at all, and in that case report these five as judgment rather than mechanical. That loses the mechanical assertion but stops the rubric from making a confident false statement, which is the worse of the two failures.
+Resolution must use repository-declared workspaces rather than the installed layout, reject symlinks and paths outside the repository, and retain path-qualified evidence. WEB-12 through WEB-16 then ask whether the required construct exists in any trusted source; every unrelated config-file check continues to inspect the selected file only.

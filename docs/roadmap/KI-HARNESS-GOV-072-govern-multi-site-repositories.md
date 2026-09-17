@@ -3,83 +3,116 @@ id: KI-HARNESS-GOV-072
 area: GOV
 title: Govern multi-site repositories
 theme: governance-consistency
-horizon: future
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: f97e34017e7d58a17d83f422be7f15859b9b3db8
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T16:53:09Z
+updated_at: 2026-09-17T18:22:51Z
 ---
 
 # Govern multi-site repositories
 
 ## Goal
 
-A repository that deploys more than one website should be able to bring every site under `ki-repo-website` and `ki-repo-website-cloudflare`, rather than governing one and leaving the rest unchecked.
+A repository that deploys more than one website should be able to declare and audit every site through `ki-repo-website` and its implementation and hosting overlays, while retaining one stable primary `ki:site:*` command seam.
 
 ## Context
 
-`site-root` is singular by contract: `standards-website.md:16` makes `[skills.ki-repo-website]` its single owner, omission selects `apps/site`, and an override selects one path. The hosting and content skills consume that one selection. A repository with two deployables therefore has exactly one governed site, and its other sites are invisible to every website check — not failing, simply not looked at.
+`[skills.ki-repo-website].site-root` selects exactly one path, defaulting to `apps/site`. The website core, content, and Cloudflare skills consume that one selection, so additional deployable sites are invisible rather than non-conforming.
 
-`krisb/kit-midnight.ninja` hit this when it split its Tower dashboard onto a second Cloudflare Worker. `apps/site-apex` is the declared `site-root`; `apps/site-tower` is a full sibling with its own `package.json`, `eleventy.config.ts`, `wrangler.jsonc`, custom domain and Workers Builds pipeline, and nothing in the rubric examines any of it. The second Worker's `wrangler.jsonc` could declare the wrong assets directory or lose its observability block and the audit would stay green.
+`krisb/kit-midnight.ninja` exposed the gap after splitting the Tower dashboard onto a second Cloudflare Worker. `apps/site-apex` is governed; the complete sibling `apps/site-tower` has its own package, Eleventy configuration, Wrangler configuration, custom domain, and Workers Builds pipeline but is outside every website audit.
 
-A second, sharper edge sits in `ki-repo-website-cloudflare`. WCF's deploy and preview checks require the root aliases to be _exactly_ `bun run --cwd <site-root> deploy` and `preview` (`items/wcf.ts:451` and `:512`), and SITE-5 requires `ki:site:dev` to contain that literal substring. A `ki:` key therefore cannot forward to anything. When the repository above adopted a uniform per-site surface — `self:site:apex:*` and `self:site:tower:*`, so that every site is addressable by name — it could not express `ki:site:deploy` as an alias of `self:site:apex:deploy`. The two keys must each hold the command string directly. The apex site consequently carries two names for one lifecycle with duplicated bodies, which is precisely the drift risk exact-match checking exists to prevent.
-
-The exactness is defensible on its own terms: it stops a governed key being quietly repointed at something else. But combined with a singular `site-root` it forces a repository into either an asymmetric command surface, where one site is addressable by name and one is not, or a duplicated one.
+The existing root aliases also require literal commands for the selected site. A uniform repository-owned `self:site:<name>:<verb>` surface therefore cannot be the terminal source for the primary `ki:site:*` aliases, forcing duplicate script bodies even when both names intentionally target the same command.
 
 ## Boundary
 
-This concerns how many sites a repository may declare and how the governed `ki:site:*` seam relates to a per-site surface. It does not propose removing the exact-match checks or inventing a sixth `ki:site:*` key.
+Do not remove the implicit single-site `apps/site` default, require every repository to adopt named sites, invent another unqualified `ki:site:*` lifecycle verb, or let an alias pass without validating its terminal command. Do not make assumptions about sites that are absent from the explicit registry.
 
 ## Current state
 
-`site-root` accepts one path. `ki:site:build`, `:clean`, `:deploy`, `:dev` and `:preview` are capability-owned keys bound to that one path, three of them by exact or substring match on the command string. There is no declared notion of a secondary site.
+All three website contexts expose one `siteRoot`. Their rubric families produce one site subject, overlay opt-ins have no per-site selection, and exact command checks compare only the literal root script body.
+
+## Locked decisions
+
+- Multi-site repositories are in scope and use a named registry with an explicit primary site:
+
+  ```toml
+  [skills.ki-repo-website]
+  primary-site = "apex"
+
+  [skills.ki-repo-website.sites]
+  apex = "apps/site-apex"
+  tower = "apps/site-tower"
+  ```
+
+- Existing keyless configuration and `site-root` remain the complete single-site contract. `site-root` is mutually exclusive with `sites` and `primary-site`.
+- Site names use lower kebab-case; roots are unique, safe, repository-relative physical directories; `primary-site` must name one declared site.
+- A content or hosting overlay applies to all registered sites by default and may use `sites = ["apex"]` to select a non-empty subset. Unknown or duplicate names fail.
+- The five unqualified root `ki:site:*` keys remain the public seam for the primary site. Named `self:site:<site>:<verb>` keys remain repository-owned and optional.
+- A primary `ki:site:*` key may delegate through exactly one `bun run self:site:<primary>:<verb>` alias. The audit resolves that one hop and validates the terminal command with the same exactness as an inline command; arbitrary or recursive forwarding fails.
+- Every declared site receives its own core and selected-overlay evidence and outcomes. Conform never guesses or creates a multi-site registry.
 
 ## Steps
 
-- [ ] Decide whether multi-site is in scope for `ki-repo-website` at all, or whether a repository with two deployables is expected to be two repositories.
-- [ ] If in scope, choose the declaration shape: a list of site roots with one marked primary, or a table of named sites keyed by name.
-- [ ] Decide what the `ki:site:*` seam means when there is more than one site — primary only, as today, or per-site keys.
-- [ ] Decide whether a `ki:` key may delegate to a repository-owned `self:` key holding the same command, which would remove the duplication without weakening the check.
-- [ ] Carry the decision through `ki-repo-website`, `ki-repo-website-content` and `ki-repo-website-cloudflare` together; all three consume the same selection.
+- [ ] Record the multi-site registry, overlay selection, primary seam, and one-hop alias rationale in a Decision Record.
+- [ ] Add a shared typed site-selection model and validation fixtures, then consume it from the website core, content, and Cloudflare contexts without copying parsers.
+- [ ] Generalise core rubric subjects and path checks across every declared site while preserving the legacy single-site output.
+- [ ] Generalise content and Cloudflare overlays across all or explicitly selected site names, including per-site packages, configuration, generated output, and Wrangler evidence.
+- [ ] Resolve one primary `self:` alias hop before the existing exact command comparisons; reject missing, mismatched, chained, or cyclic aliases.
+- [ ] Update standards, mode documentation, generated rubrics, and `.ki.toml` examples for single-site and multi-site forms.
+- [ ] Prove the contract with synthetic one-site, two-site, subset-overlay, malformed-registry, and alias fixtures, then audit `kit-midnight.ninja`.
 
 ## Files touched
 
-`skills/repo-structure/ki-repo-website/references/standards-website.md` and its rubric, the equivalents in `ki-repo-website-content` and `ki-repo-website-cloudflare`, their shared contexts, and the `.ki.toml` schema for `[skills.ki-repo-website]`.
+- A shared website site-selection module and focused tests under `skills/repo-structure/`
+- `ki-repo-website`, `ki-repo-website-content`, and `ki-repo-website-cloudflare` rubric contexts, items, and focused tests
+- The three skills' standards, mode documentation, and generated rubric references
+- One new Decision Record allocated at implementation time
+- This work item
 
 ## Verify
 
-A two-site repository declares both sites, both are audited, and neither the exactness of the governed seam nor the uniformity of the per-site surface has to be given up to achieve it.
+- Legacy keyless and explicit `site-root` fixtures retain their current outcomes and publication shape.
+- A two-site registry audits both sites in core and both selected overlays, with findings attributed to the correct name and root.
+- Overlay subset fixtures audit only declared selected names; unknown, empty, duplicate, unsafe, or conflicting declarations fail.
+- Inline primary commands and validated one-hop `self:` aliases produce the same result; mismatched or chained aliases fail.
+- The two real `kit-midnight.ninja` sites are both audited without duplicating terminal command bodies.
+- Each affected skill's focused tests and `ki dev skill rubric <skill>` pass, followed by `bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-skills --repo .`.
 
 ## Dependencies / blocks
 
-None. Related to `KI-HARNESS-GOV-071`: both come from the same single-site assumption, but that one is a detection bug within the current model and this one questions the model.
+No delivery blocker. [KI-HARNESS-GOV-071](KI-HARNESS-GOV-071-follow-shared-website-config.md) is a recommended earlier implementation because its resolved-source collection must survive the later multi-site context change, but either item can be implemented and verified independently.
 
 ## Documentation impact
 
 ### Decision Records
 
-Yes. Whether the website standards govern one deployable per repository or many is an architectural commitment, and the answer "one, deliberately" deserves recording just as much as the alternative.
+Create a Decision Record because the registry shape, overlay applicability, and primary command seam are durable public governance choices.
 
 ### Specifications
 
-The `.ki.toml` shape for `[skills.ki-repo-website]` changes if a multi-site declaration is adopted.
+Update the three website standards and their generated rubrics. No separate specification area is needed because those standards are the accepted behavioural contract.
 
 ### Guides
 
-None.
+Update EDUCATE and configuration examples for the named registry, overlay subsets, and primary alias behavior. Repository-specific deployment guides remain outside this item.
 
 ### Roadmap
 
-Sibling of `KI-HARNESS-GOV-071`.
+Keep [KI-HARNESS-GOV-071](KI-HARNESS-GOV-071-follow-shared-website-config.md) separate. Capture mixed implementation or hosting adapters only if implementation proves the overlay-subset model insufficient.
 
 ## Discussion
 
-### The reporting repository's workaround
+### Registry shape
 
-`kit-midnight.ninja` settled on three tiers of root script: bare `build` and `clean` fan out across the whole repository through Turborepo; `self:site:<site>:<verb>` addresses one named site and is the uniform surface; and the five `ki:site:*` keys remain the governed seam onto the declared `site-root`. The apex site holds both names, each with the command inline. It works and is documented in that repository's `CLAUDE.md`, but it is a workaround for a constraint rather than a shape anyone would choose.
+A named map provides stable identities for findings, overlay selection, and repository-owned scripts. Keeping `site-root` as the single-site form avoids forcing ceremony onto existing repositories and avoids two simultaneous sources of primary-root truth.
 
-### Why "just use two repositories" is not obviously right
+### Command ownership
 
-The two sites share an Eleventy config factory, a brand icon set and a token stylesheet through a workspace package. Splitting the repository would mean publishing that package or duplicating it. The monorepo is the correct engineering answer here; the governance model is what does not yet fit it.
+The capability continues to own only the unqualified `ki:site:*` seam. Allowing one verified hop into a repository-owned `self:` key removes duplicate bodies without allowing quiet repointing: exactness applies to the resolved terminal command, not merely to the alias text.
+
+### Composition
+
+Overlay selection defaults to all declared sites but permits an explicit subset. This covers the evidenced two-Eleventy/two-Cloudflare repository and leaves room for mixed implementations or hosting adapters without coupling their identities into the core registry.
