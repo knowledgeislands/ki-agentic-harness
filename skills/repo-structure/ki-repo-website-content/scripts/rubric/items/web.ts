@@ -84,20 +84,18 @@ const configRule = (
   passMessage: string,
   failMessage: string
 ): RubricItem<WebsiteContext> =>
-  mechanical(
-    code,
-    title,
-    description,
-    level,
-    (context) =>
+  mechanical(code, title, description, level, (context) => {
+    const matched = context.configSources.find((source) => pass.test(source.content))
+    return (
       inactive(context) ??
       one(
-        pass.test(context.config),
+        Boolean(matched),
         passMessage,
         failMessage,
-        context.cfgName ? context.siteAt(context.cfgName) : undefined
+        matched?.path ?? (context.cfgName ? context.siteAt(context.cfgName) : undefined)
       )
-  )
+    )
+  })
 
 const script = (context: WebsiteContext, name: string): string | undefined => context.scripts[name]
 
@@ -279,7 +277,7 @@ const WEB_11 = judgment(
 const WEB_12 = configRule(
   'WEB-12',
   'Portable URL transform',
-  'A transform rewrites absolute internal URLs to relative URLs.',
+  'Selected configuration sources include a transform that rewrites absolute internal URLs to relative URLs.',
   'FAIL',
   /toRelativeOutputUrl|explicit-index-links|addTransform[\s\S]*\brelative\(/,
   'portable dist URL transform present',
@@ -289,7 +287,7 @@ const WEB_12 = configRule(
 const WEB_13 = configRule(
   'WEB-13',
   'TypeScript data extension',
-  "`addDataExtension('ts', …)` is registered.",
+  "Selected configuration sources register `addDataExtension('ts', …)`.",
   'WARN',
   /addDataExtension\(\s*["']ts["']/,
   "addDataExtension('ts') registered",
@@ -299,7 +297,7 @@ const WEB_13 = configRule(
 const WEB_14 = configRule(
   'WEB-14',
   'JSON5 data extension',
-  "`addDataExtension('json5', …)` is registered.",
+  "Selected configuration sources register `addDataExtension('json5', …)`.",
   'WARN',
   /addDataExtension\(\s*["']json5["']/,
   "addDataExtension('json5') registered",
@@ -309,7 +307,7 @@ const WEB_14 = configRule(
 const WEB_15 = configRule(
   'WEB-15',
   'Tailwind lifecycle hook',
-  '`eleventy.before` compiles Tailwind in build mode.',
+  'Selected configuration sources use `eleventy.before` to compile Tailwind in build mode.',
   'WARN',
   /on\(\s*["']eleventy\.before["'][\s\S]*tailwindcss/,
   'Tailwind compiled through eleventy.before',
@@ -319,7 +317,7 @@ const WEB_15 = configRule(
 const WEB_16 = configRule(
   'WEB-16',
   'CSS watch target',
-  '`addWatchTarget` observes the compiled CSS.',
+  'Selected configuration sources use `addWatchTarget` to observe the compiled CSS.',
   'WARN',
   /addWatchTarget/,
   'addWatchTarget present',

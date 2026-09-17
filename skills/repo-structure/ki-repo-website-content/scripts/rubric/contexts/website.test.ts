@@ -41,10 +41,41 @@ const rootContext = (session: ReturnType<typeof createWebsiteSession>) => {
   return { subject, context: subject.context() }
 }
 
-const item = (code: 'WEB-1' | 'WEB-6' | 'WEB-8' | 'WEB-30' | 'WEB-31' | 'WEB-32' | 'WEB-33' | 'WEB-41' | 'WEB-42') => {
+const item = (
+  code:
+    | 'WEB-1'
+    | 'WEB-6'
+    | 'WEB-8'
+    | 'WEB-12'
+    | 'WEB-13'
+    | 'WEB-14'
+    | 'WEB-15'
+    | 'WEB-16'
+    | 'WEB-30'
+    | 'WEB-31'
+    | 'WEB-32'
+    | 'WEB-33'
+    | 'WEB-41'
+    | 'WEB-42'
+) => {
   const candidate = WEB.items.find((entry) => entry.code === code)
   if (!candidate?.mechanical) throw new Error(`${code} mechanical item is missing`)
   return candidate.mechanical
+}
+
+const sharedBehaviour = `
+const toRelativeOutputUrl = () => undefined
+eleventyConfig.addTransform('explicit-index-links', toRelativeOutputUrl)
+eleventyConfig.addDataExtension('ts', {})
+eleventyConfig.addDataExtension('json5', {})
+eleventyConfig.on('eleventy.before', () => tailwindcss())
+eleventyConfig.addWatchTarget('src/assets/css')
+`
+
+const expectSharedBehaviour = (context: ReturnType<typeof rootContext>['context'], status: 'PASS' | 'VIOLATION') => {
+  for (const code of ['WEB-12', 'WEB-13', 'WEB-14', 'WEB-15', 'WEB-16'] as const) {
+    expect(item(code).audit.run(context)[0]?.status).toBe(status)
+  }
 }
 
 test('audit is read-only, stable, and exposes no conform capabilities', () => {
@@ -60,6 +91,77 @@ test('audit is read-only, stable, and exposes no conform capabilities', () => {
   expect(session.proposal()).toEqual({ writes: [] })
   expect(existsSync(join(repository, '.ki.toml'))).toBe(true)
   expect(existsSync(join(repository, '.gitignore'))).toBe(false)
+})
+
+test('WEB-12 through WEB-16 accept inline site configuration behaviour', () => {
+  const repository = fixture()
+  writeFileSync(join(repository, 'apps', 'site', 'eleventy.config.ts'), sharedBehaviour)
+
+  const { context } = rootContext(createWebsiteSession(options(repository, 'audit')))
+
+  expect(context.configSources.map((source) => source.path)).toEqual(['apps/site/eleventy.config.ts'])
+  expectSharedBehaviour(context, 'PASS')
+})
+
+test('WEB-12 through WEB-16 follow one direct relative configuration import', () => {
+  const repository = fixture()
+  writeFileSync(join(repository, 'apps', 'site', 'eleventy.config.ts'), "import './shared-config.ts'\n")
+  writeFileSync(join(repository, 'apps', 'site', 'shared-config.ts'), sharedBehaviour)
+
+  const { context } = rootContext(createWebsiteSession(options(repository, 'audit')))
+
+  expect(context.configSources.map((source) => source.path)).toEqual([
+    'apps/site/eleventy.config.ts',
+    'apps/site/shared-config.ts'
+  ])
+  expectSharedBehaviour(context, 'PASS')
+})
+
+test('WEB-12 through WEB-16 follow a direct workspace-package export', () => {
+  const repository = fixture()
+  mkdirSync(join(repository, 'packages', 'view-common', 'src'), { recursive: true })
+  writeFileSync(join(repository, 'package.json'), '{"workspaces":["apps/*","packages/*"]}\n')
+  writeFileSync(
+    join(repository, 'packages', 'view-common', 'package.json'),
+    '{"name":"@kit/view-common","exports":{"./eleventy":"./src/eleventy.ts"}}\n'
+  )
+  writeFileSync(join(repository, 'packages', 'view-common', 'src', 'eleventy.ts'), sharedBehaviour)
+  writeFileSync(
+    join(repository, 'apps', 'site', 'eleventy.config.ts'),
+    "import { applyViewCommon } from '@kit/view-common/eleventy'\napplyViewCommon()\n"
+  )
+
+  const { context } = rootContext(createWebsiteSession(options(repository, 'audit')))
+
+  expect(context.configSources.map((source) => source.path)).toEqual([
+    'apps/site/eleventy.config.ts',
+    'packages/view-common/src/eleventy.ts'
+  ])
+  expectSharedBehaviour(context, 'PASS')
+})
+
+test('WEB-12 through WEB-16 do not follow unsafe, installed, dynamic, or second-edge imports', () => {
+  const repository = fixture()
+  const outside = temporaryDirectory('ki-repo-website-content-import-outside-')
+  writeFileSync(join(outside, 'shared.ts'), sharedBehaviour)
+  symlinkSync(join(outside, 'shared.ts'), join(repository, 'apps', 'site', 'linked.ts'))
+  mkdirSync(join(repository, 'node_modules', 'installed-package'), { recursive: true })
+  writeFileSync(join(repository, 'node_modules', 'installed-package', 'shared.ts'), sharedBehaviour)
+  writeFileSync(
+    join(repository, 'apps', 'site', 'eleventy.config.ts'),
+    "import '../../../outside.ts'\nimport './linked.ts'\nimport '../../node_modules/installed-package/shared.ts'\nimport 'installed-package'\nvoid import('./dynamic.ts')\nimport './first.ts'\n"
+  )
+  writeFileSync(join(repository, 'apps', 'site', 'dynamic.ts'), sharedBehaviour)
+  writeFileSync(join(repository, 'apps', 'site', 'first.ts'), "import './second.ts'\n")
+  writeFileSync(join(repository, 'apps', 'site', 'second.ts'), sharedBehaviour)
+
+  const { context } = rootContext(createWebsiteSession(options(repository, 'audit')))
+
+  expect(context.configSources.map((source) => source.path)).toEqual([
+    'apps/site/eleventy.config.ts',
+    'apps/site/first.ts'
+  ])
+  expectSharedBehaviour(context, 'VIOLATION')
 })
 
 test('a flat content site is located but fails the workspace contract', () => {

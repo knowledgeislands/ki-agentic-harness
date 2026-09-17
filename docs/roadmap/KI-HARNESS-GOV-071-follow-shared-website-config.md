@@ -4,12 +4,12 @@ area: GOV
 title: Follow shared site config
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: f97e34017e7d58a17d83f422be7f15859b9b3db8
+baseline_ref: e7d90fbdf6b4750c701a2192b2cda6bcde35de95
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T18:22:51Z
+updated_at: 2026-09-17T21:37:35Z
 ---
 
 # Follow shared site config
@@ -42,11 +42,11 @@ Keep every behavioural requirement and its existing severity. Do not require dup
 
 ## Steps
 
-- [ ] Extend `WebsiteContext` with path-qualified configuration sources and a bounded direct-import resolver.
-- [ ] Rework only WEB-12 through WEB-16 to inspect the resolved source collection while keeping their current outcomes when behaviour is absent.
-- [ ] Add focused fixtures for inline behaviour, a relative shared module, a workspace-package export, an unresolved or unsafe import, and behaviour absent from every source.
-- [ ] Update the website-content standard and generated rubric to state the repository-local direct-import evidence boundary.
-- [ ] Verify the real `kit-midnight.ninja` shape without moving shared code back into either site configuration.
+- [x] Extend `WebsiteContext` with path-qualified configuration sources and a bounded direct-import resolver.
+- [x] Rework only WEB-12 through WEB-16 to inspect the resolved source collection while keeping their current outcomes when behaviour is absent.
+- [x] Add focused fixtures for inline behaviour, a relative shared module, a workspace-package export, an unresolved or unsafe import, and behaviour absent from every source.
+- [x] Update the website-content standard and generated rubric to state the repository-local direct-import evidence boundary.
+- [x] Verify the real `kit-midnight.ninja` shape without moving shared code back into either site configuration.
 
 ## Files touched
 
@@ -88,6 +88,40 @@ No guide change is required; repository authors keep importing shared configurat
 ### Roadmap
 
 Keep [KI-HARNESS-GOV-072](KI-HARNESS-GOV-072-govern-multi-site-repositories.md) independent and ready; record any need for recursive dependency analysis as separate prospective work rather than expanding this item.
+
+## Review
+
+### Delivered
+
+WEB-12 through WEB-16 now inspect the selected Eleventy configuration and its direct, safe repository-local imports without executing configuration code or traversing a general dependency graph.
+
+### Summary of changes
+
+- Added ordered, path-qualified `configSources` and one-edge resolution for relative modules and declared workspace package exports or entry points.
+- Preserved file-local `config` for checks outside WEB-12 through WEB-16 and preserved existing FAIL and WARN severities when required behaviour is absent.
+- Added focused inline, relative, workspace, unsafe, installed, dynamic, and second-edge fixtures.
+- Updated the normative standard and generated rubric wording.
+
+### Verification
+
+- `bun test skills/repo-structure/ki-repo-website-content/scripts/rubric/contexts/website.test.ts` — 20 pass, 0 fail.
+- `bun run test` — 718 pass, 0 fail.
+- `bunx tsc --noEmit` — pass.
+- `ki dev skill rubric ki-repo-website-content` — generated publication in sync.
+- `ki repo audit --skill ki-skills --repo .` and `ki repo audit --skill ki-work-roadmap --repo .` — pass.
+- Real `kit-midnight.ninja` evidence resolved `apps/site-apex/eleventy.config.ts` then `packages/view-common/src/eleventy.ts`; WEB-12 through WEB-16 all passed with the shared module as the reported subject.
+
+### Outstanding concerns
+
+None within the approved one-edge source boundary. Multi-site selection remains owned by KI-HARNESS-GOV-072.
+
+### Post-change review
+
+The resolver remains fail-closed: it accepts only physical repository-contained TypeScript or JavaScript, derives workspace packages from the root manifest, and ignores symlinks, external packages, installed packages, dynamic imports, and transitive imports.
+
+### Mini recap
+
+Shared Eleventy behaviour is now recognised where it is authored, while absent behaviour and unsafe resolution retain the prior findings.
 
 ## Discussion
 

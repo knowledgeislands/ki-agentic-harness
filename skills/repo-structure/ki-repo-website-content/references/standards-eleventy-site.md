@@ -67,6 +67,8 @@ src/
 
 ## 4. `eleventy.config.ts` patterns
 
+WEB-12 through WEB-16 inspect an ordered, path-qualified configuration source set: the selected site's physical `eleventy.config.{ts,js,mjs,cjs}` first, followed by each unique physical TypeScript or JavaScript module it directly imports through a relative specifier or a root-workspace package export or entry point. Resolution follows exactly one import edge, stays inside the physical repository, uses only workspaces declared by the root `package.json`, and never reads symlinks, installed `node_modules`, dynamic imports, external packages, or imports of an imported module. The required behaviour may therefore live inline or in a repository-local shared configuration module without weakening the same FAIL and WARN outcomes when it is absent. Checks for properties of the selected site config itself continue to inspect only that file.
+
 The config is `export default function (eleventyConfig) { … return { dir, … } }`. These patterns are expected:
 
 - **Portable-`dist/` transform.** An `addTransform` rewrites absolute internal `href`/`src` URLs to paths relative to the current output file (skipping `http(s):`/`mailto:`/`tel:`/`data:`/`#`), so `dist/` serves from any root. The canonical shape is a `toRelativeOutputUrl` helper inside a transform named `explicit-index-links`. **This is invariant 2** — the seam to hosting (§9).

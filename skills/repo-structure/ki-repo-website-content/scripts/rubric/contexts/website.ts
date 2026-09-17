@@ -18,6 +18,11 @@ type Draft = {
   content: string
 }
 
+export type WebsiteConfigSource = {
+  path: string
+  content: string
+}
+
 export type WebsiteContext = {
   rubric: RubricPublicationContext
   target: string
@@ -29,6 +34,7 @@ export type WebsiteContext = {
   packagePath: string
   cfgName: string
   config: string
+  configSources: readonly WebsiteConfigSource[]
   packageOk: boolean
   deps: Record<string, string>
   scripts: Record<string, string>
@@ -88,6 +94,27 @@ const containedPhysical = (root: string, path: string, kind: 'file' | 'directory
   return kind === 'file' ? state.isFile() : state.isDirectory()
 }
 
+const sourceEntry = (value: unknown): string | null => {
+  if (typeof value === 'string') return value
+  const table = asTable(value)
+  if (!table) return null
+  for (const key of ['source', 'bun', 'import', 'default', 'node']) {
+    const candidate = sourceEntry(table[key])
+    if (candidate) return candidate
+  }
+  return null
+}
+
+const importedSpecifiers = (source: string): readonly string[] =>
+  [...source.matchAll(/\bimport\s+(?!type\b)(?:[^'";]*?\s+from\s*)?["']([^"']+)["']/g)].flatMap((match) =>
+    match[1] ? [match[1]] : []
+  )
+
+const sourceCandidates = (path: string): readonly string[] => {
+  if (/\.(?:[cm]?[jt]s)$/.test(path)) return [path]
+  return [path, ...['ts', 'js', 'mts', 'mjs', 'cts', 'cjs'].map((extension) => `${path}.${extension}`)]
+}
+
 export const createWebsiteSession = ({
   mode,
   repository,
@@ -131,6 +158,76 @@ export const createWebsiteSession = ({
     : []
   const workspaceCoversSiteRoot =
     siteRoot !== '.' && rootWorkspaces.some((entry) => workspaceEntryCovers(entry, siteRoot))
+
+  const workspacePackageDirectories = rootWorkspaces.flatMap((entry): string[] => {
+    if (!entry.endsWith('/*')) return containedPhysical(root, at(entry), 'directory') ? [entry] : []
+    const parent = entry.slice(0, -2)
+    if (!containedPhysical(root, at(parent), 'directory')) return []
+    return readdirSync(at(parent), { withFileTypes: true })
+      .filter((candidate) => candidate.isDirectory() && !candidate.isSymbolicLink())
+      .map((candidate) => join(parent, candidate.name))
+  })
+
+  const workspacePackages = workspacePackageDirectories.flatMap((directory) => {
+    const manifestPath = join(directory, 'package.json')
+    const manifestSource = read(manifestPath)
+    if (!manifestSource) return []
+    try {
+      const manifest = JSON.parse(manifestSource) as Record<string, unknown>
+      return typeof manifest.name === 'string' ? [{ directory, manifest, name: manifest.name }] : []
+    } catch {
+      return []
+    }
+  })
+
+  const resolveSource = (path: string): string | null =>
+    sourceCandidates(path).find((candidate) => {
+      const repositoryPath = relative(root, candidate)
+      return !repositoryPath.split(sep).includes('node_modules') && containedPhysical(root, candidate, 'file')
+    }) ?? null
+
+  const resolveWorkspaceImport = (specifier: string): string | null => {
+    const workspacePackage = workspacePackages
+      .filter(({ name }) => specifier === name || specifier.startsWith(`${name}/`))
+      .sort((left, right) => right.name.length - left.name.length)[0]
+    if (!workspacePackage) return null
+
+    const subpath = specifier === workspacePackage.name ? '.' : `.${specifier.slice(workspacePackage.name.length)}`
+    const exports = workspacePackage.manifest.exports
+    const exportsTable = asTable(exports)
+    const exported =
+      subpath === '.' && (!exportsTable || !Object.keys(exportsTable).some((key) => key.startsWith('.')))
+        ? sourceEntry(exports)
+        : sourceEntry(exportsTable?.[subpath])
+    const entry =
+      exported ??
+      (subpath === '.'
+        ? (sourceEntry(workspacePackage.manifest.source) ??
+          sourceEntry(workspacePackage.manifest.module) ??
+          sourceEntry(workspacePackage.manifest.main))
+        : null)
+    if (!entry || isAbsolute(entry) || /^[A-Za-z]:[\\/]/.test(entry) || entry.includes('\\')) return null
+    return resolveSource(resolve(root, workspacePackage.directory, entry))
+  }
+
+  const configPathRelative = cfgName ? siteAt(cfgName) : ''
+  const configSource = configPathRelative ? read(configPathRelative) : ''
+  const importedSources = configSource
+    ? importedSpecifiers(configSource).flatMap((specifier): WebsiteConfigSource[] => {
+        const resolved = specifier.startsWith('.')
+          ? resolveSource(resolve(root, siteRoot, specifier))
+          : resolveWorkspaceImport(specifier)
+        return resolved ? [{ path: relative(root, resolved), content: read(relative(root, resolved)) }] : []
+      })
+    : []
+  const configSources: readonly WebsiteConfigSource[] = configPathRelative
+    ? [
+        { path: configPathRelative, content: configSource },
+        ...importedSources.filter(
+          (candidate, index) => importedSources.findIndex((source) => source.path === candidate.path) === index
+        )
+      ]
+    : []
 
   const packagePath = siteAt('package.json')
   const packageSource = read(packagePath)
@@ -200,7 +297,8 @@ export const createWebsiteSession = ({
     workspaceCoversSiteRoot,
     packagePath,
     cfgName,
-    config: cfgName ? read(siteAt(cfgName)) : '',
+    config: configSource,
+    configSources,
     packageOk,
     deps,
     scripts,

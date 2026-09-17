@@ -60,15 +60,15 @@ The static-site stack, workspace layout, generated output, and sustainable opera
   - _Review prompt:_ Does typed `_data` own navigation and ordering rather than repeated template literals?
   - _Outcomes:_ conforming; revision required; design decision required
   - _Conforming guidance:_ Revise the affected website surface to meet the standard, or record the owning design decision before accepting a deliberate exception.
-- **WEB-12 [M] — Portable URL transform** — A transform rewrites absolute internal URLs to relative URLs. (standards-eleventy-site.md)
+- **WEB-12 [M] — Portable URL transform** — Selected configuration sources include a transform that rewrites absolute internal URLs to relative URLs. (standards-eleventy-site.md)
   - _Remediation:_ diagnostic — Inspect the affected website surface and apply the standard through a reviewable, site-owned change.
-- **WEB-13 [M] — TypeScript data extension** — `addDataExtension('ts', …)` is registered. (standards-eleventy-site.md)
+- **WEB-13 [M] — TypeScript data extension** — Selected configuration sources register `addDataExtension('ts', …)`. (standards-eleventy-site.md)
   - _Remediation:_ diagnostic — Inspect the affected website surface and apply the standard through a reviewable, site-owned change.
-- **WEB-14 [M] — JSON5 data extension** — `addDataExtension('json5', …)` is registered. (standards-eleventy-site.md)
+- **WEB-14 [M] — JSON5 data extension** — Selected configuration sources register `addDataExtension('json5', …)`. (standards-eleventy-site.md)
   - _Remediation:_ diagnostic — Inspect the affected website surface and apply the standard through a reviewable, site-owned change.
-- **WEB-15 [M] — Tailwind lifecycle hook** — `eleventy.before` compiles Tailwind in build mode. (standards-eleventy-site.md)
+- **WEB-15 [M] — Tailwind lifecycle hook** — Selected configuration sources use `eleventy.before` to compile Tailwind in build mode. (standards-eleventy-site.md)
   - _Remediation:_ diagnostic — Inspect the affected website surface and apply the standard through a reviewable, site-owned change.
-- **WEB-16 [M] — CSS watch target** — `addWatchTarget` observes the compiled CSS. (standards-eleventy-site.md)
+- **WEB-16 [M] — CSS watch target** — Selected configuration sources use `addWatchTarget` to observe the compiled CSS. (standards-eleventy-site.md)
   - _Remediation:_ diagnostic — Inspect the affected website surface and apply the standard through a reviewable, site-owned change.
 - **WEB-17 [J] — Configuration helpers** — Filters and ordered collections use the documented patterns where needed. (standards-eleventy-site.md)
   - _Evidence scope:_ Filters and ordered collections use the documented patterns where needed.
