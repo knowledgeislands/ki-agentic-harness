@@ -4,12 +4,12 @@ area: REV
 title: Review Model Radar
 theme: regular-reviews
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: 85bd9943fa1d44785fbdb53a936efb53616e6340
+baseline_ref: e0b995006502a746146d201d0c914f588a00ec05
 created_at: 2026-09-17T09:42:38Z
-updated_at: 2026-09-17T20:57:30Z
+updated_at: 2026-09-17T21:48:41Z
 housekeeping_template: KI-HARNESS-HK-003
 scheduled_for: 2026-09-17
 ---
@@ -38,12 +38,12 @@ The repository contains the source form of `ki-pulse`, but that process is not c
 
 ## Steps
 
-- [ ] Audit the current model radar and enumerate only records whose declared return triggers or tracked sources need rechecking in the review window.
-- [ ] Perform bounded discovery across registered primary sources, provider lifecycle and model catalogues, and independent benchmark-owner release surfaces; corroborate any consequential performance claim independently.
-- [ ] Reconcile each material signal into the smallest supported identity, route, recommendation, support, retirement, benchmark-lifecycle, evidence, or counter-evidence change, or record an evidenced no-change result.
-- [ ] Advance snapshot and source-ledger review dates only for evidence actually rechecked, preserving older publication and data-as-of dates.
-- [ ] Route installation, adapter, trial, default, retirement, or receiver-owned consequences through deduplicated prospective work rather than implementing them in this review.
-- [ ] Run model-radar, authoring, skill, TypeScript, and repository tests, then record the exact review outcome.
+- [x] Audit the current model radar and enumerate only records whose declared return triggers or tracked sources need rechecking in the review window.
+- [x] Perform bounded discovery across registered primary sources, provider lifecycle and model catalogues, and independent benchmark-owner release surfaces; corroborate any consequential performance claim independently.
+- [x] Reconcile each material signal into the smallest supported identity, route, recommendation, support, retirement, benchmark-lifecycle, evidence, or counter-evidence change, or record an evidenced no-change result.
+- [x] Advance snapshot and source-ledger review dates only for evidence actually rechecked, preserving older publication and data-as-of dates.
+- [x] Route installation, adapter, trial, default, retirement, or receiver-owned consequences through deduplicated prospective work rather than implementing them in this review.
+- [x] Run model-radar, authoring, skill, TypeScript, and repository tests, then record the exact review outcome.
 
 ## Files touched
 
@@ -83,6 +83,37 @@ No guide change is expected unless an accepted finding establishes a new operato
 ### Roadmap
 
 Material implementation or consumer consequences become deduplicated owner-local proposals. This review does not select or implement them.
+
+## Review
+
+### Delivered
+
+Completed the 2026-09-14 through 2026-09-17 review window against the tracked provider-lifecycle and benchmark-owner sources. No model identity, retirement, recommendation, route support, benchmark lifecycle, or local default changed.
+
+### Summary of changes
+
+- Advanced the snapshot review date to 2026-09-17.
+- Advanced only evidence, model, benchmark, and source-ledger dates directly rechecked during this run.
+- Preserved historical publication and data-as-of dates, route review dates, recommendations, and counter-evidence.
+
+### Verification
+
+- Rechecked OpenAI's model catalogue, Anthropic's model-deprecation table, and Google's Gemini deprecation table: GPT-5.6 Sol, GPT-6 Astra, Claude Opus 5, and Gemini 3.8 Flash remain active.
+- Rechecked BenchLM v5.5, Artificial Analysis Coding Agent Index v1.5, SWE-bench, Terminal-Bench 4.0, and HELM's maintenance policy; no version or lifecycle signal justified radar movement.
+- Focused model-radar tests, `bunx tsc --noEmit`, `ki repo audit --skill ki-model-radar --repo .`, `ki repo audit --skill ki-authoring --repo .`, and `ki dev skill rubric ki-model-radar` — pass.
+- `bun run test` — 726 pass, 0 fail, 3,188 expectations across 133 files.
+
+### Outstanding concerns
+
+Route support and the sources not rechecked retain their 2026-09-14 review dates within the freshness window. The next weekly review still owns provider pricing, remaining model families, benchmark data dates, and route availability.
+
+### Post-change review
+
+The no-change conclusion is source-specific rather than a date-only refresh. No performance claim was added, so no independent comparative evidence or downstream roadmap item was required.
+
+### Mini recap
+
+The model radar remains current and unchanged where the week's declared return triggers were checked.
 
 ## Discussion
 

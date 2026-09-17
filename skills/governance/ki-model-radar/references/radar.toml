@@ -1,5 +1,5 @@
 schema = 1
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 
 [evidence]
 
@@ -18,7 +18,7 @@ title = "BenchLM BenchAlign methodology"
 url = "https://benchlm.ai/methodology"
 unit = "bare-model"
 independence = "independent"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Method v5.5 dated 2026-09-04; dataset refreshed 2026-09-10; Supported and Estimated labels expose evidence completeness."
 
 [evidence.aa-intelligence-methodology]
@@ -36,7 +36,7 @@ title = "Artificial Analysis Coding Agent Index v1.5 methodology"
 url = "https://artificialanalysis.ai/methodology/coding-agents-benchmarking/"
 unit = "model-agent"
 independence = "independent"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Equal-weight composite of DeepSWE v1.1, Terminal-Bench 4.0, and SWE-Atlas-QnA; version history supplies only September 2026 for v1.5."
 
 [evidence.arena-rank-methodology]
@@ -54,7 +54,7 @@ title = "SWE-bench official leaderboards"
 url = "https://www.swebench.com/"
 unit = "task-environment"
 independence = "independent"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "The full set has 2,294 real issues; Verified has 500 human-filtered instances and its default view uses one mini-SWE-agent environment."
 
 [evidence.terminal-bench-4]
@@ -63,7 +63,7 @@ title = "Terminal-Bench 4.0 official leaderboard"
 url = "https://www.tbench.ai/"
 unit = "task-environment"
 independence = "independent"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Current leaderboard identifies model and agent separately and reports resolution rate with 95 percent confidence intervals."
 
 [evidence.harbor-task-environment]
@@ -81,7 +81,7 @@ title = "Stanford CRFM HELM maintenance policy"
 url = "https://github.com/stanford-crfm/helm/blob/main/docs/maintenance_mode.md"
 unit = "provider-endpoint"
 independence = "independent"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "HELM entered maintenance mode on 2026-06-01; no new features or leaderboard evaluations are planned and API integrations may break."
 
 [evidence.anthropic-opus-5]
@@ -108,7 +108,7 @@ title = "Anthropic model deprecations"
 url = "https://docs.anthropic.com/en/docs/about-claude/model-deprecations"
 unit = "provider-endpoint"
 independence = "provider"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Lists claude-opus-5 active with retirement not sooner than 2027-07-24."
 
 [evidence.openai-models]
@@ -117,7 +117,7 @@ title = "OpenAI API model catalogue"
 url = "https://developers.openai.com/api/docs/models"
 unit = "provider-endpoint"
 independence = "provider"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Confirms gpt-5.6-sol with gpt-5.6 alias and gpt-6-astra as current hosted API models."
 
 [evidence.openai-astra-release]
@@ -144,7 +144,7 @@ title = "Google Gemini model deprecations"
 url = "https://ai.google.dev/gemini-api/docs/deprecations"
 unit = "provider-endpoint"
 independence = "provider"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Lists a 2026-09-02 release and no announced shutdown date for gemini-3.8-flash."
 
 [evidence.zai-glm-5-3-checkpoint]
@@ -255,7 +255,7 @@ provider = "Anthropic"
 openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["anthropic-opus-5", "anthropic-lifecycle"]
 counter_evidence = []
 
@@ -277,7 +277,7 @@ provider = "OpenAI"
 openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["openai-models"]
 counter_evidence = []
 
@@ -288,7 +288,7 @@ provider = "OpenAI"
 openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["openai-models", "openai-astra-release"]
 counter_evidence = []
 
@@ -299,7 +299,7 @@ provider = "Google"
 openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["google-gemini-3-8-flash", "google-gemini-lifecycle"]
 counter_evidence = []
 
@@ -584,7 +584,7 @@ applicability = "discovery"
 lifecycle = "current"
 published_on = "2026-09-04"
 data_as_of = "2026-09-10"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["benchlm-methodology"]
 
 [benchmarks.artificial-analysis-intelligence]
@@ -620,7 +620,7 @@ applicability = "primary"
 lifecycle = "current"
 published_on = "2026-09-01"
 data_as_of = "2026-09-14"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["aa-coding-agent-methodology"]
 
 [benchmarks.lmarena]
@@ -656,7 +656,7 @@ applicability = "primary"
 lifecycle = "current"
 published_on = "2023-10-10"
 data_as_of = "2026-05-01"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["swe-bench-leaderboards"]
 
 [benchmarks.terminal-bench]
@@ -674,7 +674,7 @@ applicability = "primary"
 lifecycle = "current"
 published_on = "2026-09-01"
 data_as_of = "2026-09-14"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["terminal-bench-4", "harbor-task-environment"]
 
 [benchmarks.stanford-helm]
@@ -692,5 +692,5 @@ applicability = "corroborating"
 lifecycle = "watch"
 published_on = "2023-01-01"
 data_as_of = "2026-06-01"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["helm-maintenance"]
