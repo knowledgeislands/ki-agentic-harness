@@ -4,12 +4,12 @@ area: GOV
 title: Reject node_modules paths
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: f97e34017e7d58a17d83f422be7f15859b9b3db8
+baseline_ref: 789b8ea8c0d32f486f72ad7a7d0eb2757baad28f
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T18:22:51Z
+updated_at: 2026-09-17T21:38:27Z
 ---
 
 # Reject node_modules paths
@@ -43,11 +43,11 @@ The engineering audit already resolves root and workspace package manifests for 
 
 ## Steps
 
-- [ ] Extend engineering evidence with root and workspace script locations using the existing safe workspace resolution.
-- [ ] Add a new mechanical Scripts rubric item that emits FAIL for relative `node_modules` traversal and precise remediation guidance.
-- [ ] Add fixtures covering root and workspace offenders, multiple path depths, valid `bunx`, valid module resolution, and valid cleanup of bare `node_modules`.
-- [ ] Document the portability rule and both supported remediation forms in the engineering standard.
-- [ ] Regenerate the engineering rubric and audit the evidenced repository after its scripts use resolver-based invocation.
+- [x] Extend engineering evidence with root and workspace script locations using the existing safe workspace resolution.
+- [x] Add a new mechanical Scripts rubric item that emits FAIL for relative `node_modules` traversal and precise remediation guidance.
+- [x] Add fixtures covering root and workspace offenders, multiple path depths, valid `bunx`, valid module resolution, and valid cleanup of bare `node_modules`.
+- [x] Document the portability rule and both supported remediation forms in the engineering standard.
+- [x] Regenerate the engineering rubric and audit the evidenced repository after its scripts use resolver-based invocation.
 
 ## Files touched
 
@@ -88,6 +88,39 @@ No separate guide is required. The audit message and standard provide the action
 ### Roadmap
 
 Do not expand this item into build-configuration scanning. Capture that separately only after a bounded syntax and false-positive model is evidenced.
+
+## Review
+
+### Delivered
+
+From baseline `789b8ea8c0d32f486f72ad7a7d0eb2757baad28f`, `ki-engineering` now publishes mechanical `SCR-10`. It scans string-valued scripts in the root manifest and repository-contained resolved workspace manifests, rejects each `./node_modules/` or `../node_modules/` dependency path with package, script, fragment, and remediation evidence, and leaves bare cleanup targets and arbitrary configuration source outside the rule.
+
+### Summary of changes
+
+- Added repository-contained root and workspace package-script source collection.
+- Added precise relative `node_modules` fragment detection and portable remediation guidance.
+- Published the normative rule, generated rubric item, focused fixtures, and updated remediation inventory.
+
+### Verification
+
+- Focused engineering tests cover root and workspace offenders, multiple traversal depths, unsafe workspace escape, non-string scripts, bare cleanup, `bunx --bun`, `createRequire(...).resolve(...)`, and an unscanned configuration file.
+- `bun run test` — 726 pass, 0 fail, 3,188 expectations across 133 files.
+- `bunx tsc --noEmit` — pass.
+- `ki dev skill rubric ki-engineering` — generated publication in sync.
+- `ki repo audit --skill ki-skills --repo .` and `ki repo audit --skill ki-work-roadmap --repo .` — pass.
+- `bunx rumdl check` for the standard and this record — pass.
+
+### Outstanding concerns
+
+Known repositories that still contain relative `node_modules` invocations will fail `SCR-10` when they consume this Harness change; their script remediation belongs in those repositories, not this batch.
+
+### Post-change review
+
+The scanner follows only real package manifests whose resolved paths remain within the repository. It reports every offending fragment independently, does not execute scripts, and delegates malformed or unsafe workspace declarations to existing workspace validation.
+
+### Mini recap
+
+Hoisting-dependent package scripts are now a deterministic engineering failure with portable repair guidance.
 
 ## Discussion
 

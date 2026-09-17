@@ -43,6 +43,7 @@ export type ScriptsRubricContext = {
   scr5: EngineeringEvidence
   scr6: EngineeringEvidence
   scr7: EngineeringEvidence
+  scr10: EngineeringEvidence
   synchronisePackage?: () => void
 }
 export type BunRubricContext = Record<string, never>
@@ -370,6 +371,7 @@ export const createEngineeringSession = async (
       scr5: evidence('SCR-5'),
       scr6: evidence('SCR-6'),
       scr7: evidence('SCR-7'),
+      scr10: evidence('SCR-10'),
       ...synchronisePackageCapability
     },
     bun: {},

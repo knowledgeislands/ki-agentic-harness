@@ -134,6 +134,13 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
       'Every current or recently completed repository-footprint replacement.',
       'Did the cutover reach and verify the correct clean end state without retaining transitional compatibility code?',
       'Complete the clean cutover, record a named Gap with its owner, or record an explicit exclusion.'
+    ),
+    mechanical(
+      'SCR-10',
+      'Dependency execution is independent of node_modules layout',
+      'Root and safely resolved workspace package scripts contain no hand-written relative path into `node_modules/`; invoke package binaries through `bunx --bun` or resolve module files from the owning module.',
+      'FAIL',
+      (context) => context.scr10
     )
   ]
 }

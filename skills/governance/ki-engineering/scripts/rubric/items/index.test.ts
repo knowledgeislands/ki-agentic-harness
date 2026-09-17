@@ -1,9 +1,11 @@
 import { afterEach, expect, test } from 'bun:test'
-import { mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricEmitter, RubricFamily } from '../../shared/rubric.ts'
 import {
+  collectPackageScriptSources,
+  findRelativeNodeModulesScriptUses,
   gradeDependencyFreshness,
   inspectDependencyHolds,
   inspectEngineeringCheckRecords,
@@ -58,12 +60,13 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   const codes = catalogue.families
     .filter((family) => family.code !== 'RUBRIC')
     .flatMap((family) => family.items.map((item) => item.code))
-  expect(codes).toHaveLength(52)
+  expect(codes).toHaveLength(53)
   expect(new Set(codes).size).toBe(codes.length)
   expect(codes[0]).toBe('PKG-1')
   expect(codes).toContain('TEST-7')
   expect(codes).toContain('DESIGN-1')
   expect(codes).toContain('REVIEW-1')
+  expect(codes).toContain('SCR-10')
   expect(codes.at(-1)).toBe('TOML-3')
 
   const observableCoverage = catalogue.families
@@ -81,6 +84,54 @@ test('the structured catalogue preserves the engineering criteria', async () => 
     'not warranted',
     'consistent',
     'follow-up:<canonical-work-item-id>'
+  ])
+})
+
+test('SCR-10 finds relative node_modules execution in root and safe workspace scripts only', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  const outside = mkdtempSync(join(tmpdir(), 'ki-engineering-external-'))
+  temporaryDirectories.push(repository, outside)
+  mkdirSync(join(repository, 'apps/site'), { recursive: true })
+  writeFileSync(
+    join(repository, 'apps/site/package.json'),
+    `${JSON.stringify({
+      scripts: {
+        build: 'node ./node_modules/typescript/bin/tsc',
+        resolver: 'node --eval "createRequire(import.meta.url).resolve(\'typescript\')"'
+      }
+    })}\n`
+  )
+  writeFileSync(join(repository, 'eleventy.config.ts'), "const path = '../node_modules/tool/index.js'\n")
+  writeFileSync(join(outside, 'package.json'), '{"scripts":{"build":"bun ../node_modules/hidden/bin.js"}}\n')
+  symlinkSync(outside, join(repository, 'apps/escape'), 'dir')
+
+  const sources = collectPackageScriptSources(
+    repository,
+    {
+      scripts: {
+        build: 'bun ../../node_modules/@11ty/eleventy/cmd.cjs',
+        clean: 'rm -rf dist node_modules',
+        packageBinary: 'bunx --bun @11ty/eleventy',
+        malformed: 42
+      }
+    },
+    ['apps/site', 'apps/escape', '../outside']
+  )
+
+  expect(sources.map((source) => source.packagePath)).toEqual(['.', 'apps/site'])
+  expect(findRelativeNodeModulesScriptUses(sources)).toEqual([
+    {
+      packagePath: '.',
+      manifestPath: 'package.json',
+      scriptName: 'build',
+      fragment: '../../node_modules/@11ty/eleventy/cmd.cjs'
+    },
+    {
+      packagePath: 'apps/site',
+      manifestPath: 'apps/site/package.json',
+      scriptName: 'build',
+      fragment: './node_modules/typescript/bin/tsc'
+    }
   ])
 })
 
