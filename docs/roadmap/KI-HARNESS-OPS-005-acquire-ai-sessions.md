@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-16T22:24:46Z
+updated_at: 2026-09-17T17:14:11Z
 ---
 
 ## Goal
@@ -32,9 +32,9 @@ Deletion is a separate, destructive release operation. It requires a current exa
 
 ## Current state
 
-The first readable acquisition pilot landed in `kit-principal` as commit `79b9279`. It staged the four-message `Fitness health discussion` conversation from the unprefixed `Fitness and Wellbeing` project, its project and conversation identities, a content-minimised checkpoint covering 182 local session records, and the matching 490-byte opaque original with a verified SHA-256. No ChatGPT source state changed.
+The first readable acquisition pilot landed in `kit-principal` as commit `79b9279`, then commit `cd11849` replaced the flattened capture with a structured thread, linked Markdown message note, relationships, source metadata, and ledger. Commit `6fc04f1` removed the 490-byte opaque payload from the current tree while retaining its byte count and verified SHA-256 as provenance. The bundle contains four messages and no linked assets. No ChatGPT source state changed.
 
-The pilot also found that the installed Codex MCP binding passes `MCP_HOUSEKEEPING_CHATGPT_PATH=~/Library/Application Support/com.openai.chat` literally. The adapter consequently resolved the source beneath the working repository and failed discovery; invoking the same read-only adapter with an absolute source path succeeded. Repeatable automation therefore still needs the binding renderer or adapter boundary to materialise the user-home path before launch.
+The pilot initially appeared to show a literal-home-path binding defect. Fresh inspection proved current `mcp-housekeeping-chatgpt` source, built output, and direct configuration loading already expand `~` to the user home. Commit `f8cb93c` locks that behaviour with regression coverage and completes the provider's shared engineering baseline. The still-running Codex MCP process continues to reproduce the old repository-relative path, so the remaining condition is a runtime restart and discovery recheck rather than another renderer or adapter change.
 
 The source-mechanics groundwork is real but the end-to-end move is incomplete. The Claude, Codex, and ChatGPT MCP repositories expose comparable read-only discovery, listing, reading, and checkpoint operations, and their tests and builds pass. The ChatGPT local-store adapter safely inventories opaque `*.data` records and returns exact bytes, but those bytes do not provide a readable conversation surface or reliable project-name routing.
 
@@ -47,6 +47,7 @@ The former Awaiting review packet proved the read-only MCP mechanics, bindings, 
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
+- [x] Validate a structured readable ChatGPT bundle that retains opaque source identity, byte count, and hash without committing opaque payload bytes.
 - [ ] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
 - [ ] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
 - [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
@@ -79,7 +80,7 @@ The former Awaiting review packet proved the read-only MCP mechanics, bindings, 
 - Receiver-local triage occurs after full acquisition and does not need source access to decide what knowledge to harvest.
 - A retirement preview names each exact source conversation, its acquired receiver path, hashes, verified Git revision, and any unresolved acquisition concern.
 - Deletion is unavailable until every manifest entry has a recoverable acquired copy, the source still matches the manifest, and the human approves that exact current manifest.
-- Opaque ChatGPT `*.data` bytes are never presented as decoded conversation content.
+- Opaque ChatGPT `*.data` bytes are never presented as decoded conversation content or committed to a receiving repository by default; source identity, byte count, and hash remain as provenance.
 - Claude and Codex default to no acquisition when the repository already contains the session's outcome; any exception imports the complete selected session.
 - Every affected repository passes its focused tests and KI audits, and no acquisition test or ordinary import path can mutate a provider.
 
@@ -143,4 +144,4 @@ The intended steady state is to remove source conversations after their complete
 
 ### Source fidelity
 
-The opaque ChatGPT installed-application store is useful for identity, timestamps, byte counts, and change detection, but not for recovering readable knowledge or proving project routing. Until an authorised readable source exists, it cannot satisfy the complete-session acquisition goal by itself. A user-prepared capture remains safe and useful, but the workflow must clearly distinguish preparing a readable source from acquiring a mapped project.
+The opaque ChatGPT installed-application store is useful for identity, timestamps, byte counts, hashes, and change detection, but not for recovering readable knowledge or proving project routing. Receiving repositories retain those metadata rather than opaque payload bytes by default. Until an authorised readable source exists, the local store cannot satisfy the complete-session acquisition goal by itself. A user-prepared capture remains safe and useful, but the workflow must clearly distinguish preparing a readable source from acquiring a mapped project.

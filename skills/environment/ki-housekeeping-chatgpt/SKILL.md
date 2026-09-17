@@ -19,6 +19,8 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 
 `mcp-housekeeping-chatgpt` exposes read-only `chatgpt_sessions_discover`, `chatgpt_sessions_list`, `chatgpt_session_read`, and `chatgpt_sessions_checkpoint` operations over the configured installed-app store. Its `*.data` records are opaque: discovery returns identity, provenance, timestamps, size, and hash; `read` returns exact bytes as base64 without claiming decoded conversation content.
 
+Repository staging records the opaque source locator, timestamp, byte count, and hash but does not commit the opaque payload bytes by default. Those bytes contain no readable knowledge and remain permanently recoverable from Git after a later deletion; retain them only outside Git in an explicitly approved source store when the receiver has a justified need.
+
 `ki space acquire chatgpt import` owns repository-context staging and checkpoint persistence. The MCP never writes KI state, changes the ChatGPT store, decrypts a private format, archives, or deletes a source session.
 
 ## Operating modes
@@ -37,7 +39,7 @@ There is no local-store conform action. Acquisition and any later source-retenti
 
 ### Mode EDUCATE
 
-Explain the opaque-store boundary, the four comparable provider operations, and the separation of provider reads from KI staging and harvest.
+Explain the opaque-store boundary, the four comparable provider operations, the default exclusion of opaque payload bytes from Git, and the separation of provider reads from KI staging and harvest.
 
 ### Mode REFRESH
 
