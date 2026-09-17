@@ -4,12 +4,12 @@ area: REV
 title: Review Agentic Radar
 theme: regular-reviews
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: 85bd9943fa1d44785fbdb53a936efb53616e6340
+baseline_ref: 87a0debd4c517b5138cc4828ad69cdaef01cbb24
 created_at: 2026-09-17T09:42:38Z
-updated_at: 2026-09-17T20:57:30Z
+updated_at: 2026-09-17T21:51:26Z
 housekeeping_template: KI-HARNESS-HK-005
 scheduled_for: 2026-09-17
 ---
@@ -38,12 +38,12 @@ The repository contains the source form of `ki-pulse`, but that process is not c
 
 ## Steps
 
-- [ ] Audit the current agentic radar and enumerate subjects whose return triggers or tracked sources need rechecking in the review window.
-- [ ] Perform bounded discovery against registered normative, governance, release, implementation, conformance, interoperability, and adoption sources, preferring primary evidence and retaining counter-evidence.
-- [ ] Reconcile each material signal into the smallest supported identity, maturity, implementation, interoperability, stance, movement, evidence, or uncertainty change, or record an evidenced no-change result.
-- [ ] Advance snapshot and source-ledger review dates only for evidence actually rechecked, preserving historical release dates and uncertainty.
-- [ ] Route capability changes, experiments, Decision Records, or receiver-owned consequences through their normal owners rather than implementing them inside this review.
-- [ ] Run agentic-radar, authoring, skill, TypeScript, and repository tests, then record the exact review outcome.
+- [x] Audit the current agentic radar and enumerate subjects whose return triggers or tracked sources need rechecking in the review window.
+- [x] Perform bounded discovery against registered normative, governance, release, implementation, conformance, interoperability, and adoption sources, preferring primary evidence and retaining counter-evidence.
+- [x] Reconcile each material signal into the smallest supported identity, maturity, implementation, interoperability, stance, movement, evidence, or uncertainty change, or record an evidenced no-change result.
+- [x] Advance snapshot and source-ledger review dates only for evidence actually rechecked, preserving historical release dates and uncertainty.
+- [x] Route capability changes, experiments, Decision Records, or receiver-owned consequences through their normal owners rather than implementing them inside this review.
+- [x] Run agentic-radar, authoring, skill, TypeScript, and repository tests, then record the exact review outcome.
 
 ## Files touched
 
@@ -83,6 +83,40 @@ No guide change is expected unless an accepted finding establishes a new operato
 ### Roadmap
 
 Material implementation or receiver consequences become deduplicated owner-local proposals. This review does not select or implement them.
+
+## Review
+
+### Delivered
+
+Completed the 2026-09-14 through 2026-09-17 review window across the registered protocol, governance, implementation, conformance, interoperability, and adoption sources.
+
+### Summary of changes
+
+- Updated Agent Client Protocol evidence to stable schema v1.22.0 and retained the separately published v2.0.0 alpha as counter-evidence rather than treating it as the stable contract.
+- Updated Agent Host Protocol evidence to specification v0.9.0.
+- Added Wyrd's independently maintained AHP server as corroborating implementation evidence. This moves AHP from `reference-only` to `single-implementation` and records inward movement while retaining `assess` and `untested` interoperability.
+- Recorded evidenced no-change outcomes for MCP, ACP, A2A, AGENTS.md, and the W3C Agent Protocol Community Group.
+- Advanced only evidence, subject, and source-ledger dates directly rechecked during this run.
+
+### Verification
+
+- Rechecked the primary ACP and AHP release surfaces, Microsoft's AHP catalogue, the Wyrd server repository, the A2A specification and TCK, AGENTS.md adoption, and the W3C group and draft surfaces.
+- Focused agentic-radar tests, `bunx tsc --noEmit`, `ki repo audit --skill ki-agentic-radar --repo .`, `ki repo audit --skill ki-authoring --repo .`, and `ki dev skill rubric ki-agentic-radar` — pass.
+- `bun run test` — 726 pass, 0 fail, 3,188 expectations across 133 files.
+
+### Outstanding concerns
+
+- No second independent AHP implementation or independently witnessed interoperability or conformance result was found.
+- The Wyrd server is early and deliberately bounded; it supports an implementation-state change, not an adoption recommendation or trial.
+- ACP v2 remains pre-release counter-evidence, and remote-agent support remains a return trigger.
+
+### Post-change review
+
+The implementation classification now reflects credible independent code without overstating interoperability. No implementation, adoption, or Decision Record work is justified by this review alone.
+
+### Mini recap
+
+The agentic radar now reflects the current ACP and AHP releases and one independent AHP implementation while preserving the evidence gates for interoperability and adoption.
 
 ## Discussion
 

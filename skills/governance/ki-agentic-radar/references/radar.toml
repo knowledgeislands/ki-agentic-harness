@@ -1,5 +1,5 @@
 schema = 1
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 
 [evidence]
 
@@ -63,17 +63,27 @@ title = "Agent Client Protocol version 1 overview"
 url = "https://agentclientprotocol.com/protocol/v1/overview"
 evidence_class = "normative-text"
 source_role = "primary"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "The stable wire protocol identifies protocolVersion 1 independently of schema package releases."
 
-[evidence.acp-release-v1-2-0]
-id = "acp-release-v1-2-0"
-title = "Agent Client Protocol schema v1.2.0"
-url = "https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/v1.2.0"
+[evidence.acp-schema-v1-22-0]
+id = "acp-schema-v1-22-0"
+title = "Agent Client Protocol schema v1.22.0"
+url = "https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.22.0"
 evidence_class = "governance-release"
 source_role = "primary"
-reviewed_on = "2026-09-14"
-notes = "The official project published schema release v1.2.0 on 2026-06-29 while retaining wire protocolVersion 1."
+reviewed_on = "2026-09-17"
+notes = "The official project published stable schema release v1.22.0 on 2026-09-17 while retaining wire protocolVersion 1."
+
+[evidence.acp-schema-v2-alpha-4]
+
+id = "acp-schema-v2-alpha-4"
+title = "Agent Client Protocol schema v2.0.0 alpha 4"
+url = "https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v2.0.0-alpha.4"
+evidence_class = "governance-release"
+source_role = "counter-evidence"
+reviewed_on = "2026-09-17"
+notes = "The official project published a v2 alpha on 2026-09-17; it is not a stable wire-protocol replacement."
 
 [evidence.acp-governance]
 id = "acp-governance"
@@ -81,7 +91,7 @@ title = "Agent Client Protocol governance"
 url = "https://agentclientprotocol.com/community/governance"
 evidence_class = "governance-release"
 source_role = "primary"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Zed and JetBrains describe interim joint governance and an intention to move to an independent foundation."
 
 [evidence.acp-gemini-implementation]
@@ -90,7 +100,7 @@ title = "Gemini CLI Agent Client Protocol adapter"
 url = "https://github.com/google-gemini/gemini-cli/blob/main/packages/cli/src/acp/README.md"
 evidence_class = "independent-implementation"
 source_role = "corroborating"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "Google's Gemini CLI repository documents an ACP adapter implementation."
 
 [evidence.acp-codecompanion-implementation]
@@ -99,7 +109,7 @@ title = "CodeCompanion Agent Client Protocol client"
 url = "https://github.com/olimorris/codecompanion.nvim/blob/main/doc/codecompanion.txt"
 evidence_class = "independent-implementation"
 source_role = "corroborating"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "CodeCompanion documents an ACP client that can connect to compatible agents."
 
 [evidence.acp-gemini-codecompanion-demo]
@@ -108,7 +118,7 @@ title = "CodeCompanion and Gemini CLI ACP integration"
 url = "https://github.com/olimorris/codecompanion.nvim/discussions/2030"
 evidence_class = "interoperability-demonstration"
 source_role = "corroborating"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "The CodeCompanion project records a working cross-project ACP integration with Gemini CLI."
 
 [evidence.acp-remote-limit]
@@ -117,26 +127,26 @@ title = "Agent Client Protocol remote-agent limitation"
 url = "https://agentclientprotocol.com/get-started/introduction"
 evidence_class = "normative-text"
 source_role = "counter-evidence"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "The official introduction marks full remote-agent support as work in progress."
 
-[evidence.ahp-spec-0-7-0]
-id = "ahp-spec-0-7-0"
+[evidence.ahp-spec-0-9-0]
+id = "ahp-spec-0-9-0"
 title = "Agent Host Protocol specification overview"
 url = "https://microsoft.github.io/agent-host-protocol/specification/overview.html"
 evidence_class = "normative-text"
 source_role = "primary"
-reviewed_on = "2026-09-14"
-notes = "The Microsoft specification defines the host-agent protocol and advertises specification version 0.7.0."
+reviewed_on = "2026-09-17"
+notes = "The Microsoft specification defines the host-agent protocol and points to specification version 0.9.0 as the current published version."
 
-[evidence.ahp-release-0-7-0]
-id = "ahp-release-0-7-0"
-title = "Agent Host Protocol specification v0.7.0 release"
-url = "https://github.com/microsoft/agent-host-protocol/releases/tag/spec%2Fv0.7.0"
+[evidence.ahp-release-0-9-0]
+id = "ahp-release-0-9-0"
+title = "Agent Host Protocol specification v0.9.0 release"
+url = "https://github.com/microsoft/agent-host-protocol/releases/tag/spec%2Fv0.9.0"
 evidence_class = "governance-release"
 source_role = "primary"
-reviewed_on = "2026-09-14"
-notes = "The official project released specification v0.7.0 on 2026-07-31."
+reviewed_on = "2026-09-17"
+notes = "The official project released specification v0.9.0 on 2026-08-28."
 
 [evidence.ahp-reference-implementations]
 id = "ahp-reference-implementations"
@@ -144,8 +154,18 @@ title = "Agent Host Protocol implementation catalogue"
 url = "https://microsoft.github.io/agent-host-protocol/guide/implementations.html"
 evidence_class = "reference-implementation"
 source_role = "primary"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "The official catalogue lists Microsoft project clients, AHPX, a VS Code client, and a VS Code reference server."
+
+[evidence.ahp-wyrd-server]
+
+id = "ahp-wyrd-server"
+title = "Wyrd Company Agent Host Protocol server"
+url = "https://github.com/wyrd-company/ahp-server"
+evidence_class = "independent-implementation"
+source_role = "corroborating"
+reviewed_on = "2026-09-17"
+notes = "The independent TypeScript server implements a bounded AHP surface and publishes compatibility tests against Microsoft's TypeScript client; this is implementation evidence, not an independently witnessed interoperability result."
 
 [evidence.ahp-mixed-stability]
 id = "ahp-mixed-stability"
@@ -153,7 +173,7 @@ title = "Agent Host Protocol versioning and stability policy"
 url = "https://microsoft.github.io/agent-host-protocol/specification/versioning"
 evidence_class = "normative-text"
 source_role = "counter-evidence"
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 notes = "The pre-1.0 policy permits unstable channels and breaking changes, so release publication is not evidence of ecosystem stability."
 
 [evidence.a2a-spec-1-0]
@@ -311,11 +331,11 @@ specification_maturity = "stable"
 implementation_state = "multiple-independent"
 interoperability_state = "conformance-tested"
 ki_stance = "adopt"
-movement = "new"
+movement = "unchanged"
 owner = "ki-binding"
 uncertainty = "SDK tier conformance does not certify every registry server or separately versioned extension."
 return_trigger = "A new specification release, SDK tier change, extension lifecycle change, or local binding failure."
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = [
   "mcp-spec-2026-07-28",
   "mcp-aaif-governance",
@@ -335,20 +355,20 @@ specification_maturity = "stable"
 implementation_state = "multiple-independent"
 interoperability_state = "demonstrated"
 ki_stance = "assess"
-movement = "new"
+movement = "unchanged"
 owner = "ki-agentic-radar"
-uncertainty = "Wire protocolVersion 1 and schema release v1.2.0 are separately versioned; full remote-agent support remains unfinished."
+uncertainty = "Wire protocolVersion 1 and stable schema release v1.22.0 are separately versioned; a v2 alpha exists and full remote-agent support remains unfinished."
 return_trigger = "Independent-foundation transfer, protocol v2 stabilisation, remote-agent completion, or a local client-agent integration need."
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = [
   "acp-v1-spec",
-  "acp-release-v1-2-0",
+  "acp-schema-v1-22-0",
   "acp-governance",
   "acp-gemini-implementation",
   "acp-codecompanion-implementation",
   "acp-gemini-codecompanion-demo",
 ]
-counter_evidence = ["acp-remote-limit"]
+counter_evidence = ["acp-schema-v2-alpha-4", "acp-remote-limit"]
 
 [subjects.ahp]
 id = "ahp"
@@ -356,15 +376,15 @@ display_name = "Agent Host Protocol"
 subject_kind = "protocol"
 stewardship = "vendor"
 specification_maturity = "versioned"
-implementation_state = "reference-only"
+implementation_state = "single-implementation"
 interoperability_state = "untested"
 ki_stance = "assess"
-movement = "new"
+movement = "inward"
 owner = "ki-agentic-radar"
-uncertainty = "The official catalogue does not establish independent server implementations or cross-implementation interoperability."
-return_trigger = "A 1.0 stability declaration, independent server implementation, interoperability demonstration, or relevant command-centre use case."
-reviewed_on = "2026-09-14"
-evidence = ["ahp-spec-0-7-0", "ahp-release-0-7-0", "ahp-reference-implementations"]
+uncertainty = "One independent server publishes compatibility tests against the Microsoft client, but no independently witnessed result establishes cross-implementation interoperability."
+return_trigger = "A 1.0 stability declaration, second independent implementation, published interoperability result, or relevant command-centre use case."
+reviewed_on = "2026-09-17"
+evidence = ["ahp-spec-0-9-0", "ahp-release-0-9-0", "ahp-reference-implementations", "ahp-wyrd-server"]
 counter_evidence = ["ahp-mixed-stability"]
 
 [subjects.a2a]
@@ -376,11 +396,11 @@ specification_maturity = "stable"
 implementation_state = "multiple-independent"
 interoperability_state = "claimed"
 ki_stance = "assess"
-movement = "new"
+movement = "unchanged"
 owner = "ki-agentic-radar"
 uncertainty = "An official TCK exists, but the reviewed sources do not publish a pass or certification matrix demonstrating cross-implementation conformance."
 return_trigger = "A public TCK result, certification programme, independent interoperability report, or local agent-to-agent requirement."
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = [
   "a2a-spec-1-0",
   "a2a-release-1-0-1",
@@ -399,11 +419,11 @@ specification_maturity = "incubating"
 implementation_state = "multiple-independent"
 interoperability_state = "claimed"
 ki_stance = "adopt"
-movement = "new"
+movement = "unchanged"
 owner = "ki-repo"
 uncertainty = "The unversioned format has broad tool adoption but no formal conformance suite, and nested-file semantics are not uniformly stable."
 return_trigger = "A numbered format release, conformance suite, incompatible client behaviour, or foundation governance change."
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = [
   "agents-format",
   "agents-aaif-governance",
@@ -423,10 +443,10 @@ specification_maturity = "draft"
 implementation_state = "none"
 interoperability_state = "untested"
 ki_stance = "hold"
-movement = "new"
+movement = "unchanged"
 owner = "ki-agentic-radar"
 uncertainty = "This is Community Group incubation with an incomplete living draft, not a W3C Recommendation or demonstrated implementation ecosystem."
 return_trigger = "A formal standards-track transition, complete versioned draft, implementation, or interoperability evidence."
-reviewed_on = "2026-09-14"
+reviewed_on = "2026-09-17"
 evidence = ["w3c-agent-group", "w3c-agent-draft"]
 counter_evidence = ["w3c-cg-nonendorsement", "w3c-agent-draft-gaps"]
