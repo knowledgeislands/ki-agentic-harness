@@ -7,7 +7,7 @@ last-run: null
 grace: P2D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: null
+active-run: KI-HARNESS-REV-006
 ---
 
 # Weekly model radar review
