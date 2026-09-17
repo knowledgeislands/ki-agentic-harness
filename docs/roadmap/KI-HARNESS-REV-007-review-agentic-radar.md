@@ -4,12 +4,12 @@ area: REV
 title: Review Agentic Radar
 theme: regular-reviews
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 85bd9943fa1d44785fbdb53a936efb53616e6340
 created_at: 2026-09-17T09:42:38Z
-updated_at: 2026-09-17T09:42:38Z
+updated_at: 2026-09-17T20:57:30Z
 housekeeping_template: KI-HARNESS-HK-005
 scheduled_for: 2026-09-17
 ---
@@ -18,43 +18,53 @@ scheduled_for: 2026-09-17
 
 ## Goal
 
-Keep evidence about agentic protocols, portable formats, architectural patterns, and knowledge or provenance structures current enough to support deliberate Knowledge Islands decisions without turning discovery into automatic adoption.
+Keep evidence about agentic protocols, interface formats, stewardship, implementations, interoperability, and architectural patterns current enough to support deliberate Knowledge Islands decisions without turning discovery into automatic adoption.
 
 ## Context
 
-The initial weekly agentic-radar review became due on 2026-09-17. The committed radar needs a bounded evidence pass across identity, stewardship, specification maturity, releases, implementations, interoperability, governance, adoption, and counter-evidence.
+The first weekly agentic-radar review became due on 2026-09-17. The committed snapshot and tracked-source ledger were last reviewed on 2026-09-14, so this run covers the bounded interval from 2026-09-14 through 2026-09-17 plus any declared return trigger visible on a current primary source.
+
+The review must keep specification maturity, implementation state, demonstrated interoperability, operational adoption, and local stance separate. A release, package count, incubating group, steward claim, or implementation catalogue does not prove independent interoperability.
 
 ## Boundary
 
-This review may update the Harness-owned radar and route separately owned consequences. It must not mutate consumer configuration, prototype integrations, or present patterns, vendor terms, package counts, or organisational affiliations as proof of formal maturity or interoperability.
+Do not mutate consumer configuration, prototype an integration, choose an agent architecture, collapse similarly named protocols, or present vendor terminology, organisational affiliation, package count, or reference implementation as proof of formal maturity or interoperability. Route material consequences separately.
 
 ## Current state
 
-This is the first run linked from `KI-HARNESS-HK-005`. No implementation baseline has been selected, and the review window and evidence sources still need to be bounded during planning.
+`skills/governance/ki-agentic-radar/references/radar.toml` is mechanically valid and within the nine-day freshness grace window. Its source ledger records a 2026-09-14 review with return triggers for new protocol releases, governance transfer, independent implementation, published conformance or interoperability results, material operational adoption, deprecation, and a concrete Knowledge Islands use case.
+
+The repository contains the source form of `ki-pulse`, but that process is not currently available in this runtime's installed skill catalogue. This run may therefore perform the same bounded discovery directly against tracked primary sources and narrowly targeted public searches; absence of `ki-pulse` does not authorise an open-ended ecosystem survey.
 
 ## Steps
 
-- [ ] Use `ki-pulse` for bounded recent discovery and verify material signals against sources registered by `ki-agentic-radar`.
-- [ ] Audit the committed radar for malformed, stale, unsupported, or internally inconsistent entries while preserving evidence classes and uncertainty.
-- [ ] Record an evidenced no-change result or prepare the smallest supported snapshot update.
-- [ ] Route material capability refreshes, Decision Records, integrations, or receiver-owned consequences separately through `ki-next`.
+- [ ] Audit the current agentic radar and enumerate subjects whose return triggers or tracked sources need rechecking in the review window.
+- [ ] Perform bounded discovery against registered normative, governance, release, implementation, conformance, interoperability, and adoption sources, preferring primary evidence and retaining counter-evidence.
+- [ ] Reconcile each material signal into the smallest supported identity, maturity, implementation, interoperability, stance, movement, evidence, or uncertainty change, or record an evidenced no-change result.
+- [ ] Advance snapshot and source-ledger review dates only for evidence actually rechecked, preserving historical release dates and uncertainty.
+- [ ] Route capability changes, experiments, Decision Records, or receiver-owned consequences through their normal owners rather than implementing them inside this review.
+- [ ] Run agentic-radar, authoring, skill, TypeScript, and repository tests, then record the exact review outcome.
 
 ## Files touched
 
 - `skills/governance/ki-agentic-radar/references/radar.toml`
 - `skills/governance/ki-agentic-radar/references/sources.md`
+- Generated rubric only if the accepted contract changes
 - `docs/roadmap/KI-HARNESS-REV-007-review-agentic-radar.md`
-- separately owned follow-up records only when evidence warrants capture
+- Any separately justified follow-up roadmap record created through the normal intake boundary
 
 ## Verify
 
 - `ki repo audit --skill ki-agentic-radar --repo .`
 - `ki repo audit --skill ki-authoring --repo .`
-- `git diff --check`
+- `ki dev skill rubric ki-agentic-radar` when the generated rubric changes
+- Focused radar tests, `bun run test`, and `bunx tsc --noEmit`
+- Every changed classification resolves to evidence of the right class and preserves uncertainty and counter-evidence.
+- A no-change outcome names the sources and return triggers checked rather than merely advancing dates.
 
 ## Dependencies / blocks
 
-No build dependency is known. Planning must establish a bounded review window and confirm source availability before readiness.
+No external dependency blocks a direct tracked-source review. If a primary source is unavailable or a signal cannot support the claimed maturity or interoperability level, retain the current classification and record the uncertainty.
 
 ## Documentation impact
 
@@ -72,10 +82,14 @@ No guide change is expected unless an accepted finding establishes a new operato
 
 ### Roadmap
 
-Material implementation or receiver consequences must become deduplicated owner-local proposals rather than being delivered inside this review.
+Material implementation or receiver consequences become deduplicated owner-local proposals. This review does not select or implement them.
 
 ## Discussion
 
 ### Evidence gate
 
-The weekly cadence does not lower maturity, interoperability, or human-review gates. A valid no-change result is preferable to unsupported movement, and every classification must retain uncertainty and counter-evidence.
+Weekly cadence does not lower maturity, interoperability, or human-review gates. A valid no-change result is preferable to unsupported movement, and every classification must retain uncertainty and counter-evidence.
+
+### Review economy
+
+The bounded interval and declared return triggers keep the review proportionate. The run should revisit the full source inventory only where a changed primary source or a new signal makes an existing classification questionable.
