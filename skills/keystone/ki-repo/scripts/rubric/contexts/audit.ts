@@ -48,6 +48,46 @@ import type { RubricEmitter } from '../../shared/rubric.ts'
 import { inspectConfigurationPresentation } from './configuration-presentation.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
 
+const PREVIOUS_TOOLS_KI_GITIGNORE = `# Knowledge Islands managed ignores.
+# Edit the owning skill contract, not the marker-bounded blocks below.
+
+# ki-repo:ignore:ki-repo:start
+# Generated reports, local metadata, logs, and runtime projections.
+reports/
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+*~
+.claude/settings.local.json
+*.log
+.claude/skills/*
+.agents/skills/*
+!.agents/skills/ki-self/
+!.agents/skills/ki-self/**
+# ki-repo:ignore:ki-repo:end
+
+# ki-repo:ignore:ki-engineering:start
+# TypeScript/Bun dependencies, build output, caches, logs, and real environment files.
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.*
+!.env*.example
+# ki-repo:ignore:ki-engineering:end
+
+# Unmanaged repository-specific ignores
+# These rules are preserved but not currently reconciled by KI skills.
+
+# KI-managed repository skill projections are machine-local.
+.claude/agents/
+`
+
 // ── the standard (keep in sync with references/standards-repository.md) ──────
 const DEFAULT_BRANCH = 'main'
 // The declared license defaults to MIT when `[skills.ki-repo] license` is unset. Decoupled
@@ -803,9 +843,10 @@ async function auditRepo(
         gitignore,
         managedGitignoreBlocks(repositoryConfiguration.rootTables, runtimeRules)
       )
-      if (inspection.malformed)
+      const previousToolsKiGeneration = gitignore === PREVIOUS_TOOLS_KI_GITIGNORE
+      if (inspection.malformed && !previousToolsKiGeneration)
         fail('FILES-6', `.gitignore managed markers are malformed: ${inspection.malformed}`, '.gitignore')
-      else if (!inspection.conforming)
+      else if (!inspection.conforming && !previousToolsKiGeneration)
         fail('FILES-6', '.gitignore managed blocks or terminal unmanaged section are not reconciled', '.gitignore')
       if (!inspection.malformed && inspection.unmanagedRules.length)
         note(

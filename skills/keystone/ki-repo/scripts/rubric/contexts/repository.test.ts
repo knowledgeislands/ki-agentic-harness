@@ -149,6 +149,60 @@ describe('ki-repo session', () => {
     expect(gitignore?.content).not.toContain('.agents/skills/\n')
   })
 
+  test('accepts only the exact predecessor tools-ki ignore generation during the v0.4.0 bridge', async () => {
+    const root = repository()
+    writeFileSync(
+      join(root, '.ki.toml'),
+      '[skills.ki-repo]\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n\n[skills.ki-engineering]\n'
+    )
+    const previous = `# Knowledge Islands managed ignores.
+# Edit the owning skill contract, not the marker-bounded blocks below.
+
+# ki-repo:ignore:ki-repo:start
+# Generated reports, local metadata, logs, and runtime projections.
+reports/
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+*~
+.claude/settings.local.json
+*.log
+.claude/skills/*
+.agents/skills/*
+!.agents/skills/ki-self/
+!.agents/skills/ki-self/**
+# ki-repo:ignore:ki-repo:end
+
+# ki-repo:ignore:ki-engineering:start
+# TypeScript/Bun dependencies, build output, caches, logs, and real environment files.
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.*
+!.env*.example
+# ki-repo:ignore:ki-engineering:end
+
+# Unmanaged repository-specific ignores
+# These rules are preserved but not currently reconciled by KI skills.
+
+# KI-managed repository skill projections are machine-local.
+.claude/agents/
+`
+    writeFileSync(join(root, '.gitignore'), previous)
+    expect((await collectAuditFindings([root])).findings).not.toContainEqual(
+      expect.objectContaining({ code: 'FILES-6' })
+    )
+
+    writeFileSync(join(root, '.gitignore'), previous.replace('node_modules/', 'node-modules/'))
+    expect((await collectAuditFindings([root])).findings).toContainEqual(expect.objectContaining({ code: 'FILES-6' }))
+  })
+
   test('derives runtime-skill ignores from supported runtimes while reserving ki-self', async () => {
     const root = repository()
     writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\nsupported_runtimes = ["claude-code"]\n')

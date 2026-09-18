@@ -24,6 +24,8 @@ Released `ki` v0.3.6 pins Harness commit `65a223ca9c6d6f8f5b9b48c52e121f1e412d7e
 
 ## Boundary
 
+Remote bridge CI exposed one further immutable predecessor contract: the exact v0.3.6 `tools-ki` `.gitignore`. This item therefore also accepts that one byte-exact repository-specific generation in AUDIT only. Current `.gitignore` composition remains the sole CONFORM output; arbitrary variants and other repositories still fail.
+
 This item changes only `WORK-1` audit acceptance for the two generic working-area READMEs. The current README templates remain the sole canonical CONFORM output and the portable standard remains the desired current contract. The transition accepts only the exact v0.3.6 predecessor bytes; arbitrary drift, unsafe paths, missing files, and specialist subareas remain unchanged failures. It adds no parser fallback, public command alias, or general legacy policy. Removing the predecessor acceptance after the release cutover requires separate governed work.
 
 ## Current state
@@ -37,12 +39,14 @@ This item changes only `WORK-1` audit acceptance for the two generic working-are
 - [x] Prove CONFORM still creates and repairs to the current canonical templates.
 - [x] Record the temporary transition explicitly in the `ki-repo` working-area standard.
 - [x] Run focused `ki-repo` rubric tests, the complete Harness gates, and native `ki-repo` and roadmap audits.
+- [x] Extend the bounded bridge to the exact predecessor `tools-ki` `.gitignore` after remote CI exposed the immutable FILES-6 mismatch.
 - [ ] Return the immutable Harness commit and archive digest to `KI-TOOL-CLI-074`.
 
 ## Files touched
 
 - `skills/keystone/ki-repo/scripts/rubric/contexts/repository.ts`
 - `skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts`
 - `skills/keystone/ki-repo/references/standards-repository.md`
 - `docs/roadmap/KI-HARNESS-GOV-075-bridge-working-area-contracts.md`
 - `docs/roadmap/_ISSUES.md`
