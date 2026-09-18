@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-18T04:05:10Z
-updated_at: 2026-09-18T04:05:10Z
+updated_at: 2026-09-18T04:26:43Z
 ---
 
 # Enforce AGENTS.md root orientation
@@ -28,7 +28,7 @@ The rule is prose only. No rubric item evaluates it, so a repository can invert 
 
 In scope is the placement question the standard already decides: which file holds the orientation, and whether the other one imports it, conditioned on the declared runtimes.
 
-Out of scope: the quality, length or structure of the orientation content itself; context budgets, which `ki-tokenomics` owns; general validation of the `@`-import graph; nested per-workspace orientation files, which the standard does not currently address and which would need a decision before any check could cover them; and repositories declaring only `claude-code`, which the rule deliberately exempts.
+Out of scope: the quality, length or structure of the orientation content itself; context budgets, which `ki-tokenomics` owns; general validation of the `@`-import graph; nested per-workspace orientation files, which the standard does not currently address; and repositories declaring only `claude-code`, which the rule deliberately exempts.
 
 ## Discussion
 
@@ -38,7 +38,7 @@ On 2026-09-18, during an unrelated tidy-up of `kit-midnight.ninja`, the reposito
 
 `ki repo audit --repo .` reported `PASS · 16 skills` against that repository both before the inversion was corrected and after, with identical output. The audit had no opinion either way. The inversion had survived since the repository adopted multi-runtime support, and was found by a human reading the tree rather than by any tool.
 
-A second, weaker signal from the same repository: `apps/site-tower/` carried a 95-line nested `CLAUDE.md` with no `AGENTS.md` beside it. Applying the same split there was a judgement call, not a standard — see Boundary.
+A second, weaker signal from the same repository: `apps/site-tower/` carried a 95-line nested `CLAUDE.md` with no `AGENTS.md` beside it. It was renamed to `AGENTS.md` and left as a single file — see the position on nested files below.
 
 ### Candidate check shape
 
@@ -48,8 +48,14 @@ Two conditions look safely mechanical. A root `AGENTS.md` must exist and carry s
 
 Detecting the inversion positively is the harder half. The `kit-midnight.ninja` case would have been caught by the redirect test alone: its `AGENTS.md` pointed at `CLAUDE.md` by name. A check for "`AGENTS.md` references `CLAUDE.md` as the place to read orientation" is narrow enough to be deterministic and catches the realistic failure, where someone writes the pointer in the wrong file. A size-ratio heuristic between the two files would catch more but is crude and would fire on legitimately long Claude-only appendices.
 
+### Position on nested files
+
+The root split exists so a non-Claude runtime can find the orientation at all. That reasoning does not carry below the root. A nested orientation is reached because the root orientation names it, not because a runtime auto-loads it, so a single `AGENTS.md` serves every runtime and a `CLAUDE.md` pointer beside it adds a file and buys nothing. `kit-midnight.ninja` was briefly given the pair and then reduced to the single file; across the whole estate surveyed on 2026-09-18 it is the only nested orientation that exists at all, which is its own argument against building a rule for the case.
+
+A check should therefore evaluate the root only, and must not infer a violation from a nested `CLAUDE.md` or a nested `AGENTS.md` standing alone.
+
 ### Open questions
 
 - FAIL or WARN? The standard says "should", and the consequence — a declared runtime reading a stub — is a real capability failure rather than a style preference, which argues for FAIL. Existing repositories would need remediation first, as with `SCR-10`.
-- Does the rule extend to nested orientation files, and if so, is it conditioned on the nested file's size or on its existence alone?
+- Should the standard state the nested position explicitly, so a check knows to leave nested files alone?
 - Should the check also verify the reverse direction — that a single-runtime repository has _not_ split unnecessarily — or is that harmless and better left alone?
