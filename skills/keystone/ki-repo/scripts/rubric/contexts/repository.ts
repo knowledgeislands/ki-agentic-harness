@@ -129,6 +129,31 @@ export type KindRubricContext = {
   kind2: readonly RepoEvidenceFinding[]
 }
 
+const PREVIOUS_WORKING_AREA_READMES = new Map([
+  [
+    '+/README.md',
+    `# Incoming working area
+
+\`+\` is this repository's top-level working area for temporary material received from another repository or external source that needs local triage.
+
+For material prepared here to send elsewhere, use [the matching outbound working area](../-/README.md).
+
+It is not a canonical roadmap, plan, decision record, or knowledge-base destination. Triage each item into its durable home, or remove it when it has no value to retain.
+`
+  ],
+  [
+    '-/README.md',
+    `# Outgoing working area
+
+\`-\` is this repository's top-level working area for temporary material prepared here for another repository or external recipient.
+
+For material received here to triage, use [the matching inbound working area](../+/README.md).
+
+It is not a canonical roadmap, plan, decision record, or knowledge-base destination. Remove each item after delivery or when it no longer has value to retain.
+`
+  ]
+] as const)
+
 const WORKING_AREA_READMES = [
   {
     path: '+/README.md',
@@ -248,7 +273,9 @@ const workingAreaOutcomes = (target: string): readonly AuditOutcome[] => {
         message: `required working-area README ${readme.path} is absent or unsafe`,
         subject: readme.path
       })
-    } else if (readFileSync(path, 'utf8') !== readme.content) {
+    } else {
+      const contents = readFileSync(path, 'utf8')
+      if (contents === readme.content || contents === PREVIOUS_WORKING_AREA_READMES.get(readme.path)) continue
       outcomes.push({
         status: 'VIOLATION',
         message: `working-area README ${readme.path} differs from the canonical ki-repo orientation`,

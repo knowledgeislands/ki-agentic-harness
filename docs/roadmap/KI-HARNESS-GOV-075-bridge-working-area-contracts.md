@@ -4,12 +4,12 @@ area: GOV
 title: Bridge working-area contracts
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: fc2e055568420e7950f2db3ca40a0343c229cda1
 created_at: 2026-09-18T04:25:43Z
-updated_at: 2026-09-18T04:25:43Z
+updated_at: 2026-09-18T04:34:00Z
 ---
 
 # Bridge Working-Area Contracts
@@ -32,11 +32,11 @@ This item changes only `WORK-1` audit acceptance for the two generic working-are
 
 ## Steps
 
-- [ ] Represent the exact v0.3.6 predecessor content as an audit-only accepted generation without changing current canonical templates.
-- [ ] Accept current and predecessor README pairs while continuing to reject arbitrary or partially corrupted content.
-- [ ] Prove CONFORM still creates and repairs to the current canonical templates.
-- [ ] Record the temporary transition explicitly in the `ki-repo` working-area standard.
-- [ ] Run focused `ki-repo` rubric tests, the complete Harness gates, and native `ki-repo` and roadmap audits.
+- [x] Represent the exact v0.3.6 predecessor content as an audit-only accepted generation without changing current canonical templates.
+- [x] Accept current and predecessor README pairs while continuing to reject arbitrary or partially corrupted content.
+- [x] Prove CONFORM still creates and repairs to the current canonical templates.
+- [x] Record the temporary transition explicitly in the `ki-repo` working-area standard.
+- [x] Run focused `ki-repo` rubric tests, the complete Harness gates, and native `ki-repo` and roadmap audits.
 - [ ] Return the immutable Harness commit and archive digest to `KI-TOOL-CLI-074`.
 
 ## Files touched

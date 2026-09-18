@@ -269,6 +269,42 @@ describe('ki-repo session', () => {
     ])
   })
 
+  test('accepts the exact predecessor working-area README transition', async () => {
+    const root = repository()
+    const initial = await createRepoSession(options(root, 'conform'), inspect)
+    runWorkingAreasConform(workingAreasContext(initial))
+    applyWrites(root, initial.proposal().writes)
+
+    writeFileSync(
+      join(root, '+', 'README.md'),
+      `# Incoming working area
+
+\`+\` is this repository's top-level working area for temporary material received from another repository or external source that needs local triage.
+
+For material prepared here to send elsewhere, use [the matching outbound working area](../-/README.md).
+
+It is not a canonical roadmap, plan, decision record, or knowledge-base destination. Triage each item into its durable home, or remove it when it has no value to retain.
+`
+    )
+    writeFileSync(
+      join(root, '-', 'README.md'),
+      `# Outgoing working area
+
+\`-\` is this repository's top-level working area for temporary material prepared here for another repository or external recipient.
+
+For material received here to triage, use [the matching inbound working area](../+/README.md).
+
+It is not a canonical roadmap, plan, decision record, or knowledge-base destination. Remove each item after delivery or when it no longer has value to retain.
+`
+    )
+
+    const audit = await createRepoSession(options(root, 'audit'), inspect)
+    const [item] = WORK.items
+    expect(item?.mechanical?.audit.run(workingAreasContext(audit))).toEqual([
+      { status: 'PASS', message: 'working-area scaffold is present and conformed' }
+    ])
+  })
+
   test('repairs a drifted working-area README without recreating it', async () => {
     const root = repository()
     const initial = await createRepoSession(options(root, 'conform'), inspect)
