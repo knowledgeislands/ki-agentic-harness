@@ -32,18 +32,6 @@ type RoadmapConfiguration = {
 }
 
 export const HORIZONS = ['now', 'next', 'soon', 'waiting-for', 'parked', 'future', 'triage'] as const
-export const HORIZON_BLURBS: Record<Horizon, string> = {
-  now: 'Receiving current delivery attention. An urgent breakage may be Now, but dependency links—not the horizon—record what it blocks.',
-  next: 'The next bounded work to prepare or begin once current Now work permits it.',
-  soon: 'Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.',
-  'waiting-for':
-    'Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes; do not use this horizon for intentionally paused work.',
-  parked:
-    'Intentionally paused work with no current attention. Revisit only when its priority or named return trigger changes.',
-  future: 'Adopted long-term work that is not expected to receive delivery attention in the foreseeable queue.',
-  triage:
-    'Captured but unadopted work. It remains draft until a human explicitly approves its disposition; adoption moves it into a delivery horizon.'
-}
 
 const ID_RE = /^[A-Z][A-Z0-9-]{1,23}-\d{3,}$/
 const FILE_RE = /^([A-Z][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
