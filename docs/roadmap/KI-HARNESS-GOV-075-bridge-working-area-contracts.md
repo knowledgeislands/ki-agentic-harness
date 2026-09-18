@@ -4,12 +4,12 @@ area: GOV
 title: Bridge working-area contracts
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: 25aca35b49ae0a8ed4c229a4cf7ea1b9fae1e6da
+baseline_ref: fc2e055568420e7950f2db3ca40a0343c229cda1
 created_at: 2026-09-18T04:25:43Z
-updated_at: 2026-09-18T04:34:00Z
+updated_at: 2026-09-18T05:22:00Z
 ---
 
 # Bridge Working-Area Contracts
@@ -24,6 +24,8 @@ Released `ki` v0.3.6 pins Harness commit `65a223ca9c6d6f8f5b9b48c52e121f1e412d7e
 
 ## Boundary
 
+Remote bridge CI exposed one further immutable predecessor contract: the exact v0.3.6 `tools-ki` `.gitignore`. This item therefore also accepts that one byte-exact repository-specific generation in AUDIT only. Current `.gitignore` composition remains the sole CONFORM output; arbitrary variants and other repositories still fail.
+
 This item changes only `WORK-1` audit acceptance for the two generic working-area READMEs. The current README templates remain the sole canonical CONFORM output and the portable standard remains the desired current contract. The transition accepts only the exact v0.3.6 predecessor bytes; arbitrary drift, unsafe paths, missing files, and specialist subareas remain unchanged failures. It adds no parser fallback, public command alias, or general legacy policy. Removing the predecessor acceptance after the release cutover requires separate governed work.
 
 ## Current state
@@ -37,12 +39,14 @@ This item changes only `WORK-1` audit acceptance for the two generic working-are
 - [x] Prove CONFORM still creates and repairs to the current canonical templates.
 - [x] Record the temporary transition explicitly in the `ki-repo` working-area standard.
 - [x] Run focused `ki-repo` rubric tests, the complete Harness gates, and native `ki-repo` and roadmap audits.
-- [ ] Return the immutable Harness commit and archive digest to `KI-TOOL-CLI-074`.
+- [x] Extend the bounded bridge to the exact predecessor `tools-ki` `.gitignore` after remote CI exposed the immutable FILES-6 mismatch.
+- [x] Return the immutable Harness commit and archive digest to `KI-TOOL-CLI-074`.
 
 ## Files touched
 
 - `skills/keystone/ki-repo/scripts/rubric/contexts/repository.ts`
 - `skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts`
 - `skills/keystone/ki-repo/references/standards-repository.md`
 - `docs/roadmap/KI-HARNESS-GOV-075-bridge-working-area-contracts.md`
 - `docs/roadmap/_ISSUES.md`
@@ -78,6 +82,36 @@ None. No user procedure or public command changes.
 ### Roadmap
 
 The `ki-repo` working-area standard and this record will name the exact audit-only transition and its removal condition.
+
+## Review
+
+### Delivered
+
+Published transition Harness commit `bcdc991946a81bb59f207ee47dba24c138f60abb` on `main`; its codeload archive SHA-256 is `04247d3522b77ee884c30536a463a382de512a7cfbfc5a2654ee7c3ac22e5edf`.
+
+### Summary of changes
+
+- Added audit-only acceptance for the two exact v0.3.6 working-area README generations while leaving current CONFORM templates unchanged.
+- Added audit-only acceptance for the exact predecessor `tools-ki` `.gitignore` bytes exposed by remote bridge CI, with arbitrary drift still failing.
+- Documented the temporary transition and its removal condition in the repository standard.
+
+### Verification
+
+- The focused `ki-repo` suite passes 40 tests, including exact predecessor acceptance and one-byte-drift rejection.
+- The complete Harness suite passes 728 tests across 133 files; TypeScript, Biome, and Markdown checks pass.
+- `tools-ki` bridge CI run `35309585380`, v0.4.0 release run `35309891265`, and post-cutover run `35310148886` prove the immutable archive across the complete release sequence.
+
+### Outstanding concerns
+
+The predecessor acceptance is intentionally temporary. Remove it through separately governed Harness work only after the wider estate no longer needs those exact bytes.
+
+### Post-change review
+
+Current repository templates and CONFORM behaviour did not change. The exception is byte-exact, audit-only, repository-specific where necessary, tested against drift, and documented with a removal boundary.
+
+### Mini recap
+
+The Harness bridge enabled immutable v0.4.0 publication without weakening the current repository contract.
 
 ## Discussion
 

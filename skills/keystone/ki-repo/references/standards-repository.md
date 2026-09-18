@@ -1,5 +1,7 @@
 # Knowledge Islands repo standard
 
+> **Temporary v0.4.0 bridge:** AUDIT accepts the exact predecessor `tools-ki` `.gitignore` bytes alongside the current composition. CONFORM still emits only the current composition; any predecessor-byte drift remains a failure. Remove this repository-specific exception after released v0.4.0 governs `tools-ki` CI and the current `.gitignore` is restored.
+
 The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The structured catalogue under `../scripts/rubric/` is the executable source hosted by native `ki repo` operations.
 
 ## Contents
