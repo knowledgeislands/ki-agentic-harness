@@ -9,7 +9,7 @@ last-run-ref: null
 grace: P7D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: null
+active-run: KI-HARNESS-REV-009
 ---
 
 # Knowledge reconciliation
