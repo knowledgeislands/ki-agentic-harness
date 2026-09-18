@@ -189,7 +189,7 @@ yarn-error.log*
 # ki-repo:ignore:ki-engineering:end
 
 # Unmanaged repository-specific ignores
-# These rules are preserved but not currently reconciled by KI skills.
+# These rules are preserved but are not currently reconciled by a KI skill.
 
 # KI-managed repository skill projections are machine-local.
 .claude/agents/
