@@ -4,12 +4,12 @@ area: GOV
 title: Follow shared site config
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e7d90fbdf6b4750c701a2192b2cda6bcde35de95
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T21:37:35Z
+updated_at: 2026-09-18T04:09:06Z
 ---
 
 # Follow shared site config
@@ -122,6 +122,10 @@ The resolver remains fail-closed: it accepts only physical repository-contained 
 ### Mini recap
 
 Shared Eleventy behaviour is now recognised where it is authored, while absent behaviour and unsafe resolution retain the prior findings.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

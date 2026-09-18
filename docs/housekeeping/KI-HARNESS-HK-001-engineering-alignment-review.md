@@ -3,13 +3,13 @@ id: KI-HARNESS-HK-001
 title: Engineering alignment review
 status: active
 cadence: P1M
-last-run: 2026-09-09
+last-run: 2026-09-18
 commit-threshold: 100
-last-run-ref: null
+last-run-ref: 216523fde3d5353aaa13a1379de460af53dc491a
 grace: P7D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: KI-HARNESS-REV-008
+active-run: null
 ---
 
 # Engineering alignment review

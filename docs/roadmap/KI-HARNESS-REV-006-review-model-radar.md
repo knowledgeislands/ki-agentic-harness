@@ -4,12 +4,12 @@ area: REV
 title: Review Model Radar
 theme: regular-reviews
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e0b995006502a746146d201d0c914f588a00ec05
 created_at: 2026-09-17T09:42:38Z
-updated_at: 2026-09-17T21:48:41Z
+updated_at: 2026-09-18T04:09:06Z
 housekeeping_template: KI-HARNESS-HK-003
 scheduled_for: 2026-09-17
 ---
@@ -114,6 +114,10 @@ The no-change conclusion is source-specific rather than a date-only refresh. No 
 ### Mini recap
 
 The model radar remains current and unchanged where the week's declared return triggers were checked.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

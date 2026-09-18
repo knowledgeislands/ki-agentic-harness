@@ -3,13 +3,13 @@ id: KI-HARNESS-HK-002
 title: Knowledge reconciliation
 status: active
 cadence: P1M
-last-run: 2026-09-09
+last-run: 2026-09-18
 commit-threshold: 100
-last-run-ref: null
+last-run-ref: fa37a31b58e535fcf96415422da7fb608575365d
 grace: P7D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: KI-HARNESS-REV-009
+active-run: null
 ---
 
 # Knowledge reconciliation

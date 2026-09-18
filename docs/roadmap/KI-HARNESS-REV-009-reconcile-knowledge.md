@@ -4,12 +4,12 @@ area: REV
 title: Reconcile repository knowledge
 theme: regular-reviews
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: fa37a31b58e535fcf96415422da7fb608575365d
 created_at: 2026-09-18T03:10:58Z
-updated_at: 2026-09-18T03:20:53Z
+updated_at: 2026-09-18T04:09:06Z
 housekeeping_template: KI-HARNESS-HK-002
 scheduled_for: 2026-09-18
 ---
@@ -120,6 +120,10 @@ The corrections change no accepted system behaviour. They remove volatile invent
 ### Mini recap
 
 Current repository knowledge is mechanically clean and semantically aligned after three bounded present-state corrections; only the separately captured knip coverage work remains.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

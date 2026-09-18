@@ -4,12 +4,12 @@ area: GOV
 title: Reject node_modules paths
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 789b8ea8c0d32f486f72ad7a7d0eb2757baad28f
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T21:38:27Z
+updated_at: 2026-09-18T04:09:06Z
 ---
 
 # Reject node_modules paths
@@ -121,6 +121,10 @@ The scanner follows only real package manifests whose resolved paths remain with
 ### Mini recap
 
 Hoisting-dependent package scripts are now a deterministic engineering failure with portable repair guidance.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

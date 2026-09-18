@@ -4,12 +4,12 @@ area: FND
 title: Restore knip source coverage
 theme: foundation-tooling
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 9a5a664b2ce5bd9753ffa8ee598762a5bbd63257
 created_at: 2026-09-18T03:14:14Z
-updated_at: 2026-09-18T03:46:02Z
+updated_at: 2026-09-18T04:09:06Z
 ---
 
 # Restore knip source coverage
@@ -117,6 +117,10 @@ No reusable audit criterion was added. The existing engineering audit already ru
 ### Mini recap
 
 Knip once again provides meaningful dependency and dead-code coverage for every current Harness TypeScript source area. The resulting configuration is clean apart from two required and evidenced projection-ignore hints, and the item is ready for human review.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

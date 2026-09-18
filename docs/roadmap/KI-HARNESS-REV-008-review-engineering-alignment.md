@@ -4,12 +4,12 @@ area: REV
 title: Review engineering alignment
 theme: regular-reviews
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 216523fde3d5353aaa13a1379de460af53dc491a
 created_at: 2026-09-18T03:10:58Z
-updated_at: 2026-09-18T03:14:27Z
+updated_at: 2026-09-18T04:09:06Z
 housekeeping_template: KI-HARNESS-HK-001
 scheduled_for: 2026-09-18
 ---
@@ -116,6 +116,10 @@ No repository implementation was changed during the review. The sole new work re
 ### Mini recap
 
 Engineering and mechanical governance are stable across the recent delivery interval, with one bounded knip-coverage gap captured for later disposition.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

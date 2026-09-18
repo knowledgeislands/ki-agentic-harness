@@ -4,12 +4,12 @@ area: GOV
 title: Govern multi-site repositories
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 050a4179f31fde9361782e50bd842e500bb5be8d
 created_at: 2026-09-17T16:53:09Z
-updated_at: 2026-09-17T21:27:54Z
+updated_at: 2026-09-18T04:09:06Z
 ---
 
 # Govern multi-site repositories
@@ -136,6 +136,10 @@ The goal and locked decisions are met. Legacy tests remain green, malformed and 
 ### Mini recap
 
 Multi-site governance is viable and stable across the website stack, with real two-site evidence and no unresolved Harness defect. The only follow-on is optional adoption by repositories that currently use the single-site form.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

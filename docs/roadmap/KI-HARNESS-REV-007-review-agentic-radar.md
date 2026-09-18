@@ -4,12 +4,12 @@ area: REV
 title: Review Agentic Radar
 theme: regular-reviews
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 87a0debd4c517b5138cc4828ad69cdaef01cbb24
 created_at: 2026-09-17T09:42:38Z
-updated_at: 2026-09-17T21:51:26Z
+updated_at: 2026-09-18T04:09:06Z
 housekeeping_template: KI-HARNESS-HK-005
 scheduled_for: 2026-09-17
 ---
@@ -117,6 +117,10 @@ The implementation classification now reflects credible independent code without
 ### Mini recap
 
 The agentic radar now reflects the current ACP and AHP releases and one independent AHP implementation while preserving the evidence gates for interoperability and adoption.
+
+## Done
+
+Accepted 2026-09-18 by Kris Brown on review packet above.
 
 ## Discussion
 

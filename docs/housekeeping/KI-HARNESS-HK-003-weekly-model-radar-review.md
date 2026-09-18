@@ -3,11 +3,11 @@ id: KI-HARNESS-HK-003
 title: Weekly model radar review
 status: active
 cadence: P1W
-last-run: null
+last-run: 2026-09-18
 grace: P2D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: KI-HARNESS-REV-006
+active-run: null
 ---
 
 # Weekly model radar review
