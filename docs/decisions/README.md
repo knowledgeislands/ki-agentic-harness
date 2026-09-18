@@ -52,7 +52,7 @@ The records are living, compact, and independent. The order below is a **curated
 23. [ADR-KI-HARNESS-SKILLS-009](ADR-KI-HARNESS-SKILLS-009-two-repo-structure-skills-for-standalone-tools-and-their-homebrew-tap.md) — ki-repo-tools and ki-repo-homebrew-tap repo-structure skills.
 24. [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation-for-multi-skill-invocation.md) — subagent isolation for multi-skill invocation.
 25. [ADR-KI-HARNESS-AGENTS-002](ADR-KI-HARNESS-AGENTS-002-portable-subagent-contract-and-runtime-adapters.md) — portable subagent meaning with separate Claude Code and Codex adapters.
-26. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-footer-and-learn-block-context-check.md) — checker remediation footer and the headroom:learn cross-repo context check.
+26. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-metadata-and-learn-block-context-check.md) — structured checker remediation metadata and the `headroom:learn` cross-repository context check.
 27. [ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-and-vendored-code-is-excluded-from-linting-and-knip.md) — generated and vendored code excluded from linting and knip.
 28. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-bare-mode-scripts-and-a-coverage-scoped-aggregate-gate.md) — uniform skill modes (bare audit/conform/educate), the toolchain collapse, and the coverage-scoped aggregate gate.
 29. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-tools-for-harness-shaped-targets.md) — vendoring cross-skill graph and HELP tools into `.ki-meta/bin/` for harness-shaped targets.

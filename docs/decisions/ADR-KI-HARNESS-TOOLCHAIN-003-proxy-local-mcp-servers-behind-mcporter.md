@@ -11,20 +11,20 @@ decision_type: architecture
 
 ## Context
 
-Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns 19 local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md)); this record states the governing principle.
+Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns multiple local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md)); this record states the governing principle.
 
 ## Decision
 
 KI-owned local stdio MCP servers are proxied behind mcporter and consume a single Claude Code slot:
 
-1. **No KI server is declared as a raw stdio entry in `~/.claude.json`.** All 19 sit behind the single `ki-mcporter` URL entry. A server is present to Claude Code only through the proxy.
+1. **No KI server is declared as a raw stdio entry in `~/.claude.json`.** The canonical KI stdio set sits behind the single `ki-mcporter` URL entry. A server is present to Claude Code only through the proxy.
 2. **Adding a KI server** means adding an entry to the canonical, tool-neutral source `$XDG_CONFIG_HOME/ki/mcp-servers.yaml` (defaulting to `~/.config/ki/mcp-servers.yaml` per the [XDG Base Directory spec](https://specifications.freedesktop.org/basedir/latest/); see `ki-binding`), not to `~/.claude.json`. mcporter's own `~/.mcporter/mcporter.json` is a rendered surface fed from that source, not the place a server is added.
 3. **Third-party (non-KI) servers** are still declared directly in `~/.claude.json` in the conventional way.
 4. Any skill or prompt referencing a proxied tool uses the namespaced form `server__tool` (double underscore), not the bare tool name.
 
 ## Consequences
 
-- The 19 KI servers occupy one Claude Code slot, leaving headroom for third-party servers within the active-server budget.
+- The KI stdio server set occupies one Claude Code slot, leaving headroom for third-party servers within the active-server budget.
 - The server set lives in one renderer-neutral, XDG-located source (`$XDG_CONFIG_HOME/ki/mcp-servers.yaml`), which feeds mcporter's config and the Claude Desktop config alike; `~/.claude.json` carries only the single proxy entry plus any third-party servers.
 - mcporter's typed clients for the `mcp-*` repos are generated per-repo via each repo's `ki:generate:client` script (ki-repo-mcp conform).
 - The `ki-tokenomics` checks confirm the KB-FS-adjacent servers are distinct capabilities, not redundant.
