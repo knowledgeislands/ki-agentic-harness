@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-074
 area: GOV
 title: Enforce AGENTS.md root orientation
 theme: governance-consistency
-horizon: triage
+horizon: soon
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-18T04:05:10Z
-updated_at: 2026-09-18T04:26:43Z
+updated_at: 2026-09-18T08:13:52Z
 ---
 
 # Enforce AGENTS.md root orientation
@@ -29,6 +29,18 @@ The rule is prose only. No rubric item evaluates it, so a repository can invert 
 In scope is the placement question the standard already decides: which file holds the orientation, and whether the other one imports it, conditioned on the declared runtimes.
 
 Out of scope: the quality, length or structure of the orientation content itself; context budgets, which `ki-tokenomics` owns; general validation of the `@`-import graph; nested per-workspace orientation files, which the standard does not currently address; and repositories declaring only `claude-code`, which the rule deliberately exempts.
+
+## Shaping
+
+The intended approach is one new mechanical rubric item in `ki-repo`, gated on `supported_runtimes` containing a value other than `claude-code`, evaluating the repository root only.
+
+Three sub-checks look deterministic enough to implement without judgement. A root `AGENTS.md` must exist. A root `CLAUDE.md`, where present, must contain a bare `@AGENTS.md` import line — an exact token test against the line, not a prose match. And `AGENTS.md` must not name `CLAUDE.md` as the place to go for orientation, which is the inversion itself and the form the observed failure took.
+
+Dependencies are light: the check reads `.ki.toml` and two root files, all of which existing `ki-repo` evidence already collects. No new evidence source is needed, and nothing in `ki-tokenomics` or `ki-authoring` has to move.
+
+Two decisions are still open and are the reason this is not yet Ready. Severity — FAIL or WARN — is argued under Open questions, and the estate needs a remediation sweep before a FAIL lands, on the `SCR-10` precedent. The third sub-check's exact matching rule needs pinning down so it catches a redirect without firing on an `AGENTS.md` that legitimately mentions `CLAUDE.md` while describing the split.
+
+Promotion condition: settle severity, then survey how many repositories with multi-runtime declarations currently fail each sub-check. A FAIL is promotable once that count is zero or the remediation is itself queued.
 
 ## Discussion
 
