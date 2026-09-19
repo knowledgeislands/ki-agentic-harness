@@ -1,6 +1,8 @@
 # Knowledge Islands repository configuration.
 # Its presence declares conformance with the Knowledge Islands repository standard.
 
+# =============================================================================
+
 # -----------------------------------------------------------------------------
 # Foundation
 # -----------------------------------------------------------------------------
@@ -16,10 +18,8 @@ repo_code = "KI-HARNESS"
 visibility = "public"
 license = "MIT"
 supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
-
-[skills.ki-repo.checks]
-coverage-checkpoint = false # source repository publishes the optional capability without adopting a checkpoint subarea
-coverage-subagents-codex = false # source repository publishes the adapter without adopting Codex agent projections
+checks.coverage-checkpoint = false # source repository publishes the optional capability without adopting a checkpoint subarea
+checks.coverage-subagents-codex = false # source repository publishes the adapter without adopting Codex agent projections
 
 [skills.ki-authoring]
 
@@ -33,7 +33,7 @@ coverage-subagents-codex = false # source repository publishes the adapter witho
 prefix = "ki"
 
 # -----------------------------------------------------------------------------
-# Governance runtime
+# Governance and runtime
 # -----------------------------------------------------------------------------
 
 [skills.ki-engineering]
@@ -80,13 +80,11 @@ prefix = "ki"
 adapter = "roadmap"
 
 [skills.ki-work-roadmap]
-
-[skills.ki-work-roadmap.areas]
-FND = "foundation-tooling"
-GOV = "governance-consistency"
-OPS = "operations"
-REV = "regular-reviews"
-RTP = "runtime-portability"
+areas.FND = "foundation-tooling"
+areas.GOV = "governance-consistency"
+areas.OPS = "operations"
+areas.REV = "regular-reviews"
+areas.RTP = "runtime-portability"
 
 [skills.ki-checkpoint]
 
@@ -94,9 +92,7 @@ RTP = "runtime-portability"
 headroom = "recommended"
 # Cross-skill governance benefits from the higher-reasoning project default.
 preferred_model_type = "reasoning"
-
-[skills.ki-tokenomics.budgets]
-mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
+budgets.mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
 
 [skills.ki-tokenomics-claude]
 
@@ -111,57 +107,22 @@ mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
 # -----------------------------------------------------------------------------
 
 [skills.ki-trades]
-
-[skills.ki-trades.routes."knowledgeislands/ki-website"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/tools-ki"]
-export = ["work", "knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/tools-mgit"]
-export = ["work", "knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/ki-arcadia-principal"]
-export = ["knowledge"]
-import = ["knowledge"]
-
-[skills.ki-trades.routes."krisb/dotfiles"]
-export = ["work", "knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/ki-specifications"]
-export = ["work", "knowledge"]
-import = ["work", "knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/ki-techne-principal"]
-export = ["work", "knowledge"]
-import = ["work", "knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/ki-plugins"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-claude"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-codex"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-chatgpt"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-git-audit"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-gsuite"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-ki-kb-fs"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-ki-kb-notion-mirror"]
-export = ["knowledge"]
-
-[skills.ki-trades.routes."knowledgeislands/mcp-m365"]
-export = ["knowledge"]
+routes."knowledgeislands/ki-website" = { export = ["knowledge"] }
+routes."knowledgeislands/tools-ki" = { export = ["work", "knowledge"] }
+routes."knowledgeislands/tools-mgit" = { export = ["work", "knowledge"] }
+routes."knowledgeislands/ki-arcadia-principal" = { export = ["knowledge"], import = ["knowledge"] }
+routes."krisb/dotfiles" = { export = ["work", "knowledge"] }
+routes."knowledgeislands/ki-specifications" = { export = ["work", "knowledge"], import = ["work", "knowledge"] }
+routes."knowledgeislands/ki-techne-principal" = { export = ["work", "knowledge"], import = ["work", "knowledge"] }
+routes."knowledgeislands/ki-plugins" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-housekeeping-claude" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-housekeeping-codex" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-housekeeping-chatgpt" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-git-audit" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-gsuite" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-ki-kb-fs" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-ki-kb-notion-mirror" = { export = ["knowledge"] }
+routes."knowledgeislands/mcp-m365" = { export = ["knowledge"] }
 
 [skills.ki-agora]
 
