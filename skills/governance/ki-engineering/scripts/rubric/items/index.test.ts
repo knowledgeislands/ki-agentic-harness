@@ -1,10 +1,12 @@
 import { afterEach, expect, test } from 'bun:test'
+import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricEmitter, RubricFamily } from '../../shared/rubric.ts'
 import {
   collectPackageScriptSources,
+  collectTrackedMjs,
   findRelativeNodeModulesScriptUses,
   gradeDependencyFreshness,
   inspectDependencyHolds,
@@ -67,7 +69,7 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   const codes = catalogue.families
     .filter((family) => family.code !== 'RUBRIC')
     .flatMap((family) => family.items.map((item) => item.code))
-  expect(codes).toHaveLength(55)
+  expect(codes).toHaveLength(56)
   expect(new Set(codes).size).toBe(codes.length)
   expect(codes[0]).toBe('PKG-1')
   expect(codes).toContain('TEST-7')
@@ -76,6 +78,7 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   expect(codes).toContain('REVIEW-1')
   expect(codes).toContain('SCR-10')
   expect(codes).toContain('SCR-11')
+  expect(codes).toContain('BUN-2')
   expect(codes.at(-1)).toBe('TOML-3')
 
   const observableCoverage = catalogue.families
@@ -94,6 +97,17 @@ test('the structured catalogue preserves the engineering criteria', async () => 
     'consistent',
     'follow-up:<canonical-work-item-id>'
   ])
+})
+
+test('BUN-2 finds tracked mjs files without reporting untracked files', async () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(repository)
+  execFileSync('git', ['init', '--quiet', repository])
+  writeFileSync(join(repository, 'script.mjs'), 'export default {}\n')
+  writeFileSync(join(repository, 'untracked.mjs'), 'export default {}\n')
+  execFileSync('git', ['-C', repository, 'add', '--', 'script.mjs'])
+
+  expect(await collectTrackedMjs(repository)).toEqual(['script.mjs'])
 })
 
 test('SCR-10 finds relative node_modules execution in root and safe workspace scripts only', () => {
@@ -387,7 +401,7 @@ test('SCR-11 conform repairs common prefixes while preserving repository checks'
     'bunx syncpack format --check\nbunx lint-staged\nif test -f custom; then custom-check; fi\n'
   )
   writeFileSync(join(repository, '.husky/commit-msg'), 'bunx commitlint --edit "$1"\ncustom-message-check "$1"\n')
-  writeFileSync(join(repository, 'commitlint.config.mjs'), 'export default {}\n')
+  writeFileSync(join(repository, 'commitlint.config.ts'), 'export default {}\n')
 
   const session = await createEngineeringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
@@ -403,7 +417,7 @@ test('SCR-11 conform repairs common prefixes while preserving repository checks'
   const writes = new Map(session.proposal().writes.map((write) => [write.path, write.content]))
   expect(writes.get('.husky/pre-commit')).toBe(`${normalisePreCommit('if test -f custom; then custom-check; fi\n')}`)
   expect(writes.get('.husky/commit-msg')).toBe(`${normaliseCommitMessage('custom-message-check "$1"\n')}`)
-  expect(writes.get('commitlint.config.mjs')).toBe(COMMITLINT_CONFIGURATION)
+  expect(writes.get('commitlint.config.ts')).toBe(COMMITLINT_CONFIGURATION)
 })
 
 test('SCR-11 conform leaves unsafe hook paths untouched', async () => {

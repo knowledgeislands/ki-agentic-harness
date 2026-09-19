@@ -142,6 +142,7 @@ const mechanicalEngineeringCheckIds = new Set([
   'SCR-7',
   'SCR-10',
   'SCR-11',
+  'BUN-2',
   'TSC-1',
   'TSC-2',
   'BIO-1',
@@ -402,6 +403,20 @@ export const inspectGovernedScriptSurface = (
 
 /** Inspect the repository once and return the complete engineering evidence set. */
 const run = promisify(execFile)
+
+export const collectTrackedMjs = async (repository: string): Promise<readonly string[]> => {
+  try {
+    const result = await run('git', ['-C', repository, 'ls-files', '-z', '--', '*.mjs'], {
+      encoding: 'utf8'
+    })
+    return result.stdout
+      .split('\0')
+      .filter(Boolean)
+      .filter((path) => existsSync(join(repository, path)))
+  } catch {
+    return []
+  }
+}
 
 export const usesCanonicalCoverageReportsDirectory = (
   workspaces: readonly string[],
@@ -838,7 +853,7 @@ export const collectAuditEvidence = async (
 
   const preCommit = read('.husky', 'pre-commit')
   const commitMessage = read('.husky', 'commit-msg')
-  const commitlint = read('commitlint.config.mjs')
+  const commitlint = read('commitlint.config.ts')
   isSafeRegularFile('.husky', 'pre-commit') && hasPreCommitBaseline(preCommit)
     ? add('PASS', 'SCR-11', 'pre-commit starts with lint-staged then check-only Syncpack', STD, '.husky/pre-commit')
     : add(
@@ -851,23 +866,34 @@ export const collectAuditEvidence = async (
   isSafeRegularFile('.husky', 'commit-msg') && hasCommitMessageBaseline(commitMessage)
     ? add('PASS', 'SCR-11', 'commit-msg invokes Commitlint for the proposed message', STD, '.husky/commit-msg')
     : add('FAIL', 'SCR-11', 'commit-msg must invoke `bunx commitlint --edit "$1"`', STD, '.husky/commit-msg')
-  isSafeRegularFile('commitlint.config.mjs') && commitlint === COMMITLINT_CONFIGURATION
+  isSafeRegularFile('commitlint.config.ts') && commitlint === COMMITLINT_CONFIGURATION
     ? add(
         'PASS',
         'SCR-11',
         'Commitlint configuration matches the KI Conventional Commit policy',
         STD,
-        'commitlint.config.mjs'
+        'commitlint.config.ts'
       )
     : add(
         'FAIL',
         'SCR-11',
-        'commitlint.config.mjs must carry the canonical KI Conventional Commit policy',
+        'commitlint.config.ts must carry the canonical KI Conventional Commit policy',
         STD,
-        'commitlint.config.mjs'
+        'commitlint.config.ts'
       )
 
   // ── core: script ownership — bare lifecycle, ki: capability, or self: repository ──
+  const trackedMjs = await collectTrackedMjs(repo)
+  trackedMjs.length
+    ? add(
+        'FAIL',
+        'BUN-2',
+        `tracked .mjs files must migrate to TypeScript and run with Bun: ${trackedMjs.join(', ')}`,
+        STD,
+        trackedMjs[0]
+      )
+    : add('PASS', 'BUN-2', 'no tracked .mjs files', STD)
+
   // engineering-standard §2: ki:* scripts are claimed by resolved capabilities,
   // self:* scripts name repository ownership directly, and only the six universal
   // lifecycle idioms remain bare. Other bare names require an exact external exclusion.

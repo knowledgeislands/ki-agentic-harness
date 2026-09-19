@@ -601,7 +601,7 @@ export const createRepoSession = async (
       if (legacyKiCleanupRequested) {
         commands.push({
           program: 'node',
-          arguments: [fileURLToPath(new URL('../../remove-legacy-ki.mjs', import.meta.url)), target]
+          arguments: [fileURLToPath(new URL('../../internal/remove-legacy-ki.ts', import.meta.url)), target]
         })
       }
       if (workingAreaScaffoldRequested) {

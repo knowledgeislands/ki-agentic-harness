@@ -44,6 +44,15 @@ Select one of three approaches from repository policy, the requested review boun
 
 Do not invent a branch, pull-request, or worktree requirement merely because several actors may modify one working copy. Use worktrees when concurrent deliveries require separate branches or isolated working files; do not keep independent branch work in one working copy merely because separate indexes are possible.
 
+### Finished worktree retirement
+
+A linked worktree is temporary delivery state, not a durable archive. When its delivery finishes, inspect its branch, working-tree status, commits not reachable from the intended integration branch, and any diff against that branch. Then choose one explicit outcome:
+
+- **Integrate** coherent, authorised work: finish and verify the delivery, commit only its uncontested touched paths, integrate it through the repository's selected merge policy, and remove the linked worktree.
+- **Dispose** work confirmed to have no retained value or explicitly abandoned by its owner: preserve anything still required elsewhere, then remove the linked worktree without integrating it.
+
+Do not delete a linked worktree merely because it is old, dirty, or unexpected; those are inspection signals, not evidence that its changes are disposable. Do not leave a finished worktree parked indefinitely after its delivery has integrated or been abandoned. Delete its local branch only after proving the branch tip is reachable from the intended integration branch or that the branches have no remaining diff. An upstream branch lagging behind the local integration branch is not evidence the local delivery remains unmerged. After physical removal, run the repository-safe worktree prune operation and confirm `git worktree list --porcelain` contains only intentionally active worktrees.
+
 ## Safe Git hygiene
 
 Treat every working tree as potentially shared by other human and agent threads, even when no concurrent actor is currently visible. Inspect `git status --short` and record the current `HEAD` before editing.

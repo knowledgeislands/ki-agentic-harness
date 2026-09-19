@@ -4,7 +4,7 @@ ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
-owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.mjs]
+owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.ts]
 contributes: ['.ki.toml', '.gitignore', package.json, '.husky/pre-commit', '.husky/commit-msg']
 description: >
   Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,

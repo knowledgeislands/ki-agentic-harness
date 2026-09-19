@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T10:28:32Z
+updated_at: 2026-09-19T10:58:13Z
 ---
 
 # estate-baseline-audit
@@ -13,6 +13,8 @@ updated_at: 2026-09-19T10:28:32Z
 Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge Islands repository, then leave independently committed baselines and an estate-level assessment for deciding future structure.
 
 ## Current state
+
+All 14 repositories declaring `ki-engineering` now carry the common executable Husky baseline and TypeScript Commitlint configuration. The thirteen sibling repositories are committed and clean; the Harness contract and implementation are verified pending its local commit. This supersedes the older per-repository hook-pending notes retained below as historical audit detail.
 
 The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. The `ki-website` release-registry and `homebrew-tap` release-dispatch worktrees were verified, accepted, fast-forwarded into their respective `main` branches, removed, and their local feature branches deleted. The estate now has no linked non-primary worktrees or stale worktree metadata. All 21 `.ki.toml` files have semantics-preserving presentation commits: the conformance separator, exact `Governance and runtime` banner, compact roadmap areas, compact trade routes, and compact Agora memberships now follow the chezmoi exemplar; every file parses, matches its prior parsed data, and passes the presentation checker. No repository is yet declared fully baselined because dependency freshness, judgment review, and final estate reporting remain.
 
@@ -64,7 +66,7 @@ Mechanical audit and conform precede dependency updates and judgmental review. A
 
 ## Files touched
 
-Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`; committed TOML presentation checker changes in `skills/keystone/ki-repo/scripts/rubric/contexts/configuration-presentation.ts` and its test. Every estate `.ki.toml` is committed and clean. Uncommitted conform work currently exists only in `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, and `tools-ki`, limited to reviewed `.gitignore`, package manifest, lockfile, and Git-hook/configuration paths recorded in each tree's status. `ki-website` now contains the committed hook conform and release-registry delivery. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
+Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`; committed TOML presentation checker changes in `skills/keystone/ki-repo/scripts/rubric/contexts/configuration-presentation.ts` and its test. Every estate `.ki.toml` is committed and clean. The previously uncommitted `.gitignore`, package manifest, lockfile, and common Git-hook/configuration conform work is now committed in each affected sibling repository. The Harness currently touches only its Git/worktree and TypeScript/Bun skill contracts, generated rubrics, hook configuration, legacy-cleanup helper migration, accepted hook roadmap record, remediation inventory, and this checkpoint. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
 
 ## Open questions
 

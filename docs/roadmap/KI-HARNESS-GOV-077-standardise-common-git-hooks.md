@@ -4,12 +4,12 @@ area: GOV
 title: Standardise common Git hooks
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 74fdc44de018d8a3e07cc82eae2e660034b92c6f
 created_at: 2026-09-19T08:51:33Z
-updated_at: 2026-09-19T09:06:12Z
+updated_at: 2026-09-19T10:58:13Z
 ---
 
 # Standardise Common Git Hooks
@@ -45,7 +45,7 @@ Awaiting review from immutable baseline `74fdc44de018d8a3e07cc82eae2e660034b92c6
 - `bun.lock`
 - `.husky/pre-commit`
 - `.husky/commit-msg`
-- `commitlint.config.mjs`
+- `commitlint.config.ts`
 - `skills/governance/ki-git/`
 - `skills/governance/ki-engineering/`
 - `hooks/pre-commit.test.ts`
@@ -102,6 +102,7 @@ The Git policy, engineering audit, conform transaction, hook fixtures, and self-
 - Bound Commitlint in `commit-msg` with the six KI Conventional Commit types, lowercase kebab-case scopes, required subjects, and no terminal full stop.
 - Added `SCR-11` audit and automatic conformance, including safe refusal to replace symlinked hook paths.
 - Added current Commitlint `21.2.2` dependencies, canonical configuration, generated rubric publication, and Harness self-application.
+- Migrated the canonical configuration from `.mjs` to `.ts`, taught `ki-engineering` to reject tracked `.mjs`, and rolled the hook contract out to all 14 declared TypeScript/Bun repositories.
 
 ### Summary of changes
 
@@ -110,7 +111,7 @@ The Git policy, engineering audit, conform transaction, hook fixtures, and self-
 ### Verification
 
 - Focused hook, engineering catalogue, and remediation-inventory tests — 28 pass, 0 fail.
-- Complete Harness suite — 733 pass, 0 fail across 134 files.
+- Complete Harness suite — 735 pass, 0 fail across 134 files.
 - `bunx tsc --noEmit` — pass.
 - `bunx biome check .` — pass with one informational schema-version notice inherited from the current `biome.json` and installed CLI mismatch.
 - `bunx syncpack format --check` — pass.
@@ -120,7 +121,7 @@ The Git policy, engineering audit, conform transaction, hook fixtures, and self-
 
 ### Outstanding concerns
 
-Husky remains deliberately bypassable through `--no-verify`; repository audit and CI remain authoritative. This item publishes and self-applies the contract but does not mutate sibling repositories. Their adoption should use the published `ki-engineering` CONFORM path after this change is accepted and available to them.
+Husky remains deliberately bypassable through `--no-verify`; repository audit and CI remain authoritative. Several repositories retain unrelated pre-existing engineering findings, but the common hook and `.mjs` criteria themselves pass.
 
 ### Post-change review
 
@@ -128,7 +129,11 @@ The change adds one reusable automatic rubric criterion rather than repository-o
 
 ### Mini recap
 
-KI package repositories now have a mechanically auditable and safely conformable local hook baseline for staged formatting, package ordering, and Conventional Commit validation, with the Harness proving the contract end to end.
+KI package repositories now have a mechanically auditable and safely conformable local hook baseline for staged formatting, package ordering, TypeScript-first configuration, and Conventional Commit validation, with the Harness and estate proving the contract end to end.
+
+## Done
+
+Accepted 2026-09-19 by Kris Brown on the review packet above.
 
 ## Discussion
 

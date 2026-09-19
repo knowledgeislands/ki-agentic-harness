@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import { execFileSync } from 'node:child_process'
 import { lstatSync, readdirSync, realpathSync, rmdirSync, rmSync } from 'node:fs'
@@ -8,12 +8,12 @@ const repository = realpathSync(resolve(process.argv[2] ?? '.'))
 const legacyRoot = join(repository, '.ki')
 const removableRoots = new Set(['audits', 'conform'])
 
-const fail = (message) => {
+const fail = (message: string) => {
   process.stderr.write(`legacy .ki cleanup refused: ${message}\n`)
   process.exit(1)
 }
 
-let state
+let state: ReturnType<typeof lstatSync>
 try {
   state = lstatSync(legacyRoot)
 } catch {
@@ -31,7 +31,7 @@ if (tracked) {
   fail(`.ki contains tracked paths: ${tracked.split(/\r?\n/).join(', ')}`)
 }
 
-const walk = (directory) => {
+const walk = (directory: string) => {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const absolute = join(directory, entry.name)
     const relativePath = relative(legacyRoot, absolute)

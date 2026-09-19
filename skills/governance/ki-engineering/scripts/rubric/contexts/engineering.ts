@@ -49,7 +49,9 @@ export type ScriptsRubricContext = {
   synchronisePackage?: () => void
   synchroniseHooks?: () => void
 }
-export type BunRubricContext = Record<string, never>
+export type BunRubricContext = {
+  bun2: EngineeringEvidence
+}
 export type TypescriptRubricContext = {
   tsc1: EngineeringEvidence
   tsc2: EngineeringEvidence
@@ -392,7 +394,9 @@ export const createEngineeringSession = async (
       ...(mutable ? { synchroniseHooks: () => (synchroniseHooks = true) } : {}),
       ...synchronisePackageCapability
     },
-    bun: {},
+    bun: {
+      bun2: evidence('BUN-2')
+    },
     typescript: {
       tsc1: evidence('TSC-1'),
       tsc2: evidence('TSC-2'),
@@ -493,13 +497,13 @@ export const createEngineeringSession = async (
             if (content !== source) writes.push({ path: hook.path, content })
           }
         }
-        const configPath = join(target, 'commitlint.config.mjs')
+        const configPath = join(target, 'commitlint.config.ts')
         if (!existsSync(configPath))
-          writes.push({ path: 'commitlint.config.mjs', content: COMMITLINT_CONFIGURATION, create: true })
+          writes.push({ path: 'commitlint.config.ts', content: COMMITLINT_CONFIGURATION, create: true })
         else if (isSafeRegularFile(configPath)) {
           const source = readFileSync(configPath, 'utf8')
           if (source !== COMMITLINT_CONFIGURATION)
-            writes.push({ path: 'commitlint.config.mjs', content: COMMITLINT_CONFIGURATION })
+            writes.push({ path: 'commitlint.config.ts', content: COMMITLINT_CONFIGURATION })
         }
       }
       for (const name of scaffold) writes.push({ path: name, content: defaults[name], create: true })

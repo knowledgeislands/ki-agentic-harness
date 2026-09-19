@@ -125,6 +125,8 @@ Environment loading remains equivalent when built output runs under Node.
   - _Review prompt:_ Where `.env` is loaded, does the loader call `process.loadEnvFile()` safely?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Add the guarded Node parity call, record a named Gap, or record an explicit capability exclusion.
+- **BUN-2 [M] — Authored scripts and configuration are TypeScript-first** — Tracked repository scripts and tool configuration avoid `.mjs`; Bun executes authored TypeScript directly while Node remains the compiled consumer runtime. (standards-engineering.md)
+  - _Remediation:_ diagnostic — Rename each tracked `.mjs` source or configuration file to `.ts`, update its callers to use Bun, and verify the consuming tool supports TypeScript.
 
 ## TSC — TypeScript
 
