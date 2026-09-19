@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T09:22:17Z
+updated_at: 2026-09-19T09:56:18Z
 ---
 
 # estate-baseline-audit
@@ -14,7 +14,7 @@ Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge
 
 ## Current state
 
-The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. `mcp-acquire-whatsapp` and `tools-rig` remain deliberately deferred because they contain concurrent work. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. No repository is yet declared fully baselined because dependency freshness, roadmap processing, judgment review, and final commits remain.
+The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. `mcp-acquire-whatsapp` and `tools-rig` remain deliberately deferred because they contain concurrent work. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. The `ki-website` release-registry worktree was verified, accepted, fast-forwarded into `main` at `c8ed65f`, removed, and its local feature branch deleted. No repository is yet declared fully baselined because dependency freshness, judgment review, and final estate reporting remain.
 
 The master checklist below applies to every repository. Update its evidence and the repository ledger after each project reaches a stable state or commit.
 
@@ -43,7 +43,7 @@ Repository progress ledger:
 - `ki-specifications` — mechanical audit passes; later stages remain.
 - `ki-techne-principal` — mechanical audit passes; later stages remain.
 - `ki-techne-tools` — mechanical gap: live GitHub licence is absent while `.ki.toml` declares MIT.
-- `ki-website` — automatic hook/tooling conform applied, dependencies installed and whole mechanical audit passes; changes are not yet committed and later stages remain.
+- `ki-website` — common-hook conform and release-registry automation are committed on `main`; `KI-WEB-SITE-012` is retained as Done, the feature worktree and local branch are removed, and `.ki.toml`, dependency freshness, judgment review, and final roadmap pruning remain.
 - `mcp-acquire-whatsapp` — deferred until the end because concurrent work is present.
 - `mcp-git-audit` — managed ignore and hook/tooling conform applied and dependencies installed; post-conform verification was interrupted, and roadmap `candidate` fields remain invalid.
 - `mcp-gsuite` — managed ignore conformed; type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
@@ -64,7 +64,7 @@ Mechanical audit and conform precede dependency updates and judgmental review. A
 
 ## Files touched
 
-Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`. Uncommitted conform work currently exists only in `ki-website`, `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, and `tools-ki`, limited to reviewed `.gitignore`, package manifest, lockfile, and Git-hook/configuration paths recorded in each tree's status. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
+Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`. Uncommitted conform work currently exists only in `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, and `tools-ki`, limited to reviewed `.gitignore`, package manifest, lockfile, and Git-hook/configuration paths recorded in each tree's status. `ki-website` now contains the committed hook conform and release-registry delivery. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
 
 ## Open questions
 
@@ -72,4 +72,4 @@ Whether the missing Granola capability is a stale Arcadia declaration or an unpu
 
 ## Next step
 
-Resume post-conform verification with `mcp-git-audit`, then finish and commit one repository at a time while updating this checkpoint immediately after each stable project result.
+Finish and integrate or dispose the `homebrew-tap` release-dispatch worktree, then update this checkpoint before beginning the estate-wide `.ki.toml` presentation commits.
