@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T11:25:58Z
+updated_at: 2026-09-19T11:45:24Z
 ---
 
 # estate-baseline-audit
@@ -17,6 +17,8 @@ Mechanically conform, dependency-refresh, judgmentally audit every Knowledge Isl
 The estate contains 21 repositories. All are clean on `main`, have one primary worktree, and have committed readable `.ki.toml` presentation. All 14 repositories declaring `ki-engineering` carry the common executable Husky baseline and TypeScript Commitlint configuration. The Harness contract landed at `4b19032e`; accepted hook work `KI-HARNESS-GOV-077` was pruned at `593c5503`.
 
 This pass actively covers 18 repositories. `mcp-acquire-whatsapp`, `tools-rig`, `ki-agentic-harness`, and the external chezmoi repository are deferred because other work may be active there. “ToolsWig” is interpreted as `tools-rig`, and “Shay Noir” as chezmoi. A repository that develops concurrent changes is moved to the deferred set rather than absorbing them.
+
+One of the 18 active-pass repositories is fully baselined: `mcp-git-audit` is clean at `6905787`, passes all 15 declared KI audits, has current dependencies, and passes its complete implementation gate. Its judgment pass removed expired legacy working records and captured the broad-staging risk as unadopted `MCP-GIT-TOOL-006`.
 
 Master audit checklist:
 
@@ -47,7 +49,7 @@ Repository progress ledger uses `✓` complete, `△` begun or needs re-check, `
 | `ki-techne-principal` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `21dd0a9`; resume from conform review. |
 | `ki-techne-tools` | ✓ | ✓ | △ | — | — | △ | ✓ | — | TOML is committed at `4574998`; declared MIT licence and live GitHub licence need reconciliation. |
 | `ki-website` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks, release registry, and TOML are committed; `KI-WEB-SITE-012` needs roadmap review. |
-| `mcp-git-audit` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; resume post-conform verification and roadmap schema review. |
+| `mcp-git-audit` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `6905787`: 15-skill audit clean; dependencies current; full gate clean; legacy working records removed; `MCP-GIT-TOOL-006` captured in Triage. |
 | `mcp-gsuite` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
 | `mcp-housekeeping-chatgpt` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Real audit runs; legacy engineering, documentation, working-area, trade, and GitHub gaps remain. |
 | `mcp-housekeeping-claude` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
@@ -68,7 +70,7 @@ Mechanical conform precedes dependency and judgment work. Awaiting review record
 
 ## Files touched
 
-This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in the Harness. Earlier Harness fixes and all estate `.ki.toml`, hook, package-manifest, lockfile, and managed-ignore changes are committed. Audit reports are temporary outside repositories.
+This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in the Harness. `mcp-git-audit` baseline commits are `f1dcd1f`, `a9d804a`, `2758efc`, `7242abe`, and `6905787`; its tree is clean. Earlier Harness fixes and all estate `.ki.toml`, hook, package-manifest, lockfile, and managed-ignore changes are committed. Audit reports are temporary outside repositories.
 
 ## Open questions
 
@@ -76,4 +78,4 @@ Whether Arcadia's missing Granola capability is a stale declaration or unpublish
 
 ## Next step
 
-Commit this checkpoint control update, then fully progress `mcp-git-audit` from mechanical re-audit through dependency, verification, judgment, roadmap, and committed baseline. Update its ledger row immediately after its stable result before moving to the next repository.
+Commit this checkpoint update, then fully progress `mcp-gsuite` from mechanical re-audit through dependency, verification, judgment, roadmap, and committed baseline. Update its ledger row immediately after its stable result before moving to the next repository.
