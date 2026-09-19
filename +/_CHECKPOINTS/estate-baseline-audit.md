@@ -3,75 +3,77 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T11:05:24Z
+updated_at: 2026-09-19T11:25:58Z
 ---
 
 # estate-baseline-audit
 
 ## Objective
 
-Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge Islands repository, then leave independently committed baselines and an estate-level assessment for deciding future structure.
+Mechanically conform, dependency-refresh, judgmentally audit every Knowledge Islands repository, leave independently committed baselines, and publish estate-level evidence for deciding future structure.
 
 ## Current state
 
-All 14 repositories declaring `ki-engineering` now carry the common executable Husky baseline and TypeScript Commitlint configuration. The thirteen sibling repositories are committed and clean; the Harness contract and implementation landed at `4b19032e`, and accepted hook roadmap record `KI-HARNESS-GOV-077` was pruned at `593c5503`. This supersedes the older per-repository hook-pending notes retained below as historical audit detail.
+The estate contains 21 repositories. All are clean on `main`, have one primary worktree, and have committed readable `.ki.toml` presentation. All 14 repositories declaring `ki-engineering` carry the common executable Husky baseline and TypeScript Commitlint configuration. The Harness contract landed at `4b19032e`; accepted hook work `KI-HARNESS-GOV-077` was pruned at `593c5503`.
 
-The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. The `ki-website` release-registry and `homebrew-tap` release-dispatch worktrees were verified, accepted, fast-forwarded into their respective `main` branches, removed, and their local feature branches deleted. The estate now has no linked non-primary worktrees or stale worktree metadata. All 21 `.ki.toml` files have semantics-preserving presentation commits: the conformance separator, exact `Governance and runtime` banner, compact roadmap areas, compact trade routes, and compact Agora memberships now follow the chezmoi exemplar; every file parses, matches its prior parsed data, and passes the presentation checker. No repository is yet declared fully baselined because dependency freshness, judgment review, and final estate reporting remain.
+This pass actively covers 18 repositories. `mcp-acquire-whatsapp`, `tools-rig`, `ki-agentic-harness`, and the external chezmoi repository are deferred because other work may be active there. “ToolsWig” is interpreted as `tools-rig`, and “Shay Noir” as chezmoi. A repository that develops concurrent changes is moved to the deferred set rather than absorbing them.
 
-The master checklist below applies to every repository. Update its evidence and the repository ledger after each project reaches a stable state or commit.
+Master audit checklist:
 
-1. **Protect concurrent work.** Record initial branch, HEAD, dirty paths, linked worktrees, and the exact paths this audit touches. Never stage the whole tree or absorb another thread's changes.
-2. **Run the mechanical audit first.** Resolve every declared skill, run the whole registered `ki repo audit`, and distinguish genuine failures from sandbox, tool, or Harness defects.
-3. **Apply only safe mechanical conforms.** Review `--dry-run`, apply bounded local writes, run any separately authorised command-backed repairs, and leave diagnostic or judgment findings visible.
-4. **Refresh dependencies.** Inventory every package and workspace, remove stale holds, adopt current compatible releases deliberately, update lockfiles, and review major-version or release-note risk.
-5. **Verify the implementation.** Run the repository's type-check, tests, coverage, build, lint, Knip, Syncpack, and artifact-specific gates in the form appropriate to that repository.
-6. **Audit `.ki.toml` semantics and readability.** Validate declared roots, skill tables, banners, neighbourhood grouping, comments, defaults, and owner boundaries without changing parsed meaning. Use chezmoi as the compact relationship exemplar: readable dotted `memberships` and `routes` sit with their owning skill root; substantial multiline Agora homes may use nested tables.
-7. **Audit repository identity and GitHub state.** Reconcile README title and purpose, description, topics, visibility, licence, merge settings, feature toggles, security settings, and package metadata. Treat live GitHub mutations as explicit reviewed actions.
-8. **Audit code and architecture judgmentally.** Check cohesion, boundaries, duplication, public contracts, generated surfaces, test quality, configuration injection, and whether the implementation still matches its stated purpose.
-9. **Audit durable documentation.** Reconcile README, guides, specifications, decisions, reviews, indexes, source records, and generated publications; prune obsolete `docs/reviews` material only when it no longer has a durable role.
-10. **Audit roadmap and housekeeping.** Validate every work record and ledger; accept and commit valid Awaiting review work as Done, then prune it in a later prune-only commit; count credible promotion candidates without implicitly adopting Triage; check recurring housekeeping cadence and commit-volume triggers; and ensure agentic-radar work is weekly.
-11. **Audit working areas.** Keep top-level `+` and `-` directional and temporary, require retained specialist subfolders when their skill is declared, remove obsolete contents by their owner and retention policy, use `_BATCHES` rather than `_AUTHORISATIONS`, and never retain checkpoint `_RETIRED` directories.
-12. **Audit relationships.** Reconcile Agoras, trades, routes, roots, memberships, directionality, and handoff overlap so declarations are compact, reciprocal where required, and owned by the right skill.
-13. **Audit ignore composition.** Ensure each skill-owned `.gitignore` block is demarcated, broad bundler and tool outputs are covered, and repository-specific unmanaged entries remain only in the terminal unmanaged section.
-14. **Process repository worktrees.** Inspect status, branch, ancestry, and active processes; remove only clean, finished worktrees and retain anything dirty, unmerged, active, or ambiguous.
-15. **Create the baseline.** Commit exact touched paths per repository in coherent units, preserve the separate Done-before-prune boundary, re-audit the committed state, and record unresolved findings, roadmap opportunities, and future structural recommendations in the estate report or dashboard owner.
+1. **Protect concurrent work.** Record branch, HEAD, dirty paths, linked worktrees, and this thread's touched paths; use explicit-path staging only.
+2. **Run mechanical audit first.** Resolve declared skills, run the whole registered `ki repo audit`, and distinguish repository failures from host or Harness defects.
+3. **Apply only safe mechanical conforms.** Review `--dry-run`, apply bounded local writes, and leave judgment findings visible.
+4. **Refresh dependencies.** Inventory package workspaces, remove stale holds, adopt current releases deliberately, update lockfiles, and review major-version risk.
+5. **Verify implementation.** Run the repository's type-check, tests, coverage, build, lint, Knip, Syncpack, and artifact-specific gates where applicable.
+6. **Audit `.ki.toml` semantics and readability.** Validate roots, skill tables, banners, grouping, comments, defaults, and owner boundaries without changing meaning.
+7. **Audit repository identity and GitHub state.** Reconcile purpose, description, topics, visibility, licence, merge settings, features, security, and package metadata. Live GitHub mutations remain explicit reviewed actions.
+8. **Audit code architecture judgmentally.** Check cohesion, boundaries, duplication, public contracts, generated surfaces, test quality, configuration injection, and purpose alignment.
+9. **Audit durable documentation.** Reconcile README, guides, specifications, decisions, reviews, indexes, source records, and generated publications; remove obsolete reviews only when they have no durable role.
+10. **Audit roadmap and housekeeping.** Validate ledgers; accept valid Awaiting review work as Done and commit it before a later prune-only commit; report promotion candidates without adopting Triage; check cadence and commit-volume triggers; keep agentic-radar work weekly.
+11. **Audit working areas.** Keep `+` and `-` directional and temporary; retain skill-owned subfolders while declared; use `_BATCHES`, not `_AUTHORISATIONS`; never retain checkpoint `_RETIRED` directories.
+12. **Audit relationships.** Reconcile Agora memberships, trade routes, reciprocal declarations, directionality, and skill ownership.
+13. **Audit ignore composition.** Keep skill-owned `.gitignore` blocks demarcated, cover relevant tool outputs, and place repository-owned unmanaged entries in the terminal unmanaged section.
+14. **Process worktrees.** Integrate or dispose of finished worktrees only after status, ancestry, processes, and retained value are understood; prune stale metadata.
+15. **Create a baseline.** Commit exact touched paths in coherent units, re-audit committed state, and record unresolved findings, roadmap opportunities, and structural recommendations.
 
-Repository progress ledger:
+Repository progress ledger uses `✓` complete, `△` begun or needs re-check, `—` not started, `!` blocked, and `D` deliberately deferred. Columns map to checklist groups: `G` 1, `M` 2, `C` 3, `D` 4, `V` 5, `J` 6–13, `W` 14, and `B` 15.
 
-- `homebrew-tap` — release-dispatch automation and `.ki.toml` presentation are committed on `main` (`0f4ec20`, `1861fb6`); `BREW-003` is retained as Done, the feature worktree and local branch are removed, and the known Claude memory-index gap plus dependency, judgment, and final roadmap work remain.
-- `ki-agentic-harness` — COV audit-host blocker and TOML presentation contract are fixed and committed; `.ki.toml` presentation is committed at `74c43726`, and dependency refresh, judgment review, roadmap pass, and final estate reporting remain.
-- `ki-arcadia-principal` — `.ki.toml` presentation is committed at `98306f2`; the mechanical audit remains blocked by the unresolved `ki-housekeeping-granola` declaration.
-- `ki-plugins` — mechanical audit passes and `.ki.toml` presentation is committed at `283bb61`; dependency, judgment, roadmap, and final reporting stages remain.
-- `ki-specifications` — mechanical audit passes and `.ki.toml` presentation is committed at `a0e84e1`; dependency, judgment, roadmap, and final reporting stages remain.
-- `ki-techne-principal` — mechanical audit passes and `.ki.toml` presentation is committed at `21dd0a9`; dependency, judgment, roadmap, and final reporting stages remain.
-- `ki-techne-tools` — `.ki.toml` presentation was concurrently committed at `4574998`; the mechanical gap remains that live GitHub licence is absent while `.ki.toml` declares MIT.
-- `ki-website` — common-hook conform, release-registry automation, and `.ki.toml` presentation are committed on `main`, with the presentation commit at `31c2b78`; `KI-WEB-SITE-012` is retained as Done, the feature worktree and local branch are removed, and dependency freshness, judgment review, and final roadmap pruning remain.
-- `mcp-acquire-whatsapp` — the previously concurrent work has cleared and `.ki.toml` presentation is committed at `1521209`; the remaining mechanical, dependency, judgment, and roadmap stages are deferred until the estate pass reaches this repository.
-- `mcp-git-audit` — `.ki.toml` presentation is committed at `7e1867a`; managed ignore and hook/tooling conform remains uncommitted, post-conform verification was interrupted, and roadmap `candidate` fields remain invalid.
-- `mcp-gsuite` — `.ki.toml` presentation is committed at `fe018b5`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-housekeeping-chatgpt` — `.ki.toml` presentation is committed at `a0f8f6c` and the real audit runs after the COV fix; substantial legacy repository, engineering, documentation, working-area, trade, and GitHub gaps remain.
-- `mcp-housekeeping-claude` — `.ki.toml` presentation is committed at `09bed80`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-housekeeping-codex` — `.ki.toml` presentation is committed at `53de5c1` and the real audit runs after the COV fix; substantial legacy repository, engineering, coverage, documentation, working-area, trade, and roadmap gaps remain.
-- `mcp-ki-kb-fs` — `.ki.toml` presentation is committed at `4b3956d`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-ki-kb-notion-mirror` — `.ki.toml` presentation is committed at `b42508e`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-m365` — `.ki.toml` presentation is committed at `4d60641`; managed ignore remains uncommitted, and type-check, dependency-hold, configuration-injection, hook/tooling, and roadmap-schema gaps remain.
-- `tools-git-almanac` — `.ki.toml` presentation is committed at `3664f96`; managed ignore and hook/tooling conform remains uncommitted, while accepted-requirement conformance lines, roadmap schema, and post-conform verification remain.
-- `tools-ki` — `.ki.toml` presentation is committed at `ae90c37`; hook/tooling conform remains uncommitted and post-conform verification was interrupted.
-- `tools-mgit` — mechanical audit passes and `.ki.toml` presentation is committed at `8b7b2bb`; dependency, judgment, roadmap, and final reporting stages remain.
-- `tools-rig` — the previously concurrent work has cleared and `.ki.toml` presentation is committed at `4de0e18`; the remaining mechanical, dependency, judgment, and roadmap stages are deferred until the estate pass reaches this repository.
+| Repository | G | M | C | D | V | J | W | B | Current evidence or next gap |
+| --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | --- |
+| `homebrew-tap` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Release automation and TOML are committed (`0f4ec20`, `1861fb6`); dependency, judgment, and roadmap pass remain. |
+| `ki-arcadia-principal` | ✓ | ! | △ | — | — | — | ✓ | — | TOML and hooks are committed; audit cannot resolve declared `ki-housekeeping-granola`. |
+| `ki-plugins` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `283bb61`; resume from conform review. |
+| `ki-specifications` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `a0e84e1`; resume from conform review. |
+| `ki-techne-principal` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `21dd0a9`; resume from conform review. |
+| `ki-techne-tools` | ✓ | ✓ | △ | — | — | △ | ✓ | — | TOML is committed at `4574998`; declared MIT licence and live GitHub licence need reconciliation. |
+| `ki-website` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks, release registry, and TOML are committed; `KI-WEB-SITE-012` needs roadmap review. |
+| `mcp-git-audit` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; resume post-conform verification and roadmap schema review. |
+| `mcp-gsuite` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
+| `mcp-housekeeping-chatgpt` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Real audit runs; legacy engineering, documentation, working-area, trade, and GitHub gaps remain. |
+| `mcp-housekeeping-claude` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
+| `mcp-housekeeping-codex` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Real audit runs; legacy engineering, coverage, documentation, working-area, trade, and roadmap gaps remain. |
+| `mcp-ki-kb-fs` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
+| `mcp-ki-kb-notion-mirror` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
+| `mcp-m365` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; configuration injection, dependency holds, and roadmap schema need review. |
+| `tools-git-almanac` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; accepted-requirement and roadmap schema findings need review. |
+| `tools-ki` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; resume post-conform verification. |
+| `tools-mgit` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `8b7b2bb`; resume from conform review. |
+| `mcp-acquire-whatsapp` | D | D | D | D | D | D | D | D | Deferred until the second pass because other work may be active. |
+| `tools-rig` | D | D | D | D | D | D | D | D | Deferred until the second pass because other work may be active. |
+| `ki-agentic-harness` | D | D | D | D | D | D | D | D | Deferred until the second pass; it also owns this checkpoint and audit tooling. |
 
 ## Decisions made
 
-Mechanical audit and conform precede dependency updates and judgmental review. Active repositories `mcp-acquire-whatsapp` and `tools-rig` stay until the end. Awaiting review records have human approval to close and prune when their evidence is valid, but pruning follows a distinct committed Done boundary. Triage adoption still needs exact selection. Shared-tree commits use touched-path tracking and explicit staging only. The chezmoi `.ki.toml` is a presentation exemplar for compact relationship declarations: dotted `memberships` and `routes` remain beside their owning skill roots when readable, while substantial multiline Agora homes may retain nested tables. Empty required specialist working subareas remain when their declaring skill is enabled; retired checkpoint directories do not.
+Mechanical conform precedes dependency and judgment work. Awaiting review records may be accepted and pruned under standing approval, but Done must land before a separate prune-only commit. Triage adoption still needs exact selection. Shared-tree commits use touched-path tracking and explicit staging. Empty specialist working subareas remain while their owning skill is declared; retired checkpoint directories do not.
 
 ## Files touched
 
-Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`; committed TOML presentation checker changes in `skills/keystone/ki-repo/scripts/rubric/contexts/configuration-presentation.ts` and its test. Every estate `.ki.toml` is committed and clean. The previously uncommitted `.gitignore`, package manifest, lockfile, and common Git-hook/configuration conform work is now committed in each affected sibling repository. The Harness currently touches only its Git/worktree and TypeScript/Bun skill contracts, generated rubrics, hook configuration, legacy-cleanup helper migration, accepted hook roadmap record, remediation inventory, and this checkpoint. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
+This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in the Harness. Earlier Harness fixes and all estate `.ki.toml`, hook, package-manifest, lockfile, and managed-ignore changes are committed. Audit reports are temporary outside repositories.
 
 ## Open questions
 
-Whether the missing Granola capability is a stale Arcadia declaration or an unpublished Harness capability; which roadmap records are credible promotion candidates; and whether an existing roadmap item already owns the graphical estate dashboard.
+Whether Arcadia's missing Granola capability is a stale declaration or unpublished Harness capability; which roadmap records are credible promotion candidates; whether an existing roadmap item already owns the graphical estate dashboard.
 
 ## Next step
 
-Resume post-conform verification with `mcp-git-audit`, then continue the mechanical baseline one repository at a time before dependency and judgment passes.
+Commit this checkpoint control update, then fully progress `mcp-git-audit` from mechanical re-audit through dependency, verification, judgment, roadmap, and committed baseline. Update its ledger row immediately after its stable result before moving to the next repository.
