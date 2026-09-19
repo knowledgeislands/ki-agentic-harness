@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-074
 area: GOV
 title: Enforce AGENTS.md root orientation
 theme: governance-consistency
-horizon: soon
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-18T04:05:10Z
-updated_at: 2026-09-18T08:13:52Z
+updated_at: 2026-09-19T11:26:00Z
 ---
 
 # Enforce AGENTS.md root orientation
@@ -30,7 +30,7 @@ In scope is the placement question the standard already decides: which file hold
 
 Out of scope: the quality, length or structure of the orientation content itself; context budgets, which `ki-tokenomics` owns; general validation of the `@`-import graph; nested per-workspace orientation files, which the standard does not currently address; and repositories declaring only `claude-code`, which the rule deliberately exempts.
 
-## Shaping
+## Current state
 
 The intended approach is one new mechanical rubric item in `ki-repo`, gated on `supported_runtimes` containing a value other than `claude-code`, evaluating the repository root only.
 
@@ -38,7 +38,58 @@ Three sub-checks look deterministic enough to implement without judgement. A roo
 
 Dependencies are light: the check reads `.ki.toml` and two root files, all of which existing `ki-repo` evidence already collects. No new evidence source is needed, and nothing in `ki-tokenomics` or `ki-authoring` has to move.
 
-Two decisions are still open and are the reason this is not yet Ready. Severity — FAIL or WARN — is argued under Open questions, and the estate needs a remediation sweep before a FAIL lands, on the `SCR-10` precedent. The third sub-check's exact matching rule needs pinning down so it catches a redirect without firing on an `AGENTS.md` that legitimately mentions `CLAUDE.md` while describing the split.
+The 2026-09-19 estate survey found 31 multi-runtime declarations: 12 repositories had no root `AGENTS.md`, and a further 9 had a root `CLAUDE.md` without the canonical import. Landing the eventual FAIL immediately would therefore break existing repositories before they can be remediated. This delivery introduces the exact mechanical signal at WARN; a later estate conformance wave may promote it to FAIL only after those repositories pass. Reverse-direction detection is deliberately narrow: reject a bare `@CLAUDE.md` import or a small redirect-shaped `AGENTS.md`, while allowing substantive guidance to mention `CLAUDE.md` when explaining the split.
+
+## Steps
+
+- [ ] Add a root-only orientation evidence collector for multi-runtime repositories.
+- [ ] Publish `RUNTIMES-4` as a mechanical WARN with diagnostic remediation.
+- [ ] Prove missing `AGENTS.md`, missing Claude import, and reverse import or redirect are reported.
+- [ ] Prove Claude-only repositories and compliant multi-runtime repositories pass.
+- [ ] Update the repository standard and generated rubric reference with the staged WARN-to-FAIL posture.
+- [ ] Run the focused repository rubric tests, full Harness tests, TypeScript, and roadmap audits.
+
+## Files touched
+
+- `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/repository.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts`
+- `skills/keystone/ki-repo/scripts/rubric/items/runtimes.ts`
+- `skills/keystone/ki-repo/references/standards-repository.md`
+- generated `skills/keystone/ki-repo/references/rubric.md`
+- this roadmap record
+
+## Verify
+
+```sh
+bunx vitest run skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts
+bun run test
+bunx tsc --noEmit
+ki repo audit --skill ki-repo --repo .
+ki repo audit --skill ki-work-roadmap --repo .
+```
+
+## Dependencies / blocks
+
+No implementation dependency remains. Estate remediation and promotion from WARN to FAIL are deliberately outside this item so this repository can publish a useful signal without breaking currently non-conforming consumers.
+
+## Documentation impact
+
+### Decision Records
+
+None. The repository standard already decides the runtime-neutral orientation owner.
+
+### Specifications
+
+None. The rubric and repository standard are the owning contract.
+
+### Guides
+
+None.
+
+### Roadmap
+
+Any later FAIL promotion requires a separately selected estate-conformance record with repository-local remediation evidence.
 
 Promotion condition: settle severity, then survey how many repositories with multi-runtime declarations currently fail each sub-check. A FAIL is promotable once that count is zero or the remediation is itself queued.
 
@@ -66,8 +117,8 @@ The root split exists so a non-Claude runtime can find the orientation at all. T
 
 A check should therefore evaluate the root only, and must not infer a violation from a nested `CLAUDE.md` or a nested `AGENTS.md` standing alone.
 
-### Open questions
+### Settled implementation choices
 
-- FAIL or WARN? The standard says "should", and the consequence — a declared runtime reading a stub — is a real capability failure rather than a style preference, which argues for FAIL. Existing repositories would need remediation first, as with `SCR-10`.
-- Should the standard state the nested position explicitly, so a check knows to leave nested files alone?
-- Should the check also verify the reverse direction — that a single-runtime repository has _not_ split unnecessarily — or is that harmless and better left alone?
+- The first mechanical release is WARN because the estate survey proves immediate FAIL would create widespread breakage; the contract remains intended to become FAIL after conformance.
+- The check is explicitly root-only and does not infer a violation from nested orientation files.
+- Claude-only repositories remain exempt; an unnecessary split there is harmless and not audited.
