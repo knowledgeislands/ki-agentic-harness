@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T18:34:00Z
+updated_at: 2026-09-19T18:48:00Z
 ---
 
 # estate-baseline-audit
@@ -18,7 +18,7 @@ The estate contains 21 repositories. All are clean on `main`, have one primary w
 
 This pass actively covers 18 repositories. `mcp-acquire-whatsapp`, `tools-rig`, `ki-agentic-harness`, and the external chezmoi repository are deferred because other work may be active there. “ToolsWig” is interpreted as `tools-rig`, and “Shay Noir” as chezmoi. A repository that develops concurrent changes is moved to the deferred set rather than absorbing them.
 
-Ten of the 18 active-pass repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, `tools-mgit` at `5e43795`, and `tools-git-almanac` at `539cb49`. The original six pass all declared KI audits and their complete implementation gates. Codex Housekeeping has a committed local baseline with coverage, Decision Record adoption, and live GitHub settings retained as explicit Triage decisions. ChatGPT Housekeeping passes its complete implementation gate and all local audits except the already-captured Decision Record adoption; its host-only environment-loading warning and live GitHub settings are recorded in FND-002. Legacy-SDK repositories deliberately hold Zod at 4.4.3 until already-owned SDK-v2 migrations; every other dependency is current.
+Eleven of the 18 active-pass repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, `tools-mgit` at `5e43795`, `tools-git-almanac` at `539cb49`, and `homebrew-tap` at `7252363`. The original six pass all declared KI audits and their complete implementation gates. Codex Housekeeping has a committed local baseline with coverage, Decision Record adoption, and live GitHub settings retained as explicit Triage decisions. ChatGPT Housekeeping passes its complete implementation gate and all local audits except the already-captured Decision Record adoption; its host-only environment-loading warning and live GitHub settings are recorded in FND-002. Legacy-SDK repositories deliberately hold Zod at 4.4.3 until already-owned SDK-v2 migrations; every other dependency is current.
 
 Master audit checklist:
 
@@ -42,7 +42,7 @@ Repository progress ledger uses `✓` complete, `△` begun or needs re-check, `
 
 | Repository | G | M | C | D | V | J | W | B | Current evidence or next gap |
 | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | --- |
-| `homebrew-tap` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Release automation and TOML are committed (`0f4ec20`, `1861fb6`); dependency, judgment, and roadmap pass remain. |
+| `homebrew-tap` | ✓ | ✓ | △ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `7252363`: formula releases align with all four upstream latest releases; Ruby tests, syntax, Homebrew style, and strict online audits pass; GitHub identity and settings align; topic override and obsolete HANDOFFS scaffolds removed; completed BREW-003 pruned separately. Only the Claude memory-index finding remains, already captured in BREW-002. |
 | `ki-arcadia-principal` | ✓ | ! | △ | — | — | — | ✓ | — | TOML and hooks are committed; audit cannot resolve declared `ki-housekeeping-granola`. |
 | `ki-plugins` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `283bb61`; resume from conform review. |
 | `ki-specifications` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `a0e84e1`; resume from conform review. |
@@ -78,4 +78,4 @@ Whether Arcadia's missing Granola capability is a stale declaration or unpublish
 
 ## Next step
 
-Commit this checkpoint update, then fully progress `homebrew-tap` through dependency, verification, judgment, roadmap, and a committed baseline. Update its ledger row immediately after the stable result before moving to the next repository.
+Commit this checkpoint update, then fully progress `ki-plugins` through dependency, verification, judgment, roadmap, and a committed baseline. Update its ledger row immediately after the stable result before moving to the next repository.
