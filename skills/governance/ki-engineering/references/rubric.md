@@ -214,6 +214,11 @@ Comprehension-first modularity and deliberately restrained abstraction.
   - _Review prompt:_ Do module boundaries match domain concerns and reasons to change; can a maintainer follow ordinary control flow and policy from clear names and interfaces; and does each shared abstraction retain the same meaning, lifecycle, and error semantics for every caller?
   - _Outcomes:_ conforming; gap; exception
   - _Conforming guidance:_ Split a mixed-responsibility module at a domain seam, simplify or name an obscuring abstraction, or retain documented local duplication where it makes the domain clearer.
+- **DESIGN-2 [J] — Module boundaries are stated and enforced** — Boundaries the repository relies on — layer direction, logic-free artifact shells, and the seam its tests exercise — are declared as dependency-cruiser rules, run from the governed script surface, and covered by a test that proves the checker can still fail. (standards-engineering.md#repo-shapes--flat-vs-monorepo-core)
+  - _Evidence scope:_ Declared module boundaries, `.dependency-cruiser.ts` rules and the roots they cruise, the script that runs them, and the test that proves the checker still reports violations.
+  - _Review prompt:_ Does every boundary the design depends on have a forbidden rule that a violating import would actually trip, does the cruise cover each root those rules name, and does a test prove the checker fails on a deliberate violation rather than reporting a clean graph it never evaluated?
+  - _Outcomes:_ conforming; gap; exception
+  - _Conforming guidance:_ State the missing boundary as a forbidden rule, widen the cruise to the roots its rules name, add the failure-proving test, or record why a boundary is a convention this repository deliberately leaves unchecked.
 
 ## REVIEW — Change-aware consistency review
 
@@ -249,11 +254,11 @@ Runner-neutral tests and the conditional Vitest coverage profile.
   - _Review prompt:_ Are tests colocated with their source and does their coverage evidence substantiate the 100% claim?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Colocate or strengthen the tests, record a named Gap, or record an explicit capability exclusion.
-- **TEST-7 [J] — Coverage follows observable contracts** — Coverage evidence starts from supported observable behaviour: reachable paths are proven through their public boundary, unreachable paths are removed, and fault injection stays at a documented interface boundary. (standards-engineering.md#testing-capability-the-repo-ships-tests)
+- **TEST-7 [J] — Coverage follows observable contracts** — Coverage evidence starts from supported observable behaviour: reachable paths are proven through their public boundary, unreachable paths are removed or refactored away, any remaining annotation names its reason at the line, and fault injection stays at a documented interface boundary. (standards-engineering.md#testing-capability-the-repo-ships-tests)
   - _Evidence scope:_ The supported public contract, covered implementation paths, tests, and any documented interface-level fault injection.
-  - _Review prompt:_ Does each reachable path have evidence through the nearest supported public boundary, with unsupported paths removed rather than preserved for coverage, and is any fault injection a documented interface failure that cannot be exercised deterministically through that boundary?
+  - _Review prompt:_ Does each reachable path have evidence through the nearest supported public boundary, with unsupported paths removed or refactored away rather than preserved for coverage; does every `/* v8 ignore */` name a reason no fixture could defeat rather than standing in for a test nobody wrote; and is any fault injection a documented interface failure that cannot be exercised deterministically through that boundary?
   - _Outcomes:_ conforming; gap; exception
-  - _Conforming guidance:_ Add or strengthen an observable-contract case, remove unsupported unreachable code, or document why a necessary interface-level fault injection cannot be exercised through the ordinary public entrypoint.
+  - _Conforming guidance:_ Add or strengthen an observable-contract case, remove or refactor away unsupported unreachable code, replace an unexplained annotation with one that names its reason, or document why a necessary interface-level fault injection cannot be exercised through the ordinary public entrypoint.
 
 ## BUILD — Compiled builds
 
