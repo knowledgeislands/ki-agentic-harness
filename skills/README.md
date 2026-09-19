@@ -12,9 +12,9 @@ Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run 
 
 1. Scaffold `<name>/SKILL.md` (run `ki-skills` Mode EDUCATE), adding `references/` / `scripts/` / `assets/` only as needed.
 2. Write to the rubric, not from memory; self-audit with `ki repo audit --skill ki-skills`.
-3. Run `ki repo conform --skill ki-repo-harness` to refresh the generated catalogue below, then check the authored [skills-by-outcome guide](../docs/guides/skills-by-outcome.md) only when the new capability changes a reader journey.
+3. Run `ki repo conform --skill ki-repo-harness` to refresh the generated catalogue below, then check the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) only when the new capability changes a reader journey.
 
-Use the [skills-by-outcome guide](../docs/guides/skills-by-outcome.md) when you know the result you want but not the skill name. Use the generated catalogue below for complete membership, descriptions, argument hints, runtime bindings, and formal dependencies. Skills are installed elsewhere through managed KI activation.
+Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) when you know the result you want but not the skill name. Use the generated catalogue below for complete membership, descriptions, argument hints, runtime bindings, and formal dependencies. Skills are installed elsewhere through managed KI activation.
 
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue

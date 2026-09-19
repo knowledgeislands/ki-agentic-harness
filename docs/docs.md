@@ -22,17 +22,17 @@ This is the map of `docs/` and the guiding principles that govern everything in 
 
 ### Guides — the _how_
 
-[`guides/`](guides) holds repository-local practical instructions. Its [index](guides/README.md) directs readers to the [skills-by-outcome guide](guides/skills-by-outcome.md) and contributor procedures; [`guides/developer/`](guides/developer) stays lightweight, covering local Harness development and skill testing. Governed by the `ki-guides` skill.
+[`guides/`](guides) holds repository-local practical instructions. Its [index](guides/README.md) directs readers to the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) and repository-local contributor procedures; [`guides/developer/`](guides/developer) stays lightweight, covering local Harness development and skill testing. It is governed by the `ki-guides` skill.
 
 ### Public guidance — website-owned
 
 The KI Website is the canonical home for public explanatory guidance:
 
 - [Using KI](https://knowledgeislands.info/guidance/using-ki/) explains installation, onboarding, safe operation, tuning, and planning journeys.
-- [Skills and journeys](https://knowledgeislands.info/guidance/skills/) may provide public explanatory material; the Harness [skills-by-outcome guide](guides/skills-by-outcome.md) and generated [capability catalogue](../skills/README.md#generated-capability-catalogue) remain authoritative for the capabilities in this repository.
+- [Skills and journeys](https://knowledgeislands.info/guidance/skills/) owns public outcome routing, while the generated [capability catalogue](../skills/README.md#generated-capability-catalogue) remains authoritative for the exact capabilities in this repository.
 - [Prompting guides](https://knowledgeislands.info/guidance/prompting/) publish the source-backed, model-specific guidance and current portable type-to-model resolution.
 
-The harness retains the underlying `SKILL.md` files, generated capability catalogue, selection guide, standards, generated rubric publications, decisions, specifications, and developer procedures. Do not recreate website guidance under `docs/` as a compatibility copy.
+The harness retains the underlying `SKILL.md` files, generated capability catalogue, standards, generated rubric publications, decisions, specifications, and developer procedures. A short pointer may preserve a former local URL, but it must not duplicate the website-owned guide.
 
 ### Repository roadmaps — the _when_
 

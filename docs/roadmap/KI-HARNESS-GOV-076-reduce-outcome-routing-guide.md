@@ -4,12 +4,12 @@ area: GOV
 title: Reduce outcome routing guide
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 6e6c2e282366087f14a65594318546dd8976d601
 created_at: 2026-09-18T05:35:00Z
-updated_at: 2026-09-19T11:26:01Z
+updated_at: 2026-09-19T11:38:02Z
 transferred_from: KI-WEB-SITE-008
 ---
 
@@ -41,10 +41,10 @@ Keep a short stub at the existing local path. It preserves inbound repository li
 
 ## Steps
 
-- [ ] Replace the local guide body with a concise pointer to the website-owned canonical guide.
-- [ ] Update repository orientation and indexes that currently present the local file as the maintained guide.
-- [ ] Preserve generated capability catalogue ownership and its complementary skill-by-name purpose.
-- [ ] Run Markdown and roadmap audits.
+- [x] Replace the local guide body with a concise pointer to the website-owned canonical guide.
+- [x] Update repository orientation and indexes that currently present the local file as the maintained guide.
+- [x] Preserve generated capability catalogue ownership and its complementary skill-by-name purpose.
+- [x] Run Markdown and roadmap audits.
 
 ## Files touched
 
@@ -85,6 +85,36 @@ The website becomes the sole maintained outcome-routing guide; the Harness path 
 ### Roadmap
 
 No follow-up is required unless the website URL changes.
+
+## Review
+
+### Delivered
+
+Reduced the duplicated local outcome-routing guide from baseline `6e6c2e282366087f14a65594318546dd8976d601` while preserving its former path as a compatibility pointer.
+
+### Summary of changes
+
+- Replaced the 108-line local guide with a five-line pointer to the website-owned canonical page.
+- Updated the repository README, AGENTS orientation, documentation map, guide index, and skill catalogue introduction to route readers directly to the website.
+- Retained the generated capability catalogue as the repository-owned exact inventory.
+
+### Verification
+
+- `ki-authoring` and `ki-work-roadmap` audits pass.
+- The full Harness test suite, TypeScript, and Biome checks pass.
+- Repository navigation contains no active link to the former local maintained copy outside its compatibility role or historical records.
+
+### Outstanding concerns
+
+None. The pointer intentionally depends on the published website URL recorded by `KI-WEB-SITE-008`.
+
+### Post-change review
+
+The change establishes one maintained source without breaking existing local URLs and preserves the catalogue's separate exact-inventory role. It is ready for human acceptance.
+
+### Mini recap
+
+Outcome routing is now website-owned; the Harness retains only a stable pointer and its generated capability facts.
 
 ## Discussion
 
