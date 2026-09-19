@@ -141,6 +141,19 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
       'Root and safely resolved workspace package scripts contain no hand-written relative path into `node_modules/`; invoke package binaries through `bunx --bun` or resolve module files from the owning module.',
       'FAIL',
       (context) => context.scr10
-    )
+    ),
+    {
+      code: 'SCR-11',
+      title: 'Common Git hooks are bound',
+      description:
+        'Husky runs lint-staged then check-only Syncpack before commits, and Commitlint validates proposed messages against the `ki-git` Conventional Commit policy.',
+      sources: ['standards-engineering.md'],
+      mechanical: {
+        level: 'FAIL',
+        audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.scr11, 'FAIL') },
+        remediation: { class: 'automatic' },
+        conform: { phase: 'PRIMARY', run: (context) => context.synchroniseHooks?.() }
+      }
+    }
   ]
 }

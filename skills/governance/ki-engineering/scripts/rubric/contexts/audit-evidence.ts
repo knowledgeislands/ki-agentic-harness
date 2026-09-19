@@ -23,10 +23,11 @@
  * The native rubric host owns execution, reporting, and exit status.
  */
 import { execFile } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { promisify } from 'node:util'
 import type { PackageScriptClaim, RubricEmitter } from '../../shared/rubric.ts'
+import { COMMITLINT_CONFIGURATION, hasCommitMessageBaseline, hasPreCommitBaseline } from './git-hooks.ts'
 
 // Unified severity ladder — shared by every KI checker (checker-contract).
 // area is the minted rubric code (references/rubric.md); ref is its
@@ -140,6 +141,7 @@ const mechanicalEngineeringCheckIds = new Set([
   'SCR-6',
   'SCR-7',
   'SCR-10',
+  'SCR-11',
   'TSC-1',
   'TSC-2',
   'BIO-1',
@@ -452,6 +454,11 @@ export const collectAuditEvidence = async (
   }
   const has = (...p: string[]) => existsSync(at(...p))
   const isDir = (...p: string[]) => has(...p) && statSync(at(...p)).isDirectory()
+  const isSafeRegularFile = (...p: string[]): boolean => {
+    if (!has(...p)) return false
+    const metadata = lstatSync(at(...p))
+    return metadata.isFile() && !metadata.isSymbolicLink()
+  }
   const read = (...p: string[]): string => {
     try {
       return readFileSync(at(...p), 'utf8')
@@ -557,7 +564,17 @@ export const collectAuditEvidence = async (
   // toolchain is actually declared, rather than left implied. lint-staged is the husky
   // pre-commit fan-out — a governed key in the manifest, so it must be present and wired.
   const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>
-  const REQUIRED_DEV = ['@biomejs/biome', 'knip', 'rumdl', 'husky', 'lint-staged', 'syncpack', 'typescript']
+  const REQUIRED_DEV = [
+    '@biomejs/biome',
+    '@commitlint/cli',
+    '@commitlint/config-conventional',
+    'knip',
+    'rumdl',
+    'husky',
+    'lint-staged',
+    'syncpack',
+    'typescript'
+  ]
   const missingDev = REQUIRED_DEV.filter((d) => !(d in devDeps))
   missingDev.length
     ? add(
@@ -570,7 +587,7 @@ export const collectAuditEvidence = async (
     : add(
         'PASS',
         'PKG-5',
-        'toolchain devDependencies present (biome, rumdl, husky, lint-staged, syncpack, typescript)',
+        'toolchain devDependencies present (biome, commitlint, rumdl, husky, lint-staged, syncpack, typescript)',
         STD,
         'package.json'
       )
@@ -818,6 +835,37 @@ export const collectAuditEvidence = async (
   scripts.prepare === 'husky'
     ? add('PASS', 'SCR-5', 'prepare = "husky"', STD, 'package.json')
     : add('WARN', 'SCR-5', `prepare should be "husky", got ${JSON.stringify(scripts.prepare)}`, STD, 'package.json')
+
+  const preCommit = read('.husky', 'pre-commit')
+  const commitMessage = read('.husky', 'commit-msg')
+  const commitlint = read('commitlint.config.mjs')
+  isSafeRegularFile('.husky', 'pre-commit') && hasPreCommitBaseline(preCommit)
+    ? add('PASS', 'SCR-11', 'pre-commit starts with lint-staged then check-only Syncpack', STD, '.husky/pre-commit')
+    : add(
+        'FAIL',
+        'SCR-11',
+        'pre-commit must start with lint-staged followed by `bunx syncpack format --check`',
+        STD,
+        '.husky/pre-commit'
+      )
+  isSafeRegularFile('.husky', 'commit-msg') && hasCommitMessageBaseline(commitMessage)
+    ? add('PASS', 'SCR-11', 'commit-msg invokes Commitlint for the proposed message', STD, '.husky/commit-msg')
+    : add('FAIL', 'SCR-11', 'commit-msg must invoke `bunx commitlint --edit "$1"`', STD, '.husky/commit-msg')
+  isSafeRegularFile('commitlint.config.mjs') && commitlint === COMMITLINT_CONFIGURATION
+    ? add(
+        'PASS',
+        'SCR-11',
+        'Commitlint configuration matches the KI Conventional Commit policy',
+        STD,
+        'commitlint.config.mjs'
+      )
+    : add(
+        'FAIL',
+        'SCR-11',
+        'commitlint.config.mjs must carry the canonical KI Conventional Commit policy',
+        STD,
+        'commitlint.config.mjs'
+      )
 
   // ── core: script ownership — bare lifecycle, ki: capability, or self: repository ──
   // engineering-standard §2: ki:* scripts are claimed by resolved capabilities,

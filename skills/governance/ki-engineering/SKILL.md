@@ -4,8 +4,8 @@ ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
-owns: [mise.toml, tsconfig.json, biome.json, knip.json]
-contributes: ['.ki.toml', '.gitignore', package.json]
+owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.mjs]
+contributes: ['.ki.toml', '.gitignore', package.json, '.husky/pre-commit', '.husky/commit-msg']
 description: >
   Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,
   tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for
@@ -28,7 +28,7 @@ This is a **standard, base-agnostic governance skill**. It hard-codes no single 
 
 ## The common standard at a glance
 
-- **package.json** — `type: module`, `packageManager: bun@1.3.x`, `engines.node >= 22`; no aggregate or derived governance aliases; plus `clean` and `prepare`. `ki repo` invokes the declared native rubrics directly. Code tools run inside `ki-engineering`; Markdown tools run inside `ki-authoring`. The root manifest uses claimed `ki:` scripts, repository-owned `self:` scripts, and exact externally constrained bare `script_exclusions`; selected workspace packages follow their artifact skill's local command contract.
+- **package.json and Git hooks** — `type: module`, `packageManager: bun@1.3.x`, `engines.node >= 22`; no aggregate or derived governance aliases; plus `clean` and Husky `prepare`. The common `pre-commit` prefix runs lint-staged then check-only Syncpack, while `commit-msg` runs Commitlint against `ki-git`'s message policy. `ki repo` invokes the declared native rubrics directly. Code tools run inside `ki-engineering`; Markdown tools run inside `ki-authoring`. The root manifest uses claimed `ki:` scripts, repository-owned `self:` scripts, and exact externally constrained bare `script_exclusions`; selected workspace packages follow their artifact skill's local command contract.
 - **Bun vs Node** — install/dev under Bun, `dist/` runs under Node ≥ 22. The bare `test` script may select Bun's runner, but **no other package script may contain `bun test`**: outside the governed entrypoint it bypasses that policy, so use `bun run test`. `NODE_ENV=development` only in dev/inspect scripts; the config loader calls `process.loadEnvFile()` in a try/catch for parity.
 - **Code design** — modules remain cohesive, code privileges comprehension over clever abstraction, and reuse is extracted only when it represents a stable shared concept. A change-aware consistency review is advisory: Git trailer evidence scopes a human or model review but never triggers one automatically.
 - **tsconfig / biome** — the universal `tsconfig.json` invariants (strict, nodenext, noEmit, …) for every repo; the fuller shared base for compiled-TS repos. `biome.json` matching the shared formatter/linter fields.

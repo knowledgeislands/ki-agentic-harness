@@ -1,4 +1,5 @@
 bunx lint-staged || exit 1
+bunx syncpack format --check || exit 1
 
 # Validate the staged snapshot through the direct KI surface. Split renames into
 # delete/add paths so moving a governed file cannot hide its original scope.

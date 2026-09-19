@@ -50,7 +50,7 @@ The shared package metadata and toolchain dependency surface.
   - _Remediation:_ automatic
 - **PKG-4 [M] — Closed package coverage manifest** — Every top-level `package.json` key is in the engineering coverage manifest; an unknown key is drift. This is also the criterion for an unparseable `package.json`. (standards-engineering.md)
   - _Remediation:_ diagnostic — Correct the package manifest structure or declare the missing ownership before rerunning the audit.
-- **PKG-5 [M] — Toolchain dependencies declared** — The toolchain devDependencies `@biomejs/biome`, `knip`, `rumdl`, `husky`, `lint-staged`, `syncpack`, and `typescript` are declared rather than implied. (standards-engineering.md)
+- **PKG-5 [M] — Toolchain dependencies declared** — The toolchain devDependencies `@biomejs/biome`, Commitlint, `knip`, `rumdl`, `husky`, `lint-staged`, `syncpack`, and `typescript` are declared rather than implied. (standards-engineering.md)
   - _Remediation:_ automatic
 - **PKG-6 [M] — Lint-staged fan-out** — `lint-staged` is present and fans out to Biome on staged code and `rumdl check --fix` on staged authored Markdown. (standards-engineering.md)
   - _Remediation:_ automatic
@@ -111,6 +111,8 @@ The direct CLI boundary, lifecycle idioms, and clean cutover discipline.
   - _Conforming guidance:_ Complete the clean cutover, record a named Gap with its owner, or record an explicit exclusion.
 - **SCR-10 [M] — Dependency execution is independent of node_modules layout** — Root and safely resolved workspace package scripts contain no hand-written relative path into `node_modules/`; invoke package binaries through `bunx --bun` or resolve module files from the owning module. (standards-engineering.md)
   - _Remediation:_ diagnostic — Revise the package scripts to meet the governed script surface, then rerun the audit.
+- **SCR-11 [M] — Common Git hooks are bound** — Husky runs lint-staged then check-only Syncpack before commits, and Commitlint validates proposed messages against the `ki-git` Conventional Commit policy. (standards-engineering.md)
+  - _Remediation:_ automatic
 
 ## BUN — Bun and Node runtime boundary
 

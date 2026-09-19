@@ -33,6 +33,7 @@ test('the staged skill audit includes unchanged siblings, providers, and the loc
   const binaries = join(repository, 'test-bin')
   const setCapture = join(repository, 'set-audit-focus')
   const localCapture = join(repository, 'local-audit-focus')
+  const bunxCapture = join(repository, 'bunx-calls')
 
   write(repository, '.ki.toml', '["knowledgeislands/ki-agentic-harness:ki-skills"]\n')
   write(repository, 'README.md', '# Fixture\n')
@@ -46,7 +47,7 @@ test('the staged skill audit includes unchanged siblings, providers, and the loc
   write(repository, 'skills/repo-structure/ki-repo-specifications/SKILL.md', skill('ki-repo-specifications'))
   write(repository, '.agents/skills/ki-self/SKILL.md', skill('ki-self'))
 
-  write(repository, 'test-bin/bunx', '#!/bin/sh\nexit 0\n')
+  write(repository, 'test-bin/bunx', '#!/bin/sh\nprintf \'%s\\n\' "$*" >> "$KI_HOOK_BUNX_CAPTURE"\nexit 0\n')
   write(
     repository,
     'test-bin/ki',
@@ -89,10 +90,15 @@ esac
       ...process.env,
       PATH: `${binaries}:${process.env.PATH ?? ''}`,
       KI_HOOK_SET_CAPTURE: setCapture,
-      KI_HOOK_LOCAL_CAPTURE: localCapture
+      KI_HOOK_LOCAL_CAPTURE: localCapture,
+      KI_HOOK_BUNX_CAPTURE: bunxCapture
     }
   })
 
   expect(readFileSync(setCapture, 'utf8').trim()).not.toBe('')
   expect(readFileSync(localCapture, 'utf8').trim()).not.toBe('')
+  expect(readFileSync(bunxCapture, 'utf8').trim().split('\n').slice(0, 2)).toEqual([
+    'lint-staged',
+    'syncpack format --check'
+  ])
 })

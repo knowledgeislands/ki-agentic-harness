@@ -24,6 +24,12 @@ Choose the narrowest type that describes the committed unit rather than combinin
 
 Historic messages are not rewritten merely to conform to this current convention.
 
+### Package-backed commit-message binding
+
+A repository governed by `ki-engineering` binds the deterministic portion of this policy through Husky's `commit-msg` lifecycle and Commitlint. The canonical configuration permits exactly the six types above, requires a lowercase kebab-case scope when present, requires a non-empty subject, and rejects a terminal full stop. Commitlint retains its conventional default treatment of Git-generated merge and revert messages.
+
+The binding does not attempt to decide whether a summary is genuinely imperative, whether the selected type is the narrowest truthful type, or whether the commit contains one coherent unit; those remain `ki-git` judgment. Husky can be deliberately bypassed with `--no-verify`, so the installed hook gives immediate feedback rather than replacing repository audit, CI, or review. `ki-engineering` owns the dependencies, hook files, deterministic audit, and bounded conformance; `ki-git` remains the sole owner of message semantics.
+
 Other skills MAY define a narrowly-scoped trailer block as durable evidence for their own concern. For example, `ki-engineering` owns the `KI-Consistency-Review-*` block for an advisory code-consistency review. That block is portable commit metadata, not a new Git-hygiene policy: `ki-git` neither interprets its engineering outcome nor requires it on ordinary commits.
 
 ## Working-copy and review approaches
@@ -80,6 +86,4 @@ The harness publishes hook payload sources; `ki-repo-dotfiles-chezmoi` may regis
 
 The native rubric exposes these four policy families as **judgment-only** review prompts. A rendered audit therefore leaves them unassessed until a reviewer records an outcome; it must never be interpreted as a Git-state pass. Gather the criterion's focused read-only evidence first: current and pre-edit status, expected `HEAD`, the thread's touched-path set, touched and staged diffs, and any contested paths for hygiene; current branch, worktree, protection, concurrency, and review evidence for the working approach; proposed diff and message for commit shape; and physical-worktree/process/file-type evidence for a lock candidate. The rubric does not execute Git commands or a private wrapper on the reviewer's behalf.
 
-No compatible mechanical enforcement, `.ki.toml` activation, user-skill activation, or commit-message enforcement exists yet.
-
-Any future enforcement must be limited to deterministic rules explicitly added to this standard after its host execution contract is designed.
+Package-backed repositories have deterministic local commit-message enforcement through `ki-engineering`; non-package repositories retain the judgment-only contract. Any broader enforcement must remain limited to deterministic rules explicitly added to this standard rather than moving message judgment into a private Git executor.

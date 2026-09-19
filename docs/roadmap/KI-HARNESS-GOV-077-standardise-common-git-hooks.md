@@ -4,12 +4,12 @@ area: GOV
 title: Standardise common Git hooks
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 74fdc44de018d8a3e07cc82eae2e660034b92c6f
 created_at: 2026-09-19T08:51:33Z
-updated_at: 2026-09-19T08:51:33Z
+updated_at: 2026-09-19T09:06:12Z
 ---
 
 # Standardise Common Git Hooks
@@ -28,16 +28,16 @@ Standardise package-backed repository hooks without moving Git policy into engin
 
 ## Current state
 
-Selected and approved for immediate delivery. The Harness pre-commit hook begins with lint-staged and then runs repository-specific staged checks. Syncpack is enforced only by the engineering audit. There is no `.husky/commit-msg` or Commitlint configuration, and `ki-git` explicitly records that mechanical commit-message enforcement does not yet exist.
+Awaiting review from immutable baseline `74fdc44de018d8a3e07cc82eae2e660034b92c6f`. The Harness now exercises the canonical hook baseline itself: lint-staged and check-only Syncpack run before repository-specific pre-commit checks, while Commitlint validates proposed messages in `commit-msg`. The engineering rubric audits and safely conforms those surfaces, and the Git standard retains ownership of message semantics.
 
 ## Steps
 
-- [ ] Define the common hook lifecycle and ownership split in the Git and engineering standards.
-- [ ] Require current Commitlint dependencies alongside the existing Husky, lint-staged, and Syncpack toolchain.
-- [ ] Audit and conform a common pre-commit prefix that runs lint-staged followed by check-only Syncpack while preserving repository-specific checks.
-- [ ] Audit and conform a Commitlint-backed `commit-msg` hook and KI Conventional Commit configuration.
-- [ ] Add focused fixtures for compliant, missing, drifted, and safely conformed hook surfaces.
-- [ ] Apply the standard to the Harness and run focused tests, full tests, TypeScript, Biome, skill, engineering, Git, roadmap, and authoring audits.
+- [x] Define the common hook lifecycle and ownership split in the Git and engineering standards.
+- [x] Require current Commitlint dependencies alongside the existing Husky, lint-staged, and Syncpack toolchain.
+- [x] Audit and conform a common pre-commit prefix that runs lint-staged followed by check-only Syncpack while preserving repository-specific checks.
+- [x] Audit and conform a Commitlint-backed `commit-msg` hook and KI Conventional Commit configuration.
+- [x] Add focused fixtures for compliant, missing, drifted, and safely conformed hook surfaces.
+- [x] Apply the standard to the Harness and run focused tests, full tests, TypeScript, Biome, skill, engineering, Git, roadmap, and authoring audits.
 
 ## Files touched
 
@@ -49,6 +49,8 @@ Selected and approved for immediate delivery. The Harness pre-commit hook begins
 - `skills/governance/ki-git/`
 - `skills/governance/ki-engineering/`
 - `hooks/pre-commit.test.ts`
+- `hooks/commit-msg.test.ts`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
 - `docs/roadmap/KI-HARNESS-GOV-077-standardise-common-git-hooks.md`
 - `docs/roadmap/_ISSUES.md`
 
@@ -91,6 +93,42 @@ This record owns the Harness contract and self-application. Any estate-wide resi
 ## Delegation
 
 The Git policy, engineering audit, conform transaction, hook fixtures, and self-application form one coupled contract. Direct delivery avoids splitting ownership decisions from the implementation that proves them.
+
+## Review
+
+### Delivered
+
+- Bound lint-staged followed by check-only Syncpack as the common Husky `pre-commit` prefix while preserving repository-specific checks.
+- Bound Commitlint in `commit-msg` with the six KI Conventional Commit types, lowercase kebab-case scopes, required subjects, and no terminal full stop.
+- Added `SCR-11` audit and automatic conformance, including safe refusal to replace symlinked hook paths.
+- Added current Commitlint `21.2.2` dependencies, canonical configuration, generated rubric publication, and Harness self-application.
+
+### Summary of changes
+
+`ki-git` now explicitly owns the message policy consumed by the package-backed binding. `ki-engineering` owns the Commitlint dependencies and configuration, the two common Husky prefixes, deterministic audit evidence, and bounded conformance. Focused hook tests cover accepted and rejected messages, command ordering, drift repair, preservation of repository checks, and unsafe-path refusal.
+
+### Verification
+
+- Focused hook, engineering catalogue, and remediation-inventory tests — 28 pass, 0 fail.
+- Complete Harness suite — 733 pass, 0 fail across 134 files.
+- `bunx tsc --noEmit` — pass.
+- `bunx biome check .` — pass with one informational schema-version notice inherited from the current `biome.json` and installed CLI mismatch.
+- `bunx syncpack format --check` — pass.
+- `ki repo conform --skill ki-engineering --repo . --dry-run` — clean fixed point.
+- Focused `ki-engineering`, `ki-git`, `ki-skills`, `ki-work-roadmap`, and `ki-authoring` audits — pass.
+- `git diff --check` — pass.
+
+### Outstanding concerns
+
+Husky remains deliberately bypassable through `--no-verify`; repository audit and CI remain authoritative. This item publishes and self-applies the contract but does not mutate sibling repositories. Their adoption should use the published `ki-engineering` CONFORM path after this change is accepted and available to them.
+
+### Post-change review
+
+The change adds one reusable automatic rubric criterion rather than repository-only hook assertions. Git message semantics remain with `ki-git`, package mechanics remain with `ki-engineering`, and repository-specific checks remain outside the common prefix. No additional Decision Record or Specification is warranted.
+
+### Mini recap
+
+KI package repositories now have a mechanically auditable and safely conformable local hook baseline for staged formatting, package ordering, and Conventional Commit validation, with the Harness proving the contract end to end.
 
 ## Discussion
 
