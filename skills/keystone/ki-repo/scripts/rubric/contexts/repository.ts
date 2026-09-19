@@ -121,6 +121,7 @@ export type RuntimesRubricContext = {
   runtimes1: readonly RepoEvidenceFinding[]
   runtimes2: readonly RepoEvidenceFinding[]
   runtimes3: readonly RepoEvidenceFinding[]
+  runtimes4: readonly RepoEvidenceFinding[]
   requestRuntimeSkills?: () => void
 }
 
@@ -520,6 +521,7 @@ export const createRepoSession = async (
       runtimes1: evidence('RUNTIMES-1'),
       runtimes2: [...evidence('RUNTIMES-2'), ...runtimeActivation.findings],
       runtimes3: evidence('RUNTIMES-3'),
+      runtimes4: evidence('RUNTIMES-4'),
       ...(mutable && repositorySkills && runtimeActivation.requestable
         ? {
             requestRuntimeSkills: () => repositorySkills.propose(runtimeActivation.missing)

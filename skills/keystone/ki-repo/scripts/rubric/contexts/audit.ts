@@ -1312,6 +1312,41 @@ const localKiSelfFindings = (dir: string, runtimes: readonly string[]): Finding[
   return f
 }
 
+const localRuntimeOrientationFindings = (dir: string, runtimes: readonly string[]): Finding[] => {
+  const { f, warn } = mk()
+  if (!runtimes.some((runtime) => runtime !== 'claude-code')) return f
+
+  const agentsPath = join(dir, 'AGENTS.md')
+  const agentsState = localState(agentsPath)
+  if (!agentsState?.isFile() || agentsState.isSymbolicLink()) {
+    warn('RUNTIMES-4', 'multi-runtime repository requires a physical root AGENTS.md', 'AGENTS.md')
+    return f
+  }
+
+  const agentsLines = readFileSync(agentsPath, 'utf8')
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('<!--'))
+  const agentsProse = agentsLines.filter((line) => !line.startsWith('#'))
+  const agentsText = agentsProse.join('\n')
+  const reverseImport = agentsLines.includes('@CLAUDE.md')
+  const redirectShaped =
+    agentsProse.length <= 2 && /CLAUDE\.md/iu.test(agentsText) && /\b(read|see|orientation)\b/iu.test(agentsText)
+  if (reverseImport || redirectShaped) {
+    warn('RUNTIMES-4', 'root AGENTS.md redirects shared orientation to CLAUDE.md', 'AGENTS.md')
+  }
+
+  const claudePath = join(dir, 'CLAUDE.md')
+  const claudeState = localState(claudePath)
+  if (claudeState && (!claudeState.isFile() || claudeState.isSymbolicLink())) {
+    warn('RUNTIMES-4', 'root CLAUDE.md must be a physical file when present', 'CLAUDE.md')
+  } else if (claudeState?.isFile() && !readFileSync(claudePath, 'utf8').split(/\r?\n/u).includes('@AGENTS.md')) {
+    warn('RUNTIMES-4', 'root CLAUDE.md must contain a bare @AGENTS.md import line', 'CLAUDE.md')
+  }
+
+  return f
+}
+
 // RUNTIMES-1: validate the required `[skills.ki-repo] supported_runtimes` declaration. A pure
 // local .ki.toml read — offline-safe, sitting beside vendor-integrity. Every
 // name must be a runtime the linkers recognise; the support surface is never inferred.
@@ -1361,6 +1396,7 @@ function localConfigFindings(dir: string): Finding[] {
       KI_CONFIG
     )
   f.push(...localKiSelfFindings(dir, parsed.runtimes))
+  f.push(...localRuntimeOrientationFindings(dir, parsed.runtimes))
   return f
 }
 

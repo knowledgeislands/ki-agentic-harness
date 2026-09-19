@@ -4,12 +4,12 @@ area: GOV
 title: Enforce AGENTS.md root orientation
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 6e6c2e282366087f14a65594318546dd8976d601
 created_at: 2026-09-18T04:05:10Z
-updated_at: 2026-09-19T11:26:00Z
+updated_at: 2026-09-19T11:38:01Z
 ---
 
 # Enforce AGENTS.md root orientation
@@ -42,12 +42,12 @@ The 2026-09-19 estate survey found 31 multi-runtime declarations: 12 repositorie
 
 ## Steps
 
-- [ ] Add a root-only orientation evidence collector for multi-runtime repositories.
-- [ ] Publish `RUNTIMES-4` as a mechanical WARN with diagnostic remediation.
-- [ ] Prove missing `AGENTS.md`, missing Claude import, and reverse import or redirect are reported.
-- [ ] Prove Claude-only repositories and compliant multi-runtime repositories pass.
-- [ ] Update the repository standard and generated rubric reference with the staged WARN-to-FAIL posture.
-- [ ] Run the focused repository rubric tests, full Harness tests, TypeScript, and roadmap audits.
+- [x] Add a root-only orientation evidence collector for multi-runtime repositories.
+- [x] Publish `RUNTIMES-4` as a mechanical WARN with diagnostic remediation.
+- [x] Prove missing `AGENTS.md`, missing Claude import, and reverse import or redirect are reported.
+- [x] Prove Claude-only repositories and compliant multi-runtime repositories pass.
+- [x] Update the repository standard and generated rubric reference with the staged WARN-to-FAIL posture.
+- [x] Run the focused repository rubric tests, full Harness tests, TypeScript, and roadmap audits.
 
 ## Files touched
 
@@ -57,12 +57,13 @@ The 2026-09-19 estate survey found 31 multi-runtime declarations: 12 repositorie
 - `skills/keystone/ki-repo/scripts/rubric/items/runtimes.ts`
 - `skills/keystone/ki-repo/references/standards-repository.md`
 - generated `skills/keystone/ki-repo/references/rubric.md`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
 - this roadmap record
 
 ## Verify
 
 ```sh
-bunx vitest run skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts
+bun test skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts
 bun run test
 bunx tsc --noEmit
 ki repo audit --skill ki-repo --repo .
@@ -92,6 +93,39 @@ None.
 Any later FAIL promotion requires a separately selected estate-conformance record with repository-local remediation evidence.
 
 Promotion condition: settle severity, then survey how many repositories with multi-runtime declarations currently fail each sub-check. A FAIL is promotable once that count is zero or the remediation is itself queued.
+
+## Review
+
+### Delivered
+
+Delivered the approved root-only runtime orientation signal from baseline `6e6c2e282366087f14a65594318546dd8976d601` without changing sibling repositories or nested orientation policy.
+
+### Summary of changes
+
+- Added mechanical `RUNTIMES-4` evidence and diagnostic WARN publication for multi-runtime root orientation.
+- Detects a missing or non-physical root `AGENTS.md`, a missing bare `@AGENTS.md` line in a present root `CLAUDE.md`, and narrow reverse-import or redirect shapes.
+- Added focused fixtures for missing, inverted, compliant, and Claude-only layouts.
+- Published the generated rubric and updated the remediation inventory counts.
+
+### Verification
+
+- The focused root-runtime-orientation tests pass: 3 tests, 0 failures.
+- The full Harness test suite passes after updating the structured-remediation inventory.
+- TypeScript and Biome checks pass.
+- Generated `ki-repo` rubric parity passes.
+- `ki-repo`, `ki-authoring`, and `ki-work-roadmap` audits pass for this repository.
+
+### Outstanding concerns
+
+The signal deliberately remains WARN while affected repositories are conformed. Promotion to FAIL is not part of this delivery and needs a separately reviewed estate boundary.
+
+### Post-change review
+
+The implementation meets the item goal with deterministic local evidence, stays root-only, leaves Claude-only repositories exempt, and avoids a fleet-breaking severity change. It is ready for human acceptance.
+
+### Mini recap
+
+Multi-runtime repositories now receive an actionable warning when shared orientation is absent or inverted. The next durable route is an estate-conformance item before any severity promotion.
 
 ## Discussion
 

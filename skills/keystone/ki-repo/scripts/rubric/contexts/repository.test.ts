@@ -582,6 +582,63 @@ supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
   })
 })
 
+describe('root runtime orientation', () => {
+  const findings = async (
+    runtimes: string,
+    agents?: string,
+    claude?: string
+  ): Promise<readonly { code: string; level: string; message: string; subject?: string }[]> => {
+    const root = repository()
+    writeFileSync(join(root, '.ki.toml'), `[skills.ki-repo]\nsupported_runtimes = ${runtimes}\n`)
+    if (agents !== undefined) writeFileSync(join(root, 'AGENTS.md'), agents)
+    if (claude !== undefined) writeFileSync(join(root, 'CLAUDE.md'), claude)
+    return (await collectAuditFindings([root])).findings.filter(({ code }) => code === 'RUNTIMES-4')
+  }
+
+  test('requires a physical root AGENTS.md only for multi-runtime repositories', async () => {
+    expect(await findings('["claude-code", "chatgpt-codex"]')).toEqual([
+      expect.objectContaining({
+        code: 'RUNTIMES-4',
+        level: 'WARN',
+        message: expect.stringContaining('requires a physical root AGENTS.md'),
+        subject: expect.stringContaining('AGENTS.md')
+      })
+    ])
+    expect(await findings('["claude-code"]')).toEqual([])
+  })
+
+  test('requires a bare Claude import and rejects reverse orientation', async () => {
+    expect(await findings('["claude-code", "chatgpt-codex"]', '# Shared\n\nUseful guidance.\n', '# Claude\n')).toEqual([
+      expect.objectContaining({
+        code: 'RUNTIMES-4',
+        message: expect.stringContaining('bare @AGENTS.md import line')
+      })
+    ])
+    expect(
+      await findings(
+        '["claude-code", "chatgpt-codex"]',
+        '# Orientation\n\nRead `CLAUDE.md` for repository orientation.\n',
+        '@AGENTS.md\n'
+      )
+    ).toEqual([
+      expect.objectContaining({
+        code: 'RUNTIMES-4',
+        message: expect.stringContaining('redirects shared orientation')
+      })
+    ])
+  })
+
+  test('accepts substantive shared orientation and a thin Claude import', async () => {
+    expect(
+      await findings(
+        '["claude-code", "chatgpt-codex"]',
+        '# Orientation\n\nShared repository guidance.\n\n`CLAUDE.md` may add Claude-only notes.\n',
+        '@AGENTS.md\n\n# Claude-only notes\n'
+      )
+    ).toEqual([])
+  })
+})
+
 describe('repository kind and Knowledge Base stores', () => {
   const kindFindings = async (configuration: string) => {
     const root = repository()
