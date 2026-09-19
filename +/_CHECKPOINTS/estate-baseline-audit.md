@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T17:24:00Z
+updated_at: 2026-09-19T17:56:00Z
 ---
 
 # estate-baseline-audit
@@ -18,7 +18,7 @@ The estate contains 21 repositories. All are clean on `main`, have one primary w
 
 This pass actively covers 18 repositories. `mcp-acquire-whatsapp`, `tools-rig`, `ki-agentic-harness`, and the external chezmoi repository are deferred because other work may be active there. “ToolsWig” is interpreted as `tools-rig`, and “Shay Noir” as chezmoi. A repository that develops concurrent changes is moved to the deferred set rather than absorbing them.
 
-Seven of the 18 active-pass repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, and `mcp-housekeeping-codex` at `15e4152`. Each passes all 15 declared KI audits and its complete implementation gate. Legacy-SDK repositories deliberately hold Zod at 4.4.3 until their already-owned SDK-v2 migrations; every other dependency is current.
+Eight of the 18 active-pass repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, and `mcp-housekeeping-chatgpt` at `033b466`. The original six pass all declared KI audits and their complete implementation gates. Codex Housekeeping has a committed local baseline with coverage, Decision Record adoption, and live GitHub settings retained as explicit Triage decisions. ChatGPT Housekeeping passes its complete implementation gate and all local audits except the already-captured Decision Record adoption; its host-only environment-loading warning and live GitHub settings are recorded in FND-002. Legacy-SDK repositories deliberately hold Zod at 4.4.3 until already-owned SDK-v2 migrations; every other dependency is current.
 
 Master audit checklist:
 
@@ -51,7 +51,7 @@ Repository progress ledger uses `✓` complete, `△` begun or needs re-check, `
 | `ki-website` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks, release registry, and TOML are committed; `KI-WEB-SITE-012` needs roadmap review. |
 | `mcp-git-audit` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `6905787`: 15-skill audit clean; dependencies current; full gate clean; legacy working records removed; `MCP-GIT-TOOL-006` captured in Triage. |
 | `mcp-gsuite` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `4759952`: 15-skill audit and full gate clean; compatible Zod hold restored; Awaiting review work accepted/pruned; legacy working records removed. |
-| `mcp-housekeeping-chatgpt` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Real audit runs; legacy engineering, documentation, working-area, trade, and GitHub gaps remain. |
+| `mcp-housekeeping-chatgpt` | ✓ | ✓ | △ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `033b466`: full implementation gate and local authoring, engineering, MCP, trade, and roadmap audits pass; approved FND-001 accepted then pruned in its own commit; host-only environment loading is an evidenced WARN in FND-002; Decision Record adoption and eight live GitHub settings remain explicit decisions. |
 | `mcp-housekeeping-claude` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `8b0180f`: 15-skill audit and full gate clean; compatible Zod hold restored; obsolete handoff scaffolds removed; path-safety concern remains owned by `MCP-CH-OPS-001`. |
 | `mcp-housekeeping-codex` | ✓ | ✓ | △ | ✓ | △ | ✓ | ✓ | ✓ | Baseline `15e4152`: local authoring, MCP, trade, roadmap, type-check, build, test, Biome, Knip, Syncpack, and dependency gates pass; coverage remains 38.33% lines and is captured in FND-001; destructive public export review is captured in FND-003; Decision Record adoption and eight live GitHub settings remain explicit decisions. |
 | `mcp-ki-kb-fs` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `53cd14a`: 15-skill audit and full gate clean; compatible Zod hold restored; shared agent orientation added; obsolete handoff scaffolds removed. |
@@ -78,4 +78,4 @@ Whether Arcadia's missing Granola capability is a stale declaration or unpublish
 
 ## Next step
 
-Commit this checkpoint update, then fully progress `mcp-housekeeping-chatgpt` through dependency, verification, judgment, roadmap, and a committed baseline. Update its ledger row immediately after the stable result before moving to the next repository.
+Commit this checkpoint update, then fully progress `tools-mgit` through dependency, verification, judgment, roadmap, and a committed baseline. Update its ledger row immediately after the stable result before moving to the next repository.
