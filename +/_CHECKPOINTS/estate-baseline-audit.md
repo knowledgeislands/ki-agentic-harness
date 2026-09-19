@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T17:56:00Z
+updated_at: 2026-09-19T18:10:00Z
 ---
 
 # estate-baseline-audit
@@ -18,7 +18,7 @@ The estate contains 21 repositories. All are clean on `main`, have one primary w
 
 This pass actively covers 18 repositories. `mcp-acquire-whatsapp`, `tools-rig`, `ki-agentic-harness`, and the external chezmoi repository are deferred because other work may be active there. “ToolsWig” is interpreted as `tools-rig`, and “Shay Noir” as chezmoi. A repository that develops concurrent changes is moved to the deferred set rather than absorbing them.
 
-Eight of the 18 active-pass repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, and `mcp-housekeeping-chatgpt` at `033b466`. The original six pass all declared KI audits and their complete implementation gates. Codex Housekeeping has a committed local baseline with coverage, Decision Record adoption, and live GitHub settings retained as explicit Triage decisions. ChatGPT Housekeeping passes its complete implementation gate and all local audits except the already-captured Decision Record adoption; its host-only environment-loading warning and live GitHub settings are recorded in FND-002. Legacy-SDK repositories deliberately hold Zod at 4.4.3 until already-owned SDK-v2 migrations; every other dependency is current.
+Nine of the 18 active-pass repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, and `tools-mgit` at `5e43795`. The original six pass all declared KI audits and their complete implementation gates. Codex Housekeeping has a committed local baseline with coverage, Decision Record adoption, and live GitHub settings retained as explicit Triage decisions. ChatGPT Housekeeping passes its complete implementation gate and all local audits except the already-captured Decision Record adoption; its host-only environment-loading warning and live GitHub settings are recorded in FND-002. Legacy-SDK repositories deliberately hold Zod at 4.4.3 until already-owned SDK-v2 migrations; every other dependency is current.
 
 Master audit checklist:
 
@@ -59,7 +59,7 @@ Repository progress ledger uses `✓` complete, `△` begun or needs re-check, `
 | `mcp-m365` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `4a73c07`: 15-skill audit and full gate clean; ambient configuration fallback removed; Awaiting review work accepted/pruned; legacy working records removed. |
 | `tools-git-almanac` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; accepted-requirement and roadmap schema findings need review. |
 | `tools-ki` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; resume post-conform verification. |
-| `tools-mgit` | ✓ | ✓ | △ | — | — | — | ✓ | — | TOML is committed at `8b7b2bb`; resume from conform review. |
+| `tools-mgit` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `5e43795`: all 15 declared KI audits pass; ShellCheck, all 58 Bats tests, and mandoc pass; GitHub identity and settings align; topic override removed after judging live topics fit; obsolete HANDOFFS scaffold removed. |
 | `mcp-acquire-whatsapp` | D | D | D | D | D | D | D | D | Deferred until the second pass because other work may be active. |
 | `tools-rig` | D | D | D | D | D | D | D | D | Deferred until the second pass because other work may be active. |
 | `ki-agentic-harness` | D | D | D | D | D | D | D | D | Deferred until the second pass; it also owns this checkpoint and audit tooling. |
@@ -78,4 +78,4 @@ Whether Arcadia's missing Granola capability is a stale declaration or unpublish
 
 ## Next step
 
-Commit this checkpoint update, then fully progress `tools-mgit` through dependency, verification, judgment, roadmap, and a committed baseline. Update its ledger row immediately after the stable result before moving to the next repository.
+Commit this checkpoint update, then fully progress `tools-git-almanac` through dependency, verification, judgment, roadmap, and a committed baseline. Update its ledger row immediately after the stable result before moving to the next repository.
