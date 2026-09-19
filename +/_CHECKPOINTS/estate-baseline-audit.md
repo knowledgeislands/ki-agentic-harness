@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T10:02:13Z
+updated_at: 2026-09-19T10:28:32Z
 ---
 
 # estate-baseline-audit
@@ -14,7 +14,7 @@ Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge
 
 ## Current state
 
-The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. `mcp-acquire-whatsapp` and `tools-rig` remain deliberately deferred because they contain concurrent work. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. The `ki-website` release-registry and `homebrew-tap` release-dispatch worktrees were verified, accepted, fast-forwarded into their respective `main` branches, removed, and their local feature branches deleted. The estate now has no linked non-primary worktrees or stale worktree metadata. No repository is yet declared fully baselined because dependency freshness, judgment review, and final estate reporting remain.
+The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. The `ki-website` release-registry and `homebrew-tap` release-dispatch worktrees were verified, accepted, fast-forwarded into their respective `main` branches, removed, and their local feature branches deleted. The estate now has no linked non-primary worktrees or stale worktree metadata. All 21 `.ki.toml` files have semantics-preserving presentation commits: the conformance separator, exact `Governance and runtime` banner, compact roadmap areas, compact trade routes, and compact Agora memberships now follow the chezmoi exemplar; every file parses, matches its prior parsed data, and passes the presentation checker. No repository is yet declared fully baselined because dependency freshness, judgment review, and final estate reporting remain.
 
 The master checklist below applies to every repository. Update its evidence and the repository ledger after each project reaches a stable state or commit.
 
@@ -36,27 +36,27 @@ The master checklist below applies to every repository. Update its evidence and 
 
 Repository progress ledger:
 
-- `homebrew-tap` — release-dispatch automation is committed on `main` at `0f4ec20`; `BREW-003` is retained as Done, the feature worktree and local branch are removed, and the known Claude memory-index gap plus `.ki.toml`, dependency, judgment, and final roadmap work remain.
-- `ki-agentic-harness` — COV audit-host blocker fixed and committed; final self-audit, dependency refresh, judgment pass, roadmap pass, and worktree review remain.
-- `ki-arcadia-principal` — blocked before audit by unresolved `ki-housekeeping-granola` declaration.
-- `ki-plugins` — mechanical audit passes; later stages remain.
-- `ki-specifications` — mechanical audit passes; later stages remain.
-- `ki-techne-principal` — mechanical audit passes; later stages remain.
-- `ki-techne-tools` — mechanical gap: live GitHub licence is absent while `.ki.toml` declares MIT.
-- `ki-website` — common-hook conform and release-registry automation are committed on `main`; `KI-WEB-SITE-012` is retained as Done, the feature worktree and local branch are removed, and `.ki.toml`, dependency freshness, judgment review, and final roadmap pruning remain.
-- `mcp-acquire-whatsapp` — deferred until the end because concurrent work is present.
-- `mcp-git-audit` — managed ignore and hook/tooling conform applied and dependencies installed; post-conform verification was interrupted, and roadmap `candidate` fields remain invalid.
-- `mcp-gsuite` — managed ignore conformed; type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-housekeeping-chatgpt` — real audit now runs after the COV fix; substantial legacy repository, engineering, documentation, working-area, trade, and GitHub gaps remain; no conform write landed.
-- `mcp-housekeeping-claude` — managed ignore conformed; type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-housekeeping-codex` — real audit now runs after the COV fix; substantial legacy repository, engineering, coverage, documentation, working-area, trade, and roadmap gaps remain; no conform write landed.
-- `mcp-ki-kb-fs` — managed ignore conformed; type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-ki-kb-notion-mirror` — managed ignore conformed; type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
-- `mcp-m365` — managed ignore conformed; type-check, dependency-hold, configuration-injection, hook/tooling, and roadmap-schema gaps remain.
-- `tools-git-almanac` — managed ignore and hook/tooling conform applied and dependencies installed; accepted-requirement conformance lines, roadmap schema, and post-conform verification remain.
-- `tools-ki` — hook/tooling conform applied and dependencies installed; post-conform verification was interrupted.
-- `tools-mgit` — mechanical audit passes; later stages remain.
-- `tools-rig` — deferred until the end because concurrent work is present.
+- `homebrew-tap` — release-dispatch automation and `.ki.toml` presentation are committed on `main` (`0f4ec20`, `1861fb6`); `BREW-003` is retained as Done, the feature worktree and local branch are removed, and the known Claude memory-index gap plus dependency, judgment, and final roadmap work remain.
+- `ki-agentic-harness` — COV audit-host blocker and TOML presentation contract are fixed and committed; `.ki.toml` presentation is committed at `74c43726`, and dependency refresh, judgment review, roadmap pass, and final estate reporting remain.
+- `ki-arcadia-principal` — `.ki.toml` presentation is committed at `98306f2`; the mechanical audit remains blocked by the unresolved `ki-housekeeping-granola` declaration.
+- `ki-plugins` — mechanical audit passes and `.ki.toml` presentation is committed at `283bb61`; dependency, judgment, roadmap, and final reporting stages remain.
+- `ki-specifications` — mechanical audit passes and `.ki.toml` presentation is committed at `a0e84e1`; dependency, judgment, roadmap, and final reporting stages remain.
+- `ki-techne-principal` — mechanical audit passes and `.ki.toml` presentation is committed at `21dd0a9`; dependency, judgment, roadmap, and final reporting stages remain.
+- `ki-techne-tools` — `.ki.toml` presentation was concurrently committed at `4574998`; the mechanical gap remains that live GitHub licence is absent while `.ki.toml` declares MIT.
+- `ki-website` — common-hook conform, release-registry automation, and `.ki.toml` presentation are committed on `main`, with the presentation commit at `31c2b78`; `KI-WEB-SITE-012` is retained as Done, the feature worktree and local branch are removed, and dependency freshness, judgment review, and final roadmap pruning remain.
+- `mcp-acquire-whatsapp` — the previously concurrent work has cleared and `.ki.toml` presentation is committed at `1521209`; the remaining mechanical, dependency, judgment, and roadmap stages are deferred until the estate pass reaches this repository.
+- `mcp-git-audit` — `.ki.toml` presentation is committed at `7e1867a`; managed ignore and hook/tooling conform remains uncommitted, post-conform verification was interrupted, and roadmap `candidate` fields remain invalid.
+- `mcp-gsuite` — `.ki.toml` presentation is committed at `fe018b5`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
+- `mcp-housekeeping-chatgpt` — `.ki.toml` presentation is committed at `a0f8f6c` and the real audit runs after the COV fix; substantial legacy repository, engineering, documentation, working-area, trade, and GitHub gaps remain.
+- `mcp-housekeeping-claude` — `.ki.toml` presentation is committed at `09bed80`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
+- `mcp-housekeeping-codex` — `.ki.toml` presentation is committed at `53de5c1` and the real audit runs after the COV fix; substantial legacy repository, engineering, coverage, documentation, working-area, trade, and roadmap gaps remain.
+- `mcp-ki-kb-fs` — `.ki.toml` presentation is committed at `4b3956d`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
+- `mcp-ki-kb-notion-mirror` — `.ki.toml` presentation is committed at `b42508e`; managed ignore remains uncommitted, and type-check, dependency-hold, hook/tooling, and roadmap-schema gaps remain.
+- `mcp-m365` — `.ki.toml` presentation is committed at `4d60641`; managed ignore remains uncommitted, and type-check, dependency-hold, configuration-injection, hook/tooling, and roadmap-schema gaps remain.
+- `tools-git-almanac` — `.ki.toml` presentation is committed at `3664f96`; managed ignore and hook/tooling conform remains uncommitted, while accepted-requirement conformance lines, roadmap schema, and post-conform verification remain.
+- `tools-ki` — `.ki.toml` presentation is committed at `ae90c37`; hook/tooling conform remains uncommitted and post-conform verification was interrupted.
+- `tools-mgit` — mechanical audit passes and `.ki.toml` presentation is committed at `8b7b2bb`; dependency, judgment, roadmap, and final reporting stages remain.
+- `tools-rig` — the previously concurrent work has cleared and `.ki.toml` presentation is committed at `4de0e18`; the remaining mechanical, dependency, judgment, and roadmap stages are deferred until the estate pass reaches this repository.
 
 ## Decisions made
 
@@ -64,7 +64,7 @@ Mechanical audit and conform precede dependency updates and judgmental review. A
 
 ## Files touched
 
-Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`. Uncommitted conform work currently exists only in `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, and `tools-ki`, limited to reviewed `.gitignore`, package manifest, lockfile, and Git-hook/configuration paths recorded in each tree's status. `ki-website` now contains the committed hook conform and release-registry delivery. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
+Harness: `+/_CHECKPOINTS/estate-baseline-audit.md`; committed COV fix in `skills/keystone/ki-repo/scripts/rubric/items/coverage.ts` and `skills/keystone/ki-repo/scripts/rubric/items/index.test.ts`; committed TOML presentation checker changes in `skills/keystone/ki-repo/scripts/rubric/contexts/configuration-presentation.ts` and its test. Every estate `.ki.toml` is committed and clean. Uncommitted conform work currently exists only in `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, and `tools-ki`, limited to reviewed `.gitignore`, package manifest, lockfile, and Git-hook/configuration paths recorded in each tree's status. `ki-website` now contains the committed hook conform and release-registry delivery. Audit reports are temporary under `/tmp/ki-estate-audit.PWIU7R` and `/tmp/ki-estate-conform`.
 
 ## Open questions
 
@@ -72,4 +72,4 @@ Whether the missing Granola capability is a stale Arcadia declaration or an unpu
 
 ## Next step
 
-Apply and commit the estate-wide `.ki.toml` presentation tidy-up without changing parsed configuration, updating this checkpoint after each repository result.
+Resume post-conform verification with `mcp-git-audit`, then continue the mechanical baseline one repository at a time before dependency and judgment passes.
