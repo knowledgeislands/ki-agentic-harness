@@ -9,6 +9,7 @@ const COV_1: RubricItem<EvidenceRubricContext> = {
   sources: ['standards-configuration.md'],
   mechanical: {
     level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
       guidance:
