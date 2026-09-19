@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
 created_at: 2026-08-24T15:11:06Z
-updated_at: 2026-09-16T22:08:31Z
+updated_at: 2026-09-19T11:44:29Z
 ---
 
 ## Goal
@@ -40,6 +40,8 @@ The accepted capability evidence proves custom historical date windows, folder-s
 
 The intended steady state now includes retiring Granola source meetings after their complete acquired copies are verified in the correct repositories. That changes the retirement gate from “harvest everything first” to “prove a recoverable complete move first”; it does not grant acquisition code any mutation authority. No safe provider-supported deletion operation has yet been verified.
 
+The 2026-09-19 Now review re-grounded receiver state. `kit-legal` has committed `KIT-LEGAL-OPS-018` and declares the stable Legal folder ID; `kit-principal` declares the stable Personal folder ID plus explicit unfoldered and residual scopes. Their renamed `ki-acquire-granola` declarations resolve and audit cleanly, so the prepared intake and first direct-ingress mapping steps are complete. Arcadia still records the retired `ki space acquire <provider> import` grammar, complete provider-wide reconciliation has not been evidenced, and no provider-supported retirement operation exists.
+
 ## Steps
 
 - [x] Author `ki-acquire-granola` with the provider-neutral lifecycle, read-only source boundary, fidelity requirements, explicit omissions, receiver-selection semantics, completeness reconciliation, checkpoint semantics, and separate retirement gate.
@@ -59,11 +61,11 @@ The intended steady state now includes retiring Granola source meetings after th
 - [x] Add fixtures for saturated and split date windows, new, unchanged and changed meetings, multiple-folder membership, folder reassignment, unmatched folders, duplicate identities, inferred-unfoldered meetings, unsafe paths, unavailable transcript or media, interrupted writes, corrupted existing stages, and repeatable checkpoints.
 - [x] Give `tools-ki` ownership of the action-first adapter migration in `KI-TOOL-CLI-072`, without retaining or submitting a trade for this rollout.
 - [x] Give `kit-principal` ownership of Personal, unfoldered, and residual receiver rollout in `KIT-007`.
-- [ ] Commit the prepared `KIT-LEGAL-OPS-018` intake after Kit Legal's required mechanical-phase review boundary.
+- [x] Commit the prepared `KIT-LEGAL-OPS-018` intake after Kit Legal's required mechanical-phase review boundary.
 - [ ] Update Arcadia's existing acquisition record with the action-first adapter language.
 - [x] Define the future release-manifest contract and prove the retirement gates without adding a source-mutation tool to the acquisition provider.
 - [x] Replace the published skill's initial `kit-principal` catch-all wording with a receiver-neutral contract: folder selectors choose the best-served repository, while unfoldered, unmatched, and conflicting meetings remain explicit reconciliation outcomes.
-- [ ] Deliver the first direct-ingress mappings through receiver-owned work: Granola `Legal` folder to `kit-legal` and Granola `Personal` folder to `kit-principal`, using stable folder IDs as selectors and folder names as review evidence.
+- [x] Deliver the first direct-ingress mappings through receiver-owned work: Granola `Legal` folder to `kit-legal` and Granola `Personal` folder to `kit-principal`, using stable folder IDs as selectors and folder names as review evidence.
 - [ ] Implement a provider-supported Granola retirement operation that consumes an exact verified move manifest and remains unavailable from ordinary acquisition paths.
 
 ## Files touched

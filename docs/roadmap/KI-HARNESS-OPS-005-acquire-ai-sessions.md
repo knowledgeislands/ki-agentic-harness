@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-17T17:14:11Z
+updated_at: 2026-09-19T11:44:28Z
 ---
 
 ## Goal
@@ -42,13 +42,15 @@ The source-mechanics groundwork is real but the end-to-end move is incomplete. T
 
 The former Awaiting review packet proved the read-only MCP mechanics, bindings, registry entries, Agora membership, and prepared-capture packaging. It did not prove project routing, complete readable conversation acquisition, or safe source retirement, so this record is In progress.
 
+The 2026-09-19 Now review confirms that the routing inventory below has settled the selector contract: immutable ChatGPT project identity is canonical, current and prior names are review and migration evidence, `<Domain>: <Topic>` is reserved for non-personal domains, and unprefixed projects provisionally route to Personal / Kit. That design step is complete. Publishing `ki-acquire-chatgpt` remains separate from claiming executable completeness: the installed local store is still opaque and cannot satisfy readable project enumeration, complete conversation fidelity, or source-retirement verification.
+
 ## Steps
 
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
 - [x] Validate a structured readable ChatGPT bundle that retains opaque source identity, byte count, and hash without committing opaque payload bytes.
-- [ ] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
+- [x] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
 - [ ] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
 - [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
 - [ ] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
