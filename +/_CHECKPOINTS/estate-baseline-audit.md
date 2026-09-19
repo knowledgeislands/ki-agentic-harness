@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T10:58:13Z
+updated_at: 2026-09-19T11:05:24Z
 ---
 
 # estate-baseline-audit
@@ -14,7 +14,7 @@ Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge
 
 ## Current state
 
-All 14 repositories declaring `ki-engineering` now carry the common executable Husky baseline and TypeScript Commitlint configuration. The thirteen sibling repositories are committed and clean; the Harness contract and implementation are verified pending its local commit. This supersedes the older per-repository hook-pending notes retained below as historical audit detail.
+All 14 repositories declaring `ki-engineering` now carry the common executable Husky baseline and TypeScript Commitlint configuration. The thirteen sibling repositories are committed and clean; the Harness contract and implementation landed at `4b19032e`, and accepted hook roadmap record `KI-HARNESS-GOV-077` was pruned at `593c5503`. This supersedes the older per-repository hook-pending notes retained below as historical audit detail.
 
 The estate contains 21 repositories. The first unsandboxed mechanical pass is complete for the 18 repositories that were not already active, except that `ki-arcadia-principal` cannot resolve its declared `ki-housekeeping-granola` capability. The Harness defect that made `COV-1` crash on a legitimate warning was fixed and committed as `2a049373`. Reviewed conform writes have begun in eleven clean repositories; four received the new Git-hook package dependencies and lockfile updates, five received the managed `.turbo/` ignore rule, and remaining diagnostic failures have not been hidden. The `ki-website` release-registry and `homebrew-tap` release-dispatch worktrees were verified, accepted, fast-forwarded into their respective `main` branches, removed, and their local feature branches deleted. The estate now has no linked non-primary worktrees or stale worktree metadata. All 21 `.ki.toml` files have semantics-preserving presentation commits: the conformance separator, exact `Governance and runtime` banner, compact roadmap areas, compact trade routes, and compact Agora memberships now follow the chezmoi exemplar; every file parses, matches its prior parsed data, and passes the presentation checker. No repository is yet declared fully baselined because dependency freshness, judgment review, and final estate reporting remain.
 
