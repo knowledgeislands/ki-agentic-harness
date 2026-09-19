@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T12:03:55Z
+updated_at: 2026-09-19T13:05:22Z
 ---
 
 # estate-baseline-audit
@@ -18,7 +18,7 @@ The estate contains 21 repositories. All are clean on `main`, have one primary w
 
 This pass actively covers 18 repositories. `mcp-acquire-whatsapp`, `tools-rig`, `ki-agentic-harness`, and the external chezmoi repository are deferred because other work may be active there. “ToolsWig” is interpreted as `tools-rig`, and “Shay Noir” as chezmoi. A repository that develops concurrent changes is moved to the deferred set rather than absorbing them.
 
-Three of the 18 active-pass repositories are fully baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, and `mcp-housekeeping-claude` at `8b0180f`. Each passes all 15 declared KI audits and its complete implementation gate. The two legacy-SDK repositories deliberately hold Zod at 4.4.3 until their already-owned SDK-v2 migrations; every other dependency is current.
+Four of the 18 active-pass repositories are fully baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, and `mcp-ki-kb-fs` at `53cd14a`. Each passes all 15 declared KI audits and its complete implementation gate. The legacy-SDK repositories deliberately hold Zod at 4.4.3 until their already-owned SDK-v2 migrations; every other dependency is current.
 
 Master audit checklist:
 
@@ -54,7 +54,7 @@ Repository progress ledger uses `✓` complete, `△` begun or needs re-check, `
 | `mcp-housekeeping-chatgpt` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Real audit runs; legacy engineering, documentation, working-area, trade, and GitHub gaps remain. |
 | `mcp-housekeeping-claude` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `8b0180f`: 15-skill audit and full gate clean; compatible Zod hold restored; obsolete handoff scaffolds removed; path-safety concern remains owned by `MCP-CH-OPS-001`. |
 | `mcp-housekeeping-codex` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Real audit runs; legacy engineering, coverage, documentation, working-area, trade, and roadmap gaps remain. |
-| `mcp-ki-kb-fs` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
+| `mcp-ki-kb-fs` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `53cd14a`: 15-skill audit and full gate clean; compatible Zod hold restored; shared agent orientation added; obsolete handoff scaffolds removed. |
 | `mcp-ki-kb-notion-mirror` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; type-check, dependency holds, and roadmap schema need review. |
 | `mcp-m365` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; configuration injection, dependency holds, and roadmap schema need review. |
 | `tools-git-almanac` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks and TOML are committed; accepted-requirement and roadmap schema findings need review. |
@@ -70,7 +70,7 @@ Mechanical conform precedes dependency and judgment work. Awaiting review record
 
 ## Files touched
 
-This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in the Harness. Completed clean baselines are `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, and `mcp-housekeeping-claude` at `8b0180f`; the gsuite acceptance/prune boundary is `c49e011` then `21eb1d2`. Earlier Harness fixes and all estate `.ki.toml`, hook, package-manifest, lockfile, and managed-ignore changes are committed. Audit reports are temporary outside repositories.
+This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in the Harness. Completed clean baselines are `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, and `mcp-ki-kb-fs` at `53cd14a`; the gsuite acceptance/prune boundary is `c49e011` then `21eb1d2`. Earlier Harness fixes and all estate `.ki.toml`, hook, package-manifest, lockfile, and managed-ignore changes are committed. Audit reports are temporary outside repositories.
 
 ## Open questions
 
@@ -78,4 +78,4 @@ Whether Arcadia's missing Granola capability is a stale declaration or unpublish
 
 ## Next step
 
-Commit this checkpoint update, then fully progress `mcp-ki-kb-fs` from mechanical re-audit through dependency, verification, judgment, roadmap, and committed baseline. Update its ledger row immediately after its stable result before moving to the next repository.
+Commit this checkpoint update, then fully progress `mcp-ki-kb-notion-mirror` from mechanical re-audit through dependency, verification, judgment, roadmap, and committed baseline. Update its ledger row immediately after its stable result before moving to the next repository.
