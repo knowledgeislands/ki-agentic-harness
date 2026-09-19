@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-19T19:41:00Z
+updated_at: 2026-09-19T19:49:00Z
 ---
 
 # estate-baseline-audit
@@ -16,7 +16,7 @@ Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge
 
 The estate contains 21 repositories. At the start of this pass every repository was on `main`, clean, and using one primary worktree. Recheck those conditions immediately before touching each repository because other humans and agents share the trees.
 
-Fifteen repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, `tools-mgit` at `5e43795`, `tools-git-almanac` at `539cb49`, `homebrew-tap` at `7252363`, `ki-plugins` at `52ae513`, `ki-specifications` at `32fc900`, `ki-arcadia-principal` at `864b969`, and `ki-techne-principal` at `d35e256`.
+Sixteen repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, `tools-mgit` at `5e43795`, `tools-git-almanac` at `539cb49`, `homebrew-tap` at `7252363`, `ki-plugins` at `52ae513`, `ki-specifications` at `32fc900`, `ki-arcadia-principal` at `864b969`, `ki-techne-principal` at `d35e256`, and `ki-techne-tools` at `b7efdb6`.
 
 The earlier deferral of `mcp-acquire-whatsapp`, `tools-rig`, and `ki-agentic-harness` is lifted by the user's request to cover every remaining repository. They still move to the end so concurrent work can be detected before any edit. “ToolsWig” was interpreted as `tools-rig`; “Shay Noir” is the external chezmoi repository and is not one of the 21 repositories in this estate.
 
@@ -53,7 +53,7 @@ The columns map to checklist groups: `G` = 1, `M` = 2, `C` = 3, `D` = 4, `V` = 5
 | `ki-plugins` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `52ae513`: all 11 declared audits and both marketplace JSON parses pass; GitHub identity and settings align; runtime-neutral orientation added; topic override and obsolete HANDOFFS scaffolds removed. Proprietary root licence conflicts with GitHub's MIT detection; generated `.mjs` must be migrated in Harness source. |
 | `ki-specifications` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `32fc900`: all 14 declared audits and every schema example pass; GitHub identity and settings align; bare Claude import added; obsolete HANDOFFS surfaces and superseded CLI-006 packet removed; completed RGV-002 pruned separately. RGV-001 remains an intentionally open Next/draft review. |
 | `ki-techne-principal` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `d35e256`: all 16 declared audits and the 54-file Markdown gate pass; no package dependencies or `.mjs` utilities exist; live GitHub identity and settings align; obsolete HANDOFFS scaffolds removed; accepted Done OPS-008 pruned separately. |
-| `ki-techne-tools` | ✓ | ✓ | △ | — | — | △ | ✓ | — | TOML committed at `4574998`; declared MIT licence and live GitHub licence need reconciliation. |
+| `ki-techne-tools` | ✓ | ✓ | ✓ | ✓ | △ | ✓ | ✓ | ✓ | Baseline `b7efdb6`: all 14 audits pass; CLI and controller TypeScript/Python tests, build, help surfaces, Biome, Knip, Syncpack, Markdown, dependency and root-layout gates pass; dependencies current; GitHub MIT identity aligns. Judgment found and restored the root manifest contract before OPS-001 was accepted and pruned separately. CloudFormation validation has prior successful delivery evidence but the baseline rerun could not refresh the host's expired AWS SSO token. |
 | `ki-website` | ✓ | ✓ | △ | — | — | △ | ✓ | — | Hooks, release registry, and TOML are committed; KI-WEB-SITE-012 needs roadmap review. |
 | `mcp-git-audit` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `6905787`: 15-skill audit and full gate pass; dependencies current; legacy working records removed; MCP-GIT-TOOL-006 captured in Triage. |
 | `mcp-gsuite` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `4759952`: 15-skill audit and full gate pass; compatible Zod hold restored; Awaiting review work accepted and pruned; legacy working records removed. |
@@ -86,4 +86,4 @@ This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in 
 
 ## Next step
 
-Commit this checkpoint update, then fully progress `ki-techne-tools`, update this ledger immediately after the repository reaches a stable result, and continue through all remaining repositories.
+Commit this checkpoint update, then fully progress `ki-website`, update this ledger immediately after the repository reaches a stable result, and continue through all remaining repositories.
