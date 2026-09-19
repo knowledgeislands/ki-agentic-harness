@@ -216,11 +216,11 @@ Comprehension-first modularity and deliberately restrained abstraction.
   - _Review prompt:_ Do module boundaries match domain concerns and reasons to change; can a maintainer follow ordinary control flow and policy from clear names and interfaces; and does each shared abstraction retain the same meaning, lifecycle, and error semantics for every caller?
   - _Outcomes:_ conforming; gap; exception
   - _Conforming guidance:_ Split a mixed-responsibility module at a domain seam, simplify or name an obscuring abstraction, or retain documented local duplication where it makes the domain clearer.
-- **DESIGN-2 [J] — Module boundaries are stated and enforced** — Boundaries the repository relies on — layer direction, logic-free artifact shells, and the seam its tests exercise — are declared as dependency-cruiser rules, run from the governed script surface, and covered by a test that proves the checker can still fail. (standards-engineering.md#repo-shapes--flat-vs-monorepo-core)
-  - _Evidence scope:_ Declared module boundaries, `.dependency-cruiser.ts` rules and the roots they cruise, the script that runs them, and the test that proves the checker still reports violations.
-  - _Review prompt:_ Does every boundary the design depends on have a forbidden rule that a violating import would actually trip, does the cruise cover each root those rules name, and does a test prove the checker fails on a deliberate violation rather than reporting a clean graph it never evaluated?
+- **DESIGN-2 [J] — Module boundaries are stated and enforced** — Boundaries the repository relies on — layer direction, logic-free artifact shells, and the seam its tests exercise — are declared as dependency-cruiser rules, cruised over a graph proved to resolve, and covered by a test that proves the checker can still fail. (standards-engineering.md#repo-shapes--flat-vs-monorepo-core)
+  - _Evidence scope:_ Declared module boundaries, `.dependency-cruiser.ts` rules and the roots they cruise, its resolution and transpiler configuration, the script that runs them, and the test that proves the checker still reports violations.
+  - _Review prompt:_ Does every boundary the design depends on have a forbidden rule that a violating import would actually trip, does the cruise cover each root those rules name and resolve the imports they match on, and does a test prove the checker fails on a deliberate violation rather than reporting a clean graph it never read?
   - _Outcomes:_ conforming; gap; exception
-  - _Conforming guidance:_ State the missing boundary as a forbidden rule, widen the cruise to the roots its rules name, add the failure-proving test, or record why a boundary is a convention this repository deliberately leaves unchecked.
+  - _Conforming guidance:_ State the missing boundary as a forbidden rule, widen the cruise to the roots its rules name, configure resolution and the transpiler so the graph is real, add the failure-proving test with its module floor, or record why a boundary is a convention this repository deliberately leaves unchecked.
 
 ## REVIEW — Change-aware consistency review
 
