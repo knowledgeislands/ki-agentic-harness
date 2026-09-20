@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-20T00:16:00Z
+updated_at: 2026-09-20T06:20:00Z
 ---
 
 # estate-baseline-audit
@@ -66,7 +66,7 @@ The columns map to checklist groups: `G` = 1, `M` = 2, `C` = 3, `D` = 4, `V` = 5
 | `tools-git-almanac` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `539cb49`: all 17 audits pass; 53 tests at 100% coverage, TypeScript, build, Biome, Knip, Syncpack, and mandoc pass; dependencies current; 20 accepted requirements carry concrete conformance evidence; GitHub identity and settings align. |
 | `tools-ki` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `aaa0570`: all 18 audits, full Vitest and coverage gates, TypeScript, compiled build, Biome, Knip, Syncpack, mandoc and Markdown pass; dependencies current; live GitHub identity and settings align; no `.mjs` or obsolete HANDOFFS remain. KI-TOOL-BATCH-001 is complete but only two days old, so remains within the one-week `_BATCHES` retention window. |
 | `tools-mgit` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `5e43795`: all 15 audits, ShellCheck, 58 Bats tests, and mandoc pass; GitHub identity and settings align; topic override and obsolete HANDOFFS scaffold removed. |
-| `mcp-acquire-whatsapp` | — | — | — | — | — | — | — | — | Recheck for concurrent work, then run the full pass near the end. |
+| `mcp-acquire-whatsapp` | ✓ | ! | — | — | — | — | ✓ | — | Active shared-tree work detected on 20 September: six source/roadmap paths changed within minutes and three repository server processes are running. Preserve those changes and return after the remaining repositories; do not install, conform, format, stage or commit while the implementation is live. |
 | `tools-rig` | — | — | — | — | — | — | — | — | Recheck for concurrent work, then run the full pass near the end. |
 | `ki-agentic-harness` | — | — | — | — | — | — | — | — | Run last because it owns this checkpoint, audit tooling, and generated projections. |
 
