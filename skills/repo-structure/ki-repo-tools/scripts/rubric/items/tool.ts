@@ -255,14 +255,14 @@ const TOOL_CHANGELOG = mechanical(
 const TOOL_DEVELOPER_GUIDES = mechanical(
   'TOOL-DEVELOPER-GUIDES',
   'Developer delivery guides',
-  '`docs/guides/developer/done.md` and `docs/guides/developer/releasing.md` are physical regular files; their content remains repository-defined.',
+  '`docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` are physical regular files; their content remains repository-defined.',
   'FAIL',
   (context) => {
     const skipped = notApplicable(context)
     if (skipped) return skipped
 
     return [
-      ['docs/guides/developer/done.md', context.developerDoneGuide],
+      ['docs/guides/developer/definition-of-done.md', context.developerDefinitionOfDoneGuide],
       ['docs/guides/developer/releasing.md', context.developerReleasingGuide]
     ].map(([path, state]) =>
       state === 'physical'

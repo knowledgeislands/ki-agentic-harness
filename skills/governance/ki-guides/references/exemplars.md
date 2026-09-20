@@ -46,7 +46,7 @@ If a generated output differs, inspect its source-of-truth and rerun the owned g
 
 ```text
 docs/guides/developer/
-├── done.md
+├── definition-of-done.md
 └── releasing.md
 ```
 

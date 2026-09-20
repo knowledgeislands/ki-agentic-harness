@@ -104,17 +104,17 @@ test('developer delivery guides are required as regular files without prescribin
   }
 
   expect(audit().map(({ status, subject }) => ({ status, subject }))).toEqual([
-    { status: 'VIOLATION', subject: 'docs/guides/developer/done.md' },
+    { status: 'VIOLATION', subject: 'docs/guides/developer/definition-of-done.md' },
     { status: 'VIOLATION', subject: 'docs/guides/developer/releasing.md' }
   ])
 
   const developerGuides = join(repository, 'docs', 'guides', 'developer')
   mkdirSync(developerGuides, { recursive: true })
-  writeFileSync(join(developerGuides, 'done.md'), '')
+  writeFileSync(join(developerGuides, 'definition-of-done.md'), '')
   writeFileSync(join(developerGuides, 'releasing.md'), '')
 
   expect(audit().map(({ status, subject }) => ({ status, subject }))).toEqual([
-    { status: 'PASS', subject: 'docs/guides/developer/done.md' },
+    { status: 'PASS', subject: 'docs/guides/developer/definition-of-done.md' },
     { status: 'PASS', subject: 'docs/guides/developer/releasing.md' }
   ])
 

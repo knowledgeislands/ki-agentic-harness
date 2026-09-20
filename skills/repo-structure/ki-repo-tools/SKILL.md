@@ -38,7 +38,7 @@ tools-<name>/
 ├── man/<name>.1            # Optional manual source; when present, CI runs mandoc -T lint.
 ├── CHANGELOG.md            # semver release history or a declared current-release baseline.
 ├── docs/guides/developer/
-│   ├── done.md             # Required; repository-defined delivery-readiness guide.
+│   ├── definition-of-done.md             # Required; repository-defined delivery-readiness guide.
 │   └── releasing.md        # Required; repository-defined release guide.
 ├── README.md · LICENSE     # ki-repo's job — not governed here.
 └── .ki.toml                # qualified ki-repo + ki-repo-tools declarations (the opt-in marker).

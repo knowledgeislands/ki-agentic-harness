@@ -22,7 +22,7 @@ Maintain two composable repository-structure skills:
 - `ki-repo-tools` governs a repository containing one standalone CLI. It covers the executable container, installer, tests, CI, changelog, version and release markers, help, completion, optional manual, distribution boundaries, and capability-conditional checks.
 - `ki-repo-homebrew-tap` governs the companion tap and its `Formula/*.rb` package definitions.
 - Both compose with `ki-repo`. A tool repository composes with `ki-engineering` only when its detected implementation capabilities require that overlay.
-- `ki-repo-tools` requires physical regular files at `docs/guides/developer/done.md` and `docs/guides/developer/releasing.md`. It checks only their presence and safe file type. Each repository owns their substantive procedures; `ki-guides` governs their ordinary guide form.
+- `ki-repo-tools` requires physical regular files at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. It checks only their presence and safe file type. Each repository owns their substantive procedures; `ki-guides` governs their ordinary guide form.
 - The repository coverage cascade detects undeclared tool and tap shapes so that applicable governance remains explicit.
 
 ## Consequences

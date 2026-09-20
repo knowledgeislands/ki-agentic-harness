@@ -37,7 +37,7 @@ tools-<name>/
 ├── man/<name>.1            # Optional manual source; when present, mandoc runs in CI.
 ├── CHANGELOG.md            # semver release history or current-release baseline. Expected.
 ├── docs/guides/developer/
-│   ├── done.md             # Required repository-defined delivery-readiness guide.
+│   ├── definition-of-done.md             # Required repository-defined delivery-readiness guide.
 │   └── releasing.md        # Required repository-defined release guide.
 ├── README.md · LICENSE     # ki-repo's job.
 └── .ki.toml                # qualified ki-repo + ki-repo-tools declarations.
@@ -54,9 +54,9 @@ tools-<name>/
 
 ## Developer delivery guides
 
-Every tool repository carries physical regular files at `docs/guides/developer/done.md` and `docs/guides/developer/releasing.md`. `ki-repo-tools` enforces only their presence and safe file type; each repository defines the contents that fit its tool, delivery risks, and release mechanism.
+Every tool repository carries physical regular files at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. `ki-repo-tools` enforces only their presence and safe file type; each repository defines the contents that fit its tool, delivery risks, and release mechanism.
 
-`done.md` is the repository's local route for deciding that a change is complete. `releasing.md` is its local route for preparing and publishing a release. `ki-guides` governs their ordinary guide placement and form when selected, but neither skill imposes a universal substantive checklist.
+`definition-of-done.md` is the repository's local route for deciding that a change is complete. `releasing.md` is its local route for preparing and publishing a release. `ki-guides` governs their ordinary guide placement and form when selected, but neither skill imposes a universal substantive checklist.
 
 ## Versioning & releases
 

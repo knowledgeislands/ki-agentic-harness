@@ -1,6 +1,6 @@
 # Mode CONFORM — bring an existing tool repository up to standard
 
-Missing developer delivery guides remain report-only: author repository-specific procedures at `docs/guides/developer/done.md` and `docs/guides/developer/releasing.md`. CONFORM does not invent or standardise their contents.
+Missing developer delivery guides remain report-only: author repository-specific procedures at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. CONFORM does not invent or standardise their contents.
 
 _On-demand procedure for `ki-repo-tools` CONFORM. The hosted catalogue owns its bounded executable-bit and configuration-marker actions; this procedure coordinates the judgment repairs and sibling skills that remain outside that transaction._
 
