@@ -3,7 +3,7 @@ type: ki-checkpoint
 thread: estate-baseline-audit
 state: active
 created_at: 2026-09-19T08:56:54Z
-updated_at: 2026-09-20T06:20:00Z
+updated_at: 2026-09-20T06:27:00Z
 ---
 
 # estate-baseline-audit
@@ -16,7 +16,7 @@ Mechanically conform, dependency-refresh, and judgmentally audit every Knowledge
 
 The estate contains 21 repositories. At the start of this pass every repository was on `main`, clean, and using one primary worktree. Recheck those conditions immediately before touching each repository because other humans and agents share the trees.
 
-Eighteen repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, `tools-mgit` at `5e43795`, `tools-git-almanac` at `539cb49`, `homebrew-tap` at `7252363`, `ki-plugins` at `52ae513`, `ki-specifications` at `32fc900`, `ki-arcadia-principal` at `864b969`, `ki-techne-principal` at `d35e256`, `ki-techne-tools` at `b7efdb6`, `ki-website` at `8666ce3`, and `tools-ki` at `aaa0570`.
+Nineteen repositories are baselined: `mcp-git-audit` at `6905787`, `mcp-gsuite` at `4759952`, `mcp-housekeeping-claude` at `8b0180f`, `mcp-ki-kb-fs` at `53cd14a`, `mcp-ki-kb-notion-mirror` at `138a7d9`, `mcp-m365` at `4a73c07`, `mcp-housekeeping-codex` at `15e4152`, `mcp-housekeeping-chatgpt` at `033b466`, `tools-mgit` at `5e43795`, `tools-git-almanac` at `539cb49`, `homebrew-tap` at `7252363`, `ki-plugins` at `52ae513`, `ki-specifications` at `32fc900`, `ki-arcadia-principal` at `864b969`, `ki-techne-principal` at `d35e256`, `ki-techne-tools` at `b7efdb6`, `ki-website` at `8666ce3`, `tools-ki` at `aaa0570`, and `tools-rig` at `f18780b`.
 
 The earlier deferral of `mcp-acquire-whatsapp`, `tools-rig`, and `ki-agentic-harness` is lifted by the user's request to cover every remaining repository. They still move to the end so concurrent work can be detected before any edit. “ToolsWig” was interpreted as `tools-rig`; “Shay Noir” is the external chezmoi repository and is not one of the 21 repositories in this estate.
 
@@ -67,7 +67,7 @@ The columns map to checklist groups: `G` = 1, `M` = 2, `C` = 3, `D` = 4, `V` = 5
 | `tools-ki` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `aaa0570`: all 18 audits, full Vitest and coverage gates, TypeScript, compiled build, Biome, Knip, Syncpack, mandoc and Markdown pass; dependencies current; live GitHub identity and settings align; no `.mjs` or obsolete HANDOFFS remain. KI-TOOL-BATCH-001 is complete but only two days old, so remains within the one-week `_BATCHES` retention window. |
 | `tools-mgit` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `5e43795`: all 15 audits, ShellCheck, 58 Bats tests, and mandoc pass; GitHub identity and settings align; topic override and obsolete HANDOFFS scaffold removed. |
 | `mcp-acquire-whatsapp` | ✓ | ! | — | — | — | — | ✓ | — | Active shared-tree work detected on 20 September: six source/roadmap paths changed within minutes and three repository server processes are running. Preserve those changes and return after the remaining repositories; do not install, conform, format, stage or commit while the implementation is live. |
-| `tools-rig` | — | — | — | — | — | — | — | — | Recheck for concurrent work, then run the full pass near the end. |
+| `tools-rig` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Baseline `f18780b`: all 15 audits, 124 Bats tests, ShellCheck, mandoc and 30-file Markdown gate pass; no package dependencies or `.mjs` utilities exist; live GitHub identity and settings align. CORE-007 and CORE-008 accepted together, then pruned together in a separate commit. Seven completed `_BATCHES` records remain within the one-week retention window. |
 | `ki-agentic-harness` | — | — | — | — | — | — | — | — | Run last because it owns this checkpoint, audit tooling, and generated projections. |
 
 ## Decisions made
@@ -86,4 +86,4 @@ This thread currently touches only `+/_CHECKPOINTS/estate-baseline-audit.md` in 
 
 ## Next step
 
-Commit this checkpoint update, then recheck concurrent work and fully progress `mcp-acquire-whatsapp`, update this ledger immediately after the repository reaches a stable result, and continue through `tools-rig` before auditing Harness itself last.
+Commit this checkpoint update, audit Harness itself, then return to `mcp-acquire-whatsapp` and complete it only if the active shared-tree work has settled.
