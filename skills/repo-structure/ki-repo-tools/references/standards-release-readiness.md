@@ -4,6 +4,7 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 
 ## 1. Establish the candidate
 
+- Read the repository's `docs/guides/developer/done.md` and `docs/guides/developer/releasing.md`, then follow their local requirements. This shared checklist complements those repository-specific procedures; it does not replace them.
 - Confirm the intended `vX.Y.Z` version against the latest released tag and Semantic Versioning. Record breaking changes, migrations, or an explicit statement that none apply.
 - Review the product changes since the last release. Exclude unrelated working-tree changes and resolve any release-blocking failures before changing the version marker.
 - Keep one version source of truth in the executable or package metadata. Verify that the candidate's `--version` output will match its tag and top changelog entry. Any automated release workflow MUST reject a mismatch before building, signing, creating a draft, or publishing; a post-publication installation check is not an adequate backstop for an immutable release.

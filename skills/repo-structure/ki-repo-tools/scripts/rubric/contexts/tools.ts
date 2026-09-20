@@ -35,6 +35,8 @@ export type ToolRepositoryContext = {
   readonly changelogVersion: string | null
   readonly install: ExecutableState
   readonly changelog: FileState
+  readonly developerDoneGuide: FileState
+  readonly developerReleasingGuide: FileState
   readonly workflows: DirectoryState
   readonly workflowFiles: readonly string[]
   readonly unsafeWorkflowEntries: readonly string[]
@@ -240,6 +242,18 @@ export const createToolsSession = ({
   const changelogKind = rootState === 'physical' ? nodeKind(join(root, 'CHANGELOG.md')) : 'missing'
   const changelog: FileState =
     changelogKind === 'missing' ? 'missing' : changelogKind === 'file' ? 'physical' : 'unsafe'
+  const developerDoneGuideKind =
+    rootState === 'physical' ? nodeKind(join(root, 'docs', 'guides', 'developer', 'done.md')) : 'missing'
+  const developerDoneGuide: FileState =
+    developerDoneGuideKind === 'missing' ? 'missing' : developerDoneGuideKind === 'file' ? 'physical' : 'unsafe'
+  const developerReleasingGuideKind =
+    rootState === 'physical' ? nodeKind(join(root, 'docs', 'guides', 'developer', 'releasing.md')) : 'missing'
+  const developerReleasingGuide: FileState =
+    developerReleasingGuideKind === 'missing'
+      ? 'missing'
+      : developerReleasingGuideKind === 'file'
+        ? 'physical'
+        : 'unsafe'
   const releaseVersion = packageVersion(readableText(join(root, 'package.json')))
   const changelogRelease = changelog === 'physical' ? changelogVersion(readableText(join(root, 'CHANGELOG.md'))) : null
 
@@ -331,6 +345,8 @@ export const createToolsSession = ({
       changelogVersion: changelogRelease,
       install,
       changelog,
+      developerDoneGuide,
+      developerReleasingGuide,
       workflows: inspectedWorkflows.state,
       workflowFiles: inspectedWorkflows.files,
       unsafeWorkflowEntries,

@@ -23,7 +23,7 @@ The full, quotable standard lives in [the tool-repository standard](references/s
 
 This skill judges the **container** and a small shared public interface — not the quality of the tool's own implementation:
 
-- **In scope:** the `bin/<tool>` layout and its exec bit, `install.sh`, local release-marker shape, `CHANGELOG.md`, CI source shape, test-suite presence, completion, manual authoring and distribution, and the capability conditionals below. Runtime `--version`, installer, CI, and release execution remain separate evidence.
+- **In scope:** the `bin/<tool>` layout and its exec bit, required developer delivery-guide paths, `install.sh`, local release-marker shape, `CHANGELOG.md`, CI source shape, test-suite presence, completion, manual authoring and distribution, and the capability conditionals below. Runtime `--version`, installer, CI, and release execution remain separate evidence.
 - **Out of scope:** whether tool-specific operations are correct, well-factored, or fast. That is the tool author's concern (and, for a shell tool, shellcheck + bats — which this skill checks are _wired_, not what they _find_). The Homebrew tap and its formula are `ki-repo-homebrew-tap`'s; the repo's README, LICENSE, and GitHub settings are `ki-repo`'s.
 
 ## The canonical shape at a glance
@@ -37,11 +37,14 @@ tools-<name>/
 ├── .github/workflows/*.yml # CI: lint + test on every push. Expected.
 ├── man/<name>.1            # Optional manual source; when present, CI runs mandoc -T lint.
 ├── CHANGELOG.md            # semver release history or a declared current-release baseline.
+├── docs/guides/developer/
+│   ├── done.md             # Required; repository-defined delivery-readiness guide.
+│   └── releasing.md        # Required; repository-defined release guide.
 ├── README.md · LICENSE     # ki-repo's job — not governed here.
-└── .ki.toml         # carries qualified ki-repo + ki-repo-tools declarations (the opt-in marker).
+└── .ki.toml                # qualified ki-repo + ki-repo-tools declarations (the opt-in marker).
 ```
 
-`bin/` with ≥1 executable file is the only hard requirement (**FAIL** if missing); everything else is **WARN** — expected but not ship-stopping. The companion Homebrew formula lives in the tap repo (`homebrew-<x>`, `Formula/<name>.rb`), governed by `ki-repo-homebrew-tap` — cross-reference it, don't reproduce it.
+`bin/` with ≥1 executable file and both developer delivery guides are hard requirements (**FAIL** if missing); every other expected surface is **WARN** — expected but not ship-stopping. The guide contents remain repository-defined. The companion Homebrew formula lives in the tap repo (`homebrew-<x>`, `Formula/<name>.rb`), governed by `ki-repo-homebrew-tap` — cross-reference it, don't reproduce it.
 
 ## The capability-conditional rule
 
