@@ -4,12 +4,12 @@ area: GOV
 title: Enforce AGENTS.md root orientation
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 6e6c2e282366087f14a65594318546dd8976d601
 created_at: 2026-09-18T04:05:10Z
-updated_at: 2026-09-19T11:38:01Z
+updated_at: 2026-09-20T06:46:00Z
 ---
 
 # Enforce AGENTS.md root orientation
@@ -126,6 +126,10 @@ The implementation meets the item goal with deterministic local evidence, stays 
 ### Mini recap
 
 Multi-runtime repositories now receive an actionable warning when shared orientation is absent or inverted. The next durable route is an estate-conformance item before any severity promotion.
+
+## Done
+
+Accepted by Kris Brown on 20 September 2026 under the standing estate-baseline approval after the full Harness audit, test, type, Biome, Knip, Syncpack, Markdown and advisory evaluation gates completed.
 
 ## Discussion
 

@@ -4,12 +4,12 @@ area: GOV
 title: Bridge working-area contracts
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: fc2e055568420e7950f2db3ca40a0343c229cda1
 created_at: 2026-09-18T04:25:43Z
-updated_at: 2026-09-18T05:22:00Z
+updated_at: 2026-09-20T06:46:00Z
 ---
 
 # Bridge Working-Area Contracts
@@ -112,6 +112,10 @@ Current repository templates and CONFORM behaviour did not change. The exception
 ### Mini recap
 
 The Harness bridge enabled immutable v0.4.0 publication without weakening the current repository contract.
+
+## Done
+
+Accepted by Kris Brown on 20 September 2026 under the standing estate-baseline approval after the full Harness audit, test, type, Biome, Knip, Syncpack, Markdown and advisory evaluation gates completed.
 
 ## Discussion
 

@@ -4,12 +4,12 @@ area: GOV
 title: Reduce outcome routing guide
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 6e6c2e282366087f14a65594318546dd8976d601
 created_at: 2026-09-18T05:35:00Z
-updated_at: 2026-09-19T11:38:02Z
+updated_at: 2026-09-20T06:46:00Z
 transferred_from: KI-WEB-SITE-008
 ---
 
@@ -115,6 +115,10 @@ The change establishes one maintained source without breaking existing local URL
 ### Mini recap
 
 Outcome routing is now website-owned; the Harness retains only a stable pointer and its generated capability facts.
+
+## Done
+
+Accepted by Kris Brown on 20 September 2026 under the standing estate-baseline approval after the full Harness audit, test, type, Biome, Knip, Syncpack, Markdown and advisory evaluation gates completed.
 
 ## Discussion
 
