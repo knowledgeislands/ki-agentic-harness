@@ -4,12 +4,12 @@ title: Acquire Granola meetings
 area: OPS
 theme: operations
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
 created_at: 2026-08-24T15:11:06Z
-updated_at: 2026-09-20T11:44:04Z
+updated_at: 2026-09-20T11:58:46Z
 ---
 
 ## Goal
@@ -225,6 +225,10 @@ The four ledgers carry the same account, source schema, interval, and identity-c
 ### Mini recap
 
 Granola acquisition is complete and repeatable across the registered receiver estate. Human deletion of the exact eligible list is the remaining source-side action; one meeting stays in Granola until its missing detail projection becomes available or the human decides separately.
+
+## Done
+
+Accepted by Kris Brown on 20 September 2026 under standing approval to close and prune Awaiting review work. The complete four-receiver reconciliation, committed receiver evidence, stable repeat-import results, action-first grammar correction, and fail-closed manual-release manifest satisfy the reviewed delivery; the single detail-unavailable meeting remains explicitly excluded from deletion.
 
 ## Discussion
 
