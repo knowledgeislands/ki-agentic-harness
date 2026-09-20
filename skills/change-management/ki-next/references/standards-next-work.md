@@ -158,7 +158,7 @@ For a newly captured local record, write one canonical UTC-second instant to bot
 
 ## 8. Finish
 
-During a normal next-work cycle, apply the `ki-batch` “Batch retention” rule to `+/_BATCHES/`. Remove only records that satisfy that owner's seven-day inactivity and evidence guards, then report the exact removals. This routine maintenance is authorised without another confirmation; it does not select, accept, or prune roadmap work. No other working-area cleanup is implied.
+During a normal next-work cycle, apply the `ki-batch` “Batch retention” rule to `+/_BATCHES/`. Remove inactive records as soon as useful outcomes and follow-up are dispositioned. Treat an incompletely dispositioned inactive record at or after seven days as overdue: route useful follow-up, record when none remains, then prune it. Report the exact removals. This routine maintenance is authorised without another confirmation; it does not select, accept, or prune roadmap work. No other working-area cleanup is implied.
 
 Report each confirmed handoff disposition, synergy decision (including excluded near-matches), files changed, selected work, and audit result.
 

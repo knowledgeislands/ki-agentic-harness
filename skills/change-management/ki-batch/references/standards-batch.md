@@ -100,9 +100,11 @@ Outcome authority may cover a public-contract decision only when the current hum
 
 `+/_BATCHES/` holds temporary authority and run-account inputs. `_AUTHORISATIONS` is retired and has no discovery fallback.
 
-Regular `ki-next` and `ki-recap` housekeeping may remove an inactive batch only when its last verified activity is strictly more than seven days old and every named item's useful outcome remains in its canonical work record or committed history. Activity is the latest of the last Git commit changing the exact path, last recorded run activity, approval time, and expiry. Filesystem modification time is not evidence; exactly seven days is not eligible.
+Batch records are temporary authority and run-account inputs, not durable follow-up stores. Regular `ki-next` and `ki-recap` housekeeping may remove an inactive batch as soon as every named item's useful outcome or follow-up has been dispositioned in its canonical work record, committed history, or an explicit no-follow-up finding. Do not retain a completed record merely to satisfy a seven-day minimum.
 
-The caller must prove the exact flat path is a regular file within the physical Git root with no symlinked ancestor, committed with identical HEAD, index, and working-copy bytes. It must inspect the full ledger, prove the batch inactive, and provide retained canonical outcome evidence for every item. Active, malformed, unbound, uncommitted, unknown, or incompletely evidenced batches remain retained with a reason.
+Seven days is the cleanup deadline for an inactive record whose disposition remains incomplete. Activity is the latest of the last Git commit changing the exact path, last recorded run activity, approval time, and expiry. At or after seven days, housekeeping must report the record as overdue, route any still-useful follow-up to its canonical owner, record explicit evidence when nothing useful remains, and then prune the batch in the same maintenance cycle. Filesystem modification time is not evidence and incidental formatting or housekeeping must not restart the relevance clock.
+
+The caller must prove the exact flat path is a regular file within the physical Git root with no symlinked ancestor, committed with identical HEAD, index, and working-copy bytes. It must inspect the full ledger, prove the batch inactive, and provide canonical outcome or follow-up disposition evidence for every item. Active, malformed, unbound, uncommitted, or unknown batches remain retained with a reason. Incomplete disposition before seven days remains visible for routing; incomplete disposition at or after seven days is overdue maintenance, not permission for indefinite retention.
 
 `scripts/internal/batch-retention.ts` is a pure selector and never reads or deletes files. Immediately before deletion, revalidate all evidence. Delete only the selected exact paths, commit only owned deletions under `ki-git`, and report Git-history recovery. This policy never authorises work-item pruning.
 
@@ -110,8 +112,8 @@ The caller must prove the exact flat path is a regular file within the physical 
 
 `+/_AUTHORISATIONS/` is retired storage, not a discovery fallback. Classify each legacy entry from fresh caller-supplied filesystem, Git, lifecycle, canonical-outcome, destination, and age evidence before any mutation:
 
-- **Relocate** a committed, unchanged, contained regular completed record that is not yet retention-eligible. Preserve its exact filename and bytes beneath `+/_BATCHES/`, stop on an existing or unknown destination, verify the whole-file hash after moving, and re-parse it as `retained-legacy` non-executable evidence.
-- **Prune** a completed record only when `selectExpiredBatches` selects the byte-identical canonical-path projection under the ordinary inactivity, retained-outcome, containment, commit, and strictly-more-than-seven-days rule. A verified empty exact `+/_AUTHORISATIONS` directory contains no evidence and may also be pruned.
+- **Relocate** a committed, unchanged, contained regular record whose useful outcome or follow-up is not yet dispositioned. Preserve its exact filename and bytes beneath `+/_BATCHES/`, stop on an existing or unknown destination, verify the whole-file hash after moving, and re-parse it as `retained-legacy` non-executable evidence.
+- **Prune** a completed record as soon as `selectRetirableBatches` selects its byte-identical canonical-path projection under the ordinary inactivity, disposition, containment, and commit rules. A verified empty exact `+/_AUTHORISATIONS` directory contains no evidence and may also be pruned.
 - **Reauthorise** valid active or resumable legacy work through a newly approved lean exact-set record. Never translate an old approval, policy, run identity, or closure scope into current authority.
 - **Retain** malformed, uncommitted, symlinked, misplaced, destination-colliding, unknown, or incompletely evidenced entries at their existing path with the classifier's reason.
 

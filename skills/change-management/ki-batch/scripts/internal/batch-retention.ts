@@ -51,19 +51,26 @@ const retentionReason = (
     record.items.length !== batch.itemIds.length ||
     new Set(record.items.map((item) => item.id)).size !== batch.itemIds.length ||
     batch.itemIds.some((id) => !record.items.some((item) => item.id === id)) ||
-    record.items.some((item) => item.state !== 'inactive' || !item.retainedOutcomeEvidence?.trim())
+    record.items.some((item) => item.state !== 'inactive')
   )
-    return 'running work or missing retained canonical outcome evidence'
+    return 'running work or incomplete canonical item evidence'
   const activity = [record.lastGitChangeAt, record.lastRecordedActivityAt, batch.approvedAt, batch.expiresAt].map(
     instant
   )
   if (!Number.isFinite(now) || activity.some((time) => time === undefined)) return 'unverifiable activity timestamps'
-  if (now - Math.max(...(activity as number[])) <= WEEK_MS) return 'last activity is not more than seven days old'
+
+  if (record.items.some((item) => !item.retainedOutcomeEvidence?.trim())) {
+    const overdue = now - Math.max(...(activity as number[])) >= WEEK_MS
+    return overdue
+      ? 'overdue cleanup: useful outcome or follow-up not yet dispositioned'
+      : 'useful outcome or follow-up not yet dispositioned'
+  }
+
   return undefined
 }
 
 /** Pure selector shared by regular ki-next and ki-recap housekeeping; never reads or deletes files. */
-export const selectExpiredBatches = ({
+export const selectRetirableBatches = ({
   repositoryIdentity,
   now,
   records

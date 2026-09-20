@@ -27,6 +27,7 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 
 - Commit only the reviewed release artifacts, then create the matching `vX.Y.Z` tag and GitHub release. Do not tag an unverified or dirty candidate.
 - Hand the published tag to `ki-repo-homebrew-tap` for the formula's release URL, checksum, and tap-specific validation. That skill owns the formula change.
+- After the validated formula reaches the tap's default branch, the tap owns dispatching its verified tool-release event to explicitly enrolled consumers. The tool repository stores no shared release-App credentials and does not duplicate consumer-side validation. Existing consumer entries advance through their own review boundary; first-time entries, maturity changes, and consumers not enrolled in automation remain explicit receiver-owned handoffs.
 - Verify a fresh release installation and the package-manager path where practical. Confirm that the released executable reports the tagged version and its manual resolves when one is shipped.
 
 ## 5. Record the outcome

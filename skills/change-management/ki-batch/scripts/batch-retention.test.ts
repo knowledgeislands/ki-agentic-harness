@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test'
 import { approvedPayloadSha256 } from './internal/authorisation.ts'
-import { type BatchRetentionEvidence, selectExpiredBatches } from './internal/batch-retention.ts'
+import { type BatchRetentionEvidence, selectRetirableBatches } from './internal/batch-retention.ts'
 
 const repositoryIdentity = 'https://github.com/example/project'
 const now = new Date('2026-09-14T12:00:00Z')
@@ -41,7 +41,7 @@ policy: safe-local-v1
   }
 }
 const select = (records: BatchRetentionEvidence[], at = now) =>
-  selectExpiredBatches({ records, repositoryIdentity, now: at })
+  selectRetirableBatches({ records, repositoryIdentity, now: at })
 
 test('selects only committed inactive batches with verified retained outcomes and never writes', () => {
   const batch = record()
@@ -50,17 +50,32 @@ test('selects only committed inactive batches with verified retained outcomes an
   expect(JSON.stringify(batch)).toBe(before)
 })
 
-test('requires strictly more than seven days since every verified activity source', () => {
+test('selects inactive batches as soon as useful outcomes are dispositioned', () => {
   for (const batch of [
     { ...record(), lastGitChangeAt: threshold },
     { ...record(), lastRecordedActivityAt: threshold },
     record(threshold),
-    record(old, threshold)
+    record(old, threshold),
+    record('2026-09-15T12:00:00Z')
   ]) {
-    expect(select([batch]).selected).toEqual([])
-    expect(select([batch], new Date('2026-09-14T12:00:01Z')).selected).toEqual([batch.path])
+    expect(select([batch]).selected).toEqual([batch.path])
   }
-  expect(select([record('2026-09-15T12:00:00Z')]).selected).toEqual([])
+})
+
+test('retains useful follow-up for routing and marks unresolved cleanup overdue at seven days', () => {
+  const unrouted = (activity: string): BatchRetentionEvidence => ({
+    ...record(activity, activity),
+    lastGitChangeAt: activity,
+    lastRecordedActivityAt: activity,
+    items: [{ ...record().items[0], retainedOutcomeEvidence: null }]
+  })
+
+  expect(select([unrouted('2026-09-08T12:00:01Z')]).retained[0]?.reason).toBe(
+    'useful outcome or follow-up not yet dispositioned'
+  )
+  expect(select([unrouted(threshold)]).retained[0]?.reason).toBe(
+    'overdue cleanup: useful outcome or follow-up not yet dispositioned'
+  )
 })
 
 test('retains unsafe paths, symlinks, dirty records, active work and unknown evidence', () => {
@@ -106,5 +121,5 @@ test('retains malformed records, altered authority, absent ledgers and mismatche
   ]) {
     expect(select([{ ...batch, contents }]).selected).toEqual([])
   }
-  expect(selectExpiredBatches({ records: [batch], repositoryIdentity: 'foreign', now }).selected).toEqual([])
+  expect(selectRetirableBatches({ records: [batch], repositoryIdentity: 'foreign', now }).selected).toEqual([])
 })

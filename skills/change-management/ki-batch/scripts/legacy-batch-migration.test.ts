@@ -52,7 +52,7 @@ const record = (overrides: Partial<Extract<LegacyBatchMigrationEvidence, { kind:
 const classify = (evidence: LegacyBatchMigrationEvidence, at = now) =>
   classifyLegacyBatchMigration({ repositoryIdentity, now: at, evidence })
 
-test('relocates a completed young record byte-for-byte as retained non-executable evidence', () => {
+test('prunes a completed record as soon as its useful outcome is retained', () => {
   const evidence = record({
     contents: contents(recent, recent),
     lastGitChangeAt: recent,
@@ -60,25 +60,32 @@ test('relocates a completed young record byte-for-byte as retained non-executabl
   })
   const before = JSON.stringify(evidence)
   expect(classify(evidence)).toMatchObject({
-    outcome: 'relocate',
+    outcome: 'prune',
     sourcePath: evidence.path,
-    destinationPath: '+/_BATCHES/PROJECT-BATCH-001.md',
-    expectedContentsSha256: expect.stringMatching(/^[0-9a-f]{64}$/),
-    executable: false,
+    destinationPath: null,
     writes: false
   })
   expect(JSON.stringify(evidence)).toBe(before)
 })
 
-test('prunes only a completed record selected by the existing retention rule', () => {
+test('relocates incomplete follow-up evidence for explicit routing before cleanup', () => {
+  const unrouted = record({
+    contents: contents(recent, recent),
+    lastGitChangeAt: recent,
+    lastRecordedActivityAt: recent,
+    items: [{ id: 'PROJECT-001', state: 'inactive', retainedOutcomeEvidence: null }]
+  })
+
+  expect(classify(unrouted)).toMatchObject({
+    outcome: 'relocate',
+    destinationPath: '+/_BATCHES/PROJECT-BATCH-001.md',
+    executable: false,
+    writes: false
+  })
+
   expect(classify(record())).toMatchObject({
     outcome: 'prune',
     reason: 'completed record satisfies the canonical batch-retention rule',
-    writes: false
-  })
-  expect(classify(record(), new Date('2026-09-08T12:00:00Z'))).toMatchObject({
-    outcome: 'relocate',
-    executable: false,
     writes: false
   })
 })

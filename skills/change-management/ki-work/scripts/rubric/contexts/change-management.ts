@@ -15,7 +15,7 @@ const ADAPTERS: Readonly<Record<Adapter, AdapterDefinition>> = {
 export const batchReadme = {
   path: '+/_BATCHES/README.md',
   content:
-    '# Batches\n\nThis directory holds temporary batch inputs for repository work while `ki-work` is declared. `ki-batch` owns record shape, authority, run ledger, and retention.\n\nKeep active or uncertain records. Regular `ki-next` and `ki-recap` maintenance removes verified inactive records only after more than seven days without activity and after useful outcomes are retained in canonical work records. This README remains as the capability boundary.\n'
+    '# Batches\n\nThis directory holds temporary batch inputs for repository work while `ki-work` is declared. `ki-batch` owns record shape, authority, run ledger, and retention.\n\nKeep active records. Regular `ki-next` and `ki-recap` maintenance removes inactive records as soon as useful outcomes or follow-up are dispositioned, and treats unresolved records as overdue at seven days. This README remains as the capability boundary.\n'
 } as const
 
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML

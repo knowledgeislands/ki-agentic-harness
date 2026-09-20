@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { parseBatchAuthorisation } from './authorisation.ts'
-import { type BatchRetentionEvidence, selectExpiredBatches } from './batch-retention.ts'
+import { type BatchRetentionEvidence, selectRetirableBatches } from './batch-retention.ts'
 
 const LEGACY_DIRECTORY = '+/_AUTHORISATIONS'
 const CANONICAL_DIRECTORY = '+/_BATCHES'
@@ -120,8 +120,8 @@ export const classifyLegacyBatchMigration = ({
     batchState: evidence.batchState,
     items: evidence.items
   }
-  const retention = selectExpiredBatches({ repositoryIdentity, now, records: [retentionEvidence] })
-  if (retention.selected.length === 1) {
+  const retention = selectRetirableBatches({ repositoryIdentity, now, records: [retentionEvidence] })
+  if (retention.selected.length === 1 && evidence.destinationState === 'absent') {
     return {
       outcome: 'prune',
       sourcePath: evidence.path,
@@ -132,7 +132,10 @@ export const classifyLegacyBatchMigration = ({
   }
 
   const retentionReason = retention.retained[0]?.reason
-  if (retentionReason !== 'last activity is not more than seven days old')
+  if (
+    retention.selected.length === 0 &&
+    !retentionReason?.includes('useful outcome or follow-up not yet dispositioned')
+  )
     return retain(evidence.path, retentionReason ?? 'legacy batch retention evidence is incomplete')
   if (evidence.destinationState !== 'absent')
     return retain(
