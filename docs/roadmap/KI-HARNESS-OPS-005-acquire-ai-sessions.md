@@ -98,7 +98,7 @@ The existing housekeeping skills must remain usable while acquisition-specific c
 
 ### Decision Records
 
-Amend or supersede `ADR-KI-HARNESS-SKILLS-007` because it still assigns acquisition semantics to housekeeping skills and names the retired `ki space acquire <provider> import` grammar. Record that complete acquisition precedes receiver-local knowledge triage and that deletion is a separate manifest-authorised operation.
+Amend or supersede `ADR-KI-HARNESS-SKILLS-007` because it still assigns acquisition semantics to housekeeping skills. Record the action-first `ki acquire import --adapter <provider>` grammar, that complete acquisition precedes receiver-local knowledge triage, and that deletion is a separate manifest-authorised operation.
 
 ### Specifications
 

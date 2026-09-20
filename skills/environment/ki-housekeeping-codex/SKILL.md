@@ -23,7 +23,7 @@ The skill is opt-in while its machine-readable binding uses the experimental Cod
 
 Use the provider-neutral lifecycle: **acquire → stage → harvest → durable knowledge → archive/delete source**. For one exact physical repository, `mcp-housekeeping-codex` exposes read-only `codex_sessions_discover`, `codex_sessions_list`, `codex_session_read`, and `codex_sessions_checkpoint` operations. `list` and `checkpoint` are content-minimised provenance; `read` is the faithful source payload.
 
-The MCP does not write Knowledge Islands state. `ki space acquire codex import` will own inbound staging and incremental checkpoint persistence. Do not archive or delete a Codex session until acquisition, review, and harvesting have passed their later safety checkpoint.
+The MCP does not write Knowledge Islands state. `ki acquire import --adapter codex` will own inbound staging and incremental checkpoint persistence. Do not archive or delete a Codex session until acquisition, review, and harvesting have passed their later safety checkpoint.
 
 ## Operating modes
 

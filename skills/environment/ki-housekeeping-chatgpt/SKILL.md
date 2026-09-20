@@ -21,7 +21,7 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 
 Repository staging records the opaque source locator, timestamp, byte count, and hash but does not commit the opaque payload bytes by default. Those bytes contain no readable knowledge and remain permanently recoverable from Git after a later deletion; retain them only outside Git in an explicitly approved source store when the receiver has a justified need.
 
-`ki space acquire chatgpt import` owns repository-context staging and checkpoint persistence. The MCP never writes KI state, changes the ChatGPT store, decrypts a private format, archives, or deletes a source session.
+`ki acquire import --adapter chatgpt` owns repository-context staging and checkpoint persistence. The MCP never writes KI state, changes the ChatGPT store, decrypts a private format, archives, or deletes a source session.
 
 ## Operating modes
 
@@ -48,5 +48,5 @@ REFRESH writes only the canonical `ki-housekeeping-chatgpt` source in `ki-agenti
 ## Off-ramps
 
 - Durable knowledge promotion belongs to Arcadia's acquisition lifecycle.
-- Repository staging belongs to `ki space acquire chatgpt import` in `tools-ki`.
+- Repository staging belongs to `ki acquire import --adapter chatgpt` in `tools-ki`.
 - Archive or delete requires a later verified acquisition and harvest decision.

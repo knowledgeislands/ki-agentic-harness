@@ -19,7 +19,7 @@ The Harness owns reusable agent capabilities. `ki-housekeeping-claude` and `ki-h
 
 The Harness adopts Arcadia's provider-neutral knowledge-acquisition architecture. It supplies skills and provider MCP adapters that expose read-only discovery, listing, faithful reading, and checkpoint operations for a selected physical repository.
 
-The shared adapter surface is additive and access-gated. It returns only fields that the provider can faithfully supply, keeps content-minimised checkpoint data separate from source reads, and never writes KI state, classifies knowledge, or mutates a source session. `ki space acquire <provider> import` remains the repository-context consumer of these operations, not an MCP operation.
+The shared adapter surface is additive and access-gated. It returns only fields that the provider can faithfully supply, keeps content-minimised checkpoint data separate from source reads, and never writes KI state, classifies knowledge, or mutates a source session. `ki acquire import --adapter <provider>` remains the repository-context consumer of these operations, not an MCP operation.
 
 ## Consequences
 

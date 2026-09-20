@@ -30,7 +30,7 @@ The **mechanical arm** is split by area:
 
 Use the provider-neutral lifecycle: **acquire → stage → harvest → durable knowledge → archive/delete source**. For one exact physical repository, `mcp-housekeeping-claude` exposes read-only `claude_code_sessions_discover`, `claude_code_sessions_list`, `claude_code_session_read`, and `claude_code_sessions_checkpoint` operations. `list` and `checkpoint` are content-minimised provenance; the repository/session form of `session_read` is the faithful source payload. Its legacy project/session form remains a bounded preview.
 
-The MCP does not write Knowledge Islands state. `ki space acquire claude import` will own inbound staging and incremental checkpoint persistence. Do not archive or delete a Claude session until acquisition, review, and harvesting have passed their later safety checkpoint.
+The MCP does not write Knowledge Islands state. `ki acquire import --adapter claude` will own inbound staging and incremental checkpoint persistence. Do not archive or delete a Claude session until acquisition, review, and harvesting have passed their later safety checkpoint.
 
 ## Operating modes
 

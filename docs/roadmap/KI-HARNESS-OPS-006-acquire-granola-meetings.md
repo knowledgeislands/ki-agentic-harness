@@ -4,12 +4,12 @@ title: Acquire Granola meetings
 area: OPS
 theme: operations
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
 created_at: 2026-08-24T15:11:06Z
-updated_at: 2026-09-19T11:44:29Z
+updated_at: 2026-09-20T11:44:04Z
 ---
 
 ## Goal
@@ -40,7 +40,7 @@ The accepted capability evidence proves custom historical date windows, folder-s
 
 The intended steady state now includes retiring Granola source meetings after their complete acquired copies are verified in the correct repositories. That changes the retirement gate from “harvest everything first” to “prove a recoverable complete move first”; it does not grant acquisition code any mutation authority. No safe provider-supported deletion operation has yet been verified.
 
-The 2026-09-19 Now review re-grounded receiver state. `kit-legal` has committed `KIT-LEGAL-OPS-018` and declares the stable Legal folder ID; `kit-principal` declares the stable Personal folder ID plus explicit unfoldered and residual scopes. Their renamed `ki-acquire-granola` declarations resolve and audit cleanly, so the prepared intake and first direct-ingress mapping steps are complete. Arcadia still records the retired `ki space acquire <provider> import` grammar, complete provider-wide reconciliation has not been evidenced, and no provider-supported retirement operation exists.
+The 2026-09-20 live reconciliation completed the four-receiver union. Principal, Legal, HNR, and Arcadia share one account, source schema, interval, and identity-checkpoint hash over 216 unique Granola identities. Their 218 committed receiver copies include two intentional duplicates. Exhaustive repeat imports reported 36, 40, 140, and 2 unchanged meetings respectively, with all transcripts available. One HNR meeting repeatedly lacked its detail projection, so the exact manual-release manifest excludes it and lists the other 215 identities for human deletion. Arcadia and the reusable AI-session acquisition records now use the action-first adapter grammar. Granola remains read-only to KI; manual deletion is the accepted retirement path while no supported mutation API exists.
 
 ## Steps
 
@@ -53,7 +53,7 @@ The 2026-09-19 Now review re-grounded receiver state. `kit-legal` has committed 
 - [x] Implement a provider-neutral Granola renderer in `tools-ki` with one Markdown document per meeting, source-projection hashes, document checksum, version history, and provider-level ledger.
 - [x] Define receiver-local selectors by stable Granola folder identity plus first-class unfoldered and residual policies; report inclusion, exclusion, overlap, and unmatched outcomes.
 - [x] Configure direct ingress by best-served repository while retaining `kit-principal` for Personal, unfoldered, and residual meetings.
-- [ ] Reconcile the union of all configured receiver scopes against complete Granola discovery, failing closed on unexplained coverage gaps or conflicting duplicate identities and warning when unfoldered meetings require human consideration.
+- [x] Reconcile the union of all configured receiver scopes against complete Granola discovery: 216 identities, 218 committed receiver copies, two intentional duplicates, and one detail-unavailable identity excluded from manual release.
 - [x] Stage one Markdown document per meeting under each receiver's `+/_ACQUIRE/granola/`, advancing the local ledger only after document checksum and identity verification.
 - [x] Preserve generated notes, raw transcripts, participants, folder evidence, hashes, explicit omissions in readable lint-clean Markdown: meeting title H1, optional Attendees H2, source sections H2 with nested H3+, final Transcript H2.
 - [x] Model source amendments explicitly: changed source hashes update the meeting document, append ledger version history, and retain the previous acquired form in Git; scope exit never implies source or local deletion.
@@ -62,11 +62,11 @@ The 2026-09-19 Now review re-grounded receiver state. `kit-legal` has committed 
 - [x] Give `tools-ki` ownership of the action-first adapter migration in `KI-TOOL-CLI-072`, without retaining or submitting a trade for this rollout.
 - [x] Give `kit-principal` ownership of Personal, unfoldered, and residual receiver rollout in `KIT-007`.
 - [x] Commit the prepared `KIT-LEGAL-OPS-018` intake after Kit Legal's required mechanical-phase review boundary.
-- [ ] Update Arcadia's existing acquisition record with the action-first adapter language.
+- [x] Update Arcadia's existing acquisition record to the action-first adapter language (`41990ab`).
 - [x] Define the future release-manifest contract and prove the retirement gates without adding a source-mutation tool to the acquisition provider.
 - [x] Replace the published skill's initial `kit-principal` catch-all wording with a receiver-neutral contract: folder selectors choose the best-served repository, while unfoldered, unmatched, and conflicting meetings remain explicit reconciliation outcomes.
 - [x] Deliver the first direct-ingress mappings through receiver-owned work: Granola `Legal` folder to `kit-legal` and Granola `Personal` folder to `kit-principal`, using stable folder IDs as selectors and folder names as review evidence.
-- [ ] Implement a provider-supported Granola retirement operation that consumes an exact verified move manifest and remains unavailable from ordinary acquisition paths.
+- [x] Adopt verified manual-release manifests followed by human deletion while Granola exposes no supported mutation API; ordinary acquisition remains read-only and any ineligible meeting is excluded independently.
 
 ## Files touched
 
@@ -144,7 +144,7 @@ The exact conflict policy for a meeting belonging to multiple mapped folders is 
 - Escalate before creating a local Granola normalization wrapper, changing a sibling repository, submitting a trade, or activating a new trade route.
 - Escalate if caller-managed window splitting cannot prove complete identity enumeration or exhaustive content revalidation cannot detect changed meeting projections.
 - Escalate before credentials, live Granola access, network mutation, browser automation, source archive, deletion, or any write outside authorised Harness paths.
-- Escalate if replacing `ki space acquire` or changing current `ki acquire` semantics would break a supported workflow without an approved migration, or if Arcadia and `tools-ki` cannot converge on the single public grammar.
+- Escalate if changing current `ki acquire` semantics would break a supported workflow without an approved migration, or if Arcadia and `tools-ki` cannot converge on the single public grammar.
 - Escalate when selector scopes overlap, leave an unexplained coverage gap, or cannot deterministically handle multiple-folder membership.
 - Escalate if Granola returns conflicting duplicate identities, required source material has no omission channel, or a proposed document change is incompatible with the governed one-file-per-meeting contract.
 - Escalate any retirement proposal before its deletion manifest is regenerated and approved immediately before any future source mutation.
@@ -186,7 +186,7 @@ The exact conflict policy for a meeting belonging to multiple mapped folders is 
 
 ### Decision Records
 
-ADR-KI-ARCADIA-001 remains the lifecycle authority but needs a receiver-neutral correction from `ki space acquire` to the single public `ki acquire` grammar. ADR-KI-HARNESS-SKILLS-007 remains the AI-session pairing authority unless implementation establishes a genuinely shared non-AI adapter decision; do not broaden it merely to mention Granola.
+ADR-KI-ARCADIA-001 remains the lifecycle authority but needs a receiver-neutral correction to the single public action-first `ki acquire` grammar. ADR-KI-HARNESS-SKILLS-007 remains the AI-session pairing authority unless implementation establishes a genuinely shared non-AI adapter decision; do not broaden it merely to mention Granola.
 
 ### Specifications
 
@@ -199,6 +199,32 @@ Add an operator guide only after end-to-end acquisition is verified. It must exp
 ### Roadmap
 
 Keep this work distinct from KI-HARNESS-OPS-005 because a communication source introduces multi-repository receiver selection, source-folder reconciliation, and ongoing mutable-record concerns. Receiver repositories retain their own prioritisation, planning, implementation, review, and acceptance records through approved trades.
+
+## Review
+
+### Delivered
+
+The 2026-09-20 live pass proved one complete 216-identity snapshot across all four configured receivers and then repeated every receiver exhaustively.
+
+### Summary of changes
+
+Receiver-local meeting documents and ledgers are current and committed. The reusable retirement contract now names verified manual release followed by human deletion as the accepted no-API path. Current documentation uses the action-first adapter grammar, and unchanged transcript refreshes no longer create false amendments.
+
+### Verification
+
+The receiver-local evidence is committed at `2bb669e` (Principal), `ac0d03f3` (Legal), `22e1580` (HNR), and `9703bf9` (Arcadia). `tools-ki` commit `8440d8c` passed TypeScript, the full test suite, and Biome. Arcadia commit `41990ab` records the public action-first grammar.
+
+### Outstanding concerns
+
+The generated manual-release manifest contains 215 eligible identities. Granola meeting `3cf78d3b-bae8-4a17-8d92-be59c319a2b5` remains excluded because two exhaustive passes returned no detail projection; its transcript and receiver copy remain retained. Any later Granola or receiver change invalidates the generated manifest and requires fresh reconciliation.
+
+### Post-change review
+
+The four ledgers carry the same account, source schema, interval, and identity-checkpoint hash. Their 218 copies deduplicate to the 216 discovered identities, including exactly two intentional duplicates. Acquisition remains read-only and no Granola source was mutated.
+
+### Mini recap
+
+Granola acquisition is complete and repeatable across the registered receiver estate. Human deletion of the exact eligible list is the remaining source-side action; one meeting stays in Granola until its missing detail projection becomes available or the human decides separately.
 
 ## Discussion
 
@@ -231,7 +257,7 @@ Complete acquisition establishes a recoverable receiver-local source copy; harve
 
 The approved public operation is `ki acquire import --adapter granola`. It resolves the current repository by default, supports the existing explicit repository-selection convention, validates the Granola receiver scope, and stages one verified Markdown document per meeting in the repository's Harbour. Source hashing, ledgering, and document rendering are internal reusable capabilities, not reasons for a second `space` command.
 
-The earlier `ki space acquire` wording remains migration context, not a second Granola command. The existing provider-first implementation must migrate to the action-first grammar without a compatibility layer; broader provider-family migrations remain governed separately.
+The retired extra-segment wording remains migration context, not a second Granola command. The existing provider-first implementation must migrate to the action-first grammar without a compatibility layer; broader provider-family migrations remain governed separately.
 
 ### Receiver selection and coverage
 
