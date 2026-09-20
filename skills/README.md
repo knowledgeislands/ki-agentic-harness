@@ -19,9 +19,19 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 60 skills: 50 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 61 skills: 51 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
+
+#### `ki-acquire-chatgpt`
+
+Govern incremental readable ChatGPT project and conversation acquisition, including stable project identity, prefixed routing, faithful versions, checkpoints, and later retirement evidence. Use for ChatGPT project import or routing design; `ki-housekeeping-chatgpt` owns opaque installed-store inventory.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** `ki-housekeeping-chatgpt`
+- **Runtime:** Runtime-bound: `chatgpt-codex`
 
 #### `ki-acquire-granola`
 
@@ -243,7 +253,7 @@ Audit or safely render KI-targeted MCP servers into Codex native `[mcp_servers]`
 
 #### `ki-housekeeping-chatgpt`
 
-Acquire and audit installed ChatGPT session material through opaque, read-only local-store evidence. Use to import ChatGPT sessions for one repository, with faithful reads, checkpoints, staging, and later harvest; acquisition never authorises source-session deletion.
+Audit installed ChatGPT opaque local-store evidence for session identity, hashes, and read-only checkpoints. Use for local ChatGPT store inventory or change detection; `ki-acquire-chatgpt` owns readable project and conversation acquisition.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

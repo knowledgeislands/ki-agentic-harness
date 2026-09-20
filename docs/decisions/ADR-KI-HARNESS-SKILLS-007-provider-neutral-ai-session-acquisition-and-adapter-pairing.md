@@ -17,12 +17,20 @@ The Harness owns reusable agent capabilities. `ki-housekeeping-claude` and `ki-h
 
 ## Decision
 
+Harness separates action-first `ki-acquire-*` capabilities from provider housekeeping and source mechanics. A housekeeping skill may own content-minimised local evidence, but it does not own readable acquisition, receiver routing, or retirement authority. Each acquisition skill advertises only executable actions already proven by `tools-ki`; desired future capabilities remain standard and roadmap requirements until focused tests prove them.
+
+`ki-acquire-chatgpt` composes with `ki-housekeeping-chatgpt`: the housekeeping capability supplies opaque installed-store identity and change evidence, while the acquisition capability owns readable project routing, complete-conversation fidelity, incremental content checkpoints, and receiver staging.
+
+ChatGPT project routing binds immutable provider project IDs to receiver repositories. `<Domain>: <Topic>` names and retained prior names make routing intent reviewable but do not replace stable identity. Unknown prefixes, unmapped projects, and receiver conflicts fail closed.
+
 The Harness adopts Arcadia's provider-neutral knowledge-acquisition architecture. It supplies skills and provider MCP adapters that expose read-only discovery, listing, faithful reading, and checkpoint operations for a selected physical repository.
 
 The shared adapter surface is additive and access-gated. It returns only fields that the provider can faithfully supply, keeps content-minimised checkpoint data separate from source reads, and never writes KI state, classifies knowledge, or mutates a source session. `ki acquire import --adapter <provider>` remains the repository-context consumer of these operations, not an MCP operation.
 
 ## Consequences
 
+- ChatGPT project renames do not change routing identity; checkpoints retain current and prior names as evidence.
+- The current user-prepared ChatGPT capture remains a bounded import bridge and is not described as incremental provider acquisition.
 - Claude and Codex can be operated through the same vocabulary while retaining only verified provider capabilities.
 - Existing Claude housekeeping tools remain available while callers adopt the acquisition path.
 - A provider adapter reports an unavailable source or no readable sessions rather than synthesising content or silently falling back to another provider.

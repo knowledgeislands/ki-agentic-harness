@@ -44,6 +44,10 @@ The former Awaiting review packet proved the read-only MCP mechanics, bindings, 
 
 The 2026-09-19 Now review confirms that the routing inventory below has settled the selector contract: immutable ChatGPT project identity is canonical, current and prior names are review and migration evidence, `<Domain>: <Topic>` is reserved for non-personal domains, and unprefixed projects provisionally route to Personal / Kit. That design step is complete. Publishing `ki-acquire-chatgpt` remains separate from claiming executable completeness: the installed local store is still opaque and cannot satisfy readable project enumeration, complete conversation fidelity, or source-retirement verification.
 
+On 2026-09-20, the user confirmed every visible ChatGPT project had been renamed with a prefix, retiring the provisional unprefixed fallback. Exact immutable project-ID bindings still need to be captured from an authorised inventory rather than inferred from those names.
+
+The canonical `ki-acquire-chatgpt` capability now publishes the current prepared-capture metadata and the intended incremental source, routing, fidelity, checkpoint, staging, and retirement contract. This does not claim executable completeness: the installed local store remains opaque and cannot satisfy readable project enumeration, complete conversation fidelity, or source-retirement verification.
+
 ## Steps
 
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
@@ -51,7 +55,7 @@ The 2026-09-19 Now review confirms that the routing inventory below has settled 
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
 - [x] Validate a structured readable ChatGPT bundle that retains opaque source identity, byte count, and hash without committing opaque payload bytes.
 - [x] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
-- [ ] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
+- [x] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
 - [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
 - [ ] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
 - [ ] Represent unmapped projects, overlapping receiver mappings, missing sessions, changed sessions, and failed reads explicitly without guessing or silently dropping content.
@@ -131,6 +135,8 @@ The visible ChatGPT projects provide the first routing inventory. For the initia
 Add or correct only the non-personal prefixes already worth distinguishing before the first acquisition checkpoint, then freeze project identity and names until the move and deletion manifest are complete. Do not consolidate or move conversations between ChatGPT projects during that window. After full acquisition, revisit whether the remaining projects should be prefixed, consolidated, or routed elsewhere from the safety of the receiving repositories.
 
 `New project` is an interface action rather than a source project and is excluded from the inventory.
+
+The unprefixed names above are now migration aliases rather than current routing inputs. Freeze the prefixed names and immutable identities until the first complete acquisition checkpoint and any later deletion manifest are complete; read their current prefixes from the authorised inventory rather than guessing them from prior names.
 
 ### Complete acquisition before triage
 

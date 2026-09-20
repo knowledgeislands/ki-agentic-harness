@@ -7,13 +7,13 @@ ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Acquire and audit installed ChatGPT session material through opaque, read-only local-store evidence. Use to
-  import ChatGPT sessions for one repository, with faithful reads, checkpoints, staging, and later harvest;
-  acquisition never authorises source-session deletion.
+  Audit installed ChatGPT opaque local-store evidence for session identity, hashes, and read-only checkpoints.
+  Use for local ChatGPT store inventory or change detection; `ki-acquire-chatgpt` owns readable project and
+  conversation acquisition.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
-# ChatGPT session acquisition
+# ChatGPT local-store evidence
 
 Use the provider-neutral lifecycle: **acquire → stage → harvest → durable knowledge → archive/delete source**.
 
@@ -22,6 +22,8 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 Repository staging records the opaque source locator, timestamp, byte count, and hash but does not commit the opaque payload bytes by default. Those bytes contain no readable knowledge and remain permanently recoverable from Git after a later deletion; retain them only outside Git in an explicitly approved source store when the receiver has a justified need.
 
 `ki acquire import --adapter chatgpt` owns repository-context staging and checkpoint persistence. The MCP never writes KI state, changes the ChatGPT store, decrypts a private format, archives, or deletes a source session.
+
+The `ki-acquire-chatgpt` skill owns readable project routing, complete-conversation fidelity, incremental content versions, receiver staging, and later retirement evidence. Opaque local-store records may support its identity and change-detection layer, but never substitute for readable content.
 
 ## Operating modes
 
