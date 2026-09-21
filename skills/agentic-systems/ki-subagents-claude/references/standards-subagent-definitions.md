@@ -12,7 +12,7 @@ Claude Code requires string `name` and `description` fields. A source name uses 
 
 ## Supported fields
 
-Current Claude Code supports `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, and `initialPrompt`. The adapter checks that a candidate source uses only this set. It does not infer effective model, permissions, scheduling, nesting, tool availability, or spawned-agent policy from source text.
+Current Claude Code supports `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `omitClaudeMd`, `effort`, `isolation`, `color`, `initialPrompt`, and `experimental`. The adapter checks that a candidate source uses only this set. It does not infer effective model, permissions, scheduling, nesting, tool availability, or spawned-agent policy from source text.
 
 ## Source discovery and host boundary
 
