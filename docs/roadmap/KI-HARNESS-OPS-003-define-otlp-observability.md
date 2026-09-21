@@ -3,13 +3,13 @@ id: KI-HARNESS-OPS-003
 title: Define OTLP observability
 area: OPS
 theme: operations
-horizon: future
+horizon: parked
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-16T21:41:27Z
+updated_at: 2026-09-21T23:51:38Z
 ---
 
 ## Goal
@@ -41,3 +41,7 @@ An enabled endpoint must be explicit repository or user configuration with a def
 ### Evidence for promotion
 
 Before this is adopted beyond Triage, name one operational question that current local logs cannot answer, one consent and configuration owner, the exact event fields needed to answer it, and a test proving that disabled mode makes no network attempt.
+
+### Return trigger
+
+Resume this item when a concrete operational question cannot be answered from existing local output and the owner explicitly chooses to evaluate OTLP as the remedy, with a named consent and configuration owner.
