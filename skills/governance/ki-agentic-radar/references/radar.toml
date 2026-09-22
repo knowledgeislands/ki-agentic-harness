@@ -1,5 +1,5 @@
 schema = 1
-reviewed_on = "2026-09-17"
+reviewed_on = "2026-09-22"
 
 [evidence]
 
@@ -320,6 +320,26 @@ source_role = "counter-evidence"
 reviewed_on = "2026-09-14"
 notes = "The draft contains TODO and continuous-refinement sections and is not a completed formal standard."
 
+[evidence.obscura-reference-implementation]
+
+id = "obscura-reference-implementation"
+title = "Obscura open-source browser engine"
+url = "https://github.com/h4ckf0r0day/obscura"
+evidence_class = "reference-implementation"
+source_role = "primary"
+reviewed_on = "2026-09-22"
+notes = "The project publishes a self-hostable Rust browser engine with CDP, Playwright, Puppeteer, rendering, storage, and MCP surfaces; compatibility and performance still require independent and local verification."
+
+[evidence.obscura-zero-state]
+
+id = "obscura-zero-state"
+title = "Obscura isolated-session product description"
+url = "https://obscura.sh/#how"
+evidence_class = "vendor-claim"
+source_role = "counter-evidence"
+reviewed_on = "2026-09-22"
+notes = "The product site describes fresh zero-state sessions with no shared cookies. That isolation is useful, but it leaves authenticated-profile provisioning and persistence unresolved for recurring ChatGPT acquisition."
+
 [subjects]
 
 [subjects.mcp]
@@ -450,3 +470,21 @@ return_trigger = "A formal standards-track transition, complete versioned draft,
 reviewed_on = "2026-09-17"
 evidence = ["w3c-agent-group", "w3c-agent-draft"]
 counter_evidence = ["w3c-cg-nonendorsement", "w3c-agent-draft-gaps"]
+
+[subjects.agent-owned-browser-runtime]
+
+id = "agent-owned-browser-runtime"
+display_name = "Agent-owned isolated browser runtime"
+subject_kind = "architecture-pattern"
+stewardship = "none"
+specification_maturity = "not-applicable"
+implementation_state = "reference-only"
+interoperability_state = "claimed"
+ki_stance = "assess"
+movement = "new"
+owner = "ki-agentic-radar"
+uncertainty = "Obscura supplies a promising open-source implementation, but no Knowledge Islands trial yet proves authenticated-state handling, complex-app rendering fidelity, downloads, or complete ChatGPT acquisition."
+return_trigger = "A bounded self-hosted ChatGPT acquisition trial, independent CDP compatibility evidence, documented persistent-profile controls, or a material security or release change."
+reviewed_on = "2026-09-22"
+evidence = ["obscura-reference-implementation"]
+counter_evidence = ["obscura-zero-state"]

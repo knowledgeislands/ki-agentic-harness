@@ -25,6 +25,10 @@ This ledger records the primary and corroborating sources accepted into the agen
 - **AGENTS.md:** [OpenAI Codex](https://openai.com/index/introducing-codex/) and [Visual Studio Code](https://code.visualstudio.com/docs/agent-customization/custom-instructions) implement the format independently. The format site reports broad operational adoption, while VS Code describes nested `AGENTS.md` support as experimental. This repository's [AGENTS.md](https://github.com/knowledgeislands/ki-agentic-harness/blob/main/AGENTS.md) is the local adoption evidence.
 - **W3C AI Agent Protocol Community Group:** no reviewed implementation, conformance result, or interoperability demonstration was found in the group's primary publications.
 
+## Agent-owned browser runtimes
+
+- **Obscura:** the [open-source implementation](https://github.com/h4ckf0r0day/obscura) documents a self-hosted Rust browser engine with CDP, Playwright, Puppeteer, rendering, storage, and MCP surfaces. The [product description](https://obscura.sh/#how) emphasises isolated zero-state sessions; that supports isolation while leaving authenticated-profile provisioning and recurring ChatGPT fidelity for local evaluation.
+
 ## Structural vocabulary evidence
 
 These sources bound recurring architecture terms without treating them as protocols or comparable standards in the radar snapshot.
@@ -41,6 +45,7 @@ These sources bound recurring architecture terms without treating them as protoc
   | ------ | ------- | ------------- |
 | Initial evidence set | Six subjects and structural vocabulary reviewed. | 2026-09-14 |
 | Weekly review | ACP schema releases and AHP release plus independent implementation accepted; other subject stances unchanged. | 2026-09-17 |
+| Browser-runtime signal | Added agent-owned isolated browser runtimes for assessment, with Obscura as reference implementation and a bounded local trial required before adoption. | 2026-09-22 |
 
 - Return triggers: new protocol release, governance transfer, independent implementation, published conformance result, cross-implementation demonstration, deprecation, or a Knowledge Islands use case requiring reassessment.
 - Agent Client Protocol is disambiguated from similarly named IBM and AGNTCY protocols; structural vocabulary remains outside the subject registry where the schema would misclassify it.
