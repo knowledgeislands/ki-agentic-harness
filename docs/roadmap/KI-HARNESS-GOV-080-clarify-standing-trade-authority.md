@@ -80,6 +80,37 @@ Update only existing operational guidance whose wording currently conflates stan
 
 Capture a `tools-ki` receiver record only if implementation consequences remain after the Harness contract is complete.
 
+## Review
+
+### Delivered
+
+The portable trade contract now separates reciprocal standing knowledge intake from itemized observation policies and from any future automatic transport or execution authority.
+
+### Summary of changes
+
+- Added `unattended` and `receipt` for both knowledge and work, with `decision` and `completion` remaining work-only.
+- Made explicit that `unattended` requests no response but still requires evidenced receipt before sender release.
+- Documented standing activation, reciprocal consent, immediate revocation for new capture, and retained historical introduction evidence.
+- Aligned the decision record, `ki-trades`, `ki-trade`, and `ki-next`, and added focused policy and release tests.
+
+### Verification
+
+- Focused `ki-trades` context and catalogue tests pass.
+- The generated `ki-trades` rubric matches its source.
+- TypeScript, the full test suite, and focused repository audits passed at the final batch gate.
+
+### Outstanding concerns
+
+`tools-ki` still needs receiver-owned follow-on work to accept and validate the clarified policy matrix, expose configured, active, revoked, and historical standing states, and treat `unattended` as receipt-bound during release. It must not infer automatic transport, execution, acceptance, or publication authority. Future automation remains a separate authority contract.
+
+### Post-change review
+
+The change remains within the approved boundary: it changes the portable Harness contract and its tests but does not edit `tools-ki` or activate any standing agreement.
+
+### Mini recap
+
+Standing intake now means exact, reciprocal, knowledge-only capture authority. `unattended` now means itemized no-response-requested observation with an evidenced receipt boundary; neither grants execution authority.
+
 ## Discussion
 
 ### Planning decisions
@@ -104,34 +135,3 @@ Standing declarations also need one clear account of activation, reciprocal cons
 ### Sources to reconcile
 
 The review should align `GDR-KI-HARNESS-005`, the `ki-trades` standard and generated catalogue/rubric, the `ki-trade` procedure, and the `ki-next` disposition language. It should then identify exact downstream specification, documentation, validation, completion, and test changes required in `tools-ki`, without treating the Harness roadmap item as authority to edit that repository.
-
-## Review
-
-### Delivered
-
-The portable trade contract now separates reciprocal standing knowledge intake from itemized observation policies and from any future automatic transport or execution authority.
-
-### Summary of changes
-
-- Added `unattended` and `receipt` for both knowledge and work, with `decision` and `completion` remaining work-only.
-- Made explicit that `unattended` requests no response but still requires evidenced receipt before sender release.
-- Documented standing activation, reciprocal consent, immediate revocation for new capture, and retained historical introduction evidence.
-- Aligned the decision record, `ki-trades`, `ki-trade`, and `ki-next`, and added focused policy and release tests.
-
-### Verification
-
-- Focused `ki-trades` context and catalogue tests pass.
-- The generated `ki-trades` rubric matches its source.
-- TypeScript, the full test suite, and focused repository audits are required at the final batch gate.
-
-### Outstanding concerns
-
-`tools-ki` still needs receiver-owned follow-on work to accept and validate the clarified policy matrix, expose configured, active, revoked, and historical standing states, and treat `unattended` as receipt-bound during release. It must not infer automatic transport, execution, acceptance, or publication authority. Future automation remains a separate authority contract.
-
-### Post-change review
-
-The change remains within the approved boundary: it changes the portable Harness contract and its tests but does not edit `tools-ki` or activate any standing agreement.
-
-### Mini recap
-
-Standing intake now means exact, reciprocal, knowledge-only capture authority. `unattended` now means itemized no-response-requested observation with an evidenced receipt boundary; neither grants execution authority.

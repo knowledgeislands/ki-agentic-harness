@@ -82,18 +82,6 @@ No guide is required. The allocating process and roadmap standard must state the
 
 No follow-on record is expected unless implementation reveals allocation paths outside `ki-next` that cannot share the same freshness check.
 
-## Discussion
-
-### Planning decisions
-
-The high-water mark is authoritative only when read at publication time. A number named in a plan is an intention, not a reservation. `ki-next` owns fresh allocation; `ki-plan` never allocates identifiers. No lock or advance reservation is introduced.
-
-Captured on 2026-09-21 from the `infoschematics` session described above, where a plan's identifiers were stale within hours of approval.
-
-Two framings are worth putting side by side. The narrow one is that this is one sentence in the identity section of the roadmap standard: the high-water mark is read when the record is written. The broader one is that it belongs with the "one writer per checkout" reasoning, because it is the same class of problem — an agent treating warm context as current repository state — and the ledger is simply the place where that assumption becomes a durable falsehood rather than a transient error.
-
-There is also a case for saying nothing. A plan that names identifiers is arguably already understood to be naming intent rather than allocation, and the executing agent re-read the ledger without being told to. Against that: it re-read it because the repository had visibly moved, not because the standard asked, and an agent resuming from a summary rather than a live session has no such signal.
-
 ## Review
 
 ### Delivered
@@ -111,7 +99,7 @@ Roadmap identifiers are now explicitly provisional until the allocating writer r
 
 - Focused `ki-next`, `ki-plan`, and `ki-work-roadmap` tests pass.
 - TypeScript passes and the generated roadmap rubric is in sync.
-- The full test suite and focused repository audits are required at the final batch gate.
+- The full test suite and focused repository audits passed at the final batch gate.
 
 ### Outstanding concerns
 
@@ -124,3 +112,15 @@ The contract remains compatible with repository-wide and fixed-area ledgers. No 
 ### Mini recap
 
 A planned identifier is now only an intention. The current ledger at publication determines the serial, and the record and ledger advance travel together.
+
+## Discussion
+
+### Planning decisions
+
+The high-water mark is authoritative only when read at publication time. A number named in a plan is an intention, not a reservation. `ki-next` owns fresh allocation; `ki-plan` never allocates identifiers. No lock or advance reservation is introduced.
+
+Captured on 2026-09-21 from the `infoschematics` session described above, where a plan's identifiers were stale within hours of approval.
+
+Two framings are worth putting side by side. The narrow one is that this is one sentence in the identity section of the roadmap standard: the high-water mark is read when the record is written. The broader one is that it belongs with the "one writer per checkout" reasoning, because it is the same class of problem — an agent treating warm context as current repository state — and the ledger is simply the place where that assumption becomes a durable falsehood rather than a transient error.
+
+There is also a case for saying nothing. A plan that names identifiers is arguably already understood to be naming intent rather than allocation, and the executing agent re-read the ledger without being told to. Against that: it re-read it because the repository had visibly moved, not because the standard asked, and an agent resuming from a summary rather than a live session has no such signal.
