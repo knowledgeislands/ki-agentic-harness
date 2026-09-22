@@ -10,42 +10,43 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-website
 created_at: 2026-09-21T07:33:33Z
-updated_at: 2026-09-22T00:03:44Z
+updated_at: 2026-09-22T06:31:00Z
 ---
 
 ## Goal
 
-A Knowledge Islands MCP server can be installed by naming it, the way a released command-line tool can. Someone who finds one should get a single command that resolves, at a version its owner deliberately recommends, rather than instructions to clone a repository and build it.
+A Knowledge Islands MCP server can be installed by naming its owner and repository in one command, at a deliberate version, without publishing the server itself to npm or another package registry.
 
 ## Context
 
-`ki-repo-mcp` governs how an MCP server repository is shaped but says nothing about how one is released. Its `standards-mcp-servers.md` requires `CHANGELOG.md` to be present and non-empty and stops there; no reference covers tagging, package publication, or registry listing. The consequence is visible across the six public servers — `mcp-git-audit`, `mcp-gsuite`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `mcp-housekeeping-claude`. Every one is already publish-shaped: a `bin` entry, `files: ["dist"]`, a non-empty changelog, all sitting at `0.9.0`. None has a git tag, a release workflow (only `ci.yml` and `dependabot-auto-merge.yml`), a published package, or a `server.json`. Each README carries an npm version badge for a package that does not exist.
+`ki-repo-mcp` governs how an MCP server repository is shaped but says nothing about how a reviewed server becomes a versioned local installation. The current estate therefore relies on a manual source-checkout flow: clone or open the repository, run `bun install`, build it, and bind a client to an absolute `dist/mcp-server/index.js` path. That is workable for development but gives an operator no stable installed location, recorded source revision, atomic activation, or supported update path.
 
-Absent guidance also lets identity drift. `mcp-ki-kb-fs` declares `@knowledgeislands/mcp-ki-kb-fs` in `package.json` while its README names `knowledgeislands/mcp-kb-fs` in every badge and package reference. Nothing catches this today because nothing claims authority over it.
+Package metadata remains useful as a build and executable contract, but it must not be mistaken for a publication decision. Repository basename and GitHub owner are the durable install identity; a SemVer tag and immutable commit identify the version. The installer may use the repository's existing locked dependencies while building locally, but it does not publish the server package or add a new runtime dependency on a Knowledge Islands registry package.
 
-KI Website raised the handoff. Its new `/projects/` directory lists each server honestly as `availability: source`, telling readers to clone and build, because advertising an install command that fails resolution would be worse than admitting there is not one. Those entries stay wrong-shaped until the servers actually release.
+KI Website raised the handoff. Its `/projects/` directory lists servers honestly as `availability: source`, because no governed named installer exists. Website discovery can advertise a stable command only after the Harness defines the installable repository contract and the owning tool implements it.
 
-The external landscape is settled enough to conform to rather than invent. Ordinary SemVer tagging and package publication is the baseline: for a TypeScript stdio server the channel is npm, and clients invoke it as `npx -y @scope/server`. On top of that sits one MCP-specific and metadata-only layer — a root `server.json` published to the official MCP Registry, which hosts no artefacts and exists to be consumed by downstream aggregators. Optional surface-specific bundles (MCPB) are a separate question that need not be settled here.
+The replan uses the existing source distribution rather than introducing a public registry. A named install resolves an explicit `owner/repository` and optional SemVer tag, checks out or downloads that immutable revision, runs the repository's governed locked build, stages the result under a versioned XDG data path, records provenance, and atomically changes the active version. Omitting the version may resolve only an owner-designated stable GitHub release; it never follows an untagged branch head.
 
 ## Boundary
 
-This item bakes the standard into the skill. It does not release any server: once `ki-repo-mcp` audits and conforms distribution, the six repositories each cut their own tags and publish on their own schedule, and each remains the authority for what it released.
+This item defines the repository-side contract in `ki-repo-mcp`. It does not release or install any server. Each MCP repository remains the authority for its tags and releases, while a separate receiver-owned `tools-ki` item owns the `ki manage mcp install` command, local installation layout, activation, rollback, and uninstall behaviour.
 
-It does not touch the released-tool contract. Command-line tools distribute through the Homebrew tap and a pinned installer endpoint, governed by KI Website's tool-routes contract; MCP servers distribute through a package registry. The two should share release discipline, not transport.
+It does not change released-tool distribution, live MCP bindings, credentials, or client configuration. It does not require the official MCP Registry, `server.json`, npm publication, Homebrew, or a compiled single-file executable. Those may be evaluated separately without becoming load-bearing dependencies of local MCP installation.
 
-It does not decide whether private MCP repositories publish anything, and it does not cover the reciprocal website work of advancing directory entries once packages exist.
+Private repositories remain supported when the local Git credentials can read the named revision. Website availability changes and estate rollouts remain receiver-owned follow-on work after the repository contract and installer both exist.
 
 ## Current state
 
-`ki-repo-mcp` governs repository shape but has no distribution standard, release-workflow checks, package-identity rule, or official-registry metadata checks. Six public MCP repositories are publish-shaped but unreleased, so the first delivery belongs in the Harness contract and its fixtures rather than in those repositories.
+`ki-repo-mcp` governs repository shape but has no versioned source-install contract, release-readiness checks, provenance record, or safe hand-off to an installer. Current servers are locally buildable but not independently installable by name. The first delivery therefore belongs in the Harness contract and fixtures; executable installation belongs in `tools-ki`.
 
 ## Steps
 
-- [ ] Refresh the official MCP Registry, npm trusted-publishing, and GitHub OIDC sources already relevant to the captured requirements.
-- [ ] Add a focused MCP distribution standard that makes npm the required load-bearing channel and treats official-registry listing as recommended while that registry remains preview infrastructure.
-- [ ] Require package identity to use `@knowledgeislands/<repository-basename>`, exact version agreement between package and registry metadata, an installable `bin`, explicit published files, and a release workflow with provenance-capable authentication.
-- [ ] Add WARN-level audit items for distribution readiness and safe CONFORM proposals for missing generated metadata or workflow files; refuse ambiguous identity or version rewrites.
-- [ ] Add fixtures for ready, missing, mismatched, private, metadata-only, and unsafe-to-conform repositories, then regenerate the published rubric.
+- [ ] Add a focused MCP source-release standard covering owner/repository identity, SemVer tags, immutable commit evidence, locked builds, the MCP entry point, and the provenance an installer must retain.
+- [ ] Define the repository-to-installer hand-off, including a minimal machine-readable release descriptor only where existing `.ki.toml`, `package.json`, and Git evidence cannot supply the field without duplication.
+- [ ] Add WARN-level audit items for source-install readiness and safe CONFORM proposals for deterministic generated material; refuse version, identity, release, or workflow changes that require repository-owner judgment.
+- [ ] Record the no-registry distribution decision and its split of authority between `ki-repo-mcp`, each server repository, `tools-ki`, bindings, and website discovery.
+- [ ] Add fixtures for public and private repositories, explicit and omitted versions, missing or mutable revisions, build-contract drift, provenance mismatch, and unsafe-to-conform cases, then regenerate the published rubric.
+- [ ] Create or enrich the receiver-owned `tools-ki` roadmap item for the named installer without implementing that command from the Harness.
 
 ## Files touched
 
@@ -55,71 +56,74 @@ It does not decide whether private MCP repositories publish anything, and it doe
 - `skills/repo-structure/ki-repo-mcp/references/rubric.md`
 - `skills/repo-structure/ki-repo-mcp/scripts/rubric/items/`
 - `skills/repo-structure/ki-repo-mcp/scripts/rubric/contexts/`
+- `docs/decisions/`
+- `docs/roadmap/KI-HARNESS-GOV-078-standardise-mcp-server-distribution.md`
 
 ## Verify
 
-- Focused `ki-repo-mcp` rubric tests cover every new readiness and refusal case.
+- Focused `ki-repo-mcp` rubric tests cover every source-release readiness and refusal case.
+- The standard proves that npm publication and official-registry listing are optional and cannot become hidden prerequisites.
 - `ki dev skill rubric ki-repo-mcp` reproduces the committed rubric.
+- `ki repo audit --skill ki-repo-mcp --repo .` and `ki repo audit --skill ki-work-roadmap --repo .` pass.
 - `ki repo audit --skill ki-skills --repo .` passes.
 - `bun run test` and `bunx tsc --noEmit` pass.
 
 ## Dependencies / blocks
 
-No implementation dependency blocks the Harness contract. Publication credentials, release versions, tags, and registry submissions remain receiver-owned rollout work and are explicitly outside this item.
+No implementation dependency blocks the Harness contract. The named installer cannot be delivered here: `tools-ki` must separately accept and implement the hand-off before a website or client guide advertises the command. Repository credentials, chosen release versions, tags, and rollout remain receiver-owned.
 
 ## Documentation impact
 
 ### Decision Records
 
-Amend or add a Decision Record only if implementation changes the existing repository-kind ownership boundary rather than documenting its distribution projection.
+Record the decision to use governed, versioned source installation rather than publish Knowledge Islands MCP servers to npm, including the authority split and reversal path.
 
 ### Specifications
 
-No separate specification is required; the `ki-repo-mcp` standard and generated rubric own the accepted repository contract.
+No separate specification is required for the repository side; the `ki-repo-mcp` standard and generated rubric own it. The installer will own its user-facing behaviour in `tools-ki`.
 
 ### Guides
 
-Add concise release guidance only where an operator must perform steps that cannot be safely conformed automatically.
+Add concise maintainer guidance for cutting an installable tagged release. User installation guidance belongs with the eventual `tools-ki` command.
 
 ### Roadmap
 
-Capture receiver-local publication work separately after the Harness contract lands; do not include cross-repository releases in this item.
+Create or enrich one receiver-local `tools-ki` installer item and leave per-server release adoption to independently reviewable local records. Do not create speculative migration items before the contract identifies a real gap.
 
 ## Discussion
 
 ### Planning decisions
 
-npm is the required install channel; official-registry listing is recommended rather than mandatory until its preview lifecycle stabilises. Public package identity matches the repository basename under the `@knowledgeislands` scope. The standard requires version consistency but does not choose a receiver's first release version. MCP-specific release readiness belongs to `ki-repo-mcp`; any broader tool-release rule is separate work.
+The load-bearing channel is a tagged Git repository and owner-controlled GitHub release, not publication of the server package to npm. The install identity is `owner/repository`; the version is an exact SemVer tag resolving to an immutable commit. An omitted version may resolve only the repository owner's stable release marker, never a mutable default branch.
 
-### What the official registry actually requires
+`ki-repo-mcp` owns the repository's readiness and hand-off evidence. The repository owner owns the release. `tools-ki` owns resolution, local build staging, provenance recording, atomic activation, rollback, and uninstall. `ki-binding` continues to own client inventory and rendering; it must consume an installed entry point rather than become an installer. Website discovery may link the command only after both sides are delivered.
 
-A root `server.json` declares a reverse-DNS `name` — `io.github.knowledgeislands/<repo>` under the GitHub namespace — a `version`, and a `packages[]` entry naming the npm identifier, its version, and the transport. Namespace ownership is verified, which is what prevents impersonation. Publication uses the `mcp-publisher` CLI, and CI can authenticate through GitHub OIDC with `id-token: write` rather than storing a token.
+### Installation contract
 
-The rules that differ from ordinary package publishing are worth encoding as rubric checks:
+The first contract keeps the current, proven Bun-install and Node-run model. The installer resolves an exact source revision, stages it outside the working checkout, installs from the committed lockfile, runs the governed build, verifies the declared MCP entry point, and activates the completed version only after every step succeeds. It records owner, repository, tag, commit, package version, entry point, installation time, and active-version link so updates and rollback are inspectable.
 
-- the `server.json` version must be unique per publication and is immutable once published; metadata cannot be amended in place, only republished at a new version;
-- version _ranges_ (`^1.2.3`, `1.x`, `>=1.2.3`) are rejected outright;
-- SemVer is recommended but not required — and a non-SemVer string will be marked "latest" even where it should sort earlier, so the recommendation is effectively load-bearing;
-- `server.json.version` should track the npm package version, with the server version indicating the overall release where several packages exist;
-- metadata-only republishes should use a semantic prerelease (`1.2.3-1`), noting that a prerelease published after its release will not be marked latest.
+The Harness does not define the final XDG path or command flags; those are executable product behaviour for `tools-ki`. It does define the minimum evidence the installer can rely on and forbids mutable branch installation from being presented as a released version.
 
-Git tags are irrelevant to the registry itself. They matter for house release discipline, not for conformance, and the standard should say so rather than implying the registry enforces them.
+### Optional discovery surfaces
+
+The official MCP Registry and `server.json` can remain useful discovery metadata, but neither is an installation transport and neither becomes required. npm metadata may remain in `package.json` because the repository is a TypeScript package, but an npm package release is not implied. MCPB or compiled bundles are later optimisations only if they preserve the same provenance and rollback contract.
 
 ### Scope of the skill delta
 
-Two shapes are available. A `standards-mcp-distribution.md` reference alongside the existing structure standard keeps the concerns legible and gives the rubric somewhere obvious to hang publication checks. Folding it into `standards-mcp-servers.md` keeps one document per repository kind but mixes "how the repository is laid out" with "how an artefact reaches a user", which are audited at different moments.
-
-Either way the conform mode needs to be able to add what is missing — a release workflow, a `server.json`, corrected package identity — rather than only reporting it, or the six repositories will each solve it differently again.
+A separate `standards-mcp-distribution.md` keeps installable-release concerns distinct from source layout. CONFORM may create deterministic descriptor or workflow material only when identity and version inputs are unambiguous. It must not mint a tag, choose a version, publish a release, authenticate to GitHub, or rewrite ambiguous package identity.
 
 ### Alternatives considered
 
-Publishing to npm without listing in the official registry would deliver the install command with less ceremony, since the registry is metadata pointing at npm anyway. It costs discovery: the registry is designed for aggregator consumption, so absence from it means absence from the surfaces that read it. The registry is also still in preview with possible data resets, which argues for npm as the load-bearing channel and registry listing as an additive step that a reset cannot break.
+Publishing the servers to npm would make `npx` convenient, but it claims public package names, inserts a registry into a previously local install path, and creates release and support obligations that are unnecessary for this estate. It is explicitly rejected as the default.
 
-Leaving distribution to each repository is the status quo, and the evidence above is what it produces: six repositories that independently reached the same publish-ready shape and then independently failed to publish.
+Shipping self-contained binaries or MCPB bundles could later reduce local build cost. It is not the first slice because the nine servers do not yet share one proven packaging shape and some include OAuth or platform-sensitive behaviour. The source-install contract is reversible and works with their current build model.
 
-### Questions resolved by the plan
+Leaving installation as manual clone/build/bind instructions preserves the current failure mode: no stable active version, no provenance receipt, no atomic update, and no one-command route. That option is rejected.
 
-- Does the standard mandate registry listing, or require npm and recommend the registry?
-- Is `1.0.0` the right first tag for servers sitting at `0.9.0` with full coverage, or does a `0.x` publication better match a surface that may still move?
-- Should package identity be required to match the repository name exactly? That would settle `mcp-ki-kb-fs` by rule rather than by correction.
-- `tools-mgit` has no release workflow either, while `tools-ki` does. Is release-workflow presence a general `ki-engineering` concern that `ki-repo-mcp` merely specialises?
+### Decisions fixed for implementation
+
+- No Knowledge Islands MCP package publication is required.
+- Exact Git tags and immutable commits are the release identity; branch heads are development inputs only.
+- The Harness defines repository evidence, while `tools-ki` implements local installation and lifecycle behaviour.
+- Official-registry metadata is optional discovery, never the load-bearing transport.
+- Each server owner chooses its first release version and release timing.
