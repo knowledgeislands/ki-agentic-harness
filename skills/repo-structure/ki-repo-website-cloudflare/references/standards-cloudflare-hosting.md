@@ -69,6 +69,8 @@ For `[skills.ki-repo-website-app]`, `assets.not_found_handling` is not optional:
 
 ## 4. The script family
 
+The public hosting alias may resolve through the exact selected-package terminal command, one exact `self:site:<primary>:<operation>` hop, or exact `turbo run <operation>` delegation when root `turbo.json` declares that operation. The hosting seam checks exact `deploy`, `preview`, or `upload` task presence without duplicating `ki-engineering`'s generic task-graph adoption and quality checks. Direct `--cwd` command chains, undeclared or mismatched tasks, additional shell commands, missing aliases, and cyclic forwarding remain invalid.
+
 The selected site's `<site-root>/package.json` owns local operations:
 
 - **`deploy`** → `bunx wrangler deploy`.

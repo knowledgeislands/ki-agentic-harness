@@ -100,6 +100,39 @@ describe('ki-repo-website-cloudflare session', () => {
     expect(readFileSync(join(repository, '.gitignore'), 'utf8')).toBe(before.gitignore)
   })
 
+  test('accepts only exact Cloudflare tasks declared by the root Turborepo graph', () => {
+    const repository = makeRoot()
+    writeCanonicalRepository(repository)
+    const rootPackagePath = join(repository, 'package.json')
+    const rootPackage = JSON.parse(readFileSync(rootPackagePath, 'utf8')) as {
+      scripts: Record<string, string>
+    }
+    const deployOutcomes = () => {
+      const session = createWebsiteCloudflareSession(options(repository))
+      const subject = session.subjects.find((candidate) => candidate.families.includes('WCF'))
+      if (!subject) throw new Error('missing Cloudflare website context')
+      const context = WCF.selectContext(subject.context())
+      return WCF.items.find((item) => item.code === 'WCF-13')?.mechanical?.audit.run(context) ?? []
+    }
+
+    rootPackage.scripts['ki:site:deploy'] = 'turbo run deploy'
+    writeFileSync(rootPackagePath, `${JSON.stringify(rootPackage, null, 2)}\n`)
+    writeFileSync(join(repository, 'turbo.json'), '{\n// deployment graph\n"tasks":{"deploy":{}}\n}\n')
+    expect(deployOutcomes()).not.toContainEqual(expect.objectContaining({ status: 'VIOLATION' }))
+
+    writeFileSync(join(repository, 'turbo.json'), '{"tasks":{"preview":{}}}\n')
+    expect(deployOutcomes()).toContainEqual(expect.objectContaining({ status: 'VIOLATION' }))
+
+    rootPackage.scripts['ki:site:deploy'] = 'turbo run preview'
+    writeFileSync(rootPackagePath, `${JSON.stringify(rootPackage, null, 2)}\n`)
+    expect(deployOutcomes()).toContainEqual(expect.objectContaining({ status: 'VIOLATION' }))
+
+    rootPackage.scripts['ki:site:deploy'] = 'turbo run deploy && echo chained'
+    writeFileSync(rootPackagePath, `${JSON.stringify(rootPackage, null, 2)}\n`)
+    writeFileSync(join(repository, 'turbo.json'), '{"tasks":{"deploy":{}}}\n')
+    expect(deployOutcomes()).toContainEqual(expect.objectContaining({ status: 'VIOLATION' }))
+  })
+
   test('consumes an explicit site root from website core and keeps the hosting table keyless', () => {
     const repository = makeRoot()
     mkdirSync(join(repository, 'custom', 'web'), { recursive: true })

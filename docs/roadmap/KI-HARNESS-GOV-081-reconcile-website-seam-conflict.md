@@ -5,12 +5,12 @@ title: Reconcile website seam conflict
 theme: governance-consistency
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 43fecf3ef89fc4a9d9dc69c50fe85ed6c6b89061
 transferred_from: ki-website
 created_at: 2026-09-21T12:03:51Z
-updated_at: 2026-09-22T00:03:44Z
+updated_at: 2026-09-22T01:35:33Z
 horizon: now
-status: ready
+status: awaiting-review
 ---
 
 ## Goal
@@ -43,11 +43,11 @@ The website seam permits only an exact terminal command or one `self:site:*` hop
 
 ## Steps
 
-- [ ] Amend the static-website seam to permit `turbo run <task>` as a third terminal form only when the selected `turbo.json` declares that exact task.
-- [ ] Apply the same resolved shape to the Cloudflare-hosted seam checks that currently reject task-runner delegation.
-- [ ] Keep direct `--cwd` chaining invalid and retain cycle, missing-task, and mismatched-task failures.
-- [ ] Add fixtures covering exact commands, one-hop self aliases, valid Turborepo delegation, missing tasks, chained commands, and cyclic forwarding.
-- [ ] Cross-reference the generic task-graph owner without duplicating `ki-engineering` adoption checks, then regenerate both website rubrics.
+- [x] Amend the static-website seam to permit `turbo run <task>` as a third terminal form only when the selected `turbo.json` declares that exact task.
+- [x] Apply the same resolved shape to the Cloudflare-hosted seam checks that currently reject task-runner delegation.
+- [x] Keep direct `--cwd` chaining invalid and retain cycle, missing-task, and mismatched-task failures.
+- [x] Add fixtures covering exact commands, one-hop self aliases, valid Turborepo delegation, missing tasks, chained commands, and cyclic forwarding.
+- [x] Cross-reference the generic task-graph owner without duplicating `ki-engineering` adoption checks, then regenerate both website rubrics.
 
 ## Files touched
 
@@ -86,6 +86,32 @@ Update existing deployment examples only if they currently present a terminal sh
 ### Roadmap
 
 Receiver websites conform on their own schedules; this item does not mutate their scripts or deployment settings.
+
+## Review
+
+### Delivered
+
+Reconciled the website and engineering contracts from immutable baseline `43fecf3ef89fc4a9d9dc69c50fe85ed6c6b89061`. The change affects only static-website and Cloudflare seam validation; it does not adopt Turborepo or alter any receiver repository.
+
+### Summary changes
+
+Website and Cloudflare contexts now read the root `turbo.json` task names. Public aliases accept exact `turbo run <task>` only when the task matches the operation and is declared; direct terminal commands and one-hop named-site aliases remain valid. Missing, mismatched, chained, and cyclic shapes remain invalid, and both standards route generic task-graph quality to `ki-engineering`.
+
+### Verification
+
+The focused website and Cloudflare suites passed 23 tests, including new valid, missing-task, mismatched-task, and chained-command cases. `bunx tsc --noEmit` passed and both published rubrics regenerated without drift. The live core audit passed on KI Website, and the combined website/Cloudflare audit passed on `kit-midnight.ninja`. KI Website's Cloudflare audit reached only its pre-existing unrelated `WCF-26` missing-guide failure.
+
+### Outstanding concerns
+
+The JSONC readers are intentionally small and fail closed to an empty task list on malformed or unsafe `turbo.json`. They establish only exact task presence; `ki-engineering` remains responsible for task-graph quality and semantic input verification. KI Website separately owns its pre-existing `WCF-26` guide finding.
+
+### Post-change review
+
+The implementation resolves the contradictory seam while preserving its literal, greppable forms and rejecting shell composition. Existing direct and one-hop fixtures still pass, and the new third form is bounded by exact task equality. The item is ready for acceptance review.
+
+### Mini recap
+
+Static and Cloudflare website aliases can now enter the Turborepo graph without weakening the public script contract. Receiver websites may migrate on their own schedules after review.
 
 ## Discussion
 

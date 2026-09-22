@@ -65,6 +65,7 @@ export type WebsiteCloudflareContext = {
     readonly state: PackageState
     readonly scripts: Readonly<Record<string, string>>
   }
+  readonly turboTasks: readonly string[]
   readonly gitignore: {
     readonly state: TextState
     readonly text: string
@@ -110,6 +111,15 @@ const parsedJsonc = (source: string): Record<string, unknown> | null => {
   } catch {
     return null
   }
+}
+
+const inspectTurboTasks = (root: string): readonly string[] => {
+  const path = join(root, 'turbo.json')
+  if (nodeKind(path) !== 'file') return []
+  const parsed = parsedJsonc(readRegularText(path) ?? '')
+  return parsed?.tasks && typeof parsed.tasks === 'object' && !Array.isArray(parsed.tasks)
+    ? Object.keys(parsed.tasks)
+    : []
 }
 
 const configValue = (path: string, source: string): Record<string, unknown> | null => {
@@ -342,6 +352,7 @@ const createWebsiteCloudflareSiteSession = (
       path: 'package.json',
       ...(targetExists ? inspectPackage(join(target, 'package.json')) : { state: 'missing' as const, scripts: {} })
     },
+    turboTasks: targetExists ? inspectTurboTasks(target) : [],
     gitignore: targetExists ? inspectText(join(target, '.gitignore')) : { state: 'missing' as const, text: '' },
     guide: {
       path: GUIDE_PATH,

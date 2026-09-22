@@ -426,6 +426,8 @@ const publicAliasValid = (context: WebsiteCloudflareContext, localScript: string
   const alias = context.rootPackage.scripts[publicKey]
   const terminal = expectedRootAlias(context, localScript)
   if (alias === terminal) return true
+  const task = /^turbo run ([A-Za-z0-9:_#@/.-]+)$/.exec(alias ?? '')?.[1]
+  if (task) return task === localScript && context.turboTasks.includes(task)
   if (context.selectionMode !== 'multi' || !context.siteName) return false
   const selfKey = `self:site:${context.siteName}:${localScript}`
   return alias === `bun run ${selfKey}` && context.rootPackage.scripts[selfKey] === terminal
@@ -481,7 +483,7 @@ const WCF_13: RubricItem<WebsiteCloudflareContext> = {
                     }
                   : {
                       status: 'VIOLATION' as const,
-                      message: `ki:site:deploy must be exactly "${expectedAlias}" or one exact primary self alias hop.`,
+                      message: `ki:site:deploy must be exactly "${expectedAlias}", one exact primary self alias hop, or exact declared "turbo run deploy".`,
                       subject: context.rootPackage.path
                     }
               ]
@@ -541,7 +543,7 @@ const WCF_14: RubricItem<WebsiteCloudflareContext> = {
                     }
                   : {
                       status: 'VIOLATION' as const,
-                      message: `ki:site:preview must be exactly "${expectedAlias}" or one exact primary self alias hop.`,
+                      message: `ki:site:preview must be exactly "${expectedAlias}", one exact primary self alias hop, or exact declared "turbo run preview".`,
                       subject: context.rootPackage.path
                     }
               ]
@@ -617,7 +619,7 @@ const WCF_25: RubricItem<WebsiteCloudflareContext> = {
                     }
                   : {
                       status: 'VIOLATION' as const,
-                      message: `ki:site:upload must be exactly "${expectedAlias}" or one exact primary self alias hop.`,
+                      message: `ki:site:upload must be exactly "${expectedAlias}", one exact primary self alias hop, or exact declared "turbo run upload".`,
                       subject: context.rootPackage.path
                     }
               ]
