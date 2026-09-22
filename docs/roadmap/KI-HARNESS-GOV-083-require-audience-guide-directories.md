@@ -1,21 +1,21 @@
 ---
 id: KI-HARNESS-GOV-083
-title: Require audience guide directories
+title: Clarify audience guide grouping
 area: GOV
 theme: governance-consistency
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: null
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-21T16:40:00Z
+updated_at: 2026-09-22T06:31:00Z
 ---
 
 ## Goal
 
-`ki-guides` requires a guide collection to be grouped by the audience that reads it, and the rubric checks that grouping mechanically rather than leaving it to local taste.
+`ki-guides` recommends audience directories when they materially improve navigation, while keeping small and genuinely cross-audience collections clear without imposing a universal taxonomy.
 
 ## Context
 
@@ -23,9 +23,9 @@ updated_at: 2026-09-21T16:40:00Z
 
 The estate has already voted with its feet, unevenly. `tools-ki`, `tools-mgit`, and `tools-git-almanac` all split `user/` and `developer/`. `mcp-acquire-whatsapp` splits `developer/` and `operator/`. `ki-website` was flat until today. Six `mcp-*` repositories have no `docs/guides/` at all and hold their practical material in the README. Where the split exists it was a local choice, so a reader moving between repositories cannot rely on it.
 
-The argument for requiring it: a collection index that routes by topic makes the reader work out which documents are meant for them, and the usual failure is that contributor mechanics and user instructions end up interleaved. The standard already half-concedes this — `ROUTE-1` retires `docs/developer/` specifically so contributor material lands at `docs/guides/developer/`, which is an audience directory named as such.
+Audience grouping is useful when a collection serves stable, distinct readers: contributor mechanics, operator procedures, and end-user instructions otherwise become interleaved. The standard already recognises that useful shape by routing a retired `docs/developer/` root to `docs/guides/developer/`.
 
-The argument against: `ki-guides` deliberately avoids imposing a KI-wide taxonomy, and a small collection with three documents gains a path segment and nothing else. Whatever this decides, it should decide it for collections of every size rather than carving out an exception that re-creates today's inconsistency.
+A universal requirement would be counterproductive. A collection with only a few guides gains a path segment without gaining clarity, and a guide serving several audiences would need an artificial category. Directory names also reflect the local product and operating model, so a fixed KI-wide vocabulary would turn useful information architecture into a compliance taxonomy.
 
 Raised from `ki-website`, which has grouped its own collection under `developer/` and has opened companion items in ten tool and MCP repositories asking them to do the same. Those items cite this one; if it is declined, they stand on their own merits and should say so.
 
@@ -33,37 +33,35 @@ Raised from `ki-website`, which has grouped its own collection under `developer/
 
 Adopted into `Now` by explicit approval, so this is prioritised work rather than intake. It remains `status: draft`: `ki-plan` shapes it to `Ready` before any implementation.
 
-If it is accepted, it is a change to the standard and the rubric together — a requirement the rubric cannot check is a preference. Retrofitting every KI repository is a consequence to be weighed here, not a separate problem to discover afterwards.
-
-## Shaping
-
-- Decide whether audience grouping is required, recommended, or left local, and say which for collections of every size.
-- If required, settle whether the directory names are an open vocabulary or a fixed set. `user/`, `developer/`, and `operator/` cover what the estate already uses; `operations/` and `release/` appear in the current text.
-- Decide what a mixed collection does with a genuinely cross-audience document rather than leaving it to invent a folder.
-- Add the rubric item, with its mechanical evidence and a remediation that `ki repo conform` can perform where the move is unambiguous.
-- Estimate the retrofit: which repositories change, and whether the audit reports a failure or a warning during a transition.
+The approved policy is advisory: use open-vocabulary audience directories when the collection has stable audience distinctions and grouping improves the route from the index. Root-level guides remain valid for a small collection, shared entry points, or genuinely cross-audience material. The rubric records this as judgment, not as a mechanical path requirement, and CONFORM never relocates authored guides.
 
 ## Current state
 
-`standards-guides.md` permits either arrangement and states that category names are local information architecture. The rubric follows: `GUIDE-1`, `GUIDE-2`, and `GUIDE-3` check the root, the index, and one H1 per guide, and `ROUTE-1` and `ROUTE-2` check boundaries and judgment. Nothing checks audience grouping. This repository's own collection is the case in point — `docs/guides/developer/` is an audience directory, while `docs/guides/skills-by-outcome.md` sits at the collection root outside any audience.
+`standards-guides.md` permits either arrangement and states that category names are local information architecture. The rubric checks structure and routing but does not explicitly help a reviewer decide when audience grouping improves discovery. This repository illustrates the intended mixed shape: `docs/guides/developer/` contains contributor-facing material, while the cross-audience `docs/guides/skills-by-outcome.md` remains at the collection root.
 
 ## Steps
 
-- [ ] Decide whether audience grouping is required, recommended, or left local, and state which for collections of every size.
-- [ ] If required, settle whether the directory names are an open vocabulary or a fixed set, and record the reasoning either way.
-- [ ] Decide what a genuinely cross-audience document does, so a collection is not left inventing a folder.
-- [ ] Amend `standards-guides.md` to state the requirement.
-- [ ] Add the rubric item with its mechanical evidence, and a `ki repo conform` remediation where the move is unambiguous.
-- [ ] Bring this repository's own collection into conformance, starting with `docs/guides/skills-by-outcome.md`.
-- [ ] Estimate the retrofit across the estate and decide whether the audit fails or warns during the transition.
+- [ ] Amend `standards-guides.md` to recommend audience directories when stable reader groups make the collection easier to navigate, while preserving valid flat and mixed collections.
+- [ ] State that directory names use an open local vocabulary and that shared entry points or genuinely cross-audience guides may remain at the collection root.
+- [ ] Extend the existing `ROUTE-2` judgment guidance and fixtures so review assesses audience clarity without claiming a mechanically provable directory rule.
+- [ ] Make explicit that AUDIT emits no structural finding solely because a guide is flat and CONFORM never moves an authored guide between categories.
+- [ ] Review the eleven companion repository items and ensure they describe local information-architecture choices rather than compliance with a Harness-wide requirement.
 
 ## Files touched
 
-`skills/documentation/ki-guides/references/standards-guides.md`, `skills/documentation/ki-guides/rubric.toml` and `rubric.md`, the conform remediation, and this repository's `docs/guides/`.
+- `skills/governance/ki-guides/references/standards-guides.md`
+- `skills/governance/ki-guides/references/rubric.md`
+- `skills/governance/ki-guides/scripts/rubric/items/routing.ts`
+- Focused `ki-guides` fixtures
+- `docs/roadmap/KI-HARNESS-GOV-083-require-audience-guide-directories.md`
 
 ## Verify
 
-`ki repo audit --skill ki-guides --repo .` passes here under the amended rubric, and the new rubric item fails a deliberately flat fixture collection and passes a grouped one.
+- Focused fixtures prove that flat, audience-grouped, and intentionally mixed collections remain mechanically valid.
+- The rendered rubric tells a reviewer when audience grouping improves discovery without inventing a fixed vocabulary.
+- `ki dev skill rubric ki-guides` reproduces the committed rubric.
+- `ki repo audit --skill ki-guides --repo .`, `ki repo audit --skill ki-skills --repo .`, and `ki repo audit --skill ki-work-roadmap --repo .` pass.
+- `bun run test` and `bunx tsc --noEmit` pass.
 
 ## Dependencies / blocks
 
@@ -73,7 +71,7 @@ Nothing blocks this. Eleven companion items in the tool, MCP, and website reposi
 
 ### Decision Records
 
-A decision record is owed if the requirement lands. Tightening an explicitly permissive standard across the estate is a decision with a retrofit cost, and the reasoning for a fixed or open audience vocabulary needs to survive the change.
+No Decision Record is required because the plan preserves the existing local-information-architecture boundary and clarifies its judgment rather than imposing a new estate-wide taxonomy.
 
 ### Specifications
 
@@ -81,12 +79,22 @@ No behaviour-level contract changes to the harness tooling beyond the rubric ite
 
 ### Guides
 
-`standards-guides.md` changes, and this repository's own collection is restructured to conform.
+`standards-guides.md` and the reviewer guidance change. No guide is relocated merely to satisfy this item.
 
 ### Roadmap
 
-The companion items in the other repositories are already open. If the requirement lands with a transition period, the horizon of that transition is recorded here rather than left implicit.
+The companion items remain local choices. Review them for wording that falsely claims a universal requirement; no estate-wide retrofit or transition period is created.
 
 ## Discussion
 
-Shaping settles the shape of the requirement, not whether to make one. The narrower question first: does `ROUTE-1` retiring `docs/developer/` into `docs/guides/developer/` already commit the standard to audience grouping in everything but name?
+### Policy decision
+
+Audience grouping is recommended, not required. Use it when stable reader groups materially improve navigation. The vocabulary remains open and repository-local. A small collection, shared entry point, or genuinely cross-audience guide may remain at `docs/guides/`; mixed collections are valid.
+
+### Why judgment is the right enforcement
+
+The filesystem can prove that a guide is beneath the governed root, but it cannot prove who its readers are or whether a new path segment improves discovery. A mechanical rule would reward directory shape rather than useful routing. `ROUTE-2` already owns discoverability and correct placement as a judgment concern, so the smallest coherent change is to make the audience question explicit there.
+
+### Companion repository work
+
+The eleven companion items may still be worthwhile where a local collection mixes clearly distinct audiences. They must stand on that local evidence rather than cite this item as a universal migration requirement. Repositories whose current flat or mixed collection is clear need no change.
