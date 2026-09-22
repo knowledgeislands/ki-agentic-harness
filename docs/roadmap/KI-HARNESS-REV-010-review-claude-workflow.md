@@ -4,12 +4,12 @@ area: REV
 title: Review Claude workflow
 theme: regular-reviews
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-21T07:46:49Z
-updated_at: 2026-09-21T23:51:38Z
+updated_at: 2026-09-22T02:05:09Z
 ---
 
 ## Goal
@@ -71,6 +71,10 @@ The review may recommend concise runtime pointers or an existing guide owner, bu
 Owner-specific changes discovered by the review become separate records only when they are substantive and approved; this record retains the disposition evidence.
 
 ## Discussion
+
+### Planning decisions
+
+The review records one row per substantive rule: source excerpt or stable label, classification, disposition, canonical owner, evidence, and any separately scoped follow-on. It compares the installed file with its chezmoi source and current imported guidance, but treats all of them as read-only evidence. Completion means the disposition inventory is written into this record; it does not mean any recommendation has been applied.
 
 ### Review questions
 
