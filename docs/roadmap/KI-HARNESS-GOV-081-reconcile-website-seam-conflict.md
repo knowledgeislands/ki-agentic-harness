@@ -93,7 +93,7 @@ Receiver websites conform on their own schedules; this item does not mutate thei
 
 Reconciled the website and engineering contracts from immutable baseline `43fecf3ef89fc4a9d9dc69c50fe85ed6c6b89061`. The change affects only static-website and Cloudflare seam validation; it does not adopt Turborepo or alter any receiver repository.
 
-### Summary changes
+### Summary of changes
 
 Website and Cloudflare contexts now read the root `turbo.json` task names. Public aliases accept exact `turbo run <task>` only when the task matches the operation and is declared; direct terminal commands and one-hop named-site aliases remain valid. Missing, mismatched, chained, and cyclic shapes remain invalid, and both standards route generic task-graph quality to `ki-engineering`.
 

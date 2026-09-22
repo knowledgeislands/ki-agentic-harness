@@ -90,7 +90,7 @@ Receiver repositories that fail the new warning own their adoption or exemption 
 
 Implemented the approved `TURBO` rubric family from immutable baseline `3a342c7b6eda3bc399c5bcea47756e7b0f335db9`. The delivery is diagnostic only: it does not migrate estate repositories, enable remote caching, or claim to prove semantic input completeness.
 
-### Summary changes
+### Summary of changes
 
 Added `TURBO-1` adoption, `TURBO-2` task-correspondence, and `TURBO-3` cache-boundary checks to `ki-engineering`; collected package names and scripts safely across expanded workspaces; parsed commented `turbo.json` files; documented the mutation-test boundary; and regenerated the published rubric. All new violations begin at WARN.
 

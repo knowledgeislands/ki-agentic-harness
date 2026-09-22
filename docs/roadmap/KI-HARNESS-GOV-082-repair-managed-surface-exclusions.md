@@ -100,7 +100,7 @@ Automatic safe repair may be captured later if a general format-preserving confi
 
 Improved the approved `GEN-1` operator path from immutable baseline `61fcf274ced8632cad9d0e329b5bd06cca0d332b`. The change remains diagnostic-only and does not add partial JSON or JSONC mutation.
 
-### Summary changes
+### Summary of changes
 
 The audit now names missing Biome, Knip, and Markdown exclusion cells and explains that Knip's unused-ignore hint is expected and cannot override the cross-tool contract. The rubric remediation repeats that warning, the standard places it beside the managed-surface rule, and focused fixtures cover absent, partial, and compliant configurations.
 
