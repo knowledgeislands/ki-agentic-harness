@@ -8,9 +8,9 @@ blocked_by: []
 baseline_ref: 61fcf274ced8632cad9d0e329b5bd06cca0d332b
 transferred_from: ki-website
 created_at: 2026-09-21T15:23:58Z
-updated_at: 2026-09-22T01:23:21Z
+updated_at: 2026-09-22T06:23:36Z
 horizon: now
-status: awaiting-review
+status: done
 ---
 
 ## Goal
@@ -119,6 +119,10 @@ The implementation meets the diagnostic goal without weakening tool ownership or
 ### Mini recap
 
 `GEN-1` failures now tell an operator exactly which exclusions are absent and why Knip's contrary hint must not be followed. Repair remains deliberate and reviewable; no receiver repository was modified.
+
+## Done
+
+Accepted 2026-09-22 by Kris Brown on the review packet above.
 
 ## Discussion
 

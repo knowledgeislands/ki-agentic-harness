@@ -8,9 +8,9 @@ blocked_by: []
 baseline_ref: 3a342c7b6eda3bc399c5bcea47756e7b0f335db9
 transferred_from: ki-website
 created_at: 2026-09-21T08:12:07Z
-updated_at: 2026-09-22T01:15:22Z
+updated_at: 2026-09-22T06:23:36Z
 horizon: now
-status: awaiting-review
+status: done
 ---
 
 ## Goal
@@ -109,6 +109,10 @@ The implementation meets the goal and stays inside the planned boundary. The mai
 ### Mini recap
 
 Workspace repositories now receive actionable task-graph findings instead of silently passing without Turborepo. Focused fixtures cover absent, malformed, partial, commented, and compliant configurations; follow-on adoption belongs in each receiver repository rather than this item.
+
+## Done
+
+Accepted 2026-09-22 by Kris Brown on the review packet above.
 
 ## Discussion
 

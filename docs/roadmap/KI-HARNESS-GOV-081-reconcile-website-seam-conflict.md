@@ -8,9 +8,9 @@ blocked_by: []
 baseline_ref: 43fecf3ef89fc4a9d9dc69c50fe85ed6c6b89061
 transferred_from: ki-website
 created_at: 2026-09-21T12:03:51Z
-updated_at: 2026-09-22T01:35:33Z
+updated_at: 2026-09-22T06:23:36Z
 horizon: now
-status: awaiting-review
+status: done
 ---
 
 ## Goal
@@ -112,6 +112,10 @@ The implementation resolves the contradictory seam while preserving its literal,
 ### Mini recap
 
 Static and Cloudflare website aliases can now enter the Turborepo graph without weakening the public script contract. Receiver websites may migrate on their own schedules after review.
+
+## Done
+
+Accepted 2026-09-22 by Kris Brown on the review packet above.
 
 ## Discussion
 

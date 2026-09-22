@@ -4,12 +4,12 @@ area: GOV
 title: Clarify standing trade authority
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 02b97f520d1699111d790113cd0ffdc2f5eabf43
 created_at: 2026-09-21T08:08:16Z
-updated_at: 2026-09-22T01:53:25Z
+updated_at: 2026-09-22T06:23:36Z
 ---
 
 ## Goal
@@ -110,6 +110,10 @@ The change remains within the approved boundary: it changes the portable Harness
 ### Mini recap
 
 Standing intake now means exact, reciprocal, knowledge-only capture authority. `unattended` now means itemized no-response-requested observation with an evidenced receipt boundary; neither grants execution authority.
+
+## Done
+
+Accepted 2026-09-22 by Kris Brown on the review packet above.
 
 ## Discussion
 

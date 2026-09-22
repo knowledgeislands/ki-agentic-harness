@@ -7,9 +7,9 @@ blocks: []
 blocked_by: []
 baseline_ref: 48bbd4e80014a92f90a6ff7b41d5617558b282c7
 created_at: 2026-09-21T23:35:00Z
-updated_at: 2026-09-22T02:00:54Z
+updated_at: 2026-09-22T06:23:36Z
 horizon: now
-status: awaiting-review
+status: done
 ---
 
 # Reground the issue ledger
@@ -112,6 +112,10 @@ The contract remains compatible with repository-wide and fixed-area ledgers. No 
 ### Mini recap
 
 A planned identifier is now only an intention. The current ledger at publication determines the serial, and the record and ledger advance travel together.
+
+## Done
+
+Accepted 2026-09-22 by Kris Brown on the review packet above.
 
 ## Discussion
 
