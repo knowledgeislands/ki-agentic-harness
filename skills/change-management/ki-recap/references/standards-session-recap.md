@@ -66,7 +66,7 @@ The standard owns the placement ladder, promotion evidence, and duplicate-reconc
 | --- | --- |
 | Stable repository convention | Portable `AGENTS.md`, or a runtime file only when it is genuinely runtime-specific |
 | Checker, rubric, shared rule, or reusable operation | Its owning skill, standard, reference, agent, or hook — add a criterion only after scanning the relevant catalogue and linter |
-| Recurring repository-review concept | The `ki-repo` REVIEW procedure — raise it as a repository-review checklist candidate and offer the canonical update |
+| New reusable repository-review concept | The `ki-repo` REVIEW procedure — raise it as a repository-review checklist candidate and offer the canonical update |
 | A bounded procedure | An existing appropriate guide, rather than new standing orientation |
 | Durable personal fact or user preference | Runtime memory or synchronised personal configuration, according to its scope |
 | Deferred work with no home yet | Non-KB: `ROADMAP.md`, or a `ki-plan` if it is multi-step. KB: `Streams/Roadmap/`, or a `ki-plan` if it is multi-step. |
