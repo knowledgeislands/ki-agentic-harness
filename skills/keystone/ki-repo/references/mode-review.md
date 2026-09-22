@@ -180,6 +180,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Repository governance
 
 - [ ] The repository declaration reflects what the repository now contains.
+- [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
+- [ ] Short subordinate records, including Agora memberships, use compact dotted keys and inline tables; complex Agora homes and similar records use legible nested tables.
 - [ ] The declared skill set covers every governance capability the repository uses, including capabilities without an automatic detection signal.
 - [ ] Every declared runtime-bound skill is linked into the repository through a KI-managed local projection.
 - [ ] No skill remains declared after the capability it governs has left the repository.
