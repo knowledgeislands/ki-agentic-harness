@@ -125,7 +125,7 @@ For every repo on github.com:
 | Description | Equals declared `ki-repo` `description`; synced with `package.json` where present | One-line identity on GitHub. |
 | Merge methods | **Squash only** — merge-commit off, rebase off | One commit per PR; clean, linear `main`. |
 | Auto-delete branch | On | No stale merged branches. |
-| Issues | On | The tracker. |
+| Issues | Off unless `[skills.ki-work-github-issues]` is declared | Follows the selected work adapter. |
 | Wiki | Off | Docs live in-repo. |
 | Projects | Off | Unused. |
 | Discussions | Off | Unused. |
@@ -135,6 +135,8 @@ Public repos additionally carry **topics** — per-repo discovery metadata, not 
 **`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it. Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` overrides the `branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR (0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
 
 ### Package.json identity & metadata
+
+`bugs` is adapter-selected metadata, not a generic GitHub default. It is absent unless the root `[skills.ki-work-github-issues]` table is declared; when declared, `bugs.url` is exactly `https://github.com/<owner>/<repository>/issues`.
 
 The engineering coverage manifest assigns the `package.json` **identity & metadata** keys to this skill (engineering owns the closed key set; this skill owns their content). Where the repo has a `package.json`, these are checked:
 
@@ -147,7 +149,7 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 | `license`     | matches the declared `license` id (`UNLICENSED` if proprietary) — above | FAIL      |
 | `private`     | `true` iff the repo is private                                          | FAIL      |
 | `repository`  | carries a `url`; should reference the repo's `owner/name`               | FAIL/WARN |
-| `bugs`        | carries a `url`                                                         | WARN      |
+| `bugs`        | absent unless `ki-work-github-issues` is declared; then canonical URL   | FAIL      |
 | `homepage`    | present                                                                 | WARN      |
 | `keywords`    | non-empty array                                                         | WARN      |
 
@@ -189,6 +191,8 @@ branch-protection = true   # default off — protect `main` on this repo
 
 ## Per-repo overrides
 
+GitHub Issues is not an override. The root `[skills.ki-work-github-issues]` declaration is the authority: absent means Issues disabled and no `package.json` `bugs`; present means Issues enabled and the canonical GitHub Issues URL.
+
 The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, description, merge policy, auto-delete-branch, visibility, Dependabot — and aren't negotiable. License is bedrock and **declared, not inferred from visibility**: a repo names its license as an SPDX id in `[skills.ki-repo]` `license` (default MIT), and the auditor checks that the live GitHub license (`license`), a present LICENSE file (`license-file`), and `package.json` `"license"` (`package-license`) all match it. A proprietary declaration (`UNLICENSED`/`proprietary`) expects no recognised OSI license on GitHub — including GitHub's `unlicensed` classification for a custom copyright licence — and `"UNLICENSED"` in `package.json`. Visibility is a separate, independent check — a private repo may be MIT, a public repo proprietary. The rest are **overridable**: a repo flips one for itself with a single boolean in its `[skills.ki-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without reading as drift.
 
 | Check               | Org default | When enforced, the auditor requires…                |
@@ -196,7 +200,6 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 | `branch-protection` | **off**     | `main`: enforces the protection set ‡               |
 | `wiki`              | on          | Wiki disabled.                                      |
 | `projects`          | on          | Projects disabled.                                  |
-| `issues`            | on          | Issues enabled.                                     |
 | `topics`            | on          | _(public)_ non-empty topics, synced with keywords †. |
 | `secret-scanning`   | on          | _(public)_ secret scanning enabled.                 |
 | `push-protection`   | on          | _(public)_ secret-scanning push protection enabled. |
@@ -241,12 +244,15 @@ public=(mcp-housekeeping-claude mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-repo-k
 # Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
 #   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 
-# Layer 2 — every repo: squash-only + auto-delete branch + Wiki/Projects off
+# Layer 2 — every repo: squash-only + auto-delete branch + Issues/Wiki/Projects off
 for r in $all; do
   gh repo edit "knowledgeislands/$r" \
     --enable-merge-commit=false --enable-rebase-merge=false --enable-squash-merge=true \
-    --delete-branch-on-merge=true --enable-wiki=false --enable-projects=false
+    --delete-branch-on-merge=true --enable-issues=false --enable-wiki=false --enable-projects=false
 done
+
+# Re-enable Issues only where .ki.toml declares [skills.ki-work-github-issues].
+gh repo edit knowledgeislands/<github-issues-repo> --enable-issues=true
 
 # Layer 2 — descriptions and topics (both per repo; topics public-only).
 # Topics mirror the repo's package.json "keywords" — set both from the same list.

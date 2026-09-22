@@ -108,8 +108,8 @@ GitHub merge and branch-cleanup behaviour.
 
 Issues, Wiki, and Projects settings.
 
-- **TOGGLE-1 [M] — Repository feature toggles** — Issues are enabled and Wiki and Projects are disabled unless explicitly overridden. (standards-repository.md)
-  - _Remediation:_ diagnostic — Align the repository feature settings or record an explicit override, then rerun the audit.
+- **TOGGLE-1 [M] — Repository feature toggles** — Issues are enabled exactly when ki-work-github-issues is declared; Wiki and Projects are disabled unless explicitly overridden. (standards-repository.md)
+  - _Remediation:_ diagnostic — Align Issues with the selected work adapter and the other repository feature settings with their overrides, then rerun the audit.
 
 ## VIS — Visibility
 

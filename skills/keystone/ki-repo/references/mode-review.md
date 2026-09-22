@@ -181,6 +181,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 
 - [ ] The repository declaration reflects what the repository now contains.
 - [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
+- [ ] GitHub Issues and `package.json` bug-reporting metadata agree with the selected work adapter: both are absent unless `ki-work-github-issues` is declared.
 - [ ] Short subordinate records, including Agora memberships, use compact dotted keys and inline tables; complex Agora homes and similar records use legible nested tables.
 - [ ] The declared skill set covers every governance capability the repository uses, including capabilities without an automatic detection signal.
 - [ ] Every declared runtime-bound skill is linked into the repository through a KI-managed local projection.

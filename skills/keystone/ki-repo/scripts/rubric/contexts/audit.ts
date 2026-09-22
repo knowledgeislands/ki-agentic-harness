@@ -17,7 +17,7 @@
  *                `[skills.ki-<skill>]` opt-in table — detected-but-undeclared
  *                WARNs. A non-ki-repo is never coverage-checked (no false positives).
  *   2. GITHUB  — default branch, license, squash-only + linear, auto-delete-branch,
- *                Issues on / Wiki+Projects off, non-empty description, visibility
+ *                Issues selected by ki-work-github-issues / Wiki+Projects off, non-empty description, visibility
  *                (matches the value DECLARED in .ki.toml — not the name),
  *                and (public) the standard topic set. `main` is open by default;
  *                branch protection is an overridable check (.ki.toml checks).
@@ -107,7 +107,6 @@ const CHECK_DEFAULTS: Record<string, boolean> = {
   'branch-protection': false, // protect `main` (PR + build check + linear history)
   wiki: true, //                Wiki disabled
   projects: true, //            Projects disabled
-  issues: true, //              Issues enabled
   topics: true, //              (public) carries the standard topic set
   'secret-scanning': true, //   (public) secret scanning on
   'push-protection': true, //   (public) secret-scanning push protection on
@@ -772,6 +771,19 @@ const declaresTable = (kiText: string, table: string): boolean =>
 export const declaresRootTable = (kiText: string, table: string): boolean =>
   declaredTables(kiText).some(({ root, exact }) => root === table && exact)
 
+export type GitHubIssuesPolicy = Readonly<{
+  enabled: boolean
+  bugsUrl: string | null
+}>
+
+export const githubIssuesPolicy = (kiText: string | null, nameWithOwner: string): GitHubIssuesPolicy => {
+  const enabled = declaresRootTable(kiText ?? '', skillTable('ki-work-github-issues'))
+  return {
+    enabled,
+    bugsUrl: enabled ? `https://github.com/${nameWithOwner}/issues` : null
+  }
+}
+
 const readmeTitle = (text: string | null): string | null =>
   text?.match(/^#\s+(.+?)(?:\s+#+)?\s*$/m)?.[1]?.trim() || null
 
@@ -914,6 +926,7 @@ async function auditRepo(
   }
 
   // ── layer 2: core GitHub ── GH-1
+  const issuesPolicy = githubIssuesPolicy(kiText, r.nameWithOwner)
   if (r.defaultBranchRef?.name !== DEFAULT_BRANCH)
     fail('GH-1', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
   // License is the declared SPDX id from `[skills.ki-repo] license` (default MIT), decoupled
@@ -967,7 +980,19 @@ async function auditRepo(
       fail('PKG-1', 'private repo: package.json must set "private": true', 'package.json')
     if (r.visibility === 'PUBLIC' && p.private === true)
       fail('PKG-1', 'public repo: package.json must not set "private": true', 'package.json')
-    if (!isStr(urlOf(p.bugs))) warn('PKG-1', 'package.json "bugs" should carry a url', 'package.json')
+    const bugsUrl = urlOf(p.bugs)
+    if (issuesPolicy.bugsUrl == null && p.bugs !== undefined)
+      fail(
+        'PKG-1',
+        'package.json "bugs" must be absent unless [skills.ki-work-github-issues] is declared',
+        'package.json'
+      )
+    else if (issuesPolicy.bugsUrl != null && bugsUrl !== issuesPolicy.bugsUrl)
+      fail(
+        'PKG-1',
+        `package.json "bugs" url is ${JSON.stringify(bugsUrl)} (want ${JSON.stringify(issuesPolicy.bugsUrl)})`,
+        'package.json'
+      )
     if (!isStr(p.homepage)) warn('PKG-1', 'package.json "homepage" missing', 'package.json')
     if (!Array.isArray(p.keywords) || p.keywords.length === 0)
       warn('PKG-1', 'package.json "keywords" should be a non-empty array', 'package.json')
@@ -1016,7 +1041,6 @@ async function auditRepo(
     'branch-protection': 'BP-1',
     wiki: 'TOGGLE-1',
     projects: 'TOGGLE-1',
-    issues: 'TOGGLE-1',
     topics: 'TOPICS-1',
     'secret-scanning': 'SEC-1',
     'push-protection': 'SEC-1',
@@ -1101,8 +1125,12 @@ async function auditRepo(
       )
   }
 
-  // TOGGLE-1: repo-feature toggles (Issues on, Wiki/Projects off)
-  if (enforced('issues') && !r.hasIssuesEnabled) fail('TOGGLE-1', 'Issues are disabled')
+  // TOGGLE-1: GitHub Issues follows the selected adapter; Wiki and Projects stay off.
+  if (r.hasIssuesEnabled !== issuesPolicy.enabled)
+    fail(
+      'TOGGLE-1',
+      `Issues are ${r.hasIssuesEnabled ? 'enabled' : 'disabled'} (want ${issuesPolicy.enabled ? 'enabled' : 'disabled'} because [skills.ki-work-github-issues] is ${issuesPolicy.enabled ? 'declared' : 'not declared'})`
+    )
   if (enforced('wiki') && r.hasWikiEnabled) fail('TOGGLE-1', 'Wiki is enabled (want off)')
   if (enforced('projects') && r.hasProjectsEnabled) fail('TOGGLE-1', 'Projects are enabled (want off)')
 
@@ -1509,7 +1537,7 @@ const auditLocalContent = async (nwo: string, content: ContentEvidence): Promise
     squashMergeAllowed: true,
     rebaseMergeAllowed: false,
     deleteBranchOnMerge: true,
-    hasIssuesEnabled: true,
+    hasIssuesEnabled: githubIssuesPolicy(content.kiText, nwo).enabled,
     hasProjectsEnabled: false,
     hasWikiEnabled: false,
     repositoryTopics: pkgKeywords(content.signals.pkg),
