@@ -340,6 +340,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] The lockfile is current and dependency versions are consistent across workspaces.
 - [ ] Verification exercises representative real-scale data as well as minimal fixtures.
 - [ ] Relevant live configuration and runtime state are compared with their declared sources without exposing private values.
+- [ ] A change to a declaration that another tool consumes was verified by running that tool, not only the repository's own gates. A clean pass from a gate that cannot see the consumer reads exactly like verification and stops the reviewer looking.
 - [ ] No gate was made to pass by widening an ignore list rather than fixing the cause.
 - [ ] Every suppression comment added in this change names a reason.
 
