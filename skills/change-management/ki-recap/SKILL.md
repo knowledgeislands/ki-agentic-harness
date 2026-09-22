@@ -22,6 +22,8 @@ Three legs, always in this order:
 2. **Surface what is outstanding** — only unfinished threads and explicitly deferred fixes from this session. Always check whether the session's work is fully committed — dirty files this session touched are outstanding; dirty files from other threads and generic future work are out of scope. A roadmap item or Stream **added this session** is "what happened", not outstanding.
 3. **Harvest the learnings** — dead-ends, workarounds, conventions discovered in-session — and route each through `ki-authoring`'s knowledge-promotion convention set: distinguish a durable learning from unfinished work, then choose its narrowest appropriate owner. Confirm with the user before writing anywhere durable.
 
+During the learning harvest, raise any recurring repository-review question, lens, evidence expectation, output requirement, or method that the `ki-repo` REVIEW procedure does not yet cover as a **repository-review checklist candidate**. Offer to update that canonical checklist, but do not change it without the user's confirmation.
+
 When the user asks for coverage, or several materially different discussion points would otherwise be hard to trace, add a bounded **Discussion coverage** matrix after the three legs and before Actions. It is an optional reviewer aid, never a fourth source of truth or a claim of transcript completeness; the full procedure fixes its four columns, closed dispositions, and evidence limits.
 
 Normal recap also applies the `ki-batch` “Batch retention” rule to eligible inactive records under `+/_BATCHES/`, reports exact removals, and refreshes Git grounding afterwards. This narrowly authorised housekeeping is separate from proposed recap Actions and never prunes roadmap records.

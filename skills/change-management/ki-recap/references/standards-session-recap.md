@@ -66,11 +66,14 @@ The standard owns the placement ladder, promotion evidence, and duplicate-reconc
 | --- | --- |
 | Stable repository convention | Portable `AGENTS.md`, or a runtime file only when it is genuinely runtime-specific |
 | Checker, rubric, shared rule, or reusable operation | Its owning skill, standard, reference, agent, or hook — add a criterion only after scanning the relevant catalogue and linter |
+| Recurring repository-review concept | The `ki-repo` REVIEW procedure — raise it as a repository-review checklist candidate and offer the canonical update |
 | A bounded procedure | An existing appropriate guide, rather than new standing orientation |
 | Durable personal fact or user preference | Runtime memory or synchronised personal configuration, according to its scope |
 | Deferred work with no home yet | Non-KB: `ROADMAP.md`, or a `ki-plan` if it is multi-step. KB: `Streams/Roadmap/`, or a `ki-plan` if it is multi-step. |
 
 Use `highCostCandidates` from the grounding helper as a starting list, not the full set — warm context surfaces things the helper cannot see (a design dead-end, a rejected approach).
+
+For a repository-review checklist candidate, name the concept and the gap it would close, then ask whether to update the canonical `ki-repo` REVIEW reference. Do not edit the checklist merely because the recap identified the candidate; user confirmation still governs the durable learning write. If approved, preserve that reference's broad-to-narrow structure and reconcile any lower-layer copy or pointer.
 
 ### Per-record review mini recap
 
