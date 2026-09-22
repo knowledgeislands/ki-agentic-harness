@@ -8,9 +8,9 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-website
 created_at: 2026-09-21T15:23:58Z
-updated_at: 2026-09-21T15:23:58Z
-horizon: triage
-status: draft
+updated_at: 2026-09-22T00:03:44Z
+horizon: now
+status: ready
 ---
 
 ## Goal
@@ -45,7 +45,60 @@ This concerns `GEN-1`'s diagnostic and repair inside `ki-engineering`. It does n
 
 It changes no repository's configuration. `infoschematics` owns its own failure, and KI Website is already conformant.
 
+## Current state
+
+`GEN-1` correctly requires managed-surface exclusions across Biome, Knip, and Markdown tooling, but its diagnostic does not explain that Knip may call required entries unused. CONFORM has no comment-preserving multi-format editor capable of repairing every affected configuration safely.
+
+## Steps
+
+- [ ] Extend the `GEN-1` diagnostic to name the missing tool cell and explain that Knip's unused-ignore hint does not override the cross-tool managed-surface contract.
+- [ ] Cross-reference the managed-surface rule and Knip-hint explanation where the operator encounters the failure.
+- [ ] Keep CONFORM no-write for this concern until one safe editor can preserve supported JSON and JSONC bytes, comments, ordering, and unrelated configuration.
+- [ ] Add fixtures for absent Knip exclusions, partial cross-tool coverage, fully compliant exclusions, and the exact remediation message.
+- [ ] Regenerate the engineering rubric and verify existing `KNIP-2` behaviour remains unchanged.
+
+## Files touched
+
+- `skills/governance/ki-engineering/references/standards-engineering.md`
+- `skills/governance/ki-engineering/references/rubric.md`
+- `skills/governance/ki-engineering/scripts/rubric/items/generated.ts`
+- `skills/governance/ki-engineering/scripts/rubric/contexts/engineering.ts`
+- Focused `GEN-1` fixture tests
+
+## Verify
+
+- Focused engineering tests assert the diagnostic text, tool-specific missing cells, and clean compliant case.
+- `ki dev skill rubric ki-engineering` reproduces the committed rubric.
+- `ki repo audit --skill ki-engineering --repo .` and `ki repo audit --skill ki-skills --repo .` pass.
+- `bun run test` and `bunx tsc --noEmit` pass.
+
+## Dependencies / blocks
+
+No dependency blocks the diagnostic repair. Automatic configuration mutation is explicitly excluded until safe format-preserving edit capability exists.
+
+## Documentation impact
+
+### Decision Records
+
+No Decision Record is required because the managed-surface rule and ownership are unchanged.
+
+### Specifications
+
+The engineering standard and generated diagnostic rubric remain the accepted contract.
+
+### Guides
+
+No new guide is needed; remediation must appear in the failure itself and the existing standard.
+
+### Roadmap
+
+Automatic safe repair may be captured later if a general format-preserving configuration editor becomes available.
+
 ## Discussion
+
+### Planning decisions
+
+The first slice repairs the operator path through an exact diagnostic rather than introducing a `knip.json`-only CONFORM exception. A partial editor would make safety depend on incidental file format and leave the same cross-tool failure inconsistent elsewhere.
 
 ### Why the smallest fix is the diagnostic
 
@@ -69,7 +122,7 @@ Leaving it is defensible now that §231 exists, on the argument that the documen
 
 Raising the hint into a rubric-owned wrapper — having the house always invoke Knip through a script that suppresses hints — would stop a hand-run `bunx knip` from ever showing the contradiction. It also hides a class of legitimate Knip advice, and conflicts with `ki:knip` being named as retired drift in §182.
 
-### Open questions
+### Questions resolved by the plan
 
 - Is a narrow `knip.json`-only conform repair worth the precedent, or does the `GEN-1` remedy stay manual across all three tools for consistency?
 - Should the diagnostic name the tool whose advice conflicts, or state the general principle that a tool's opinion about its own configuration does not override a cross-tool rule it cannot see?

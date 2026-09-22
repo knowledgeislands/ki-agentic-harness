@@ -8,9 +8,9 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-website
 created_at: 2026-09-21T08:12:07Z
-updated_at: 2026-09-21T08:12:07Z
-horizon: triage
-status: draft
+updated_at: 2026-09-22T00:03:44Z
+horizon: now
+status: ready
 ---
 
 ## Goal
@@ -33,7 +33,62 @@ This adds detection to `ki-engineering`. It does not migrate any repository — 
 
 It does not decide remote caching, which the standard already requires to be set explicitly rather than by omission, and it does not touch `ki-repo-website`'s `site-root` default. Those are adjacent to KI Website's local item but are not this.
 
+## Current state
+
+The engineering standard requires a task graph for every repository declaring workspaces, but the rubric never inspects `turbo.json`. Six of ten observed workspace repositories adopted Turborepo independently; four remain invisible to the current audit.
+
+## Steps
+
+- [ ] Add a `TURBO` rubric family to `ki-engineering` and collect workspace, root-script, workspace-script, `turbo.json`, and managed-ignore evidence once.
+- [ ] Emit WARN when a repository declares workspaces without a task graph, including `5g-emerge-ibc-2026`, while retaining the existing per-item override mechanism for evidenced exceptions.
+- [ ] Validate that configured tasks correspond to governed root and workspace scripts, deployable builds retain `$TURBO_DEFAULT$`, and `.turbo/` is excluded through the managed ignore contribution.
+- [ ] Keep semantic input-completeness judgment outside the mechanical audit and document the existing mutation test as the verification method.
+- [ ] Add fixtures for compliant, absent, partial, deliberately overridden, glob-workspace, and malformed configurations, then regenerate the rubric.
+
+## Files touched
+
+- `skills/governance/ki-engineering/references/standards-engineering.md`
+- `skills/governance/ki-engineering/references/rubric.md`
+- `skills/governance/ki-engineering/scripts/rubric/items/turbo.ts`
+- `skills/governance/ki-engineering/scripts/rubric/items/index.ts`
+- `skills/governance/ki-engineering/scripts/rubric/contexts/audit-evidence.ts`
+- `skills/governance/ki-engineering/scripts/rubric/contexts/engineering.ts`
+- Focused `ki-engineering` fixture tests
+
+## Verify
+
+- Focused engineering tests prove WARN-level absence, configuration-quality failures, override handling, and compliant task graphs.
+- `ki dev skill rubric ki-engineering` reproduces the committed rubric.
+- `ki repo audit --skill ki-engineering --repo .` passes for the Harness.
+- `ki repo audit --skill ki-skills --repo .`, `bun run test`, and `bunx tsc --noEmit` pass.
+
+## Dependencies / blocks
+
+No external dependency blocks the checker. Estate migrations are follow-on receiver work; this item deliberately begins at WARN so existing repositories are visible without becoming immediate failures.
+
+## Documentation impact
+
+### Decision Records
+
+No Decision Record is expected because this implements the already accepted engineering standard.
+
+### Specifications
+
+The engineering standard and generated rubric remain the accepted contract; no separate specification is needed.
+
+### Guides
+
+No guide is required beyond a concise remediation that points to the standard's task-graph shape and mutation test.
+
+### Roadmap
+
+Receiver repositories that fail the new warning own their adoption or exemption work; this item does not create those records.
+
 ## Discussion
+
+### Planning decisions
+
+The first slice ships presence and minimum configuration-quality checks together under a dedicated `TURBO` family. Every repository with a workspace declaration is in scope, including `5g-emerge-ibc-2026`; a justified exemption uses the existing override mechanism. `ki-engineering` is the sole mechanical owner, so website skills do not duplicate the generic adoption check.
 
 ### What a rubric item can actually prove
 
@@ -55,7 +110,7 @@ Leaving it to each repository is the status quo, and the four-versus-six split i
 
 Checking only for `turbo.json` presence and stopping there is a legitimate first step and catches everything currently wrong. The risk is that presence becomes the whole standard, and a repository satisfies the gate with a `turbo.json` containing a single root `build` — which the standard explicitly calls one cache entry for the whole repository.
 
-### Open questions
+### Questions resolved by the plan
 
 - Is a bare `turbo.json` presence check worth shipping ahead of the configuration-quality items, or does shipping it alone teach the wrong lesson?
 - Should `5g-emerge-ibc-2026` be in scope? It declares `["apps/*","infoschematics/*"]` and is the one non-website repository in the gap, so it may have a reason the three website repositories do not.

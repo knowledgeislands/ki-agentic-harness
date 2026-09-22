@@ -8,9 +8,9 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-website
 created_at: 2026-09-21T12:03:51Z
-updated_at: 2026-09-21T12:03:51Z
-horizon: triage
-status: draft
+updated_at: 2026-09-22T00:03:44Z
+horizon: now
+status: ready
 ---
 
 ## Goal
@@ -37,7 +37,61 @@ This reconciles two standards the harness owns. It does not change any website r
 
 It does not decide Cloudflare dashboard settings for any specific site, and it does not revisit whether Turborepo is the right task runner. `KI-HARNESS-GOV-079` covers making Turborepo adoption mechanically detectable and is a separate concern — that item is about a standard nobody checks, this one is about two standards that contradict.
 
+## Current state
+
+The website seam permits only an exact terminal command or one `self:site:*` hop, while the engineering standard requires workspace orchestration through the task graph. KI Website can satisfy either rule but not both for the same externally invoked build alias.
+
+## Steps
+
+- [ ] Amend the static-website seam to permit `turbo run <task>` as a third terminal form only when the selected `turbo.json` declares that exact task.
+- [ ] Apply the same resolved shape to the Cloudflare-hosted seam checks that currently reject task-runner delegation.
+- [ ] Keep direct `--cwd` chaining invalid and retain cycle, missing-task, and mismatched-task failures.
+- [ ] Add fixtures covering exact commands, one-hop self aliases, valid Turborepo delegation, missing tasks, chained commands, and cyclic forwarding.
+- [ ] Cross-reference the generic task-graph owner without duplicating `ki-engineering` adoption checks, then regenerate both website rubrics.
+
+## Files touched
+
+- `skills/repo-structure/ki-repo-website/references/standards-website.md`
+- `skills/repo-structure/ki-repo-website/references/rubric.md`
+- `skills/repo-structure/ki-repo-website/scripts/rubric/`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/standards-cloudflare-hosting.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/rubric.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/scripts/rubric/`
+
+## Verify
+
+- Focused website and Cloudflare tests prove the three accepted terminal shapes and every refusal case.
+- Generated `ki-repo-website` and `ki-repo-website-cloudflare` rubrics match their sources.
+- Relevant website-skill and `ki-skills` audits pass.
+- `bun run test` and `bunx tsc --noEmit` pass.
+
+## Dependencies / blocks
+
+The change is independently executable against existing Turborepo configuration evidence. It does not depend on `KI-HARNESS-GOV-079`, although both items can share a task-graph verification pass. App-site behaviour remains unchanged unless its existing contract contains the same literal seam; any distinct conflict becomes separate work.
+
+## Documentation impact
+
+### Decision Records
+
+No Decision Record is expected; the change reconciles two accepted standards without changing their ownership.
+
+### Specifications
+
+The website and Cloudflare standards are the accepted behaviour contracts and must be updated together.
+
+### Guides
+
+Update existing deployment examples only if they currently present a terminal shape the reconciled contract rejects.
+
+### Roadmap
+
+Receiver websites conform on their own schedules; this item does not mutate their scripts or deployment settings.
+
 ## Discussion
+
+### Planning decisions
+
+Task-graph delegation becomes an accepted public seam when the exact task is mechanically present. This preserves external `ki:site:*` stability while allowing cached deploy builds. The first slice changes static-site and Cloudflare seam checks only; generic Turborepo adoption remains solely owned by `ki-engineering`.
 
 ### Why each side is defensible
 
@@ -59,7 +113,7 @@ Declare the seam's priority and record it. The status quo plus a sentence in bot
 
 Leaving it undocumented is the status quo. Two repositories have now resolved it the same way independently — `kit-midnight.ninja` by construction and `ki-website` by hitting the FAIL — which suggests the answer is stable even though it is unwritten. The cost is that each adopter pays the discovery again, and pays it mid-implementation after having already written the wrong scripts.
 
-### Open questions
+### Questions resolved by the plan
 
 - Which standard yields? The seam's guarantee is about auditability, the task graph's is about correctness, and they are not obviously commensurable.
 - If `turbo run <task>` becomes a recognised form, must the website rubric read `turbo.json` to confirm the named task exists, or is that overreach into `ki-engineering`'s territory?

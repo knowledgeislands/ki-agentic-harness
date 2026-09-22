@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-080
 area: GOV
 title: Clarify standing trade authority
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-21T08:08:16Z
-updated_at: 2026-09-21T08:08:16Z
+updated_at: 2026-09-22T00:03:44Z
 ---
 
 ## Goal
@@ -28,7 +28,63 @@ This is the right point to settle the contract before standing agreements are us
 
 This item reconciles the portable trade authority, vocabulary, kind/policy matrix, and future automation boundary. It does not assume that standing authority should extend to work, authorise background execution, activate any standing route, or directly change `tools-ki` or another repository. Host changes discovered by the review must be returned through a bounded handoff or trade after the Harness contract is agreed.
 
+## Current state
+
+The decision record and `ki-trades` standard define reciprocal standing knowledge-intake grants, while `ki-trade` and `ki-next` additionally use `unattended` as an observation policy. The concepts are implemented but named closely enough to imply execution authority they do not grant.
+
+## Steps
+
+- [ ] Define one authority matrix separating standing knowledge intake, per-trade unattended observation, receiver disposition, execution, acceptance, release, and pruning.
+- [ ] Keep standing grants knowledge-only and state explicitly that they grant capture eligibility, not application, prioritisation, implementation, acceptance, or background execution.
+- [ ] Define `unattended` solely as an observation and release policy for an itemised trade, with receipt still evidenced and receiver authority unchanged.
+- [ ] Align `GDR-KI-HARNESS-005`, the `ki-trades` standard and rubric, `ki-trade`, and `ki-next`, including activation, reciprocal consent, revocation, and historical evidence terminology.
+- [ ] Add focused authority and lifecycle fixtures, then identify exact `tools-ki` follow-on requirements without editing that repository.
+
+## Files touched
+
+- `docs/decisions/GDR-KI-HARNESS-005-governed-cross-repository-trades.md`
+- `skills/governance/ki-trades/SKILL.md`
+- `skills/governance/ki-trades/references/standards-trades.md`
+- `skills/governance/ki-trades/references/rubric.md`
+- `skills/governance/ki-trades/scripts/rubric/`
+- `skills/governance/ki-trade/SKILL.md`
+- `skills/governance/ki-trade/references/standards-trade-operations.md`
+- `skills/change-management/ki-next/references/standards-next-work.md`
+
+## Verify
+
+- Focused trade tests prove standing capture cannot imply execution and unattended delivery cannot bypass receipt or receiver disposition.
+- Generated `ki-trades` rubric publication matches its source.
+- `ki repo audit --skill ki-trades --repo .` and `ki repo audit --skill ki-skills --repo .` pass.
+- `bun run test` and `bunx tsc --noEmit` pass.
+
+## Dependencies / blocks
+
+No external dependency blocks the portable authority clarification. Any `tools-ki` command or persistence change is receiver-owned follow-on work through the existing trade route.
+
+## Documentation impact
+
+### Decision Records
+
+Amend `GDR-KI-HARNESS-005` so the durable authority model matches the clarified contract.
+
+### Specifications
+
+Record downstream `tools-ki` specification consequences as a bounded handoff; do not amend that repository here.
+
+### Guides
+
+Update only existing operational guidance whose wording currently conflates standing intake and unattended observation.
+
+### Roadmap
+
+Capture a `tools-ki` receiver record only if implementation consequences remain after the Harness contract is complete.
+
 ## Discussion
+
+### Planning decisions
+
+Standing intake remains deliberately knowledge-only. `unattended` remains a per-trade observation policy, not a standing agreement or execution grant. Any future autonomous transfer or application requires a separate authority contract covering idempotency, scheduling, failure recovery, evidence, and revocation.
 
 ### Concepts to distinguish
 

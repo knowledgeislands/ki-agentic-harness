@@ -3,14 +3,14 @@ id: KI-HARNESS-GOV-078
 area: GOV
 title: Standardise MCP server distribution
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 transferred_from: ki-website
 created_at: 2026-09-21T07:33:33Z
-updated_at: 2026-09-21T07:33:33Z
+updated_at: 2026-09-22T00:03:44Z
 ---
 
 ## Goal
@@ -35,7 +35,61 @@ It does not touch the released-tool contract. Command-line tools distribute thro
 
 It does not decide whether private MCP repositories publish anything, and it does not cover the reciprocal website work of advancing directory entries once packages exist.
 
+## Current state
+
+`ki-repo-mcp` governs repository shape but has no distribution standard, release-workflow checks, package-identity rule, or official-registry metadata checks. Six public MCP repositories are publish-shaped but unreleased, so the first delivery belongs in the Harness contract and its fixtures rather than in those repositories.
+
+## Steps
+
+- [ ] Refresh the official MCP Registry, npm trusted-publishing, and GitHub OIDC sources already relevant to the captured requirements.
+- [ ] Add a focused MCP distribution standard that makes npm the required load-bearing channel and treats official-registry listing as recommended while that registry remains preview infrastructure.
+- [ ] Require package identity to use `@knowledgeislands/<repository-basename>`, exact version agreement between package and registry metadata, an installable `bin`, explicit published files, and a release workflow with provenance-capable authentication.
+- [ ] Add WARN-level audit items for distribution readiness and safe CONFORM proposals for missing generated metadata or workflow files; refuse ambiguous identity or version rewrites.
+- [ ] Add fixtures for ready, missing, mismatched, private, metadata-only, and unsafe-to-conform repositories, then regenerate the published rubric.
+
+## Files touched
+
+- `skills/repo-structure/ki-repo-mcp/SKILL.md`
+- `skills/repo-structure/ki-repo-mcp/references/standards-mcp-distribution.md`
+- `skills/repo-structure/ki-repo-mcp/references/sources.md`
+- `skills/repo-structure/ki-repo-mcp/references/rubric.md`
+- `skills/repo-structure/ki-repo-mcp/scripts/rubric/items/`
+- `skills/repo-structure/ki-repo-mcp/scripts/rubric/contexts/`
+
+## Verify
+
+- Focused `ki-repo-mcp` rubric tests cover every new readiness and refusal case.
+- `ki dev skill rubric ki-repo-mcp` reproduces the committed rubric.
+- `ki repo audit --skill ki-skills --repo .` passes.
+- `bun run test` and `bunx tsc --noEmit` pass.
+
+## Dependencies / blocks
+
+No implementation dependency blocks the Harness contract. Publication credentials, release versions, tags, and registry submissions remain receiver-owned rollout work and are explicitly outside this item.
+
+## Documentation impact
+
+### Decision Records
+
+Amend or add a Decision Record only if implementation changes the existing repository-kind ownership boundary rather than documenting its distribution projection.
+
+### Specifications
+
+No separate specification is required; the `ki-repo-mcp` standard and generated rubric own the accepted repository contract.
+
+### Guides
+
+Add concise release guidance only where an operator must perform steps that cannot be safely conformed automatically.
+
+### Roadmap
+
+Capture receiver-local publication work separately after the Harness contract lands; do not include cross-repository releases in this item.
+
 ## Discussion
+
+### Planning decisions
+
+npm is the required install channel; official-registry listing is recommended rather than mandatory until its preview lifecycle stabilises. Public package identity matches the repository basename under the `@knowledgeislands` scope. The standard requires version consistency but does not choose a receiver's first release version. MCP-specific release readiness belongs to `ki-repo-mcp`; any broader tool-release rule is separate work.
 
 ### What the official registry actually requires
 
@@ -63,7 +117,7 @@ Publishing to npm without listing in the official registry would deliver the ins
 
 Leaving distribution to each repository is the status quo, and the evidence above is what it produces: six repositories that independently reached the same publish-ready shape and then independently failed to publish.
 
-### Open questions
+### Questions resolved by the plan
 
 - Does the standard mandate registry listing, or require npm and recommend the registry?
 - Is `1.0.0` the right first tag for servers sitting at `0.9.0` with full coverage, or does a `0.x` publication better match a surface that may still move?
