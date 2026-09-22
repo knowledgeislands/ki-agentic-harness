@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-19T11:44:28Z
+updated_at: 2026-09-22T01:08:55Z
 ---
 
 ## Goal
@@ -48,6 +48,8 @@ On 2026-09-20, the user confirmed every visible ChatGPT project had been renamed
 
 The canonical `ki-acquire-chatgpt` capability now publishes the current prepared-capture metadata and the intended incremental source, routing, fidelity, checkpoint, staging, and retirement contract. This does not claim executable completeness: the installed local store remains opaque and cannot satisfy readable project enumeration, complete conversation fidelity, or source-retirement verification.
 
+On 2026-09-22, the user selected the official ChatGPT account export as the authorised bootstrap source for the first complete readable snapshot. The request reached ChatGPT's account re-authentication boundary and is not yet delivered. The export remains sensitive external source material outside Git; after delivery it must be inspected for project membership, complete conversation content, write-ups, and assets before a bounded converter can produce the existing `ki-chatgpt-capture` input. This snapshot does not provide the intended incremental source contract, so the end-to-end source step remains open.
+
 ## Steps
 
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
@@ -56,6 +58,7 @@ The canonical `ki-acquire-chatgpt` capability now publishes the current prepared
 - [x] Validate a structured readable ChatGPT bundle that retains opaque source identity, byte count, and hash without committing opaque payload bytes.
 - [x] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
 - [x] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
+- [x] Select the official ChatGPT account export as the authorised bootstrap source, keep its sensitive archive outside Git, and retain incremental acquisition as a separate gap.
 - [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
 - [ ] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
 - [ ] Represent unmapped projects, overlapping receiver mappings, missing sessions, changed sessions, and failed reads explicitly without guessing or silently dropping content.
@@ -92,7 +95,7 @@ The canonical `ki-acquire-chatgpt` capability now publishes the current prepared
 
 ## Dependencies / blocks
 
-The action-first executor and read-only provider mechanics exist. The principal unresolved dependency is a readable, authorised ChatGPT source that preserves project membership and complete conversation content. The installed-application records are opaque, while the existing executable path begins from a user-prepared capture. The design must use an official export, user-prepared capture, supported API, or another authorised readable surface without reverse-engineering private storage.
+The action-first executor and read-only provider mechanics exist. The official account export is the authorised bootstrap source, but it has not yet been delivered or verified to preserve project membership, write-ups, assets, and every complete conversation. The installed-application records are opaque, while the existing executable path begins from a user-prepared `ki-chatgpt-capture` tree rather than an account export ZIP. The remaining bridge must inspect the delivered export, convert only verified source evidence, and keep a supported incremental source as a separate requirement without reverse-engineering private storage.
 
 Safe deletion also depends on a provider-supported, identity-specific mutation surface. If ChatGPT exposes no safe deletion operation, the system must produce a verified manual-release manifest and stop. Browser automation is not an acceptable substitute for an auditable deletion contract.
 

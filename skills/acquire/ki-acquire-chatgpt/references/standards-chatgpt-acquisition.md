@@ -34,6 +34,12 @@ The opaque installed-store adapter satisfies only the first layer. A user-prepar
 
 If either layer is unavailable, acquisition reports the exact gap and stops before claiming project coverage or readable fidelity. It must not treat opaque bytes, an interface title, a partial export, or an inaccessible conversation as acquired content.
 
+### Account-export bootstrap
+
+The official ChatGPT account export is an authorised bootstrap source for an initial bounded readable snapshot. Treat the downloaded archive as sensitive external source material: keep it outside Git, verify its archive and source hashes, and inspect its observed schema before converting selected evidence into the canonical prepared-capture form.
+
+An account export is not the incremental provider interface. Until an observed export proves otherwise, do not infer complete project membership, write-ups, assets, stable project identities, or omission-free conversation coverage merely because the archive contains chat history. Export conversion remains separate from expanding the adapter's declared executable capabilities, and repeat acquisition still requires a supported identity and change-detection contract.
+
 ## Project identity and naming
 
 An immutable provider project ID is the canonical routing selector. The current project name, its parsed prefix, and prior names are review evidence and aliases; a rename never creates a new acquisition identity or silently changes the receiver.
