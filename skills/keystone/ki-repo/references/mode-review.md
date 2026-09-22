@@ -283,7 +283,10 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Performance, maintainability, and release
 
 - [ ] Representative operations have explicit performance budgets and meet them against realistic data.
-- [ ] Slow operations expose progress without progress masking avoidable latency in ordinary queries.
+- [ ] Long-running multi-item operations distinguish queued, active, completed, and failed work at a glance.
+- [ ] Each item retains a stable row or equivalent entry showing its current phase, current and total measure when available, and terminal outcome.
+- [ ] Concurrent progress remains compact and readable; non-interactive output emits equivalent discrete status records.
+- [ ] Progress reporting does not mask avoidable latency in ordinary queries.
 - [ ] The distribution contract does not force authored source into a monolith that raises change coupling.
 - [ ] Version output, changelog, installation instructions, documentation, and released artifacts describe the same release state.
 - [ ] Development-only behaviour is clearly distinguished from the latest released behaviour.
