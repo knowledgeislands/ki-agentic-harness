@@ -5,12 +5,12 @@ title: Repair managed surface exclusions
 theme: governance-consistency
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 61fcf274ced8632cad9d0e329b5bd06cca0d332b
 transferred_from: ki-website
 created_at: 2026-09-21T15:23:58Z
-updated_at: 2026-09-22T00:03:44Z
+updated_at: 2026-09-22T01:23:21Z
 horizon: now
-status: ready
+status: awaiting-review
 ---
 
 ## Goal
@@ -51,11 +51,11 @@ It changes no repository's configuration. `infoschematics` owns its own failure,
 
 ## Steps
 
-- [ ] Extend the `GEN-1` diagnostic to name the missing tool cell and explain that Knip's unused-ignore hint does not override the cross-tool managed-surface contract.
-- [ ] Cross-reference the managed-surface rule and Knip-hint explanation where the operator encounters the failure.
-- [ ] Keep CONFORM no-write for this concern until one safe editor can preserve supported JSON and JSONC bytes, comments, ordering, and unrelated configuration.
-- [ ] Add fixtures for absent Knip exclusions, partial cross-tool coverage, fully compliant exclusions, and the exact remediation message.
-- [ ] Regenerate the engineering rubric and verify existing `KNIP-2` behaviour remains unchanged.
+- [x] Extend the `GEN-1` diagnostic to name the missing tool cell and explain that Knip's unused-ignore hint does not override the cross-tool managed-surface contract.
+- [x] Cross-reference the managed-surface rule and Knip-hint explanation where the operator encounters the failure.
+- [x] Keep CONFORM no-write for this concern until one safe editor can preserve supported JSON and JSONC bytes, comments, ordering, and unrelated configuration.
+- [x] Add fixtures for absent Knip exclusions, partial cross-tool coverage, fully compliant exclusions, and the exact remediation message.
+- [x] Regenerate the engineering rubric and verify existing `KNIP-2` behaviour remains unchanged.
 
 ## Files touched
 
@@ -93,6 +93,32 @@ No new guide is needed; remediation must appear in the failure itself and the ex
 ### Roadmap
 
 Automatic safe repair may be captured later if a general format-preserving configuration editor becomes available.
+
+## Review
+
+### Delivered
+
+Improved the approved `GEN-1` operator path from immutable baseline `61fcf274ced8632cad9d0e329b5bd06cca0d332b`. The change remains diagnostic-only and does not add partial JSON or JSONC mutation.
+
+### Summary changes
+
+The audit now names missing Biome, Knip, and Markdown exclusion cells and explains that Knip's unused-ignore hint is expected and cannot override the cross-tool contract. The rubric remediation repeats that warning, the standard places it beside the managed-surface rule, and focused fixtures cover absent, partial, and compliant configurations.
+
+### Verification
+
+`bun test skills/governance/ki-engineering/scripts/rubric/items/index.test.ts` passed 28 tests, `bunx tsc --noEmit` passed, and `ki dev skill rubric ki-engineering --write` regenerated the committed rubric. The aggregate batch gate will rerun the repository-wide tests and skill audits.
+
+### Outstanding concerns
+
+No automatic repair is offered. A future safe editor must preserve comments, ordering, and unrelated JSON or JSONC configuration before CONFORM can own this cross-tool repair.
+
+### Post-change review
+
+The implementation meets the diagnostic goal without weakening tool ownership or masking Knip findings. The main regression risk is divergence between the pure fixture inspector and repository evidence collector; both share the same required text and are covered by the focused engineering suite. The item is ready for acceptance review.
+
+### Mini recap
+
+`GEN-1` failures now tell an operator exactly which exclusions are absent and why Knip's contrary hint must not be followed. Repair remains deliberate and reviewable; no receiver repository was modified.
 
 ## Discussion
 

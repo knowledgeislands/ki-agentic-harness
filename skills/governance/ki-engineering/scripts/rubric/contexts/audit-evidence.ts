@@ -293,6 +293,106 @@ export const inspectTurborepo = ({
   )
   return results
 }
+
+type GeneratedSurface = {
+  signal: string[]
+  label: string
+  biome: string
+  knip: string
+  markdown: string
+}
+
+const GENERATED_SURFACES: readonly GeneratedSurface[] = [
+  {
+    signal: ['src', 'generated'],
+    label: 'src/generated/',
+    biome: 'src/generated',
+    knip: 'src/generated',
+    markdown: 'src/generated'
+  },
+  {
+    signal: ['.claude', 'skills'],
+    label: '.claude/skills/',
+    biome: '.claude/skills',
+    knip: '.claude/skills',
+    markdown: '.claude/skills'
+  },
+  {
+    signal: ['.claude', 'agents'],
+    label: '.claude/agents/',
+    biome: '.claude/agents',
+    knip: '.claude/agents',
+    markdown: '.claude/agents'
+  },
+  {
+    signal: ['.agents', 'skills'],
+    label: '.agents/skills/',
+    biome: '.agents/skills',
+    knip: '.agents/skills',
+    markdown: '.agents/skills'
+  }
+]
+
+const exclusionMatches = (content: string, path: string, negative = false): boolean => {
+  // biome-ignore lint/suspicious/noShadowRestrictedNames: local helper escapes regular-expression text.
+  const escape = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const prefix = negative ? '!' : ''
+  const ancestors = path.split('/').map((_, index, parts) => parts.slice(0, index + 1).join('/'))
+  return ancestors.some((candidate) => RegExp(`["']${escape(`${prefix}${candidate}`)}(?:/\\*\\*)?["']`).test(content))
+}
+
+type ManagedSurfaceInspection = {
+  activeLabels: readonly string[]
+  biome: string
+  knip: string
+  markdown: string
+  legacyExclusions?: readonly string[]
+}
+
+const MANAGED_SURFACE_HINT =
+  'Knip may report these ignore entries as unused configuration hints; that hint is expected and must not override the cross-tool GEN-1 contract.'
+
+/** Inspect cross-tool exclusion agreement without offering unsafe partial configuration writes. */
+export const inspectManagedSurfaceExclusions = ({
+  activeLabels,
+  biome,
+  knip,
+  markdown,
+  legacyExclusions = []
+}: ManagedSurfaceInspection): readonly EngineeringEvidenceFinding[] => {
+  if (legacyExclusions.length)
+    return [
+      {
+        level: 'FAIL',
+        code: 'GEN-1',
+        message: `remove legacy KI runtime exclusion(s): ${legacyExclusions.join('; ')}`
+      }
+    ]
+  const active = GENERATED_SURFACES.filter((surface) => activeLabels.includes(surface.label))
+  if (!active.length)
+    return [{ level: 'NOT_APPLICABLE', code: 'GEN-1', message: 'no generated or managed discovery surfaces detected' }]
+  const missing: string[] = []
+  for (const surface of active) {
+    if (!exclusionMatches(biome, surface.biome, true)) missing.push(`biome.json missing ${surface.label}`)
+    if (!exclusionMatches(knip, surface.knip)) missing.push(`knip.json missing ${surface.label}`)
+    if (!exclusionMatches(markdown, surface.markdown)) missing.push(`.rumdl.toml missing ${surface.label}`)
+  }
+  return missing.length
+    ? [
+        {
+          level: 'FAIL',
+          code: 'GEN-1',
+          message: `managed surfaces need matching Biome, Knip, and Markdown exclusions: ${missing.join('; ')}. ${MANAGED_SURFACE_HINT}`
+        }
+      ]
+    : [
+        {
+          level: 'PASS',
+          code: 'GEN-1',
+          message: `managed surfaces excluded consistently: ${active.map((surface) => surface.label).join(', ')}`
+        }
+      ]
+}
 type Level = EngineeringEvidenceFinding['level']
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 
@@ -1558,7 +1658,7 @@ export const collectAuditEvidence = async (
       ? add(
           'FAIL',
           'GEN-1',
-          `managed surfaces need matching Biome, knip, and Markdown exclusions: ${missing.join('; ')}`,
+          `managed surfaces need matching Biome, Knip, and Markdown exclusions: ${missing.join('; ')}. ${MANAGED_SURFACE_HINT}`,
           STD
         )
       : add(

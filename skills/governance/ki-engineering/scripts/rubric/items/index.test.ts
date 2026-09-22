@@ -12,6 +12,7 @@ import {
   inspectDependencyHolds,
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
+  inspectManagedSurfaceExclusions,
   inspectTurborepo,
   nextVersionAfter
 } from '../contexts/audit-evidence.ts'
@@ -249,6 +250,42 @@ test('TURBO accepts a commented task graph and glob-expanded workspace evidence'
     rootDependencies: {}
   })
   expect(evidence.map((entry) => entry.level)).toEqual(['PASS', 'PASS', 'PASS'])
+})
+
+test('GEN-1 explains Knip configuration hints and reports tool-specific exclusion gaps', () => {
+  const absentKnip = inspectManagedSurfaceExclusions({
+    activeLabels: ['src/generated/'],
+    biome: '{"files":{"includes":["!src/generated/**"]}}',
+    knip: '{"ignore":[]}',
+    markdown: 'exclude = ["src/generated/**"]'
+  })
+  expect(absentKnip[0]?.message).toContain('knip.json missing src/generated/')
+  expect(absentKnip[0]?.message).toContain('hint is expected and must not override the cross-tool GEN-1 contract')
+
+  const partial = inspectManagedSurfaceExclusions({
+    activeLabels: ['src/generated/', '.agents/skills/'],
+    biome: '{"files":{"includes":["!src/generated/**"]}}',
+    knip: '{"ignore":["src/generated/**",".agents/skills/**"]}',
+    markdown: 'exclude = ["src/generated/**"]'
+  })
+  expect(partial[0]?.message).toContain('biome.json missing .agents/skills/')
+  expect(partial[0]?.message).toContain('.rumdl.toml missing .agents/skills/')
+
+  const compliant = inspectManagedSurfaceExclusions({
+    activeLabels: ['src/generated/'],
+    biome: '{"files":{"includes":["!src/generated/**"]}}',
+    knip: '{"ignore":["src/generated/**"]}',
+    markdown: 'exclude = ["src/generated/**"]'
+  })
+  expect(compliant).toEqual([
+    { level: 'PASS', code: 'GEN-1', message: 'managed surfaces excluded consistently: src/generated/' }
+  ])
+
+  const gen1 = catalogue.families.find((family) => family.code === 'GEN')?.items[0]
+  const remediation = gen1?.mechanical?.remediation
+  expect(remediation?.class).toBe('diagnostic')
+  if (remediation?.class !== 'diagnostic') throw new Error('GEN-1 must retain diagnostic-only remediation')
+  expect(remediation.guidance).toContain('unused configuration hints')
 })
 
 test('exact external script exclusions satisfy the naming and claim boundaries', () => {

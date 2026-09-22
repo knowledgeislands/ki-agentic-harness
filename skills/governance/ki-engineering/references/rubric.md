@@ -206,7 +206,7 @@ Available dependency updates are surfaced and deliberately applied.
 Managed discovery surfaces carry consistent tool exclusions.
 
 - **GEN-1 [M] — Managed discovery surfaces share exclusions** — Known generated or managed discovery surfaces have matching Biome, Knip, and Markdown exclusions, and no legacy `.ki` runtime exclusion remains. (standards-engineering.md)
-  - _Remediation:_ diagnostic — Align the Engineering-owned Biome and Knip exclusions deliberately, use ki-authoring for its wholly owned `.rumdl.toml`, remove legacy runtime exclusions, then rerun the audit.
+  - _Remediation:_ diagnostic — Align the Engineering-owned Biome and Knip exclusions deliberately, use ki-authoring for its wholly owned `.rumdl.toml`, remove legacy runtime exclusions, then rerun the audit. Knip may call managed-surface ignore entries unused configuration hints; that expected hint does not override the cross-tool GEN-1 contract.
 
 ## TURBO — Workspace task graph
 
