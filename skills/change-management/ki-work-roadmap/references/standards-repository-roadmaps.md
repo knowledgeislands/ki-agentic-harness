@@ -44,7 +44,7 @@ The item identifier is globally unique within its repository. A repository choos
 
 `<AREA>` is an uppercase code for a fixed issuing namespace. It is selected when the item opens, recorded as `area:` frontmatter, and never changes. It is not a mutable theme or group.
 
-`<NNN>` is a zero-padded serial allocated from `001`. In repository-wide mode it is one repository sequence. In fixed-area mode it is one sequence per area. Never lower a high-water mark, fill a gap, or reuse a number after pruning.
+`<NNN>` is a zero-padded serial allocated from `001`. In repository-wide mode it is one repository sequence. In fixed-area mode it is one sequence per area. Never lower a high-water mark, fill a gap, or reuse a number after pruning. An identifier proposed during planning is provisional, not reserved. The writer must re-read the applicable `_ISSUES.md` high-water mark immediately before publication, allocate one greater than that current value, and publish the new record and advanced ledger in one coherent write boundary. If the ledger changed since inspection, discard the proposed serial and reallocate from the latest value.
 
 `docs/roadmap/_ISSUES.md` is the canonical durable allocation ledger. Repository-wide mode uses `last_id`; fixed-area mode uses a code-sorted `areas: { AREA: N }` map. The checker verifies that the ledger matches the configured issuing mode and no retained item exceeds its applicable high-water mark; CONFORM scaffolds the file only when it is absent.
 

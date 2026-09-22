@@ -61,6 +61,8 @@ Do not change adopted content until the user confirms exact wording and placemen
 
 ### Capture substantive prospective work
 
+Any identifier named before publication is provisional. Immediately before writing a roadmap or Streams record, re-read the applicable `_ISSUES.md` scope; if its high-water mark differs from the inspected value or the proposed serial is not exactly one greater, discard the proposed serial and reallocate from the latest value. Publish the new record and advanced ledger in the same coherent write boundary. Never treat a plan, recap, approval, or warm session context as an identifier reservation.
+
 During the current interaction, capture a distinct prospective outcome, concern, dependency, or decision once it is substantive enough to state a plain-language Goal, Context, Boundary, and decision-useful Discussion. Do not require prior approval. Allocate the next canonical identity, create one `horizon: triage`, `status: draft` record with matching timestamps, and report the capture after writing it. Capture creates durable intake only; it does not adopt, prioritise, plan, implement, batch, accept, or prune work.
 
 Before creating a record, search the selected adapter for an existing owner. Do not capture rhetorical examples, already-resolved observations, or duplicates. If an existing Triage record owns the same Goal and Boundary, new decision-useful detail within that boundary may enrich it automatically and must advance its timestamp. If an adopted record owns the concern, report that owner and require confirmation before changing it. Adoption into another horizon requires explicit human approval and remains here. Rejection, duplicate, or merge disposition requires exact human approval and routes to `ki-accept`, which records Triage as `done` before any later prune; it is never a direct deletion. Approval alone never bypasses the lifecycle or done-before-prune rules.
@@ -147,6 +149,8 @@ It shapes the same item through the stage-detail contract and stops for review b
 That handoff does not permit `ki-next` to infer batch, selection, or implementation authority.
 
 ## 7. Spawn due housekeeping work
+
+A due-run identity is provisional until publication. Re-read the applicable issue ledger immediately before spawning, reallocate if it advanced, and write the spawned record, advanced ledger, and template `active-run` linkage as one coherent change.
 
 After grounding and before ordinary candidate selection, evaluate each active housekeeping template under the adapter's template horizon. Use `ki-work-housekeeping`'s read-only `evaluateHousekeepingSchedule({ repository, schedule, today })` capability with freshly read template fields and an explicit UTC date. Its owner standard defines calendar-or-commit eligibility, first-parent evidence, missing-history diagnostics, initial runs, and grace. Do not reimplement that calculation or treat unknown volume as zero; preserve manual confirmation, paused, and active-run guards.
 

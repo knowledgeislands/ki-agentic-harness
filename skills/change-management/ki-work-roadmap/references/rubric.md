@@ -62,7 +62,7 @@ Canonical generated-index structure, placement, and readiness.
   - _Conforming guidance:_ Confirm the lifecycle move with its owner, record a gap, or record an explicit exclusion; never choose the move automatically.
 - **ROAD-6 [M] — repository work-item code** — The ki-repo table declares a valid stable repository code; roadmap configuration declares either repository-wide themes or fixed area-to-theme namespaces. (standards-repository-roadmaps.md)
   - _Remediation:_ diagnostic — Correct the configured repository code, theme vocabulary, or fixed area map from authoritative repository configuration.
-- **ROAD-7 [M] — issue-allocation ledger** — docs/roadmap/_ISSUES.md records the repository-wide or fixed-area high-water marks, preventing a pruned issue number from being reused. (standards-repository-roadmaps.md)
+- **ROAD-7 [M] — issue-allocation ledger** — docs/roadmap/_ISSUES.md records repository-wide or fixed-area high-water marks. Proposed identifiers remain provisional until the writer re-reads the applicable current mark and publishes the record with its atomic ledger advance, preventing stale allocation or reuse. (standards-repository-roadmaps.md)
   - _Remediation:_ automatic
 - **ROAD-8 [J] — lifecycle and pruning commit boundaries** — Lifecycle transitions may share their coherent work commit; a prune-only commit removes one or more eligible records only after each has landed as done. (standards-repository-roadmaps.md)
   - _Evidence scope:_ The Git history and proposed commits that create or transition work records, land accepted done records, or prune selected records.

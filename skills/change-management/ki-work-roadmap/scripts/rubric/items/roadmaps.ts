@@ -113,7 +113,7 @@ const ROAD_7: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-7',
   title: 'issue-allocation ledger',
   description:
-    'docs/roadmap/_ISSUES.md records the repository-wide or fixed-area high-water marks, preventing a pruned issue number from being reused.',
+    'docs/roadmap/_ISSUES.md records repository-wide or fixed-area high-water marks. Proposed identifiers remain provisional until the writer re-reads the applicable current mark and publishes the record with its atomic ledger advance, preventing stale allocation or reuse.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

@@ -5,11 +5,11 @@ title: Reground the issue ledger
 theme: governance-consistency
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 48bbd4e80014a92f90a6ff7b41d5617558b282c7
 created_at: 2026-09-21T23:35:00Z
-updated_at: 2026-09-22T00:03:44Z
+updated_at: 2026-09-22T02:00:54Z
 horizon: now
-status: ready
+status: awaiting-review
 ---
 
 # Reground the issue ledger
@@ -38,11 +38,11 @@ The ledger prevents number reuse after a record exists, but neither the roadmap 
 
 ## Steps
 
-- [ ] State in the roadmap identity contract that proposed identifiers are provisional until the writer re-reads `_ISSUES.md` immediately before creating the record and advances the current high-water mark atomically with it.
-- [ ] Add the same freshness stop to `ki-next` capture and due-run spawning; if the ledger or target changed after inspection, reallocate before writing rather than retaining a planned number.
-- [ ] Clarify that `ki-plan` resolves an existing identifier and therefore performs source-revision freshness checks but never allocates or reserves a new one.
-- [ ] Add focused fixtures or decision tests for a stale proposed identifier, a concurrent ledger advance, and a clean atomic allocation.
-- [ ] Regenerate the roadmap rubric and ensure the rule remains compatible with area-qualified and repository-wide ledgers.
+- [x] State in the roadmap identity contract that proposed identifiers are provisional until the writer re-reads `_ISSUES.md` immediately before creating the record and advances the current high-water mark atomically with it.
+- [x] Add the same freshness stop to `ki-next` capture and due-run spawning; if the ledger or target changed after inspection, reallocate before writing rather than retaining a planned number.
+- [x] Clarify that `ki-plan` resolves an existing identifier and therefore performs source-revision freshness checks but never allocates or reserves a new one.
+- [x] Add focused fixtures or decision tests for a stale proposed identifier, a concurrent ledger advance, and a clean atomic allocation.
+- [x] Regenerate the roadmap rubric and ensure the rule remains compatible with area-qualified and repository-wide ledgers.
 
 ## Files touched
 
@@ -93,3 +93,34 @@ Captured on 2026-09-21 from the `infoschematics` session described above, where 
 Two framings are worth putting side by side. The narrow one is that this is one sentence in the identity section of the roadmap standard: the high-water mark is read when the record is written. The broader one is that it belongs with the "one writer per checkout" reasoning, because it is the same class of problem — an agent treating warm context as current repository state — and the ledger is simply the place where that assumption becomes a durable falsehood rather than a transient error.
 
 There is also a case for saying nothing. A plan that names identifiers is arguably already understood to be naming intent rather than allocation, and the executing agent re-read the ledger without being told to. Against that: it re-read it because the repository had visibly moved, not because the standard asked, and an agent resuming from a summary rather than a live session has no such signal.
+
+## Review
+
+### Delivered
+
+Roadmap identifiers are now explicitly provisional until the allocating writer re-reads the applicable ledger immediately before publication and advances it with the new record.
+
+### Summary of changes
+
+- Added the publication-time freshness and atomic record-plus-ledger rule to the roadmap contract and generated rubric.
+- Applied the same stop and reallocation rule to `ki-next` capture and due housekeeping-run spawning.
+- Clarified that `ki-plan` resolves existing records, performs source-freshness checks, and never allocates or reserves identifiers.
+- Added decision tests for clean and stale repository-wide and fixed-area allocations, including regressed-ledger refusal.
+
+### Verification
+
+- Focused `ki-next`, `ki-plan`, and `ki-work-roadmap` tests pass.
+- TypeScript passes and the generated roadmap rubric is in sync.
+- The full test suite and focused repository audits are required at the final batch gate.
+
+### Outstanding concerns
+
+The helper models the required one-writer decision boundary but does not introduce a filesystem lock or distributed reservation. That is intentional; publication still stops and re-reads rather than promising unsupported concurrent-write coordination.
+
+### Post-change review
+
+The contract remains compatible with repository-wide and fixed-area ledgers. No allocating path outside `ki-next` was found in this Harness.
+
+### Mini recap
+
+A planned identifier is now only an intention. The current ledger at publication determines the serial, and the record and ledger advance travel together.
