@@ -43,6 +43,7 @@ export type EngineeringEvidenceFinding = {
 export type PackageScriptSource = {
   packagePath: string
   manifestPath: string
+  name?: string
   scripts: Readonly<Record<string, string>>
 }
 
@@ -74,7 +75,12 @@ export const collectPackageScriptSources = (
   }
 
   const sources: PackageScriptSource[] = [
-    { packagePath: '.', manifestPath: 'package.json', scripts: stringScripts(rootPackage.scripts) }
+    {
+      packagePath: '.',
+      manifestPath: 'package.json',
+      ...(typeof rootPackage.name === 'string' ? { name: rootPackage.name } : {}),
+      scripts: stringScripts(rootPackage.scripts)
+    }
   ]
 
   for (const workspace of [...new Set(workspaces)]) {
@@ -88,6 +94,7 @@ export const collectPackageScriptSources = (
       sources.push({
         packagePath: relative(repositoryReal, dirname(manifestReal)) || '.',
         manifestPath: relative(repositoryReal, manifestReal),
+        ...(typeof parsed.name === 'string' ? { name: parsed.name } : {}),
         scripts: stringScripts(parsed.scripts)
       })
     } catch {
@@ -114,6 +121,178 @@ export const findRelativeNodeModulesScriptUses = (
       }))
     )
   )
+
+const stripJsonComments = (source: string): string => {
+  let result = ''
+  let inString = false
+  let escaped = false
+  let lineComment = false
+  let blockComment = false
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index] ?? ''
+    const next = source[index + 1] ?? ''
+    if (lineComment) {
+      if (char === '\n') {
+        lineComment = false
+        result += char
+      }
+      continue
+    }
+    if (blockComment) {
+      if (char === '*' && next === '/') {
+        blockComment = false
+        index += 1
+      } else if (char === '\n') result += char
+      continue
+    }
+    if (inString) {
+      result += char
+      if (escaped) escaped = false
+      else if (char === '\\') escaped = true
+      else if (char === '"') inString = false
+      continue
+    }
+    if (char === '"') {
+      inString = true
+      result += char
+    } else if (char === '/' && next === '/') {
+      lineComment = true
+      index += 1
+    } else if (char === '/' && next === '*') {
+      blockComment = true
+      index += 1
+    } else result += char
+  }
+  return result
+}
+
+type TurborepoInspection = {
+  workspaces: readonly string[]
+  packageSources: readonly PackageScriptSource[]
+  turboSource: string
+  turboExists: boolean
+  gitignore: string
+  rootDependencies: Readonly<Record<string, unknown>>
+}
+
+/** Inspect the mechanically provable part of the workspace task-graph contract. */
+export const inspectTurborepo = ({
+  workspaces,
+  packageSources,
+  turboSource,
+  turboExists,
+  gitignore,
+  rootDependencies
+}: TurborepoInspection): readonly EngineeringEvidenceFinding[] => {
+  const finding = (
+    level: EngineeringEvidenceFinding['level'],
+    code: string,
+    message: string,
+    subject?: string
+  ): EngineeringEvidenceFinding => ({ level, code, message, ...(subject ? { subject } : {}) })
+  if (!workspaces.length)
+    return [
+      finding('NOT_APPLICABLE', 'TURBO-1', 'no workspaces declaration — a task graph is not required'),
+      finding('NOT_APPLICABLE', 'TURBO-2', 'no workspace task surface to inspect'),
+      finding('NOT_APPLICABLE', 'TURBO-3', 'no workspace cache boundary to inspect')
+    ]
+  if (!turboExists)
+    return [
+      finding('WARN', 'TURBO-1', 'workspaces are declared but turbo.json is missing', 'turbo.json'),
+      finding('NOT_APPLICABLE', 'TURBO-2', 'turbo.json is missing, so task correspondence cannot be inspected'),
+      finding('NOT_APPLICABLE', 'TURBO-3', 'turbo.json is missing, so cache boundaries cannot be inspected')
+    ]
+
+  let config: Record<string, unknown>
+  try {
+    config = JSON.parse(stripJsonComments(turboSource)) as Record<string, unknown>
+  } catch {
+    return [
+      finding('WARN', 'TURBO-1', 'turbo.json is not parseable JSONC', 'turbo.json'),
+      finding('NOT_APPLICABLE', 'TURBO-2', 'malformed turbo.json prevents task inspection'),
+      finding('NOT_APPLICABLE', 'TURBO-3', 'malformed turbo.json prevents cache-boundary inspection')
+    ]
+  }
+  const tasks =
+    config.tasks && typeof config.tasks === 'object' && !Array.isArray(config.tasks)
+      ? (config.tasks as Record<string, unknown>)
+      : {}
+  const results: EngineeringEvidenceFinding[] = [
+    Object.keys(tasks).length
+      ? finding('PASS', 'TURBO-1', 'workspace task graph is declared in turbo.json', 'turbo.json')
+      : finding('WARN', 'TURBO-1', 'turbo.json must declare a non-empty tasks object', 'turbo.json')
+  ]
+
+  const workspaceSources = packageSources.filter((source) => source.packagePath !== '.')
+  const missingWorkspaceScripts = workspaceSources.flatMap((source) =>
+    ['build', 'typecheck', 'test']
+      .filter((script) => !source.scripts[script])
+      .map((script) => `${source.packagePath}:${script}`)
+  )
+  const configuredTaskNames = new Set(Object.keys(tasks))
+  const missingConfiguredTasks = ['build', 'typecheck', 'test'].filter(
+    (task) => workspaceSources.some((source) => source.scripts[task]) && !configuredTaskNames.has(task)
+  )
+  const rootScripts = packageSources.find((source) => source.packagePath === '.')?.scripts ?? {}
+  const undeclaredRootTasks = Object.values(rootScripts).flatMap((script) =>
+    [...script.matchAll(/\bturbo\s+run\s+([^\s&|;]+)/g)]
+      .map((match) => match[1] ?? '')
+      .filter((task) => task && !configuredTaskNames.has(task))
+  )
+  const packageScriptNames = new Set(packageSources.flatMap((source) => Object.keys(source.scripts)))
+  const orphanTasks = Object.keys(tasks).filter((task) => {
+    if (task.startsWith('//#')) return false
+    const script = task.includes('#') ? task.slice(task.lastIndexOf('#') + 1) : task
+    return !packageScriptNames.has(script)
+  })
+  const taskProblems = [
+    ...(missingWorkspaceScripts.length ? [`workspace scripts missing: ${missingWorkspaceScripts.join(', ')}`] : []),
+    ...(missingConfiguredTasks.length ? [`tasks missing from turbo.json: ${missingConfiguredTasks.join(', ')}`] : []),
+    ...(undeclaredRootTasks.length
+      ? [`root scripts invoke undeclared task(s): ${[...new Set(undeclaredRootTasks)].join(', ')}`]
+      : []),
+    ...(orphanTasks.length ? [`configured task(s) have no package script: ${orphanTasks.join(', ')}`] : [])
+  ]
+  results.push(
+    taskProblems.length
+      ? finding('WARN', 'TURBO-2', taskProblems.join('; '), 'turbo.json')
+      : finding('PASS', 'TURBO-2', 'workspace scripts and configured tasks correspond', 'turbo.json')
+  )
+
+  const remoteCache =
+    config.remoteCache && typeof config.remoteCache === 'object' && !Array.isArray(config.remoteCache)
+      ? (config.remoteCache as Record<string, unknown>)
+      : undefined
+  const cacheProblems: string[] = []
+  if (typeof remoteCache?.enabled !== 'boolean') cacheProblems.push('remoteCache.enabled must be explicit')
+  if (!gitignore.split(/\r?\n/).some((line) => /^\/?\.turbo\/?$/.test(line.trim())))
+    cacheProblems.push('.gitignore must exclude .turbo/')
+  const workspaceDependencyNames = workspaceSources
+    .map((source) => source.name)
+    .filter((name): name is string => Boolean(name))
+    .filter((name) => Object.hasOwn(rootDependencies, name))
+  if (workspaceDependencyNames.length)
+    cacheProblems.push(`root dependencies contain workspace package(s): ${workspaceDependencyNames.join(', ')}`)
+  const deployableBuilds = workspaceSources.filter(
+    (source) => source.scripts.build && (source.packagePath.startsWith('apps/') || source.scripts.deploy)
+  )
+  const unsafeDeployableBuilds = deployableBuilds.filter((source) => {
+    const selected = (source.name ? tasks[`${source.name}#build`] : undefined) ?? tasks.build
+    if (!selected || typeof selected !== 'object' || Array.isArray(selected)) return true
+    const inputs = (selected as Record<string, unknown>).inputs
+    return !Array.isArray(inputs) || !inputs.includes('$TURBO_DEFAULT$')
+  })
+  if (unsafeDeployableBuilds.length)
+    cacheProblems.push(
+      `deployable build inputs must include $TURBO_DEFAULT$: ${unsafeDeployableBuilds.map((source) => source.packagePath).join(', ')}`
+    )
+  results.push(
+    cacheProblems.length
+      ? finding('WARN', 'TURBO-3', cacheProblems.join('; '), 'turbo.json')
+      : finding('PASS', 'TURBO-3', 'task graph declares safe local and deployable cache boundaries', 'turbo.json')
+  )
+  return results
+}
 type Level = EngineeringEvidenceFinding['level']
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 
@@ -153,6 +332,9 @@ const mechanicalEngineeringCheckIds = new Set([
   'SYNC-1',
   'DEPS-1',
   'GEN-1',
+  'TURBO-1',
+  'TURBO-2',
+  'TURBO-3',
   'TEST-1',
   'TEST-2',
   'TEST-3',
@@ -774,6 +956,19 @@ export const collectAuditEvidence = async (
             : [entry]
         )
     : []
+
+  for (const result of inspectTurborepo({
+    workspaces,
+    packageSources: collectPackageScriptSources(repo, pkg, workspaces),
+    turboSource: read('turbo.json'),
+    turboExists: has('turbo.json'),
+    gitignore: read('.gitignore'),
+    rootDependencies:
+      pkg.dependencies && typeof pkg.dependencies === 'object' && !Array.isArray(pkg.dependencies)
+        ? (pkg.dependencies as Record<string, unknown>)
+        : {}
+  }))
+    add(result.level, result.code, result.message, STD, result.subject)
 
   // ── core: the read-only toolchain, run directly (audit = lint WITHOUT fixing) ──
   // The native ki-engineering rubric runs all read-only tool checks itself. The tools

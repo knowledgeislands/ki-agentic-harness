@@ -12,6 +12,7 @@ import {
   inspectDependencyHolds,
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
+  inspectTurborepo,
   nextVersionAfter
 } from '../contexts/audit-evidence.ts'
 import {
@@ -59,6 +60,7 @@ test('the structured catalogue preserves the engineering criteria', async () => 
     'SYNC',
     'DEPS',
     'GEN',
+    'TURBO',
     'DESIGN',
     'REVIEW',
     'TEST',
@@ -69,7 +71,7 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   const codes = catalogue.families
     .filter((family) => family.code !== 'RUBRIC')
     .flatMap((family) => family.items.map((item) => item.code))
-  expect(codes).toHaveLength(56)
+  expect(codes).toHaveLength(59)
   expect(new Set(codes).size).toBe(codes.length)
   expect(codes[0]).toBe('PKG-1')
   expect(codes).toContain('TEST-7')
@@ -161,9 +163,12 @@ test('SCR-10 finds relative node_modules execution in root and safe workspace sc
 test('engineering check records accept only known mechanical boolean entries', () => {
   expect(
     inspectEngineeringCheckRecords(
-      '[skills.ki-engineering]\n\n[skills.ki-engineering.checks]\nBUILD-2 = false # temporary exception record\n'
+      '[skills.ki-engineering]\n\n[skills.ki-engineering.checks]\nBUILD-2 = false # temporary exception record\nTURBO-1 = false # evidenced task-graph exception\n'
     )
-  ).toEqual([{ level: 'PASS', message: 'engineering check record BUILD-2 = false (diagnostic only)' }])
+  ).toEqual([
+    { level: 'PASS', message: 'engineering check record BUILD-2 = false (diagnostic only)' },
+    { level: 'PASS', message: 'engineering check record TURBO-1 = false (diagnostic only)' }
+  ])
   expect(
     inspectEngineeringCheckRecords(
       '[skills.ki-engineering.checks]\nDESIGN-1 = false\nBUILD-2 = "false"\nUNKNOWN-1 = true\n'
@@ -176,6 +181,74 @@ test('engineering check records accept only known mechanical boolean entries', (
     },
     { level: 'WARN', message: 'unknown engineering check record: UNKNOWN-1' }
   ])
+})
+
+test('TURBO warns for absent, partial, malformed, and incomplete workspace task graphs', () => {
+  const workspace = {
+    packagePath: 'apps/site',
+    manifestPath: 'apps/site/package.json',
+    name: '@example/site',
+    scripts: { build: 'eleventy', deploy: 'wrangler deploy' }
+  }
+  const absent = inspectTurborepo({
+    workspaces: ['apps/site'],
+    packageSources: [workspace],
+    turboSource: '',
+    turboExists: false,
+    gitignore: '',
+    rootDependencies: {}
+  })
+  expect(absent.find((entry) => entry.code === 'TURBO-1')?.level).toBe('WARN')
+
+  const malformed = inspectTurborepo({
+    workspaces: ['apps/site'],
+    packageSources: [workspace],
+    turboSource: '{not-json',
+    turboExists: true,
+    gitignore: '.turbo/\n',
+    rootDependencies: {}
+  })
+  expect(malformed.find((entry) => entry.code === 'TURBO-1')?.message).toContain('not parseable')
+
+  const partial = inspectTurborepo({
+    workspaces: ['apps/site'],
+    packageSources: [workspace],
+    turboSource: '{"tasks":{"build":{"inputs":["src/**"]}}}',
+    turboExists: true,
+    gitignore: '',
+    rootDependencies: { '@example/site': 'workspace:*' }
+  })
+  expect(partial.find((entry) => entry.code === 'TURBO-2')?.message).toContain('typecheck')
+  expect(partial.find((entry) => entry.code === 'TURBO-3')?.message).toContain('$TURBO_DEFAULT$')
+})
+
+test('TURBO accepts a commented task graph and glob-expanded workspace evidence', () => {
+  const evidence = inspectTurborepo({
+    workspaces: ['apps/site'],
+    packageSources: [
+      {
+        packagePath: '.',
+        manifestPath: 'package.json',
+        scripts: {
+          build: 'turbo run build',
+          typecheck: 'turbo run typecheck',
+          test: 'turbo run test'
+        }
+      },
+      {
+        packagePath: 'apps/site',
+        manifestPath: 'apps/site/package.json',
+        name: '@example/site',
+        scripts: { build: 'eleventy', typecheck: 'tsc --noEmit', test: 'vitest run', deploy: 'wrangler deploy' }
+      }
+    ],
+    turboSource:
+      '{\n// explicit local-only cache\n"remoteCache":{"enabled":false},"tasks":{"build":{"inputs":["$TURBO_DEFAULT$"]},"typecheck":{},"test":{}}}',
+    turboExists: true,
+    gitignore: '.turbo/\n',
+    rootDependencies: {}
+  })
+  expect(evidence.map((entry) => entry.level)).toEqual(['PASS', 'PASS', 'PASS'])
 })
 
 test('exact external script exclusions satisfy the naming and claim boundaries', () => {

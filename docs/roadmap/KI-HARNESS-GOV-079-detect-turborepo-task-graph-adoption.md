@@ -5,12 +5,12 @@ title: Detect Turborepo task-graph adoption
 theme: governance-consistency
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 3a342c7b6eda3bc399c5bcea47756e7b0f335db9
 transferred_from: ki-website
 created_at: 2026-09-21T08:12:07Z
-updated_at: 2026-09-22T00:03:44Z
+updated_at: 2026-09-22T01:15:22Z
 horizon: now
-status: ready
+status: awaiting-review
 ---
 
 ## Goal
@@ -39,11 +39,11 @@ The engineering standard requires a task graph for every repository declaring wo
 
 ## Steps
 
-- [ ] Add a `TURBO` rubric family to `ki-engineering` and collect workspace, root-script, workspace-script, `turbo.json`, and managed-ignore evidence once.
-- [ ] Emit WARN when a repository declares workspaces without a task graph, including `5g-emerge-ibc-2026`, while retaining the existing per-item override mechanism for evidenced exceptions.
-- [ ] Validate that configured tasks correspond to governed root and workspace scripts, deployable builds retain `$TURBO_DEFAULT$`, and `.turbo/` is excluded through the managed ignore contribution.
-- [ ] Keep semantic input-completeness judgment outside the mechanical audit and document the existing mutation test as the verification method.
-- [ ] Add fixtures for compliant, absent, partial, deliberately overridden, glob-workspace, and malformed configurations, then regenerate the rubric.
+- [x] Add a `TURBO` rubric family to `ki-engineering` and collect workspace, root-script, workspace-script, `turbo.json`, and managed-ignore evidence once.
+- [x] Emit WARN when a repository declares workspaces without a task graph, including `5g-emerge-ibc-2026`, while retaining the existing per-item override mechanism for evidenced exceptions.
+- [x] Validate that configured tasks correspond to governed root and workspace scripts, deployable builds retain `$TURBO_DEFAULT$`, and `.turbo/` is excluded through the managed ignore contribution.
+- [x] Keep semantic input-completeness judgment outside the mechanical audit and document the existing mutation test as the verification method.
+- [x] Add fixtures for compliant, absent, partial, deliberately overridden, glob-workspace, and malformed configurations, then regenerate the rubric.
 
 ## Files touched
 
@@ -83,6 +83,32 @@ No guide is required beyond a concise remediation that points to the standard's 
 ### Roadmap
 
 Receiver repositories that fail the new warning own their adoption or exemption work; this item does not create those records.
+
+## Review
+
+### Delivered
+
+Implemented the approved `TURBO` rubric family from immutable baseline `3a342c7b6eda3bc399c5bcea47756e7b0f335db9`. The delivery is diagnostic only: it does not migrate estate repositories, enable remote caching, or claim to prove semantic input completeness.
+
+### Summary changes
+
+Added `TURBO-1` adoption, `TURBO-2` task-correspondence, and `TURBO-3` cache-boundary checks to `ki-engineering`; collected package names and scripts safely across expanded workspaces; parsed commented `turbo.json` files; documented the mutation-test boundary; and regenerated the published rubric. All new violations begin at WARN.
+
+### Verification
+
+`bun test skills/governance/ki-engineering/scripts/rubric/items/index.test.ts` passed 27 tests. `ki dev skill rubric ki-engineering --write`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-engineering --repo .` passed. The final repository-wide gates are recorded in the delivery commit evidence.
+
+### Outstanding concerns
+
+The audit deliberately cannot prove that task inputs cover every file a command reads; the documented random-content mutation test remains the verification method. Estate repositories newly surfaced by WARN still own their migrations or evidenced exceptions.
+
+### Post-change review
+
+The implementation meets the goal and stays inside the planned boundary. The main regression risk is false confidence from treating static input inspection as semantic proof; the new standard text explicitly prevents that interpretation. The item is ready for acceptance review.
+
+### Mini recap
+
+Workspace repositories now receive actionable task-graph findings instead of silently passing without Turborepo. Focused fixtures cover absent, malformed, partial, commented, and compliant configurations; follow-on adoption belongs in each receiver repository rather than this item.
 
 ## Discussion
 
