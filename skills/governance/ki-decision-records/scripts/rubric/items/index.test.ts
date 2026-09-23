@@ -31,7 +31,8 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'FM',
     'TYPE-FIT',
     'BODY',
-    'INDEX'
+    'INDEX',
+    'DEPENDS'
   ])
   expect(items.map((item) => item.code)).toEqual([
     'FILENAME-0',
@@ -61,7 +62,10 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'INDEX-4',
     'INDEX-6',
     'INDEX-7',
-    'INDEX-8'
+    'INDEX-8',
+    'DEPENDS-1',
+    'DEPENDS-2',
+    'DEPENDS-3'
   ])
   expect(items.filter((item) => item.judgment)).toHaveLength(9)
   expect(items.filter((item) => item.mechanical).every((item) => Boolean(item.mechanical?.remediation))).toBe(true)

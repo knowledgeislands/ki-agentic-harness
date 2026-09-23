@@ -11,6 +11,7 @@
 - [Templates](#templates)
 - [Collection root](#collection-root)
 - [Index](#index)
+- [Dependency graph](#dependency-graph)
 - [Writing guidance](#writing-guidance)
 
 The normative standard behind [the generated rubric](rubric.md). Grounded in Michael Nygard's original 2011 ADR format (see [the source list](sources.md)) with house additions: decision-specific metadata, type-specific prefixes, and `## References`. Unified from the former `ki-adrs` and `ki-kdrs` instruments. A DR is a concise, self-contained **living present-state record**: it states the decision as it stands now and is edited in place, without historical narrative, a supersession chain, or changelog (see [Writing guidance](#writing-guidance)). Mode REFRESH re-reads the sources and proposes diffs here.
@@ -90,7 +91,7 @@ decision_type_url: https://knowledgeislands.info/specifications/decision-records
 - `decision_type_url` exactly matches the house reference URL in the table above.
 - Choose the prefix by what the decision is actually about. If the filename and metadata disagree, a human resolves whether the canonical ID or the metadata is wrong; CONFORM never chooses by overwriting either side.
 - CONFORM may make only source-preserving scalar metadata repairs on a parseable, regular, non-symlink record whose filename is already canonical: remove generic `type`; rename a canonical legacy `type_url` when `decision_type_url` is absent; and add missing canonical decision-type fields derived from the existing prefix. It refuses malformed, ambiguous, conflicting, or non-canonical sources.
-- `decision_depends_on` is an optional YAML list of full DR codes that this decision logically depends on (e.g. `["GDR-KI-ARCADIA-001"]`). Cross-scope (cross-repo) references are permitted. Body prose cites only backward — no forward references to higher-numbered DRs of the same type. Omit the field when there are no dependencies.
+- `decision_depends_on` is an optional YAML list of full DR codes that this decision logically depends on (e.g. `["GDR-KI-ARCADIA-001"]`). Cross-scope (cross-repo) references are permitted. Those edges form one directed acyclic graph across the whole collection, under [Dependency graph](#dependency-graph). Body prose cites only backward — no forward references to higher-numbered DRs of the same type. Omit the field when there are no dependencies.
 - `shared_record: true` is an optional, narrow marker for one decision mirrored across approved repositories. Shared identity is the deterministic projection of decision-owned frontmatter in this fixed order — `id`, `title`, `date`, `status`, `decision_type`, `decision_type_url`, optional `decision_depends_on`, `shared_record` — followed by the complete body with LF line endings. `note_type` is the sole excluded container field; no category of repository-local metadata is implicitly excluded, and every unknown frontmatter field fails closed. The record keeps its canonical foreign ID. It is excluded from a receiving collection’s serial series only when that prefix+scope has no ordinary local records; otherwise it remains part of the local sequence. Use the marker in every copy, including the canonical source copy. It does not make ordinary local records shareable or relax any other metadata, body, index, or identity rule.
 
 ## Sections
@@ -186,6 +187,18 @@ The index file — `Decisions.md` in a KB, `README.md` in a code repo (GitHub re
 Each item links the record by its ID and gives a short gloss of what it decides. Per-record dates and maintenance status live in each record's frontmatter, not in the index. There is no decision lifecycle marker — records are living and present-state.
 
 CONFORM may append a missing entry or restore a link target only for a recognised, regular, non-symlink record whose canonical filename is deterministically known. It preserves existing entry order, numbering markers, and unrelated index prose; stale links, duplicates, ordering, unordered links, and entries for non-canonical records remain human review.
+
+## Dependency graph
+
+`decision_depends_on` states which records a decision rests on. Taken together those edges form one directed graph over the whole collection, and it MUST be acyclic. This is a property of the collection rather than of any one record, so it is checked across every prefix at once: the ascending-serial rule constrains order only within a single prefix, and in a mature collection most dependency edges cross prefixes, where nothing else constrains them at all.
+
+**Every target in a scope this collection owns must exist.** A dependency on a record the collection does not hold is either a typo or a citation of something renumbered or removed, and either way it is a dead end for the reader who follows it. Cross-scope (cross-repo) targets are permitted and are not resolved here, because the collection holding them is not the collection being checked (mechanical — DEPENDS-1).
+
+**No record may depend on itself, directly or through a chain.** A cycle asserts that each record in it must be read before the others, which no reading order satisfies. It usually means one edge is not a dependency at all but a cross-reference: two records share a subject, so each names the other, and only one of them actually rests on the other. Fix it by dropping the weaker edge, or — where the two genuinely cannot be reconsidered independently — by merging them into the one record that owns the concern (mechanical — DEPENDS-2).
+
+**A dependency appears before its dependent in the index.** Reveal order exists so that reading top to bottom never asks for a decision on trust, and an edge pointing back up the list contradicts that. The usual fix is to move the dependent later; where the edge itself is wrong, the field changes instead (mechanical — DEPENDS-3).
+
+Reclassifying a record — changing its prefix because it turned out to be about product rather than architecture, say — moves every edge it carries from inside one prefix to across two, so that is the moment the graph most needs rechecking. Renumbering a series moves the field's codes along with every other citation of the shifted record, in the same change.
 
 ## Writing guidance
 
