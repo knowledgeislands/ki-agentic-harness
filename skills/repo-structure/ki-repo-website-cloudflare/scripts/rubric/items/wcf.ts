@@ -247,7 +247,7 @@ const WCF_26: RubricItem<WebsiteCloudflareContext> = {
   code: 'WCF-26',
   title: 'the Cloudflare guide',
   description:
-    'A tracked guide at docs/guides/cloudflare.md records the dashboard-owned settings — Workers Builds commands, domains, redirects — that wrangler.jsonc cannot express.',
+    'A tracked guide at docs/guides/developer/cloudflare.md records the dashboard-owned settings — Workers Builds commands, domains, redirects — that wrangler.jsonc cannot express.',
   sources: [`${SOURCE}#6-the-cloudflare-guide--dashboard-owned-settings`],
   mechanical: {
     level: 'FAIL',
@@ -271,8 +271,8 @@ const WCF_26: RubricItem<WebsiteCloudflareContext> = {
                 status: 'VIOLATION',
                 message:
                   guide.state === 'missing'
-                    ? 'No docs/guides/cloudflare.md — the dashboard-owned settings (Workers Builds commands, domains, redirects) have no reconstructable record in the repository.'
-                    : 'docs/guides/cloudflare.md exists but is empty or unreadable; it must record the dashboard-owned settings.',
+                    ? 'No docs/guides/developer/cloudflare.md — the dashboard-owned settings (Workers Builds commands, domains, redirects) have no reconstructable record in the repository.'
+                    : 'docs/guides/developer/cloudflare.md exists but is empty or unreadable; it must record the dashboard-owned settings.',
                 subject: guide.path
               }
             ]

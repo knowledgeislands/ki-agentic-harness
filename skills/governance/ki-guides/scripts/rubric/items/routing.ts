@@ -34,16 +34,16 @@ const ROUTE_2: RubricItem<GuidesRubricContext> = {
   code: 'ROUTE-2',
   title: 'guides are discoverable, actionable, and correctly placed',
   description:
-    'The guide index gives each intended reader a useful route, and each guide contains practical procedure rather than duplicated rationale, behaviour specification, or future work; stable behaviour reaches its existing Specification or a routed `ki-specs` gap.',
+    'The guide index and any locally useful audience grouping give each intended reader a clear route, and each guide contains practical procedure rather than duplicated rationale, behaviour specification, or future work; stable behaviour reaches its existing Specification or a routed `ki-specs` gap.',
   sources: [SOURCE],
   judgment: {
     scope:
       'The Guides index, every guide below `docs/guides/`, and their linked Decision Records, Specifications, `ki-specs` gaps, and roadmap records where applicable.',
     prompt:
-      'Can the intended reader find the guide, complete its stated outcome, verify success, and recover from the failures it describes? Are why, what, and when statements held by their Decision Record, existing Specification, routed `ki-specs` gap, and roadmap owners instead?',
+      'Can each intended reader find the guide through a clear index route, with open-vocabulary audience directories where stable reader groups make the collection easier to navigate and root-level placement retained for small, shared, or cross-audience material? Do specialised exact-role paths preserve that route? Can the reader complete the stated outcome, verify success, and recover from the failures described? Are why, what, and when statements held by their Decision Record, existing Specification, routed `ki-specs` gap, and roadmap owners instead?',
     outcomes: ['conforming', 'guide revision', 'reclassify material'],
     guidance:
-      'Revise the guide for its intended reader and outcome, or move rationale, behaviour, and future work to their owning record. Do not infer a documentation or product decision from the check alone.'
+      'Revise the index or guide for its intended reader and outcome, group by audience only where that improves navigation, or move rationale, behaviour, and future work to their owning record. Do not invent a fixed directory taxonomy, fail a flat guide mechanically, relocate authored guides through CONFORM, or infer a documentation or product decision from the check alone.'
   }
 }
 

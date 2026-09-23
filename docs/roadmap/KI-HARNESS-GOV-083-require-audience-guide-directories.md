@@ -4,13 +4,13 @@ title: Clarify audience guide grouping
 area: GOV
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
 transferred_from: ki-website
-baseline_ref: null
+baseline_ref: 31f2c98e354526162438143fedbd8eafd9d2778c
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-22T06:31:00Z
+updated_at: 2026-09-23T17:54:30Z
 ---
 
 ## Goal
@@ -31,41 +31,51 @@ Raised from `ki-website`, which has grouped its own collection under `developer/
 
 ## Boundary
 
-Adopted into `Now` by explicit approval, so this is prioritised work rather than intake. It remains `status: draft`: `ki-plan` shapes it to `Ready` before any implementation.
+Adopted into `Now`, approved as `Ready`, and implemented from the immutable baseline recorded above. The local Harness boundary includes the general `ki-guides` judgment and any specialised Harness skill whose exact role conflicts with it; changes to receiver-owned roadmap records remain owned by those repositories.
 
 The approved policy is advisory: use open-vocabulary audience directories when the collection has stable audience distinctions and grouping improves the route from the index. Root-level guides remain valid for a small collection, shared entry points, or genuinely cross-audience material. The rubric records this as judgment, not as a mechanical path requirement, and CONFORM never relocates authored guides.
 
 ## Current state
 
-`standards-guides.md` permits either arrangement and states that category names are local information architecture. The rubric checks structure and routing but does not explicitly help a reviewer decide when audience grouping improves discovery. This repository illustrates the intended mixed shape: `docs/guides/developer/` contains contributor-facing material, while the cross-audience `docs/guides/skills-by-outcome.md` remains at the collection root.
+`standards-guides.md` permitted either arrangement and stated that category names are local information architecture, but its rubric did not explicitly help a reviewer decide when audience grouping improves discovery. The specialised `ki-repo-website-cloudflare` overlay also required its maintainer-facing guide at `docs/guides/cloudflare.md`, bypassing the `developer/` route. A scan of specialised Harness skills found no second exact root-level guide role with the same defect. This repository illustrates the intended mixed shape: `docs/guides/developer/` contains contributor-facing material, while the cross-audience `docs/guides/skills-by-outcome.md` remains at the collection root.
+
+The companion-item inventory has grown from eleven to fourteen records. Several still describe this work as a universal directory requirement; those statements are inconsistent with the approved advisory policy and need correction in their owning repositories.
 
 ## Steps
 
-- [ ] Amend `standards-guides.md` to recommend audience directories when stable reader groups make the collection easier to navigate, while preserving valid flat and mixed collections.
-- [ ] State that directory names use an open local vocabulary and that shared entry points or genuinely cross-audience guides may remain at the collection root.
-- [ ] Extend the existing `ROUTE-2` judgment guidance and fixtures so review assesses audience clarity without claiming a mechanically provable directory rule.
-- [ ] Make explicit that AUDIT emits no structural finding solely because a guide is flat and CONFORM never moves an authored guide between categories.
-- [ ] Review the eleven companion repository items and ensure they describe local information-architecture choices rather than compliance with a Harness-wide requirement.
+- [x] Amend `standards-guides.md` to recommend audience directories when stable reader groups make the collection easier to navigate, while preserving valid flat and mixed collections.
+- [x] State that directory names use an open local vocabulary and that shared entry points or genuinely cross-audience guides may remain at the collection root.
+- [x] Extend the existing `ROUTE-2` judgment guidance and fixtures so review assesses audience clarity without claiming a mechanically provable directory rule.
+- [x] Make explicit that AUDIT emits no structural finding solely because a guide is flat and CONFORM never moves an authored guide between categories.
+- [x] Align the Cloudflare specialised exact role with the maintainer audience route at `docs/guides/developer/cloudflare.md`, including its evidence collector, criterion, fixtures, standard, EDUCATE procedure, and generated rubric.
+- [ ] Correct the fourteen companion repository items that describe this advisory policy as a universal Harness-wide directory requirement.
 
 ## Files touched
 
 - `skills/governance/ki-guides/references/standards-guides.md`
 - `skills/governance/ki-guides/references/rubric.md`
 - `skills/governance/ki-guides/scripts/rubric/items/routing.ts`
-- Focused `ki-guides` fixtures
+- `skills/governance/ki-guides/scripts/rubric/contexts/guides.test.ts`
+- `skills/governance/ki-guides/scripts/rubric/items/index.test.ts`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/mode-educate.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/rubric.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/standards-cloudflare-hosting.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/scripts/rubric/contexts/website-cloudflare.test.ts`
+- `skills/repo-structure/ki-repo-website-cloudflare/scripts/rubric/contexts/website-cloudflare.ts`
+- `skills/repo-structure/ki-repo-website-cloudflare/scripts/rubric/items/wcf.ts`
 - `docs/roadmap/KI-HARNESS-GOV-083-require-audience-guide-directories.md`
 
 ## Verify
 
 - Focused fixtures prove that flat, audience-grouped, and intentionally mixed collections remain mechanically valid.
 - The rendered rubric tells a reviewer when audience grouping improves discovery without inventing a fixed vocabulary.
-- `ki dev skill rubric ki-guides` reproduces the committed rubric.
-- `ki repo audit --skill ki-guides --repo .`, `ki repo audit --skill ki-skills --repo .`, and `ki repo audit --skill ki-work-roadmap --repo .` pass.
+- `ki dev skill rubric ki-guides` and `ki dev skill rubric ki-repo-website-cloudflare` report that both committed rubrics are in sync.
+- `ki repo audit --skill ki-guides --repo .`, `ki repo audit --skill ki-skills --repo .`, `ki repo audit --skill ki-work-roadmap --repo .`, and `ki repo audit --skill ki-authoring --repo .` pass. The Harness does not declare the Cloudflare repository overlay for self-audit, so its focused fixture supplies the local implementation evidence.
 - `bun run test` and `bunx tsc --noEmit` pass.
 
 ## Dependencies / blocks
 
-Nothing blocks this. Eleven companion items in the tool, MCP, and website repositories cite it: each stands on its own merits, so they neither block this nor wait on it. If this is declined, they remain valid as local choices and should say so.
+Nothing blocks the local Harness implementation. Fourteen companion items in tool, MCP, specification, application, and website repositories cite it: each stands on its own merits, but their stale universal-requirement wording must be corrected by the owning repository before this item reaches review.
 
 ## Documentation impact
 
@@ -83,7 +93,7 @@ No behaviour-level contract changes to the harness tooling beyond the rubric ite
 
 ### Roadmap
 
-The companion items remain local choices. Review them for wording that falsely claims a universal requirement; no estate-wide retrofit or transition period is created.
+The companion items remain local choices. Fourteen records were found; their wording that falsely claims a universal requirement remains receiver-owned follow-up. No estate-wide retrofit or transition period is created.
 
 ## Discussion
 
@@ -97,4 +107,8 @@ The filesystem can prove that a guide is beneath the governed root, but it canno
 
 ### Companion repository work
 
-The eleven companion items may still be worthwhile where a local collection mixes clearly distinct audiences. They must stand on that local evidence rather than cite this item as a universal migration requirement. Repositories whose current flat or mixed collection is clear need no change.
+The fourteen companion items may still be worthwhile where a local collection mixes clearly distinct audiences. They must stand on that local evidence rather than cite this item as a universal migration requirement. Repositories whose current flat or mixed collection is clear need no change. The Harness scan identified the stale claim; correction remains in each record's owning repository.
+
+### Specialised exact roles
+
+The Cloudflare guide is stable maintainer/developer material, so `ki-repo-website-cloudflare` now requires `docs/guides/developer/cloudflare.md`. Specialised overlays may require exact guide roles, but those roles preserve the locally meaningful audience route rather than bypassing the collection's information architecture. A repository-wide scan found no other specialised skill hard-coding a root-level guide filename.

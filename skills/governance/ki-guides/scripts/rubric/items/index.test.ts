@@ -39,8 +39,8 @@ test('only derived publication is automatic; authoring and routing remain non-ex
   ])
   expect(items.find((item) => item.code === 'ROUTE-2')?.judgment).toMatchObject({
     scope: expect.any(String),
-    prompt: expect.any(String),
+    prompt: expect.stringContaining('audience directories'),
     outcomes: expect.any(Array),
-    guidance: expect.any(String)
+    guidance: expect.stringContaining('Do not invent a fixed directory taxonomy')
   })
 })

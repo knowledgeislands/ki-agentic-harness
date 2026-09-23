@@ -13,7 +13,7 @@ const CONFIG_FILE = '.ki.toml'
 const CONFIG_SECTION = 'ki-repo-website-cloudflare'
 const WEBSITE_CONFIG_SECTION = 'ki-repo-website'
 const DEFAULT_SITE_ROOT = 'apps/site'
-export const GUIDE_PATH = 'docs/guides/cloudflare.md'
+export const GUIDE_PATH = 'docs/guides/developer/cloudflare.md'
 const WRANGLER_FILES = ['wrangler.jsonc', 'wrangler.json', 'wrangler.toml'] as const
 const SKIPPED_DIRECTORIES = new Set(['.git', '.wrangler', 'dist', 'node_modules'])
 

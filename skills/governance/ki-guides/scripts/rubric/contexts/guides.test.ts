@@ -42,3 +42,23 @@ test('a docs/logs path is left to its specialised owner', () => {
 
   expect(context.boundary.retiredRoots).toEqual([])
 })
+
+test('flat, grouped, and intentionally mixed collections remain structurally valid', () => {
+  for (const guides of [['overview.md'], ['developer/workflow.md'], ['overview.md', 'developer/workflow.md']]) {
+    const repository = temporaryRepository()
+    mkdirSync(join(repository, 'docs/guides'), { recursive: true })
+    writeFileSync(join(repository, 'docs/guides/README.md'), '# Guides\n')
+    for (const guide of guides) {
+      const path = join(repository, 'docs/guides', guide)
+      mkdirSync(join(path, '..'), { recursive: true })
+      writeFileSync(path, '# Guide\n')
+    }
+
+    const session = createGuidesSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+    const context = session.subjects[1]?.context()
+    if (!context) throw new Error('ki-guides session did not expose its repository subject')
+
+    expect(context.layout).toEqual({ directoryExists: true, indexExists: true, headingIssues: [] })
+    expect(session.proposal()).toEqual({ writes: [] })
+  }
+})
