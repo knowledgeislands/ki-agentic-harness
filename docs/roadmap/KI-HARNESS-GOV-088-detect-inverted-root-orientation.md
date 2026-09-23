@@ -3,14 +3,14 @@ id: KI-HARNESS-GOV-088
 area: GOV
 title: Detect inverted root orientation
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 transferred_from: knowledgeislands/ki-website
 created_at: 2026-09-23T14:37:17Z
-updated_at: 2026-09-23T14:37:17Z
+updated_at: 2026-09-23T18:13:04Z
 ---
 
 ## Goal
@@ -33,6 +33,54 @@ The general shape is worth stating because it recurs: a structural check that as
 
 This item is about the mechanical `RUNTIMES-4` rubric only. It does not revisit the `ki-repo` REVIEW lenses added in `bb80a0a2`, which already cover the judgment side and need no change. It does not restate or renegotiate the `RUNTIMES-4` standard itself in `standards-repository.md` — the rule is right, the check under-serves it. It does not change the finding's current WARN severity, which `standards-repository.md` ties to a separately reviewed conformance boundary. It does not audit or edit any downstream repository's root files; `ki-website` is already corrected and is cited here as evidence, not as work.
 
+## Current state
+
+`RUNTIMES-4` verifies that a multi-runtime repository has a physical root `AGENTS.md`, rejects an obvious `AGENTS.md` redirect to `CLAUDE.md`, and requires a physical `CLAUDE.md` containing a bare `@AGENTS.md` import. It does not compare the two files' substantive, repository-owned orientation. A repository can therefore keep a thin `AGENTS.md` and a much larger shared orientation in `CLAUDE.md` while receiving no `RUNTIMES-4` finding.
+
+The checker already reads both files in `audit.ts`. Headroom-managed learning blocks are legitimate Claude-specific material and must be excluded from any relative-weight signal. A conservative deterministic warning can catch the evidenced inversion without claiming semantic proof: after removing comments, imports, headings, blank lines, and complete recognised managed blocks, warn only when `CLAUDE.md` retains at least eight substantive lines and more than twice the substantive lines in `AGENTS.md`.
+
+## Steps
+
+- [ ] Extract a bounded root-orientation evidence helper that counts only substantive repository-owned lines and excludes complete recognised managed blocks without following links or interpreting imported files.
+- [ ] Extend `RUNTIMES-4` to emit its existing WARN-level finding when a multi-runtime `CLAUDE.md` has at least eight substantive unmanaged lines and more than twice the substantive unmanaged lines in `AGENTS.md`.
+- [ ] Add focused fixtures for the observed inverted pair, a conforming shared-orientation pair, Claude-only repositories, managed Headroom blocks, incomplete managed markers, and small legitimate Claude-specific notes.
+- [ ] Keep `RUNTIMES-J1`, the standard wording, severity, and downstream repository files unchanged; regenerate the published rubric only if canonical item metadata changes.
+
+## Files touched
+
+- `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts`
+- `docs/roadmap/KI-HARNESS-GOV-088-detect-inverted-root-orientation.md`
+
+## Verify
+
+- Focused repository fixtures prove the evidenced 41-line/15-line inversion warns while conforming, Claude-only, managed-block, incomplete-marker, and small-note cases retain their intended outcomes.
+- `bun test skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts` passes.
+- `ki repo audit --skill ki-repo --repo .`, `ki repo audit --skill ki-skills --repo .`, and `ki repo audit --skill ki-work-roadmap --repo .` pass.
+- `bun run test` and `bunx tsc --noEmit` pass.
+
+## Dependencies / blocks
+
+No external dependency blocks the implementation. The current user instruction approves adoption, readiness, and bounded delivery. The existing WARN severity and standard are locked; any broader semantic orientation analysis or severity promotion is excluded.
+
+## Documentation impact
+
+### Decision Records
+
+No Decision Record is required because the accepted orientation contract and authority split do not change; this delivery closes an implementation gap in its existing mechanical warning.
+
+### Specifications
+
+No separate Specification changes. The existing `ki-repo` standard and `RUNTIMES-4` rubric item remain the accepted behaviour owner.
+
+### Guides
+
+No guide changes. The finding message and existing standard give maintainers the repair direction.
+
+### Roadmap
+
+No downstream migration item is created by this delivery. Wider repository reviews can surface any newly detected inversions through their owning review records.
+
 ## Discussion
 
 ### What a stronger check could measure
@@ -54,6 +102,10 @@ Because the estate is larger than the set of repositories anyone reviews by hand
 Whether the check should also verify the converse — that a repository declaring only `claude-code` is _not_ penalised for keeping everything in `CLAUDE.md`, which `standards-repository.md` explicitly permits. A naive weight comparison would flag exactly that legitimate arrangement, so the runtime declaration has to gate the check rather than the file layout alone.
 
 Whether `AGENTS.md` should additionally be required to be non-trivial in absolute terms. A repository with two thin files is differently broken from one with an inverted pair, and the two probably want different messages.
+
+### Readiness decision
+
+The relative-weight heuristic is deliberately conservative and warning-only. Eight substantive Claude-owned lines avoids treating a short appendix as inverted, the greater-than-two ratio catches the cited failure, and complete managed-block exclusion avoids penalising Headroom output. Incomplete marker pairs remain substantive rather than being silently hidden from evidence.
 
 ### Handoff origin
 
