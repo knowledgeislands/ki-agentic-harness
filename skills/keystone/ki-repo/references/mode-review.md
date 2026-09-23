@@ -188,6 +188,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Short subordinate records, including Agora memberships, use compact dotted keys and inline tables; complex Agora homes and similar records use legible nested tables.
 - [ ] The declared skill set covers every governance capability the repository uses, including capabilities without an automatic detection signal.
 - [ ] Every declared runtime-bound skill is linked into the repository through a KI-managed local projection.
+- [ ] Adding a runtime to `supported_runtimes` carried its knock-on surfaces: that runtime's skills directory is git-ignored, excluded from the formatter and dead-code configurations, and its tokenomics adapter is declared and activated.
 - [ ] No skill remains declared after the capability it governs has left the repository.
 - [ ] A substantive change to a canonical zone went through the enactment process.
 - [ ] The work record exists and its status matches reality.

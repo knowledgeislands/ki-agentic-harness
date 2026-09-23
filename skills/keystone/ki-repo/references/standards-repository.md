@@ -278,6 +278,10 @@ for r in $public; do
 done
 ```
 
+Booleans in `gh api` need `-F`, not `-f`. `-f has_projects=false` sends the string `"false"`, which the API accepts and ignores: the call succeeds, the response still reports `true`, and the setting is silently unchanged. The `-F allow_update_branch=true` above is the correct form, and the difference is invisible unless the response is read back.
+
+Syncing a description is a cascade rather than a single edit. `.ki.toml`, the root `package.json` and any workspace member `package.json` each carry one, and the audit blocks on the next one as soon as the previous is fixed, so expect to walk all of them in one pass rather than to finish after the first.
+
 Layer 1 files are added with a normal commit, pushed straight to `main` (it is unprotected) or via a PR if you prefer.
 
 ## Verifying it
