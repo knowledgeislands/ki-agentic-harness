@@ -52,9 +52,9 @@ The records are living, compact, and independent. The order below is a **curated
 23. [ADR-KI-HARNESS-SKILLS-009](ADR-KI-HARNESS-SKILLS-009-two-repository-structure-skills-for-standalone-tools-and-their-homebrew-tap.md) — ki-repo-tools and ki-repo-homebrew-tap repo-structure skills.
 24. [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation-for-multi-skill-invocation.md) — subagent isolation for multi-skill invocation.
 25. [ADR-KI-HARNESS-AGENTS-002](ADR-KI-HARNESS-AGENTS-002-portable-subagent-contract-and-runtime-adapters.md) — portable subagent meaning with separate Claude Code and Codex adapters.
-26. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-metadata-and-learn-block-context-check.md) — structured checker remediation metadata and the `headroom:learn` cross-repository context check.
-27. [ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-and-vendored-code-is-excluded-from-linting-and-knip.md) — generated and vendored code excluded from linting and knip.
-28. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-bare-mode-scripts-and-a-coverage-scoped-aggregate-gate.md) — uniform skill modes (bare audit/conform/educate), the toolchain collapse, and the coverage-scoped aggregate gate.
+26. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-bare-mode-scripts-and-a-coverage-scoped-aggregate-gate.md) — uniform skill modes (bare audit/conform/educate), the toolchain collapse, and the coverage-scoped aggregate gate.
+27. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-metadata-and-learn-block-context-check.md) — structured checker remediation metadata and the `headroom:learn` cross-repository context check.
+28. [ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-and-vendored-code-is-excluded-from-linting-and-knip.md) — generated and vendored code excluded from linting and knip.
 29. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-tools-for-harness-shaped-targets.md) — vendoring cross-skill graph and HELP tools into `.ki-meta/bin/` for harness-shaped targets.
 30. [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings-across-audit-and-conform.md) — comparable, cited checker findings across audit and conform (the `ref`/`file` finding fields, conform `--json`, and the shared aggregate renderer).
 31. [ADR-KI-HARNESS-SKILLS-011](ADR-KI-HARNESS-SKILLS-011-repository-roadmaps-for-non-kb-repositories.md) — the non-KB repo-roadmap profiles, thematic plan layout, and Knowledge Base Streams boundary.
@@ -66,9 +66,9 @@ The records are living, compact, and independent. The order below is a **curated
 37. [ODR-KI-HARNESS-001](ODR-KI-HARNESS-001-scoped-lifecycle-operations.md) — separate repository and user lifecycle operations.
 38. [ADR-KI-HARNESS-012](ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md) — compatible harness publication and the governed-rubric boundary.
 39. [ADR-KI-HARNESS-013](ADR-KI-HARNESS-013-compositional-ignore-management-and-generated-report-namespace.md) — skill-attributed ignore composition, terminal unmanaged inventory, and the `reports/` namespace.
-40. [ADR-KI-HARNESS-014](ADR-KI-HARNESS-014-route-state-by-authority-and-durability.md) — route Harness state by canonical authority, durability, sensitivity, regeneration, and recovery.
-41. [GDR-KI-HARNESS-003](GDR-KI-HARNESS-003-portable-git-governance-ownership.md) — portable Git governance ownership.
-42. [GDR-KI-HARNESS-004](GDR-KI-HARNESS-004-four-doc-repository-documentation-ownership.md) — four-doc repository documentation ownership.
+40. [GDR-KI-HARNESS-003](GDR-KI-HARNESS-003-portable-git-governance-ownership.md) — portable Git governance ownership.
+41. [GDR-KI-HARNESS-004](GDR-KI-HARNESS-004-four-doc-repository-documentation-ownership.md) — four-doc repository documentation ownership.
+42. [ADR-KI-HARNESS-014](ADR-KI-HARNESS-014-route-state-by-authority-and-durability.md) — route Harness state by canonical authority, durability, sensitivity, regeneration, and recovery.
 43. [GDR-KI-HARNESS-005](GDR-KI-HARNESS-005-cross-repository-trade-routes.md) — locally declared, receiver-controlled cross-repository trade submissions.
 44. [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-reciprocal-agora-membership.md) — portable consent for named repository collections and explicit local target selection.
 45. [GDR-KI-HARNESS-007](GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md) — ownership of document metadata and principal authority.

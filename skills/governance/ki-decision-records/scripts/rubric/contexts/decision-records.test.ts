@@ -443,7 +443,17 @@ describe('decision-record index links', () => {
 })
 
 describe('decision dependency graph', () => {
-  const dependentRecord = ({ id, title, dependsOn }: { id: string; title: string; dependsOn: string }) => `---
+  const dependentRecord = ({
+    id,
+    title,
+    dependsOn,
+    note = ''
+  }: {
+    id: string
+    title: string
+    dependsOn: string
+    note?: string
+  }) => `---
 id: ${id}
 title: '${title}'
 date: 2026-07-22
@@ -464,11 +474,11 @@ The repository records this decision.
 
 ## Consequences
 
-The decision remains readable.
+The decision remains readable. ${note}
 `
 
   const dependsFixture = (
-    files: ReadonlyArray<{ file: string; id: string; title: string; dependsOn: string }>,
+    files: ReadonlyArray<{ file: string; id: string; title: string; dependsOn: string; note?: string }>,
     indexIds: readonly string[]
   ) => {
     const root = mkdtempSync(join(tmpdir(), 'ki-decision-records-depends-'))
@@ -550,6 +560,33 @@ The decision remains readable.
       subject: 'ADR-EXAMPLE-001 -> ADR-EXAMPLE-002 -> ADR-EXAMPLE-001'
     })
     expect(audit('DEPENDS-3', context)?.[0]).toMatchObject({ status: 'VIOLATION', subject: 'ADR-EXAMPLE-001' })
+  })
+
+  test('reports a body citation of a higher-numbered record of the same type, and allows another type', () => {
+    const context = dependsFixture(
+      [
+        {
+          file: 'ADR-EXAMPLE-001-first-decision.md',
+          id: 'ADR-EXAMPLE-001',
+          title: 'First decision',
+          dependsOn: '',
+          note: 'ADR-EXAMPLE-002 generalises this, and GDR-EXAMPLE-001 carries the governance of it.'
+        },
+        {
+          file: 'ADR-EXAMPLE-002-second-decision.md',
+          id: 'ADR-EXAMPLE-002',
+          title: 'Second decision',
+          dependsOn: 'decision_depends_on: [ADR-EXAMPLE-001]\n',
+          note: 'ADR-EXAMPLE-001 is the record this one builds on.'
+        },
+        { file: 'GDR-EXAMPLE-001-third-decision.md', id: 'GDR-EXAMPLE-001', title: 'Third decision', dependsOn: '' }
+      ],
+      ['ADR-EXAMPLE-001', 'ADR-EXAMPLE-002', 'GDR-EXAMPLE-001']
+    )
+
+    expect(audit('DEPENDS-4', context)).toEqual([
+      expect.objectContaining({ status: 'VIOLATION', subject: 'ADR-EXAMPLE-001' })
+    ])
   })
 
   test('treats a self-dependency as a cycle', () => {

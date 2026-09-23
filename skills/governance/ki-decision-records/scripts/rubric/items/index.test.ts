@@ -65,7 +65,8 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'INDEX-8',
     'DEPENDS-1',
     'DEPENDS-2',
-    'DEPENDS-3'
+    'DEPENDS-3',
+    'DEPENDS-4'
   ])
   expect(items.filter((item) => item.judgment)).toHaveLength(9)
   expect(items.filter((item) => item.mechanical).every((item) => Boolean(item.mechanical?.remediation))).toBe(true)

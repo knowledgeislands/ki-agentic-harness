@@ -56,6 +56,7 @@ const INDEX_ENTRY =
 const INDEX_ENTRY_TARGET =
   /^(\s*\d+\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,}))\]\()([^)]+)(\).*)$/
 const DECISION_LINK = /\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,}))\]\(([^)]+)\)/
+const BODY_CITATION = /(?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-(?:XXX|\d{3,})/g
 const HEADING = /^#\s+((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,})):\s+(.+)$/m
 
 export type DecisionRecord = {
@@ -99,6 +100,7 @@ export type DependsRubricContext = {
   unresolvedDependencies: readonly { id: string; target: string }[]
   dependencyCycles: readonly (readonly string[])[]
   dependencyOrderViolations: readonly { id: string; target: string }[]
+  forwardCitations: readonly { id: string; target: string }[]
 }
 
 export type RecordsRubricContext = {
@@ -362,6 +364,7 @@ const dependencyEvidence = (
   const malformedDependencies: { id: string; target: string }[] = []
   const unresolvedDependencies: { id: string; target: string }[] = []
   const dependencyOrderViolations: { id: string; target: string }[] = []
+  const forwardCitations: { id: string; target: string }[] = []
   const edges = new Map<string, string[]>()
   for (const record of records) {
     const resolved: string[] = []
@@ -382,12 +385,20 @@ const dependencyEvidence = (
       if (localScopes.has(identity[2] as string)) unresolvedDependencies.push({ id: record.id, target })
     }
     edges.set(record.id, resolved)
+    if (record.serial !== 'XXX')
+      for (const target of new Set(record.body.match(BODY_CITATION) ?? [])) {
+        const identity = target.match(ID)
+        if (!identity || identity[3] === 'XXX') continue
+        if (identity[1] !== record.prefix || identity[2] !== record.scope) continue
+        if (Number(identity[3]) > Number(record.serial)) forwardCitations.push({ id: record.id, target })
+      }
   }
   return {
     malformedDependencies,
     unresolvedDependencies,
     dependencyCycles: dependencyCycles(edges),
-    dependencyOrderViolations
+    dependencyOrderViolations,
+    forwardCitations
   }
 }
 

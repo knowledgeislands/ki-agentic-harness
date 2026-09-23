@@ -28,4 +28,4 @@ Every skill payload must be **independently self-contained**, while executable p
 - Runtime projection works without cross-skill relative paths.
 - Cross-skill references in prose are by name, so they survive path changes.
 - The checker self-containment requirement is part of the mechanical-checker contract (ADR-KI-HARNESS-SKILLS-002).
-- Backend-specific variants add no taxonomy cluster (consistent with ADR-KI-HARNESS-SKILLS-006): they are the composition mechanism applied to the backend axis, so a universal skill can be selected without a backend and a backend is opt-in via its composition skill.
+- Backend-specific variants add no taxonomy cluster: they are the composition mechanism applied to the backend axis, so a universal skill can be selected without a backend and a backend is opt-in via its composition skill.

@@ -105,11 +105,42 @@ const DEPENDS_3: RubricItem<DependsRubricContext> = {
   }
 }
 
+const DEPENDS_4: RubricItem<DependsRubricContext> = {
+  code: 'DEPENDS-4',
+  title: 'Body prose cites only backward',
+  description:
+    'A record names lower-numbered records of its own prefix and scope, never a higher-numbered one. Where a later record extends, narrows, or settles something, the later record says so, so an earlier record never needs editing when something downstream lands.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Remove the forward reference and let the later record state the relationship, which it already declares as a dependency.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context: DependsRubricContext) =>
+        outcomes(
+          context.forwardCitations.map(
+            ({ id, target }): AuditOutcome => ({
+              status: 'VIOLATION',
+              message: `Body cites \`${target}\`, a higher-numbered record of the same type.`,
+              subject: id
+            })
+          ),
+          'No record body cites a higher-numbered record of its own type.'
+        )
+    }
+  }
+}
+
 export const DEPENDS: RubricFamily<DecisionRecordsRubricContext, DependsRubricContext> = {
   code: 'DEPENDS',
   title: 'dependency-graph checks',
-  description: 'Declared decision dependencies resolve, stay acyclic, and precede their dependents.',
+  description:
+    'Declared decision dependencies resolve, stay acyclic, precede their dependents, and prose points backward.',
   standard: SOURCE,
   selectContext: (context) => context.depends,
-  items: [DEPENDS_1, DEPENDS_2, DEPENDS_3]
+  items: [DEPENDS_1, DEPENDS_2, DEPENDS_3, DEPENDS_4]
 }
