@@ -5,6 +5,7 @@
 - [Naming convention](#naming-convention)
 - [Prefix table](#prefix-table)
 - [Placement](#placement)
+- [Supporting material](#supporting-material)
 - [Frontmatter](#frontmatter)
 - [Sections](#sections)
 - [Templates](#templates)
@@ -51,6 +52,18 @@ Each `decision_type_url` expands from `https://knowledgeislands.info/specificati
 | code / unset       | `docs/decisions/`             | `README.md`    | Required (see below) |
 
 The repo type is declared in `.ki.toml` under `[skills.ki-decision-records]` (or inferred from `[skills.ki-repo-kb]` presence). The checker auto-detects the decisions directory (`docs/decisions/` then `Admin/Governance/Decisions/`) and picks the matching index file by mode; pass an explicit path to override.
+
+## Supporting material
+
+A DR is self-contained: it MUST read completely without following any link, which is why skills, guides, workflows and standards a decision grounds in are named in its body rather than listed as links. Some material genuinely supports a collection without being a decision — a survey of adjacent projects, an evidence table, a coverage matrix, a triage of findings. It is longer than a record body should be, it changes on a different cadence from the decisions it informs, and writing it as a DR would misfile it.
+
+That material lives in a `references/` directory **inside** the decisions directory: `docs/decisions/references/` in a code repository, `Admin/Governance/Decisions/references/` in a KB. Keeping it inside the tree is the point. A record may then cite it by a relative sibling path without reaching outside the decisions collection, so the collection stays movable and self-contained as a unit, and a reader who has the decisions has everything they support.
+
+Do not confuse this directory with the `## References` section, which is a list of followable links inside one record and takes only sibling DRs and external URLs. A supporting file is cited from a record's **body**, where the reader meets it, under the same rule as any other named artefact.
+
+What belongs there: material the collection's records depend on or are informed by, that is not itself a decision. What does not: anything that _is_ a decision, which gets a record; documentation a reader outside the decisions tree is expected to find, which belongs in the documentation corpus; and anything short enough to sit in the one record that needs it.
+
+A supporting file MAY be cited by several records, by one, or by none — standing evidence nothing cites is legitimate. Its filename is an ordinary descriptive slug, not a record identifier, and the checker does not read it as a record. The index MUST say the directory exists and what belongs in it, but supporting files are NOT entries in the ordered list, which carries one item per DR and nothing else.
 
 ## Frontmatter
 
