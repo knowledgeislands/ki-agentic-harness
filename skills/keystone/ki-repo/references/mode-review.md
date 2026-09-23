@@ -194,6 +194,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Commit messages follow the conventional format and describe the change, not the session.
 - [ ] Staged paths are exactly the paths this work touched.
 - [ ] No other writer's uncommitted work was reverted, stashed, or discarded.
+- [ ] Concurrent writers against this working tree were identified before staging, committing or reporting push state. Every session in one checkout commits under the same author, so Git metadata cannot attribute work between them, and a peer that pushes or edits between two reads makes a correct-at-the-time claim stale without warning.
 
 ### Naming and identity
 
