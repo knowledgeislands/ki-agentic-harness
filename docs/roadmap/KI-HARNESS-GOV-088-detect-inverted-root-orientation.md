@@ -4,13 +4,13 @@ area: GOV
 title: Detect inverted root orientation
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: ea0422363fb02ebdad908ef77f78d34130671fd3
 transferred_from: knowledgeislands/ki-website
 created_at: 2026-09-23T14:37:17Z
-updated_at: 2026-09-23T18:13:04Z
+updated_at: 2026-09-23T18:25:25Z
 ---
 
 ## Goal
@@ -41,10 +41,10 @@ The checker already reads both files in `audit.ts`. Headroom-managed learning bl
 
 ## Steps
 
-- [ ] Extract a bounded root-orientation evidence helper that counts only substantive repository-owned lines and excludes complete recognised managed blocks without following links or interpreting imported files.
-- [ ] Extend `RUNTIMES-4` to emit its existing WARN-level finding when a multi-runtime `CLAUDE.md` has at least eight substantive unmanaged lines and more than twice the substantive unmanaged lines in `AGENTS.md`.
-- [ ] Add focused fixtures for the observed inverted pair, a conforming shared-orientation pair, Claude-only repositories, managed Headroom blocks, incomplete managed markers, and small legitimate Claude-specific notes.
-- [ ] Keep `RUNTIMES-J1`, the standard wording, severity, and downstream repository files unchanged; regenerate the published rubric only if canonical item metadata changes.
+- [x] Extract a bounded root-orientation evidence helper that counts only substantive repository-owned lines and excludes complete recognised managed blocks without following links or interpreting imported files.
+- [x] Extend `RUNTIMES-4` to emit its existing WARN-level finding when a multi-runtime `CLAUDE.md` has at least eight substantive unmanaged lines and more than twice the substantive unmanaged lines in `AGENTS.md`.
+- [x] Add focused fixtures for the observed inverted pair, a conforming shared-orientation pair, Claude-only repositories, managed Headroom blocks, incomplete managed markers, and small legitimate Claude-specific notes.
+- [x] Keep `RUNTIMES-J1`, the standard wording, severity, and downstream repository files unchanged; regenerate the published rubric only if canonical item metadata changes.
 
 ## Files touched
 
@@ -80,6 +80,32 @@ No guide changes. The finding message and existing standard give maintainers the
 ### Roadmap
 
 No downstream migration item is created by this delivery. Wider repository reviews can surface any newly detected inversions through their owning review records.
+
+## Review
+
+### Delivered
+
+Delivered the approved warning-only `RUNTIMES-4` implementation from baseline `ea0422363fb02ebdad908ef77f78d34130671fd3`. Multi-runtime repositories now warn when substantive unmanaged orientation is materially heavier in `CLAUDE.md` than `AGENTS.md`; Claude-only repositories, imports, headings, comments, short appendices, and complete Headroom learning blocks remain outside that signal. No downstream repository, standard wording, severity, or judgment item changed.
+
+### Summary of changes
+
+`audit.ts` gained a bounded substantive-line counter, complete Headroom-block exclusion, and the conservative eight-line and greater-than-two inversion check. `repository.test.ts` gained fixtures for the observed inversion, complete and incomplete managed blocks, and a small Claude-specific appendix. The planned generated-rubric step was correctly skipped because canonical rubric metadata did not change.
+
+### Verification
+
+`bun test skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts` passed 46 tests. `ki repo audit --skill ki-repo --repo .`, `ki repo audit --skill ki-skills --repo .`, and `ki repo audit --skill ki-work-roadmap --repo .` passed. `bunx tsc --noEmit` passed. `bun run test` passed 761 tests across 137 files with zero failures.
+
+### Outstanding concerns
+
+None within the approved item. The warning is deliberately heuristic and remains paired with `RUNTIMES-J1` human review rather than claiming semantic proof or changing severity.
+
+### Post-change review
+
+The goal is met within scope: the exact inversion that previously passed now emits a repository-owned warning, while explicit boundary fixtures constrain false positives around managed Claude material and small appendices. The change is read-only, root-only, and multi-runtime-only, so regression risk is limited to an additional WARN where repository orientation is materially inverted. The item is ready for acceptance review.
+
+### Mini recap
+
+GOV-088 now detects a thin shared `AGENTS.md` paired with substantially heavier unmanaged `CLAUDE.md` orientation. Focused, full-suite, type, and governance gates pass with no unresolved item-scoped concern. Any future semantic classification or severity change should be routed as separate work rather than widening this delivered warning.
 
 ## Discussion
 

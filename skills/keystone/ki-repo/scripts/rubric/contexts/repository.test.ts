@@ -639,6 +639,65 @@ describe('root runtime orientation', () => {
   })
 })
 
+describe('root orientation inversion evidence', () => {
+  const findings = async (
+    agents: string,
+    claude: string
+  ): Promise<readonly { code: string; level: string; message: string; subject?: string }[]> => {
+    const root = repository()
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n')
+    writeFileSync(join(root, 'AGENTS.md'), agents)
+    writeFileSync(join(root, 'CLAUDE.md'), claude)
+    return (await collectAuditFindings([root])).findings.filter(({ code }) => code === 'RUNTIMES-4')
+  }
+
+  test('warns when substantial unmanaged orientation remains inverted', async () => {
+    const claudeOrientation = [
+      '@AGENTS.md',
+      ...Array.from({ length: 8 }, (_, index) => `Shared detail ${index + 1}.`)
+    ].join('\n')
+
+    expect(
+      await findings(
+        '# Orientation\n\nShared repository guidance.\n\nCommit focused changes.\n',
+        `${claudeOrientation}\n`
+      )
+    ).toEqual([
+      expect.objectContaining({
+        code: 'RUNTIMES-4',
+        level: 'WARN',
+        message: expect.stringContaining('shared repository orientation'),
+        subject: expect.stringContaining('CLAUDE.md')
+      })
+    ])
+  })
+
+  test('excludes complete Headroom blocks but counts incomplete blocks as orientation evidence', async () => {
+    const learnedLines = Array.from({ length: 8 }, (_, index) => `- Learned detail ${index + 1}.`).join('\n')
+    const complete = `@AGENTS.md\n\n# Claude-only notes\n\n<!-- headroom:learn:start -->\n${learnedLines}\n<!-- headroom:learn:end -->\n`
+    const incomplete = `@AGENTS.md\n\n# Claude-only notes\n\n<!-- headroom:learn:start -->\n${learnedLines}\n`
+    const agents = '# Orientation\n\nShared repository guidance.\n\nCommit focused changes.\n'
+
+    expect(await findings(agents, complete)).toEqual([])
+    expect(await findings(agents, incomplete)).toEqual([
+      expect.objectContaining({
+        code: 'RUNTIMES-4',
+        message: expect.stringContaining('shared repository orientation')
+      })
+    ])
+  })
+
+  test('allows a small Claude-specific appendix', async () => {
+    const appendix = [
+      '@AGENTS.md',
+      '# Claude-only notes',
+      ...Array.from({ length: 7 }, (_, index) => `Note ${index + 1}.`)
+    ].join('\n')
+
+    expect(await findings('# Orientation\n\nShared repository guidance.\n', `${appendix}\n`)).toEqual([])
+  })
+})
+
 describe('repository kind and Knowledge Base stores', () => {
   const kindFindings = async (configuration: string) => {
     const root = repository()

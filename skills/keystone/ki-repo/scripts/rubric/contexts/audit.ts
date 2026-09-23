@@ -1340,6 +1340,28 @@ const localKiSelfFindings = (dir: string, runtimes: readonly string[]): Finding[
   return f
 }
 
+const HEADROOM_LEARN_START = '<!-- headroom:learn:start -->'
+const HEADROOM_LEARN_END = '<!-- headroom:learn:end -->'
+
+const withoutCompleteHeadroomBlocks = (text: string): string => {
+  let remaining = text
+  let start = remaining.indexOf(HEADROOM_LEARN_START)
+  while (start >= 0) {
+    const end = remaining.indexOf(HEADROOM_LEARN_END, start + HEADROOM_LEARN_START.length)
+    if (end < 0) break
+    remaining = `${remaining.slice(0, start)}${remaining.slice(end + HEADROOM_LEARN_END.length)}`
+    start = remaining.indexOf(HEADROOM_LEARN_START)
+  }
+  return remaining
+}
+
+const substantiveOrientationLineCount = (text: string): number =>
+  withoutCompleteHeadroomBlocks(text)
+    .replace(/<!--[\s\S]*?-->/gu, '')
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith('#') && !/^@[A-Z0-9][A-Z0-9._/-]*\.md$/iu.test(line)).length
+
 const localRuntimeOrientationFindings = (dir: string, runtimes: readonly string[]): Finding[] => {
   const { f, warn } = mk()
   if (!runtimes.some((runtime) => runtime !== 'claude-code')) return f
@@ -1351,7 +1373,8 @@ const localRuntimeOrientationFindings = (dir: string, runtimes: readonly string[
     return f
   }
 
-  const agentsLines = readFileSync(agentsPath, 'utf8')
+  const agentsSource = readFileSync(agentsPath, 'utf8')
+  const agentsLines = agentsSource
     .split(/\r?\n/u)
     .map((line) => line.trim())
     .filter((line) => line.length > 0 && !line.startsWith('<!--'))
@@ -1368,8 +1391,21 @@ const localRuntimeOrientationFindings = (dir: string, runtimes: readonly string[
   const claudeState = localState(claudePath)
   if (claudeState && (!claudeState.isFile() || claudeState.isSymbolicLink())) {
     warn('RUNTIMES-4', 'root CLAUDE.md must be a physical file when present', 'CLAUDE.md')
-  } else if (claudeState?.isFile() && !readFileSync(claudePath, 'utf8').split(/\r?\n/u).includes('@AGENTS.md')) {
-    warn('RUNTIMES-4', 'root CLAUDE.md must contain a bare @AGENTS.md import line', 'CLAUDE.md')
+  } else if (claudeState?.isFile()) {
+    const claudeSource = readFileSync(claudePath, 'utf8')
+    if (!claudeSource.split(/\r?\n/u).includes('@AGENTS.md')) {
+      warn('RUNTIMES-4', 'root CLAUDE.md must contain a bare @AGENTS.md import line', 'CLAUDE.md')
+    } else {
+      const agentsWeight = substantiveOrientationLineCount(agentsSource)
+      const claudeWeight = substantiveOrientationLineCount(claudeSource)
+      if (claudeWeight >= 8 && claudeWeight > agentsWeight * 2) {
+        warn(
+          'RUNTIMES-4',
+          'root CLAUDE.md appears to contain shared repository orientation that belongs in AGENTS.md',
+          'CLAUDE.md'
+        )
+      }
+    }
   }
 
   return f
