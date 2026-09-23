@@ -324,6 +324,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Anything runnable is reachable from the declared task surface.
 - [ ] Website servers use a deterministic port outside tests so start and stop operations can target them reliably.
 - [ ] Nothing depends on a path outside the repository without declaring it.
+- [ ] Build and script steps invoke an executable directly, or by resolving the owning package manifest, rather than through a package-manager runner such as `npx` or `bunx`.
+- [ ] Where a build host installs with a different package manager from local development, nothing in the build depends on that difference.
 
 ### Language and presentation
 
