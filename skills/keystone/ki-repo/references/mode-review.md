@@ -184,6 +184,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
 - [ ] In a multi-runtime repository, root `AGENTS.md` is the authoritative home for shared runtime-neutral guidance.
 - [ ] Where root `CLAUDE.md` accompanies `AGENTS.md`, it imports `AGENTS.md` and contains only Claude-specific additions.
+- [ ] Root orientation records only repository-specific facts and points at the governing skill or Decision Record, rather than restating a rule a declared skill already owns.
 - [ ] GitHub Issues and `package.json` bug-reporting metadata agree with the selected work adapter: both are absent unless `ki-work-github-issues` is declared.
 - [ ] Short subordinate records, including Agora memberships, use compact dotted keys and inline tables; complex Agora homes and similar records use legible nested tables.
 - [ ] The declared skill set covers every governance capability the repository uses, including capabilities without an automatic detection signal.
