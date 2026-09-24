@@ -211,7 +211,7 @@ Before setting `status: awaiting-review`, insert `## Review` immediately before 
 - **Delivered** states the approved boundary and exclusions, plus immutable baseline and resulting evidence.
 - **Change Summary** names concrete changed files, material decisions, and approved deviations.
 - **Verification** records exact gates and their outcomes.
-- **Outstanding concerns** records unresolved, unchecked, or failing issues, or explicitly says none.
+- **Outstanding concerns** records unresolved, unchecked, or failing issues, or explicitly says none. A concern that names work somebody should still do needs its own identifier before acceptance, and this section cites it. This section is evidence for one acceptance decision, not a backlog: it is deleted with the record at the prune, and anything held only here is held nowhere.
 - **Post-change review** freshly assesses goal, scope, regression risk, and acceptance readiness.
 - **Mini recap** restates item-scoped delivery, verification, and concerns, then proposes learning routes without promoting them.
 
@@ -228,6 +228,8 @@ After explicit acceptance, insert terminal `## Done` immediately before `Discuss
 For terminal Triage, `## Done` instead records who approved the disposition and when — `Disposed <date> by <name> as <intake_disposition> on the intake evidence above.` — and nothing else. Evidence belongs in `## Intake disposition`.
 
 Retain the accepted record until an explicitly selected prune path or glob.
+
+Pruning destroys the record's contents along with the record. Before selecting an item, confirm that every concern its `### Outstanding concerns` still leaves open is carried by a live identifier elsewhere; a deferral that exists only inside the record being removed ceases to exist, and nothing reports that it did.
 
 At every stage, `Discussion` remains the final top-level section.
 
