@@ -6,6 +6,15 @@ The authoritative and community sources behind the [Workspace MCP Standard](stan
 
 Two layers feed the standard: the **official MCP specification** (what every conformant server must do) and the **in-house workspace convention** (the opinionated shape the six sibling repos share on top of the spec). A finding is only "spec-driven" if it traces to the Authoritative table; everything else is house style and should be labelled as such so it is not mistaken for a protocol requirement.
 
+## Contents
+
+- [Authoritative MCP sources](#authoritative-official-mcp-spec)
+- [Community sources](#community)
+- [In-house evidence](#in-house-the-workspace-convention)
+- [Source-distribution sources](#source-distribution)
+- [Last review](#last-review)
+- [Previous review](#previous-review)
+
 ## Authoritative (official MCP spec)
 
 The spec is versioned by date. Track the **latest released** version and note the current one here.
