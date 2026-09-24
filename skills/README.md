@@ -560,7 +560,7 @@ Govern the KI knowledge-base Streams container: flat Roadmap records and Houseke
 
 #### `ki-repo-mcp`
 
-Audit or scaffold KI MCP server code for workspace-MCP layout, dependency injection, tool naming, access gates, logging, and security. Use `ki-engineering` for common toolchains, `ki-skills` for SKILL.md, and `ki-repo` for repository settings.
+Audit or scaffold KI MCP server code for source-release readiness, workspace-MCP layout, dependency injection, tool naming, access gates, logging, and security. Use `ki-engineering` for common toolchains, `ki-skills` for SKILL.md, and `ki-repo` for repository settings.
 
 - **Kind:** Governance
 - **Applicability:** Detected
