@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { KI } from '../items/applicability.ts'
 import { CI } from '../items/ci.ts'
+import { DIST } from '../items/distribution.ts'
 import { PKG } from '../items/package.ts'
 import { PROTO } from '../items/protocol.ts'
 import { TOOL } from '../items/tools.ts'
@@ -97,6 +98,12 @@ const protocolItem = () => {
   return item.mechanical
 }
 
+const distributionItem = () => {
+  const item = DIST.items.find((candidate) => candidate.code === 'DIST-1')
+  if (!item?.mechanical) throw new Error('DIST-1 mechanical item is missing')
+  return item.mechanical
+}
+
 const writeDependencies = (packagePath: string, dependencies: Record<string, string>): void => {
   const packageJson = JSON.parse(readFileSync(packagePath, 'utf8')) as Record<string, unknown>
   packageJson.dependencies = dependencies
@@ -156,6 +163,24 @@ test('symlinked mutation targets remain report-only', () => {
   expect(session.proposal()).toEqual({ writes: [] })
   expect(readFileSync(outsideConfig, 'utf8')).toBe('[skills.ki-repo]\n')
   expect(readFileSync(outsidePackage, 'utf8')).toBe('{}\n')
+})
+
+test('release-owner decisions remain diagnostic and unsafe evidence is never conformed', () => {
+  const { repository } = fixture()
+  const outside = temporaryDirectory('ki-repo-mcp-lock-outside-')
+  writeFileSync(join(outside, 'bun.lock'), 'lockfileVersion = 1\n')
+  symlinkSync(join(outside, 'bun.lock'), join(repository, 'bun.lock'))
+  const session = createMcpSession(options(repository, 'conform'))
+  const { context } = rootContext(session)
+
+  expect(distributionItem().conform).toBeUndefined()
+  expect(distributionItem().audit.run(DIST.selectContext(context))).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ status: 'VIOLATION', subject: 'bun.lock' }),
+      expect.objectContaining({ status: 'VIOLATION', subject: 'package.json' })
+    ])
+  )
+  expect(session.proposal()).toEqual({ writes: [] })
 })
 
 test('unrelated repositories route only the applicability family', () => {

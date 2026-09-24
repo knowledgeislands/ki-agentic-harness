@@ -19,6 +19,7 @@ Line-by-line criteria for auditing ki-repo-mcp. Classifications are derived from
 - [PKG — Package entry points](#pkg--package-entry-points)
 - [SCR — MCP scripts](#scr--mcp-scripts)
 - [CI — Smoke CI](#ci--smoke-ci)
+- [DIST — MCP source distribution](#dist--mcp-source-distribution)
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 
 ## KI — Applicability and declaration
@@ -145,6 +146,19 @@ Smoke-test wiring is mechanically visible while execution remains an explicit ex
   - _Remediation:_ diagnostic — Add the smoke invocation to the CI workflow when the declared smoke script exists.
 - **CI-2 [M] — MCP smoke execution** — When ki:test:smoke is defined, its execution remains an explicit verification step outside hosted audit and conform. (standards-mcp-servers.md#8-packagejson)
   - _Remediation:_ diagnostic — Run the declared smoke script explicitly and investigate its result outside hosted audit or conform.
+
+## DIST — MCP source distribution
+
+→ [standard](standards-mcp-distribution.md)
+
+Versioned source releases provide immutable build and provenance evidence without package publication.
+
+- **DIST-1 [M + J] — Source-release readiness** — The repository exposes enough immutable, reproducible evidence for a named source installation. (standards-mcp-distribution.md)
+  - _Remediation:_ diagnostic — Repair ordinary package or lockfile drift, but leave versions, tags, releases, repository identity, and workflow changes to the repository owner.
+  - _Evidence scope:_ Repository release settings, source accessibility, stable-release marker, and installer provenance receipt.
+  - _Review prompt:_ Verify public and private source access without changing visibility, ensure omitted versions resolve only the owner-designated latest stable release, and compare the installer receipt with the selected tag and commit.
+  - _Outcomes:_ ready; development-only; provenance-mismatch; exclusion
+  - _Conforming guidance:_ The owner cuts or designates releases; CONFORM must not mint versions or tags, publish a release, change repository identity, or rewrite workflows.
 
 ## RUBRIC — Generated rubric publication
 

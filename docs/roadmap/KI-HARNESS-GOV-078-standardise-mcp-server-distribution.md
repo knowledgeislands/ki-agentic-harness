@@ -4,13 +4,13 @@ area: GOV
 title: Standardise MCP server distribution
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: d3e2d80d1f9fe7afecd96e9f88bda9343f7218bd
 transferred_from: ki-website
 created_at: 2026-09-21T07:33:33Z
-updated_at: 2026-09-22T06:31:00Z
+updated_at: 2026-09-24T08:04:41Z
 ---
 
 ## Goal
@@ -41,12 +41,12 @@ Private repositories remain supported when the local Git credentials can read th
 
 ## Steps
 
-- [ ] Add a focused MCP source-release standard covering owner/repository identity, SemVer tags, immutable commit evidence, locked builds, the MCP entry point, and the provenance an installer must retain.
-- [ ] Define the repository-to-installer hand-off, including a minimal machine-readable release descriptor only where existing `.ki.toml`, `package.json`, and Git evidence cannot supply the field without duplication.
-- [ ] Add WARN-level audit items for source-install readiness and safe CONFORM proposals for deterministic generated material; refuse version, identity, release, or workflow changes that require repository-owner judgment.
-- [ ] Record the no-registry distribution decision and its split of authority between `ki-repo-mcp`, each server repository, `tools-ki`, bindings, and website discovery.
-- [ ] Add fixtures for public and private repositories, explicit and omitted versions, missing or mutable revisions, build-contract drift, provenance mismatch, and unsafe-to-conform cases, then regenerate the published rubric.
-- [ ] Create or enrich the receiver-owned `tools-ki` roadmap item for the named installer without implementing that command from the Harness.
+- [x] Add a focused MCP source-release standard covering owner/repository identity, SemVer tags, immutable commit evidence, locked builds, the MCP entry point, and the provenance an installer must retain.
+- [x] Define the repository-to-installer hand-off, including a minimal machine-readable release descriptor only where existing `.ki.toml`, `package.json`, and Git evidence cannot supply the field without duplication.
+- [x] Add WARN-level audit items for source-install readiness and safe CONFORM proposals for deterministic generated material; refuse version, identity, release, or workflow changes that require repository-owner judgment.
+- [x] Record the no-registry distribution decision and its split of authority between `ki-repo-mcp`, each server repository, `tools-ki`, bindings, and website discovery.
+- [x] Add fixtures for public and private repositories, explicit and omitted versions, missing or mutable revisions, build-contract drift, provenance mismatch, and unsafe-to-conform cases, then regenerate the published rubric.
+- [x] Create or enrich the receiver-owned `tools-ki` roadmap item for the named installer without implementing that command from the Harness.
 
 ## Files touched
 
@@ -90,6 +90,42 @@ Add concise maintainer guidance for cutting an installable tagged release. User 
 
 Create or enrich one receiver-local `tools-ki` installer item and leave per-server release adoption to independently reviewable local records. Do not create speculative migration items before the contract identifies a real gap.
 
+## Review
+
+### Delivered
+
+Delivered the approved repository-side source-install contract from immutable baseline `d3e2d80d1f9fe7afecd96e9f88bda9343f7218bd`. The Harness now defines release identity, resolution, locked builds, provenance, authority boundaries, WARN-level readiness evidence, and maintainer procedure without publishing an MCP package or implementing the installer.
+
+### Summary of changes
+
+Added the `ki-repo-mcp` source-distribution standard, a `DIST-1` generated-rubric family, live Git and lockfile evidence, a pure installer-candidate assessment model, focused fixtures, the no-registry Governance Decision Record, and the MCP source-release developer guide. Updated the generated rubric and remediation inventory. Captured the receiver-owned installer as `KI-TOOL-CLI-082` in `tools-ki` commit `7dd233f`.
+
+The implementation concluded that no repository release descriptor is needed: `.ki.toml`, `package.json`, the committed lockfile, and Git already provide every source fact. The installer-owned provenance receipt is the only new machine-readable record.
+
+### Verification
+
+- Focused `ki-repo-mcp` rubric suite: 23 tests passed.
+- Full Harness suite: 768 tests passed across 138 files; 3,307 assertions passed.
+- `bunx tsc --noEmit`: passed.
+- Generated rubric publication and reproduction through `ki dev skill rubric ki-repo-mcp --write`: passed with no subsequent drift.
+- `ki-decision-records`, `ki-skills`, `ki-authoring`, and `ki-work-roadmap` audits: passed.
+- Live `ki-repo-mcp` audit of `mcp-git-audit`: no failures and the expected single release-readiness warning because its development HEAD is not tagged `v0.9.0`.
+- `tools-ki` authoring and roadmap audits after receiver capture: passed.
+
+The planned `ki repo audit --skill ki-repo-mcp --repo .` check cannot target the Harness itself because the Harness does not declare the detected MCP-repository skill. The declared `mcp-git-audit` consumer and focused hosted-rubric tests provide the applicable execution evidence instead.
+
+### Outstanding concerns
+
+The `tools-ki` installer does not exist yet. `KI-TOOL-CLI-082` is deliberately Triage/draft until its XDG layout, CLI surface, stable-release lookup, receipt schema, recovery, and garbage-collection behaviour are shaped and adopted. No Harness-side concern blocks acceptance.
+
+### Post-change review
+
+The delivered contract satisfies the approved Harness boundary and keeps npm, official MCP Registry metadata, release assets, MCPB, compiled binaries, and Homebrew optional. Audit severity is proportionate: development checkouts remain valid with a clear WARN rather than failing repository governance. The item is ready for acceptance review.
+
+### Mini recap
+
+MCP release readiness is now governed by source evidence and immutable provenance. The executable product work is durably routed to `tools-ki`; server-by-server adoption remains independent follow-on work once the installer is available.
+
 ## Discussion
 
 ### Planning decisions
@@ -110,7 +146,7 @@ The official MCP Registry and `server.json` can remain useful discovery metadata
 
 ### Scope of the skill delta
 
-A separate `standards-mcp-distribution.md` keeps installable-release concerns distinct from source layout. CONFORM may create deterministic descriptor or workflow material only when identity and version inputs are unambiguous. It must not mint a tag, choose a version, publish a release, authenticate to GitHub, or rewrite ambiguous package identity.
+A separate `standards-mcp-distribution.md` keeps installable-release concerns distinct from source layout. Existing `.ki.toml`, `package.json`, lockfile, and Git evidence supply every repository-side field, so no release descriptor or workflow material is generated. Existing deterministic package entry-point repairs remain safe CONFORM actions; version, tag, release, identity, credential, and workflow decisions remain diagnostic and repository-owner controlled.
 
 ### Alternatives considered
 
