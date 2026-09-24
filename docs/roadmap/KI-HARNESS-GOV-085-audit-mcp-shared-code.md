@@ -4,12 +4,12 @@ area: GOV
 title: Audit MCP shared code
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: b105590518f5863597610794c8f2382907b5f3df
 created_at: 2026-09-22T05:50:17Z
-updated_at: 2026-09-22T05:50:17Z
+updated_at: 2026-09-24T08:18:00Z
 ---
 
 ## Goal
@@ -36,7 +36,7 @@ The existing mechanical MCP shape is healthy across the fleet, so the missing la
 
 ## Steps
 
-- [ ] Inventory every MCP repository's common utility surface, exported API, behaviour, tests, and consumers; classify exact matches, intentional capability variants, stale copies, and repository-specific code.
+- [x] Inventory every MCP repository's common utility surface, exported API, behaviour, tests, and consumers; classify exact matches, intentional capability variants, stale copies, and repository-specific code.
 - [ ] Define the smallest stable vendoring profiles for genuinely shared concepts such as access gating, annotations, audit logging, and MCP result envelopes without forcing unrelated helpers into one abstraction.
 - [ ] Add canonical skill-owned source assets with provenance and version evidence, plus a deterministic projection manifest that maps each supported profile to its destination files.
 - [ ] Extend `ki-repo-mcp` audit and rubric coverage to report missing, modified, obsolete, and locally extended managed files while preserving explicitly declared repository-owned seams.
@@ -49,6 +49,7 @@ The existing mechanical MCP shape is healthy across the fleet, so the missing la
 - `skills/repo-structure/ki-repo-mcp/SKILL.md`
 - `skills/repo-structure/ki-repo-mcp/assets/`
 - `skills/repo-structure/ki-repo-mcp/references/standards-mcp-servers.md`
+- `skills/repo-structure/ki-repo-mcp/references/standards-mcp-shared-code.md`
 - `skills/repo-structure/ki-repo-mcp/references/rubric.md`
 - `skills/repo-structure/ki-repo-mcp/scripts/rubric/`
 - `docs/decisions/`
@@ -95,6 +96,10 @@ The contract should prefer a few explicit capability profiles over either extrem
 ### Audit order
 
 First reconcile the two already-owned small findings, then freeze a fresh mechanical baseline. Next classify behaviour and API differences before selecting canonical sources. Only after that classification should CONFORM or receiver migration work be offered. This prevents a consistency initiative from normalising accidental current state or overwriting a more capable implementation with an older majority copy.
+
+### Inventory finding
+
+The nine-repository inventory found no byte-identical `annotations.ts` or `audit-log.ts` family. Only three exact-copy clusters exist: one modern access gate across three repositories, one legacy access gate across two repositories, and one legacy result helper across the same two repositories. Audit-log differences carry real domain redaction policy, so the managed design must extract a repository-owned sanitizer seam before any audit-log projection. The committed estate matrix owns the detailed classification and migration order.
 
 ### Relationship to GOV-078
 
