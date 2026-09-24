@@ -216,7 +216,7 @@ const EXECUTION_SECTIONS = [
 const DOCUMENTATION_IMPACT_SECTIONS = ['Decision Records', 'Specifications', 'Guides', 'Roadmap'] as const
 const REVIEW_SECTIONS = [
   'Delivered',
-  'Summary of changes',
+  'Change Summary',
   'Verification',
   'Outstanding concerns',
   'Post-change review',

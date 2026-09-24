@@ -168,7 +168,7 @@ The installed `~/.claude/workflow.md` and its chezmoi source are byte-identical 
 
 Completed the approved read-only review from immutable baseline `c67db353b78fa737a615d50468053d3db8455611`. Every substantive workflow section has a classification, disposition, canonical owner, evidence, and follow-on. No user configuration, chezmoi source, repository guidance, or governing skill was edited.
 
-### Summary of changes
+### Change Summary
 
 Recorded eleven rule-group dispositions in this roadmap item. Five are already duplicated by personal `AGENTS.md`, two should migrate there, three should be replaced by links to current KI governance, and the formatting section should retain at most its Claude-specific editing nuance. The review also identifies the global one-writer and no-branches language as stale against current `ki-git` and repository policy.
 

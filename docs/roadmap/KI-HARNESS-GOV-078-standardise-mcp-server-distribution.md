@@ -96,7 +96,7 @@ Create or enrich one receiver-local `tools-ki` installer item and leave per-serv
 
 Delivered the approved repository-side source-install contract from immutable baseline `d3e2d80d1f9fe7afecd96e9f88bda9343f7218bd`. The Harness now defines release identity, resolution, locked builds, provenance, authority boundaries, WARN-level readiness evidence, and maintainer procedure without publishing an MCP package or implementing the installer.
 
-### Summary of changes
+### Change Summary
 
 Added the `ki-repo-mcp` source-distribution standard, a `DIST-1` generated-rubric family, live Git and lockfile evidence, a pure installer-candidate assessment model, focused fixtures, the no-registry Governance Decision Record, and the MCP source-release developer guide. Updated the generated rubric and remediation inventory. Captured the receiver-owned installer as `KI-TOOL-CLI-082` in `tools-ki` commit `7dd233f`.
 

@@ -206,10 +206,10 @@ Record material departures, decisions, and newly discovered constraints under th
 
 ### Awaiting review
 
-Before setting `status: awaiting-review`, insert `## Review` immediately before `Discussion` with `### Delivered`, `### Summary of changes`, `### Verification`, `### Outstanding concerns`, `### Post-change review`, and `### Mini recap` in that exact order. The roadmap checker enforces this review-packet shape.
+Before setting `status: awaiting-review`, insert `## Review` immediately before `Discussion` with `### Delivered`, `### Change Summary`, `### Verification`, `### Outstanding concerns`, `### Post-change review`, and `### Mini recap` in that exact order. The roadmap checker enforces this review-packet shape.
 
 - **Delivered** states the approved boundary and exclusions, plus immutable baseline and resulting evidence.
-- **Summary of changes** names concrete changed files, material decisions, and approved deviations.
+- **Change Summary** names concrete changed files, material decisions, and approved deviations.
 - **Verification** records exact gates and their outcomes.
 - **Outstanding concerns** records unresolved, unchecked, or failing issues, or explicitly says none.
 - **Post-change review** freshly assesses goal, scope, regression risk, and acceptance readiness.

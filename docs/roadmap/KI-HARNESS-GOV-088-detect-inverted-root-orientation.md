@@ -87,7 +87,7 @@ No downstream migration item is created by this delivery. Wider repository revie
 
 Delivered the approved warning-only `RUNTIMES-4` implementation from baseline `ea0422363fb02ebdad908ef77f78d34130671fd3`. Multi-runtime repositories now warn when substantive unmanaged orientation is materially heavier in `CLAUDE.md` than `AGENTS.md`; Claude-only repositories, imports, headings, comments, short appendices, and complete Headroom learning blocks remain outside that signal. No downstream repository, standard wording, severity, or judgment item changed.
 
-### Summary of changes
+### Change Summary
 
 `audit.ts` gained a bounded substantive-line counter, complete Headroom-block exclusion, and the conservative eight-line and greater-than-two inversion check. `repository.test.ts` gained fixtures for the observed inversion, complete and incomplete managed blocks, and a small Claude-specific appendix. The planned generated-rubric step was correctly skipped because canonical rubric metadata did not change.
 

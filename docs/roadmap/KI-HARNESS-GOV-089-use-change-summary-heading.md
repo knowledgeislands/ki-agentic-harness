@@ -4,17 +4,17 @@ area: GOV
 title: Use Change Summary heading
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: ce84a8e1b725f295d3a4d1eb61c482054152f425
 created_at: 2026-09-24T08:26:07Z
-updated_at: 2026-09-24T08:26:07Z
+updated_at: 2026-09-24T08:34:13Z
 ---
 
 ## Goal
 
-Replace the canonical review-packet heading `Summary of changes` with the shorter, clearer `Change Summary` everywhere that produces, validates, documents, or currently uses the contract.
+Use the shorter, clearer `Change Summary` as the canonical second review-packet heading everywhere that produces, validates, documents, or currently uses the contract.
 
 ## Context
 
@@ -26,15 +26,15 @@ This item changes only the second review-packet heading and its direct fixtures,
 
 ## Current state
 
-The old exact literal occurs in twelve live files: three retained awaiting-review records, the four lifecycle and recap surfaces, the canonical roadmap standard, two runtime constants, the roadmap evidence validator, and its focused test. The repositories are otherwise unchanged by this item, and the Harness dependency tree is already present.
+The previous exact literal occurred in twelve live files: three retained awaiting-review records, the four lifecycle and recap surfaces, the canonical roadmap standard, two runtime constants, the roadmap evidence validator, and its focused test. The repositories were otherwise unchanged by this item, and the Harness dependency tree was already present.
 
 ## Steps
 
-- [ ] Update the canonical roadmap format and lifecycle guidance to require `Change Summary`.
-- [ ] Update producer, acceptance, recap, and roadmap validation constants and tests.
-- [ ] Migrate retained Harness review packets that remain awaiting review.
-- [ ] Prove the old exact heading is absent from the governed live surface.
-- [ ] Run focused tests, the full test and type gates, and relevant repository audits.
+- [x] Update the canonical roadmap format and lifecycle guidance to require `Change Summary`.
+- [x] Update producer, acceptance, recap, and roadmap validation constants and tests.
+- [x] Migrate retained Harness review packets that remain awaiting review.
+- [x] Prove the old exact heading is absent from the governed live surface.
+- [x] Run focused tests, the full test and type gates, and relevant repository audits.
 
 ## Files touched
 
@@ -52,7 +52,7 @@ The old exact literal occurs in twelve live files: three retained awaiting-revie
 
 ## Verify
 
-- Exact fixed-string scan finds no remaining `Summary of changes` heading or contract literal in governed live files.
+- Exact fixed-string scan finds no remaining `Change Summary` heading or contract literal in governed live files.
 - Focused lifecycle and roadmap tests pass.
 - `bun run test`
 - `bunx tsc --noEmit`
@@ -80,6 +80,32 @@ Existing implementation, acceptance, and recap guidance changes in place; no new
 ### Roadmap
 
 This record coordinates the migration and stops at awaiting review after verified delivery.
+
+## Review
+
+### Delivered
+
+Delivered the approved atomic review-packet contract migration from baseline `ce84a8e1b725f295d3a4d1eb61c482054152f425`. Producers, validators, acceptance and recap guidance, the canonical work-item standard, focused test evidence, and all retained Harness review packets now use `Change Summary`.
+
+### Change Summary
+
+Updated the review heading in nine shared skill and runtime files plus three retained awaiting-review records. The GOV-089 roadmap record and issue ledger coordinate the change. No dependency, package, package-library folder, downstream repository, lifecycle meaning, or other heading changed.
+
+### Verification
+
+Exact fixed-string predicates confirmed the previous literal is absent and the replacement is present across every intended surface. All 43 focused roadmap and lifecycle tests pass, as do TypeScript checking, Markdown and TypeScript formatting, diff checks, and the `ki-work-roadmap` and `ki-skills` audits. The full suite ran 771 tests: 768 passed and three out-of-scope tests failed against concurrent uncommitted MCP shared-code work.
+
+### Outstanding concerns
+
+None within the heading migration. The Harness working tree is not globally clean until concurrent MCP work reconciles its remediation inventory, shared-code audit expectation, and MCP family-list expectation. Downstream repositories containing independently retained open review packets will migrate when their own governing surfaces adopt the updated Harness skill projection.
+
+### Post-change review
+
+The migration is internally consistent: the producer and acceptance constants agree with the canonical standard and roadmap validator, retained live packets satisfy the new shape, and focused failure text names the same heading. The three global failures do not touch this item's files or behaviour, so the bounded change is ready for user acceptance while the wider repository remains under active MCP implementation.
+
+### Mini recap
+
+The exact-output guard now protects literal-sensitive edits, while the shared review contract uses the less fragile `Change Summary` wording. No further durable learning route is proposed.
 
 ## Discussion
 

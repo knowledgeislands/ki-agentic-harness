@@ -578,7 +578,7 @@ test('awaiting-review Steps are all checked', () => {
       .replace('- [ ] Implement the first slice.', '- [x] Implement the first slice.')
       .replace(
         '## Discussion',
-        '## Review\n\n### Delivered\n\nThe first slice is delivered.\n\n### Summary of changes\n\nOne change.\n\n### Verification\n\n`bun test` passes.\n\n### Outstanding concerns\n\nNone.\n\n### Post-change review\n\nReady for the user review.\n\n### Mini recap\n\nNo learning route proposed.\n\n## Discussion'
+        '## Review\n\n### Delivered\n\nThe first slice is delivered.\n\n### Change Summary\n\nOne change.\n\n### Verification\n\n`bun test` passes.\n\n### Outstanding concerns\n\nNone.\n\n### Post-change review\n\nReady for the user review.\n\n### Mini recap\n\nNo learning route proposed.\n\n## Discussion'
       )
   )
   expect(inspectRoadmap(repository).filter((finding) => finding.area === 'ITEM-3')).toEqual([])
@@ -586,7 +586,7 @@ test('awaiting-review Steps are all checked', () => {
   expect(inspectRoadmap(repository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-3',
-      msg: '## Review must contain Delivered → Summary of changes → Verification → Outstanding concerns → Post-change review → Mini recap in order'
+      msg: '## Review must contain Delivered → Change Summary → Verification → Outstanding concerns → Post-change review → Mini recap in order'
     })
   )
   writeFileSync(
