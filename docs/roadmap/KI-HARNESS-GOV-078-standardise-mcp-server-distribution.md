@@ -4,13 +4,13 @@ area: GOV
 title: Standardise MCP server distribution
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: d3e2d80d1f9fe7afecd96e9f88bda9343f7218bd
 transferred_from: ki-website
 created_at: 2026-09-21T07:33:33Z
-updated_at: 2026-09-24T08:04:41Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -125,6 +125,10 @@ The delivered contract satisfies the approved Harness boundary and keeps npm, of
 ### Mini recap
 
 MCP release readiness is now governed by source evidence and immutable provenance. The executable product work is durably routed to `tools-ki`; server-by-server adoption remains independent follow-on work once the installer is available.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 

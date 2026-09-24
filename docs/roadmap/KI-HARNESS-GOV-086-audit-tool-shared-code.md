@@ -4,12 +4,12 @@ area: GOV
 title: Audit tool shared code
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 548861670244395838c19b40d7a546acbec4564c
 created_at: 2026-09-22T06:00:48Z
-updated_at: 2026-09-24T09:02:44Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -117,6 +117,10 @@ Ready for human review. The implementation does not publish packages, mutate sib
 ### Mini recap
 
 `ki-repo-tools` can now identify, render, audit, and safely conform three stable delivery profiles while preserving repository-specific extensions and stronger integrity controls.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 

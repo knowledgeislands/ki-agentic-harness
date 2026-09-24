@@ -4,12 +4,12 @@ area: GOV
 title: Use Change Summary heading
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: ce84a8e1b725f295d3a4d1eb61c482054152f425
 created_at: 2026-09-24T08:26:07Z
-updated_at: 2026-09-24T08:34:13Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -106,6 +106,10 @@ The migration is internally consistent: the producer and acceptance constants ag
 ### Mini recap
 
 The exact-output guard now protects literal-sensitive edits, while the shared review contract uses the less fragile `Change Summary` wording. No further durable learning route is proposed.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 

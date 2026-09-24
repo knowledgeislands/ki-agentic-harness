@@ -4,12 +4,12 @@ area: REV
 title: Review Claude workflow
 theme: regular-reviews
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c67db353b78fa737a615d50468053d3db8455611
 created_at: 2026-09-21T07:46:49Z
-updated_at: 2026-09-22T06:31:41Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -187,6 +187,10 @@ The review meets the goal without changing any source under review. The disposit
 ### Mini recap
 
 The Claude workflow is synchronised with its chezmoi source but is no longer a clean canonical owner: most content is shared personal or KI governance, and two sections conflict with newer Git policy. The next safe step is a chezmoi-owned consolidation, not an in-place edit from this Harness item.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 

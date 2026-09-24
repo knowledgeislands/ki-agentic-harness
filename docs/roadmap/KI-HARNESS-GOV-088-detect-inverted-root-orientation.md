@@ -4,13 +4,13 @@ area: GOV
 title: Detect inverted root orientation
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: ea0422363fb02ebdad908ef77f78d34130671fd3
 transferred_from: knowledgeislands/ki-website
 created_at: 2026-09-23T14:37:17Z
-updated_at: 2026-09-23T18:25:25Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -106,6 +106,10 @@ The goal is met within scope: the exact inversion that previously passed now emi
 ### Mini recap
 
 GOV-088 now detects a thin shared `AGENTS.md` paired with substantially heavier unmanaged `CLAUDE.md` orientation. Focused, full-suite, type, and governance gates pass with no unresolved item-scoped concern. Any future semantic classification or severity change should be routed as separate work rather than widening this delivered warning.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 

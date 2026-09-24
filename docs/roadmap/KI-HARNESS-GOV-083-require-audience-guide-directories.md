@@ -4,13 +4,13 @@ title: Clarify audience guide grouping
 area: GOV
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: 31f2c98e354526162438143fedbd8eafd9d2778c
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-24T09:18:00Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -124,6 +124,10 @@ Ready for human review. The policy and every known companion record now agree th
 ### Mini recap
 
 The estate has one coherent guide-grouping policy, one correctly routed Cloudflare guide role, and no known roadmap record claiming a universal audience-directory mandate.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 

@@ -4,12 +4,12 @@ area: GOV
 title: Audit MCP shared code
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b105590518f5863597610794c8f2382907b5f3df
 created_at: 2026-09-22T05:50:17Z
-updated_at: 2026-09-24T08:41:30Z
+updated_at: 2026-09-24T10:30:00Z
 ---
 
 ## Goal
@@ -115,6 +115,10 @@ The delivered contract meets the item goal without introducing a registry depend
 ### Mini recap
 
 MCP shared utilities now have a stable governed-vendoring baseline, while intentional variants remain explicit. The next useful evidence is one receiver-owned modern-profile pilot; it does not block review of this Harness contract.
+
+## Done
+
+Accepted 2026-09-24 by Kris Brown on the review packet above.
 
 ## Discussion
 
