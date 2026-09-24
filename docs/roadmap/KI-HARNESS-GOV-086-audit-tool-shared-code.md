@@ -4,12 +4,12 @@ area: GOV
 title: Audit tool shared code
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 548861670244395838c19b40d7a546acbec4564c
 created_at: 2026-09-22T06:00:48Z
-updated_at: 2026-09-22T06:00:48Z
+updated_at: 2026-09-24T09:02:44Z
 ---
 
 ## Goal
@@ -36,13 +36,13 @@ The existing estate therefore demonstrates conformance without demonstrating con
 
 ## Steps
 
-- [ ] Inventory every tool repository's installer, release packaging, version surface, installer tests, and shared shell helpers; classify exact matches, intentional delivery profiles, stale copies, and tool-specific code.
-- [ ] Define the smallest stable vendoring profiles for source-installed Bash tools, archive-installed tools, and any security-hardened signed-release variant without weakening the strongest current integrity controls.
-- [ ] Add canonical skill-owned source assets with provenance and version evidence, plus a deterministic projection manifest whose parameters are data rather than repository-specific copied logic.
-- [ ] Extend `ki-repo-tools` audit and rubric coverage to report missing, modified, obsolete, and locally extended managed files while preserving declared tool-owned seams and language-specific implementation.
-- [ ] Add guarded CONFORM proposals that vendor only an unambiguous declared profile, never overwrite unexplained local changes, and remain idempotent.
-- [ ] Add fixtures for every supported delivery profile, checksum and signature boundaries, exact agreement, stale managed copies, unmanaged extensions, partial projections, and safe refusal; regenerate the published rubric.
-- [ ] Produce a repository-by-repository migration matrix and capture only the remaining receiver-owned changes in their local roadmaps.
+- [x] Inventory every tool repository's installer, release packaging, version surface, installer tests, and shared shell helpers; classify exact matches, intentional delivery profiles, stale copies, and tool-specific code.
+- [x] Define the smallest stable vendoring profiles for source-installed Bash tools, archive-installed tools, and any security-hardened signed-release variant without weakening the strongest current integrity controls.
+- [x] Add canonical skill-owned source assets with provenance and version evidence, plus a deterministic projection manifest whose parameters are data rather than repository-specific copied logic.
+- [x] Extend `ki-repo-tools` audit and rubric coverage to report missing, modified, obsolete, and locally extended managed files while preserving declared tool-owned seams and language-specific implementation.
+- [x] Add guarded CONFORM proposals that vendor only an unambiguous declared profile, never overwrite unexplained local changes, and remain idempotent.
+- [x] Add fixtures for every supported delivery profile, checksum and signature boundaries, exact agreement, stale managed copies, unmanaged extensions, partial projections, and safe refusal; regenerate the published rubric.
+- [x] Produce a repository-by-repository migration matrix and capture only the remaining receiver-owned changes in their local roadmaps.
 
 ## Files touched
 
@@ -84,6 +84,39 @@ Update existing tool authoring and release guidance only if maintainers need a m
 ### Roadmap
 
 Do not create speculative migration items in every tool repository. Use the completed matrix to enrich an existing local owner or allocate one bounded receiver item only where a real change remains.
+
+## Review
+
+### Delivered
+
+Implemented the Harness-owned tool shared-code contract from baseline `548861670244395838c19b40d7a546acbec4564c`. The delivery adds source-script, checksummed-archive, and signed-archive profiles without modifying any receiver repository.
+
+### Change Summary
+
+Added hash-pinned installer and packaging templates, a deterministic profile manifest, validated profile-specific parameters, exact drift classifications, and guarded missing-file or executable-bit conformance. The shared vendoring rationale remains in GDR-KI-HARNESS-012, while the tool standard now includes the five-repository estate inventory and receiver-local migration matrix.
+
+### Verification
+
+- Focused `ki-repo-tools` tests pass: 17 tests and 164 assertions.
+- The full Bun test suite and `bunx tsc --noEmit` pass.
+- `ki dev skill rubric ki-repo-tools` reproduces the committed rubric.
+- `ki-skills`, `ki-work-roadmap`, `ki-decision-records`, and `ki-authoring` audits pass.
+- A live `ki-repo-tools` audit against `tools-git-almanac` passes with its keyless repository-owned profile.
+
+### Outstanding concerns
+
+- No receiver has adopted a managed profile; each migration remains receiver-owned and independently reviewable.
+- `tools-ki` retains rollback and receipt extensions that must remain outside, or be explicitly reconciled with, the managed core.
+- `tools-techne` has no release profile until its release contract is established.
+- Archive packaging creates checksums; signing and CI publication remain receiver-owned steps.
+
+### Post-change review
+
+Ready for human review. The implementation does not publish packages, mutate sibling repositories, or overwrite modified managed files.
+
+### Mini recap
+
+`ki-repo-tools` can now identify, render, audit, and safely conform three stable delivery profiles while preserving repository-specific extensions and stronger integrity controls.
 
 ## Discussion
 
