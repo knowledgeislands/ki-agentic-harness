@@ -26,7 +26,7 @@ For `help`, `-h`, or `?`, explain the source collection, inspiration output, and
 
 ### Mode INSPIRE
 
-For a colour-system, palette, or gamut question, start with the focused colour resources before expanding into whole-site galleries.
+For a colour-system, palette, or gamut question, start with the focused colour resources before expanding into whole-site galleries. For an existing-brand reconstruction, use a brand-data resource to locate candidate assets and tokens, then verify them against the brand's authoritative source and usage rights.
 
 Use the current brief: page or component, audience, intended action, visual preferences, and any existing brand or technical constraints. Ask only for missing context that would materially change the search; an exploratory request can start with a stated assumption.
 
