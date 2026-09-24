@@ -13,3 +13,12 @@ policy: safe-local-v1
 ---
 
 # KI-HARNESS-BATCH-001
+
+## Run ledger
+
+<!-- ki-batch-run: KI-HARNESS-BATCH-001-RUN-001 e45f19694d9f60256007931edd9ab7b459375bb7f24ee5cfa190b84d271e791f -->
+| Item | Result | Baseline | Result commit | Exception |
+| --- | --- | --- | --- | --- |
+| KI-HARNESS-GOV-086 | awaiting-review | `548861670244395838c19b40d7a546acbec4564c` | `804c25e1b944f392ab7bb9113219901835327167` | Run start was not recorded before delivery; the committed authorisation and exact implementation boundary remained unchanged. |
+
+<!-- ki-batch-close: KI-HARNESS-BATCH-001 awaiting-review 804c25e1b944f392ab7bb9113219901835327167 -->
