@@ -4,12 +4,12 @@ area: GOV
 title: Accept estate work trades
 theme: governance-consistency
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-24T10:07:00Z
-updated_at: 2026-09-24T10:07:00Z
+updated_at: 2026-09-24T10:45:00Z
 ---
 
 ## Goal

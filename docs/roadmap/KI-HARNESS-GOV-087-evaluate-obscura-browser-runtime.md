@@ -4,12 +4,12 @@ area: GOV
 title: Evaluate Obscura browser runtime
 theme: governance-consistency
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-22T06:15:11Z
-updated_at: 2026-09-23T18:13:04Z
+updated_at: 2026-09-24T10:45:00Z
 ---
 
 ## Goal
