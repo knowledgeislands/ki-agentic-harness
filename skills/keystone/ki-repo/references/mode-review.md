@@ -334,6 +334,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Nothing depends on a path outside the repository without declaring it.
 - [ ] Build and script steps invoke an executable directly, or by resolving the owning package manifest, rather than through a package-manager runner such as `npx` or `bunx`.
 - [ ] Where a build host installs with a different package manager from local development, nothing in the build depends on that difference.
+- [ ] In a scheduled or unattended pipeline, unconditional work runs, and is committed, before any step that can fail — so one step's failure does not silently suppress an independent record.
+- [ ] Any committer that cannot reword and retry its own message satisfies the repository's commit-message rules mechanically, rather than by a message that happens to pass.
 
 ### Language and presentation
 
