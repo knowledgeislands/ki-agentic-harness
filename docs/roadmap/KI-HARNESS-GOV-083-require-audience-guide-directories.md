@@ -4,13 +4,13 @@ title: Clarify audience guide grouping
 area: GOV
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: 31f2c98e354526162438143fedbd8eafd9d2778c
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-23T17:54:30Z
+updated_at: 2026-09-24T09:18:00Z
 ---
 
 ## Goal
@@ -48,7 +48,7 @@ The companion-item inventory has grown from eleven to fourteen records. Several 
 - [x] Extend the existing `ROUTE-2` judgment guidance and fixtures so review assesses audience clarity without claiming a mechanically provable directory rule.
 - [x] Make explicit that AUDIT emits no structural finding solely because a guide is flat and CONFORM never moves an authored guide between categories.
 - [x] Align the Cloudflare specialised exact role with the maintainer audience route at `docs/guides/developer/cloudflare.md`, including its evidence collector, criterion, fixtures, standard, EDUCATE procedure, and generated rubric.
-- [ ] Correct the fourteen companion repository items that describe this advisory policy as a universal Harness-wide directory requirement.
+- [x] Correct the fourteen companion repository items that describe this advisory policy as a universal Harness-wide directory requirement.
 
 ## Files touched
 
@@ -93,7 +93,37 @@ No behaviour-level contract changes to the harness tooling beyond the rubric ite
 
 ### Roadmap
 
-The companion items remain local choices. Fourteen records were found; their wording that falsely claims a universal requirement remains receiver-owned follow-up. No estate-wide retrofit or transition period is created.
+The companion items remain local choices. All fourteen records now state the advisory policy accurately and retain their receiver-owned lifecycle state. No estate-wide structural retrofit or transition period is created.
+
+## Review
+
+### Delivered
+
+Clarified `ki-guides` as an advisory audience-routing judgment, aligned the specialised Cloudflare guide with its developer audience, and corrected all fourteen companion repository records that had described the policy as a universal directory requirement.
+
+### Change Summary
+
+Flat, audience-grouped, and intentionally mixed guide collections remain valid. Reviewers now consider whether stable reader groups make navigation clearer, while CONFORM never relocates authored guides. The fourteen receiver records now justify audience grouping from repository-local readers, and their pre-existing review packets use the current `Change Summary` heading.
+
+### Verification
+
+- The full Harness Bun test suite and TypeScript gate pass.
+- `ki-guides`, `ki-skills`, `ki-work-roadmap`, and `ki-authoring` audits pass in the Harness.
+- The generated `ki-guides` and `ki-repo-website-cloudflare` rubrics reproduce from source.
+- Markdown validation passes across all changed receiver records.
+- `ki-work-roadmap` audits pass in all fourteen receiver repositories.
+
+### Outstanding concerns
+
+The companion work items retain their existing local lifecycle states. This correction neither accepts delivered guide collections nor commits draft repositories to a particular audience taxonomy.
+
+### Post-change review
+
+Ready for human review. The policy and every known companion record now agree that audience grouping is evidence-led and repository-local rather than universally required.
+
+### Mini recap
+
+The estate has one coherent guide-grouping policy, one correctly routed Cloudflare guide role, and no known roadmap record claiming a universal audience-directory mandate.
 
 ## Discussion
 
