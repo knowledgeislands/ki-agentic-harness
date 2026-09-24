@@ -899,7 +899,7 @@ async function auditRepo(
     if (!ki.description?.trim()) fail('FILES-2', `${KI_CONFIG} must declare a non-empty \`description\``, KI_CONFIG)
     if (
       declaresRootTable(kiText ?? '', skillTable('ki-work-roadmap')) &&
-      !/^[A-Z][A-Z0-9-]{1,23}$/.test(ki.repoCode ?? '')
+      !/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(ki.repoCode ?? '')
     )
       fail(
         'FILES-2',

@@ -33,8 +33,8 @@ type RoadmapConfiguration = {
 
 export const HORIZONS = ['now', 'next', 'soon', 'waiting-for', 'parked', 'future', 'triage'] as const
 
-const ID_RE = /^[A-Z][A-Z0-9-]{1,23}-\d{3,}$/
-const FILE_RE = /^([A-Z][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
+const ID_RE = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
+const FILE_RE = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
 const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const AREA_RE = /^[A-Z][A-Z0-9]*$/
 const COMMIT_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
@@ -133,7 +133,7 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
         ? (repoTable as Record<string, unknown>)
         : undefined
     const code = repoValues?.repo_code
-    if (typeof code !== 'string' || !/^[A-Z][A-Z0-9-]{1,23}$/.test(code)) {
+    if (typeof code !== 'string' || !/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(code)) {
       add(
         'FAIL',
         'ROAD-6',

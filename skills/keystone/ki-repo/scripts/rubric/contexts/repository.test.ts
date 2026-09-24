@@ -789,6 +789,18 @@ describe('local repository evidence', () => {
     )
   })
 
+  test('accepts a roadmap repo_code that begins with a digit', async () => {
+    const root = repository()
+    writeFileSync(join(root, 'README.md'), '# Actual title\n')
+    writeFileSync(
+      join(root, '.ki.toml'),
+      '[skills.ki-repo]\ntitle = "Actual title"\ndescription = "Configured description."\nrepo_code = "5GE"\n\n[skills.ki-work-roadmap]\n'
+    )
+
+    const findings = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'FILES-2')
+    expect(findings.some((finding) => finding.message.includes('repo_code'))).toBe(false)
+  })
+
   test('detects the optional checkpoints subarea without creating or interpreting it', async () => {
     const root = repository()
     mkdirSync(join(root, '+', '_CHECKPOINTS'), { recursive: true })

@@ -286,6 +286,19 @@ test('an area-qualified work item uses its configured namespace and area ledger'
   expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
 })
 
+test('a repository code and work-item identifier may begin with a digit', () => {
+  const repository = createFixture()
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    '[skills.ki-repo]\nrepo_code = "5GE"\n\n[skills.ki-work-roadmap]\nthemes = ["foundation-tooling"]\n'
+  )
+  const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
+  const target = join(repository, 'docs', 'roadmap', '5GE-001-build-the-foundation.md')
+  renameSync(source, target)
+  writeFileSync(target, readFileSync(target, 'utf8').replace('id: TEST-001', 'id: 5GE-001'))
+  expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
+})
+
 test('fixed areas reject an unknown namespace and a ledger below its retained serial', () => {
   const repository = createFixture()
   writeFileSync(
