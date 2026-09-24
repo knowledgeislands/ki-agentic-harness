@@ -127,56 +127,9 @@ routes."knowledgeislands/mcp-ki-kb-notion-mirror" = { export = ["knowledge"] }
 routes."knowledgeislands/mcp-m365" = { export = ["knowledge"] }
 
 [skills.ki-agora]
-
-[skills.ki-agora.homes.ki-all]
-owner = "https://github.com/knowledgeislands/ki-agentic-harness"
-purpose = "Knowledge Islands ecosystem repositories"
-order = [
-  "https://github.com/krisb/dotfiles",
-  "https://github.com/knowledgeislands/ki-agentic-harness",
-  "https://github.com/knowledgeislands/tools-ki",
-  "https://github.com/knowledgeislands/tools-mgit",
-  "https://github.com/knowledgeislands/tools-rig",
-  "https://github.com/knowledgeislands/homebrew-tap",
-]
-
-[skills.ki-agora.homes.ki-all.members]
-"https://github.com/krisb/dotfiles" = "maintainer"
-"https://github.com/knowledgeislands/homebrew-tap" = "maintainer"
-"https://github.com/knowledgeislands/ki-arcadia-principal" = "maintainer"
-"https://github.com/knowledgeislands/ki-plugins" = "maintainer"
-"https://github.com/knowledgeislands/ki-specifications" = "maintainer"
-"https://github.com/knowledgeislands/ki-techne-principal" = "maintainer"
-"https://github.com/knowledgeislands/ki-techne-harness" = "maintainer"
-"https://github.com/knowledgeislands/ki-website" = "maintainer"
-"https://github.com/knowledgeislands/mcp-acquire-whatsapp" = "maintainer"
-"https://github.com/knowledgeislands/mcp-housekeeping-claude" = "maintainer"
-"https://github.com/knowledgeislands/mcp-housekeeping-codex" = "maintainer"
-"https://github.com/knowledgeislands/mcp-housekeeping-chatgpt" = "maintainer"
-"https://github.com/knowledgeislands/mcp-git-audit" = "maintainer"
-"https://github.com/knowledgeislands/mcp-gsuite" = "maintainer"
-"https://github.com/knowledgeislands/mcp-ki-kb-fs" = "maintainer"
-"https://github.com/knowledgeislands/mcp-ki-kb-notion-mirror" = "maintainer"
-"https://github.com/knowledgeislands/mcp-m365" = "maintainer"
-"https://github.com/knowledgeislands/tools-git-almanac" = "maintainer"
-"https://github.com/knowledgeislands/tools-ki" = "maintainer"
-"https://github.com/knowledgeislands/tools-mgit" = "maintainer"
-"https://github.com/knowledgeislands/tools-rig" = "maintainer"
-
-[skills.ki-agora.homes.ki-fnd]
-owner = "https://github.com/knowledgeislands/ki-agentic-harness"
-purpose = "Knowledge Islands foundation repositories"
-
-[skills.ki-agora.homes.ki-fnd.members]
-"https://github.com/krisb/dotfiles" = "maintainer"
-"https://github.com/knowledgeislands/ki-arcadia-principal" = "maintainer"
-"https://github.com/knowledgeislands/ki-specifications" = "maintainer"
-"https://github.com/knowledgeislands/ki-techne-principal" = "maintainer"
-"https://github.com/knowledgeislands/ki-techne-harness" = "maintainer"
-"https://github.com/knowledgeislands/ki-website" = "maintainer"
-"https://github.com/knowledgeislands/tools-ki" = "maintainer"
-"https://github.com/knowledgeislands/tools-mgit" = "maintainer"
-"https://github.com/knowledgeislands/tools-rig" = "maintainer"
+memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
+memberships.ki-fnd = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
+memberships.ki-tools = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
 
 [skills.ki-agora.homes.ki-mcps]
 owner = "https://github.com/knowledgeislands/ki-agentic-harness"
