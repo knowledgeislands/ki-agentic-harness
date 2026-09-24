@@ -252,6 +252,58 @@ test('TURBO accepts a commented task graph and glob-expanded workspace evidence'
   expect(evidence.map((entry) => entry.level)).toEqual(['PASS', 'PASS', 'PASS'])
 })
 
+test('TURBO-2 expects a build only from a workspace that emits something', () => {
+  const root = {
+    packagePath: '.',
+    manifestPath: 'package.json',
+    scripts: { build: 'turbo run build', typecheck: 'turbo run typecheck', test: 'turbo run test' }
+  }
+  const turboSource =
+    '{"remoteCache":{"enabled":false},"tasks":{"build":{"inputs":["$TURBO_DEFAULT$"]},"typecheck":{},"test":{}}}'
+  const consumedAsSource = inspectTurborepo({
+    workspaces: ['packages/view-common'],
+    packageSources: [
+      root,
+      {
+        packagePath: 'packages/view-common',
+        manifestPath: 'packages/view-common/package.json',
+        name: '@example/view-common',
+        scripts: { typecheck: 'tsc --noEmit', test: 'bun test tests' },
+        entryPoints: ['./src/eleventy.ts', './bin/refresh.js', './base.json']
+      }
+    ],
+    turboSource,
+    turboExists: true,
+    gitignore: '.turbo/\n',
+    rootDependencies: {}
+  })
+  expect(consumedAsSource.find((entry) => entry.code === 'TURBO-2')).toEqual({
+    level: 'PASS',
+    code: 'TURBO-2',
+    message: 'workspace scripts and configured tasks correspond',
+    subject: 'turbo.json'
+  })
+
+  const emitted = inspectTurborepo({
+    workspaces: ['packages/library'],
+    packageSources: [
+      root,
+      {
+        packagePath: 'packages/library',
+        manifestPath: 'packages/library/package.json',
+        name: '@example/library',
+        scripts: { typecheck: 'tsc --noEmit', test: 'bun test tests' },
+        entryPoints: ['./dist/index.js', './dist/index.d.ts']
+      }
+    ],
+    turboSource,
+    turboExists: true,
+    gitignore: '.turbo/\n',
+    rootDependencies: {}
+  })
+  expect(emitted.find((entry) => entry.code === 'TURBO-2')?.message).toContain('packages/library:build')
+})
+
 test('GEN-1 explains Knip configuration hints and reports tool-specific exclusion gaps', () => {
   const absentKnip = inspectManagedSurfaceExclusions({
     activeLabels: ['src/generated/'],

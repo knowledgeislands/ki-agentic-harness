@@ -45,6 +45,7 @@ export type PackageScriptSource = {
   manifestPath: string
   name?: string
   scripts: Readonly<Record<string, string>>
+  entryPoints?: readonly string[]
 }
 
 export type RelativeNodeModulesScriptUse = {
@@ -52,6 +53,20 @@ export type RelativeNodeModulesScriptUse = {
   manifestPath: string
   scriptName: string
   fragment: string
+}
+
+const ENTRY_POINT_FIELDS = ['main', 'module', 'browser', 'types', 'typings', 'bin', 'exports'] as const
+
+/** Every path a manifest publishes as an entry point, flattened out of nested exports maps. */
+const entryPointPaths = (manifest: Readonly<Record<string, unknown>>): readonly string[] => {
+  const paths: string[] = []
+  const walk = (value: unknown): void => {
+    if (typeof value === 'string') paths.push(value)
+    else if (Array.isArray(value)) for (const entry of value) walk(entry)
+    else if (value && typeof value === 'object') for (const entry of Object.values(value)) walk(entry)
+  }
+  for (const field of ENTRY_POINT_FIELDS) walk(manifest[field])
+  return paths
 }
 
 const stringScripts = (value: unknown): Readonly<Record<string, string>> => {
@@ -79,7 +94,8 @@ export const collectPackageScriptSources = (
       packagePath: '.',
       manifestPath: 'package.json',
       ...(typeof rootPackage.name === 'string' ? { name: rootPackage.name } : {}),
-      scripts: stringScripts(rootPackage.scripts)
+      scripts: stringScripts(rootPackage.scripts),
+      entryPoints: entryPointPaths(rootPackage)
     }
   ]
 
@@ -95,7 +111,8 @@ export const collectPackageScriptSources = (
         packagePath: relative(repositoryReal, dirname(manifestReal)) || '.',
         manifestPath: relative(repositoryReal, manifestReal),
         ...(typeof parsed.name === 'string' ? { name: parsed.name } : {}),
-        scripts: stringScripts(parsed.scripts)
+        scripts: stringScripts(parsed.scripts),
+        entryPoints: entryPointPaths(parsed)
       })
     } catch {
       // Existing workspace validation owns missing, malformed, or unsafe manifests.
@@ -175,6 +192,20 @@ type TurborepoInspection = {
   rootDependencies: Readonly<Record<string, unknown>>
 }
 
+const builtEntryPoint = /(?:^|\/)(?:dist|build|out|lib|esm|cjs|_build|\.output)\//
+
+/**
+ * Whether a workspace has anything to build. A deployable's bundle counts, and so does an entry
+ * point published out of a build directory, which nothing fills unless the workspace builds it. A
+ * package consumed as source — entry points that are the checked-in files themselves, the `.ts` Bun
+ * runs natively, a config, a hand-written `bin` — has no build output, and an empty `build` declared
+ * to satisfy a checker would cache nothing.
+ */
+const emitsBuildOutput = (source: PackageScriptSource): boolean =>
+  source.packagePath.startsWith('apps/') ||
+  Boolean(source.scripts.deploy) ||
+  (source.entryPoints ?? []).some((path) => builtEntryPoint.test(path))
+
 /** Inspect the mechanically provable part of the workspace task-graph contract. */
 export const inspectTurborepo = ({
   workspaces,
@@ -225,7 +256,7 @@ export const inspectTurborepo = ({
 
   const workspaceSources = packageSources.filter((source) => source.packagePath !== '.')
   const missingWorkspaceScripts = workspaceSources.flatMap((source) =>
-    ['build', 'typecheck', 'test']
+    (emitsBuildOutput(source) ? ['build', 'typecheck', 'test'] : ['typecheck', 'test'])
       .filter((script) => !source.scripts[script])
       .map((script) => `${source.packagePath}:${script}`)
   )

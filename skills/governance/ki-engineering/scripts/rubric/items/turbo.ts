@@ -42,7 +42,7 @@ export const TURBO: RubricFamily<EngineeringRubricContext, TurboRubricContext> =
     item(
       'TURBO-2',
       'Task correspondence',
-      'Workspace lifecycle scripts and configured Turborepo tasks correspond in both directions.',
+      'Every workspace declares the lifecycle scripts it has, build included where it emits output, and configured Turborepo tasks correspond in both directions.',
       (context) => context.turbo2
     ),
     item(

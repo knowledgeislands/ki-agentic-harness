@@ -216,7 +216,7 @@ Turborepo adoption, task correspondence, and cache boundaries for Bun workspaces
 
 - **TURBO-1 [M] — Task-graph adoption** — A repository declaring workspaces has a readable turbo.json with a non-empty task graph. (standards-engineering.md)
   - _Remediation:_ diagnostic — Adopt or repair the Turborepo task graph described by the engineering standard, then rerun the audit.
-- **TURBO-2 [M] — Task correspondence** — Workspace lifecycle scripts and configured Turborepo tasks correspond in both directions. (standards-engineering.md)
+- **TURBO-2 [M] — Task correspondence** — Every workspace declares the lifecycle scripts it has, build included where it emits output, and configured Turborepo tasks correspond in both directions. (standards-engineering.md)
   - _Remediation:_ diagnostic — Adopt or repair the Turborepo task graph described by the engineering standard, then rerun the audit.
 - **TURBO-3 [M] — Cache boundaries** — Remote caching is explicit, local state is ignored, workspace packages stay out of root dependencies, and deployable builds hash their whole workspace. (standards-engineering.md)
   - _Remediation:_ diagnostic — Adopt or repair the Turborepo task graph described by the engineering standard, then rerun the audit.
