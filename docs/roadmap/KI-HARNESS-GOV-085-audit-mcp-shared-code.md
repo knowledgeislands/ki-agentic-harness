@@ -4,12 +4,12 @@ area: GOV
 title: Audit MCP shared code
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: b105590518f5863597610794c8f2382907b5f3df
 created_at: 2026-09-22T05:50:17Z
-updated_at: 2026-09-24T08:18:00Z
+updated_at: 2026-09-24T08:41:30Z
 ---
 
 ## Goal
@@ -37,12 +37,12 @@ The existing mechanical MCP shape is healthy across the fleet, so the missing la
 ## Steps
 
 - [x] Inventory every MCP repository's common utility surface, exported API, behaviour, tests, and consumers; classify exact matches, intentional capability variants, stale copies, and repository-specific code.
-- [ ] Define the smallest stable vendoring profiles for genuinely shared concepts such as access gating, annotations, audit logging, and MCP result envelopes without forcing unrelated helpers into one abstraction.
-- [ ] Add canonical skill-owned source assets with provenance and version evidence, plus a deterministic projection manifest that maps each supported profile to its destination files.
-- [ ] Extend `ki-repo-mcp` audit and rubric coverage to report missing, modified, obsolete, and locally extended managed files while preserving explicitly declared repository-owned seams.
-- [ ] Add guarded CONFORM proposals that vendor only an unambiguous declared profile, never overwrite unexplained local changes, and remain idempotent.
-- [ ] Add fixtures for exact agreement, intentional variants, stale managed copies, unmanaged extensions, partial projections, and safe refusal; regenerate the published rubric.
-- [ ] Produce a repository-by-repository migration matrix and capture only the remaining receiver-owned changes in their local roadmaps.
+- [x] Define the smallest stable vendoring profiles for genuinely shared concepts such as access gating, annotations, audit logging, and MCP result envelopes without forcing unrelated helpers into one abstraction.
+- [x] Add canonical skill-owned source assets with provenance and version evidence, plus a deterministic projection manifest that maps each supported profile to its destination files.
+- [x] Extend `ki-repo-mcp` audit and rubric coverage to report missing, modified, obsolete, and locally extended managed files while preserving explicitly declared repository-owned seams.
+- [x] Add guarded CONFORM proposals that vendor only an unambiguous declared profile, never overwrite unexplained local changes, and remain idempotent.
+- [x] Add fixtures for exact agreement, intentional variants, stale managed copies, unmanaged extensions, partial projections, and safe refusal; regenerate the published rubric.
+- [x] Produce a repository-by-repository migration matrix and capture only the remaining receiver-owned changes in their local roadmaps.
 
 ## Files touched
 
@@ -84,6 +84,37 @@ Update existing MCP authoring guidance only if maintainers need a manual profile
 ### Roadmap
 
 Do not create speculative migration items in every MCP repository. Use the completed matrix to enrich an existing local owner or allocate one bounded receiver item only where a real change remains.
+
+## Review
+
+### Delivered
+
+Delivered the approved MCP shared-code baseline from immutable starting revision `b105590518f5863597610794c8f2382907b5f3df`. The Harness now owns two explicit SDK-era profiles, deterministic source manifests, whole-file drift evidence, receiver-owned security seams, and guarded missing-file projection without changing any sibling MCP repository.
+
+### Change Summary
+
+Added `legacy-v1-core` and `modern-v2-core` assets for access gating, the complete annotation vocabulary, and SDK-compatible result envelopes. Added SHA-256 manifest verification, optional `.ki.toml` profile selection, missing/exact/modified/unsafe/obsolete/local-extension classification, safe idempotent CONFORM writes, focused fixtures, generated rubric coverage, and `GDR-KI-HARNESS-012`. The estate matrix records all nine MCP repositories and concludes that no receiver migration is mandatory before explicit profile adoption; `mcp-git-audit` remains the preferred future pilot.
+
+### Verification
+
+- Focused `ki-repo-mcp` suite: 19 tests passed with 128 assertions.
+- Full Harness suite: 771 tests passed across 138 files with 3,315 assertions.
+- `bunx tsc --noEmit`: passed.
+- `ki dev skill rubric ki-repo-mcp`: generated publication is in sync.
+- `ki-skills`, `ki-work-roadmap`, `ki-decision-records`, and `ki-authoring` audits: passed.
+- Live `ki-repo-mcp` audit of `mcp-git-audit`: no failures; the existing source-release warning remains because its development HEAD is not annotated `v0.9.0`.
+
+### Outstanding concerns
+
+No receiver has adopted a profile yet. `audit-log.ts` deliberately remains repository-owned until a later shared audit engine can accept explicit sanitizer and server-identity seams. The optional `mcp-git-audit` pilot remains receiver-owned follow-on work rather than a hidden migration in this delivery.
+
+### Post-change review
+
+The delivered contract meets the item goal without introducing a registry dependency or normalising domain-specific security policy. Contained destinations, asset digests, physical-file checks, exact-byte comparisons, and all-or-nothing refusal around drift keep automated projection reversible and reviewable. The item is ready for acceptance review.
+
+### Mini recap
+
+MCP shared utilities now have a stable governed-vendoring baseline, while intentional variants remain explicit. The next useful evidence is one receiver-owned modern-profile pilot; it does not block review of this Harness contract.
 
 ## Discussion
 

@@ -8,12 +8,27 @@ import type {
   RubricSession
 } from '../../shared/rubric.ts'
 import { normalizeGitHubRepository } from './distribution.ts'
+import { type McpSharedCodeContext, prepareMcpSharedCode } from './shared-code.ts'
 
 const CONFIG_FILE = '.ki.toml'
 const CONFIG_SECTION = 'ki-repo-mcp'
 const PACKAGE_FILE = 'package.json'
 const MCP_MAIN = 'dist/mcp-server/index.js'
-const FAMILY_CODES = ['KI', 'LAY', 'DOC', 'CFG', 'UTIL', 'TEST', 'TOOL', 'PROTO', 'PKG', 'SCR', 'CI', 'DIST'] as const
+const FAMILY_CODES = [
+  'KI',
+  'LAY',
+  'DOC',
+  'CFG',
+  'UTIL',
+  'SHARED',
+  'TEST',
+  'TOOL',
+  'PROTO',
+  'PKG',
+  'SCR',
+  'CI',
+  'DIST'
+] as const
 
 type NodeKind = 'missing' | 'file' | 'directory' | 'unsafe'
 type ConfigState = 'missing' | 'unsafe' | 'malformed' | 'absent' | 'present'
@@ -29,6 +44,7 @@ export type McpApplicabilityContext = {
   readonly applicable: boolean
   readonly config: ConfigState
   readonly configKeys: readonly string[]
+  readonly sharedProfile: unknown
   readonly addMarker?: () => void
 }
 
@@ -102,6 +118,7 @@ export type McpRubricContext = {
   readonly documentation: McpDocumentationContext
   readonly configuration: McpConfigurationContext
   readonly utilities: McpUtilitiesContext
+  readonly sharedCode: McpSharedCodeContext
   readonly testing: McpTestingContext
   readonly tools: McpToolsContext
   readonly protocol: McpProtocolContext
@@ -148,16 +165,23 @@ const sourceFilesBelow = (root: string, directory: string): SourceFile[] => {
 const inspectConfig = (
   path: string,
   kind: NodeKind
-): { readonly state: ConfigState; readonly keys: readonly string[]; readonly content: string | null } => {
-  if (kind === 'missing') return { state: 'missing', keys: [], content: null }
-  if (kind !== 'file') return { state: 'unsafe', keys: [], content: null }
+): {
+  readonly state: ConfigState
+  readonly keys: readonly string[]
+  readonly content: string | null
+  readonly sharedProfile: unknown
+} => {
+  if (kind === 'missing') return { state: 'missing', keys: [], content: null, sharedProfile: undefined }
+  if (kind !== 'file') return { state: 'unsafe', keys: [], content: null, sharedProfile: undefined }
   const content = readFileSync(path, 'utf8')
   try {
     const document = Bun.TOML.parse(content) as Record<string, unknown>
     const table = asTable(asTable(document.skills)?.[CONFIG_SECTION])
-    return table ? { state: 'present', keys: Object.keys(table), content } : { state: 'absent', keys: [], content }
+    return table
+      ? { state: 'present', keys: Object.keys(table), content, sharedProfile: table.profile }
+      : { state: 'absent', keys: [], content, sharedProfile: undefined }
   } catch {
-    return { state: 'malformed', keys: [], content }
+    return { state: 'malformed', keys: [], content, sharedProfile: undefined }
   }
 }
 
@@ -251,7 +275,7 @@ export const createMcpSession = ({
   const configPath = at(CONFIG_FILE)
   const configEvidence = rootExists
     ? inspectConfig(configPath, nodeKind(configPath))
-    : { state: 'missing' as const, keys: [], content: null }
+    : { state: 'missing' as const, keys: [], content: null, sharedProfile: undefined }
   const applicable = rootExists && configEvidence.state === 'present'
   const packagePath = at(PACKAGE_FILE)
   const packageEvidence = rootExists
@@ -283,6 +307,13 @@ export const createMcpSession = ({
       'vitest.config.cjs'
     ].find((file) => nodeKind(at(file)) === 'file') ?? null
   const toolFiles = sourceFiles.filter((file) => file.path.startsWith('src/tools/') && !file.path.endsWith('.test.ts'))
+  const conformWrites = new Map<string, ConformWrite>()
+  const sharedCode = prepareMcpSharedCode({
+    root,
+    profile: configEvidence.sharedProfile,
+    mode,
+    writes: conformWrites
+  })
   const context: McpRubricContext = {
     rubric: { publication },
     applicability: {
@@ -290,7 +321,8 @@ export const createMcpSession = ({
       rootExists,
       applicable,
       config: configEvidence.state,
-      configKeys: configEvidence.keys
+      configKeys: configEvidence.keys,
+      sharedProfile: configEvidence.sharedProfile
     },
     layout: {
       requiredDirectories: ['config', 'mcp-server', 'tools', 'main', 'utils'].map((directory) => ({
@@ -339,6 +371,7 @@ export const createMcpSession = ({
         present: sourceByPath.has(`src/utils/${file}`)
       }))
     },
+    sharedCode,
     testing: {
       vitestFile,
       source: vitestFile ? readFileSync(at(vitestFile), 'utf8') : null
@@ -422,6 +455,7 @@ export const createMcpSession = ({
       const writes: ConformWrite[] = []
       if (packageChanged && packageDraft && packageEvidence.content !== null)
         writes.push({ path: PACKAGE_FILE, content: `${JSON.stringify(packageDraft, null, 2)}\n` })
+      writes.push(...conformWrites.values())
       return { writes }
     }
   }

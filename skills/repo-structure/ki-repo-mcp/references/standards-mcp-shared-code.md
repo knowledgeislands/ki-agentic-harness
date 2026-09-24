@@ -38,13 +38,17 @@ The inventory compared physical file digests, exports, SDK package family, coloc
 | `mcp-ki-kb-notion-mirror` | v2 | 6 | Modern access near-match; remote annotations; Notion redaction; modern results reorder only | Candidate after local Notion sanitizer seam is explicit |
 | `mcp-m365` | v2 | 7 | Exact modern access cluster; broad remote annotations; mail/body redaction; extended results | Candidate after local mail sanitizer and result extensions are explicit |
 
-## Proposed profile boundary
+## Managed profile contract
 
-The smallest honest initial profile set is `legacy-v1-core` and `modern-v2-core`. Each may manage an access gate, a complete annotation-preset vocabulary, and its SDK-compatible result envelopes. A later shared audit engine may join both profiles only after its canonical file accepts a repository-owned sanitizer and server-identity seam without importing repository-specific code.
+The supported profiles are `legacy-v1-core` and `modern-v2-core`. Each manages an access gate, a complete annotation-preset vocabulary, and its SDK-compatible result envelopes. The declaration is `profile = "<profile>"` beneath `[skills.ki-repo-mcp]`.
 
-Managed files must be complete regular files with a visible profile marker and source digest recorded in the skill-owned projection manifest. Repository-owned seams sit in separate files; local edits inside a managed file are drift, not an extension mechanism.
+The skill-owned `assets/shared-code/manifest.json` maps every profile source to one contained repository destination and records its SHA-256 digest. Managed files are complete regular files with a visible profile and version marker. Repository-owned seams sit in separate files; local edits inside a managed file are drift, not an extension mechanism.
 
-Profile adoption is optional and explicit. An undeclared repository remains governed by the existing source-shape rubric without vendoring findings. A declared profile makes missing, modified, partial, or obsolete managed files visible. CONFORM may create a missing file only when the profile, destination, parent, and required local seams are unambiguous; it must never overwrite unexplained local bytes.
+Profile adoption is optional and explicit. An undeclared repository remains governed by the existing source-shape rubric without vendoring findings. A declared profile makes missing, modified, partial, unsafe, or obsolete managed files visible and reports unmarked utility files as preserved local extensions.
+
+CONFORM may create only missing managed files when all destinations are contained beneath the repository, every parent directory is physical, every required local seam is a regular file, all present managed files match exactly, and no obsolete managed projection remains. It never overwrites modified bytes or removes files. Repeating CONFORM after a successful projection produces no writes.
+
+`audit-log.ts` remains a required repository-owned seam in both profiles. Its rotation and callback shape are reusable, but redaction, server identity, previews, and error extraction are security policy. A later managed audit engine must accept those policies through separate repository-owned files before it can enter either profile.
 
 ## Migration sequencing
 

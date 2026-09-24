@@ -77,6 +77,7 @@ The records are living, compact, and independent. The order below is a **curated
 48. [GDR-KI-HARNESS-010](GDR-KI-HARNESS-010-named-multi-site-governance.md) — named website registries, overlay subsets, and the primary command seam.
 49. [ADR-KI-HARNESS-SKILLS-014](ADR-KI-HARNESS-SKILLS-014-explicit-skill-applicability.md) — exhaustive repository applicability classification and detector ownership.
 50. [GDR-KI-HARNESS-011](GDR-KI-HARNESS-011-versioned-source-installation-for-mcp-servers.md) — versioned Git source installation for MCP servers without mandatory package publication.
+51. [GDR-KI-HARNESS-012](GDR-KI-HARNESS-012-governed-vendoring-for-shared-estate-code.md) — digested skill-owned source profiles with receiver-owned seams and guarded projection.
 
 ## Template
 
