@@ -20,6 +20,7 @@ This is a curated collection, not a design standard. The sources were selected b
 | [Recent][recent] | Whole-site inspiration by website category | 2026-09-13 |
 | [Dribbble: web design inspiration][dribbble] | Visual concepts and presentation treatments | 2026-09-13 |
 | [CSS Design Awards][cssda] | Award-recognised websites; UI, UX, and innovation | 2026-09-13 |
+| [OKLCH Color Picker & Converter][oklch] | Perceptual colour exploration, palette building, and gamut fallbacks | 2026-09-24 |
 
 [motion]: https://motionsites.ai/
 [navbar]: https://www.navbar.gallery/
@@ -33,6 +34,8 @@ This is a curated collection, not a design standard. The sources were selected b
 [recent]: https://recent.design/
 [dribbble]: https://dribbble.com/tags/web-design-inspiration
 [cssda]: https://www.cssdesignawards.com/
+
+[oklch]: https://oklch.com/
 
 ## Routing notes
 
@@ -48,8 +51,11 @@ This is a curated collection, not a design standard. The sources were selected b
 - **Recent** — a broader design collection with a dedicated [Websites gallery](https://recent.design/websites), filterable by categories such as portfolio, SaaS, ecommerce, and editorial. Start there for whole-site inspiration; its app screenshots, icons, and other design material serve different needs.
 - **Dribbble: web design inspiration** — the selected tag gathers designer-posted website shots. Useful for composition, colour, typography, and visual exploration. Establish whether a shot represents a concept or a shipped site; a presentation image alone does not demonstrate complete flows, responsive behaviour, or usability.
 - **CSS Design Awards** — website nominees and winners with UI, UX, and innovation scores. Useful for exploring complete creative websites and interaction ideas alongside Awwwards. Distinguish nomination from an award, and treat scores as the gallery's assessment; inspect the original site against the current brief before recommending its patterns.
+- **OKLCH Color Picker & Converter** — focused colour tool for converting HEX, RGB, or HSL into OKLCH; exploring perceptual lightness, chroma, hue, and alpha; building palettes; and checking sRGB fallbacks alongside wider P3 and Rec. 2020 gamuts. Use it for colour-system direction and gamut-aware implementation values, then verify contrast and browser support against the current product requirements.
 
 ## Last review
+
+On 2026-09-24, the OKLCH landing page was checked for its picker, converter, palette, gamut, fallback, and three-dimensional visualisation surfaces.
 
 The review checked public landing-page text and source metadata for subject and routing, including Awwwards, Recent's dedicated Websites gallery, the selected Dribbble tag, and CSS Design Awards. Bento Grids returned no readable text in the direct fetch; indexed content from the same domain supplied the collection description. Individual designs, videos, responsive states, and member-only content were not visually evaluated as part of this source-list review. Assess them when selecting examples for a concrete brief.
 
