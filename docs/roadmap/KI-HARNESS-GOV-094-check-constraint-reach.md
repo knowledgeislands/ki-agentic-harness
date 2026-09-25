@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-09-25T09:06:24Z
+updated_at: 2026-09-25T11:42:28Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
@@ -42,7 +42,9 @@ Against it: the checklist's own rule prefers deleting an item that never fires (
 
 **The structural fix.** The question documents a hazard rather than removing it. The cause is that six skills each vendor a copy of one grammar with no shared definition and nothing that fails when they diverge. A single definition in `tools-ki`, or a conformance test asserting the copies agree, would make the question unnecessary. This is the same shape as `KI-HARNESS-GOV-093`: a fact with multiple copies and no drift check.
 
-Recommendation on the table as of 2026-09-25: take both — the question now, because it is one line and closes the gap today, and the shared grammar as the durable fix. The user has not yet decided.
+**Decided 2026-09-25: standardise the grammar.** One shared definition, with the copies either importing it or held to it by a conformance test that fails when they diverge. That removes the hazard rather than documenting it, and it is why the checklist question is not being added: `mode-review.md:43` prefers deleting an item that never fires, and a question asking a reviewer to grep for copies of a constraint earns nothing once the copies cannot silently disagree. If the shared definition turns out not to be reachable for all six skills, the one-line question at `:317` is the fallback and this item says so rather than leaving the gap open.
+
+What that makes concrete for execution: the six restating skills are `ki-repo`, `ki-work-roadmap`, `ki-work-housekeeping`, `ki-accept`, `ki-decision-records` and `ki-specs`; the grammar to unify is the repository-code and scope-segment pair settled by `ADR-KI-HARNESS-SKILLS-015` (`[A-Z0-9][A-Z0-9-]{1,23}` for a code, `[A-Z0-9]*[A-Z][A-Z0-9]*` for a scope segment); and the constraint on where it can live is `ADR-KI-HARNESS-012`, which owns the vendored-rubric architecture and is the reason each skill holds its own copy today. Whether the shared definition sits in `tools-ki` or is enforced across vendored copies by test is the open design question, not whether to have one.
 
 - [ADR-KI-HARNESS-SKILLS-015](../decisions/ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) relaxed both governance instruments
 - [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) is the same one-fact-many-copies shape applied to the plugin projection
