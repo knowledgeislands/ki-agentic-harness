@@ -118,7 +118,38 @@ Close the recap with an **Actions** section: a short, concrete, imperative list 
 - `APPLY-LEARNING-ROUTE` — Apply an approved learning route from the knowledge-promotion standard (for example, a repository rule, skill criterion, hook, memory, or personal configuration update).
 - `RERUN-FAILING-GATE` — Re-run a gate that was left failing, or finish a mid-change thread.
 
-If nothing is actionable, say so in one line ("No actions — tree clean, nothing outstanding"). Do **not** perform the actions unprompted — this section is the checklist the user acts on (or asks you to act on); durable writes still require the step-4 confirmation.
+Decide the Actions list from the grounded evidence before considering the terminal rendering. The completion banner is derived from an empty Actions list, never a goal: do not suppress, downgrade, or reroute a genuine action to make the banner eligible. In particular, reconcile outstanding claims against the grounding helper's current `filesTouched` evidence rather than warm context, and do not call work verified unless the required gate actually ran and passed.
+
+Render the completion banner only when all of these conditions hold together:
+
+1. The grounding helper reports `repository.status: available`, a non-null full `HEAD`, `worktree: clean`, and an empty `filesTouched` list at recap time.
+2. Steps 3–5 leave no outstanding work, decision, failing or omitted verification, or other Action.
+3. Every learning harvested in step 4 has a decided route: it was written to its approved durable owner or the user explicitly declined it. A proposed route awaiting confirmation is undecided and blocks the banner.
+4. Substantive work has entered context since the previous recap. Never render the banner for two recaps over the same unchanged span; apply the same work-based minimum-footprint judgment used by step 8.
+
+An unpushed commit does **not** block the banner. Pushing is a separate user decision and may trigger deployment. The banner attests only that the named local `HEAD` has a clean working copy and that this session has no outstanding work or unrouted learning; it does not claim the remote is synchronised.
+
+When every condition passes, render this five-line frame literally and without colour, ANSI escapes, substituted wording, or improvised art:
+
+```text
+╭──────────────────────────────────────────────────╮
+│  █▀▀▄ █▀▀█ █▄ █ █▀▀▀   · thread closed           │
+│  █  █ █  █ █ ██ █▀▀    · nothing outstanding     │
+│  █▄▄▀ █▄▄█ █  █ █▄▄▄   · every learning routed   │
+╰──────────────────────────────────────────────────╯
+```
+
+Each framed line is exactly 52 terminal display columns. Measure terminal display width by Unicode code point width, not byte length. Keep the frame byte-identical so transcript archives can find completed sessions by searching for `█▄▄▀ █▄▄█ █  █ █▄▄▄`.
+
+Immediately below the frame, render the variable evidence line with three leading spaces:
+
+```text
+   <repository-basename> · <seven-character-HEAD> · <YYYY-MM-DD>
+```
+
+Use the physical Git root's basename, the seven-character abbreviation of the full `HEAD` observed by the same grounding pass, and the recap date. The evidence line stays outside the frame and is not padded to 52 columns.
+
+If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state and name any material evidence gap; never render a partial or weakened banner. Do **not** perform Actions unprompted — the section is a checklist for the user to act on (or ask you to act on); durable writes still require the step-4 confirmation.
 
 ## 7. Route future-work selection to `ki-next`
 
