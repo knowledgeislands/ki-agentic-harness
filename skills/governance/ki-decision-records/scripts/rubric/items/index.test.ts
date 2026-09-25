@@ -180,3 +180,58 @@ test('repository-root Markdown is not treated as decision records', () => {
     expect.objectContaining({ status: 'PASS' })
   ])
 })
+
+test('a scope may begin with a digit when the segment carries a letter', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-decision-records-digit-scope-'))
+  temporaryDirectories.push(repository)
+  const directory = join(repository, 'docs', 'decisions')
+  mkdirSync(directory, { recursive: true })
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-decision-records]\n')
+  writeFileSync(
+    join(directory, 'README.md'),
+    '# Decisions\n\n1. [GDR-5GE-P2-001](GDR-5GE-P2-001-adopting-decision-records.md) — Adopting Decision Records\n'
+  )
+  writeFileSync(
+    join(directory, 'GDR-5GE-P2-001-adopting-decision-records.md'),
+    `---
+id: GDR-5GE-P2-001
+title: 'Adopting Decision Records'
+date: 2026-09-25
+status: current
+decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
+decision_type: governance
+---
+
+# GDR-5GE-P2-001: Adopting Decision Records
+
+## Context
+
+The repository code leads with a digit.
+
+## Decision
+
+The collection uses that code unchanged as its scope.
+
+## Consequences
+
+One identifier serves the roadmap and the records.
+`
+  )
+
+  const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+  const rootContext = session.subjects[1]?.context() as NonNullable<DecisionRecordsRubricContext>
+  const filename = families.find((candidate) => candidate.code === 'FILENAME')
+  const root = families.find((candidate) => candidate.code === 'ROOT')
+
+  expect(
+    filename?.items
+      .find((item) => item.code === 'FILENAME-0')
+      ?.mechanical?.audit.run(filename.selectContext(rootContext))
+  ).toEqual([expect.objectContaining({ status: 'PASS' })])
+  expect(
+    root?.items
+      .find((item) => item.code === 'ROOT-1')
+      ?.mechanical?.audit.run(root.selectContext(rootContext))
+      .some((outcome) => outcome.status === 'VIOLATION')
+  ).toBe(false)
+})

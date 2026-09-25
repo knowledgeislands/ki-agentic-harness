@@ -11,10 +11,11 @@ const DEFAULT_DIRECTORY = 'docs/specs'
 const INDEX_FILE = 'index.md'
 const RFC2119 =
   /\b(MUST NOT|MUST|SHALL NOT|SHALL|SHOULD NOT|SHOULD|MAY|REQUIRED|RECOMMENDED|NOT RECOMMENDED|OPTIONAL)\b/
-const REQUIREMENT_HEADING = /^###\s+([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)-(\d{3,})\s+—\s+(.+?)\s*$/
+const REQUIREMENT_HEADING = /^###\s+([A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*)-(\d{3,})\s+—\s+(.+?)\s*$/
 const H3 = /^###\s+(.+?)\s*$/
-const NEAR_MISS_HEADING = /^###\s+([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-\d{3,})\s*(?:[–—-]{1,2})\s*(\S.*?)\s*$/
-const RETIRED_ID = /\b([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)-(\d{3,})\b/g
+const NEAR_MISS_HEADING =
+  /^###\s+([A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*-\d{3,})\s*(?:[–—-]{1,2})\s*(\S.*?)\s*$/
+const RETIRED_ID = /\b([A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*)-(\d{3,})\b/g
 
 export type SpecRequirement = {
   readonly file: string

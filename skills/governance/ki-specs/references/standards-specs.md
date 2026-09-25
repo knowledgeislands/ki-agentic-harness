@@ -58,7 +58,7 @@ _Verify:_ inspect the built `/culture/` page for its canonical link.
 _Evidence:_ `site-output.test.ts` asserts the absolute canonical URL for `/culture/`.
 ```
 
-- **Heading** — `### <PREFIX>-NNN — <title>`. `PREFIX` is one or more uppercase alpha-leading segments joined by hyphens; `NNN` is zero-padded to at least three digits; the separator is an em dash.
+- **Heading** — `### <PREFIX>-NNN — <title>`. `PREFIX` is one or more uppercase alphanumeric segments joined by hyphens, each matching `[A-Z0-9]*[A-Z][A-Z0-9]*` — a segment may lead with a digit but must carry a letter, which is what keeps it distinct from `NNN`; `NNN` is zero-padded to at least three digits; the separator is an em dash.
 - **Statement** — one paragraph with an uppercase **BCP 14** keyword (`MUST`, `MUST NOT`, `SHALL`, `SHALL NOT`, `SHOULD`, `SHOULD NOT`, `MAY`, `REQUIRED`, `RECOMMENDED`, `NOT RECOMMENDED`, or `OPTIONAL`). Split unrelated behaviours so they can be verified independently.
 - **`_Conformance:_`** — exactly one of `conforming`, `pending`, or `divergent`. This is the current relationship between the accepted contract and the system.
 - **`_Verify:_`** — the planned check: a concrete built-output assertion, test, inspection, or source symbol capable of deciding conformance.

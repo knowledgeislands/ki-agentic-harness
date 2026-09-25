@@ -10,7 +10,7 @@ Supporting evidence that is not itself a Decision Record lives in [references/](
 <PREFIX>-<SCOPE>-NNN
 ```
 
-`<PREFIX>` encodes the decision type (`ADR-` architecture, `SDR-` strategy, `GDR-` governance). `<SCOPE>` is one or more alpha-leading uppercase segments separated by hyphens — e.g. `KI-HARNESS`, `KI-HARNESS-SKILLS`. `NNN` is a zero-padded integer (minimum three digits), monotonically increasing per prefix within the scope. Foundational harness records use the bare scope `<PREFIX>-KI-HARNESS-NNN`; domain-specific ADRs append a sub-scope: `ADR-KI-HARNESS-<SUB-SCOPE>-NNN`. A filename is `<ID>-<title-slug>.md`: the canonical uppercase ID followed by the title lowercased with non-alphanumeric runs compressed to one dash.
+`<PREFIX>` encodes the decision type (`ADR-` architecture, `SDR-` strategy, `GDR-` governance). `<SCOPE>` is one or more uppercase alphanumeric segments separated by hyphens — e.g. `KI-HARNESS`, `KI-HARNESS-SKILLS`. `NNN` is a zero-padded integer (minimum three digits), monotonically increasing per prefix within the scope. Foundational harness records use the bare scope `<PREFIX>-KI-HARNESS-NNN`; domain-specific ADRs append a sub-scope: `ADR-KI-HARNESS-<SUB-SCOPE>-NNN`. A filename is `<ID>-<title-slug>.md`: the canonical uppercase ID followed by the title lowercased with non-alphanumeric runs compressed to one dash.
 
 Sub-scopes used in this harness:
 
@@ -78,6 +78,7 @@ The records are living, compact, and independent. The order below is a **curated
 49. [ADR-KI-HARNESS-SKILLS-014](ADR-KI-HARNESS-SKILLS-014-explicit-skill-applicability.md) — exhaustive repository applicability classification and detector ownership.
 50. [GDR-KI-HARNESS-011](GDR-KI-HARNESS-011-versioned-source-installation-for-mcp-servers.md) — versioned Git source installation for MCP servers without mandatory package publication.
 51. [GDR-KI-HARNESS-012](GDR-KI-HARNESS-012-governed-vendoring-for-shared-estate-code.md) — digested skill-owned source profiles with receiver-owned seams and guarded projection.
+52. [ADR-KI-HARNESS-SKILLS-015](ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) — identifier scope segments accept any declared repository code that carries a letter.
 
 ## Template
 

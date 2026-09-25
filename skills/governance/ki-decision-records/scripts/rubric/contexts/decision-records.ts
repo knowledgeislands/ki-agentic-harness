@@ -50,14 +50,15 @@ const PREFIX_TO_TYPE: Record<string, { decisionType: string; decisionTypeUrl: st
     decisionTypeUrl: 'https://knowledgeislands.info/specifications/decision-records/kdr'
   }
 }
-const ID = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)-(XXX|\d{3,})$/
+const ID = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*)-(XXX|\d{3,})$/
 const INDEX_ENTRY =
-  /^\s*(\d+)\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,}))\]\(([^)]+)\)/
+  /^\s*(\d+)\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,}))\]\(([^)]+)\)/
 const INDEX_ENTRY_TARGET =
-  /^(\s*\d+\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,}))\]\()([^)]+)(\).*)$/
-const DECISION_LINK = /\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,}))\]\(([^)]+)\)/
-const BODY_CITATION = /(?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-(?:XXX|\d{3,})/g
-const HEADING = /^#\s+((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,})):\s+(.+)$/m
+  /^(\s*\d+\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,}))\]\()([^)]+)(\).*)$/
+const DECISION_LINK = /\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,}))\]\(([^)]+)\)/
+const BODY_CITATION =
+  /(?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*-(?:XXX|\d{3,})/g
+const HEADING = /^#\s+((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,})):\s+(.+)$/m
 
 export type DecisionRecord = {
   file: string

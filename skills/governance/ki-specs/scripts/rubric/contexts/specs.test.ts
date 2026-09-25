@@ -364,3 +364,35 @@ test('duplicate areas-table prefix ownership is reported rather than overwritten
     message: expect.stringContaining('AUTH')
   })
 })
+
+test('a requirement prefix may begin with a digit when the segment carries a letter', () => {
+  const repository = temporaryDirectory('ki-specs-digit-prefix-')
+  const directory = join(repository, 'docs', 'specs')
+  mkdirSync(directory, { recursive: true })
+  declareSpecs(repository)
+  writeFileSync(
+    join(directory, 'index.md'),
+    ['# Specifications', '', '| File | Prefix |', '| --- | --- |', '| telemetry.md | 5GE-P2 |', ''].join('\n')
+  )
+  writeFileSync(
+    join(directory, 'telemetry.md'),
+    [
+      '# Telemetry — 5GE-P2',
+      '',
+      '## Collection',
+      '',
+      '### 5GE-P2-001 — Component status',
+      '',
+      'A component MUST report a status.',
+      '',
+      '_Verify:_ telemetry.test.ts checks the status vocabulary.',
+      ''
+    ].join('\n')
+  )
+
+  const context = identityContext(createSpecsSession(options(repository, 'audit')))
+
+  expect(context.requirements.map((requirement) => requirement.prefix)).toEqual(['5GE-P2'])
+  expect(context.requirements.map((requirement) => requirement.serial)).toEqual([1])
+  expect(context.headingIssues).toEqual([])
+})
