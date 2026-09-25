@@ -353,6 +353,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 
 ### Automated verification
 
+- [ ] Every script or task named by the repository orientation's documented verification gate exists and resolves through the declared runner.
 - [ ] The full verification task exits zero.
 - [ ] `ki repo repair` completes without unresolved KI-managed projection repairs.
 - [ ] `ki repo diag` reports every declared repository skill and its local projection healthy.
