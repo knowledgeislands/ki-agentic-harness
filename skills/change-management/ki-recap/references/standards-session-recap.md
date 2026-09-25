@@ -125,7 +125,8 @@ Render the completion banner only when all of these conditions hold together:
 1. The grounding helper reports `repository.status: available`, a non-null full `HEAD`, `worktree: clean`, and an empty `filesTouched` list at recap time.
 2. Steps 3–5 leave no outstanding work, decision, failing or omitted verification, or other Action.
 3. Every learning harvested in step 4 has a decided route: it was written to its approved durable owner or the user explicitly declined it. A proposed route awaiting confirmation is undecided and blocks the banner.
-4. Substantive work has entered context since the previous recap. Never render the banner for two recaps over the same unchanged span; apply the same work-based minimum-footprint judgment used by step 8.
+
+The banner states current evidence rather than a session event, so two recaps over an unchanged `HEAD` both render it. That repetition is correct and deliberately unguarded: it means a banner withheld under conditions 1–3, or missed in error, is recovered by the next recap at which those conditions hold. A condition on recap history would instead make a miss permanent, because the only route back to eligibility would be doing more work — absurd when the claim being made is that no work remains.
 
 An unpushed commit does **not** block the banner. Pushing is a separate user decision and may trigger deployment. The banner attests only that the named local `HEAD` has a clean working copy and that this session has no outstanding work or unrouted learning; it does not claim the remote is synchronised.
 
@@ -149,7 +150,7 @@ Immediately below the frame, render the variable evidence line with three leadin
 
 Use the physical Git root's basename, the seven-character abbreviation of the full `HEAD` observed by the same grounding pass, and the recap date. The evidence line stays outside the frame and is not padded to 52 columns.
 
-If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state and name any material evidence gap; never render a partial or weakened banner. Do **not** perform Actions unprompted — the section is a checklist for the user to act on (or ask you to act on); durable writes still require the step-4 confirmation.
+If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state that names the numbered condition which blocked the banner, and any material evidence gap behind it; never render a partial or weakened banner. A bare “none” hides the difference between a finished session and one whose completion check did not pass, and leaves the reader no way to tell that the banner was owed. Do **not** perform Actions unprompted — the section is a checklist for the user to act on (or ask you to act on); durable writes still require the step-4 confirmation.
 
 ## 7. Route future-work selection to `ki-next`
 
