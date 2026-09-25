@@ -28,6 +28,8 @@ For `help`, `-h`, or `?`, explain the source collection, inspiration output, and
 
 For a colour-system, palette, or gamut question, start with the focused colour resources before expanding into whole-site galleries. For an existing-brand reconstruction, use a brand-data resource to locate candidate assets and tokens, then verify them against the brand's authoritative source and usage rights.
 
+For responsive typography or spacing scales, start with the fluid-design resource. Use the contrast resource as a validation boundary after selecting candidate colours; it complements rather than replaces contextual visual evaluation.
+
 Use the current brief: page or component, audience, intended action, visual preferences, and any existing brand or technical constraints. Ask only for missing context that would materially change the search; an exploratory request can start with a stated assumption.
 
 Choose the smallest useful set of resources from the source list. A component request normally starts with its specialist gallery; a broader page request can start with Unsection or MotionSites. Expand when the first sources do not offer a useful fit, preserving any sources the user explicitly requested.
