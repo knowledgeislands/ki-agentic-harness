@@ -114,6 +114,7 @@ Produce the Assessment output sections from the checklist in their stated order.
 - [ ] If the review could turn on an unspoken product, security, ownership, or compatibility choice, record that uncertainty and interview the user before drawing a conclusion.
 - [ ] Read the repository's `AGENTS.md` and applicable KI skills before inspecting governed material.
 - [ ] Read the repository orientation and current work first: `AGENTS.md`, `README`, `.ki.toml` where present, canonical roadmap material, Decision Records, feature definitions, Specifications, Guides, and the implementation surfaces in scope.
+- [ ] Inventory legacy repository-local runtime surfaces when present, including `.claude/commands/` and `.claude/memory/`, rather than assuming the current canonical structure contains all operative guidance.
 - [ ] Read every Decision Record in the agreed scope rather than inferring collection quality from its index or a sample.
 - [ ] Collect inspectable evidence rather than impressions, covering architecture and dependency boundaries; data flow and extension points; source, build, test, and runtime entry points; configuration ownership, secrets, migration, and failure paths; documentation correspondence; maintainability signals; and what each relevant check does not establish.
 - [ ] Inspect live configuration, runtime state, and external source material only when the invocation permits it.
@@ -213,6 +214,10 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Documentation progressively reveals purpose and concepts before procedures, implementation detail, and reference material.
 - [ ] Each subject has one authoritative home; other documents link to it rather than repeating it.
 - [ ] Historical change remains in version control or explicitly historical records instead of current-state guidance.
+- [ ] Each legacy Claude artifact has an explicit disposition: migrate to its current canonical owner, retain it with a current reason, or retire it.
+- [ ] Still-useful `.claude/commands/` behaviour is owned by a skill rather than maintained as a parallel legacy command.
+- [ ] Durable content from legacy repository-local `.claude/memory/` is promoted by meaning to `AGENTS.md`, runtime-specific `CLAUDE.md`, a Decision Record, Specification, Guide, skill, synchronised user configuration, or roadmap; runtime-only retrieval aids remain in selected native memory.
+- [ ] A legacy artifact is removed only after its retained content, inbound references, and live runtime dependencies have been reconciled.
 - [ ] Each Decision Record can be understood as a coherent, self-contained account without following its links.
 - [ ] Overlapping Decision Records are consolidated so each independent decision has one authoritative record.
 - [ ] Decision records state the current decision, its rationale, and its future consequences rather than accumulating a chronological change history.
