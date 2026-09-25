@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 61 skills: 51 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 62 skills: 52 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -44,6 +44,16 @@ Acquire and reconcile Granola meetings through read-only MCP evidence, including
 - **Runtime:** Portable
 
 ### Agentic Systems
+
+#### `ki-agent-coordination-paperclip`
+
+Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories remain knowledge and work authority. Use when designing or auditing Paperclip agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <arrangement> | conform <arrangement> | educate <arrangement> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
 
 #### `ki-subagents`
 
