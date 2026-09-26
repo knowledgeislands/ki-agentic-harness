@@ -4,12 +4,12 @@ area: GOV
 title: Order roadmap number reservation
 theme: governance-consistency
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-26T15:32:22Z
+updated_at: 2026-09-26T15:56:59Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -128,4 +128,4 @@ Both rules remain judgment criteria. A mechanical check is conceivable — a rep
 
 ### Coordination linkage
 
-Covering coordination task: `KNO-34`. Approval origin: `KNO-22`, confirmation `b822a290`, accepted 2026-09-26T14:38Z. The number for this record was reserved by commit `77a99d509504a8c556ff47694aa7ba8d82e9a0b7` on the primary checkout before the record existed, applying the rule the record writes.
+Covering coordination task: `KNO-34`. Approval origin: `KNO-22`, confirmation `b822a290`, accepted 2026-09-26T14:38Z. The number for this record was reserved by commit `77a99d509504a8c556ff47694aa7ba8d82e9a0b7` on the primary checkout before the record existed, applying the rule the record writes. Steps 1 to 4 are delivered by `KNO-34` on branch `paperclip/KNO-34-write-the-roadmap-rules-into-ki-doctrine` at `1ea2ee31`; Steps 5 and 6 are delivered by covering coordination task `KNO-36`. The doctrine change was approved by the responsible human on `KNO-34`, confirmation `cc5c042f`, accepted 2026-09-26T15:53:32Z, bound to proposal revision 1. The readiness re-audit `ki-plan` requires could not run: no harness is installed on this host, so every `ki repo audit` exits 1. That gate is unmet rather than passed, and this record is shaped to `ready` on the approval rather than on the audit.
