@@ -52,6 +52,11 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-8 [J] — Roadmap write locus** — Roadmap-record writes are serialised in the repository’s designated primary checkout rather than made in a task’s isolated worktree. (standards-agent-coordination-paperclip.md#roadmap-records-are-the-exception)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does every write to the repository’s roadmap records happen in its designated primary checkout rather than the task’s isolated worktree, and does the task’s evidence record both write boundaries?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## RUBRIC — Generated rubric publication
 

@@ -78,6 +78,16 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       judgment: judgment(
         'Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?'
       )
+    },
+    {
+      code: 'COORD-8',
+      title: 'Roadmap write locus',
+      description:
+        'Roadmap-record writes are serialised in the repository’s designated primary checkout rather than made in a task’s isolated worktree.',
+      sources: [`${STANDARD}#roadmap-records-are-the-exception`],
+      judgment: judgment(
+        'Does every write to the repository’s roadmap records happen in its designated primary checkout rather than the task’s isolated worktree, and does the task’s evidence record both write boundaries?'
+      )
     }
   ]
 }
