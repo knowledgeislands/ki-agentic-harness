@@ -4,12 +4,12 @@ area: GOV
 title: Record coordination lane roles
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 3f409aaceaa6baae223a20c297dfd06ad733d536
 created_at: 2026-09-26T13:09:36Z
-updated_at: 2026-09-26T13:25:12Z
+updated_at: 2026-09-26T14:46:39Z
 ---
 
 # Record Coordination Lane Roles
@@ -47,7 +47,7 @@ Observed at `6dd81641` on `main`.
 - `subagents/` contains exactly `README.md` and `governance/`. `governance/` holds five records — `ki-decision-author`, `ki-engineering-lead`, `ki-repo-kb-curator`, `ki-repo-kb-streams-curator`, `ki-skills-lead` — and there is no `coordination/` directory.
 - `.ki.toml` already declares `[skills.ki-subagents]` and `[skills.ki-subagents-claude]`, and explicitly opts out of `ki-subagents-codex` with `checks.coverage-subagents-codex = false`. `ki-repo` `COV-1` is already satisfied by the existing `governance/` records, so adding a second domain directory changes nothing in the coverage cascade. No `.ki.toml` change is needed, and none is permitted here.
 - `subagents/README.md` documents only the `governance/` domain, with a two-column Agent/Lane table and an "Adding an agent" procedure. Adding a domain without updating it would leave the README stale. The README already states that `name` must be unique across the whole tree, so the new domain inherits that rule without the README needing to restate it.
-- The four record bodies exist in approved final form in §4 of the Paperclip document **"Role records for Convenor, Steward, Ferryman and Wright"** (`3d3ef2cb-6f62-47e7-9c13-7aa6f0ffeeb2`, revision `d3675fd9-aac9-4b8e-a9bd-1731ba03aee4`) on coordination task `KNO-2`, which names this item as its governing record. Each carries `name` and `description` frontmatter only, and an instruction body with `## Grounding`, `## When invoked`, `## What you own vs defer`, `## Orchestration`, `## Lenses`, `## Outcome evidence`, and — for three of the four — `## Output bar`. Implementation transcribes those bodies; it does not author them.
+- The four record bodies exist in approved final form in §4 of the Paperclip document **"Role records for Convenor, Steward, Ferryman and Wright"** (`3d3ef2cb-6f62-47e7-9c13-7aa6f0ffeeb2`, revision `d3675fd9-aac9-4b8e-a9bd-1731ba03aee4`) on coordination task `KNO-2`, which names this item as its governing record. Each carries `name`, `description`, `model` and `color` frontmatter — the same projection-layer set all five existing `governance/` records carry — and an instruction body with `## Grounding`, `## When invoked`, `## What you own vs defer`, `## Orchestration`, `## Lenses`, `## Outcome evidence`, and — for three of the four — `## Output bar`. Implementation transcribes those bodies; it does not author them.
 - The approved proposal cited baseline `701d669`. The repository has since advanced through roadmap-only commits to `6dd81641`, which is the commit that captured this record; nothing under `subagents/`, `.ki.toml`, or the `ki-subagents*` skills changed between the two, so the approved reasoning is unaffected.
 - The approved proposal reserved `KI-HARNESS-GOV-096`, which was allocated to other work before this item was written; `GOV-101` is the next free number against the `_ISSUES.md` `GOV` high-water mark, which the capture advanced to `101`.
 - Three of the four records will carry a named `PORTABLE-3` gap on outcome evidence — Steward, Ferryman, Wright; Convenor is expected conforming. The roles are one day old and `ki-subagents` states that a syntactically valid file is not evidence that selecting a role improved an outcome. Each gap names the work that closes it. `PORTABLE-1` through `PORTABLE-3` and `HOST-1` are all judgment criteria, so these dispositions are recorded by the reviewer in `## Review`; no tool emits them.
@@ -178,7 +178,7 @@ Executed in one isolated `git worktree` on branch `ki-harness-gov-101-coordinati
 
 Evidence: the four record files are byte-identical to the approved bodies (verified by re-extraction and comparison, below); tier 0 and tier 2 of `## Verify` pass with real output recorded; tier 1 is **unavailable** on this host and is reported as unavailable, not as passed.
 
-### Change Summary
+### Summary of changes
 
 Five files changed, all inside `## Files touched`:
 
@@ -351,7 +351,7 @@ Ruby's YAML loader is not the auditor's parser and this is a re-implementation i
 Four, none of them a defect in the delivered files.
 
 1. **The primary gate did not run.** Tier 1 is unavailable on this host, so the four records are unaudited against `ki-subagents-claude`; `CLAUDE-1` and `CLAUDE-4` are unchecked by anything authoritative. Owner and action are recorded on coordination task `KNO-15` (host activation of the `ki` environment). This is a precondition, not a `blocked_by` dependency, and it is a condition on the whole archipelago rather than on this change. A reviewer may reasonably require tier 1 to pass on a bootstrapped host before accepting.
-2. **`## Current state` misdescribes the approved frontmatter** as `name` and `description` only. See the approved deviation in `### Change Summary`. The reviewer decides whether the records or the prose is corrected; correcting the records would be an ungoverned edit to a human-approved original and was not done.
+2. **`## Current state` misdescribes the approved frontmatter** as `name` and `description` only. See the approved deviation in `### Summary of changes`. The reviewer decides whether the records or the prose is corrected; correcting the records would be an ungoverned edit to a human-approved original and was not done.
 3. **The published projection is four records behind.** `ki-plugins/knowledge-islands/agents/` at `d177a05e` carries the five `governance/` names and none of the four new ones. That is `KI-HARNESS-GOV-093`, deliberately downstream of this item and explicitly excluded by `## Boundary`.
 4. **The three follow-on captures in `## Documentation impact` / `Roadmap` have no roadmap identifiers.** They are described but not captured, so today they are held only in this record and in this section — which is deleted at the prune. Capturing them through `ki-next` is `ki-convenor`'s lane and would be a roadmap write outside this item's authorized file set, so it was not done here. The reviewer should require identifiers for at least the decision record on separating a role record from its projections before acceptance, since it is the one with no other home.
 
@@ -374,6 +374,10 @@ Verified: tier 0 exits `0`; all four tier 2 checks exit `0`, including cross-rep
 Concerns: the primary gate did not run (`KNO-15`); `## Current state` misdescribes the approved frontmatter; the published projection is four records behind (`KI-HARNESS-GOV-093`); three follow-on captures still lack identifiers.
 
 Learning routes, proposed and not promoted: that a verification whose primary gate cannot execute on the working host should say so in the record's own `## Verify` at shaping time rather than at review — this item did that, and it is worth generalising; that mechanical transcription with a byte-comparison step is a cheap, reusable way to discharge "transcribe verbatim" instructions; and that three roles landing with a declared, self-citing `PORTABLE-3` gap is a usable pattern for recording a role before it has earned its evidence.
+
+## Done
+
+Accepted 2026-09-26 by Kris Brown on the review packet above.
 
 ## Discussion
 
@@ -418,3 +422,18 @@ Captured at `6dd81641`, executed from `3f409aaceaa6baae223a20c297dfd06ad733d536`
 ### Governing coordination task
 
 Coordination task `KNO-2` on the external plane carries the approved proposal and the human approval. It names this identifier, and this record names it, pending the covering-task frontmatter field that would make the link structural rather than prose. Delivery ran under child task `KNO-16`.
+
+### What acceptance changed in this record
+
+Two prose corrections, both to this record and neither to a delivered file.
+
+`## Current state` said each approved record carries `name` and `description` frontmatter only; it now names the four fields the approved bodies actually carry. This is the correction the reviewer reserved in `### Outstanding concerns` concern 2 and in `### What approved frontmatter actually carries`. The delivered records were not touched: correcting them to match the prose would have been an ungoverned edit to a human-approved original, and the prose was the inaccurate side. `## Steps` inherits the same understatement in its second step. It is left as written, because it is the instruction that was given rather than an observation, and the step is complete against the approved bodies it points at.
+
+The review packet's second heading was `### Change Summary`. The work-item format requires `### Summary of changes`, and `ki-accept` refuses a packet whose six headings are not exactly those in order, so the record could not have been closed as written. The heading was renamed and its one in-record citation updated. No content moved.
+
+### How the outstanding concerns stood at acceptance
+
+- **Concern 1, the primary gate.** Still unavailable, re-attempted at acceptance rather than carried forward on the earlier claim: `ki repo diag --repo .` reports `ki environment is not bootstrapped; run 'ki bootstrap' first`. `CLAUDE-1` and `CLAUDE-4` remain unchecked by the contract's own auditor. Accepted on tier 0 and tier 2 with tier 1 recorded as unavailable, which is the disposition the approving human gave. `ki bootstrap` is host activation and is not repository work.
+- **Concern 2, the frontmatter prose.** Resolved above.
+- **Concern 3, the published projection.** Unchanged and out of scope. `KI-HARNESS-GOV-093` owns it.
+- **Concern 4, the missing follow-on identifiers.** Closed before acceptance, which is why acceptance waited on it. `KI-HARNESS-GOV-102` — *Decide role record serialization* — and `KI-HARNESS-GOV-103` — *Cite coordination rules once* — are captured at `4a04c480` on `main`, both `horizon: triage`, `status: draft`. The third follow-on, host activation, is coordination work with no roadmap identifier and is named in `## Documentation impact`. The two decisions that would otherwise have been deleted with this record now have a home that survives its prune.
