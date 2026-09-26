@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-26T15:56:59Z
+updated_at: 2026-09-26T15:59:21Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -47,7 +47,7 @@ The numbering rule appears in four doctrine locations and states atomicity rathe
 
 The Paperclip coordination standard already requires separate worktrees for concurrent mutating tasks in its workspace model, but states it as a concurrency precaution rather than a standing rule, and says nothing about where roadmap records are written. `COORD-4` assesses workspace isolation; no criterion assesses the roadmap write locus.
 
-`ki-agent-coordination-paperclip` is `ki-applicability: declaration-only` and no repository declares it, so its rubric has nothing to run against. That gap is real but is not this item's to close.
+`ki-agent-coordination-paperclip` is `ki-applicability: declaration-only`. No repository declared it when this record was first written, so its rubric had nothing to run against. That is no longer true: `ff42edc4` added `[skills.ki-agent-coordination-paperclip]` to this repository's `.ki.toml`, so as of `main` at `6c79a75b` the criteria do have a declaration to run against. Whether they can be executed on a given host is a separate gap, captured as `KI-HARNESS-GOV-109`, and neither is this item's to close.
 
 The ledger body text is generated: `issueLedger()` in `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts` produces it and `ledgerAllocation()` accepts a ledger only when the file is byte-identical to that output. Adding the order of steps to `_ISSUES.md` therefore cannot be an edit to the file; it is a change to the generator plus a repair path for every already-conforming repository, since `CONFORM` scaffolds a ledger only when it is absent and never overwrites one.
 
