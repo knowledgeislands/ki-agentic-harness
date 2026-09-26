@@ -34,6 +34,11 @@ Commit messages express one completed unit through the portable convention.
   - _Review prompt:_ After inspecting the proposed diff and subject line, assess whether the commit type, optional scope, and imperative summary accurately describe one completed unit, using the established vocabulary without combining unrelated changes.
   - _Outcomes:_ conforming; split required; message revision required
   - _Conforming guidance:_ Split unrelated changes into separately reviewable commits, then revise the Conventional Commit type, scope, or imperative summary to describe the completed unit.
+- **COMMIT-2 [J] — publication and integration retain separate authority** — Local commits, pushes, and integration into the primary branch use distinct authority boundaries. (standards-git.md#commit-publication-and-integration-authority)
+  - _Evidence scope:_ The requested change, repository instructions, selected branch or worktree, proposed commit, push target, integration action, and any explicit or standing authority.
+  - _Review prompt:_ Does the actor have authority for each local commit, push, and primary-branch integration action independently, without inferring publication or merge authority from assignment, autonomy, or task completion?
+  - _Outcomes:_ conforming; commit authority required; push authority required; integration authority required
+  - _Conforming guidance:_ Commit only the authorised unit and branch. Push or integrate only under explicit current-user instruction or a standing repository workflow that names the actor and scope.
 
 ## BRANCH — working approach
 
@@ -41,16 +46,21 @@ Commit messages express one completed unit through the portable convention.
 
 Working-copy topology and review flow follow local protection, review, and concurrency needs.
 
-- **BRANCH-1 [J] — working approach matches the delivery boundary** — Single-main, branch-with-PR, and worktree-with-PR approaches follow repository policy, review needs, and concurrency. (standards-git.md)
+- **BRANCH-1 [J] — working approach matches the delivery boundary** — Primary-checkout, branch-with-PR, and worktree-with-PR approaches follow repository policy, review needs, concurrency, and unattended isolation. (standards-git.md)
   - _Evidence scope:_ The selected repository, requested change, current `git branch --show-current` and `git worktree list` evidence, protection policy, concurrency, and review boundary.
-  - _Review prompt:_ After checking branch, worktree, protection, concurrency, and review evidence, assess whether `single-working-copy-on-main`, `single-working-copy-on-branch-with-pr`, or `worktrees-with-pr` is the appropriate approach.
+  - _Review prompt:_ After checking branch, worktree, protection, concurrency, unattended execution, and review evidence, assess whether the primary-checkout default or an explicitly required branch or worktree boundary is appropriate.
   - _Outcomes:_ conforming; use single-working-copy-on-main; use single-working-copy-on-branch-with-pr; use worktrees-with-pr
-  - _Conforming guidance:_ Use the least ceremonial approach that preserves the selected protection, review, and concurrency boundary; use separate worktrees when concurrent deliveries need isolated working files.
+  - _Conforming guidance:_ Use the primary checkout for ordinary interactive work. Use a branch or separate worktree when protection, review, concurrent delivery, or unattended coordination requires that isolation.
 - **BRANCH-2 [J] — finished worktrees are integrated or disposed** — Finished linked worktrees are inspected, deliberately integrated or disposed, removed, and pruned without losing unmerged work. (standards-git.md)
   - _Evidence scope:_ Every linked worktree in `git worktree list --porcelain`, its branch, `git status --short`, commits not reachable from the intended integration branch, branch diff, and delivery authority.
   - _Review prompt:_ For each finished linked worktree, is its work deliberately integrated or explicitly disposed before the worktree and any proven-redundant local branch are removed?
   - _Outcomes:_ conforming; integrate worktree; dispose worktree; ownership decision required
   - _Conforming guidance:_ Inspect before removal. Integrate coherent authorised work; dispose only confirmed unwanted work. Delete a branch only after proving reachability or no remaining diff, prune stale metadata, and retain only intentionally active worktrees.
+- **BRANCH-3 [J] — linked worktrees use a safe runtime-owned root** — Linked working files stay outside the primary working tree and Git common directory under a collision-safe runtime-owned root. (standards-git.md#worktree-location)
+  - _Evidence scope:_ Every linked worktree path, the repository primary working tree, Git common directory, estate discovery roots, and the runtime that owns creation and retirement.
+  - _Review prompt:_ Is each linked worktree contained under an explicit runtime-owned root outside the repository and its Git common directory, excluded from estate discovery, and uniquely keyed to avoid collisions?
+  - _Outcomes:_ conforming; relocate worktree root; define runtime ownership; collision risk
+  - _Conforming guidance:_ Use one runtime-owned application-state or XDG root with repository and task identity. Do not place working files inside the repository, under `.git`, or in an estate-scanned workspace tree.
 
 ## HYGIENE — Git working hygiene
 

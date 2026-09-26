@@ -42,6 +42,10 @@ Runs operating on the same island may share repository identity and baseline whi
 
 A run that will write to a repository works in its own isolated checkout — normally a linked worktree on its own branch, cut from a named commit — whether or not another run happens to be active. Isolation is a standing property of a writing run, not a precaution taken when concurrency is observed, because a run cannot see the runs that start after it. A human's working copy is never a run's working directory: a person must be able to read, build, and edit their own checkout without an agent changing files underneath them.
 
+Paperclip worktrees use an explicit Paperclip-owned root outside the repository's working tree and outside its Git common directory. The root is outside estate discovery and includes enough company, project or repository, and task identity to prevent collisions. Do not use Paperclip's repository-local default, an ad hoc workspace sibling, or `.git/paperclip-worktrees` for working files.
+
+A writing run may commit verified work to its task branch when the governing KI work or direct instruction authorises that mutation. It does not push or integrate that branch into the primary branch unless explicit current-user or standing repository authority separately grants that action. Paperclip assignment, agent autonomy, and a `done` task state grant none of commit, push, merge, deployment, or KI acceptance by themselves.
+
 Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, local branch or worktree identity when applicable, and any uncommitted starting state admitted into scope. Never infer a clean or current checkout from the agent name.
 
 ### Roadmap records are the exception

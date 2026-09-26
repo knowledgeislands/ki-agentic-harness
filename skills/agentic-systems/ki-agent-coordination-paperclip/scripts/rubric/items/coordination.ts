@@ -40,10 +40,11 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
     {
       code: 'COORD-4',
       title: 'Workspace isolation',
-      description: 'Concurrent mutation uses isolated writable workspaces grounded in explicit baselines.',
+      description:
+        'Every mutating run uses an isolated writable workspace under a safe Paperclip-owned root and an explicit baseline.',
       sources: [`${STANDARD}#workspace-model`],
       judgment: judgment(
-        'Are concurrent mutating tasks isolated in separate writable checkouts with explicit repository and baseline evidence?'
+        'Does every mutating run use its own writable checkout under a collision-safe Paperclip-owned root outside the repository and Git common directory, with explicit repository and baseline evidence?'
       )
     },
     {

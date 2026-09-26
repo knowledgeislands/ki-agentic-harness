@@ -32,9 +32,9 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does each task identify at most one governing KI work item, preserve repository and baseline context, and avoid treating Paperclip completion as KI acceptance?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-4 [J] — Workspace isolation** — Concurrent mutation uses isolated writable workspaces grounded in explicit baselines. (standards-agent-coordination-paperclip.md#workspace-model)
+- **COORD-4 [J] — Workspace isolation** — Every mutating run uses an isolated writable workspace under a safe Paperclip-owned root and an explicit baseline. (standards-agent-coordination-paperclip.md#workspace-model)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Are concurrent mutating tasks isolated in separate writable checkouts with explicit repository and baseline evidence?
+  - _Review prompt:_ Does every mutating run use its own writable checkout under a collision-safe Paperclip-owned root outside the repository and Git common directory, with explicit repository and baseline evidence?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **COORD-5 [J] — Direct interaction and control-plane boundary** — Direct sessions remain valid and Paperclip API mechanics stay with Paperclip’s own skill. (standards-agent-coordination-paperclip.md#interaction-and-skill-composition)

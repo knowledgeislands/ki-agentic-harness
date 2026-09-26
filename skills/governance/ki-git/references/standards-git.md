@@ -32,9 +32,17 @@ The binding does not attempt to decide whether a summary is genuinely imperative
 
 Other skills MAY define a narrowly-scoped trailer block as durable evidence for their own concern. For example, `ki-engineering` owns the `KI-Consistency-Review-*` block for an advisory code-consistency review. That block is portable commit metadata, not a new Git-hygiene policy: `ki-git` neither interprets its engineering outcome nor requires it on ordinary commits.
 
+## Commit, publication, and integration authority
+
+A local commit preserves one verified unit of authorised repository work. Ordinary interactive work may commit that unit in the primary checkout when the requested change and repository instructions permit it. A branch or linked-worktree delivery may commit only to its own branch unless separate integration authority has been granted.
+
+A request to change, finish, or commit work does not imply authority to push. Pushing publishes the current ref and can carry commits made by other writers, trigger CI, or deploy. It requires explicit current-user instruction or a standing repository workflow that names the actor and scope.
+
+Merging or fast-forwarding a delivery into the primary branch is a separate integration decision. A worker may prepare and commit a reviewable branch without receiving authority to merge it. Autonomy, assignment, task completion, or ownership of a worktree does not grant push or integration authority. Report publication as an action taken or not taken; do not treat a shared ref's current position as durable session-owned state.
+
 ## Working-copy and review approaches
 
-`main` is open by default in Knowledge Islands repositories.
+`main` is open by default in Knowledge Islands repositories, and ordinary interactive work uses the repository's primary checkout rather than creating a linked worktree. A repository instruction, explicit user request, or unattended coordination policy may require a branch or worktree boundary.
 
 Select one of three approaches from repository policy, the requested review boundary, and whether work must proceed concurrently:
 
@@ -42,7 +50,13 @@ Select one of three approaches from repository policy, the requested review boun
 - **`single-working-copy-on-branch-with-pr`** — use when one delivery is active in the working copy and protection, the user, or a useful isolated review boundary calls for a branch and pull request. Multiple threads may contribute to that one delivery under the same shared-working-tree hygiene.
 - **`worktrees-with-pr`** — use when concurrent or independently isolated deliveries need separate branches, indexes, and working files. Give each branch its own worktree and PR, then integrate through the repository's review and merge policy.
 
-Do not invent a branch, pull-request, or worktree requirement merely because several actors may modify one working copy. Use worktrees when concurrent deliveries require separate branches or isolated working files; do not keep independent branch work in one working copy merely because separate indexes are possible.
+Do not invent a branch, pull-request, or worktree requirement merely because several interactive actors may modify one working copy. Use worktrees when concurrent deliveries require separate branches or isolated working files, or when an unattended coordinator must not mutate a human's checkout; do not keep independent branch work in one working copy merely because separate indexes are possible.
+
+### Worktree location
+
+A linked worktree lives under one explicit, runtime-owned root outside the repository's primary working tree and outside its Git common directory. The root must not be discoverable as another estate or workspace member, and its repository and task identity must prevent path collisions. Do not use an ad hoc sibling inside a normal workspace tree, a repository-local untracked directory, or a path under `.git` for working files.
+
+The coordinator that creates a worktree owns its location, branch association, and retirement evidence. A portable policy names the containment properties rather than one user's absolute path; an XDG state/data root or a coordinator-owned application-state root is an appropriate implementation.
 
 ### Finished worktree retirement
 

@@ -23,6 +23,8 @@ Read the [Paperclip coordination standard](references/standards-agent-coordinati
 
 ## Shared model
 
+Every Paperclip run that can mutate a repository uses a task-specific branch and isolated checkout under a Paperclip-owned root outside the repository and its Git directory. It may commit authorised work on that branch; pushing or integrating it requires separate authority.
+
 Keep four identities distinct:
 
 - an **agent role** is durable organisational identity and responsibility;
