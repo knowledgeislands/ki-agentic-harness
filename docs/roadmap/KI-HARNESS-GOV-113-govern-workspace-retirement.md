@@ -4,12 +4,12 @@ area: GOV
 title: Govern workspace retirement
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 5514e48fa6557d150441a9ca83ff036bcdd3aca9
 created_at: 2026-09-26T22:55:00Z
-updated_at: 2026-09-26T22:55:00Z
+updated_at: 2026-09-26T23:40:00Z
 ---
 
 # KI-HARNESS-GOV-113: Govern workspace retirement
@@ -53,11 +53,11 @@ Six of the nine live worktrees in this repository are held correctly by the firs
 
 ## Steps
 
-- [ ] Reserve `GOV-113` by committing the `_ISSUES.md` advance on its own, before this record exists.
-- [ ] Add a `## Workspace retirement` section to `standards-agent-coordination-paperclip.md` stating the single mechanism, the five gates, the refused-case disposition, and where retirement readiness is actually read.
-- [ ] Add `COORD-9` for workspace retirement in `scripts/rubric/items/coordination.ts`, extend the criterion-code assertion in `scripts/rubric/items/index.test.ts`, and regenerate `references/rubric.md`.
-- [ ] Pin the server build the gates were read from in `references/sources.md`, so a version bump cannot silently rewrite the doctrine.
-- [ ] Record the cooldown decision and the configuration gap it leaves in this record's Current state.
+- [x] Reserve `GOV-113` by committing the `_ISSUES.md` advance on its own, before this record exists.
+- [x] Add a `## Workspace retirement` section to `standards-agent-coordination-paperclip.md` stating the single mechanism, the five gates, the refused-case disposition, and where retirement readiness is actually read.
+- [x] Add `COORD-9` for workspace retirement in `scripts/rubric/items/coordination.ts`, extend the criterion-code assertion in `scripts/rubric/items/index.test.ts`, and regenerate `references/rubric.md`.
+- [x] Pin the server build the gates were read from in `references/sources.md`, so a version bump cannot silently rewrite the doctrine.
+- [x] Record the cooldown decision and the configuration gap it leaves in this record's Current state.
 
 ## Files touched
 
@@ -68,6 +68,7 @@ Six of the nine live worktrees in this repository are held correctly by the firs
 - `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md` (generated)
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
 
 ## Verify
 
@@ -105,6 +106,59 @@ No human-guidance change. The website skills-by-outcome guide selects skills by 
 ### Roadmap
 
 One follow-on. Nothing surfaces a workspace the mechanism is holding by a gate that can never pass; it is visible only to whoever walks close-readiness per workspace. Captured as `KI-HARNESS-GOV-114` after this record's number was secured, so the two could not race for one ledger advance.
+
+## Review
+
+### Delivered
+
+The approved boundary: the retirement half of the workspace model, one judgment criterion for it, the build pin that makes the reading reproducible, and this instance's cooldown decision. Every exclusion held — the six orphaned workspace records, the four worktree-only commits, the creation half of the convention, `KI-HARNESS-GOV-104`'s write-locus rules, `KI-HARNESS-GOV-107`'s mechanisation, and the coordination-plane configuration change are all untouched.
+
+Immutable baseline `5514e48fa6557d150441a9ca83ff036bcdd3aca9`, delivered on branch `paperclip/aligned-20260926/KIS-39-write-worktree-retirement-into-the-convention-and-ki-doctrine`: `0cc140ee` reserves the number alone, `b7710d0f` writes this record, and the commit carrying this review packet delivers the doctrine. Nothing is pushed, merged, or accepted.
+
+### Change Summary
+
+- `standards-agent-coordination-paperclip.md` gains `## Workspace retirement` as a sibling of `## Workspace model`: one mechanism, five gates, the refused-case Triage disposition with its trigger and owner, and close-readiness as the only place retirement readiness may be read.
+- `scripts/rubric/items/coordination.ts` gains `COORD-9`; `scripts/rubric/items/index.test.ts` asserts the new code list; `references/rubric.md` carries the matching published entry.
+- `references/sources.md` pins `@paperclipai/server` 2026.916.1 as the source of the gates and records a partial review dated 2026-09-26.
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` moves its fleet counts from 721 criteria and 272 judgment to 722 and 273. One added judgment criterion changes two numbers in a cross-skill inventory; no other count moved.
+
+Material decisions: the criterion is `COORD-9` rather than `COORD-8`, which `KI-HARNESS-GOV-104` holds on an unmerged branch; the standard states five gates and records the unreadable-tree skip here instead; the cooldown figure lives in this record rather than in the portable standard.
+
+Approved deviations: this record and its ledger advance were written in the task worktree rather than the designated primary checkout, directed by the responsible human on `KIS-39`; see the write-locus topic in Discussion for the collision check that substituted for serialisation.
+
+### Verification
+
+| Gate | Outcome |
+| --- | --- |
+| `bun run test` | 789 pass, 0 fail, 3372 assertions |
+| `bunx tsc --noEmit` | exit 0, after `bun install --frozen-lockfile` in this worktree |
+| `ki harness list` | resolves `knowledgeislands/ki-agentic-harness`, 62 capabilities |
+| `ki repo audit --skill ki-agent-coordination-paperclip` | PASS, 2 skills |
+| `ki repo audit --skill ki-work-roadmap` | PASS after this packet was added; it failed `ITEM-3` while the packet was absent, which is what proves the audit reads this worktree |
+| `ki repo audit --skill ki-skills` | PASS |
+| `ki repo audit --skill ki-authoring` | PASS |
+
+### Outstanding concerns
+
+`references/rubric.md` was not regenerated by the publication generator. `ki dev skill rubric ki-agent-coordination-paperclip` reports the installed harness's own copy in sync and never reads this worktree, and `--write` is refused unless the installed harness is dev-linked to a checkout — which would repoint shared host state and was therefore not done. The published entry here was written to match the generator's shape by copying a sibling criterion's rendered bytes. A probe settles what that costs: appending a stray line to this worktree's `references/rubric.md` still audits PASS, so `RUBRIC-1` is not exercised on this host and nothing here has verified the publication against the catalogue. A reviewer on a dev-linked checkout should run `ki dev skill rubric ki-agent-coordination-paperclip --write` and expect no diff; a diff is a defect in this change, not in the generator.
+
+`COORD-9` is judgment-graded, so nothing detects a violation mechanically. The skill is declared in `.ki.toml`, so the criterion is at least exercised by review rather than published and ignored, but the detection gap for a held workspace is real and is `KI-HARNESS-GOV-114`.
+
+The cooldown decision of zero days is recorded and not configured. Until `PAPERCLIP_WORKSPACE_REAPER_COOLDOWN_DAYS=0` is set in the coordination-plane instance, the running default of seven days contradicts this record, which is why Current state states the decision and the gap separately.
+
+### Post-change review
+
+The goal is met for the half it claims: a reader of the standard can now tell that a workspace on disk may be correct, can see the five conditions under which it ends, and knows that a refused workspace is someone's decision rather than debris. It does not claim the other half — nothing surfaces the refused cases, so the rule still depends on a person walking close-readiness.
+
+Regression risk is low and bounded. Three of the four source changes are prose in a skill nothing executes; the fourth adds one catalogue entry and moves two assertion counts. The one thing a merge can break is the criterion namespace: if `KI-HARNESS-GOV-104`'s branch lands `COORD-8` after this, the codes are contiguous and nothing conflicts, and if it never lands, the published rubric carries a gap that costs a reader nothing.
+
+Acceptance readiness: ready for review, subject to the rubric-publication concern above and to a ledger re-read before merge. If `main` has advanced past `GOV: 113`, this record needs renumbering before it lands.
+
+### Mini recap
+
+Workspace retirement is now doctrine in the coordination standard, with a judgment criterion, a pinned build reading, and this instance's zero-day cooldown recorded in the item rather than the portable standard. Verified by the full test suite, the TypeScript gate, and four `ki repo audit` runs, one of which failed first and passed only after the review packet existed. Two concerns stay open: the generated rubric publication is unverified on this host, and the cooldown decision is recorded but not yet configured.
+
+Learning worth routing, not promoted here: that an audit can report PASS because a criterion is unexercised rather than because the repository conforms is a general trap, and it applies to every `ki repo audit` reported as evidence from a host whose harness is not dev-linked. The natural home is `KI-HARNESS-GOV-107`, which owns making these criteria mechanical.
 
 ## Discussion
 

@@ -60,6 +60,24 @@ Isolation and serialisation protect different things. Isolation keeps two delive
 
 A coordinated run therefore crosses back to the primary checkout to take its number and write its record, and returns to its own worktree for delivery. Those are two write boundaries in two checkouts by design, and the task's evidence records both.
 
+## Workspace retirement
+
+An isolated workspace ends through Paperclip's own retirement mechanism and through nothing else. No agent removes a worktree, deletes a branch Paperclip created, or deletes a workspace directory by hand. A person may retire one early through Paperclip's workspace view, which runs the same cleanup and records it. A hand-removal records nothing and leaves an active workspace record pointing at a path that no longer exists.
+
+The mechanism destroys only the artefacts it created, and only when every gate passes:
+
+1. the source task and every task in its subtree are terminal;
+2. the working tree is clean, counting untracked entries as dirty;
+3. the branch is merged into its base, where neither an unmerged nor an unknown delivery state qualifies;
+4. no queued or running run holds the workspace or the source task;
+5. the configured cooldown since the most recent terminal transition in the task tree has elapsed.
+
+A workspace still on disk is therefore not evidence of a leak. A held workspace is the mechanism declining to destroy unlanded work, which is the behaviour this rule wants. An arrangement records the cooldown it is configured with, including a cooldown of zero, where retirement follows immediately once the other four gates pass; an unrecorded cooldown cannot be audited.
+
+A workspace held past its cooldown by a gate that can never pass is neither debris nor the mechanism's problem to solve. It is unlanded work nobody has been asked about, so it is raised as a Triage item in the repository that owns the checkout and decided there: land it, discard it, or record it as a duplicate of work already landed. A detached `HEAD` is the clearest case, because no branch state can satisfy the merge gate.
+
+Read retirement readiness from Paperclip's close-readiness assessment for the individual workspace. A delivery state carried in a workspace list is not evidence, because it may be an unpopulated default rather than a reading.
+
 ## Interaction and skill composition
 
 Humans may speak directly to an agent. Direct conversation does not bypass governance: the agent uses this skill to preserve the KI relationship and Paperclip's own skill for control-plane operations. Paperclip remains optional for a conversation and authoritative for the coordination state it actually owns.

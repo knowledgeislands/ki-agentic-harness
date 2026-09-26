@@ -52,6 +52,11 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-9 [J] — Workspace retirement** — Isolated workspaces end only through the coordination plane, and a refused retirement becomes a recorded repository decision. (standards-agent-coordination-paperclip.md#workspace-retirement)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Do isolated workspaces end only through Paperclip’s retirement mechanism with the arrangement’s cooldown recorded, and does a workspace it refuses to retire become a recorded repository decision rather than residue on disk?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## RUBRIC — Generated rubric publication
 

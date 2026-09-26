@@ -78,6 +78,16 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       judgment: judgment(
         'Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?'
       )
+    },
+    {
+      code: 'COORD-9',
+      title: 'Workspace retirement',
+      description:
+        'Isolated workspaces end only through the coordination plane, and a refused retirement becomes a recorded repository decision.',
+      sources: [`${STANDARD}#workspace-retirement`],
+      judgment: judgment(
+        'Do isolated workspaces end only through Paperclip’s retirement mechanism with the arrangement’s cooldown recorded, and does a workspace it refuses to retire become a recorded repository decision rather than residue on disk?'
+      )
     }
   ]
 }
