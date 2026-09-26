@@ -46,6 +46,10 @@ Paperclip worktrees use an explicit Paperclip-owned root outside the repository'
 
 A writing run may commit verified work to its task branch when the governing KI work or direct instruction authorises that mutation. It does not push or integrate that branch into the primary branch unless explicit current-user or standing repository authority separately grants that action. Paperclip assignment, agent autonomy, and a `done` task state grant none of commit, push, merge, deployment, or KI acceptance by themselves.
 
+A repository's ordinary Paperclip workflow may grant non-force push of only the recorded task branch and creation or update of its draft pull request. The grant does not include primary-branch push, tags, releases, deployment, remote-branch deletion, approval, merge, or auto-merge.
+
+A repository may delegate pull-request review, approval, merge, or auto-merge to selected Paperclip agents as independent capabilities. The repository-owned grant identifies each stable agent, repository and target refs, eligible work domain, required checks or reviews, allowed merge method, and expiry or revocation condition. Paperclip may enforce or project that grant, but assignment, role title, credentials, broad autonomy, and a `done` task state do not originate or widen it. An integration agent acts only within the grant, never approves its own delivery, never bypasses protection, and does not treat PR merge as KI acceptance.
+
 Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, local branch or worktree identity when applicable, and any uncommitted starting state admitted into scope. Never infer a clean or current checkout from the agent name.
 
 ### Roadmap records are the exception

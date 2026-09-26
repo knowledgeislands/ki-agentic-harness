@@ -20,16 +20,24 @@ const COMMIT_1: RubricItem<GitRubricContext> = {
 const COMMIT_2: RubricItem<GitRubricContext> = {
   code: 'COMMIT-2',
   title: 'publication and integration retain separate authority',
-  description: 'Local commits, pushes, and integration into the primary branch use distinct authority boundaries.',
+  description:
+    'Commits, task-branch publication, pull-request review, approval, merge, and primary-branch integration use explicit separable authority.',
   sources: ['standards-git.md#commit-publication-and-integration-authority'],
   judgment: {
     scope:
-      'The requested change, repository instructions, selected branch or worktree, proposed commit, push target, integration action, and any explicit or standing authority.',
+      'The requested change, repository instructions, stable actor identity, selected branch or worktree, proposed commit, push target, pull-request action, integration target, required gates, and any explicit or standing authority.',
     prompt:
-      'Does the actor have authority for each local commit, push, and primary-branch integration action independently, without inferring publication or merge authority from assignment, autonomy, or task completion?',
-    outcomes: ['conforming', 'commit authority required', 'push authority required', 'integration authority required'],
+      'Does the actor have independently evidenced authority for each commit, push, review, approval, merge, or auto-merge action, scoped to the named repository, refs, work domain, gates, and lifetime, without inferring it from assignment, autonomy, credentials, or task completion?',
+    outcomes: [
+      'conforming',
+      'commit authority required',
+      'push authority required',
+      'review authority required',
+      'integration authority required',
+      'authority scope incomplete'
+    ],
     guidance:
-      'Commit only the authorised unit and branch. Push or integrate only under explicit current-user instruction or a standing repository workflow that names the actor and scope.'
+      'Commit only the authorised unit and branch. A bounded unattended workflow may publish its task branch and draft pull request. Review, approval, merge, and auto-merge require separately named capabilities with actor, repository, ref, domain, gate, and revocation scope.'
   }
 }
 

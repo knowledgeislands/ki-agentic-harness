@@ -34,11 +34,11 @@ Commit messages express one completed unit through the portable convention.
   - _Review prompt:_ After inspecting the proposed diff and subject line, assess whether the commit type, optional scope, and imperative summary accurately describe one completed unit, using the established vocabulary without combining unrelated changes.
   - _Outcomes:_ conforming; split required; message revision required
   - _Conforming guidance:_ Split unrelated changes into separately reviewable commits, then revise the Conventional Commit type, scope, or imperative summary to describe the completed unit.
-- **COMMIT-2 [J] — publication and integration retain separate authority** — Local commits, pushes, and integration into the primary branch use distinct authority boundaries. (standards-git.md#commit-publication-and-integration-authority)
-  - _Evidence scope:_ The requested change, repository instructions, selected branch or worktree, proposed commit, push target, integration action, and any explicit or standing authority.
-  - _Review prompt:_ Does the actor have authority for each local commit, push, and primary-branch integration action independently, without inferring publication or merge authority from assignment, autonomy, or task completion?
-  - _Outcomes:_ conforming; commit authority required; push authority required; integration authority required
-  - _Conforming guidance:_ Commit only the authorised unit and branch. Push or integrate only under explicit current-user instruction or a standing repository workflow that names the actor and scope.
+- **COMMIT-2 [J] — publication and integration retain separate authority** — Commits, task-branch publication, pull-request review, approval, merge, and primary-branch integration use explicit separable authority. (standards-git.md#commit-publication-and-integration-authority)
+  - _Evidence scope:_ The requested change, repository instructions, stable actor identity, selected branch or worktree, proposed commit, push target, pull-request action, integration target, required gates, and any explicit or standing authority.
+  - _Review prompt:_ Does the actor have independently evidenced authority for each commit, push, review, approval, merge, or auto-merge action, scoped to the named repository, refs, work domain, gates, and lifetime, without inferring it from assignment, autonomy, credentials, or task completion?
+  - _Outcomes:_ conforming; commit authority required; push authority required; review authority required; integration authority required; authority scope incomplete
+  - _Conforming guidance:_ Commit only the authorised unit and branch. A bounded unattended workflow may publish its task branch and draft pull request. Review, approval, merge, and auto-merge require separately named capabilities with actor, repository, ref, domain, gate, and revocation scope.
 
 ## BRANCH — working approach
 

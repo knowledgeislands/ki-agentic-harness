@@ -50,6 +50,12 @@ A request to change, finish, or commit work does not imply authority to push. Pu
 
 Merging or fast-forwarding a delivery into the primary branch is a separate integration decision. A worker may prepare and commit a reviewable branch without receiving authority to merge it. Autonomy, assignment, task completion, or ownership of a worktree does not grant push or integration authority. Report publication as an action taken or not taken; do not treat a shared ref's current position as durable session-owned state.
 
+An unattended task-branch workflow may grant commit, non-force push of only the recorded task branch, and creation or update of its draft pull request as one bounded standing authority. That grant does not cover the primary branch, tags, releases, deployment, or remote-branch deletion.
+
+Pull-request review, approval, merge, and auto-merge are separate capabilities. A repository may delegate any combination to a stable named agent through explicit current-user instruction or durable repository-owned policy. The grant names the agent identity, repository and target refs, permitted actions, eligible work domain, required checks or reviews, allowed merge method, and expiry or revocation condition. An agent name, role, task assignment, broad autonomy, or access credential is not itself a grant. Approval never implies merge; merge never implies approval. An agent never approves its own delivery; a repository that permits one agent to both approve and merge still requires authorship separation and hosting protection.
+
+An authorised integration agent may merge only an eligible delivery within its grant after required evidence passes; it may not bypass protection or widen the grant because a check is unavailable. Use a durable `ki-delegation` packet when one high-risk task-specific handoff needs locked authority and escalation evidence; ordinary standing integration authority belongs in repository policy.
+
 ## Working-copy and review approaches
 
 `main` is open by default in Knowledge Islands repositories, and ordinary interactive work uses the repository's primary checkout rather than creating a linked worktree. A repository instruction, explicit user request, or unattended coordination policy may require a branch or worktree boundary.

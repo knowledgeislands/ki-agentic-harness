@@ -64,6 +64,17 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       judgment: judgment(
         'Does completion reconcile Paperclip task evidence, repository evidence, the KI work record, and durable knowledge promotion without converting unavailable evidence into a pass?'
       )
+    },
+
+    {
+      code: 'COORD-7',
+      title: 'Delegated Git authority',
+      description:
+        'Task-branch publication and selected-agent pull-request review or integration use explicit repository-owned capability grants.',
+      sources: [`${STANDARD}#workspace-model`],
+      judgment: judgment(
+        'Does each Paperclip agent exercise only the separately granted commit, task-branch push, draft-PR, review, approval, merge, or auto-merge capabilities for its named repository, refs, work domain, gates, and grant lifetime?'
+      )
     }
   ]
 }

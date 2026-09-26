@@ -13,6 +13,7 @@ test('Paperclip coordination keeps relationship criteria judgment-led', () => {
     'COORD-4',
     'COORD-5',
     'COORD-6',
+    'COORD-7',
     'RUBRIC-1'
   ])
   expect(items.every((item) => !item.mechanical || item.code === 'RUBRIC-1')).toBe(true)
