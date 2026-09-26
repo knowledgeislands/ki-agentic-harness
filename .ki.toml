@@ -111,22 +111,173 @@ budgets.mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
 # -----------------------------------------------------------------------------
 
 [skills.ki-trades]
-routes."knowledgeislands/ki-website" = { export = ["knowledge"] }
-routes."knowledgeislands/tools-ki" = { export = ["work", "knowledge"] }
-routes."knowledgeislands/tools-mgit" = { export = ["work", "knowledge"] }
-routes."knowledgeislands/ki-arcadia-principal" = { export = ["knowledge"], import = ["knowledge"] }
-routes."krisb/dotfiles" = { export = ["work", "knowledge"] }
-routes."knowledgeislands/ki-specifications" = { export = ["work", "knowledge"], import = ["work", "knowledge"] }
-routes."knowledgeislands/ki-techne-principal" = { export = ["work", "knowledge"], import = ["work", "knowledge"] }
-routes."knowledgeislands/ki-plugins" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-housekeeping-claude" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-housekeeping-codex" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-housekeeping-chatgpt" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-git-audit" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-gsuite" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-ki-kb-fs" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-ki-kb-notion-mirror" = { export = ["knowledge"] }
-routes."knowledgeislands/mcp-m365" = { export = ["knowledge"] }
+
+# Maintenance intake is limited to the explicitly named KI repositories below.
+# Do not add formal routes to HNR, legal, personal or other company groups.
+# Standing knowledge intake is not execution, publication or acceptance authority.
+
+[skills.ki-trades.subtypes.knowledge]
+shared-capability-maintenance = "Non-sensitive findings about receiver-owned KI skills and governance: defects, compatibility, convention gaps and method outcomes. Excludes acquired user data, business content and credentials; grants no execution authority."
+
+[skills.ki-trades.routes."knowledgeislands/apps-observatory"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/apps-observatory".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/homebrew-tap"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/homebrew-tap".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-arcadia-principal"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-arcadia-principal".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-plugins"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-plugins".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-specifications"]
+export = ["work", "knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-specifications".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-techne-harness"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-techne-harness".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-techne-principal"]
+export = ["work", "knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-techne-principal".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-website"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-website".standing.export]
+knowledge = ["public-source-change"]
+
+[skills.ki-trades.routes."knowledgeislands/ki-website".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-acquire-whatsapp"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-acquire-whatsapp".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-git-audit"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-git-audit".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-gsuite"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-gsuite".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-chatgpt"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-chatgpt".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-claude"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-claude".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-codex"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-housekeeping-codex".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-ki-kb-fs"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-ki-kb-fs".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-ki-kb-notion-mirror"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-ki-kb-notion-mirror".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-m365"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/mcp-m365".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-git-almanac"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-git-almanac".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-ki"]
+export = ["work", "knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-ki".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-mgit"]
+export = ["work", "knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-mgit".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-rig"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-rig".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-techne"]
+export = ["knowledge"]
+import = ["work", "knowledge"]
+
+[skills.ki-trades.routes."knowledgeislands/tools-techne".standing.import]
+knowledge = ["shared-capability-maintenance"]
+
+[skills.ki-trades.routes."krisb/dotfiles"]
+export = ["work", "knowledge"]
 
 [skills.ki-agora]
 memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
