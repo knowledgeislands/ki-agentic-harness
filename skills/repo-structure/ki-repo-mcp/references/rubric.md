@@ -163,8 +163,8 @@ Smoke-test wiring is mechanically visible while execution remains an explicit ex
 
 Versioned source releases provide immutable build and provenance evidence without package publication.
 
-- **DIST-1 [M + J] — Source-release readiness** — The repository exposes enough immutable, reproducible evidence for a named source installation. (standards-mcp-distribution.md)
-  - _Remediation:_ diagnostic — Repair ordinary package or lockfile drift, but leave versions, tags, releases, repository identity, and workflow changes to the repository owner.
+- **DIST-1 [M + J] — Source-release readiness** — The repository distinguishes valid development source from annotated release evidence while warning on invalid or malformed source-release evidence. (standards-mcp-distribution.md)
+  - _Remediation:_ diagnostic — Development-only INFO needs no repair. Repair invalid package, build, lockfile, repository, or HEAD evidence, but leave versions, tags, releases, repository identity, and workflow changes to the repository owner.
   - _Evidence scope:_ Repository release settings, source accessibility, stable-release marker, and installer provenance receipt.
   - _Review prompt:_ Verify public and private source access without changing visibility, ensure omitted versions resolve only the owner-designated latest stable release, and compare the installer receipt with the selected tag and commit.
   - _Outcomes:_ ready; development-only; provenance-mismatch; exclusion

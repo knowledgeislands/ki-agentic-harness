@@ -7,26 +7,32 @@ const STANDARD = 'standards-mcp-distribution.md'
 const DIST_1: RubricItem<McpDistributionContext> = {
   code: 'DIST-1',
   title: 'Source-release readiness',
-  description: 'The repository exposes enough immutable, reproducible evidence for a named source installation.',
+  description:
+    'The repository distinguishes valid development source from annotated release evidence while warning on invalid or malformed source-release evidence.',
   sources: [STANDARD],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Repair ordinary package or lockfile drift, but leave versions, tags, releases, repository identity, and workflow changes to the repository owner.'
+        'Development-only INFO needs no repair. Repair invalid package, build, lockfile, repository, or HEAD evidence, but leave versions, tags, releases, repository identity, and workflow changes to the repository owner.'
     },
     audit: {
       phase: 'INSPECT',
       run: (context) => {
         const outcomes: AuditOutcome[] = []
         const version = typeof context.packageJson?.version === 'string' ? context.packageJson.version : undefined
+        const hasValidVersion = Boolean(version && isSemVer(version))
         const scripts =
           context.packageJson?.scripts && typeof context.packageJson.scripts === 'object'
             ? (context.packageJson.scripts as Record<string, unknown>)
             : {}
+        const hasBuildScript = typeof scripts.build === 'string' && Boolean(scripts.build.trim())
+        const hasTrackedLockfile = context.lockfile?.tracked === true
+        const hasRepositoryIdentity = Boolean(context.repositoryIdentity)
+        const hasHeadCommit = Boolean(context.headCommit)
         outcomes.push(
-          version && isSemVer(version)
+          hasValidVersion
             ? {
                 status: 'PASS',
                 message: `Package version ${version} is valid Semantic Versioning.`,
@@ -39,12 +45,12 @@ const DIST_1: RubricItem<McpDistributionContext> = {
               }
         )
         outcomes.push(
-          typeof scripts.build === 'string' && scripts.build.trim()
+          hasBuildScript
             ? { status: 'PASS', message: 'A governed build script is declared.', subject: 'package.json' }
             : { status: 'VIOLATION', message: 'package.json has no governed build script.', subject: 'package.json' }
         )
         outcomes.push(
-          context.lockfile?.tracked
+          hasTrackedLockfile
             ? {
                 status: 'PASS',
                 message: `${context.lockfile.path} is a committed regular lockfile.`,
@@ -59,7 +65,7 @@ const DIST_1: RubricItem<McpDistributionContext> = {
               }
         )
         outcomes.push(
-          context.repositoryIdentity
+          hasRepositoryIdentity
             ? {
                 status: 'PASS',
                 message: `Git origin supplies install identity ${context.repositoryIdentity}.`,
@@ -72,25 +78,39 @@ const DIST_1: RubricItem<McpDistributionContext> = {
               }
         )
         outcomes.push(
-          context.headCommit
+          hasHeadCommit
             ? { status: 'PASS', message: `HEAD resolves to immutable commit ${context.headCommit}.`, subject: 'HEAD' }
             : { status: 'VIOLATION', message: 'HEAD does not resolve to a full commit ID.', subject: 'HEAD' }
         )
-        const expectedTag = version && isSemVer(version) ? `v${version}` : undefined
+        const expectedTag = hasValidVersion ? `v${version}` : undefined
+        const hasAnnotatedReleaseTag = expectedTag && context.releaseTag === expectedTag && context.releaseTagAnnotated
+        const isValidDevelopmentHead =
+          expectedTag &&
+          hasBuildScript &&
+          hasTrackedLockfile &&
+          hasRepositoryIdentity &&
+          hasHeadCommit &&
+          context.releaseTag === null
         outcomes.push(
-          expectedTag && context.releaseTag === expectedTag && context.releaseTagAnnotated
+          hasAnnotatedReleaseTag
             ? {
                 status: 'PASS',
                 message: `HEAD carries annotated release tag ${expectedTag}.`,
                 subject: `refs/tags/${expectedTag}`
               }
-            : {
-                status: 'VIOLATION',
-                message: expectedTag
-                  ? `HEAD is not the annotated release tag ${expectedTag}; development checkout is not installable release evidence.`
-                  : 'A release tag cannot be derived until package.json has a valid version.',
-                subject: expectedTag ? `refs/tags/${expectedTag}` : 'package.json'
-              }
+            : isValidDevelopmentHead
+              ? {
+                  status: 'INFO',
+                  message: `HEAD is valid development source without release tag ${expectedTag}; release readiness still requires the matching annotated tag.`,
+                  subject: `refs/tags/${expectedTag}`
+                }
+              : {
+                  status: 'VIOLATION',
+                  message: expectedTag
+                    ? `HEAD is not the annotated release tag ${expectedTag}; development checkout is not installable release evidence.`
+                    : 'A release tag cannot be derived until package.json has a valid version.',
+                  subject: expectedTag ? `refs/tags/${expectedTag}` : 'package.json'
+                }
         )
         return outcomes
       }

@@ -61,7 +61,7 @@ Before activation, the installer compares the receipt fields with the staged sou
 
 ## Audit and conformance
 
-`ki-repo-mcp` reports source-release readiness at WARN level so an ordinary development checkout remains valid while clearly not release-ready. It checks the package version, build script, committed lockfile, GitHub repository identity, full HEAD commit, and matching annotated tag.
+`ki-repo-mcp` keeps invalid package versions, missing build scripts, unsafe or untracked lockfiles, invalid GitHub repository identity, invalid HEAD commits, and malformed release markers at WARN. An otherwise valid development HEAD with no matching `v<SemVer>` tag is neutral INFO: it is valid development source but not installable release evidence. A matching lightweight tag remains WARN because it appears to mark a release without satisfying the annotated-tag contract. PASS release evidence still requires the matching annotated tag at HEAD.
 
 CONFORM may apply existing deterministic package entry-point repairs. It must not choose or change a version, create or move a tag, publish or designate a release, change an origin or visibility, authenticate to GitHub, generate a duplicative descriptor, or rewrite a release workflow. Those actions require repository-owner judgment.
 
