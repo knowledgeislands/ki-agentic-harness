@@ -4,12 +4,12 @@ title: Separate release readiness
 area: GOV
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 0adc528bbe470db32f3c83f9da7facd32ad996c5
 created_at: 2026-09-26T17:42:44Z
-updated_at: 2026-09-26T17:47:16Z
+updated_at: 2026-09-26T18:11:17Z
 ---
 
 ## Goal
@@ -121,6 +121,10 @@ The item is ready for human review and is not accepted by this implementation.
 ### Mini recap
 
 `DIST-1` now reports valid untagged development HEAD as INFO, annotated release evidence as PASS, and invalid or malformed evidence as WARN violations. Nineteen focused tests, rubric parity, TypeScript, the representative MCP audit, and the roadmap audit passed. Only unrelated refresh-cadence warnings remain.
+
+## Done
+
+Accepted 2026-09-26 by Kris Brown on the review packet above.
 
 ## Discussion
 
