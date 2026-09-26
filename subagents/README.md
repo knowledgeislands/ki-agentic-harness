@@ -20,6 +20,17 @@ KI governance-domain agents. Each is grounded in the ki-arcadia-principal KB and
 | `ki-decision-author`    | DR authoring (SDR / GDR / ADR) and the Decisions index   |
 | `ki-repo-kb-streams-curator` | Enactment process, proposals pipeline, and streams state |
 
+## coordination/
+
+KI coordination-lane roles. Each owns one lane of the work cycle — convening, stewardship, crossing, delivery — and defers to its siblings for the other three. They were designed as one interlocking set; each record's hand-offs name the other three.
+
+| Agent          | Lane                                                            |
+| -------------- | --------------------------------------------------------------- |
+| `ki-convenor`  | Intent into governed work, routing to lanes, and escalation      |
+| `ki-steward`   | Repository/coordination-plane boundary, shaping, and audit       |
+| `ki-ferryman`  | Remote execution substrate, sessions, and access paths           |
+| `ki-wright`    | Delivery under a Ready work record, from baseline to review      |
+
 ## Adding an agent
 
 1. Group it in a domain subdirectory.
