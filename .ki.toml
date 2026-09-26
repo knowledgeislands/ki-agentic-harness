@@ -52,6 +52,8 @@ prefix = "ki"
 
 [skills.ki-subagents-codex]
 
+[skills.ki-agent-coordination-paperclip]
+
 [skills.ki-decision-records]
 
 [skills.ki-delegation]

@@ -40,7 +40,9 @@ This governance skill carries **AUDIT · CONFORM · EDUCATE · REFRESH**. `help`
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-agent-coordination-paperclip --repo <repo>` when the repository declares this capability. Apply the judgment criteria in the generated rubric to the supplied Paperclip company, agent, task, workspace, and KI evidence. Report repository facts separately from remote Paperclip facts; an unavailable remote view is unknown, not a pass.
+→ Read [the AUDIT procedure](references/mode-audit.md) for the `.ki.toml` declaration precondition and the host invocation from inside a Paperclip run.
+
+Run `ki repo audit --skill ki-agent-coordination-paperclip --repo <repo>` when the repository declares this capability. Every COORD item is a judgment criterion, so a mechanical `PASS` proves resolution, not conformance. Apply the judgment criteria in the generated rubric to the supplied Paperclip company, agent, task, workspace, and KI evidence. Report repository facts separately from remote Paperclip facts; an unavailable remote view is unknown, not a pass.
 
 ### Mode CONFORM
 
