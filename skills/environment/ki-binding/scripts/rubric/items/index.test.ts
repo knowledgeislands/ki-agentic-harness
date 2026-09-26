@@ -122,8 +122,30 @@ test('the closed schema rejects misplaced or unsupported fields and missing URL 
     configuration: {}
   }).subjects[0]?.context() as BindingRubricContext
   expect(context.sourceState).toMatchObject({ kind: 'invalid', message: expect.stringContaining('unsupported field') })
+  writeFileSync(
+    source,
+    'mcpServers:\n  - name: ki-url\n    clients: [mcporter]\n    url: https://example.invalid/mcp\n    transports:\n      mcporter: http\n    lifecycle: forever\n'
+  )
+  context = createBindingSession({
+    mode: 'audit',
+    repository,
+    userHome,
+    configuration: {}
+  }).subjects[0]?.context() as BindingRubricContext
+  expect(context.sourceState).toMatchObject({ kind: 'invalid', message: expect.stringContaining('lifecycle') })
+  writeFileSync(
+    source,
+    'mcpServers:\n  - name: ki-url\n    clients: [mcporter]\n    url: https://example.invalid/mcp\n    transports:\n      mcporter: http\n    headers:\n      Authorization:\n        op: vault/item/field\n'
+  )
+  context = createBindingSession({
+    mode: 'audit',
+    repository,
+    userHome,
+    configuration: {}
+  }).subjects[0]?.context() as BindingRubricContext
+  expect(context.sourceState).toMatchObject({ kind: 'invalid', message: expect.stringContaining('headers') })
 })
-test('URL definitions accept secret-reference headers and lifecycle overrides', () => {
+test('definitions accept typed headers and bounded lifecycle overrides', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-binding-repository-'))
   const userHome = mkdtempSync(join(tmpdir(), 'ki-binding-home-'))
   temporaryDirectories.push(repository, userHome)
@@ -131,7 +153,7 @@ test('URL definitions accept secret-reference headers and lifecycle overrides', 
   process.env.KI_MCP_SOURCE = source
   writeFileSync(
     source,
-    'mcpServers:\n  - name: ki-url\n    clients: [mcporter]\n    url: https://example.invalid/mcp\n    transports:\n      mcporter: http\n    headers:\n      Authorization:\n        op: op://vault/item/field\n    lifecycle: ephemeral\n'
+    'mcpServers:\n  - name: ki-url\n    clients: [mcporter]\n    url: https://example.invalid/mcp\n    transports:\n      mcporter: http\n    headers:\n      Authorization:\n        op: op://vault/item/field\n      X-Literal: literal-value\n    lifecycle: ephemeral\n  - name: ki-stdio\n    clients: [mcporter]\n    command: node\n    lifecycle: keep-alive\n'
   )
   const context = createBindingSession({
     mode: 'audit',
@@ -143,8 +165,11 @@ test('URL definitions accept secret-reference headers and lifecycle overrides', 
     kind: 'valid',
     entries: [
       {
-        headers: { Authorization: { op: 'op://vault/item/field' } },
+        headers: { Authorization: { op: 'op://vault/item/field' }, 'X-Literal': 'literal-value' },
         lifecycle: 'ephemeral'
+      },
+      {
+        lifecycle: 'keep-alive'
       }
     ]
   })

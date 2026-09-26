@@ -6,7 +6,9 @@ declare const Bun: { YAML: { parse(input: string): unknown } }
 export const CLIENTS = ['mcporter', 'claude-code', 'claude-desktop', 'chatgpt-codex'] as const
 export type Client = (typeof CLIENTS)[number]
 export type Transport = 'stdio' | 'http' | 'sse' | 'streamable_http'
-export type EnvValue = string | { op: string }
+export type Lifecycle = 'ephemeral' | 'keep-alive'
+export type SecretReference = { op: string }
+export type EnvValue = string | SecretReference
 export type ServerEntry =
   | {
       name: string
@@ -14,7 +16,7 @@ export type ServerEntry =
       command: string
       args: readonly string[]
       env: Readonly<Record<string, EnvValue>>
-      lifecycle?: string
+      lifecycle?: Lifecycle
     }
   | {
       name: string
@@ -22,7 +24,7 @@ export type ServerEntry =
       url: string
       transports: Readonly<Partial<Record<Client, Transport>>>
       headers?: Readonly<Record<string, EnvValue>>
-      lifecycle?: string
+      lifecycle?: Lifecycle
     }
 export type SourceState =
   | { kind: 'absent' }
@@ -35,6 +37,7 @@ const CLIENT_TRANSPORTS: Readonly<Record<Client, readonly Transport[]>> = {
   'claude-desktop': ['http', 'sse'],
   'chatgpt-codex': ['streamable_http']
 }
+const LIFECYCLES: readonly Lifecycle[] = ['ephemeral', 'keep-alive']
 
 export const physicalFile = (path: string): boolean =>
   existsSync(path) && lstatSync(path).isFile() && !lstatSync(path).isSymbolicLink()
@@ -55,15 +58,22 @@ export const resolveSource = ({
 const record = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
 
-const env = (value: unknown): Readonly<Record<string, EnvValue>> | null => {
+const values = (value: unknown): Readonly<Record<string, EnvValue>> | null => {
   if (value === undefined) return {}
   const entries = record(value)
   if (!entries) return null
   const result: Record<string, EnvValue> = {}
   for (const [key, item] of Object.entries(entries)) {
+    if (!key) return null
     const secret = record(item)
     if (typeof item === 'string') result[key] = item
-    else if (secret && Object.keys(secret).length === 1 && typeof secret.op === 'string' && secret.op)
+    else if (
+      secret &&
+      Object.keys(secret).length === 1 &&
+      typeof secret.op === 'string' &&
+      secret.op.startsWith('op://') &&
+      secret.op.length > 'op://'.length
+    )
       result[key] = { op: secret.op }
     else return null
   }
@@ -89,9 +99,9 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
     throw new Error(`entry ${index + 1} has invalid clients`)
   const clients = entry.clients as Client[]
   if (new Set(clients).size !== clients.length) throw new Error(`entry ${index + 1} repeats a client`)
-  if (entry.lifecycle !== undefined && (typeof entry.lifecycle !== 'string' || !entry.lifecycle))
+  if (entry.lifecycle !== undefined && !LIFECYCLES.includes(entry.lifecycle as Lifecycle))
     throw new Error(`entry ${index + 1} has an invalid lifecycle`)
-  const lifecycle = entry.lifecycle as string | undefined
+  const lifecycle = entry.lifecycle as Lifecycle | undefined
   if ((typeof entry.command === 'string') === (typeof entry.url === 'string'))
     throw new Error(`entry ${index + 1} must define exactly one command or url`)
   if (typeof entry.command === 'string') {
@@ -99,7 +109,7 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
       throw new Error(`entry ${index + 1} has invalid stdio fields`)
     if (entry.args !== undefined && (!Array.isArray(entry.args) || !entry.args.every((arg) => typeof arg === 'string')))
       throw new Error(`entry ${index + 1} has invalid args`)
-    const variables = env(entry.env)
+    const variables = values(entry.env)
     if (!variables) throw new Error(`entry ${index + 1} has invalid env`)
     return {
       name: entry.name,
@@ -113,7 +123,7 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
   if (!entry.url || entry.args !== undefined || entry.env !== undefined)
     throw new Error(`entry ${index + 1} has invalid URL fields`)
   const transports = record(entry.transports)
-  const headers = env(entry.headers)
+  const headers = values(entry.headers)
   if (!headers) throw new Error(`entry ${index + 1} has invalid headers`)
   if (
     !transports ||

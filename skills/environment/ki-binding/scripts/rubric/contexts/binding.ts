@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { physicalFile, readSource, resolveSource, type ServerEntry, type SourceState } from '../../shared/binding.ts'
+import {
+  type Lifecycle,
+  physicalFile,
+  readSource,
+  resolveSource,
+  type ServerEntry,
+  type SourceState
+} from '../../shared/binding.ts'
 import type { RubricContextOptions, RubricPublicationContext, RubricSession } from '../../shared/rubric.ts'
 
 type McporterDefinition = {
@@ -9,7 +16,7 @@ type McporterDefinition = {
   url?: string
   baseUrl?: string
   headers?: Readonly<Record<string, string>>
-  lifecycle?: string
+  lifecycle?: Lifecycle
 }
 export type McporterState =
   | { kind: 'unavailable'; path?: string }
@@ -41,9 +48,9 @@ const mcporter = (): McporterState => {
           : typeof definition.baseUrl === 'string'
             ? definition.baseUrl
             : undefined
-      if (definition.lifecycle !== undefined && typeof definition.lifecycle !== 'string')
+      if (definition.lifecycle !== undefined && !['ephemeral', 'keep-alive'].includes(definition.lifecycle as string))
         return { kind: 'invalid', path: resolved }
-      const lifecycle = definition.lifecycle as string | undefined
+      const lifecycle = definition.lifecycle as Lifecycle | undefined
       const headers = definition.headers
       if (
         headers !== undefined &&
