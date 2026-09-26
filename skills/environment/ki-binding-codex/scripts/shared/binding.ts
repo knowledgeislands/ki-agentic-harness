@@ -14,8 +14,16 @@ export type ServerEntry =
       command: string
       args: readonly string[]
       env: Readonly<Record<string, EnvValue>>
+      lifecycle?: string
     }
-  | { name: string; clients: readonly Client[]; url: string; transports: Readonly<Record<Client, Transport>> }
+  | {
+      name: string
+      clients: readonly Client[]
+      url: string
+      transports: Readonly<Partial<Record<Client, Transport>>>
+      headers?: Readonly<Record<string, EnvValue>>
+      lifecycle?: string
+    }
 export type SourceState =
   | { kind: 'absent' }
   | { kind: 'invalid'; message: string }
@@ -66,7 +74,11 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
   const entry = record(value)
   if (!entry) throw new Error(`entry ${index + 1} must be a mapping`)
   const keys = Object.keys(entry)
-  if (keys.some((key) => !['name', 'clients', 'command', 'args', 'env', 'url', 'transports'].includes(key)))
+  if (
+    keys.some(
+      (key) => !['name', 'clients', 'command', 'args', 'env', 'url', 'transports', 'headers', 'lifecycle'].includes(key)
+    )
+  )
     throw new Error(`entry ${index + 1} has an unsupported field`)
   if (typeof entry.name !== 'string' || !entry.name) throw new Error(`entry ${index + 1} has no non-empty name`)
   if (
@@ -77,10 +89,13 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
     throw new Error(`entry ${index + 1} has invalid clients`)
   const clients = entry.clients as Client[]
   if (new Set(clients).size !== clients.length) throw new Error(`entry ${index + 1} repeats a client`)
+  if (entry.lifecycle !== undefined && (typeof entry.lifecycle !== 'string' || !entry.lifecycle))
+    throw new Error(`entry ${index + 1} has an invalid lifecycle`)
+  const lifecycle = entry.lifecycle as string | undefined
   if ((typeof entry.command === 'string') === (typeof entry.url === 'string'))
     throw new Error(`entry ${index + 1} must define exactly one command or url`)
   if (typeof entry.command === 'string') {
-    if (!entry.command || entry.transports !== undefined || entry.url !== undefined)
+    if (!entry.command || entry.transports !== undefined || entry.url !== undefined || entry.headers !== undefined)
       throw new Error(`entry ${index + 1} has invalid stdio fields`)
     if (entry.args !== undefined && (!Array.isArray(entry.args) || !entry.args.every((arg) => typeof arg === 'string')))
       throw new Error(`entry ${index + 1} has invalid args`)
@@ -91,12 +106,15 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
       clients,
       command: entry.command,
       args: (entry.args as string[] | undefined) ?? [],
-      env: variables
+      env: variables,
+      ...(lifecycle ? { lifecycle } : {})
     }
   }
   if (!entry.url || entry.args !== undefined || entry.env !== undefined)
     throw new Error(`entry ${index + 1} has invalid URL fields`)
   const transports = record(entry.transports)
+  const headers = env(entry.headers)
+  if (!headers) throw new Error(`entry ${index + 1} has invalid headers`)
   if (
     !transports ||
     Object.keys(transports).length !== clients.length ||
@@ -106,7 +124,14 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
     )
   )
     throw new Error(`entry ${index + 1} must declare one supported transport for each URL client`)
-  return { name: entry.name, clients, url: entry.url as string, transports: transports as Record<Client, Transport> }
+  return {
+    name: entry.name,
+    clients,
+    url: entry.url as string,
+    transports: transports as Partial<Record<Client, Transport>>,
+    headers,
+    ...(lifecycle ? { lifecycle } : {})
+  }
 }
 
 export const readSource = (path: string): SourceState => {
