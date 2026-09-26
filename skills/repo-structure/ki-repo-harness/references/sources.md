@@ -8,8 +8,8 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| [AS] | [Agent Skills specification][as-spec] | The individual `SKILL.md` format the harness serves † | 2026-08-12 |
-| [CC] | [Claude Code subagent docs][cc-subagents] | The subagent definition format the `subagents/` part serves | 2026-08-12 |
+| [AS] | [Agent Skills specification][as-spec] | The individual `SKILL.md` format the harness serves † | 2026-09-26 |
+| [CC] | [Claude Code subagent docs][cc-subagents] | The subagent definition format the `subagents/` part serves | 2026-09-26 |
 
 † Including the directory-name = `name:` constraint and the `references/`, `scripts/`, `assets/` layout.
 
@@ -17,11 +17,11 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| [AH] | [ki-agentic-harness README][ah-readme] | The KI canonical source-harness implementation § | 2026-07-27 |
-| [CH] | [Compatible harness contract][compatible] | Installed identity, direct payload, capability, host, and activation boundaries | 2026-07-27 |
-| [KR] | `ki-repo` skill | The `.ki.toml` contract and what makes a KI-governed repository | 2026-07-27 |
-| [KS] | `ki-skills` skill | The governed-rubric family, session, and host boundary ‡ | 2026-07-27 |
-| [KE] | `ki-engineering` skill | Development toolchain ownership outside compatible-harness installation semantics | 2026-07-27 |
+| [AH] | [ki-agentic-harness README][ah-readme] | The KI canonical source-harness implementation § | 2026-09-26 |
+| [CH] | [Compatible harness contract][compatible] | Installed identity, direct payload, capability, host, and activation boundaries | 2026-09-26 |
+| [KR] | `ki-repo` skill | The `.ki.toml` contract and what makes a KI-governed repository | 2026-09-26 |
+| [KS] | `ki-skills` skill | The governed-rubric family, session, and host boundary ‡ | 2026-09-26 |
+| [KE] | `ki-engineering` skill | Development toolchain ownership outside compatible-harness installation semantics | 2026-09-26 |
 
 § Source layout and shelf practice are inferred from this repository; installed-payload policy comes from [CH].
 
@@ -29,7 +29,7 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 
 ## Last review
 
-_REFRESH last run **2026-08-12** (previous: 2026-07-27)._
+_REFRESH last run **2026-09-26** (previous: 2026-08-12)._
 
 **Confirmed:**
 
@@ -48,6 +48,7 @@ _REFRESH last run **2026-08-12** (previous: 2026-07-27)._
 
 - [AS] — Monitor for any Agent Skills spec update that adds bundle / harness-level concepts. If agentskills.io ever formalises a multi-skill container, reconcile with this standard. Also: the newly-documented optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) are a `ki-skills` concern to fold in — flag raised, not owned here.
 - [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.
+- Codex subagent discovery is now documented under `.codex/agents/`, but the compatible harness has no publication path for it; disposition is routed to `KI-HARNESS-GOV-112`.
 - [CH] — Monitor host support for eval capabilities. Evals remain a source shelf until a compatible-payload contract lands; MCP servers remain independent repositories.
 
 [as-spec]: https://agentskills.io/specification
