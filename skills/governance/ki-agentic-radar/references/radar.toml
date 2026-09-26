@@ -349,6 +349,46 @@ source_role = "counter-evidence"
 reviewed_on = "2026-09-26"
 notes = "The product site describes fresh zero-state sessions with no shared cookies. That isolation is useful, but it leaves authenticated-profile provisioning and persistence unresolved for recurring ChatGPT acquisition."
 
+[evidence.gas-city-reference-implementation]
+
+id = "gas-city-reference-implementation"
+title = "Gas City open-source orchestrator"
+url = "https://github.com/gastownhall/gascity"
+evidence_class = "reference-implementation"
+source_role = "primary"
+reviewed_on = "2026-09-26"
+notes = "The project publishes an MIT-licensed orchestration-builder implementation with Beads-backed durable work, formula workflows, packs, and coding-agent integrations."
+
+[evidence.gas-city-software-factory]
+
+id = "gas-city-software-factory"
+title = "Gas City software-factory architecture"
+url = "https://gascity.com/guide/ai-software-factory/"
+evidence_class = "vendor-claim"
+source_role = "corroborating"
+reviewed_on = "2026-09-26"
+notes = "The vendor describes a customer-owned coding factory where workflows materialise into a Beads work graph, ready steps route to configured agents, and review gates remain operator-controlled."
+
+[evidence.paperclip-reference-implementation]
+
+id = "paperclip-reference-implementation"
+title = "Paperclip open-source control plane"
+url = "https://github.com/PaperclipAI/paperclip"
+evidence_class = "reference-implementation"
+source_role = "primary"
+reviewed_on = "2026-09-26"
+notes = "The project publishes an MIT-licensed agent coordination control plane with companies, tasks, agent hierarchies, heartbeats, approvals, budgets, workspaces, and multiple runtime adapters."
+
+[evidence.paperclip-company-model]
+
+id = "paperclip-company-model"
+title = "Paperclip company and agent concepts"
+url = "https://docs.paperclip.ing/guides/welcome/key-concepts/"
+evidence_class = "vendor-claim"
+source_role = "corroborating"
+reviewed_on = "2026-09-26"
+notes = "The vendor describes a company-scoped organisational model comprising goals, hierarchical agent roles, tasks, budgets, approvals, and isolated company boundaries."
+
 [subjects]
 
 [subjects.mcp]
@@ -497,3 +537,39 @@ return_trigger = "A bounded self-hosted ChatGPT acquisition trial, independent C
 reviewed_on = "2026-09-26"
 evidence = ["obscura-reference-implementation"]
 counter_evidence = ["obscura-zero-state"]
+
+[subjects.gas-city]
+
+id = "gas-city"
+display_name = "Gas City"
+subject_kind = "vendor-term"
+stewardship = "vendor"
+specification_maturity = "not-applicable"
+implementation_state = "reference-only"
+interoperability_state = "claimed"
+ki_stance = "assess"
+movement = "new"
+owner = "ki-agentic-radar"
+uncertainty = "Gas City demonstrates configurable coding workflows over durable Beads state, but no bounded Knowledge Islands evaluation establishes fit, authority boundaries, or comparative value beside Paperclip."
+return_trigger = "A bounded Knowledge Islands coordination trial, stable shared multi-operator release, independently demonstrated runtime portability, or material trust-boundary change."
+reviewed_on = "2026-09-26"
+evidence = ["gas-city-reference-implementation", "gas-city-software-factory"]
+counter_evidence = []
+
+[subjects.paperclip]
+
+id = "paperclip"
+display_name = "Paperclip"
+subject_kind = "vendor-term"
+stewardship = "vendor"
+specification_maturity = "not-applicable"
+implementation_state = "reference-only"
+interoperability_state = "claimed"
+ki_stance = "assess"
+movement = "new"
+owner = "ki-agent-coordination-paperclip"
+uncertainty = "Paperclip provides an organisational coordination plane already governed by a KI boundary skill, but the radar has no bounded comparison proving when its company model should own coordination instead of a workflow factory such as Gas City."
+return_trigger = "A bounded Knowledge Islands coordination evaluation, material authority or workspace-model change, external tracker integration, or demonstrated composition with a workflow orchestrator."
+reviewed_on = "2026-09-26"
+evidence = ["paperclip-reference-implementation", "paperclip-company-model"]
+counter_evidence = []

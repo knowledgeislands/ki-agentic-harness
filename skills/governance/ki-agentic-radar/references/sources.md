@@ -25,6 +25,13 @@ This ledger records the primary and corroborating sources accepted into the agen
 - **AGENTS.md:** [OpenAI Codex](https://openai.com/index/introducing-codex/) and [Visual Studio Code](https://code.visualstudio.com/docs/agent-customization/custom-instructions) implement the format independently. The format site reports broad operational adoption, while VS Code describes nested `AGENTS.md` support as experimental. This repository's [AGENTS.md](https://github.com/knowledgeislands/ki-agentic-harness/blob/main/AGENTS.md) is the local adoption evidence.
 - **W3C AI Agent Protocol Community Group:** no reviewed implementation, conformance result, or interoperability demonstration was found in the group's primary publications.
 
+## Agent coordination tooling
+
+- **Gas City:** the [open-source orchestrator](https://github.com/gastownhall/gascity) supplies reference-implementation evidence; the [software-factory guide](https://gascity.com/guide/ai-software-factory/) describes Beads-backed durable work, configured coding workflows, routing, retries, and review gates.
+- **Paperclip:** the [open-source control plane](https://github.com/PaperclipAI/paperclip) supplies reference-implementation evidence; the [key concepts guide](https://docs.paperclip.ing/guides/welcome/key-concepts/) describes company boundaries, hierarchical agent roles, tasks, goals, budgets, and approvals.
+
+These sources establish two implemented coordination tools with overlapping multi-agent concerns but different primary abstractions. They do not establish comparative fitness, cross-tool interoperability, or a Knowledge Islands adoption decision.
+
 ## Agent-owned browser runtimes
 
 - **Obscura:** the [open-source implementation](https://github.com/h4ckf0r0day/obscura) documents a self-hosted Rust browser engine with CDP, Playwright, Puppeteer, rendering, storage, and MCP surfaces. The [product description](https://obscura.sh/#how) emphasises isolated zero-state sessions; that supports isolation while leaving authenticated-profile provisioning and recurring ChatGPT fidelity for local evaluation.
@@ -47,6 +54,7 @@ These sources bound recurring architecture terms without treating them as protoc
 | Weekly review | ACP schema releases and AHP release plus independent implementation accepted; other subject stances unchanged. | 2026-09-17 |
 | Browser-runtime signal | Added agent-owned isolated browser runtimes for assessment, with Obscura as reference implementation and a bounded local trial required before adoption. | 2026-09-22 |
 | Weekly review | ACP advanced to stable schema v1.23.0 and v2 alpha 5; AHP now has multiple independent hosts, while interoperability remains untested; other stances remain unchanged. | 2026-09-26 |
+| Coordination-tooling signal | Added Gas City and Paperclip as new assessment subjects, preserving the workflow-factory versus company-control-plane distinction without adoption inference. | 2026-09-26 |
 
 - Return triggers: new protocol release, governance transfer, independent implementation, published conformance result, cross-implementation demonstration, deprecation, or a Knowledge Islands use case requiring reassessment.
 - Agent Client Protocol is disambiguated from similarly named IBM and AGNTCY protocols; structural vocabulary remains outside the subject registry where the schema would misclassify it.
