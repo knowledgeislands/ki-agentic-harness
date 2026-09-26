@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-26T15:23:47Z
+updated_at: 2026-09-26T15:32:22Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -59,7 +59,7 @@ The ledger body text is generated: `issueLedger()` in `skills/change-management/
 - [ ] Record the worktree rule and the roadmap primary-checkout exception in the workspace model of `standards-agent-coordination-paperclip.md`, and name them in the coordination `SKILL.md` shared model.
 - [ ] Update `ROAD-7` in `skills/change-management/ki-work-roadmap/scripts/rubric/items/roadmaps.ts` to the ordering wording and regenerate the rubric.
 - [ ] Add a `COORD` criterion for the roadmap write locus in `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts` and regenerate the rubric.
-- [ ] Capture the `_ISSUES.md` generated-body change as its own record, since it needs a fleet repair path.
+- [ ] Deliver the ledger-body change through `KI-HARNESS-GOV-105`, which owns the generator change and its estate repair path.
 
 ## Files touched
 
@@ -110,7 +110,7 @@ No human-guidance change. The website skills-by-outcome guide selects skills by 
 
 ### Roadmap
 
-One follow-on record for the generated `_ISSUES.md` body, which needs a conform repair path before its text can change. Activation of `ki-agent-coordination-paperclip` in a repository `.ki.toml` remains separately owned; until then the new `COORD` criterion is published but unexercised.
+`KI-HARNESS-GOV-105` owns the generated `_ISSUES.md` body, which needs a conform repair path before its text can change. Activation of `ki-agent-coordination-paperclip` in a repository `.ki.toml` remains separately owned; until then the new `COORD` criterion is published but unexercised.
 
 ## Discussion
 
