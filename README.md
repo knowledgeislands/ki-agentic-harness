@@ -4,19 +4,18 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 
 ## Place in the Knowledge Islands ecosystem
 
-The harness is the canonical source for reusable Knowledge Islands agentic capabilities. It generalises patterns proven in [Arcadia Principal](https://github.com/knowledgeislands/ki-arcadia-principal) into compatible harnesses, skills, agents, MCP wrappers, evals, and hooks; it does not originate the Knowledge Islands philosophy or model, or implement the public CLI. [tools-ki](https://github.com/knowledgeislands/tools-ki) supplies the `ki` executable platform that installs and hosts those capabilities. Implementation evidence from both repositories helps [KI Specifications](https://github.com/knowledgeislands/ki-specifications) formalise portable contracts, and applicable Active specifications constrain implementations that claim conformance.
+The harness is the canonical source for reusable Knowledge Islands agentic capabilities. It generalises patterns proven in [Arcadia Principal](https://github.com/knowledgeislands/ki-arcadia-principal) into compatible harnesses, skills, agents, evals, and hooks; it does not originate the Knowledge Islands philosophy or model, implement the public CLI, or contain MCP servers. [tools-ki](https://github.com/knowledgeislands/tools-ki) supplies the `ki` executable platform that installs and hosts those capabilities. MCP servers remain independently released `mcp-*` repositories coordinated through the `ki-mcps` Agora. Implementation evidence from these repositories may inform future [KI Specifications](https://github.com/knowledgeislands/ki-specifications) after the ecosystem reaches its v1 boundary.
 
 [Techne Principal](https://github.com/knowledgeislands/ki-techne-principal) translates the Knowledge Islands philosophy into engineering practice and may inform the harness, without owning its capability semantics. The [KI Website](https://github.com/knowledgeislands/ki-website) may vendor source-labelled harness documentation for public publication, while this repository remains canonical for the capability artifacts it publishes. The mirrored [ecosystem decision](docs/decisions/GDR-KI-FUNDAMENTALS-001-knowledge-islands-ecosystem-fundamentals.md) defines the six authorities and publication flows.
 
-A harness is **five parts** — the things an agent is given to work with:
+A harness is **four parts** — the things an agent is given to work with:
 
 - **Skills** ([`skills/`](skills)) — 62 reusable [Agent Skills](https://agentskills.io/specification): 52 governance skills that hold standards and 10 process skills that drive workflows. Use [choose a skill by outcome](https://knowledgeislands.info/guidance/skills/by-outcome/) to find the right capability or journey; the generated [capability catalogue](skills/README.md#generated-capability-catalogue) is the exact local inventory and publishes declared dependency facts.
 - **Agents** ([`subagents/`](subagents)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Governance agents live under `subagents/governance/`, governed by the `ki-subagents` skill. See [`subagents/README.md`](subagents/README.md).
-- **MCP servers** ([`mcp/`](mcp)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `ki-repo-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
 - **Hooks** ([`hooks/`](hooks)) — durable global Claude Code hook payloads for Plan Mode lifecycle and stale Git-lock recovery; a user-environment manager binds them into settings separately. See [`hooks/README.md`](hooks/README.md).
 
-All five parts are first-class; skills are simply the most built-out, with agents, the eval suite, and hooks now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout and delivery conventions apply to every kind equally.
+All four parts are first-class; skills are simply the most built-out. A skill does not have to be wedded to Knowledge Islands — the repository layout and delivery conventions apply to every kind equally.
 
 ## Get started
 

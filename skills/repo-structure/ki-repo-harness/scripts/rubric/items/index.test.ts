@@ -25,7 +25,7 @@ afterEach(() => {
 const fixture = (): string => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-repo-harness-'))
   temporaryDirectories.push(repository)
-  for (const part of ['skills', 'subagents', 'mcp', 'evals', 'hooks']) {
+  for (const part of ['skills', 'subagents', 'evals', 'hooks']) {
     mkdirSync(join(repository, part))
     writeFileSync(join(repository, part, 'README.md'), `# ${part}\n`)
   }

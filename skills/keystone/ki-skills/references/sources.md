@@ -92,7 +92,7 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 | ADR-KI-HARNESS-SKILLS-004 | Local decision record | Standalone skills and variation | 2026-08-12 |
 | ADR-KI-HARNESS-SKILLS-006 | Local decision record | Kind, taxonomy, and dependencies | 2026-08-12 |
 
-The README is cited only for the harness's five-part structure. Local decision records, rather than the README, support the semantic house claims.
+The README is cited only for the harness's four-part structure. Local decision records, rather than the README, support the semantic house claims.
 
 ## Runtime overlay: Claude Code
 

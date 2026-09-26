@@ -33,14 +33,14 @@ _REFRESH last run **2026-08-12** (previous: 2026-07-27)._
 
 **Confirmed:**
 
-- [AS] re-fetched live: the Agent Skills specification still defines **no** bundle, harness, container, or multi-skill grouping concept — the five-part source structure and co-location intent remain a KI architectural convention. The spec requires the `name` field to match the parent directory name (reinforcing SKILLS-1) and documents optional frontmatter governed by `ki-skills`, not this container standard.
+- [AS] re-fetched live: the Agent Skills specification still defines **no** bundle, harness, container, or multi-skill grouping concept — the four-part source structure and co-location intent remain a KI architectural convention. The spec requires the `name` field to match the parent directory name (reinforcing SKILLS-1) and documents optional frontmatter governed by `ki-skills`, not this container standard.
 - [CC] re-fetched live: the subagent definition format (frontmatter `name` / `description` / `tools` / `model` + system-prompt body, project- and user-level install locations) is unchanged. No change to the `subagents/` part of the harness contract.
 - [CH] confirms that the current installed payload contains regular `skills/`, `subagents/`, and `hooks/`; a checkout, cache, runtime projection, or `.ki/` directory is never an implicit operation source.
 - [KR] / [KS] / [KE] confirm the direct boundaries: `.ki.toml` declares source-repository governance, rubrics execute through the `ki` host, and package scripts are development conveniences rather than installation or governance entry points.
 
 **Drift resolved this pass:**
 
-- The standard now separates the five-part source repository from the current three-directory compatible payload and names installed, verified harness state as the only operation source.
+- The standard now separates the four-part source repository from the current three-directory compatible payload and names installed, verified harness state as the only operation source.
 - Retired package aliases, repository-vendored executors, checkout-dependent runtime links, and a skill-owned global linker are removed from the harness contract.
 - The mechanical catalogue now discovers grouped physical skill roots, uses the final session contract, and retains only the safe host-published `[skills.ki-repo-harness]` marker append.
 
@@ -48,7 +48,7 @@ _REFRESH last run **2026-08-12** (previous: 2026-07-27)._
 
 - [AS] — Monitor for any Agent Skills spec update that adds bundle / harness-level concepts. If agentskills.io ever formalises a multi-skill container, reconcile with this standard. Also: the newly-documented optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) are a `ki-skills` concern to fold in — flag raised, not owned here.
 - [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.
-- [CH] — Monitor host support for additional capability kinds. MCP servers and evals remain source shelves until their compatible-payload contracts land.
+- [CH] — Monitor host support for eval capabilities. Evals remain a source shelf until a compatible-payload contract lands; MCP servers remain independent repositories.
 
 [as-spec]: https://agentskills.io/specification
 [cc-subagents]: https://code.claude.com/docs/en/sub-agents

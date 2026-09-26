@@ -178,7 +178,7 @@ Executed in one isolated `git worktree` on branch `ki-harness-gov-101-coordinati
 
 Evidence: the four record files are byte-identical to the approved bodies (verified by re-extraction and comparison, below); tier 0 and tier 2 of `## Verify` pass with real output recorded; tier 1 is **unavailable** on this host and is reported as unavailable, not as passed.
 
-### Summary of changes
+### Change Summary
 
 Five files changed, all inside `## Files touched`:
 
@@ -436,4 +436,4 @@ The review packet's second heading was `### Change Summary`. The work-item forma
 - **Concern 1, the primary gate.** Still unavailable, re-attempted at acceptance rather than carried forward on the earlier claim: `ki repo diag --repo .` reports `ki environment is not bootstrapped; run 'ki bootstrap' first`. `CLAUDE-1` and `CLAUDE-4` remain unchecked by the contract's own auditor. Accepted on tier 0 and tier 2 with tier 1 recorded as unavailable, which is the disposition the approving human gave. `ki bootstrap` is host activation and is not repository work.
 - **Concern 2, the frontmatter prose.** Resolved above.
 - **Concern 3, the published projection.** Unchanged and out of scope. `KI-HARNESS-GOV-093` owns it.
-- **Concern 4, the missing follow-on identifiers.** Closed before acceptance, which is why acceptance waited on it. `KI-HARNESS-GOV-102` — *Decide role record serialization* — and `KI-HARNESS-GOV-103` — *Cite coordination rules once* — are captured at `4a04c480` on `main`, both `horizon: triage`, `status: draft`. The third follow-on, host activation, is coordination work with no roadmap identifier and is named in `## Documentation impact`. The two decisions that would otherwise have been deleted with this record now have a home that survives its prune.
+- **Concern 4, the missing follow-on identifiers.** Closed before acceptance, which is why acceptance waited on it. `KI-HARNESS-GOV-102` — _Decide role record serialization_ — and `KI-HARNESS-GOV-103` — _Cite coordination rules once_ — are captured at `4a04c480` on `main`, both `horizon: triage`, `status: draft`. The third follow-on, host activation, is coordination work with no roadmap identifier and is named in `## Documentation impact`. The two decisions that would otherwise have been deleted with this record now have a home that survives its prune.

@@ -13,7 +13,7 @@ harnesses = ["knowledgeislands/ki-agentic-harness"]
 [skills.ki-repo]
 repository = "https://github.com/knowledgeislands/ki-agentic-harness"
 title = "ki-agentic-harness"
-description = "Knowledge Islands agentic harness — canonical home for Agent Skills, Agents, MCP servers, and Evals across the Knowledge Islands ecosystem."
+description = "Knowledge Islands agentic harness — canonical home for Agent Skills, Agents, Evals, and Hooks across the ecosystem."
 repo_code = "KI-HARNESS"
 visibility = "public"
 license = "MIT"

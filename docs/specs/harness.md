@@ -1,36 +1,36 @@
 # Harness structure — `HARN`
 
-The behaviour of the harness as a repository: the five-part bundle and the container invariants a Knowledge Islands harness must satisfy so its skills, agents, and checkers are discoverable and self-describing. Part of the Specifications corpus; see [index.md](index.md).
+The behaviour of the harness as a repository: the four-part container and the invariants a Knowledge Islands harness must satisfy so its skills, agents, and checkers are discoverable and self-describing. Part of the Specifications corpus; see [index.md](index.md).
 
 > **Status:** accepted contract; conformance is declared per requirement.
 
-## The five-part bundle
+## The four-part harness
 
-### HARN-001 — Five part-directories exist
+### HARN-001 — Four part-directories exist
 
-The repo root MUST contain `skills/`, `subagents/`, `mcp/`, `evals/`, and `hooks/` as directories, per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure-the-five-part-bundle.md).
+The repo root MUST contain `skills/`, `subagents/`, `evals/`, and `hooks/` as directories. MCP servers remain independently released repositories outside the harness.
 
 _Conformance:_ conforming
 
-_Verify:_ `bun skills/repo-structure/ki-repo-harness/scripts/audit-harness.ts .` — LAY-1 PASSes only when all five directories are present (a missing one is a FAIL).
+_Verify:_ `ki repo audit --skill ki-repo-harness --repo .` — LAY-1 PASSes only when all four directories are present (a missing one is a FAIL).
 
-_Evidence:_ `bun skills/repo-structure/ki-repo-harness/scripts/audit-harness.ts .` — LAY-1 PASSes only when all five directories are present (a missing one is a FAIL).
+_Evidence:_ `ki repo audit --skill ki-repo-harness --repo .` — LAY-1 checks the four required physical directories.
 
 ### HARN-002 — Each part declares its status
 
-Each of the five part-directories MUST contain a `README.md` that declares whether the part is populated or an empty shelf.
+Each of the four part-directories MUST contain a `README.md` that declares whether the part is populated or an empty shelf.
 
 _Conformance:_ conforming
 
-_Verify:_ `audit-harness.ts` LAY-2 checks a `README.md` in each of `skills/`, `subagents/`, `mcp/`, `evals/`, `hooks/`.
+_Verify:_ `ki repo audit --skill ki-repo-harness --repo .` — LAY-2 checks a `README.md` in each of `skills/`, `subagents/`, `evals/`, and `hooks/`.
 
-_Evidence:_ `audit-harness.ts` LAY-2 checks a `README.md` in each of `skills/`, `subagents/`, `mcp/`, `evals/`, `hooks/`.
+_Evidence:_ `ki-repo-harness` LAY-2 checks all four shelf descriptions.
 
 ## Root anchors
 
 ### HARN-003 — Root orientation and config files
 
-The repo root MUST carry `CLAUDE.md` (always-loaded orientation), `.ki.toml` (the KI compliance declaration), and SHOULD carry `ROADMAP.md` (the open-work signal), per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure-the-five-part-bundle.md).
+The repo root MUST carry `CLAUDE.md` (always-loaded orientation), `.ki.toml` (the KI compliance declaration), and SHOULD carry `ROADMAP.md` (the open-work signal).
 
 _Conformance:_ conforming
 
@@ -86,7 +86,7 @@ _Evidence:_ `ki-work-roadmap`'s [repository-roadmap standard](../../skills/chang
 
 ### HARN-008 — CLAUDE.md orientation coverage
 
-`CLAUDE.md` MUST open with a paragraph naming all five part-directories (`skills/`, `subagents/`, `mcp/`, `evals/`, `hooks/`) and MUST carry a five-part status table marking each part populated or an empty shelf, per the `ki-repo-harness` standard.
+The effective root orientation MUST explain the four-part harness (`skills/`, `subagents/`, `evals/`, `hooks/`) and state the current status of every part, per the `ki-repo-harness` standard.
 
 _Conformance:_ conforming
 
@@ -123,7 +123,3 @@ _Conformance:_ conforming
 _Verify:_ `ki-repo-harness` capability-publication tests exercise valid publication and reject missing classification, invalid baseline membership, kind inconsistency, unknown detector targets, and registry-to-skill drift.
 
 _Evidence:_ `skills/README.md` is generated from the complete canonical skill collection and carries an applicability line for every entry.
-
-## Gaps
-
-- The `mcp/` shelf is scaffolded but empty; no requirement yet describes a populated MCP server because none ships here.

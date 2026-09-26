@@ -17,19 +17,18 @@ The [generated rubric](rubric.md) is the checkable publication of this standard.
 
 ## Source and installed boundaries
 
-A **source harness** is one versioned repository that co-locates five agentic shelves:
+A **source harness** is one versioned repository that co-locates four agentic shelves:
 
 | Directory    | Source concern                                            |
 | ------------ | --------------------------------------------------------- |
 | `skills/`    | Agent Skills, optionally grouped by semantic category     |
 | `subagents/` | Agent definitions and their source organisation           |
-| `mcp/`       | MCP server packages or a shelf routing to their own repos |
 | `evals/`     | Behavioural evaluation scenarios and results              |
 | `hooks/`     | Runtime hook payloads and installation material           |
 
 These shelves are authored and reviewed together, but not every shelf is part of the current installed payload.
 
-A **compatible installed harness** is a verified regular-file payload acquired and registered by the `ki` host. The current payload contains `skills/`, `subagents/`, and `hooks/`. MCP servers and evals remain source-harness concerns until the host publishes those capability kinds.
+A **compatible installed harness** is a verified regular-file payload acquired and registered by the `ki` host. The current payload contains `skills/`, `subagents/`, and `hooks/`. Evals remain a source-harness concern until the host publishes that capability kind. MCP servers are separate repositories and are not a harness capability kind.
 
 The installed payload, not a checkout, runtime projection, cache, or repository-local `.ki/` directory, is the operation source. A nearby checkout never becomes authoritative because a name matches or a symlink points to it.
 
@@ -59,17 +58,16 @@ The root `README.md` does not have to repeat a numeric skill summary. When it us
 
 ## Source-harness layout
 
-Every source harness has all five directories at its physical repository root, each with a physical `README.md` explaining its purpose and status:
+Every source harness has all four directories at its physical repository root, each with a physical `README.md` explaining its purpose and status:
 
 ```text
 skills/       README.md
 subagents/    README.md
-mcp/          README.md
 evals/        README.md
 hooks/        README.md
 ```
 
-An empty shelf is valid. Its README distinguishes intentional reserved structure from accidental absence.
+An empty shelf is valid. Its README distinguishes intentional reserved structure from accidental absence. MCP server source does not belong in a harness shelf; each server remains in its independently governed `mcp-*` repository.
 
 The source root also contains physical `CLAUDE.md`, `ROADMAP.md`, and `.ki.toml` files. Symlinked, dangling, directory-valued, device, or unreadable evidence is unsafe and does not satisfy a physical-file or physical-directory requirement.
 
@@ -89,7 +87,7 @@ Every discovered skill name begins with the declared Harness prefix followed by 
 
 The source-harness `CLAUDE.md` is its runtime-bound orientation. It:
 
-1. explains what the source harness is and names all five shelves;
+1. explains what the source harness is and names all four shelves;
 2. gives the current status of every shelf;
 3. routes working conventions to the skill or document that owns each concern;
 4. lists the direct `ki` audit, conform, and rubric-publication commands plus the repository test and TypeScript gates; and

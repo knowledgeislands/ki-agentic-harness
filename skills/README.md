@@ -6,7 +6,7 @@ Knowledge Islands **Agent Skills** live here, one directory per skill. This is t
 
 Each skill is a directory containing a `SKILL.md` (YAML frontmatter — `name` + `description` required — followed by a markdown body), per the [Agent Skills open standard](https://agentskills.io/specification). Longer detail goes in `references/`, executables in `scripts/`, templates in `assets/` — all loaded on demand. The **directory name is the skill's `name`**: lowercase, hyphenated, matching the `name:` frontmatter exactly, since agents discover a skill by `name`, not path.
 
-Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run its AUDIT (`ki repo audit --skill ki-skills`) before shipping. The container these skills sit in — this five-part `skills/` / `subagents/` / `mcp/` / `evals/` / `hooks/` harness — conforms to **`ki-repo-harness`**.
+Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run its AUDIT (`ki repo audit --skill ki-skills`) before shipping. The container these skills sit in — this four-part `skills/` / `subagents/` / `evals/` / `hooks/` harness — conforms to **`ki-repo-harness`**. MCP servers remain independently released repositories outside the harness.
 
 ## Adding a skill
 
@@ -500,7 +500,7 @@ Audit or conform KI chezmoi source repositories: source-versus-target editing, a
 
 #### `ki-repo-harness`
 
-Audit or design a KI-compatible harness that publishes skills, subagents, MCP servers, evals, and hooks as a verified installed payload. Use for source layout, prefix identity, declarations, or catalogue publication; each capability skill owns content quality.
+Audit or design a KI-compatible harness that publishes skills, subagents, evals, and hooks as a verified installed payload. Use for source layout, prefix identity, declarations, or catalogue publication; each capability skill owns content quality.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

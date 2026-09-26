@@ -14,7 +14,7 @@ import {
 } from './capability-publication.ts'
 import { prepareRootCapabilitySummary, type RootCapabilitySummaryDraft } from './root-capability-summary.ts'
 
-export const HARNESS_PARTS = ['skills', 'subagents', 'mcp', 'evals', 'hooks'] as const
+export const HARNESS_PARTS = ['skills', 'subagents', 'evals', 'hooks'] as const
 export type HarnessPart = (typeof HARNESS_PARTS)[number]
 
 type PathState = 'missing' | 'file' | 'directory' | 'unsafe'

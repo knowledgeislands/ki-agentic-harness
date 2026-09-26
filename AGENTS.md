@@ -6,7 +6,7 @@ The README is the entry point; the website-owned [skills-by-outcome guide](https
 
 ## What this repo is
 
-The canonical home for reusable Knowledge Islands agentic capabilities. The [README](README.md) owns the five-part source layout and current repository status; the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) owns task-oriented selection, while the generated [capability catalogue](skills/README.md#generated-capability-catalogue) publishes exact membership and declared dependencies.
+The canonical home for reusable Knowledge Islands agentic capabilities. The [README](README.md) owns the four-part source layout and current repository status; the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) owns task-oriented selection, while the generated [capability catalogue](skills/README.md#generated-capability-catalogue) publishes exact membership and declared dependencies.
 
 ## How skills relate
 
