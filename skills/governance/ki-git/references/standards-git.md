@@ -1,5 +1,15 @@
 # Git standard
 
+## Contents
+
+- [Scope and ownership](#scope-and-ownership)
+- [Commit messages](#commit-messages)
+- [Commit, publication, and integration authority](#commit-publication-and-integration-authority)
+- [Working-copy and review approaches](#working-copy-and-review-approaches)
+- [Safe Git hygiene](#safe-git-hygiene)
+- [Stale-lock guard](#stale-lock-guard)
+- [Runtime binding and enforcement](#runtime-binding-and-enforcement)
+
 ## Scope and ownership
 
 `ki-git` is the sole owner of portable Knowledge Islands Git and commit policy.
