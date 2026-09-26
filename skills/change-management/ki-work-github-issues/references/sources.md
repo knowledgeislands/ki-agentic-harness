@@ -4,13 +4,13 @@
 
 | Source | Governs | Last reviewed |
 | --- | --- | --- |
-| [Issue dependencies][dependencies] | blocker relation semantics and permissions | 2026-08-12 |
-| [Sub-issues][subissues] | hierarchy distinct from blockers | 2026-08-12 |
-| [Issue fields][fields] | organisation-wide versus project-scoped metadata planes | 2026-08-12 |
-| [Close an issue][close] | closure state and permissions | 2026-08-12 |
-| [Transfer an issue][transfer] | mutable locator, redirect, retained/missing metadata | 2026-08-12 |
-| [Delete an issue][delete] | permanent Issue deletion, distinct from project-item archive | 2026-08-12 |
-| [Issues REST API][api] | Issue-versus-pull-request filtering and API boundary | 2026-08-12 |
+| [Issue dependencies][dependencies] | blocker relation semantics and permissions | 2026-09-21 |
+| [Sub-issues][subissues] | hierarchy distinct from blockers | 2026-09-21 |
+| [Issue fields][fields] | organisation-wide versus project-scoped metadata planes | 2026-09-21 |
+| [Close an issue][close] | closure state and permissions | 2026-09-21 |
+| [Transfer an issue][transfer] | mutable locator, redirect, retained/missing metadata | 2026-09-21 |
+| [Delete an issue][delete] | permanent Issue deletion, distinct from project-item archive | 2026-09-21 |
+| [Issues REST API][api] | Issue-versus-pull-request filtering and API boundary | 2026-09-21 |
 
 ## Local authority
 
@@ -18,7 +18,7 @@ The adapter standard is normative for KI configuration, migration stops, and no-
 
 ## Last review
 
-On 2026-08-12, GitHub confirmed dependencies and sub-issues are separate relationships, issue fields and project fields are distinct metadata planes, transfers redirect old URLs while moving an open Issue, permanent Issue deletion differs from project-item archive, and REST Issues endpoints can return pull requests. The adapter therefore treats displayed references as mutable locators and remains fail-closed pending `KI-HARNESS-FND-014`.
+2026-09-21 — All seven sources re-fetched live. Dependencies and sub-issues remain separate relationships; organisation-wide issue fields and project-scoped fields remain distinct metadata planes (up to 25 issue fields, four supported types); transfers still redirect old URLs while moving an open Issue; permanent Issue deletion still differs from project-item archive; REST Issues endpoints continue to return pull requests. REST API version 2026-03-10 adds an "issue suggestions" surface (AI-generated label/assignee/field/state suggestions) — this is a new feature-flag capability, not a change to the adapter contract. The adapter treats displayed references as mutable locators and remains fail-closed pending `KI-HARNESS-FND-014`.
 
 [dependencies]: https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies
 [subissues]: https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues
