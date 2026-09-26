@@ -52,7 +52,7 @@ Govern how Paperclip coordinates agents around a Knowledge Island group or archi
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <arrangement> | conform <arrangement> | educate <arrangement> | help | refresh`
-- **Dependencies:** None
+- **Dependencies:** `ki-git`
 - **Runtime:** Portable
 
 #### `ki-subagents`

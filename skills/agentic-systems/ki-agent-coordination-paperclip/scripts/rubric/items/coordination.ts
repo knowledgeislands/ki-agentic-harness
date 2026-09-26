@@ -70,10 +70,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-7',
       title: 'Delegated Git authority',
       description:
-        'Task-branch publication and selected-agent pull-request review or integration use explicit repository-owned capability grants.',
-      sources: [`${STANDARD}#workspace-model`],
+        'Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`.',
+      sources: [
+        `${STANDARD}#workspace-model`,
+        '../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority'
+      ],
       judgment: judgment(
-        'Does each Paperclip agent exercise only the separately granted commit, task-branch push, draft-PR, review, approval, merge, or auto-merge capabilities for its named repository, refs, work domain, gates, and grant lifetime?'
+        'Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?'
       )
     }
   ]

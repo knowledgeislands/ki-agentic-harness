@@ -47,9 +47,9 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does completion reconcile Paperclip task evidence, repository evidence, the KI work record, and durable knowledge promotion without converting unavailable evidence into a pass?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-7 [J] — Delegated Git authority** — Task-branch publication and selected-agent pull-request review or integration use explicit repository-owned capability grants. (standards-agent-coordination-paperclip.md#workspace-model)
+- **COORD-7 [J] — Delegated Git authority** — Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`. (standards-agent-coordination-paperclip.md#workspace-model, ../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does each Paperclip agent exercise only the separately granted commit, task-branch push, draft-PR, review, approval, merge, or auto-merge capabilities for its named repository, refs, work domain, gates, and grant lifetime?
+  - _Review prompt:_ Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

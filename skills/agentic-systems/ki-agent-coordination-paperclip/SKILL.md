@@ -2,7 +2,7 @@
 name: ki-agent-coordination-paperclip
 ki-kind: governance
 ki-applicability: declaration-only
-ki-depends-on: []
+ki-depends-on: [ki-git]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories
@@ -17,7 +17,7 @@ argument-hint: 'audit <arrangement> | conform <arrangement> | educate <arrangeme
 
 Paperclip is a coordination plane around Knowledge Islands, not their memory or governance authority. A KI repository and admitted revision remain the durable source for knowledge, work records, authority, and review evidence. Paperclip may schedule agents, hold operational task state, and bind execution workspaces without becoming the place where durable KI meaning lives.
 
-This skill owns the relationship between those systems. Paperclip's own `paperclip` skill owns control-plane API mechanics, authentication, checkout, task updates, comments, and delegation. Use `ki-subagents` when defining a portable agent role and the active `ki-work` adapter when changing a KI work record.
+This skill owns the relationship between those systems. Paperclip's own `paperclip` skill owns control-plane API mechanics, authentication, checkout, task updates, comments, and delegation. `ki-git` owns Git topology, commits, publication, review, and integration authority; this skill projects those rules into Paperclip coordination. Use `ki-subagents` when defining a portable agent role and the active `ki-work` adapter when changing a KI work record.
 
 Read the [Paperclip coordination standard](references/standards-agent-coordination-paperclip.md) before designing or assessing an arrangement. Read the [generated rubric](references/rubric.md) for its review criteria and the [source record](references/sources.md) only when refreshing volatile Paperclip claims.
 
