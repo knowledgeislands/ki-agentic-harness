@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-09-26T14:34:49Z
+updated_at: 2026-09-26T18:20:00Z
 ---
 
 # KI-HARNESS-GOV-102: Decide role record serialization
@@ -30,15 +30,15 @@ Three observations from that commit sharpen the question.
 
 `.ki.toml` declares `[skills.ki-subagents]` and `[skills.ki-subagents-claude]` and sets `checks.coverage-subagents-codex = false`, so the Codex projection is deliberately absent. While exactly one projection exists, fusing record and projection costs nothing visible. The cost arrives with the second: `CODEX-2` requires `developer_instructions`, so the instruction body would exist twice in two vendor formats, and nothing in either standard says which copy is the role.
 
-The five records carry `name`, `description`, `model: inherit` and a `color`. Two of those four are Claude projection fields. `subagents/README.md` says an agent needs "`name` and `description` frontmatter" — so the README already describes a record while the files on disk are projections, and the two have already diverged. This was observed during the shaping of `KI-HARNESS-GOV-101`, whose `## Current state` repeats the README's description rather than the files'.
+The five records carry `name`, `description`, `model: inherit` and a `color`. Two of those four are Claude projection fields. `subagents/README.md` says an agent needs "`name` and `description` frontmatter" — so the README already describes a record while the files on disk are projections, and the two have already diverged. This was observed during the shaping of the accepted coordination-lane delivery, whose `## Current state` repeats the README's description rather than the files'.
 
-`KI-HARNESS-GOV-101` reached this question and declined it on purpose: "Physically separating the original from every projection would require a new serialization and therefore a decision record; that is out of scope here and captured separately." This record is that capture. Without it the question dies with that item.
+the accepted coordination-lane delivery reached this question and declined it on purpose: "Physically separating the original from every projection would require a new serialization and therefore a decision record; that is out of scope here and captured separately." This record is that capture. Without it the question dies with that item.
 
 ## Boundary
 
 In scope: whether `ki-subagents` defines a record serialization of its own; if so its shape, discovery rule, and the stated relation between a record and its projections; the partition between record fields and projection fields; and consequently whether `ki repo audit --skill ki-subagents` gains anything mechanical or remains wholly judgment, since `PORTABLE-1` to `PORTABLE-3` and `HOST-1` are all `[J]` today.
 
-Out of scope: the role records delivered under `KI-HARNESS-GOV-101`, which conform to the contract as it currently stands and are not to be reshaped by this question; the flat plugin projection in `ki-plugins`, governed by `KI-HARNESS-GOV-093`; adopting the Codex projection in this repository, declined in `.ki.toml`; and the content of any individual role record.
+Out of scope: the role records delivered under the accepted coordination-lane delivery, which conform to the contract as it currently stands and are not to be reshaped by this question; the flat plugin projection in `ki-plugins`, governed by `KI-HARNESS-GOV-093`; adopting the Codex projection in this repository, declined in `.ki.toml`; and the content of any individual role record.
 
 ## Discussion
 
@@ -54,5 +54,5 @@ One thing is already settled by evidence rather than argument, whichever answer 
 
 This is a decision record question and not a contract change to be made quietly. `ADR-KI-HARNESS-AGENTS-002` is `status: current` and the sentence at issue is one of its own, so the outcome is either a record that supersedes or amends it, or a recorded decision to leave it as written with the fusion made explicit.
 
-- `KI-HARNESS-GOV-101` raised the question and declined it; this record owns it.
+- the accepted coordination-lane delivery raised the question and declined it; this record owns it.
 - `KI-HARNESS-GOV-103` needs this answered before rule 6 of the coordination rules has a citation target.

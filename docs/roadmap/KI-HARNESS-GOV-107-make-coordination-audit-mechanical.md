@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-26T15:28:25Z
+updated_at: 2026-09-26T18:20:00Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -64,7 +64,7 @@ None of the three candidates replaces a judgment criterion; each adds a mechanic
 
 ### Relationship to other records
 
-- [KI-HARNESS-GOV-101](KI-HARNESS-GOV-101-record-coordination-lane-roles.md) places the four coordination lane records under `subagents/coordination/`. Those records are the subject of `COORD-2`, not of any check proposed here.
+- The accepted coordination-lane delivery places the four coordination lane records under `subagents/coordination/`. Those records are the subject of `COORD-2`, not of any check proposed here.
 - [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) decides who declares the skill. It determines how many repositories a mechanical item would run against, and is therefore worth settling first, but it is not build order: a rubric item can be written against one declaring repository.
 - `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` and the allow-list in `tools-ki` are the real precondition. `blocked_by` is empty because it records build order between records in this roadmap, and neither of those is one; the constraint is stated here instead.
 

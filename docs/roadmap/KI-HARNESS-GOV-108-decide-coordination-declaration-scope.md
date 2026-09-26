@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-26T15:28:25Z
+updated_at: 2026-09-26T18:20:00Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope
@@ -26,7 +26,7 @@ The skill governs an _arrangement_ between Knowledge Islands and a coordination 
 
 The reasoning as it currently stands:
 
-- `ki-agentic-harness` declares it because it owns `ki-subagents` and, under the rule that a role is a repository record before it is an agent, holds the role records that every coordination agent is a projection of. `KI-HARNESS-GOV-101` places four of those under `subagents/coordination/`. This is where the _agent role_ identity physically lives.
+- `ki-agentic-harness` declares it because it owns `ki-subagents` and, under the rule that a role is a repository record before it is an agent, holds the role records that every coordination agent is a projection of. the accepted coordination-lane delivery places four of those under `subagents/coordination/`. This is where the _agent role_ identity physically lives.
 - `ki-techne-harness` declares it because it holds `TECHNE-TOOLS-CTRL-001`, the unresolved form of the task-to-work linkage contract, and owns the controller and execution fabric where the _workspace_ and _worker_ identities are physically realised.
 - `tools-ki` is excluded because it implements the roadmap front matter in `src/core/work/items.ts` and is therefore the _subject_ of a future field change, not the owner of the arrangement.
 - `ki-techne-principal` is excluded because it holds remote-agent working style as knowledge base material. Knowledge about an arrangement is not the arrangement.
@@ -57,7 +57,7 @@ A second, weaker trigger: if a criterion ever acquires a mechanical form that re
 
 ### Whether this needs a decision record
 
-Open. The case for one is that the declaring set is an authority boundary, it spans repositories, and it will be cited by later arguments about where coordination doctrine applies. The case against is that it is a placement judgment inside an existing standard that deliberately leaves placement open, and that the reasoning fits in a work item with a revisit condition — which is how `KI-HARNESS-GOV-101` handled a structurally similar choice.
+Open. The case for one is that the declaring set is an authority boundary, it spans repositories, and it will be cited by later arguments about where coordination doctrine applies. The case against is that it is a placement judgment inside an existing standard that deliberately leaves placement open, and that the reasoning fits in a work item with a revisit condition — which is how the accepted coordination-lane delivery handled a structurally similar choice.
 
 The question is entangled with a larger one that has no record yet: the coordination rules themselves are accepted on a coordination task and written into no repository. If that decision record is created, this scope rule is a natural section of it rather than a record of its own. Settle the larger question first.
 

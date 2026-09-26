@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-09-26T14:34:49Z
+updated_at: 2026-09-26T18:20:00Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -24,7 +24,7 @@ Seven rules governing the Knowledge Islands–Paperclip boundary were accepted b
 
 The three copies have already diverged, one day after they were written. Rule 1 appears as "A Paperclip task never accepts KI work" in one configuration, with "`done` on a task means the coordinated execution ended, not that the work was accepted" appended in a second, and "acceptance stays with human review and `ki-accept`" in a third. Rule 5 is one clause in one copy and three in another. Rule 6 is a bare sentence in one and carries a projection clause in the others. No copy is marked as derived from another and none names a revision, so there is no way to tell which is current and no check that would notice the next divergence. This is the **inert doctrine** and **two-way link** failure at once: the rule text is the authority, and nothing is watching it.
 
-`KI-HARNESS-GOV-101` declined to add a fourth, fifth, sixth and seventh copy into the role records for exactly this reason — "they have no decision record yet, and inlining them would create four more unversioned copies of doctrine" — and recorded the removal of the existing copies as a follow-on.
+the accepted coordination-lane delivery declined to add a fourth, fifth, sixth and seventh copy into the role records for exactly this reason — "they have no decision record yet, and inlining them would create four more unversioned copies of doctrine" — and recorded the removal of the existing copies as a follow-on.
 
 Checked at `3f409aac`, six of the seven rules already have a citable home in this repository, so the follow-on is smaller than it looked:
 
@@ -46,13 +46,13 @@ In scope: confirming the citation for each rule against the standard as written 
 
 Out of scope, and this is the load-bearing exclusion: **editing the agent configurations themselves.** They are Paperclip agent instruction files in a Paperclip instance directory, outside every repository in the archipelago. A roadmap item here cannot own an edit to a file no repository contains. This item makes the citation exist; removing each copy is a coordination-plane action taken against it and belongs to a task, not to this record.
 
-Also out of scope: authoring a new decision record for the seven rules, which the citation table above shows is not needed; deciding what a role record physically is, which is `KI-HARNESS-GOV-102`; declaring `[skills.ki-agent-coordination-paperclip]` in any `.ki.toml`, which is separate activation work; and the four role records delivered under `KI-HARNESS-GOV-101`, which correctly carry no rule text.
+Also out of scope: authoring a new decision record for the seven rules, which the citation table above shows is not needed; deciding what a role record physically is, which is `KI-HARNESS-GOV-102`; declaring `[skills.ki-agent-coordination-paperclip]` in any `.ki.toml`, which is separate activation work; and the four role records delivered under the accepted coordination-lane delivery, which correctly carry no rule text.
 
 ## Discussion
 
 The temptation is to treat this as a tidy-up: delete seven paragraphs from three files. It is not, because the copies are currently the only place three of the rules are written down in the form the agents act on, and two rules have no complete home to be sent to.
 
-Rule 2 is the sharp one. `COORD-3` requires each task to identify at most one governing work item, which is the task half. The other half — every governing item naming its covering tasks — has no home because it has no field: roadmap front matter is a closed allow-list checked at parse time in `tools-ki` at `src/core/work/items.ts`, and no covering-task field is in it. Until one is, the item side of rule 2 is prose in a `## Current state` section, which is what `KI-HARNESS-GOV-101` does and says it is doing. That field is owned by `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness`. The honest outcome is a citation to `COORD-3` for the task side and a named, owned gap for the item side, not a citation that quietly overstates its coverage.
+Rule 2 is the sharp one. `COORD-3` requires each task to identify at most one governing work item, which is the task half. The other half — every governing item naming its covering tasks — has no home because it has no field: roadmap front matter is a closed allow-list checked at parse time in `tools-ki` at `src/core/work/items.ts`, and no covering-task field is in it. Until one is, the item side of rule 2 is prose in a `## Current state` section, which is what the accepted coordination-lane delivery does and says it is doing. That field is owned by `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness`. The honest outcome is a citation to `COORD-3` for the task side and a named, owned gap for the item side, not a citation that quietly overstates its coverage.
 
 Rule 7 is the other gap and is probably cheap: "all delivery happens under a roadmap item" is close to what `ki-work-roadmap` already governs, and `ADR-KI-HARNESS-SKILLS-011` decided that non-KB repositories carry roadmaps. Whether either states the rule as a requirement on delivery, rather than as a description of where work items live, has to be read before it is claimed.
 
@@ -62,6 +62,6 @@ There is an order that keeps every step verifiable: confirm the four solid citat
 
 What would fail if this were violated? Today, nothing — which is the point. Nothing reads the agent configurations, nothing compares them to the standard, and `.ki.toml` does not declare `[skills.ki-agent-coordination-paperclip]`, so `ki repo audit --skill ki-agent-coordination-paperclip` has no target in any repository. Shaping this item should decide whether the outcome includes a check that would notice a rule copy reappearing, because without one this work is reversible by anyone who finds it convenient to paste the rules back in.
 
-- `KI-HARNESS-GOV-101` recorded this as a follow-on and declined to add four more copies.
+- the accepted coordination-lane delivery recorded this as a follow-on and declined to add four more copies.
 - `KI-HARNESS-GOV-102` owns what a role record physically is, which rule 6's citation depends on.
 - `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` owns the covering-task front-matter field that rule 2's item side needs.
