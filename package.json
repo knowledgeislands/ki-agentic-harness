@@ -23,11 +23,13 @@
   "keywords": [
     "agent-skills",
     "anthropic",
+    "bun",
     "claude",
     "claude-code",
     "knowledge-islands",
     "multi-runtime",
-    "skills"
+    "skills",
+    "typescript"
   ],
   "license": "MIT",
   "lint-staged": {
