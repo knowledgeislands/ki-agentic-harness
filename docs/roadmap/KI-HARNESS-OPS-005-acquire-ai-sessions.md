@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-22T01:08:55Z
+updated_at: 2026-09-26T16:27:26Z
 ---
 
 ## Goal
@@ -48,10 +48,16 @@ On 2026-09-20, the user confirmed every visible ChatGPT project had been renamed
 
 The canonical `ki-acquire-chatgpt` capability now publishes the current prepared-capture metadata and the intended incremental source, routing, fidelity, checkpoint, staging, and retirement contract. This does not claim executable completeness: the installed local store remains opaque and cannot satisfy readable project enumeration, complete conversation fidelity, or source-retirement verification.
 
-On 2026-09-22, the user selected the official ChatGPT account export as the authorised bootstrap source for the first complete readable snapshot. The request reached ChatGPT's account re-authentication boundary and is not yet delivered. The export remains sensitive external source material outside Git; after delivery it must be inspected for project membership, complete conversation content, write-ups, and assets before a bounded converter can produce the existing `ki-chatgpt-capture` input. This snapshot does not provide the intended incremental source contract, so the end-to-end source step remains open.
+On 2026-09-22, the user selected the official ChatGPT account export as the authorised bootstrap source for the first complete readable snapshot. At that point the request had reached ChatGPT's account re-authentication boundary and delivery was pending. The export remains sensitive external source material outside Git; after delivery it must be inspected for project membership, complete conversation content, write-ups, and assets before a bounded converter can produce the existing `ki-chatgpt-capture` input. This snapshot does not provide the intended incremental source contract, so the end-to-end source step remains open.
+
+On 2026-09-26, the user confirmed that the requested ChatGPT account export has been delivered. Its local path and archive hash have not yet been recorded, so no archive content or completeness claim has been inspected. The agreed source split is to use this export once as the authoritative bootstrap candidate, use the opaque local cache only to nominate changed identities, and evaluate browser acquisition for new or changed readable conversations. Browser-derived content remains provisional until it is reconciled against the bootstrap export and later periodic exports; rendered UI alone is not evidence of complete branches, write-ups, attachments, or project coverage.
 
 ## Steps
 
+- [x] Confirm that the official ChatGPT account export is available as the one-time bootstrap candidate.
+- [ ] Record the export's external source-store location and archive hash, then inspect its schema, project membership, conversation identity, write-ups, and assets read-only without committing source payloads.
+- [ ] Convert only verified export evidence into the canonical `ki-chatgpt-capture` form and retain explicit omissions for every unsupported field or asset class.
+- [ ] Evaluate the hybrid incremental path: local-cache change nomination, browser retrieval of new or changed readable sessions under KI-HARNESS-GOV-087, and periodic full-export reconciliation before browser coverage is trusted.
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
@@ -95,7 +101,7 @@ On 2026-09-22, the user selected the official ChatGPT account export as the auth
 
 ## Dependencies / blocks
 
-The action-first executor and read-only provider mechanics exist. The official account export is the authorised bootstrap source, but it has not yet been delivered or verified to preserve project membership, write-ups, assets, and every complete conversation. The installed-application records are opaque, while the existing executable path begins from a user-prepared `ki-chatgpt-capture` tree rather than an account export ZIP. The remaining bridge must inspect the delivered export, convert only verified source evidence, and keep a supported incremental source as a separate requirement without reverse-engineering private storage.
+The action-first executor and read-only provider mechanics exist. The official account export is now available as the authorised bootstrap source, but its path, hash, observed schema, project membership, write-ups, assets, and conversation completeness have not yet been inspected. The installed-application records remain opaque, while the existing executable path begins from a user-prepared `ki-chatgpt-capture` tree rather than an account export ZIP. The remaining bridge must inspect the delivered export, convert only verified source evidence, and keep browser-based incremental acquisition provisional and export-reconciled without reverse-engineering private storage or undocumented network endpoints.
 
 Safe deletion also depends on a provider-supported, identity-specific mutation surface. If ChatGPT exposes no safe deletion operation, the system must produce a verified manual-release manifest and stop. Browser automation is not an acceptable substitute for an auditable deletion contract.
 

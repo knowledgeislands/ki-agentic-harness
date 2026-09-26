@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-22T06:15:11Z
-updated_at: 2026-09-24T10:45:00Z
+updated_at: 2026-09-26T16:27:26Z
 ---
 
 ## Goal
@@ -21,6 +21,8 @@ Determine whether self-hosted Obscura should become a reusable Knowledge Islands
 Obscura is an open-source headless browser engine that advertises Chrome DevTools Protocol compatibility, Playwright and Puppeteer reuse, fast isolated sessions, JavaScript rendering, and self-hosting. This could provide a lighter agent-owned browser surface when a task should not depend on a person's everyday Chrome profile.
 
 The immediate practical case is ChatGPT acquisition. The installed local cache supplies opaque identity and change evidence, while account exports are readable but delayed and manually requested. A browser trial could establish whether an explicitly authenticated isolated session can enumerate projects and conversations, read complete visible content, and emit deterministic checkpoints without relying on undocumented network endpoints.
+
+On 2026-09-26, the user confirmed that an official ChatGPT account export is available. The export is the bootstrap comparison source rather than a reason to skip the browser trial: the trial now asks whether an isolated browser can retrieve new or changed readable conversations that correlate with cache identities and reconcile cleanly against export evidence.
 
 ## Boundary
 
@@ -60,7 +62,7 @@ The existing signed-in browser profile cannot be copied into the trial under thi
 
 ## Dependencies / blocks
 
-The item is adopted into Now and fully shaped, but it is not Ready. Readiness requires two presently unresolved execution preconditions: a selected Obscura revision must prove locally buildable, and the user must explicitly confirm an interactive authentication window in the isolated runtime. The safe-local batch policy cannot infer either condition, transfer the existing browser profile, or substitute a synthetic page for the ChatGPT trial.
+The item is Ready. The delivered account export supplies the comparison baseline for the later ChatGPT step, but execution still stops at two explicit gates: a selected Obscura revision must prove locally buildable, and the user must explicitly confirm an interactive authentication window in the isolated runtime. These are implementation-time feasibility and authority gates; the safe-local batch policy cannot infer either condition, transfer the existing browser profile, or substitute a synthetic page for the ChatGPT trial.
 
 ## Documentation impact
 
@@ -84,6 +86,6 @@ Any supported browser adapter, ChatGPT acquisition change, or security boundary 
 
 Compare Obscura with the current interactive Chrome and in-app browser surfaces on isolation, authenticated-state handling, rendering fidelity, accessibility-tree or DOM extraction, downloads, observability, resource cost, and maintenance risk. Confirm actual compatibility rather than accepting CDP and performance claims as interoperability evidence.
 
-For ChatGPT, attempt a small read-only project and conversation inventory. Correlate browser-observed identities with local-cache evidence and, when available, the official export. Record whether every message branch, write-up, file, timestamp, project association, and omission can be represented and hashed. A useful result may be a constrained browser adapter, a hybrid cache-plus-browser design, or evidence that browser acquisition is too fragile.
+For ChatGPT, attempt a small read-only project and conversation inventory. Correlate browser-observed identities with local-cache evidence and the delivered official export. Record whether every message branch, write-up, file, timestamp, project association, and omission can be represented and hashed. Treat the export as the one-time bootstrap candidate and browser reads as provisional incremental evidence until periodic export reconciliation demonstrates coverage. A useful result may be a constrained browser adapter, a hybrid cache-plus-browser design, or evidence that browser acquisition is too fragile.
 
 The trial should produce a recommendation, reproducible fixture or evidence packet, explicit credential boundary, and follow-on owner. It must not silently broaden `ki-acquire-chatgpt`'s executable capability metadata before the evidence exists.
