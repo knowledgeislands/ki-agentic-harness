@@ -40,7 +40,17 @@ Paperclip and KI lifecycle states remain independent:
 
 Runs operating on the same island may share repository identity and baseline while using different physical workspaces. Concurrent mutating tasks use separate worktrees, clones, or equivalent isolated writable checkouts. A shared mutable checkout is acceptable only when mutation is serialised explicitly; read-only inspection may share a filesystem view.
 
+A run that will write to a repository works in its own isolated checkout — normally a linked worktree on its own branch, cut from a named commit — whether or not another run happens to be active. Isolation is a standing property of a writing run, not a precaution taken when concurrency is observed, because a run cannot see the runs that start after it. A human's working copy is never a run's working directory: a person must be able to read, build, and edit their own checkout without an agent changing files underneath them.
+
 Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, local branch or worktree identity when applicable, and any uncommitted starting state admitted into scope. Never infer a clean or current checkout from the agent name.
+
+### Roadmap records are the exception
+
+Work records are the deliberate exception to isolation. Every write to a repository's roadmap records — capture, shaping, a lifecycle transition, acceptance, or a prune — is made in that repository's designated primary checkout, never in a task's isolated worktree.
+
+Isolation and serialisation protect different things. Isolation keeps two deliveries from corrupting each other's working files. Serialisation keeps two runs from allocating the same work-item identifier, which isolation actively defeats: two worktrees that each advance the issue ledger on their own branch both believe they hold the number, and the collision surfaces at the merge rather than at the allocation. The [roadmap standard](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md#roadmap-write-locus) requires exactly one designated writing checkout per repository and owns the committed-advance-before-record ordering; this standard names the primary checkout as that designation for coordinated runs.
+
+A coordinated run therefore crosses back to the primary checkout to take its number and write its record, and returns to its own worktree for delivery. Those are two write boundaries in two checkouts by design, and the task's evidence records both.
 
 ## Interaction and skill composition
 

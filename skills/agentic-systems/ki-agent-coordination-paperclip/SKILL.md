@@ -30,7 +30,9 @@ Keep four identities distinct:
 - a **workspace** is the filesystem and admitted baseline available to that run;
 - a **worker** is the compute or process executing it.
 
-Rita and Sue may both work on `tools-rig` and start from the same admitted revision. When both can mutate files concurrently, give each task a separate worktree or equivalent isolated checkout. Sharing the logical island does not require sharing one mutable directory.
+Rita and Sue may both work on `tools-rig` and start from the same admitted revision. Each writing task gets its own worktree or equivalent isolated checkout, cut from a named commit, and a human's working copy is not one of them. Sharing the logical island does not require sharing one mutable directory.
+
+Work records invert that: both of them write roadmap records in `tools-rig`'s designated primary checkout, because an identifier is reserved by a committed ledger advance and two isolated branches can each advance the same number. The [standard](references/standards-agent-coordination-paperclip.md#roadmap-records-are-the-exception) states the exception and cites the roadmap standard that owns the ordering.
 
 Direct human-agent sessions remain valid. A directly addressed agent may use Paperclip's own skill to inspect assignments, create or update coordinated tasks, and return evidence. Paperclip is a shared coordination plane, not a mandatory conversational gateway.
 

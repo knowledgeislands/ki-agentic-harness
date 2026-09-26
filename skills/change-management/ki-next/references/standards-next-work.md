@@ -61,7 +61,7 @@ Do not change adopted content until the user confirms exact wording and placemen
 
 ### Capture substantive prospective work
 
-Any identifier named before publication is provisional. Immediately before writing a roadmap or Streams record, re-read the applicable `_ISSUES.md` scope; if its high-water mark differs from the inspected value or the proposed serial is not exactly one greater, discard the proposed serial and reallocate from the latest value. Publish the new record and advanced ledger in the same coherent write boundary. Never treat a plan, recap, approval, or warm session context as an identifier reservation.
+Any identifier named before publication is provisional. Immediately before allocating, re-read the applicable `_ISSUES.md` scope; if its high-water mark differs from the inspected value or the proposed serial is not exactly one greater, discard the proposed serial and reallocate from the latest value. Then commit the ledger advance on its own, in the repository's designated roadmap writing checkout, before writing the record it reserves. Never treat a plan, recap, approval, warm session context, or an uncommitted working copy as an identifier reservation. The [roadmap standard](../../ki-work-roadmap/references/standards-repository-roadmaps.md#number-reservation) owns that ordering and the write locus it depends on.
 
 During the current interaction, capture a distinct prospective outcome, concern, dependency, or decision once it is substantive enough to state a plain-language Goal, Context, Boundary, and decision-useful Discussion. Do not require prior approval. Allocate the next canonical identity, create one `horizon: triage`, `status: draft` record with matching timestamps, and report the capture after writing it. Capture creates durable intake only; it does not adopt, prioritise, plan, implement, batch, accept, or prune work.
 
@@ -150,7 +150,7 @@ That handoff does not permit `ki-next` to infer batch, selection, or implementat
 
 ## 7. Spawn due housekeeping work
 
-A due-run identity is provisional until publication. Re-read the applicable issue ledger immediately before spawning, reallocate if it advanced, and write the spawned record, advanced ledger, and template `active-run` linkage as one coherent change.
+A due-run identity is provisional until publication. Re-read the applicable issue ledger immediately before spawning and reallocate if it advanced. Commit the ledger advance on its own first, then write the spawned record and the template `active-run` linkage as one coherent change.
 
 After grounding and before ordinary candidate selection, evaluate each active housekeeping template under the adapter's template horizon. Use `ki-work-housekeeping`'s read-only `evaluateHousekeepingSchedule({ repository, schedule, today })` capability with freshly read template fields and an explicit UTC date. Its owner standard defines calendar-or-commit eligibility, first-parent evidence, missing-history diagnostics, initial runs, and grace. Do not reimplement that calculation or treat unknown volume as zero; preserve manual confirmation, paused, and active-run guards.
 
