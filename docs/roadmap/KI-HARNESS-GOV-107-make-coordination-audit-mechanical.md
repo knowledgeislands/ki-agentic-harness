@@ -1,5 +1,5 @@
 ---
-id: KI-HARNESS-GOV-105
+id: KI-HARNESS-GOV-107
 area: GOV
 title: Make coordination audit mechanical
 theme: governance-consistency
@@ -12,7 +12,7 @@ created_at: 2026-09-26T15:14:21Z
 updated_at: 2026-09-26T15:28:25Z
 ---
 
-# KI-HARNESS-GOV-105: Make coordination audit mechanical
+# KI-HARNESS-GOV-107: Make coordination audit mechanical
 
 ## Goal
 
@@ -42,7 +42,7 @@ Out of scope, deliberately:
 
 - adding the roadmap front-matter field itself, which is `TECHNE-TOOLS-CTRL-001` and a `tools-ki` change, not harness rubric work;
 - changing any normative claim in [the coordination standard](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md), which this item treats as settled and only proposes to make checkable;
-- which repositories declare the skill, which is [KI-HARNESS-GOV-106](KI-HARNESS-GOV-106-decide-coordination-declaration-scope.md);
+- which repositories declare the skill, which is [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md);
 - removing or weakening the existing judgment criteria;
 - the seven coordination rules themselves and any decision record that would fix them.
 
@@ -65,7 +65,7 @@ None of the three candidates replaces a judgment criterion; each adds a mechanic
 ### Relationship to other records
 
 - [KI-HARNESS-GOV-101](KI-HARNESS-GOV-101-record-coordination-lane-roles.md) places the four coordination lane records under `subagents/coordination/`. Those records are the subject of `COORD-2`, not of any check proposed here.
-- [KI-HARNESS-GOV-106](KI-HARNESS-GOV-106-decide-coordination-declaration-scope.md) decides who declares the skill. It determines how many repositories a mechanical item would run against, and is therefore worth settling first, but it is not build order: a rubric item can be written against one declaring repository.
+- [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) decides who declares the skill. It determines how many repositories a mechanical item would run against, and is therefore worth settling first, but it is not build order: a rubric item can be written against one declaring repository.
 - `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` and the allow-list in `tools-ki` are the real precondition. `blocked_by` is empty because it records build order between records in this roadmap, and neither of those is one; the constraint is stated here instead.
 
 ### Governing coordination task

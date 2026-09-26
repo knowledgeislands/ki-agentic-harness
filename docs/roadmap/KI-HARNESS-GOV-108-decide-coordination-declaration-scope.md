@@ -1,5 +1,5 @@
 ---
-id: KI-HARNESS-GOV-106
+id: KI-HARNESS-GOV-108
 area: GOV
 title: Decide coordination declaration scope
 theme: governance-consistency
@@ -12,7 +12,7 @@ created_at: 2026-09-26T15:14:21Z
 updated_at: 2026-09-26T15:28:25Z
 ---
 
-# KI-HARNESS-GOV-106: Decide coordination declaration scope
+# KI-HARNESS-GOV-108: Decide coordination declaration scope
 
 ## Goal
 
@@ -43,7 +43,7 @@ Out of scope, deliberately:
 
 - reversing the two declarations already made, which were approved on `KNO-19` and stand until this item proposes otherwise;
 - declaring the skill in any further repository, which needs its own approval on its own record;
-- what the audit actually checks once declared, which is [KI-HARNESS-GOV-105](KI-HARNESS-GOV-105-make-coordination-audit-mechanical.md);
+- what the audit actually checks once declared, which is [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md);
 - the content of the coordination rules and the standard, which this item takes as given;
 - any change to `ki-applicability` or to the declaration mechanism itself, which is a `ki-skills` contract.
 
@@ -63,7 +63,7 @@ The question is entangled with a larger one that has no record yet: the coordina
 
 ### Why the declaration is not free
 
-An empty table is not a null act. It selects the repository into every future criterion this skill gains, including ones written after the declaring decision was made and by someone who never considered that repository. A repository that declares a skill it cannot satisfy produces either a standing failure or a permanent exception, and the exception is the more likely outcome. The restraint here is about what the set will cost when `KI-HARNESS-GOV-105` succeeds, not about what it costs today when the audit checks nothing.
+An empty table is not a null act. It selects the repository into every future criterion this skill gains, including ones written after the declaring decision was made and by someone who never considered that repository. A repository that declares a skill it cannot satisfy produces either a standing failure or a permanent exception, and the exception is the more likely outcome. The restraint here is about what the set will cost when `KI-HARNESS-GOV-107` succeeds, not about what it costs today when the audit checks nothing.
 
 ### Governing coordination task
 
