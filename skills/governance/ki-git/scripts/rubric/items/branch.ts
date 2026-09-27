@@ -5,21 +5,22 @@ const BRANCH_1: RubricItem<GitRubricContext> = {
   code: 'BRANCH-1',
   title: 'working approach matches the delivery boundary',
   description:
-    'Primary-checkout, branch-with-PR, and worktree-with-PR approaches follow repository policy, review needs, concurrency, and unattended isolation.',
-  sources: ['standards-git.md'],
+    'Primary-checkout, branch-with-PR, worktree-with-PR, and local worktree integration approaches follow repository policy, review needs, concurrency, and unattended isolation.',
+  sources: ['standards-git.md#working-copy-and-review-approaches', 'standards-git.md#local-integration-write-boundary'],
   judgment: {
     scope:
       'The selected repository, requested change, current `git branch --show-current` and `git worktree list` evidence, protection policy, concurrency, and review boundary.',
     prompt:
-      'After checking branch, worktree, protection, concurrency, unattended execution, and review evidence, assess whether the primary-checkout default or an explicitly required branch or worktree boundary is appropriate.',
+      'Does the selected approach satisfy isolation and review needs, and does local worktree integration use an authorised owner and serialised destination write without imposing remote publication?',
     outcomes: [
       'conforming',
       'use single-working-copy-on-main',
       'use single-working-copy-on-branch-with-pr',
-      'use worktrees-with-pr'
+      'use worktrees-with-pr',
+      'use worktrees-with-local-integration'
     ],
     guidance:
-      'Use the primary checkout for ordinary interactive work. Use a branch or separate worktree when protection, review, concurrent delivery, or unattended coordination requires that isolation.'
+      'Use the primary checkout for ordinary interactive work. Isolate unattended implementation. When delivery is local-only, independently review the candidate and integrate through the authorised serialised write boundary without requiring a push or pull request.'
   }
 }
 

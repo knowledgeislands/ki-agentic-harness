@@ -33,6 +33,12 @@ Before writing code, read:
 - **Own**: implementation under one Ready record — one item, one baseline, one checkout; keeping specification and implementation in step; contradiction detection for any two-way link; the verification that proves the change.
 - **Defer**: selection, adoption and escalation → `ki-convenor`; shaping a draft to Ready and the audit contract → `ki-steward`; execution substrate and remote access → `ki-ferryman`; acceptance and pruning → human review and `ki-accept`.
 
+## Integration hand-off
+
+Before implementing, confirm the destination branch, independent reviewer and integration owner as well as the governing record and baseline. Return the exact delivery commit, changed paths, verification evidence and any conflict or dependency that affects integration.
+
+Hand the result to Steward for review and Convenor for integration ownership. A completed implementation subtask must link an open integration task with a named owner; otherwise keep the delivery awaiting review or integration. Do not report repository delivery complete while its result exists only on your task branch. You still hold no merge or KI acceptance authority.
+
 ## Orchestration
 
 One writer per checkout. Concurrent mutating work takes separate worktrees or clones, never a shared mutable directory; read-only inspection may share a filesystem view.

@@ -60,13 +60,24 @@ An authorised integration agent may merge only an eligible delivery within its g
 
 `main` is open by default in Knowledge Islands repositories, and ordinary interactive work uses the repository's primary checkout rather than creating a linked worktree. A repository instruction, explicit user request, or unattended coordination policy may require a branch or worktree boundary.
 
-Select one of three approaches from repository policy, the requested review boundary, and whether work must proceed concurrently:
+Select one of four approaches from repository policy, the requested review boundary, and whether work must proceed concurrently:
 
 - **`single-working-copy-on-main`** — use for small, focused, independently verified changes when local instructions permit direct commits and no isolated review boundary is needed. Human and agent threads may share the working copy when they retain disjoint file-level change boundaries and coordinate Git writes.
 - **`single-working-copy-on-branch-with-pr`** — use when one delivery is active in the working copy and protection, the user, or a useful isolated review boundary calls for a branch and pull request. Multiple threads may contribute to that one delivery under the same shared-working-tree hygiene.
 - **`worktrees-with-pr`** — use when concurrent or independently isolated deliveries need separate branches, indexes, and working files. Give each branch its own worktree and PR, then integrate through the repository's review and merge policy.
+- **`worktrees-with-local-integration`** — use isolated task branches for local delivery without remote publication. Independently review the exact delivery commit, then let the repository's authorised integration owner merge it into the named local destination branch under the serialised write boundary below. No push or pull request is implied.
 
 Do not invent a branch, pull-request, or worktree requirement merely because several interactive actors may modify one working copy. Use worktrees when concurrent deliveries require separate branches or isolated working files, or when an unattended coordinator must not mutate a human's checkout; do not keep independent branch work in one working copy merely because separate indexes are possible.
+
+### Local integration write boundary
+
+Identify an integration destination by repository, host, designated checkout and branch, not by the branch name alone. For laptop-local operation, successful delivery places the reviewed result in the human's primary checkout on local `main` and in its working files. Verify both; advancing a ref in another clone or publishing a remote ref is a different action. A remote worker's own `main` remains that worker's local branch unless the repository explicitly designates it as the delivery destination.
+
+Local integration is a bounded exception to implementation-worktree isolation. The repository's grant identifies its integration owner and destination; it may authorise that owner to update the primary checkout so the human can see the delivered files. The grant does not permit development in that checkout, switching its branch, or overwriting another actor's work.
+
+Before integration, establish exclusive ownership of the repository's short Git write window, re-read the destination and reviewed source commits, and inspect the primary checkout's branch, index and working state. Stop if another actor owns the window, the index contains unrelated staged work, a Git operation is in progress, or tracked or untracked changes would be overwritten. A per-agent concurrency limit is not a repository lock. Do not use a ref-only update to move a branch that is checked out elsewhere.
+
+Verify the proposed combined result against the current destination before advancing it. A clean merge that preserves the reviewed change may use the existing grant; conflict resolution changes the candidate and requires renewed verification and review. Advance only the authorised local destination using the granted merge method, record the resulting commit and integration evidence, then release the write window. Never reset, force-update or stash another actor's state to make a merge proceed.
 
 ### Worktree location
 

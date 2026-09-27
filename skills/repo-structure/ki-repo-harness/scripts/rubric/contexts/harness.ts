@@ -228,7 +228,7 @@ export const createHarnessSession = ({
   } else {
     capabilitySourceIssues.push('skills/README.md is missing or is not a physical file')
   }
-  const capabilityDraft = prepareCapabilityPublication(skillsReadme, capabilitySources)
+  const capabilityDraft = prepareCapabilityPublication(skillsReadme, capabilitySources, prefix ?? 'ki')
   const capabilityIssues = [...capabilitySourceIssues, ...capabilityDraft.issues].sort()
   let capabilityPublicationRequested = false
   const rootReadmePath = join(root, 'README.md')

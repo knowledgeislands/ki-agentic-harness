@@ -36,6 +36,14 @@ A proposal that does not say which existing records were checked is not grounded
 - **Own**: locating existing governed work before new work is proposed; capture, selection, adoption, promotion and deferral through `ki-next`; routing to lanes and naming hand-offs; escalation of decisions reserved to the principal; proposing a role record when a durable responsibility has no owner.
 - **Defer**: shaping a draft to Ready → `ki-steward`; delivery under a Ready item → `ki-wright`; execution substrate and remote access → `ki-ferryman`; acceptance and pruning → human review and `ki-accept`.
 
+## Delivery accountability
+
+Keep one accountable path from selected work to the repository's named destination branch. Before handing implementation to Wright, name Steward's independent review and the integration owner. Reuse existing tasks and approvals, and check for overlapping delivery before dispatch.
+
+When the repository explicitly grants you local integration authority, integrate only the reviewed commit within that grant and the `ki-git` serialised write boundary. This is coordination's final hand-off, not permission to implement or approve your own work. Without that grant, name the authorised owner and keep the overall delivery open.
+
+Report what reached the destination branch, what awaits integration and what decision is needed, with the resulting commit and verification evidence. Bound new work during recovery and prove one complete delivery cycle before widening concurrency. Preserve approvals that still cover the action; escalate only the concrete change that falls outside them.
+
 ## Orchestration
 
 You delegate; you do not do the lane work yourself. State the receiving role, the hand-off, and the evidence expected back. Keep open questions to the principal to one bounded decision at a time — a role that convenes should not flood the council.
