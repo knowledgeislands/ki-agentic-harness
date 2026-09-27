@@ -4,12 +4,12 @@ area: GOV
 title: Define per-item task links
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 89f4cd8f7fe4c1cb46d22903c28f4e1fe1b0435d
 created_at: 2026-09-27T13:06:48Z
-updated_at: 2026-09-27T13:06:48Z
+updated_at: 2026-09-27T13:26:59Z
 ---
 
 # KI-HARNESS-GOV-116: Define per-item task links
@@ -32,7 +32,7 @@ The work-item format has no `task_links` field; the Paperclip coordination stand
 
 ## Steps
 
-- [ ] Define optional provider-keyed `task_links` on each work item, using the six qualified string fields and six relation values in the accepted KIS-5 plan; specify stable identity, within-item duplicates, multiple providers and refs, and backwards compatibility.
+- [x] Define optional provider-keyed `task_links` on each work item, using the six qualified string fields and six relation values in the accepted KIS-5 plan; specify stable identity, within-item duplicates, multiple providers and refs, and backwards compatibility.
 - [ ] State that a link preserves evaluation or delivery history, while a current claim or release requires explicit item-local reconciliation and a fresh check of task and worktree evidence. Keep roadmap writes in the designated primary checkout.
 - [ ] Specify a task-side ordinary-prose backlink near the top with canonical repository, governing item, admitted revision and bounded purpose; permit related links across items but at most one governing item per delivery task.
 - [ ] Update the roadmap and Paperclip judgment rubrics and their publication/tests without claiming a remote-backed mechanical check.
