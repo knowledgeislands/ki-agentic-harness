@@ -68,6 +68,8 @@ Bring an explicitly scoped coordination design or local declaration into line wi
 
 ### Mode EDUCATE
 
+For an existing set of repositories, follow the [existing-estate onboarding guide](references/standards-existing-estate-onboarding.md) after the coordination standard. It stages inventory, one project per repository, task and work reconciliation, and a verified local delivery pilot without itself granting provisioning or agent resumption.
+
 Explain or draft the smallest arrangement that preserves the shared model. Start with one company or group, named repository identities, agent roles, task-to-work locators, workspace isolation, and evidence return. Do not provision a company, invent remote identifiers, or require every conversation to pass through Paperclip.
 
 ### Mode REFRESH
