@@ -17,7 +17,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-39
       relation: implementation
 created_at: 2026-09-26T22:55:00Z
-updated_at: 2026-09-27T14:06:00Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-113: Govern workspace retirement
@@ -169,6 +169,14 @@ Workspace retirement is now doctrine in the coordination standard, distinguishin
 Learning worth routing, not promoted here: that an audit can report PASS because a criterion is unexercised rather than because the repository conforms is a general trap, and it applies to every `ki repo audit` reported as evidence from a host whose harness is not dev-linked. The natural home is `KI-HARNESS-GOV-107`, which owns making these criteria mechanical.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified delivery candidate: `623e0e72c306677b7449adeef11192f03051e9d3` is reachable from the audited destination and retains [workspace retirement doctrine](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#workspace-retirement), `COORD-9` and its published rubric. The existing Review packet records the delivery and historical verification; it is not evidence of KI acceptance.
+- Evidence correction: the earlier Dependencies / blocks paragraph incorrectly attributes a landed base-revision standard and `COORD-10` to `4c854d2c2f2a852575fb8c829e049cd51843f400`. That commit changed only GOV-107’s roadmap cross-reference. At this audit, `COORD-10` instead means Repository skill baseline, a judgment criterion delivered by `7d7b247d`; the proposed mechanical current-base check in GOV-115 is not established by either commit.
+- Remaining and closure route: independently review the integrated retirement scope and its retained evidence, then obtain explicit owner acceptance. The zero-day runtime configuration remains separately owned by the historical KIS-80 handoff and was not checked live here; GOV-114 retains held-workspace reporting. The retained KIS-39 worktree still points to `623e0e72`; reachability does not authorise its retirement or release any hold.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Why the standard states five gates and not six
 

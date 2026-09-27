@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-09-27T18:38:14Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 ## Goal
@@ -31,6 +31,14 @@ This item owns the generic classification, review evidence, and migration method
 Genuinely personal choices, including interaction preferences, registry-publishing stance, and machine-specific source-store paths, remain user-scoped unless their governing evidence establishes a broader owner.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial delivery: `9b2efa68` adds the portable-versus-repository-versus-personal guidance routing rule in [the chezmoi standard’s agent-instruction ownership section](../../skills/repo-structure/ki-repo-dotfiles-chezmoi/references/standards-chezmoi-dotfiles.md#agent-instruction-layering). It explicitly requires reporting unavailable user-level evidence rather than claiming portability. `15faa4e7` records this progress in the item; the existing `KI-SHAPE-10` remains the skill-level judgment.
+- Remaining: the broader semantic review and representative verification without private instruction files have not been established. The recorded personal-file reduction at receiving commit `9511644` is a historical claim in this audit, not a freshly verified estate-wide migration or runtime test.
+- Closure route: reconcile the delivered routing rule rather than duplicate it, then use the proper Triage adoption and review route or an applicable approved disposition. Any receiver-owned changes retain their own authority and acceptance; do not close this generic outcome based solely on a repository-local audit.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Detection boundary
 

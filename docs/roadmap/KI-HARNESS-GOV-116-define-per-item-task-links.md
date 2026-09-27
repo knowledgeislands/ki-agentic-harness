@@ -17,7 +17,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-27T13:06:48Z
-updated_at: 2026-09-27T14:15:12Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-116: Define per-item task links
@@ -109,6 +109,14 @@ The independent review found no material defect in the corrected parser, contrac
 Per-item task links are implemented and reviewable in both repositories; local main is the delivery destination. Continue item-by-item reconciliation before assigning more work, and seek human KI acceptance after review.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified delivery candidate: `a98cce65` is reachable from the audited destination and supplies [the shared task-link format](../../skills/change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links), Paperclip reconciliation guidance, offline nested-YAML validation and tests. The six-field qualified identity and association-not-claim boundary are implemented; this is not a missing-schema task.
+- Receiving evidence: `knowledgeislands/tools-ki` commit `c0857d5652060d644fecc7c2f20a308f59feec7c` is reachable from its inspected HEAD `c2e592c8771697f643dd2a923ee3da9fc6e5ee7c`. Its `src/core/work/items.ts::parseTaskLinks`, `src/core/work/roadmap-report.ts` and CLI-088 Review packet provide the separate CLI delivery. Uncommitted receiving-repository changes were present and are excluded from this completion claim; its historical test results were not rerun here.
+- Remaining and closure route: review the already-delivered harness packet and contract agreement, then obtain explicit owner acceptance independently in each repository. Live backlinks, current claims, exhaustive association backfill and held Techné work were not verified or released. Do not repeat implementation or treat either awaiting-review record as accepted.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Identity and availability
 

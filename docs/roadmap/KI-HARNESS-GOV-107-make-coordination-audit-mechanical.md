@@ -29,7 +29,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-27T13:55:33Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -77,6 +77,14 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 This is an association-only recovery check. No active delivery task was verified, but this is not a complete task/worktree census or an availability grant. Neither task-link backfill nor a paused agent releases retained work. Reconcile ownership and the changed evidence assumptions before selecting or shaping this Triage item; its horizon, lifecycle and audit boundary remain unchanged. Keep references here until KIS-5's provider-neutral map is implemented.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial prerequisite delivery: `a98cce65` supplies qualified per-item task links and offline shape validation in `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts`. The matching committed CLI implementation is `c0857d5652060d644fecc7c2f20a308f59feec7c` in `knowledgeislands/tools-ki`, `src/core/work/items.ts::parseTaskLinks`. Historical statements that no field exists are no longer current.
+- The broader claim that the coordination audit cannot fail on any input is also stale: `00de1d36` added organisation configuration validation through `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts::createPaperclipCoordinationSession` and `ORG-1`. This is not task-link, live ownership or independent-acceptance verification. The current `COORD` criteria remain judgments.
+- Remaining and closure route: retain this Triage item for its actual linkage-evidence problem, reconcile its prerequisites before human-approved adoption or disposition, and design negative fixtures against the selected evidence boundary. Do not report a mechanical coordination PASS as proof of live conformance or reimplement the delivered task-link field.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Where the evidence would have to come from
 

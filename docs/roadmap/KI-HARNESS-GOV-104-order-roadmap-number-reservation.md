@@ -35,7 +35,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-76
       relation: integration
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-27T13:55:33Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -151,6 +151,14 @@ The recovery-pilot document at revision `f44b75d0-4853-4b7f-8621-69fe4b18d3ec` r
 This is an association-only recovery check, not a complete ownership census or a release for another agent to implement. Reconcile the already-landed changes, remaining scope and current claims before any further work. Preserve these per-item references for migration when KIS-5's provider-neutral map is implemented; historical implementation and integration links must survive completion.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified delivery candidate: `db4635d0` carries reservation-before-record ordering through [the roadmap standard](../../skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md#number-reservation), `ki-next` capture and housekeeping spawning, and the Streams propose procedure. `395d592b`, reachable through the recovered delivery at `f878a552be275122767c6f4ae7e3e6b8b2789299`, updates `skills/change-management/ki-work-roadmap/scripts/rubric/items/roadmaps.ts::ROAD_7` and the coordination catalogue’s `COORD-8`. The latter governs the primary-checkout roadmap write locus. GOV-105 already retains the ledger-body follow-up.
+- Remaining: reconcile every preserved unchecked step and the historical Current state against these destination-branch changes, then produce a review packet with current verification and any remaining concerns. The generated ledger-body change remains GOV-105’s scope; the existing dependency narrative says it does not gate this delivery.
+- Closure route: do not replay the Ready plan as new implementation. Reconcile retained task branches and review the already-integrated result before any lifecycle transition; explicit owner acceptance is still required. This checkpoint deliberately does not change checkboxes, baseline or lifecycle.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Why ordering rather than atomicity
 

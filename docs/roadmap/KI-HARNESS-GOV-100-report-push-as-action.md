@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-09-26T12:39:00Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-100: Report push as action
@@ -33,6 +33,14 @@ In scope: how `ki-git` and the recap procedure phrase push state, and whether th
 Out of scope: the standing no-push rule itself, which worked exactly as intended; concurrent-writer policy, which `ki-git` already governs under one-writer-per-checkout; and the peer's commits, which were legitimate.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified delivery candidate: `f9dbcd90` added the action-versus-position reporting rule, still present in [the Git standard’s publication authority section](../../skills/governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority). The central requested rule is not missing and should not be implemented again.
+- Remaining: assess whether the recap procedure needs an explicit corresponding instruction or already obtains sufficient guidance from the governing Git policy. No runtime recap-behaviour test or independent acceptance was established by this audit.
+- Closure route: this remains unadopted Triage, not an accepted delivery. Use the proper human-approved adoption and review route, or an applicable approved intake disposition; do not mark it done solely because matching wording exists.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 The distinction the guidance currently blurs is between two different facts. _I did not push_ is a statement about this session's actions, is permanently true once true, and is the thing the no-push rule is actually about. _The commit is unpushed_ is a statement about a shared ref's current position, is true only at the moment it is checked, and is not this session's property at all. Recaps have been making the second while meaning the first.
 

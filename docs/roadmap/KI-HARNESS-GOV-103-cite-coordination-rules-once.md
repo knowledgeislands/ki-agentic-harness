@@ -35,7 +35,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-09-27T13:55:33Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -86,6 +86,14 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 This is an association-only recovery check, not a complete task/worktree census or an availability grant. No active implementation claim was verified, but none was released either. Before direct or coordinated implementation, reconcile retained work and ownership and obtain the normal selection/readiness authority. Keep these references on this item; migrate them to the provider-neutral map only after KIS-5's contract and parser are available.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial delivery: `a98cce65` implemented the item-side association contract. [Task links](../../skills/change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links) and [task-to-work reconciliation](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#task-to-work-relationship) now supply the formerly missing item-side part of rule 2. Receiving-repository commit `c0857d5652060d644fecc7c2f20a308f59feec7c` in `knowledgeislands/tools-ki` implements `src/core/work/items.ts::parseTaskLinks`; its CLI-088 review packet remains awaiting review. That committed snapshot, not unrelated receiving-checkout edits, is the evidence used here.
+- Remaining: complete the seven-rule citation reconciliation, resolve the rule-6 serialization question with GOV-102, and establish rule 7’s actual authority without overriding the current explicit-direct-instruction path. No live agent configuration or removal of duplicated rule text was verified. This item still does not own edits to Paperclip agent configurations.
+- Closure route: revisit the Triage scope against delivered GOV-116 before human-approved adoption or an applicable disposition. Do not recreate the task-link schema or treat historical task associations as active ownership.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 The temptation is to treat this as a tidy-up: delete seven paragraphs from three files. It is not, because the copies are currently the only place three of the rules are written down in the form the agents act on, and two rules have no complete home to be sent to.
 

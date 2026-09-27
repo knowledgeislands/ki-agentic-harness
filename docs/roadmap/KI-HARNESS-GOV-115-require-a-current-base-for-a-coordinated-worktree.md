@@ -23,7 +23,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-79
       relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-09-27T13:55:33Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base
@@ -125,6 +125,14 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 This association-only check does not reconcile all worktrees, refresh a branch, release the held delivery, approve its old plan, or change this item's lifecycle. The current coordination standard's branch-refresh policy also needs comparison with this older plan before implementation; do not replay a superseded claim from the baseline above. Keep the evaluation and delivery references on this item for migration after KIS-5's provider-neutral map is implemented. A paused agent or missing machine-readable map is not evidence of availability.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial delivery: the current coordination standard already requires [current-baseline recovery](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#recovery-and-visibility) and [delivery-branch refresh](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch). Those normative prerequisites do not prove the planned mechanical current-base and path-containment assertions.
+- Remaining: no current-base mechanical assertion exists in the inspected coordination catalogue/context. Moreover, `7d7b247d` now uses `COORD-10` for Repository skill baseline, a judgment criterion. Reconcile and explicitly resolve this identifier collision before implementing or regenerating any rubric; do not overwrite the existing criterion. The earlier GOV-113 claim about `4c854d2c` is incorrect: that commit only updated GOV-107’s roadmap cross-reference.
+- Verification and closure route: the retained KIS-70 worktree points to `94b6f9f007d06754f7c5ee67cf3c82be32308c50`; this audit did not inspect its uncommitted contents or establish a live task claim. Reconcile retained work, confirm the separate host-operation delivery in `tools-ki`, and prove all planned negative and read-only fixtures before review and explicit owner acceptance. Do not refresh or replay the retained branch under this documentation pass.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Why the obvious check cannot fail
 

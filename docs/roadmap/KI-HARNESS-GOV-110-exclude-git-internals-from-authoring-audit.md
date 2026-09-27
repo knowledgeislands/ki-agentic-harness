@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T17:09:48Z
-updated_at: 2026-09-26T17:09:48Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # KI-HARNESS-GOV-110: Exclude Git Internals
@@ -31,6 +31,14 @@ No existing roadmap item owns this audit-boundary defect. The nearest active wor
 This item does not modify, format, audit, or remove files inside active Paperclip worktrees. It does not broadly exclude hidden directories, weaken Markdown rules, suppress genuine findings from tracked files in the selected worktree, or implement the fix during intake capture.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial delivery: `572d84a6` added `.git` to the canonical authoring exclusion and this repository’s configuration. The exclusion remains in `skills/governance/ki-authoring/scripts/rubric/contexts/authoring.ts::RUMDL_DEFAULT` and [.rumdl.toml](../../.rumdl.toml#L6). `skills/governance/ki-authoring/scripts/rubric/items/index.test.ts` asserts that the generated configuration contains it.
+- Remaining: the existing assertion is not the end-to-end discovery regression requested under Verification shape. Prove that malformed selected-checkout Markdown fails while the same content under physical Git metadata, including a sibling-worktree path, is excluded; cover linked-worktree pointer-file layouts. This audit did not add or run that missing fixture.
+- Closure route: treat the exclusion as already implemented, not as permission to weaken more rules. Resolve the verification gap through the proper Triage adoption and review route or an applicable owner-approved disposition; then obtain explicit acceptance. No Git metadata or retained worktree was changed.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Stability boundary
 

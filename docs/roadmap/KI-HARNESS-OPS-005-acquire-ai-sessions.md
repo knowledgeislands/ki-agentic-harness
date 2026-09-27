@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-26T16:27:26Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 ## Goal
@@ -125,6 +125,14 @@ Document the ChatGPT project workflow first: inspect mappings, preview complete 
 Keep this item open through acquisition-skill separation, one verified complete ChatGPT project move, and a deletion path that remains disabled until its safety gate passes. Receiver-owned executor or MCP changes remain independently planned and accepted in their repositories.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial harness delivery: `b9d07c25` publishes `skills/acquire/ki-acquire-chatgpt/SKILL.md` and its acquisition standard. The [current bridge boundary](../../skills/acquire/ki-acquire-chatgpt/SKILL.md#chatgpt-acquisition) advertises only local capture and read-only mutation semantics; the provider-neutral acquisition decision distinguishes readable acquisition from opaque-store housekeeping. The record’s completed groundwork should not be replayed.
+- Remaining: complete readable project enumeration/acquisition, receiver staging, incremental reconciliation and the separately authorised retirement path are not proven by that bridge. Claude and Codex acquisition-specific capabilities remain absent from the inspected `skills/acquire/` source shelf. The delivered export, immutable project bindings, complete-project move and receiver-local triage were not inspected here. Earlier MCP, CLI, bundle and export assertions remain historical evidence, not fresh end-to-end verification.
+- Closure route: reconcile those historical source and receiving-repository claims before continuing the preserved In-progress plan. Obtain the missing fidelity and routing evidence, keep browser evaluation under GOV-087, and retain a disabled or verified manual retirement path until its safety and authority requirements are met. Acquisition success is never deletion authority; later closure still requires review and explicit owner acceptance.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Acquisition and housekeeping
 

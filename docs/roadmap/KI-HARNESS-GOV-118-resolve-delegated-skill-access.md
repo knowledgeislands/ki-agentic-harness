@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-27T16:50:38Z
-updated_at: 2026-09-27T16:50:38Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 # Resolve delegated skill access
@@ -71,6 +71,14 @@ Make the supported route discoverable from the delegation guidance rather than k
 Keep the reciprocal Arcadia origin link and any later downstream links current. Closing a handoff or downstream ticket does not accept this principal outcome.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial guidance delivery since the earlier audit: `7d7b247d674846244d74f29dfccc33988ab8c6c6` adds [repository skills as the execution baseline](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline) and judgment criterion `COORD-10`. It distinguishes declarations, runtime discovery and company skill assignment, requires actual-workspace verification, and describes supported canonical-source access or an explicit provisioning prerequisite without bypassing access boundaries.
+- Remaining: this is Paperclip-facing guidance, not proof that the dated delegation failures are resolved in every affected runtime. Reproduce or retire those observations, test the actual recipient’s access and unavailable-invocation fallback, and determine whether generic delegation guidance or a bounded downstream change remains necessary. No runtime was provisioned or exercised by this audit.
+- Closure route: preserve Next / draft and the existing principal-owner split. Reconcile this delivered guidance during planning before seeking readiness approval; later delivery still requires representative verification and explicit owner acceptance. Do not create a competing principal ticket or duplicate the existing coordination guidance.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 ### Choice of remedy
 

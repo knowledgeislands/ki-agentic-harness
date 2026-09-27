@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-24T10:07:00Z
-updated_at: 2026-09-24T10:45:00Z
+updated_at: 2026-09-27T22:06:13Z
 ---
 
 ## Goal
@@ -76,6 +76,14 @@ None.
 This item. `TRD-8b69fe1b` is referenced by identifier only; the record itself was removed from the sender on 2026-09-24 and resolves against history there.
 
 ## Discussion
+
+### Pickup checkpoint — 2026-09-27
+
+- Verified partial delivery: commits `6378206c` and `77ec746d` are reachable from the audited destination. [The current intake declaration](../../.ki.toml#L115) accepts work from explicitly named KI repositories and expressly excludes formal routes to HNR, legal, personal and other company groups. The old statement that only two repositories can report defects is no longer the current configuration.
+- Remaining: reconcile the original estate-wide goal with this narrower standing intake policy, establish the disposition of silent dead-lettering, and verify the intended receiving path. This audit did not submit or receive a trade, test live delivery, or establish completion of the CLI follow-up.
+- Closure route: review the existing approved scope against the current policy and capture any necessary owner decision before reconciling the plan and preparing its review packet. Do not widen routes or repeat already-landed declarations merely to satisfy the historical checklist.
+
+Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 Raised from a live session in `5g-emerge-phase2` that went looking for the trade's status and found the deadlock underneath it. The instruction was to drop the trade and raise the route problem directly in the repository that owns the declaration, rather than fold a governance change into a cleanup commit.
 
