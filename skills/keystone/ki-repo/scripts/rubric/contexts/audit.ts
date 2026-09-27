@@ -822,6 +822,9 @@ async function auditRepo(
     return f
   }
 
+  for (const path of [...signals.tree].filter((path) => /(^|\/)\.claude\/CLAUDE\.md$/u.test(path)).sort())
+    fail('RUNTIMES-5', 'Claude orientation belongs at repository root, not inside .claude/', path)
+
   // ── layer 1: files (presence on the default branch) ── FILES-1
   for (const [, paths] of REQUIRED_FILES) {
     if (!paths.some((p) => files.has(p))) fail('FILES-1', `no ${paths.join(' / ')}`, paths[0])
@@ -1542,6 +1545,7 @@ const CONTENT_AREAS = new Set([
   'GH-2',
   'GH-3',
   'PKG-1',
+  'RUNTIMES-5',
   'CHECKS-1',
   'COV-1',
   'STRUCT-1',

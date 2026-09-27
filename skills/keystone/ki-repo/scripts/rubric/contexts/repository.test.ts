@@ -639,6 +639,29 @@ describe('root runtime orientation', () => {
   })
 })
 
+test('fails for .claude/CLAUDE.md at root and nested package scope', async () => {
+  const root = repository()
+  writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n')
+  writeFileSync(join(root, 'CLAUDE.md'), '@AGENTS.md\n')
+  const audit = async () => (await collectAuditFindings([root])).findings.filter(({ code }) => code === 'RUNTIMES-5')
+
+  expect(await audit()).toEqual([])
+
+  mkdirSync(join(root, '.claude'), { recursive: true })
+  mkdirSync(join(root, 'packages', 'tool', '.claude'), { recursive: true })
+  writeFileSync(join(root, '.claude', 'CLAUDE.md'), 'Root misplaced guidance.\n')
+  writeFileSync(join(root, 'packages', 'tool', '.claude', 'CLAUDE.md'), 'Nested misplaced guidance.\n')
+
+  expect(localTreePaths(root)).toContain('.claude/CLAUDE.md')
+  expect(localTreePaths(root)).toContain('packages/tool/.claude/CLAUDE.md')
+  const findings = await audit()
+  expect(findings).toHaveLength(2)
+  for (const path of ['.claude/CLAUDE.md', 'packages/tool/.claude/CLAUDE.md'])
+    expect(findings).toContainEqual(
+      expect.objectContaining({ code: 'RUNTIMES-5', level: 'FAIL', subject: expect.stringContaining(path) })
+    )
+})
+
 describe('root orientation inversion evidence', () => {
   const findings = async (
     agents: string,
