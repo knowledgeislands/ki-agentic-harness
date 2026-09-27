@@ -17,9 +17,9 @@ Line-by-line criteria for auditing ki-agent-coordination-paperclip. Classificati
 
 Repository authority, identity separation, work linkage, workspace isolation, and evidence return.
 
-- **COORD-1 [J] — Repository authority** — Paperclip coordinates execution without becoming durable KI knowledge or work authority. (standards-agent-coordination-paperclip.md#position-and-authority, standards-agent-coordination-paperclip.md#knowledge-boundary)
+- **COORD-1 [J] — Repository authority** — Paperclip coordinates execution without becoming durable KI knowledge or work authority. (standards-agent-coordination-paperclip.md#position-and-authority, standards-agent-coordination-paperclip.md#knowledge-boundary, standards-agent-coordination-paperclip.md#project-ownership-and-coordination-boundary)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does the arrangement keep durable knowledge, work lifecycle, acceptance, and repository authority in the owning KI repositories?
+  - _Review prompt:_ Does every admitted repository have one owning project, while a workspace-free Coordination project only coordinates and all repository work, knowledge, lifecycle and acceptance retain their owning repository boundary?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **COORD-2 [J] — Distinct execution identities** — Agent role, run or session, workspace, and worker remain distinct identities. (standards-agent-coordination-paperclip.md#identity-model)
@@ -27,9 +27,9 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the arrangement distinguish the durable agent role from each run or session, workspace, and worker?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-3 [J] — Task-to-work linkage** — Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle. (standards-agent-coordination-paperclip.md#task-to-work-relationship, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration)
+- **COORD-3 [J] — Task-to-work linkage** — Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle. (standards-agent-coordination-paperclip.md#task-to-work-relationship, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does each delivery name its governing work or direct authority, repository, baseline, destination, implementer, reviewer and integration owner, while preserving the independent KI lifecycle?
+  - _Review prompt:_ Does each delivery name its authority, repository, current destination, baseline and owners, refresh a diverged candidate without unauthorised history rewriting, verify and independently review that result, and preserve the independent KI lifecycle?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **COORD-4 [J] — Workspace isolation** — Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries. (standards-agent-coordination-paperclip.md#workspace-model, standards-agent-coordination-paperclip.md#human-readable-workspace-names)

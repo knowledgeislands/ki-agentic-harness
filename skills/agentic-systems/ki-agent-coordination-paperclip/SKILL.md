@@ -23,6 +23,8 @@ Read the [Paperclip coordination standard](references/standards-agent-coordinati
 
 ## Shared model
 
+Give every repository in the company's admitted scope its own Paperclip project. A separate Coordination project has no repository execution workspace and only coordinates scope, dependencies, decisions and hand-offs. All repository work, including read-only inspection, audits, planning and review, belongs in the owning repository project; the same agent role may act in either context without transferring authority. Apply the standard's [project boundary](references/standards-agent-coordination-paperclip.md#project-ownership-and-coordination-boundary).
+
 Every Paperclip implementation run that can mutate a repository uses a task-specific branch and isolated checkout under a Paperclip-owned root outside the repository and its Git directory. It may commit authorised work on that branch; pushing or integrating it requires separate authority.
 
 Keep four identities distinct:
@@ -47,6 +49,8 @@ Use a human-readable company and repository path, preferring the governing roadm
 Before moving delivery to a remote worker, prove the local delivery cycle, review what the coordination platform already provides, and agree a repository-owned remote-delivery policy. The [remote delivery prerequisite](references/standards-agent-coordination-paperclip.md#remote-delivery-prerequisite) defines the decision boundary without choosing a remote architecture. A programme put on hold stays held until the human explicitly resumes it.
 
 ## Operating modes
+
+Before reviewing a candidate for integration, reconcile it with current destination `main`. Refresh a diverged delivery branch in its isolated worktree, normally by merging `main`; rebase only with explicit history-rewrite authority. Verify and independently review the refreshed result. This delivery gate does not authorise bulk branch updates, replay superseded work or lift a programme hold; apply the standard's [branch refresh boundary](references/standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch).
 
 This governance skill carries **AUDIT · CONFORM · EDUCATE · REFRESH**. `help` / `-h` / `?` explains the skill, invocation, modes, and off-ramps, then stops. With no clear mode, provide the same explanation and only in an interactive session ask which mode and arrangement to use.
 

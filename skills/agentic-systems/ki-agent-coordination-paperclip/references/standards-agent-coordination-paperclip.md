@@ -3,6 +3,7 @@
 ## Contents
 
 - [Position and authority](#position-and-authority)
+- [Project ownership and coordination boundary](#project-ownership-and-coordination-boundary)
 - [Identity model](#identity-model)
 - [Knowledge boundary](#knowledge-boundary)
 - [Task-to-work relationship](#task-to-work-relationship)
@@ -18,6 +19,16 @@
 Paperclip coordinates execution around a Knowledge Island group or archipelago. It may own agent scheduling, operational tasks, run state, and execution-workspace bindings. It does not own the durable knowledge, repository history, KI work lifecycle, acceptance decision, or authority envelope those tasks act within.
 
 A Paperclip assignment grants coordination context, not repository authority. Every mutation still needs the authority already carried by the governing KI work, direct user instruction, and repository rules. A Paperclip status transition cannot push, merge, deploy, accept, close, or prune KI work by implication.
+
+## Project ownership and coordination boundary
+
+Every repository admitted to a company's scope has exactly one active repository project, including repositories with no current delivery or with work on hold. Name and bind that project to the repository's canonical identity and designated primary checkout. Multiple task worktrees or workspace records do not create additional repository projects. Check existing and archived bindings before creating a project so renamed repositories and aliases do not produce duplicates; preserve historical task links.
+
+A separate Coordination project is workspace-free and only coordinates company-wide scope, sequencing, dependencies, decisions, hand-offs and consolidated evidence links. It performs no repository work: inspection, audits, repository-specific planning, review, implementation, roadmap writes and integration all belong to tasks in the owning repository project. Read-only work is not an exception. Coordination may inspect control-plane metadata and synthesise returned repository evidence, but may not adopt a repository checkout as an execution workspace.
+
+Cross-repository work has a coordination parent and separately scoped repository tasks. Reuse existing tasks where their scope fits; a coordination plan is not a second backlog. Each repository task returns evidence and a next owner to the coordination parent without transferring repository authority or acceptance. When a repository project is missing, establish its identity before dispatching repository work; do not use Coordination as a temporary execution project.
+
+Project ownership and agent roles are distinct. The same role may coordinate in Coordination and perform separately authorised work in a repository project, but it must use the appropriate task and project context for each. Creating a project or assigning its lead does not authorise implementation, integration, publication, agent resumption or lifting a hold. Direct human-agent sessions remain valid; when their work is coordinated through Paperclip, its repository execution evidence belongs in the owning repository project.
 
 ## Identity model
 
@@ -62,6 +73,16 @@ Baseline movement requires revalidation, not automatic cancellation of approval.
 Execution location and delivery destination are separate. In laptop-local operation, the designated primary checkout on the human's laptop is the live destination: delivery updates both its local `main` and the working files the human uses. Record the destination host and checkout as well as the repository and branch, following `ki-git`.
 
 A remote worker may have its own clone, worktrees and `main`. Its local merge does not establish delivery to the human's designated checkout, and publishing to a Git remote does not establish that either. A future remote arrangement must explicitly name its destination and evidence-return path; the current local workflow does not preselect that design or grant remote publication authority.
+
+### Refreshing a delivery branch
+
+Before final review and integration, identify the exact candidate and current destination commits and check ancestry, patch equivalence and retained value. Already-delivered, duplicate, superseded, uncertain or held work must be dispositioned before refresh; a blanket request to bring branches up to date is not permission to replay every retained branch or lift a hold.
+
+For an authorised candidate that diverges from current destination `main`, the implementer refreshes the delivery branch in its isolated worktree, normally by merging that exact `main` commit into it. No extra merge is needed when the candidate already contains current `main`. Record the original branch tip and baseline before changing them, and preserve a recoverable reference to any history a rebase would replace. Rebase requires explicit history-rewrite authority and must not rewrite shared history or imply a force push. Stop on dirty or contested files; do not reset, stash or overwrite another actor's work to make refresh proceed.
+
+Refresh is repository work, not a Coordination-project operation. The implementer resolves conflicts only within the authorised scope; identifier collisions or changed meaning require escalation, not mechanical conflict acceptance. Run required checks on the combined result and obtain independent review of the exact refreshed candidate. Prior review of an older diff is not approval of a changed one.
+
+The integrator rechecks destination `main` in the serialised write window. If it advanced after review, revalidate the proposed combined result; a clean combination preserving the reviewed change need not require fresh scope approval, but conflict resolution or another changed candidate returns to verification and independent review. Record the source, admitted destination and resulting destination commits. Passing this gate does not grant integration authority or KI acceptance.
 
 ## Remote delivery prerequisite
 

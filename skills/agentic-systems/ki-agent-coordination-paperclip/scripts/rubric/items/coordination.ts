@@ -14,9 +14,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-1',
       title: 'Repository authority',
       description: 'Paperclip coordinates execution without becoming durable KI knowledge or work authority.',
-      sources: [`${STANDARD}#position-and-authority`, `${STANDARD}#knowledge-boundary`],
+      sources: [
+        `${STANDARD}#position-and-authority`,
+        `${STANDARD}#knowledge-boundary`,
+        `${STANDARD}#project-ownership-and-coordination-boundary`
+      ],
       judgment: judgment(
-        'Does the arrangement keep durable knowledge, work lifecycle, acceptance, and repository authority in the owning KI repositories?'
+        'Does every admitted repository have one owning project, while a workspace-free Coordination project only coordinates and all repository work, knowledge, lifecycle and acceptance retain their owning repository boundary?'
       )
     },
     {
@@ -32,9 +36,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-3',
       title: 'Task-to-work linkage',
       description: 'Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle.',
-      sources: [`${STANDARD}#task-to-work-relationship`, `${STANDARD}#delivery-ownership-and-local-integration`],
+      sources: [
+        `${STANDARD}#task-to-work-relationship`,
+        `${STANDARD}#delivery-ownership-and-local-integration`,
+        `${STANDARD}#refreshing-a-delivery-branch`
+      ],
       judgment: judgment(
-        'Does each delivery name its governing work or direct authority, repository, baseline, destination, implementer, reviewer and integration owner, while preserving the independent KI lifecycle?'
+        'Does each delivery name its authority, repository, current destination, baseline and owners, refresh a diverged candidate without unauthorised history rewriting, verify and independently review that result, and preserve the independent KI lifecycle?'
       )
     },
     {
