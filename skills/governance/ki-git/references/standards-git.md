@@ -44,7 +44,7 @@ Other skills MAY define a narrowly-scoped trailer block as durable evidence for 
 
 ## Commit, publication, and integration authority
 
-A local commit preserves one verified unit of authorised repository work. Ordinary interactive work may commit that unit in the primary checkout when the requested change and repository instructions permit it. A branch or linked-worktree delivery may commit only to its own branch unless separate integration authority has been granted.
+A local commit preserves one verified unit of authorised repository work. Ordinary interactive work should commit that unit in the primary checkout once it is verified, rather than leaving it dirty for a later instruction. A repository may withhold that default in its own instructions, but silence is not a withholding: an actor that has finished and verified a unit of requested work already holds the authority to commit it locally, and a repository that wants commits gated says so. A branch or linked-worktree delivery may commit only to its own branch unless separate integration authority has been granted.
 
 A request to change, finish, or commit work does not imply authority to push. Pushing publishes the current ref and can carry commits made by other writers, trigger CI, or deploy. It requires explicit current-user instruction or a standing repository workflow that names the actor and scope.
 
