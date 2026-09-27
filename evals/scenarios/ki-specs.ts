@@ -3,7 +3,7 @@
  * system. Design note: a baseline model gives generic requirements advice ("write user
  * stories", "use MoSCoW", "put them in a PRD"). These scenarios target the house-ARBITRARY
  * specifics a baseline cannot guess: the `docs/specs/` layout with an areas table, the
- * `### <PREFIX>-NNN — title` + RFC-2119 + `_Verify:_` requirement shape, append-only IDs,
+ * `### <PREFIX>-NNN — title` + BCP 14 + `_Verify:_` requirement shape, append-only IDs,
  * and the unnumbered `## Gaps` backlog that sits outside the as-built contract.
  */
 import type { Scenario } from '../harness.ts'
@@ -16,12 +16,12 @@ export const scenarios: Scenario[] = [
       'I want to write down a single behaviour our system has — that an indexable page emits a canonical URL — as a formal specification in our house format. What exactly does one requirement look like, and what must each one carry?',
     assertions: [
       { name: 'PREFIX-NNN heading', re: /<?PREFIX>?-?\d|[A-Z]{2,}-\d{3}|heading.*id|### /i },
-      { name: 'RFC-2119 keyword', re: /MUST|SHOULD|MAY|RFC.?2119|normative/i },
+      { name: 'BCP 14 keyword', re: /MUST|SHOULD|MAY|BCP.?14|RFC.?2119|normative/i },
       { name: 'Verify hook', re: /_?verify_?|verification hook|test hook/i },
       { name: 'lives in docs/specs', re: /docs\/specs|specs\//i }
     ],
     rubric:
-      'House fact: a requirement is a level-3 heading `### <PREFIX>-NNN — <title>`, followed by **one RFC-2119 normative statement** (MUST/SHOULD/MAY, uppercase) and a **`_Verify:_`** line naming the concrete check. Files live in `docs/specs/`, flat one-file-per-area, registered by prefix in an `index.md` areas table. A correct answer produces the heading-with-ID shape, requires an uppercase RFC-2119 keyword, and requires the `_Verify:_` hook — not a generic user-story or acceptance-criteria template.'
+      'House fact: a requirement is a level-3 heading `### <PREFIX>-NNN — <title>`, followed by an opening statement paragraph with an uppercase BCP 14 keyword (MUST/SHOULD/MAY) and a **`_Verify:_`** line naming the concrete check. Files live in `docs/specs/`, flat one-file-per-area, registered by prefix in an `index.md` areas table. A correct answer produces the heading-with-ID shape, requires the keyword in the statement rather than only in verification or evidence, and requires the `_Verify:_` hook — not a generic user-story or acceptance-criteria template.'
   },
   {
     skill: 'ki-specs',
