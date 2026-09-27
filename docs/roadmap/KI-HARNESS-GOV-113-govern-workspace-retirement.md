@@ -47,7 +47,7 @@ Out of scope: archiving the six orphaned workspace records, which is coordinatio
 
 The mechanism's five gates, its created-artefacts-only rule, and its cooldown are recorded nowhere in this repository. They survive only as a reading of an installed build, which no future reader can reproduce without being told which build was read.
 
-This instance's cooldown is **0 days**, decided by the responsible human on coordination task `KIS-39` on 2026-09-26. The running instance does not yet match that decision: `PAPERCLIP_WORKSPACE_REAPER_COOLDOWN_DAYS` is unset in the coordination-plane instance directory, so the built-in default of seven days is in force. Closing that gap is a coordination-plane configuration change owned outside this repository, and this record states the decision rather than claiming the configuration.
+This instance's cooldown is **0 days**, decided by the responsible human on coordination task `KIS-39` on 2026-09-26. The running instance does not yet match that decision: `PAPERCLIP_WORKSPACE_REAPER_COOLDOWN_DAYS` is unset in the coordination-plane instance directory, so the built-in default of seven days is in force. Closing that gap is a coordination-plane configuration change owned outside this repository, and this record states the decision rather than claiming the configuration. The configuration change is coordination task `KIS-80`, which carries the evidence that the variable is set in neither the instance's `.env` nor its `config.json`.
 
 Six of the nine live worktrees in this repository are held correctly by the first gate, because their source tasks are not terminal. They are not a leak, and nothing in the repository currently says so.
 
