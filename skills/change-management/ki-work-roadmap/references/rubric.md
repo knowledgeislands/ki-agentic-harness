@@ -93,6 +93,11 @@ Flat work-item identity, grouping, lifecycle, and dependencies.
   - _Review prompt:_ Review whether each dependency represents a real execution relationship without hiding a priority or acceptance decision.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Correct the declared relationship with the owning work-item decision, record a gap, or record an explicit exclusion.
+- **ITEM-6 [J] — external task links** — Verified provider-qualified task associations live on each work item without claiming live ownership or replacing its KI lifecycle. (standards-work-item-format.md, standards-repository-roadmaps.md)
+  - _Evidence scope:_ Work items with verified external task associations and the corresponding task-side references.
+  - _Review prompt:_ Do each item’s task links and task-side backlinks agree on governing ownership and purpose, preserve historical associations, and avoid inferring a current claim, release, or KI acceptance from a task link alone?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Reconcile against repository and task evidence, correct only verified links in the designated primary checkout, or record the unresolved association as a named gap.
 
 ## INDEX — root orientation
 

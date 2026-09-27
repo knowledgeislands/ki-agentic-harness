@@ -8,8 +8,16 @@ status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 5514e48fa6557d150441a9ca83ff036bcdd3aca9
+task_links:
+  paperclip:
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: a3bb5b60-6f24-41d2-9be7-35346c1d04cb
+      key: KIS-39
+      url: http://127.0.0.1:3100/KIS/issues/KIS-39
+      relation: implementation
 created_at: 2026-09-26T22:55:00Z
-updated_at: 2026-09-27T13:41:08Z
+updated_at: 2026-09-27T14:06:00Z
 ---
 
 # KI-HARNESS-GOV-113: Govern workspace retirement

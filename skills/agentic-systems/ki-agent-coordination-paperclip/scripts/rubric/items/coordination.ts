@@ -38,11 +38,12 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       description: 'Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle.',
       sources: [
         `${STANDARD}#task-to-work-relationship`,
+        '../../../change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links',
         `${STANDARD}#delivery-ownership-and-local-integration`,
         `${STANDARD}#refreshing-a-delivery-branch`
       ],
       judgment: judgment(
-        'Does each delivery name its authority, repository, current destination, baseline and owners, refresh a diverged candidate without unauthorised history rewriting, verify and independently review that result, and preserve the independent KI lifecycle?'
+        'Does each delivery name its authority, repository, current destination, baseline and owners; reconcile the governing item’s task_links with its task-side prose backlink; refresh a diverged candidate without unauthorised history rewriting; verify and independently review that result; and preserve the independent KI lifecycle without treating an association as a live claim or acceptance?'
       )
     },
     {

@@ -121,6 +121,8 @@ Every confirmed move is re-evaluated at its destination.
 
 ## Work-item discipline
 
+When an item has verified tasks in Paperclip or another task system, keep their qualified, provider-keyed `task_links` on that item using the [work-item format](standards-work-item-format.md#task-links). This is an association record, not a second lifecycle, a live ownership claim, or a central task registry. Write and reconcile it only through the repository's [designated primary checkout](#roadmap-write-locus).
+
 Every item conforms to [the work-item format](standards-work-item-format.md), including the final topic-oriented `Discussion` section and the detail required at its current horizon and lifecycle state.
 
 An item begins with a mandatory plain-language Goal, then its outcome evidence, boundary, current context, and enough discussion to preserve decision-useful reasoning.

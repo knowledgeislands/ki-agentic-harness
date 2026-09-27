@@ -4,12 +4,20 @@ area: GOV
 title: Define per-item task links
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 89f4cd8f7fe4c1cb46d22903c28f4e1fe1b0435d
+task_links:
+  paperclip:
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: b76a4ec9-be48-4a3c-8568-7885b5e6789b
+      key: KIS-5
+      url: http://127.0.0.1:3100/KIS/issues/KIS-5
+      relation: related
 created_at: 2026-09-27T13:06:48Z
-updated_at: 2026-09-27T13:26:59Z
+updated_at: 2026-09-27T14:15:12Z
 ---
 
 # KI-HARNESS-GOV-116: Define per-item task links
@@ -33,10 +41,10 @@ The work-item format has no `task_links` field; the Paperclip coordination stand
 ## Steps
 
 - [x] Define optional provider-keyed `task_links` on each work item, using the six qualified string fields and six relation values in the accepted KIS-5 plan; specify stable identity, within-item duplicates, multiple providers and refs, and backwards compatibility.
-- [ ] State that a link preserves evaluation or delivery history, while a current claim or release requires explicit item-local reconciliation and a fresh check of task and worktree evidence. Keep roadmap writes in the designated primary checkout.
-- [ ] Specify a task-side ordinary-prose backlink near the top with canonical repository, governing item, admitted revision and bounded purpose; permit related links across items but at most one governing item per delivery task.
-- [ ] Update the roadmap and Paperclip judgment rubrics and their publication/tests without claiming a remote-backed mechanical check.
-- [ ] Independently review the contract against the `tools-ki` implementation and the four interim pilot items.
+- [x] State that a link preserves evaluation or delivery history, while a current claim or release requires explicit item-local reconciliation and a fresh check of task and worktree evidence. Keep roadmap writes in the designated primary checkout.
+- [x] Specify a task-side ordinary-prose backlink near the top with canonical repository, governing item, admitted revision and bounded purpose; permit related links across items but at most one governing item per delivery task.
+- [x] Update the roadmap and Paperclip judgment rubrics and their publication/tests without claiming a remote-backed mechanical check.
+- [x] Independently review the contract against the `tools-ki` implementation and the four interim pilot items.
 
 ## Files touched
 
@@ -71,6 +79,34 @@ The Paperclip coordination standard explains task backlinks and reconciliation; 
 ### Roadmap
 
 The tools-ki sibling owns parser delivery. GOV-103 and GOV-107 remain independent; interim prose links migrate only after the parser is verified.
+
+## Review
+
+### Delivered
+
+The provider-neutral per-item association contract, Paperclip backlink guidance, rubric judgments, and offline harness audit are implemented in the designated primary checkout's local `main` delivery window. The tools-ki CLI implementation is separately committed at `c0857d5652060d644fecc7c2f20a308f59feec7c` and awaiting KI review. Seven verified pilot item maps now exist across the two primary checkouts, including the recovered KIS-39 delivery. KIS-5 is recorded only as related planning context, not as the implementer of this direct-session delivery. Nothing was pushed, accepted, resumed, or released from hold.
+
+### Change Summary
+
+The work-item format owns six qualified string fields and six relationship values, with no shared mapping table or provider status cache. The roadmap and Paperclip standards describe primary-checkout writes and task-side delivery backlinks. ITEM-6 and COORD-3 provide judgment review; ITEM-1 now validates nested YAML task links offline using the same YAML interpretation as tools-ki. Six harness records gained verified Paperclip references; the seventh pilot is the tools-ki CLI item. The harness audit parser, focused test, and direct YAML dependency are the necessary additional harness-local files beyond the initial list.
+
+### Verification
+
+- Focused task-link and rubric tests, full `bun run test`, `bunx tsc --noEmit`, and focused Biome checks passed.
+- Generated roadmap and Paperclip rubric publications match their catalogues. `ki repo audit --skill ki-skills`, `ki-work-roadmap`, and `ki-agent-coordination-paperclip` passed; focused Markdown checks passed.
+- An independent reviewer checked the harness/CLI parser boundary, including escaped YAML identity, and parsed all seven pilot items with the committed tools-ki parser. No material defect remained.
+
+### Outstanding concerns
+
+KI acceptance remains a human review action for this item and the tools-ki sibling. The seven pilot associations are not a complete estate census or a release of retained tasks; missing links and paused agents do not prove availability. KIS-5 remains backlog planning context. Paperclip agent resumption, remote delivery, held Techné work, and KIS-39 workspace cooldown configuration remain separately governed.
+
+### Post-change review
+
+The independent review found no material defect in the corrected parser, contract, or pilot maps. It specifically confirmed that KIS-5's related links do not make it a second governing delivery task and that KIS-39's historical implementation link adds no live status claim. The changed checklist and review packet record implementation readiness only, not self-acceptance.
+
+### Mini recap
+
+Per-item task links are implemented and reviewable in both repositories; local main is the delivery destination. Continue item-by-item reconciliation before assigning more work, and seek human KI acceptance after review.
 
 ## Discussion
 

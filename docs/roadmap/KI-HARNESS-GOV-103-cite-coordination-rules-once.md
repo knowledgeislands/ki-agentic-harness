@@ -8,8 +8,34 @@ status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
+task_links:
+  paperclip:
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 3dbfe169-6f44-4706-941c-5517253a5aef
+      key: KIS-21
+      url: http://127.0.0.1:3100/KIS/issues/KIS-21
+      relation: evaluation
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: abdf6827-ee50-474f-91e7-7421da53c64a
+      key: KIS-24
+      url: http://127.0.0.1:3100/KIS/issues/KIS-24
+      relation: related
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 9015b82f-c285-4c1c-a257-c748cd5e9ea3
+      key: KIS-1
+      url: http://127.0.0.1:3100/KIS/issues/KIS-1
+      relation: related
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: b76a4ec9-be48-4a3c-8568-7885b5e6789b
+      key: KIS-5
+      url: http://127.0.0.1:3100/KIS/issues/KIS-5
+      relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-09-27T12:46:13Z
+updated_at: 2026-09-27T13:55:33Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once

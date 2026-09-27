@@ -49,6 +49,8 @@ Ground a run in an explicit repository identity and admitted revision before wor
 
 ## Task-to-work relationship
 
+The governing KI work item's own [`task_links`](../../../change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links) is the durable structured association with Paperclip and other task systems. Record a Paperclip delivery task's ordinary-prose backlink near the top of its description: repository identity, governing KI item identifier, admitted repository revision, and task purpose. Do not invent a Paperclip custom field or maintain a shared writable lookup table. One KI item may cite several tasks; one delivery task has at most one governing KI item, although other items may cite it as related context. Reconcile a missing or conflicting backlink against the item's map and repository evidence before assigning or releasing work. An association alone is neither a live claim, KI acceptance, nor proof that a paused or completed task leaves work available.
+
 A Paperclip task may execute all or part of one governing KI work item. Record a durable locator comprising the repository identity, KI work identifier, admitted revision, and task purpose wherever the active Paperclip task model can preserve it without inventing unsupported fields.
 
 One KI work item may fan out into several Paperclip tasks. One Paperclip task has at most one governing KI work item; related items remain links or context so authority and closure do not become ambiguous.

@@ -8,8 +8,22 @@ status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
+task_links:
+  paperclip:
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 1040aaa6-dc73-4b11-9b6f-b2f0ad0d2a42
+      key: KIS-70
+      url: http://127.0.0.1:3100/KIS/issues/KIS-70
+      relation: evaluation
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 331d6981-2e23-4818-9e4a-dc2ba933e6c3
+      key: KIS-79
+      url: http://127.0.0.1:3100/KIS/issues/KIS-79
+      relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-09-27T12:46:13Z
+updated_at: 2026-09-27T13:55:33Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base

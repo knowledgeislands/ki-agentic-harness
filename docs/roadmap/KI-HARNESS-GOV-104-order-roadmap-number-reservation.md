@@ -8,8 +8,34 @@ status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
+task_links:
+  paperclip:
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: f6668843-ec44-4ba5-bff9-f900fd4a99a5
+      key: KIS-34
+      url: http://127.0.0.1:3100/KIS/issues/KIS-34
+      relation: implementation
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 5012f29b-bb4a-4d17-a837-d04c8a56068a
+      key: KIS-36
+      url: http://127.0.0.1:3100/KIS/issues/KIS-36
+      relation: implementation
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 601aeda4-adf3-4709-acb1-9d423929a441
+      key: KIS-76
+      url: http://127.0.0.1:3100/KIS/issues/KIS-76
+      relation: review
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 601aeda4-adf3-4709-acb1-9d423929a441
+      key: KIS-76
+      url: http://127.0.0.1:3100/KIS/issues/KIS-76
+      relation: integration
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-27T12:46:13Z
+updated_at: 2026-09-27T13:55:33Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation

@@ -8,8 +8,28 @@ status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
+task_links:
+  paperclip:
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 8a4fac55-7b74-4ad7-8934-37f2437873ad
+      key: KIS-19
+      url: http://127.0.0.1:3100/KIS/issues/KIS-19
+      relation: evaluation
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: b76a4ec9-be48-4a3c-8568-7885b5e6789b
+      key: KIS-5
+      url: http://127.0.0.1:3100/KIS/issues/KIS-5
+      relation: related
+    - authority: http://127.0.0.1:3100
+      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
+      id: 1040aaa6-dc73-4b11-9b6f-b2f0ad0d2a42
+      key: KIS-70
+      url: http://127.0.0.1:3100/KIS/issues/KIS-70
+      relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-27T12:46:13Z
+updated_at: 2026-09-27T13:55:33Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
