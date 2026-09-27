@@ -7,7 +7,7 @@ const SELECT_1: RubricItem<HousekeepingSelectionContext> = {
   code: 'SELECT-1',
   title: 'Auto-memory state and project scope established',
   description:
-    'Disabled auto-memory passes under disabled or transition policy without memory file inspection. Enabled auto-memory requires declared transition or both enabled policy and a project-scoped Claude opt-in; malformed or unsupported settings fail closed.',
+    'Disabled KI policy skips memory index and file checks. Effective Claude auto-memory must also be disabled unless transition is declared; enabled policy requires a project-scoped Claude opt-in. Malformed or unsupported settings fail closed.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -22,16 +22,16 @@ const SELECT_1: RubricItem<HousekeepingSelectionContext> = {
 
 const SELECT_2: RubricItem<HousekeepingSelectionContext> = {
   code: 'SELECT-2',
-  title: 'Existing auto-memory reconciled before transition closes',
+  title: 'Selected auto-memory directory and transition reconciled',
   description:
-    'A transition declaration or existing files in a disabled selected memory directory warn until reviewed learning is routed and the transition is closed. The audit never creates, moves, or deletes memory files.',
+    'An existing selected memory directory warns unless KI policy explicitly enables auto-memory. Transition always warns, even without a directory. Review whether to opt in or reconcile existing learning before closing transition; the audit never creates, moves, or deletes memory files.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Review existing memory through repository or KB intake, retain the files until approved reconciliation, then mark the skill declaration disabled.'
+        'Review whether a project-scoped opt-in is intended; otherwise reconcile existing memory through repository or KB intake and retain files until approved.'
     },
     audit: { phase: 'PREPARE', run: (context) => context.reconciliation }
   }

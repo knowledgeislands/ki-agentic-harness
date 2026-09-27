@@ -306,7 +306,9 @@ const reconciliationEvidence = (selection: MemorySelection, claudeRoot: string):
   if (selection.state === 'unavailable') {
     return notApplicable('Auto-memory location is unavailable for reconciliation inspection.', selection.relativePath)
   }
-  if (existsSync(selection.directory) && !physicalDescendant(claudeRoot, selection.directory)) {
+  const directoryExists = existsSync(selection.directory)
+  const directoryIsPhysical = physicalDescendant(claudeRoot, selection.directory)
+  if (directoryExists && !directoryIsPhysical) {
     return one({
       status: 'VIOLATION',
       message:
@@ -314,18 +316,20 @@ const reconciliationEvidence = (selection: MemorySelection, claudeRoot: string):
       subject: selection.relativePath
     })
   }
-  const files = physicalDescendant(claudeRoot, selection.directory)
+  const files = directoryIsPhysical
     ? readdirSync(selection.directory, { withFileTypes: true }).filter(
         (entry) => entry.name.endsWith('.md') && (entry.isFile() || entry.isSymbolicLink())
       ).length
     : 0
-  if (selection.transition || ((selection.state === 'disabled' || selection.policy === 'disabled') && files > 0)) {
+  if (selection.transition || (selection.policy !== 'enabled' && directoryExists)) {
     return one({
       status: 'VIOLATION',
       message:
         files > 0
           ? `${files} existing auto-memory file(s) need reviewed reconciliation; preserve them until their durable value is routed.`
-          : 'Auto-memory transition remains declared; confirm reconciliation and change the skill value to disabled.',
+          : selection.transition
+            ? 'Auto-memory transition remains declared; confirm reconciliation and change the skill value to disabled.'
+            : 'A selected auto-memory directory exists while KI policy is disabled; review whether to opt in or reconcile it.',
       subject: selection.relativePath
     })
   }
@@ -709,7 +713,7 @@ export const createHousekeepingSession = ({
   const selection = selectMemory(home, repositoryRoot, repositorySlug, configuration)
   const reconciliation = reconciliationEvidence(selection, claudeRoot)
   const selectedMemory =
-    selection.state === 'selected'
+    selection.state === 'selected' && selection.policy !== 'disabled'
       ? physicalDescendant(claudeRoot, selection.directory)
         ? {
             ...projectContext(
