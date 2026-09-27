@@ -818,6 +818,33 @@ describe('repository kind and Knowledge Base stores', () => {
     ).toContain('a Project primary_shape')
   })
 
+  test('allows shared KB roadmap configuration only alongside its Streams container', async () => {
+    const root = repository()
+    const roadmap = '[skills.ki-work-roadmap]\nareas.KM = "knowledge-management"\n'
+    const cases = [
+      { configuration: kb, fails: false },
+      { configuration: `${kb}[skills.ki-repo-kb-streams]\n`, fails: false },
+      { configuration: `${kb}[skills.ki-repo-kb-streams]\n${roadmap}`, fails: false },
+      { configuration: kb + roadmap, fails: true },
+      { configuration: `${kb}[skills.ki-repo-kb-streams.settings]\n${roadmap}`, fails: true },
+      { configuration: project + roadmap, fails: false }
+    ]
+    for (const fixture of cases) {
+      writeFileSync(join(root, '.ki.toml'), fixture.configuration)
+      const findings = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'KIND-2')
+      expect(findings).toEqual(
+        fixture.fails
+          ? [
+              expect.objectContaining({
+                level: 'FAIL',
+                message: expect.stringContaining('[skills.ki-repo-kb-streams]')
+              })
+            ]
+          : []
+      )
+    }
+  }, 10_000)
+
   test('requires KB notes stores and prohibits Project store roles', () => {
     expect(parseRepositoryConfiguration(kb).issue).toBeUndefined()
     expect(parseRepositoryConfiguration(kb.replace('store_roles = ["notes"]\n', '')).issue).toContain(

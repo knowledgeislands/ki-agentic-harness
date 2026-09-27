@@ -932,10 +932,13 @@ async function auditRepo(
     else if (configuration.repositoryType === 'kb') {
       if (!declaresRootTable(kiText, skillTable('ki-repo-kb')))
         fail('KIND-2', 'repo_type = "kb" requires the [skills.ki-repo-kb] structure declaration', KI_CONFIG)
-      if (declaresRootTable(kiText, skillTable('ki-work-roadmap')))
+      if (
+        declaresRootTable(kiText, skillTable('ki-work-roadmap')) &&
+        !declaresRootTable(kiText, skillTable('ki-repo-kb-streams'))
+      )
         fail(
           'KIND-2',
-          'repo_type = "kb" cannot declare ki-work-roadmap; Knowledge Bases use ki-repo-kb-streams',
+          'repo_type = "kb" with ki-work-roadmap requires [skills.ki-repo-kb-streams] for its roadmap container',
           KI_CONFIG
         )
     } else if (declaresRootTable(kiText, skillTable('ki-repo-kb')))

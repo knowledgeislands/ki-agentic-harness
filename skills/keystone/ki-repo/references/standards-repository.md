@@ -86,7 +86,7 @@ primary_shape = "ki-repo-kb"
 store_roles = ["notes", "sources", "legacy"]
 ```
 
-A KB must declare `ki-repo-kb` and must not declare `ki-work-roadmap`: its planning model is `ki-repo-kb-streams`. Conversely, the `ki-repo-kb` structure declaration requires `repo_type = "kb"`. This validates operating model separately from the structural skill that implements its layout.
+A KB must declare `ki-repo-kb`. It may also declare `ki-work-roadmap` for the shared record model and its issuing-area or theme configuration, but only alongside `ki-repo-kb-streams`, which owns the `Streams/Roadmap/` container. That declaration does not select the project `roadmap` adapter or authorise a parallel `ROADMAP.md` or `docs/roadmap/` tree: `ki-work` owns adapter compatibility and the roadmap skill owns the artefact prohibition. Conversely, the `ki-repo-kb` structure declaration requires `repo_type = "kb"`. This validates operating model separately from the structural skill that implements its layout.
 
 ### Project shapes
 

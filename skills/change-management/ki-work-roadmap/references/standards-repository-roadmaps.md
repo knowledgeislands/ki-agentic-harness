@@ -4,7 +4,7 @@
 
 This standard applies to non-KB repositories.
 
-A repository whose `.ki.toml` declares `repo_type = "kb"` uses `ki-repo-kb-streams` and must not add a parallel project `ROADMAP.md` or `docs/roadmap/` tree.
+A repository whose `.ki.toml` declares `repo_type = "kb"` uses `ki-repo-kb-streams` and must not add a parallel project `ROADMAP.md` or `docs/roadmap/` tree. It may declare `[skills.ki-work-roadmap]` alongside `[skills.ki-repo-kb-streams]` to configure the shared record model, themes and issuing areas; the declaration does not select the project `roadmap` adapter. Streams remains the KB container and audit owner.
 
 ## Contents
 
