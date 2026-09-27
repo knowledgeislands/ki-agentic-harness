@@ -9,7 +9,7 @@ blocks: []
 blocked_by: [KI-HARNESS-GOV-109]
 baseline_ref: null
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-09-27T17:05:00Z
+updated_at: 2026-09-27T17:40:00Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages
@@ -28,9 +28,11 @@ The consequence is observed rather than theoretical. Four Markdown findings were
 
 ## Boundary
 
-In scope: deciding whether a commit-gate criterion should reach a repository that declares neither `ki-engineering` nor `ki-repo-tools`, and if so which skill owns it. Because `ki-repo` is `ki-applicability: baseline` its criteria run against every `.ki.toml`-bearing repository, which is exactly the reach required and exactly why `ki-engineering` cannot supply it.
+In scope: a two-layer split, agreed 2026-09-27. `ki-repo`, being `ki-applicability: baseline`, requires only that a repository has some mechanical trigger bound to a gate and declares what that gate is expected to run. Each shape skill then verifies that its own expectation is actually present in that binding. `ki-repo` owns the existence question because it is the only skill that reaches every repository; it never owns the content question, because the content is toolchain-specific and `ki-repo` cannot know it.
 
-Out of scope: the mechanism by which an absent gate becomes a failure, which is `KI-HARNESS-GOV-109` and blocks this item; the content of any individual repository's hook, which each repository owns; and amending `ADR-DOTFILES-006` in the chezmoi source, which is that repository's decision to take and not this one's to assume.
+In scope also: requiring the shape skills that today say nothing to say something. `ki-engineering` already states its expectation as `SCR-11` and needs only to be read as an instance of the general rule. `ki-repo-tools`, `ki-repo-kb`, and any later repository shape must each declare what they expect in a hook, so that a repository of a known shape is never covered by the existence check alone.
+
+Out of scope: the mechanism by which an absent gate becomes a failure, which is `KI-HARNESS-GOV-109` and blocks this item; the content of any individual repository's hook, which each repository owns; and amending `ADR-DOTFILES-006` in the chezmoi source, which is that repository's decision to take and not this one's to assume. Moving a commit-gate criterion wholesale into `ki-repo` is also out of scope and was considered and rejected: the baseline skill cannot carry a requirement it has no means to express.
 
 Also out of scope: changing `SCR-11` itself. Its package-backed scope is correct for what it requires — `bunx lint-staged`, Syncpack, Commitlint are all package-manager commands — and widening it would make a Bash repository fail a criterion it has no means to satisfy.
 
@@ -40,7 +42,13 @@ Also out of scope: changing `SCR-11` itself. Its package-backed scope is correct
 
 `KI-HARNESS-GOV-109` records that `core.hooksPath` is `.husky/_`, produced per working directory by `bun install`, so a linked worktree resolves it to a directory that does not exist and commits with no diagnostic — five commits landed on the `KNO-34` branch with none of the three gates running. Its Boundary explicitly defers "the fleet-wide question of whether other repositories in the estate share the configuration, which needs this repository's answer first." This item is that fleet-wide question, so it inherits whichever mechanism GOV-109 chooses and should not pick a different one.
 
-### Moving the criterion is a contract change between two skills
+### The split follows from what each layer can know
+
+A baseline criterion can ask whether a trigger exists and whether the repository has written down what it should run; both are answerable from any repository's files without knowing its toolchain. It cannot ask whether the trigger runs the right thing, because "the right thing" is `bunx lint-staged` in one repository, `shellcheck` and `bats` in another, and a structural check in a knowledge base. So the existence question rises to `ki-repo` and the content question stays with whichever skill already knows the toolchain.
+
+That is also why the declaration matters as much as the binding. A repository that binds a hook to nothing satisfies a bare existence check, and a repository whose documented gate and whose hook have drifted apart satisfies it too. The baseline criterion therefore needs both halves — a trigger, and a statement of what it is expected to run — with the shape skill comparing the second against reality.
+
+### Relocating the criterion is a contract change between two skills
 
 `.husky/pre-commit` and `.husky/commit-msg` are declared under `contributes:` in `ki-engineering`'s `SKILL.md:8`, and `commitlint.config.ts` under `owns:`. A hook criterion in `ki-repo` would therefore either duplicate or relocate an existing ownership claim, which is a decision about the boundary between two governance skills rather than an implementation detail. It needs its own Decision Record and a `SYNC-1` re-alignment across standard, published rubric, and checker, and it cannot be satisfied by editing a criterion in place.
 
