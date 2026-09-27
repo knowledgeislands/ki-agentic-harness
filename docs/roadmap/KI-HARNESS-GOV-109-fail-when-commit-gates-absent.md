@@ -5,11 +5,11 @@ title: Enforce commit gates
 theme: governance-consistency
 horizon: triage
 status: draft
-blocks: []
+blocks: [KI-HARNESS-GOV-117]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:58:00Z
-updated_at: 2026-09-26T15:58:00Z
+updated_at: 2026-09-27T17:10:00Z
 ---
 
 # KI-HARNESS-GOV-109: Enforce Commit Gates
