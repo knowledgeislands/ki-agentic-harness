@@ -236,4 +236,4 @@ standing.import.knowledge = ["shared-capability-maintenance"]
 export = ["work", "knowledge"]
 
 [skills.ki-agora]
-memberships.kis = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
+memberships.kis = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "member" }
