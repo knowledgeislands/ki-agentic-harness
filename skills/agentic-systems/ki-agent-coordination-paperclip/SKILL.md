@@ -21,6 +21,8 @@ This skill owns the relationship between those systems. Paperclip's own `papercl
 
 Read the [Paperclip coordination standard](references/standards-agent-coordination-paperclip.md) before designing or assessing an arrangement. Read the [generated rubric](references/rubric.md) for its review criteria and the [source record](references/sources.md) only when refreshing volatile Paperclip claims.
 
+For runtime upgrades, local compatibility repairs, or renamed company and issue codes, resolve the host environment repository's Paperclip operations guide and repair inventory before acting. That owner keeps version-specific patches, installed-payload checks, live regression evidence and retirement decisions; instance snapshots remain runtime state. Preserve stable issue identity when repairing historical links, and follow the host's maintenance procedure so loading a repair does not silently interrupt coordinated work. This skill does not own installation commands or a machine-specific patch catalogue.
+
 ## Shared model
 
 Give every repository in the company's admitted scope its own Paperclip project. A separate Coordination project has no repository execution workspace and only coordinates scope, dependencies, decisions and hand-offs. All repository work, including read-only inspection, audits, planning and review, belongs in the owning repository project; the same agent role may act in either context without transferring authority. Apply the standard's [project boundary](references/standards-agent-coordination-paperclip.md#project-ownership-and-coordination-boundary).
