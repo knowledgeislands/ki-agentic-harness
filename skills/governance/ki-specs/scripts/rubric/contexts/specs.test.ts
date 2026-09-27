@@ -342,6 +342,61 @@ test('a requirement cannot borrow a keyword or Verify hook from a later H2 or Ga
   expect(mechanicalItem(VERIFY, 'VERIFY-1').audit.run(verificationContext as never)[0]?.status).toBe('VIOLATION')
 })
 
+for (const [source, extra] of [
+  ['a later paragraph', 'Additional context MUST stay separate.'],
+  ['the Verify hook', '_Verify:_ the test MUST check expiry.'],
+  ['the Evidence field', '_Evidence:_ the test MUST have passed.']
+] as const) {
+  test(`a requirement cannot borrow a BCP 14 keyword from ${source}`, () => {
+    const { repository, area } = fixture()
+    writeFileSync(
+      area,
+      [
+        '# Authentication — AUTH',
+        '',
+        '### AUTH-001 — Session lifetime',
+        '',
+        'A session expires after issue.',
+        '',
+        extra,
+        '',
+        '_Conformance:_ pending',
+        '',
+        '_Verify:_ session test checks expiry.',
+        ''
+      ].join('\n')
+    )
+    const session = createSpecsSession(options(repository, 'audit'))
+    const context = REQ.selectContext(session.subjects[0]?.context() as never)
+
+    expect(mechanicalItem(REQ, 'REQ-1').audit.run(context as never)[0]?.status).toBe('VIOLATION')
+  })
+}
+
+test('a wrapped opening statement satisfies the BCP 14 keyword check', () => {
+  const { repository, area } = fixture()
+  writeFileSync(
+    area,
+    [
+      '# Authentication — AUTH',
+      '',
+      '### AUTH-001 — Session lifetime',
+      '',
+      'A session',
+      'MUST expire after issue.',
+      '',
+      '_Conformance:_ pending',
+      '',
+      '_Verify:_ session test checks expiry.',
+      ''
+    ].join('\n')
+  )
+  const session = createSpecsSession(options(repository, 'audit'))
+  const context = REQ.selectContext(session.subjects[0]?.context() as never)
+
+  expect(mechanicalItem(REQ, 'REQ-1').audit.run(context as never)[0]?.status).toBe('PASS')
+})
+
 test('duplicate areas-table prefix ownership is reported rather than overwritten', () => {
   const { repository } = fixture()
   writeFileSync(

@@ -18,7 +18,7 @@ This is the map of `docs/` and the guiding principles that govern everything in 
 
 ### Specifications — the _what_
 
-[`specs/`](specs) holds the behaviour-level contract: what the harness does, stated normatively (RFC-2119) with a `_Verify:_` hook per requirement. Flat, one file per area, with [`specs/index.md`](specs/index.md) defining the ID scheme and areas table. Governed by the `ki-specs` skill.
+[`specs/`](specs) holds the behaviour-level contract: what the harness does, with a BCP 14 statement and a `_Verify:_` hook per requirement. Flat, one file per area, with [`specs/index.md`](specs/index.md) defining the ID scheme and areas table. Governed by the `ki-specs` skill.
 
 ### Guides — the _how_
 

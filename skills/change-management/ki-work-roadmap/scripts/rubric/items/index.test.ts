@@ -187,6 +187,17 @@ test('roadmap commit guidance separates pruning rather than every lifecycle tran
   expect(metadata).toContain('dedicated prune-only commit')
 })
 
+test('the ledger criterion states reservation ordering without claiming to detect it', () => {
+  const item = items.find((candidate) => candidate.code === 'ROAD-7')
+
+  expect(item?.description).toContain(
+    'committing the applicable ledger advance on its own before the record is written'
+  )
+  expect(item?.description).toContain('one designated writing checkout')
+  expect(item?.description).toContain('cannot observe the commit ordering')
+  expect(item?.description).not.toContain('atomic ledger advance')
+})
+
 test('every criterion declares its v1 remediation or review evidence', () => {
   for (const family of catalogue.families) {
     for (const item of family.items) {

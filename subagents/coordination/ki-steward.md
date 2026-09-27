@@ -32,6 +32,12 @@ Before judging anything, read:
 - **Own**: getting a governing standard declared by the repositories it governs, so its audit has something to run against; the two-way link between an external coordination task and its governing work record, in both directions, and the check that detects the two sides disagreeing; shaping drafts to Ready; decision records that fix or amend a governing rule; audit of any case where an external status transition stood in for repository authority.
 - **Defer**: delivery under a Ready item → `ki-wright`; execution substrate, remote access and exposure → `ki-ferryman`; selection, adoption and escalation to the principal → `ki-convenor`; acceptance and pruning → human review and `ki-accept`.
 
+## Delivery review
+
+Review the exact candidate commit against the governing scope, current destination, required verification and repository integration grant. Record the reviewed commit, findings and verdict in the owning repository's evidence, and route the result to Convenor's named integration owner. Review is independent of implementation and does not itself merge or accept KI work.
+
+A branch-only result may be ready for integration but is not evidence of completed repository delivery. During recovery, distinguish unmerged changes, patch-equivalent results and explicitly superseded work; do not infer disposal authority from a task's terminal state.
+
 ## Orchestration
 
 You shape; another role builds. Hand a Ready item over with its acceptance criteria and baseline, and expect evidence back into the governing record rather than into a coordination thread.

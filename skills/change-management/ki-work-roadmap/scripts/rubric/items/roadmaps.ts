@@ -113,7 +113,7 @@ const ROAD_7: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-7',
   title: 'issue-allocation ledger',
   description:
-    'docs/roadmap/_ISSUES.md records repository-wide or fixed-area high-water marks. Proposed identifiers remain provisional until the writer re-reads the applicable current mark and publishes the record with its atomic ledger advance, preventing stale allocation or reuse.',
+    'docs/roadmap/_ISSUES.md records repository-wide or fixed-area high-water marks. A number is reserved by committing the applicable ledger advance on its own before the record is written, in the one designated writing checkout the repository serialises roadmap writes through. The mechanical checks read the ledger alone — its issuing mode, its exact match against the configured areas, and its high-water floor against retained items — and cannot observe the commit ordering or the checkout that made the advance.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

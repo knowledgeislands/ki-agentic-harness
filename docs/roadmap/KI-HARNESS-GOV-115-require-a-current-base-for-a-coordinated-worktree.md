@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-09-27T05:02:00Z
+updated_at: 2026-09-27T12:46:13Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base
@@ -100,6 +100,15 @@ None. The website skills-by-outcome guide selects skills by task and does not re
 ### Roadmap
 
 `KI-HARNESS-GOV-107` gains one cross-reference: this is the first candidate check with both ends inside the repository, so its evidence deadlock does not apply here.
+
+## Task associations
+
+Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1:3100`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`. Each UUID is the stable task identity.
+
+- [KIS-70](http://127.0.0.1:3100/KIS/issues/KIS-70), `1040aaa6-dc73-4b11-9b6f-b2f0ad0d2a42`: evaluation and proposal of this record; the earlier "covering" wording identifies that context, not a fresh implementation grant.
+- [KIS-79](http://127.0.0.1:3100/KIS/issues/KIS-79), `331d6981-2e23-4818-9e4a-dc2ba933e6c3`: held delivery task explicitly naming this governing item and the KIS-70 context. Do not allocate overlapping implementation to a direct agent without resolving this retained ownership first.
+
+This association-only check does not reconcile all worktrees, refresh a branch, release the held delivery, approve its old plan, or change this item's lifecycle. The current coordination standard's branch-refresh policy also needs comparison with this older plan before implementation; do not replay a superseded claim from the baseline above. Keep the evaluation and delivery references on this item for migration after KIS-5's provider-neutral map is implemented. A paused agent or missing machine-readable map is not evidence of availability.
 
 ## Discussion
 

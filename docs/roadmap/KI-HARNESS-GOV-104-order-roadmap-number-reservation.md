@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-26T15:59:21Z
+updated_at: 2026-09-27T12:46:13Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -111,6 +111,18 @@ No human-guidance change. The website skills-by-outcome guide selects skills by 
 ### Roadmap
 
 `KI-HARNESS-GOV-105` owns the generated `_ISSUES.md` body, which needs a conform repair path before its text can change. Activation of `ki-agent-coordination-paperclip` in a repository `.ki.toml` remains separately owned; until then the new `COORD` criterion is published but unexercised.
+
+## Task associations
+
+Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1:3100`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`. Each UUID is the stable task identity; the older KNO-34 and KNO-36 citations identify the same tasks now displayed as KIS-34 and KIS-36.
+
+- [KIS-34](http://127.0.0.1:3100/KIS/issues/KIS-34), `f6668843-ec44-4ba5-bff9-f900fd4a99a5`: historical implementation evidence for steps 1–4.
+- [KIS-36](http://127.0.0.1:3100/KIS/issues/KIS-36), `5012f29b-bb4a-4d17-a837-d04c8a56068a`: implementation of steps 5–6, naming this governing item.
+- [KIS-76 recovery pilot](http://127.0.0.1:3100/KIS/issues/KIS-76#document-recovery-pilot), `601aeda4-adf3-4709-acb1-9d423929a441`: independent review and local integration of the retained KIS-36 result; not a second implementation claim over the whole item.
+
+The recovery-pilot document at revision `f44b75d0-4853-4b7f-8621-69fe4b18d3ec` records steps 5–6 delivered to this primary checkout's local main at `f878a552be275122767c6f4ae7e3e6b8b2789299`. The earlier baseline and unchecked plan above are not instructions to repeat that delivery. This association update neither accepts the whole item nor reconciles its remaining checklist: its recorded lifecycle stays `ready`. KIS-76 remains an open recovery task even though this bounded integration completed.
+
+This is an association-only recovery check, not a complete ownership census or a release for another agent to implement. Reconcile the already-landed changes, remaining scope and current claims before any further work. Preserve these per-item references for migration when KIS-5's provider-neutral map is implemented; historical implementation and integration links must survive completion.
 
 ## Discussion
 

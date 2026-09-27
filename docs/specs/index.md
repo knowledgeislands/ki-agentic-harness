@@ -15,6 +15,8 @@ This is the accepted behaviour and quality contract for **ki-agentic-harness** â
 
 Each accepted requirement has a `### <PREFIX>-NNN â€” <title>` heading, one BCP-14 statement, and lifecycle fields:
 
+The statement is the first paragraph after the heading. Uppercase requirement words such as `MUST`, `SHOULD`, and `MAY` have the meanings defined by [BCP 14 (RFC 2119 and RFC 8174)](https://www.rfc-editor.org/info/bcp14/); lowercase words retain their ordinary meanings. BCP 14 permits normative text without these keywords, but this corpus requires one in every accepted statement. Write each statement directly, with one independently verifiable behaviour or quality property.
+
 - `_Conformance:_ conforming | pending | divergent` states how the implementation relates to the accepted contract now.
 - `_Verify:_` names the check capable of deciding conformance.
 - `_Evidence:_` names current proof and is required when conforming.

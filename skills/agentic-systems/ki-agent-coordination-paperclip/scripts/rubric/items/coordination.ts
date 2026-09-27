@@ -14,9 +14,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-1',
       title: 'Repository authority',
       description: 'Paperclip coordinates execution without becoming durable KI knowledge or work authority.',
-      sources: [`${STANDARD}#position-and-authority`, `${STANDARD}#knowledge-boundary`],
+      sources: [
+        `${STANDARD}#position-and-authority`,
+        `${STANDARD}#knowledge-boundary`,
+        `${STANDARD}#project-ownership-and-coordination-boundary`
+      ],
       judgment: judgment(
-        'Does the arrangement keep durable knowledge, work lifecycle, acceptance, and repository authority in the owning KI repositories?'
+        'Does every admitted repository have one owning project, while a workspace-free Coordination project only coordinates and all repository work, knowledge, lifecycle and acceptance retain their owning repository boundary?'
       )
     },
     {
@@ -32,19 +36,23 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-3',
       title: 'Task-to-work linkage',
       description: 'Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle.',
-      sources: [`${STANDARD}#task-to-work-relationship`],
+      sources: [
+        `${STANDARD}#task-to-work-relationship`,
+        `${STANDARD}#delivery-ownership-and-local-integration`,
+        `${STANDARD}#refreshing-a-delivery-branch`
+      ],
       judgment: judgment(
-        'Does each task identify at most one governing KI work item, preserve repository and baseline context, and avoid treating Paperclip completion as KI acceptance?'
+        'Does each delivery name its authority, repository, current destination, baseline and owners, refresh a diverged candidate without unauthorised history rewriting, verify and independently review that result, and preserve the independent KI lifecycle?'
       )
     },
     {
       code: 'COORD-4',
       title: 'Workspace isolation',
       description:
-        'Every mutating run uses an isolated writable workspace under a safe Paperclip-owned root and an explicit baseline.',
-      sources: [`${STANDARD}#workspace-model`],
+        'Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries.',
+      sources: [`${STANDARD}#workspace-model`, `${STANDARD}#human-readable-workspace-names`],
       judgment: judgment(
-        'Does every mutating run use its own writable checkout under a collision-safe Paperclip-owned root outside the repository and Git common directory, with explicit repository and baseline evidence?'
+        'Does implementation use an isolated workspace with a policy-compliant human-readable name and path, explicit baseline and consistent runtime binding, while integration and roadmap writes remain separately serialised?'
       )
     },
     {
@@ -60,9 +68,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-6',
       title: 'Evidence return',
       description: 'Coordination, repository, KI lifecycle, and durable-learning evidence are reconciled explicitly.',
-      sources: [`${STANDARD}#evidence-and-completion`],
+      sources: [
+        `${STANDARD}#evidence-and-completion`,
+        `${STANDARD}#delivery-ownership-and-local-integration`,
+        `${STANDARD}#recovery-and-visibility`
+      ],
       judgment: judgment(
-        'Does completion reconcile Paperclip task evidence, repository evidence, the KI work record, and durable knowledge promotion without converting unavailable evidence into a pass?'
+        'Does completed delivery prove the reviewed result reached its destination branch, with verification, independent KI lifecycle evidence and workspace disposition; and does branch-only completion hand off to a named owner on an open integration task?'
       )
     },
 
@@ -73,20 +85,32 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
         'Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`.',
       sources: [
         `${STANDARD}#workspace-model`,
+        `${STANDARD}#delivery-ownership-and-local-integration`,
+        `${STANDARD}#remote-delivery-prerequisite`,
         '../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority'
       ],
       judgment: judgment(
-        'Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?'
+        'Does the arrangement use only repository-granted Git authority, preserve still-valid approvals, require a reviewed remote-delivery policy before remote expansion, and keep a programme hold until explicit human resumption?'
+      )
+    },
+    {
+      code: 'COORD-8',
+      title: 'Roadmap write locus',
+      description:
+        'Roadmap-record writes are serialised in the repository’s designated primary checkout rather than made in a task’s isolated worktree.',
+      sources: [`${STANDARD}#roadmap-records-are-the-exception`],
+      judgment: judgment(
+        'Does every write to the repository’s roadmap records happen in its designated primary checkout rather than the task’s isolated worktree, and does the task’s evidence record both write boundaries?'
       )
     },
     {
       code: 'COORD-9',
       title: 'Workspace retirement',
       description:
-        'Isolated workspaces end only through the coordination plane, and a refused retirement becomes a recorded repository decision.',
+        'Isolated workspaces end through Paperclip: the automatic sweep uses five gates, while warned early close requires explicit work disposition.',
       sources: [`${STANDARD}#workspace-retirement`],
       judgment: judgment(
-        'Do isolated workspaces end only through Paperclip’s retirement mechanism with the arrangement’s cooldown recorded, and does a workspace it refuses to retire become a recorded repository decision rather than residue on disk?'
+        'Does the automatic sweep apply its five gates and recorded cooldown, while a person-requested early close inspects close-readiness and requires explicit authority to disposition retained or uncertain work behind warnings? Are refused workspaces routed to a repository-owned decision rather than left as residue?'
       )
     }
   ]

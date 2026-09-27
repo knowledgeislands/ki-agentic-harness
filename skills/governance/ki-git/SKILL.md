@@ -17,7 +17,7 @@ Ordinary interactive work uses the repository's primary checkout by default. An 
 
 `ki-git` is the portable policy owner for Git and commit practice across Knowledge Islands repositories.
 
-It names three working approaches so branch choice and working-copy topology are explicit: `single-working-copy-on-main`, `single-working-copy-on-branch-with-pr`, and `worktrees-with-pr`. A single working copy may be shared by human and agent threads: each thread tracks the files it may have changed, commits only its uncontested touched paths, and serialises the short Git write window that stages and advances shared `HEAD`.
+It names four working approaches so branch choice and working-copy topology are explicit: `single-working-copy-on-main`, `single-working-copy-on-branch-with-pr`, `worktrees-with-pr`, and `worktrees-with-local-integration`. A single working copy may be shared by human and agent threads: each thread tracks the files it may have changed, commits only its uncontested touched paths, and serialises the short Git write window that stages and advances shared `HEAD`.
 
 Read [the Git standard](references/standards-git.md) before preparing a commit, choosing a branch boundary, or assessing a stale lock.
 
