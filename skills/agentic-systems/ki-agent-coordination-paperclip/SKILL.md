@@ -40,6 +40,12 @@ Direct human-agent sessions remain valid. A directly addressed agent may use Pap
 
 A repository delivery has a named destination branch, reviewer and integration owner before implementation starts. Branch completion is a hand-off; delivery completion requires evidence in the destination branch. Local-only delivery may use isolated worktrees followed by authorised local integration without a pull request. Apply the standard's delivery and recovery contract; `ki-git` owns the integration grant and safe Git write boundary.
 
+Local execution delivers into the human's designated primary checkout on local `main`, including its working files. A task branch, another clone's `main` and a published remote ref are different destinations. Name the destination host and checkout explicitly.
+
+Use a human-readable company and repository path, preferring the governing roadmap code first in each worktree name and the Paperclip task key as a collision suffix. Apply the standard's supported-field fallback where automatic provisioning cannot render the roadmap code. Preserve existing bindings until a verified migration can update Git and Paperclip together.
+
+Before moving delivery to a remote worker, prove the local delivery cycle, review what the coordination platform already provides, and agree a repository-owned remote-delivery policy. The [remote delivery prerequisite](references/standards-agent-coordination-paperclip.md#remote-delivery-prerequisite) defines the decision boundary without choosing a remote architecture. A programme put on hold stays held until the human explicitly resumes it.
+
 ## Operating modes
 
 This governance skill carries **AUDIT · CONFORM · EDUCATE · REFRESH**. `help` / `-h` / `?` explains the skill, invocation, modes, and off-ramps, then stops. With no clear mode, provide the same explanation and only in an interactive session ask which mode and arrangement to use.

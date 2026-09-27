@@ -32,9 +32,9 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does each delivery name its governing work or direct authority, repository, baseline, destination, implementer, reviewer and integration owner, while preserving the independent KI lifecycle?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-4 [J] — Workspace isolation** — Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries. (standards-agent-coordination-paperclip.md#workspace-model)
+- **COORD-4 [J] — Workspace isolation** — Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries. (standards-agent-coordination-paperclip.md#workspace-model, standards-agent-coordination-paperclip.md#human-readable-workspace-names)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does each implementation run use an isolated checkout under a safe Paperclip-owned root with an explicit baseline, while authorised integration and roadmap writes use their separately serialised primary-checkout boundaries?
+  - _Review prompt:_ Does implementation use an isolated workspace with a policy-compliant human-readable name and path, explicit baseline and consistent runtime binding, while integration and roadmap writes remain separately serialised?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **COORD-5 [J] — Direct interaction and control-plane boundary** — Direct sessions remain valid and Paperclip API mechanics stay with Paperclip’s own skill. (standards-agent-coordination-paperclip.md#interaction-and-skill-composition)
@@ -47,9 +47,9 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does completed delivery prove the reviewed result reached its destination branch, with verification, independent KI lifecycle evidence and workspace disposition; and does branch-only completion hand off to a named owner on an open integration task?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-7 [J] — Delegated Git authority** — Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`. (standards-agent-coordination-paperclip.md#workspace-model, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, ../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority)
+- **COORD-7 [J] — Delegated Git authority** — Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`. (standards-agent-coordination-paperclip.md#workspace-model, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, standards-agent-coordination-paperclip.md#remote-delivery-prerequisite, ../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does the arrangement use only repository-granted Git authority, preserve approvals that still cover the action after revalidation, and distinguish local integration from publication and KI acceptance?
+  - _Review prompt:_ Does the arrangement use only repository-granted Git authority, preserve still-valid approvals, require a reviewed remote-delivery policy before remote expansion, and keep a programme hold until explicit human resumption?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

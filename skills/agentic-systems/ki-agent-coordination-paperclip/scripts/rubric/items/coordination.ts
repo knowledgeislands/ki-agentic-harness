@@ -42,9 +42,9 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       title: 'Workspace isolation',
       description:
         'Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries.',
-      sources: [`${STANDARD}#workspace-model`],
+      sources: [`${STANDARD}#workspace-model`, `${STANDARD}#human-readable-workspace-names`],
       judgment: judgment(
-        'Does each implementation run use an isolated checkout under a safe Paperclip-owned root with an explicit baseline, while authorised integration and roadmap writes use their separately serialised primary-checkout boundaries?'
+        'Does implementation use an isolated workspace with a policy-compliant human-readable name and path, explicit baseline and consistent runtime binding, while integration and roadmap writes remain separately serialised?'
       )
     },
     {
@@ -78,10 +78,11 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       sources: [
         `${STANDARD}#workspace-model`,
         `${STANDARD}#delivery-ownership-and-local-integration`,
+        `${STANDARD}#remote-delivery-prerequisite`,
         '../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority'
       ],
       judgment: judgment(
-        'Does the arrangement use only repository-granted Git authority, preserve approvals that still cover the action after revalidation, and distinguish local integration from publication and KI acceptance?'
+        'Does the arrangement use only repository-granted Git authority, preserve still-valid approvals, require a reviewed remote-delivery policy before remote expansion, and keep a programme hold until explicit human resumption?'
       )
     }
   ]

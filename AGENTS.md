@@ -23,7 +23,7 @@ The `ki-skills` skill and its cited decisions own the dependency, optional-augme
 
 ## Paperclip local delivery
 
-Current operation runs on the principal's laptop. The delivery destination is this repository's designated primary checkout on local `main`, including the working files the principal sees and uses. A task branch, another clone's `main`, or `origin/main` is not that destination. Completion proves the reviewed result is present in local `main` and its primary working files, while preserving unrelated user changes; pushing remains a separate action.
+This repository currently delivers to the principal's laptop, in its designated primary checkout on local `main`. The `ki-agent-coordination-paperclip` skill owns the shared local-delivery semantics, worktree naming and prerequisite for a reviewed remote-delivery policy; this file supplies only the repository's operating choice and authority grant.
 
 Use `ki-agent-coordination-paperclip` for task-to-repository delivery and recovery. This repository selects `worktrees-with-local-integration`: Wright implements in isolation, Steward reviews the exact commit, and Convenor owns local integration and the visible result.
 

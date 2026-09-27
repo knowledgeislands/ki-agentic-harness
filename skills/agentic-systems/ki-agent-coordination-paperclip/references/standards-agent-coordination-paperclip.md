@@ -1,5 +1,18 @@
 # Paperclip coordination standard
 
+## Contents
+
+- [Position and authority](#position-and-authority)
+- [Identity model](#identity-model)
+- [Knowledge boundary](#knowledge-boundary)
+- [Task-to-work relationship](#task-to-work-relationship)
+- [Delivery ownership and local integration](#delivery-ownership-and-local-integration)
+- [Remote delivery prerequisite](#remote-delivery-prerequisite)
+- [Recovery and visibility](#recovery-and-visibility)
+- [Workspace model](#workspace-model)
+- [Interaction and skill composition](#interaction-and-skill-composition)
+- [Evidence and completion](#evidence-and-completion)
+
 ## Position and authority
 
 Paperclip coordinates execution around a Knowledge Island group or archipelago. It may own agent scheduling, operational tasks, run state, and execution-workspace bindings. It does not own the durable knowledge, repository history, KI work lifecycle, acceptance decision, or authority envelope those tasks act within.
@@ -50,6 +63,14 @@ Execution location and delivery destination are separate. In laptop-local operat
 
 A remote worker may have its own clone, worktrees and `main`. Its local merge does not establish delivery to the human's designated checkout, and publishing to a Git remote does not establish that either. A future remote arrangement must explicitly name its destination and evidence-return path; the current local workflow does not preselect that design or grant remote publication authority.
 
+## Remote delivery prerequisite
+
+Before moving a local arrangement to remote implementation or delivery, demonstrate the local review, integration, evidence-return and retirement cycle. Review the lessons and which responsibilities the coordination platform already fulfils before deciding what additional execution infrastructure remains necessary.
+
+The owning repositories must agree a remote-delivery policy before remote implementation begins. It identifies the authoritative destination host, checkout and branch; how reviewed work reaches it and becomes visible to the human; the owners of review, integration, synchronisation and conflict recovery; and any separate publication authority. A worker's own `main` is not automatically that destination. This prerequisite requires a policy decision, not a speculative remote architecture.
+
+A human-requested programme hold preserves existing commits, uncommitted files and work records. Record the reason, retained results, resume prerequisites and next owner without cancelling or accepting the work. Reaching the prerequisites does not automatically lift the hold: the human decides whether to resume, reshape or retire the work in light of the local evidence.
+
 ## Recovery and visibility
 
 When branch output has accumulated, bound new implementation and inventory existing work before expanding concurrency. Classify each result as awaiting review, awaiting integration, integrated, superseded or explicitly abandoned, with its repository, task, branch or commit, destination and next owner. Compare both commit reachability and patch equivalence; neither an old task state nor a missing workspace proves that work is disposable. Inventory evidence belongs with the existing work, not a parallel backlog.
@@ -73,6 +94,14 @@ A repository's ordinary Paperclip workflow may project the bounded task-branch p
 Selected Paperclip agents may receive the independently scoped review or integration capabilities defined by `ki-git`. Paperclip may enforce or project a repository-owned grant, but assignment, role title, credentials, broad autonomy, and a `done` task state do not originate or widen it. An integration agent acts only within that grant and does not treat local or remote integration as KI acceptance.
 
 Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, local branch or worktree identity when applicable, and any uncommitted starting state admitted into scope. Never infer a clean or current checkout from the agent name.
+
+### Human-readable workspace names
+
+Use human-readable company and repository components beneath the runtime-owned root. A delivery worktree name starts with its governing KI work identifier, with the Paperclip task key only where needed to distinguish subtasks or attempts. For example, `knowledge-islands/ki-agentic-harness/ki-harness-gov-104-KIS-36` exposes both identities without a full task title or date namespace. Case-normalised path components retain an exact link to the canonical work identifier in task evidence.
+
+UUIDs may remain internal identities; they are not the default human-facing worktree name. For explicitly authorised work without a governing KI item, use its readable Paperclip task key rather than inventing a roadmap identifier. Resolve the name using supported provisioning fields; do not invent a roadmap template variable the runtime cannot render. Where automatic provisioning can only render the Paperclip key, use that short fallback and record the governing KI identifier in task evidence until code-first provisioning is supported.
+
+A naming-policy change applies to new workspaces. Existing workspaces keep their current branch, path and execution-workspace binding until a scoped migration verifies retained content and updates Git and Paperclip consistently. Never rename a directory or branch alone, break a restart path, or discard work merely to conform its name.
 
 ### Roadmap records are the exception
 
