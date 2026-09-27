@@ -1,5 +1,5 @@
 ---
-name: ki-subagents-codex
+name: ki-subagents-chatgpt
 ki-kind: governance
 ki-applicability: detected
 ki-depends-on: [ki-subagents]
@@ -13,7 +13,7 @@ description: >
 argument-hint: 'audit | conform | educate | refresh | help'
 ---
 
-# KI subagents — Codex adapter
+# KI subagents — ChatGPT adapter (Codex TOML)
 
 ## Runtime binding
 

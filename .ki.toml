@@ -19,7 +19,7 @@ visibility = "public"
 license = "MIT"
 supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
 checks.coverage-checkpoint = false # source repository publishes the optional capability without adopting a checkpoint subarea
-checks.coverage-subagents-codex = false # source repository publishes the adapter without adopting Codex agent projections
+checks.coverage-subagents-chatgpt = false # source repository publishes the adapter without adopting Codex agent projections
 
 [skills.ki-authoring]
 
@@ -50,7 +50,7 @@ prefix = "ki"
 
 [skills.ki-subagents-claude]
 
-[skills.ki-subagents-codex]
+[skills.ki-subagents-chatgpt]
 
 [skills.ki-agent-coordination-paperclip]
 organisation_code = "KIS"

@@ -57,7 +57,7 @@ Govern how Paperclip coordinates agents around a Knowledge Island group or archi
 
 #### `ki-subagents`
 
-Define or assess runtime-neutral KI subagent roles: identity, delegation purpose, instructions, lane, grounding, hand-offs, orchestration, and evidence. Use before a native projection; use `ki-subagents-claude` or `ki-subagents-codex` for runtime files.
+Define or assess runtime-neutral KI subagent roles: identity, delegation purpose, instructions, lane, grounding, hand-offs, orchestration, and evidence. Use before a native projection; use `ki-subagents-claude` or `ki-subagents-chatgpt` for runtime files.
 
 - **Kind:** Governance
 - **Applicability:** Detected
@@ -65,17 +65,7 @@ Define or assess runtime-neutral KI subagent roles: identity, delegation purpose
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-subagents-claude`
-
-Audit or write Claude Code Markdown/YAML projections of approved portable KI subagent roles. Use for Claude-native agent source shape and fields; use `ki-subagents` for runtime-neutral role design and `ki-subagents-codex` for Codex TOML.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit <agent-or-dir> | conform <agent> | help | educate <description> | refresh`
-- **Dependencies:** `ki-subagents`
-- **Runtime:** Runtime-bound: `claude-code`
-
-#### `ki-subagents-codex`
+#### `ki-subagents-chatgpt`
 
 Audit or write Codex TOML projections of approved portable KI subagent roles. Use for Codex-native agent source shape and fields; use `ki-subagents` for runtime-neutral role design and `ki-subagents-claude` for Claude Markdown/YAML.
 
@@ -84,6 +74,16 @@ Audit or write Codex TOML projections of approved portable KI subagent roles. Us
 - **Arguments:** `audit | conform | educate | refresh | help`
 - **Dependencies:** `ki-subagents`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
+
+#### `ki-subagents-claude`
+
+Audit or write Claude Code Markdown/YAML projections of approved portable KI subagent roles. Use for Claude-native agent source shape and fields; use `ki-subagents` for runtime-neutral role design and `ki-subagents-chatgpt` for Codex TOML.
+
+- **Kind:** Governance
+- **Applicability:** Detected
+- **Arguments:** `audit <agent-or-dir> | conform <agent> | help | educate <description> | refresh`
+- **Dependencies:** `ki-subagents`
+- **Runtime:** Runtime-bound: `claude-code`
 
 ### Change Management
 
@@ -461,7 +461,7 @@ Audit or conform the universal KI repository contract declared by `.ki.toml`, in
 
 - **Kind:** Governance
 - **Applicability:** Baseline
-- **Detects:** `ki-checkpoint`, `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-plugins`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-claude`, `ki-subagents-codex`
+- **Detects:** `ki-checkpoint`, `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-plugins`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`
 - **Arguments:** `audit | conform <repo> | educate <repo> | help | refresh | review [scope] | review close <REV-NNN>`
 - **Dependencies:** `ki-authoring`, `ki-git`
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract

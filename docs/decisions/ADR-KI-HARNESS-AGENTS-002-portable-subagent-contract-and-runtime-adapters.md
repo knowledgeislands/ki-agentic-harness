@@ -20,7 +20,7 @@ The Harness supports Claude Code and OpenAI Codex, but its original `ki-subagent
 Runtime adapters compose the parent and own native representation:
 
 - `ki-subagents-claude` owns Claude Code Markdown, YAML frontmatter, discovery paths, fields, and source-shape checks.
-- `ki-subagents-codex` owns Codex standalone TOML, discovery paths, fields, and source-shape checks.
+- `ki-subagents-chatgpt` owns Codex standalone TOML, discovery paths, fields, and source-shape checks.
 
 Runtime-native definitions live under distinct runtime projections within the `subagents/` source shelf. Definitions with the same portable identity are corresponding projections, not copies that establish one another's correctness. Source conformance never proves installation, activation, effective settings, invocation, or outcome quality.
 

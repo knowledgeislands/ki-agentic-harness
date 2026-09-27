@@ -5,7 +5,7 @@ import { RUBRIC } from './publication.ts'
 
 export default {
   contract: 1,
-  name: 'ki-subagents-codex',
+  name: 'ki-subagents-chatgpt',
   concern: 'Codex standalone TOML source projections',
   createSession: createCodexSession,
   families: [CODEX, RUBRIC]

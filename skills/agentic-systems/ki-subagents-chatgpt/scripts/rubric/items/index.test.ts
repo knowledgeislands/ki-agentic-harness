@@ -13,7 +13,7 @@ afterEach(() => {
   })
 })
 const fixture = (): string => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-subagents-codex-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-subagents-chatgpt-'))
   temporary.push(repository)
   mkdirSync(join(repository, '.codex', 'agents'), { recursive: true })
   writeFileSync(
