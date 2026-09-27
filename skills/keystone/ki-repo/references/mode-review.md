@@ -172,6 +172,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Repository purpose and stability
 
 - [ ] The repository fulfils its delineated responsibility within the wider project ecosystem.
+- [ ] Each roadmap outcome sits with the repository responsible for delivering it, not merely the repository where its symptom was discovered. Assess the record's actual scope and acceptance evidence rather than inferring ownership from its title or current location.
+- [ ] Mixed-repository work has one principal record accountable for the combined outcome and final verification, with reciprocal links to bounded downstream records where other repositories must deliver changes. Each downstream retains its own execution and acceptance authority; moving ownership does not silently change priority, lifecycle state or acceptance.
 - [ ] The repository has a clear stable baseline against which future change can be judged.
 - [ ] The repository records enough of that baseline that maintaining it does not depend on personal memory.
 - [ ] Every known departure from the stable baseline is explicit and represented by active work.
@@ -182,6 +184,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Repository governance
 
 - [ ] The repository declaration reflects what the repository now contains.
+- [ ] Agora declarations identify the intended owner independently of projection order. Check whether the first projected repository is that owner or an explicitly intended exception, and verify reciprocal membership separately; being listed first grants no ownership or authority.
 - [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
 - [ ] In a multi-runtime repository, root `AGENTS.md` is the authoritative home for shared runtime-neutral guidance.
 - [ ] Where root `CLAUDE.md` accompanies `AGENTS.md`, it imports `AGENTS.md` and contains only Claude-specific additions.
