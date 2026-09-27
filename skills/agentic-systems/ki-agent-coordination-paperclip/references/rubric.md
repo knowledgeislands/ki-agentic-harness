@@ -9,6 +9,7 @@ Line-by-line criteria for auditing ki-agent-coordination-paperclip. Classificati
 ## Contents
 
 - [COORD — KI–Paperclip coordination](#coord--kipaperclip-coordination)
+- [ORG — Paperclip organisation identity](#org--paperclip-organisation-identity)
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 
 ## COORD — KI–Paperclip coordination
@@ -62,6 +63,15 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the automatic sweep apply its five gates and recorded cooldown, while a person-requested early close inspects close-readiness and requires explicit authority to disposition retained or uncertain work behind warnings? Are refused workspaces routed to a repository-owned decision rather than left as residue?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+
+## ORG — Paperclip organisation identity
+
+→ [standard](standards-agent-coordination-paperclip.md)
+
+Each repository explicitly declares its owning Paperclip organisation code.
+
+- **ORG-1 [M] — Required organisation code** — The skill declaration requires one stable uppercase organisation_code and no unknown keys. (standards-agent-coordination-paperclip.md#organisation-identity)
+  - _Remediation:_ diagnostic — Set organisation_code to the repository’s owning Paperclip company code in .ki.toml.
 
 ## RUBRIC — Generated rubric publication
 

@@ -3,6 +3,7 @@
 ## Contents
 
 - [Position and authority](#position-and-authority)
+- [Organisation identity](#organisation-identity)
 - [Project ownership and coordination boundary](#project-ownership-and-coordination-boundary)
 - [Identity model](#identity-model)
 - [Knowledge boundary](#knowledge-boundary)
@@ -19,6 +20,17 @@
 Paperclip coordinates execution around a Knowledge Island group or archipelago. It may own agent scheduling, operational tasks, run state, and execution-workspace bindings. It does not own the durable knowledge, repository history, KI work lifecycle, acceptance decision, or authority envelope those tasks act within.
 
 A Paperclip assignment grants coordination context, not repository authority. Every mutation still needs the authority already carried by the governing KI work, direct user instruction, and repository rules. A Paperclip status transition cannot push, merge, deploy, accept, close, or prune KI work by implication.
+
+## Organisation identity
+
+Every repository using this skill declares its owning Paperclip company code in its own `.ki.toml`:
+
+```toml
+[skills.ki-agent-coordination-paperclip]
+organisation_code = "KIS"
+```
+
+`organisation_code` is required, non-empty, and uppercase letters or digits beginning with a letter; `ER` is valid. No other keys are recognised in this skill's table. The value identifies the company that owns this repository's Paperclip project, not the repository's `repo_code`, an Agora identifier, or necessarily Paperclip's current issue prefix. A repository may join several Agoras but still declares one owning company code; Agora membership never silently assigns or changes it. Reconcile a company rename or ownership transfer explicitly against existing project and task bindings before changing the declaration.
 
 ## Project ownership and coordination boundary
 

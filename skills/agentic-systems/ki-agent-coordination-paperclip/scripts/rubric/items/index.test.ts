@@ -16,9 +16,10 @@ test('Paperclip coordination keeps relationship criteria judgment-led', () => {
     'COORD-7',
     'COORD-8',
     'COORD-9',
+    'ORG-1',
     'RUBRIC-1'
   ])
-  expect(items.every((item) => !item.mechanical || item.code === 'RUBRIC-1')).toBe(true)
+  expect(items.every((item) => !item.mechanical || ['ORG-1', 'RUBRIC-1'].includes(item.code))).toBe(true)
 })
 
 test('the roadmap write locus is assessed separately from workspace isolation', () => {

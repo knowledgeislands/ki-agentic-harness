@@ -2,10 +2,11 @@
 
 _On-demand procedure for the coordination AUDIT mode. The position, shared model, and mode set live in [`SKILL.md`](../SKILL.md) and are already loaded; the normative claims live in the [coordination standard](standards-agent-coordination-paperclip.md). This file is the procedure only._
 
-1. **Confirm the declaration.** This skill is `ki-applicability: declaration-only`: no repository shape implies it. A repository opts in with an empty table in its `.ki.toml`, placed in the governance section:
+1. **Confirm the declaration.** This skill is `ki-applicability: declaration-only`: no repository shape implies it. A repository opts in with its owning company code in `.ki.toml`, placed in the governance section:
 
    ```toml
    [skills.ki-agent-coordination-paperclip]
+   organisation_code = "KIS"
    ```
 
    Without it the host exits 2 with `--skill must name one declared resolved skill`. That message means the repository has not declared the capability; it is not an environment fault. Confirm with `grep -n 'ki-agent-coordination-paperclip' <repo>/.ki.toml` before treating the arrangement as ungoverned.

@@ -19,6 +19,8 @@ Paperclip is a coordination plane around Knowledge Islands, not their memory or 
 
 This skill owns the relationship between those systems. Paperclip's own `paperclip` skill owns control-plane API mechanics, authentication, checkout, task updates, comments, and delegation. `ki-git` owns Git topology, commits, publication, review, and integration authority; this skill projects those rules into Paperclip coordination. Use `ki-subagents` when defining a portable agent role and the active `ki-work` adapter when changing a KI work record.
 
+Each participating repository declares its owning company with required `organisation_code` in `[skills.ki-agent-coordination-paperclip]`; see the standard's [organisation identity](references/standards-agent-coordination-paperclip.md#organisation-identity). Agora membership alone does not select a company.
+
 Read the [Paperclip coordination standard](references/standards-agent-coordination-paperclip.md) before designing or assessing an arrangement. Read the [generated rubric](references/rubric.md) for its review criteria and the [source record](references/sources.md) only when refreshing volatile Paperclip claims.
 
 For runtime upgrades, local compatibility repairs, or renamed company and issue codes, resolve the host environment repository's Paperclip operations guide and repair inventory before acting. That owner keeps version-specific patches, installed-payload checks, live regression evidence and retirement decisions; instance snapshots remain runtime state. Preserve stable issue identity when repairing historical links, and follow the host's maintenance procedure so loading a repair does not silently interrupt coordinated work. This skill does not own installation commands or a machine-specific patch catalogue.
