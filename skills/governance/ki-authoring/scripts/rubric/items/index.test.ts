@@ -217,7 +217,7 @@ test('frontmatter conform removes only safely unnecessary scalar quotes', () => 
   ])
 })
 
-test('a declared owned-file exception remains a warning and suppresses only its drifted-file write', () => {
+test('a declared owned-file exception reports information and suppresses only its drifted-file write', () => {
   const repository = temporaryRepository()
   writeFileSync(join(repository, '.editorconfig'), EDITORCONFIG_DEFAULT)
   writeFileSync(join(repository, '.rumdl.toml'), '# evidence-preserving variation\n')
@@ -238,14 +238,36 @@ test('a declared owned-file exception remains a warning and suppresses only its 
   const owned = ownedModule.OWNED.items[0]
 
   expect(owned?.mechanical?.audit.run(context?.owned as NonNullable<typeof context>['owned'])).toContainEqual({
-    status: 'VIOLATION',
+    status: 'INFO',
     message:
-      '.rumdl.toml has a declared exception because Preserves verbatim correspondence whose list markers are source evidence. — it remains non-canonical; return it to the house template when the constraint ends',
+      '.rumdl.toml uses a declared owned-file exception: Preserves verbatim correspondence whose list markers are source evidence.',
     subject: '.rumdl.toml'
   })
 
   owned?.mechanical?.conform?.run(context?.owned as NonNullable<typeof context>['owned'])
   expect(session.proposal().writes).toEqual([])
+})
+
+test('unexplained owned-file drift remains a warning and is proposed for repair', () => {
+  const repository = temporaryRepository()
+  writeFileSync(join(repository, '.editorconfig'), EDITORCONFIG_DEFAULT)
+  writeFileSync(join(repository, '.rumdl.toml'), '# unexplained variation\n')
+  const session = createAuthoringSession(
+    { mode: 'conform', repository, userHome: tmpdir(), configuration: {} },
+    () => ({ clean: true })
+  )
+  const context = session.subjects[1]?.context()
+  const owned = ownedModule.OWNED.items[0]
+
+  expect(owned?.mechanical?.audit.run(context?.owned as NonNullable<typeof context>['owned'])).toContainEqual({
+    status: 'VIOLATION',
+    message:
+      '.rumdl.toml has drifted from the house template — run "ki repo conform --skill ki-authoring" to correct it',
+    subject: '.rumdl.toml'
+  })
+
+  owned?.mechanical?.conform?.run(context?.owned as NonNullable<typeof context>['owned'])
+  expect(session.proposal().writes).toEqual([{ path: '.rumdl.toml', content: RUMDL_DEFAULT }])
 })
 
 test('owned-file exceptions do not suppress missing or unsafe paths', () => {

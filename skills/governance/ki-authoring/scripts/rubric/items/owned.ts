@@ -10,8 +10,8 @@ const ownedFileAudit = (file: OwnedFileEvidence): AuditOutcome => {
     }
   if (file.exception && file.state === 'drifted')
     return {
-      status: 'VIOLATION',
-      message: `${file.name} has a declared exception because ${file.exception} — it remains non-canonical; return it to the house template when the constraint ends`,
+      status: 'INFO',
+      message: `${file.name} uses a declared owned-file exception: ${file.exception}`,
       subject: file.name
     }
   if (file.state === 'canonical')
@@ -43,7 +43,7 @@ const OWN_1: RubricItem<OwnedRubricContext> = {
   code: 'OWN-1',
   title: 'owned authoring configuration matches the house templates',
   description:
-    'The skill owns `.editorconfig` and `.rumdl.toml` wholly (SHAPE-16 `owns:`): AUDIT warns on drift from the house templates, while CONFORM transactionally scaffolds missing files and overwrites drifted regular files. A reasoned `owned_file_exceptions` declaration remains a WARN and suppresses only the named regular drifted-file write; it is never a local template. Each template is stored already formatted to the house width so CONFORM output is a fixed point of the governing formatter; a template the repository would reformat leaves every governed repository permanently drifted.',
+    'The skill owns `.editorconfig` and `.rumdl.toml` wholly (SHAPE-16 `owns:`): AUDIT warns on unexplained drift from the house templates, while CONFORM transactionally scaffolds missing files and overwrites drifted regular files. A reasoned `owned_file_exceptions` declaration reports INFO and suppresses only the named regular drifted-file write; missing, unsafe, malformed, and stale exceptions remain WARN. An exception is never a local template. Each template is stored already formatted to the house width so CONFORM output is a fixed point of the governing formatter; a template the repository would reformat leaves every governed repository permanently drifted.',
   sources: ['standards-authoring.md#owned-configuration'],
   mechanical: {
     level: 'WARN',

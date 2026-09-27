@@ -20,7 +20,7 @@ An evidenced exception is the narrow safety valve for a repository whose regular
 ".rumdl.toml" = "Preserves verbatim correspondence whose list markers are source evidence."
 ```
 
-AUDIT still reports the declared drift as a WARN with its reason and the recommendation to return to the house template. CONFORM skips only that named regular drifted file; it does not merge a template delta, interpret local settings, or make the exception conforming. Unknown names, blank reasons, a malformed table, and a stale declaration against a canonical file are warnings to correct. A declaration never suppresses scaffolding of a missing file or the safety refusal for an unsafe path.
+AUDIT reports declared non-canonical drift as INFO with its reason; it does not count as a warning while the exception applies. CONFORM skips only that named regular drifted file; it does not merge a template delta, interpret local settings, or make the file canonical. Unknown names, blank reasons, a malformed table, and a stale declaration against a canonical file are warnings to correct. A declaration never suppresses scaffolding of a missing file or the safety refusal for an unsafe path.
 
 `.prettierrc.json`, `.prettierignore`, and `.markdownlint-cli2.jsonc` are retired. AUDIT warns while any of them survives and CONFORM removes it, because a leftover configuration is not inert: an editor extension reads it and reformats Markdown against a standard this repository no longer holds.
 
