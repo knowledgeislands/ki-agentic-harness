@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-26T18:20:00Z
+updated_at: 2026-09-27T05:06:00Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -67,6 +67,7 @@ None of the three candidates replaces a judgment criterion; each adds a mechanic
 - The accepted coordination-lane delivery places the four coordination lane records under `subagents/coordination/`. Those records are the subject of `COORD-2`, not of any check proposed here.
 - [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) decides who declares the skill. It determines how many repositories a mechanical item would run against, and is therefore worth settling first, but it is not build order: a rubric item can be written against one declaring repository.
 - `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` and the allow-list in `tools-ki` are the real precondition. `blocked_by` is empty because it records build order between records in this roadmap, and neither of those is one; the constraint is stated here instead.
+- The worktree-base assertion captured in [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md) is the first candidate check whose evidence is entirely repository-local: the Git worktree registry, the selected worktree's base, and the declared destination branch are all readable offline in the checkout being audited. None of the three evidence routes above applies to it, so it proceeds independently of this record. What remains here is the link criteria, whose other end is genuinely in the coordination plane.
 
 ### Governing coordination task
 
