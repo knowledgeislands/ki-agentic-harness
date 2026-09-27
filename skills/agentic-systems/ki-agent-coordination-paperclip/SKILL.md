@@ -23,7 +23,7 @@ Read the [Paperclip coordination standard](references/standards-agent-coordinati
 
 ## Shared model
 
-Every Paperclip run that can mutate a repository uses a task-specific branch and isolated checkout under a Paperclip-owned root outside the repository and its Git directory. It may commit authorised work on that branch; pushing or integrating it requires separate authority.
+Every Paperclip implementation run that can mutate a repository uses a task-specific branch and isolated checkout under a Paperclip-owned root outside the repository and its Git directory. It may commit authorised work on that branch; pushing or integrating it requires separate authority.
 
 Keep four identities distinct:
 
@@ -37,6 +37,8 @@ Rita and Sue may both work on `tools-rig` and start from the same admitted revis
 Work records invert that: both of them write roadmap records in `tools-rig`'s designated primary checkout, because an identifier is reserved by a committed ledger advance and two isolated branches can each advance the same number. The [standard](references/standards-agent-coordination-paperclip.md#roadmap-records-are-the-exception) states the exception and cites the roadmap standard that owns the ordering.
 
 Direct human-agent sessions remain valid. A directly addressed agent may use Paperclip's own skill to inspect assignments, create or update coordinated tasks, and return evidence. Paperclip is a shared coordination plane, not a mandatory conversational gateway.
+
+A repository delivery has a named destination branch, reviewer and integration owner before implementation starts. Branch completion is a hand-off; delivery completion requires evidence in the destination branch. Local-only delivery may use isolated worktrees followed by authorised local integration without a pull request. Apply the standard's delivery and recovery contract; `ki-git` owns the integration grant and safe Git write boundary.
 
 ## Operating modes
 

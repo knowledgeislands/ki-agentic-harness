@@ -32,19 +32,19 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-3',
       title: 'Task-to-work linkage',
       description: 'Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle.',
-      sources: [`${STANDARD}#task-to-work-relationship`],
+      sources: [`${STANDARD}#task-to-work-relationship`, `${STANDARD}#delivery-ownership-and-local-integration`],
       judgment: judgment(
-        'Does each task identify at most one governing KI work item, preserve repository and baseline context, and avoid treating Paperclip completion as KI acceptance?'
+        'Does each delivery name its governing work or direct authority, repository, baseline, destination, implementer, reviewer and integration owner, while preserving the independent KI lifecycle?'
       )
     },
     {
       code: 'COORD-4',
       title: 'Workspace isolation',
       description:
-        'Every mutating run uses an isolated writable workspace under a safe Paperclip-owned root and an explicit baseline.',
+        'Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries.',
       sources: [`${STANDARD}#workspace-model`],
       judgment: judgment(
-        'Does every mutating run use its own writable checkout under a collision-safe Paperclip-owned root outside the repository and Git common directory, with explicit repository and baseline evidence?'
+        'Does each implementation run use an isolated checkout under a safe Paperclip-owned root with an explicit baseline, while authorised integration and roadmap writes use their separately serialised primary-checkout boundaries?'
       )
     },
     {
@@ -60,9 +60,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-6',
       title: 'Evidence return',
       description: 'Coordination, repository, KI lifecycle, and durable-learning evidence are reconciled explicitly.',
-      sources: [`${STANDARD}#evidence-and-completion`],
+      sources: [
+        `${STANDARD}#evidence-and-completion`,
+        `${STANDARD}#delivery-ownership-and-local-integration`,
+        `${STANDARD}#recovery-and-visibility`
+      ],
       judgment: judgment(
-        'Does completion reconcile Paperclip task evidence, repository evidence, the KI work record, and durable knowledge promotion without converting unavailable evidence into a pass?'
+        'Does completed delivery prove the reviewed result reached its destination branch, with verification, independent KI lifecycle evidence and workspace disposition; and does branch-only completion hand off to a named owner on an open integration task?'
       )
     },
 
@@ -73,10 +77,11 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
         'Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`.',
       sources: [
         `${STANDARD}#workspace-model`,
+        `${STANDARD}#delivery-ownership-and-local-integration`,
         '../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority'
       ],
       judgment: judgment(
-        'Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?'
+        'Does the arrangement use only repository-granted Git authority, preserve approvals that still cover the action after revalidation, and distinguish local integration from publication and KI acceptance?'
       )
     }
   ]

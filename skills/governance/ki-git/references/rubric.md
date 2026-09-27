@@ -46,11 +46,11 @@ Commit messages express one completed unit through the portable convention.
 
 Working-copy topology and review flow follow local protection, review, and concurrency needs.
 
-- **BRANCH-1 [J] — working approach matches the delivery boundary** — Primary-checkout, branch-with-PR, and worktree-with-PR approaches follow repository policy, review needs, concurrency, and unattended isolation. (standards-git.md)
+- **BRANCH-1 [J] — working approach matches the delivery boundary** — Primary-checkout, branch-with-PR, worktree-with-PR, and local worktree integration approaches follow repository policy, review needs, concurrency, and unattended isolation. (standards-git.md#working-copy-and-review-approaches, standards-git.md#local-integration-write-boundary)
   - _Evidence scope:_ The selected repository, requested change, current `git branch --show-current` and `git worktree list` evidence, protection policy, concurrency, and review boundary.
-  - _Review prompt:_ After checking branch, worktree, protection, concurrency, unattended execution, and review evidence, assess whether the primary-checkout default or an explicitly required branch or worktree boundary is appropriate.
-  - _Outcomes:_ conforming; use single-working-copy-on-main; use single-working-copy-on-branch-with-pr; use worktrees-with-pr
-  - _Conforming guidance:_ Use the primary checkout for ordinary interactive work. Use a branch or separate worktree when protection, review, concurrent delivery, or unattended coordination requires that isolation.
+  - _Review prompt:_ Does the selected approach satisfy isolation and review needs, and does local worktree integration use an authorised owner and serialised destination write without imposing remote publication?
+  - _Outcomes:_ conforming; use single-working-copy-on-main; use single-working-copy-on-branch-with-pr; use worktrees-with-pr; use worktrees-with-local-integration
+  - _Conforming guidance:_ Use the primary checkout for ordinary interactive work. Isolate unattended implementation. When delivery is local-only, independently review the candidate and integrate through the authorised serialised write boundary without requiring a push or pull request.
 - **BRANCH-2 [J] — finished worktrees are integrated or disposed** — Finished linked worktrees are inspected, deliberately integrated or disposed, removed, and pruned without losing unmerged work. (standards-git.md)
   - _Evidence scope:_ Every linked worktree in `git worktree list --porcelain`, its branch, `git status --short`, commits not reachable from the intended integration branch, branch diff, and delivery authority.
   - _Review prompt:_ For each finished linked worktree, is its work deliberately integrated or explicitly disposed before the worktree and any proven-redundant local branch are removed?

@@ -27,14 +27,14 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the arrangement distinguish the durable agent role from each run or session, workspace, and worker?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-3 [J] — Task-to-work linkage** — Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle. (standards-agent-coordination-paperclip.md#task-to-work-relationship)
+- **COORD-3 [J] — Task-to-work linkage** — Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle. (standards-agent-coordination-paperclip.md#task-to-work-relationship, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does each task identify at most one governing KI work item, preserve repository and baseline context, and avoid treating Paperclip completion as KI acceptance?
+  - _Review prompt:_ Does each delivery name its governing work or direct authority, repository, baseline, destination, implementer, reviewer and integration owner, while preserving the independent KI lifecycle?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-4 [J] — Workspace isolation** — Every mutating run uses an isolated writable workspace under a safe Paperclip-owned root and an explicit baseline. (standards-agent-coordination-paperclip.md#workspace-model)
+- **COORD-4 [J] — Workspace isolation** — Implementation uses isolated workspaces; authorised integration and roadmap writes use separately serialised primary-checkout boundaries. (standards-agent-coordination-paperclip.md#workspace-model)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does every mutating run use its own writable checkout under a collision-safe Paperclip-owned root outside the repository and Git common directory, with explicit repository and baseline evidence?
+  - _Review prompt:_ Does each implementation run use an isolated checkout under a safe Paperclip-owned root with an explicit baseline, while authorised integration and roadmap writes use their separately serialised primary-checkout boundaries?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **COORD-5 [J] — Direct interaction and control-plane boundary** — Direct sessions remain valid and Paperclip API mechanics stay with Paperclip’s own skill. (standards-agent-coordination-paperclip.md#interaction-and-skill-composition)
@@ -42,14 +42,14 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Can a human address an agent directly while control-plane operations remain governed by Paperclip’s official skill and existing authority?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-6 [J] — Evidence return** — Coordination, repository, KI lifecycle, and durable-learning evidence are reconciled explicitly. (standards-agent-coordination-paperclip.md#evidence-and-completion)
+- **COORD-6 [J] — Evidence return** — Coordination, repository, KI lifecycle, and durable-learning evidence are reconciled explicitly. (standards-agent-coordination-paperclip.md#evidence-and-completion, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, standards-agent-coordination-paperclip.md#recovery-and-visibility)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does completion reconcile Paperclip task evidence, repository evidence, the KI work record, and durable knowledge promotion without converting unavailable evidence into a pass?
+  - _Review prompt:_ Does completed delivery prove the reviewed result reached its destination branch, with verification, independent KI lifecycle evidence and workspace disposition; and does branch-only completion hand off to a named owner on an open integration task?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-7 [J] — Delegated Git authority** — Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`. (standards-agent-coordination-paperclip.md#workspace-model, ../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority)
+- **COORD-7 [J] — Delegated Git authority** — Paperclip projects task-branch publication and selected-agent review or integration authority owned by `ki-git`. (standards-agent-coordination-paperclip.md#workspace-model, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, ../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does the Paperclip arrangement project only the task-branch, review, approval, merge, or auto-merge authority granted under `ki-git`, without originating or widening it?
+  - _Review prompt:_ Does the arrangement use only repository-granted Git authority, preserve approvals that still cover the action after revalidation, and distinguish local integration from publication and KI acceptance?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

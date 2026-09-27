@@ -36,11 +36,29 @@ Paperclip and KI lifecycle states remain independent:
 - Newly discovered substantive work is captured through the active KI work adapter, normally as unadopted Triage, rather than hidden in a task comment.
 - Paperclip may show a task blocked or awaiting review without rewriting the KI record unless an authorised KI lifecycle action occurs.
 
+## Delivery ownership and local integration
+
+Before implementation, name the repository, governing work or explicit direct authority, admitted baseline, destination branch, implementer, reviewer, integration owner and required checks. The coordinator owns the hand-offs through integration; assigning an implementer does not discharge that responsibility. Reuse the existing KI record and Paperclip task relationship rather than opening a second delivery tracker.
+
+A repository may choose local-only delivery: implementation in an isolated task worktree, independent review of the exact commit, then integration into local `main` under a repository-owned grant. A remote push or pull request is not a prerequisite. `ki-git` owns the grant, merge method, authorship separation and serialised destination write; this standard neither grants integration nor requires another approval for an action already covered by that grant.
+
+The implementation task may finish at a reviewed branch only when an explicitly linked, open integration task has a named owner and the overall delivery remains open. Otherwise the delivery task remains awaiting review or integration. A delivery whose promised result is a repository change is not complete until the reviewed result is reachable from its destination branch, or the responsible authority explicitly dispositions it without integration. KI acceptance remains independent.
+
+Baseline movement requires revalidation, not automatic cancellation of approval. Preserve an existing approval when its scope, authority, review evidence and risk still apply; record the new baseline and verification. A changed diff invalidates review of the previous diff. Scope expansion, conflicting ownership, identifier collisions or a materially changed risk require a concrete escalation stating what changed and which decision remains.
+
+## Recovery and visibility
+
+When branch output has accumulated, bound new implementation and inventory existing work before expanding concurrency. Classify each result as awaiting review, awaiting integration, integrated, superseded or explicitly abandoned, with its repository, task, branch or commit, destination and next owner. Compare both commit reachability and patch equivalence; neither an old task state nor a missing workspace proves that work is disposable. Inventory evidence belongs with the existing work, not a parallel backlog.
+
+Prove one bounded delivery through review, local integration, evidence reconciliation and safe workspace retirement before increasing concurrency. Admit a current baseline at dispatch and record it for that delivery; an old company-wide pin is not evidence that a new task starts from current repository state. Serialise integration and roadmap writes per repository, independently of per-agent concurrency limits.
+
+Present outcomes to the human as changes delivered to the destination branch, results awaiting integration and decisions needed. Each completed delivery names the resulting destination commit, verification and review evidence, independent KI lifecycle state, and workspace retirement or its explicit remaining blocker. Agent activity and branch commits alone are not delivered outcomes.
+
 ## Workspace model
 
 Runs operating on the same island may share repository identity and baseline while using different physical workspaces. Concurrent mutating tasks use separate worktrees, clones, or equivalent isolated writable checkouts. A shared mutable checkout is acceptable only when mutation is serialised explicitly; read-only inspection may share a filesystem view.
 
-A run that will write to a repository works in its own isolated checkout — normally a linked worktree on its own branch, cut from a named commit — whether or not another run happens to be active. Isolation is a standing property of a writing run, not a precaution taken when concurrency is observed, because a run cannot see the runs that start after it. A human's working copy is never a run's working directory: a person must be able to read, build, and edit their own checkout without an agent changing files underneath them.
+An implementation run that will write to a repository works in its own isolated checkout — normally a linked worktree on its own branch, cut from a named commit — whether or not another run happens to be active. Isolation is a standing property of a writing run, not a precaution taken when concurrency is observed, because a run cannot see the runs that start after it. A human's working copy is never an implementation run's working directory: a person must be able to read, build, and edit their own checkout without an agent changing files underneath them. Authorised integration and roadmap writes are bounded exceptions governed below and by `ki-git`; they do not permit implementation in the primary checkout.
 
 Paperclip worktrees use an explicit Paperclip-owned root outside the repository's working tree and outside its Git common directory. The root is outside estate discovery and includes enough company, project or repository, and task identity to prevent collisions. Do not use Paperclip's repository-local default, an ad hoc workspace sibling, or `.git/paperclip-worktrees` for working files.
 
@@ -48,7 +66,7 @@ A writing run may commit verified work to its task branch when the governing KI 
 
 A repository's ordinary Paperclip workflow may project the bounded task-branch publication authority defined by `ki-git`: non-force push of only the recorded task branch and creation or update of its draft pull request. It projects no primary-branch, tag, release, deployment, remote-branch deletion, approval, merge, or auto-merge authority.
 
-Selected Paperclip agents may receive the independently scoped review or integration capabilities defined by `ki-git`. Paperclip may enforce or project a repository-owned grant, but assignment, role title, credentials, broad autonomy, and a `done` task state do not originate or widen it. An integration agent acts only within that grant and does not treat PR merge as KI acceptance.
+Selected Paperclip agents may receive the independently scoped review or integration capabilities defined by `ki-git`. Paperclip may enforce or project a repository-owned grant, but assignment, role title, credentials, broad autonomy, and a `done` task state do not originate or widen it. An integration agent acts only within that grant and does not treat local or remote integration as KI acceptance.
 
 Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, local branch or worktree identity when applicable, and any uncommitted starting state admitted into scope. Never infer a clean or current checkout from the agent name.
 
@@ -68,7 +86,7 @@ This skill does not duplicate Paperclip endpoints, authentication, heartbeat pro
 
 ## Evidence and completion
 
-Before reporting coordinated work complete, reconcile four evidence classes:
+Before reporting coordinated work complete, apply the delivery completion rule above and reconcile four evidence classes:
 
 - Paperclip task outcome and relevant thread or plan context;
 - repository diff, commit, test, and review evidence;

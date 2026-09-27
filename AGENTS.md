@@ -21,6 +21,16 @@ The `ki-skills` skill and its cited decisions own the dependency, optional-augme
 - **Git** → use `ki-git` for portable commit and hygiene policy. This repository's local delta is a solo direct-to-`main` workflow with no PR gate; branches remain available for an isolated review boundary. Its pre-commit hook runs `lint-staged`, TypeScript for staged `.ts` changes, and a staged-snapshot `ki-skills` audit for touched skill roots.
 - **Verification** → run `bun run test`, `bunx tsc --noEmit`, and the relevant focused `ki repo audit --skill <skill>` sequentially. Record fleet findings separately from failures in the contract under change.
 
+## Paperclip local delivery
+
+Use `ki-agent-coordination-paperclip` for task-to-repository delivery and recovery. This repository selects `worktrees-with-local-integration`: Wright implements in isolation, Steward reviews the exact commit, and Convenor owns local integration and the visible result.
+
+The Knowledge Islands Convenor (`4b312799-a51c-43c4-876e-161b1f6ce4c2`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`) may merge approved, verified harness deliveries into this repository's local `main`. Eligible work is an approved Ready item or explicitly scoped direct user instruction. The grant covers local non-force integration only, using a fast-forward or `--no-ff` merge; it grants no push, release, deployment, KI acceptance or deletion of retained work.
+
+Steward (`61d06d85-a1c0-4505-a043-4a8f3a66286b`) must review the exact candidate independently of its author. Required evidence is the governing scope, source and destination commits, `bun run test`, `bunx tsc --noEmit`, and relevant focused audits against the proposed combined result. Convenor must establish the serialised Git write window required by `ki-git` before advancing the primary checkout and record the resulting `main` commit. A changed candidate returns to review; an ordinary destination advance requires revalidation, not a fresh approval of unchanged scope.
+
+This grant remains valid until the principal revokes or changes it. Recovery starts with one harness delivery at a time; do not expand concurrency until one cycle has demonstrated review, local integration, evidence return and safe workspace retirement. Other repositories require their own integration grants. Paperclip completion does not accept a KI work item.
+
 ## Toolchain
 
 [Bun](https://bun.sh) is the install and development runtime; `ki` is the repository-governance executor.
