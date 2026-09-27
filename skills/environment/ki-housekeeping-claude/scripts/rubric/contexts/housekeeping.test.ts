@@ -45,6 +45,12 @@ const settings = (home: string, contents = '{}'): void => {
   writeFileSync(join(home, '.claude', 'settings.json'), contents)
 }
 
+const projectSettings = (home: string, contents: Record<string, unknown>, local = true): void => {
+  const directory = join(home, 'repository', '.claude')
+  mkdirSync(directory, { recursive: true })
+  writeFileSync(join(directory, local ? 'settings.local.json' : 'settings.json'), JSON.stringify(contents))
+}
+
 const fixture = (): { home: string; directory: string; alpha: string; index: string } => {
   const home = userHome()
   const directory = selectedMemoryDirectory(home)
@@ -219,22 +225,23 @@ describe('ki-housekeeping-claude session', () => {
     expect(context.index.entriesResolve[0]?.status).toBe('PASS')
   })
 
-  test('fails closed when native settings evidence is unavailable', () => {
+  test('reports an implicit runtime enable without a scoped opt-in', () => {
     const home = userHome()
     const session = createHousekeepingSession(options(home, 'audit'))
     const context = memoryContext(session)
 
     expect(session.subjects.find(({ families }) => families.includes('RUNTIME'))?.families).toContain('RUNTIME')
     expect(context.selection.selected[0]?.status).toBe('VIOLATION')
-    expect(context.selection.selected[0]?.message).toContain('cannot be established')
+    expect(context.selection.selected[0]?.message).toContain('without a project-scoped opt-in')
     expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
     expect(context.runtime.server[0]?.status).toBe('NOT_APPLICABLE')
     expect(context.runtime.server[0]?.message).toContain('No server registration')
   })
 
-  test('uses the documented default only after readable settings show no override', () => {
+  test('uses the documented default for a project-scoped opt-in', () => {
     const home = userHome()
-    settings(home)
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true })
     mkdirSync(selectedMemoryDirectory(home), { recursive: true })
     writeFileSync(join(selectedMemoryDirectory(home), 'MEMORY.md'), '')
     const session = createHousekeepingSession(options(home, 'audit'))
@@ -246,11 +253,107 @@ describe('ki-housekeeping-claude session', () => {
 
   test('treats an absent documented default directory as no native memories', () => {
     const home = userHome()
-    settings(home)
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true })
     const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
 
     expect(context.selection.selected[0]?.status).toBe('PASS')
     expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
+  })
+
+  test('does not inspect existing memory when default-off is effective', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    mkdirSync(selectedMemoryDirectory(home), { recursive: true })
+    writeFileSync(join(selectedMemoryDirectory(home), 'orphan.md'), memory('wrong-name'))
+    const session = createHousekeepingSession(options(home, 'conform'))
+    const context = memoryContext(session)
+
+    expect(context.selection.selected[0]?.status).toBe('PASS')
+    expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
+    expect(context.frontmatter.present[0]?.status).toBe('NOT_APPLICABLE')
+    expect(session.proposal()).toEqual({ writes: [] })
+  })
+
+  test('project-local opt-in outranks user default-off and shared project off', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: false }, false)
+    projectSettings(home, { autoMemoryEnabled: true })
+    mkdirSync(selectedMemoryDirectory(home), { recursive: true })
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+
+    expect(context.selection.selected[0]?.status).toBe('PASS')
+    expect(context.index.exists[0]?.status).toBe('VIOLATION')
+  })
+
+  test('project-local off outranks shared project opt-in', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true }, false)
+    projectSettings(home, { autoMemoryEnabled: false })
+    mkdirSync(selectedMemoryDirectory(home), { recursive: true })
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+
+    expect(context.selection.selected[0]?.status).toBe('PASS')
+    expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
+  })
+
+  test('environment overrides effective settings in either direction', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true })
+    mkdirSync(selectedMemoryDirectory(home), { recursive: true })
+    const previous = process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY
+    try {
+      process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY = '1'
+      expect(memoryContext(createHousekeepingSession(options(home, 'audit'))).index.exists[0]?.status).toBe(
+        'NOT_APPLICABLE'
+      )
+      process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY = '0'
+      expect(memoryContext(createHousekeepingSession(options(home, 'audit'))).index.exists[0]?.status).toBe('VIOLATION')
+    } finally {
+      if (previous === undefined) delete process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY
+      else process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY = previous
+    }
+  })
+
+  test('settings env can disable memory, and a shell override can force it on', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true, env: { CLAUDE_CODE_DISABLE_AUTO_MEMORY: '1' } })
+    mkdirSync(selectedMemoryDirectory(home), { recursive: true })
+    expect(memoryContext(createHousekeepingSession(options(home, 'audit'))).index.exists[0]?.status).toBe(
+      'NOT_APPLICABLE'
+    )
+    const previous = process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY
+    try {
+      process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY = '0'
+      expect(memoryContext(createHousekeepingSession(options(home, 'audit'))).index.exists[0]?.status).toBe('VIOLATION')
+    } finally {
+      if (previous === undefined) delete process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY
+      else process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY = previous
+    }
+  })
+
+  test('does not inspect a guessed directory under a changed Claude project name', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true, env: { CLAUDE_CODE_PROJECT_DIR_NAME: 'elsewhere' } })
+    mkdirSync(selectedMemoryDirectory(home), { recursive: true })
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+
+    expect(context.selection.selected[0]?.status).toBe('VIOLATION')
+    expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
+  })
+
+  test('a user-wide enable is not a scoped opt-in', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: true }))
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+
+    expect(context.selection.selected[0]?.status).toBe('VIOLATION')
+    expect(context.selection.selected[0]?.message).toContain('without a project-scoped opt-in')
   })
 
   test('resolves a contained native override for a worktree without inspecting the default path', () => {
@@ -258,7 +361,8 @@ describe('ki-housekeeping-claude session', () => {
     const worktreeMemory = join(home, '.claude', 'worktrees', 'feature', 'memory')
     mkdirSync(worktreeMemory, { recursive: true })
     writeFileSync(join(worktreeMemory, 'MEMORY.md'), '')
-    settings(home, JSON.stringify({ autoMemoryDirectory: '.claude/worktrees/feature/memory' }))
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    projectSettings(home, { autoMemoryEnabled: true, autoMemoryDirectory: '~/.claude/worktrees/feature/memory' })
     const session = createHousekeepingSession(options(home, 'audit'))
     const context = memoryContext(session)
 
@@ -280,11 +384,16 @@ describe('ki-housekeeping-claude session', () => {
     const malformed = memoryContext(createHousekeepingSession(options(home, 'audit')))
     expect(malformed.selection.selected[0]?.status).toBe('VIOLATION')
     expect(malformed.selection.selected[0]?.message).toContain('malformed')
+
+    settings(home, JSON.stringify({ autoMemoryDirectory: '.claude/relative-memory' }))
+    const relative = memoryContext(createHousekeepingSession(options(home, 'audit')))
+    expect(relative.selection.selected[0]?.status).toBe('VIOLATION')
+    expect(relative.index.exists[0]?.status).toBe('NOT_APPLICABLE')
   })
 
   test('rejects an out-of-bounds override and reports malformed index, marker-date, and frontmatter evidence', () => {
     const home = userHome()
-    settings(home, JSON.stringify({ autoMemoryDirectory: '../outside' }))
+    settings(home, JSON.stringify({ autoMemoryDirectory: join(home, 'outside') }))
     const unsafe = memoryContext(createHousekeepingSession(options(home, 'audit')))
     expect(unsafe.selection.selected[0]?.status).toBe('VIOLATION')
     expect(unsafe.selection.selected[0]?.message).toContain('outside')

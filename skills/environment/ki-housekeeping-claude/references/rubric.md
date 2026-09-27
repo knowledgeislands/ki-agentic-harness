@@ -22,8 +22,8 @@ Line-by-line criteria for auditing ki-housekeeping-claude. Classifications are d
 
 Evidence that bounds the local native-memory inspection.
 
-- **SELECT-1 [M] — Native memory location is established** — The audit establishes the selected native auto-memory directory from a readable local settings record. Missing, malformed, disabled, unsupported, or out-of-bounds override evidence is a FAIL; it never falls back to the default path. (standards-auto-memory.md)
-  - _Remediation:_ diagnostic — Resolve the native auto-memory settings evidence or explicitly keep the runtime unavailable, then rerun the audit.
+- **SELECT-1 [M] — Auto-memory state and project scope established** — Disabled auto-memory passes without memory inspection. Enabled auto-memory requires an explicit project-scoped opt-in and a selected contained directory; malformed or unsupported settings fail closed. (standards-auto-memory.md)
+  - _Remediation:_ diagnostic — Review effective settings and environment overrides; disable auto-memory or opt in explicitly for this project, then rerun audit.
 
 ## RUNTIME — Server-runtime boundary
 

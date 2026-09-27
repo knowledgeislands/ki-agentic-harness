@@ -21,7 +21,8 @@ type MemoryFile = {
 }
 
 type MemorySelection =
-  | { state: 'selected'; relativePath: string; directory: string; message: string }
+  | { state: 'selected'; relativePath: string; directory: string; message: string; scopedOptIn: boolean }
+  | { state: 'disabled'; relativePath: string; message: string }
   | { state: 'unavailable'; relativePath: string; message: string }
 
 export type HousekeepingSelectionContext = {
@@ -120,13 +121,7 @@ const indexEntries = (index: string): { files: string[]; malformed: string[] } =
 }
 
 const configuredPath = (home: string, raw: string): string =>
-  raw === '~'
-    ? home
-    : raw.startsWith('~/')
-      ? join(home, raw.slice(2))
-      : isAbsolute(raw)
-        ? resolve(raw)
-        : resolve(home, raw)
+  raw.startsWith('~/') ? join(home, raw.slice(2)) : resolve(raw)
 
 const isContained = (root: string, path: string): boolean => {
   const pathRelative = relative(root, path)
@@ -154,45 +149,99 @@ const physicalFileDescendant = (root: string, path: string): boolean => {
   return true
 }
 
-const selectMemory = (home: string, repositorySlug: string): MemorySelection => {
+const readSettings = (path: string): Record<string, unknown> | null => {
+  if (!existsSync(path)) return {}
+  if (!physicalFile(path)) return null
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(path, 'utf8'))
+    return isRecord(parsed) ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+const selectMemory = (home: string, repositoryRoot: string, repositorySlug: string): MemorySelection => {
   const claudeRoot = join(home, '.claude')
   const defaultDirectory = join(claudeRoot, 'projects', repositorySlug, 'memory')
   const defaultRelativePath = relative(home, defaultDirectory)
-  const settingsPath = join(claudeRoot, 'settings.json')
-  if (!physicalFileDescendant(home, settingsPath)) {
-    return {
-      state: 'unavailable',
-      relativePath: defaultRelativePath,
-      message: 'Native Claude settings are unavailable; the selected auto-memory directory cannot be established.'
-    }
-  }
-  let settings: Record<string, unknown>
-  try {
-    const parsed = JSON.parse(readFileSync(settingsPath, 'utf8'))
-    if (!isRecord(parsed)) throw new Error('not an object')
-    settings = parsed
-  } catch {
-    return {
-      state: 'unavailable',
-      relativePath: defaultRelativePath,
-      message: 'Native Claude settings are malformed; the selected auto-memory directory cannot be established.'
-    }
-  }
-  if (!Object.hasOwn(settings, 'autoMemoryDirectory')) {
-    return {
-      state: 'selected',
-      relativePath: defaultRelativePath,
-      directory: defaultDirectory,
-      message: 'Native settings contain no auto-memory override; the documented default directory is selected.'
-    }
-  }
-  const override = settings.autoMemoryDirectory
-  if (typeof override !== 'string' || !override.trim()) {
+  const paths = [
+    join(claudeRoot, 'settings.json'),
+    join(repositoryRoot, '.claude', 'settings.json'),
+    join(repositoryRoot, '.claude', 'settings.local.json')
+  ]
+  const settings = paths.map((path, index) =>
+    existsSync(path) && !physicalFileDescendant(index === 0 ? home : repositoryRoot, path) ? null : readSettings(path)
+  )
+  if (settings.some((value) => value === null)) {
     return {
       state: 'unavailable',
       relativePath: defaultRelativePath,
       message:
-        'Native auto-memory override is disabled or unsupported; the selected directory is unavailable rather than defaulted.'
+        'Native Claude settings are malformed or not physical files; auto-memory selection cannot be established.'
+    }
+  }
+  const layers = settings as Record<string, unknown>[]
+  const effective = (key: string): unknown => [...layers].reverse().find((layer) => Object.hasOwn(layer, key))?.[key]
+  const enabled = effective('autoMemoryEnabled')
+  const env = [...layers]
+    .reverse()
+    .find((layer) => isRecord(layer.env) && Object.hasOwn(layer.env, 'CLAUDE_CODE_DISABLE_AUTO_MEMORY'))?.env
+  const configuredEnv = isRecord(env) ? env.CLAUDE_CODE_DISABLE_AUTO_MEMORY : undefined
+  const overrideEnv = process.env.CLAUDE_CODE_DISABLE_AUTO_MEMORY ?? configuredEnv
+  if (overrideEnv !== undefined && overrideEnv !== '0' && overrideEnv !== '1') {
+    return {
+      state: 'unavailable',
+      relativePath: defaultRelativePath,
+      message: 'CLAUDE_CODE_DISABLE_AUTO_MEMORY has an unsupported value; auto-memory selection cannot be established.'
+    }
+  }
+  if (enabled !== undefined && typeof enabled !== 'boolean') {
+    return {
+      state: 'unavailable',
+      relativePath: defaultRelativePath,
+      message: 'autoMemoryEnabled must be a boolean; auto-memory selection cannot be established.'
+    }
+  }
+  if (overrideEnv === '1' || (overrideEnv !== '0' && enabled === false)) {
+    return {
+      state: 'disabled',
+      relativePath: defaultRelativePath,
+      message: 'Auto-memory is disabled by the effective setting or environment override.'
+    }
+  }
+  if (
+    process.env.CLAUDE_CONFIG_DIR ||
+    process.env.CLAUDE_CODE_PROJECT_DIR_NAME ||
+    layers.some(
+      (layer) => isRecord(layer.env) && (layer.env.CLAUDE_CONFIG_DIR || layer.env.CLAUDE_CODE_PROJECT_DIR_NAME)
+    )
+  ) {
+    return {
+      state: 'unavailable',
+      relativePath: defaultRelativePath,
+      message:
+        'Claude configuration or project-directory environment override is active; the selected directory cannot be established by this local checker.'
+    }
+  }
+  const scopedOptIn = layers.slice(1).some((layer) => layer.autoMemoryEnabled === true)
+  const override = effective('autoMemoryDirectory')
+  if (override === undefined) {
+    return {
+      state: 'selected',
+      relativePath: defaultRelativePath,
+      directory: defaultDirectory,
+      message: scopedOptIn
+        ? 'Project settings opt in to auto-memory; the documented default directory is selected.'
+        : 'Auto-memory is enabled without a project-scoped opt-in.',
+      scopedOptIn
+    }
+  }
+  if (typeof override !== 'string' || !override.trim() || (!override.startsWith('~/') && !isAbsolute(override))) {
+    return {
+      state: 'unavailable',
+      relativePath: defaultRelativePath,
+      message:
+        'Native auto-memory directory override is unsupported; the selected directory is unavailable rather than defaulted.'
     }
   }
   const directory = configuredPath(home, override)
@@ -207,7 +256,10 @@ const selectMemory = (home: string, repositorySlug: string): MemorySelection => 
     state: 'selected',
     relativePath: relative(home, directory),
     directory,
-    message: 'Native auto-memory override selects this bounded directory.'
+    message: scopedOptIn
+      ? 'Project settings opt in to auto-memory and select this bounded directory.'
+      : 'Auto-memory is enabled without a project-scoped opt-in.',
+    scopedOptIn
   }
 }
 
@@ -232,7 +284,11 @@ const unavailableMemoryContext = (
   return {
     rubric: { publication },
     selection: {
-      selected: one({ status: 'VIOLATION', message: selection.message, subject: selection.relativePath })
+      selected: one({
+        status: selection.state === 'disabled' ? 'PASS' : 'VIOLATION',
+        message: selection.message,
+        subject: selection.relativePath
+      })
     },
     runtime: {
       server: notApplicable(
@@ -268,7 +324,11 @@ const absentMemoryContext = (
   return {
     ...context,
     selection: {
-      selected: one({ status: 'PASS', message: selection.message, subject: selection.relativePath })
+      selected: one({
+        status: selection.scopedOptIn ? 'PASS' : 'VIOLATION',
+        message: selection.message,
+        subject: selection.relativePath
+      })
     }
   }
 }
@@ -278,6 +338,7 @@ const projectContext = (
   repositoryName: string,
   memoryRoot: string,
   memoryDirectory: string,
+  selection: Extract<MemorySelection, { state: 'selected' }>,
   mutable: boolean,
   drafts: Map<string, MemoryDraft>
 ): Omit<HousekeepingRubricContext, 'rubric'> => {
@@ -501,8 +562,8 @@ const projectContext = (
     },
     selection: {
       selected: one({
-        status: 'PASS',
-        message: 'The native auto-memory directory was selected from available settings evidence.',
+        status: selection.scopedOptIn ? 'PASS' : 'VIOLATION',
+        message: selection.message,
         subject: memoryRoot
       })
     },
@@ -563,7 +624,7 @@ export const createHousekeepingSession = ({
   const repositorySlug = repositoryRoot.replace(/[/.]/g, '-')
   const claudeRoot = join(home, '.claude')
   const drafts = new Map<string, MemoryDraft>()
-  const selection = selectMemory(home, repositorySlug)
+  const selection = selectMemory(home, repositoryRoot, repositorySlug)
   const selectedMemory =
     selection.state === 'selected'
       ? physicalDescendant(claudeRoot, selection.directory)
@@ -573,6 +634,7 @@ export const createHousekeepingSession = ({
               repositoryName,
               selection.relativePath,
               selection.directory,
+              selection,
               mode === 'conform',
               drafts
             ),

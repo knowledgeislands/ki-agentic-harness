@@ -5,16 +5,16 @@ const SOURCE = 'standards-auto-memory.md'
 
 const SELECT_1: RubricItem<HousekeepingSelectionContext> = {
   code: 'SELECT-1',
-  title: 'Native memory location is established',
+  title: 'Auto-memory state and project scope established',
   description:
-    'The audit establishes the selected native auto-memory directory from a readable local settings record. Missing, malformed, disabled, unsupported, or out-of-bounds override evidence is a FAIL; it never falls back to the default path.',
+    'Disabled auto-memory passes without memory inspection. Enabled auto-memory requires an explicit project-scoped opt-in and a selected contained directory; malformed or unsupported settings fail closed.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Resolve the native auto-memory settings evidence or explicitly keep the runtime unavailable, then rerun the audit.'
+        'Review effective settings and environment overrides; disable auto-memory or opt in explicitly for this project, then rerun audit.'
     },
     audit: { phase: 'PREPARE', run: (context) => context.selected }
   }

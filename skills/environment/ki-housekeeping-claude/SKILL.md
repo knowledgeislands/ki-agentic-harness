@@ -23,7 +23,7 @@ The **standard and judgment** over the state Claude accumulates on a machine, ac
 
 The **mechanical arm** is split by area:
 
-1. **Native memory** — governed locally when a readable native settings record establishes a selected contained directory. An absent or malformed settings record, disabled or unsupported override, or out-of-bounds override is reported unavailable; the rubric never silently falls back to its default path. Once selection is established, the index/file contract (every `memory/*.md` listed in `MEMORY.md`, every entry resolving to a file), frontmatter schema, four-type doctrine, and promote-then-delete reconciliation are checked by `ki repo audit --skill ki-housekeeping-claude`. It never enumerates, reports, or writes another repository's memory. Detail in [the auto-memory standard](references/standards-auto-memory.md).
+1. **Native memory** — off by default as KI policy, with an explicit per-project opt-in. The checker resolves user, project, and project-local settings plus the auto-memory environment override. Effective disabled memory passes selection and skips all index/file checks; implicit or globally enabled memory fails the scoped opt-in criterion. Enabled memory is inspected only in its selected contained directory. Uncertain or out-of-bounds selection fails closed. Detail in [the auto-memory standard](references/standards-auto-memory.md).
 2. **Headroom output and every other area** — a `headroom:learn` block is rendered-file evidence only; it does not prove a Headroom database, version, installation, or executed learn action. The paired **`mcp-housekeeping-claude`** server is a separate tool source: a source checkout or inventory declaration does not prove registration, access exposure, or an executed audit. The skill applies judgment only to independently obtained server audit evidence; it never re-implements those tools.
 
 ## AI session acquisition
@@ -46,6 +46,6 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 ## Notes
 
 - The state this skill governs lives **outside the repo tree** — under `~/.claude/`, `~/Library/Application Support/Claude/`, and VSCode's `workspaceStorage/`. Its structured session is restricted to the selected repository's Claude project memory; the session / artifact / storage areas are machine-level and audited directly through the server, not by repository audit.
-- A selected native directory with no `memory/` directory yet is an **NA**, not a FAIL. Uncertain selection is a **FAIL**, not an NA.
+- Disabled auto-memory and an enabled selected directory with no `memory/` directory are **NA** for index/file criteria. Uncertain selection and enabled memory without a project-scoped opt-in are **FAIL** at SELECT-1.
 - Route Markdown formatting to the separately applicable `ki-authoring` standard. The local `ki-skills:rubric` shared module is compile-time packaging, not a governance dependency.
 - Does not assume any particular personal `~/.claude/CLAUDE.md` content — the doctrines checked are the systems' own universal instructions, not one user's private elaboration of them.
