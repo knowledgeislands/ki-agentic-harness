@@ -21,12 +21,28 @@ type MemoryFile = {
 }
 
 type MemorySelection =
-  | { state: 'selected'; relativePath: string; directory: string; message: string; scopedOptIn: boolean }
-  | { state: 'disabled'; relativePath: string; message: string }
+  | {
+      state: 'selected'
+      relativePath: string
+      directory: string
+      message: string
+      scopedOptIn: boolean
+      transition: boolean
+      policy: 'transition' | 'disabled' | 'enabled'
+    }
+  | {
+      state: 'disabled'
+      relativePath: string
+      directory: string
+      message: string
+      transition: boolean
+      policy: 'transition' | 'disabled' | 'enabled'
+    }
   | { state: 'unavailable'; relativePath: string; message: string }
 
 export type HousekeepingSelectionContext = {
   selected: readonly AuditOutcome[]
+  reconciliation: readonly AuditOutcome[]
 }
 
 export type HousekeepingRuntimeContext = {
@@ -160,10 +176,28 @@ const readSettings = (path: string): Record<string, unknown> | null => {
   }
 }
 
-const selectMemory = (home: string, repositoryRoot: string, repositorySlug: string): MemorySelection => {
+const selectMemory = (
+  home: string,
+  repositoryRoot: string,
+  repositorySlug: string,
+  configuration: Readonly<Record<string, unknown>>
+): MemorySelection => {
   const claudeRoot = join(home, '.claude')
   const defaultDirectory = join(claudeRoot, 'projects', repositorySlug, 'memory')
   const defaultRelativePath = relative(home, defaultDirectory)
+  const declaredPolicy = configuration.auto_memory
+  if (
+    declaredPolicy !== undefined &&
+    (typeof declaredPolicy !== 'string' || !['transition', 'disabled', 'enabled'].includes(declaredPolicy))
+  ) {
+    return {
+      state: 'unavailable',
+      relativePath: defaultRelativePath,
+      message: 'auto_memory must be transition, disabled, or enabled in the skill declaration.'
+    }
+  }
+  const policy = (declaredPolicy ?? 'disabled') as 'transition' | 'disabled' | 'enabled'
+  const transition = policy === 'transition'
   const paths = [
     join(claudeRoot, 'settings.json'),
     join(repositoryRoot, '.claude', 'settings.json'),
@@ -202,13 +236,6 @@ const selectMemory = (home: string, repositoryRoot: string, repositorySlug: stri
       message: 'autoMemoryEnabled must be a boolean; auto-memory selection cannot be established.'
     }
   }
-  if (overrideEnv === '1' || (overrideEnv !== '0' && enabled === false)) {
-    return {
-      state: 'disabled',
-      relativePath: defaultRelativePath,
-      message: 'Auto-memory is disabled by the effective setting or environment override.'
-    }
-  }
   if (
     process.env.CLAUDE_CONFIG_DIR ||
     process.env.CLAUDE_CODE_PROJECT_DIR_NAME ||
@@ -225,18 +252,10 @@ const selectMemory = (home: string, repositoryRoot: string, repositorySlug: stri
   }
   const scopedOptIn = layers.slice(1).some((layer) => layer.autoMemoryEnabled === true)
   const override = effective('autoMemoryDirectory')
-  if (override === undefined) {
-    return {
-      state: 'selected',
-      relativePath: defaultRelativePath,
-      directory: defaultDirectory,
-      message: scopedOptIn
-        ? 'Project settings opt in to auto-memory; the documented default directory is selected.'
-        : 'Auto-memory is enabled without a project-scoped opt-in.',
-      scopedOptIn
-    }
-  }
-  if (typeof override !== 'string' || !override.trim() || (!override.startsWith('~/') && !isAbsolute(override))) {
+  if (
+    override !== undefined &&
+    (typeof override !== 'string' || !override.trim() || (!override.startsWith('~/') && !isAbsolute(override)))
+  ) {
     return {
       state: 'unavailable',
       relativePath: defaultRelativePath,
@@ -244,7 +263,7 @@ const selectMemory = (home: string, repositoryRoot: string, repositorySlug: stri
         'Native auto-memory directory override is unsupported; the selected directory is unavailable rather than defaulted.'
     }
   }
-  const directory = configuredPath(home, override)
+  const directory = override === undefined ? defaultDirectory : configuredPath(home, override as string)
   if (!isContained(claudeRoot, directory)) {
     return {
       state: 'unavailable',
@@ -252,15 +271,69 @@ const selectMemory = (home: string, repositoryRoot: string, repositorySlug: stri
       message: 'Native auto-memory override resolves outside the bounded Claude root and is not inspected.'
     }
   }
+  const relativePath = relative(home, directory)
+  if (overrideEnv === '1' || (overrideEnv !== '0' && enabled === false)) {
+    return {
+      state: 'disabled',
+      relativePath,
+      directory,
+      message:
+        policy === 'enabled'
+          ? 'Auto-memory is disabled while KI policy declares an enabled project opt-in.'
+          : 'Auto-memory is disabled by the effective setting or environment override.',
+      transition,
+      policy
+    }
+  }
   return {
     state: 'selected',
-    relativePath: relative(home, directory),
+    relativePath,
     directory,
-    message: scopedOptIn
-      ? 'Project settings opt in to auto-memory and select this bounded directory.'
-      : 'Auto-memory is enabled without a project-scoped opt-in.',
-    scopedOptIn
+    message: transition
+      ? 'Auto-memory transition is declared; enabled memory remains available for reconciliation.'
+      : policy === 'disabled' && scopedOptIn
+        ? 'Auto-memory is enabled while KI policy declares disabled.'
+        : scopedOptIn
+          ? 'Project settings opt in to auto-memory and select this bounded directory.'
+          : 'Auto-memory is enabled without a project-scoped opt-in.',
+    scopedOptIn,
+    transition,
+    policy
   }
+}
+
+const reconciliationEvidence = (selection: MemorySelection, claudeRoot: string): readonly AuditOutcome[] => {
+  if (selection.state === 'unavailable') {
+    return notApplicable('Auto-memory location is unavailable for reconciliation inspection.', selection.relativePath)
+  }
+  if (existsSync(selection.directory) && !physicalDescendant(claudeRoot, selection.directory)) {
+    return one({
+      status: 'VIOLATION',
+      message:
+        'The selected memory directory is not a physical contained directory; inspect it manually before closing transition.',
+      subject: selection.relativePath
+    })
+  }
+  const files = physicalDescendant(claudeRoot, selection.directory)
+    ? readdirSync(selection.directory, { withFileTypes: true }).filter(
+        (entry) => entry.name.endsWith('.md') && (entry.isFile() || entry.isSymbolicLink())
+      ).length
+    : 0
+  if (selection.transition || ((selection.state === 'disabled' || selection.policy === 'disabled') && files > 0)) {
+    return one({
+      status: 'VIOLATION',
+      message:
+        files > 0
+          ? `${files} existing auto-memory file(s) need reviewed reconciliation; preserve them until their durable value is routed.`
+          : 'Auto-memory transition remains declared; confirm reconciliation and change the skill value to disabled.',
+      subject: selection.relativePath
+    })
+  }
+  return one({
+    status: 'PASS',
+    message: 'No auto-memory transition or disabled-store reconciliation remains.',
+    subject: selection.relativePath
+  })
 }
 
 const replaceName = (content: string, expected: string): string => {
@@ -275,6 +348,7 @@ const replaceName = (content: string, expected: string): string => {
 
 const unavailableMemoryContext = (
   selection: MemorySelection,
+  reconciliation: readonly AuditOutcome[],
   publication?: RubricContextOptions['publication']
 ): HousekeepingRubricContext => {
   const memory = notApplicable(
@@ -285,10 +359,11 @@ const unavailableMemoryContext = (
     rubric: { publication },
     selection: {
       selected: one({
-        status: selection.state === 'disabled' ? 'PASS' : 'VIOLATION',
+        status: selection.state === 'disabled' && selection.policy !== 'enabled' ? 'PASS' : 'VIOLATION',
         message: selection.message,
         subject: selection.relativePath
-      })
+      }),
+      reconciliation
     },
     runtime: {
       server: notApplicable(
@@ -318,17 +393,20 @@ const unavailableMemoryContext = (
 
 const absentMemoryContext = (
   selection: Extract<MemorySelection, { state: 'selected' }>,
+  reconciliation: readonly AuditOutcome[],
   publication?: RubricContextOptions['publication']
 ): HousekeepingRubricContext => {
-  const context = unavailableMemoryContext(selection, publication)
+  const context = unavailableMemoryContext(selection, reconciliation, publication)
   return {
     ...context,
     selection: {
       selected: one({
-        status: selection.scopedOptIn ? 'PASS' : 'VIOLATION',
+        status:
+          selection.transition || (selection.policy === 'enabled' && selection.scopedOptIn) ? 'PASS' : 'VIOLATION',
         message: selection.message,
         subject: selection.relativePath
-      })
+      }),
+      reconciliation
     }
   }
 }
@@ -339,6 +417,7 @@ const projectContext = (
   memoryRoot: string,
   memoryDirectory: string,
   selection: Extract<MemorySelection, { state: 'selected' }>,
+  reconciliation: readonly AuditOutcome[],
   mutable: boolean,
   drafts: Map<string, MemoryDraft>
 ): Omit<HousekeepingRubricContext, 'rubric'> => {
@@ -562,10 +641,12 @@ const projectContext = (
     },
     selection: {
       selected: one({
-        status: selection.scopedOptIn ? 'PASS' : 'VIOLATION',
+        status:
+          selection.transition || (selection.policy === 'enabled' && selection.scopedOptIn) ? 'PASS' : 'VIOLATION',
         message: selection.message,
         subject: memoryRoot
-      })
+      }),
+      reconciliation
     },
     runtime: {
       server: notApplicable(
@@ -616,6 +697,7 @@ export const createHousekeepingSession = ({
   mode,
   repository,
   userHome,
+  configuration,
   publication
 }: RubricContextOptions): RubricSession<HousekeepingRubricContext> => {
   const home = resolve(userHome)
@@ -624,7 +706,8 @@ export const createHousekeepingSession = ({
   const repositorySlug = repositoryRoot.replace(/[/.]/g, '-')
   const claudeRoot = join(home, '.claude')
   const drafts = new Map<string, MemoryDraft>()
-  const selection = selectMemory(home, repositoryRoot, repositorySlug)
+  const selection = selectMemory(home, repositoryRoot, repositorySlug, configuration)
+  const reconciliation = reconciliationEvidence(selection, claudeRoot)
   const selectedMemory =
     selection.state === 'selected'
       ? physicalDescendant(claudeRoot, selection.directory)
@@ -635,12 +718,13 @@ export const createHousekeepingSession = ({
               selection.relativePath,
               selection.directory,
               selection,
+              reconciliation,
               mode === 'conform',
               drafts
             ),
             rubric: { publication }
           }
-        : absentMemoryContext(selection, publication)
+        : absentMemoryContext(selection, reconciliation, publication)
       : null
   const memoryFamilies = ['SELECT', 'RUNTIME', 'IDX', 'FM', 'LINK', 'DOC']
 
@@ -649,12 +733,12 @@ export const createHousekeepingSession = ({
       {
         families: memoryFamilies,
         subject: selection.relativePath,
-        context: () => selectedMemory ?? unavailableMemoryContext(selection, publication)
+        context: () => selectedMemory ?? unavailableMemoryContext(selection, reconciliation, publication)
       },
       {
         families: ['RUBRIC'],
         subject: repositoryRoot,
-        context: () => selectedMemory ?? unavailableMemoryContext(selection, publication)
+        context: () => selectedMemory ?? unavailableMemoryContext(selection, reconciliation, publication)
       }
     ],
     proposal: () => {
