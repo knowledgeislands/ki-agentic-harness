@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-09-25T05:34:19Z
+updated_at: 2026-09-27T18:38:14Z
 ---
 
 ## Goal
@@ -20,7 +20,7 @@ Knowledge Islands skills behave the same without their author's private instruct
 
 A review in `kit-midnight.ninja` on 25 September 2026 found that the chezmoi-managed `dot_claude/private_workflow.md`, rendered as `~/.claude/workflow.md` and imported into every Claude session, mixes genuine preferences with portable governance doctrine. Its sections include skill-owned rules about governed audits, Git working practice, cross-repository authority, writer coordination, formatting, and language conventions.
 
-The portability principle already exists. `KI-SHAPE-10` says a skill must not assume private personal configuration, and `ki-authoring` routes reusable operations to skills. The operational gap is that `ki-repo-dotfiles-chezmoi` currently classifies guidance only as repository-local, user-level, or persistent memory. It does not name reusable skill doctrine as a separate destination, and a repository-only skill audit cannot discover an undeclared dependency hidden in a user's home directory.
+The portability principle already exists: `KI-SHAPE-10` prohibits private-configuration assumptions, and `ki-authoring` routes reusable operations to skills. The chezmoi placement rule now names reusable skill doctrine and requires explicit reporting when user-scope evidence is unavailable (`9b2efa68`); the reviewed personal instruction files were reduced (`9511644`). This Triage item remains for broader semantic review across affected skills and repositories: a clean repository-only audit cannot prove independence from an unseen home file.
 
 The source review also shows why migration must be semantic rather than wholesale. A home-file rule may already exist in its governing skill, may need to be generalised there, or may conflict with the current portable standard and need retirement rather than promotion.
 
