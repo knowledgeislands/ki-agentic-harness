@@ -1418,12 +1418,17 @@ const localRuntimeOrientationFindings = (dir: string, runtimes: readonly string[
 // local .ki.toml read — offline-safe, sitting beside vendor-integrity. Every
 // name must be a runtime the linkers recognise; the support surface is never inferred.
 export const requiredRuntimeSkills = (runtimes: readonly string[]): readonly string[] => {
-  const required = new Set(['ki-tokenomics'])
+  const required = new Set(['ki-binding', 'ki-tokenomics'])
+  if (runtimes.includes('claude-code') || runtimes.includes('claude-desktop')) required.add('ki-binding-claude')
   if (runtimes.includes('claude-code')) {
     required.add('ki-housekeeping-claude')
     required.add('ki-tokenomics-claude')
   }
-  if (runtimes.includes('chatgpt-codex')) required.add('ki-tokenomics-codex')
+  if (runtimes.includes('chatgpt-codex')) {
+    required.add('ki-binding-chatgpt')
+    required.add('ki-housekeeping-chatgpt')
+    required.add('ki-tokenomics-chatgpt')
+  }
   return [...required].sort()
 }
 

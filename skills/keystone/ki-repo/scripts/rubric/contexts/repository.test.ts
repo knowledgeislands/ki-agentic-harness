@@ -407,7 +407,7 @@ describe('runtime environment coverage', () => {
         level: 'FAIL',
         code: 'RUNTIMES-2',
         message:
-          'supported runtime coverage requires missing table(s): [skills.ki-housekeeping-claude], [skills.ki-tokenomics], [skills.ki-tokenomics-claude], [skills.ki-tokenomics-codex]',
+          'supported runtime coverage requires missing table(s): [skills.ki-binding], [skills.ki-binding-chatgpt], [skills.ki-binding-claude], [skills.ki-housekeeping-chatgpt], [skills.ki-housekeeping-claude], [skills.ki-tokenomics], [skills.ki-tokenomics-chatgpt], [skills.ki-tokenomics-claude]',
         subject: expect.any(String)
       }
     ])
@@ -431,7 +431,16 @@ describe('runtime environment coverage', () => {
     })
     runRuntimeCoverageConform(session)
 
-    const expected = ['ki-housekeeping-claude', 'ki-tokenomics', 'ki-tokenomics-claude', 'ki-tokenomics-codex']
+    const expected = [
+      'ki-binding',
+      'ki-binding-chatgpt',
+      'ki-binding-claude',
+      'ki-housekeeping-chatgpt',
+      'ki-housekeeping-claude',
+      'ki-tokenomics',
+      'ki-tokenomics-chatgpt',
+      'ki-tokenomics-claude'
+    ]
     expect(inspected).toEqual([expected])
     expect(requested).toEqual([expected])
     expect(session.proposal()).toEqual({ writes: [] })
@@ -443,11 +452,19 @@ supported_runtimes = ["claude-code", "chatgpt-codex"]
 
 [skills.ki-housekeeping-claude]
 
+[skills.ki-housekeeping-chatgpt]
+
+[skills.ki-binding]
+
+[skills.ki-binding-claude]
+
+[skills.ki-binding-chatgpt]
+
 [skills.ki-tokenomics]
 
 [skills.ki-tokenomics-claude]
 
-[skills.ki-tokenomics-codex]
+[skills.ki-tokenomics-chatgpt]
 `
     const activeRoot = repository()
     const activeRequests: string[][] = []
@@ -511,11 +528,19 @@ supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
 
 [skills.ki-tokenomics]
 
+[skills.ki-binding]
+
+[skills.ki-binding-claude]
+
+[skills.ki-binding-chatgpt]
+
 [skills.ki-housekeeping-claude]
+
+[skills.ki-housekeeping-chatgpt]
 
 [skills.ki-tokenomics-claude]
 
-[skills.ki-tokenomics-codex]
+[skills.ki-tokenomics-chatgpt]
 `)
     ).toEqual([])
   })

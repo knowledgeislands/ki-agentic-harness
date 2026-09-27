@@ -81,8 +81,7 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 - prospective `skills/acquire/ki-acquire-claude/` and `skills/acquire/ki-acquire-codex/`
 - `skills/environment/ki-housekeeping-chatgpt/`
 - `skills/environment/ki-housekeeping-claude/`
-- `skills/environment/ki-housekeeping-codex/`
-- sibling `mcp-housekeeping-claude`, `mcp-housekeeping-codex`, `mcp-housekeeping-chatgpt`, and `tools-ki` repositories where their owners adopt the revised contract
+- sibling `mcp-housekeeping-claude`, the combined `mcp-housekeeping-chatgpt`, and `tools-ki` repositories where their owners adopt the revised contract
 - receiving repositories selected by the approved ChatGPT project map
 
 ## Verify

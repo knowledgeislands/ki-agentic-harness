@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 62 skills: 52 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 61 skills: 51 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -231,6 +231,16 @@ Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client t
 - **Dependencies:** None
 - **Runtime:** Portable
 
+#### `ki-binding-chatgpt`
+
+Audit or safely render KI-targeted MCP servers into Codex native `[mcp_servers]` without taking over unrelated configuration. Use for Codex MCP drift or rendering; `ki-binding` owns portable source and `ki-binding-claude` owns Claude surfaces.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit [project] | conform [project] | help | educate [project] | refresh`
+- **Dependencies:** `ki-binding`
+- **Runtime:** Runtime-bound: `chatgpt-codex`
+
 #### `ki-binding-chezmoi`
 
 Audit or conform the chezmoi rendering path from canonical KI `mcp-servers.yaml` through a renderer partial and `chezmoi apply`. Use for that portable-source-to-dotfiles pipeline; `ki-binding` owns the source contract and `ki-repo-dotfiles-chezmoi` owns general chezmoi structure.
@@ -243,7 +253,7 @@ Audit or conform the chezmoi rendering path from canonical KI `mcp-servers.yaml`
 
 #### `ki-binding-claude`
 
-Audit or safely conform Claude-native MCP configuration across Claude Code, Desktop, web conventions, and the KI Cowork plugin projection. Use when Claude MCP surfaces drift or Cowork needs rebuilding; `ki-binding` owns portable source and `ki-binding-codex` owns Codex.
+Audit or safely conform Claude-native MCP configuration across Claude Code, Desktop, web conventions, and the KI Cowork plugin projection. Use when Claude MCP surfaces drift or Cowork needs rebuilding; `ki-binding` owns portable source and `ki-binding-chatgpt` owns Codex.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -251,19 +261,9 @@ Audit or safely conform Claude-native MCP configuration across Claude Code, Desk
 - **Dependencies:** `ki-binding`
 - **Runtime:** Runtime-bound: `claude-code`
 
-#### `ki-binding-codex`
-
-Audit or safely render KI-targeted MCP servers into Codex native `[mcp_servers]` without taking over unrelated configuration. Use for Codex MCP drift or rendering; `ki-binding` owns portable source and `ki-binding-claude` owns Claude surfaces.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit [project] | conform [project] | help | educate [project] | refresh`
-- **Dependencies:** `ki-binding`
-- **Runtime:** Runtime-bound: `chatgpt-codex`
-
 #### `ki-housekeeping-chatgpt`
 
-Audit installed ChatGPT opaque local-store evidence for session identity, hashes, and read-only checkpoints. Use for local ChatGPT store inventory or change detection; `ki-acquire-chatgpt` owns readable project and conversation acquisition.
+Audit ChatGPT opaque local-store evidence and Codex local memory or repository-scoped sessions. Use for ChatGPT store change detection, Codex memory reconciliation, or reviewed Codex thread cleanup; `ki-acquire-chatgpt` owns readable ChatGPT conversation acquisition.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -281,16 +281,6 @@ Acquire, audit, and safely clean accumulated Claude Desktop, Cowork, Claude Code
 - **Dependencies:** None
 - **Runtime:** Runtime-bound: `claude-code`
 
-#### `ki-housekeeping-codex`
-
-Acquire, audit, and later clean repository-scoped Codex sessions for one physical repository. Use for Codex session import, thread review, or old-thread cleanup with explicit retention; portable recurring repository maintenance belongs to `ki-work-housekeeping`.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <artifact> <thread-id>... | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Runtime-bound: `chatgpt-codex`
-
 #### `ki-tokenomics`
 
 Govern portable agent-context budgets, standing-surface attribution, and model-purpose policy. Use runtime adapters for observed Claude or Codex evidence and `ki-skills` for description quality.
@@ -301,17 +291,7 @@ Govern portable agent-context budgets, standing-surface attribution, and model-p
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-tokenomics-claude`
-
-Audit non-secret Claude Code repository evidence—instructions, rules, settings, imports, and MCP declarations—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-codex` for Codex evidence; effective session state is outside this filesystem audit.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit | conform | educate | refresh | help`
-- **Dependencies:** `ki-tokenomics`
-- **Runtime:** Runtime-bound: `claude-code`
-
-#### `ki-tokenomics-codex`
+#### `ki-tokenomics-chatgpt`
 
 Audit non-secret Codex repository evidence—configuration, AGENTS.md, skills, and custom agents—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-claude` for Claude evidence; effective session state is outside this filesystem audit.
 
@@ -320,6 +300,16 @@ Audit non-secret Codex repository evidence—configuration, AGENTS.md, skills, a
 - **Arguments:** `audit | conform | educate | refresh | help`
 - **Dependencies:** `ki-tokenomics`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
+
+#### `ki-tokenomics-claude`
+
+Audit non-secret Claude Code repository evidence—instructions, rules, settings, imports, and MCP declarations—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-chatgpt` for Codex evidence; effective session state is outside this filesystem audit.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit | conform | educate | refresh | help`
+- **Dependencies:** `ki-tokenomics`
+- **Runtime:** Runtime-bound: `claude-code`
 
 ### Governance
 

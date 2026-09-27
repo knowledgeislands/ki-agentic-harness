@@ -237,7 +237,7 @@ describe('ki-housekeeping-claude session', () => {
 
   test('reports an implicit runtime enable without a scoped opt-in', () => {
     const home = userHome()
-    const session = createHousekeepingSession(options(home, 'audit'))
+    const session = createHousekeepingSession(options(home, 'audit', { auto_memory: 'disabled' }))
     const context = memoryContext(session)
 
     expect(session.subjects.find(({ families }) => families.includes('RUNTIME'))?.families).toContain('RUNTIME')
@@ -276,7 +276,7 @@ describe('ki-housekeeping-claude session', () => {
     settings(home, JSON.stringify({ autoMemoryEnabled: false }))
     mkdirSync(selectedMemoryDirectory(home), { recursive: true })
     writeFileSync(join(selectedMemoryDirectory(home), 'orphan.md'), memory('wrong-name'))
-    const session = createHousekeepingSession(options(home, 'conform'))
+    const session = createHousekeepingSession(options(home, 'conform', { auto_memory: 'disabled' }))
     const context = memoryContext(session)
 
     expect(context.selection.selected[0]?.status).toBe('PASS')
@@ -287,15 +287,26 @@ describe('ki-housekeeping-claude session', () => {
     expect(session.proposal()).toEqual({ writes: [] })
   })
 
-  test('warns for an empty selected memory directory under default-disabled policy', () => {
+  test('fails an unset policy and warns for an empty selected memory directory', () => {
     const home = userHome()
     settings(home, JSON.stringify({ autoMemoryEnabled: false }))
     mkdirSync(selectedMemoryDirectory(home), { recursive: true })
     const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
 
-    expect(context.selection.selected[0]?.status).toBe('PASS')
+    expect(context.selection.selected[0]?.status).toBe('VIOLATION')
+    expect(context.selection.selected[0]?.message).toContain('auto_memory is unset')
     expect(context.selection.reconciliation[0]?.status).toBe('VIOLATION')
     expect(context.selection.reconciliation[0]?.message).toContain('directory exists')
+    expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
+  })
+
+  test('fails an unset policy even when no selected memory directory exists', () => {
+    const home = userHome()
+    settings(home, JSON.stringify({ autoMemoryEnabled: false }))
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+
+    expect(context.selection.selected[0]?.status).toBe('VIOLATION')
+    expect(context.selection.reconciliation[0]?.status).toBe('PASS')
     expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
   })
 
@@ -384,7 +395,7 @@ describe('ki-housekeeping-claude session', () => {
     projectSettings(home, { autoMemoryEnabled: true }, false)
     projectSettings(home, { autoMemoryEnabled: false })
     mkdirSync(selectedMemoryDirectory(home), { recursive: true })
-    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit', { auto_memory: 'disabled' })))
 
     expect(context.selection.selected[0]?.status).toBe('PASS')
     expect(context.index.exists[0]?.status).toBe('NOT_APPLICABLE')
@@ -449,7 +460,7 @@ describe('ki-housekeeping-claude session', () => {
   test('a user-wide enable is not a scoped opt-in', () => {
     const home = userHome()
     settings(home, JSON.stringify({ autoMemoryEnabled: true }))
-    const context = memoryContext(createHousekeepingSession(options(home, 'audit')))
+    const context = memoryContext(createHousekeepingSession(options(home, 'audit', { auto_memory: 'disabled' })))
 
     expect(context.selection.selected[0]?.status).toBe('VIOLATION')
     expect(context.selection.selected[0]?.message).toContain('without a project-scoped opt-in')

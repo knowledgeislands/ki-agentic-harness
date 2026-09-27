@@ -28,6 +28,7 @@ type MemorySelection =
       message: string
       scopedOptIn: boolean
       transition: boolean
+      declared: boolean
       policy: 'transition' | 'disabled' | 'enabled'
     }
   | {
@@ -36,6 +37,7 @@ type MemorySelection =
       directory: string
       message: string
       transition: boolean
+      declared: boolean
       policy: 'transition' | 'disabled' | 'enabled'
     }
   | { state: 'unavailable'; relativePath: string; message: string }
@@ -197,6 +199,7 @@ const selectMemory = (
     }
   }
   const policy = (declaredPolicy ?? 'disabled') as 'transition' | 'disabled' | 'enabled'
+  const declared = declaredPolicy !== undefined
   const transition = policy === 'transition'
   const paths = [
     join(claudeRoot, 'settings.json'),
@@ -277,11 +280,13 @@ const selectMemory = (
       state: 'disabled',
       relativePath,
       directory,
-      message:
-        policy === 'enabled'
+      message: !declared
+        ? 'auto_memory is unset; inspect the selected memory directory and explicitly declare disabled, transition, or a human-approved enabled opt-in.'
+        : policy === 'enabled'
           ? 'Auto-memory is disabled while KI policy declares an enabled project opt-in.'
           : 'Auto-memory is disabled by the effective setting or environment override.',
       transition,
+      declared,
       policy
     }
   }
@@ -289,15 +294,18 @@ const selectMemory = (
     state: 'selected',
     relativePath,
     directory,
-    message: transition
-      ? 'Auto-memory transition is declared; enabled memory remains available for reconciliation.'
-      : policy === 'disabled' && scopedOptIn
-        ? 'Auto-memory is enabled while KI policy declares disabled.'
-        : scopedOptIn
-          ? 'Project settings opt in to auto-memory and select this bounded directory.'
-          : 'Auto-memory is enabled without a project-scoped opt-in.',
+    message: !declared
+      ? 'auto_memory is unset; inspect the selected memory directory and explicitly declare disabled, transition, or a human-approved enabled opt-in.'
+      : transition
+        ? 'Auto-memory transition is declared; enabled memory remains available for reconciliation.'
+        : policy === 'disabled' && scopedOptIn
+          ? 'Auto-memory is enabled while KI policy declares disabled.'
+          : scopedOptIn
+            ? 'Project settings opt in to auto-memory and select this bounded directory.'
+            : 'Auto-memory is enabled without a project-scoped opt-in.',
     scopedOptIn,
     transition,
+    declared,
     policy
   }
 }
@@ -363,7 +371,8 @@ const unavailableMemoryContext = (
     rubric: { publication },
     selection: {
       selected: one({
-        status: selection.state === 'disabled' && selection.policy !== 'enabled' ? 'PASS' : 'VIOLATION',
+        status:
+          selection.state === 'disabled' && selection.declared && selection.policy !== 'enabled' ? 'PASS' : 'VIOLATION',
         message: selection.message,
         subject: selection.relativePath
       }),
@@ -406,7 +415,9 @@ const absentMemoryContext = (
     selection: {
       selected: one({
         status:
-          selection.transition || (selection.policy === 'enabled' && selection.scopedOptIn) ? 'PASS' : 'VIOLATION',
+          selection.declared && (selection.transition || (selection.policy === 'enabled' && selection.scopedOptIn))
+            ? 'PASS'
+            : 'VIOLATION',
         message: selection.message,
         subject: selection.relativePath
       }),
@@ -646,7 +657,9 @@ const projectContext = (
     selection: {
       selected: one({
         status:
-          selection.transition || (selection.policy === 'enabled' && selection.scopedOptIn) ? 'PASS' : 'VIOLATION',
+          selection.declared && (selection.transition || (selection.policy === 'enabled' && selection.scopedOptIn))
+            ? 'PASS'
+            : 'VIOLATION',
         message: selection.message,
         subject: memoryRoot
       }),

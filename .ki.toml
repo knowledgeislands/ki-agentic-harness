@@ -42,7 +42,7 @@ prefix = "ki"
 
 [skills.ki-binding-claude]
 
-[skills.ki-binding-codex]
+[skills.ki-binding-chatgpt]
 
 [skills.ki-skills]
 
@@ -53,6 +53,7 @@ prefix = "ki"
 [skills.ki-subagents-codex]
 
 [skills.ki-agent-coordination-paperclip]
+organisation_code = "KIS"
 
 [skills.ki-decision-records]
 
@@ -71,9 +72,9 @@ prefix = "ki"
 [skills.ki-housekeeping-claude]
 auto_memory = "transition"
 
-[skills.ki-housekeeping-codex]
-
 [skills.ki-housekeeping-chatgpt]
+
+auto_memory = "disabled"
 
 [skills.ki-acquire-chatgpt]
 
@@ -101,7 +102,7 @@ budgets.mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
 
 [skills.ki-tokenomics-claude]
 
-[skills.ki-tokenomics-codex]
+[skills.ki-tokenomics-chatgpt]
 
 [skills.ki-model-radar]
 
@@ -281,21 +282,4 @@ knowledge = ["shared-capability-maintenance"]
 export = ["work", "knowledge"]
 
 [skills.ki-agora]
-memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
-memberships.ki-fnd = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
-memberships.ki-tools = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }
-
-[skills.ki-agora.homes.ki-mcps]
-owner = "https://github.com/knowledgeislands/ki-agentic-harness"
-purpose = "Knowledge Islands MCP repositories"
-
-[skills.ki-agora.homes.ki-mcps.members]
-"https://github.com/knowledgeislands/mcp-acquire-whatsapp" = "maintainer"
-"https://github.com/knowledgeislands/mcp-housekeeping-claude" = "maintainer"
-"https://github.com/knowledgeislands/mcp-housekeeping-codex" = "maintainer"
-"https://github.com/knowledgeislands/mcp-housekeeping-chatgpt" = "maintainer"
-"https://github.com/knowledgeislands/mcp-git-audit" = "maintainer"
-"https://github.com/knowledgeislands/mcp-gsuite" = "maintainer"
-"https://github.com/knowledgeislands/mcp-ki-kb-fs" = "maintainer"
-"https://github.com/knowledgeislands/mcp-ki-kb-notion-mirror" = "maintainer"
-"https://github.com/knowledgeislands/mcp-m365" = "maintainer"
+memberships.kis = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "governance-harness" }

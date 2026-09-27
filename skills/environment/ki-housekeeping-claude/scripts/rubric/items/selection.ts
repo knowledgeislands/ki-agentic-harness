@@ -7,7 +7,7 @@ const SELECT_1: RubricItem<HousekeepingSelectionContext> = {
   code: 'SELECT-1',
   title: 'Auto-memory state and project scope established',
   description:
-    'Disabled KI policy skips memory index and file checks. Effective Claude auto-memory must also be disabled unless transition is declared; enabled policy requires a project-scoped Claude opt-in. Malformed or unsupported settings fail closed.',
+    'An explicit KI lifecycle declaration is required; omission fails even when no memory directory exists. Disabled KI policy skips memory index and file checks. Effective Claude auto-memory must also be disabled unless transition is declared; enabled policy requires a project-scoped Claude opt-in. Malformed or unsupported settings fail closed.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

@@ -22,7 +22,7 @@ Line-by-line criteria for auditing ki-housekeeping-claude. Classifications are d
 
 Evidence that bounds the local native-memory inspection.
 
-- **SELECT-1 [M] — Auto-memory state and project scope established** — Disabled KI policy skips memory index and file checks. Effective Claude auto-memory must also be disabled unless transition is declared; enabled policy requires a project-scoped Claude opt-in. Malformed or unsupported settings fail closed. (standards-auto-memory.md)
+- **SELECT-1 [M] — Auto-memory state and project scope established** — An explicit KI lifecycle declaration is required; omission fails even when no memory directory exists. Disabled KI policy skips memory index and file checks. Effective Claude auto-memory must also be disabled unless transition is declared; enabled policy requires a project-scoped Claude opt-in. Malformed or unsupported settings fail closed. (standards-auto-memory.md)
   - _Remediation:_ diagnostic — Reconcile the KI lifecycle declaration with effective Claude settings and environment overrides, then rerun audit.
 - **SELECT-2 [M] — Selected auto-memory directory and transition reconciled** — An existing selected memory directory warns unless KI policy explicitly enables auto-memory. Transition always warns, even without a directory. Review whether to opt in or reconcile existing learning before closing transition; the audit never creates, moves, or deletes memory files. (standards-auto-memory.md)
   - _Remediation:_ diagnostic — Review whether a project-scoped opt-in is intended; otherwise reconcile existing memory through repository or KB intake and retain files until approved.
