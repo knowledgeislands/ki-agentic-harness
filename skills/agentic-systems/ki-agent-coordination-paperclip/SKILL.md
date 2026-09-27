@@ -6,8 +6,8 @@ ki-depends-on: [ki-git]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories
-  remain knowledge and work authority. Use when designing or auditing Paperclip agents, tasks, direct sessions,
-  or execution workspaces for KI; not for Paperclip API mechanics.
+  remain knowledge and work authority. Use when bootstrapping, rebootstrapping, designing, or auditing Paperclip
+  projects, agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
 argument-hint: 'audit <arrangement> | conform <arrangement> | educate <arrangement> | help | refresh'
 ---
 
@@ -70,7 +70,7 @@ Bring an explicitly scoped coordination design or local declaration into line wi
 
 ### Mode EDUCATE
 
-For an existing set of repositories, follow the [existing-estate onboarding guide](references/standards-existing-estate-onboarding.md) after the coordination standard. It stages inventory, one project per repository, task and work reconciliation, and a verified local delivery pilot without itself granting provisioning or agent resumption.
+For an initial or repeat company bootstrap, follow the [existing-estate onboarding guide](references/standards-existing-estate-onboarding.md) after the coordination standard. It owns the cross-company project styling scheme and stages inventory, one project per repository, task-link reconciliation on work items, repository health, the operating cadence, hires proposed from discovery, and a verified local delivery pilot without itself granting provisioning or agent resumption.
 
 Explain or draft the smallest arrangement that preserves the shared model. Start with one company or group, named repository identities, agent roles, task-to-work locators, workspace isolation, and evidence return. Do not provision a company, invent remote identifiers, or require every conversation to pass through Paperclip.
 
