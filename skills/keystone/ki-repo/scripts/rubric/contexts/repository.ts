@@ -29,6 +29,8 @@ import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
 const KI_REPO_TABLE = 'ki-repo'
 const KI_AUTHORING_TABLE = 'ki-authoring'
 const KI_REPO_DEFAULT = `[skills.${KI_REPO_TABLE}]
+repo_type = "project"
+primary_shape = "ki-repo-project"
 title = ""              # required — exact README.md H1
 description = ""        # required — exact GitHub and package.json description where present
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
@@ -436,7 +438,9 @@ export const createRepoSession = async (
       : undefined
   const declaredRuntimeRules = configSource === undefined ? undefined : runtimeRules(configSource || KI_REPO_DEFAULT)
   const parsedRepositoryConfiguration =
-    configSource === undefined ? undefined : parseRepositoryConfiguration(configSource || KI_REPO_DEFAULT)
+    configSource === undefined
+      ? undefined
+      : parseRepositoryConfiguration(configSource || `${KI_REPO_DEFAULT}\n[skills.ki-repo-project]\n`)
   const gitignoreBlocks =
     declaredRuntimeRules && parsedRepositoryConfiguration && !parsedRepositoryConfiguration.issue
       ? managedGitignoreBlocks(parsedRepositoryConfiguration.rootTables, declaredRuntimeRules)
@@ -581,6 +585,11 @@ export const createRepoSession = async (
       if (configSource !== undefined) {
         const blocks = [
           repoConfigurationRequested && !declaresRootTable(configSource, KI_REPO_TABLE) ? KI_REPO_DEFAULT : '',
+          repoConfigurationRequested &&
+          !declaresRootTable(configSource, KI_REPO_TABLE) &&
+          !declaresRootTable(configSource, 'ki-repo-project')
+            ? '[skills.ki-repo-project]\n'
+            : '',
           authoringConfigurationRequested && !declaresRootTable(configSource, KI_AUTHORING_TABLE)
             ? KI_AUTHORING_DEFAULT
             : ''

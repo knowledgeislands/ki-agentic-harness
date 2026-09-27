@@ -31,7 +31,7 @@ Run the owner audits in AUDIT first. This skill proposes no primary declaration,
 
 ### Mode EDUCATE
 
-Explain Project as the default primary structure, the `ki-repo-*` extensions it may compose, and the separate selection of a change-management adapter. Do not infer that a repository is a KB from one incidental directory.
+Explain the explicit Project kind, its mandatory primary shape, how `ki-repo-*` extensions may compose, and the separate selection of a change-management adapter. Neither kind nor primary shape is inferred from directory contents or skill presence.
 
 ### Mode REFRESH
 

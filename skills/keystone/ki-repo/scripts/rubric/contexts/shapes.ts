@@ -1,5 +1,6 @@
 /** Project specialisations; website implementation and hosting skills refine its core shape. */
 export const PROJECT_SHAPES = [
+  'ki-repo-project',
   'ki-repo-dotfiles-chezmoi',
   'ki-repo-harness',
   'ki-repo-homebrew-tap',
@@ -11,20 +12,21 @@ export const PROJECT_SHAPES = [
 ] as const
 
 export type ProjectShape = (typeof PROJECT_SHAPES)[number]
-export type ShapeResolution = { primaryShape?: ProjectShape; issue?: string }
+export type RepositoryShape = ProjectShape | 'ki-repo-kb'
+export type ShapeResolution = { primaryShape?: RepositoryShape; issue?: string }
 
-export function resolveProjectShape(
+export function resolveRepositoryShape(
   declared: readonly string[],
   primaryShape: unknown,
   kind: 'project' | 'kb'
 ): ShapeResolution {
-  if (kind === 'kb') return primaryShape === undefined ? {} : { issue: 'primary_shape is only valid for a Project' }
-  const candidates = PROJECT_SHAPES.filter((shape) => declared.includes(shape))
-  if (primaryShape !== undefined) {
-    if (typeof primaryShape !== 'string' || !candidates.includes(primaryShape as ProjectShape))
-      return { issue: 'primary_shape must name a declared Project shape: ' + PROJECT_SHAPES.join(', ') }
-    return { primaryShape: primaryShape as ProjectShape }
-  }
-  if (candidates.length > 1) return { issue: `multiple Project shapes require primary_shape: ${candidates.join(', ')}` }
-  return candidates[0] ? { primaryShape: candidates[0] } : {}
+  if (typeof primaryShape !== 'string' || !primaryShape)
+    return { issue: 'primary_shape is required and must name a declared repository shape' }
+  if (kind === 'kb' && primaryShape !== 'ki-repo-kb')
+    return { issue: 'a Knowledge Base requires primary_shape = "ki-repo-kb"' }
+  if (kind === 'project' && !PROJECT_SHAPES.includes(primaryShape as ProjectShape))
+    return { issue: 'a Project primary_shape must be one of: ' + PROJECT_SHAPES.join(', ') }
+  if (!declared.includes(primaryShape))
+    return { issue: `primary_shape requires a declared [skills.${primaryShape}] table` }
+  return { primaryShape: primaryShape as RepositoryShape }
 }

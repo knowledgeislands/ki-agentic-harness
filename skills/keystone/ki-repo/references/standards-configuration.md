@@ -55,6 +55,8 @@ A repository names the harnesses that provide its skills once, in `[repo]`, and 
 harnesses = ["knowledgeislands/ki-agentic-harness"]
 
 [skills.ki-repo]
+repo_type = "project"
+primary_shape = "ki-repo-project"
 repository = "https://github.com/owner/repository" # canonical GitHub home
 title = "Example repository" # exact README.md H1
 description = "One sentence describing the repository." # exact GitHub and package.json description where present
@@ -63,6 +65,8 @@ license = "MIT"          # SPDX id; default MIT when unset. "UNLICENSED" for pro
 supported_runtimes = ["claude-code", "chatgpt-codex"] # required agent-runtime support surface
 
 checks.branch-protection = true
+
+[skills.ki-repo-project]
 ```
 
 `[skills]` is a namespace, not a skill: it makes "this key is a declaration" structural rather than a guess about how the key is spelled. A repository-level setting that belongs to no skill lives in `[repo]` and is never mistaken for one.
@@ -175,15 +179,15 @@ No marker table is decorative — each is read by code. Most are read by their *
 
 ## Repository kind
 
-`[skills.ki-repo]` owns repository kind and primary shape. Omit `repo_type` for a **Project**; a **Knowledge Base** writes `repo_type = "kb"` and a duplicate-free `store_roles` array containing `notes`, optionally `sources` and `legacy`. These are role names, not paths or local-machine bindings. No other explicit `repo_type` value is valid. Projects do not declare `store_roles`.
+`[skills.ki-repo]` owns the mandatory `repo_type` and `primary_shape` fields. `repo_type` is exactly `project` or `kb`. A Project names a declared core shape in `primary_shape`, using `ki-repo-project` for a general Project. A Knowledge Base writes `primary_shape = "ki-repo-kb"` and a duplicate-free `store_roles` array containing `notes`, optionally `sources` and `legacy`. These are role names, not paths or local-machine bindings. Projects do not declare `store_roles`.
 
-A Project's core shape declarations resolve its primary shape automatically when there are zero or one candidates. With several candidates, `primary_shape` must name one declared core shape. The [Project shape rules](standards-repository.md#project-shapes) define the candidate set and adapters. `primary_shape` is invalid for a KB. Neither kind nor primary shape is accepted in another skill's table.
+Both fields must be present even when the repository has only one possible shape. The [Project shape rules](standards-repository.md#project-shapes) define supported core shapes and adapters. A missing, unsupported, undeclared, or kind-incompatible shape is invalid. Neither kind nor primary shape is accepted in another skill's table.
 
 ## Scaffolding & ownership
 
 The **schema and conformer** inside a table belong to the skill that owns it: that skill documents the allowed keys and may emit or update its canonical fragment while preserving unrelated content. `ki-repo` owns the shared file-level contract and the two required foundation markers. No operation embeds another skill's TOML template or edits that skill's table directly. This retains one shared `.ki.toml`, one table per skill, read-only access across table boundaries, and validate-down/conform-down ownership.
 
-`ki-repo`'s own foundation action establishes the opening declaration and required markers. For a missing file it writes the exact header, one canonical `[skills.ki-repo]` default block, and one bare `[skills.ki-authoring]`. For a partial file it prepends only the missing header and appends only whichever exact root marker is absent; `[skills.ki-repo.checks]` alone is not an exact `[skills.ki-repo]` marker. Apart from that bounded prepend and append, existing content remains byte-for-byte unchanged — including values, comments, ordering, and existing newline bytes — repeat runs are idempotent, and dry-run writes nothing. CONFORM applies the local repair while live GitHub changes remain separately confirmed work.
+`ki-repo`'s own foundation action establishes the opening declaration and required markers. For a missing file it writes the exact header, one canonical `[skills.ki-repo]` general-Project block, its bare `[skills.ki-repo-project]` declaration, and one bare `[skills.ki-authoring]` marker. For a partial file it prepends only the missing header and appends only whichever foundation root marker is absent, adding the bare general-Project declaration only when it creates the `ki-repo` block; `[skills.ki-repo.checks]` alone is not an exact `[skills.ki-repo]` marker. Apart from that bounded prepend and append, existing content remains byte-for-byte unchanged — including values, comments, ordering, and existing newline bytes — repeat runs are idempotent, and dry-run writes nothing. CONFORM applies the local repair while live GitHub changes remain separately confirmed work.
 
 The native configuration and activation flow runs this owner leg without embedding a TOML template or writing another skill's table. It re-reads the result before resolving the declared operations from the verified installed collection; it does not vendor an executor. No-seed/no-config activation remains an empty-set operation, so this flow does not recreate an injected baseline.
 

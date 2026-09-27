@@ -7,7 +7,7 @@ const KIND_1: RubricItem<KindRubricContext> = {
   code: 'KIND-1',
   title: 'Repository kind, primary shape, and store roles',
   description:
-    'ki-repo resolves Project or Knowledge Base, validates named KB stores, and requires an unambiguous declared Project primary shape.',
+    'ki-repo requires explicit Project or Knowledge Base kind and a compatible declared primary shape, and validates named KB stores.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

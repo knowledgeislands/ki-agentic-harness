@@ -25,7 +25,7 @@ This skill governs a repo's **configuration and Knowledge Islands compliance** â
 
 ## The standard at a glance
 
-Repository kind is **Project** by default or **Knowledge Base** when `[skills.ki-repo].repo_type` is `kb`. Shape skills compose within that model; multiple core Project shapes require an explicit `primary_shape`. The [kind and shape rules](references/standards-repository.md#repository-kind-and-knowledge-base-stores) own this resolution, while `ki-skills` owns required dependency composition.
+Every repository explicitly declares `repo_type` (`project` or `kb`) and `primary_shape` under `[skills.ki-repo]`. A Project names a declared core shape, using `ki-repo-project` for the general baseline; a Knowledge Base names `ki-repo-kb`. Neither field has an inferred default. The [kind and shape rules](references/standards-repository.md#repository-kind-and-knowledge-base-stores) own validation, while `ki-skills` owns required dependency composition.
 
 Declared specialist capabilities own, require, and retain their exact working-area README scaffolds. `ki-repo` owns only the generic working areas; each declaring owner governs its specialist scaffold and record lifecycle.
 

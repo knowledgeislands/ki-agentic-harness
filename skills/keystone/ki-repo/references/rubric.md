@@ -218,7 +218,7 @@ GitHub reachability and archive state.
 
 The repository kind, primary Project shape, and named Knowledge Base store roles.
 
-- **KIND-1 [M] — Repository kind, primary shape, and store roles** — ki-repo resolves Project or Knowledge Base, validates named KB stores, and requires an unambiguous declared Project primary shape. (standards-repository.md)
+- **KIND-1 [M] — Repository kind, primary shape, and store roles** — ki-repo requires explicit Project or Knowledge Base kind and a compatible declared primary shape, and validates named KB stores. (standards-repository.md)
   - _Remediation:_ diagnostic — Resolve Project or Knowledge Base, compatible store roles, and an unambiguous declared primary shape, then rerun the audit.
 - **KIND-2 [M] — Kind and structure compatibility** — A KB kind declares the KB structure and Streams planning model; a non-KB does not declare the KB structure. (standards-repository.md)
   - _Remediation:_ diagnostic — Align the repository kind with its declared structure and planning model, then rerun the audit.

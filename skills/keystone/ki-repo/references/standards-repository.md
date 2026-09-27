@@ -75,13 +75,14 @@ No document may represent a legacy `.ki/bin` runner as the current self-check co
 
 ## Repository kind and Knowledge Base stores
 
-`ki-repo` owns the repository kind: **Project** or **Knowledge Base**. Omit `repo_type` for a Project; declare `repo_type = "kb"` for a Knowledge Base. These are the two kinds, not three names for different layers. `repo_type` belongs only in `[skills.ki-repo]`; no other explicit value is valid. The matching `ki-repo-project` or `ki-repo-kb` declaration selects the structure standard for that kind, not a second classification.
+`ki-repo` owns the repository kind: **Project** or **Knowledge Base**. Every repository declares both `repo_type` and `primary_shape` under `[skills.ki-repo]`. A Project writes `repo_type = "project"`; a Knowledge Base writes `repo_type = "kb"` and `primary_shape = "ki-repo-kb"`. No omitted kind, inferred default, alias, or declaration under another skill table is accepted. The matching `ki-repo-project` or `ki-repo-kb` declaration selects the structure standard for that kind.
 
 A Knowledge Base declares its roles with `store_roles`. `notes` is required and names the selected repository itself; `sources` and `legacy` are optional external roles. Roles are stable identities only, never filesystem paths, URLs, or local bindings. User-local tooling chooses and validates physical bindings separately, so an external store is not silently made a KI repository.
 
 ```toml
 [skills.ki-repo]
 repo_type = "kb"
+primary_shape = "ki-repo-kb"
 store_roles = ["notes", "sources", "legacy"]
 ```
 
@@ -91,7 +92,7 @@ A KB must declare `ki-repo-kb` and must not declare `ki-work-roadmap`: its plann
 
 A Project composes the shape skills it actually needs. The core shapes are `ki-repo-dotfiles-chezmoi`, `ki-repo-harness`, `ki-repo-homebrew-tap`, `ki-repo-mcp`, `ki-repo-plugins`, `ki-repo-specifications`, `ki-repo-tools`, and `ki-repo-website`. Website content, app, and Cloudflare declarations refine the website shape; they are not additional primary-shape candidates. Knowledge Base substructure skills refine the KB kind. `ki-engineering` is a governance capability, not a repository kind or shape.
 
-Resolve a Project's primary shape from its declared core shapes: none means an unspecialised Project; one selects that shape; more than one requires `primary_shape` under `[skills.ki-repo]`, naming one of those declared core skills. The field is invalid for a KB, for an undeclared shape, or in another skill's table. It selects the repository's main responsibility without disabling any other declared skill. Directory names, display names, the order of TOML tables, and an agent's judgment never override this resolution. Selecting which responsibility is primary is a repository decision; once declared, every consumer obtains the same answer.
+Every Project explicitly selects `primary_shape`, naming one of its declared core shape skills or `ki-repo-project` for a general Project. A Knowledge Base always selects its declared `ki-repo-kb` baseline. Missing, unsupported, undeclared, or kind-incompatible values fail validation. Declaring one specialist does not imply selecting it; adding another specialist does not alter the chosen primary shape. The choice identifies the repository's main responsibility without disabling its other skills. Directory names, display names, TOML table order, and an agent's judgment never replace these fields. Setup may emit an explicit general-Project scaffold; audits and consumers must not infer missing values.
 
 Skill prerequisites are the required edges declared in `ki-depends-on`, evaluated before the skill's own rules. For example, `ki-repo-mcp` requires `ki-engineering`; a shell-only tools repository does not. Optional dependencies and independently detected coverage remain distinct. The `ki-skills` composition contract governs the dependency graph; Paperclip does not maintain another graph.
 
@@ -238,7 +239,7 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 
 A repo that is **not** a ki-repo (no `.ki.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `ki-repo`'s single cross-table read. It normally reads only table **presence**; the one value it consumes is the core website `site-root`, solely to locate the app evidence whose coverage it detects. The owning website skill validates that value. The full signal list and the marker-vs-config model live in [the `.ki.toml` standard](standards-configuration.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[skills.ki-repo.checks]`; the resulting informational note makes the intentional omission visible.
 
-The cascade's companion is a **primary-structure** rule: a repo declares at most one of `[skills.ki-repo-project]` and `[skills.ki-repo-kb]`. Project is the explicit default for non-KB repositories; KB is the mutually exclusive Knowledge Base primary. Declaring both FAILs (`repo-structure`, bedrock — not overridable). The remaining `ki-repo-*` standards are composable specialisations and do not count. Declaring neither WARNs (`structure`) so every governed repository makes its primary model visible.
+The cascade's companion is a **primary-structure** rule: a repo declares at most one of `[skills.ki-repo-project]` and `[skills.ki-repo-kb]`. Project and Knowledge Base are mutually exclusive structures matching the explicitly declared repository kind. Declaring both FAILs (`repo-structure`, bedrock — not overridable). The remaining `ki-repo-*` standards are composable specialisations and do not count. Declaring neither WARNs (`structure`) so every governed repository makes its primary model visible.
 
 Website composition has its own narrower cardinality. A repository declaring `[skills.ki-repo-website]` selects exactly one purpose-specific implementation: `[skills.ki-repo-website-content]` or `[skills.ki-repo-website-app]`. Declaring both FAILs; declaring the core without either WARNs. Hosting adapters such as `[skills.ki-repo-website-cloudflare]` are orthogonal and do not participate in this count.
 

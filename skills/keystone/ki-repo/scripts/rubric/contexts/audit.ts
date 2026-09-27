@@ -47,7 +47,7 @@ import { promisify } from 'node:util'
 import type { RubricEmitter } from '../../shared/rubric.ts'
 import { inspectConfigurationPresentation } from './configuration-presentation.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
-import { type ProjectShape, resolveProjectShape } from './shapes.ts'
+import { type RepositoryShape, resolveRepositoryShape } from './shapes.ts'
 
 const PREVIOUS_TOOLS_KI_GITIGNORE = `# Knowledge Islands managed ignores.
 # Edit the owning skill contract, not the marker-bounded blocks below.
@@ -304,6 +304,8 @@ const declaredSkills = (document: Record<string, unknown>): Record<string, unkno
 }
 const KI_SECTION = skillTable('ki-repo')
 const KI_REPO_DEFAULT = `[skills.${KI_SECTION}]
+repo_type = "project"
+primary_shape = "ki-repo-project"
 repository = ""         # required — canonical HTTPS GitHub home, for example https://github.com/owner/repository
 title = ""              # required — exact README.md H1
 description = ""        # required — exact GitHub and package.json description where present
@@ -322,7 +324,7 @@ const KI_AUTHORING_DEFAULT = `# The authoring standard (Markdown/TOML house styl
 # governed by it. Declared explicitly, not assumed; its presence is the compliance marker.
 [skills.${skillTable('ki-authoring')}]
 `
-const KI_DEFAULT = `${KI_CONFIGURATION_HEADER}${KI_REPO_DEFAULT}\n${KI_AUTHORING_DEFAULT}`
+const KI_DEFAULT = `${KI_CONFIGURATION_HEADER}${KI_REPO_DEFAULT}\n${KI_AUTHORING_DEFAULT}\n[skills.ki-repo-project]\n`
 
 // Parse the owned table with Bun's TOML parser so quoted table keys, comments,
 // and multiline strings cannot be mistaken for schema. Returns null when the
@@ -341,7 +343,7 @@ export type RepositoryConfiguration = {
   repositoryType: RepositoryType
   storeRoles: readonly string[]
   rootTables: readonly string[]
-  primaryShape?: ProjectShape
+  primaryShape?: RepositoryShape
   issue?: string
 }
 const KB_STORE_ROLES = ['notes', 'sources', 'legacy'] as const
@@ -376,8 +378,7 @@ function parseKiConfig(text: string): KiConfig | null {
 
 /**
  * Parse the portable repository-kind contract owned by ki-repo.  A repository
- * that omits `repo_type` is a Project; `repo_type = "kb"` selects a Knowledge
- * Base. Store roles are identities, not
+ * explicitly declares `repo_type` and `primary_shape`. Store roles are identities, not
  * paths: `notes` names the KB repository itself and external bindings stay in
  * user-local tooling.
  */
@@ -401,15 +402,15 @@ export function parseRepositoryConfiguration(text: string): RepositoryConfigurat
     }
   const table = value as Record<string, unknown>
   const rawType = table.repo_type
-  if (rawType !== undefined && rawType !== 'kb')
+  if (rawType !== 'project' && rawType !== 'kb')
     return {
       repositoryType: 'project',
       storeRoles: [],
       rootTables,
-      issue: 'repo_type must be "kb" when declared; omit it for a Project'
+      issue: 'repo_type is required and must be "project" or "kb"'
     }
-  const repositoryType: RepositoryType = rawType === 'kb' ? 'kb' : 'project'
-  const shape = resolveProjectShape(rootTables, table.primary_shape, repositoryType)
+  const repositoryType: RepositoryType = rawType
+  const shape = resolveRepositoryShape(rootTables, table.primary_shape, repositoryType)
   if (shape.issue) return { repositoryType, storeRoles: [], rootTables, ...shape }
   for (const [name, configuration] of Object.entries(declaredSkills(document))) {
     if (name === KI_SECTION || !configuration || typeof configuration !== 'object') continue
@@ -726,7 +727,7 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
 export const detectedCoverageSkills = (): readonly string[] => COVERAGE.map((entry) => entry.table).sort()
 // A primary structure is exclusive; all other ki-repo-* skills are composable
-// specialisations. Project is the non-KB default, while KB owns the KB primary.
+// specialisations. Each declaration must match the explicit repository kind.
 const PRIMARY_STRUCTURE_TABLES = [skillTable('ki-repo-project'), skillTable('ki-repo-kb')]
 const WEBSITE_IMPLEMENTATION_TABLES = [skillTable('ki-repo-website-content'), skillTable('ki-repo-website-app')]
 type MultilineDelimiter = '"""' | "'''"

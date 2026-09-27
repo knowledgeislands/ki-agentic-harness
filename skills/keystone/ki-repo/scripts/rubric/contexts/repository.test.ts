@@ -137,7 +137,10 @@ describe('ki-repo session', () => {
 
   test('replaces legacy runtime-skill ignores with the canonical ki-self exception', async () => {
     const root = repository()
-    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n')
+    writeFileSync(
+      join(root, '.ki.toml'),
+      '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n[skills.ki-repo-project]\n'
+    )
     mkdirSync(join(root, '.agents', 'skills', 'ki-self'), { recursive: true })
     writeFileSync(join(root, '.agents', 'skills', 'ki-self', 'SKILL.md'), '# KI Self\n')
     writeFileSync(join(root, '.gitignore'), 'node_modules/\n.claude/skills/*\n.agents/skills/\n')
@@ -159,7 +162,7 @@ describe('ki-repo session', () => {
     const root = repository()
     writeFileSync(
       join(root, '.ki.toml'),
-      '[skills.ki-repo]\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n\n[skills.ki-engineering]\n'
+      '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\nsupported_runtimes = ["claude-code", "chatgpt-codex"]\n[skills.ki-repo-project]\n[skills.ki-engineering]\n'
     )
     const previous = `# Knowledge Islands managed ignores.
 # Edit the owning skill contract, not the marker-bounded blocks below.
@@ -753,107 +756,100 @@ describe('root orientation inversion evidence', () => {
 })
 
 describe('repository kind and Knowledge Base stores', () => {
-  test('resolves Project by default and accepts only kb as an explicit kind', () => {
-    expect(parseRepositoryConfiguration('[skills.ki-repo]\n[skills.ki-repo-project]')).toMatchObject({
-      repositoryType: 'project'
+  const project =
+    '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\n[skills.ki-repo-project]\n'
+  const kb =
+    '[skills.ki-repo]\nrepo_type = "kb"\nprimary_shape = "ki-repo-kb"\nstore_roles = ["notes"]\n[skills.ki-repo-kb]\n'
+
+  test('requires an explicit supported kind with no default or aliases', () => {
+    expect(parseRepositoryConfiguration(project)).toMatchObject({
+      repositoryType: 'project',
+      primaryShape: 'ki-repo-project'
     })
-    for (const kind of ['project', 'repository', 'mcp', ''])
-      expect(parseRepositoryConfiguration(`[skills.ki-repo]\nrepo_type = ${JSON.stringify(kind)}`).issue).toContain(
-        'omit it for a Project'
-      )
-    expect(parseRepositoryConfiguration('[skills.ki-repo]\nstore_roles = []').issue).toContain('only valid')
+    expect(parseRepositoryConfiguration(project).issue).toBeUndefined()
+    expect(parseRepositoryConfiguration('[skills.ki-repo]').issue).toContain('repo_type is required')
+    for (const kind of ['repository', 'mcp', ''])
+      expect(
+        parseRepositoryConfiguration(project.replace('repo_type = "project"', `repo_type = "${kind}"`)).issue
+      ).toContain('repo_type is required')
   })
 
-  test('resolves one shape, groups website adapters, and rejects ambiguous shapes', () => {
-    const base = '[skills.ki-repo]\n'
-    expect(parseRepositoryConfiguration(base)).toEqual({
-      repositoryType: 'project',
-      storeRoles: [],
-      rootTables: ['ki-repo']
-    })
-    expect(parseRepositoryConfiguration(base + '[skills.ki-repo-mcp]\n[skills.ki-engineering]').primaryShape).toBe(
-      'ki-repo-mcp'
+  test('requires an explicit shape even when there is only one declared candidate', () => {
+    for (const config of [project, kb])
+      expect(parseRepositoryConfiguration(config.replace(/primary_shape = "[^"]+"\n/, '')).issue).toContain(
+        'primary_shape is required'
+      )
+    expect(parseRepositoryConfiguration(project.replace('"ki-repo-project"\n', '42\n')).issue).toContain(
+      'primary_shape is required'
     )
+  })
+
+  test('accepts declared specialised shapes without inferring from additional capabilities', () => {
+    const config =
+      '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-mcp"\n[skills.ki-repo-mcp]\n[skills.ki-repo-tools]\n[skills.ki-engineering]\n'
+    expect(parseRepositoryConfiguration(config).primaryShape).toBe('ki-repo-mcp')
+    expect(parseRepositoryConfiguration(config).issue).toBeUndefined()
+    const website =
+      config.replaceAll('ki-repo-mcp', 'ki-repo-website') +
+      '[skills.ki-repo-website-app]\n[skills.ki-repo-website-cloudflare]\n'
+    expect(parseRepositoryConfiguration(website).primaryShape).toBe('ki-repo-website')
+    expect(parseRepositoryConfiguration(website).issue).toBeUndefined()
+    expect(parseRepositoryConfiguration(project + '[skills.ki-repo-tools]\n').primaryShape).toBe('ki-repo-project')
+  })
+
+  test('rejects undeclared and kind-incompatible shapes', () => {
     expect(
       parseRepositoryConfiguration(
-        base + '[skills.ki-repo-website]\n[skills.ki-repo-website-app]\n[skills.ki-repo-website-cloudflare]'
-      ).primaryShape
-    ).toBe('ki-repo-website')
-    const shapes = '[skills.ki-repo-mcp]\n[skills.ki-repo-tools]'
-    expect(parseRepositoryConfiguration(base + shapes).issue).toContain('multiple Project shapes require primary_shape')
-    expect(parseRepositoryConfiguration(base + 'primary_shape = "ki-repo-mcp"\n' + shapes).primaryShape).toBe(
-      'ki-repo-mcp'
-    )
-    expect(parseRepositoryConfiguration(base + 'primary_shape = "ki-repo-website"\n' + shapes).issue).toContain(
-      'must name a declared'
-    )
-    expect(parseRepositoryConfiguration(base + 'primary_shape = 42\n' + shapes).issue).toContain('must name a declared')
+        project.replace('primary_shape = "ki-repo-project"', 'primary_shape = "ki-repo-tools"')
+      ).issue
+    ).toContain('requires a declared [skills.ki-repo-tools]')
     expect(
-      parseRepositoryConfiguration(base + '[skills.ki-repo-tools]\nprimary_shape = "ki-repo-tools"').issue
-    ).toContain('belong only in [skills.ki-repo]')
-    expect(parseRepositoryConfiguration(base + 'repo_type = "kb"\nprimary_shape = "ki-repo-tools"').issue).toContain(
-      'only valid for a Project'
-    )
+      parseRepositoryConfiguration(project.replace('primary_shape = "ki-repo-project"', 'primary_shape = "ki-repo-kb"'))
+        .issue
+    ).toContain('a Project primary_shape')
+    expect(
+      parseRepositoryConfiguration(kb.replace('primary_shape = "ki-repo-kb"', 'primary_shape = "ki-repo-project"'))
+        .issue
+    ).toContain('a Knowledge Base requires')
+    expect(
+      parseRepositoryConfiguration(
+        project.replace('primary_shape = "ki-repo-project"', 'primary_shape = "ki-repo-website-app"')
+      ).issue
+    ).toContain('a Project primary_shape')
   })
 
-  const kindFindings = async (configuration: string) => {
-    const root = repository()
-    writeFileSync(join(root, '.ki.toml'), configuration)
-    return (await collectAuditFindings([root])).findings.filter(({ code }) => code === 'KIND-1' || code === 'KIND-2')
-  }
-
-  test('rejects both primary structure declarations even when KB kind is valid', async () => {
-    const root = repository()
-    writeFileSync(
-      join(root, '.ki.toml'),
-      '[skills.ki-repo]\nrepo_type = "kb"\nstore_roles = ["notes"]\n[skills.ki-repo-kb]\n[skills.ki-repo-project]'
+  test('requires KB notes stores and prohibits Project store roles', () => {
+    expect(parseRepositoryConfiguration(kb).issue).toBeUndefined()
+    expect(parseRepositoryConfiguration(kb.replace('store_roles = ["notes"]\n', '')).issue).toContain(
+      'requires store_roles'
     )
+    expect(parseRepositoryConfiguration(kb.replace('["notes"]', '["sources"]')).issue).toContain('must include notes')
+    expect(
+      parseRepositoryConfiguration(project.replace('repo_type = "project"', 'repo_type = "project"\nstore_roles = []'))
+        .issue
+    ).toContain('only valid')
+  })
+
+  test('rejects declarations outside the owning table', () => {
+    for (const field of ['repo_type = "kb"', 'primary_shape = "ki-repo-tools"'])
+      expect(parseRepositoryConfiguration(project + `[skills.ki-decision-records]\n${field}\n`).issue).toContain(
+        'belong only in [skills.ki-repo]'
+      )
+  })
+
+  test('audits missing fields and incompatible structure without assuming a kind', async () => {
+    const root = repository()
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n[skills.ki-repo-project]\n')
+    expect((await collectAuditFindings([root])).findings).toContainEqual(
+      expect.objectContaining({ code: 'KIND-1', message: expect.stringContaining('repo_type is required') })
+    )
+    writeFileSync(join(root, '.ki.toml'), kb + '[skills.ki-repo-project]\n')
     expect((await collectAuditFindings([root])).findings).toContainEqual(
       expect.objectContaining({ code: 'STRUCT-1', level: 'FAIL' })
     )
-  })
-
-  test('accepts a KB with the canonical notes role and KB structure', async () => {
-    expect(
-      await kindFindings(`[skills.ki-repo]
-repo_type = "kb"
-store_roles = ["notes", "sources"]
-
-[skills.ki-repo-kb]
-`)
-    ).toEqual([])
-  })
-
-  test('rejects invalid roles and incompatible structures', async () => {
-    expect(
-      await kindFindings(`[skills.ki-repo]
-repo_type = "kb"
-store_roles = ["sources"]
-`)
-    ).toContainEqual(
-      expect.objectContaining({ code: 'KIND-1', message: expect.stringContaining('must include notes') })
-    )
-    expect(
-      await kindFindings(`[skills.ki-repo]
-
-[skills.ki-repo-kb]
-`)
-    ).toContainEqual(
+    writeFileSync(join(root, '.ki.toml'), project + '[skills.ki-repo-kb]\n')
+    expect((await collectAuditFindings([root])).findings).toContainEqual(
       expect.objectContaining({ code: 'KIND-2', message: expect.stringContaining('requires repo_type = "kb"') })
-    )
-  })
-
-  test('rejects a kind declaration outside its owning table', async () => {
-    expect(
-      await kindFindings(`[skills.ki-repo]
-
-[skills.ki-repo-kb]
-
-[skills.ki-decision-records]
-repo_type = "kb"
-`)
-    ).toContainEqual(
-      expect.objectContaining({ code: 'KIND-1', message: expect.stringContaining('belong only in [skills.ki-repo]') })
     )
   })
 })

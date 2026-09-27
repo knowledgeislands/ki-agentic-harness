@@ -59,14 +59,13 @@ export const createChangeManagementSession = ({
         const unknown = Object.keys(table).filter((key) => key !== 'adapter')
         const definition = isAdapter(adapter) ? ADAPTERS[adapter] : undefined
         const declaredType = tableAt(parsedSkills, 'ki-repo')?.repo_type
-        const repoType = declaredType === undefined ? 'project' : declaredType
+        const repoType = declaredType
         const violations: AuditOutcome[] = [
-          ...(declaredType !== undefined && declaredType !== 'kb'
+          ...(declaredType !== 'project' && declaredType !== 'kb'
             ? [
                 {
                   status: 'VIOLATION' as const,
-                  message:
-                    'Invalid repository kind: ki-repo requires repo_type to be omitted for a Project or set to kb.',
+                  message: 'Invalid repository kind: ki-repo requires an explicit repo_type of project or kb.',
                   subject: '.ki.toml'
                 }
               ]

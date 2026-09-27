@@ -41,21 +41,25 @@ test('requires the selected adapter to be declared and applicable', () => {
 })
 
 test('resolves valid local and remote adapters from declared tables', () => {
-  expect(audit('[skills.ki-work]\nadapter = "roadmap"\n\n[skills.ki-work-roadmap]\n')).toEqual([
-    expect.objectContaining({ status: 'PASS', message: expect.stringContaining('ki-work-roadmap') })
-  ])
+  expect(
+    audit(
+      '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\n[skills.ki-repo-project]\n[skills.ki-work]\nadapter = "roadmap"\n\n[skills.ki-work-roadmap]\n'
+    )
+  ).toEqual([expect.objectContaining({ status: 'PASS', message: expect.stringContaining('ki-work-roadmap') })])
   expect(
     audit(
       '[skills.ki-repo]\nrepo_type = "kb"\n\n[skills.ki-work]\nadapter = "kb-streams"\n\n[skills.ki-repo-kb-streams]\n'
     )
   ).toEqual([expect.objectContaining({ status: 'PASS', message: expect.stringContaining('ki-repo-kb-streams') })])
-  expect(audit('[skills.ki-work]\nadapter = "linear"\n\n[skills.ki-work-linear]\n')).toEqual([
-    expect.objectContaining({ status: 'PASS', message: expect.stringContaining('ki-work-linear') })
-  ])
+  expect(
+    audit(
+      '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\n[skills.ki-repo-project]\n[skills.ki-work]\nadapter = "linear"\n\n[skills.ki-work-linear]\n'
+    )
+  ).toEqual([expect.objectContaining({ status: 'PASS', message: expect.stringContaining('ki-work-linear') })])
 })
 
 test('does not resolve adapters against an unsupported explicit repository kind', () => {
-  for (const kind of ['repository', 'project', 'mcp'])
+  for (const kind of ['repository', '', 'mcp'])
     for (const [adapter, skill] of [
       ['roadmap', 'ki-work-roadmap'],
       ['linear', 'ki-work-linear']
