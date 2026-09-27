@@ -4,7 +4,7 @@ _On-demand procedure for ki-repo-mcp's AUDIT mode. The canonical shape, surface-
 
 Auditing all the `mcp-*` servers at once is a set audit — **bound the context** (the set-audit discipline in `ki-skills`' enforcement framework §5): walk the servers **one at a time**, running each server's full audit (the common `engineering` layer then the MCP delta below) and releasing it before the next; the servers are independent, so the order is free.
 
-1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note its `<app>` prefix and which tool groups it ships.
+1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note its `<app>` prefix and which tool groups it ships. This skill composes `ki-engineering`: the repository must declare that prerequisite, and the host audits it before the MCP delta.
 2. **Run the hosted mechanical audit.** `ki repo audit --repo <repo-path>` runs every declared skill, including `ki-engineering` for the shared toolchain and `ki-repo-mcp` for the **MCP delta**: `src/` layers, `main`/`bin`/`exports`, shared `utils/`, tool names, and—when the repo selects Vitest—MCP coverage exclusions. Capture the result; the repository is clean only when every declared skill passes.
 3. **Do the semantic pass the native audit cannot** — walk [Audit Rubric](rubric.md) and judge:
    - **Config injection**: grep for top-level `process.env` reads outside `config/index.ts`; confirm `main/`/`utils/` take config as the first arg.

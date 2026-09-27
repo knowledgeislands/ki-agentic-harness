@@ -16,6 +16,8 @@ test('Paperclip coordination keeps relationship criteria judgment-led', () => {
     'COORD-7',
     'COORD-8',
     'COORD-9',
+    'COORD-10',
+    'COORD-11',
     'ORG-1',
     'RUBRIC-1'
   ])

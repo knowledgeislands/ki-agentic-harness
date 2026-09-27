@@ -47,7 +47,7 @@ Acquire and reconcile Granola meetings through read-only MCP evidence, including
 
 #### `ki-agent-coordination-paperclip`
 
-Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories remain knowledge and work authority. Use when designing or auditing Paperclip agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
+Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories remain knowledge and work authority. Use when bootstrapping, rebootstrapping, designing, or auditing Paperclip projects, agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -565,7 +565,7 @@ Audit or scaffold KI MCP server code for source-release readiness, workspace-MCP
 - **Kind:** Governance
 - **Applicability:** Detected
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
+- **Dependencies:** `ki-engineering`
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
 
 #### `ki-repo-plugins`

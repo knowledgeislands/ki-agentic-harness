@@ -63,6 +63,16 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the automatic sweep apply its five gates and recorded cooldown, while a person-requested early close inspects close-readiness and requires explicit authority to disposition retained or uncertain work behind warnings? Are refused workspaces routed to a repository-owned decision rather than left as residue?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-10 [J] — Repository skill baseline** — Every repository role verifies declared skills and prerequisites in its actual task workspace; company assignment remains a separate check. (standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does the run verify repository instructions, declared skills, required dependencies, harness identity, and runtime discovery at its admitted revision, with coordinator skill access and managed instruction drift checked separately?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-11 [J] — Repeatable bootstrap and deterministic project styling** — Bootstrap resolves company identity from verified context and styling from repository kind and primary shape, preserving approval boundaries. (standards-agent-coordination-paperclip.md#resolving-the-current-company-and-agora, standards-existing-estate-onboarding.md#project-styling)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does bootstrap resolve an evidenced company/Agora binding, report ambiguity, map repository kind and primary shape consistently, reconcile rather than duplicate work, and distinguish source rollout from verified live adoption?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## ORG — Paperclip organisation identity
 

@@ -4,10 +4,10 @@ import type { AuditOutcome, ConformWrite, RubricContextOptions, RubricSession } 
 import type { ChangeManagementRubricContext } from '../types.ts'
 
 const TABLE = 'ki-work'
-type AdapterDefinition = { readonly skill: string; readonly repositoryKind?: 'repository' | 'kb' }
+type AdapterDefinition = { readonly skill: string; readonly repositoryKind?: 'project' | 'kb' }
 type Adapter = 'roadmap' | 'kb-streams' | 'github-issues' | 'linear'
 const ADAPTERS: Readonly<Record<Adapter, AdapterDefinition>> = {
-  roadmap: { skill: 'ki-work-roadmap', repositoryKind: 'repository' },
+  roadmap: { skill: 'ki-work-roadmap', repositoryKind: 'project' },
   'kb-streams': { skill: 'ki-repo-kb-streams', repositoryKind: 'kb' },
   'github-issues': { skill: 'ki-work-github-issues' },
   linear: { skill: 'ki-work-linear' }
@@ -58,8 +58,19 @@ export const createChangeManagementSession = ({
         const adapter = table.adapter
         const unknown = Object.keys(table).filter((key) => key !== 'adapter')
         const definition = isAdapter(adapter) ? ADAPTERS[adapter] : undefined
-        const repoType = tableAt(parsedSkills, 'ki-repo')?.repo_type ?? 'repository'
+        const declaredType = tableAt(parsedSkills, 'ki-repo')?.repo_type
+        const repoType = declaredType === undefined ? 'project' : declaredType
         const violations: AuditOutcome[] = [
+          ...(declaredType !== undefined && declaredType !== 'kb'
+            ? [
+                {
+                  status: 'VIOLATION' as const,
+                  message:
+                    'Invalid repository kind: ki-repo requires repo_type to be omitted for a Project or set to kb.',
+                  subject: '.ki.toml'
+                }
+              ]
+            : []),
           ...(unknown.length
             ? [
                 {

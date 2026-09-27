@@ -54,6 +54,19 @@ test('resolves valid local and remote adapters from declared tables', () => {
   ])
 })
 
+test('does not resolve adapters against an unsupported explicit repository kind', () => {
+  for (const kind of ['repository', 'project', 'mcp'])
+    for (const [adapter, skill] of [
+      ['roadmap', 'ki-work-roadmap'],
+      ['linear', 'ki-work-linear']
+    ])
+      expect(
+        audit(`[skills.ki-repo]\nrepo_type = "${kind}"\n[skills.ki-work]\nadapter = "${adapter}"\n[skills.${skill}]`)
+      ).toContainEqual(
+        expect.objectContaining({ status: 'VIOLATION', message: expect.stringContaining('Invalid repository kind') })
+      )
+})
+
 test('a declared work capability requires and can restore the retained batch scaffold', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-work-scaffold-'))
   temporaryDirectories.push(repository)

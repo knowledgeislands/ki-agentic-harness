@@ -7,7 +7,13 @@ import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { FILES } from '../items/files.ts'
 import { RUNTIMES } from '../items/runtimes.ts'
 import { WORK } from '../items/working-areas.ts'
-import { collectAuditFindings, detectedCoverageSkills, KI_CONFIGURATION_HEADER, localTreePaths } from './audit.ts'
+import {
+  collectAuditFindings,
+  detectedCoverageSkills,
+  KI_CONFIGURATION_HEADER,
+  localTreePaths,
+  parseRepositoryConfiguration
+} from './audit.ts'
 import { createRepoSession, type FilesRubricContext, type WorkingAreasRubricContext } from './repository.ts'
 
 const roots: string[] = []
@@ -747,11 +753,65 @@ describe('root orientation inversion evidence', () => {
 })
 
 describe('repository kind and Knowledge Base stores', () => {
+  test('resolves Project by default and accepts only kb as an explicit kind', () => {
+    expect(parseRepositoryConfiguration('[skills.ki-repo]\n[skills.ki-repo-project]')).toMatchObject({
+      repositoryType: 'project'
+    })
+    for (const kind of ['project', 'repository', 'mcp', ''])
+      expect(parseRepositoryConfiguration(`[skills.ki-repo]\nrepo_type = ${JSON.stringify(kind)}`).issue).toContain(
+        'omit it for a Project'
+      )
+    expect(parseRepositoryConfiguration('[skills.ki-repo]\nstore_roles = []').issue).toContain('only valid')
+  })
+
+  test('resolves one shape, groups website adapters, and rejects ambiguous shapes', () => {
+    const base = '[skills.ki-repo]\n'
+    expect(parseRepositoryConfiguration(base)).toEqual({
+      repositoryType: 'project',
+      storeRoles: [],
+      rootTables: ['ki-repo']
+    })
+    expect(parseRepositoryConfiguration(base + '[skills.ki-repo-mcp]\n[skills.ki-engineering]').primaryShape).toBe(
+      'ki-repo-mcp'
+    )
+    expect(
+      parseRepositoryConfiguration(
+        base + '[skills.ki-repo-website]\n[skills.ki-repo-website-app]\n[skills.ki-repo-website-cloudflare]'
+      ).primaryShape
+    ).toBe('ki-repo-website')
+    const shapes = '[skills.ki-repo-mcp]\n[skills.ki-repo-tools]'
+    expect(parseRepositoryConfiguration(base + shapes).issue).toContain('multiple Project shapes require primary_shape')
+    expect(parseRepositoryConfiguration(base + 'primary_shape = "ki-repo-mcp"\n' + shapes).primaryShape).toBe(
+      'ki-repo-mcp'
+    )
+    expect(parseRepositoryConfiguration(base + 'primary_shape = "ki-repo-website"\n' + shapes).issue).toContain(
+      'must name a declared'
+    )
+    expect(parseRepositoryConfiguration(base + 'primary_shape = 42\n' + shapes).issue).toContain('must name a declared')
+    expect(
+      parseRepositoryConfiguration(base + '[skills.ki-repo-tools]\nprimary_shape = "ki-repo-tools"').issue
+    ).toContain('belong only in [skills.ki-repo]')
+    expect(parseRepositoryConfiguration(base + 'repo_type = "kb"\nprimary_shape = "ki-repo-tools"').issue).toContain(
+      'only valid for a Project'
+    )
+  })
+
   const kindFindings = async (configuration: string) => {
     const root = repository()
     writeFileSync(join(root, '.ki.toml'), configuration)
     return (await collectAuditFindings([root])).findings.filter(({ code }) => code === 'KIND-1' || code === 'KIND-2')
   }
+
+  test('rejects both primary structure declarations even when KB kind is valid', async () => {
+    const root = repository()
+    writeFileSync(
+      join(root, '.ki.toml'),
+      '[skills.ki-repo]\nrepo_type = "kb"\nstore_roles = ["notes"]\n[skills.ki-repo-kb]\n[skills.ki-repo-project]'
+    )
+    expect((await collectAuditFindings([root])).findings).toContainEqual(
+      expect.objectContaining({ code: 'STRUCT-1', level: 'FAIL' })
+    )
+  })
 
   test('accepts a KB with the canonical notes role and KB structure', async () => {
     expect(
@@ -775,7 +835,6 @@ store_roles = ["sources"]
     )
     expect(
       await kindFindings(`[skills.ki-repo]
-repo_type = "repository"
 
 [skills.ki-repo-kb]
 `)
@@ -784,7 +843,7 @@ repo_type = "repository"
     )
   })
 
-  test('does not accept a legacy kind declaration outside ki-repo', async () => {
+  test('rejects a kind declaration outside its owning table', async () => {
     expect(
       await kindFindings(`[skills.ki-repo]
 
@@ -794,7 +853,7 @@ repo_type = "repository"
 repo_type = "kb"
 `)
     ).toContainEqual(
-      expect.objectContaining({ code: 'KIND-2', message: expect.stringContaining('requires repo_type = "kb"') })
+      expect.objectContaining({ code: 'KIND-1', message: expect.stringContaining('belong only in [skills.ki-repo]') })
     )
   })
 })

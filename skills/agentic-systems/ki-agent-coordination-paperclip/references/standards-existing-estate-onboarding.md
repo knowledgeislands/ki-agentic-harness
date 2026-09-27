@@ -4,6 +4,12 @@ This is a staged guide for an existing Knowledge Islands group, not permission t
 
 Use one repeatable company-level bootstrap task in the workspace-free Coordination project. Inventory and reconcile before creating anything; a later run preserves correctly configured projects, tasks, hires, routines, links, and retained work rather than reproducing the first run. Route every repository-specific inspection, audit, conform, and delivery through that repository's project. Keep each completed run's evidence and decisions; a clean rerun reports no changes. An existing Onboarding project may hold an unfinished first run, but archive it only after its work has an owner and its history remains reachable.
 
+## Starting a repeatable bootstrap
+
+Use the [bootstrap task brief](../assets/bootstrap-task.md) without company-code or Agora placeholders. It resolves the current company through the coordination standard's [identity procedure](standards-agent-coordination-paperclip.md#resolving-the-current-company-and-agora). A missing binding becomes a concrete decision, not an inferred name. If the coordination skill is not yet assigned or discoverable, include its verified local `SKILL.md` path in the task until company-level access is established.
+
+The first run drafts a plan only. It identifies changes and repository-project tasks without creating them or changing repositories. After approval, reuse the same bootstrap task to apply only the approved scope, verify it, and retain unresolved decisions for the next run. An approved audit and conform preview does not approve applying the preview.
+
 ## 1. Inventory before provisioning
 
 For each repository, identify its canonical repository identity, current name and aliases, designated primary checkout, destination branch and host, active work adapter, held programmes, and the owner who can approve review and integration. Read the repository's work records and Git state; do not infer the backlog from Paperclip tasks alone. Separately list existing Paperclip companies, projects, tasks, agents, execution workspaces, and their repository bindings. Check archived projects and renamed issue keys before creating anything: a name change must not make a second project or orphan historical links.
@@ -16,9 +22,15 @@ Register `ki-agent-coordination-paperclip` in every admitted repository's `.ki.t
 
 Use one Paperclip company for the intended KI group. Give every admitted repository exactly one active repository project, including repositories with no current delivery or with work on hold. Bind the project to the canonical repository identity and designated primary checkout. Reconcile an existing project rather than creating a replacement solely because its display name or issue code changed. Project colour and icon help navigation; they are not authority signals.
 
+### Repository baseline and rollout
+
+For each repository, obtain its project's evidence for `ki-repo` kind and primary-shape resolution, applicable skill declarations, prerequisites, active harness, and runtime discovery. Report invalid declarations and ambiguous primary shapes as exact proposed configuration changes; do not choose them by display name. Follow the coordination standard's [repository skill baseline](standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline), including validation in the task worktree. For an MCP repository, confirm that its required `ki-engineering` declaration and payload are present before dispatch.
+
+Reconcile company-library availability and agent assignments separately from repository activation. Inventory managed agent instructions and propose corrections where they contradict the current contract. Roll out by approving concrete repository repairs, refreshing the installed harness through its supported workflow, auditing one pilot repository and task workspace, then applying the verified pattern to the remaining repositories. Report source changes, installation, repository conformance, and live-agent adoption separately; a source commit alone does not prove fleet rollout. Preserve holds throughout.
+
 ### Project styling
 
-Use the same project-type styling across companies. Classify by the repository's primary purpose rather than its company or name; preserve an intentional exception with its reason, and propose a change when an existing style drifts. Use these Paperclip icon names and colours:
+Use the same project-type styling across companies. Resolve kind and primary shape through `ki-repo`, then apply the mapping below. Coordination has its own non-repository style; KB kind always selects Knowledge Base styling. For a Project, map its resolved primary shape as follows: `ki-repo-tools` or `ki-repo-dotfiles-chezmoi` selects Tooling; `ki-repo-harness` selects Engineering; `ki-repo-mcp` selects MCP; `ki-repo-website` selects Website; `ki-repo-plugins` or `ki-repo-homebrew-tap` selects Package; `ki-repo-specifications` selects Specification. A Project with no core shape selects Engineering when `ki-engineering` is declared, otherwise Documentation. An unresolved or invalid shape blocks restyling; never guess from a repository name or choose a precedence between competing shapes. Use these Paperclip icon names and colours:
 
 - **Coordination:** `compass`, `#0ea5e9`.
 - **Knowledge base:** `brain`, `#f59e0b`.
@@ -29,7 +41,7 @@ Use the same project-type styling across companies. Classify by the repository's
 - **Package, plugin, or distribution:** `package`, `#ec4899`.
 - **Specification or documentation:** `file-code`, `#3b82f6`.
 
-Where a repository spans categories, choose the dominant durable responsibility and record the choice. Do not create another project to represent a second category.
+Where several core shapes apply, the owning repository records its choice in `[skills.ki-repo].primary_shape`. Every rerun uses that declaration. Propose a correction when the current project style differs from the resolved mapping; do not create another project to represent a secondary shape.
 
 Keep a separate workspace-free Coordination project for company-wide sequencing, dependencies, decisions, hand-offs, and consolidated evidence. It never performs repository work, including read-only inspection or planning of one repository. Put every repository-specific task in that repository's project. A cross-repository effort may have a Coordination parent, with separately scoped tasks in each owning repository project. Do not treat project creation or assignment of a lead as permission to implement, integrate, publish, resume an agent, or lift a programme hold.
 

@@ -47,6 +47,7 @@ import { promisify } from 'node:util'
 import type { RubricEmitter } from '../../shared/rubric.ts'
 import { inspectConfigurationPresentation } from './configuration-presentation.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
+import { type ProjectShape, resolveProjectShape } from './shapes.ts'
 
 const PREVIOUS_TOOLS_KI_GITIGNORE = `# Knowledge Islands managed ignores.
 # Edit the owning skill contract, not the marker-bounded blocks below.
@@ -335,14 +336,14 @@ type KiConfig = {
   license?: string
   checks: Record<string, boolean>
 }
-export type RepositoryType = 'repository' | 'kb'
+export type RepositoryType = 'project' | 'kb'
 export type RepositoryConfiguration = {
   repositoryType: RepositoryType
   storeRoles: readonly string[]
   rootTables: readonly string[]
+  primaryShape?: ProjectShape
   issue?: string
 }
-const REPOSITORY_TYPES = new Set<RepositoryType>(['repository', 'kb'])
 const KB_STORE_ROLES = ['notes', 'sources', 'legacy'] as const
 const GITHUB_REPOSITORY =
   /^https:\/\/github\.com\/([a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)\/([a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)$/
@@ -375,8 +376,8 @@ function parseKiConfig(text: string): KiConfig | null {
 
 /**
  * Parse the portable repository-kind contract owned by ki-repo.  A repository
- * that omits `repo_type` is an ordinary repository; the only specialised
- * operating model is a Knowledge Base (`kb`).  Store roles are identities, not
+ * that omits `repo_type` is a Project; `repo_type = "kb"` selects a Knowledge
+ * Base. Store roles are identities, not
  * paths: `notes` names the KB repository itself and external bindings stay in
  * user-local tooling.
  */
@@ -385,7 +386,7 @@ export function parseRepositoryConfiguration(text: string): RepositoryConfigurat
   try {
     document = TOML.parse(text) as Record<string, unknown>
   } catch {
-    return { repositoryType: 'repository', storeRoles: [], rootTables: [], issue: 'must be valid TOML' }
+    return { repositoryType: 'project', storeRoles: [], rootTables: [], issue: 'must be valid TOML' }
   }
   const rootTables = Object.entries(declaredSkills(document))
     .filter(([, value]) => value && typeof value === 'object' && !Array.isArray(value))
@@ -393,27 +394,41 @@ export function parseRepositoryConfiguration(text: string): RepositoryConfigurat
   const value = declaredSkills(document)[KI_SECTION]
   if (!value || typeof value !== 'object' || Array.isArray(value))
     return {
-      repositoryType: 'repository',
+      repositoryType: 'project',
       storeRoles: [],
       rootTables,
       issue: `must contain a [skills.${KI_SECTION}] table`
     }
   const table = value as Record<string, unknown>
   const rawType = table.repo_type
-  if (rawType !== undefined && (typeof rawType !== 'string' || !REPOSITORY_TYPES.has(rawType as RepositoryType)))
+  if (rawType !== undefined && rawType !== 'kb')
     return {
-      repositoryType: 'repository',
+      repositoryType: 'project',
       storeRoles: [],
       rootTables,
-      issue: `repo_type must be one of: ${[...REPOSITORY_TYPES].join(', ')}`
+      issue: 'repo_type must be "kb" when declared; omit it for a Project'
     }
-  const repositoryType = (rawType ?? 'repository') as RepositoryType
+  const repositoryType: RepositoryType = rawType === 'kb' ? 'kb' : 'project'
+  const shape = resolveProjectShape(rootTables, table.primary_shape, repositoryType)
+  if (shape.issue) return { repositoryType, storeRoles: [], rootTables, ...shape }
+  for (const [name, configuration] of Object.entries(declaredSkills(document))) {
+    if (name === KI_SECTION || !configuration || typeof configuration !== 'object') continue
+    if ('repo_type' in configuration || 'primary_shape' in configuration)
+      return {
+        repositoryType,
+        storeRoles: [],
+        rootTables,
+        issue: `repo_type and primary_shape belong only in [skills.${KI_SECTION}], not [skills.${name}]`
+      }
+  }
   const rawRoles = table.store_roles
   if (rawRoles === undefined) {
     if (repositoryType === 'kb')
       return { repositoryType, storeRoles: [], rootTables, issue: 'KB repo_type requires store_roles including notes' }
-    return { repositoryType, storeRoles: [], rootTables }
+    return { repositoryType, storeRoles: [], rootTables, ...shape }
   }
+  if (repositoryType !== 'kb')
+    return { repositoryType, storeRoles: [], rootTables, issue: 'store_roles is only valid when repo_type is kb' }
   if (!Array.isArray(rawRoles) || rawRoles.some((role) => typeof role !== 'string'))
     return { repositoryType, storeRoles: [], rootTables, issue: 'store_roles must be an array of role names' }
   const storeRoles = rawRoles as string[]
@@ -427,11 +442,9 @@ export function parseRepositoryConfiguration(text: string): RepositoryConfigurat
       rootTables,
       issue: `store_roles names unknown role(s): ${unknown.join(', ')} (known: ${KB_STORE_ROLES.join(', ')})`
     }
-  if (repositoryType !== 'kb' && storeRoles.length)
-    return { repositoryType, storeRoles, rootTables, issue: 'store_roles is only valid when repo_type is kb' }
   if (repositoryType === 'kb' && !storeRoles.includes('notes'))
     return { repositoryType, storeRoles, rootTables, issue: 'KB store_roles must include notes' }
-  return { repositoryType, storeRoles, rootTables }
+  return { repositoryType, storeRoles, rootTables, ...shape }
 }
 
 type Repo = {

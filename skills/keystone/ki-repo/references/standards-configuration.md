@@ -175,7 +175,9 @@ No marker table is decorative — each is read by code. Most are read by their *
 
 ## Repository kind
 
-`[skills.ki-repo]` owns `repo_type` and, for a Knowledge Base, `store_roles`. The ordinary repository model is implicit when `repo_type` is omitted. A Knowledge Base writes `repo_type = "kb"` and a duplicate-free `store_roles` array containing `notes`; it may additionally declare `sources` and `legacy`. These are role names, not paths or local-machine bindings. No other skill table owns or accepts a repository kind declaration.
+`[skills.ki-repo]` owns repository kind and primary shape. Omit `repo_type` for a **Project**; a **Knowledge Base** writes `repo_type = "kb"` and a duplicate-free `store_roles` array containing `notes`, optionally `sources` and `legacy`. These are role names, not paths or local-machine bindings. No other explicit `repo_type` value is valid. Projects do not declare `store_roles`.
+
+A Project's core shape declarations resolve its primary shape automatically when there are zero or one candidates. With several candidates, `primary_shape` must name one declared core shape. The [Project shape rules](standards-repository.md#project-shapes) define the candidate set and adapters. `primary_shape` is invalid for a KB. Neither kind nor primary shape is accepted in another skill's table.
 
 ## Scaffolding & ownership
 

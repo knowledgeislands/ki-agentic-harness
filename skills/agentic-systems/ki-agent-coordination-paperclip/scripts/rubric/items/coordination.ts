@@ -113,6 +113,29 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       judgment: judgment(
         'Does the automatic sweep apply its five gates and recorded cooldown, while a person-requested early close inspects close-readiness and requires explicit authority to disposition retained or uncertain work behind warnings? Are refused workspaces routed to a repository-owned decision rather than left as residue?'
       )
+    },
+    {
+      code: 'COORD-10',
+      title: 'Repository skill baseline',
+      description:
+        'Every repository role verifies declared skills and prerequisites in its actual task workspace; company assignment remains a separate check.',
+      sources: [`${STANDARD}#repository-skills-are-the-execution-baseline`],
+      judgment: judgment(
+        'Does the run verify repository instructions, declared skills, required dependencies, harness identity, and runtime discovery at its admitted revision, with coordinator skill access and managed instruction drift checked separately?'
+      )
+    },
+    {
+      code: 'COORD-11',
+      title: 'Repeatable bootstrap and deterministic project styling',
+      description:
+        'Bootstrap resolves company identity from verified context and styling from repository kind and primary shape, preserving approval boundaries.',
+      sources: [
+        `${STANDARD}#resolving-the-current-company-and-agora`,
+        'standards-existing-estate-onboarding.md#project-styling'
+      ],
+      judgment: judgment(
+        'Does bootstrap resolve an evidenced company/Agora binding, report ambiguity, map repository kind and primary shape consistently, reconcile rather than duplicate work, and distinguish source rollout from verified live adoption?'
+      )
     }
   ]
 }

@@ -5,15 +5,16 @@ const SOURCE = 'standards-repository.md'
 
 const KIND_1: RubricItem<KindRubricContext> = {
   code: 'KIND-1',
-  title: 'Repository kind and store roles',
+  title: 'Repository kind, primary shape, and store roles',
   description:
-    'ki-repo owns the optional KB discriminator and validates its closed named-store vocabulary without accepting legacy locations.',
+    'ki-repo resolves Project or Knowledge Base, validates named KB stores, and requires an unambiguous declared Project primary shape.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Declare a supported repository kind and compatible store roles, then rerun the audit.'
+      guidance:
+        'Resolve Project or Knowledge Base, compatible store roles, and an unambiguous declared primary shape, then rerun the audit.'
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.kind1, 'FAIL') }
   }
@@ -38,7 +39,7 @@ const KIND_2: RubricItem<KindRubricContext> = {
 export const KIND: RubricFamily<RepoRubricContext, KindRubricContext> = {
   code: 'KIND',
   title: 'Repository kind',
-  description: 'The selected repository operating model and named Knowledge Base store roles.',
+  description: 'The repository kind, primary Project shape, and named Knowledge Base store roles.',
   standard: SOURCE,
   selectContext: (context) => context.kind,
   items: [KIND_1, KIND_2]

@@ -25,6 +25,8 @@ This skill governs a repo's **configuration and Knowledge Islands compliance** â
 
 ## The standard at a glance
 
+Repository kind is **Project** by default or **Knowledge Base** when `[skills.ki-repo].repo_type` is `kb`. Shape skills compose within that model; multiple core Project shapes require an explicit `primary_shape`. The [kind and shape rules](references/standards-repository.md#repository-kind-and-knowledge-base-stores) own this resolution, while `ki-skills` owns required dependency composition.
+
 Declared specialist capabilities own, require, and retain their exact working-area README scaffolds. `ki-repo` owns only the generic working areas; each declaring owner governs its specialist scaffold and record lifecycle.
 
 1. **Files** â€” every repo carries `README.md`, `LICENSE`, `.gitignore`, and `.ki.toml` (its declared config, with the exact opening conformance header and source-aware structure diagnostics for substantial files). `ki-repo` composes `.gitignore` from declared skill blocks, reserves `reports/` for disposable generated reports, and retains repository-specific rules under a terminal unmanaged header for later reconciliation. A local target reads its checkout first; an `--org` or other filesystem-free run reads the GitHub default branch. (`.editorconfig` is owned by `ki-authoring`, not this skill.)

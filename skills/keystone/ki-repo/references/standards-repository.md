@@ -75,7 +75,7 @@ No document may represent a legacy `.ki/bin` runner as the current self-check co
 
 ## Repository kind and Knowledge Base stores
 
-`ki-repo` owns the portable operating-model declaration. An omitted `repo_type` is an ordinary `repository`; `repo_type = "kb"` is the only specialised kind. The older `repo_type` declarations under other skill tables are invalid and must be migrated here. There is no alias or second location.
+`ki-repo` owns the repository kind: **Project** or **Knowledge Base**. Omit `repo_type` for a Project; declare `repo_type = "kb"` for a Knowledge Base. These are the two kinds, not three names for different layers. `repo_type` belongs only in `[skills.ki-repo]`; no other explicit value is valid. The matching `ki-repo-project` or `ki-repo-kb` declaration selects the structure standard for that kind, not a second classification.
 
 A Knowledge Base declares its roles with `store_roles`. `notes` is required and names the selected repository itself; `sources` and `legacy` are optional external roles. Roles are stable identities only, never filesystem paths, URLs, or local bindings. User-local tooling chooses and validates physical bindings separately, so an external store is not silently made a KI repository.
 
@@ -86,6 +86,14 @@ store_roles = ["notes", "sources", "legacy"]
 ```
 
 A KB must declare `ki-repo-kb` and must not declare `ki-work-roadmap`: its planning model is `ki-repo-kb-streams`. Conversely, the `ki-repo-kb` structure declaration requires `repo_type = "kb"`. This validates operating model separately from the structural skill that implements its layout.
+
+### Project shapes
+
+A Project composes the shape skills it actually needs. The core shapes are `ki-repo-dotfiles-chezmoi`, `ki-repo-harness`, `ki-repo-homebrew-tap`, `ki-repo-mcp`, `ki-repo-plugins`, `ki-repo-specifications`, `ki-repo-tools`, and `ki-repo-website`. Website content, app, and Cloudflare declarations refine the website shape; they are not additional primary-shape candidates. Knowledge Base substructure skills refine the KB kind. `ki-engineering` is a governance capability, not a repository kind or shape.
+
+Resolve a Project's primary shape from its declared core shapes: none means an unspecialised Project; one selects that shape; more than one requires `primary_shape` under `[skills.ki-repo]`, naming one of those declared core skills. The field is invalid for a KB, for an undeclared shape, or in another skill's table. It selects the repository's main responsibility without disabling any other declared skill. Directory names, display names, the order of TOML tables, and an agent's judgment never override this resolution. Selecting which responsibility is primary is a repository decision; once declared, every consumer obtains the same answer.
+
+Skill prerequisites are the required edges declared in `ki-depends-on`, evaluated before the skill's own rules. For example, `ki-repo-mcp` requires `ki-engineering`; a shell-only tools repository does not. Optional dependencies and independently detected coverage remain distinct. The `ki-skills` composition contract governs the dependency graph; Paperclip does not maintain another graph.
 
 ## Repository write authority
 

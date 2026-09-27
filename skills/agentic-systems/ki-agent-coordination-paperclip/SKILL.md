@@ -54,6 +54,8 @@ Before moving delivery to a remote worker, prove the local delivery cycle, revie
 
 ## Operating modes
 
+Repository tasks use the declared repository skills and their required dependencies as their baseline in the actual task workspace. Company-library assignment, runtime discovery, and repository declaration are separate checks; follow the standard's [execution baseline](references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline). Use the reusable [bootstrap task brief](assets/bootstrap-task.md) for a plan that resolves the current company and Agora without caller-supplied placeholders.
+
 Before reviewing a candidate for integration, reconcile it with current destination `main`. Refresh a diverged delivery branch in its isolated worktree, normally by merging `main`; rebase only with explicit history-rewrite authority. Verify and independently review the refreshed result. This delivery gate does not authorise bulk branch updates, replay superseded work or lift a programme hold; apply the standard's [branch refresh boundary](references/standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch).
 
 This governance skill carries **AUDIT · CONFORM · EDUCATE · REFRESH**. `help` / `-h` / `?` explains the skill, invocation, modes, and off-ramps, then stops. With no clear mode, provide the same explanation and only in an interactive session ask which mode and arrangement to use.
