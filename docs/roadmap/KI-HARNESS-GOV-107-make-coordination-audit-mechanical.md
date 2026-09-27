@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-27T05:06:00Z
+updated_at: 2026-09-27T12:46:13Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -45,6 +45,16 @@ Out of scope, deliberately:
 - which repositories declare the skill, which is [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md);
 - removing or weakening the existing judgment criteria;
 - the seven coordination rules themselves and any decision record that would fix them.
+
+## Task associations
+
+Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1:3100`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`. Each UUID is the stable task identity.
+
+- [KIS-19](http://127.0.0.1:3100/KIS/issues/KIS-19), `8a4fac55-7b74-4ad7-8934-37f2437873ad`: discovery and evaluation; its proposal D1 is the source cited below as KNO-19.
+- [KIS-5 plan](http://127.0.0.1:3100/KIS/issues/KIS-5#document-plan), `b76a4ec9-be48-4a3c-8568-7885b5e6789b`: related task-link contract and parser work, not implementation of this item's mechanical audit. The current proposal uses per-item references and ordinary task prose backlinks, not a mandatory structured Paperclip field or shared mapping file. The held Techné record below remains historical provenance, not resumed authority.
+- [KIS-70](http://127.0.0.1:3100/KIS/issues/KIS-70), `1040aaa6-dc73-4b11-9b6f-b2f0ad0d2a42`: related current-base evaluation; its plan distinguishes this item from governing GOV-115.
+
+This is an association-only recovery check. No active delivery task was verified, but this is not a complete task/worktree census or an availability grant. Neither task-link backfill nor a paused agent releases retained work. Reconcile ownership and the changed evidence assumptions before selecting or shaping this Triage item; its horizon, lifecycle and audit boundary remain unchanged. Keep references here until KIS-5's provider-neutral map is implemented.
 
 ## Discussion
 

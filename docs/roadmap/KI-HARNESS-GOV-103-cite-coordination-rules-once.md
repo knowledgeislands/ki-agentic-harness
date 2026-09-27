@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-09-26T18:20:00Z
+updated_at: 2026-09-27T12:46:13Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -47,6 +47,17 @@ In scope: confirming the citation for each rule against the standard as written 
 Out of scope, and this is the load-bearing exclusion: **editing the agent configurations themselves.** They are Paperclip agent instruction files in a Paperclip instance directory, outside every repository in the archipelago. A roadmap item here cannot own an edit to a file no repository contains. This item makes the citation exist; removing each copy is a coordination-plane action taken against it and belongs to a task, not to this record.
 
 Also out of scope: authoring a new decision record for the seven rules, which the citation table above shows is not needed; deciding what a role record physically is, which is `KI-HARNESS-GOV-102`; declaring `[skills.ki-agent-coordination-paperclip]` in any `.ki.toml`, which is separate activation work; and the four role records delivered under the accepted coordination-lane delivery, which correctly carry no rule text.
+
+## Task associations
+
+Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1:3100`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`. Each UUID is the stable task identity; KNO keys below remain historical citations, not separate tasks.
+
+- [KIS-21](http://127.0.0.1:3100/KIS/issues/KIS-21), `3dbfe169-6f44-4706-941c-5517253a5aef`: evaluation and capture of this record.
+- [KIS-24](http://127.0.0.1:3100/KIS/issues/KIS-24), `abdf6827-ee50-474f-91e7-7421da53c64a`: related duplicate-capture reconciliation.
+- [KIS-1](http://127.0.0.1:3100/KIS/issues/KIS-1), `9015b82f-c285-4c1c-a257-c748cd5e9ea3`: related rule-origin evidence, historically cited as KNO-1; not this item's delivery task.
+- [KIS-5 plan](http://127.0.0.1:3100/KIS/issues/KIS-5#document-plan), `b76a4ec9-be48-4a3c-8568-7885b5e6789b`: related per-item task-link work. Its replacement proposal separates harness contract ownership from tools-ki implementation; it does not resume or transfer the held Techné record cited below.
+
+This is an association-only recovery check, not a complete task/worktree census or an availability grant. No active implementation claim was verified, but none was released either. Before direct or coordinated implementation, reconcile retained work and ownership and obtain the normal selection/readiness authority. Keep these references on this item; migrate them to the provider-neutral map only after KIS-5's contract and parser are available.
 
 ## Discussion
 
