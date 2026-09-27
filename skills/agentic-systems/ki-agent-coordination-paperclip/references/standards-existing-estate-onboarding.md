@@ -47,6 +47,8 @@ Keep a separate workspace-free Coordination project for company-wide sequencing,
 
 Map agent roles to responsibilities after project ownership is clear. A role may coordinate on one task and perform separately authorised repository work on another; role, run, workspace, and worker remain different identities. Keep agents paused while reconciling an inherited queue unless a bounded run has its own current authority.
 
+After approved hires, use the [post-hire configuration brief](../assets/post-hire-task.md) to reconcile agent settings through an authorised external operator. Keep configuration read-back, actual workspace skill verification and permission to start work as separate gates.
+
 ## 3. Reconcile work and task identities
 
 For each existing task, decide whether it governs one KI work item, merely relates to several items, or has no repository delivery role. Put verified provider-qualified associations in each owning item's [`task_links`](../../../change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links), written through that repository's designated primary checkout. A delivery task has at most one governing item; one item may have several tasks, and related links may cross items. Near the top of a Paperclip delivery task's ordinary description, name the canonical repository, governing item, admitted revision, and bounded purpose. Do not invent a custom Paperclip field or shared writable lookup table.

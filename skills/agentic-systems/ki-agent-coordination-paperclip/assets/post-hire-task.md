@@ -1,0 +1,18 @@
+# Reconcile post-hire agent configuration
+
+Use this brief from an external agent with authorised access to the local Paperclip instance. Reconcile the company identified in the caller's context; if several companies are named, verify each separately. Ask before writing when the target company or intended settings are ambiguous. Read the canonical `ki-agent-coordination-paperclip` skill, Paperclip's installed operational skill, and the host environment repository's Paperclip operations guide and repair inventory. Resolve current configuration fields from the installed schema rather than assuming a version or database layout.
+
+Inspect service health, current agents, approved company–Agora bindings, configuration revisions, skill access and recent run outcomes. Separate a service outage, queued or running work, a deliberate pause, a permission failure and invalid configuration. If Paperclip is unavailable, report the blocker; do not restart it or edit its database merely because an API request failed.
+
+Apply only these bounded, evidenced configuration repairs:
+
+- Reconcile supported on-demand wake settings so eligible agents can respond to explicit prompts and authorised task dispatch. Preserve deliberate wake restrictions, agent pause states, programme holds and approved schedules; do not enable unsolicited periodic work.
+- Reconcile required `KI_*` environment properties against the installed KI runtime contract, verified company–Agora binding and each agent's role. Preserve unrelated environment entries and secret references. Do not copy another company's values, invent variable names, or pin repository workers to a primary checkout or one repository when their task workspace should supply that context.
+- Verify coordination-skill access for coordinating agents separately from repository skill discovery for workers. Use the supported assignment mechanism or a verified canonical source reference; retain existing skill assignments. Repository-task workspace verification remains a separate evidence gate, not something a saved company setting proves.
+- Reconcile managed coordinator instructions with the approved company UUID, organisation code, Agora, home repository and evidence link. Correct contradictory project-boundary instructions without removing valid repository-granted review or integration authority: Coordination only coordinates; all repository work belongs in its owning project.
+
+Preserve models, budgets, permissions, credentials, concurrency settings and unrelated instructions. Do not copy secret values into reports. Re-read each configuration immediately before writing, patch only the intended fields while preserving nested siblings, and stop on concurrent changes rather than overwriting another actor's update. Prefer supported Paperclip API or configuration operations. If a repair genuinely requires direct database access, report the exact proposed change, backup and rollback procedure, and obtain explicit approval before writing.
+
+Re-read saved settings and compare them with the intended result. Repeat the reconciliation read-only; a clean second pass proposes no further change. Report each agent's changed fields, unchanged intentional restrictions, unresolved decisions and runtime verification still needed. Configuration verification is not proof of a successful agent run.
+
+Do not invoke heartbeats, resume agents or held work, cancel runs, create tasks, change repositories, restart services or perform delivery as part of this configuration pass. A runtime smoke test requires separately authorised scope and must not release the backlog. Keep version-specific repairs in the host environment's repair inventory, not in this reusable brief.
