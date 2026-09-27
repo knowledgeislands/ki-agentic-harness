@@ -46,6 +46,10 @@ The implementation task may finish at a reviewed branch only when an explicitly 
 
 Baseline movement requires revalidation, not automatic cancellation of approval. Preserve an existing approval when its scope, authority, review evidence and risk still apply; record the new baseline and verification. A changed diff invalidates review of the previous diff. Scope expansion, conflicting ownership, identifier collisions or a materially changed risk require a concrete escalation stating what changed and which decision remains.
 
+Execution location and delivery destination are separate. In laptop-local operation, the designated primary checkout on the human's laptop is the live destination: delivery updates both its local `main` and the working files the human uses. Record the destination host and checkout as well as the repository and branch, following `ki-git`.
+
+A remote worker may have its own clone, worktrees and `main`. Its local merge does not establish delivery to the human's designated checkout, and publishing to a Git remote does not establish that either. A future remote arrangement must explicitly name its destination and evidence-return path; the current local workflow does not preselect that design or grant remote publication authority.
+
 ## Recovery and visibility
 
 When branch output has accumulated, bound new implementation and inventory existing work before expanding concurrency. Classify each result as awaiting review, awaiting integration, integrated, superseded or explicitly abandoned, with its repository, task, branch or commit, destination and next owner. Compare both commit reachability and patch equivalence; neither an old task state nor a missing workspace proves that work is disposable. Inventory evidence belongs with the existing work, not a parallel backlog.

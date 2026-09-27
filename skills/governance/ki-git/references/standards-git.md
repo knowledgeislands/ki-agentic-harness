@@ -71,6 +71,8 @@ Do not invent a branch, pull-request, or worktree requirement merely because sev
 
 ### Local integration write boundary
 
+Identify an integration destination by repository, host, designated checkout and branch, not by the branch name alone. For laptop-local operation, successful delivery places the reviewed result in the human's primary checkout on local `main` and in its working files. Verify both; advancing a ref in another clone or publishing a remote ref is a different action. A remote worker's own `main` remains that worker's local branch unless the repository explicitly designates it as the delivery destination.
+
 Local integration is a bounded exception to implementation-worktree isolation. The repository's grant identifies its integration owner and destination; it may authorise that owner to update the primary checkout so the human can see the delivered files. The grant does not permit development in that checkout, switching its branch, or overwriting another actor's work.
 
 Before integration, establish exclusive ownership of the repository's short Git write window, re-read the destination and reviewed source commits, and inspect the primary checkout's branch, index and working state. Stop if another actor owns the window, the index contains unrelated staged work, a Git operation is in progress, or tracked or untracked changes would be overwritten. A per-agent concurrency limit is not a repository lock. Do not use a ref-only update to move a branch that is checked out elsewhere.

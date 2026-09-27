@@ -23,6 +23,8 @@ The `ki-skills` skill and its cited decisions own the dependency, optional-augme
 
 ## Paperclip local delivery
 
+Current operation runs on the principal's laptop. The delivery destination is this repository's designated primary checkout on local `main`, including the working files the principal sees and uses. A task branch, another clone's `main`, or `origin/main` is not that destination. Completion proves the reviewed result is present in local `main` and its primary working files, while preserving unrelated user changes; pushing remains a separate action.
+
 Use `ki-agent-coordination-paperclip` for task-to-repository delivery and recovery. This repository selects `worktrees-with-local-integration`: Wright implements in isolation, Steward reviews the exact commit, and Convenor owns local integration and the visible result.
 
 The Knowledge Islands Convenor (`4b312799-a51c-43c4-876e-161b1f6ce4c2`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`) may merge approved, verified harness deliveries into this repository's local `main`. Eligible work is an approved Ready item or explicitly scoped direct user instruction. The grant covers local non-force integration only, using a fast-forward or `--no-ff` merge; it grants no push, release, deployment, KI acceptance or deletion of retained work.
