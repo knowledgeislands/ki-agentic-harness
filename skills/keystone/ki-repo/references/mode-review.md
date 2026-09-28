@@ -332,6 +332,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] A test exists for each documented failure mode, not only the happy path.
 - [ ] Fixtures contain no real personal data, credentials, or customer identifiers.
 - [ ] Tests do not depend on execution order or on each other's state.
+- [ ] The harness guarantees isolation from the machine that runs it, rather than relying on each invocation to restate its own sandbox. A runtime default that bypasses the usual containment, such as an absolute interpreter or service-manager path that never resolves through `PATH`, needs an explicit override the harness sets once.
 
 ### Scripts, binaries, and operations
 
