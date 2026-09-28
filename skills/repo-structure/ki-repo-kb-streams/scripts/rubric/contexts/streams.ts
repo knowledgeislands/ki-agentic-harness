@@ -9,8 +9,8 @@ import type {
   ViolationLevel
 } from '../../shared/rubric.ts'
 
-const OPERATIONAL_AREAS = ['Roadmap', 'Housekeeping', 'Trades'] as const
-const REQUIRED_AREAS = ['Roadmap', 'Housekeeping'] as const
+const OPERATIONAL_AREAS = ['Roadmap', 'Trades'] as const
+const REQUIRED_AREAS = ['Roadmap'] as const
 const EXECUTION_FAMILIES = ['STREAM', 'GATE', 'CONFIG'] as const
 const LEGACY_FOLDERS = [
   'Active',
@@ -202,10 +202,17 @@ export const createStreamsSession = ({
         ? 'Triage is roadmap metadata; Streams/Triage/ must not exist.'
         : missingAreas.length || unexpectedAreas.length
           ? `Streams operational areas need review: missing ${missingAreas.join(', ') || 'none'}; unexpected ${unexpectedAreas.join(', ') || 'none'}.`
-          : 'Streams contains the configured Roadmap and Housekeeping operational areas.',
+          : 'Streams contains the configured Roadmap operational area.',
       subject: configuration.streams
     }
   ]
+  if (present.includes('Housekeeping'))
+    operationalAreas.push({
+      level: 'WARN',
+      message:
+        'Recurring obligations belong in the configured Activity collection. Reconcile existing Streams/Housekeeping definitions with owner approval; do not automatically move, delete or duplicate them.',
+      subject: join(configuration.streams, 'Housekeeping')
+    })
   const legacyFolders: StreamsEvidence[] = [
     {
       level: legacy.length ? 'WARN' : 'PASS',

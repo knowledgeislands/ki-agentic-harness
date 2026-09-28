@@ -24,7 +24,7 @@ When a `ki-recap` precedes this cycle, require its bounded handoff to be complet
 1. Resolve the current git repository physically and read `.ki.toml`.
 2. Run `ki repo audit --skill ki-work --repo <git-root>` and stop on any failure. Read its selected adapter literal and require the matching declared owner table. This process does not reimplement the base selector's semantic validation and never infers an adapter from repository shape.
 3. For `roadmap`, run `ki repo audit --skill ki-work-roadmap --repo <git-root>` and stop on any FAIL or WARN. Read `ROADMAP.md`, every canonical item directly below `docs/roadmap/`, and active `docs/housekeeping/` templates; derive lifecycle status and dependencies from frontmatter.
-4. For `kb-streams`, run `ki repo audit --skill ki-repo-kb-streams --repo <git-root>` and stop on any FAIL or WARN. Read the flat records and `_ISSUES.md` ledger in `Streams/Roadmap/`, plus active `Streams/Housekeeping/` templates, fresh.
+4. For `kb-streams`, run `ki repo audit --skill ki-repo-kb-streams --repo <git-root>` and stop on any FAIL or WARN. Read the flat records and `_ISSUES.md` ledger in `Streams/Roadmap/`, plus active recurring Activity notes in the configured `ki-repo-kb-activities` collection, fresh.
 5. For `github-issues` or `linear`, stop before reading or writing records: remote process execution is not implemented. Do not fall back to local paths or a compatibility representation.
 6. When the repository declares `ki-trades`, run its audit and inspect validated inbound records after the clean governing-skill audits. Its `README.md` is orientation, not a record.
 
@@ -79,7 +79,7 @@ Before creating a record, search the selected adapter for an existing owner. Do 
 
 ### Knowledge Bases
 
-Use the same horizon vocabulary on flat `Streams/Roadmap/` records. `Streams/Housekeeping` is a template home, not a delivery destination; due runs become linked roadmap records at the template's declared horizon.
+Use the same horizon vocabulary on flat `Streams/Roadmap/` records. A recurring Activity is the standing definition, not a delivery destination; due runs become linked roadmap records at the profile's declared horizon.
 
 ### Roadmap batchability screen
 
@@ -150,13 +150,15 @@ That handoff does not permit `ki-next` to infer batch, selection, or implementat
 
 ## 7. Spawn due housekeeping work
 
+Use the repository-native definition governed by `ki-work-housekeeping`: Project template fields are flat and hyphenated; KB Activity schedule fields are snake_case inside `housekeeping`, with `id`, `title`, and `status` at the Activity's top level. Ignore ordinary Activities without a profile and never evaluate retired Activities. Run the focused housekeeping audit before spawning; stop on invalid profiles, ambiguous identities, retained duplicate definitions, or unsafe placement. Every caller, including an external routine, uses this same admission and serialised active-run reservation rather than creating an independent run. KB profile writes also require the base's canonical-change authority.
+
 A due-run identity is provisional until publication. Re-read the applicable issue ledger immediately before spawning and reallocate if it advanced. Commit the ledger advance on its own first, then write the spawned record and the template `active-run` linkage as one coherent change.
 
 After grounding and before ordinary candidate selection, evaluate each active housekeeping template under the adapter's template horizon. Use `ki-work-housekeeping`'s read-only `evaluateHousekeepingSchedule({ repository, schedule, today })` capability with freshly read template fields and an explicit UTC date. Its owner standard defines calendar-or-commit eligibility, first-parent evidence, missing-history diagnostics, initial runs, and grace. Do not reimplement that calculation or treat unknown volume as zero; preserve manual confirmation, paused, and active-run guards.
 
 For each due template, present the exact proposed work record, destination (normally Now or Next), template link, and policy effect. Spawn automatically only when the template expressly permits automatic spawning; otherwise require confirmation. The spawned record enters as `draft` and follows the ordinary shared lifecycle. In the same coherent change, set only `active-run` to the linked record identity; never change `last-run` or `last-run-ref` at spawn. `ki-accept` records successful completion by recording the actual successful completion date in `last-run`, the evidenced reviewed revision in `last-run-ref`, and clearing `active-run` only after the linked run is accepted as `done`.
 
-Never implement a template directly, spawn a duplicate active run, or leave a due run in `Streams/Housekeeping`.
+Never implement a definition directly, spawn a duplicate active run, or leave a due work record in the Activity collection.
 
 ### Timestamp ownership
 

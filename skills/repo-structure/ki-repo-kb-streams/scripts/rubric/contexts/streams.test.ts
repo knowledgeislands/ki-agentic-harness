@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
@@ -30,7 +30,6 @@ const options = (root: string, mode: 'audit' | 'conform'): RubricContextOptions 
 const targetFixture = (): string => {
   const root = repository()
   mkdirSync(join(root, 'Streams', 'Roadmap'), { recursive: true })
-  mkdirSync(join(root, 'Streams', 'Housekeeping'), { recursive: true })
   writeFileSync(join(root, 'Streams', 'Roadmap', '_ISSUES.md'), '# Streams issue ledger\n')
   writeFileSync(
     join(root, '.ki.toml'),
@@ -53,7 +52,7 @@ describe('ki-repo-kb-streams session', () => {
     for (const subject of session.subjects) expect(subject.families.every((family) => declared.has(family))).toBe(true)
   })
 
-  test('keeps conform read-only because record shape belongs to the roadmap and housekeeping adapters', () => {
+  test('keeps conform read-only because record shape belongs to the roadmap adapter and Activities owner', () => {
     const session = createStreamsSession(options(targetFixture(), 'conform'))
 
     expect(session.proposal()).toEqual({ writes: [] })
@@ -70,20 +69,47 @@ describe('ki-repo-kb-streams session', () => {
     expect(session.proposal()).toEqual({ writes: [] })
   })
 
-  test('recognises the initial operational areas and no legacy folders', () => {
+  test('recognises Roadmap without requiring a separate Housekeeping area', () => {
     const session = createStreamsSession(options(targetFixture(), 'audit'))
     const context = STREAM.selectContext(rootContext(session))
 
     expect(context.operationalAreas).toEqual([
       {
         level: 'PASS',
-        message: 'Streams contains the configured Roadmap and Housekeeping operational areas.',
+        message: 'Streams contains the configured Roadmap operational area.',
         subject: 'Streams'
       }
     ])
     expect(context.legacyFolders).toEqual([
       { level: 'PASS', message: 'No legacy Streams state or Focus folders are present.', subject: 'Streams' }
     ])
+  })
+
+  test('flags retained Housekeeping definitions for deliberate reconciliation without moving or deleting them', () => {
+    const root = targetFixture()
+    const directory = join(root, 'Streams', 'Housekeeping')
+    mkdirSync(directory, { recursive: true })
+    const path = join(directory, 'Weekly Review Housekeeping.md')
+    const content = '# Retained recurring obligation\n'
+    writeFileSync(path, content)
+    const session = createStreamsSession(options(root, 'conform'))
+    const context = STREAM.selectContext(rootContext(session))
+
+    expect(context.operationalAreas).toEqual([
+      {
+        level: 'WARN',
+        message: 'Streams operational areas need review: missing none; unexpected Housekeeping.',
+        subject: 'Streams'
+      },
+      {
+        level: 'WARN',
+        message:
+          'Recurring obligations belong in the configured Activity collection. Reconcile existing Streams/Housekeeping definitions with owner approval; do not automatically move, delete or duplicate them.',
+        subject: 'Streams/Housekeeping'
+      }
+    ])
+    expect(session.proposal()).toEqual({ writes: [] })
+    expect(readFileSync(path, 'utf8')).toBe(content)
   })
 
   test('rejects a Triage directory because triage is roadmap metadata', () => {

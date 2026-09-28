@@ -9,7 +9,7 @@ REFRESH checks that the target remains usable against current receiver practice.
 ## Canonical
 
 - [the SKILL body](../SKILL.md) — container boundary, operational areas, and adapter routing.
-- [the Streams structure standard](standards-streams-structure.md) — `Streams/Roadmap/`, `Streams/Housekeeping/`, legacy migration, and retention.
+- [the Streams structure standard](standards-streams-structure.md) — `Streams/Roadmap/`, recurring Activity off-ramp, owner-approved migration, and retention.
 - [the Enactment Process standard](standards-enactment-process.md) — the always-loaded canonical-change gate.
 - [the rubric](rubric.md) and its native `scripts/rubric/items/index.ts` catalogue — checkable container criteria.
 
@@ -19,4 +19,4 @@ Receiver Knowledge Bases are evidence of migration needs, not sources of the tar
 
 ## Last review
 
-**2026-08-09** — replaced the former Focus/proposal model with the operational-container contract. The target is flat `Streams/Roadmap/` work records plus `Streams/Housekeeping/` templates; legacy folders and proposal-shaped records are migration inputs. No base is claimed as already conformed until its owner has completed its local classification and migration.
+**2026-09-28** — reconciled recurring obligations with canonical Activity notes under the base's configured collection. Streams requires only `Roadmap/`; existing `Housekeeping/` definitions are reported for owner-approved reconciliation, never automatically moved or deleted. The Activity and `ki-work-housekeeping` contracts own standing definitions and shared run lifecycle. No receiving base is claimed as migrated by this source change.

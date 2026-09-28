@@ -179,7 +179,7 @@ Define GitHub Issues configuration, lifecycle mapping, hierarchy, dependencies, 
 
 #### `ki-work-housekeeping`
 
-Govern recurring repository-housekeeping templates, cadence or commit-volume eligibility, last-run evidence, and due-run spawning through `ki-next`. Use to define or audit recurring maintenance; runtime state cleanup belongs to the relevant `ki-housekeeping-*` skill.
+Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and `ki-housekeeping-*` skills own runtime cleanup.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -520,7 +520,7 @@ Create, query, update, distil, or audit a KI knowledge base using Calendar, Pill
 
 #### `ki-repo-kb-activities`
 
-Create, audit, and maintain Activity notes recording automation, scheduling, and agentic work adopted by a KI knowledge base. Use for activity identity, frontmatter, realisation type, index, or linked skill and scheduled-task evidence; `ki-repo-kb` owns zones and `ki-skills` skill authoring.
+Create, audit, and maintain Activity notes recording automation, scheduling, and agentic work adopted by a KI knowledge base. Use for activity identity, frontmatter, realisation type, index, or linked skill and scheduled-task evidence; `ki-work-housekeeping` owns recurring-work lifecycle and `ki-repo-kb` owns zones.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -550,7 +550,7 @@ Audit or conform the local structural overlay for a designated principal KI know
 
 #### `ki-repo-kb-streams`
 
-Govern the KI knowledge-base Streams container: flat Roadmap records and Housekeeping templates. Use for KB forward-work structure or migration; lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept`, while `ki-repo-kb` owns zones.
+Govern the KI knowledge-base Streams container and flat Roadmap records. Use for KB forward-work structure or migration; lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept`, while `ki-repo-kb` owns zones.
 
 - **Kind:** Governance
 - **Applicability:** Detected

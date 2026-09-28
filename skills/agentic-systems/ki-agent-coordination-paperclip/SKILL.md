@@ -52,6 +52,8 @@ Use a human-readable company and repository path, preferring the governing roadm
 
 Before moving delivery to a remote worker, prove the local delivery cycle, review what the coordination platform already provides, and agree a repository-owned remote-delivery policy. The [remote delivery prerequisite](references/standards-agent-coordination-paperclip.md#remote-delivery-prerequisite) defines the decision boundary without choosing a remote architecture. A programme put on hold stays held until the human explicitly resumes it.
 
+Paperclip is additive and replaceable: repository-owned knowledge and work must remain understandable to an authorised human or alternate agent with the declared skills and tooling. Apply the standard's [replacement test](references/standards-agent-coordination-paperclip.md#replaceable-coordination) and [recurring-activity boundary](references/standards-agent-coordination-paperclip.md#recurring-activities-and-routines): repository definitions own obligations, while routines schedule their governed execution.
+
 ## Operating modes
 
 Repository tasks use the declared repository skills and their required dependencies as their baseline in the actual task workspace. Company-library assignment, runtime discovery, and repository declaration are separate checks; follow the standard's [execution baseline](references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline). Use the reusable [bootstrap task brief](assets/bootstrap-task.md) for a plan that resolves the current company and Agora without caller-supplied placeholders.

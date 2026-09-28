@@ -28,16 +28,16 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 Operational-area layout, legacy migration, and adapter routing.
 
-- **STREAM-1 [M] — operational areas** — Streams contains the Roadmap and Housekeeping operational areas, with Trades reserved for later explicit adoption. (standards-streams-structure.md)
-  - _Remediation:_ diagnostic — Establish Roadmap and Housekeeping, then classify any legacy or unexpected folders with the receiving base owner.
+- **STREAM-1 [M] — operational areas** — Streams contains the Roadmap operational area; recurring definitions belong in Activities, with Trades reserved for later explicit adoption. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Establish Roadmap; reconcile any Housekeeping definitions into configured Activities only with owner approval, preserving linked-run evidence.
 - **STREAM-2 [M] — legacy state folders** — Legacy state and Focus folders are migration inputs, not target Streams structure. (standards-streams-structure.md)
   - _Remediation:_ diagnostic — Classify each retained legacy record before removing or replacing a legacy navigation folder.
-- **STREAM-4 [J] — adapter-owned records** — Roadmap and housekeeping records follow their owning adapters rather than a generic Streams record model. (standards-streams-structure.md)
-  - _Evidence scope:_ Roadmap and housekeeping records sampled from the two Streams areas.
-  - _Review prompt:_ Does each sampled record follow its owning roadmap or housekeeping adapter?
+- **STREAM-4 [J] — adapter-owned records** — Roadmap records follow their owning adapter; recurring definitions are Activity notes rather than a generic Streams record model. (standards-streams-structure.md)
+  - _Evidence scope:_ Roadmap records and any recurring definitions still awaiting reconciliation out of Streams.
+  - _Review prompt:_ Does each roadmap record follow its adapter, with recurring obligations routed to the configured Activity collection?
   - _Outcomes:_ conforming; adapter migration required; classification decision required
   - _Conforming guidance:_ Route the record to the correct area and apply its owning adapter’s format; record any unresolved classification decision.
-- **STREAM-5 [J] — legacy migration disposition** — Each retained legacy Stream has a deliberate roadmap, housekeeping, canonical-knowledge, or prune disposition. (standards-streams-structure.md)
+- **STREAM-5 [J] — legacy migration disposition** — Each retained legacy Stream has a deliberate roadmap, recurring Activity, canonical-knowledge, or prune disposition. (standards-streams-structure.md)
   - _Evidence scope:_ Sampled legacy Streams records and their owner-approved migration decisions.
   - _Review prompt:_ Does each sampled legacy record have an appropriate explicit disposition?
   - _Outcomes:_ conforming; migration required; owner decision required

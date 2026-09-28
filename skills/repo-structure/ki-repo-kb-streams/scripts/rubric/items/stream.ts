@@ -7,7 +7,7 @@ const STREAM_1: RubricItem<StreamRubricContext> = {
   code: 'STREAM-1',
   title: 'operational areas',
   description:
-    'Streams contains the Roadmap and Housekeeping operational areas, with Trades reserved for later explicit adoption.',
+    'Streams contains the Roadmap operational area; recurring definitions belong in Activities, with Trades reserved for later explicit adoption.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
@@ -15,7 +15,7 @@ const STREAM_1: RubricItem<StreamRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Establish Roadmap and Housekeeping, then classify any legacy or unexpected folders with the receiving base owner.'
+        'Establish Roadmap; reconcile any Housekeeping definitions into configured Activities only with owner approval, preserving linked-run evidence.'
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.operationalAreas, 'WARN', ['FAIL']) }
   }
@@ -40,11 +40,12 @@ const STREAM_4: RubricItem<StreamRubricContext> = {
   code: 'STREAM-4',
   title: 'adapter-owned records',
   description:
-    'Roadmap and housekeeping records follow their owning adapters rather than a generic Streams record model.',
+    'Roadmap records follow their owning adapter; recurring definitions are Activity notes rather than a generic Streams record model.',
   sources: [SOURCE],
   judgment: {
-    scope: 'Roadmap and housekeeping records sampled from the two Streams areas.',
-    prompt: 'Does each sampled record follow its owning roadmap or housekeeping adapter?',
+    scope: 'Roadmap records and any recurring definitions still awaiting reconciliation out of Streams.',
+    prompt:
+      'Does each roadmap record follow its adapter, with recurring obligations routed to the configured Activity collection?',
     outcomes: ['conforming', 'adapter migration required', 'classification decision required'],
     guidance:
       'Route the record to the correct area and apply its owning adapter’s format; record any unresolved classification decision.'
@@ -55,7 +56,7 @@ const STREAM_5: RubricItem<StreamRubricContext> = {
   code: 'STREAM-5',
   title: 'legacy migration disposition',
   description:
-    'Each retained legacy Stream has a deliberate roadmap, housekeeping, canonical-knowledge, or prune disposition.',
+    'Each retained legacy Stream has a deliberate roadmap, recurring Activity, canonical-knowledge, or prune disposition.',
   sources: [SOURCE],
   judgment: {
     scope: 'Sampled legacy Streams records and their owner-approved migration decisions.',

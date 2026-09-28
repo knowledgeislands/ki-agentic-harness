@@ -4,7 +4,7 @@
 
 _On-demand procedure for Streams REFRESH. The shared model lives in [`SKILL.md`](../SKILL.md) and is already loaded; this file is the procedure only._
 
-This skill is the canonical definition of the KB Streams container; REFRESH keeps that placement and routing coherent with the shared roadmap and housekeeping adapters. Run it periodically (monthly, with the other skills), or when someone asks "is the Streams model still current".
+This skill is the canonical definition of the KB Streams container; REFRESH keeps its placement and routing coherent with the shared roadmap adapter and the recurring Activity off-ramp. Run it periodically (monthly, with the other skills), or when someone asks "is the Streams model still current".
 
 1. **Read [the source list](sources.md)** — the live bases that run the process, each with a `last review` date.
 2. **Re-anchor against practice**: sample how the live bases run their Streams; look for a genuinely shared pattern the skill does not yet carry, a convention that has moved on, or a binding real bases supply that the bindings table doesn't name.

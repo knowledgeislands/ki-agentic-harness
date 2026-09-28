@@ -4,6 +4,15 @@ This is a staged guide for an existing Knowledge Islands group, not permission t
 
 Use one repeatable company-level bootstrap task in the workspace-free Coordination project. Inventory and reconcile before creating anything; a later run preserves correctly configured projects, tasks, hires, routines, links, and retained work rather than reproducing the first run. Route every repository-specific inspection, audit, conform, and delivery through that repository's project. Keep each completed run's evidence and decisions; a clean rerun reports no changes. An existing Onboarding project may hold an unfinished first run, but archive it only after its work has an owner and its history remains reachable.
 
+## Contents
+
+- [Starting a repeatable bootstrap](#starting-a-repeatable-bootstrap)
+- [Inventory before provisioning](#1-inventory-before-provisioning)
+- [Establish ownership boundaries](#2-establish-ownership-boundaries)
+- [Reconcile work and task identities](#3-reconcile-work-and-task-identities)
+- [Prove one local delivery path](#4-prove-one-local-delivery-path)
+- [Expand only from evidence](#5-expand-only-from-evidence)
+
 ## Starting a repeatable bootstrap
 
 Use the [bootstrap task brief](../assets/bootstrap-task.md) without company-code or Agora placeholders. It resolves the current company through the coordination standard's [identity procedure](standards-agent-coordination-paperclip.md#resolving-the-current-company-and-agora). A missing binding becomes a concrete decision, not an inferred name. If the coordination skill is not yet assigned or discoverable, include its verified local `SKILL.md` path in the task until company-level access is established.
@@ -59,11 +68,29 @@ Keep task lifecycle and KI lifecycle separate. A link preserves association hist
 
 ### Repository health before the operating rhythm
 
-Run each repository's mechanical audit and a judgmental pass in its own project before relying on its status for a company report. Preview conform and obtain authority for its exact writes; apply only authorised repairs, re-audit, then run conform in dry-run again. The second preview must propose no further change before calling conform idempotent. Record exceptions and incomplete checks explicitly; a mechanical `PASS` does not settle judgment criteria.
+Run each repository's mechanical audit and judgmental pass in its own project before relying on its status in the company report. Preview conform and obtain authority for its exact writes; apply only authorised repairs, re-audit, then run conform in dry-run again. The second preview must propose no further change before calling conform idempotent. Record exceptions and incomplete checks explicitly; mechanical `PASS` does not settle judgment criteria.
 
-After establishing the health-check path, reconcile one daily change-log report at 08:00 in the company's chosen IANA timezone and one weekly review. Reuse existing routines or meetings rather than duplicating them. Before each daily report, run a repository preflight of mechanical and judgmental audit plus conform preview; apply only separately authorised repairs and verify convergence. This may be a separate scheduled task early enough to feed the report, but it routes repository work through repository projects and gains no write authority from its schedule. The 08:00 report states previous-day delivered results, current repository health, blockers, and today's focus. If preflight is incomplete or blocked, report that state rather than claiming a clean estate. The weekly review uses current preflight evidence. Coordination aggregates returned evidence and does no repository work.
+### Reconcile recurring obligations
 
-Discover each repository's purpose and existing work before proposing hires or a small first delivery batch. Name the needed role, first assignment, independent reviewer, and integration owner; do not hire agents or bulk-import the work backlog by default. Human approval of the proposed roles and selected work remains separate from bootstrap reconciliation.
+Apply the [recurring-activity contract](standards-agent-coordination-paperclip.md#recurring-activities-and-routines). Inventory the agreed recurring checklist, repository-owned definitions and existing Paperclip routines before proposing changes. Projects use `docs/housekeeping/`; KBs use the configured Activities area, normally `Admin/Operations/Activities/`, with a nested `housekeeping` mapping only when the recurring-work lifecycle applies. Do not create a parallel KB housekeeping definition. Return the canonical owner, locator, lifecycle and schedule state, last successful evidence, any active run, Paperclip linkage and proposed disposition for each obligation.
+
+Reconcile missing coverage, duplicates, conflicting cadence, pauses, stale links and inappropriate obligations against each repository's purpose and capabilities. Keep valid routines and existing evidence; propose scoped repairs instead of replacing them. A runtime-independent procedure and retained outcomes must pass the [replacement test](standards-agent-coordination-paperclip.md#replaceable-coordination). Resolve the verified Agora home's ownership of shared definitions and reports; route report writes to its repository project, while Coordination only aggregates returned evidence.
+
+Use these recurring concerns as discovery prompts, not mandatory schedules for every repository:
+
+- Daily repository preflight: audit plus conform dry-run before the company report; separately authorised repairs require convergence evidence.
+- Daily company change-log report at 08:00 in the chosen IANA timezone: previous-day delivered results, current health, blockers and today's focus. Record incomplete or blocked preflight rather than claiming a clean estate.
+- Weekly work/delivery and knowledge reconciliation: retained work, task links, unresolved decisions, delivered evidence and useful learning.
+- Ad-hoc and weekly judgment review: use the same master `ki-repo` REVIEW checklist to assess purpose, consolidation, drift, learning and possible repositioning, redirection or retirement. Scope each invocation by revision, last-reviewed baseline, depth and budget; preserve gaps where that baseline is unavailable. Keep proposals distinct from adopted work or permission to change direction.
+- Monthly capability and risk review where relevant. Reuse existing deeper engineering or knowledge-reconciliation routines; a weekly bounded review must not duplicate their scope.
+- Backup and recovery assurance at the estate or infrastructure owner's level, with member dependencies and evidence linked rather than duplicated checks.
+- Event-driven reconciliation after hires, membership changes, skill changes or runtime changes.
+
+The list is reconciled with existing obligations, not imported wholesale as new work. A weekly review may consolidate compatible concerns into one bounded invocation; the master checklist remains owned by `ki-repo`, not copied into each task or routine.
+
+Before enabling any proposed routine, agree its exact scope, schedule including weekly day/time and IANA timezone, depth or budget, evidence destination and single-active-run safeguard. Determine a preflight start or dependency that can feed the 08:00 report without pretending a failed or late run passed. A routine triggers the governing due-run lifecycle; it does not independently spawn a duplicate of a run created by `ki-next`, accept the result or grant repository writes. Draft-only bootstrap does not activate schedules.
+
+Discover each repository's purpose and existing work before proposing hires or a small first delivery batch. Name the needed role, first assignment, independent reviewer and integration owner; do not hire agents or bulk-import the work backlog by default. Human approval of the proposed roles and selected work remains separate from bootstrap reconciliation.
 
 ## 4. Prove one local delivery path
 

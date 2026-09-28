@@ -26,7 +26,7 @@ A Knowledge Islands base is one markdown store with a fixed set of five zones, f
 | `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
 | `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
 | `Resources/` | External reference material that exists independently of this base.                             |
-| `Streams/`   | Work in motion — adapter-owned records and recurring-work templates. ※                         |
+| `Streams/`   | Work in motion — finite adapter-owned work records. ※ |
 | `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs).‡ Not a zone.         |
 | `Admin/`     | Base-agnostic governance and operations.                                                        |
 

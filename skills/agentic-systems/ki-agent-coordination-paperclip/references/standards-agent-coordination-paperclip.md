@@ -7,6 +7,8 @@
 - [Project ownership and coordination boundary](#project-ownership-and-coordination-boundary)
 - [Identity model](#identity-model)
 - [Knowledge boundary](#knowledge-boundary)
+- [Replaceable coordination](#replaceable-coordination)
+- [Recurring activities and routines](#recurring-activities-and-routines)
 - [Task-to-work relationship](#task-to-work-relationship)
 - [Delivery ownership and local integration](#delivery-ownership-and-local-integration)
 - [Remote delivery prerequisite](#remote-delivery-prerequisite)
@@ -64,6 +66,26 @@ Do not equate an agent with a thread, process, VM, or checkout. A role can have 
 The repository is the durable knowledge source. Paperclip task descriptions, comments, plans, and agent memory are operational context or caches. They may point to repository knowledge and carry short-lived coordination detail, but any decision, learning, specification, or evidence that must survive the task returns to its correct repository-owned artifact.
 
 Ground a run in an explicit repository identity and admitted revision before work begins. If the task depends on a KI context, authority, or work record, resolve that source rather than copying an unversioned paraphrase into an agent prompt.
+
+## Replaceable coordination
+
+Paperclip is additive, not a prerequisite for understanding or continuing a repository's work. Apply the runtime-neutral continuity principle owned by `ki-authoring`'s knowledge-promotion standard: the repository retains purpose, procedures, authority, decisions, learning, work state and review evidence; the selected runtime adds execution and coordination. Paperclip task links are useful provenance, not the only source of durable meaning.
+
+Use a removal or replacement test: if Paperclip's task UI, agent memory and scheduler were unavailable, could an authorised human or another agent reconstruct the current obligations, holds, next decisions and evidence from the repository and its declared dependencies? Required skills, tooling and external services must still be resolved and verified; this is not a promise of dependency-free or offline operation. Document non-secret dependency and recovery requirements, but keep credentials and secrets in their designated external stores.
+
+Reconcile durable state before a deliberate hand-off or runtime replacement. Preserve source identity and task links while promoting any missing decisions, procedure, outcome or learning into the owning repository. Stop where authority, current claims or evidence cannot be established; replacing the runtime does not lift a hold, authorise another run, or make unknown in-flight work safe to repeat.
+
+## Recurring activities and routines
+
+Keep one repository-owned definition for each recurring obligation. Project repositories use `docs/housekeeping/`; Knowledge Bases use Activity notes in `Admin/Operations/Activities/` or the configured Activities path. `ki-repo-kb-activities` owns Activity identity and placement. An Activity opts into the recurring-work lifecycle with the nested `housekeeping` mapping governed by `ki-work-housekeeping`; not every manual or conversational Activity needs it. Do not maintain a second definition in `Streams/Housekeeping/`.
+
+Paperclip routines are replaceable scheduling and dispatch projections of these definitions, not a second catalogue of procedures or an acceptance mechanism. Reference the canonical repository identity, definition locator and admitted revision; keep only execution-specific routing in Paperclip. Where the housekeeping lifecycle applies, a routine trigger uses its due-run procedure and single-active-run gate, shared with ad-hoc `ki-next` use, instead of independently creating a competing run. Preserve paused definitions, unresolved active runs, grace periods and approval boundaries. Paperclip completion alone neither accepts a KI run nor advances its successful-review state. Return outcomes, evidence and task links to the repository through its governing lifecycle.
+
+The verified Agora home is the default repository owner of cross-repository definitions and consolidated reports, unless the approved arrangement names another owner. Member repositories own their checks, changes and detailed evidence. A Coordination task may schedule, delegate and aggregate returned evidence; writing a consolidated report is repository work in the home repository's project. A shared report is not a duplicate obligation in every member repository.
+
+Bootstrap reconciles the agreed recurring-activities checklist, actual repository definitions and existing Paperclip routines together. Classify each obligation as covered, missing, conflicting, paused, duplicate or not applicable, with its canonical owner and next decision. Adapt coverage to repository purpose and declared capabilities rather than imposing every checklist entry everywhere. Reconcile conflicting or duplicate definitions under explicit authority while preserving retained evidence; do not silently delete or resume them.
+
+Before enabling or changing any schedule, establish its exact approved scope, cadence, day and time where applicable, IANA timezone, depth or budget, project routing, active-run guard and evidence destination. Unresolved settings remain decisions in the bootstrap plan. Reconciliation, source guidance and a routine's existence do not themselves authorise activation or repository mutation.
 
 ## Task-to-work relationship
 

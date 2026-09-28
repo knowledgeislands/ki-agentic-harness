@@ -22,7 +22,7 @@ The authoritative definition of frontmatter fields for all notes in a Knowledge 
 | `tags` | Optional | Topical / temporal / source labels (`topic/*`, `date/*`, `source/*`) — retained, but never the **kind** classifier |
 | `author` | Recommended | `AI-assisted` / `Manual` / `Mixed` |
 
-† NOTE-1c delegates metadata classification for `Streams/Roadmap/**`, `Streams/Housekeeping/**`, direct batch records under `+/_BATCHES/`, active `+/_CHECKPOINTS/<thread>.md` checkpoints, canonical acquisition records under `+/_ACQUIRE/<adapter>/*.md`, and peer-qualified `TRD-*.md` protocol records under either staging area to their owning skills. These records still undergo YAML, key-shape, and declared required-field checks. Nested checkpoint or acquisition paths, including `_RETIRED`, are not delegated. Local session digests under `-/_DIGESTS/` remain governed here.
+† NOTE-1c delegates metadata classification for `Streams/Roadmap/**`, direct batch records under `+/_BATCHES/`, active `+/_CHECKPOINTS/<thread>.md` checkpoints, canonical acquisition records under `+/_ACQUIRE/<adapter>/*.md`, and peer-qualified `TRD-*.md` protocol records under either staging area to their owning skills. These records still undergo YAML, key-shape, and declared required-field checks. Nested checkpoint or acquisition paths, including `_RETIRED`, are not delegated. Local session digests under `-/_DIGESTS/` remain governed here.
 
 ‡ Component-specific status values remain under their component owners while KB-wide metadata reconciliation is pending.
 
@@ -50,7 +50,7 @@ The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefi
 | `admin/operations/activity`   | `Admin/Operations/Activities/**/*`                        | `ki-repo-kb-activities`    |
 | `admin/operations/skill`      | `Admin/Operations/Skills/**/*`                            | TBD                   |
 
-`Admin/Operations/Activities/` is governed by `ki-repo-kb-activities` and `Admin/Operations/Live Artifacts/` by `ki-repo-kb-live-artifacts`. Their component-specific frontmatter and the universal metadata contract are not yet reconciled; this standard therefore does not treat a clean component or aggregate structural audit as proof of a universal metadata schema. The remaining `TBD` rows have no governing skill yet.
+`Admin/Operations/Activities/` (or its configured collection) is governed by `ki-repo-kb-activities`: Activity notes retain `note_type: admin/operations/activity`, with an optional nested `housekeeping` profile governed by `ki-work-housekeeping`. They are canonical notes, not delegated Streams record types. `Admin/Operations/Live Artifacts/` is governed by `ki-repo-kb-live-artifacts`; reconciliation of its component-specific and universal metadata remains separate. The remaining `TBD` rows have no governing skill yet.
 
 ### Outbound staging (`-/`)
 
@@ -92,7 +92,7 @@ The `Streams` zone's internal structure is owned by `ki-repo-kb-streams`; these 
 | Note type          | Path context                                     | Defined by      |
 | ------------------ | ------------------------------------------------ | --------------- |
 | `streams/zone`     | `Streams/Streams.md` (zone root)                 | `ki-repo-kb-streams` |
-| _pending reconciliation_ | Roadmap and housekeeping record metadata is owned by their selected adapters | respective adapter owners |
+| _adapter-owned_ | Roadmap work-record metadata | `ki-work-roadmap` |
 
 ### Pillars branch (`pillars/`)
 
@@ -111,6 +111,6 @@ Some `note_type` values require additional fields, defined by the skill that own
 | --- | --- | --- | --- |
 | `admin/governance/decision` | `decision_type` | nine decision domains‡ | `ki-decision-records` |
 | `calendar/daily` | `day_type` | work-day / weekend / bank-holiday / annual-leave (open enumeration) | `ki-repo-kb` |
-| _pending reconciliation_ | Roadmap and housekeeping dependent fields | adapter-defined | selected adapter owner |
+| _adapter-owned_ | Roadmap dependent fields | adapter-defined | `ki-work-roadmap` |
 
 ‡ strategy, product, architecture, data, security, operations, governance, research, knowledge.

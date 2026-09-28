@@ -6,7 +6,7 @@ This standard defines `Streams/` as the operational container of a Knowledge Isl
 
 - [Operational container](#operational-container)
 - [Roadmap](#roadmap)
-- [Housekeeping](#housekeeping)
+- [Recurring Activities](#recurring-activities)
 - [Future trades](#future-trades)
 - [Legacy migration](#legacy-migration)
 - [Canonical knowledge and retention](#canonical-knowledge-and-retention)
@@ -18,11 +18,10 @@ This standard defines `Streams/` as the operational container of a Knowledge Isl
 ```text
 Streams/
   Roadmap/
-  Housekeeping/
   Trades/          # only when a future KB trade placement is adopted
 ```
 
-`Roadmap/` and `Housekeeping/` are the initial fixed areas. They are neither horizons nor lifecycle states. In particular, triage is roadmap metadata and never a `Streams/Triage/` directory. A future `Trades/` area needs an explicit contract; do not create it merely because generic `ki-trades` working areas exist elsewhere in the repository.
+`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap metadata and never a `Streams/Triage/` directory. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
 
 The container does not prescribe a topical-folder or `groups` vocabulary. Where an owning adapter supports topical metadata, the receiving base chooses its vocabulary. That metadata never replaces an operational area or changes an identifier.
 
@@ -36,9 +35,9 @@ Substantive prospective work is deduplicated against the canonical queue, then c
 
 Explicit human approval is required before a captured record leaves triage or is renamed, rejected, or merged into another record. Approval never bypasses the shared lifecycle or done-before-prune rules, and this intake contract creates no direct discard path. Silence, discussion, and automatic capture are not approval. Apply adoption through `ki-next`; route an approved rejected, duplicate, or merged disposition to `ki-accept` so Triage reaches retained `done` before any later prune.
 
-## Housekeeping
+## Recurring Activities
 
-`Streams/Housekeeping/` is the KB placement equivalent of `docs/housekeeping/`. It contains recurring-work templates, not a permanent set of delivery work. The [housekeeping template standard](../../../change-management/ki-work-housekeeping/references/standards-housekeeping.md) owns template identity, cadence, due-run spawning, and retained run evidence.
+Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). An Activity with the `housekeeping` profile uses `ki-work-housekeeping` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
 
 A due run is a linked ordinary roadmap record in `Streams/Roadmap/`. Its horizon and lifecycle remain record metadata; it is not moved into a Streams state folder.
 
@@ -53,7 +52,7 @@ A due run is a linked ordinary roadmap record in `Streams/Roadmap/`. Its horizon
 For each retained legacy record, the receiving base decides deliberately whether it is:
 
 1. finite forward work → a flat `Streams/Roadmap/` record;
-2. a recurring obligation → a `Streams/Housekeeping/` template;
+2. a recurring obligation → one Activity note in the configured Activity collection, using the `ki-work-housekeeping` profile when its recurring-work lifecycle applies;
 3. durable knowledge → a canonical `Admin/`, `Pillars/`, or `Resources/` note; or
 4. obsolete working material → retained or pruned through explicit owner approval.
 
@@ -61,4 +60,6 @@ The base also decides its own repository code, fixed roadmap area codes, issue-l
 
 ## Canonical knowledge and retention
 
-Streams records are working evidence, not a knowledge store. Durable outputs belong in `Admin/`, `Pillars/`, `Resources/`, or a Decision Record. A completed roadmap record remains until an explicitly selected prune; template and trade retention follow their owning standards.
+An existing `Streams/Housekeeping/` area is not a supported second schedule source. AUDIT flags it for deliberate reconciliation. Preserve its identifiers, active-run links and successful-run evidence when the owner approves consolidation into Activities; neither AUDIT nor CONFORM moves, deletes or duplicates those definitions.
+
+Streams records are working evidence, not a knowledge store. Durable outputs belong in `Admin/`, `Pillars/`, `Resources/`, or a Decision Record. A completed roadmap record remains until explicitly selected for prune; Activity and trade retention follow their owning standards.

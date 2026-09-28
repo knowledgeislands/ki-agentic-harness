@@ -260,7 +260,6 @@ test('adapter and protocol records delegate note-type metadata to their owning s
   const repository = createBase()
   const records = [
     'Streams/Roadmap/ITEM.md',
-    'Streams/Housekeeping/TEMPLATE.md',
     '+/_BATCHES/KI-EXAMPLE-BATCH-001.md',
     '+/_CHECKPOINTS/active-thread.md',
     '+/_ACQUIRE/granola/2026-07-28--example.md',
@@ -285,6 +284,18 @@ test('adapter and protocol records delegate note-type metadata to their owning s
       message: 'Frontmatter uses note_type and does not use the legacy type field.'
     }
   ])
+})
+
+test('former Streams housekeeping definitions no longer delegate note-type metadata', () => {
+  const repository = createBase()
+  const directory = join(repository, 'Streams', 'Housekeeping')
+  mkdirSync(directory, { recursive: true })
+  writeFileSync(join(directory, 'Template.md'), '---\ntype: stream-housekeeping\n---\n\n# Template\n')
+
+  expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-1c')).toMatchObject({
+    level: 'FAIL',
+    message: expect.stringContaining('missing note_type: Streams/Housekeeping/Template.md')
+  })
 })
 
 test('direct KB digests and undelegated trade files require note_type', () => {

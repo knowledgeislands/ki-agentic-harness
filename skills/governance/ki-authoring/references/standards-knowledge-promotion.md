@@ -28,6 +28,12 @@ Choose the narrowest durable home that reaches the people and agents who need th
 5. Reconcile the source layer: remove a duplicate, replace it with a pointer, or explicitly retain it only when it serves a different audience.
 6. Revisit the placement when its scope changes; promotion is not a reason to preserve obsolete lower-layer copies.
 
+## Replaceable execution environments
+
+An agent runtime or coordination system is additive, not the durable owner of a repository's knowledge or operating model. Preserve purpose, procedures, authority, accepted decisions, work state, verification evidence, and residual learning in their repository-owned homes. Runtime memory, task conversations, and scheduler history may aid execution but must not be the only record needed to understand or continue the work.
+
+The continuity test is practical: with the repository, its referenced durable sources, and verified declared skills and tooling, can a person or another execution environment determine what matters, what happened, what remains, what authority is required, and how to proceed? This is not a promise of dependency-free or offline operation. Keep secrets outside Git, declare external dependencies and access prerequisites, and retain non-secret evidence locators. Changing the executor neither changes repository authority nor permits replaying uncertain work; reconcile in-flight claims, holds, and returned evidence before handover.
+
 ## Boundaries
 
 - `AGENTS.md` holds portable repository guidance; runtime files hold only genuinely runtime-specific detail.

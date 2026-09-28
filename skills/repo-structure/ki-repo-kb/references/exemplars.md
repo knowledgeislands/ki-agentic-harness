@@ -75,6 +75,7 @@ ki-arcadia-principal/
 │   ├── Admin.md         ← zone root index
 │   ├── Governance/
 │   └── Operations/
+│       └── Activities/  ← adopted behaviours, including recurring obligations
 ├── Calendar/            ← time-bound records (sessions, reviews)
 ├── Pillars/             ← stable internal knowledge
 │   ├── Pillars.md       ← zone root index
@@ -84,8 +85,7 @@ ki-arcadia-principal/
 ├── Resources/           ← reference material with external origin
 └── Streams/             ← work in motion (see ki-repo-kb-streams)
     ├── Streams.md
-    ├── Roadmap/
-    └── Housekeeping/
+    └── Roadmap/
 ```
 
 The staging areas (`+/`, `-/`) have no zone index note; only the five canonical zones carry one. Pillar folders inside `Pillars/` match the island's topic arms — they are not fixed by the standard; what is fixed is that each carries a same-name index note at its root.

@@ -12,7 +12,7 @@ export const HOUSE: RubricFamily<HousekeepingRubricContext, HousekeepingRubricCo
       code: 'HOUSE-1',
       title: 'template contract',
       description:
-        'Each housekeeping template has a safe location and controlled identity, lifecycle, calendar cadence, optional commit threshold and reviewed revision, and spawn fields.',
+        'Each recurring definition is a Project template or an opted-in KB Activity with a safe location, unique identity, controlled lifecycle, calendar cadence, optional commit threshold and reviewed revision, and spawn fields; no duplicate Streams template is scheduled.',
       sources: ['standards-housekeeping.md'],
       mechanical: {
         level: 'FAIL',

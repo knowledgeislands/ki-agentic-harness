@@ -61,6 +61,22 @@ const indexItem = () => {
   return item.mechanical
 }
 
+test('recurring-work lifecycle is required only for opted-in Activities', () => {
+  const repository = activityBase()
+  const path = join(repository, 'Admin', 'Operations', 'Activities', 'Morning Briefing.md')
+  const criterion = ACT.items.find((item) => item.code === 'ACT-R-5')?.mechanical
+  if (!criterion) throw new Error('Missing recurring-work criterion')
+  const audit = () => criterion.audit.run(activityContext(createActivitiesSession(options(repository, 'audit'))))
+  expect(audit()[0]?.status).toBe('NOT_APPLICABLE')
+  writeFileSync(
+    path,
+    readFileSync(path, 'utf8').replace('status: active', 'status: active\nhousekeeping:\n  cadence: P1W')
+  )
+  expect(audit()[0]?.status).toBe('VIOLATION')
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-work-housekeeping]\n')
+  expect(audit()[0]?.status).toBe('PASS')
+})
+
 test('audit is read-only and returns one stable prepared context', () => {
   const repository = activityBase()
   const session = createActivitiesSession(options(repository, 'audit'))

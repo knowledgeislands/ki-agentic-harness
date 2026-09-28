@@ -16,6 +16,7 @@ export type ActivityNote = {
   readonly title: string
   readonly frontmatter: Readonly<Record<string, string>> | null
   readonly malformedFrontmatter: boolean
+  readonly recurring: boolean
 }
 
 export type ActivitiesContext = {
@@ -37,6 +38,7 @@ export type ActivitiesContext = {
   }
   readonly configuration: {
     readonly keys: readonly string[]
+    readonly housekeepingDeclared: boolean
   }
   readonly notes: readonly ActivityNote[]
   readonly harness?: {
@@ -74,21 +76,34 @@ const safeDirectory = (root: string, path: string): boolean => {
   return true
 }
 
-const parseFrontmatter = (text: string): { value: Readonly<Record<string, string>> | null; malformed: boolean } => {
-  if (text.split(/\r?\n/, 1)[0]?.trim() !== '---') return { value: null, malformed: false }
+const housekeepingDeclared = (root: string): boolean => {
+  const path = join(root, '.ki.toml')
+  if (!isFile(path)) return false
+  try {
+    const parsed = Bun.TOML.parse(readFileSync(path, 'utf8')) as { skills?: Record<string, unknown> }
+    return Boolean(parsed.skills && Object.hasOwn(parsed.skills, 'ki-work-housekeeping'))
+  } catch {
+    return false
+  }
+}
+const parseFrontmatter = (
+  text: string
+): { value: Readonly<Record<string, string>> | null; malformed: boolean; recurring: boolean } => {
+  if (text.split(/\r?\n/, 1)[0]?.trim() !== '---') return { value: null, malformed: false, recurring: false }
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
-  if (!match) return { value: null, malformed: true }
+  if (!match) return { value: null, malformed: true, recurring: false }
   try {
     const parsed = Bun.YAML.parse(match[1] ?? '')
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { value: null, malformed: true }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
+      return { value: null, malformed: true, recurring: false }
     const fields = Object.fromEntries(
       Object.entries(parsed as Record<string, unknown>).filter(
         (entry): entry is [string, string] => typeof entry[1] === 'string'
       )
     )
-    return { value: fields, malformed: false }
+    return { value: fields, malformed: false, recurring: Object.hasOwn(parsed, 'housekeeping') }
   } catch {
-    return { value: null, malformed: true }
+    return { value: null, malformed: true, recurring: false }
   }
 }
 
@@ -171,7 +186,8 @@ export const createActivitiesSession = ({
             indexLink: link,
             title: titleFromNote(text, link),
             frontmatter: frontmatter.value,
-            malformedFrontmatter: frontmatter.malformed
+            malformedFrontmatter: frontmatter.malformed,
+            recurring: frontmatter.recurring
           }
         })
     : []
@@ -196,7 +212,7 @@ export const createActivitiesSession = ({
         content: indexContent,
         unsafeEntry: unsafeIndexEntry
       },
-      configuration: { keys: Object.keys(configuration) },
+      configuration: { keys: Object.keys(configuration), housekeepingDeclared: housekeepingDeclared(root) },
       notes,
       ...(harness
         ? {

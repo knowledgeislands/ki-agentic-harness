@@ -2,4 +2,4 @@
 
 _On-demand procedure for Streams READY. The shared model lives in [`SKILL.md`](../SKILL.md) and is already loaded; this file is the procedure only._
 
-For a roadmap item, load `ki-plan`, which owns its readiness and user approval. A housekeeping template never becomes a delivery item; `ki-next` spawns a linked run when it is due.
+For a roadmap item, load `ki-plan`, which owns its readiness and user approval. A recurring Activity never becomes a delivery item; `ki-next` spawns a linked run under its `ki-work-housekeeping` profile when it is due.

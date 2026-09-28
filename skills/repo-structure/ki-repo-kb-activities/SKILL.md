@@ -4,10 +4,11 @@ ki-kind: governance
 ki-applicability: declaration-only
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: []
+ki-optional-depends-on: [ki-work-housekeeping]
 description: >
   Create, audit, and maintain Activity notes recording automation, scheduling, and agentic work adopted by a
   KI knowledge base. Use for activity identity, frontmatter, realisation type, index, or linked skill and
-  scheduled-task evidence; `ki-repo-kb` owns zones and `ki-skills` skill authoring.
+  scheduled-task evidence; `ki-work-housekeeping` owns recurring-work lifecycle and `ki-repo-kb` owns zones.
 argument-hint: 'audit | conform | help | educate | new <name> | refresh'
 ---
 
@@ -22,6 +23,8 @@ Activity notes live at `Admin/Operations/Activities/<Activity Name>.md` and desc
 Read the [Activity standard](references/standards-activities.md) before authoring, auditing, or conforming a collection. It owns the location and configuration boundary, frontmatter vocabulary, realization-specific fields, index contract, and safe index-conform boundary. [The exemplars](references/exemplars.md) show representative notes.
 
 ## Operating modes
+
+An Activity that opts into a `housekeeping` mapping uses `ki-work-housekeeping` for recurring-work identity, eligibility, active-run reservation, and successful-run reconciliation in this same note. Declare that capability when using the profile; the optional dependency orders its checks when active without making every Activity recurring. No second definition belongs in Streams. Ordinary scheduled or conversational Activities do not acquire this lifecycle merely because they have a trigger.
 
 Modes: **AUDIT · CONFORM · EDUCATE · NEW · REFRESH** (named, alphabetical). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 

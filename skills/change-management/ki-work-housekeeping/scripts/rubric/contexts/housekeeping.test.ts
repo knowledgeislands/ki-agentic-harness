@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHousekeepingSession } from './housekeeping.ts'
@@ -132,22 +132,152 @@ test('optional commit fields are validated while an unevidenced anchor is a sche
   }
 })
 
-test('uses Streams Housekeeping for a KB configuration', () => {
-  const repository = temporaryDirectory()
-  const root = join(repository, 'Streams', 'Housekeeping')
-  mkdirSync(root, { recursive: true })
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\nrepo_type = "kb"\n')
-  writeFileSync(join(root, 'Housekeeping.md'), '# Housekeeping\n')
-  writeFileSync(
-    join(root, 'Monthly Maintenance Housekeeping.md'),
-    template('KI-BASE-HK-001').replace(
-      'title: Monthly maintenance',
-      'title: Monthly maintenance\ntype: stream-housekeeping'
-    )
-  )
+const activity = (status = 'active') =>
+  [
+    '---',
+    'note_type: admin/operations/activity',
+    'id: KI-BASE-HK-001',
+    'title: Weekly review',
+    `status: ${status}`,
+    'realization: manual',
+    'author: Repository owner',
+    'tags: [review, maintenance]',
+    'housekeeping:',
+    '  cadence: P1W',
+    '  last_run: null',
+    '  last_run_ref: null',
+    '  grace: P1D',
+    '  spawn_policy: when-due',
+    '  spawn_horizon: next',
+    '  active_run: null',
+    '---',
+    template().split('\n---\n')[1]
+  ].join('\n')
 
-  expect(outcomes(repository)[0]?.subject).toBe('Streams/Housekeeping/Monthly Maintenance Housekeeping.md')
+const kbRepository = (location = 'Admin/Operations/Activities') => {
+  const repository = temporaryDirectory()
+  const root = join(repository, location)
+  mkdirSync(root, { recursive: true })
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    `[skills.ki-repo]\nrepo_type = "kb"\n[skills.ki-repo-kb-activities]\nactivities_dir = "${location}"\n[skills.ki-work-housekeeping]\n`
+  )
+  writeFileSync(join(root, 'Activities.md'), '# Activities\n')
+  return { repository, root }
+}
+
+test('uses a single recurring Activity with nested fields and ordinary KB metadata', () => {
+  const { repository, root } = kbRepository()
+  const path = join(root, 'Weekly Review.md')
+  const content = activity()
+  writeFileSync(path, content)
+  expect(outcomes(repository)[0]?.subject).toBe('Admin/Operations/Activities/Weekly Review.md')
   expect(outcomes(repository)[0]?.status).toBe('PASS')
+  const session = createHousekeepingSession({ ...options(repository), mode: 'conform' })
+  expect(session.subjects[0]?.context().templates.schedules[0]?.message).toContain('spawn')
+  expect(session.proposal()).toEqual({ writes: [] })
+  expect(readFileSync(path, 'utf8')).toBe(content)
+})
+
+test('uses configured Activities placement and safely discovers nested recurring notes', () => {
+  const { repository, root } = kbRepository('Admin/Operations/Review Activities')
+  mkdirSync(join(root, 'Reviews'))
+  writeFileSync(join(root, 'Reviews', 'Weekly.md'), activity())
+  writeFileSync(
+    join(root, 'Conversation.md'),
+    '---\nstatus: active\nrealization: conversational\n---\n# Conversation\n'
+  )
+  expect(outcomes(repository)).toHaveLength(1)
+  expect(outcomes(repository)[0]).toMatchObject({
+    status: 'PASS',
+    subject: 'Admin/Operations/Review Activities/Reviews/Weekly.md'
+  })
+})
+
+test('ordinary Activities do not acquire recurring-work obligations', () => {
+  const { repository, root } = kbRepository()
+  writeFileSync(
+    join(root, 'Daily Report.md'),
+    '---\nstatus: active\nrealization: scheduled-task\nschedule_name: daily\n---\n# Report\n'
+  )
+  expect(outcomes(repository)[0]?.status).toBe('NOT_APPLICABLE')
+  expect(createHousekeepingSession(options(repository)).subjects[0]?.context().templates.schedules).toEqual([])
+})
+
+test('retired Activities retain their evidence without becoming eligible and cannot hide active work', () => {
+  const { repository, root } = kbRepository()
+  const path = join(root, 'Weekly.md')
+  writeFileSync(path, activity('retired'))
+  expect(outcomes(repository)[0]?.status).toBe('PASS')
+  expect(
+    createHousekeepingSession(options(repository)).subjects[0]?.context().templates.schedules[0]?.message
+  ).toContain('no run is eligible')
+  writeFileSync(path, activity('retired').replace('active_run: null', 'active_run: KI-BASE-001'))
+  expect(outcomes(repository)[0]?.message).toContain('retirement requires explicit disposition')
+})
+
+test('recurring Activity rejects malformed profiles, duplicate YAML keys, wrong field spellings and duplicate identities', () => {
+  const { repository, root } = kbRepository()
+  const path = join(root, 'Weekly.md')
+  for (const content of [
+    activity().replace('housekeeping:\n', 'housekeeping: true\n'),
+    activity().replace('  cadence: P1W', '  cadence: P1W\n  cadence: P1D'),
+    activity().replace('  last_run: null', '  last-run: null'),
+    activity().replace('  active_run: null', '  active_run: []'),
+    activity().replace('  cadence: P1W', '  cadence: [P1W]'),
+    activity().replace('  last_run: null', '  last_run: 9999-12-31')
+  ]) {
+    writeFileSync(path, content)
+    expect(outcomes(repository)[0]?.status).toBe('VIOLATION')
+  }
+  writeFileSync(path, activity())
+  writeFileSync(join(root, 'Duplicate.md'), activity())
+  expect(outcomes(repository).every((outcome) => outcome.message.includes('identity must be unique'))).toBe(true)
+})
+
+test('recurring Activity shares the roadmap reservation and remains read-only', () => {
+  const { repository, root } = kbRepository()
+  writeFileSync(join(root, 'Weekly.md'), activity().replace('active_run: null', 'active_run: KI-BASE-001'))
+  const roadmap = join(repository, 'Streams', 'Roadmap')
+  mkdirSync(roadmap, { recursive: true })
+  writeFileSync(
+    join(roadmap, 'KI-BASE-001-review.md'),
+    '---\nid: KI-BASE-001\nstatus: draft\nhousekeeping_template: KI-BASE-HK-001\nscheduled_for: 2026-09-28\n---\n'
+  )
+  expect(outcomes(repository)[0]?.status).toBe('PASS')
+  const session = createHousekeepingSession(options(repository))
+  expect(session.subjects[0]?.context().templates.schedules[0]?.message).toContain('Schedule action: blocked;')
+  expect(session.proposal()).toEqual({ writes: [] })
+})
+
+test('retained Streams definitions block scheduling without being moved or deleted', () => {
+  const { repository, root } = kbRepository()
+  writeFileSync(join(root, 'Weekly.md'), activity())
+  const oldRoot = join(repository, 'Streams', 'Housekeeping')
+  mkdirSync(oldRoot, { recursive: true })
+  const path = join(oldRoot, 'Retained.md')
+  writeFileSync(path, 'retained work')
+  expect(outcomes(repository)[0]).toMatchObject({ status: 'VIOLATION', subject: 'Streams/Housekeeping' })
+  expect(
+    createHousekeepingSession(options(repository)).subjects[0]?.context().templates.schedules[0]?.message
+  ).toContain('no schedule was evaluated')
+  expect(readFileSync(path, 'utf8')).toBe('retained work')
+})
+
+test('housekeeping rejects escaped and symlinked collections and malformed configuration', () => {
+  const repository = temporaryDirectory()
+  const outside = temporaryDirectory()
+  writeFileSync(join(outside, 'Weekly.md'), activity())
+  symlinkSync(outside, join(repository, 'linked'))
+  for (const location of ['../outside', outside, 'linked', 'linked/subdir']) {
+    writeFileSync(
+      join(repository, '.ki.toml'),
+      `[skills.ki-repo]\nrepo_type = "kb"\n[skills.ki-repo-kb-activities]\nactivities_dir = "${location}"\n`
+    )
+    expect(outcomes(repository)[0]?.status).toBe('VIOLATION')
+  }
+  writeFileSync(join(repository, '.ki.toml'), 'invalid [')
+  expect(outcomes(repository)[0]?.message).toContain('malformed repository configuration')
 })
 
 test('rejects future successful-run dates through the hosted template contract without writes', () => {

@@ -5,9 +5,9 @@ ki-applicability: declaration-only
 ki-depends-on: []
 contributes: ['.ki.toml']
 description: >
-  Govern recurring repository-housekeeping templates, cadence or commit-volume eligibility, last-run evidence,
-  and due-run spawning through `ki-next`. Use to define or audit recurring maintenance; runtime state cleanup
-  belongs to the relevant `ki-housekeeping-*` skill.
+  Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates
+  and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and
+  `ki-housekeeping-*` skills own runtime cleanup.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
@@ -17,9 +17,9 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 ## Shared model
 
-A housekeeping template is a durable instruction to create ordinary work when its cadence becomes due. It has a small lifecycle: `active` templates are evaluated, `paused` templates are retained but never spawn work, and a retired template is deleted. Calendar due and overdue are calculated from `cadence`, `last-run`, and `grace`; an optional `commit-threshold` also makes work due from verified first-parent history after `last-run-ref`. These are computed evidence, not stored states. Use the owner's [read-only schedule capability](scripts/rubric/contexts/schedule.ts) for evaluation; it never creates runs.
+A housekeeping definition is a durable instruction to create ordinary work when its cadence becomes due. Active definitions are evaluated; paused definitions never spawn work. Project templates are explicitly deleted on retirement; KB Activities retain retired rationale without scheduling. Calendar due and overdue are calculated from cadence, successful-run evidence, and grace; an optional commit threshold also makes work due from verified first-parent history. These are computed evidence, not stored states. Use the owner's [read-only schedule capability](scripts/rubric/contexts/schedule.ts) after filtering retired Activities; it never creates runs.
 
-In a non-KB repository templates live directly below `docs/housekeeping/`. In a KB, the equivalent template notes live at `Streams/Housekeeping/`; it is an operational area, not a delivery state. `ki-next` reads active templates and atomically creates a linked `draft` run at the template's declared horizon while setting `active-run`. The run then follows the common `draft` → `ready` → `in-progress` → `awaiting-review` → `done` lifecycle.
+Project templates live directly below `docs/housekeeping/`. A KB uses an Activity note in the collection owned by `ki-repo-kb-activities`, with one nested `housekeeping` profile; there is no duplicate definition in Streams. The standard owns the exact field mapping. `ki-next` reads active definitions and atomically creates a linked `draft` run while reserving that definition's active run. The run follows the common lifecycle through `ki-accept`; an external scheduler grants no additional authority.
 
 `ki-accept` records the actual successful completion date and evidenced reviewed revision on the template only after the run is `done`. It never marks a template as run merely because a draft was created. An unfinished linked run prevents a duplicate spawn.
 
@@ -50,7 +50,7 @@ On the cadence in [the sources](references/sources.md), compare observed templat
 - `ki-next` selects, promotes, defers, and spawns due work; this skill only defines its inputs.
 - `ki-plan`, `ki-implement`, and `ki-accept` own the spawned run's readiness, delivery, review, closure, and later pruning.
 - Runtime-specific state-hygiene skills may be named by a recurring template, but they do not own this template model.
-- `Housekeeping` is a KB Streams operational area. It does not replace horizon metadata on the due roadmap run.
+- `ki-repo-kb-activities` owns the KB Activity and collection; this skill owns the optional recurring-work profile in that same note. Ordinary Activities remain outside this lifecycle.
 
 ## Runtime binding
 

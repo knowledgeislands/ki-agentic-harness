@@ -1,14 +1,25 @@
 # Housekeeping template standard
 
+## Contents
+
+- [Scope](#scope)
+- [Placement and identity](#placement-and-identity)
+- [Frontmatter](#frontmatter)
+- [KB recurring-work profile](#kb-recurring-work-profile)
+- [Optional execution environments](#optional-execution-environments)
+- [Due-run procedure](#due-run-procedure)
+- [KB adapter](#kb-adapter)
+- [Retention](#retention)
+
 ## Scope
 
 This standard defines durable recurring-work templates. A template is not a roadmap item: it is the source from which `ki-next` may spawn one due run. The run uses the common forward-work lifecycle and carries the template identifier plus its scheduled date. Partition templates by independently runnable purpose and cost, not by every artifact type.
 
 ## Placement and identity
 
-Non-KB repositories use one flat template directory, `docs/housekeeping/`, with filenames `<REPO>-HK-<NNN>-<slug>.md`. Knowledge Bases use the dedicated `Streams/Housekeeping/` operational area, with an orientation note `Housekeeping.md` and templates named `<Name> Housekeeping.md`.
+Project repositories use one flat template directory, `docs/housekeeping/`, with filenames `<REPO>-HK-<NNN>-<slug>.md`. Knowledge Bases use one canonical Activity note in the collection owned by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`, or its configured `activities_dir`). There is no second KB template in Streams.
 
-Every template has a stable `id` in `<REPO>-HK-<NNN>` form. Non-KB filenames repeat that identifier followed by a lowercase kebab-case slug. KB filenames follow the base's note naming convention, while frontmatter retains the same identifier and `type: stream-housekeeping`.
+Every recurring definition has a stable `id` in `<REPO>-HK-<NNN>` form, unique within its collection. Project filenames repeat that identifier followed by a lowercase kebab-case slug. KB filenames follow the Activity note convention; the same note holds both the adopted behaviour and its recurring-work profile.
 
 ## Frontmatter
 
@@ -28,7 +39,7 @@ active-run: null
 ---
 ```
 
-`status` is `active` or `paused`. Retiring a template means deleting it after its future schedule is deliberately ended; do not retain a `retired` marker.
+`status` is `active` or `paused` for Project templates. Retiring a Project template means explicitly ending its schedule and disposing any active run before deleting the template. KB Activities also permit retained `retired` status with rationale and `housekeeping.active_run: null`; retired Activities never enter schedule evaluation. `cadence` and `grace` are ISO-8601 calendar durations using one positive unit: `P<n>D`, `P<n>W`, or `P<n>M`. `last-run` is the evidenced ISO date of the last successfully completed review, or `null` without successful-run evidence. A future `last-run` blocks evaluation. `active-run` is `null` or the linked run identity. `spawn-policy` is `manual`, `when-due`, or `when-overdue`; `spawn-horizon` is one of `now`, `next`, `soon`, `future`, `waiting-for`, or `parked`. The KB profile maps these fields as described below.
 
 `cadence` and `grace` are ISO-8601 calendar durations using one positive unit: `P<n>D`, `P<n>W`, or `P<n>M`. `last-run` is the evidenced ISO date of the last successfully completed review, or `null` for a template without successful-run evidence. A future `last-run` is invalid completion evidence and blocks evaluation; it cannot postpone calendar review or enable volume-triggered work. `active-run` is `null` or the linked run identity. `spawn-policy` is `manual`, `when-due`, or `when-overdue`; `spawn-horizon` is one of `now`, `next`, `soon`, `future`, `waiting-for`, or `parked`.
 
@@ -41,7 +52,38 @@ An opted-in threshold with an absent or null anchor is valid but its volume is u
 
 The body has non-empty `## Goal`, `## Procedure`, `## Successful-run evidence`, and `## Obsolescence` sections. It is a concise source record, not a history log.
 
-AUDIT accepts only regular Markdown files below the selected root. It checks required and optional frontmatter fields, valid calendar dates, non-KB filename identity, KB note naming plus `type: stream-housekeeping`, and required body sections. An `active-run` must resolve to exactly one unfinished local roadmap record which names the template in `housekeeping_template` and has a valid `scheduled_for` date. No two templates may name the same active run.
+AUDIT accepts only safe regular Markdown files below the selected root, without following symbolic links. Project templates admit only the required and optional fields above. A KB Activity keeps its normal Activity and KB metadata; only its nested `housekeeping` mapping has a closed scheduling schema. The audit checks identity, dates, body sections, and linkage. A non-null active-run must resolve to exactly one unfinished roadmap record naming this definition in `housekeeping_template` and carrying a valid `scheduled_for` date. No two definitions may name the same active run.
+
+## KB recurring-work profile
+
+An Activity opts into this lifecycle by declaring a `housekeeping` mapping. Declare and activate `ki-work-housekeeping` alongside `ki-repo-kb-activities`; the latter owns Activity identity, indexing, realization, and the location binding, while this skill owns the recurring profile. An ordinary Activity without the mapping is not a housekeeping template, even if it has a scheduled realization.
+
+Keep `id`, `title`, and `status` at the Activity's top level. Use snake_case inside the mapping: required `cadence`, `last_run`, `grace`, `spawn_policy`, `spawn_horizon`, and `active_run`; optional `commit_threshold` and `last_run_ref`. These map one-to-one to the Project template's hyphenated fields. There is one status, not a second nested lifecycle. All schedule and acceptance rules below apply to those mapped fields.
+
+```yaml
+---
+note_type: admin/operations/activity
+id: EXAMPLE-HK-001
+title: Weekly review
+status: active
+realization: manual
+author: Repository owner
+housekeeping:
+  cadence: P1W
+  last_run: null
+  last_run_ref: null
+  grace: P1D
+  spawn_policy: manual
+  spawn_horizon: next
+  active_run: null
+---
+```
+
+Use the normal Activity body plus the four recurring-work sections above. The example is a manually admitted obligation, not permission to create or activate a schedule. An external scheduler's name and environment remain realization metadata, not the authority for cadence, procedure, or successful-run evidence.
+
+## Optional execution environments
+
+Recurring definitions are repository-owned and remain usable by a person or another execution environment with the declared skills and tooling. A scheduler may trigger evaluation and coordinate a run, but does not own another backlog or successful-run state. Before spawning, every caller re-reads the same definition and uses the same serialised reservation; an existing active run is reused or reported, never duplicated. Schedule activation, repairs, acceptance, and pruning retain their separate authority gates. Capture durable outcomes and learning in their repository-owned destinations rather than only in scheduler history.
 
 ## Due-run procedure
 
@@ -67,7 +109,7 @@ Failed, abandoned, or superseded runs do not advance either successful-run field
 
 ## KB adapter
 
-`Streams/Housekeeping/` is a visible source area for recurring obligations, not a permanent pile of active work. A due run becomes a linked item in `Streams/Roadmap/`; its delivery horizon is frontmatter metadata. The base's change-management gate applies whenever the run changes a canonical KB zone.
+The Activity note is the sole standing definition; a due run becomes a linked item in `Streams/Roadmap/`, with its horizon in frontmatter. The base's canonical-change gate applies to adopted behaviour and profile changes. Approval of a run and its closure must explicitly cover the bounded profile reservation and evidence updates; canonical placement is not permission for arbitrary Admin edits. Preserve stable IDs, active-run links, successful dates, reviewed revisions, and rationale when reconciling retained Streams templates into Activities. Conflicting or duplicate definitions block scheduling pending an owner-approved reconciliation; audits and conform do not move or delete them.
 
 ## Retention
 

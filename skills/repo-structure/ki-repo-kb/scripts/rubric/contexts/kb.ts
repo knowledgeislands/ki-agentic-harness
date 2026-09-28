@@ -25,8 +25,7 @@ const delegatedNoteTypeRecord = (
   relativePath: string,
   zones: { readonly streams: string; readonly inbound: string; readonly outbound: string }
 ): boolean => {
-  if (relativePath.startsWith(`${zones.streams}/Roadmap/`) || relativePath.startsWith(`${zones.streams}/Housekeeping/`))
-    return true
+  if (relativePath.startsWith(`${zones.streams}/Roadmap/`)) return true
 
   const segments = relativePath.split('/')
   if (

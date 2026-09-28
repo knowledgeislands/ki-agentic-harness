@@ -18,6 +18,7 @@ test('the catalogue exposes the complete ordered Activity family', () => {
     'ACT-R-2',
     'ACT-R-3',
     'ACT-R-4',
+    'ACT-R-5',
     'ACT-J-1',
     'ACT-J-2',
     'ACT-J-3',
@@ -42,7 +43,7 @@ test('criteria expose complete v1 remediation and review metadata', () => {
   const mechanical = items.filter((item) => item.mechanical)
   const judgment = items.filter((item) => item.judgment)
 
-  expect(mechanical).toHaveLength(12)
+  expect(mechanical).toHaveLength(13)
   expect(mechanical.every((item) => item.mechanical?.remediation)).toBe(true)
   expect(judgment).toHaveLength(6)
   expect(

@@ -18,6 +18,8 @@ test('Paperclip coordination keeps relationship criteria judgment-led', () => {
     'COORD-9',
     'COORD-10',
     'COORD-11',
+    'COORD-12',
+    'COORD-13',
     'ORG-1',
     'RUBRIC-1'
   ])
@@ -42,4 +44,27 @@ test('workspace retirement distinguishes the automatic sweep from warned early c
   expect(metadata).toContain('automatic sweep')
   expect(metadata).toContain('early close')
   expect(metadata).toContain('explicit authority')
+})
+
+test('runtime replacement preserves repository continuity and authority without promising self-containment', () => {
+  const replacement = items.find((candidate) => candidate.code === 'COORD-12')
+  const metadata = `${replacement?.description}\n${replacement?.judgment?.prompt}`
+
+  expect(replacement?.sources).toContain('standards-agent-coordination-paperclip.md#replaceable-coordination')
+  expect(metadata).toContain('declared dependencies verified')
+  expect(metadata).toContain('without Paperclip task UI or agent memory')
+  expect(metadata).toContain('holds')
+  expect(metadata).toContain('without copying secrets')
+  expect(metadata).toContain('permission to repeat in-flight work')
+})
+
+test('routine review includes canonical definitions, independent acceptance and activation decisions', () => {
+  const recurring = items.find((candidate) => candidate.code === 'COORD-13')
+  const metadata = `${recurring?.description}\n${recurring?.judgment?.prompt}`
+
+  expect(recurring?.sources).toContain('standards-existing-estate-onboarding.md#reconcile-recurring-obligations')
+  expect(metadata).toContain('one appropriate repository definition')
+  expect(metadata).toContain('home-project ownership')
+  expect(metadata).toContain('one active run and independent acceptance')
+  expect(metadata).toContain('schedule, timezone and budget before activation')
 })

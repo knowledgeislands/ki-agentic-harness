@@ -52,6 +52,8 @@ Activity note structure, frontmatter, realization-specific declarations, and saf
   - _Remediation:_ diagnostic — Declare the external scheduler’s actual task name for the scheduled activity.
 - **ACT-R-4 [M] — scheduled-task registration** — Scheduled-task registrations are surfaced for verification in their external environment. (standards-activities.md)
   - _Remediation:_ diagnostic — Verify the named task in its external scheduler and update the activity note or scheduler registration through the owning environment.
+- **ACT-R-5 [M] — recurring-work lifecycle owner** — An Activity with a housekeeping mapping requires declared ki-work-housekeeping; that capability validates its schedule, identity, and run evidence in the same note. (standards-activities.md#recurring-work-profile)
+  - _Remediation:_ diagnostic — Declare and activate ki-work-housekeeping for recurring-work Activities, then audit its profile. Do not create a duplicate template or start a run.
 - **ACT-J-1 [J] — activity note clarity** — Each activity note body explains what the activity does, when it runs, and why it was adopted. (standards-activities.md)
   - _Evidence scope:_ Every activity note body and its stated purpose, trigger, and adoption rationale.
   - _Review prompt:_ Does each activity note clearly explain what it does, when it runs, and why it was adopted?

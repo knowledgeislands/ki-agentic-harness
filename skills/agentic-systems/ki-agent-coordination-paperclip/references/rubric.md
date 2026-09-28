@@ -73,6 +73,16 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does bootstrap resolve an evidenced company/Agora binding, report ambiguity, map repository kind and primary shape consistently, reconcile rather than duplicate work, and distinguish source rollout from verified live adoption?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-12 [J] — Replaceable coordination** — Repository-owned knowledge, obligations and evidence support continuity without Paperclip, with declared dependencies verified and authority preserved. (standards-agent-coordination-paperclip.md#replaceable-coordination)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Could an authorised human or alternate agent reconstruct procedures, work state, holds, decisions and evidence without Paperclip task UI or agent memory, using verified declared skills and tooling, without copying secrets or treating runtime replacement as permission to repeat in-flight work?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-13 [J] — Repository-owned recurring obligations** — Bootstrap reconciles repository definitions and routine projections through the owning recurring-work lifecycle before approving schedules. (standards-agent-coordination-paperclip.md#recurring-activities-and-routines, standards-existing-estate-onboarding.md#reconcile-recurring-obligations)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, while resolving checklist coverage, holds, duplicate routines and exact scope, schedule, timezone and budget before activation?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## ORG — Paperclip organisation identity
 

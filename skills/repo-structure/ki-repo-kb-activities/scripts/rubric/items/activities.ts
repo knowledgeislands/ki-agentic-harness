@@ -512,6 +512,41 @@ const ACT_R_4: RubricItem<ActivitiesContext> = {
   }
 }
 
+const ACT_R_5: RubricItem<ActivitiesContext> = {
+  code: 'ACT-R-5',
+  title: 'recurring-work lifecycle owner',
+  description:
+    'An Activity with a housekeeping mapping requires declared ki-work-housekeeping; that capability validates its schedule, identity, and run evidence in the same note.',
+  sources: [`${SOURCE}#recurring-work-profile`],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Declare and activate ki-work-housekeeping for recurring-work Activities, then audit its profile. Do not create a duplicate template or start a run.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        const stop = unavailable(context)
+        if (stop) return stop
+        const notes = context.notes.filter((note) => note.recurring)
+        if (!notes.length)
+          return [{ status: 'NOT_APPLICABLE', message: 'No Activities opt into the recurring-work lifecycle.' }]
+        return notes.map(
+          (note): AuditOutcome => ({
+            status: context.configuration.housekeepingDeclared ? 'PASS' : 'VIOLATION',
+            message: context.configuration.housekeepingDeclared
+              ? 'Recurring-work lifecycle owner is declared; ki-work-housekeeping validates this same Activity note.'
+              : 'A housekeeping profile requires [skills.ki-work-housekeeping] and its installed capability.',
+            subject: note.relative
+          })
+        )
+      }
+    }
+  }
+}
+
 const ACT_J_1: RubricItem<ActivitiesContext> = {
   code: 'ACT-J-1',
   title: 'activity note clarity',
@@ -600,6 +635,7 @@ export const ACT: RubricFamily<ActivitiesRubricContext, ActivitiesContext> = {
     ACT_R_2,
     ACT_R_3,
     ACT_R_4,
+    ACT_R_5,
     ACT_J_1,
     ACT_J_2,
     ACT_J_3,

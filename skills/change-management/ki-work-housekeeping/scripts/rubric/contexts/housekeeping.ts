@@ -1,5 +1,6 @@
 import { lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { basename, join, relative, resolve } from 'node:path'
+import { basename, isAbsolute, join, relative, resolve } from 'node:path'
+import { parse as parseYaml } from 'yaml'
 import type { AuditOutcome, RubricContextOptions, RubricPublicationContext, RubricSession } from '../types.ts'
 import { evaluateHousekeepingSchedule, FULL_COMMIT_REF, type HousekeepingSchedule } from './schedule.ts'
 
@@ -9,7 +10,16 @@ const CADENCE = /^P[1-9]\d*[DWM]$/
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 const HORIZONS = new Set(['now', 'next', 'soon', 'future', 'waiting-for', 'parked'])
 const RUN_STATES = new Set(['draft', 'ready', 'in-progress', 'awaiting-review'])
-const REPO_CONFIG = 'ki-repo'
+const KB_SCHEDULE_FIELDS = new Set([
+  'cadence',
+  'last_run',
+  'grace',
+  'spawn_policy',
+  'spawn_horizon',
+  'active_run',
+  'commit_threshold',
+  'last_run_ref'
+])
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 export type HousekeepingRubricContext = {
@@ -17,7 +27,12 @@ export type HousekeepingRubricContext = {
   templates: { outcomes: readonly AuditOutcome[]; schedules: readonly AuditOutcome[] }
 }
 
-type Frontmatter = { values: Readonly<Record<string, string>>; body: string; errors: readonly string[] }
+type Frontmatter = {
+  values: Readonly<Record<string, string>>
+  body: string
+  errors: readonly string[]
+  selected: boolean
+}
 type Template = {
   id: string
   activeRun: string | null
@@ -45,22 +60,63 @@ const directory = (path: string): boolean => {
   }
 }
 
-const frontmatter = (content: string): Frontmatter => {
-  const match = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(content)
-  if (!match) return { values: {}, body: content, errors: ['must begin with a complete YAML frontmatter block'] }
+const present = (path: string): boolean => {
+  try {
+    lstatSync(path)
+    return true
+  } catch {
+    return false
+  }
+}
+const safeContainedPath = (root: string, path: string): boolean => {
+  const value = relative(root, path)
+  if (!value || isAbsolute(value) || value === '..' || value.startsWith('../')) return false
+  let cursor = root
+  for (const segment of value.split('/')) {
+    cursor = join(cursor, segment)
+    if (present(cursor) && !directory(cursor)) return false
+  }
+  return true
+}
+const record = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+
+const frontmatter = (content: string, kb = false): Frontmatter => {
+  const match = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)([\s\S]*)$/.exec(content)
+  if (!match)
+    return {
+      values: {},
+      body: content,
+      selected: !kb,
+      errors: kb && !content.startsWith('---') ? [] : ['must begin with a complete YAML frontmatter block']
+    }
   const values: Record<string, string> = {}
   const errors: string[] = []
-  for (const line of (match[1] ?? '').split('\n')) {
-    const field = /^([a-z][a-z0-9_-]*):\s*(.*?)\s*$/.exec(line)
-    if (!field?.[2]) {
-      errors.push(`has an invalid frontmatter line: ${line || '(blank)'}`)
-      continue
+  let selected = !kb
+  try {
+    const document: unknown = parseYaml(match[1] ?? '')
+    if (!record(document)) throw new Error('frontmatter must be a mapping')
+    selected = !kb || Object.hasOwn(document, 'housekeeping')
+    if (kb && !selected) return { values, body: match[2] ?? '', errors, selected }
+    let fields = document
+    if (kb) {
+      if (!record(document.housekeeping)) throw new Error('housekeeping must be a mapping')
+      fields = { id: document.id, title: document.title, status: document.status }
+      for (const [key, value] of Object.entries(document.housekeeping)) {
+        if (!KB_SCHEDULE_FIELDS.has(key)) errors.push(`has unexpected housekeeping field '${key}'`)
+        else fields[key.replaceAll('_', '-')] = value
+      }
     }
-    const key = field[1] as string
-    if (key in values) errors.push(`repeats frontmatter field '${key}'`)
-    else values[key] = field[2] as string
+    for (const [key, value] of Object.entries(fields)) {
+      if (value === undefined) continue
+      if (value !== null && typeof value !== 'string' && !(key === 'commit-threshold' && typeof value === 'number'))
+        errors.push(`field '${key}' must be a scalar of the declared type`)
+      values[key] = value === null ? 'null' : String(value)
+    }
+  } catch (error) {
+    errors.push(`has invalid YAML or housekeeping profile: ${error instanceof Error ? error.message : String(error)}`)
   }
-  return { values, body: match[2] ?? '', errors }
+  return { values, body: match[2] ?? '', errors, selected }
 }
 
 const validDate = (value: string): boolean => {
@@ -74,27 +130,30 @@ const hasBodySection = (body: string, heading: string): boolean => {
   return Boolean(section?.[1].trim())
 }
 
-const isKb = (root: string): boolean => {
+const repositoryLayout = (root: string): { kb: boolean; templateRoot: string; errors: string[] } => {
   const config = join(root, '.ki.toml')
-  if (!file(config)) return false
+  const project = { kb: false, templateRoot: join(root, 'docs', 'housekeeping'), errors: [] }
+  if (!present(config)) return project
+  if (!file(config)) return { ...project, errors: ['Repository configuration is not a safe regular file.'] }
   try {
     const parsed = TOML.parse(readFileSync(config, 'utf8')) as Record<string, unknown>
-    const skills = parsed.skills
-    const table = skills && typeof skills === 'object' ? (skills as Record<string, unknown>)[REPO_CONFIG] : undefined
-    return (
-      typeof table === 'object' &&
-      table !== null &&
-      !Array.isArray(table) &&
-      (table as Record<string, unknown>).repo_type === 'kb'
-    )
+    const skills = record(parsed.skills) ? parsed.skills : {}
+    const kb = record(skills['ki-repo']) && skills['ki-repo'].repo_type === 'kb'
+    if (!kb) return project
+    // Consume the Activities-owned location binding; its owner validates the table.
+    const activities = record(skills['ki-repo-kb-activities']) ? skills['ki-repo-kb-activities'] : {}
+    const location = activities.activities_dir ?? 'Admin/Operations/Activities'
+    if (typeof location !== 'string' || !location.trim() || isAbsolute(location))
+      return { ...project, kb: true, errors: ['The Activities collection binding must be a non-empty relative path.'] }
+    return { kb, templateRoot: resolve(root, location.trim()), errors: [] }
   } catch {
-    return false
+    return { ...project, errors: ['Cannot resolve recurring-work placement from malformed repository configuration.'] }
   }
 }
 
 const runIndex = (root: string, kb: boolean): ReadonlyMap<string, Run[]> => {
   const roadmap = kb ? join(root, 'Streams', 'Roadmap') : join(root, 'docs', 'roadmap')
-  if (!directory(roadmap)) return new Map()
+  if (!safeContainedPath(root, roadmap) || !directory(roadmap)) return new Map()
   const runs = new Map<string, Run[]>()
   for (const entry of readdirSync(roadmap, { withFileTypes: true })) {
     const path = join(roadmap, entry.name)
@@ -128,7 +187,6 @@ const templateErrors = ({
   const expected = new Set([
     'id',
     'title',
-    ...(kb ? ['type'] : []),
     'status',
     'cadence',
     'last-run',
@@ -145,12 +203,12 @@ const templateErrors = ({
   const id = parsed.values.id
   if (!id || !TEMPLATE_ID.test(id)) errors.push('has an invalid housekeeping template id')
   if (!parsed.values.title?.trim()) errors.push('has an empty title')
-  if (kb && parsed.values.type !== 'stream-housekeeping') errors.push("must declare type 'stream-housekeeping'")
   if (!kb && (!id || !new RegExp(`^${id}-[a-z0-9]+(?:-[a-z0-9]+)*\\.md$`).test(basename(path))))
     errors.push('filename must repeat the template id followed by a lowercase kebab-case slug')
-  if (kb && !/^(?:[A-Z][A-Za-z0-9 -]* )?Housekeeping\.md$/.test(basename(path)))
-    errors.push("KB template filename must follow the '<Name> Housekeeping.md' note convention")
-  if (!['active', 'paused'].includes(parsed.values.status ?? '')) errors.push("status must be 'active' or 'paused'")
+  if (!(kb ? ['active', 'paused', 'retired'] : ['active', 'paused']).includes(parsed.values.status ?? ''))
+    errors.push(kb ? "status must be 'active', 'paused', or 'retired'" : "status must be 'active' or 'paused'")
+  if (kb && parsed.values.status === 'retired' && parsed.values['active-run'] !== 'null')
+    errors.push('retirement requires explicit disposition of active-run before retaining the retired Activity')
   if (!CADENCE.test(parsed.values.cadence ?? '')) errors.push('cadence must be a positive one-unit ISO-8601 duration')
   if (!CADENCE.test(parsed.values.grace ?? '')) errors.push('grace must be a positive one-unit ISO-8601 duration')
   if (parsed.values['last-run'] !== 'null' && !validDate(parsed.values['last-run'] ?? ''))
@@ -175,18 +233,47 @@ const templateErrors = ({
   return errors
 }
 
+const collectionEntries = (root: string, recursive: boolean): string[] =>
+  readdirSync(root)
+    .sort()
+    .flatMap((name) => {
+      const path = join(root, name)
+      return recursive && directory(path) ? collectionEntries(path, true) : [path]
+    })
+
 export const createHousekeepingSession = ({
   repository,
   publication
 }: RubricContextOptions): RubricSession<HousekeepingRubricContext> => {
   const root = resolve(repository)
   const today = new Date().toISOString().slice(0, 10)
-  const kb = isKb(root)
-  const templateRoot = kb ? join(root, 'Streams', 'Housekeeping') : join(root, 'docs', 'housekeeping')
+  const layout = repositoryLayout(root)
+  const { kb, templateRoot } = layout
   const relativeRoot = relative(root, templateRoot)
-  const outcomes: AuditOutcome[] = []
+  const outcomes: AuditOutcome[] = layout.errors.map((message) => ({
+    status: 'VIOLATION',
+    message,
+    subject: '.ki.toml'
+  }))
   const schedules: AuditOutcome[] = []
-  if (!directory(templateRoot)) {
+  if (kb && present(join(root, 'Streams', 'Housekeeping'))) {
+    outcomes.push({
+      status: 'VIOLATION',
+      message:
+        'Reconcile retained Streams/Housekeeping records into canonical Activity notes before scheduling; preserve identities, run links, and review evidence. No files were moved or deleted.',
+      subject: 'Streams/Housekeeping'
+    })
+  }
+  if (!safeContainedPath(root, templateRoot)) {
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'Recurring-work collection must be a contained path without symbolic links or non-directory ancestors.',
+      subject: relativeRoot
+    })
+  }
+  if (outcomes.length) {
+    schedules.push({ status: 'INFO', message: 'Collection evidence is invalid; no schedule was evaluated.' })
+  } else if (!directory(templateRoot)) {
     outcomes.push({
       status: 'NOT_APPLICABLE',
       message: 'No housekeeping template directory is present.',
@@ -194,11 +281,11 @@ export const createHousekeepingSession = ({
     })
   } else {
     const templates: Template[] = []
-    for (const entry of readdirSync(templateRoot, { withFileTypes: true })) {
-      const path = join(templateRoot, entry.name)
+    for (const path of collectionEntries(templateRoot, kb)) {
+      const name = basename(path)
       const subject = relative(root, path)
-      if (kb && entry.name === 'Housekeeping.md' && file(path)) continue
-      if (!entry.name.endsWith('.md') || !file(path)) {
+      if (kb && file(path) && (path === join(templateRoot, 'Activities.md') || !name.endsWith('.md'))) continue
+      if (!name.endsWith('.md') || !file(path)) {
         outcomes.push({
           status: 'VIOLATION',
           message: 'Housekeeping template root contains an unsafe or unexpected entry.',
@@ -206,7 +293,8 @@ export const createHousekeepingSession = ({
         })
         continue
       }
-      const parsed = frontmatter(readFileSync(path, 'utf8'))
+      const parsed = frontmatter(readFileSync(path, 'utf8'), kb)
+      if (kb && !parsed.selected && !parsed.errors.length) continue
       templates.push({
         id: parsed.values.id ?? '',
         activeRun: parsed.values['active-run'] === 'null' ? null : (parsed.values['active-run'] ?? null),
@@ -223,6 +311,11 @@ export const createHousekeepingSession = ({
       })
 
     const runs = runIndex(root, kb)
+    const identities = new Map<string, number>()
+    for (const template of templates) identities.set(template.id, (identities.get(template.id) ?? 0) + 1)
+    for (const template of templates)
+      if ((identities.get(template.id) ?? 0) > 1)
+        template.errors.push('housekeeping identity must be unique in the collection')
     const activeOwners = new Map<string, Template[]>()
     for (const template of templates)
       if (template.activeRun)
@@ -252,6 +345,14 @@ export const createHousekeepingSession = ({
       })
       if (template.errors.length) continue
       const values = template.values
+      if (values.status === 'retired') {
+        schedules.push({
+          status: 'INFO',
+          subject: template.subject,
+          message: 'Retired Activity retained for rationale and evidence; no run is eligible.'
+        })
+        continue
+      }
       const evaluation = evaluateHousekeepingSchedule({
         repository: root,
         today,
