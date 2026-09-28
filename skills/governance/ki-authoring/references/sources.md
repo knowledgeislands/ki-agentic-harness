@@ -8,13 +8,13 @@ The sources behind [the enforcement standard](standards-authoring.md), [the Mark
 
 | Source                      | Governs                                                     | Last reviewed |
 | --------------------------- | ----------------------------------------------------------- | ------------- |
-| [CommonMark spec][cm]       | the Markdown syntax baseline                                | 2026-08-12    |
-| [rumdl rules][ru]           | the `MDxxx` rules enforced, their options, and reflow modes | 2026-08-12    |
-| [rumdl global settings][rgs] | configuration-file and global-setting semantics | 2026-08-12 |
-| [rumdl CLI][rcli] | `check --fix` behaviour and exit semantics | 2026-08-12 |
-| [rumdl releases][rr] | current upstream release | 2026-08-12 |
-| [GitHub alert guidance][ga] | GitHub alert labels, purpose, and Markdown form             | 2026-08-12    |
-| [TOML spec][toml]           | TOML syntax for the shared `.ki.toml`                | 2026-08-12    |
+| [CommonMark spec][cm]       | the Markdown syntax baseline                                | 2026-09-28    |
+| [rumdl rules][ru]           | the `MDxxx` rules enforced, their options, and reflow modes | 2026-09-28    |
+| [rumdl global settings][rgs] | configuration-file and global-setting semantics | 2026-09-28 |
+| [rumdl CLI][rcli] | `check --fix` behaviour and exit semantics | 2026-09-28 |
+| [rumdl releases][rr] | current upstream release | 2026-09-28 |
+| [GitHub alert guidance][ga] | GitHub alert labels, purpose, and Markdown form             | 2026-09-28    |
+| [TOML spec][toml]           | TOML syntax for the shared `.ki.toml`                | 2026-09-28    |
 
 ## Advisory
 
@@ -22,7 +22,7 @@ Advisory sources inform local judgment conventions but are not specifications, m
 
 | Source                | Informs                                                 | Last reviewed |
 | --------------------- | ------------------------------------------------------- | ------------- |
-| [Standard Readme][sr] | README entry-point structure and reader discoverability | 2026-08-29    |
+| [Standard Readme][sr] | README entry-point structure and reader discoverability | 2026-09-28    |
 
 [cm]: https://spec.commonmark.org/
 [ru]: https://rumdl.dev/rules
@@ -35,16 +35,17 @@ Advisory sources inform local judgment conventions but are not specifications, m
 
 ## Last review
 
-REFRESH last run **2026-08-12**. CommonMark 0.31.2, TOML 1.1.0, GitHub alerts, rumdl's rules/configuration/CLI documentation, and the rumdl release surface were rechecked.
+REFRESH last run **2026-09-28**. CommonMark 0.31.2, TOML 1.1.0, GitHub alerts, rumdl's release surface were rechecked. rumdl updated from v0.2.54 to v0.2.77 with two new rules. rumdl.dev was unreachable during this refresh; rules page re-fetch deferred to next run.
 
-- **Standard Readme:** Reviewed as a library-oriented advisory source. Purpose, orientation, proportional navigation, installation, usage, contribution, and licence discoverability informed the local README convention; fixed headings, ordering, badges, line thresholds, and licence placement were not imported.
-- **CommonMark:** accessible. Version 0.31.2 (released 2024-01-28) confirmed still current; no newer version. Syntax baseline unchanged.
-- **rumdl:** v0.2.54 released 2026-08-11. A 2026-08-20 direct `rumdl 0.2.54 check --fix` reproduction confirms that MD005 still misreads an ordered list inside a blockquote nested in a list item, and MD075 still misreads pipe-formatted rows after a blockquote; both remain disabled because their fixes can rewrite valid structure. The included `dda35d54d654` fix also treats an aliased wikilink as one MD056 cell under the Obsidian flavor; other flavors deliberately retain GFM pipe semantics. This repository uses the standard flavor and forbids wikilinks, so MD056 is enabled for detection and listed as unfixable to prevent a destructive standard-flavor autofix. `MD033`, `MD036`, and `MD057` remain separate house/content decisions. The global-settings and CLI references are the authority for config discovery and `check --fix`, rather than the rules page alone.
-- **GitHub alerts:** added as a judgment convention. GitHub documents five labels (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, and `CAUTION`), advises using alerts sparingly, and reserves them for information important enough to break prose flow.
-- **TOML:** v1.1.0 remains current. Its additions are additive and do not affect value quoting, short inline arrays, or explanatory comments. Key and table identity are intentionally excluded here because `ki-repo` owns that semantic contract.
-- **Convention change this run:** table column alignment moves from the mechanical layer to the judgment layer, because no rumdl setting reproduces the former conditional padding. The wide-table → footnote convention is now load-bearing rather than advisory.
+- **Standard Readme:** No significant structural changes observed. Sections remain advisory; house README convention is unchanged.
+- **CommonMark:** Version 0.31.2 (released 2024-01-28) confirmed still current. Syntax baseline unchanged.
+- **rumdl:** Updated from v0.2.54 to **v0.2.77** (latest as of 2026-09-28). New rules added since last review: **MD093** (opt-in: detect inline formatting within headings, added in v0.2.75) and **MD094** (reports invalid UTF-8 sequences with position, added in v0.2.76). Also: MD013 received optional link-text-wrapping and bracket-display-math fixes; MD044 gained opt-in whole-word matching. MD005 and MD075 reproductions not retested this run (rumdl.dev inaccessible); standing deferrals remain until retested.
+- **GitHub alerts:** Five labels (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`) confirmed unchanged. Sparing-use guidance unchanged.
+- **TOML:** v1.1.0 confirmed still current.
 - **Standing check:** a rule this configuration disables is a deferral, not a verdict. Re-test each one against its recorded reproduction on every rumdl upgrade, and re-enable the ones upstream has fixed — otherwise a defensive setting outlives the defect and quietly costs the coverage it was meant to protect.
 - **Open watch-items:**
+  - **MD093** (new in v0.2.75, opt-in): detects inline formatting in headings. Evaluate whether to enable for this estate; decide and record the outcome in a future Mode CONFORM or Mode REFRESH run.
+  - **MD094** (new in v0.2.76): reports invalid UTF-8 sequences with position. Evaluate whether to enable. Low risk to enable given the harness is ASCII/valid-UTF-8; decide and record.
   - `MD056` is fixed for aliased wikilinks under the Obsidian flavor in 0.2.54. Under the standard flavor, `[[Target|Label]]` correctly retains GFM pipe semantics and is reported as an extra table cell. The house configuration keeps that useful finding but marks MD056 unfixable, so `check --fix` preserves the source. Re-test both flavors and the no-fix guard on each upgrade.
   - Block constructs are recognised on soft-wrapped continuation lines, which is one root cause behind three separate corruptions. A line beginning `##]` is admitted as an ATX heading although CommonMark requires a space after the hash run, and `MD022`, `MD018` and `MD026` then split the paragraph and delete its full stop. An empty list item after a wrapped line is read as a setext heading, and `MD003` injects a literal `##` mid-sentence. `MD030` reads `8.Does ownership...` as a marker with no space and inserts one. To re-test each: run the construct through `rumdl check --fix` and through a reference CommonMark parser, and confirm they now agree. No rule is disabled here in the house configuration, because the harness content does not carry these constructs — `kit-legal` disables `MD030` locally and defuses the other two by rejoining the wraps at source.
   - `MD013` reflow silently skips any paragraph containing a `|`, so a wikilink-heavy base is less normalised than a clean gate implies. Non-destructive, and no rule is disabled for it. To re-test: write a wrapped paragraph containing `[[Target|Label]]` and confirm `rumdl check --fix` joins it to one line.
