@@ -25,6 +25,8 @@ Project templates live directly below `docs/housekeeping/`. A KB uses an Activit
 
 ## Operating modes
 
+When adopting recurring repository review, use the stock [Project template](assets/repository-review-project.md) or [KB Activity template](assets/repository-review-activity.md), following the standard's [stock-review adoption rules](references/standards-housekeeping.md#stock-repository-review). Both invoke the master `ki-repo` REVIEW checklist; neither activates a schedule.
+
 Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes. `help` / `-h` / `?` explains the skill and stops; no recognised mode offers the same explanation and, only interactively, asks for a mode and target.
 
 ### Mode AUDIT

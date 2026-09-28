@@ -4,6 +4,7 @@
 
 - [Scope](#scope)
 - [Placement and identity](#placement-and-identity)
+- [Stock repository review](#stock-repository-review)
 - [Frontmatter](#frontmatter)
 - [KB recurring-work profile](#kb-recurring-work-profile)
 - [Optional execution environments](#optional-execution-environments)
@@ -20,6 +21,18 @@ This standard defines durable recurring-work templates. A template is not a road
 Project repositories use one flat template directory, `docs/housekeeping/`, with filenames `<REPO>-HK-<NNN>-<slug>.md`. Knowledge Bases use one canonical Activity note in the collection owned by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`, or its configured `activities_dir`). There is no second KB template in Streams.
 
 Every recurring definition has a stable `id` in `<REPO>-HK-<NNN>` form, unique within its collection. Project filenames repeat that identifier followed by a lowercase kebab-case slug. KB filenames follow the Activity note convention; the same note holds both the adopted behaviour and its recurring-work profile.
+
+## Stock repository review
+
+Repository review is a stock recurring obligation for both Projects and Knowledge Bases. Use the [Project template](../assets/repository-review-project.md) or [KB Activity template](../assets/repository-review-activity.md) when adopting it. The master checklist, invocation, assessment output and review-evidence retention remain owned by `ki-repo` REVIEW; do not copy the checklist into the definition or an execution routine.
+
+The proposed cadence is weekly (`P1W`), with ad-hoc review through the same definition and active-run guard. Templates start paused with manual admission: availability in the stock set is not adoption or activation. Before adoption, reconcile existing engineering, knowledge and repository reviews; reuse an equivalent definition and its identity, evidence and active run rather than creating a duplicate. A weekly bounded review may reference deeper periodic reviews without repeating them. Record an explicit reason if repository review is not applicable.
+
+Replace the example identity with an allocated repository-local ID only when no equivalent definition exists. Place a Project template under its identity-bearing filename, or a KB Activity in its configured collection with the actual author, required KB metadata and index entry. Preserve established successful-run evidence; do not populate it from the current date or revision. Declare the applicable skills and agree the review's purpose, scope, depth/budget and repository-owned evidence destination before enabling the obligation. Keep scheduler day/time, IANA timezone and approved dispatch settings in the execution binding, not invented housekeeping fields.
+
+Each run uses `ki-repo` REVIEW to examine purpose and ecosystem fit, consolidation, drift, learning and possible repositioning, redirection or retirement, applying only relevant checklist sections. Compare with the evidenced last-reviewed revision where available; a missing baseline remains an explicit gap. This is judgement-led assessment, not a substitute for mechanical audit/conform. Existing findings and work are reconciled before recommending new work. Findings propose routes; they do not authorise repository repairs, direction changes, work adoption, acceptance, pruning or publication.
+
+The assessment itself is read-only. Admission and approved evidence return are separate bounded lifecycle writes: agree the exact retained output before dispatch, use the normal run record and `ki-repo` review-retention contract, and keep durable conclusions in their owning repository records. Only approved `ki-accept` closure updates the definition's successful-run fields. An external routine points to this canonical definition and uses the same admission guard as an ad-hoc caller; it is not another checklist or backlog.
 
 ## Frontmatter
 
