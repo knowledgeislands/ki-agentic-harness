@@ -11,7 +11,6 @@
 harnesses = ["knowledgeislands/ki-agentic-harness"]
 
 [skills.ki-repo]
-repo_type = "project"
 primary_shape = "ki-repo-harness"
 repository = "https://github.com/knowledgeislands/ki-agentic-harness"
 title = "ki-agentic-harness"
