@@ -72,9 +72,14 @@ const sameArguments = (expected: readonly string[], actual: unknown, home: strin
       typeof actual[index] === 'string' &&
       (actual[index] === argument || actual[index] === renderedArgument(argument, home))
   )
-const same = (entry: ServerEntry, actual: Record<string, unknown> | undefined, home: string): boolean => {
+const same = (
+  entry: ServerEntry,
+  actual: Record<string, unknown> | undefined,
+  home: string,
+  client: 'claude-code' | 'claude-desktop'
+): boolean => {
   if (!actual) return false
-  if ('url' in entry) return actual.type === 'url' && actual.url === entry.url
+  if ('url' in entry) return actual.type === entry.transports[client] && actual.url === entry.url
   return (
     (actual.type === undefined || actual.type === 'stdio') &&
     sameCommand(entry.command, actual.command, home) &&
@@ -146,5 +151,7 @@ export const targetMatches = (
   home: string
 ): ReturnType<typeof targeted> | null =>
   sourceState.kind === 'valid' && targetState.kind === 'valid'
-    ? targeted(sourceState.entries, client).filter((entry) => !same(entry, targetState.servers[entry.name], home))
+    ? targeted(sourceState.entries, client).filter(
+        (entry) => !same(entry, targetState.servers[entry.name], home, client)
+      )
     : null

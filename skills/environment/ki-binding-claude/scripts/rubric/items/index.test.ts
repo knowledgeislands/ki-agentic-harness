@@ -171,13 +171,27 @@ test('the Claude target rejects unsafe command, argument, and environment equiva
 test('the Claude target keeps URL comparison exact and ignores unrelated native servers', () => {
   const entry = {
     name: 'ki-url',
-    clients: ['claude-code'],
+    clients: ['claude-code', 'claude-desktop'],
     url: 'https://example.invalid/mcp',
-    transports: { 'claude-code': 'http' }
+    transports: { 'claude-code': 'http', 'claude-desktop': 'sse' }
   } as unknown as Extract<ServerEntry, { url: string }>
-  const exact = { type: 'url', url: entry.url }
+  const exact = { type: 'http', url: entry.url }
 
   expect(claudeMismatches(entry, exact, '/Users/example', { unrelated: { url: 'https://other.invalid' } })).toEqual([])
+  expect(
+    targetMatches(
+      { kind: 'valid', entries: [entry] },
+      'claude-desktop',
+      {
+        kind: 'valid',
+        path: '/Users/example/claude_desktop_config.json',
+        servers: { [entry.name]: { type: 'sse', url: entry.url } }
+      },
+      '/Users/example'
+    )
+  ).toEqual([])
+  expect(claudeMismatches(entry, { ...exact, type: 'sse' })).toEqual([entry])
+  expect(claudeMismatches(entry, { ...exact, type: 'url' })).toEqual([entry])
   expect(claudeMismatches(entry, { ...exact, url: 'https://wrong.invalid/mcp' })).toEqual([entry])
   expect(
     targetMatches(
