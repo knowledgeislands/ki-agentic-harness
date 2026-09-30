@@ -95,6 +95,7 @@ Use these recurring concerns as discovery prompts, not mandatory schedules for e
 
 - Daily repository preflight: audit plus conform dry-run before the company report; separately authorised repairs require convergence evidence.
 - Daily company change-log report at 08:00 in the chosen IANA timezone: previous-day delivered results, current health, blockers and today's focus. Record incomplete or blocked preflight rather than claiming a clean estate.
+- Regular next-work review: each repository project checks its selected work queue, reconciles active and retained work first, and dispatches approved Ready delivery only when the existing authority, owners, workspace and review path are sufficient. Otherwise it returns the smallest decision needed; a routine or Ready label does not authorise selection, implementation or integration.
 - Weekly work/delivery and knowledge reconciliation: retained work, task links, unresolved decisions, delivered evidence and useful learning.
 - Ad-hoc and weekly judgment review: use the same master `ki-repo` REVIEW checklist to assess purpose, consolidation, drift, learning and possible repositioning, redirection or retirement. Scope each invocation by revision, last-reviewed baseline, depth and budget; preserve gaps where that baseline is unavailable. Keep proposals distinct from adopted work or permission to change direction.
 - Monthly capability and risk review where relevant. Reuse existing deeper engineering or knowledge-reconciliation routines; a weekly bounded review must not duplicate their scope.
