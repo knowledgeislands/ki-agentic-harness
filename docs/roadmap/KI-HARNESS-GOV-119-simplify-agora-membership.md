@@ -4,12 +4,12 @@ area: GOV
 title: Simplify Agora membership
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 07707804caeb36983aaa369a507aed37cfb9c248
 created_at: 2026-09-27T19:09:14Z
-updated_at: 2026-09-30T13:46:24Z
+updated_at: 2026-09-30T14:08:18Z
 ---
 
 # KI-HARNESS-GOV-119: Simplify Agora membership
@@ -94,6 +94,10 @@ The migrated declarations preserve participant identities without role equality.
 ### Mini recap
 
 Role-free membership is implemented and all 44 declarations are committed. The eight Agoras and the focused estate audit are healthy. The harness gates pass; one unrelated CLI coverage function remains uncovered. The durable contract is in `ki-agora` and `GDR-KI-HARNESS-006`, while the shared fundamentals amendment and output grouping retain their own work owners.
+
+## Done
+
+Accepted 2026-09-30 by Kris Brown on the review packet above.
 
 ## Discussion
 
