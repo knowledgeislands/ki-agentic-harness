@@ -184,7 +184,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Repository governance
 
 - [ ] The repository declaration reflects what the repository now contains.
-- [ ] Agora declarations identify the intended owner independently of projection order. Check whether the first projected repository is that owner or an explicitly intended exception, and verify reciprocal membership separately; being listed first grants no ownership or authority.
+- [ ] An Agora is declared only by its owning repository, whose identity supplies the owner. Check its direct members and optional inclusions against intended scope; alphabetical projection and inclusion grant no ownership or authority.
 - [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
 - [ ] In a multi-runtime repository, root `AGENTS.md` is the authoritative home for shared runtime-neutral guidance.
 - [ ] Where root `CLAUDE.md` accompanies `AGENTS.md`, it imports `AGENTS.md` and contains only Claude-specific additions.
