@@ -7,6 +7,9 @@ Use one repeatable company-level bootstrap task in the workspace-free Coordinati
 ## Contents
 
 - [Starting a repeatable bootstrap](#starting-a-repeatable-bootstrap)
+- [Approve an outcome, not every step](#approve-an-outcome-not-every-step)
+- [Minimum needed to start useful work](#minimum-needed-to-start-useful-work)
+- [Roadmap-to-delivery loop](#roadmap-to-delivery-loop)
 - [Inventory before provisioning](#1-inventory-before-provisioning)
 - [Establish ownership boundaries](#2-establish-ownership-boundaries)
 - [Reconcile work and task identities](#3-reconcile-work-and-task-identities)
@@ -17,9 +20,45 @@ Use one repeatable company-level bootstrap task in the workspace-free Coordinati
 
 Use the [bootstrap task brief](../assets/bootstrap-task.md) without company-code or Agora placeholders. It resolves the current company through the coordination standard's [identity procedure](standards-agent-coordination-paperclip.md#resolving-the-current-company-and-agora). A missing binding becomes a concrete decision, not an inferred name. If the coordination skill is not yet assigned or discoverable, include its verified local `SKILL.md` path in the task until company-level access is established.
 
-The first run drafts a plan only. It identifies changes and repository-project tasks without creating them or changing repositories. After approval, reuse the same bootstrap task to apply only the approved scope, verify it, and retain unresolved decisions for the next run. An approved audit and conform preview does not approve applying the preview.
+Start from the actual request and existing approvals. A request for a plan or read-only assessment stays within that boundary. A request to carry out an agreed bootstrap continues its authorised work; do not reset it to planning or seek the same permission again. The reusable brief permits bounded read-only discovery tasks in existing repository projects, so Coordination can obtain evidence without inspecting repositories itself. A more restrictive caller instruction overrides that permission. Creating a missing project, applying repository changes and starting a schedule still require their applicable authority. An approved audit and conform preview does not approve applying the preview.
 
-Make the human-facing plan a one-screen decision brief, not a reproduction of the bootstrap inventory; aim for no more than about 250 words without cutting context needed to decide. Lead with what is working, what remains blocked, and the single next action that actually needs approval. State its purpose, proposed owner, permitted change, explicit boundary, expected result and any decision the human must make in everyday language. A question must stand alone: explain what happened, what the agents have already checked, what remains unknown, why this needs the human rather than an authorised operator, the recommended choice and the consequence of waiting. Keep detailed findings, exact bytes or diffs, prior revisions, checks and later work in stable linked supporting records; links support the explanation but do not replace it. An approval of the brief covers only that named action; a supporting record is evidence, not a bundle of implicitly approved future actions. If no decision is needed, report status without manufacturing an approval request. Preserve accepted approvals and avoid repeating an investigation whose unchanged result already identifies a missing owner, permission or execution route.
+Make the human-facing plan a one-screen decision brief; aim for no more than about 250 words without cutting context needed to decide. Lead with the useful result, what already works, the proposed changes and the decision needed. Name the work, owner, review and delivery path, limits and expected result. Keep detailed inventories, diffs, prior revisions and verification evidence in linked supporting records. A question must explain the situation, what has already been checked, why the human's judgement is needed, the recommended choice and the consequence of waiting. If no decision is needed, proceed within the existing authority and report progress.
+
+## Approve an outcome, not every step
+
+The bounded next action is a useful outcome, such as preparing one named roadmap item or delivering its agreed result. It may contain several technical steps. Present known setup, roadmap preparation, implementation, review and local integration permissions together when they are needed for that outcome and their scope is concrete. The human can approve that defined sequence once. Separate responsibilities and verification gates remain in force; they do not require separate human confirmations when the approval already covers them. A linked technical record cannot silently enlarge the approved scope.
+
+Use the same repository task across preparation and delivery where its governing item and purpose remain the same; record the phase and approval as they change. Create separate tasks for a different repository, an independent reviewer or a genuinely distinct outcome. Do not create a task for every check, commit or hand-off. A completed historical task need not be reopened or have its workspace migrated solely to enable new work; preserve its evidence and configure the appropriate active task.
+
+Preparing a repository plan means shaping the governing roadmap draft and its task links through the repository's work adapter, when those writes are authorised. Include that writing boundary and its local commit in the preparation scope. Do not claim to prepare the item while forbidding all roadmap writes and returning another Paperclip-only plan. An explicitly read-only assessment may return a proposal, but it must say the repository item is still unprepared.
+
+Ask again only when a real decision is missing or has changed: selecting unapproved work, changing its meaning or priority, lifting a hold, resolving contested edits, exceeding the agreed budget, hiring, publishing, or obtaining a missing permission. Check tools and supported settings through the authorised operator before asking the human to investigate them. An agent's limited access is not a reason to repeat discovery or to ask the human who should investigate when that owner is already known.
+
+## Minimum needed to start useful work
+
+For the next operation, establish the owning repository project, its current instructions and usable runtime, the relevant roadmap state and holds, and authority for that operation. Before implementation, also establish the separate working copy, required checks, independent reviewer and authorised integration owner. Planning can proceed while later delivery permissions are being resolved, provided its own prerequisites and write scope are satisfied.
+
+Choose the workspace for the operation. Repository-project read-only assessment may use the designated primary checkout; every roadmap write uses its serialised primary-checkout boundary. Neither requires an implementation worktree first. Canonical-content implementation uses isolation. Verify the instructions, capabilities and store bindings in the checkout actually used for each phase; a failure in a newly created worktree need not prevent authorised assessment through the working primary checkout.
+
+Fresh worktrees may lack ignored skill projections and local store bindings. Include the supported preparation and verification of those in the implementation setup scope. Resolve required skills through verified runtime discovery or an explicitly supported canonical-source route; missing generated links and unreadable skills are different findings. Resolve external stores from the repository's authoritative existing bindings, never from a guessed directory name, and do not register a temporary worktree as another estate member just to satisfy a checker. If the runtime has no supported way to use a required binding, route that concrete setup defect to its operator while independent planning continues.
+
+For local delivery, resolve the designated checkout's current local destination commit before provisioning and verify the worktree starts from that commit. Do not assume a platform's `main` setting uses local `main`; some prefer a remote-tracking branch. Use a supported explicit commit or verified local-ref setting, and revalidate before integration. A clean isolated copy does not settle ownership of an uncommitted primary edit. Preserve contested paths and stop overlapping writes or integration, while allowing independent read-only assessment and authorised disjoint work.
+
+Classify each bootstrap finding as blocking the next operation, affecting a later operation, or follow-up improvement. A missing backup report, optional schedule, unrelated repository finding or styling correction does not block an otherwise authorised roadmap task. A failed prerequisite required by the selected work process does block that operation; return its specific repair and owner rather than repeating the entire bootstrap assessment. Never report an incomplete health check as passed.
+
+Report operational readiness separately from complete bootstrap reconciliation. One repository can be ready for a first delivery while other setup remains open. Keep those remaining obligations visible and owned, without making a perfectly reconciled estate a prerequisite for useful work.
+
+## Roadmap-to-delivery loop
+
+Each repository project owns this loop, using its selected `ki-work` adapter. Coordination receives the result and handles dependencies. Check at the agreed next-work cadence and after relevant completion, approval or dependency events; a schedule must be explicitly configured before claiming it will run.
+
+1. **Finish what has started.** Reconcile active work, retained branches, review and integration before starting another delivery. A `task_links` association is provenance, not an exclusive work claim; check the current task and repository evidence.
+2. **Deliver selected Ready work.** Dispatch when the approved scope and required delivery permissions are present. A Ready label alone is insufficient; request any missing authority as one outcome-focused decision.
+3. **Prepare selected drafts.** If no Ready item is available, examine adopted Now or Next drafts and recommend the next eligible item. With selection and preparation authority, use `ki-plan` to shape that actual record and its task links. Bring back its concrete plan for the approval required to mark it Ready and, where requested and fully specified, implement and locally integrate it. No Ready work is a reason to prepare work, not to idle indefinitely or rerun bootstrap.
+4. **Ask about priorities when necessary.** If only Soon, Future, Triage, held or meaningfully competing work is available, follow `ki-next` ordering, recommend one item with a short reason and request the missing selection, promotion or adoption decision. Do not promote it silently, infer release of a hold or import the whole roadmap into Paperclip.
+5. **Return the result to the repository.** Record implementation, checks, independent review, destination commit and task links. Paperclip task completion and KI acceptance remain separate. Keep delivered roadmap items available for human acceptance and any later explicit prune; a routine does not accept or prune them.
+
+Begin with one active delivery per repository and at most one next item being prepared, unless an approved arrangement selects greater concurrency. Reuse live tasks and recurring-run reservations so scheduled and ad-hoc checks cannot dispatch the same work twice. Recheck only evidence invalidated by a relevant change; a repeated blocked run with no new evidence should retain its existing owner and waiting path.
 
 ## 1. Inventory before provisioning
 
@@ -99,7 +138,7 @@ Use these recurring concerns as discovery prompts, not mandatory schedules for e
 
 - Daily repository preflight: audit plus conform dry-run before the company report; separately authorised repairs require convergence evidence.
 - Daily company change-log report at 08:00 in the chosen IANA timezone: previous-day delivered results, current health, blockers and today's focus. Record incomplete or blocked preflight rather than claiming a clean estate.
-- Regular next-work review: each repository project checks its selected work queue, reconciles active and retained work first, and dispatches approved Ready delivery only when the existing authority, owners, workspace and review path are sufficient. Otherwise it returns the smallest decision needed; a routine or Ready label does not authorise selection, implementation or integration.
+- Regular next-work review: run the [roadmap-to-delivery loop](#roadmap-to-delivery-loop), including preparation of selected drafts when no Ready work exists. Reconcile existing work before dispatch, and request only the missing selection or delivery decision. A routine or Ready label does not itself grant that authority.
 - Weekly work/delivery and knowledge reconciliation: retained work, task links, unresolved decisions, delivered evidence and useful learning.
 - Ad-hoc and weekly judgment review: use the same master `ki-repo` REVIEW checklist to assess purpose, consolidation, drift, learning and possible repositioning, redirection or retirement. Scope each invocation by revision, last-reviewed baseline, depth and budget; preserve gaps where that baseline is unavailable. Keep proposals distinct from adopted work or permission to change direction.
 - Monthly capability and risk review where relevant. Reuse existing deeper engineering or knowledge-reconciliation routines; a weekly bounded review must not duplicate their scope.
@@ -110,7 +149,7 @@ The list is reconciled with existing obligations, not imported wholesale as new 
 
 Before enabling any proposed routine, agree its exact scope, schedule including weekly day/time and IANA timezone, depth or budget, evidence destination and single-active-run safeguard. Determine a preflight start or dependency that can feed the 08:00 report without pretending a failed or late run passed. A routine triggers the governing due-run lifecycle; it does not independently spawn a duplicate of a run created by `ki-next`, accept the result or grant repository writes. Draft-only bootstrap does not activate schedules.
 
-Discover each repository's purpose and existing work before proposing hires or a small first delivery batch. Name the needed role, first assignment, independent reviewer and integration owner; do not hire agents or bulk-import the work backlog by default. Human approval of the proposed roles and selected work remains separate from bootstrap reconciliation.
+Discover each repository's purpose and existing work before proposing hires or a small first delivery batch. Name the needed role, first assignment, independent reviewer and integration owner; do not hire agents or bulk-import the work backlog by default. Roles, work selection and delivery permissions are distinct decisions that may share one concrete, explicitly approved bootstrap outcome; reconciliation alone grants none of them.
 
 ## 4. Prove one local delivery path
 

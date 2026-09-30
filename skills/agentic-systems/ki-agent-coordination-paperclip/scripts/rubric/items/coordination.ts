@@ -131,10 +131,12 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
         'Bootstrap resolves company identity from verified context and styling from repository kind and primary shape, preserving approval boundaries.',
       sources: [
         `${STANDARD}#resolving-the-current-company-and-agora`,
-        'standards-existing-estate-onboarding.md#project-styling'
+        'standards-existing-estate-onboarding.md#project-styling',
+        'standards-existing-estate-onboarding.md#approve-an-outcome-not-every-step',
+        'standards-existing-estate-onboarding.md#minimum-needed-to-start-useful-work'
       ],
       judgment: judgment(
-        'Does bootstrap resolve an evidenced company/Agora binding, report ambiguity, map repository kind and primary shape consistently, reconcile rather than duplicate work, and distinguish source rollout from verified live adoption?'
+        'Does bootstrap resolve company/Agora identity and deterministic styling, reuse existing work and approvals, group known steps into a bounded outcome, distinguish immediate blockers from later improvements, and verify live adoption without repeated setup-only approvals or treating source rollout as operational success?'
       )
     },
     {
@@ -154,10 +156,11 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
         'Bootstrap reconciles repository definitions and routine projections through the owning recurring-work lifecycle before approving schedules.',
       sources: [
         `${STANDARD}#recurring-activities-and-routines`,
-        'standards-existing-estate-onboarding.md#reconcile-recurring-obligations'
+        'standards-existing-estate-onboarding.md#reconcile-recurring-obligations',
+        'standards-existing-estate-onboarding.md#roadmap-to-delivery-loop'
       ],
       judgment: judgment(
-        'Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, while resolving checklist coverage, holds, duplicate routines and exact scope, schedule, timezone and budget before activation?'
+        'Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, with approved scope, schedule, timezone and budget before activation; and does next-work review finish existing work, dispatch authorised Ready items and prepare selected drafts without silently adopting, releasing holds, accepting or pruning work?'
       )
     },
     {
