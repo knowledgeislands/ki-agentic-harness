@@ -54,6 +54,8 @@ Project ownership and agent roles are distinct. The same role may coordinate in 
 
 Explain bootstrap status and decisions in ordinary language first: which repository already has a project, which proposed project change is waiting for a complete check, what can continue now, and who needs to act. Put API routes, permission scope, timestamps and other proof underneath that summary. Do not turn a coordinator's limited visibility into a request for the principal to reconstruct Paperclip's project records or repeat an approval that remains valid.
 
+Keep a bootstrap approval request about one bounded next action, not the entire historical assessment or a chain of possible later actions. State the decision, owner, allowed change, limits and expected return briefly; link the detailed evidence and exact technical scope rather than pasting it into the approval surface. A cited record preserves reviewability but does not enlarge the action being approved. Report status without requesting approval when no new decision is needed.
+
 ## Identity model
 
 Keep these identities separate because they change on different cadences:
