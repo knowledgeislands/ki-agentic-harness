@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T06:59:13Z
-updated_at: 2026-09-30T06:59:13Z
+updated_at: 2026-09-30T07:40:00Z
 ---
 
 # Route MCP through mcporter
@@ -32,20 +32,32 @@ Own the portable surface-selection rule and its placement across `ki-binding`, `
 
 ## Current state
 
-Captured and adopted into Now at the principal's direction on 30 September 2026. The local Paperclip bridge route is unverified, and no skill text has changed.
+Captured and adopted into Now at the principal's direction on 30 September 2026. No skill text has changed.
+
+Planning evidence, inspected locally on 30 September 2026 against Paperclip `2026.916.1`:
+
+- Each run receives a fresh temporary `HOME`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `CLAUDE_CONFIG_DIR` and `CODEX_HOME` (`@paperclipai/server/dist/services/ai-connection-runtime.js`). User-scoped Claude Code and Codex MCP configuration, including the `ki-mcporter` bridge entry, therefore never reaches a run. Pinning `PAPERCLIP_GITHUB_HOST_HOME` fixes `ki` audits only.
+- Paperclip injects MCP servers into runs itself and supports operator-configured generic remote MCP connections through its tool gateway. Private and loopback endpoints are accepted unless the deployment is both `authenticated` and `public` (`allowPrivateRemoteEndpoints` in `services/tool-access.js` and `services/tool-gateway.js`).
+- The local instance binds to loopback with `exposure: "private"`, so a connection to `http://127.0.0.1:3333/mcp` is admissible. The bridge answered an unauthenticated probe with HTTP 405. No existing Paperclip connection to the bridge was verified, and no run was exercised.
 
 ## Steps
 
-- [ ] Establish from a live or retained local Paperclip run whether the `ki-mcporter` bridge is configured and reachable, and record the evidence scope.
-- [ ] State the surface-selection rule once in `ki-binding`: host-bound runtimes use the host's mcporter bridge, cloud sessions use claude.ai connectors, and an unauthorised connector in a host-bound session is expected state.
-- [ ] Extend the `ki-binding-claude` web convention to cite that rule without restating it.
-- [ ] State in `ki-agent-coordination-paperclip` how a run reaches the host bridge, or that it has no MCP route and what the prerequisite is, and the requirements a remote Paperclip host must meet.
-- [ ] Add or adjust rubric items and tests where the rule becomes checkable.
-- [ ] Offer the principal a one-line pointer for the chezmoi-managed user instructions; applying it stays with chezmoi.
+- [ ] `ki-binding` standard: add a **Host surface selection** section. A host-bound runtime (Claude Code, Desktop, Codex or a Paperclip run, on any host) reaches KI MCP servers through that host's mcporter bridge. claude.ai connectors belong to cloud sessions. An unauthorised connector in a host-bound session is expected state, reported only when a task needs that service and no bridge route provides it. Each host owns its inventory, bridge and secret store, and never depends on another host's loopback bridge.
+- [ ] `ki-binding` SKILL.md: add one sentence pointing to that section.
+- [ ] `ki-binding` rubric: add judgment item `BIND-J2` (host bridge is the local MCP route) in `scripts/rubric/items/bind.ts` and its index test.
+- [ ] `ki-binding-claude` standard: extend the claude.ai web bullet to cloud sessions and connectors, citing the `ki-binding` section without restating it.
+- [ ] `ki-agent-coordination-paperclip` standard: add **MCP access in runs** under interaction and skill composition. Run isolation excludes user MCP configuration, so the supported route is a Paperclip remote MCP connection to the host bridge, granted through Paperclip's connection mechanism. Bootstrap verifies access in a real run and reports a missing connection as a provisioning prerequisite. Never widen the audit home-pinning to MCP access.
+- [ ] `ki-agent-coordination-paperclip` remote-delivery prerequisite: add the remote-host MCP requirements (own bridge and inventory, service-scoped secrets, private exposure reached through session manager or mesh, no default tunnel to the laptop, public exposure only with a separately decided authenticated HTTPS endpoint).
+- [ ] `ki-agent-coordination-paperclip` rubric: add judgment item `COORD-14` (run MCP access) in `scripts/rubric/items/coordination.ts` and its index test; record the dated Paperclip evidence in `references/sources.md`.
+- [ ] Regenerate rubric publications with `ki dev skill rubric` for all three skills.
+- [ ] After delivery, offer the principal a one-line pointer for the chezmoi-managed user instructions; applying it stays outside this item.
 
 ## Files touched
 
-Expected: `skills/environment/ki-binding/` (SKILL.md, standards and rubric), `skills/environment/ki-binding-claude/references/`, and `skills/agentic-systems/ki-agent-coordination-paperclip/references/`, plus generated rubric publications and focused tests. Exact paths are fixed during planning.
+- `skills/environment/ki-binding/SKILL.md`, `references/standards-cross-surface-binding.md`, `references/rubric.md`, `scripts/rubric/items/bind.ts`, `scripts/rubric/items/index.test.ts`
+- `skills/environment/ki-binding-claude/references/standards-claude-binding.md`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`, `references/rubric.md`, `references/sources.md`, `scripts/rubric/items/coordination.ts`, `scripts/rubric/items/index.test.ts`
+- Generated catalogue or plugin projections only where the pre-commit or rubric generator requires them.
 
 ## Verify
 
@@ -59,7 +71,7 @@ No local build-order dependency. Related: `KI-HARNESS-RTP-002` (Cowork reachabil
 
 ### Decision Records
 
-Assess whether the surface-selection rule is a durable choice that needs a Decision Record rather than standard prose alone.
+None. The rule is standard prose with judgment items; a remote exposure choice belongs to Techne when it resumes.
 
 ### Specifications
 
@@ -67,7 +79,7 @@ None expected.
 
 ### Guides
 
-The Paperclip guidance gains the run-to-bridge route or its stated prerequisite.
+The Paperclip guidance gains the run-to-bridge route, its prerequisite, and remote-host requirements.
 
 ### Roadmap
 
