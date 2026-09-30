@@ -4,12 +4,12 @@ area: RTP
 title: Route MCP through mcporter
 theme: runtime-portability
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: ce3ba688f261486eb5db5476e4bbb01045a43de0
 created_at: 2026-09-30T06:59:13Z
-updated_at: 2026-09-30T08:20:00Z
+updated_at: 2026-09-30T11:23:18Z
 ---
 
 # Route MCP through mcporter
@@ -117,6 +117,10 @@ The rule is stated once in `ki-binding` and cited, not restated, by both other s
 ### Mini recap
 
 Local and future remote agents now have one documented MCP route: their own host's mcporter bridge. Next: accept through `ki-accept`, then optionally create the Paperclip bridge connection and add the user-instruction pointer through chezmoi.
+
+## Done
+
+Accepted 2026-09-30 by Kris Brown on the review packet above.
 
 ## Discussion
 
