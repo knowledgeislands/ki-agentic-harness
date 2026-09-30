@@ -325,7 +325,7 @@ Maintain an evidence-backed radar for agentic protocols, interfaces, organisatio
 
 #### `ki-agora`
 
-Govern reciprocal Agora membership: a KI home declares purpose, canonical members, and roles, while each member independently consents. Use to define or audit declarations; the `ki` CLI owns local resolution and environment tooling owns client projections.
+Govern reciprocal Agora membership: a KI home declares purpose and canonical members, while each member independently consents. Use to define or audit declarations; the `ki` CLI owns local resolution and environment tooling owns client projections.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

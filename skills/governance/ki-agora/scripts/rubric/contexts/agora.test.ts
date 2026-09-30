@@ -53,13 +53,12 @@ test('canonical home and membership declarations pass local shape validation', (
             'https://github.com/knowledgeislands/home'
           ],
           references: ['https://github.com/example/plain-git-repository'],
-          members: { 'https://github.com/knowledgeislands/tools-ki': 'maintainer' }
+          members: ['https://github.com/knowledgeislands/tools-ki']
         }
       },
       memberships: {
         'knowledge-islands': {
-          home: 'https://github.com/knowledgeislands/ki-agentic-harness',
-          role: 'maintainer'
+          home: 'https://github.com/knowledgeislands/ki-agentic-harness'
         }
       }
     })
@@ -72,7 +71,7 @@ test('canonical home and membership declarations pass local shape validation', (
     }
   ])
   expect(outcomes(session, MEMBERSHIP)).toEqual([
-    { status: 'PASS', message: 'Agora memberships use canonical home and role shape.' }
+    { status: 'PASS', message: 'Agora memberships use canonical home shape.' }
   ])
 })
 
@@ -84,13 +83,10 @@ test('local shape rejects malformed declarations without observing a peer', () =
         Knowledge_Islands: {
           owner: 'not a repository',
           purpose: '',
-          members: {
-            'not a repository': 'not a role',
-            'https://github.com/knowledgeislands/home': 'owner'
-          }
+          members: ['not a repository', 'https://github.com/knowledgeislands/home']
         }
       },
-      memberships: { 'knowledge-islands': { home: 'not a repository', role: 'not a role', extra: true } }
+      memberships: { 'knowledge-islands': { home: 'not a repository', role: 'member', extra: true } }
     })
   )
 
@@ -99,7 +95,6 @@ test('local shape rejects malformed declarations without observing a peer', () =
     'home Knowledge_Islands owner must be a canonical HTTPS GitHub repository',
     'home Knowledge_Islands requires a non-empty purpose',
     'home Knowledge_Islands member not a repository must be a canonical HTTPS GitHub repository',
-    'home Knowledge_Islands member not a repository role must be a lower-case hyphenated identifier',
     'home Knowledge_Islands must not list its own repository as a member'
   ])
   expect(outcomes(session, MEMBERSHIP)).toContainEqual({
@@ -121,7 +116,7 @@ test('unknown fields fail closed and a local declaration never becomes reciproca
         team: {
           owner: 'https://github.com/knowledgeislands/home',
           purpose: 'Team work',
-          members: {},
+          members: [],
           target_policy: ['editor']
         }
       }
@@ -157,7 +152,7 @@ test('ordered projection is a duplicate-free prefix of the declared participants
             'https://github.com/knowledgeislands/tools-ki',
             'https://github.com/knowledgeislands/unknown'
           ],
-          members: { 'https://github.com/knowledgeislands/tools-ki': 'maintainer' }
+          members: ['https://github.com/knowledgeislands/tools-ki']
         }
       }
     })
@@ -183,7 +178,7 @@ test('external references are canonical, unique, non-member, and owner-selected'
             'https://github.com/knowledgeislands/tools-ki',
             'https://github.com/knowledgeislands/tools-ki'
           ],
-          members: { 'https://github.com/knowledgeislands/tools-ki': 'maintainer' }
+          members: ['https://github.com/knowledgeislands/tools-ki']
         }
       }
     })
@@ -206,7 +201,7 @@ test('local shape requires each home to name its declaring owner', () => {
         team: {
           owner: 'https://github.com/knowledgeislands/other',
           purpose: 'Team work',
-          members: {}
+          members: []
         }
       }
     })
@@ -217,4 +212,33 @@ test('local shape requires each home to name its declaring owner', () => {
     message: 'home team owner must match its declaring repository',
     subject: '.ki.toml'
   })
+})
+
+test('role-bearing legacy declarations and repeated members are rejected', () => {
+  const root = fixture()
+  const session = createAgoraSession(
+    options(root, {
+      homes: {
+        legacy: {
+          owner: 'https://github.com/knowledgeislands/home',
+          purpose: 'Shared work',
+          members: { 'https://github.com/knowledgeislands/tools-ki': 'member' }
+        },
+        repeated: {
+          owner: 'https://github.com/knowledgeislands/home',
+          purpose: 'Shared work',
+          members: ['https://github.com/knowledgeislands/tools-ki', 'https://github.com/knowledgeislands/tools-ki']
+        }
+      },
+      memberships: { legacy: { home: 'https://github.com/knowledgeislands/owner', role: 'member' } }
+    })
+  )
+
+  expect(outcomes(session, CONFIG).map((outcome) => outcome.message)).toEqual([
+    'home legacy members must be an array of canonical HTTPS GitHub repositories',
+    'home repeated members repeats https://github.com/knowledgeislands/tools-ki'
+  ])
+  expect(outcomes(session, MEMBERSHIP).map((outcome) => outcome.message)).toEqual([
+    'membership legacy has unrecognised key role'
+  ])
 })

@@ -6,7 +6,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: [".ki.toml"]
 description: >
-  Govern reciprocal Agora membership: a KI home declares purpose, canonical members, and roles, while each
+  Govern reciprocal Agora membership: a KI home declares purpose and canonical members, while each
   member independently consents. Use to define or audit declarations; the `ki` CLI owns local resolution and
   environment tooling owns client projections.
 argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
@@ -18,8 +18,8 @@ This governance skill defines the portable declaration of an **Agora**: a purpos
 
 ## What this skill owns
 
-1. **Agora homes** — a registered owner repository declares a stable, globally unique Agora identifier, its own canonical identity, human purpose, approved canonical repository members with roles, and optional owner-selected non-member Git repository references.
-2. **Member consent** — a member repository independently declares each Agora identifier it joins, the canonical home repository, and the matching role. A repository may join more than one Agora.
+1. **Agora homes** — a registered owner repository declares a stable, globally unique Agora identifier, its own canonical identity, human purpose, approved canonical repository members, and optional owner-selected non-member Git repository references.
+2. **Member consent** — a member repository independently declares each Agora identifier it joins and the canonical home repository. A repository may join more than one Agora.
 3. **Portable boundary** — declarations use canonical HTTPS repository identities only. References remain ordinary Git repositories without membership, role, reciprocal consent, or KI conformance. Declarations contain no local path, installed-harness location, editor database, app setting, user name, or machine-specific state.
 4. **Independent authority** — the registered owner is an automatic projection participant, while every other member consents for itself. This skill validates declaration shape only; a local shape pass is never reciprocal consent. `ki` must resolve local registry identities, verify owner identity, reject duplicate Agora IDs, and observe member consent before it reports reciprocal agreement; `ki agora open --target` and client projection remain separate host and environment capabilities.
 

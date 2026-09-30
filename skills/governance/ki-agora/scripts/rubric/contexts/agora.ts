@@ -9,7 +9,6 @@ import type {
 
 const REPOSITORY = /^https:\/\/github\.com\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/
 const AGORA_ID = /^[a-z][a-z0-9-]*[a-z0-9]$/
-const ROLE = /^[a-z][a-z0-9-]*[a-z0-9]$/
 type AgoraConfiguration = Record<string, unknown>
 
 export type OutcomeContext = {
@@ -68,20 +67,21 @@ const parseHomes = (value: unknown, local: string | undefined): AuditOutcome[] =
       outcomes.push(violation(`home ${identifier} owner must match its declaring repository`))
     if (typeof home.purpose !== 'string' || !home.purpose.trim())
       outcomes.push(violation(`home ${identifier} requires a non-empty purpose`))
-    const members = table(home.members)
-    if (!members) {
-      outcomes.push(violation(`home ${identifier} members must be a repository-to-role table`))
+    const members = home.members
+    if (!Array.isArray(members)) {
+      outcomes.push(violation(`home ${identifier} members must be an array of canonical HTTPS GitHub repositories`))
       continue
     }
-    for (const [repository, role] of Object.entries(members)) {
-      if (!REPOSITORY.test(repository))
+    const memberIdentities = new Set<string>()
+    for (const repository of members) {
+      if (typeof repository !== 'string' || !REPOSITORY.test(repository)) {
         outcomes.push(violation(`home ${identifier} member ${repository} must be a canonical HTTPS GitHub repository`))
+        continue
+      }
       if (repository === local)
         outcomes.push(violation(`home ${identifier} must not list its own repository as a member`))
-      if (typeof role !== 'string' || !ROLE.test(role))
-        outcomes.push(
-          violation(`home ${identifier} member ${repository} role must be a lower-case hyphenated identifier`)
-        )
+      if (memberIdentities.has(repository)) outcomes.push(violation(`home ${identifier} members repeats ${repository}`))
+      else memberIdentities.add(repository)
     }
     const references = home.references
     const referenced = new Set<string>()
@@ -96,7 +96,7 @@ const parseHomes = (value: unknown, local: string | undefined): AuditOutcome[] =
         if (referenced.has(repository)) outcomes.push(violation(`home ${identifier} references repeats ${repository}`))
         else referenced.add(repository)
         if (repository === local) outcomes.push(violation(`home ${identifier} must not reference its own repository`))
-        if (repository in members)
+        if (memberIdentities.has(repository))
           outcomes.push(
             violation(`home ${identifier} repository ${repository} must not be both a member and reference`)
           )
@@ -106,7 +106,7 @@ const parseHomes = (value: unknown, local: string | undefined): AuditOutcome[] =
       else {
         const participants = new Set([
           ...(typeof home.owner === 'string' ? [home.owner] : []),
-          ...Object.keys(members),
+          ...memberIdentities,
           ...referenced
         ])
         const ordered = new Set<string>()
@@ -141,12 +141,10 @@ const parseMemberships = (value: unknown): AuditOutcome[] => {
       outcomes.push(violation(`membership ${identifier} must be a table`))
       continue
     }
-    for (const key of Object.keys(membership).filter((key) => !['home', 'role'].includes(key)))
+    for (const key of Object.keys(membership).filter((key) => key !== 'home'))
       outcomes.push(violation(`membership ${identifier} has unrecognised key ${key}`))
     if (typeof membership.home !== 'string' || !REPOSITORY.test(membership.home))
       outcomes.push(violation(`membership ${identifier} home must be a canonical HTTPS GitHub repository`))
-    if (typeof membership.role !== 'string' || !ROLE.test(membership.role))
-      outcomes.push(violation(`membership ${identifier} role must be a lower-case hyphenated identifier`))
   }
   return outcomes
 }
@@ -169,9 +167,7 @@ const parseConfiguration = (configuration: Readonly<AgoraConfiguration>, root: s
         : pass('Agora homes use canonical owner identity, purpose, ordered projection, and approved member shape.')
     },
     memberships: {
-      outcomes: membershipsOutcomes.length
-        ? membershipsOutcomes
-        : pass('Agora memberships use canonical home and role shape.')
+      outcomes: membershipsOutcomes.length ? membershipsOutcomes : pass('Agora memberships use canonical home shape.')
     }
   }
 }

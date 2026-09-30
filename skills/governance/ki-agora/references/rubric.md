@@ -25,9 +25,9 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 → [standard](standards-agora.md)
 
-Owner identity, purpose, ordered projection, and approved member roles are explicit and portable.
+Owner identity, purpose, ordered projection, and approved members are explicit and portable.
 
-- **CONFIG-1 [M] — Agora homes are canonical** — A declared Agora home uses a stable identifier, explicitly names the canonical identity of its declaring owner repository, and records only its non-empty purpose, optional duplicate-free ordered projection prefix, optional duplicate-free canonical HTTPS GitHub references, and canonical member repositories with lower-case hyphenated roles. Owner, member, and reference identities are mutually exclusive; ordered identities name one of those classes and affect projection order only. References are owner-selected non-members requiring no reciprocal declaration. Unknown fields fail closed, and local declaration shape is not reciprocal-consent evidence. (standards-agora.md)
+- **CONFIG-1 [M] — Agora homes are canonical** — A declared Agora home uses a stable identifier, explicitly names the canonical identity of its declaring owner repository, and records only its non-empty purpose, optional duplicate-free ordered projection prefix, optional duplicate-free canonical HTTPS GitHub references, and a duplicate-free array of canonical member repositories. Owner, member, and reference identities are mutually exclusive; ordered identities name one of those classes and affect projection order only. References are owner-selected non-members requiring no reciprocal declaration. Unknown fields fail closed, and local declaration shape is not reciprocal-consent evidence. (standards-agora.md)
   - _Remediation:_ diagnostic — Correct the local ki-agora home declaration, then rerun the audit.
 
 ## MEMBERSHIP — Member declaration
@@ -36,5 +36,5 @@ Owner identity, purpose, ordered projection, and approved member roles are expli
 
 Every membership is a local, portable consent declaration.
 
-- **MEMBERSHIP-1 [M] — member consent is canonical** — Each declared membership names one stable Agora identifier, canonical HTTPS GitHub home, and lower-case hyphenated role with no unknown fields. A repository may declare multiple memberships; local shape never infers peer agreement. (standards-agora.md)
+- **MEMBERSHIP-1 [M] — member consent is canonical** — Each declared membership names one stable Agora identifier and canonical HTTPS GitHub home with no unknown fields. A repository may declare multiple memberships; local shape never infers peer agreement. (standards-agora.md)
   - _Remediation:_ diagnostic — Correct the local ki-agora membership declaration, then rerun the audit.

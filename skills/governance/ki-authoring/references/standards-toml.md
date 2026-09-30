@@ -33,7 +33,7 @@ After an explicit `[skills.<name>]` root, a short subordinate map entry **SHOULD
 areas.UE = "user-environment"
 
 [skills.ki-agora]
-memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-agentic-harness", role = "maintainer" }
+memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-agentic-harness" }
 
 [skills.ki-trades]
 routes."knowledgeislands/tools-ki" = { export = ["work", "knowledge"], import = ["work", "knowledge"] }
