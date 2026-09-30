@@ -56,6 +56,8 @@ Explain bootstrap status and decisions in ordinary language first: which reposit
 
 Keep a bootstrap approval request about one bounded next action, not the entire historical assessment or a chain of possible later actions. State the decision, owner, allowed change, limits and expected return briefly; link the detailed evidence and exact technical scope rather than pasting it into the approval surface. A cited record preserves reviewability but does not enlarge the action being approved. Report status without requesting approval when no new decision is needed.
 
+Before raising a question, distinguish a human choice from a check that an authorised agent or operator can perform. A human-facing question gives enough plain-language context to answer without opening another record: the situation, checks already made, remaining uncertainty, why the human must decide, the recommended choice when one is justified, and what happens if no answer arrives. Link technical evidence for review; do not make the human reconstruct the situation from it. Brevity does not justify withholding decision-relevant context.
+
 ## Identity model
 
 Keep these identities separate because they change on different cadences:
