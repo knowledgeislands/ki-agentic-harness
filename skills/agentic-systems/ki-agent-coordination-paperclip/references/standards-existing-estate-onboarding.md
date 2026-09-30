@@ -52,9 +52,12 @@ Reconcile company-library availability and agent assignments separately from rep
 
 ### Project styling
 
+On every bootstrap or rebootstrap, compare each existing project's actual icon and colour with the scheme below. Include missing or mismatched styling in the short proposed changes; apply it once the governing bootstrap scope authorises project updates, even if unrelated discovery or delivery remains blocked. Do not create or replace a project just to restyle it.
+
 Use the same project-type styling across companies. Validate the required `repo_type` and `primary_shape` through `ki-repo`, then apply the mapping below. Coordination has its own non-repository style; a KB with `primary_shape = "ki-repo-kb"` selects Knowledge Base styling. For a Project, map its declared primary shape as follows: `ki-repo-tools` or `ki-repo-dotfiles-chezmoi` selects Tooling; `ki-repo-project` or `ki-repo-harness` selects Engineering; `ki-repo-mcp` selects MCP; `ki-repo-website` selects Website; `ki-repo-plugins` or `ki-repo-homebrew-tap` selects Package; `ki-repo-specifications` selects Specification. Missing or invalid fields block restyling; never infer a kind or shape from the repository name, other capabilities, or table order. Use these Paperclip icon names and colours:
 
 - **Coordination:** `compass`, `#0ea5e9`.
+- **Existing Onboarding project while still active:** `rocket`, `#10b981`. Do not create one merely for bootstrap; preserve its history when it is eventually archived.
 - **Knowledge base:** `brain`, `#f59e0b`.
 - **Tooling, CLI, or dotfiles:** `hammer`, `#8b5cf6`.
 - **Engineering or agent harness:** `cpu`, `#6366f1`.
