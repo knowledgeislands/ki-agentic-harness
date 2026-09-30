@@ -2,10 +2,11 @@ import { describe, expect, test } from 'bun:test'
 import { resolveCodexModelTier } from './internal/model-tier-resolution.ts'
 
 describe('Codex model-tier resolution', () => {
-  test('keeps orchestration at the portable frontier purpose when no family evidence exists', () =>
+  test('keeps orchestration at the portable frontier purpose with advisory family evidence', () =>
     expect(resolveCodexModelTier('orchestration')).toEqual({
       purpose: 'frontier',
-      status: 'inherit',
+      evidenceFamily: 'Astra',
+      status: 'runtime-evidence',
       requiresAuthorisedEvaluation: true
     }))
 

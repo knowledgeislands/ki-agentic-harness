@@ -22,8 +22,11 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 | [Claude Opus 5 launch][claude-opus] | provider | Identity, access, release | 2026-09-26 |
 | [Claude Fable 5.1 model page][claude-fable] | provider | Identity, access, retention | 2026-09-26 |
 | [Claude model deprecations][claude-lifecycle] | provider | Opus lifecycle | 2026-09-26 |
+| [Current Claude models][claude-current] | provider | Fable, Opus, Sonnet, and Haiku identities and effort | 2026-09-30 |
 | [OpenAI model catalogue][openai-models] | provider | Sol and Astra identities and access | 2026-09-26 |
 | [GPT-6 Astra launch][openai-astra] | provider | Astra release and availability | 2026-09-26 |
+| [OpenAI GPT-6 guide][openai-gpt-6] | provider | Current Astra, Sol, and Luna positioning | 2026-09-30 |
+| [GPT-5.6 Terra model page][openai-terra] | provider | Previous-family Terra identity and access | 2026-09-30 |
 | [Gemini 3.8 Flash model page][gemini-flash] | provider | Identity, capability, stable access | 2026-09-26 |
 | [Gemini model deprecations][gemini-lifecycle] | provider | Release and shutdown status | 2026-09-26 |
 | [GLM-5.3 checkpoint][glm-53] | provider | Identity, weights, deployment | 2026-09-26 |
@@ -43,12 +46,14 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 - 2026-09-14 — Replaced the placeholder with individually reviewed primary methodology, benchmark-owner, provider, licence, lifecycle, and local-owner sources.
 - 2026-09-17 — Rechecked current provider lifecycle pages and benchmark-owner return triggers. Sol, Astra, Opus 5, and Gemini 3.8 Flash remain active; BenchLM v5.5, Coding Agent Index v1.5, SWE-bench, Terminal-Bench 4.0, and HELM maintenance state did not justify recommendation or lifecycle movement.
 - 2026-09-26 — Rechecked every tracked source. Existing model identities remain active, Artificial Analysis advanced to Intelligence Index v4.3.2, and no existing recommendation moved. New model candidates and local route implications were routed to `KI-HARNESS-GOV-112` for bounded evaluation.
+- 2026-09-30 — Targeted release-triggered review added the current Claude and GPT-6 family identities plus GPT-5.6 Terra as an available previous-family option. Existing route defaults and recommendations did not move: provider positioning alone does not establish Codex or Claude Code route fit. Previously tracked sources outside this targeted review retain their earlier review dates.
 - The KI recommendation vocabulary is a documented local adaptation of Thoughtworks' four rings: it preserves Adopt, Trial, Assess, and Caution as Hold rather than claiming an exact reproduction.
 - HELM entered maintenance mode on 2026-06-01 and remains watch-level corroborating evidence, not a current frontier-primary source.
 - All named initial model identities were substantiated. Hosted-only variants retain a conservative proprietary distribution classification; no public weights licence was found for those exact variants.
 - Open watch-item: reassess provider availability, retirement notices, pricing, route support, benchmark versions, and data dates during every weekly refresh.
 - Open watch-item: do not promote an open-weight model to Open Source AI Definition conformance without evidence for the definition's data-information, code, and parameter requirements.
 - Open watch-item: keep hosted `qwen3.8-max` separate from Apache-2.0 Qwen3.8 open-weight checkpoints.
+- Open watch-item: reconcile the locally evidenced Codex and Claude Code model routes with the new families before changing route defaults; evaluate candidates on representative tasks, effort, cost, and effective runtime access.
 
 [aa-coding]: https://artificialanalysis.ai/methodology/coding-agents-benchmarking/
 [aa-intelligence]: https://artificialanalysis.ai/methodology/intelligence-benchmarking
@@ -56,6 +61,7 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 [arena-rank]: https://arena.ai/blog/arena-rank
 [benchlm]: https://benchlm.ai/methodology
 [claude-fable]: https://www.anthropic.com/claude/fable
+[claude-current]: https://platform.claude.com/docs/en/models/overview
 [claude-lifecycle]: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
 [claude-opus]: https://www.anthropic.com/news/claude-opus-5
 [gemini-flash]: https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash
@@ -74,7 +80,9 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 [kimi-k3-license]: https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE
 [local-roadmap]: https://github.com/knowledgeislands/ki-agentic-harness/blob/dd45807722a06cf3e54686f4eaa38c1149836e3a/docs/roadmap/KI-HARNESS-REV-003-establish-model-radar.md
 [openai-astra]: https://openai.com/index/gpt-6-astra/
+[openai-gpt-6]: https://developers.openai.com/api/docs/guides/latest-model
 [openai-models]: https://developers.openai.com/api/docs/models
+[openai-terra]: https://developers.openai.com/api/docs/models/gpt-5.6-terra
 [osi-osaid]: https://opensource.org/ai/open-source-ai-definition
 [qwen-27b]: https://huggingface.co/Qwen/Qwen3.8-27B
 [qwen-family]: https://github.com/QwenLM/Qwen3.8

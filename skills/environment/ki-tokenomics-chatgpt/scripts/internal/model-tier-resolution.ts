@@ -10,12 +10,13 @@ export const CODEX_MODEL_TIER_ROLES = ['orchestration', 'judgment', 'mechanical'
 export type CodexModelTierRole = (typeof CODEX_MODEL_TIER_ROLES)[number]
 
 export const CODEX_MODEL_TIER_EVIDENCE = {
+  frontier: 'Astra',
   reasoning: 'Sol',
-  standard: 'Terra',
+  standard: 'Sol',
   fast: 'Luna'
 } as const
 
-type PortablePurpose = 'frontier' | keyof typeof CODEX_MODEL_TIER_EVIDENCE
+type PortablePurpose = keyof typeof CODEX_MODEL_TIER_EVIDENCE
 
 export type CodexModelTierResolution = {
   readonly purpose: PortablePurpose
@@ -42,7 +43,7 @@ export const resolveCodexModelTier = (
 ): CodexModelTierResolution => {
   const purpose = PURPOSE_BY_ROLE[role]
   const advisoryBinding = modelTierBinding?.trim() || undefined
-  const evidenceFamily = CODEX_MODEL_TIER_EVIDENCE[purpose as keyof typeof CODEX_MODEL_TIER_EVIDENCE]
+  const evidenceFamily = CODEX_MODEL_TIER_EVIDENCE[purpose]
 
   return {
     purpose,

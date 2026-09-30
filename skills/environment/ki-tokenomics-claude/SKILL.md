@@ -19,6 +19,8 @@ argument-hint: 'audit | conform | educate | refresh | help'
 
 The audit inventories project instruction files and contained imports, `.claude/CLAUDE.md`, project rules, parseable project settings, and parseable project MCP declarations. It reports structural presence only and never emits configuration values. Effective model, loaded context, active MCP tools, trust, approvals, memory use, transcript, compaction, billing, and token measurements remain unavailable.
 
+For dated, advisory Claude model-family evidence, read [the Claude model-tier resolution standard](references/standards-model-tier-resolution.md). It does not infer the effective model or change an agent's configuration.
+
 CONFORM is report-only unless a future item proves an existing safe, item-owned write. It currently emits no writes or commands.
 
 ## Composition

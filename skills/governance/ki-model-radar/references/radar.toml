@@ -1,5 +1,5 @@
 schema = 1
-reviewed_on = "2026-09-26"
+reviewed_on = "2026-09-30"
 
 [evidence]
 
@@ -111,6 +111,15 @@ independence = "provider"
 reviewed_on = "2026-09-26"
 notes = "Lists claude-opus-5 active with retirement not sooner than 2027-07-24."
 
+[evidence.anthropic-current-models]
+id = "anthropic-current-models"
+title = "Anthropic current Claude models overview"
+url = "https://platform.claude.com/docs/en/models/overview"
+unit = "provider-endpoint"
+independence = "provider"
+reviewed_on = "2026-09-30"
+notes = "Identifies Fable 5.1, Opus 5.5, Sonnet 5.5, and Haiku 4.5, with exact Claude API IDs, capabilities, effort defaults, and retirement commitments. Provider positioning is not independent performance evidence."
+
 [evidence.openai-models]
 id = "openai-models"
 title = "OpenAI API model catalogue"
@@ -128,6 +137,24 @@ unit = "provider-endpoint"
 independence = "provider"
 reviewed_on = "2026-09-26"
 notes = "Confirms the 2026-09-03 release and announced OpenAI API, ChatGPT, Azure, and AWS Bedrock access."
+
+[evidence.openai-gpt-6-guide]
+id = "openai-gpt-6-guide"
+title = "OpenAI GPT-6 family guide"
+url = "https://developers.openai.com/api/docs/guides/latest-model"
+unit = "provider-endpoint"
+independence = "provider"
+reviewed_on = "2026-09-30"
+notes = "Names Astra, GPT-6.1 Sol, and Luna as the current family choices; identifies GPT-6 Sol as the preceding Sol version. It does not establish KI route quality."
+
+[evidence.openai-gpt-5-6-terra]
+id = "openai-gpt-5-6-terra"
+title = "OpenAI GPT-5.6 Terra model page"
+url = "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+unit = "provider-endpoint"
+independence = "provider"
+reviewed_on = "2026-09-30"
+notes = "Confirms the exact previous-family Terra identity remains available; it is not a current GPT-6 family choice."
 
 [evidence.google-gemini-3-8-flash]
 id = "google-gemini-3-8-flash"
@@ -267,7 +294,40 @@ openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
 reviewed_on = "2026-09-26"
-evidence = ["anthropic-fable-5-1"]
+evidence = ["anthropic-fable-5-1", "anthropic-current-models"]
+counter_evidence = []
+
+[models.claude-opus-5-5]
+id = "claude-opus-5-5"
+display_name = "Claude Opus 5.5"
+provider = "Anthropic"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["anthropic-current-models"]
+counter_evidence = []
+
+[models.claude-sonnet-5-5]
+id = "claude-sonnet-5-5"
+display_name = "Claude Sonnet 5.5"
+provider = "Anthropic"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["anthropic-current-models"]
+counter_evidence = []
+
+[models.claude-haiku-4-5]
+id = "claude-haiku-4-5"
+display_name = "Claude Haiku 4.5"
+provider = "Anthropic"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["anthropic-current-models"]
 counter_evidence = []
 
 [models.gpt-5-6-sol]
@@ -281,6 +341,17 @@ reviewed_on = "2026-09-26"
 evidence = ["openai-models"]
 counter_evidence = []
 
+[models.gpt-5-6-terra]
+id = "gpt-5-6-terra"
+display_name = "GPT-5.6 Terra"
+provider = "OpenAI"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["openai-gpt-5-6-terra"]
+counter_evidence = []
+
 [models.gpt-6-astra]
 id = "gpt-6-astra"
 display_name = "GPT-6 Astra"
@@ -289,7 +360,40 @@ openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
 reviewed_on = "2026-09-26"
-evidence = ["openai-models", "openai-astra-release"]
+evidence = ["openai-models", "openai-astra-release", "openai-gpt-6-guide"]
+counter_evidence = []
+
+[models.gpt-6-sol]
+id = "gpt-6-sol"
+display_name = "GPT-6 Sol"
+provider = "OpenAI"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["openai-gpt-6-guide"]
+counter_evidence = []
+
+[models.gpt-6-1-sol]
+id = "gpt-6-1-sol"
+display_name = "GPT-6.1 Sol"
+provider = "OpenAI"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["openai-gpt-6-guide"]
+counter_evidence = []
+
+[models.gpt-6-luna]
+id = "gpt-6-luna"
+display_name = "GPT-6 Luna"
+provider = "OpenAI"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-09-30"
+evidence = ["openai-gpt-6-guide"]
 counter_evidence = []
 
 [models.gemini-3-8-flash]

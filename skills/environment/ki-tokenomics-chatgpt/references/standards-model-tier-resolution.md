@@ -8,11 +8,11 @@ The portable contract remains `frontier`, `reasoning`, `standard`, and `fast`.
 
 | Role | Portable purpose | Dated family evidence | Resolver result |
 | --- | --- | --- | --- |
-| Main-thread orchestration | `frontier` | None | `inherit` |
+| Main-thread orchestration | `frontier` | Astra | `runtime-evidence` |
 | Judgment worker | `reasoning` | Sol | `runtime-evidence` |
 | Mechanical worker | `fast` | Luna | `runtime-evidence` |
 
-Terra remains source-local evidence for `standard` work, rather than a fixed role default.
+Sol also has source-local evidence for `standard` work, without becoming a fixed role default. GPT-5.6 Terra remains an available previous-family cost candidate, not the current-family evidence for that purpose.
 
 The evidence does not establish a one-to-one binding: it does not prove current availability, the effective session model, reasoning-effort support, price, latency, or that Sol is sufficient for every `frontier` task.
 
@@ -22,7 +22,7 @@ It is never parsed as a provider guarantee or used to authorise delegation, spen
 
 ## Evaluation protocol
 
-Before adopting any Codex default, run each baseline case twice at the common supported effort (planned baseline: `medium`), with no corrective prompting:
+Before recommending a durable KI agent-fleet Codex default, run each baseline case twice at the common supported effort (planned baseline: `medium`), with no corrective prompting:
 
 | Case | Required evidence |
 | --- | --- |
@@ -38,10 +38,10 @@ Do not calculate a composite score.
 
 Recommend only the lowest-cost model and effort that passes both repetitions for that purpose; mixed, unavailable, or insufficient evidence produces `no default change`.
 
-Live calls, runtime selection, and spending require separate user authority.
+Live calls, runtime selection, and spending require separate user authority. A user's explicit choice for their personal Codex default is separate from a KI agent-fleet recommendation; it does not establish local-fit evidence for other agents.
 
 ## Source status
 
-The Sol/Terra/Luna positioning is planning evidence captured from the official OpenAI model guide on 2026-08-13.
+The Astra/Sol/Luna positioning is planning evidence rechecked against the official [GPT-6 guide](https://developers.openai.com/api/docs/guides/latest-model) on 2026-09-30. It distinguishes GPT-6.1 Sol from the preceding GPT-6 Sol, and does not establish effective Codex-session availability or a KI route default.
 
-It was not live-revalidated while implementing this source-local resolver on 2026-08-16; refresh it before any default proposal.
+GPT-6.1 Sol supports `medium` as its default reasoning effort and `high` for harder tasks. A personal Codex setting is a runtime choice, not a portable skill rule; candidate agent-fleet defaults still require the evaluation protocol above.
