@@ -54,7 +54,7 @@ Reconcile company-library availability and agent assignments separately from rep
 
 On every bootstrap or rebootstrap, compare each existing project's actual icon and colour with the scheme below. Include missing or mismatched styling in the short proposed changes; apply it once the governing bootstrap scope authorises project updates, even if unrelated discovery or delivery remains blocked. Do not create or replace a project just to restyle it.
 
-Use the same project-type styling across companies. Validate the required `repo_type` and `primary_shape` through `ki-repo`, then apply the mapping below. Coordination has its own non-repository style; a KB with `primary_shape = "ki-repo-kb"` selects Knowledge Base styling. For a Project, map its declared primary shape as follows: `ki-repo-tools` or `ki-repo-dotfiles-chezmoi` selects Tooling; `ki-repo-project` or `ki-repo-harness` selects Engineering; `ki-repo-mcp` selects MCP; `ki-repo-website` selects Website; `ki-repo-plugins` or `ki-repo-homebrew-tap` selects Package; `ki-repo-specifications` selects Specification. Missing or invalid fields block restyling; never infer a kind or shape from the repository name, other capabilities, or table order. Use these Paperclip icon names and colours:
+Use the same project-type styling across companies. For a KI repository, validate the required `repo_type` and `primary_shape` through `ki-repo`, then apply the mapping below. Coordination has its own non-repository style; a KB with `primary_shape = "ki-repo-kb"` selects Knowledge Base styling. For a Project, map its declared primary shape as follows: `ki-repo-tools` or `ki-repo-dotfiles-chezmoi` selects Tooling; `ki-repo-project` or `ki-repo-harness` selects Engineering; `ki-repo-mcp` selects MCP; `ki-repo-website` selects Website; `ki-repo-plugins` or `ki-repo-homebrew-tap` selects Package; `ki-repo-specifications` selects Specification. Missing or invalid KI declarations block KI type styling; never infer a kind or shape from the repository name, other capabilities, or table order. A verified non-KI repository project may use the neutral style without claiming KI conformance. Use these Paperclip icon names and colours:
 
 - **Coordination:** `compass`, `#0ea5e9`.
 - **Existing Onboarding project while still active:** `rocket`, `#10b981`. Do not create one merely for bootstrap; preserve its history when it is eventually archived.
@@ -65,8 +65,9 @@ Use the same project-type styling across companies. Validate the required `repo_
 - **Website or application:** `globe`, `#06b6d4`.
 - **Package, plugin, or distribution:** `package`, `#ec4899`.
 - **Specification or documentation:** `file-code`, `#3b82f6`.
+- **Verified non-KI repository:** `folder`, `#64748b`. This neutral style is not a substitute for an intended KI repository's missing declaration.
 
-Every repository records its kind and primary shape explicitly in `[skills.ki-repo]`. Every rerun uses those declarations. Propose a correction when the current project style differs from the resolved mapping; do not create another project to represent a secondary shape.
+Every KI repository records its kind and primary shape explicitly in `[skills.ki-repo]`. Every rerun uses those declarations. Propose a correction when the current project style differs from the resolved mapping; do not create another project to represent a secondary shape.
 
 Keep a separate workspace-free Coordination project for company-wide sequencing, dependencies, decisions, hand-offs, and consolidated evidence. It never performs repository work, including read-only inspection or planning of one repository. Put every repository-specific task in that repository's project. A cross-repository effort may have a Coordination parent, with separately scoped tasks in each owning repository project. Do not treat project creation or assignment of a lead as permission to implement, integrate, publish, resume an agent, or lift a programme hold.
 
