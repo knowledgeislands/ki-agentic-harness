@@ -6,7 +6,7 @@ The sources behind [the Agora membership standard](standards-agora.md) and its [
 
 | Source | Last reviewed |
 | --- | --- |
-| `GDR-KI-HARNESS-006` — reciprocal Agora membership | 2026-09-30 |
+| `GDR-KI-HARNESS-006` — owner-declared Agoras | 2026-09-30 |
 | `ki-repo` configuration and local registered-repository contracts | 2026-09-30 |
 
 ## Last review

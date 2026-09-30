@@ -1,84 +1,38 @@
 # Agora membership standard
 
-## Contents
-
-- [Purpose and boundary](#purpose-and-boundary)
-- [Configuration](#configuration)
-- [Home declarations](#home-declarations)
-- [Referenced repositories](#referenced-repositories)
-- [Member declarations](#member-declarations)
-- [Reciprocal observation](#reciprocal-observation)
-
 ## Purpose and boundary
 
-An **Agora** is a named, portable collection of independently governed Knowledge Islands repositories. It is neither a filesystem directory nor a client workspace. Its registered owner participates automatically, approves the repositories that may participate, and each other member repository independently records its consent. Workspace targets are selected by the local `ki` command, not declared by the group.
+An **Agora** is a named working set of independently governed Knowledge Islands repositories. A registered owner repository declares its direct members and optional inclusions. Ordinary members have no Agora declaration or role. A repository may be a direct member of more than one Agora. Membership and inclusion grant no authority over another repository.
 
-`ki-agora` owns the declaration format. It neither discovers repositories nor reads or writes a peer checkout. The `ki` host owns local registry resolution and reports whether a resolvable home and member agree. A user-environment owner may render an allowed target projection, but owns that app-specific state and its local paths.
-
-Every declaration relies on the canonical HTTPS GitHub identity declared by `ki-repo.repository`. A registry may contain every registered KI repository, and a system-managed estate may be derived from that full inventory. Neither fact creates membership in a named Agora.
+`ki-agora` owns portable declaration shape. The `ki` host owns local registry resolution, diagnostics, and target selection. A user-environment owner may project the resolved roots to a client, while preserving client-owned state. Neither registry presence nor opening a repository makes it a member of a named Agora.
 
 ## Configuration
 
-Declare the capability explicitly, even when no home or membership is yet configured:
+Only an Agora owner declares this skill. Its canonical identity comes from `ki-repo.repository`; it is included in each Agora it declares. The owner may declare more than one Agora:
 
 ```toml
 [skills.ki-agora]
+
+[skills.ki-agora.legal]
+purpose = "Legal casework and research repositories"
+members = ["https://github.com/example/legal-tools"]
+includes = ["equalremedy", "https://github.com/example/plain-git-repository"]
 ```
 
-The root table admits only the optional `homes` and `memberships` tables. Their keys are stable lower-case hyphenated identifiers matching `[a-z][a-z0-9-]*[a-z0-9]`; an identifier is stable rather than a rendered title. Target selection is an explicit local `ki agora open --target` choice, not portable group policy. Unknown root, home, and membership fields are configuration errors and do not provide evidence of membership, consent, or target authorization.
+Each child table name is a globally unique, stable lower-case hyphenated Agora identifier matching `[a-z][a-z0-9-]*[a-z0-9]`. `estate` is reserved for the system-managed registered estate. Each child table requires `purpose` and `members` and admits optional `includes`; unknown keys fail. A member repository declares no `[skills.ki-agora]` table solely for membership.
 
-```toml
-[skills.ki-agora]
-memberships.knowledge-islands = { home = "https://github.com/knowledgeislands/ki-agentic-harness" }
+- `purpose` is a non-empty human explanation of the group.
+- `members` is a duplicate-free array of canonical HTTPS GitHub repository identities. The owner is implicit and must not appear here. Every direct member must resolve to one locally registered KI repository.
+- `includes` is an optional duplicate-free array. An Agora identifier includes that Agora's owner and direct members; a canonical HTTPS GitHub repository identity includes that repository alone. The owner and its direct members cannot also appear as repository inclusions, and an Agora cannot include itself.
 
-[skills.ki-agora.homes.knowledge-islands]
-owner = "https://github.com/knowledgeislands/ki-agentic-harness"
-purpose = "Knowledge Islands maintained repositories"
-order = [
-  "https://github.com/knowledgeislands/ki-agentic-harness",
-  "https://github.com/knowledgeislands/tools-ki",
-  "https://github.com/example/plain-git-repository",
-]
-references = ["https://github.com/example/plain-git-repository"]
-members = ["https://github.com/knowledgeislands/tools-ki"]
-```
+An included Agora's own inclusions are not followed. This one-level rule prevents hidden expansion and cycles. Owners may declare opposite directed inclusions when both opening directions are useful. An included root is a working-set participant, not a direct member of the including Agora. The resolver deduplicates roots by canonical repository identity and sorts all projected roots alphabetically by local registry key. The same order governs display, `roots`, opening, and repository selection; no authored order field exists.
 
-`order` is an optional duplicate-free ordered prefix of canonical repository identities drawn from the owner, declared members, and references. Resolved projections place those repositories first in the declared order and retain lexical local-key order for every unlisted participant. It controls only deterministic projection order, including display, roots, opening, and repository selection; it grants no membership, role, priority, or authority. TOML does not otherwise require lexical ordering for tables or inline-table keys. Each configuration table is locally authored; a tool never adds a membership or changes another repository's declaration.
+## Included repositories
 
-## Home declarations
+A registered repository inclusion resolves through the local registry without a member declaration or separate checkout association. An unregistered Git repository inclusion may be associated on each machine with one explicitly selected absolute Git checkout whose canonical remote matches. The host never clones or selects among multiple checkouts automatically. An absent, ambiguous, missing, or remote-mismatched association omits that root with a typed diagnostic; it does not change direct membership.
 
-Each `[skills.ki-agora.homes.<agora-id>]` table requires `owner`, `purpose`, and `members`, and admits only the optional `order` and `references` fields alongside them:
+The same canonical HTTPS GitHub identity grammar as `ki-repo.repository` applies to members and repository inclusions. Credentials, queries, fragments, trailing `.git`, filesystem paths, and arbitrary source directories are invalid. No inclusion grants KI conformance, trust, work routing, trade, publication, implementation, or acceptance authority.
 
-- `owner` — the canonical HTTPS GitHub identity of the declaring repository. The `ki` resolver verifies this matches the registered repository that declares the Agora; each identifier is unique across registered owners.
-- `purpose` — a non-empty human explanation of the collection.
-- `order` — an optional ordered prefix of the resolved owner and member repository identities. Every entry is canonical, unique, and already named by `owner` or `members`; omitted participants follow in lexical local-key order.
-- `references` — an optional duplicate-free array of canonical HTTPS GitHub repository identities selected by the owner for working-set projection without membership or role.
-- `members` — a duplicate-free array of canonical HTTPS GitHub repository identities. Every non-owner member must independently consent.
+## Resolution
 
-The owner repository does not list itself in `members`: it is automatically included in the resolved Agora projection as its owner, rather than claiming reciprocal consent from itself. A different repository may operate another Agora and also join this one.
-
-## Referenced repositories
-
-Only the registered Agora owner may declare `references`. A reference is an ordinary Git repository included for working-set projection. It is not a member, needs no `.ki.toml` or reciprocal declaration, and gains no Knowledge Islands conformance, trust, work routing, trade, priority, publication, implementation, or acceptance authority.
-
-Owner, member, and reference identities are mutually exclusive within one home. Declaring the same identity in more than one class is a configuration failure. Promoting a reference to membership requires removing it from `references` and completing the existing reciprocal owner/member declarations. Removing a reference changes only the owner's declaration and never mutates the referenced repository.
-
-The portable first contract accepts only the same canonical HTTPS GitHub repository identity grammar as `ki-repo.repository`; credentials, queries, fragments, trailing `.git`, filesystem paths, arbitrary source directories, and non-Git repositories are invalid. A machine-local host association may map one reference identity to one explicitly selected absolute Git checkout whose canonical remote matches. That association is not KI registration and grants no authority. Missing, ambiguous, absent, or remote-mismatched associations omit only the unresolved reference from the projected roots and produce a typed diagnostic; they do not invalidate or reclassify owner and reciprocal-member results. The host never clones or chooses among multiple checkouts automatically.
-
-## Member declarations
-
-Each `[skills.ki-agora.memberships.<agora-id>]` table requires exactly:
-
-- `home` — the canonical HTTPS GitHub identity of the Agora home.
-
-A repository may declare any number of memberships. Membership has no exclusivity, priority, work-routing, or publication implication.
-
-## Reciprocal observation
-
-A local resolver may resolve a named Agora only when its unique owner is locally registered and declares the matching `owner` identity. It may report each non-owner membership as reciprocal only when all of the following are locally resolvable:
-
-1. the member declaration's `home` identifies the registered owner repository;
-2. that home declares the same Agora identifier;
-3. the home lists the member's canonical repository identity.
-
-An absent, malformed, unreachable, or non-matching peer is an observation result, never grounds for a local or cross-repository mutation. Only the local repository owner changes its own declaration.
+A named Agora resolves only from a unique locally registered owner with a valid declaration. The owner and direct members must resolve to registered repositories; missing or ambiguous identities fail resolution. An included Agora must resolve to a unique registered owner and valid direct members, or the including profile reports a finding. Duplicate roots from several inclusion paths are projected once. A malformed or unavailable peer is an observation result and never grounds for a repository mutation.

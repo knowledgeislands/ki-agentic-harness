@@ -1,6 +1,6 @@
 <!-- GENERATED FILE: produced by `ki dev skill rubric`. Do not hand-edit; edit scripts/rubric/items/, then rerun `ki dev skill rubric <skill> --write`. -->
 
-# Generated rubric — Portable reciprocal Agora membership
+# Generated rubric — Owner-declared Agora membership and inclusion
 
 > **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `ki dev skill rubric ki-agora --write`.
 
@@ -10,7 +10,6 @@ Line-by-line criteria for auditing ki-agora. Classifications are derived from it
 
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 - [CONFIG — Agora home declaration](#config--agora-home-declaration)
-- [MEMBERSHIP — Member declaration](#membership--member-declaration)
 
 ## RUBRIC — Generated rubric publication
 
@@ -25,16 +24,7 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 → [standard](standards-agora.md)
 
-Owner identity, purpose, ordered projection, and approved members are explicit and portable.
+Purpose, membership, and inclusion are owner-declared and portable.
 
-- **CONFIG-1 [M] — Agora homes are canonical** — A declared Agora home uses a stable identifier, explicitly names the canonical identity of its declaring owner repository, and records only its non-empty purpose, optional duplicate-free ordered projection prefix, optional duplicate-free canonical HTTPS GitHub references, and a duplicate-free array of canonical member repositories. Owner, member, and reference identities are mutually exclusive; ordered identities name one of those classes and affect projection order only. References are owner-selected non-members requiring no reciprocal declaration. Unknown fields fail closed, and local declaration shape is not reciprocal-consent evidence. (standards-agora.md)
+- **CONFIG-1 [M] — Agora homes are canonical** — An owner-declared Agora has a stable identifier, non-empty purpose, duplicate-free canonical member repositories, and optional duplicate-free inclusions naming Agora identifiers or canonical repositories. An included repository is not a member. Owner identity comes from ki-repo.repository. Unknown fields fail closed. (standards-agora.md)
   - _Remediation:_ diagnostic — Correct the local ki-agora home declaration, then rerun the audit.
-
-## MEMBERSHIP — Member declaration
-
-→ [standard](standards-agora.md)
-
-Every membership is a local, portable consent declaration.
-
-- **MEMBERSHIP-1 [M] — member consent is canonical** — Each declared membership names one stable Agora identifier and canonical HTTPS GitHub home with no unknown fields. A repository may declare multiple memberships; local shape never infers peer agreement. (standards-agora.md)
-  - _Remediation:_ diagnostic — Correct the local ki-agora membership declaration, then rerun the audit.

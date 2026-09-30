@@ -6,9 +6,8 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: [".ki.toml"]
 description: >
-  Govern reciprocal Agora membership: a KI home declares purpose and canonical members, while each
-  member independently consents. Use to define or audit declarations; the `ki` CLI owns local resolution and
-  environment tooling owns client projections.
+  Govern owner-declared Agora membership and inclusion of other Agoras or repositories. Use to define or
+  audit group declarations; the `ki` CLI owns local resolution and environment tooling owns client projections.
 argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 ---
 
@@ -18,10 +17,10 @@ This governance skill defines the portable declaration of an **Agora**: a purpos
 
 ## What this skill owns
 
-1. **Agora homes** — a registered owner repository declares a stable, globally unique Agora identifier, its own canonical identity, human purpose, approved canonical repository members, and optional owner-selected non-member Git repository references.
-2. **Member consent** — a member repository independently declares each Agora identifier it joins and the canonical home repository. A repository may join more than one Agora.
-3. **Portable boundary** — declarations use canonical HTTPS repository identities only. References remain ordinary Git repositories without membership, role, reciprocal consent, or KI conformance. Declarations contain no local path, installed-harness location, editor database, app setting, user name, or machine-specific state.
-4. **Independent authority** — the registered owner is an automatic projection participant, while every other member consents for itself. This skill validates declaration shape only; a local shape pass is never reciprocal consent. `ki` must resolve local registry identities, verify owner identity, reject duplicate Agora IDs, and observe member consent before it reports reciprocal agreement; `ki agora open --target` and client projection remain separate host and environment capabilities.
+1. **Agora owners** — a registered repository declares each stable, globally unique Agora identifier it owns, its purpose, and canonical repository members. The owner is included automatically; ordinary members declare nothing.
+2. **Inclusions** — an owner may include another named Agora or a canonical Git repository without making its repositories members. Group inclusion projects only that group's owner and direct members. A registered repository resolves through the local registry; an unregistered Git repository needs an explicit machine-local checkout association.
+3. **Portable boundary** — declarations contain no local path, installed-harness location, editor database, app setting, user name, role, or machine-specific state. All projected roots are deduplicated and sorted by local registry key.
+4. **Independent authority** — inclusion affects a working set only. It grants no cross-repository permission or trade route. The `ki` host resolves registry identities and rejects duplicate Agora IDs; `ki agora open --target` and client projection remain separate host and environment capabilities.
 
 ## Operating modes
 
@@ -29,15 +28,15 @@ The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-agora --repo <repo>`. The structured catalogue validates the local canonical identity plus every declared home and membership entry. It does not search for peers, infer membership from an editor profile, or treat a local registry record as consent.
+Run `ki repo audit --skill ki-agora --repo <repo>`. The structured catalogue validates the local canonical identity and each owner declaration. It does not search for peers or infer membership from an editor profile.
 
 ### Mode CONFORM
 
-Run AUDIT first. `ki repo conform --skill ki-agora --repo <repo> --dry-run` may regenerate only this skill's readable rubric publication. It never creates an Agora, adds a member, changes peer configuration, resolves a path, or writes target-application state. Correct authored declarations locally, then re-run AUDIT.
+Run AUDIT first. `ki repo conform --skill ki-agora --repo <repo> --dry-run` may regenerate only this skill's readable rubric publication. It never creates an Agora, adds a member or inclusion, resolves a path, or writes target-application state. Correct authored declarations locally, then re-run AUDIT.
 
 ### Mode EDUCATE
 
-Run `ki repo educate --skill ki-agora --repo <repo>` to render the concern and rubric. Start with the repository's canonical `ki-repo.repository`, then declare a home or a membership in `.ki.toml` using the examples in the standard. EDUCATE grants neither membership nor local projection authority.
+Run `ki repo educate --skill ki-agora --repo <repo>` to render the concern and rubric. An owning repository declares each Agora beneath `[skills.ki-agora]` using the example in the standard. An ordinary member needs no `ki-agora` table. EDUCATE grants no local projection authority.
 
 ### Mode REFRESH
 
@@ -46,5 +45,5 @@ REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When i
 ## Notes
 
 - A local repository registry is the complete inventory of registered canonical KI repositories. It is not an Agora declaration and does not grant membership.
-- A protected system-managed estate may later be derived from that registry. It is separate from named reciprocal Agoras, which are intentional subsets of that inventory.
+- A protected system-managed estate may later be derived from that registry. It is separate from named owner-declared Agoras, which are intentional subsets of that inventory.
 - External source stores may appear in a local target alongside a Knowledge Base, but they are never Agora members merely because a client opens them.

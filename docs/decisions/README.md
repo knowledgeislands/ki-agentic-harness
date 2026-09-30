@@ -70,7 +70,7 @@ The records are living, compact, and independent. The order below is a **curated
 41. [GDR-KI-HARNESS-004](GDR-KI-HARNESS-004-four-doc-repository-documentation-ownership.md) — four-doc repository documentation ownership.
 42. [ADR-KI-HARNESS-014](ADR-KI-HARNESS-014-route-state-by-authority-and-durability.md) — route Harness state by canonical authority, durability, sensitivity, regeneration, and recovery.
 43. [GDR-KI-HARNESS-005](GDR-KI-HARNESS-005-cross-repository-trade-routes.md) — locally declared, receiver-controlled cross-repository trade submissions.
-44. [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-reciprocal-agora-membership.md) — portable consent for named repository collections and explicit local target selection.
+44. [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-owner-declared-agoras.md) — owner-declared repository groups, optional inclusions, and explicit local target selection.
 45. [GDR-KI-HARNESS-007](GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md) — ownership of document metadata and principal authority.
 46. [GDR-KI-HARNESS-008](GDR-KI-HARNESS-008-portable-work-item-timestamps.md) — portable work-item creation and semantic-update timestamps.
 47. [GDR-KI-HARNESS-009](GDR-KI-HARNESS-009-lean-exact-set-batch-authority.md) — lean exact-set authority for autonomous batch delivery and consolidated acceptance.

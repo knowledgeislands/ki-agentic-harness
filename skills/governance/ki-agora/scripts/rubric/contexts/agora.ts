@@ -18,7 +18,6 @@ export type OutcomeContext = {
 export type AgoraRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly configuration: OutcomeContext
-  readonly memberships: OutcomeContext
 }
 
 const table = (value: unknown): Record<string, unknown> | null =>
@@ -50,21 +49,15 @@ const parseHomes = (value: unknown, local: string | undefined): AuditOutcome[] =
   if (value !== undefined && !homes) return [violation('homes must be a table keyed by Agora identifier')]
 
   for (const [identifier, rawHome] of Object.entries(homes ?? {})) {
-    if (!AGORA_ID.test(identifier))
+    if (!AGORA_ID.test(identifier) || identifier === 'estate')
       outcomes.push(violation(`home ${identifier} must use a stable lower-case hyphenated identifier`))
     const home = table(rawHome)
     if (!home) {
       outcomes.push(violation(`home ${identifier} must be a table`))
       continue
     }
-    for (const key of Object.keys(home).filter(
-      (key) => !['owner', 'purpose', 'order', 'references', 'members'].includes(key)
-    ))
+    for (const key of Object.keys(home).filter((key) => !['purpose', 'members', 'includes'].includes(key)))
       outcomes.push(violation(`home ${identifier} has unrecognised key ${key}`))
-    if (typeof home.owner !== 'string' || !REPOSITORY.test(home.owner))
-      outcomes.push(violation(`home ${identifier} owner must be a canonical HTTPS GitHub repository`))
-    else if (home.owner !== local)
-      outcomes.push(violation(`home ${identifier} owner must match its declaring repository`))
     if (typeof home.purpose !== 'string' || !home.purpose.trim())
       outcomes.push(violation(`home ${identifier} requires a non-empty purpose`))
     const members = home.members
@@ -83,91 +76,43 @@ const parseHomes = (value: unknown, local: string | undefined): AuditOutcome[] =
       if (memberIdentities.has(repository)) outcomes.push(violation(`home ${identifier} members repeats ${repository}`))
       else memberIdentities.add(repository)
     }
-    const references = home.references
-    const referenced = new Set<string>()
-    if (references !== undefined && !Array.isArray(references))
-      outcomes.push(violation(`home ${identifier} references must be an array`))
-    else
-      for (const repository of references ?? []) {
-        if (typeof repository !== 'string' || !REPOSITORY.test(repository)) {
-          outcomes.push(violation(`home ${identifier} references entries must be canonical HTTPS GitHub repositories`))
+    const includes = home.includes
+    if (includes !== undefined && !Array.isArray(includes))
+      outcomes.push(violation(`home ${identifier} includes must be an array`))
+    else {
+      const seen = new Set<string>()
+      for (const included of includes ?? []) {
+        if (typeof included !== 'string' || !(REPOSITORY.test(included) || AGORA_ID.test(included))) {
+          outcomes.push(
+            violation(
+              `home ${identifier} includes entries must be Agora identifiers or canonical HTTPS GitHub repositories`
+            )
+          )
           continue
         }
-        if (referenced.has(repository)) outcomes.push(violation(`home ${identifier} references repeats ${repository}`))
-        else referenced.add(repository)
-        if (repository === local) outcomes.push(violation(`home ${identifier} must not reference its own repository`))
-        if (memberIdentities.has(repository))
-          outcomes.push(
-            violation(`home ${identifier} repository ${repository} must not be both a member and reference`)
-          )
-      }
-    if (home.order !== undefined) {
-      if (!Array.isArray(home.order)) outcomes.push(violation(`home ${identifier} order must be an array`))
-      else {
-        const participants = new Set([
-          ...(typeof home.owner === 'string' ? [home.owner] : []),
-          ...memberIdentities,
-          ...referenced
-        ])
-        const ordered = new Set<string>()
-        for (const repository of home.order) {
-          if (typeof repository !== 'string' || !REPOSITORY.test(repository)) {
-            outcomes.push(violation(`home ${identifier} order entries must be canonical HTTPS GitHub repositories`))
-            continue
-          }
-          if (ordered.has(repository)) outcomes.push(violation(`home ${identifier} order repeats ${repository}`))
-          else ordered.add(repository)
-          if (!participants.has(repository))
-            outcomes.push(
-              violation(`home ${identifier} order repository ${repository} must name its owner, member, or reference`)
-            )
-        }
+        if (seen.has(included)) outcomes.push(violation(`home ${identifier} includes repeats ${included}`))
+        else seen.add(included)
+        if (included === identifier) outcomes.push(violation(`home ${identifier} must not include itself`))
+        if (included === local || memberIdentities.has(included))
+          outcomes.push(violation(`home ${identifier} must not include its owner or a direct member`))
       }
     }
-  }
-  return outcomes
-}
-
-const parseMemberships = (value: unknown): AuditOutcome[] => {
-  const outcomes: AuditOutcome[] = []
-  const memberships = table(value)
-  if (value !== undefined && !memberships) return [violation('memberships must be a table keyed by Agora identifier')]
-
-  for (const [identifier, rawMembership] of Object.entries(memberships ?? {})) {
-    if (!AGORA_ID.test(identifier))
-      outcomes.push(violation(`membership ${identifier} must use a stable lower-case hyphenated identifier`))
-    const membership = table(rawMembership)
-    if (!membership) {
-      outcomes.push(violation(`membership ${identifier} must be a table`))
-      continue
-    }
-    for (const key of Object.keys(membership).filter((key) => key !== 'home'))
-      outcomes.push(violation(`membership ${identifier} has unrecognised key ${key}`))
-    if (typeof membership.home !== 'string' || !REPOSITORY.test(membership.home))
-      outcomes.push(violation(`membership ${identifier} home must be a canonical HTTPS GitHub repository`))
   }
   return outcomes
 }
 
 const parseConfiguration = (configuration: Readonly<AgoraConfiguration>, root: string): AgoraRubricContext => {
   const configurationOutcomes: AuditOutcome[] = []
-  const membershipsOutcomes: AuditOutcome[] = []
   const local = repositoryIdentity(root)
   if (!local) configurationOutcomes.push(violation('ki-repo repository must be a canonical HTTPS GitHub home'))
-  for (const key of Object.keys(configuration).filter((key) => !['homes', 'memberships'].includes(key)))
-    configurationOutcomes.push(violation(`unrecognised ki-agora configuration key ${key}`))
-  configurationOutcomes.push(...parseHomes(configuration.homes, local))
-  membershipsOutcomes.push(...parseMemberships(configuration.memberships))
+  configurationOutcomes.push(...parseHomes(configuration, local))
 
   return {
     rubric: {},
     configuration: {
       outcomes: configurationOutcomes.length
         ? configurationOutcomes
-        : pass('Agora homes use canonical owner identity, purpose, ordered projection, and approved member shape.')
-    },
-    memberships: {
-      outcomes: membershipsOutcomes.length ? membershipsOutcomes : pass('Agora memberships use canonical home shape.')
+        : pass('Agora homes use canonical purpose, members, and optional inclusion shape.')
     }
   }
 }
@@ -182,7 +127,7 @@ export const createAgoraSession = ({
   return {
     subjects: [
       { families: ['RUBRIC'], context: () => context },
-      { families: ['CONFIG', 'MEMBERSHIP'], context: () => context }
+      { families: ['CONFIG'], context: () => context }
     ],
     proposal: () => ({ writes: [] })
   }
