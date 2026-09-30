@@ -159,6 +159,16 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       judgment: judgment(
         'Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, while resolving checklist coverage, holds, duplicate routines and exact scope, schedule, timezone and budget before activation?'
       )
+    },
+    {
+      code: 'COORD-14',
+      title: 'Run MCP access',
+      description:
+        "Runs reach KI MCP servers through a granted Paperclip connection to their own host's bridge, and a remote host carries its own bridge.",
+      sources: [`${STANDARD}#mcp-access-in-runs`, `${STANDARD}#remote-delivery-prerequisite`],
+      judgment: judgment(
+        "Does each run that needs KI MCP access reach its own host's bridge through a granted Paperclip connection verified in a real run, with a missing grant reported as a prerequisite and no audit home-pinning, laptop tunnel or cloud connector substituted?"
+      )
     }
   ]
 }

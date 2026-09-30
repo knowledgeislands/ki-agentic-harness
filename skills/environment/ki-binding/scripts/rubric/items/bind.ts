@@ -115,11 +115,26 @@ const BIND_J1: RubricItem<BindingRubricContext> = {
       'Adjust the canonical clients set to the least-surprising intended availability, or record the owning authority decision before changing exposure.'
   }
 }
+const BIND_J2: RubricItem<BindingRubricContext> = {
+  code: 'BIND-J2',
+  title: 'Host bridge is the local MCP route',
+  description:
+    "Host-bound runtimes reach KI MCP servers through their own host's mcporter bridge, and cloud-session connectors are not treated as local gaps.",
+  sources: ['standards-cross-surface-binding.md#host-surface-selection'],
+  judgment: {
+    scope: 'Every host-bound runtime that claims KI MCP access, its bridge route, and any reported connector gap.',
+    prompt:
+      "Does each host-bound runtime reach KI MCP servers through its own host's bridge, without depending on another host's loopback bridge or reporting an unauthorised cloud connector as missing local capability?",
+    outcomes: ['conforming', 'route repair required', 'authority decision required'],
+    guidance:
+      "Route the runtime to its host's bridge, or report the missing bridge or grant as a prerequisite; record an exposure decision before crossing hosts."
+  }
+}
 export const BIND: RubricFamily<BindingRubricContext, BindingRubricContext> = {
   code: 'BIND',
   title: 'Canonical MCP binding',
   description: 'Portable source validity, client targeting, and non-secret mcporter definition evidence.',
   standard: 'standards-cross-surface-binding.md',
   selectContext: (context) => context,
-  items: [BIND_1, BIND_2, BIND_J1]
+  items: [BIND_1, BIND_2, BIND_J1, BIND_J2]
 }

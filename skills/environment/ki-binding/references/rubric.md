@@ -26,6 +26,11 @@ Portable source validity, client targeting, and non-secret mcporter definition e
   - _Review prompt:_ Does each server target the clients that need it, without exposing it on clients that do not?
   - _Outcomes:_ conforming; target adjustment required; authority decision required
   - _Conforming guidance:_ Adjust the canonical clients set to the least-surprising intended availability, or record the owning authority decision before changing exposure.
+- **BIND-J2 [J] — Host bridge is the local MCP route** — Host-bound runtimes reach KI MCP servers through their own host's mcporter bridge, and cloud-session connectors are not treated as local gaps. (standards-cross-surface-binding.md#host-surface-selection)
+  - _Evidence scope:_ Every host-bound runtime that claims KI MCP access, its bridge route, and any reported connector gap.
+  - _Review prompt:_ Does each host-bound runtime reach KI MCP servers through its own host's bridge, without depending on another host's loopback bridge or reporting an unauthorised cloud connector as missing local capability?
+  - _Outcomes:_ conforming; route repair required; authority decision required
+  - _Conforming guidance:_ Route the runtime to its host's bridge, or report the missing bridge or grant as a prerequisite; record an exposure decision before crossing hosts.
 
 ## RUBRIC — Generated rubric publication
 

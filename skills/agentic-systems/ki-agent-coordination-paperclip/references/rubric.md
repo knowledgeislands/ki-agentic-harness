@@ -83,6 +83,11 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, while resolving checklist coverage, holds, duplicate routines and exact scope, schedule, timezone and budget before activation?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-14 [J] — Run MCP access** — Runs reach KI MCP servers through a granted Paperclip connection to their own host's bridge, and a remote host carries its own bridge. (standards-agent-coordination-paperclip.md#mcp-access-in-runs, standards-agent-coordination-paperclip.md#remote-delivery-prerequisite)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does each run that needs KI MCP access reach its own host's bridge through a granted Paperclip connection verified in a real run, with a missing grant reported as a prerequisite and no audit home-pinning, laptop tunnel or cloud connector substituted?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## ORG — Paperclip organisation identity
 
