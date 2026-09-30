@@ -4,12 +4,12 @@ area: RTP
 title: Route MCP through mcporter
 theme: runtime-portability
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T06:59:13Z
-updated_at: 2026-09-30T07:40:00Z
+updated_at: 2026-09-30T07:50:00Z
 ---
 
 # Route MCP through mcporter
