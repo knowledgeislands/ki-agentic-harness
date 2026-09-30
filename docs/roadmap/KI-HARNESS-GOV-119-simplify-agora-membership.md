@@ -4,7 +4,7 @@ area: GOV
 title: Simplify Agora membership
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 07707804caeb36983aaa369a507aed37cfb9c248
@@ -34,7 +34,7 @@ The baseline used repository-to-role member tables and role-bearing member conse
 
 - [x] Define role-free home members and member consent in the decision and standard.
 - [x] Update local validation, focused tests, generated rubric, and published skill catalogue.
-- [x] Migrate declarations with identity-preserving checks and verify reciprocal Agora resolution.
+- [ ] Complete the three held Techné declarations, then verify reciprocal Agora resolution estate-wide.
 
 ## Files touched
 
@@ -64,7 +64,7 @@ Update the authoring examples and website-owned skills-by-outcome wording that d
 
 ### Roadmap
 
-Retain `KI-TOOL-CLI-099` for output grouping. This record moves to human review after implementation and verification.
+Retain `KI-TOOL-CLI-099` for output grouping. This record moves to human review after the held declarations migrate and estate-wide verification passes.
 
 ## Review
 
@@ -74,26 +74,26 @@ The harness contract now accepts a duplicate-free member identity array and memb
 
 ### Change Summary
 
-The standard, `GDR-KI-HARNESS-006`, rubric validator and publication, skill description and catalogue, examples, and local declaration now use the role-free shape. A bounded rewrite preserved home IDs, member identities, and membership homes in 44 live declarations. `tools-ki` removed role parsing and matching in commit `62f00ce`; its output presentation remains tracked by `KI-TOOL-CLI-099`.
+The standard, `GDR-KI-HARNESS-006`, rubric validator and publication, skill description and catalogue, examples, and local declaration now use the role-free shape. A bounded rewrite verified preservation of home IDs, member identities, and membership homes in 44 live declarations; 41 were committed, while the three Techné changes were reverted under their programme hold. `tools-ki` removed role parsing and matching in commit `62f00ce`; its output presentation remains tracked by `KI-TOOL-CLI-099`.
 
 ### Verification
 
 - Harness `bun run test`, `bunx tsc --noEmit`, and focused `ki-agora`, `ki-repo-harness`, and `ki-authoring` audits pass.
-- `ki agora audit` reports eight healthy profiles and zero findings; the estate-wide focused `ki-agora` audit exits successfully.
+- `ki agora audit` reports seven healthy profiles and one KIS finding from a held Techné declaration. The estate-wide focused `ki-agora` audit reports 41 passes and three failures, all in the held Techné repositories.
 - `tools-ki` focused Agora tests, TypeScript check, and focused `ki-self`, `ki-agora`, and `ki-authoring` audits pass.
 - `tools-ki` full coverage tests pass, but the global 100% gate fails on one uncovered function in unrelated `src/core/storage/repository-stores.ts`.
 
 ### Outstanding concerns
 
-The unrelated `tools-ki` coverage gap is outside this contract change and remains a repository gate finding. Arcadia's shared `GDR-KI-FUNDAMENTALS-001` still names retired Agora groups and role labels; its existing `KI-ARCADIA-ECO-006` enactment item owns that amendment. `KI-TOOL-CLI-099` owns the requested output grouping.
+The Techné programme hold covers `ki-techne-harness`, `ki-techne-principal`, and `tools-techne`; their role-bearing declarations remain unchanged until the principal explicitly resumes that work after the local Paperclip learning review. These declarations now fail strict validation, and the KIS Agora is unhealthy until they migrate. The unrelated `tools-ki` coverage gap is outside this contract change and remains a repository gate finding. Arcadia's shared `GDR-KI-FUNDAMENTALS-001` still names retired Agora groups and role labels; its existing `KI-ARCADIA-ECO-006` enactment item owns that amendment. `KI-TOOL-CLI-099` owns the requested output grouping.
 
 ### Post-change review
 
-The migrated declarations resolve the same reciprocal participants without role equality. The new validator rejects legacy tables, repeated members, and unexpected consent fields. The focused tests and live audit cover the changed behaviour; the separate coverage finding and shared-record amendment remain visible for review.
+The migrated declarations preserve participant identities without role equality. The new validator rejects legacy tables, repeated members, and unexpected consent fields. Focused tests cover the changed behaviour; the live audit exposes the three held legacy declarations, while the separate coverage finding and shared-record amendment remain visible for review.
 
 ### Mini recap
 
-Role-free membership is implemented and the registered Agoras remain healthy. The harness gates pass; one unrelated CLI coverage function remains uncovered. The durable contract is in `ki-agora` and `GDR-KI-HARNESS-006`, while the shared fundamentals amendment and output grouping retain their own work owners.
+Role-free membership is implemented and 41 declarations are committed. The KIS Agora remains unhealthy because three Techné declarations are held. The harness gates pass; one unrelated CLI coverage function remains uncovered. The durable contract is in `ki-agora` and `GDR-KI-HARNESS-006`, while the shared fundamentals amendment and output grouping retain their own work owners.
 
 ## Discussion
 
