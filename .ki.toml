@@ -233,6 +233,3 @@ standing.import.knowledge = ["shared-capability-maintenance"]
 export = ["knowledge"]
 import = ["work", "knowledge"]
 standing.import.knowledge = ["shared-capability-maintenance"]
-
-[skills.ki-trades.routes."krisb/dotfiles"]
-export = ["work", "knowledge"]
