@@ -9,8 +9,11 @@
 | [Execution workspaces][workspaces] | Workspace binding and runtime relationship | 2026-09-25 |
 | [Chat-style tasks][task-chat] | Direct conversational task behaviour | 2026-09-25 |
 | [Paperclip server build][server-build] | Retirement gates, archived-inclusive project listing, run isolation and remote MCP endpoints | 2026-09-30 |
+| [Bundled PARA memory skill][server-build] | Agent-local capture, recall, planning and retention instructions | 2026-10-01 |
 
 ## Last review
+
+2026-10-01: inspected `skills/para-memory-files/SKILL.md` and `references/schemas.md` in the installed `@paperclipai/server` 2026.916.1 payload. They direct facts and daily notes into agent-local memory, separate project plans into `plans/`, and retained facts into superseding records. The KI memory boundary constrains those instructions without modifying the bundled skill: repositories retain durable knowledge and work authority, and an employee knowledge-return check reconciles useful discoveries. This was an instruction review, not an audit of agents' stored memories or retrieval indexes. Recheck these instructions after upgrades.
 
 Reviewed 2026-09-25. Paperclip's official agent skill remains the owner of API mechanics and coordination mutations. The documentation distinguishes reusable skills, execution workspaces, and chat-style tasks, supporting a KI overlay that keeps role, run, workspace, and worker identities separate. Chat-style tasks are experimental, so this skill depends only on the durable principle that direct conversation can coexist with coordinated execution, not on a specific chat API shape.
 

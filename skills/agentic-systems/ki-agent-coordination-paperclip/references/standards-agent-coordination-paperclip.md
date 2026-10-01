@@ -77,6 +77,8 @@ Ground a run in an explicit repository identity and admitted revision before wor
 
 ## Replaceable coordination
 
+The [agent-memory standard](standards-agent-memory.md) applies this boundary to personal agent notes, including `para-memory-files`, and defines the weekly employee knowledge-return check. Memory skills do not override repository ownership, create a second roadmap or authorise retention across company boundaries. Useful discoveries return during normal delivery; the recurring review catches omissions rather than postponing all knowledge return until the end of the week.
+
 Paperclip is additive, not a prerequisite for understanding or continuing a repository's work. Apply the runtime-neutral continuity principle owned by `ki-authoring`'s knowledge-promotion standard: the repository retains purpose, procedures, authority, decisions, learning, work state and review evidence; the selected runtime adds execution and coordination. Paperclip task links are useful provenance, not the only source of durable meaning.
 
 Use a removal or replacement test: if Paperclip's task UI, agent memory and scheduler were unavailable, could an authorised human or another agent reconstruct the current obligations, holds, next decisions and evidence from the repository and its declared dependencies? Required skills, tooling and external services must still be resolved and verified; this is not a promise of dependency-free or offline operation. Document non-secret dependency and recovery requirements, but keep credentials and secrets in their designated external stores.

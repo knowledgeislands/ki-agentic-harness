@@ -144,9 +144,12 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       title: 'Replaceable coordination',
       description:
         'Repository-owned knowledge, obligations and evidence support continuity without Paperclip, with declared dependencies verified and authority preserved.',
-      sources: [`${STANDARD}#replaceable-coordination`],
+      sources: [
+        `${STANDARD}#replaceable-coordination`,
+        'standards-agent-memory.md#working-memory-not-a-second-knowledge-base'
+      ],
       judgment: judgment(
-        'Could an authorised human or alternate agent reconstruct procedures, work state, holds, decisions and evidence without Paperclip task UI or agent memory, using verified declared skills and tooling, without copying secrets or treating runtime replacement as permission to repeat in-flight work?'
+        'Could an authorised human or alternate agent reconstruct procedures, work state, holds, decisions and evidence without Paperclip task UI or agent memory, using verified declared skills and tooling, without copying secrets or treating runtime replacement as permission to repeat in-flight work? Do employee memory instructions preserve opt-in and company boundaries, source-linked retrieval and repository-owned plans, with unique durable learning returned or visibly awaiting an owned review rather than trapped in private memory?'
       )
     },
     {
@@ -157,10 +160,11 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       sources: [
         `${STANDARD}#recurring-activities-and-routines`,
         'standards-existing-estate-onboarding.md#reconcile-recurring-obligations',
-        'standards-existing-estate-onboarding.md#roadmap-to-delivery-loop'
+        'standards-existing-estate-onboarding.md#roadmap-to-delivery-loop',
+        'standards-agent-memory.md#weekly-employee-knowledge-return-check'
       ],
       judgment: judgment(
-        'Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, with approved scope, schedule, timezone and budget before activation; and does next-work review finish existing work, dispatch authorised Ready items and prepare selected drafts without silently adopting, releasing holds, accepting or pruning work?'
+        'Does reconciliation preserve one appropriate repository definition per obligation, home-project ownership of shared reports, one active run and independent acceptance, with approved scope, schedule, timezone and budget before activation; and does next-work review finish existing work, dispatch authorised Ready items and prepare selected drafts without silently adopting, releasing holds, accepting or pruning work? Does weekly knowledge return cover employee contributions, source verification, deduplication, authorised repository promotion and explicit pending or missing coverage without dumping private notes or creating duplicate reviews?'
       )
     },
     {

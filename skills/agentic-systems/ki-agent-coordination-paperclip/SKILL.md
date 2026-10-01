@@ -56,6 +56,8 @@ Paperclip is additive and replaceable: repository-owned knowledge and work must 
 
 ## Operating modes
 
+When configuring agent memory or reconciling employee learning, read the [agent-memory and knowledge-return standard](references/standards-agent-memory.md). Agent memory is a scoped working aid, not a parallel knowledge base or plan. Its weekly knowledge-return check belongs in the existing repository-owned review where practical; bootstrap and post-hire reconciliation verify this boundary without enabling memory or schedules implicitly.
+
 The operational goal is reviewed roadmap work delivered into the designated checkout. Bootstrap establishes the prerequisites for that flow; an inventory or another preparation task is not the delivered result. Use the onboarding guide's [bounded outcome approval](references/standards-existing-estate-onboarding.md#approve-an-outcome-not-every-step) and [roadmap-to-delivery loop](references/standards-existing-estate-onboarding.md#roadmap-to-delivery-loop): carry existing authority through the necessary steps, prepare selected drafts when no Ready work exists, and ask only for a missing decision. The guide does not itself grant work selection, implementation or integration authority.
 
 Repository tasks use the declared repository skills and their required dependencies as their baseline in the actual task workspace. Company-library assignment, runtime discovery, and repository declaration are separate checks; follow the standard's [execution baseline](references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline). Use the reusable [bootstrap task brief](assets/bootstrap-task.md) for a plan that resolves the current company and Agora without caller-supplied placeholders.
