@@ -1,14 +1,20 @@
-# Bootstrap or rebootstrap the current company
+# Company Operational Review
+
+<a id="bootstrap-or-rebootstrap-the-current-company"></a>
 
 Set this company up so its agents can progress the work I choose from its repositories' roadmaps and deliver reviewed results into my local checkout. Reuse the existing setup and approvals. Prioritise a working first delivery path, then finish the remaining setup.
 
-## What bootstrap does
+Review whether this company is ready to operate efficiently, and carry authorised improvements through to useful results. Bootstrap and rebootstrap are earlier names for this same review; reuse the existing task and its evidence rather than opening another onboarding task. Keep the review within the company and pilot I selected.
+
+<a id="what-bootstrap-does"></a>
+
+## What the review delivers
 
 - Find its repositories and give each one a clear project.
 - Give each project an icon and colour that show what kind of project it is.
 - Understand existing tasks, unfinished work, and anything on hold—without starting duplicates.
 - Find the next useful roadmap item. If it is still a draft, arrange its preparation so there is something concrete to approve and deliver.
-- Check whether current employees have clear responsibilities and can cover the work. Adjust their roles or assignments before suggesting hires.
+- Check whether current employees have clear responsibilities and can cover the work. Prefer a lean team; reconcile roles, assignments and configuration before proposing additional employees. The CEO submits justified hire proposals for human confirmation through supported Paperclip approvals, rather than leaving recommendations buried in the report.
 - Set up useful regular checks and reports, based on what each repository needs.
 - Prove that one chosen item can be prepared, implemented, reviewed and delivered into the user's local `main` checkout.
 - Give a short list of what is working, what needs changing, and the few choices only the user can make.
@@ -22,11 +28,19 @@ Set this company up so its agents can progress the work I choose from its reposi
 - **Weekly work and knowledge reconciliation:** each employee checks for useful discoveries, company knowledge and durable learning that have not reached their owning repository. Verify what is already saved, return approved knowledge, and name any pending review or missing response. Include unfinished work, task links and decisions; combine this with the repository review where one run can cover both.
 - **When relevant:** review team capacity and risk, check backup and recovery evidence with its owner, and recheck the arrangement after hires, membership, skill or runtime changes.
 
+Keep these checks visible and manually runnable through their approved definitions and supported Paperclip projections. Scheduled and on-demand calls share the same definition, scope and active-run guard; combine weekly review and knowledge return where one run covers both. Agree exact timing, IANA timezone, budget and evidence destination before activating schedules.
+
+## Runtime binding
+
+For my estate, Claude is the default proposed runtime for new hires, subject to a working supported connection. This is my approved hiring preference, not a global Paperclip default. Preserve explicit approved exceptions and existing working runtimes. Verify the proposed connection before claiming a hire is ready; if it is unavailable, report the specific connection action and owner, keep authorised work on its working runtime, and do not silently substitute a different runtime for the new hire.
+
 ## Details for the agent
 
 Apply the skill's [agent-memory boundary and weekly knowledge-return procedure](../references/standards-agent-memory.md). Verify that every employee's instructions keep personal memory subordinate to repository knowledge. Do not enable auto-memory, copy private notes wholesale or create separate PARA plans for KI work. Reconcile existing review coverage before proposing a new routine.
 
 Read the canonical `ki-agent-coordination-paperclip` skill and its [existing-estate onboarding guide](../references/standards-existing-estate-onboarding.md). Infer the current company from the Paperclip run and verify its Agora binding from approved context and repository evidence; do not guess either from a name. Reuse existing projects, tasks, employees, definitions and routines. Reconcile repository projects, their actual icons and colours, unfinished and held work, decisions, skill access, roadmap task links and recurring obligations without duplicating them. Apply the guide's styling scheme to approved project changes; resolve a KI repository's style from its declared type and primary shape, not its name, and use only the neutral style for a verified non-KI repository. Repository inspection, planning and delivery belong in each owning repository project; Coordination only arranges and synthesises their returned evidence. Check clearer remits, reassignment and configuration before proposing hires.
+
+For a justified staffing gap within this review's scope, the CEO submits a concrete hire proposal through Paperclip's supported human-approval mechanism, reusing any matching pending proposal. Name the role, responsibilities, first assignment, runtime and connection, budget, and independent reviewer; explain why existing employees cannot cover the gap. Submission seeks approval and does not itself hire, wake an employee or grant repository authority. A plan-only request proposes the submission without creating it.
 
 Use the primary checkout for repository-project read-only assessment and authorised roadmap planning. Verify a separate checkout before canonical-content implementation; include its required skill and store setup in that delivery scope. An implementation-workspace problem must not block independent assessment through an already working primary checkout.
 
@@ -37,3 +51,5 @@ Unless my instruction explicitly limits this to drafting a plan or prohibits tas
 Return a one-screen plan for the useful outcome, with the known setup and delivery steps grouped into that proposal. Name the chosen roadmap item, what will change, who will implement and review it, how it reaches local `main`, and the limits. Put technical detail in linked evidence. Seek one approval for the concrete sequence where needed, then carry it through without asking again for each routine step. A planning-only instruction stays planning-only; an implementation instruction must not be reset to another assessment.
 
 Ask questions in simple language with enough context to answer: what happened, what has been checked, the choice needed, your recommendation and what waiting would hold up. Report what is delivered, what is moving and the actual blocker. Separate blockers to the next operation from later improvements; keep useful work moving while other setup is unfinished. Daily preflight remains audit plus conform dry-run only.
+
+Keep the review report short and answer four questions: What is working? What improved? What happens next? What decision needs the human? Link the evidence and concrete approval requests; report unknown or blocked results plainly. If no human decision is needed, say so and continue the authorised work.

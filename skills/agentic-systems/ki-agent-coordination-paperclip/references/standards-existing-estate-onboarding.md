@@ -1,12 +1,16 @@
-# Bootstrap or rebootstrap an existing repository estate in Paperclip
+# Company Operational Review for an existing repository estate in Paperclip
+
+<a id="bootstrap-or-rebootstrap-an-existing-repository-estate-in-paperclip"></a>
 
 This is a staged guide for an existing Knowledge Islands group, not permission to start agents or migrate repositories. Apply the [coordination standard](standards-agent-coordination-paperclip.md) for authority and the `ki-git` skill for Git grants. Use Paperclip's own skill for current project, task, workspace, and API mechanics. Keep the first pass local unless the repositories already have an approved remote-delivery policy.
 
-Use one repeatable company-level bootstrap task in the workspace-free Coordination project. Inventory and reconcile before creating anything; a later run preserves correctly configured projects, tasks, hires, routines, links, and retained work rather than reproducing the first run. Route every repository-specific inspection, audit, conform, and delivery through that repository's project. Keep each completed run's evidence and decisions; a clean rerun reports no changes. An existing Onboarding project may hold an unfinished first run, but archive it only after its work has an owner and its history remains reachable.
+Use one repeatable company-level Company Operational Review task in the workspace-free Coordination project. Bootstrap and rebootstrap are legacy names for the same review; preserve task identity, approvals, evidence and existing links rather than creating a second onboarding task. Review operational readiness and efficiency: correct repository projects and styling, a capable lean team, useful roadmap progress, and working daily, next-work and weekly review coverage. Keep the current company's approved scope and selected pilot; do not restart a fleet review or expand to another company without authority.
+
+Inventory and reconcile before provisioning; a later run preserves correctly configured projects, tasks, hires, routines, links, and retained work rather than reproducing the first run. Route every repository-specific inspection, audit, conform, and delivery through that repository's project. Keep each completed run's evidence and decisions; a clean rerun reports no changes. An existing Onboarding project may hold an unfinished first run, but archive it only after its work has an owner and its history remains reachable. Filenames and legacy anchors remain stable for existing tasks.
 
 ## Contents
 
-- [Starting a repeatable bootstrap](#starting-a-repeatable-bootstrap)
+- [Starting a repeatable review](#starting-a-repeatable-bootstrap)
 - [Approve an outcome, not every step](#approve-an-outcome-not-every-step)
 - [Minimum needed to start useful work](#minimum-needed-to-start-useful-work)
 - [Roadmap-to-delivery loop](#roadmap-to-delivery-loop)
@@ -16,13 +20,17 @@ Use one repeatable company-level bootstrap task in the workspace-free Coordinati
 - [Prove one local delivery path](#4-prove-one-local-delivery-path)
 - [Expand only from evidence](#5-expand-only-from-evidence)
 
-## Starting a repeatable bootstrap
+<a id="starting-a-repeatable-bootstrap"></a>
 
-Use the [bootstrap task brief](../assets/bootstrap-task.md) without company-code or Agora placeholders. It resolves the current company through the coordination standard's [identity procedure](standards-agent-coordination-paperclip.md#resolving-the-current-company-and-agora). A missing binding becomes a concrete decision, not an inferred name. If the coordination skill is not yet assigned or discoverable, include its verified local `SKILL.md` path in the task until company-level access is established.
+## Starting a repeatable review
+
+Use the [Company Operational Review brief](../assets/bootstrap-task.md) without company-code or Agora placeholders. It resolves the current company through the coordination standard's [identity procedure](standards-agent-coordination-paperclip.md#resolving-the-current-company-and-agora). A missing binding becomes a concrete decision, not an inferred name. If the coordination skill is not yet assigned or discoverable, include its verified local `SKILL.md` path in the task until company-level access is established.
 
 Start from the actual request and existing approvals. A request for a plan or read-only assessment stays within that boundary. A request to carry out an agreed bootstrap continues its authorised work; do not reset it to planning or seek the same permission again. The reusable brief permits bounded read-only discovery tasks in existing repository projects, so Coordination can obtain evidence without inspecting repositories itself. A more restrictive caller instruction overrides that permission. Creating a missing project, applying repository changes and starting a schedule still require their applicable authority. An approved audit and conform preview does not approve applying the preview.
 
 Make the human-facing plan a one-screen decision brief; aim for no more than about 250 words without cutting context needed to decide. Lead with the useful result, what already works, the proposed changes and the decision needed. Name the work, owner, review and delivery path, limits and expected result. Keep detailed inventories, diffs, prior revisions and verification evidence in linked supporting records. A question must explain the situation, what has already been checked, why the human's judgement is needed, the recommended choice and the consequence of waiting. If no decision is needed, proceed within the existing authority and report progress.
+
+The short review report answers: What is working? What improved? What happens next? What decision needs the human? Distinguish delivered improvements from proposals and unverified settings. Link supporting evidence and actual pending approvals. When no decision is needed, say so; a report is not a reason to pause authorised work.
 
 ## Approve an outcome, not every step
 
@@ -114,6 +122,12 @@ Keep a separate workspace-free Coordination project for company-wide sequencing,
 
 Map responsibilities after project ownership and actual work are clear. Compare the existing employees' remits, skills, assignments and available capacity with company coordination, each repository's work, implementation, independent review, authorised integration and recurring obligations. For each gap or overlap, propose keeping the current arrangement, clarifying a remit, reassigning or reconfiguring an existing employee, or hiring only when the current team cannot reasonably cover it. Name the current and proposed owner, hand-off for retained tasks, review independence and approval needed; do not treat an employee's title or project membership as repository authority. A role may coordinate on one task and perform separately authorised repository work on another; role, run, workspace, and worker remain different identities. Keep agents paused while reconciling an inherited queue unless a bounded run has its own current authority.
 
+Where a justified gap requires a hire and proposal submission is authorised, the CEO submits a concrete proposal through Paperclip's supported human-approval mechanism. Reuse a matching pending proposal; do not substitute a prose recommendation for the approval request or hire automatically. Include responsibilities, first assignment, runtime and verified connection route, budget, and the independent review arrangement. Explain why reassignment or configuration of existing employees is insufficient. If submission access is missing, return the exact operator action and continue unrelated authorised work. A hire approval does not grant repository implementation, integration, acceptance or publication authority.
+
+### Runtime binding
+
+Resolve new-hire runtime choice from the principal's approved estate policy. The [review brief](../assets/bootstrap-task.md#runtime-binding) expresses this principal's Claude default, conditional on a working supported connection; it is not a global Paperclip default or a requirement for every user. Preserve explicitly approved exceptions and existing working runtimes. Verify the supported connection for the proposed hire and report a specific missing connection action to its operator. An unavailable preferred connection does not justify silently proposing another runtime, resetting approved work to discovery or disabling a working employee.
+
 After approved hires, use the [post-hire configuration brief](../assets/post-hire-task.md) to reconcile agent settings through an authorised external operator. Keep configuration read-back, actual workspace skill verification and permission to start work as separate gates.
 
 ## 3. Reconcile work and task identities
@@ -150,6 +164,8 @@ Use these recurring concerns as discovery prompts, not mandatory schedules for e
 The list is reconciled with existing obligations, not imported wholesale as new work. A weekly review may consolidate compatible concerns into one bounded invocation; the master checklist remains owned by `ki-repo`, not copied into each task or routine.
 
 Before enabling any proposed routine, agree its exact scope, schedule including weekly day/time and IANA timezone, depth or budget, evidence destination and single-active-run safeguard. Determine a preflight start or dependency that can feed the 08:00 report without pretending a failed or late run passed. A routine triggers the governing due-run lifecycle; it does not independently spawn a duplicate of a run created by `ki-next`, accept the result or grant repository writes. Draft-only bootstrap does not activate schedules.
+
+Make approved daily reporting, next-work and weekly review coverage visible and manually runnable through supported Paperclip projections. Scheduled and on-demand calls reuse their repository definition and active-run guard. Manual calls use their approved invocation scope; making them available does not require activating a timer or repeating unchanged approvals. Combine weekly review and employee knowledge return when their approved scopes fit one run. Verify the actual invocation and returned evidence before reporting a routine operational; a saved definition alone is not proof that it runs.
 
 Discover each repository's purpose and existing work before proposing hires or a small first delivery batch. Name the needed role, first assignment, independent reviewer and integration owner; do not hire agents or bulk-import the work backlog by default. Roles, work selection and delivery permissions are distinct decisions that may share one concrete, explicitly approved bootstrap outcome; reconciliation alone grants none of them.
 

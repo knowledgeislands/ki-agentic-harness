@@ -6,7 +6,7 @@ ki-depends-on: [ki-git]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories
-  remain knowledge and work authority. Use when bootstrapping, rebootstrapping, designing, or auditing Paperclip
+  remain knowledge and work authority. Use for Company Operational Review, bootstrap/rebootstrap, or designing and auditing Paperclip
   projects, agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
 argument-hint: 'audit <arrangement> | conform <arrangement> | educate <arrangement> | help | refresh'
 ---
@@ -58,9 +58,11 @@ Paperclip is additive and replaceable: repository-owned knowledge and work must 
 
 When configuring agent memory or reconciling employee learning, read the [agent-memory and knowledge-return standard](references/standards-agent-memory.md). Agent memory is a scoped working aid, not a parallel knowledge base or plan. Its weekly knowledge-return check belongs in the existing repository-owned review where practical; bootstrap and post-hire reconciliation verify this boundary without enabling memory or schedules implicitly.
 
-The operational goal is reviewed roadmap work delivered into the designated checkout. Bootstrap establishes the prerequisites for that flow; an inventory or another preparation task is not the delivered result. Use the onboarding guide's [bounded outcome approval](references/standards-existing-estate-onboarding.md#approve-an-outcome-not-every-step) and [roadmap-to-delivery loop](references/standards-existing-estate-onboarding.md#roadmap-to-delivery-loop): carry existing authority through the necessary steps, prepare selected drafts when no Ready work exists, and ask only for a missing decision. The guide does not itself grant work selection, implementation or integration authority.
+Company Operational Review is the human-facing name for the repeatable company review; bootstrap and rebootstrap refer to the same work and preserve its task, approvals and evidence. It checks operational readiness and efficiency: repository projects and styling, capable lean staffing, useful roadmap progress, and daily reporting, next-work and weekly review coverage. Use the existing task within the selected company and pilot; the review does not expand authority to other companies.
 
-Repository tasks use the declared repository skills and their required dependencies as their baseline in the actual task workspace. Company-library assignment, runtime discovery, and repository declaration are separate checks; follow the standard's [execution baseline](references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline). Use the reusable [bootstrap task brief](assets/bootstrap-task.md) for a plan that resolves the current company and Agora without caller-supplied placeholders.
+The operational goal is reviewed roadmap work delivered into the designated checkout. The review establishes the prerequisites for that flow; an inventory or another preparation task is not the delivered result. Use the onboarding guide's [bounded outcome approval](references/standards-existing-estate-onboarding.md#approve-an-outcome-not-every-step) and [roadmap-to-delivery loop](references/standards-existing-estate-onboarding.md#roadmap-to-delivery-loop): carry existing authority through the necessary steps, prepare selected drafts when no Ready work exists, and ask only for a missing decision. Apply its staffing and recurring-coverage guidance: justified hires need actual supported human-approval proposals, and manual and scheduled calls share governed definitions. The guide does not itself grant work selection, implementation or integration authority.
+
+Repository tasks use the declared repository skills and their required dependencies as their baseline in the actual task workspace. Company-library assignment, runtime discovery, and repository declaration are separate checks; follow the standard's [execution baseline](references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline). Use the reusable [Company Operational Review brief](assets/bootstrap-task.md) to resolve the current company and Agora without caller-supplied placeholders and return what is working, what improved, what happens next and which decision needs the human.
 
 Use the [post-hire configuration brief](assets/post-hire-task.md) from an external agent after approved hires or when reconciling existing agent settings. It bounds wake, KI and local-toolchain environment, skill-access and managed-instruction repairs without starting work or assuming direct database access.
 
@@ -80,7 +82,7 @@ Bring an explicitly scoped coordination design or local declaration into line wi
 
 ### Mode EDUCATE
 
-For an initial or repeat company bootstrap, follow the [existing-estate onboarding guide](references/standards-existing-estate-onboarding.md) after the coordination standard. It owns the cross-company project styling scheme and stages inventory, one project per repository, task-link reconciliation on work items, repository health, the operating cadence, hires proposed from discovery, and a verified local delivery pilot without itself granting provisioning or agent resumption.
+For an initial or repeat Company Operational Review, including requests called bootstrap or rebootstrap, follow the [existing-estate onboarding guide](references/standards-existing-estate-onboarding.md) after the coordination standard. It owns the cross-company project styling scheme and stages inventory, one project per repository, task-link reconciliation on work items, repository health, the operating cadence, justified hire proposals, and a verified local delivery pilot without itself granting provisioning or agent resumption.
 
 Explain or draft the smallest arrangement that preserves the shared model. Start with one company or group, named repository identities, agent roles, task-to-work locators, workspace isolation, and evidence return. Do not provision a company, invent remote identifiers, or require every conversation to pass through Paperclip.
 
