@@ -61,11 +61,41 @@ const PRINCIPAL_2: RubricItem<PrincipalContext> = {
   }
 }
 
+const PRINCIPAL_3: RubricItem<PrincipalContext> = {
+  code: 'PRINCIPAL-3',
+  title: 'territorial declarations agree',
+  description:
+    'Charter and Known Lands agree on the territory, its one Capital, canonical repository identities, and governed membership; registry location, Agora inclusion, company binding, or a passing audit does not appoint a principal or grant exchange rights.',
+  sources: [`${SOURCE}#territorial-declaration`],
+  judgment: {
+    scope: 'The Charter, internal Known Lands inventory, and their cited authority declarations.',
+    prompt:
+      'Do the declarations identify one Capital and agree on jurisdiction and membership, with discrepancies retained for the territorial owner rather than resolved from runtime or working-set evidence?',
+    outcomes: ['conforming', 'declaration reconciliation required', 'owner decision required'],
+    guidance:
+      'Reconcile the authored declarations through the territorial owner; record unresolved differences without inferring authority from registry, Agora, or company state.'
+  }
+}
+const PRINCIPAL_4: RubricItem<PrincipalContext> = {
+  code: 'PRINCIPAL-4',
+  title: 'internal inventory and external signposting are distinct',
+  description:
+    'Known Lands separates governed internal membership from external signposting, uses canonical repository identities and authority references, and leaves local locations in the registry; receiver-owned public adoption needs no reciprocal public consumer list.',
+  sources: [`${SOURCE}#known-lands-relationships`],
+  judgment: {
+    scope: 'Known Lands entries and any declarations of external knowledge consumption or adoption.',
+    prompt:
+      'Are internal members and external destinations distinguishable, with external authority respected, local unavailability separate from membership, and adoption controlled by the receiver without publishing private consumer identities?',
+    outcomes: ['conforming', 'relationship clarification required', 'owner decision required'],
+    guidance:
+      'Clarify relationship sections or labels and authority references; keep local locations in the registry and adoption decisions with the receiver.'
+  }
+}
 export const PRINCIPAL: RubricFamily<PrincipalContext, PrincipalContext> = {
   code: 'PRINCIPAL',
   title: 'principal governance',
-  description: 'Principal-only governance surface and enactment anchor.',
+  description: 'Principal governance surfaces, Enactment anchor, and authored territorial relationships.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PRINCIPAL_1, PRINCIPAL_2]
+  items: [PRINCIPAL_1, PRINCIPAL_2, PRINCIPAL_3, PRINCIPAL_4]
 }

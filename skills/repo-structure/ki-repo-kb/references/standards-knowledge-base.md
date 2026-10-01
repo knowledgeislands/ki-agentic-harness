@@ -5,6 +5,7 @@ This normative standard defines the structure, linking, configuration, routing, 
 ## Contents
 
 - [The Knowledge Islands model](#the-knowledge-islands-model)
+- [Identity, provenance, and adoption](#identity-provenance-and-adoption)
 - [Linking within a base](#linking-within-a-base)
 - [Onboarding a base to this skill](#onboarding-a-base-to-this-skill)
 - [Zone aliases and the `[skills.ki-repo-kb]` config table](#zone-aliases-and-the-skillski-repo-kb-config-table)
@@ -20,11 +21,19 @@ The standard applies when a base either declares `[skills.ki-repo-kb]` / `[skill
 - **Island vs Pillar.** Each whole knowledge base is an "island" (a legal base, a personal base, a research base). Within a base, a **Pillar** is a major strand of subject matter - a case, a client, a domain, a theme. A base that holds a zone under a different local folder name keeps that folder and declares it as a [zone alias](#zone-aliases-and-the-skillski-repo-kb-config-table) rather than counting as a different zone.
 - **Settling.** `Streams/` holds work in motion; once settled it migrates into `Pillars/` (internal) or `Resources/` (external). The discriminating question for internal vs external: _would this knowledge exist without this base?_ If yes, it is a resource. The **internal structure and process of the `Streams/` zone** — flat adapter-owned operational areas and the Enactment Process that governs them — are owned by the `ki-repo-kb-streams` skill; this skill knows only that `Streams/` is a zone with a same-name index and routes top-level work into it.
 
+## Identity, provenance, and adoption
+
+The base's governed declaration identifies its owning island and territory. Knowledge items may inherit that identity rather than repeat it in every note. Territorial authority belongs in the Charter and, for a principal base, its governed Known Lands inventory. A local registry resolves physical locations without assigning jurisdiction; company bindings and Agora working sets remain distinct from territorial authority.
+
+Record item-specific provenance and exceptions explicitly: identify the source and relevant revision, whether material is original, an external reference, or an adopted adaptation, and any audience or ownership boundary that differs from the inherited declaration. Kind, subject, lifecycle, audience, and provenance have different jobs. Preserve the existing frontmatter vocabulary: `note_type` classifies kind, tags describe subject, and lifecycle belongs to the owning note type. This contract introduces no new required metadata keys; a reader must be able to recover the meaning from the governed notes and source references.
+
+The receiver chooses whether external knowledge becomes canonical local knowledge and when to adopt later revisions. A source reference remains external reference material; an adopted adaptation records its source and revision while following the destination's canonical-change process. Public consumption or adoption may be recorded privately by its receiver without a reciprocal consumer list in the publishing territory. Contributions back to the publisher follow its own intake and acceptance rules. Territorial membership or repository visibility alone does not permit access to, or redistribution of, linked restricted source material.
+
 ## Linking within a base
 
 Within a base, notes link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths. The five index-carrying zones resolve as `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`; the inbound `+/` and outbound `-/` are staging, not zones, with no same-name index. Body links use the shortest unique path — a bare filename when it is unique, the minimum disambiguating prefix when it is not — and check for filename collisions before writing a bare link; a `## Contents` list always uses the full path with an alias (`[[Full/Path/Note|Note Name]]`).
 
-This is the convention for **note content inside a base**. It is deliberately distinct from how the skill files in this repository link to one another (relative markdown links, per ki-agentic-harness `docs/installation.md` under "Linking inside skills") — the two never meet, so a base using wikilinks does not break the skills that use markdown links.
+This is the convention for **note content inside a base**, including internal links in table cells; escape an alias separator as `\|` so it is not parsed as a table-column separator. It takes precedence over the general `ki-authoring` relative-link rule for that scoped content. Skill files and other house documents use descriptive relative Markdown links. Canonical cross-repository references use the destination's repository identity and an appropriate portable reference rather than machine-local checkout paths.
 
 ## Onboarding a base to this skill
 

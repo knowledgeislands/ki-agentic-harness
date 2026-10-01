@@ -4,12 +4,12 @@ area: GOV
 title: Align territory governance
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: b2ed537c36ea1db9bbe7c48e4039e4e8206eb58a
 created_at: 2026-10-01T21:40:54Z
-updated_at: 2026-10-01T21:40:54Z
+updated_at: 2026-10-01T21:54:20Z
 ---
 
 # KI-HARNESS-GOV-126: Align territory governance
@@ -34,11 +34,11 @@ The principal skill is structural-only, checks five readable surfaces and an Ena
 
 ## Steps
 
-- [ ] Align the principal description, body, and standard around a governed territorial declaration without implying that a skill or audit appoints a principal.
-- [ ] Add judgment criteria for Charter/Known Lands agreement and internal membership versus external signposting; republish the generated rubric and adjust catalogue tests.
-- [ ] Clarify inherited island/territory identity, explicit item provenance and exceptions, and receiver-owned adoption in the KB standard.
-- [ ] Clarify the general Markdown link rule's scope and point territorial knowledge placement to its owning governance.
-- [ ] Verify the integrated contract and record a complete review packet.
+- [x] Align the principal description, body, and standard around a governed territorial declaration without implying that a skill or audit appoints a principal.
+- [x] Add judgment criteria for Charter/Known Lands agreement and internal membership versus external signposting; republish the generated rubric and adjust catalogue tests.
+- [x] Clarify inherited island/territory identity, explicit item provenance and exceptions, and receiver-owned adoption in the KB standard.
+- [x] Clarify the general Markdown link rule's scope and point territorial knowledge placement to its owning governance.
+- [x] Verify the integrated contract and record a complete review packet.
 
 ## Files touched
 
@@ -48,6 +48,8 @@ The principal skill is structural-only, checks five readable surfaces and an Ena
 - `skills/repo-structure/ki-repo-kb-principal/scripts/rubric/items/` and relevant existing tests
 - `skills/repo-structure/ki-repo-kb/references/standards-knowledge-base.md`
 - `skills/governance/ki-authoring/references/standards-markdown.md`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
+- `skills/README.md` through the capability publication generator
 - This work record
 
 ## Verify
@@ -101,6 +103,40 @@ This record carries delivery evidence. The existing exchange intake retains tran
 - **Verify:** Focused tests and audits, followed by coordinator semantic review and required repository gates.
 - **Return:** Touched paths, changes in behaviour or judgment scope, verification evidence and unresolved findings.
 - **Checkpoint:** Stop with a reviewable uncommitted patch.
+
+## Review
+
+### Delivered
+
+The approved reusable territory contract is delivered from baseline `b2ed537c36ea1db9bbe7c48e4039e4e8206eb58a`. Principal governance now reviews owner-authored jurisdiction and relationships without appointing a Capital. No runtime, registry, Agora or trade schema changed.
+
+### Change Summary
+
+The principal skill, standard and generated rubric contain two new judgment criteria; the mechanical floor is unchanged. The KB standard covers inherited identity, provenance and receiver-controlled adoption. General Markdown guidance defers internal KB linking to the KB contract.
+
+Integration required two mechanical publication adjustments: the inventory test's totals now include the two added judgment criteria, and the supported harness generator republished the changed description. Its exact catalogue replacement also synchronised one pre-existing Paperclip description mismatch from already-committed source. No Paperclip capability semantics changed.
+
+### Verification
+
+- `bun run test`: 851 tests passed, zero failed. The first run exposed the expected aggregate-count update; the complete rerun passed after that assertion was corrected.
+- `bunx tsc --noEmit`: passed.
+- Focused principal catalogue tests, generated-rubric parity and touched formatting: passed.
+- `ki repo audit --skill ki-skills`: zero failures, two existing refresh-cadence warnings.
+- `ki repo conform --skill ki-repo-harness` and subsequent audit: generated catalogue exact; no failures, the same two refresh warnings.
+- Arcadia `ki-repo-kb-principal`: all six composed skills passed.
+- `git diff --check`: passed. Coordinator semantic review confirmed public/private boundaries, retained mechanical checks, and no new parser or metadata obligations.
+
+### Outstanding concerns
+
+Two unrelated source refreshes are overdue. This delivery does not refresh external sources or claim the entire fleet is conformant. Each Capital's declarations and the detailed exchange design retain their own delivery and acceptance.
+
+### Post-change review
+
+The change corrects the governance/structure ambiguity without inferring authority from a successful audit. Judgment criteria explicitly require owner evidence, and source/location separation is consistent with the reviewed Arcadia model. The description's generated publication and aggregate test counts are integrated. Ready for human review, not self-accepted.
+
+### Mini recap
+
+Reusable governance, publication and tests agree. Territorial rollout can apply this baseline; detailed exchange policy and transport remain with the existing exchange intake. No push or runtime activation occurred.
 
 ## Discussion
 

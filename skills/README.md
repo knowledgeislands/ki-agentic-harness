@@ -47,7 +47,7 @@ Acquire and reconcile Granola meetings through read-only MCP evidence, including
 
 #### `ki-agent-coordination-paperclip`
 
-Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories remain knowledge and work authority. Use when bootstrapping, rebootstrapping, designing, or auditing Paperclip projects, agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
+Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories remain knowledge and work authority. Use for Company Operational Review, bootstrap/rebootstrap, or designing and auditing Paperclip projects, agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -540,7 +540,7 @@ Create, audit, and maintain KI Live Artifact pairs: a Markdown source and render
 
 #### `ki-repo-kb-principal`
 
-Audit or conform the local structural overlay for a designated principal KI knowledge base: governance home, Enactment gate, charter, memory root, canonical zones, and handoff entry points. Use for the overlay only; it does not establish canonical identity, authority, or cross-island roles.
+Audit or conform a designated principal KI knowledge base's governance overlay: territorial Charter, Known Lands inventory and signposting, memory root, and Enactment gate. Use for principal governance declarations; designation and authority remain owner-governed, while `ki-repo-kb` owns general base structure.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

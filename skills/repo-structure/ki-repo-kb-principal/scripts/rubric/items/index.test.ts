@@ -8,7 +8,21 @@ test('the principal catalogue has the expected native contract', () => {
   expect(catalogue.contract).toBe(1)
   expect(catalogue.name).toBe('ki-repo-kb-principal')
   expect(catalogue.families.map((family) => family.code)).toEqual(['RUBRIC', 'PRINCIPAL'])
-  expect(catalogue.families[1]?.items.map((item) => item.code)).toEqual(['PRINCIPAL-1', 'PRINCIPAL-2'])
+  expect(catalogue.families[1]?.items.map((item) => item.code)).toEqual([
+    'PRINCIPAL-1',
+    'PRINCIPAL-2',
+    'PRINCIPAL-3',
+    'PRINCIPAL-4'
+  ])
+  const territorialReview = catalogue.families[1]?.items.slice(2) ?? []
+  expect(territorialReview).toHaveLength(2)
+  for (const item of territorialReview) {
+    expect(item.mechanical).toBeUndefined()
+    expect(item.judgment?.scope).toBeTruthy()
+    expect(item.judgment?.prompt).toBeTruthy()
+    expect(item.judgment?.outcomes).toContain('owner decision required')
+    expect(item.sources[0]).toStartWith('standards-principal.md#')
+  }
   for (const family of catalogue.families) {
     for (const item of family.items) {
       if (!item.mechanical) continue

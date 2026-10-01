@@ -98,11 +98,13 @@ This is an authoring presentation rule. Domain skills own a document's required 
 
 ## Links
 
-- **Use standard relative markdown links, never Obsidian wikilinks** (`[[…]]`). Wikilinks break the moment a file is relocated, symlinked, or read outside the base; relative markdown links survive it. For a path containing spaces, use the CommonMark angle-bracket form: `[ref](<references/My Detail.md>)`.
-- **Never use wikilinks inside table cells.** The display-name form `[[target|Display text]]` contains a `|` that Markdown parsers treat as a column separator, silently breaking the table layout. Use a standard relative markdown link (`[Display text](path/to/file.md)`) instead.
+- **Use descriptive relative Markdown links in house documents and skill files.** For a path containing spaces, use the CommonMark angle-bracket form: `[ref](<references/My Detail.md>)`. KB note content and agent prompts are scoped exceptions; `ki-repo-kb` owns internal note linking, using wikilinks and the shortest unique destination path.
+- **Respect the KB convention inside table cells.** In KB note content, escape a wikilink alias separator as `\|`; an unescaped `|` is parsed as a column separator. Outside that scoped content, use a standard relative Markdown link (`[Display text](path/to/file.md)`).
 - **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo standard](…)`, not `[here](…)`.
 - **Refer to another skill by its `name`**, never by a file path — "the `ki-repo-kb` skill" — because a skill's location on disk is not stable, but its name is how it loads into the session.
 - **In editor / IDE contexts** where the harness asks for clickable references, link files and lines with relative markdown links (`[file.ts:42](src/file.ts#L42)`) rather than bare backtick paths, so the reference is navigable.
+
+Link presentation does not establish territorial authority or canonical knowledge ownership. `ki-repo-kb` owns KB identity, provenance, and adoption; `ki-repo-kb-principal` owns the territorial Charter and Known Lands declaration contract. Keep those declarations in their governed homes and link to them rather than restating them as general authoring conventions.
 
 ## Callouts
 
