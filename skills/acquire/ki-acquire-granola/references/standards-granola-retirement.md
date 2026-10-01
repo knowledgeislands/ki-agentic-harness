@@ -19,7 +19,7 @@ An exact proposed manual-release manifest remains unavailable until these condit
 7. An exact manual-release manifest naming the source identity and reviewed source-version hash.
 8. Explicit human approval of the exact manifest immediately before manual deletion.
 
-For a note created while shared-screen snapshots are available, the release evidence must establish its snapshot count from the source. A note with snapshots remains in Granola until every image is acquired and verified alongside its meeting document. Unknown snapshot presence also excludes a note from the manifest; the MCP's lack of images is not evidence that the source note has none.
+For a note created while shared-screen snapshots are available, the release evidence must establish its current snapshot count from the desktop source. A note with snapshots remains in Granola until every UUID-named image is acquired and checksum-verified alongside its meeting document, the image manifest is committed, and a fresh export of the source stack matches that manifest in count, UUIDs, and bytes. An image count alone cannot establish identity or unchanged bytes. Unknown snapshot presence also excludes a note from the manifest; the MCP's lack of images is not evidence that the source note has none.
 
 A meeting that fails one gate is excluded without blocking safe release of independently verified meetings. Any source, schema, entitlement, receiver, or acquired-content change after manifest generation invalidates the affected manifest approval; regenerate and re-present the manifest rather than patching an approved list in place.
 

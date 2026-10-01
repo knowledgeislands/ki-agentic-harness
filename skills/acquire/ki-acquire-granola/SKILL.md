@@ -38,7 +38,7 @@ The official MCP currently exposes account information, folders, date-window mee
 
 The MCP exposes no native pagination, completeness indicator, update version, source URL, media, or deletion tombstone in the verified surface. The standard therefore requires caller-managed date-window splitting, query-context folder evidence, inferred unfoldered membership, and explicit content revalidation rather than pretending those capabilities exist.
 
-Granola's shared-screen snapshots are source images attached to notes. The current MCP does not enumerate or return them, so text acquisition cannot certify a snapshot-bearing note for source retirement. See the acquisition and retirement standards before preparing any cleanout.
+Granola's shared-screen snapshots are source images attached to notes. The current MCP does not enumerate or return them. For a Knowledge Base receiver, use Granola desktop's image stack to observe the count and download each original image, then run `ki acquire images --adapter granola --repo <repo> --source <meeting-uuid> --directory <exports> --expected <count>`. The CLI verifies UUID-named exports and stores original bytes with a checksum manifest beside the acquired meeting Markdown. The observed count remains manual source evidence; recheck it before preparing any cleanout. See the acquisition and retirement standards.
 
 ## Operating modes
 
