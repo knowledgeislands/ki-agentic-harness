@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T12:30:00Z
-updated_at: 2026-09-25T12:30:00Z
+updated_at: 2026-10-01T19:52:30Z
 ---
 
 # KI-HARNESS-FND-027: Configure Cloudflare guide path
@@ -37,5 +37,7 @@ Out of scope: whether a Cloudflare guide should be required at all, which WCF-26
 The cheapest fix is a glob — accept the guide anywhere under the declared guide collection — and it is probably also the right one, because it stops the rubric having an opinion about grouping that `ki-guides` already owns. An explicit `.ki.toml` key would work but asks every repository to configure a path that could be discovered.
 
 Worth checking during execution whether other `ki-repo-website-*` contexts hold sibling constants. If they do, this is the same one-fact-many-copies shape as `KI-HARNESS-GOV-093` and `KI-HARNESS-GOV-094` rather than a single hardcoded string, and the fix should be uniform across them.
+
+Noted 2026-10-01: the hardcoded constant is not the only obstacle. The `ki-repo` REVIEW checklist asks at `skills/keystone/ki-repo/references/mode-review.md:232` that every guide under `docs/guides/` lives in an explicit audience subdirectory, such as `user/`, `developer/`, or `agent/`. A flat guide collection fails that question too, so making WCF-26 configurable or glob-based alone would not let `5g-emerge-phase2` flatten its last guide without then failing the checklist. That question contradicts `ki-guides` outright: `skills/governance/ki-guides/references/standards-guides.md:44` says flat, grouped and intentionally mixed collections are all valid, and `:46` says AUDIT emits no finding solely because a guide sits directly below `docs/guides/`. Execution should bring `mode-review.md:232` into line with `ki-guides` alongside WCF-26 rather than fixing the constant in isolation.
 
 - [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) is the same class of defect: a constraint restated in one skill's vendored rubric where another skill owns the fact
