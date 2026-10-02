@@ -282,13 +282,13 @@ const TOOL_DEVELOPER_GUIDES = mechanical(
 const TOOL_CHANGELOG_FORMAT = judgment(
   'TOOL-CHANGELOG-FORMAT',
   'Changelog format',
-  'The changelog identifies the current semantic-versioned release through either Keep a Changelog entries or a declared current-release baseline.'
+  'The changelog has an Unreleased section and dated semantic-version entries for shipped releases, including 0.x releases; it does not use a proposed V1 baseline as release history.'
 )
 
 const TOOL_CLI = judgment(
   'TOOL-CLI',
   'Shared CLI conventions',
-  'The CLI keeps help, completion, errors, exit status, README, and changelog aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.'
+  'The CLI keeps help, completion, errors, exit status, and the README command overview aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.'
 )
 
 const TOOL_CI = mechanical(

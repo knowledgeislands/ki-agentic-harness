@@ -71,14 +71,14 @@ Layout, executable, distribution, versioning, and judgment criteria.
   - _Remediation:_ diagnostic — Correct the evidenced tool-repository issue through the responsible maintainer; hosted conform does not infer tool, release, or documentation semantics.
 - **TOOL-DEVELOPER-GUIDES [M] — Developer delivery guides** — `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` are physical regular files; their content remains repository-defined. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Correct the evidenced tool-repository issue through the responsible maintainer; hosted conform does not infer tool, release, or documentation semantics.
-- **TOOL-CHANGELOG-FORMAT [J] — Changelog format** — The changelog identifies the current semantic-versioned release through either Keep a Changelog entries or a declared current-release baseline. (standards-tool-repositories.md)
+- **TOOL-CHANGELOG-FORMAT [J] — Changelog format** — The changelog has an Unreleased section and dated semantic-version entries for shipped releases, including 0.x releases; it does not use a proposed V1 baseline as release history. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ The changelog identifies the current semantic-versioned release through either Keep a Changelog entries or a declared current-release baseline.
+  - _Review prompt:_ The changelog has an Unreleased section and dated semantic-version entries for shipped releases, including 0.x releases; it does not use a proposed V1 baseline as release history.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
-- **TOOL-CLI [J] — Shared CLI conventions** — The CLI keeps help, completion, errors, exit status, README, and changelog aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help. (standards-tool-repositories.md)
+- **TOOL-CLI [J] — Shared CLI conventions** — The CLI keeps help, completion, errors, exit status, and the README command overview aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ The CLI keeps help, completion, errors, exit status, README, and changelog aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.
+  - _Review prompt:_ The CLI keeps help, completion, errors, exit status, and the README command overview aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
 - **TOOL-CI [M] — CI workflow** — At least one physical workflow YAML file is present. (standards-tool-repositories.md)
