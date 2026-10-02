@@ -4,12 +4,12 @@ area: GOV
 title: Align territory governance
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b2ed537c36ea1db9bbe7c48e4039e4e8206eb58a
 created_at: 2026-10-01T21:40:54Z
-updated_at: 2026-10-01T21:54:20Z
+updated_at: 2026-10-02T06:40:37Z
 ---
 
 # KI-HARNESS-GOV-126: Align territory governance
@@ -137,6 +137,10 @@ The change corrects the governance/structure ambiguity without inferring authori
 ### Mini recap
 
 Reusable governance, publication and tests agree. Territorial rollout can apply this baseline; detailed exchange policy and transport remain with the existing exchange intake. No push or runtime activation occurred.
+
+## Done
+
+Accepted 2026-10-02 by Kris Brown on review packet above.
 
 ## Discussion
 
