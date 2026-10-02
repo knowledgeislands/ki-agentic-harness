@@ -18,13 +18,15 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
 
 **Ground every claim in reality, not memory.** Warm in-session context, compaction summaries, and recalled memory entries are hypotheses about state, not evidence of it — concurrent sessions, background processes, and elapsed time all make them stale. Before the recap asserts a checkable fact — a commit landed, a gate passed, a file contains something, a plan is open — check it now (`git log`, re-run the read-only gate, read the file). What cannot be cheaply re-checked, state as recollection ("as of when it ran"), not as fact.
 
+**Set the coverage boundary before checking repository state.** Inventory the material topics, decisions, deliveries, and agreed follow-ups in the entire live thread through this invocation, including work before earlier recaps or compaction and work in other repositories. Use the visible conversation and available carry-forward context for discovery; reconcile each claim against current canonical evidence. A repository-matched transcript is advisory and may be a different concurrent session. If part of the thread is unavailable after compaction or transcript selection is uncertain, identify the missing span and ask for the needed context; do not certify whole-thread completion from a partial inventory.
+
 ## 1. Run the grounding helper
 
 ```bash
 bun skills/change-management/ki-recap/scripts/recap-grounding.ts --json --runtime detect
 ```
 
-(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/change-management/ki-recap/scripts/recap-grounding.ts --json`.)
+(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/change-management/ki-recap/scripts/recap-grounding.ts --json`.) Run it separately with each repository path touched by this thread, not only the invocation's working directory. Record which repository each result grounds.
 
 When more than one eligible Claude or Codex session is active for the repository, choose the session explicitly instead of relying on newest modification time:
 
@@ -32,7 +34,7 @@ When more than one eligible Claude or Codex session is active for the repository
 bun skills/change-management/ki-recap/scripts/recap-grounding.ts --json --transcript <session-file>.jsonl
 ```
 
-`detect` is the default: it selects the newest matching transcript from both supported runtimes. Use `--runtime claude` or `--runtime codex` to force one. Claude transcripts are selected from the repository's derived Claude project directory; Codex transcripts are searched recursively below `~/.codex/sessions/` and qualify only when their `session_meta.payload.cwd` resolves to the target repository.
+`detect` is the default: it selects the newest matching transcript from both supported runtimes. Use `--runtime claude` or `--runtime codex` to force one. Claude transcripts are selected from the repository's derived Claude project directory; Codex transcripts are searched recursively below `~/.codex/sessions/` and qualify only when their `session_meta.payload.cwd` resolves to the target repository. Those are helper selection rules, not a definition of the live thread: a thread may operate across repositories without changing its initial `cwd`.
 
 The selector is a basename, not a path. It must name exactly one eligible regular `.jsonl` candidate; absolute paths, traversal, other extensions, symlinks, files for another repository, and ambiguous duplicate basenames are rejected.
 
@@ -42,20 +44,20 @@ The comparison qualifies transcript-derived tool tallies and high-cost suggestio
 
 ## 2. Summarise
 
-Before reporting the final repository state, apply the `ki-batch` “Batch retention” rule to `+/_BATCHES/`. Delete only the eligible inactive records under that owner's rule, without another confirmation, then refresh Git grounding and report the exact removals and Git recovery. This maintenance exception does not select work, promote learnings, or prune roadmap items; proposed Actions remain a user checklist.
+Before reporting final repository state, apply the `ki-batch` “Batch retention” rule to `+/_BATCHES/` in each repository this thread worked in. Delete only the eligible inactive records under that owner's rule, without another confirmation, then refresh Git grounding and report the exact removals and Git recovery. This maintenance exception does not select work, promote learnings, or prune roadmap items; proposed Actions remain a user checklist.
 
-Using warm context plus the helper's `filesTouched` / `diffStat`: state what changed, what was decided, and why — in the order it happened, not a topic reshuffle. Keep it to what a reader picking this up cold would need: no blow-by-blow tool narration.
+Using the whole-thread inventory plus each touched repository's `filesTouched` / `diffStat`: state what changed, what was decided, and why — in the order it happened, not a topic reshuffle. Keep it to what a reader picking this up cold would need: no blow-by-blow tool narration. For each material topic, establish whether it was delivered, explicitly declined, superseded, or remains follow-up; do not treat an earlier recap as a terminal boundary.
 
 ## 3. Surface what is outstanding
 
-**Always check whether everything is committed** — even if the session felt "done", verify the working tree is clean for the files this session touched (staged, unstaged, and untracked). If `repository.status` is `unavailable`, say that Git evidence is unavailable and do not claim clean, committed, or no-actions status. Uncommitted session work is the most common silently-dropped outstanding item. Files dirty from _other_ threads of work are out of scope (per the stay-scoped rule) — note their existence in one line at most, never enumerate or adopt them.
+**Always check whether everything is committed in every touched repository** — even if the session felt "done", verify the working tree for the files this thread touched (staged, unstaged, and untracked) in each one. If any required `repository.status` is `unavailable`, say which Git evidence is unavailable and do not claim clean, committed, or no-actions status for the whole thread. Uncommitted session work is the most common silently-dropped outstanding item. Files dirty from _other_ threads of work are out of scope (per the stay-scoped rule) — note their existence in one line at most, never enumerate or adopt them.
 
 Then look only for work still open in this thread: uncommitted edits, a failing gate, a decision still open, or an explicitly deferred fix this thread still owns without a durable home. Do not use a recap to inventory repository backlog, peer-repository state, or plausible future work; those are outside the thread and `ki-next` owns future-work selection. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If `transcriptEvidence.status` is `changed` or `unavailable`, describe transcript-derived tool tallies only as historical or omit their recommendation. If meaningful time has passed since step 1 ran, re-run it before finalizing this section.
 
-When the user explicitly leaves an external concern with its owning repository and does not ask this thread to create a handoff, that is a decided scope boundary, not an unfinished deferral. Mention the boundary and risk if material, but do not put it under Outstanding, turn it into an Action, or withhold the completion banner solely because the owner has no work item. This does not discharge an agreed but unwritten handoff, an in-scope failing gate, or uncommitted work. Apply the house rule:
+For each substantive follow-up agreed in the thread, identify the owning repository and its configured local work adapter. Inspect the current canonical roadmap or Stream records for an existing item covering that exact work; verify its ID, path, and lifecycle state rather than trusting a link or recalled identifier. If none exists, use `ki-next`'s bounded Triage capture in that owner, including its audit, deduplication, and issue-ledger rules; capture is not adoption, planning, or implementation. If the owner uses a remote adapter, cannot be accessed, or fails the capture gate, state the exact impediment and leave a `PRESERVE-SESSION-DEFERRAL` Action. Do not create a substitute record in the invocation repository. An explicit user decision that no follow-up is intended, including an external concern they deliberately decline to track, needs no item; merely assigning another owner does not make an agreed follow-up disappear. Apply the house rule:
 
 - Work captured in a roadmap item or Stream, whether newly created or routed to an existing record in this or another repository, is a **recorded deferral**. Name its canonical home and current lifecycle state under what happened or deferred work, not under outstanding or Actions. Unchecked Steps, pending review, and future acceptance belong to that record's lifecycle; they do not keep this thread open. Check current Git and verification evidence separately for an unfinished implementation unit in this thread.
-- If this thread agreed to preserve a deferred fix but has not given it a durable home, offer its correct local route: `ki-next` capture into the shared queue, then `ki-plan` when it is selected; use the roadmap adapter for a non-KB repository and the Streams adapter for a Knowledge Base. Do not manufacture a route for work merely noticed during the recap or explicitly returned to another owner without an agreed handoff.
+- If this thread agreed to preserve a deferred fix but has not given it a durable home, capture it through `ki-next` where its owner permits local intake. If capture cannot complete, name the blocker and exact owner route; do not manufacture a record for work merely noticed during the recap or explicitly declined by the user.
 
 ## 4. Harvest the learnings, and route each
 
@@ -82,7 +84,7 @@ When `ki-accept` requests a record-scoped recap, do not run or imply a full-sess
 
 ## 5. Discussion coverage
 
-Add this optional section after the three recap legs and before Actions only when the user asks for coverage or multiple materially distinct discussion points would otherwise be difficult to trace. Omit it for a simple single-thread recap. It is a compact reviewer aid: it summarises conclusions already grounded by the preceding legs; it does not mine unavailable transcripts, classify every conversational turn, or establish transcript completeness.
+Reconcile every material point in the thread inventory, whether or not a matrix is shown. Add the matrix after the three recap legs and before Actions when the user asks for coverage or multiple materially distinct discussion points would otherwise be difficult to trace. Omit it for a simple single-topic recap. It is a compact reviewer aid: it summarises conclusions already grounded by the preceding legs; it does not mine unavailable transcripts, classify every conversational turn, or establish transcript completeness.
 
 Immediately before the matrix, state its evidence scope. Rows may draw only on warm in-session context, the selected eligible transcript, and freshly checked repository evidence. Label the matrix **bounded and non-exhaustive** whenever transcript evidence is absent, ambiguous, changed, or otherwise unavailable; do not silently fill gaps from recollection.
 
@@ -96,21 +98,22 @@ Use only this closed disposition vocabulary:
 
 - `delivered` — evidence-backed completed work.
 - `captured` — work placed in its durable queue or record. A roadmap item or Stream added during this session is part of what happened, not an Action.
-- `deferred` — an explicit deferral with a named durable home or return condition.
-- `out-of-scope` — a concern explicitly returned to its external owner without an agreed in-thread handoff; note material risk without adopting its work.
+- `deferred` — an agreed deferral awaiting a canonical record, or a recorded pause with a named durable home and return condition.
+- `out-of-scope` — a concern explicitly declined as follow-up or never agreed as work for this thread; note material risk without adopting its work.
 - `decision-needed` — an unresolved user-owned choice.
 
-Reconcile the matrix with [Surface what is outstanding](#3-surface-what-is-outstanding) and [Actions](#6-actions): a deferred point this thread still owns without a durable home, and every `decision-needed` row, remains outstanding and has a corresponding final Action. An agreed but unwritten handoff is `deferred`, not `out-of-scope`; an `out-of-scope` row has no Action. Do not turn a captured record into an Action merely because it is actionable later.
+Reconcile the matrix with [Surface what is outstanding](#3-surface-what-is-outstanding) and [Actions](#6-actions): an agreed follow-up without a verified durable home, regardless of owner, and every `decision-needed` row remains outstanding and has a corresponding final Action. An agreed but unwritten handoff is `deferred`, not `out-of-scope`; an `out-of-scope` row has no Action. Do not turn a captured record into an Action merely because it is actionable later.
 
 Apply these scenario checks before presenting the matrix:
 
 | Situation | Required result |
 | --- | --- |
-| Simple single-thread recap | Omit the matrix. |
+| Simple single-topic recap | Omit the matrix, but still reconcile its disposition. |
 | Multi-topic recap with grounded evidence | Use the four columns and only the closed dispositions. |
-| Transcript evidence absent, ambiguous, changed, or unavailable | State the bounded non-exhaustive scope; omit unsupported rows. |
+| Transcript evidence absent, ambiguous, changed, or unavailable | State the bounded non-exhaustive scope; omit unsupported rows and withhold a whole-thread completion claim if the missing span cannot be recovered. |
+| Agreed cross-repository handoff has a verified owner item | Mark it `captured`; its unfinished lifecycle is not a thread Action. |
 | Agreed handoff lacks a durable home or a choice remains unresolved | Keep it outstanding and add a reconciled Action. |
-| External concern returned to its owner without a handoff | Mark it `out-of-scope` if material; add no Action for the owner's work. |
+| External concern explicitly declined as follow-up | Mark it `out-of-scope` if material; add no Action for the owner's work. |
 
 ## 6. Actions
 
@@ -125,13 +128,13 @@ Decide the Actions list from the grounded evidence before considering the termin
 
 Render the completion banner only when all of these conditions hold together:
 
-1. The grounding helper reports `repository.status: available`, a non-null full `HEAD`, `worktree: clean`, and an empty `filesTouched` list at recap time.
-2. Steps 3–5 leave no outstanding work in this thread, decision, failing or omitted verification, or other Action. An external concern explicitly left to its owner under section 3 does not fail this condition by itself.
+1. The grounding helper reports `repository.status: available` and a non-null full `HEAD` for every touched repository. Its `filesTouched` evidence, reconciled against this thread's touched paths, shows no uncommitted session-owned changes. Unrelated dirty work does not count as session work; an unavailable or contested attribution does not count as clean evidence.
+2. The whole-thread inventory is sufficiently evidenced, every touched repository's session-owned changes are committed and verified, and steps 3–5 leave no outstanding work, uncaptured agreed follow-up, decision, failing or omitted verification, or other Action. A verified owner item is sufficient for follow-up; its later lifecycle does not fail this condition. An explicit decision not to pursue follow-up needs no item.
 3. Every learning harvested in step 4 has a decided route: it was written to its approved durable owner or the user explicitly declined it. A proposed route awaiting confirmation is undecided and blocks the banner.
 
-The banner states current evidence rather than a session event, so two recaps over an unchanged `HEAD` both render it. That repetition is correct and deliberately unguarded: it means a banner withheld under conditions 1–3, or missed in error, is recovered by the next recap at which those conditions hold. A condition on recap history would instead make a miss permanent, because the only route back to eligibility would be doing more work — absurd when the claim being made is that no work remains.
+The banner states current evidence rather than a session event, so two recaps over unchanged `HEAD` values both render it. That repetition is correct and deliberately unguarded: it means a banner withheld under conditions 1–3, or missed in error, is recovered by the next recap at which those conditions hold. A condition on recap history would instead make a miss permanent, because the only route back to eligibility would be doing more work — absurd when the claim being made is that no work remains.
 
-An unpushed commit does **not** block the banner. Pushing is a separate user decision and may trigger deployment. The banner attests only that the named local `HEAD` has a clean working copy and that this session has no outstanding work or unrouted learning; it does not claim the remote is synchronised.
+An unpushed commit does **not** block the banner. Pushing is a separate user decision and may trigger deployment. The banner attests only that session-owned paths at the named local `HEAD` values have no uncommitted work and that this thread has no outstanding work or unrouted learning; it does not claim unrelated paths are clean or the remote is synchronised.
 
 When every condition passes, render this five-line frame literally and without colour, ANSI escapes, substituted wording, or improvised art:
 
@@ -151,16 +154,16 @@ Immediately below the frame, render the variable evidence line with three leadin
    <repository-basename> · <seven-character-HEAD> · <YYYY-MM-DD>
 ```
 
-Use the physical Git root's basename, the seven-character abbreviation of the full `HEAD` observed by the same grounding pass, and the recap date. The evidence line stays outside the frame and is not padded to 52 columns.
+Use the invocation repository's physical Git root basename, the seven-character abbreviation of its full `HEAD` observed by the same grounding pass, and the recap date. When the thread touched other repositories, follow this line with one plain evidence line per additional repository (`<repository-basename> · <seven-character-HEAD>`); the fixed frame remains unchanged. Evidence lines stay outside the frame and are not padded to 52 columns.
 
-If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state that names the numbered condition which blocked the banner, and any material evidence gap behind it; never render a partial or weakened banner. A bare “none” hides the difference between a finished session and one whose completion check did not pass, and leaves the reader no way to tell that the banner was owed. Do **not** perform Actions unprompted — the section is a checklist for the user to act on (or ask you to act on); durable writes still require the step-4 confirmation.
+If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state that names the numbered condition which blocked the banner, and any material evidence gap behind it; never render a partial or weakened banner. A bare “none” hides the difference between a finished session and one whose completion check did not pass, and leaves the reader no way to tell that the banner was owed. Do **not** perform checklist Actions unprompted; the exception is `ki-next`'s already-authorised, bounded Triage capture for an agreed substantive follow-up. Durable learning writes still require step-4 confirmation.
 
 ## 7. Route future-work selection to `ki-next`
 
 Future-work selection is separate from recap. Route to `ki-next` only when the user asks to choose, rank, or defer future work; it is not a Specific action, a standing recap requirement, or an automatic handoff:
 
 1. State the boundary: `ki-next` re-runs the current roadmap audit and treats any recap context as a lead rather than fact.
-2. Do not turn candidate work into a recap action, create a roadmap entry, promote an item, create a plan, write a learning route, or invoke `ki-next` merely by naming the route. The user chooses whether to continue.
+2. Do not turn candidate work into a recap action, promote an item, create a plan, or write a learning route merely by naming the route. `ki-next` capture is used only for substantive follow-up already agreed in this thread; other selection waits for the user.
 
 Apply these scenario checks when offering it:
 
