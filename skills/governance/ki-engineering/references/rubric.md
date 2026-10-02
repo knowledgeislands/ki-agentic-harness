@@ -176,6 +176,11 @@ The unused-code configuration and gate.
   - _Conforming guidance:_ Remove genuinely unused code, protect a valid surface in configuration, or record an explicit exclusion.
 - **KNIP-3 [M] — Knip entry points cover every package export** — Every target in the `exports` map of `package.json` is reachable from at least one glob in the `entry` list of `knip.json`, mapping the built path back to its source (`./dist/X.js` and `./dist/X.d.ts` map to `src/X.ts`); `./package.json` is exempt. An unreachable published entrypoint is invisible to knip as a public surface, so the KNIP-2 repair deletes genuine public API. Audit only — which entry glob to add is a judgment call, so there is no conform action. (standards-engineering.md)
   - _Remediation:_ diagnostic — Add the intended source entry glob to `knip.json` so the published export is protected, then rerun the audit.
+- **KNIP-4 [J] — Knip entry points have real callers** — Authored repository commands and canonical skill scripts remain in Knip scope, and declared entry points are justified by supported invocations rather than their presence in the entry list. (standards-engineering.md)
+  - _Evidence scope:_ `knip.json` entry, project and ignore patterns; package commands, published executables, test-runner configuration, documented skill operations, and native catalogue loaders.
+  - _Review prompt:_ Does every declared entry or broad pattern correspond to a real supported caller, can Knip see authored scripts and canonical skill code that might be unused, and do exclusions stop at generated or linked projections?
+  - _Outcomes:_ conforming; gap; exception
+  - _Conforming guidance:_ Name finite command entries, include authored script trees, verify dynamic skill and catalogue callers, and remove obsolete entries or code after checking supported external use. Keep managed projections excluded.
 
 ## SYNC — Dependency synchronisation
 

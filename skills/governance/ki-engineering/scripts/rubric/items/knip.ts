@@ -59,6 +59,22 @@ export const KNIP: RubricFamily<EngineeringRubricContext, KnipRubricContext> = {
         },
         audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.knip3, 'FAIL') }
       }
+    },
+    {
+      code: 'KNIP-4',
+      title: 'Knip entry points have real callers',
+      description:
+        'Authored repository commands and canonical skill scripts remain in Knip scope, and declared entry points are justified by supported invocations rather than their presence in the entry list.',
+      sources: ['standards-engineering.md'],
+      judgment: {
+        scope:
+          '`knip.json` entry, project and ignore patterns; package commands, published executables, test-runner configuration, documented skill operations, and native catalogue loaders.',
+        prompt:
+          'Does every declared entry or broad pattern correspond to a real supported caller, can Knip see authored scripts and canonical skill code that might be unused, and do exclusions stop at generated or linked projections?',
+        outcomes: ['conforming', 'gap', 'exception'],
+        guidance:
+          'Name finite command entries, include authored script trees, verify dynamic skill and catalogue callers, and remove obsolete entries or code after checking supported external use. Keep managed projections excluded.'
+      }
     }
   ]
 }

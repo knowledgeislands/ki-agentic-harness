@@ -72,10 +72,11 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   const codes = catalogue.families
     .filter((family) => family.code !== 'RUBRIC')
     .flatMap((family) => family.items.map((item) => item.code))
-  expect(codes).toHaveLength(59)
+  expect(codes).toHaveLength(60)
   expect(new Set(codes).size).toBe(codes.length)
   expect(codes[0]).toBe('PKG-1')
   expect(codes).toContain('TEST-7')
+  expect(codes).toContain('KNIP-4')
   expect(codes).toContain('DESIGN-1')
   expect(codes).toContain('DESIGN-2')
   expect(codes).toContain('REVIEW-1')
