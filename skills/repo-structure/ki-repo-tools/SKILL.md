@@ -36,7 +36,7 @@ tools-<name>/
 ├── tests/ or src/tests/    # executable test suite (a *.bats suite under tests/ for a shell tool). Expected.
 ├── .github/workflows/*.yml # CI: lint + test on every push. Expected.
 ├── man/<name>.1            # Optional manual source; when present, CI runs mandoc -T lint.
-├── CHANGELOG.md            # Unreleased changes and dated semantic-version release entries.
+├── CHANGELOG.md            # Consolidated pre-1.0 baseline or dated 1.0+ release history.
 ├── docs/guides/developer/
 │   ├── definition-of-done.md             # Required; repository-defined delivery-readiness guide.
 │   └── releasing.md        # Required; repository-defined release guide.

@@ -199,13 +199,13 @@ const TOOL_VERSION = mechanical(
 const TOOL_VERSION_SOURCE = judgment(
   'TOOL-VERSION-SOURCE',
   'Version source',
-  'The version marker has one source of truth aligned with the latest tag and changelog.'
+  'The version marker has one source of truth aligned with the latest tag; from 1.0 onward, the first dated changelog entry agrees too.'
 )
 
 const TOOL_RELEASE_MARKERS = mechanical(
   'TOOL-RELEASE-MARKERS',
   'Release marker alignment',
-  'From package version 1.0.0 onward, package.json and CHANGELOG.md current local release markers agree.',
+  'From package version 1.0.0 onward, package.json and the first dated CHANGELOG.md release marker agree.',
   'WARN',
   (context) => {
     const skipped = notApplicable(context)
@@ -247,8 +247,8 @@ const TOOL_CHANGELOG = mechanical(
         subject: 'CHANGELOG.md'
       })
     return context.changelog === 'physical'
-      ? one({ status: 'PASS', message: 'Release history file is present.', subject: 'CHANGELOG.md' })
-      : one({ status: 'VIOLATION', message: 'Release history file is absent.', subject: 'CHANGELOG.md' })
+      ? one({ status: 'PASS', message: 'Changelog file is present.', subject: 'CHANGELOG.md' })
+      : one({ status: 'VIOLATION', message: 'Changelog file is absent.', subject: 'CHANGELOG.md' })
   }
 )
 
@@ -282,13 +282,13 @@ const TOOL_DEVELOPER_GUIDES = mechanical(
 const TOOL_CHANGELOG_FORMAT = judgment(
   'TOOL-CHANGELOG-FORMAT',
   'Changelog format',
-  'The changelog has an Unreleased section and dated semantic-version entries for shipped releases, including 0.x releases; it does not use a proposed V1 baseline as release history.'
+  'Before 1.0, the changelog has one consolidated Pre-1.0 command and behaviour baseline, not per-release 0.x entries; from 1.0 onward, it has dated release entries.'
 )
 
 const TOOL_CLI = judgment(
   'TOOL-CLI',
   'Shared CLI conventions',
-  'The CLI keeps help, completion, errors, exit status, and the README command overview aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.'
+  'The CLI keeps help, completion, errors, exit status, the README command overview, and any pre-1.0 changelog command baseline aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.'
 )
 
 const TOOL_CI = mechanical(
@@ -358,7 +358,7 @@ const TOOL_LANGUAGE = judgment(
 const TOOL_RELEASE_CHECK = judgment(
   'TOOL-RELEASE-CHECK',
   'Release alignment',
-  'Version markers, tags, releases, and changelog entries agree.'
+  'Version markers, tags, and releases agree; a pre-1.0 changelog baseline reflects the current surface, and a 1.0+ dated entry names the release.'
 )
 
 export const TOOL: RubricFamily<ToolsRubricContext, ToolRepositoryContext> = {

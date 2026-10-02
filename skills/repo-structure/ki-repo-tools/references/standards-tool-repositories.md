@@ -35,7 +35,7 @@ tools-<name>/
 ├── tests/ or src/tests/    # executable test suite (a *.bats suite under tests/ for a shell tool). Expected.
 ├── .github/workflows/*.yml # CI: lint + test on every push. Expected.
 ├── man/<name>.1            # Optional manual source; when present, mandoc runs in CI.
-├── CHANGELOG.md            # Unreleased changes and dated semver release entries. Expected.
+├── CHANGELOG.md            # Pre-1.0 baseline or dated 1.0+ release history. Expected.
 ├── docs/guides/developer/
 │   ├── definition-of-done.md             # Required repository-defined delivery-readiness guide.
 │   └── releasing.md        # Required repository-defined release guide.
@@ -61,9 +61,9 @@ Every tool repository carries physical regular files at `docs/guides/developer/d
 ## Versioning & releases
 
 - The tool carries a **version marker** — for example `MGIT_VERSION=0.1.0` in a shell entrypoint or the package metadata of a TS/Bun tool — that `--version` prints. One source of truth; no second copy to drift.
-- Releases are **`vX.Y.Z` git tags**, each with a **GitHub release**. The version marker and tag agree; the changelog has a dated entry for that release.
-- Before the package reaches `1.0.0`, the mechanical audit does not compare its version with the changelog's first dated release marker. Changelog presence and judgmental release-readiness review still apply.
-- `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/) style: `Unreleased` first, then dated semantic-version entries grouped by `Added`, `Changed`, `Fixed`, and `Removed` as applicable. Record notable changes for each new 0.x release as well as later releases. Do not label pending work as an in-progress 1.0 release or substitute a proposed command inventory for release history. Older releases need not be reconstructed retroactively; their tags and commit history remain the record of that run-up.
+- Releases are **`vX.Y.Z` git tags**, each with a **GitHub release**. The executable version marker and tag agree at every release. The changelog's shape depends on whether the tool has reached 1.0.
+- Before `1.0.0`, `CHANGELOG.md` is one explicitly labelled **Pre-1.0 baseline**: a consolidated account of the current command surface and notable behaviours and changes. Update that baseline as the tool evolves; do not maintain chronological 0.x release sections or label pending work as `Unreleased` or an in-progress 1.0 release. Tags, releases, and commit history retain the exact 0.x snapshots. The mechanical audit does not compare a pre-1.0 version marker to a changelog release heading; judgment checks the baseline against the current CLI, manual, and README.
+- From `1.0.0` onward, `CHANGELOG.md` uses [Keep a Changelog](https://keepachangelog.com/) style: an optional `Unreleased` section followed by dated semantic-version entries grouped by `Added`, `Changed`, `Fixed`, and `Removed` as applicable. The first dated entry identifies the latest shipped release and agrees with its version marker and tag. The pre-1.0 baseline may remain as historical orientation, but it is not a substitute for a dated 1.0+ entry.
 - Tags and releases can't be seen from a checkout path — the checker hands this to the judgment pass (RELEASE, ADVISORY).
 
 ## Release readiness
@@ -114,7 +114,7 @@ These are Knowledge Islands house style, established by `tools-mgit` and `tools-
 - The Bash definition is sourceable and registers the executable with `complete`. The Zsh definition is an autoloadable `_<tool>` artifact: it declares `#compdef <tool>` and registers `compdef _<tool> <tool>` without invoking the completion function while it is loaded. Test both emitted forms and the Zsh registration under `compinit`.
 - A tool never edits shell startup files or installs personal completion files itself. The user's shell configuration, package manager, or configuration manager owns persistence and activation; for Zsh, it writes the generated `_<tool>` artifact into an existing `fpath` directory before `compinit` runs.
 - Syntax the tool itself owns reports `<tool>: error: …`, exits with status 2, and includes usage. Invalid owned syntax takes precedence over `--help`; arguments intentionally passed through to another program remain that program's concern.
-- The active CLI help, a physical manual, and the README's command overview describe the same public surface. A tool may give each a different level of detail, but none may advertise a retired command or omit a shipped user-facing command. The changelog records changes to that surface by release rather than serving as a second command inventory.
+- The active CLI help, a physical manual, and the README's command overview describe the same public surface. A tool may give each a different level of detail, but none may advertise a retired command or omit a shipped user-facing command. Before 1.0, the changelog's consolidated command surface stays aligned with them; from 1.0 onward, dated changelog entries record changes rather than serving as a second command inventory.
 
 ## Manual authoring
 

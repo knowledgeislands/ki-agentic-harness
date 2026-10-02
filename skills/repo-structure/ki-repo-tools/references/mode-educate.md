@@ -10,7 +10,7 @@ _On-demand procedure for tools' EDUCATE mode. The canonical shape, the container
    - `install.sh` — adapt the `REPO`, the `<NAME>_INSTALL_DIR` (default `$HOME/.local/bin`) and `<NAME>_VERSION` (default latest release) env overrides, and the download → verify → install flow. `chmod +x install.sh`.
    - `.github/workflows/ci.yml` — a `shellcheck bin/<name> install.sh` lint job and a `bats tests/` job (for a shell tool).
    - `tests/<name>.bats` — a starter bats suite (for a shell tool).
-   - `CHANGELOG.md` — keep-a-changelog with an `## [Unreleased]` head.
+   - `CHANGELOG.md` — begin with one consolidated Pre-1.0 baseline of the current command surface and notable behaviours; 0.x tags and GitHub releases retain the per-release record.
 3. **Add `ki-repo`'s files** (README, LICENSE, `.gitignore`, `.editorconfig`) — run `ki-repo`'s EDUCATE for the local-file + GitHub-settings layer.
 4. **Declare the config tables.** Add `[skills.ki-repo-tools]` alongside the qualified `ki-repo` declaration; `ki repo conform --repo <repo-path> --skill ki-repo-tools` can add it to an existing parseable configuration. If the tool has a `package.json`, also declare qualified `ki-engineering` and run its EDUCATE.
 5. **Set up the Homebrew tap** — the companion `Formula/<name>.rb` in the tap repo is `ki-repo-homebrew-tap`'s to scaffold; hand off there.

@@ -60,25 +60,25 @@ Layout, executable, distribution, versioning, and judgment criteria.
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
 - **TOOL-VERSION [M] — Version flag** — Runtime `--version` execution is an explicit, isolated diagnostic outside this static audit. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Correct the evidenced tool-repository issue through the responsible maintainer; hosted conform does not infer tool, release, or documentation semantics.
-- **TOOL-VERSION-SOURCE [J] — Version source** — The version marker has one source of truth aligned with the latest tag and changelog. (standards-tool-repositories.md)
+- **TOOL-VERSION-SOURCE [J] — Version source** — The version marker has one source of truth aligned with the latest tag; from 1.0 onward, the first dated changelog entry agrees too. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ The version marker has one source of truth aligned with the latest tag and changelog.
+  - _Review prompt:_ The version marker has one source of truth aligned with the latest tag; from 1.0 onward, the first dated changelog entry agrees too.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
-- **TOOL-RELEASE-MARKERS [M] — Release marker alignment** — From package version 1.0.0 onward, package.json and CHANGELOG.md current local release markers agree. (standards-tool-repositories.md)
+- **TOOL-RELEASE-MARKERS [M] — Release marker alignment** — From package version 1.0.0 onward, package.json and the first dated CHANGELOG.md release marker agree. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Correct the evidenced tool-repository issue through the responsible maintainer; hosted conform does not infer tool, release, or documentation semantics.
 - **TOOL-CHANGELOG [M] — Changelog presence** — `CHANGELOG.md` is a physical regular file. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Correct the evidenced tool-repository issue through the responsible maintainer; hosted conform does not infer tool, release, or documentation semantics.
 - **TOOL-DEVELOPER-GUIDES [M] — Developer delivery guides** — `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` are physical regular files; their content remains repository-defined. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Correct the evidenced tool-repository issue through the responsible maintainer; hosted conform does not infer tool, release, or documentation semantics.
-- **TOOL-CHANGELOG-FORMAT [J] — Changelog format** — The changelog has an Unreleased section and dated semantic-version entries for shipped releases, including 0.x releases; it does not use a proposed V1 baseline as release history. (standards-tool-repositories.md)
+- **TOOL-CHANGELOG-FORMAT [J] — Changelog format** — Before 1.0, the changelog has one consolidated Pre-1.0 command and behaviour baseline, not per-release 0.x entries; from 1.0 onward, it has dated release entries. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ The changelog has an Unreleased section and dated semantic-version entries for shipped releases, including 0.x releases; it does not use a proposed V1 baseline as release history.
+  - _Review prompt:_ Before 1.0, the changelog has one consolidated Pre-1.0 command and behaviour baseline, not per-release 0.x entries; from 1.0 onward, it has dated release entries.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
-- **TOOL-CLI [J] — Shared CLI conventions** — The CLI keeps help, completion, errors, exit status, and the README command overview aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help. (standards-tool-repositories.md)
+- **TOOL-CLI [J] — Shared CLI conventions** — The CLI keeps help, completion, errors, exit status, the README command overview, and any pre-1.0 changelog command baseline aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ The CLI keeps help, completion, errors, exit status, and the README command overview aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.
+  - _Review prompt:_ The CLI keeps help, completion, errors, exit status, the README command overview, and any pre-1.0 changelog command baseline aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
 - **TOOL-CI [M] — CI workflow** — At least one physical workflow YAML file is present. (standards-tool-repositories.md)
@@ -100,9 +100,9 @@ Layout, executable, distribution, versioning, and judgment criteria.
   - _Review prompt:_ A non-shell, non-JavaScript tool wires its own lint and test toolchain into CI.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
-- **TOOL-RELEASE-CHECK [J] — Release alignment** — Version markers, tags, releases, and changelog entries agree. (standards-tool-repositories.md)
+- **TOOL-RELEASE-CHECK [J] — Release alignment** — Version markers, tags, and releases agree; a pre-1.0 changelog baseline reflects the current surface, and a 1.0+ dated entry names the release. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ Version markers, tags, releases, and changelog entries agree.
+  - _Review prompt:_ Version markers, tags, and releases agree; a pre-1.0 changelog baseline reflects the current surface, and a 1.0+ dated entry names the release.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
 

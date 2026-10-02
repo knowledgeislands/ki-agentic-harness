@@ -388,7 +388,7 @@ test('static version evidence remains unavailable even for a rejecting executabl
 test('release-marker alignment starts at package version 1.0.0', () => {
   const { repository } = fixture()
   writeFileSync(join(repository, 'package.json'), JSON.stringify({ version: '0.2.20' }))
-  writeFileSync(join(repository, 'CHANGELOG.md'), '# Changelog\n\n## [Unreleased]\n\n## [0.2.20] - 2026-09-01\n')
+  writeFileSync(join(repository, 'CHANGELOG.md'), '# Changelog\n\n## Pre-1.0 baseline\n\n### Commands\n\n- `demo`\n')
 
   const preOne = createToolsSession(options(repository, 'audit')).subjects[0]?.context()
   if (!preOne) throw new Error('ki-repo-tools session has no repository context')
@@ -400,7 +400,10 @@ test('release-marker alignment starts at package version 1.0.0', () => {
   ])
 
   writeFileSync(join(repository, 'package.json'), JSON.stringify({ version: '1.0.0' }))
-  writeFileSync(join(repository, 'CHANGELOG.md'), '# Changelog\n\n## [Unreleased]\n\n## [1.0.0] - 2026-10-01\n')
+  writeFileSync(
+    join(repository, 'CHANGELOG.md'),
+    '# Changelog\n\n## [Unreleased]\n\n## [1.0.0] - 2026-10-01\n\n## Pre-1.0 baseline\n'
+  )
   const aligned = createToolsSession(options(repository, 'audit')).subjects[0]?.context()
   if (!aligned) throw new Error('ki-repo-tools session has no repository context')
   expect(toolItem('TOOL-RELEASE-MARKERS').audit.run(TOOL.selectContext(aligned))[0]?.status).toBe('PASS')

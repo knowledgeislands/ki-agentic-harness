@@ -7,11 +7,11 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 - Read the repository's `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`, then follow their local requirements. This shared checklist complements those repository-specific procedures; it does not replace them.
 - Confirm the intended `vX.Y.Z` version against the latest released tag and Semantic Versioning. Record breaking changes, migrations, or an explicit statement that none apply.
 - Review the product changes since the last release. Exclude unrelated working-tree changes and resolve any release-blocking failures before changing the version marker.
-- Keep one version source of truth in the executable or package metadata. Verify that the candidate's `--version` output will match its tag and top changelog entry. Any automated release workflow MUST reject a mismatch before building, signing, creating a draft, or publishing; a post-publication installation check is not an adequate backstop for an immutable release.
+- Keep one version source of truth in the executable or package metadata. Verify that the candidate's `--version` output will match its tag. From 1.0 onward, the first dated changelog entry must also match; before 1.0, review the consolidated baseline instead of expecting a version heading. Any automated release workflow MUST reject a version/tag mismatch before building, signing, creating a draft, or publishing; a post-publication installation check is not an adequate backstop for an immutable release.
 
 ## 2. Align the public surface
 
-- Add the dated changelog entry using `Added`, `Changed`, `Fixed`, and `Removed` as applicable. A declared command baseline remains suitable only when establishing a release line, not as a substitute for a concrete release entry.
+- For a 0.x candidate, update the single Pre-1.0 baseline with the current command surface and notable behaviours and changes; do not add a per-release changelog section. For a 1.0+ candidate, add a dated entry using `Added`, `Changed`, `Fixed`, and `Removed` as applicable. The pre-1.0 baseline is not a substitute for that concrete 1.0+ entry.
 - Compare active `--help`, the README, user guides, completion guidance, and any physical manual. They must describe the same shipped commands, options, defaults, and compatibility behaviour.
 - Where a release changes a persisted manifest or configuration format, document the supported schema, migration, or rejection path in the canonical user reference.
 - For a physical manual, update its date when appropriate, run `mandoc -T lint`, and inspect `mandoc -Tutf8 man/<tool>.1 | col -b` after a content or layout change.
@@ -34,7 +34,7 @@ When a shared delivery profile is declared, confirm `ki-repo-tools` reports ever
 
 ## 5. Record the outcome
 
-- Retain the release commit, tag, GitHub release, and formula update as the durable record. Keep a concise review packet with the candidate version, validation performed, and any deliberately deferred post-release follow-up.
+- Retain the release commit, tag, GitHub release, and formula update as the durable per-release record, including during 0.x development. Keep a concise review packet with the candidate version, validation performed, and any deliberately deferred post-release follow-up.
 - If a check cannot run, record the blocker and do not describe the release as fully verified. Route work outside this skill's boundary to its owner rather than adding a compatibility path here.
 
 ## Ownership boundaries
