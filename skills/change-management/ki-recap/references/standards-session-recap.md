@@ -50,10 +50,12 @@ Using warm context plus the helper's `filesTouched` / `diffStat`: state what cha
 
 **Always check whether everything is committed** — even if the session felt "done", verify the working tree is clean for the files this session touched (staged, unstaged, and untracked). If `repository.status` is `unavailable`, say that Git evidence is unavailable and do not claim clean, committed, or no-actions status. Uncommitted session work is the most common silently-dropped outstanding item. Files dirty from _other_ threads of work are out of scope (per the stay-scoped rule) — note their existence in one line at most, never enumerate or adopt them.
 
-Then look only for work still open in this thread: uncommitted edits, a failing gate, a decision still open, or an explicitly deferred fix without a durable home. Do not use a recap to inventory repository backlog, peer-repository state, or plausible future work; those are outside the thread and `ki-next` owns future-work selection. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If `transcriptEvidence.status` is `changed` or `unavailable`, describe transcript-derived tool tallies only as historical or omit their recommendation. If meaningful time has passed since step 1 ran, re-run it before finalizing this section. Apply the house rule:
+Then look only for work still open in this thread: uncommitted edits, a failing gate, a decision still open, or an explicitly deferred fix this thread still owns without a durable home. Do not use a recap to inventory repository backlog, peer-repository state, or plausible future work; those are outside the thread and `ki-next` owns future-work selection. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If `transcriptEvidence.status` is `changed` or `unavailable`, describe transcript-derived tool tallies only as historical or omit their recommendation. If meaningful time has passed since step 1 ran, re-run it before finalizing this section.
+
+When the user explicitly leaves an external concern with its owning repository and does not ask this thread to create a handoff, that is a decided scope boundary, not an unfinished deferral. Mention the boundary and risk if material, but do not put it under Outstanding, turn it into an Action, or withhold the completion banner solely because the owner has no work item. This does not discharge an agreed but unwritten handoff, an in-scope failing gate, or uncommitted work. Apply the house rule:
 
 - Work captured in a roadmap item or Stream, whether newly created or routed to an existing record in this or another repository, is a **recorded deferral**. Name its canonical home and current lifecycle state under what happened or deferred work, not under outstanding or Actions. Unchecked Steps, pending review, and future acceptance belong to that record's lifecycle; they do not keep this thread open. Check current Git and verification evidence separately for an unfinished implementation unit in this thread.
-- If an explicitly deferred in-session thread has no durable home, offer its correct local route: `ki-next` capture into the shared queue, then `ki-plan` when it is selected; use the roadmap adapter for a non-KB repository and the Streams adapter for a Knowledge Base. Do not manufacture a route for work merely noticed during the recap.
+- If this thread agreed to preserve a deferred fix but has not given it a durable home, offer its correct local route: `ki-next` capture into the shared queue, then `ki-plan` when it is selected; use the roadmap adapter for a non-KB repository and the Streams adapter for a Knowledge Base. Do not manufacture a route for work merely noticed during the recap or explicitly returned to another owner without an agreed handoff.
 
 ## 4. Harvest the learnings, and route each
 
@@ -95,9 +97,10 @@ Use only this closed disposition vocabulary:
 - `delivered` — evidence-backed completed work.
 - `captured` — work placed in its durable queue or record. A roadmap item or Stream added during this session is part of what happened, not an Action.
 - `deferred` — an explicit deferral with a named durable home or return condition.
+- `out-of-scope` — a concern explicitly returned to its external owner without an agreed in-thread handoff; note material risk without adopting its work.
 - `decision-needed` — an unresolved user-owned choice.
 
-Reconcile the matrix with [Surface what is outstanding](#3-surface-what-is-outstanding) and [Actions](#6-actions): a deferred point without a durable home, and every `decision-needed` row, remains outstanding and has a corresponding final Action. Do not turn a captured record into an Action merely because it is actionable later.
+Reconcile the matrix with [Surface what is outstanding](#3-surface-what-is-outstanding) and [Actions](#6-actions): a deferred point this thread still owns without a durable home, and every `decision-needed` row, remains outstanding and has a corresponding final Action. An agreed but unwritten handoff is `deferred`, not `out-of-scope`; an `out-of-scope` row has no Action. Do not turn a captured record into an Action merely because it is actionable later.
 
 Apply these scenario checks before presenting the matrix:
 
@@ -106,7 +109,8 @@ Apply these scenario checks before presenting the matrix:
 | Simple single-thread recap | Omit the matrix. |
 | Multi-topic recap with grounded evidence | Use the four columns and only the closed dispositions. |
 | Transcript evidence absent, ambiguous, changed, or unavailable | State the bounded non-exhaustive scope; omit unsupported rows. |
-| Deferred point lacks a durable home or a choice remains unresolved | Keep it outstanding and add a reconciled Action. |
+| Agreed handoff lacks a durable home or a choice remains unresolved | Keep it outstanding and add a reconciled Action. |
+| External concern returned to its owner without a handoff | Mark it `out-of-scope` if material; add no Action for the owner's work. |
 
 ## 6. Actions
 
@@ -122,7 +126,7 @@ Decide the Actions list from the grounded evidence before considering the termin
 Render the completion banner only when all of these conditions hold together:
 
 1. The grounding helper reports `repository.status: available`, a non-null full `HEAD`, `worktree: clean`, and an empty `filesTouched` list at recap time.
-2. Steps 3–5 leave no outstanding work, decision, failing or omitted verification, or other Action.
+2. Steps 3–5 leave no outstanding work in this thread, decision, failing or omitted verification, or other Action. An external concern explicitly left to its owner under section 3 does not fail this condition by itself.
 3. Every learning harvested in step 4 has a decided route: it was written to its approved durable owner or the user explicitly declined it. A proposed route awaiting confirmation is undecided and blocks the banner.
 
 The banner states current evidence rather than a session event, so two recaps over an unchanged `HEAD` both render it. That repetition is correct and deliberately unguarded: it means a banner withheld under conditions 1–3, or missed in error, is recovered by the next recap at which those conditions hold. A condition on recap history would instead make a miss permanent, because the only route back to eligibility would be doing more work — absurd when the claim being made is that no work remains.
