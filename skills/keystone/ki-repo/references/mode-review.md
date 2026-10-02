@@ -123,6 +123,7 @@ Produce the Assessment output sections from the checklist in their stated order.
 - [ ] Record every verification or measurement command and its result.
 - [ ] Reconcile documentary claims against implementation and permitted live evidence.
 - [ ] Do not treat mechanical conformance as sufficient evidence of product quality or fitness.
+- [ ] For each repeatable review check, ask whether it can be decided deterministically. Route a checkable gap to the owning skill's mechanical rubric and checker (or a declared toolchain gate for implementation behaviour), naming the assertion and a failing case; do not leave it as recurring judgment merely because its checker has not been written. Keep fitness and interpretation as judgment. Follow the [rubric-authoring standard](../../ki-skills/references/standards-rubric-authoring.md) for the mechanical boundary.
 - [ ] For each material observation, state the consequence and confidence level. Do not promote a style preference into a finding without a concrete cost, risk, or missed capability.
 - [ ] Label each material claim as observed, inferred, or user-confirmed.
 - [ ] Give each material finding a stable identifier.
