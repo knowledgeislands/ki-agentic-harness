@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-02T05:27:09Z
+updated_at: 2026-10-02T05:32:46Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -32,8 +32,8 @@ This item owns the portable `ki-engineering` policy, audit and conformance behav
 
 ### Common contract
 
-Decide the minimum shared check, including circular and unresolved dependencies, how each repository declares meaningful import directions, and whether the checker runs through the test suite or a repository command. Extend the engineering rubric so a missing, disconnected, or ineffective check is visible in `ki repo audit`, with conformance limited to safe, deterministic setup. Retain the existing standard's separate supported TypeScript install root where the repository compiler is incompatible.
+Decide the minimum shared check, including circular and unresolved dependencies, how each repository declares meaningful import directions, and whether the checker runs through the test suite or a repository command. Treat tracked `scripts/` code as a candidate source root and require an explicit reason when it is excluded; checks that only cruise `src/` can miss imports from repository tooling. Extend the engineering rubric so a missing, disconnected, or ineffective check is visible in `ki repo audit`, with conformance limited to safe, deterministic setup. Retain the existing standard's separate supported TypeScript install root where the repository compiler is incompatible.
 
 ### Rollout evidence
 
-Inventory repositories governed by `ki-engineering`, record applicability and existing enforcement, then sequence repository-owned adoption work for gaps. Verification should demonstrate that the checker visits the intended source roots, resolves the imports used by its rules, and fails on a deliberate crossing. The two working configurations provide starting examples, not a single rule set to copy into unrelated repositories.
+Inventory repositories governed by `ki-engineering`, record applicability, existing enforcement, and whether their `scripts/` code is covered, then sequence repository-owned adoption work for gaps. Verification should demonstrate that the checker visits the intended source roots, resolves the imports used by its rules, and fails on a deliberate crossing. The two working configurations provide starting examples, not a single rule set to copy into unrelated repositories.
