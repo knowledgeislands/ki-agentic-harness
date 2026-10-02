@@ -12,7 +12,7 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 ## 2. Align the public surface
 
 - For a 0.x candidate, update the single Pre-1.0 baseline with the current command surface and notable behaviours and changes; do not add a per-release changelog section. For a 1.0+ candidate, add a dated entry using `Added`, `Changed`, `Fixed`, and `Removed` as applicable. The pre-1.0 baseline is not a substitute for that concrete 1.0+ entry.
-- Compare active `--help`, the README, user guides, completion guidance, and any physical manual. They must describe the same shipped commands, options, defaults, and compatibility behaviour.
+- Compare the candidate executable's active `--help` and `--version`, the README command overview, user guides, completion guidance and generated Bash/Zsh definitions, the applicable changelog baseline or dated entry, and any physical manual. Keep shipped commands, options, defaults, installation paths, and compatibility behaviour aligned across these surfaces.
 - Where a release changes a persisted manifest or configuration format, document the supported schema, migration, or rejection path in the canonical user reference.
 - For a physical manual, update its date when appropriate, run `mandoc -T lint`, and inspect `mandoc -Tutf8 man/<tool>.1 | col -b` after a content or layout change.
 
@@ -22,7 +22,7 @@ When a shared delivery profile is declared, confirm `ki-repo-tools` reports ever
 
 - Run `ki repo audit --repo .` and resolve its applicable mechanical findings. Complete the judgment review for version alignment, CLI surface, manual distribution, and the companion formula.
 - Run every native quality gate declared by the tool. A shell entrypoint runs ShellCheck and Bats; a package.json-bearing tool also follows `ki-engineering` for its build, lint, type, and test gates.
-- Exercise changed command paths and error handling proportionately to risk. Confirm `--help` and `--version` from the candidate rather than an installed copy.
+- Exercise changed command paths and error handling proportionately to risk. Confirm `--help` and `--version` from the candidate rather than an installed copy. For a completion change, generate Bash and Zsh definitions from the packaged executable, check that they reflect the current grammar, and verify their shell registration.
 - Verify the release installer and `--link` mode against disposable destinations. When a physical manual exists, confirm that both installation paths publish or link it alongside the executable.
 
 ## 4. Publish through both channels
