@@ -32,7 +32,7 @@ Keep these checks visible and manually runnable through their approved definitio
 
 ## Runtime binding
 
-For my estate, Claude is the default proposed runtime for new hires, subject to a working supported connection. This is my approved hiring preference, not a global Paperclip default. Preserve explicit approved exceptions and existing working runtimes. Verify the proposed connection before claiming a hire is ready; if it is unavailable, report the specific connection action and owner, keep authorised work on its working runtime, and do not silently substitute a different runtime for the new hire.
+For my estate, Claude is the intended primary runtime for every existing employee and new hire; Codex is a backup, not a routine default. This is my estate policy, not a global Paperclip setting. Review each employee's saved adapter and AI connection, including approved exceptions. Test the supported Claude connection before migrating an existing employee or claiming a hire is ready. If the test fails, name the connection repair and its owner, leave the existing working runtime and agent status unchanged, and track that employee as awaiting migration. Do not silently switch a new hire to Codex. After a successful connection test, migrate through the supported agent settings, preserve unrelated configuration, and verify the saved result and one bounded run before reporting Claude operational.
 
 ## Details for the agent
 

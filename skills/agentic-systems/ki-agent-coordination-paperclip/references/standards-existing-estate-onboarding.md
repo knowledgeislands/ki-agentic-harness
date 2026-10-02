@@ -126,9 +126,9 @@ Where a justified gap requires a hire and proposal submission is authorised, the
 
 ### Runtime binding
 
-Resolve new-hire runtime choice from the principal's approved estate policy. The [review brief](../assets/bootstrap-task.md#runtime-binding) expresses this principal's Claude default, conditional on a working supported connection; it is not a global Paperclip default or a requirement for every user. Preserve explicitly approved exceptions and existing working runtimes. Verify the supported connection for the proposed hire and report a specific missing connection action to its operator. An unavailable preferred connection does not justify silently proposing another runtime, resetting approved work to discovery or disabling a working employee.
+Resolve existing-employee and new-hire runtime choice from the principal's approved estate policy. The [review brief](../assets/bootstrap-task.md#runtime-binding) sets Claude as this estate's intended primary and Codex as backup; it is not a global Paperclip default or a requirement for every user. Preserve explicitly approved exceptions. Review existing employees as well as hires, but migrate an employee only after the target Claude connection passes its supported test. If it fails, retain the employee's current working runtime and status, name the connection repair and owner, and keep the migration visible. Do not silently propose Codex for a new hire, reset approved work to discovery, or disable a working employee.
 
-After approved hires, use the [post-hire configuration brief](../assets/post-hire-task.md) to reconcile agent settings through an authorised external operator. Keep configuration read-back, actual workspace skill verification and permission to start work as separate gates.
+After approved hires or a repaired connection, use the [post-hire configuration brief](../assets/post-hire-task.md) to reconcile agent settings through an authorised external operator and verify one bounded run. Keep configuration read-back, actual workspace skill verification and permission to start work as separate gates.
 
 ## 3. Reconcile work and task identities
 
