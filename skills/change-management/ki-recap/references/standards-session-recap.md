@@ -20,6 +20,8 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
 
 **Set the coverage boundary before checking repository state.** Inventory the material topics, decisions, deliveries, and agreed follow-ups in the entire live thread through this invocation, including work before earlier recaps or compaction and work in other repositories. Use the visible conversation and available carry-forward context for discovery; reconcile each claim against current canonical evidence. A repository-matched transcript is advisory and may be a different concurrent session. If part of the thread is unavailable after compaction or transcript selection is uncertain, identify the missing span and ask for the needed context; do not certify whole-thread completion from a partial inventory.
 
+Treat user messages arriving during work as steering unless they expressly replace or cancel earlier instructions. Before the recap or final handoff, reconcile every visible material message, including decisions made after an earlier summary was drafted. A queued message that could not reasonably have been addressed before the previous response remains live input for the next response; acknowledge and incorporate its still-relevant content rather than treating the intervening summary as closure. Do not infer queue-versus-steer delivery mode solely from timing when the runtime does not expose it. If the message's scope is genuinely ambiguous, state the assumption or ask; do not silently discard either request.
+
 ## 1. Run the grounding helper
 
 ```bash
