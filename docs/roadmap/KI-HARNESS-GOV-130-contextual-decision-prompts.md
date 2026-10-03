@@ -4,12 +4,12 @@ area: GOV
 title: Contextual decision prompts
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 3d62e65cfd0667504fef131a1f5c7791cc922efc
 created_at: 2026-10-03T02:56:47Z
-updated_at: 2026-10-03T03:23:19Z
+updated_at: 2026-10-03T03:26:16Z
 ---
 
 # Contextual decision prompts
@@ -32,9 +32,9 @@ In scope: decide where the shared question pattern belongs, identify the KI deci
 
 ## Steps
 
-- [ ] Add concise decision-question guidance to the relevant `ki-next`, `ki-plan`, and `ki-accept` procedures, and cover batch approval where it presents a set of work items.
-- [ ] Require the choice, essential state and consequence, canonical item link where the interface supports it, and a reasoned recommended option; define a prose fallback and preserve explicit approval.
-- [ ] Review wording across the process skills and run the skill, roadmap, and Markdown checks.
+- [x] Add concise decision-question guidance to the relevant `ki-next`, `ki-plan`, and `ki-accept` procedures, and cover batch approval where it presents a set of work items.
+- [x] Require the choice, essential state and consequence, canonical item link where the interface supports it, and a reasoned recommended option; define a prose fallback and preserve explicit approval.
+- [x] Review wording across the process skills and run the skill, roadmap, and Markdown checks.
 
 ## Files touched
 
@@ -65,6 +65,32 @@ The process-skill procedures are the canonical guidance; no separate user guide 
 ### Roadmap
 
 Update this record with delivery and review evidence; leave unrelated work items unchanged.
+
+## Review
+
+### Delivered
+
+The approved guidance now covers owner decisions in `ki-next`, `ki-plan`, `ki-accept`, and reviewed-item `ki-batch`. Each uses an available structured question interface, provides the item context and link where supported, offers a reasoned recommendation, and keeps explicit approval authoritative. The immutable starting baseline was `3d62e65cfd0667504fef131a1f5c7791cc922efc`; delivery is commit `83fae45d3b8195f71ed6ff21ff3703579269708f`.
+
+### Change Summary
+
+Updated the four process procedures under `skills/change-management/` with decision-specific question content and a prose fallback. Batch outcome authority remains governed by its separate contract. No scope departure was needed.
+
+### Verification
+
+`bunx rumdl check --fix` passed for the four procedure files. `ki repo audit --skill ki-work-roadmap` and `ki repo audit --skill ki-authoring` passed. `ki repo audit --skill ki-skills` had no failures and two existing refresh-cadence warnings for unrelated website skill sources last reviewed in August 2026. The commit hook repeated the Markdown check and skill audit on the staged snapshot.
+
+### Outstanding concerns
+
+No delivery concern within the approved boundary. Question interfaces may differ in link rendering; the guidance requires an adjacent prose link when the question cannot render one.
+
+### Post-change review
+
+The guidance meets the requested decision context, quick item access, and recommended response without changing approval authority. Changes are limited to four process procedures and their review record; the documentation-only change has low regression risk and is ready for owner review.
+
+### Mini recap
+
+Delivered and verified contextual decision prompts across the single-item and reviewed batch decisions. The rendering fallback remains part of the guidance. No further item-scoped work or learning route is proposed.
 
 ## Discussion
 
