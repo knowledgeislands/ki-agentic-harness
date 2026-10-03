@@ -4,12 +4,12 @@ area: GOV
 title: Contextual decision prompts
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 3d62e65cfd0667504fef131a1f5c7791cc922efc
 created_at: 2026-10-03T02:56:47Z
-updated_at: 2026-10-03T03:26:16Z
+updated_at: 2026-10-03T03:44:37Z
 ---
 
 # Contextual decision prompts
@@ -91,6 +91,10 @@ The guidance meets the requested decision context, quick item access, and recomm
 ### Mini recap
 
 Delivered and verified contextual decision prompts across the single-item and reviewed batch decisions. The rendering fallback remains part of the guidance. No further item-scoped work or learning route is proposed.
+
+## Done
+
+Accepted 2026-10-03 by the repository owner on the review packet above.
 
 ## Discussion
 
