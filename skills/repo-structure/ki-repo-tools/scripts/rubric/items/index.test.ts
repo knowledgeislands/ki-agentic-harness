@@ -38,6 +38,7 @@ test('the catalogue preserves every ordered ki-repo-tools criterion', () => {
     'TOOL-RELEASE-MARKERS',
     'TOOL-CHANGELOG',
     'TOOL-DEVELOPER-GUIDES',
+    'TOOL-GUIDE-ALIGNMENT',
     'TOOL-CHANGELOG-FORMAT',
     'TOOL-CLI',
     'TOOL-CI',
@@ -81,7 +82,7 @@ test('the catalogue preserves every ordered ki-repo-tools criterion', () => {
     'CONFIG-1': 'WARN',
     'SHARED-1': 'FAIL'
   })
-  expect(items.filter((item) => item.judgment)).toHaveLength(18)
+  expect(items.filter((item) => item.judgment)).toHaveLength(19)
   for (const item of items) {
     if (item.mechanical) {
       expect(item.mechanical.remediation?.class).toBeDefined()

@@ -59,7 +59,9 @@ Mirrors `ki-engineering`'s capability-conditional pattern: what the repo _is_ de
 
 A `tools-*` repo opts into this standard by declaring `[skills.ki-repo-tools]` in `.ki.toml`. A keyless table leaves installer and packaging files repository-owned. The optional `profile` plus its validated parameters selects one managed delivery projection; every other key is rejected. `ki-repo` owns selecting the declaration, and conformance never selects a profile or overwrites modified managed files.
 
-## Release readiness
+## Change and release readiness
+
+Before presenting any tool change for review, read [the change-readiness checklist](references/standards-change-readiness.md). It keeps shared documentation, verification, and authority questions in one place while each repository's developer guide retains its own executable gates and recovery detail.
 
 Before preparing or reviewing a tool release, read [the release-readiness checklist](references/standards-release-readiness.md). It consolidates the existing version, documentation, validation, and distribution obligations into one staged human checklist; it does not create another skill mode or take ownership from `ki-engineering` or `ki-repo-homebrew-tap`.
 

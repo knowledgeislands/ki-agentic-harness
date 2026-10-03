@@ -1,6 +1,6 @@
 # Mode AUDIT — check a repository against the standard
 
-The mechanical audit treats missing or non-regular `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` as FAIL findings. It verifies only their exact paths and safe file type; the judgment pass does not assess their repository-defined contents.
+The mechanical audit treats missing or non-regular `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` as FAIL findings. It verifies only their exact paths and safe file type; review their repository-defined contents against the shared checklists in the judgment pass.
 
 _On-demand procedure for `ki-repo-tools` AUDIT. The canonical shape, the container-not-contents split, and the capability-conditional rule live in [`SKILL.md`](../SKILL.md) and are already loaded; this file owns only the audit sequence._
 
@@ -8,9 +8,10 @@ _On-demand procedure for `ki-repo-tools` AUDIT. The canonical shape, the contain
 2. **Run the mechanical checker.** `ki repo audit --repo <repo-path> --skill ki-repo-tools` covers the static container: `bin/` + exec bit (FAIL), `install.sh`, local release markers, `CHANGELOG.md`, CI workflow source, `tests/` or `src/tests/`, the shell capability conditionals (shellcheck + bats), the physical `man/<tool>.1`→`mandoc` CI conditional, the `package.json`→`ki-engineering` note, and the qualified `ki-repo-tools` marker. It never executes the tool, installer, CI, or network validator. Capture the result verbatim — downstream tooling renders it; do not re-derive what it found.
 3. **Run `ki-repo`'s audit too.** The tool repo's standard files (README, LICENSE, `.gitignore`, `.editorconfig`) and GitHub settings are `ki-repo`'s — run its checker for that layer. A TS/Bun tool (a `package.json` present) also runs `ki-engineering`'s audit.
 4. **Do the judgment pass the script can't** — walk [rubric.md](rubric.md)'s **[J]** items:
+   - **Developer guide alignment**: compare the local definition of done with [change readiness](standards-change-readiness.md) and the release guide with [release readiness](standards-release-readiness.md). Confirm the local commands and risks remain accurate and self-contained. Do not treat a shared-checklist citation as proof of semantic alignment.
    - **`install.sh` robustness**: read it — POSIX-ish, honours the target-dir + version env overrides, verifies the download, idempotent on re-run.
    - **Release candidate**: for a concrete release, work through [the release-readiness checklist](standards-release-readiness.md); otherwise, check the single version marker against the latest `vX.Y.Z` tag (`git tag`, `gh release list`). For 1.0+, also check the first dated changelog entry; for 0.x, review the consolidated baseline instead of comparing a version heading.
-   - **Persisted manifests**: each evolving structural format declares and strictly validates its own integer schema, accepts only implemented forms, and leaves stable leaf metadata without a ceremonial schema.
+   - **Input and output contracts**: newly written user configuration omits schema/version metadata; reads accept only recognised legacy shapes and repair is explicit. Each generated public contract has its own v1 identity before 1.0, while private persisted-state migrations retain the markers they need.
    - **CHANGELOG shape**: one consolidated Pre-1.0 command and behaviour baseline during 0.x; dated semantic-version entries from 1.0 onward.
    - **Shared CLI surface**: `--help` succeeds and matches the shipped surface; successful commands, operational errors, and invalid owned syntax use statuses 0, 1, and 2 respectively; completion is singular; owned syntax fails as a namespaced error with usage before `--help`.
    - **Manual authoring**: a physical manual's command groups match help; its roff uses the portable macros, a `\&` line follows each `.SH` / `.SS`, and `mandoc -Tutf8 … | col -b` renders the intended spacing.

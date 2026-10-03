@@ -4,7 +4,7 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 
 ## 1. Establish the candidate
 
-- Read the repository's `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`, then follow their local requirements. This shared checklist complements those repository-specific procedures; it does not replace them.
+- Complete [the change-readiness checklist](standards-change-readiness.md), then read the repository's `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` for its exact gates and publication procedure. The local guides remain self-contained; this shared checklist does not replace them.
 - Confirm the intended `vX.Y.Z` version against the latest released tag and Semantic Versioning. Record breaking changes, migrations, or an explicit statement that none apply.
 - Check the other enrolled `tools-*` projects' released versions and roadmap horizons as an advisory consistency snapshot. A peer's backlog or version does not block this candidate; note only a concrete shared-contract or distribution mismatch that affects it.
 - Review the product changes since the last release. Exclude unrelated working-tree changes and resolve any release-blocking failures before changing the version marker.
@@ -15,7 +15,7 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 
 - For a 0.x candidate, update the single Pre-1.0 baseline with the current command surface and notable behaviours and changes; do not add a per-release changelog section. For a 1.0+ candidate, add a dated entry using `Added`, `Changed`, `Fixed`, and `Removed` as applicable. The pre-1.0 baseline is not a substitute for that concrete 1.0+ entry.
 - Compare the candidate executable's active `--help` and `--version`, the README command overview, user guides, completion guidance and generated Bash/Zsh definitions, the applicable changelog baseline or dated entry, and any physical manual. Keep shipped commands, options, defaults, installation paths, and compatibility behaviour aligned across these surfaces.
-- Where a release changes a persisted manifest or configuration format, document the supported schema, migration, or rejection path in the canonical user reference.
+- Where a release changes configuration or persisted state, document the current input shape, recognised legacy repair, internal-state migration, or rejection path in the canonical user reference.
 - For user-authored configuration, do not emit a schema/version field into newly written files while the input contract has one current shape. Read a legacy versioned file only when its actual structure is recognised; offer an explicit, previewable repair that removes obsolete version metadata, and never rewrite on a read or silently prompt in a non-interactive run. For each generated output contract, use its own `v1` identity while pre-1.0, not an estate-wide version or `latest`, `pre-release`, or `0`; consumers should tolerate additive fields. A change in persisted state still requires a deliberate migration and tests.
 - For a physical manual, update its date when appropriate, run `mandoc -T lint`, and inspect `mandoc -Tutf8 man/<tool>.1 | col -b` after a content or layout change.
 

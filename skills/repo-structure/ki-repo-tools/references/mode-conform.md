@@ -9,7 +9,7 @@ _On-demand procedure for `ki-repo-tools` CONFORM. The hosted catalogue owns its 
 3. Fix report-only gaps by adapting the `tools-mgit` reference rather than inventing:
    - Missing `install.sh` → adapt the `REPO`, `<TOOL>_INSTALL_DIR` / `<TOOL>_VERSION` overrides, and download → verify → install flow.
    - Missing `--version` → add one version marker literal and the `--version`/`-V` case.
-   - An evolving persisted manifest → introduce its own strictly validated integer schema, write the current form explicitly, and choose a deliberate migration or rejection path for earlier forms; do not add a schema to stable leaf metadata.
+   - User-authored configuration → write the one current unversioned shape, accept only recognised legacy structures, and offer an explicit previewed repair. Keep private persisted-state migration markers intact unless a tested migration changes them; identify each generated public contract as v1 before 1.0.
    - Missing `CHANGELOG.md` → before 1.0, seed one consolidated Pre-1.0 command and behaviour baseline; from 1.0 onward, seed dated semantic-version release entries.
    - A physical manual → add a `mandoc -T lint man/<tool>.1` CI gate and ensure both release and `--link` installation publish it alongside the executable.
    - Missing shared CLI behaviour → make `--help` succeed; use statuses 0 (success), 1 (operational error), and 2 (invalid owned syntax); expose one documented `completion <shell>` action at a stable path; and return a namespaced error plus usage for invalid owned syntax, including when `--help` is also present.

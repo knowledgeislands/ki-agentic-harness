@@ -133,8 +133,8 @@ const TOOL_XDG = judgment(
 )
 const TOOL_SCHEMA = judgment(
   'TOOL-SCHEMA',
-  'Persisted manifest schema',
-  'Each evolving persisted structural format declares and strictly validates its own integer schema, accepts only implemented forms, and does not add a ceremonial schema to stable leaf metadata.'
+  'Input and output contracts',
+  'New user-authored configuration omits schema metadata; only recognised legacy shapes are read or explicitly repaired. Generated public contracts each identify v1 before 1.0, while private persisted-state migrations retain their needed markers.'
 )
 
 const TOOL_INSTALL: RubricItem<ToolRepositoryContext> = {
@@ -279,6 +279,12 @@ const TOOL_DEVELOPER_GUIDES = mechanical(
   }
 )
 
+const TOOL_GUIDE_ALIGNMENT = judgment(
+  'TOOL-GUIDE-ALIGNMENT',
+  'Developer guide alignment',
+  'The local definition of done and release guide remain self-contained, executable, and semantically aligned with the shared change- and release-readiness checklists; repository-specific gates and downstream handoffs are accurate.'
+)
+
 const TOOL_CHANGELOG_FORMAT = judgment(
   'TOOL-CHANGELOG-FORMAT',
   'Changelog format',
@@ -380,6 +386,7 @@ export const TOOL: RubricFamily<ToolsRubricContext, ToolRepositoryContext> = {
     TOOL_RELEASE_MARKERS,
     TOOL_CHANGELOG,
     TOOL_DEVELOPER_GUIDES,
+    TOOL_GUIDE_ALIGNMENT,
     TOOL_CHANGELOG_FORMAT,
     TOOL_CLI,
     TOOL_CI,

@@ -9,9 +9,10 @@ The full, quotable standard behind the `ki-repo-tools` skill. A `tools-*` repo h
 - [The executable — `bin/<tool>`](#the-executable--bintool)
 - [Developer delivery guides](#developer-delivery-guides)
 - [Versioning & releases](#versioning--releases)
+- [Change readiness](#change-readiness)
 - [Release readiness](#release-readiness)
 - [The distribution contract](#the-distribution-contract)
-- [Persisted configuration formats](#persisted-configuration-formats)
+- [Input and output contracts](#input-and-output-contracts)
 - [Capability conditionals](#capability-conditionals)
 - [Shared CLI conventions](#shared-cli-conventions)
 - [Manual authoring](#manual-authoring)
@@ -54,9 +55,9 @@ tools-<name>/
 
 ## Developer delivery guides
 
-Every tool repository carries physical regular files at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. `ki-repo-tools` enforces only their presence and safe file type; each repository defines the contents that fit its tool, delivery risks, and release mechanism.
+Every tool repository carries physical regular files at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. `ki-repo-tools` enforces only their presence and safe file type; each repository applies the shared change and release checklists while defining the commands, delivery risks, and release mechanism that fit its tool. The guides remain self-contained for their readers.
 
-`definition-of-done.md` is the repository's local route for deciding that a change is complete. `releasing.md` is its local route for preparing and publishing a release. `ki-guides` governs their ordinary guide placement and form when selected, but neither skill imposes a universal substantive checklist.
+`definition-of-done.md` is the repository's local route for deciding that a change is complete. `releasing.md` is its local route for preparing and publishing a release. `ki-guides` governs their ordinary guide placement and form when selected; the shared readiness checklists supply cross-tool obligations without dictating the repository's exact procedure.
 
 ## Versioning & releases
 
@@ -65,6 +66,10 @@ Every tool repository carries physical regular files at `docs/guides/developer/d
 - Before `1.0.0`, `CHANGELOG.md` is one explicitly labelled **Pre-1.0 baseline**: a consolidated account of the current command surface and notable behaviours and changes. Update that baseline as the tool evolves; do not maintain chronological 0.x release sections or label pending work as `Unreleased` or an in-progress 1.0 release. Tags, releases, and commit history retain the exact 0.x snapshots. The mechanical audit does not compare a pre-1.0 version marker to a changelog release heading; judgment checks the baseline against the current CLI, manual, and README.
 - From `1.0.0` onward, `CHANGELOG.md` uses [Keep a Changelog](https://keepachangelog.com/) style: an optional `Unreleased` section followed by dated semantic-version entries grouped by `Added`, `Changed`, `Fixed`, and `Removed` as applicable. The first dated entry identifies the latest shipped release and agrees with its version marker and tag. The pre-1.0 baseline may remain as historical orientation, but it is not a substitute for a dated 1.0+ entry.
 - Tags and releases can't be seen from a checkout path — the checker hands this to the judgment pass (RELEASE, ADVISORY).
+
+## Change readiness
+
+Use [the change-readiness checklist](standards-change-readiness.md) for the common documentation, verification, and review questions on every tool change. The local definition of done supplies the exact tool-specific gates; neither one replaces the other.
 
 ## Release readiness
 
@@ -83,14 +88,11 @@ Two delivery channels, both required for a shipped tool:
    - When a physical `man/<tool>.1` exists, honours a matching manual-target override (for example `MGIT_MAN_INSTALL_DIR`), installs the manual with a release, and makes `--link` link the manual source with the local executable.
 2. **A companion Homebrew formula** — `Formula/<name>.rb` in the tap repo (`homebrew-<x>`), installable via `brew tap` + `brew install`. The **tap** and its formula are governed by the sibling `ki-repo-homebrew-tap` skill, not here — this standard only requires that a tap formula exists as the second channel; it does not reproduce the formula rules.
 
-## Persisted configuration formats
+## Input and output contracts
 
-Use a schema only for an on-disk manifest whose **structure is expected to evolve**. It defines the current persisted structure, not another spelling of the tool's release version.
+Newly written user-authored configuration has one current, unversioned input shape. Do not emit a schema/version field, or introduce `latest`, `pre-release`, or `0` as a substitute. An absent field means the current shape; a legacy field is accepted only when the whole structure is recognised. Unknown values or ambiguous legacy structures fail clearly. A repair is explicit and previewable, never a side effect of reading or a silent non-interactive prompt.
 
-- Put `schema = <integer>` at the start of a versioned manifest and accept only the versions the tool implements. An absent, malformed, or unsupported value fails clearly; never guess how to interpret it.
-- Increment the schema only for an incompatible structural change. Before 1.0, implementations accept only the current form. A newer unknown version is always rejected rather than silently downgraded.
-- Keep schema parsing and writing in one owned implementation with coverage for each accepted form and each rejection path. Generated or registered manifests write the current schema explicitly.
-- Canonical `.ki.toml` and `.mgit.toml` documents each own and validate their schema-1 contract. Matching schema numbers do not make the formats interchangeable. Do **not** add a ceremonial schema to small, stable leaf metadata with no evolving structural contract.
+Generated public output may carry a version identity for its own contract. Before 1.0, identify each such contract as v1 and let consumers tolerate additive fields; there is no estate-wide schema number. Private persisted state is different: retain migration markers needed to recover existing data, and change them only with a deliberate migration and tests. Matching version numbers never make different formats interchangeable.
 
 ## Capability conditionals
 

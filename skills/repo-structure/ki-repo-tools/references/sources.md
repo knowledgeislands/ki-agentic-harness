@@ -22,16 +22,15 @@ The opinionated shape is fixed by the reference tool repo under `knowledgeisland
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| MGIT | `tools-mgit` | Bash entrypoint, installer override/link behaviour, workspace/repository command grouping | 2026-07-30 |
-| KI | `tools-ki` | Typed command host, owned-syntax diagnostics, completion, signed installer, manual distribution | 2026-07-30 |
+| MGIT | `tools-mgit` | Bash entrypoint, installer override/link behaviour, workspace/repository command grouping | 2026-10-03 |
+| KI | `tools-ki` | Typed command host, owned-syntax diagnostics, completion, signed installer, manual distribution | 2026-10-03 |
 
 ## Last review
 
-REFRESH last run **2026-07-30**. The standard now reflects `tools-mgit` and `tools-ki`: semantic-version release baselines, singular completion, owned-syntax diagnostics, installed/linkable manuals, and independent schema-one workspace manifests only where their structure evolves.
+The external-spec REFRESH last ran **2026-07-30**. A targeted in-house review on **2026-10-03** reconciled the five tool delivery guides with shared change and release readiness, confirmed MGIt's mandoc CI gate, and replaced the obsolete user-authored schema requirement with current unversioned input and per-contract v1 generated output guidance. External specifications were not re-fetched in this review.
 
 **Open watch-items:**
 
-- `tools-mgit` has a physical manual but its current CI does not run `mandoc -T lint man/mgit.1` (MAN-LINT). Restore that source-repository gate; do not weaken the manual capability conditional.
 - Homebrew's own audit surface (`brew audit` / `brew style`, the Formula Cookbook) is tracked by the sibling `ki-repo-homebrew-tap` skill, not here — reconcile the tap-facing half there.
 - If a second shell-specific concern emerges beyond shellcheck + bats, reconsider a dedicated `ki-shell` skill (deliberately not created at n=1).
 
