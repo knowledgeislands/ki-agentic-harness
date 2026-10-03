@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-130
 area: GOV
 title: Contextual decision prompts
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-03T02:56:47Z
-updated_at: 2026-10-03T02:56:47Z
+updated_at: 2026-10-03T03:23:19Z
 ---
 
 # Contextual decision prompts
@@ -25,6 +25,46 @@ During review of `KI-TOOL-CLI-100`, the owner asked for decision questions throu
 ## Boundary
 
 In scope: decide where the shared question pattern belongs, identify the KI decision points that should use it, and show concise context, a canonical item link, and a justified recommended option in runtime-appropriate question examples. Preserve the need for explicit owner approval at governed transitions. Out of scope: changing roadmap lifecycle authority, silently submitting a preselected answer, requiring a question tool when the runtime lacks one, or assuming every question interface renders Markdown links.
+
+## Current state
+
+`ki-next` requires explicit decisions but does not specify how to ask them. `ki-plan` asks for a canonical link in prose but gives no question-tool pattern. `ki-accept` and `ki-batch` also seek owner decisions. The owner approved direct delivery of this guidance on 2026-10-03, including adoption into Now and preparation for implementation.
+
+## Steps
+
+- [ ] Add concise decision-question guidance to the relevant `ki-next`, `ki-plan`, and `ki-accept` procedures, and cover batch approval where it presents a set of work items.
+- [ ] Require the choice, essential state and consequence, canonical item link where the interface supports it, and a reasoned recommended option; define a prose fallback and preserve explicit approval.
+- [ ] Review wording across the process skills and run the skill, roadmap, and Markdown checks.
+
+## Files touched
+
+The relevant procedure files under `skills/change-management/ki-next/`, `ki-plan/`, `ki-accept/`, and `ki-batch/`, plus this work record.
+
+## Verify
+
+Run `ki repo audit --skill ki-skills`, `ki repo audit --skill ki-work-roadmap`, and `ki repo audit --skill ki-authoring` for this repository; inspect the four procedures for consistent wording and valid links.
+
+## Dependencies / blocks
+
+No build dependency. Use each runtime's available question interface and keep a prose fallback; do not rely on unverified Markdown rendering inside a question widget.
+
+## Documentation impact
+
+### Decision Records
+
+No decision record: this clarifies presentation of existing owner decisions without changing their authority.
+
+### Specifications
+
+No behavior-level specification change: the work concerns agent-facing process guidance.
+
+### Guides
+
+The process-skill procedures are the canonical guidance; no separate user guide is needed.
+
+### Roadmap
+
+Update this record with delivery and review evidence; leave unrelated work items unchanged.
 
 ## Discussion
 
