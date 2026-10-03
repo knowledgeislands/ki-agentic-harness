@@ -20,6 +20,8 @@ Use `ki-next` to select candidates and `ki-plan` to make every admitted record h
 
 Every item must be canonical to the selected local adapter, in the same repository, independently deliverable or correctly dependency-ordered, and equipped with an executable plan and verification. Findings discovered after freezing are capture-only inputs to a later batch.
 
+For a reviewed-item set requiring owner approval, use the runtime's structured ask-user-questions interface when available. Put the exact set and order, a canonical link for each item, the shared delivery advantage, completion target, and expiry in the question. Recommend authorisation only when every item and the batch boundary pass review, with a short reason in the recommended response. If the interface cannot render clickable links, put them in adjacent prose; if it lacks a question tool, ask in prose with the same context. A preselected response is not approval. Outcome mode still uses its separate affirmative authority contract.
+
 ## 2. Prepare the lean authorisation
 
 Create one regular Markdown file directly beneath `+/_BATCHES/`, named `<REPO>-BATCH-<NNN>.md`, with the same `id` in frontmatter:

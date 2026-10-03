@@ -138,6 +138,8 @@ Present those facts directly, choose only after the human confirms the order, an
 
 Before a selection, adoption, promotion, or deferral write, show selected items, any proposed batch set and order, exact frontmatter or wording changes, and dependency effects. The bounded Triage capture rule above is the sole no-prior-confirmation exception.
 
+When an owner answer is needed, use the runtime's structured ask-user-questions interface if available. Put the item's current state, proposed change, consequence, and canonical record link in the question; use a clickable link only where that interface supports one, and otherwise place the link in adjacent prose. Offer the evidence-backed recommendation as the first selectable response with its reason in the option description where supported. For example, recommend moving a dependency-ready Soon item to Next when its scope is actionable, while offering to keep it in Soon. If evidence does not support a recommendation, say so. A preselected response is not an answer or approval. Use the same content in a concise prose question when no structured interface is available.
+
 Require explicit confirmation, then run the applicable adapter audit.
 
 Invoke `ki-plan` only after a selected record is Now or Next.

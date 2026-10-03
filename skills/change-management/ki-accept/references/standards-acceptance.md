@@ -20,6 +20,8 @@ Do not repair missing delivery or review evidence by inference. Return a record 
 
 Present the exact canonical record, its six-part delivery review packet or exact intake disposition, known concerns, and proposed terminal state.
 
+When the owner must decide, use the runtime's structured ask-user-questions interface if available. Include the canonical record link, the proposed disposition, material evidence or concern, and what approval would close. Put a reasoned recommendation first among selectable responses: recommend closure only when the evidence supports it, otherwise recommend retaining the current state. Use adjacent prose for the link if the interface cannot render it, or a prose question with the same context if no question tool exists. A preselected response is not approval.
+
 Require explicit human approval before writing `done`.
 
 The sole exception is an approved `ki-batch` authority whose payload and run binding are still valid and which explicitly grants delivery closure for this exact record. Batch authority never closes Triage intake. An authority that merely permits execution, delegation, reporting, or a different named record is not closure authority.
