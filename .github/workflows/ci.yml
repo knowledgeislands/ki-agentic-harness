@@ -37,7 +37,8 @@ jobs:
           bash "$RUNNER_TEMP/tools-ki-source/install.sh" --link
           export PATH="$KI_CLI_INSTALL_DIR:$PATH"
           test "$(command -v ki)" = "$KI_CLI_INSTALL_DIR/ki"
-          test "$(realpath "$KI_CLI_INSTALL_DIR/ki")" = "$RUNNER_TEMP/tools-ki-source/src/main.ts"
+          test "$(realpath "$KI_CLI_INSTALL_DIR/ki")" = "$KI_CLI_INSTALL_DIR/.ki-local-runner"
+          grep -F "$RUNNER_TEMP/tools-ki-source/src/main.ts" "$KI_CLI_INSTALL_DIR/.ki-local-runner"
           ki --version
           ki manage diag | grep -F 'Installation: local'
           ki manage diag | grep -F "Executable: $RUNNER_TEMP/tools-ki-source/src/main.ts"
