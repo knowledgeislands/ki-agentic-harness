@@ -23,7 +23,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-79
       relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-10-04T12:10:04Z
+updated_at: 2026-10-04T18:20:00Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base
@@ -165,3 +165,9 @@ Covering coordination task: `KIS-70`, where the finding was raised and where the
 ### Blocker checkpoint - 2026-10-04 (estate push)
 
 Not implemented in the 2026-10-04 estate push. Paperclip task `KIS-79` still holds retained delivery ownership of this record (`in_review`, assigned to the Convenor), and its latest comment records the board pausing agents with an instruction to stop without delivering. This record says not to allocate overlapping implementation until that ownership is resolved, so the owner must either release `KIS-79` or confirm its retained delivery. Separately, the plan's `COORD-10` code is now taken ("Repository skill baseline" in `ki-agent-coordination-paperclip`); a fresh code, such as `COORD-15`, is needed when the plan is revisited.
+
+### Question for Kris - 2026-10-04
+
+Not started in the second 2026-10-04 pass, for two reasons that only you can clear. The harness half already exists as retained commit `94b6f9f0` on the `KIS-70` branch (standard paragraph, mechanical item, regenerated rubric, `mode-audit.md`), still owned by `KIS-79`. Verify criteria 1 and 2 also need a host operation in `tools-ki`, which has no matching item yet.
+
+**Question:** May this repository take over delivery from `KIS-79` by landing `94b6f9f0` on `main` with its criterion renumbered to `COORD-15`, and should a `tools-ki` handoff item be raised for the host-side execution (this record would then be `blocked by` it)? Until both are answered this record stays `ready`.
