@@ -151,6 +151,7 @@ describe('ki-repo session', () => {
     expect(gitignore?.create).toBeUndefined()
     expect(gitignore?.content).toContain('# ki-repo:ignore:ki-repo:start')
     expect(gitignore?.content).toContain('reports/')
+    expect(gitignore?.content).toContain('tmp/')
     expect(gitignore?.content).toContain('.claude/skills/*')
     expect(gitignore?.content).toContain('!.agents/skills/ki-self/**')
     expect(gitignore?.content).toContain('# Unmanaged repository-specific ignores')

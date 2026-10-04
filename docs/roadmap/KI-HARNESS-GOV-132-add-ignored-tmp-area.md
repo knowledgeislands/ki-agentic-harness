@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-132
 area: GOV
 title: Add ignored tmp area
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 42e2ac59fb3911d343e44f8fe77fe83046d6a3e4
 created_at: 2026-10-04T10:18:57Z
-updated_at: 2026-10-04T10:18:57Z
+updated_at: 2026-10-04T11:20:00Z
 ---
 
 # KI-HARNESS-GOV-132: Add ignored tmp area
@@ -26,22 +26,104 @@ The apps-observatory diagram pilot (KI-OBS-APP-034) exposed the gap. It rebuilt 
 
 ## Boundary
 
-The change is owned by `ki-repo`'s working-area standard, its managed ignore block, and the matching WORK checks. It does not change the direction or lifecycle of `+/` and `-/` or their specialist subareas. It does not make `tmp/` a place for anything that has to survive or be reviewed. Repositories adopt the change through `ki repo conform`.
+The change is owned by `ki-repo`'s working-area standard and its managed ignore block, which FILES-6 already reconciles. It does not change the direction or lifecycle of `+/` and `-/` or their specialist subareas. It does not make `tmp/` a place for anything that has to survive or be reviewed. Repositories adopt the change through `ki repo conform`.
+
+## Current state
+
+`ki-repo` scaffolds `+/` and `-/` with README files and composes the root `.gitignore` from marker-bounded, skill-owned blocks. The `ki-repo` block reserves `reports/` but nothing for disposable scratch output, so it lands in `+/` as untracked work.
+
+## Steps
+
+- [x] Add `tmp/` to the `ki-repo` managed block and fold the legacy `tmp`, `/tmp` and `/tmp/` rules into it.
+- [x] Cover the new rule and the fold in the `gitignore` and repository conform tests.
+- [x] Document `tmp/` in the working-area standard, the ignore contract and the skill body.
+- [x] Reconcile the harness's own `.gitignore`.
+
+## Files touched
+
+- `skills/keystone/ki-repo/scripts/rubric/contexts/gitignore.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/gitignore.test.ts`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/repository.test.ts`
+- `skills/keystone/ki-repo/references/standards-repository.md`
+- `skills/keystone/ki-repo/SKILL.md`
+- `.gitignore`
+
+## Verify
+
+- `bun test --isolate --max-concurrency=1 ./skills/keystone/ki-repo` passes.
+- `bun run test`, `bunx tsc --noEmit` and Biome pass.
+- `ki repo audit --repo .` reports no FILES-6 finding for the harness.
+
+## Dependencies / blocks
+
+None. Other repositories adopt through `ki repo conform` once the harness change reaches their installed collection.
+
+## Documentation impact
+
+### Decision Records
+
+None. [ADR-KI-HARNESS-013](../decisions/ADR-KI-HARNESS-013-compositional-ignore-management-and-generated-report-namespace.md) already makes the `ki-repo` block the owner of portable disposable output; `tmp/` is one more rule in it.
+
+### Specifications
+
+None.
+
+### Guides
+
+None. The repository standard is the canonical description.
+
+### Roadmap
+
+apps-observatory moves its diagram builds to `tmp/diagrams/` as its own follow-up.
+
+## Review
+
+### Delivered
+
+`tmp/` is a reserved, ignored working area in every KI repository, Knowledge Bases included. It has no scaffold and no README.
+
+### Change Summary
+
+- The `ki-repo` managed ignore block now carries `tmp/` after `reports/`, and its purpose comment names it.
+- `LEGACY_EQUIVALENTS` maps `tmp`, `/tmp` and `/tmp/` to `tmp/`, so conform drops an existing unmanaged rule instead of duplicating it.
+- The standard's Working areas section defines `tmp/`: disposable, rebuildable from committed sources, safe to delete, never for material awaiting review or transfer. The ignore contract and the skill body mention it.
+- The harness `.gitignore` is reconciled.
+
+### Verification
+
+- `bun test --isolate --max-concurrency=1 ./skills/keystone/ki-repo`: 75 pass, 0 fail. A new test asserts the rule and the legacy fold; the conform test asserts the proposal contains `tmp/`.
+- `bunx tsc --noEmit`, Biome on `skills/keystone/ki-repo` and `rumdl` on the touched Markdown: clean.
+- `ki repo audit --repo .`: PASS=30 WARN=2 FAIL=0, no FILES-6. The three warnings predate this change: one auto-memory reconciliation (SELECT-2) and two overdue source refreshes (LONG-3).
+- `bun run test`: 852 pass, 0 fail across 141 files.
+
+### Outstanding concerns
+
+- Every other repository now reports FILES-6 until it is conformed, because its managed block lacks `tmp/`. That is the intended adoption path, but it turns each repository's audit red until `ki repo conform` runs there.
+- The predecessor tools-ki bridge text in `audit.ts` is unchanged and still accepted as written.
+- A Knowledge Base opened in Obsidian still indexes `tmp/` unless the vault excludes it; the ignore rule only covers Git.
+
+### Post-change review
+
+The rule sits at any depth, matching `reports/`. No local checkout tracks anything under a `tmp` directory, so no tracked file becomes ignored.
+
+### Mini recap
+
+Owner decisions on 2026-10-04 settled the shape; the change is one rule, three legacy mappings, tests and standard text.
 
 ## Discussion
 
-### Shape to settle
+### Owner decisions
 
-- **Ignore entry:** add `tmp/` to the `ki-repo:ignore:ki-repo` managed block in `.gitignore`.
-- **README:** an ignored directory cannot carry a tracked README unless it is negated in the ignore rules. Either `tmp/` has no scaffold and is documented only in the standard and the root orientation, or a `!tmp/README.md` exception keeps a one-paragraph orientation.
-- **Rule of use:** anything under `tmp/` must be safe to delete at any time and rebuildable from committed sources. Anything needing review or transfer belongs in `+/` or `-/`.
-- **Audit:** the WORK checks would fail when the managed ignore block lacks `tmp/`, and perhaps warn when a tracked path exists under `tmp/`.
+On 2026-10-04 the owner settled the shape:
 
-### Open questions
+- the name is `tmp`, not `.tmp`;
+- it has no README;
+- it is ignored by the managed `.gitignore` block;
+- it applies to every repository, Knowledge Bases included.
 
-- Does any repository already use `tmp/` for tracked content? A sweep is needed before conform rewrites the ignore block.
-- Should Knowledge Bases under `ki-repo-kb`, with their fixed staging model, receive `tmp/` too?
-- Is `tmp` the name, or `.tmp` to keep it out of directory listings and editor trees? Visible matches the owner's request and the `+` and `-` convention.
+### Sweep
+
+A sweep of 49 local checkouts found none tracking files under a `tmp` directory at any depth. Nine already carried an unmanaged `tmp` ignore rule, which conform now folds into the managed one.
 
 ### Adopters
 

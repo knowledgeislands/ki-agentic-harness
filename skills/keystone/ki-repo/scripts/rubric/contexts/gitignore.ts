@@ -33,6 +33,9 @@ const LEGACY_EQUIVALENTS = new Map([
   ['/test-results', 'reports/'],
   ['playwright-report/', 'reports/'],
   ['/playwright-report', 'reports/'],
+  ['tmp', 'tmp/'],
+  ['/tmp', 'tmp/'],
+  ['/tmp/', 'tmp/'],
   ['/node_modules', 'node_modules/'],
   ['node_modules', 'node_modules/'],
   ['.turbo', '.turbo/'],
@@ -64,8 +67,9 @@ export const managedGitignoreBlocks = (
 ): readonly GitignoreBlock[] => {
   const declared = new Set(declaredSkills)
   const blocks: GitignoreBlock[] = [
-    block('ki-repo', 'Generated reports, local metadata, logs, and runtime projections.', [
+    block('ki-repo', 'Generated reports, disposable tmp output, local metadata, logs, and runtime projections.', [
       'reports/',
+      'tmp/',
       '.DS_Store',
       'Thumbs.db',
       '.idea/',

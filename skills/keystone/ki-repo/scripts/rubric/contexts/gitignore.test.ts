@@ -51,6 +51,15 @@ custom-output/
     expect(inspection.content).toEndWith(`${gitignoreUnmanagedHeader}\n\n.vscode/\ncustom-output/\n`)
   })
 
+  test('reserves the tmp working area and folds legacy tmp rules into it', () => {
+    const blocks = managedGitignoreBlocks(['ki-repo'], runtimeRules)
+    const inspection = inspectGitignore('tmp\n/tmp/\n.vscode/\n', blocks)
+
+    expect(blocks.find(({ owner }) => owner === 'ki-repo')?.rules).toContain('tmp/')
+    expect(inspection.unmanagedRules).toEqual(['.vscode/'])
+    expect(inspection.content.match(/^\/?tmp\/?$/gm)).toEqual(['tmp/'])
+  })
+
   test('is idempotent after reconciliation', () => {
     const blocks = managedGitignoreBlocks(['ki-repo'], runtimeRules)
     const first = inspectGitignore('.vscode/\n', blocks)
