@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-04T18:40:00Z
 ---
 
 ## Goal
@@ -55,7 +55,7 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 ## Steps
 
 - [x] Confirm that the official ChatGPT account export is available as the one-time bootstrap candidate.
-- [ ] Record the export's external source-store location and archive hash, then inspect its schema, project membership, conversation identity, write-ups, and assets read-only without committing source payloads.
+- [x] Record the export's external source-store location and archive hash, then inspect its schema, project membership, conversation identity, write-ups, and assets read-only without committing source payloads.
 - [ ] Convert only verified export evidence into the canonical `ki-chatgpt-capture` form and retain explicit omissions for every unsupported field or asset class.
 - [ ] Evaluate the hybrid incremental path: local-cache change nomination, browser retrieval of new or changed readable sessions under KI-HARNESS-GOV-087, and periodic full-export reconciliation before browser coverage is trusted.
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
@@ -133,6 +133,17 @@ Keep this item open through acquisition-skill separation, one verified complete 
 - Closure route: reconcile those historical source and receiving-repository claims before continuing the preserved In-progress plan. Obtain the missing fidelity and routing evidence, keep browser evaluation under GOV-087, and retain a disabled or verified manual retirement path until its safety and authority requirements are met. Acquisition success is never deletion authority; later closure still requires review and explicit owner acceptance.
 
 Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
+
+### Export inspection checkpoint - 2026-10-04
+
+Read-only inspection of the delivered official account export; no payload was copied into Git and no ChatGPT source state changed.
+
+- **Location:** `sources-kit-principal` source store, `+/chatgpt-export/`, already extracted (no archive retained). `export_manifest.json` version 1 lists 160 files by path and size; every listed file is present at its declared size. The manifest carries no content hashes, so identity is recorded here: `export_manifest.json` SHA-256 `fd69273fe3ccb040fcf515a7cb7688d1ab31091cc870c9c8f68d237db94fda10`; aggregate SHA-256 over sorted `path<TAB>size<TAB>sha256` lines of the listed files `63bbf7091b4ebeacb56cb1cd8face98ad9ebaff83ebfb5ed6276adbe3b393361`.
+- **Schema and identity:** `conversations-000..003.json` hold 334 conversations with 334 unique `conversation_id` values; each carries a full `mapping` tree with `current_node`, timestamps, archive and star flags. Messages: 3,440 user and 4,224 assistant, typed `multimodal_text`, `text`, `reasoning_recap` and `thoughts`.
+- **Project membership:** `conversation_template_id` carries 17 distinct `g-p-` project identifiers plus 6 conversations outside any project. The export carries no project display names, so it cannot by itself bind the immutable identifiers to the routing inventory above.
+- **Assets:** 147 `.dat` asset files. Of 126 attachment identifiers referenced from messages, 70 are present; of 857 distinct content asset pointers, 45 resolve to a present file. The export is therefore incomplete for assets, and conversion must record the rest as explicit omissions rather than treat the export as asset-complete.
+
+**Question for Kris:** the 17 `g-p-` project identifiers need binding to project names (for example from a read-only capture of the ChatGPT project list) before routing can fail closed on immutable identity. Will you supply that inventory, or authorise a one-off read-only capture of it? Until then the conversion and staging steps stay open and this record remains `in-progress`.
 
 ### Acquisition and housekeeping
 
