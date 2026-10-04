@@ -4,7 +4,7 @@ area: GOV
 title: Define per-item task links
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 89f4cd8f7fe4c1cb46d22903c28f4e1fe1b0435d
@@ -17,7 +17,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-27T13:06:48Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-04T11:39:36Z
 ---
 
 # KI-HARNESS-GOV-116: Define per-item task links
@@ -107,6 +107,10 @@ The independent review found no material defect in the corrected parser, contrac
 ### Mini recap
 
 Per-item task links are implemented and reviewable in both repositories; local main is the delivery destination. Continue item-by-item reconciliation before assigning more work, and seek human KI acceptance after review.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer confirmed the task_links contract, ITEM-1 offline validation, ITEM-6 and COORD-3 judgment criteria and tools-ki c0857d56 at HEAD (852 tests pass, tsc clean, focused audits PASS).
 
 ## Discussion
 
