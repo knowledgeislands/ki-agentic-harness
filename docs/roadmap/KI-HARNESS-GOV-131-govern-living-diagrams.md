@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T09:41:34Z
-updated_at: 2026-10-04T09:41:34Z
+updated_at: 2026-10-04T09:55:26Z
 ---
 
 # KI-HARNESS-GOV-131: Govern living diagrams
@@ -47,6 +47,16 @@ Archify itself, its schemas and its viewer stay upstream. Prose style stays with
 - Every source passes `finalize` at showcase quality.
 - No source or SVG carries a local absolute path or private identity.
 - No diagram is stale. A source is stale when its traced files changed after its last checked revision in a way its staleness triggers name. The mechanical part could compare file digests and leave the judgement to review.
+
+### Embedding
+
+A second pilot, a project documentation site, embeds each diagram as an inline figure with an **Interactive** control that opens the full viewer in an overlay, or in a new tab on a modified click. It commits the HTML because the site serves it. The Observatory pilot does not commit the HTML and embeds only the SVG (KI-OBS-VIS-016 there). The standard should name both cases:
+
+- a repository that serves its diagrams commits the HTML;
+- a repository that does not, commits only the source and the SVG;
+- in both, the inline figure links onward to the interactive view.
+
+The manifest should also be machine-readable, so a reader such as the Observatory can list diagrams and flag stale ones without parsing prose.
 
 ### Open questions
 
