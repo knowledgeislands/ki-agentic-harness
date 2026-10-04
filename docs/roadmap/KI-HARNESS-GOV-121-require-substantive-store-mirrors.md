@@ -34,7 +34,7 @@ Out of scope: writing the per-base records from this repository, since KB groups
 
 ### Bases known to hold a sources store
 
-kit-principal (four controlled mirror groups), kit-legal (about 2,150 record-series notes with `source_path` frontmatter), kit-techmedix (about 46 correspondence notes citing store paths), vallearmonia-principal (store declared, no mirrors yet) and er-research (seven resource notes). hnr-principal, vallearmonia-website and kit-midnight.ninja have OneDrive directories but do not declare a store; each needs a decision before it can hold mirrors.
+kit-principal (four controlled mirror groups), kit-legal (about 2,150 record-series notes with `source_path` frontmatter), kit-techmedix (about 46 correspondence notes citing store paths), vallearmonia-principal (store declared, no mirrors yet) and er-research (seven resource notes). vallearmonia-website and kit-midnight.ninja have OneDrive directories but do not declare a store; each needs a decision before it can hold mirrors. The obsolete `hnr-principal`, originally listed here, has since been deregistered and is out of scope.
 
 ### Extract scope
 

@@ -23,7 +23,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-79
       relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-04T12:10:04Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base
@@ -161,3 +161,7 @@ All 24 measured worktrees fail the base assertion the day this lands, and no exc
 ### Governing coordination task
 
 Covering coordination task: `KIS-70`, where the finding was raised and where the widened 24-of-24 measurement from `KIS-37` was accepted as its evidence. The proposal was approved by the responsible human on that task, bound to plan revision 1. The provisioner half of the correction is `KIS-71`, escalated rather than absorbed, because no KI repository governs the code that cuts the worktree. This record and its ledger advance were written in this repository's designated primary checkout, on `main` from `4eb1ea90`, not in the covering task's delivery worktree, per `### Roadmap records are the exception`. The readiness re-audit ran on that checkout: `ki repo audit --skill ki-work-roadmap` reports `PASS`.
+
+### Blocker checkpoint - 2026-10-04 (estate push)
+
+Not implemented in the 2026-10-04 estate push. Paperclip task `KIS-79` still holds retained delivery ownership of this record (`in_review`, assigned to the Convenor), and its latest comment records the board pausing agents with an instruction to stop without delivering. This record says not to allocate overlapping implementation until that ownership is resolved, so the owner must either release `KIS-79` or confirm its retained delivery. Separately, the plan's `COORD-10` code is now taken ("Repository skill baseline" in `ki-agent-coordination-paperclip`); a fresh code, such as `COORD-15`, is needed when the plan is revisited.

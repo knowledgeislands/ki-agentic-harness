@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-22T06:15:11Z
-updated_at: 2026-09-26T16:27:26Z
+updated_at: 2026-10-04T12:10:04Z
 ---
 
 ## Goal
@@ -89,3 +89,7 @@ Compare Obscura with the current interactive Chrome and in-app browser surfaces 
 For ChatGPT, attempt a small read-only project and conversation inventory. Correlate browser-observed identities with local-cache evidence and the delivered official export. Record whether every message branch, write-up, file, timestamp, project association, and omission can be represented and hashed. Treat the export as the one-time bootstrap candidate and browser reads as provisional incremental evidence until periodic export reconciliation demonstrates coverage. A useful result may be a constrained browser adapter, a hybrid cache-plus-browser design, or evidence that browser acquisition is too fragile.
 
 The trial should produce a recommendation, reproducible fixture or evidence packet, explicit credential boundary, and follow-on owner. It must not silently broaden `ki-acquire-chatgpt`'s executable capability metadata before the evidence exists.
+
+### Blocker checkpoint - 2026-10-04 (estate push)
+
+Not started in the 2026-10-04 estate push. Step 3 requires the owner to confirm and complete an interactive ChatGPT authentication window in the isolated runtime, which cannot be done unattended; Steps 1-2 were not begun in isolation because their evidence would go stale before that gate. Resume when the owner is available for the authentication step.
