@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import type { ConformWrite } from '../../shared/rubric.ts'
 
 const OWNER = 'ki-repo-mcp'
@@ -56,6 +56,20 @@ const nodeKind = (path: string): NodeKind => {
   }
 }
 
+// The standard requires physical parents. A symlinked ancestor, even one resolving inside
+// the repository, escapes the lexical containment check, so every root-relative component
+// above the leaf must be a real directory before the leaf is read or a write is proposed.
+const physicalKind = (root: string, path: string): NodeKind => {
+  let current = root
+  for (const component of relative(root, path).split(sep).slice(0, -1)) {
+    current = join(current, component)
+    const kind = nodeKind(current)
+    if (kind === 'missing') return 'missing'
+    if (kind !== 'directory') return 'unsafe'
+  }
+  return nodeKind(path)
+}
+
 const digest = (content: string): string => createHash('sha256').update(content).digest('hex')
 
 const contained = (root: string, path: string): boolean => {
@@ -103,7 +117,7 @@ export const prepareMcpSharedCode = ({
     const source = readFileSync(sourcePath, 'utf8')
     if (digest(source) !== file.sha256)
       return { destination: file.destination, sha256: file.sha256, state: 'asset-invalid' }
-    const destinationKind = nodeKind(destinationPath)
+    const destinationKind = physicalKind(root, destinationPath)
     if (destinationKind === 'missing') return { destination: file.destination, sha256: file.sha256, state: 'missing' }
     if (destinationKind !== 'file') return { destination: file.destination, sha256: file.sha256, state: 'unsafe' }
     return {
@@ -112,11 +126,11 @@ export const prepareMcpSharedCode = ({
       state: digest(readFileSync(destinationPath, 'utf8')) === file.sha256 ? 'exact' : 'modified'
     }
   })
-  const missingRequirements = selected.requires.filter((path) => nodeKind(resolve(root, path)) !== 'file')
+  const missingRequirements = selected.requires.filter((path) => physicalKind(root, resolve(root, path)) !== 'file')
   const obsoleteManagedFiles: string[] = []
   const localExtensions: string[] = []
   const utilitiesPath = resolve(root, 'src/utils')
-  if (nodeKind(utilitiesPath) === 'directory')
+  if (physicalKind(root, utilitiesPath) === 'directory')
     for (const entry of readdirSync(utilitiesPath, { withFileTypes: true })) {
       if (!entry.isFile() || !entry.name.endsWith('.ts')) continue
       const destination = `src/utils/${entry.name}`
@@ -131,7 +145,7 @@ export const prepareMcpSharedCode = ({
     missingRequirements.length === 0 &&
     obsoleteManagedFiles.length === 0 &&
     files.every((file) => file.state === 'exact' || file.state === 'missing') &&
-    selected.files.every((file) => nodeKind(resolve(root, dirname(file.destination))) === 'directory')
+    selected.files.every((file) => physicalKind(root, resolve(root, dirname(file.destination))) === 'directory')
 
   return {
     profile,

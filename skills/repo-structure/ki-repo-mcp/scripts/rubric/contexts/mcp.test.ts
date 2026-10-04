@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
@@ -270,6 +270,67 @@ test('shared-code profile rejects missing repository-owned seams', () => {
     subject: 'src/utils/errors.ts'
   })
 })
+
+// A repository whose modern-v2-core projection is exact through physical directories.
+const projectedRepository = (): string => {
+  const { repository, config } = fixture()
+  writeFileSync(config, '[skills.ki-repo]\n[skills.ki-repo-mcp]\nprofile = "modern-v2-core"\n')
+  writeFileSync(join(repository, 'src', 'utils', 'errors.ts'), 'export const errMessage = String\n')
+  for (const file of ['access-level.ts', 'annotations.ts', 'results.ts'])
+    rmSync(join(repository, 'src', 'utils', file), { force: true })
+  const initial = createMcpSession(options(repository, 'conform'))
+  sharedItem().conform?.run(SHARED.selectContext(rootContext(initial).context))
+  for (const write of initial.proposal().writes) writeFileSync(join(repository, write.path), write.content)
+  return repository
+}
+
+const ancestorLinks: Readonly<Record<string, (repository: string) => void>> = {
+  'an outside-root src link': (repository) => {
+    const outside = temporaryDirectory('ki-repo-mcp-outside-')
+    renameSync(join(repository, 'src'), join(outside, 'src'))
+    symlinkSync(join(outside, 'src'), join(repository, 'src'))
+  },
+  'an inside-root src link': (repository) => {
+    renameSync(join(repository, 'src'), join(repository, 'physical-src'))
+    symlinkSync('physical-src', join(repository, 'src'))
+  },
+  'a nested src/utils link beneath a physical src': (repository) => {
+    const outside = temporaryDirectory('ki-repo-mcp-outside-')
+    renameSync(join(repository, 'src', 'utils'), join(outside, 'utils'))
+    symlinkSync(join(outside, 'utils'), join(repository, 'src', 'utils'))
+  }
+}
+
+test('a physical shared-code projection audits clean before any ancestor is linked', () => {
+  const repository = projectedRepository()
+  const { context } = rootContext(createMcpSession(options(repository, 'audit')))
+
+  expect(
+    sharedItem()
+      .audit.run(SHARED.selectContext(context))
+      .map((outcome) => outcome.status)
+  ).not.toContain('VIOLATION')
+})
+
+for (const [layout, link] of Object.entries(ancestorLinks))
+  test(`shared-code rejects managed files and seams reached through ${layout}`, () => {
+    const repository = projectedRepository()
+    link(repository)
+    const audit = rootContext(createMcpSession(options(repository, 'audit'))).context
+    const outcomes = sharedItem().audit.run(SHARED.selectContext(audit))
+
+    for (const destination of ['src/utils/access-level.ts', 'src/utils/annotations.ts', 'src/utils/results.ts'])
+      expect(outcomes).toContainEqual(expect.objectContaining({ status: 'VIOLATION', subject: destination }))
+    expect(outcomes).toContainEqual(expect.objectContaining({ status: 'VIOLATION', subject: 'src/utils/errors.ts' }))
+    expect(outcomes.some((outcome) => outcome.status === 'PASS')).toBe(false)
+
+    rmSync(join(repository, 'src', 'utils', 'access-level.ts'))
+    const session = createMcpSession(options(repository, 'conform'))
+    const context = rootContext(session).context
+    expect(SHARED.selectContext(context).conformMissing).toBeUndefined()
+    sharedItem().conform?.run(SHARED.selectContext(context))
+    expect(session.proposal().writes).toEqual([])
+  })
 
 test('result-envelope checks bind each helper use to its own source file', () => {
   const { repository } = fixture()
