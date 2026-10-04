@@ -4,12 +4,12 @@ area: GOV
 title: Exclude Git internals
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 77b9d6d89a9eee7cd469e8f2c76b482fb2add393
 created_at: 2026-09-26T17:09:48Z
-updated_at: 2026-10-04T12:07:58Z
+updated_at: 2026-10-04T12:09:50Z
 ---
 
 # KI-HARNESS-GOV-110: Exclude Git Internals
@@ -103,6 +103,10 @@ The test uses only temporary directories and real `git worktree add`; it touches
 ### Mini recap
 
 The Git-internals exclusion was already in place; this item adds the missing end-to-end proof on both sides of the boundary, including linked-worktree pointer layouts.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. Fable confirmed all six criteria and independently reproduced the non-vacuity check; encoding that check in-test is an optional follow-up.
 
 ## Discussion
 
