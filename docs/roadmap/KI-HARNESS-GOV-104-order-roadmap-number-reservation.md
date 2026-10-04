@@ -4,7 +4,7 @@ area: GOV
 title: Order roadmap number reservation
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 9c906a496540da9d5bda5604298f9e41b03bbf64
@@ -35,7 +35,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-76
       relation: integration
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-10-04T11:43:28Z
+updated_at: 2026-10-04T11:52:31Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -96,6 +96,7 @@ The ledger body text is generated: `issueLedger()` in `skills/change-management/
 - `skills/change-management/ki-work-roadmap/references/rubric.md` (generated)
 - `skills/change-management/ki-next/references/standards-next-work.md`
 - `skills/repo-structure/ki-repo-kb-streams/references/mode-propose.md`
+- `skills/repo-structure/ki-repo-kb-streams/references/standards-streams-structure.md` (one-sentence consistency edit in `db4635d0`)
 - `skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
@@ -192,6 +193,10 @@ The goal is met at the level of doctrine and assessable criteria. A number is no
 ### Mini recap
 
 Ledger-first number reservation and the roadmap write locus are now harness doctrine, with matching `ROAD-7` wording and a `COORD-8` criterion. All stated gates pass. The ledger body change is routed to `KI-HARNESS-GOV-105`. This run had to reconcile the record, which still said `ready` after its delivery had landed. That is evidence for `KI-HARNESS-GOV-114` (surface held workspaces) and for prompt record transitions by coordination runs; neither is promoted automatically.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer confirmed both delivery commits against Steps 1-7 and re-ran the audits, rubric checks and TypeScript gate; Files touched now also lists the one-sentence standards-streams-structure.md edit the reviewer found in db4635d0.
 
 ## Discussion
 

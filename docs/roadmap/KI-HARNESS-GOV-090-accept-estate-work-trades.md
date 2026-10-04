@@ -4,12 +4,12 @@ area: GOV
 title: Accept estate work trades
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 9fda7bc0b17826b60281459f419999c426b3e1d8
 created_at: 2026-09-24T10:07:00Z
-updated_at: 2026-10-04T11:49:34Z
+updated_at: 2026-10-04T11:52:31Z
 ---
 
 ## Goal
@@ -111,6 +111,10 @@ The goal holds for the estate the owner has chosen to route. Every Knowledge Isl
 ### Mini recap
 
 Intake routes are verified active across the Knowledge Islands estate. Explicit per-peer routing is recorded as the decision, and silent dead-lettering is routed to `tools-ki` as `TRD-d03495e9`. Learning route: none beyond the trade.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer accepted route-state evidence in place of a live test submission, confirmed the TRD-d03495e9 defect description against tools-ki source, and observed the trade visible at its receiver as awaiting receipt.
 
 ## Discussion
 
