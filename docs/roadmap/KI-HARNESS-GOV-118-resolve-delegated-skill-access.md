@@ -4,12 +4,12 @@ area: GOV
 title: Resolve delegated skill access
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: eae432d7c15988740c13c5f9b93a6e43160d2b2c
 created_at: 2026-09-27T16:50:38Z
-updated_at: 2026-10-04T19:10:00Z
+updated_at: 2026-10-04T19:20:00Z
 ---
 
 # Resolve delegated skill access
@@ -102,6 +102,10 @@ A delegator now has a documented, always-invocable source for the route, so a re
 ### Mini recap
 
 Guidance delivered in `ki-bootstrap`; awaiting acceptance.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above after an independent Fable review returned ACCEPT (goal met within the boundary; claims dated per runtime; links resolve). Decided by the Fable reviewer under delegated autonomy (2026-10-04), reversible.
 
 ## Plan - 2026-10-04
 
