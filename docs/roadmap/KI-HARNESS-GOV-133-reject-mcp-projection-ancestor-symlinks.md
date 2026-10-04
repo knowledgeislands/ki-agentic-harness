@@ -4,12 +4,12 @@ area: GOV
 title: Reject projection ancestor symlinks
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b131f9aac3dc8425af67066e8b67252a7cd268cf
 created_at: 2026-10-04T10:52:28Z
-updated_at: 2026-10-04T12:16:06Z
+updated_at: 2026-10-04T16:28:46Z
 ---
 
 # KI-HARNESS-GOV-133: Reject projection ancestor symlinks
@@ -105,6 +105,10 @@ Missing-only creation, modified-file refusal and repeat-CONFORM behaviour are un
 ### Mini recap
 
 Ancestor symlinks no longer let the MCP shared-code audit certify, or CONFORM propose, managed files outside their physical parents; estate MCP audits remain clean.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. Fable confirmed all criteria, low regression risk for live estate audits, and noted only that the capture-time Discussion wording is now historical.
 
 ## Discussion
 
