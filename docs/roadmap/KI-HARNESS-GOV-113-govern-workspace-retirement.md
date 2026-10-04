@@ -4,7 +4,7 @@ area: GOV
 title: Govern workspace retirement
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 5514e48fa6557d150441a9ca83ff036bcdd3aca9
@@ -17,7 +17,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-39
       relation: implementation
 created_at: 2026-09-26T22:55:00Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-04T11:38:32Z
 ---
 
 # KI-HARNESS-GOV-113: Govern workspace retirement
@@ -167,6 +167,10 @@ Acceptance readiness: the scoped delivery is integrated and verified on the desi
 Workspace retirement is now doctrine in the coordination standard, distinguishing automatic sweep from manual early close. The reviewed KIS-39 result is on local main at `623e0e72c306677b7449adeef11192f03051e9d3`; 799 combined-candidate tests, TypeScript, focused audits and candidate-local rubric equality passed. The cooldown configuration remains open under KIS-80, and held-workspace detection remains GOV-114. KI acceptance has not occurred.
 
 Learning worth routing, not promoted here: that an audit can report PASS because a criterion is unexercised rather than because the repository conforms is a general trap, and it applies to every `ki repo audit` reported as evidence from a host whose harness is not dev-linked. The natural home is `KI-HARNESS-GOV-107`, which owns making these criteria mechanical.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer confirmed COORD-9, the workspace-retirement standard and the pinned Paperclip source at HEAD; the incorrect Dependencies claim about 4c854d2c and COORD-10 is already corrected by the pickup checkpoint in Discussion.
 
 ## Discussion
 

@@ -4,12 +4,12 @@ area: GOV
 title: Align KB roadmap declarations
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e74ebc9daf4710e3eb94dd65a1fcbe7d4ca9ce59
 created_at: 2026-09-27T23:01:17Z
-updated_at: 2026-09-27T23:21:18Z
+updated_at: 2026-10-04T11:38:31Z
 ---
 
 # Align KB roadmap declarations
@@ -99,6 +99,10 @@ The change removes a cross-standard contradiction without bypassing adapter vali
 ### Mini recap
 
 KB shared-record declarations now coexist correctly with their Streams container. The source suite and live HNR audit pass; the original issuing areas are preserved.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer re-ran the gates at HEAD (852 tests pass, tsc clean, focused audits PASS, kit-hnr ki-repo audit PASS); the recorded test count of 839 is stale only because of later unrelated commits.
 
 ## Discussion
 
