@@ -4,12 +4,12 @@ area: GOV
 title: Resolve delegated skill access
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: eae432d7c15988740c13c5f9b93a6e43160d2b2c
 created_at: 2026-09-27T16:50:38Z
-updated_at: 2026-10-04T19:00:00Z
+updated_at: 2026-10-04T19:10:00Z
 ---
 
 # Resolve delegated skill access
@@ -34,11 +34,11 @@ The originating observation exists, but the supported access route has not been 
 
 ## Steps
 
-- [ ] Reproduce or retire the dated access observations against the supported runtime and installed harness surfaces.
-- [ ] Identify the smallest supported access route and resolve whether guidance alone is sufficient.
-- [ ] If another repository must change, create or reuse a bounded downstream record there and link both directions before its implementation; do not absorb that repository's implementation here.
-- [ ] Prepare the harness guidance and verification plan for human review before marking this record Ready.
-- [ ] Following separately approved delivery, verify that a delegating agent can identify the supported access route without trial-and-error invocation.
+- [x] Reproduce or retire the dated access observations against the supported runtime and installed harness surfaces.
+- [x] Identify the smallest supported access route and resolve whether guidance alone is sufficient.
+- [x] If another repository must change, create or reuse a bounded downstream record there and link both directions before its implementation; do not absorb that repository's implementation here.
+- [x] Prepare the harness guidance and verification plan for human review before marking this record Ready.
+- [x] Following separately approved delivery, verify that a delegating agent can identify the supported access route without trial-and-error invocation (Claude Code and Codex; Cowork remains an evidence gap).
 
 ## Files touched
 
@@ -73,6 +73,35 @@ Make the supported route discoverable from the delegation guidance rather than k
 ### Roadmap
 
 Keep the reciprocal Arcadia origin link and any later downstream links current. Closing a handoff or downstream ticket does not accept this principal outcome.
+
+## Review
+
+### Delivered
+
+Scope held the approved plan. Baseline `eae432d7c15988740c13c5f9b93a6e43160d2b2c`; the delivery commit follows it. Guidance only; no runtime, installation, CLI or Arcadia change.
+
+### Change Summary
+
+- `standards-bootstrap.md`: new "Skill access in delegated work" section (and contents entry) stating the invocable-skill boundary, the delegator's duty to name readable source paths for governance skills, read-not-invoke for the recipient, audit independence from invocation, and the Paperclip cross-reference. Evidence is dated per runtime.
+- `ki-bootstrap/SKILL.md`: one-line pointer to the section.
+
+### Verification
+
+- `ki repo audit --skill ki-skills`, `--skill ki-authoring` and `--skill ki-work-roadmap`: PASS. `--skill ki-bootstrap`: the CLI refuses (`--skill must name one declared resolved skill`), as `ki-bootstrap` is invocation-only and undeclared here.
+- `bun run test`: 859 pass, 0 fail. `bunx tsc --noEmit`: exit 0.
+- Representative check: `ki-skills` is absent from `ki-arcadia-principal`'s Claude projection and readable at `ki-agentic-harness/.agents/skills/ki-skills/SKILL.md`, the path the guidance tells a delegator to name.
+
+### Outstanding concerns
+
+Cowork access is not verified. Dangling-projection detection remains a `tools-ki` gap, unchanged by this record.
+
+### Post-change review
+
+A delegator now has a documented, always-invocable source for the route, so a recipient no longer needs to discover a missing governance skill by failure. Arcadia's KI-ARCADIA-ECO-005 can verify its handoff against this section.
+
+### Mini recap
+
+Guidance delivered in `ki-bootstrap`; awaiting acceptance.
 
 ## Plan - 2026-10-04
 

@@ -88,7 +88,7 @@ This record; GOV-095 retains the cross-tool parity work.
 
 Scope held the approved plan. Baseline `e1e4db478f95473c511d838dc284eaf37a4615aa`; the delivery commit follows it. No receiving repository's records were changed.
 
-### Change summary
+### Change Summary
 
 - `streams.ts`: new `roadmapIdentity` evidence reads the `id` frontmatter of each regular direct-child `.md` record in `Streams/Roadmap/` except `_ISSUES.md`; it emits one `FAIL` per record sharing an identifier (naming the identifier and colliding paths), otherwise one `PASS`, or `NOT_APPLICABLE` with no identified records.
 - `stream.ts`: mechanical item `STREAM-6` "unique roadmap identity" at `FAIL`, diagnostic remediation (keep the canonical holder; reallocate the other from `_ISSUES.md`; never reuse a pruned serial).
@@ -101,6 +101,18 @@ Scope held the approved plan. Baseline `e1e4db478f95473c511d838dc284eaf37a4615aa
 - `bun run test`: 859 pass, 0 fail. `bunx tsc --noEmit`: exit 0.
 - `STREAM-6` evaluated directly from this checkout against `kit-principal`, `kit-techmedix`, `ki-arcadia-principal`, `kit-legal`, `kit-hnr`, `vallearmonia-principal` and `er-research`: PASS on each. `ki repo audit --skill ki-repo-kb-streams` on each: PASS.
 - `ki repo audit --skill ki-skills` and `--skill ki-work-roadmap` on this repository: PASS.
+
+### Outstanding concerns
+
+None. Reuse of a pruned record's serial remains undetectable from the tree alone and is out of scope, as the Boundary records.
+
+### Post-change review
+
+KB audits now fail a duplicated roadmap identifier in `Streams/Roadmap/`, matching the non-KB `ITEM-1` check. No current estate KB is affected.
+
+### Mini recap
+
+`STREAM-6` delivered with tests and the standard's rule; awaiting acceptance.
 
 ## Done
 

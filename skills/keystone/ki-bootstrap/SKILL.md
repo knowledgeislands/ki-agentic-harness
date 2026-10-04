@@ -16,6 +16,8 @@ The `ki` CLI owns installation, activation, and repository operations. This guid
 
 Read [the bootstrap standard](references/standards-bootstrap.md) when the installation, activation, or trust boundary matters. Use [the exemplars](references/exemplars.md) for concrete command sequences.
 
+When delegating work into another repository, name each governance skill it needs with a readable source path, because a recipient invokes only its user-scope skills and its start repository's projection; see [skill access in delegated work](references/standards-bootstrap.md#skill-access-in-delegated-work).
+
 ## First-time user setup
 
 Run `ki bootstrap`.

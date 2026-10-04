@@ -8,6 +8,7 @@ This standard implements the architecture in [ADR-KI-HARNESS-012](../../../../do
 - [Authoritative installed harnesses](#authoritative-installed-harnesses)
 - [Declarative repository selection](#declarative-repository-selection)
 - [Explicit activation scopes](#explicit-activation-scopes)
+- [Skill access in delegated work](#skill-access-in-delegated-work)
 - [Native repository operations](#native-repository-operations)
 - [First-time bootstrap](#first-time-bootstrap)
 - [Local harness development](#local-harness-development)
@@ -61,6 +62,12 @@ Harness installation and skill activation are separate. Installing a harness doe
 `ki repo skill add <skill>` and `ki repo skill remove <skill>` change only the selected repository: its `.ki.toml` declaration and managed repository-runtime discovery links. They do not alter user activation or uninstall a harness.
 
 Activation resolves a bare skill name only when one installed harness provides it. Ambiguous, missing, foreign, altered, or escaping targets fail closed. Existing KI-managed links are re-pointed only through the command's explicit replacement option.
+
+## Skill access in delegated work
+
+A session can invoke only the user-scope skills (the process skills) and the skills projected into the repository it started in. It does not gain the target repository's declared skills by working there, so a recipient sent into another repository may lack a governance skill that repository declares. Observed for Claude Code (`.claude/skills/`) and Codex (`.agents/skills/`) on 2026-10-04; Cowork has not been verified.
+
+A delegator sending work into another repository therefore names each governance skill the work needs with a readable source: the target's projection (`<target>/.agents/skills/<name>/SKILL.md` or `<target>/.claude/skills/<name>/SKILL.md`) or the canonical harness source. The recipient reads that file when the skill is absent from its own list, rather than discovering the gap by a failed invocation. `ki repo audit --skill <name>` runs from the target repository without runtime invocation. A missing or dangling projection is reported as an activation repair, not repaired by the recipient. Paperclip runs apply the same rule through [repository skills as the execution baseline](../../../agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline).
 
 ## Native repository operations
 
