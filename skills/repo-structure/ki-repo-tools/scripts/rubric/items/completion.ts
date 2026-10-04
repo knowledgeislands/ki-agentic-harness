@@ -7,12 +7,12 @@ const COMPLETION_SURFACE = {
   code: 'COMP-SURFACE',
   title: 'Completion command surface',
   description:
-    'The CLI exposes exactly one documented completion <shell> action at a stable command path; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax.',
+    'The CLI exposes exactly one documented root completion <shell> action; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax.',
   sources: [STANDARD],
   judgment: {
     scope: 'The CLI completion command, its supported shells, output, and invalid-input behaviour.',
     prompt:
-      'The CLI exposes exactly one documented completion <shell> action at a stable command path; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax.',
+      'The CLI exposes exactly one documented root completion <shell> action; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax.',
     outcomes: ['conforming', 'surface revision required', 'compatibility decision required'],
     guidance:
       'Revise the documented completion surface and its validation tests, or record the owning compatibility decision before changing command behaviour.'

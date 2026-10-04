@@ -294,7 +294,7 @@ const TOOL_CHANGELOG_FORMAT = judgment(
 const TOOL_CLI = judgment(
   'TOOL-CLI',
   'Shared CLI conventions',
-  'The CLI keeps help, completion, errors, exit status, the README command overview, and any pre-1.0 changelog command baseline aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.'
+  'Root help [command], completion <shell>, share-safe diag, and read-only doctor keep their distinct roles. Owned repair is preview-first with an explicit write path; init and bootstrap appear only where meaningful. Help, completion, manual, README, guides, changelog, errors, and exit status agree, with a repository-native deterministic inventory or equivalent tests covering repeatable relationships.'
 )
 
 const TOOL_CI = mechanical(

@@ -81,9 +81,9 @@ Layout, executable, distribution, versioning, and judgment criteria.
   - _Review prompt:_ Before 1.0, the changelog has one consolidated Pre-1.0 command and behaviour baseline, not per-release 0.x entries; from 1.0 onward, it has dated release entries.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
-- **TOOL-CLI [J] — Shared CLI conventions** — The CLI keeps help, completion, errors, exit status, the README command overview, and any pre-1.0 changelog command baseline aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help. (standards-tool-repositories.md)
+- **TOOL-CLI [J] — Shared CLI conventions** — Root help [command], completion <shell>, share-safe diag, and read-only doctor keep their distinct roles. Owned repair is preview-first with an explicit write path; init and bootstrap appear only where meaningful. Help, completion, manual, README, guides, changelog, errors, and exit status agree, with a repository-native deterministic inventory or equivalent tests covering repeatable relationships. (standards-tool-repositories.md)
   - _Evidence scope:_ The target command-line tool repository and the evidence named by this criterion.
-  - _Review prompt:_ The CLI keeps help, completion, errors, exit status, the README command overview, and any pre-1.0 changelog command baseline aligned: help succeeds; success, operational errors, and invalid owned syntax use 0, 1, and 2; completion is singular; invalid owned syntax reports a namespaced error with usage before help.
+  - _Review prompt:_ Root help [command], completion <shell>, share-safe diag, and read-only doctor keep their distinct roles. Owned repair is preview-first with an explicit write path; init and bootstrap appear only where meaningful. Help, completion, manual, README, guides, changelog, errors, and exit status agree, with a repository-native deterministic inventory or equivalent tests covering repeatable relationships.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the tool repository through its responsible maintainer, record a named gap, or record an explicit justified exclusion.
 - **TOOL-CI [M] — CI workflow** — At least one physical workflow YAML file is present. (standards-tool-repositories.md)
@@ -137,9 +137,9 @@ Language toolchain deferral.
 
 Portable Bash and Zsh completion output, integration, and ownership.
 
-- **COMP-SURFACE [J] — Completion command surface** — The CLI exposes exactly one documented completion <shell> action at a stable command path; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax. (standards-tool-repositories.md)
+- **COMP-SURFACE [J] — Completion command surface** — The CLI exposes exactly one documented root completion <shell> action; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax. (standards-tool-repositories.md)
   - _Evidence scope:_ The CLI completion command, its supported shells, output, and invalid-input behaviour.
-  - _Review prompt:_ The CLI exposes exactly one documented completion <shell> action at a stable command path; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax.
+  - _Review prompt:_ The CLI exposes exactly one documented root completion <shell> action; it accepts bash and zsh, prints only the selected definition to standard output, and rejects unsupported shells as owned invalid syntax.
   - _Outcomes:_ conforming; surface revision required; compatibility decision required
   - _Conforming guidance:_ Revise the documented completion surface and its validation tests, or record the owning compatibility decision before changing command behaviour.
 - **COMP-INTEGRATION [J] — Completion integration** — The Bash definition registers the executable with complete; the Zsh definition is an autoloadable _<tool> artifact with #compdef and compdef registration that does not invoke itself while loading. Tests cover both emitted forms and Zsh registration under compinit. (standards-tool-repositories.md)
