@@ -106,6 +106,8 @@ Editing and read-only Git commands may proceed concurrently across disjoint path
 
 Stage only fully enumerated touched paths, using `git add -- <path>...`, and inspect the staged names and diff before committing. Never use whole-tree or implicit collection such as `git add -A`, `git add .`, `git add -u`, `git commit -a`, `git commit -am`, or a broad wildcard pathspec in a shared working tree: each can absorb another actor's work. A commit may include only uncontested paths from the committing thread's touched-path set.
 
+After a hook-backed commit, inspect the actual committed names and diff with `git show --name-status HEAD` and `git show HEAD`; hooks may have staged additional files. If the unpushed commit captured unrelated work, coordinate ownership, rebuild only that commit with its intended paths, and restore the unrelated changes unstaged. Never rewrite another actor's commit or a published commit to repair this mistake.
+
 For a delegated worker that must stage outside the shared commit window, a unique temporary `GIT_INDEX_FILE` may isolate its preparatory staging. A separate index does not isolate working files, serialize `HEAD`, or confer commit authority; the worker or coordinator still revalidates the touched paths and takes the same serialized commit window before advancing `HEAD`.
 
 Prefer recoverable, explicit-path commits after independently verified work. A thread must stop and report rather than rebasing, resetting, restoring, or repairing another actor's working files, index, or history.

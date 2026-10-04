@@ -55,9 +55,11 @@ tools-<name>/
 
 ## Developer delivery guides
 
-Every tool repository carries physical regular files at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. `ki-repo-tools` enforces only their presence and safe file type; each repository applies the shared change and release checklists while defining the commands, delivery risks, and release mechanism that fit its tool. The guides remain self-contained for their readers.
+Every tool repository carries physical regular files at `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md`. `ki-repo-tools` enforces their presence and safe file type; each guide names this skill's shared readiness checklist and supplies the tool-specific commands, delivery risks, and release mechanism needed to carry it out. Readers can execute the local procedure without guessing command names or destinations; shared policy does not need to be copied into each guide.
 
 `definition-of-done.md` is the repository's local route for deciding that a change is complete. `releasing.md` is its local route for preparing and publishing a release. `ki-guides` governs their ordinary guide placement and form when selected; the shared readiness checklists supply cross-tool obligations without dictating the repository's exact procedure.
+
+Keep repository `AGENTS.md` and developer guides as local deltas. Promote recurring tool policy into `ki-repo-tools`, commit practice into `ki-git`, document placement into its authoring skills, and language/toolchain conventions into `ki-engineering`. The standing repository context names those owners and retains only product boundaries, unusual hazards, and local entrypoints. Keep one canonical local verification command list and link to it from other local documents. During a cross-tool review, remove duplicate policy only after its owning skill covers the rule; retain concrete examples and safeguards that depend on the tool's behaviour.
 
 ## Versioning & releases
 

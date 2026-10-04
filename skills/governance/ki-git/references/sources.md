@@ -23,8 +23,11 @@
 | Harness commit history                     | current type vocabulary and direct-main practice | 2026-08-12    |
 | `hooks/git-lock-check.sh` and its run test | stale-lock guard semantics and safety boundary   | 2026-08-12    |
 | GDR-KI-HARNESS-003                         | portable ownership boundaries                    | 2026-08-12    |
+| Rig delivery guidance and shared-tree practice | post-hook committed-path inspection and bounded recovery | 2026-10-04 |
 
 ## Last review
+
+The targeted in-house review on 2026-10-04 promoted actual committed-path inspection after hooks from Rig's delivery guidance into the shared hygiene standard and rubric. The external sources were not re-fetched during this consolidation.
 
 The 2026-08-12 refresh re-checked the primary Git, Git workflow, and worktree documentation. `git-worktree` now supplies the direct terminology source for the guard's linked-worktree boundary; the harness hook and its run test remain the normative local safety contract.
 

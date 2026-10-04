@@ -282,7 +282,7 @@ const TOOL_DEVELOPER_GUIDES = mechanical(
 const TOOL_GUIDE_ALIGNMENT = judgment(
   'TOOL-GUIDE-ALIGNMENT',
   'Developer guide alignment',
-  'The local definition of done and release guide remain self-contained, executable, and semantically aligned with the shared change- and release-readiness checklists; repository-specific gates and downstream handoffs are accurate.'
+  'The local definition of done and release guide name the shared readiness checklists and retain executable tool-specific commands, destinations, risks and handoffs. AGENTS.md and guides route common policy to its skill owner rather than duplicate it, and other local documents link to one canonical verification command list.'
 )
 
 const TOOL_CHANGELOG_FORMAT = judgment(

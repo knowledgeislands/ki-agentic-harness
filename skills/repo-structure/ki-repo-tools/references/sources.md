@@ -4,7 +4,7 @@
 
 The authoritative and in-house sources behind the [tool-repository standard](standards-tool-repositories.md) and [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, and diffs it against the standard plus the structured catalogue under `scripts/rubric/items/`. It then **bumps the `Last reviewed` dates** and refreshes the `## Last review` block below; what changed belongs in the commit, not a changelog here.
 
-Two layers feed the standard: the **external specs** (shellcheck, bats, keep-a-changelog, semver, XDG) that a conformant tool repo builds on, and the **in-house reference repos** (`tools-mgit` and `tools-ki`) that fix the opinionated shape. A finding is only "spec-driven" if it traces to an external spec; everything else is house style layered on top and should be labelled as such.
+Two layers feed the standard: the **external specs** (shellcheck, bats, keep-a-changelog, semver, XDG) that a conformant tool repo builds on, and the **in-house tool repos** that supply implementation evidence for shared practice. A finding is only "spec-driven" if it traces to an external spec; everything else is house style layered on top and should be labelled as such.
 
 ## External specs
 
@@ -16,18 +16,21 @@ Two layers feed the standard: the **external specs** (shellcheck, bats, keep-a-c
 | SEMVER | [Semantic Versioning 2.0.0][semver] | `vX.Y.Z` version marker + release tags | 2026-07-09 |
 | XDG | [XDG Base Directory Specification][xdg] | Where the tool writes config/state/cache | 2026-07-09 |
 
-## In-house (the reference repo)
+## In-house tool repositories
 
-The opinionated shape is fixed by the reference tool repo under `knowledgeislands/`. It is the living source of truth for house style; when the standard and the repo diverge, decide which is right and reconcile.
+The tool repositories under `knowledgeislands/` provide evidence for house style. When an implementation and the standard diverge, decide which is right and reconcile; keep shared policy in the skill and tool-specific procedures in the local guides.
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| MGIT | `tools-mgit` | Bash entrypoint, installer override/link behaviour, workspace/repository command grouping | 2026-10-03 |
-| KI | `tools-ki` | Typed command host, owned-syntax diagnostics, completion, signed installer, manual distribution | 2026-10-03 |
+| MGIT | `tools-mgit` | Bash/Git boundary, installer overrides, workspace/repository command grouping | 2026-10-04 |
+| KI | `tools-ki` | Typed command host, diagnostics, completion, signed installer, manual distribution | 2026-10-04 |
+| RIG | `tools-rig` | Authored assembly, terminal ownership, workstation isolation, installer verification | 2026-10-04 |
+| TECHNE | `tools-techne` | Typed operator boundary, compiled archives, remote-environment hold | 2026-10-04 |
+| ALMANAC | `tools-git-almanac` | Read-only Git inspection, reporting boundary, Node artifact delivery | 2026-10-04 |
 
 ## Last review
 
-The external-spec REFRESH last ran **2026-07-30**. A targeted in-house review on **2026-10-03** reconciled the five tool delivery guides with shared change and release readiness, confirmed MGIt's mandoc CI gate, and replaced the obsolete user-authored schema requirement with current unversioned input and per-contract v1 generated output guidance. External specifications were not re-fetched in this review.
+The external-spec REFRESH last ran **2026-07-30**. The targeted in-house review on **2026-10-04** compared all five tools' standing instructions and delivery/release guides, clarified shared policy versus executable local procedures, and consolidated repeated guidance. Installer verification examples now require explicit disposable executable/manual destinations, unavailable checks remain visible, and post-hook committed-path inspection belongs to `ki-git`. Repeatable CLI parity remains a native-test responsibility; static hosted audit does not execute tools or claim semantic conformance. External specifications were not re-fetched in this review.
 
 **Open watch-items:**
 
