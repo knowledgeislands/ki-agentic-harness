@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-133
 area: GOV
 title: Reject projection ancestor symlinks
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T10:52:28Z
-updated_at: 2026-10-04T10:52:28Z
+updated_at: 2026-10-04T12:11:29Z
 ---
 
 # KI-HARNESS-GOV-133: Reject projection ancestor symlinks
@@ -31,6 +31,50 @@ This establishes unsafe context proposals and a false-clean audit classification
 Repair belongs to the shared-code context and its [MCP context tests](../../skills/repo-structure/ki-repo-mcp/scripts/rubric/contexts/mcp.test.ts). Validate every root-relative ancestor component before inspecting managed files, required seams or utility extensions, and before proposing writes. Reject symlinked ancestors even when their targets remain inside the repository, because the existing contract requires physical parents.
 
 Focused fixtures should cover inside-root and outside-root ancestor links, nested ancestors and direct-parent controls, required seam paths, exact existing managed files, missing managed destinations, and ordinary physical projections. Preserve missing-only creation, modified-file refusal and repeat-CONFORM idempotence. Clarify the existing standard only if needed; do not change profile opt-in semantics, migrate receiver repositories, introduce a shared audit engine or publish packages.
+
+## Current state
+
+`skills/repo-structure/ki-repo-mcp/scripts/rubric/contexts/shared-code.ts` classifies each managed destination, required seam and the `src/utils` extension directory with a leaf-only `lstatSync` (`nodeKind`), and its CONFORM guard checks only each destination's immediate parent. No root-relative ancestor above the leaf is validated, so a symlinked `src/` (inside or outside the repository) or a symlinked `src/utils/` reached as an ancestor passes. The seven local MCP server checkouts were checked on 2026-10-04 and none has a symlinked `src` or `src/*` entry, so the stricter rule is not expected to produce new estate findings.
+
+## Steps
+
+- [ ] Add a root-relative physical-path classifier in `shared-code.ts` that walks every ancestor component between the repository root and the leaf, returns `unsafe` for a symlinked or non-directory ancestor, `missing` for an absent ancestor, and otherwise the existing leaf classification.
+- [ ] Use it for managed destinations, required seams, the `src/utils` extension scan and the CONFORM parent-directory guard, so no read or proposal happens through a symlinked ancestor.
+- [ ] Add focused `mcp.test.ts` fixtures: an outside-root `src` link with all seams and managed files present; an inside-root `src` link; a nested `src/utils` link beneath a physical `src`; each must refuse CONFORM proposals and must not classify managed files or seams as exact or present. Existing physical-projection tests remain the controls for missing-only creation, modified-file refusal and repeat-CONFORM idempotence.
+
+## Files touched
+
+- `skills/repo-structure/ki-repo-mcp/scripts/rubric/contexts/shared-code.ts`
+- `skills/repo-structure/ki-repo-mcp/scripts/rubric/contexts/mcp.test.ts`
+- `docs/roadmap/KI-HARNESS-GOV-133-reject-mcp-projection-ancestor-symlinks.md`
+
+## Verify
+
+- `bun test skills/repo-structure/ki-repo-mcp`, `bun run test` and `bunx tsc --noEmit` pass.
+- `ki repo audit --skill ki-repo-mcp --repo <each local MCP server checkout>` shows no new SHARED findings attributable to this change.
+- `ki repo audit --skill ki-work-roadmap --repo .` passes.
+
+## Dependencies / blocks
+
+None. The standard already requires physical parents, so this is a conformance repair rather than a contract change; profile opt-in semantics, receiver migration and package publication stay out of scope.
+
+## Documentation impact
+
+### Decision Records
+
+None.
+
+### Specifications
+
+None; the shared-code standard already states the physical-parent requirement.
+
+### Guides
+
+None.
+
+### Roadmap
+
+This record only.
 
 ## Discussion
 
