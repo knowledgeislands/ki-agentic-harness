@@ -20,7 +20,7 @@ A local Paperclip run reaches the host's mcporter bridge through a granted Paper
 
 ## Context
 
-[KI-HARNESS-RTP-014](KI-HARNESS-RTP-014-route-mcp-through-mcporter.md) documented the route from Paperclip `2026.916.1` source: runs replace user configuration, and Paperclip admits a loopback MCP endpoint on a private deployment. No connection to `http://127.0.0.1:3333/mcp` exists or was exercised, and the bridge refused connections from an interactive session on 30 September 2026.
+[KI-HARNESS-RTP-014](https://github.com/knowledgeislands/ki-agentic-harness/blob/ff6d023be0985ff4d431945fbdf241ef7318b6a3/docs/roadmap/KI-HARNESS-RTP-014-route-mcp-through-mcporter.md) documented the route from Paperclip `2026.916.1` source: runs replace user configuration, and Paperclip admits a loopback MCP endpoint on a private deployment. No connection to `http://127.0.0.1:3333/mcp` exists or was exercised, and the bridge refused connections from an interactive session on 30 September 2026.
 
 ## Boundary
 
