@@ -4,10 +4,10 @@ area: GOV
 title: Order roadmap number reservation
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 9c906a496540da9d5bda5604298f9e41b03bbf64
 task_links:
   paperclip:
     - authority: http://127.0.0.1:3100
@@ -35,7 +35,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-76
       relation: integration
 created_at: 2026-09-26T15:23:47Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-04T11:43:28Z
 ---
 
 # KI-HARNESS-GOV-104: Order roadmap number reservation
@@ -62,6 +62,8 @@ Out of scope: write-root enforcement mechanism, which is coordination task `KNO-
 
 ## Current state
 
+Delivered on `main` by `db4635d0` (doctrine) and `395d592b` (rubric criteria); `KI-HARNESS-GOV-105` holds the ledger-body follow-on. The paragraphs below describe the state before that delivery.
+
 The numbering rule appears in four doctrine locations and states atomicity rather than ordering:
 
 - `skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md` — the owning rule: "publish the new record and advanced ledger in one coherent write boundary".
@@ -79,13 +81,13 @@ The ledger body text is generated: `issueLedger()` in `skills/change-management/
 
 ## Steps
 
-- [ ] Replace the atomicity requirement with the ledger-first ordering in `standards-repository-roadmaps.md`, and state the single-writing-checkout rule that makes the ordering meaningful across concurrent runs.
-- [ ] Apply the same ordering to the capture procedure and the housekeeping spawn rule in `standards-next-work.md`, citing the owning standard rather than restating its reasoning.
-- [ ] State the ordering in the Streams propose path in `mode-propose.md`.
-- [ ] Record the worktree rule and the roadmap primary-checkout exception in the workspace model of `standards-agent-coordination-paperclip.md`, and name them in the coordination `SKILL.md` shared model.
-- [ ] Update `ROAD-7` in `skills/change-management/ki-work-roadmap/scripts/rubric/items/roadmaps.ts` to the ordering wording and regenerate the rubric.
-- [ ] Add a `COORD` criterion for the roadmap write locus in `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts` and regenerate the rubric.
-- [ ] Deliver the ledger-body change through `KI-HARNESS-GOV-105`, which owns the generator change and its estate repair path.
+- [x] Replace the atomicity requirement with the ledger-first ordering in `standards-repository-roadmaps.md`, and state the single-writing-checkout rule that makes the ordering meaningful across concurrent runs.
+- [x] Apply the same ordering to the capture procedure and the housekeeping spawn rule in `standards-next-work.md`, citing the owning standard rather than restating its reasoning.
+- [x] State the ordering in the Streams propose path in `mode-propose.md`.
+- [x] Record the worktree rule and the roadmap primary-checkout exception in the workspace model of `standards-agent-coordination-paperclip.md`, and name them in the coordination `SKILL.md` shared model.
+- [x] Update `ROAD-7` in `skills/change-management/ki-work-roadmap/scripts/rubric/items/roadmaps.ts` to the ordering wording and regenerate the rubric.
+- [x] Add a `COORD` criterion for the roadmap write locus in `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts` and regenerate the rubric.
+- [x] Deliver the ledger-body change through `KI-HARNESS-GOV-105`, which owns the generator change and its estate repair path.
 
 ## Files touched
 
@@ -149,6 +151,47 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 The recovery-pilot document at revision `f44b75d0-4853-4b7f-8621-69fe4b18d3ec` records steps 5–6 delivered to this primary checkout's local main at `f878a552be275122767c6f4ae7e3e6b8b2789299`. The earlier baseline and unchecked plan above are not instructions to repeat that delivery. This association update neither accepts the whole item nor reconciles its remaining checklist: its recorded lifecycle stays `ready`. KIS-76 remains an open recovery task even though this bounded integration completed.
 
 This is an association-only recovery check, not a complete ownership census or a release for another agent to implement. Reconcile the already-landed changes, remaining scope and current claims before any further work. Preserve these per-item references for migration when KIS-5's provider-neutral map is implemented; historical implementation and integration links must survive completion.
+
+## Review
+
+### Delivered
+
+Steps 1 to 7 of the approved plan. Immutable baseline `9c906a496540da9d5bda5604298f9e41b03bbf64`, the parent of the first delivery commit. Doctrine landed in `db4635d0` (`docs(skills): order roadmap number reservation before the record`) and the rubric criteria in `395d592b` (`feat(rubric): audit roadmap reservation ordering`), both reachable from local and remote `main`. The work was done by coordination runs `KIS-34` and `KIS-36` and integrated under `KIS-76`. On 2026-10-04 this run verified it and assembled the review packet; it changed no doctrine. Out of scope, as the record states: write-root enforcement (`KNO-10`), coordination-plane configuration (`KNO-9`), boundary-rule citation homes (`KI-HARNESS-GOV-103`) and ledger repair.
+
+### Change Summary
+
+- `standards-repository-roadmaps.md`: the serial rule now says the ledger advance is committed on its own before the record exists. A new `Number reservation` section owns the ordering, the reasoning and the single designated writing checkout.
+- `standards-next-work.md`: the capture procedure and the housekeeping spawn rule both commit the ledger advance first and cite the owning standard.
+- `ki-repo-kb-streams/references/mode-propose.md`: the Streams propose path commits the ledger advance in the base's designated roadmap writing checkout before the record exists.
+- `standards-agent-coordination-paperclip.md` and the coordination `SKILL.md`: the workspace model makes the isolated checkout a standing rule and adds `Roadmap records are the exception`.
+- `ROAD-7` in `roadmaps.ts` now carries the ordering wording and states what the mechanical check cannot observe. The new `COORD-8 Roadmap write locus` judgment criterion is in `coordination.ts`. Both rubrics are regenerated and the expected-code tests are updated.
+- Step 7: `KI-HARNESS-GOV-105` (`State ordering in ledger`) is the captured follow-on for the generated `_ISSUES.md` body and its estate repair path.
+
+### Verification
+
+Run on 2026-10-04 at `main`:
+
+- `ki repo audit --skill ki-work-roadmap`: PASS.
+- `ki repo audit --skill ki-agent-coordination-paperclip`: PASS.
+- `ki repo audit --skill ki-skills`: PASS.
+- `ki repo audit --skill ki-repo-kb-streams --repo ki-arcadia-principal`: PASS. That skill is not declared in this repository, so the audit ran against a declaring knowledge base.
+- `ki dev skill rubric ki-work-roadmap` and `ki dev skill rubric ki-agent-coordination-paperclip`: both in sync.
+- `bun run test`: 852 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `grep -rn "coherent write boundary" skills`: no matches.
+
+### Outstanding concerns
+
+- Both rules remain judgment criteria. Mechanical enforcement is the open question recorded in Discussion and is not claimed.
+- The housekeeping spawn rule still publishes the spawned record and the template `active-run` linkage as one coherent change, after the separate ledger commit. That matches the plan.
+
+### Post-change review
+
+The goal is met at the level of doctrine and assessable criteria. A number is now reserved by a committed, standalone ledger advance in one serialised checkout, and every doctrine site states the rule or cites it. The scope held to the files listed in the record. Regression risk is low: `ROAD-7`'s mechanical check is unchanged and only its wording moved, and `COORD-8` is judgment-only. The item is ready for acceptance.
+
+### Mini recap
+
+Ledger-first number reservation and the roadmap write locus are now harness doctrine, with matching `ROAD-7` wording and a `COORD-8` criterion. All stated gates pass. The ledger body change is routed to `KI-HARNESS-GOV-105`. This run had to reconcile the record, which still said `ready` after its delivery had landed. That is evidence for `KI-HARNESS-GOV-114` (surface held workspaces) and for prompt record transitions by coordination runs; neither is promoted automatically.
 
 ## Discussion
 
