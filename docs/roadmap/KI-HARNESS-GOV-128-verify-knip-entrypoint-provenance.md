@@ -4,12 +4,12 @@ area: GOV
 title: Verify Knip entrypoint provenance
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: bc42e6e7146841b32b26cfe6880f650e26de7f5a
 created_at: 2026-10-02T05:46:14Z
-updated_at: 2026-10-02T06:08:05Z
+updated_at: 2026-10-04T11:38:52Z
 ---
 
 # KI-HARNESS-GOV-128: Verify Knip entrypoint provenance
@@ -93,6 +93,10 @@ The rule distinguishes authored code from managed projections and real invocatio
 ### Mini recap
 
 The engineering skill now carries the entry-point provenance standard and review question. Verification passed; repository-specific entry reviews remain with their owners.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer re-ran the gates at HEAD (852 tests pass, tsc clean, ki-engineering rubric in sync, focused audits PASS); the harness's own broad skill-script globs remain a repository-specific review under the new KNIP-4 criterion, as the Outstanding concerns record.
 
 ## Discussion
 
