@@ -4,12 +4,12 @@ area: GOV
 title: Add ignored tmp area
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 42e2ac59fb3911d343e44f8fe77fe83046d6a3e4
 created_at: 2026-10-04T10:18:57Z
-updated_at: 2026-10-04T11:20:00Z
+updated_at: 2026-10-04T11:42:24Z
 ---
 
 # KI-HARNESS-GOV-132: Add ignored tmp area
@@ -109,6 +109,10 @@ The rule sits at any depth, matching `reports/`. No local checkout tracks anythi
 ### Mini recap
 
 Owner decisions on 2026-10-04 settled the shape; the change is one rule, three legacy mappings, tests and standard text.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above, under the owner's delegated estate-push authority following an independent Fable review verdict of ACCEPT. The reviewer re-ran the gates (852 tests pass, tsc clean, harness audit FAIL=0) and confirmed ki-arcadia-principal, tools-ki and apps-observatory audits stay clean with no FILES-6 under the live installed harness.
 
 ## Discussion
 
