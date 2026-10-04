@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-118
 area: GOV
 title: Resolve delegated skill access
 theme: governance-consistency
-horizon: next
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-27T16:50:38Z
-updated_at: 2026-10-04T11:51:59Z
+updated_at: 2026-10-04T19:00:00Z
 ---
 
 # Resolve delegated skill access
@@ -42,7 +42,11 @@ The originating observation exists, but the supported access route has not been 
 
 ## Files touched
 
-Expected harness scope is the owning delegation and skill-discovery guidance plus focused tests if required. Exact source paths are selected during planning. No runtime, host configuration, or Arcadia knowledge files are authorised by this record.
+- `skills/keystone/ki-bootstrap/references/standards-bootstrap.md` - new "Skill access in delegated work" section and contents entry
+- `skills/keystone/ki-bootstrap/SKILL.md` - one-line pointer
+- `docs/roadmap/KI-HARNESS-GOV-118-resolve-delegated-skill-access.md`
+
+No runtime, host configuration, CLI or Arcadia knowledge files are authorised by this record.
 
 ## Verify
 
@@ -69,6 +73,22 @@ Make the supported route discoverable from the delegation guidance rather than k
 ### Roadmap
 
 Keep the reciprocal Arcadia origin link and any later downstream links current. Closing a handoff or downstream ticket does not accept this principal outcome.
+
+## Plan - 2026-10-04
+
+Remedy: guidance only. No runtime, installation or CLI change; the dangling-projection detection gap stays with `tools-ki` and needs no downstream record from this item, so Step 3 closes with "no downstream record required".
+
+Home: `ki-bootstrap`, because it is the one skill every recipient can invoke whatever its start directory, and its standard already owns the user-versus-repository activation model. `ki-delegation` activates only for durable high-risk packets and `ki-subagents` defines reusable roles, so neither reaches ordinary handoffs. The new section links the Paperclip "repository skills are the execution baseline" rule rather than duplicating it.
+
+Content: a recipient invokes only user-scope process skills plus its start repository's projection; a delegator names each required governance skill with a readable source path in the target projection or the canonical harness source; the recipient reads rather than trial-invokes; `ki repo audit --skill <name>` needs no runtime invocation. Evidence stays dated per runtime: Claude Code and Codex on 2026-10-04, Cowork an explicit gap.
+
+Verification: `ki repo audit --skill ki-skills`, `--skill ki-authoring` and `--skill ki-work-roadmap` (`ki-bootstrap` is invocation-only and has no audit catalogue; record the CLI result), `bun run test`, `bunx tsc --noEmit`, and a representative check that a governance skill absent from a recipient's list is readable at the named path.
+
+Readiness: plan approved, and the Step 4 human-review gate satisfied, by the Fable reviewer under delegated autonomy (2026-10-04), reversible.
+
+### Access observation - 2026-10-04 (Codex)
+
+User scope `~/.agents/skills` links only the seven process skills; governance skills reach a Codex session only through the start repository's ignored `.agents/skills/` projection (for example `mcp-git-audit`'s). This matches the Claude Code observation below. Cowork was not exercised.
 
 ## Discussion
 
