@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-110
 area: GOV
 title: Exclude Git internals
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T17:09:48Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-04T12:05:54Z
 ---
 
 # KI-HARNESS-GOV-110: Exclude Git Internals
@@ -29,6 +29,49 @@ No existing roadmap item owns this audit-boundary defect. The nearest active wor
 ## Boundary
 
 This item does not modify, format, audit, or remove files inside active Paperclip worktrees. It does not broadly exclude hidden directories, weaken Markdown rules, suppress genuine findings from tracked files in the selected worktree, or implement the fix during intake capture.
+
+## Current state
+
+`572d84a6` delivered the exclusion itself: `.git` is in `RUMDL_DEFAULT` (`skills/governance/ki-authoring/scripts/rubric/contexts/authoring.ts`) and in this repository's `.rumdl.toml`, and the frontmatter walk skips `.git` through `FRONTMATTER_IGNORED_DIRECTORIES`. The only remaining gap is the end-to-end regression this record's Verification shape asks for; the existing test merely asserts that the template string contains `".git"`.
+
+## Steps
+
+- [ ] Add one `ki-authoring` regression that drives the real `MD-mech` audit path (`createAuthoringSession` with its default `rumdl check .` inspector) against a temporary Git repository carrying the canonical `.rumdl.toml`.
+- [ ] Prove the excluded side: malformed Markdown in a sibling linked worktree under `.git/paperclip-worktrees/**`, and in other physical Git metadata, leaves the selected checkout's audit at `PASS`.
+- [ ] Prove the retained side: the same malformed Markdown in the selected checkout yields `VIOLATION`, including when the selected checkout is itself a linked worktree whose `.git` is a pointer file.
+- [ ] Confirm the regression fails against a configuration without the `.git` exclusion, so it is not vacuous.
+
+## Files touched
+
+- `skills/governance/ki-authoring/scripts/rubric/items/index.test.ts`
+- `docs/roadmap/KI-HARNESS-GOV-110-exclude-git-internals-from-authoring-audit.md`
+
+## Verify
+
+- `bun test skills/governance/ki-authoring/scripts/rubric/items/index.test.ts`, `bun run test`, and `bunx tsc --noEmit` pass.
+- `ki repo audit --skill ki-authoring --repo .` and `ki repo audit --skill ki-work-roadmap --repo .` pass.
+
+## Dependencies / blocks
+
+None. The exclusion is already delivered; this adds evidence only, changes no audit behaviour, and touches no Paperclip worktree or Git metadata outside temporary fixtures.
+
+## Documentation impact
+
+### Decision Records
+
+None; no durable choice changes.
+
+### Specifications
+
+None; accepted behaviour is unchanged.
+
+### Guides
+
+None.
+
+### Roadmap
+
+This record only.
 
 ## Discussion
 
