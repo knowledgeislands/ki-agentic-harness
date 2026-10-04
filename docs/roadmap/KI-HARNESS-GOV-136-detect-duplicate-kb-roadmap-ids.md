@@ -4,12 +4,12 @@ area: GOV
 title: Detect duplicate KB ids
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e1e4db478f95473c511d838dc284eaf37a4615aa
 created_at: 2026-10-04T16:29:19Z
-updated_at: 2026-10-04T18:00:00Z
+updated_at: 2026-10-04T18:10:00Z
 ---
 
 # KI-HARNESS-GOV-136: Detect Duplicate KB Ids
@@ -101,6 +101,10 @@ Scope held the approved plan. Baseline `e1e4db478f95473c511d838dc284eaf37a4615aa
 - `bun run test`: 859 pass, 0 fail. `bunx tsc --noEmit`: exit 0.
 - `STREAM-6` evaluated directly from this checkout against `kit-principal`, `kit-techmedix`, `ki-arcadia-principal`, `kit-legal`, `kit-hnr`, `vallearmonia-principal` and `er-research`: PASS on each. `ki repo audit --skill ki-repo-kb-streams` on each: PASS.
 - `ki repo audit --skill ki-skills` and `--skill ki-work-roadmap` on this repository: PASS.
+
+## Done
+
+Accepted 2026-10-04 on the review packet above after an independent Fable review returned ACCEPT (goal and all steps met within the boundary; tests meaningful; standard wording accurate). Decided by the Fable reviewer under delegated autonomy (2026-10-04), reversible.
 
 ## Discussion
 
