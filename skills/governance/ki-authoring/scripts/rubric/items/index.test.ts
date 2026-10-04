@@ -1,6 +1,15 @@
 import { afterEach, expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createAuthoringSession, EDITORCONFIG_DEFAULT, RUMDL_DEFAULT } from '../contexts/authoring.ts'
@@ -369,4 +378,45 @@ test('owned-file conform refuses to propose a write through a symlink', () => {
 
   expect(session.proposal().writes.some((write) => write.path === '.editorconfig')).toBe(false)
   expect(readFileSync(outside, 'utf8')).toBe('do not replace\n')
+})
+
+test('the repository Markdown audit inspects the selected checkout but never physical Git metadata', () => {
+  const repository = temporaryRepository()
+  const malformed = '# Fixture\n\n#Missing heading space\n'
+  const git = (cwd: string, ...args: string[]) =>
+    spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], {
+      cwd,
+      encoding: 'utf8'
+    })
+  const markdownAudit = (checkout: string) => {
+    const context = createAuthoringSession({
+      mode: 'audit',
+      repository: checkout,
+      userHome: tmpdir(),
+      configuration: {}
+    }).subjects[1]?.context()
+    return markdownModule.MARKDOWN.items[0]?.mechanical?.audit.run(
+      context?.markdown as NonNullable<typeof context>['markdown']
+    )[0]?.status
+  }
+  writeFileSync(join(repository, '.rumdl.toml'), RUMDL_DEFAULT)
+  writeFileSync(join(repository, 'README.md'), '# Fixture\n')
+  expect(git(repository, 'init', '--quiet').status).toBe(0)
+  expect(git(repository, 'add', '.').status).toBe(0)
+  expect(git(repository, 'commit', '--quiet', '-m', 'fixture').status).toBe(0)
+
+  // A sibling linked worktree stored inside physical Git metadata, as Paperclip retains them.
+  const sibling = join(repository, '.git', 'paperclip-worktrees', 'KIS-0-fixture')
+  expect(git(repository, 'worktree', 'add', '--quiet', '-b', 'fixture', sibling).status).toBe(0)
+  writeFileSync(join(sibling, 'sibling.md'), malformed)
+  mkdirSync(join(repository, '.git', 'notes-fixture'), { recursive: true })
+  writeFileSync(join(repository, '.git', 'notes-fixture', 'metadata.md'), malformed)
+  expect(markdownAudit(repository)).toBe('PASS')
+
+  // The selected checkout's own Markdown still fails, including in a linked worktree whose
+  // `.git` is a pointer file rather than a directory.
+  writeFileSync(join(repository, 'selected.md'), malformed)
+  expect(markdownAudit(repository)).toBe('VIOLATION')
+  expect(lstatSync(join(sibling, '.git')).isFile()).toBe(true)
+  expect(markdownAudit(sibling)).toBe('VIOLATION')
 })

@@ -4,12 +4,12 @@ area: GOV
 title: Exclude Git internals
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 77b9d6d89a9eee7cd469e8f2c76b482fb2add393
 created_at: 2026-09-26T17:09:48Z
-updated_at: 2026-10-04T12:05:54Z
+updated_at: 2026-10-04T12:07:58Z
 ---
 
 # KI-HARNESS-GOV-110: Exclude Git Internals
@@ -36,10 +36,10 @@ This item does not modify, format, audit, or remove files inside active Papercli
 
 ## Steps
 
-- [ ] Add one `ki-authoring` regression that drives the real `MD-mech` audit path (`createAuthoringSession` with its default `rumdl check .` inspector) against a temporary Git repository carrying the canonical `.rumdl.toml`.
-- [ ] Prove the excluded side: malformed Markdown in a sibling linked worktree under `.git/paperclip-worktrees/**`, and in other physical Git metadata, leaves the selected checkout's audit at `PASS`.
-- [ ] Prove the retained side: the same malformed Markdown in the selected checkout yields `VIOLATION`, including when the selected checkout is itself a linked worktree whose `.git` is a pointer file.
-- [ ] Confirm the regression fails against a configuration without the `.git` exclusion, so it is not vacuous.
+- [x] Add one `ki-authoring` regression that drives the real `MD-mech` audit path (`createAuthoringSession` with its default `rumdl check .` inspector) against a temporary Git repository carrying the canonical `.rumdl.toml`.
+- [x] Prove the excluded side: malformed Markdown in a sibling linked worktree under `.git/paperclip-worktrees/**`, and in other physical Git metadata, leaves the selected checkout's audit at `PASS`.
+- [x] Prove the retained side: the same malformed Markdown in the selected checkout yields `VIOLATION`, including when the selected checkout is itself a linked worktree whose `.git` is a pointer file.
+- [x] Confirm the regression fails against a configuration without the `.git` exclusion, so it is not vacuous.
 
 ## Files touched
 
@@ -72,6 +72,37 @@ None.
 ### Roadmap
 
 This record only.
+
+## Review
+
+### Delivered
+
+An end-to-end `ki-authoring` regression proving that the repository Markdown audit inspects the selected checkout and never physical Git metadata. It drives the real `MD-mech` path (`createAuthoringSession` with its default `rumdl check .` inspector) against a temporary Git repository carrying the canonical `.rumdl.toml`.
+
+### Change Summary
+
+- `skills/governance/ki-authoring/scripts/rubric/items/index.test.ts`: one new test. Malformed Markdown in a real linked worktree under `.git/paperclip-worktrees/KIS-0-fixture` and in another `.git` subdirectory leaves the selected checkout at `PASS`; the same content in the selected checkout yields `VIOLATION`; auditing the linked worktree itself, whose `.git` is a pointer file, also yields `VIOLATION`. `lstatSync` joins the existing `node:fs` import.
+- No production code or audit behaviour changed; the exclusion delivered by `572d84a6` is unchanged.
+
+### Verification
+
+- `bun test skills/governance/ki-authoring/scripts/rubric/items/index.test.ts`: 14 pass, 0 fail.
+- `bun run test`: 853 pass, 0 fail across 141 files.
+- `bunx tsc --noEmit` and `bunx biome check` on the changed test: clean.
+- Non-vacuity: `rumdl check .` with a configuration lacking the `.git` exclusion reports the MD018 finding from `.git/paperclip-worktrees/x/s.md`, so the `PASS` assertion depends on the exclusion.
+- `ki repo audit --skill ki-authoring --repo .` and `ki repo audit --skill ki-work-roadmap --repo .`: PASS.
+
+### Outstanding concerns
+
+The fixture covers the `rumdl` discovery path that the full audit uses. The separate frontmatter walk skips `.git` by directory name and is not exercised by a malformed-frontmatter fixture here; it was outside the recorded verification shape.
+
+### Post-change review
+
+The test uses only temporary directories and real `git worktree add`; it touches no retained Paperclip worktree or repository Git metadata. Runtime is under one second.
+
+### Mini recap
+
+The Git-internals exclusion was already in place; this item adds the missing end-to-end proof on both sides of the boundary, including linked-worktree pointer layouts.
 
 ## Discussion
 
