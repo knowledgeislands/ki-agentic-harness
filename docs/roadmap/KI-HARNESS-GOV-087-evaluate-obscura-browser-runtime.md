@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-22T06:15:11Z
-updated_at: 2026-10-04T12:10:04Z
+updated_at: 2026-10-04T18:25:00Z
 ---
 
 ## Goal
@@ -93,3 +93,9 @@ The trial should produce a recommendation, reproducible fixture or evidence pack
 ### Blocker checkpoint - 2026-10-04 (estate push)
 
 Not started in the 2026-10-04 estate push. Step 3 requires the owner to confirm and complete an interactive ChatGPT authentication window in the isolated runtime, which cannot be done unattended; Steps 1-2 were not begun in isolation because their evidence would go stale before that gate. Resume when the owner is available for the authentication step.
+
+### Question for Kris - 2026-10-04
+
+Still not started on the second 2026-10-04 pass; evaluation only, nothing adopted. Step 1 would clone and build `h4ckf0r0day/obscura`, an unvetted third-party Rust source whose build scripts execute locally, and Step 3 needs you present for the isolated ChatGPT sign-in, so running Steps 1-2 unattended would add risk and produce evidence that goes stale before the gate.
+
+**Question:** Do you approve building a pinned `h4ckf0r0day/obscura` revision on this Mac (or should the trial use a disposable VM or container instead), and when can you be present for the isolated ChatGPT authentication window? Until then this record stays `ready`.
