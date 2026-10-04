@@ -182,4 +182,41 @@ describe('ki-repo-kb-streams session', () => {
 
     expect(context.anchor).toEqual([{ level: 'PASS', message: 'Enactment gate is anchored.', subject: 'AGENTS.md' }])
   })
+
+  test('fails every Streams roadmap record whose identifier another record shares', () => {
+    const root = targetFixture()
+    const record = (name: string, id?: string) =>
+      writeFileSync(
+        join(root, 'Streams', 'Roadmap', name),
+        `${id ? `---\nid: ${id}\ntitle: Fixture\n---\n\n` : ''}# Fixture\n`
+      )
+    record('KB-OPS-001-first.md', 'KB-OPS-001')
+    record('KB-OPS-002-second.md', 'KB-OPS-002')
+    record('notes.md')
+    record('_ISSUES.md', 'KB-OPS-001')
+    const unique = STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+    expect(unique.roadmapIdentity).toEqual([
+      { level: 'PASS', message: 'Every roadmap record identifier is unique.', subject: join('Streams', 'Roadmap') }
+    ])
+
+    record('KB-OPS-001-collision.md', 'KB-OPS-001')
+    const duplicated = STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+    const item = STREAM.items.find((candidate) => candidate.code === 'STREAM-6')
+
+    expect(duplicated.roadmapIdentity.map((evidence) => [evidence.level, evidence.subject])).toEqual([
+      ['FAIL', join('Streams', 'Roadmap', 'KB-OPS-001-collision.md')],
+      ['FAIL', join('Streams', 'Roadmap', 'KB-OPS-001-first.md')]
+    ])
+    expect(item?.mechanical?.level).toBe('FAIL')
+    expect(item?.mechanical?.audit.run(duplicated).map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
+  })
+
+  test('treats a roadmap without identified records as not applicable', () => {
+    const root = targetFixture()
+    const context = STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+
+    expect(context.roadmapIdentity).toEqual([
+      { level: 'NOT_APPLICABLE', message: 'No identified roadmap records are present.' }
+    ])
+  })
 })

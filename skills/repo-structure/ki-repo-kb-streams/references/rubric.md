@@ -42,6 +42,8 @@ Operational-area layout, legacy migration, and adapter routing.
   - _Review prompt:_ Does each sampled legacy record have an appropriate explicit disposition?
   - _Outcomes:_ conforming; migration required; owner decision required
   - _Conforming guidance:_ Record the owner-approved destination before moving, retaining, or pruning the legacy record; never infer it from the former path.
+- **STREAM-6 [M] — unique roadmap identity** — Every Streams/Roadmap record carries an identifier no other record in the base shares. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Keep the canonical holder of the identifier; reallocate the other record from _ISSUES.md with a committed ledger advance and update its references. Never reuse a pruned serial.
 
 ## GATE — always-loaded gate
 

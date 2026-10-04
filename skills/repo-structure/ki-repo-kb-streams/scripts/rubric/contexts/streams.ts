@@ -34,6 +34,7 @@ export type StreamsEvidence = {
 export type StreamRubricContext = {
   operationalAreas: readonly StreamsEvidence[]
   legacyFolders: readonly StreamsEvidence[]
+  roadmapIdentity: readonly StreamsEvidence[]
 }
 
 export type GateRubricContext = {
@@ -136,6 +137,34 @@ const parseConfiguration = (text: string): StreamsConfiguration => {
   }
 }
 
+// The repository roadmap standard requires each record's identifier to be unique. Only
+// direct-child records with an `id` frontmatter value are compared; record format itself
+// belongs to the roadmap adapter.
+const roadmapIdentityEvidence = (root: string, roadmapPath: string): StreamsEvidence[] => {
+  const byId = new Map<string, string[]>()
+  for (const entry of directory(roadmapPath) ? readdirSync(roadmapPath, { withFileTypes: true }) : []) {
+    if (!entry.isFile() || !entry.name.endsWith('.md') || entry.name === '_ISSUES.md') continue
+    const path = join(roadmapPath, entry.name)
+    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(readFileSync(path, 'utf8'))
+    const id = frontmatter?.[1].match(/^id:\s*["']?([^"'\s]+)["']?\s*$/m)?.[1]
+    if (!id) continue
+    byId.set(id, [...(byId.get(id) ?? []), relative(root, path)])
+  }
+  if (byId.size === 0) return [{ level: 'NOT_APPLICABLE', message: 'No identified roadmap records are present.' }]
+  const duplicates = [...byId.entries()].filter(([, paths]) => paths.length > 1)
+  if (duplicates.length === 0)
+    return [
+      { level: 'PASS', message: 'Every roadmap record identifier is unique.', subject: relative(root, roadmapPath) }
+    ]
+  return duplicates.flatMap(([id, paths]) =>
+    paths.sort().map((path) => ({
+      level: 'FAIL' as const,
+      message: `Roadmap identifier ${id} is shared by ${paths.length} records: ${paths.join('; ')}.`,
+      subject: path
+    }))
+  )
+}
+
 const sample = (values: readonly string[]): string => values.slice(0, 10).join('; ')
 
 const unavailableContext = (
@@ -148,7 +177,7 @@ const unavailableContext = (
   const notApplicable: StreamsEvidence[] = [{ level: 'NOT_APPLICABLE', message: 'Streams evidence is unavailable.' }]
   return {
     rubric: { publication },
-    stream: { operationalAreas: [evidence], legacyFolders: notApplicable },
+    stream: { operationalAreas: [evidence], legacyFolders: notApplicable, roadmapIdentity: notApplicable },
     gate: { anchor: notApplicable },
     config: { parseable: notApplicable, knownKeys: notApplicable, processNote: notApplicable }
   }
@@ -274,7 +303,7 @@ export const createStreamsSession = ({
   ]
   const context: StreamsRubricContext = {
     rubric: { publication },
-    stream: { operationalAreas, legacyFolders },
+    stream: { operationalAreas, legacyFolders, roadmapIdentity: roadmapIdentityEvidence(root, roadmapPath) },
     gate: { anchor },
     config: { parseable, knownKeys, processNote: processNoteEvidence }
   }

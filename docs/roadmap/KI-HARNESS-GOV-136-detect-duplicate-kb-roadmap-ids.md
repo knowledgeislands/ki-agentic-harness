@@ -4,12 +4,12 @@ area: GOV
 title: Detect duplicate KB ids
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: e1e4db478f95473c511d838dc284eaf37a4615aa
 created_at: 2026-10-04T16:29:19Z
-updated_at: 2026-10-04T16:30:08Z
+updated_at: 2026-10-04T18:00:00Z
 ---
 
 # KI-HARNESS-GOV-136: Detect Duplicate KB Ids
@@ -38,10 +38,10 @@ No harness audit reads KB roadmap record identity (see Context). A read-only swe
 
 ## Steps
 
-- [ ] Add identity evidence to the `ki-repo-kb-streams` context: read the `id` frontmatter of each regular direct-child `.md` record in `Streams/Roadmap/` except `_ISSUES.md`, and emit one `FAIL` per record whose identifier is shared with another, naming the identifier and the colliding paths; otherwise one `PASS` (or `NOT_APPLICABLE` with no records).
-- [ ] Add mechanical item `STREAM-6` "unique roadmap identity" at `FAIL` in the `STREAM` family, citing the Roadmap section of the standard.
-- [ ] State the uniqueness rule in `references/standards-streams-structure.md` under Roadmap.
-- [ ] Add focused `streams.test.ts` fixtures: duplicate identifiers fail on each colliding record; distinct identifiers pass; a record without `id` frontmatter and `_ISSUES.md` are ignored.
+- [x] Add identity evidence to the `ki-repo-kb-streams` context: read the `id` frontmatter of each regular direct-child `.md` record in `Streams/Roadmap/` except `_ISSUES.md`, and emit one `FAIL` per record whose identifier is shared with another, naming the identifier and the colliding paths; otherwise one `PASS` (or `NOT_APPLICABLE` with no records).
+- [x] Add mechanical item `STREAM-6` "unique roadmap identity" at `FAIL` in the `STREAM` family, citing the Roadmap section of the standard.
+- [x] State the uniqueness rule in `references/standards-streams-structure.md` under Roadmap.
+- [x] Add focused `streams.test.ts` fixtures: duplicate identifiers fail on each colliding record; distinct identifiers pass; a record without `id` frontmatter and `_ISSUES.md` are ignored.
 
 ## Files touched
 
@@ -49,6 +49,9 @@ No harness audit reads KB roadmap record identity (see Context). A read-only swe
 - `skills/repo-structure/ki-repo-kb-streams/scripts/rubric/items/stream.ts`
 - `skills/repo-structure/ki-repo-kb-streams/scripts/rubric/contexts/streams.test.ts`
 - `skills/repo-structure/ki-repo-kb-streams/references/standards-streams-structure.md`
+- `skills/repo-structure/ki-repo-kb-streams/scripts/rubric/items/index.test.ts`
+- `skills/repo-structure/ki-repo-kb-streams/references/rubric.md` (generated)
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
 - `docs/roadmap/KI-HARNESS-GOV-136-detect-duplicate-kb-roadmap-ids.md`
 
 ## Verify
@@ -78,6 +81,26 @@ None.
 ### Roadmap
 
 This record; GOV-095 retains the cross-tool parity work.
+
+## Review
+
+### Delivered
+
+Scope held the approved plan. Baseline `e1e4db478f95473c511d838dc284eaf37a4615aa`; the delivery commit follows it. No receiving repository's records were changed.
+
+### Change summary
+
+- `streams.ts`: new `roadmapIdentity` evidence reads the `id` frontmatter of each regular direct-child `.md` record in `Streams/Roadmap/` except `_ISSUES.md`; it emits one `FAIL` per record sharing an identifier (naming the identifier and colliding paths), otherwise one `PASS`, or `NOT_APPLICABLE` with no identified records.
+- `stream.ts`: mechanical item `STREAM-6` "unique roadmap identity" at `FAIL`, diagnostic remediation (keep the canonical holder; reallocate the other from `_ISSUES.md`; never reuse a pruned serial).
+- `standards-streams-structure.md`: uniqueness rule stated under Roadmap; `rubric.md` regenerated.
+- Tests: duplicates fail on each colliding record, distinct identifiers pass, an un-identified record and `_ISSUES.md` are ignored, an empty roadmap is not applicable; catalogue and harness-wide remediation-inventory counts rise by one mechanical diagnostic criterion.
+
+### Verification
+
+- `bun test skills/repo-structure/ki-repo-kb-streams skills/keystone/ki-skills`: 71 pass, 0 fail.
+- `bun run test`: 859 pass, 0 fail. `bunx tsc --noEmit`: exit 0.
+- `STREAM-6` evaluated directly from this checkout against `kit-principal`, `kit-techmedix`, `ki-arcadia-principal`, `kit-legal`, `kit-hnr`, `vallearmonia-principal` and `er-research`: PASS on each. `ki repo audit --skill ki-repo-kb-streams` on each: PASS.
+- `ki repo audit --skill ki-skills` and `--skill ki-work-roadmap` on this repository: PASS.
 
 ## Discussion
 

@@ -67,11 +67,27 @@ const STREAM_5: RubricItem<StreamRubricContext> = {
   }
 }
 
+const STREAM_6: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-6',
+  title: 'unique roadmap identity',
+  description: 'Every Streams/Roadmap record carries an identifier no other record in the base shares.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Keep the canonical holder of the identifier; reallocate the other record from _ISSUES.md with a committed ledger advance and update its references. Never reuse a pruned serial.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.roadmapIdentity, 'FAIL') }
+  }
+}
+
 export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
   code: 'STREAM',
   title: 'Streams structure',
   description: 'Operational-area layout, legacy migration, and adapter routing.',
   standard: SOURCE,
   selectContext: (context) => context.stream,
-  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5]
+  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6]
 }
