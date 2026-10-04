@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T04:23:19Z
-updated_at: 2026-10-01T19:40:44Z
+updated_at: 2026-10-04T10:59:42Z
 ---
 
 # KI-HARNESS-GOV-122: Design inter-territory exchange
@@ -36,7 +36,7 @@ Arcadia owns the territory model, territorial Capital, authoritative internal Kn
 
 The human requested a wider KB-governance drift review and assessment of absorbing Techné's engineering knowledge into Arcadia while retaining the Techné harness and operator CLI. Arcadia's existing [Island concepts record](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Streams/Roadmap/KI-ARCADIA-MOD-002-island-concepts.md) already owns Known Lands, Routes, Customs, and signposting. Its [territory governance review](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/+/territory-governance-reconciliation-review.md) supplies the proposed sequence and public evidence; private estate identities remain in the owner's private review.
 
-First reconcile territorial authority and KB drift; then agree knowledge classification and directional exchange; then define the Observatory's read-only knowledge experience; finally amend shared standards and derive receiver-owned implementation work. Agoras and trade mechanisms follow those principles. The Arcadia review remains a working proposal while its existing Streams prerequisite is reconciled, and this item stays Triage. No migration, company transfer, programme resumption, or runtime policy change is authorised by capture here.
+First reconcile territorial authority and KB drift; then agree knowledge classification and directional exchange; then define the Observatory's read-only knowledge experience; finally amend shared standards and derive receiver-owned implementation work. Agoras and trade mechanisms follow those principles. The territorial authority reconciliation and Arcadia's bounded Techné knowledge consolidation were accepted on 2026-10-02; their retained review records own that evidence. This later exchange-design item stays Triage. No migration, company transfer, remote programme resumption, or runtime policy change is authorised by capture here.
 
 ### Direction and classification
 
