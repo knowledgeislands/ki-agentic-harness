@@ -341,6 +341,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Scripts accept arguments in the same style as their siblings.
 - [ ] Scripts fail loudly with a non-zero exit rather than continuing on error.
 - [ ] Anything runnable is reachable from the declared task surface.
+- [ ] A running or reachable service is not treated as evidence that its derived indexes, caches, or mirrors are current.
+- [ ] Derived-data freshness is observable through the last successful refresh and any outstanding or failed refresh work.
 - [ ] Website servers use a deterministic port outside tests so start and stop operations can target them reliably.
 - [ ] Nothing depends on a path outside the repository without declaring it.
 - [ ] Build and script steps invoke an executable directly, or by resolving the owning package manifest, rather than through a package-manager runner such as `npx` or `bunx`.
