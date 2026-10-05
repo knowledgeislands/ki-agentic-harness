@@ -19,7 +19,7 @@ The `ki-repo-kb` source-mirror contract named its mirror declaration `source_pat
 
 Mirrors and source provenance use separate field families, and only the mirror family makes a note a mirror.
 
-- **Mirror:** `mirrors` names exactly one file as `<store-alias>-sources/<store-relative path>`; `mirror_type` is required and is one of `verbatim`, `annotated`, `summarised` or `indexed`; `mirror_sha256` is required and identifies the file's content. Lists, directories and coverage notes are not mirrors. Every type except `indexed` carries a minimum substantive extract.
+- **Mirror:** `mirrors` names exactly one file as `<store-alias>-sources/<store-relative path>`; `mirror_type` is required and is one of `verbatim`, `annotated`, `summarised` or `indexed`; `mirror_sha256` is required and identifies the file's content. Lists, directories and coverage notes are not mirrors. `mirror_type` is the authoritative claim about the body: `indexed` records provenance only, and every other type needs some body content but no minimum length.
 - **Source provenance:** `source_path`, in the same aliased form, and `source_sha256` record where a derived note came from. Many notes may share one source. These fields never make a note a mirror.
 - **Adapter provenance:** an acquisition adapter keeps its own upstream fields and uses neither family unless a note genuinely mirrors or derives from a store file.
 
@@ -28,7 +28,7 @@ The `ki-repo-kb` source-mirror standard, its shared classifier, the `NOTE-4` aud
 ## Consequences
 
 - Provenance on derived notes and adapter output no longer raises mirror findings, and the bases' existing `mirrors` and `mirror_type` vocabulary becomes the shared standard.
-- `mirror_type` is authored intent rather than inferred length, so brief `indexed` mirrors of bulk material are conforming rather than warned.
+- `mirror_type` is authored intent rather than inferred length, so short summaries of short sources and brief `indexed` mirrors conform. Only an empty body under a content type is warned; whether a summary is adequate is a judgment, not a word count.
 - One file per mirror keeps the checksum meaningful and lets an owner inventory unmirrored files; bases with list or directory mirrors must split them into single-file mirrors or ordinary index notes.
 - Bases rename mirror checksums to `mirror_sha256`, backfill missing checksums and `mirror_type` values, and move mirrors declared with `source_path` to `mirrors`, each through their own enactment process.
 - Search results carry `mirrors`, `mirror_type` and `mirror_sha256` in place of `source_path` and `source_sha256`.

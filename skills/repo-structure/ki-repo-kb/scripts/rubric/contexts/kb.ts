@@ -455,7 +455,7 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
     add(
       'PASS',
       'NOTE-4',
-      'Declared mirrors meet mirrors, mirror_type and mirror_sha256 syntax and minimum extract checks; source fidelity is unverified.'
+      'Declared mirrors meet mirrors, mirror_type and mirror_sha256 syntax and non-empty body checks; source fidelity is unverified.'
     )
   add(
     malformedFrontmatter.length ? 'FAIL' : 'PASS',

@@ -134,16 +134,16 @@ test('source mirror diagnostics bind only to a declared sources role', () => {
   expect(readFileSync(note, 'utf8')).toBe(before)
   writeFileSync(
     note,
-    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\nSee source.\n`
+    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\n**Source:** \`kit-example-sources/Records/Example.pdf\`\n`
   )
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')).toMatchObject({
     level: 'WARN',
     subject: 'Resources/Mirror.md',
-    message: expect.stringContaining('fewer than 40')
+    message: expect.stringContaining('no content')
   })
   writeFileSync(
     note,
-    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\n${Array.from({ length: 40 }, (_, index) => `fact${index}`).join(' ')}\n`
+    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\nReceipt for one laptop.\n`
   )
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('PASS')
   writeFileSync(

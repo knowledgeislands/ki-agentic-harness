@@ -99,7 +99,7 @@ const NOTE_4: RubricItem<KbNoteContext> = {
   code: 'NOTE-4',
   title: 'substantive source mirrors',
   description:
-    'Declared source mirrors name one aliased store file, an allowed mirror_type, checksum syntax and, unless indexed, a minimum extract; fidelity remains judgment.',
+    'Declared source mirrors name one aliased store file, an allowed mirror_type, checksum syntax and, unless indexed, some body content; fidelity remains judgment.',
   sources: [KB, 'standards-source-mirrors.md'],
   mechanical: {
     level: 'WARN',

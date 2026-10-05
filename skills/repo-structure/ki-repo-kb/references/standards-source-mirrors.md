@@ -23,7 +23,7 @@ A mirror keeps its zone's appropriate `note_type`. Its frontmatter carries:
 
 None of these fields proves that a private source exists or is currently available.
 
-The body states what the file is and records the durable facts a reader would otherwise open it for. Link canonical knowledge rather than duplicating private detail with no enduring use. Do not copy or Git-track the binary. Except for `indexed` mirrors, keep a minimum of 40 body words after excluding frontmatter, headings, inline Markdown links, wikilinks, link definitions, bare HTTP URLs and HTML comments. This deliberately low diagnostic threshold catches pointers; the `NOTE-4` judgment assesses actual usefulness and fidelity.
+The body states what the file is and records the durable facts a reader would otherwise open it for. Link canonical knowledge rather than duplicating private detail with no enduring use. Do not copy or Git-track the binary. `mirror_type` is the author's claim about the body: a short source warrants a short summary, so no length is required. Except for `indexed` mirrors, the body must contain some text beyond frontmatter, headings, inline Markdown links, wikilinks, link definitions, bare HTTP URLs, inline code, label-only lines such as `Source:` and HTML comments; an empty body is a pointer under the wrong type. The `NOTE-4` judgment assesses actual usefulness and fidelity.
 
 A coverage or index note that lists many source files is an ordinary note, not a mirror, and carries no mirror fields.
 
@@ -38,13 +38,13 @@ The pure [classifier](../scripts/internal/source-mirrors.ts) accepts parsed top-
 `mirror_content` is derived response metadata, never required authored frontmatter:
 
 - **null** — no mirror field is present in a well-formed note; it is an ordinary or derived note.
-- **extract** — all three mirror fields pass the declaration checks, `mirror_type` is not `indexed`, and the body meets the minimum word count.
-- **pointer** — all three mirror fields pass, but the mirror is `indexed` or its body is below the minimum word count.
+- **extract** — all three mirror fields pass the declaration checks, `mirror_type` is not `indexed`, and the body has content.
+- **pointer** — all three mirror fields pass, but the mirror is `indexed` or its body has no content.
 - **unknown** — YAML cannot be assessed, or a mirror field is present but the path, type or checksum declaration is missing, wrongly typed or invalid.
 
 Responses also carry `mirrors`, `mirror_type` and `mirror_sha256` as declared values or null. Invalid declarations remain `unknown`; consumers must not present them as a verified source location. The classifier exposes `word_count` and `issues` for diagnostics. The label cannot attest source existence, authorisation, checksum match or freshness, substantive accuracy, or complete coverage of unlabelled legacy mirrors. Owner review remains necessary. A valid-looking forged checksum passes syntax only.
 
-Labels operate only over authorised Markdown, after zone and access checks and before snippets or engine expansion. No label reader opens, hashes, follows, crawls or resolves a source store. A selected-checkout audit must skip symlinked note files and directories. `NOTE-4` warns on declared mirrors with invalid declarations or, except for `indexed` mirrors, insufficient text, and reports not applicable where the sources role is absent; it never fails merely for mirror quality.
+Labels operate only over authorised Markdown, after zone and access checks and before snippets or engine expansion. No label reader opens, hashes, follows, crawls or resolves a source store. A selected-checkout audit must skip symlinked note files and directories. `NOTE-4` warns on declared mirrors with invalid declarations or, except for `indexed` mirrors, an empty body, and reports not applicable where the sources role is absent; it never fails merely for mirror quality.
 
 ## Per-base enrichment work
 

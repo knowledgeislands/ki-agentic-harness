@@ -117,7 +117,7 @@ Frontmatter mechanics and note-authoring judgment.
   - _Review prompt:_ Are facts sourced and analysis labelled according to the base convention?
   - _Outcomes:_ conforming; note revision; convention revision
   - _Conforming guidance:_ Add evidence or labels according to the base convention; do not manufacture sources.
-- **NOTE-4 [M + J] — substantive source mirrors** — Declared source mirrors name one aliased store file, an allowed mirror_type, checksum syntax and, unless indexed, a minimum extract; fidelity remains judgment. (standards-knowledge-base.md, standards-source-mirrors.md)
+- **NOTE-4 [M + J] — substantive source mirrors** — Declared source mirrors name one aliased store file, an allowed mirror_type, checksum syntax and, unless indexed, some body content; fidelity remains judgment. (standards-knowledge-base.md, standards-source-mirrors.md)
   - _Remediation:_ diagnostic — Have the base owner reconcile mirror provenance and durable extracts; never open a source store during this audit.
   - _Evidence scope:_ Sampled declared source mirrors and the base-owned enrichment record.
   - _Review prompt:_ Does each extract carry the durable facts a reader would otherwise open the binary for, without private detail of no enduring use? Are fidelity and checksum freshness verified only under base authority?
