@@ -147,10 +147,10 @@ Optional main-branch protection.
 
 → [standard](standards-repository.md)
 
-Dependabot and branch freshness.
+Dependabot security updates without auto-merge, and branch freshness.
 
-- **DEP-1 [M] — Dependabot and branch freshness** — Dependabot alerts and updates are enabled and pull-request branches may be updated. (standards-repository.md)
-  - _Remediation:_ diagnostic — Enable the required Dependabot and branch-update settings or record an explicit override, then rerun the audit.
+- **DEP-1 [M] — Dependabot and branch freshness** — Dependabot alerts and security updates are enabled, no workflow auto-merges dependency pull requests, and pull-request branches may be updated. (standards-repository.md)
+  - _Remediation:_ diagnostic — Enable the required Dependabot and branch-update settings, remove any Dependabot auto-merge workflow and version-update configuration, then rerun the audit.
 
 ## SEC — Secret protection
 

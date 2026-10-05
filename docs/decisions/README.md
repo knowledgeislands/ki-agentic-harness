@@ -79,6 +79,7 @@ The records are living, compact, and independent. The order below is a **curated
 50. [GDR-KI-HARNESS-011](GDR-KI-HARNESS-011-versioned-source-installation-for-mcp-servers.md) — versioned Git source installation for MCP servers without mandatory package publication.
 51. [GDR-KI-HARNESS-012](GDR-KI-HARNESS-012-governed-vendoring-for-shared-estate-code.md) — digested skill-owned source profiles with receiver-owned seams and guarded projection.
 52. [ADR-KI-HARNESS-SKILLS-015](ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) — identifier scope segments accept any declared repository code that carries a letter.
+53. [XDR-KI-HARNESS-001](XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md) — Dependabot alerts and security updates everywhere; no version-update configuration and no dependency auto-merge.
 
 ## Template
 

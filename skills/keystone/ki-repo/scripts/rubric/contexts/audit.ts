@@ -1213,6 +1213,8 @@ async function auditRepo(
   } catch {
     warn('DEP-1', 'could not read allow_update_branch')
   }
+  for (const finding of dependabotPolicyFindings(signals.tree))
+    (finding.level === 'FAIL' ? fail : warn)('DEP-1', finding.message, finding.subject)
   // SEC-1: secret scanning + push protection (public).
   if (r.visibility === 'PUBLIC' && (enforced('secret-scanning') || enforced('push-protection'))) {
     try {
@@ -1246,6 +1248,36 @@ async function auditRepo(
 // The agent runtimes the bootstrap linkers know how to install for. A repo may
 // declare a subset in `[skills.ki-repo] supported_runtimes`; anything outside this set has no
 // discovery path, so the linker would silently do nothing for it (RUNTIMES-1).
+// DEP-1 file policy: Dependabot is a security signal, not an update channel. A workflow
+// named for Dependabot auto-merge FAILs (unreviewed dependency merges are a supply-chain
+// risk); a Dependabot configuration file WARNs, since it may tune security updates only.
+// Routine version updates come from `bun run ki:deps:update`.
+const DEPENDABOT_CONFIG = /^\.github\/dependabot\.ya?ml$/u
+const DEPENDABOT_AUTO_MERGE_WORKFLOW = /^\.github\/workflows\/[^/]*dependabot[^/]*auto-?merge[^/]*\.ya?ml$/iu
+export const dependabotPolicyFindings = (tree: ReadonlySet<string>): RepoEvidenceFinding[] =>
+  [...tree].sort().flatMap((path): RepoEvidenceFinding[] => {
+    if (DEPENDABOT_AUTO_MERGE_WORKFLOW.test(path))
+      return [
+        {
+          level: 'FAIL',
+          code: 'DEP-1',
+          message: 'Dependabot auto-merge workflow present — remove it; dependency PRs need human review',
+          subject: path
+        }
+      ]
+    if (DEPENDABOT_CONFIG.test(path))
+      return [
+        {
+          level: 'WARN',
+          code: 'DEP-1',
+          message:
+            'Dependabot version-update configuration present — routine updates come from `bun run ki:deps:update`; keep it only to tune security updates',
+          subject: path
+        }
+      ]
+    return []
+  })
+
 export const KNOWN_RUNTIMES = ['claude-code', 'claude-desktop', 'chatgpt-codex']
 const LOCAL_SELF_SOURCE = '.agents/skills/ki-self'
 const CLAUDE_SELF_PROJECTION = '.claude/skills/ki-self'

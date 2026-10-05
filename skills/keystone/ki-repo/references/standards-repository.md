@@ -173,11 +173,13 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 | Setting                             | Value | Scope                                                          |
 | ----------------------------------- | ----- | -------------------------------------------------------------- |
 | Dependabot alerts                   | On    | All repos                                                      |
-| Dependabot security updates         | On    | All repos (each ships a `dependabot-auto-merge.yml`)           |
+| Dependabot security updates         | On    | All repos                                                      |
 | Always suggest updating PR branches | On    | All repos (`allow_update_branch`; keeps PRs current with base) |
 | Secret scanning                     | On    | Public repos (plan-limited on private — out of scope)          |
 | Secret-scanning push protection     | On    | Public repos                                                   |
 | Actions `allowed_actions`           | `all` | All repos (CI pulls marketplace actions like setup-bun)        |
+
+Dependabot is a security signal, not an update channel. Every repository, knowledge bases included, keeps alerts and security updates on. Routine version updates come from the repository's `bun run ki:deps:update` run, which a human reviews like any other change, so a repository carries no Dependabot version-update configuration (`.github/dependabot.yml`). No repository carries a workflow that auto-merges dependency pull requests: an unreviewed merge would carry a compromised upstream release straight to `main`. DEP-1 fails a workflow named for Dependabot auto-merge and warns on a Dependabot configuration file, which may legitimately tune security updates only.
 
 ## Visibility
 

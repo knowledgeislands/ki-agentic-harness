@@ -4,12 +4,12 @@ area: GOV
 title: Forbid Dependabot auto-merge
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: f0666f8bc52e82046cfc539e30c7dbf416c1173a
-created_at: 2026-10-05T11:00:00Z
-updated_at: 2026-10-05T11:00:00Z
+created_at: 2026-10-05T10:25:00Z
+updated_at: 2026-10-05T10:42:23Z
 ---
 
 # KI-HARNESS-GOV-137: Forbid Dependabot auto-merge
@@ -39,11 +39,11 @@ Out of scope: removing the files from the seven repositories (each receiving rep
 
 ## Steps
 
-- [ ] Add `XDR-KI-HARNESS-001` recording the policy and index it in `docs/decisions/README.md`.
-- [ ] Rewrite the Layer 3 Dependabot rows in `standards-repository.md`, add a short policy paragraph, and correct the exemplar row and SKILL summary.
-- [ ] Add an exported pure helper `dependabotPolicyFindings(tree)` in `audit.ts`, call it from DEP-1, and update DEP-1 wording in `items/dependencies.ts`; regenerate `references/rubric.md`.
-- [ ] Add `dependabot-policy.test.ts` covering FAIL, WARN, and clean trees.
-- [ ] Run the verification below.
+- [x] Add `XDR-KI-HARNESS-001` recording the policy and index it in `docs/decisions/README.md`.
+- [x] Rewrite the Layer 3 Dependabot rows in `standards-repository.md`, add a short policy paragraph, and correct the exemplar row and SKILL summary.
+- [x] Add an exported pure helper `dependabotPolicyFindings(tree)` in `audit.ts`, call it from DEP-1, and update DEP-1 wording in `items/dependencies.ts`; regenerate `references/rubric.md`.
+- [x] Add `dependabot-policy.test.ts` covering FAIL, WARN, and clean trees.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -96,3 +96,41 @@ None.
 ### Decision
 
 Owner decision (b), 2026-10-05: Dependabot alerts and security updates on for every repository; Dependabot version-update configuration and every auto-merge workflow removed; routine updates through `bun run ki:deps:update`.
+
+## Review
+
+### Delivered
+
+The `ki-repo` contract now treats Dependabot as a security signal only: alerts and security updates stay bedrock FAIL checks, DEP-1 fails any `.github/workflows/` file named for Dependabot auto-merge and warns on `.github/dependabot.yml` or `.yaml`, and the standard, SKILL summary and exemplars no longer require or cite an auto-merge workflow. `XDR-KI-HARNESS-001` records the owner's policy (b).
+
+### Change Summary
+
+- `docs/decisions/XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md` and its index entry in `docs/decisions/README.md`.
+- `skills/keystone/ki-repo/references/standards-repository.md`: Layer 3 row corrected and a policy paragraph added.
+- `skills/keystone/ki-repo/SKILL.md` and `references/exemplars.md`: summary and exemplar wording.
+- `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts`: exported pure `dependabotPolicyFindings(tree)`, called from DEP-1 against the audited tree (local checkout or GitHub default branch).
+- `skills/keystone/ki-repo/scripts/rubric/items/dependencies.ts` and generated `references/rubric.md`: DEP-1 wording and remediation.
+- `skills/keystone/ki-repo/scripts/rubric/contexts/dependabot-policy.test.ts`: four cases.
+
+No deviation from the plan.
+
+### Verification
+
+- Focused test `dependabot-policy.test.ts`: 4 pass.
+- `bunx tsc --noEmit`: clean. `bunx biome check skills/keystone/ki-repo/scripts`: clean (infos only).
+- `ki repo audit --progress never`: PASS, 32 skills.
+- `bun run test`: 858 pass, 5 fail - all five are 5 s or 10 s timeouts in `repository.test.ts` and session tests. The same file at baseline `c19e358d` in a clean worktree failed six timeouts under the same machine load, so they are pre-existing load-sensitive timeouts, not regressions.
+- Estate effect: the seven receiving repositories removed both files and each passes `ki repo audit`.
+
+### Outstanding concerns
+
+- Load-sensitive test timeouts in `repository.test.ts` predate this item and are not addressed here.
+- A renamed auto-merge workflow escapes the file-name check; left to REVIEW judgment as planned.
+
+### Post-change review
+
+Goal met within the stated boundary; alerts and security-update checks are unchanged, and the new checks are additive and file-name based, so regression risk is limited to repositories that still carry the files, which the estate no longer does. Ready for acceptance.
+
+### Mini recap
+
+Delivered the standard change, check, test and security DR. Learning route: consider a REVIEW prompt for workflows that call `gh pr merge --auto` under another name; no automatic promotion.
