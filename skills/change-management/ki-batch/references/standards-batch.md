@@ -77,11 +77,13 @@ Prefer this commit topology when repository state permits:
 
 This produces `N + 2` commits without weakening per-item evidence. Stop or park only the affected item, and continue solely where independence is proven. Append a concise ledger row for every admitted item, including a park or stop.
 
+An isolated delegated workspace may start from an older commit than the batch baseline, such as the commit the coordinating session began on. Prove each delegate's starting commit equals the recorded baseline, or fast-forward it there, before implementation begins; otherwise its result commit diverges from the evidence the ledger claims.
+
 ## 5. Verify and close
 
-Run focused checks during each item cycle. After all deliverable items reach `awaiting-review`, run one aggregate repository gate. `completion_target: awaiting-review` stops there for normal human review.
+Run focused checks during each item cycle. After all deliverable items reach `awaiting-review`, run one aggregate repository gate. A check that depends on untracked local state, such as gitignored skill activations or a registry that knows only the primary checkout's path, can fail in an isolated workspace while the repository is sound. Record that failure as environmental, never as a pass, and treat the aggregate gate on the integrated checkout as its authoritative result. `completion_target: awaiting-review` stops there for normal human review.
 
-For `completion_target: done`, recheck every item's current review packet and aggregate evidence, then invoke `ki-accept` once for consolidated acceptance of the full named set. Partial closure is not covered by the authorisation: park the unresolved item and stop closure, or prepare a later separately authorised batch.
+For `completion_target: done`, recheck every item's current review packet and aggregate evidence, then invoke `ki-accept` once for consolidated acceptance of the full named set. Append each item's ledger row with the result the record will hold at closure: `ki repo batch run` refuses `awaiting-review` for an item whose record is already `done`. Partial closure is not covered by the authorisation: park the unresolved item and stop closure, or prepare a later separately authorised batch.
 
 Record non-blocking improvements as receiver-owned candidates for the next wave. Do not reopen delivered records or widen the active set. Pruning is never implied.
 
