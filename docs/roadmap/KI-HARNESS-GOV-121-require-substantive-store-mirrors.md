@@ -4,12 +4,12 @@ area: GOV
 title: Require substantive store mirrors
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:50:13Z
+updated_at: 2026-10-05T11:58:45Z
 ---
 
 # KI-HARNESS-GOV-121: Require substantive store mirrors
@@ -56,15 +56,15 @@ kit-principal's convention, promoted into `ki-repo-kb`, and the pointer-only-mir
 
 ## Steps
 
-- [ ] Add `## Source mirrors` to `standards-knowledge-base.md`: applicability by `store_roles`; the `source_path` and `source_sha256` contract; extract content (what the binary is, the facts a reader would otherwise open it for, links to canonical knowledge rather than duplicated private detail); identity by field rather than `note_type`; the distinction from an acquisition "source note"; and the expected per-base enrichment record (inventory the store against its mirrors, add or extend extracts and checksums, record controlled groups, no binary in Git).
-- [ ] Point onboarding item 2 in the same file, the sources-store binding in `SKILL.md`, `mode-save.md` step 3 and `mode-query.md` step 2 at the new section, replacing their one-line descriptions rather than restating the rule.
-- [ ] Publish the pure classifier in `scripts/internal/source-mirrors.ts` and `references/standards-source-mirrors.md`: recognize `source_path` and `source_sha256`, require safe store-relative paths and 64 hexadecimal characters, count at least 40 body words after removing frontmatter, headings, links and HTML comments, return unknown on malformed or incomplete provenance, and do not follow sources. Fixtures cover links/headings-only, forged metadata, ordinary notes, missing checksums and substantive extracts.
-- [ ] In `scripts/rubric/contexts/kb.ts`, read `[skills.ki-repo].store_roles` from the already parsed `.ki.toml`, and during the existing frontmatter walk collect notes carrying `source_path`; record a `NOTE-4` check: `PASS` with "not applicable" when `sources` is not declared; `WARN` naming each mirror whose `source_sha256` is absent or not 64 hexadecimal characters; `WARN` naming each mirror whose body, after frontmatter, headings and links are removed, holds fewer than 40 words; `PASS` otherwise. Expose it as `notes.sourceMirrors`.
-- [ ] Add `NOTE_4` to `scripts/rubric/items/notes.ts`, sourced to `standards-knowledge-base.md`, mechanical level `WARN` with diagnostic remediation, and a judgment asking whether each sampled extract carries the facts a reader would otherwise open the binary for without private detail of no enduring use.
-- [ ] Extend `scripts/rubric/items/index.test.ts`: add `NOTE-4` to the expected code list and the judgment count, and add fixtures for no `sources` role, a pointer-only mirror, a missing checksum and a substantive mirror.
-- [ ] Update the counts in `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` for one new criterion.
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-repo-kb`.
-- [ ] Raise no trade from this repository: its `.ki.toml` forbids formal `ki-trades` routes to personal, legal and other company groups. Each receiving base already holds a draft enrichment record citing this item (kit-principal `KIT-013`, kit-legal `KIT-LEGAL-EVD-005`, kit-techmedix `TMX-KB-003`, vallearmonia-principal `VA-PRINCIPAL-KNW-001`, er-research `ER-RESEARCH-011`) and picks up the published standard through ordinary skill refresh. Record the delivered commit here so those records can cite it.
+- [x] Add `## Source mirrors` to `standards-knowledge-base.md`: applicability by `store_roles`; the `source_path` and `source_sha256` contract; extract content (what the binary is, the facts a reader would otherwise open it for, links to canonical knowledge rather than duplicated private detail); identity by field rather than `note_type`; the distinction from an acquisition "source note"; and the expected per-base enrichment record (inventory the store against its mirrors, add or extend extracts and checksums, record controlled groups, no binary in Git).
+- [x] Point onboarding item 2 in the same file, the sources-store binding in `SKILL.md`, `mode-save.md` step 3 and `mode-query.md` step 2 at the new section, replacing their one-line descriptions rather than restating the rule.
+- [x] Publish the pure classifier in `scripts/internal/source-mirrors.ts` and `references/standards-source-mirrors.md`: recognize `source_path` and `source_sha256`, require safe store-relative paths and 64 hexadecimal characters, count at least 40 body words after removing frontmatter, headings, links and HTML comments, return unknown on malformed or incomplete provenance, and do not follow sources. Fixtures cover links/headings-only, forged metadata, ordinary notes, missing checksums and substantive extracts.
+- [x] In `scripts/rubric/contexts/kb.ts`, read `[skills.ki-repo].store_roles` from the already parsed `.ki.toml`, and during the existing frontmatter walk collect notes carrying `source_path`; record a `NOTE-4` check: `PASS` with "not applicable" when `sources` is not declared; `WARN` naming each mirror whose `source_sha256` is absent or not 64 hexadecimal characters; `WARN` naming each mirror whose body, after frontmatter, headings and links are removed, holds fewer than 40 words; `PASS` otherwise. Expose it as `notes.sourceMirrors`.
+- [x] Add `NOTE_4` to `scripts/rubric/items/notes.ts`, sourced to `standards-knowledge-base.md`, mechanical level `WARN` with diagnostic remediation, and a judgment asking whether each sampled extract carries the facts a reader would otherwise open the binary for without private detail of no enduring use.
+- [x] Extend `scripts/rubric/items/index.test.ts`: add `NOTE-4` to the expected code list and the judgment count, and add fixtures for no `sources` role, a pointer-only mirror, a missing checksum and a substantive mirror.
+- [x] Update the counts in `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` for one new criterion.
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-repo-kb`.
+- [x] Raise no trade from this repository: its `.ki.toml` forbids formal `ki-trades` routes to personal, legal and other company groups. Each receiving base already holds a draft enrichment record citing this item (kit-principal `KIT-013`, kit-legal `KIT-LEGAL-EVD-005`, kit-techmedix `TMX-KB-003`, vallearmonia-principal `VA-PRINCIPAL-KNW-001`, er-research `ER-RESEARCH-011`) and picks up the published standard through ordinary skill refresh. Record the delivered commit here so those records can cite it.
 
 ## Files touched
 
@@ -149,4 +149,34 @@ A pointer-only mirror is cheap to detect and expensive to miss once search ranks
 
 Canonical standards, pure classifier and native NOTE-4 are published in `e71a769f779d3d45ac03886dd9dfc57e2b3d7489`. Strict YAML parsing plus the shared conservative raw grammar reject duplicate, quoted/escaped-key, merge, flow, alias and other ambiguous provenance; malformed notes in a declared-sources base warn unknown rather than earning a positive complete-provenance claim. Shared store-role metadata selects applicability without sibling-table validation. Synthetic fixtures skip external symlink files/directories and never resolve a source store.
 
-Required full test gate remains red: idle run 863 pass / 9 fixture timeouts / 2 asynchronous cleanup errors; independent unchanged repository-context file reproduces 45 pass / 8 timeouts / 3 cleanup errors. These local-content fixtures invoke pre-existing GitHub checks before filtering findings. No timeout widening or acceptance bypass is applied. Focused source tests, TypeScript and all applicable synthetic/standards audits pass; final handoff waits correction and the required full gate.
+At intermediate publication the required full test gate remained red: idle run 863 pass / 9 fixture timeouts / 2 asynchronous cleanup errors; independent unchanged repository-context file reproduces 45 pass / 8 timeouts / 3 cleanup errors. These local-content fixtures invoke pre-existing GitHub checks before filtering findings. No timeout widening or acceptance bypass is applied. Focused source tests, TypeScript and all applicable synthetic/standards audits pass; The separate necessary repair and successful required gate are recorded below.
+
+## Review
+
+### Delivered
+
+The full shared substantive source-mirror standard, receiver-owned enrichment shape, derived label classifier and mechanical-plus-judgment NOTE-4 are delivered. Source-store applicability is explicit; acquired upstream source notes remain distinct. Initial publication `e71a769f779d3d45ac03886dd9dfc57e2b3d7489`, strict/shared-metadata correction `357c094f2cbafb4232756740a24b74919dc22bf4`, entry-point correction `7247129d97b3b21c1521b23f1362d41c6e072d2b`, and separate verification prerequisite `b953cb28d06715396692169ac28ae0392e3d664e` form the reviewed source delivery from baseline `00b4b56181a44a2bf77e0a10836e83429f5b62f6`.
+
+### Change Summary
+
+The normative mirror contract defines safe declared source paths, typed 64-hex checksums, useful extracts, the 40-word mechanical floor and per-base enrichment ownership without binary crawling or a new note type. A pure Node-neutral helper derives null/extract/pointer/unknown; extract attests declaration syntax and minimum words only. Strict parsing and shared raw eligibility reject ambiguous provenance consistently across NOTE-4 and consumers. Malformed notes warn unknown; symlink files/directories stay excluded. Shared store_roles metadata selects applicability without sibling-table validation. The generated rubric and inventory counts include NOTE-4.
+
+Owned KB paths include SKILL, standards-knowledge-base, standards-source-mirrors, QUERY/SAVE, source-mirrors helper/tests, native KB context, notes/config criterion definitions and native fixtures, plus the generated rubric and remediation inventory. Search consumers receive exact schema/fixtures and byte-vendor the final helper (`427930c35888981bad777a3da9e7cc71023d145dc4fa8da8b3f0bc5caa99065d`). Receiver-owned enrichment remains outside this record; no live/private mirrors or source stores were touched.
+
+### Verification
+
+Combined source candidate `b953cb28d06715396692169ac28ae0392e3d664e`: `bun run test` passed 874 tests across 144 files in 27.80 seconds, with zero failures; `bunx tsc --noEmit` passed. Sequential focused audits passed for the synthetic KB fixture (four resolved KB skills), `ki-tokenomics`, `ki-decision-records`, `ki-authoring`, `ki-skills` and `ki-engineering`. The pure helper also passes strict consumer TypeScript flags, and the final focused source set passed 26 tests. Logs and exact ownership/digests are retained under `/tmp/ki-harness-qmd-pilot-20261005-runtime/logs/`; the full successful gate is `harness-test-repaired.log`.
+
+The initial model-contended full run failed; the idle run reproduced nine timeouts and two cleanup errors. Independent unchanged repository-context tests reproduced eight timeouts and three cleanup errors. Byte predicates prove baseline audit/test identity (audit SHA-256 `9ea1d1ab676494d4c8dd6f053dc1cdb2d84ae59ea3ae0dc5ef47139a94409863`; test SHA-256 `f3d93e7116f3800b986bf3de1699177758e341f39489020675858c30ec7a68e2`). Root authorised the separate necessary repair `b953cb28`: local-content auditing now prevents hosted checks before execution, retains local Dependabot policy findings, and leaves default hosted audits intact. Two scoped public-collector fixtures prove zero local provider calls and all six hosted API requests; all 55 repository/collector tests passed in 3.37 seconds. No skipped tests or timeout changes were used.
+
+### Outstanding concerns
+
+No blocking source or required-gate concern remains. Historical per-base and route observations were not refreshed through private KB reads. Receiver-owned implementation, provisioning and enrichment retain their own acceptance authority. No push, registry publication, private indexing, provider mutation or live binding occurred.
+
+### Post-change review
+
+Independent reviewer approved clean `e71a769f`, rebound to the shared-metadata and strict-TypeScript corrections, and approved exact `b953cb28` repair/combined source. Evidence includes native mirror confinement and ambiguous-provenance assertions, 104 embedded-evidence predicates, scoped collector tests and the root's independent 115 original-pilot predicates. This packet is the final documentation transition; root and reviewer bind their terminal review to its clean commit before acceptance. Five unrelated ki-repo-tools paths remain byte-identical and have zero delivery diff; 25 owned paths are recorded in the runtime ownership evidence. The approved batch marker remains until root's Done boundary.
+
+### Mini recap
+
+Local direct-to-main delivery is committed and verified. Source contracts and synthetic evidence are published; root owns acceptance and subsequent pruning. No new work or fleet migration was admitted to the batch.

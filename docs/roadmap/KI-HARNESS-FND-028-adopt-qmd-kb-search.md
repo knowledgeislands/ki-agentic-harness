@@ -4,12 +4,12 @@ area: FND
 title: Adopt qmd KB search
 theme: foundation-tooling
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:50:13Z
+updated_at: 2026-10-05T11:58:45Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
@@ -53,12 +53,12 @@ Excluded: metadata frontmatter for qmd filtering, indexing binary source stores 
 
 ## Steps
 
-- [ ] Pilot (step one, time-boxed to one hour): install qmd locally per its README and record the version; index task-owned synthetic Alpha and Omega corpora as two separate named indexes with explicit unique trust boundaries; ask eight to ten synthetic questions of each method, qmd CLI (`qmd --index <name> query <question> --json`) against grep plus reads; record per question whether the right note was found, the characters of context returned, and wall time. Record the results and an explicit go or no-go with its reason in a `## Pilot result` section of this record. Delete the pilot indexes afterwards; the models may stay in the local cache.
-- [ ] On no-go: add qmd with the pilot evidence to the "Declined" list in `ADR-KI-HARNESS-TOOLCHAIN-002`, apply only the snippet-first tokenomics guidance below (which does not depend on qmd), mark the remaining steps not applicable, and stop.
-- [ ] On go: write `docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md` (new; take the next free serial at authoring time) adopting qmd as a rebuildable derived index reached only through KI surfaces, citing the pilot, the localhost-only daemon, named indexes per trust boundary, and the rejected direct-agent and per-client-SDK shapes. Add it to `docs/decisions/README.md` and add qmd to "Adopted" in `ADR-KI-HARNESS-TOOLCHAIN-002` with its pinned upstream link; the decision directory index links the new adoption decision without creating a prohibited forward citation in the older record.
-- [ ] On go: rewrite `mode-query.md` steps 1 and 2: use `kb_search` (or `ki kb search` on the shell) when bound; search exact identifiers literally; read returned line ranges rather than whole files; cite repository paths, never qmd docids; fall back to grep and targeted reads when no search surface is available.
-- [ ] Add a short "Retrieval" section to `standards-tokenomics.md`: prefer snippet or line-range retrieval to whole-file reads, measure retrieved context in the same terms as standing surfaces, and route search-surface design to `ki-repo-mcp` and `ki-repo-kb`.
-- [ ] On go: publish the pinned qmd request/response, per-registry-KB trust-boundary and derived mapping contract in `ki-repo-kb/references/standards-search.md`; coordinate tools-ki and mcp-ki-kb-fs consumers under the current explicit user scope. Preserve historical route facts; create no trade or live runtime binding.
+- [x] Pilot (step one, time-boxed to one hour): install qmd locally per its README and record the version; index task-owned synthetic Alpha and Omega corpora as two separate named indexes with explicit unique trust boundaries; ask eight to ten synthetic questions of each method, qmd CLI (`qmd --index <name> query <question> --json`) against grep plus reads; record per question whether the right note was found, the characters of context returned, and wall time. Record the results and an explicit go or no-go with its reason in a `## Pilot result` section of this record. Delete the pilot indexes afterwards; the models may stay in the local cache.
+- [x] No-go branch assessed as not applicable after functional go: add qmd with the pilot evidence to the "Declined" list in `ADR-KI-HARNESS-TOOLCHAIN-002`, apply only the snippet-first tokenomics guidance below (which does not depend on qmd), mark the remaining steps not applicable, and stop.
+- [x] On go: write `docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md` (new; take the next free serial at authoring time) adopting qmd as a rebuildable derived index reached only through KI surfaces, citing the pilot, the localhost-only daemon, named indexes per trust boundary, and the rejected direct-agent and per-client-SDK shapes. Add it to `docs/decisions/README.md` and add qmd to "Adopted" in `ADR-KI-HARNESS-TOOLCHAIN-002` with its pinned upstream link; the decision directory index links the new adoption decision without creating a prohibited forward citation in the older record.
+- [x] On go: rewrite `mode-query.md` steps 1 and 2: use `kb_search` (or `ki kb search` on the shell) when bound; search exact identifiers literally; read returned line ranges rather than whole files; cite repository paths, never qmd docids; fall back to grep and targeted reads when no search surface is available.
+- [x] Add a short "Retrieval" section to `standards-tokenomics.md`: prefer snippet or line-range retrieval to whole-file reads, measure retrieved context in the same terms as standing surfaces, and route search-surface design to `ki-repo-mcp` and `ki-repo-kb`.
+- [x] On go: publish the pinned qmd request/response, per-registry-KB trust-boundary and derived mapping contract in `ki-repo-kb/references/standards-search.md`; coordinate tools-ki and mcp-ki-kb-fs consumers under the current explicit user scope. Preserve historical route facts; create no trade or live runtime binding.
 
 ## Files touched
 
@@ -113,7 +113,7 @@ None in this repository. A user-facing search guide belongs with the tools-ki or
 
 ### Roadmap
 
-None in this repository beyond the outbound trades.
+No formal trade was emitted. Receiving repositories retain their own records and authority under the current explicit scope.
 
 ## Discussion
 
@@ -141,4 +141,34 @@ Each explicitly configured operator-managed loopback daemon owns one KB trust bo
 
 **Go for optional derived retrieval behind explicitly provisioned KI surfaces.** qmd 2.8.3 at `facd35e01359e59d938bc9418e93fb9318addee3` ran two independent synthetic Alpha/Omega indexes, ten question instances per corpus. The [durable report](../decisions/references/qmd-synthetic-pilot.md) and [complete JSON](../decisions/references/qmd-synthetic-pilot.json) retain every per-question finding, exact characters/bytes and wall time, original and improved grep baselines, supplementary predeclarations, protocol frames and cleanup.
 
-Both methods found 16/16 expected notes on the original instances; qmd had no observed quality, context or latency advantage. The four predeclared paraphrases yielded qmd 4/4 and bounded literal grep 0/4. This limited semantic capability and verified isolation/protocol correctness justify availability, not a production performance claim. The actual explicit-local-GGUF probe passed. The stopped endpoint produced connection refusal; indexes/configs and synthetic projections were removed, with task-owned model cache and reproducibility logs retained. Required idle suite and exact independent review remain pending; this intermediate publication is not acceptance.
+Both methods found 16/16 expected notes on the original instances; qmd had no observed quality, context or latency advantage. The four predeclared paraphrases yielded qmd 4/4 and bounded literal grep 0/4. This limited semantic capability and verified isolation/protocol correctness justify availability, not a production performance claim. The actual explicit-local-GGUF probe passed. The stopped endpoint produced connection refusal; indexes/configs and synthetic projections were removed, with task-owned model cache and reproducibility logs retained. The intermediate publication did not claim acceptance; the final verification and independent review are recorded below.
+
+## Review
+
+### Delivered
+
+Optional qmd adoption, QUERY/snippet-first retrieval and the discoverable pinned search/mapping/result contract are delivered. The complete ten-instance-per-corpus synthetic pilot is published in decision supporting material. Initial publication `e71a769f779d3d45ac03886dd9dfc57e2b3d7489`, strict/shared-metadata correction `357c094f2cbafb4232756740a24b74919dc22bf4`, entry-point correction `7247129d97b3b21c1521b23f1362d41c6e072d2b`, and separate verification prerequisite `b953cb28d06715396692169ac28ae0392e3d664e` form the reviewed source delivery from baseline `00b4b56181a44a2bf77e0a10836e83429f5b62f6`.
+
+### Change Summary
+
+Adopt pinned qmd 2.8.3 as optional derived retrieval behind KI gateways, with explicit independent registered-KB boundaries, private fresh projections and one KB per operator-managed daemon. URI/hash mapping, locally reconstructed snippets/citations, typed REST protocol, untrusted engine text, missing-model/error states and unauthenticated loopback limitations are explicit. QUERY keeps literal exact identifiers and grep/targeted-read fallback; tokenomics measures actual returned units without budget changes. ADR/decision index/current adoptions retain backward-only decision citation rules.
+
+The original sixteen instances gave both methods 16/16 expected-note retrieval, with qmd slower and returning more median context. All results, the initial substring baseline and stronger whole-word baseline remain recorded. Four predeclared supplementary paraphrases gave qmd 4/4 and bounded literal grep 0/4. This supports functional availability only, with no private/large-scale or efficiency claim. Actual local GGUF paths and endpoint-unavailable behavior are captured; task-owned synthetic indexes/configs/projections were removed and only documented cache/source/logs retained.
+
+### Verification
+
+Combined source candidate `b953cb28d06715396692169ac28ae0392e3d664e`: `bun run test` passed 874 tests across 144 files in 27.80 seconds, with zero failures; `bunx tsc --noEmit` passed. Sequential focused audits passed for the synthetic KB fixture (four resolved KB skills), `ki-tokenomics`, `ki-decision-records`, `ki-authoring`, `ki-skills` and `ki-engineering`. The pure helper also passes strict consumer TypeScript flags, and the final focused source set passed 26 tests. Logs and exact ownership/digests are retained under `/tmp/ki-harness-qmd-pilot-20261005-runtime/logs/`; the full successful gate is `harness-test-repaired.log`.
+
+The initial model-contended full run failed; the idle run reproduced nine timeouts and two cleanup errors. Independent unchanged repository-context tests reproduced eight timeouts and three cleanup errors. Byte predicates prove baseline audit/test identity (audit SHA-256 `9ea1d1ab676494d4c8dd6f053dc1cdb2d84ae59ea3ae0dc5ef47139a94409863`; test SHA-256 `f3d93e7116f3800b986bf3de1699177758e341f39489020675858c30ec7a68e2`). Root authorised the separate necessary repair `b953cb28`: local-content auditing now prevents hosted checks before execution, retains local Dependabot policy findings, and leaves default hosted audits intact. Two scoped public-collector fixtures prove zero local provider calls and all six hosted API requests; all 55 repository/collector tests passed in 3.37 seconds. No skipped tests or timeout changes were used.
+
+### Outstanding concerns
+
+No blocking source or required-gate concern remains. Historical per-base and route observations were not refreshed through private KB reads. Receiver-owned implementation, provisioning and enrichment retain their own acceptance authority. No push, registry publication, private indexing, provider mutation or live binding occurred.
+
+### Post-change review
+
+Independent reviewer approved clean `e71a769f`, rebound to the shared-metadata and strict-TypeScript corrections, and approved exact `b953cb28` repair/combined source. Evidence includes native mirror confinement and ambiguous-provenance assertions, 104 embedded-evidence predicates, scoped collector tests and the root's independent 115 original-pilot predicates. This packet is the final documentation transition; root and reviewer bind their terminal review to its clean commit before acceptance. Five unrelated ki-repo-tools paths remain byte-identical and have zero delivery diff; 25 owned paths are recorded in the runtime ownership evidence. The approved batch marker remains until root's Done boundary.
+
+### Mini recap
+
+Local direct-to-main delivery is committed and verified. Source contracts and synthetic evidence are published; root owns acceptance and subsequent pruning. No new work or fleet migration was admitted to the batch.
