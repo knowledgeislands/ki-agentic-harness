@@ -59,7 +59,7 @@ Validate-down `[skills.ki-repo-kb]` configuration and zone aliases.
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
 - **CONFIG-3 [M] — canonical zone alias keys** — Every [skills.ki-repo-kb.zones] key names a canonical zone or staging area. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
-- **CONFIG-4 [M] — KB configuration boundary** — The checker reads and validates only the ki-repo-kb table, leaving every sibling table untouched. (standards-knowledge-base.md)
+- **CONFIG-4 [M] — KB configuration boundary** — The checker validates only the ki-repo-kb table; shared ki-repo store_roles metadata selects mirror applicability without validating sibling tables. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
 - **CONFIG-5 [M] — declared preflight paths** — Literal preflight paths resolve under the base; globs remain runtime-resolved. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.

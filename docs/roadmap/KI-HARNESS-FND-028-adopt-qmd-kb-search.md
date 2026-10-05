@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:40:01Z
+updated_at: 2026-10-05T11:50:13Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
@@ -55,7 +55,7 @@ Excluded: metadata frontmatter for qmd filtering, indexing binary source stores 
 
 - [ ] Pilot (step one, time-boxed to one hour): install qmd locally per its README and record the version; index task-owned synthetic Alpha and Omega corpora as two separate named indexes with explicit unique trust boundaries; ask eight to ten synthetic questions of each method, qmd CLI (`qmd --index <name> query <question> --json`) against grep plus reads; record per question whether the right note was found, the characters of context returned, and wall time. Record the results and an explicit go or no-go with its reason in a `## Pilot result` section of this record. Delete the pilot indexes afterwards; the models may stay in the local cache.
 - [ ] On no-go: add qmd with the pilot evidence to the "Declined" list in `ADR-KI-HARNESS-TOOLCHAIN-002`, apply only the snippet-first tokenomics guidance below (which does not depend on qmd), mark the remaining steps not applicable, and stop.
-- [ ] On go: write `docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md` (new; take the next free serial at authoring time) adopting qmd as a rebuildable derived index reached only through KI surfaces, citing the pilot, the localhost-only daemon, named indexes per trust boundary, and the rejected direct-agent and per-client-SDK shapes. Add it to `docs/decisions/README.md` and add qmd to "Adopted" in `ADR-KI-HARNESS-TOOLCHAIN-002` with a link.
+- [ ] On go: write `docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md` (new; take the next free serial at authoring time) adopting qmd as a rebuildable derived index reached only through KI surfaces, citing the pilot, the localhost-only daemon, named indexes per trust boundary, and the rejected direct-agent and per-client-SDK shapes. Add it to `docs/decisions/README.md` and add qmd to "Adopted" in `ADR-KI-HARNESS-TOOLCHAIN-002` with its pinned upstream link; the decision directory index links the new adoption decision without creating a prohibited forward citation in the older record.
 - [ ] On go: rewrite `mode-query.md` steps 1 and 2: use `kb_search` (or `ki kb search` on the shell) when bound; search exact identifiers literally; read returned line ranges rather than whole files; cite repository paths, never qmd docids; fall back to grep and targeted reads when no search surface is available.
 - [ ] Add a short "Retrieval" section to `standards-tokenomics.md`: prefer snippet or line-range retrieval to whole-file reads, measure retrieved context in the same terms as standing surfaces, and route search-surface design to `ki-repo-mcp` and `ki-repo-kb`.
 - [ ] On go: publish the pinned qmd request/response, per-registry-KB trust-boundary and derived mapping contract in `ki-repo-kb/references/standards-search.md`; coordinate tools-ki and mcp-ki-kb-fs consumers under the current explicit user scope. Preserve historical route facts; create no trade or live runtime binding.
@@ -77,7 +77,7 @@ Excluded: metadata frontmatter for qmd filtering, indexing binary source stores 
 
 1. This record holds a `## Pilot result` section with the qmd version, both corpora, eight to ten questions, per-question found or not found, context size and time for both methods, and a one-line go or no-go with its reason.
 2. On no-go: `ADR-KI-HARNESS-TOOLCHAIN-002` lists qmd under "Declined" with a link to this record, no new Decision Record exists, and `mode-query.md` is unchanged.
-3. On go: the new Decision Record passes `ki repo audit --skill ki-decision-records`, is indexed in `docs/decisions/README.md`, and `ADR-KI-HARNESS-TOOLCHAIN-002` links it from "Adopted".
+3. On go: the new Decision Record passes `ki repo audit --skill ki-decision-records`, is indexed in `docs/decisions/README.md`, and `ADR-KI-HARNESS-TOOLCHAIN-002` names the optional adoption and links the pinned upstream engine; the directory index links the new decision, preserving backward-only decision citations.
 4. On go: `mode-query.md` names `kb_search`, exact-identifier search, line-range reads, repository-path citations and the grep fallback, and names no qmd command or docid.
 5. `standards-tokenomics.md` holds the retrieval guidance and no budget value changes.
 6. No daemon is exposed beyond localhost, no remote service is configured, and only task-owned local pilot runtime directories outside this repository are written; no private KB, provider, route, live binding or source store is touched. Named indexes and synthetic projections are removed after the pilot; model cache retention is recorded.

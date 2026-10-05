@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:09:05Z
+updated_at: 2026-10-05T11:50:13Z
 ---
 
 # KI-HARNESS-GOV-121: Require substantive store mirrors
@@ -77,6 +77,7 @@ kit-principal's convention, promoted into `ki-repo-kb`, and the pointer-only-mir
 - `skills/repo-structure/ki-repo-kb/references/mode-save.md`
 - `skills/repo-structure/ki-repo-kb/references/mode-query.md`
 - `skills/repo-structure/ki-repo-kb/scripts/rubric/contexts/kb.ts`
+- `skills/repo-structure/ki-repo-kb/scripts/rubric/items/config.ts` (shared metadata applicability wording)
 - `skills/repo-structure/ki-repo-kb/scripts/rubric/items/notes.ts`
 - `skills/repo-structure/ki-repo-kb/scripts/rubric/items/index.test.ts`
 - `skills/repo-structure/ki-repo-kb/references/rubric.md` (generated)
@@ -143,3 +144,9 @@ The extract should state what the binary is, the facts a reader would otherwise 
 ### Why a word floor rather than a judgment-only check
 
 A pointer-only mirror is cheap to detect and expensive to miss once search ranks by content. The 40-word floor is a deliberately low mechanical tripwire for the pointer case; whether an extract is good enough remains the `NOTE-4` judgment. The threshold lives in the standard so a later review can tune it without changing the contract.
+
+## Delivery progress
+
+Canonical standards, pure classifier and native NOTE-4 are published in `e71a769f779d3d45ac03886dd9dfc57e2b3d7489`. Strict YAML parsing plus the shared conservative raw grammar reject duplicate, quoted/escaped-key, merge, flow, alias and other ambiguous provenance; malformed notes in a declared-sources base warn unknown rather than earning a positive complete-provenance claim. Shared store-role metadata selects applicability without sibling-table validation. Synthetic fixtures skip external symlink files/directories and never resolve a source store.
+
+Required full test gate remains red: idle run 863 pass / 9 fixture timeouts / 2 asynchronous cleanup errors; independent unchanged repository-context file reproduces 45 pass / 8 timeouts / 3 cleanup errors. These local-content fixtures invoke pre-existing GitHub checks before filtering findings. No timeout widening or acceptance bypass is applied. Focused source tests, TypeScript and all applicable synthetic/standards audits pass; final handoff waits correction and the required full gate.

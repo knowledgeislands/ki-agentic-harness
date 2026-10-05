@@ -56,7 +56,7 @@ const CONFIG_3 = mechanical(
 const CONFIG_4 = mechanical(
   'CONFIG-4',
   'KB configuration boundary',
-  'The checker reads and validates only the ki-repo-kb table, leaving every sibling table untouched.',
+  'The checker validates only the ki-repo-kb table; shared ki-repo store_roles metadata selects mirror applicability without validating sibling tables.',
   (context) => context.boundary
 )
 const CONFIG_5 = mechanical(

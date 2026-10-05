@@ -20,9 +20,12 @@ export const ambiguousMirrorFrontmatter = (raw: string): boolean => {
       continue
     }
     const match = /^([a-z][a-z0-9_]*)\s*:\s*(.*)$/.exec(line)
-    if (!match || seen.has(match[1])) return true
-    seen.add(match[1])
-    if (['source_path', 'source_sha256'].includes(match[1]) && (/^[&*!>|[{]/.test(match[2]) || match[2].includes('\\')))
+    if (!match || seen.has(match[1]!)) return true
+    seen.add(match[1]!)
+    if (
+      ['source_path', 'source_sha256'].includes(match[1]!) &&
+      (/^[&*!>|[{]/.test(match[2]!) || match[2]!.includes('\\'))
+    )
       return true
   }
   return false
@@ -58,8 +61,8 @@ export const classifySourceMirror = ({
   if (malformed || (frontmatter !== undefined && ambiguousMirrorFrontmatter(frontmatter)))
     return { ...empty, mirror_content: 'unknown', issues: ['malformed or unsupported frontmatter'] }
   if (!fields || (!Object.hasOwn(fields, 'source_path') && !Object.hasOwn(fields, 'source_sha256'))) return empty
-  const path = typeof fields.source_path === 'string' ? fields.source_path : null
-  const checksum = typeof fields.source_sha256 === 'string' ? fields.source_sha256 : null
+  const path = typeof fields['source_path'] === 'string' ? fields['source_path'] : null
+  const checksum = typeof fields['source_sha256'] === 'string' ? fields['source_sha256'] : null
   const issues: string[] = []
   if (
     !path ||

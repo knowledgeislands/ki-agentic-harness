@@ -72,7 +72,7 @@ Pillars = "<local folder name>"
 Rules, following the `.ki.toml` contract:
 
 - **Resolve every zone reference through the alias.** When the table maps a zone to a local folder, read, route, and write that zone at the mapped folder; the routing test, memory cascade, and digest paths all use the resolved folder.
-- **Validate down, ignore across.** Warn on an unrecognised key under `[skills.ki-repo-kb]` (a typo or stale option should surface) and advise dropping one that merely restates a default (a zone mapped to its own canonical name). Never read or validate another skill's table.
+- **Validate down, ignore across.** Warn on an unrecognised key under `[skills.ki-repo-kb]` (a typo or stale option should surface) and advise dropping one that merely restates a default (a zone mapped to its own canonical name). Do not validate another skill's table. Consume the shared `[skills.ki-repo].store_roles` declaration only to select source-mirror applicability; its owner retains validation authority.
 - **Transitional or standing.** A zone alias may record an in-progress rename — removed once the base reaches the canonical folder name — or a permanent local naming choice the base keeps. Either way it is a folder-name mapping, never a change to the zone model itself.
 
 ## Session digest structure

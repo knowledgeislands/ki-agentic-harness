@@ -25,7 +25,7 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 **house-code** (personal tool) — a daemon cleaner that prunes stale conversation content (old file reads, completed todos, resolved errors) every few turns. Complementary to headroom-ai: headroom compacts what is present, house-code removes what is no longer relevant.
 
-**qmd** — optional derived KB retrieval behind governed KI surfaces. Explicitly provisioned independent KB indexes preserve repository knowledge authority; the bounded synthetic pilot demonstrates retrieval and limited paraphrase capability but no efficiency advantage on its original tiny corpus. No automatic install, binding or private indexing follows from adoption. The [dedicated qmd derived-search decision](ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) owns the full constraints.
+**[qmd](https://github.com/tobi/qmd/tree/facd35e01359e59d938bc9418e93fb9318addee3)** — optional derived KB retrieval behind governed KI surfaces. Explicitly provisioned independent KB indexes preserve repository knowledge authority; the bounded synthetic pilot demonstrates retrieval and limited paraphrase capability but no efficiency advantage on its original tiny corpus. No automatic install, binding or private indexing follows from adoption. The dedicated qmd derived-search decision, indexed in the decision directory, owns the full constraints.
 
 ### Available, not governed
 

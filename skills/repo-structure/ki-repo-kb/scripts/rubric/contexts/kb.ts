@@ -296,7 +296,12 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
     if (Object.keys(config.zones).length === 0) {
       add('PASS', 'CONFIG-2', 'No redundant zone aliases.', CONFIG)
       add('PASS', 'CONFIG-3', 'All zone aliases are canonical.', CONFIG)
-      add('PASS', 'CONFIG-4', 'Only the ki-repo-kb table was inspected.', CONFIG)
+      add(
+        'PASS',
+        'CONFIG-4',
+        'Only ki-repo-kb configuration was validated; shared store_roles metadata selects mirror applicability.',
+        CONFIG
+      )
     }
     const missing = config.preflight.filter((path) => !/[*?[\]]/.test(path) && !existsSync(join(root, path)))
     if (missing.length) add('WARN', 'CONFIG-5', `Declared preflight paths are missing: ${sample(missing)}.`, CONFIG)
