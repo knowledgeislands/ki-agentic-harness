@@ -54,7 +54,6 @@ import { scenarios as liveArtifactsScenarios } from './scenarios/ki-repo-kb-live
 import { scenarios as housekeepingScenarios } from './scenarios/ki-housekeeping-claude.ts'
 import { scenarios as bindingScenarios } from './scenarios/ki-binding.ts'
 import { scenarios as specsScenarios } from './scenarios/ki-specs.ts'
-import { scenarios as pluginsScenarios } from './scenarios/ki-repo-plugins.ts'
 import { scenarios as pulseScenarios } from './scenarios/ki-pulse.ts'
 import { scenarios as paperclipCoordinationScenarios } from './scenarios/ki-agent-coordination-paperclip.ts'
 
@@ -87,7 +86,6 @@ const ALL: Scenario[] = [
   ...liveArtifactsScenarios,
   ...housekeepingScenarios,
   ...bindingScenarios,
-  ...pluginsScenarios,
   ...pulseScenarios,
   ...paperclipCoordinationScenarios
 ]

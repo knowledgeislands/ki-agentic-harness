@@ -18,15 +18,11 @@ afterEach(() => {
 test('the Claude catalogue is independently complete', () => {
   expect(catalogue.contract).toBe(1)
   expect(catalogue.name).toBe('ki-binding-claude')
-  expect(catalogue.packageScripts).toEqual(['ki:binding:claude:build-plugin'])
-  expect(catalogue.families[0]?.items.map((item) => item.code)).toEqual([
-    'CLAUDEBIND-1',
-    'CLAUDEBIND-2',
-    'CLAUDEBIND-J1'
-  ])
+  expect('packageScripts' in catalogue).toBe(false)
+  expect(catalogue.families[0]?.items.map((item) => item.code)).toEqual(['CLAUDEBIND-1', 'CLAUDEBIND-J1'])
 })
 
-test('Cowork changes remain diagnostic without Cowork-specific external-edit authority', () => {
+test('Claude binding changes remain diagnostic apart from rubric publication', () => {
   const items = catalogue.families.flatMap((family) => family.items as readonly unknown[]) as readonly {
     code: string
     mechanical?: { remediation: { class: string } }

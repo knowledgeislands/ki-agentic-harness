@@ -49,7 +49,6 @@ The current `audit.ts` / `conform.ts` pair is therefore the initial executable b
 | `ki-repo-homebrew-tap` | Inspect tap structure | Conform tap files | Domain writer before authoring normalisation. |
 | `ki-repo-kb` | Inspect KB structure | Conform KB root/index | Consumes KB family outputs before roadmap projection. |
 | `ki-repo-mcp` | Inspect MCP surface | Conform MCP files | Domain writer before authoring normalisation. |
-| `ki-repo-plugins` | Inspect plugin layout | Conform plugin files | Domain writer before authoring normalisation. |
 | `ki-repo-specifications` | Inspect specification layout | Conform specification files | Domain writer before authoring normalisation. |
 | `ki-repo-tools` | Inspect tools layout | Conform tool files | Domain writer before authoring normalisation. |
 | `ki-repo-website` | Inspect website layout | Conform website files | Domain writer before authoring normalisation. |

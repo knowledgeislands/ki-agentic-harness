@@ -4,12 +4,12 @@ area: GOV
 title: Keep plugin projection current
 theme: governance-consistency
 horizon: now
-status: ready
+status: done
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: c19e358d5f8cbd8cb3b45a664507309f43fbb3dd
 created_at: 2026-09-25T08:50:34Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-05T11:12:24Z
 ---
 
 # KI-HARNESS-GOV-093: Keep plugin projection current
@@ -20,7 +20,7 @@ A change to a canonical skill reaches `ki-plugins` without a person remembering 
 
 ## Context
 
-`ki-plugins` is a generated, lossy projection of this repository, produced by `ki:binding:claude:build-plugin` and never hand-edited (ADR-KI-HARNESS-005). Nothing fails when it falls behind its source.
+`ki-plugins` is a generated, lossy projection of this repository, produced by `ki:binding:claude:build-plugin` and never hand-edited (ADR-KI-HARNESS-002; earlier text cited ADR-KI-HARNESS-005 in error). Nothing fails when it falls behind its source.
 
 `ADR-KI-HARNESS-SKILLS-015` relaxed the decision-record and specification identifier grammars in `ki-decision-records` and `ki-specs` on 2026-09-25. Repositories resolving skills from this checkout picked the change up immediately; any consumer resolving them through the published plugin still enforces the old alpha-leading rule, and would reject an identifier this repository now calls well-formed. The divergence was noticed in conversation rather than reported by a check.
 
@@ -40,11 +40,7 @@ Verified on `main` at `19651664`. `skills/environment/ki-binding-claude/scripts/
 
 ## Steps
 
-- [ ] Raise a trade to `ki-plugins` for the `ADR-KI-HARNESS-SKILLS-015` regeneration and every later skill change: one regeneration commit from `bun run ki:binding:claude:build-plugin <ki-plugins checkout>` at current `main`, naming this harness revision. The owner lifts the pause there; nothing in this record writes to `ki-plugins`.
-- [ ] Add `--check` to `build-plugin.ts`: build the manifest into a fresh `mkdtemp` scratch directory, compare every generated path's digest with the given output directory, print each added, removed or changed path, exit `1` on any difference or when the output directory or its generated paths are absent, exit `0` when identical, and never write the output directory. Reject `--check` combined with `--dry-run`.
-- [ ] Add tests to `build-plugin.test.ts`: two builds of the same source produce identical digests (determinism); `--check` passes against a freshly built output; changing one projected skill file in the source fixture makes `--check` fail and name that path; the output directory's bytes and mtimes are unchanged by `--check`.
-- [ ] Add the package script `ki:binding:claude:check-plugin` running `bun skills/environment/ki-binding-claude/scripts/build-plugin.ts --check`.
-- [ ] Add the check to the Verification bullet in `AGENTS.md` for changes touching `skills/` or `subagents/governance/`, with the `ki-plugins` checkout path resolved from `ki registry list`; and add one sentence to the Cowork paragraph of `references/standards-claude-binding.md` that a stale projection is detected by `--check`.
+- [x] Close as superseded by [KI-HARNESS-RTP-016](KI-HARNESS-RTP-016-retire-claude-plugin-projection.md): the projection this record would have checked is retired under `ADR-KI-HARNESS-015`, so none of the planned steps (preserved under Discussion) was executed.
 
 ## Files touched
 
@@ -92,6 +88,36 @@ None.
 
 None.
 
+## Review
+
+### Delivered
+
+Nothing from the approved plan. On 2026-10-05 Kris retired `ki-plugins` ("lets just get rid of it, its 1 less thing to think about"); the projection, its builder and the trade target this record depended on no longer exist. The record closes as superseded by [KI-HARNESS-RTP-016](KI-HARNESS-RTP-016-retire-claude-plugin-projection.md) and `ADR-KI-HARNESS-015`; its baseline records the revision at closure, and execution never began.
+
+### Change Summary
+
+No file in this record's Files touched list was changed for it. RTP-016 deletes `build-plugin.ts`, `build-plugin.test.ts` and the `ki:binding:claude:build-plugin` script, which removes the drift this record would have checked. This record's Context and Out of scope cited `ADR-KI-HARNESS-005`; the owning decision is `ADR-KI-HARNESS-002`.
+
+### Verification
+
+None run for this record; RTP-016 carries the retirement gates.
+
+### Outstanding concerns
+
+None. No `ki-plugins` regeneration trade was raised, so none needs withdrawing.
+
+### Post-change review
+
+The goal, keeping a published projection current, has no remaining subject. Closing rather than leaving it Ready prevents a later session from implementing a check against a retired repository.
+
+### Mini recap
+
+Superseded, not delivered. Learning route: a generated projection without a failing drift check went stale and was retired rather than repaired; `ADR-KI-HARNESS-015` records that any reinstated projection must name its drift check.
+
+## Done
+
+Accepted 2026-10-05 by Kris Brown on the review packet above.
+
 ## Discussion
 
 Three candidate routes, to be chosen at triage rather than assumed here.
@@ -109,3 +135,11 @@ Whichever route wins, the immediate regeneration carrying `ADR-KI-HARNESS-SKILLS
 Route 2: a failing drift check that regenerates the projection into scratch and compares it, with the `ADR-KI-HARNESS-SKILLS-015` regeneration as the first step. Decided by the Fable reviewer under delegated autonomy, reversible.
 
 A failing drift check that regenerates the projection into scratch and compares, with the `ADR-KI-HARNESS-SKILLS-015` regeneration done first. The check runs in this repository's documented verification gate rather than a pre-commit hook, because a hook that fails on a missing or paused sibling checkout would block unrelated commits.
+
+### Original plan (not executed)
+
+- Raise a trade to `ki-plugins` for the `ADR-KI-HARNESS-SKILLS-015` regeneration and every later skill change: one regeneration commit from `bun run ki:binding:claude:build-plugin <ki-plugins checkout>` at current `main`, naming this harness revision. The owner lifts the pause there; nothing in this record writes to `ki-plugins`.
+- Add `--check` to `build-plugin.ts`: build the manifest into a fresh `mkdtemp` scratch directory, compare every generated path's digest with the given output directory, print each added, removed or changed path, exit `1` on any difference or when the output directory or its generated paths are absent, exit `0` when identical, and never write the output directory. Reject `--check` combined with `--dry-run`.
+- Add tests to `build-plugin.test.ts`: two builds of the same source produce identical digests (determinism); `--check` passes against a freshly built output; changing one projected skill file in the source fixture makes `--check` fail and name that path; the output directory's bytes and mtimes are unchanged by `--check`.
+- Add the package script `ki:binding:claude:check-plugin` running `bun skills/environment/ki-binding-claude/scripts/build-plugin.ts --check`.
+- Add the check to the Verification bullet in `AGENTS.md` for changes touching `skills/` or `subagents/governance/`, with the `ki-plugins` checkout path resolved from `ki registry list`; and add one sentence to the Cowork paragraph of `references/standards-claude-binding.md` that a stale projection is detected by `--check`.

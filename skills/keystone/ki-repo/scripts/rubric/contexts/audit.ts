@@ -665,14 +665,6 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
     detect: (s) => pkgHasDep(s.pkg, '@modelcontextprotocol/sdk') || pkgHasDep(s.pkg, '@modelcontextprotocol/server')
   },
   {
-    skill: 'plugins',
-    table: skillTable('ki-repo-plugins'),
-    artifact: '.claude-plugin/marketplace.json',
-    detect: (s) =>
-      s.tree.has('.claude-plugin/marketplace.json') ||
-      [...s.tree].some((p) => p.endsWith('/.claude-plugin/marketplace.json'))
-  },
-  {
     skill: 'specifications',
     table: skillTable('ki-repo-specifications'),
     artifact: 'proposals/ + specifications/ + schemas/',

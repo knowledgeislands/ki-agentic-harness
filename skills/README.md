@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 61 skills: 51 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 60 skills: 50 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -253,7 +253,7 @@ Audit or conform the chezmoi rendering path from canonical KI `mcp-servers.yaml`
 
 #### `ki-binding-claude`
 
-Audit or safely conform Claude-native MCP configuration across Claude Code, Desktop, web conventions, and the KI Cowork plugin projection. Use when Claude MCP surfaces drift or Cowork needs rebuilding; `ki-binding` owns portable source and `ki-binding-chatgpt` owns Codex.
+Audit or safely conform Claude-native MCP configuration across Claude Code, Claude Desktop, and the claude.ai web convention. Use when Claude MCP surfaces drift; `ki-binding` owns portable source and `ki-binding-chatgpt` owns Codex.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -461,7 +461,7 @@ Audit or conform the universal KI repository contract declared by `.ki.toml`, in
 
 - **Kind:** Governance
 - **Applicability:** Baseline
-- **Detects:** `ki-checkpoint`, `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-plugins`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`
+- **Detects:** `ki-checkpoint`, `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`
 - **Arguments:** `audit | conform <repo> | educate <repo> | help | refresh | review [scope] | review close <REV-NNN>`
 - **Dependencies:** `ki-authoring`, `ki-git`
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
@@ -566,16 +566,6 @@ Audit or scaffold KI MCP server code for source-release readiness, workspace-MCP
 - **Applicability:** Detected
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** `ki-engineering`
-- **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
-
-#### `ki-repo-plugins`
-
-Audit or scaffold the generated KI Claude plugin marketplace: manifests, copied skills, flattened agents, deferred MCP configuration, and generated integrity. Use `ki-binding-claude` for generation or Cowork enablement and `ki-repo` for universal files.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
-- **Dependencies:** None
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
 
 #### `ki-repo-project`

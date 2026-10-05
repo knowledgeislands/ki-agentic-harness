@@ -28,13 +28,13 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 
 The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names relate) is fixed in its own decision; here the point is that the single `ki-` namespace spans repositories and the artefacts alike.
 
-**Harness vs plugin.** An **agentic harness** is a dev-time source bundle co-locating those parts, each installed by its own native mechanism. A Claude **plugin/marketplace** — a GitHub repo carrying `.claude-plugin/marketplace.json`, per-plugin `.claude-plugin/plugin.json`, `.mcp.json`, and bundled `skills/`/`agents/` — is a **distributable, lossy, per-surface projection** of that source: skills and agents port into it as files; host-local MCP servers do not, because Cowork's gVisor sandbox cannot reach them. The harness is the source; a plugin is one surface's packaging of it — produced by projecting that single source onto each surface, never something the harness "becomes".
+**Harness vs plugin.** An **agentic harness** is a dev-time source bundle co-locating those parts, each installed by its own native mechanism. A Claude **plugin/marketplace** — a GitHub repo carrying `.claude-plugin/marketplace.json`, per-plugin `.claude-plugin/plugin.json`, `.mcp.json`, and bundled `skills/`/`agents/` — is a **distributable, lossy, per-surface projection** of that source: skills and agents port into it as files; host-local MCP servers do not, because Cowork's gVisor sandbox cannot reach them. The harness is the source; a plugin is one surface's packaging of it — produced by projecting that single source onto each surface, never something the harness "becomes". Knowledge Islands currently maintains no plugin projection: the `ki` CLI and the skills-only `npx skills add` route distribute the harness, and the former `ki-plugins` marketplace is retired.
 
 ## Consequences
 
 - Repository names are self-describing: a `ki-` repo is framework-level unless its name marks a territory (`ki-arcadia-principal`), and the framework/base split is legible from the org listing alone.
 - The bundle stays the single source of truth. Distribution to any surface is a projection performed by binding, not a fork or a rewrite; nothing "becomes" a plugin.
-- The projection is understood to be lossy per surface: skills and agents travel as files; host-local MCP servers need separate sandbox-portability work before they reach Cowork. A surface receiving fewer parts is expected, not a defect.
+- Any projection is understood to be lossy per surface: skills and agents travel as files, while host-local MCP servers need separate portability work before a sandboxed surface can reach them. A surface receiving fewer parts is expected, not a defect.
 - Decisions about a given surface's enablement have one reasoning home — binding and the cross-surface design record — rather than being scattered across per-surface scripts.
 
 ## References

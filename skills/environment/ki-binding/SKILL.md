@@ -42,6 +42,6 @@ Explain this portable boundary and stop without changing anything.
 
 ## Runtime bindings and renderer composition
 
-- `ki-binding-claude` owns Claude Code, Desktop, Cowork, web convention, and the plugin builder.
+- `ki-binding-claude` owns Claude Code, Desktop, and the web convention.
 - `ki-binding-chatgpt` owns Codex TOML comparison and the merge-safe native renderer.
 - `ki-binding-chezmoi` composes this root with `ki-repo-dotfiles-chezmoi` for a renderer-specific source-repository path.

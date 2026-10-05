@@ -9,7 +9,7 @@ blocks: [KI-HARNESS-GOV-103]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-05T08:19:22Z
+updated_at: 2026-10-05T10:45:00Z
 ---
 
 # KI-HARNESS-GOV-102: Decide role record serialization
@@ -38,7 +38,7 @@ The accepted coordination-lane delivery reached this question and declined it on
 
 In scope: whether `ki-subagents` defines a record serialization of its own; if so its shape, discovery rule, and the stated relation between a record and its projections; the partition between record fields and projection fields; and consequently whether `ki repo audit --skill ki-subagents` gains anything mechanical or remains wholly judgment, since `PORTABLE-1` to `PORTABLE-3` and `HOST-1` are all `[J]` today.
 
-Out of scope: the role records delivered under the accepted coordination-lane delivery, which conform to the contract as it currently stands and are not to be reshaped by this question; the flat plugin projection in `ki-plugins`, governed by `KI-HARNESS-GOV-093`; adopting the Codex projection in this repository, declined in `.ki.toml`; and the content of any individual role record.
+Out of scope: the role records delivered under the accepted coordination-lane delivery, which conform to the contract as it currently stands and are not to be reshaped by this question; the retired `ki-plugins` plugin projection (`ADR-KI-HARNESS-015`); adopting the Codex projection in this repository, declined in `.ki.toml`; and the content of any individual role record.
 
 Decided 2026-10-05 under delegated owner authority: **keep the fusion and say so.** The record is carried by exactly one designated primary projection, the `ki-subagents-claude` Markdown file; any other projection corresponds to it and never establishes the record. `ADR-KI-HARNESS-AGENTS-002` is amended in place under the living-record rule in `ki-decision-records`, not superseded. No native serialization and no derived normal form are introduced, and `PORTABLE-1` to `PORTABLE-3` and `HOST-1` stay judgment criteria.
 
@@ -105,7 +105,7 @@ None. `subagents/README.md` is updated as a step above; no guide describes role 
 
 ### Roadmap
 
-Unblocks [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md). The flat plugin projection in `ki-plugins`, owned by [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md), is unaffected because the primary file remains its source.
+Unblocks [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md).
 
 ## Discussion
 

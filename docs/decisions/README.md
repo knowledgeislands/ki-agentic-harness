@@ -81,6 +81,7 @@ The records are living, compact, and independent. The order below is a **curated
 52. [ADR-KI-HARNESS-SKILLS-015](ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) — identifier scope segments accept any declared repository code that carries a letter.
 53. [XDR-KI-HARNESS-001](XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md) — Dependabot alerts and security updates everywhere; no version-update configuration and no dependency auto-merge.
 54. [ADR-KI-HARNESS-TOOLCHAIN-006](ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) — optional qmd derived search behind governed KI surfaces, with explicit independent KB boundaries.
+55. [ADR-KI-HARNESS-015](ADR-KI-HARNESS-015-retire-the-claude-plugin-projection.md) — retire the Claude plugin projection; the `ki` CLI and `npx skills add` distribute the harness.
 
 ## Template
 

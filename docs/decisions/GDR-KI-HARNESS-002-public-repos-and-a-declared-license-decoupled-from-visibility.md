@@ -11,7 +11,7 @@ decision_type: governance
 
 ## Context
 
-The `ki-repo` standard coupled license to visibility: a public repo had to carry MIT, a private repo a proprietary LICENSE and `"UNLICENSED"` in `package.json`. That coupling baked a policy into the checker — "public means MIT" — and left no way for a repo to be public under a different license, or to state its license as an explicit fact. Separately, the earlier direction kept `ki-repo-plugins` private; but the harness is the source and the plugin set is its projection ([ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-the-ki-naming-model-and-harness-as-source-vs-plugin-as-projection.md)), and a governance skill set is only useful if it can be installed from source — which wants public repos.
+The `ki-repo` standard coupled license to visibility: a public repo had to carry MIT, a private repo a proprietary LICENSE and `"UNLICENSED"` in `package.json`. That coupling baked a policy into the checker — "public means MIT" — and left no way for a repo to be public under a different license, or to state its license as an explicit fact. Separately, an earlier direction kept the plugin projection private; but the harness is the source ([ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-the-ki-naming-model-and-harness-as-source-vs-plugin-as-projection.md)), and a governance skill set is only useful if it can be installed from source — which wants public repos.
 
 ## Decision
 
@@ -19,7 +19,7 @@ Knowledge Islands repos are **public by default** (installable from source), and
 
 - `["knowledgeislands/ki-agentic-harness:ki-repo"]` gains a `license` field — an SPDX id (e.g. `MIT`, `Apache-2.0`), or `UNLICENSED`/`proprietary` for all-rights-reserved — **defaulting to MIT** when unset. choosealicense.com is the picker and the REFRESH source.
 - The `license`, `license-file`, and `package-license` checks verify that the **live GitHub license, the `LICENSE` file, and `package.json` `"license"` all match the declared-or-default id**. A proprietary declaration expects no recognised OSI license on GitHub and `"UNLICENSED"` in `package.json`.
-- Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary — `ki-repo-plugins`, for one, is public with a proprietary license declared, and the audit passes it.
+- Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary, and the audit passes it when that license is declared.
 
 ## Consequences
 

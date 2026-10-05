@@ -59,43 +59,6 @@ const CLAUDEBIND_1: RubricItem<ClaudeBindingContext> = {
     }
   }
 }
-const CLAUDEBIND_2: RubricItem<ClaudeBindingContext> = {
-  code: 'CLAUDEBIND-2',
-  title: 'Cowork registration remains unavailable without product-specific evidence',
-  description: 'Cowork registration is recorded separately from source projection, activation, and runtime health.',
-  sources: source,
-  mechanical: {
-    level: 'WARN',
-    remediation: {
-      class: 'diagnostic',
-      guidance:
-        'Obtain a product-specific Cowork external-edit and next-launch evidence contract before automating settings changes.'
-    },
-    audit: {
-      phase: 'INSPECT',
-      run: ({ cowork, coworkBase }) =>
-        !cowork.length
-          ? [
-              {
-                status: 'INFO',
-                message:
-                  'No Cowork workspace settings were found; registration, activation, and runtime health are unavailable.',
-                subject: coworkBase
-              }
-            ]
-          : cowork.map((file) => ({
-              status: file.status === 'unsafe' ? ('VIOLATION' as const) : ('INFO' as const),
-              message:
-                file.status === 'unsafe'
-                  ? 'Cowork settings are unsafe or unreadable.'
-                  : file.status === 'already'
-                    ? 'Cowork registration is present; activation and runtime health remain unavailable.'
-                    : 'Cowork registration is absent; automatic repair is unsupported without product-specific authority.',
-              subject: file.subject
-            }))
-    }
-  }
-}
 const CLAUDEBIND_J1: RubricItem<ClaudeBindingContext> = {
   code: 'CLAUDEBIND-J1',
   title: 'Web convention is intentional',
@@ -112,8 +75,8 @@ const CLAUDEBIND_J1: RubricItem<ClaudeBindingContext> = {
 export const CLAUDEBIND: RubricFamily<ClaudeBindingContext, ClaudeBindingContext> = {
   code: 'CLAUDEBIND',
   title: 'Claude binding',
-  description: 'Claude-native JSON definition, Cowork-registration, and unavailable-runtime evidence.',
+  description: 'Claude-native JSON definition and unavailable-runtime evidence.',
   standard: 'standards-claude-binding.md',
   selectContext: (context) => context,
-  items: [CLAUDEBIND_1, CLAUDEBIND_2, CLAUDEBIND_J1]
+  items: [CLAUDEBIND_1, CLAUDEBIND_J1]
 }
