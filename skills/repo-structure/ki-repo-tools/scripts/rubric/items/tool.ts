@@ -294,7 +294,7 @@ const TOOL_CHANGELOG_FORMAT = judgment(
 const TOOL_CLI = judgment(
   'TOOL-CLI',
   'Shared CLI conventions',
-  'Root help [command], completion <shell>, share-safe diag, and read-only doctor keep their distinct roles. Owned repair is preview-first with an explicit write path; init and bootstrap appear only where meaningful. Help, completion, manual, README, guides, changelog, errors, and exit status agree, with a repository-native deterministic inventory or equivalent tests covering repeatable relationships.'
+  'Root help [command], completion <shell>, share-safe diag, and read-only doctor keep their distinct roles. Diagnostics share factual execution context with proven or unknown installation provenance; doctor reports checked scope, verdict and pass/warn/fail/skipped counts without implying package freshness. Tables adapt to terminals while preserving values and plain redirected output. Owned repair is preview-first with an explicit write path; init and bootstrap appear only where meaningful. Help, completion, manual, README, guides, changelog, errors, and exit status agree, with isolated native tests covering diagnostic redaction, provenance, health counts, table layout and repeatable command relationships.'
 )
 
 const TOOL_CI = mechanical(

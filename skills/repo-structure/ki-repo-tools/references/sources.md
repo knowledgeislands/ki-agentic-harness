@@ -32,6 +32,8 @@ The tool repositories under `knowledgeislands/` provide evidence for house style
 
 The external-spec REFRESH last ran **2026-07-30**. The targeted in-house review on **2026-10-04** compared all five tools' standing instructions and delivery/release guides, clarified shared policy versus executable local procedures, and consolidated repeated guidance. Installer verification examples now require explicit disposable executable/manual destinations, unavailable checks remain visible, and post-hook committed-path inspection belongs to `ki-git`. Repeatable CLI parity remains a native-test responsibility; static hosted audit does not execute tools or claim semantic conformance. External specifications were not re-fetched in this review.
 
+The owner-approved diagnostic review on **2026-10-05** compared all five tools' `diag` and `doctor` implementations and Rig's table renderer. It established common execution-context facts, evidence-backed local/release/unknown installation provenance, scoped health verdicts and counts, share-safe default diagnostics, and width-aware tables with lossless identifiers and deterministic redirected output. These are house conventions rather than new external requirements. Isolated repository-native fixtures own runtime proof; the hosted audit continues to report the semantic review as judgment work without launching target executables.
+
 **Open watch-items:**
 
 - Homebrew's own audit surface (`brew audit` / `brew style`, the Formula Cookbook) is tracked by the sibling `ki-repo-homebrew-tap` skill, not here — reconcile the tap-facing half there.
