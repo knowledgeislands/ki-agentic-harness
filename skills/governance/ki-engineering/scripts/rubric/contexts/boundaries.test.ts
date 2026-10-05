@@ -21,7 +21,7 @@ const fixture = () => {
     join(root, 'package.json'),
     JSON.stringify({
       devDependencies: { 'dependency-cruiser': '^18' },
-      scripts: { test: 'vitest run' }
+      scripts: { prepare: 'husky && bun install --frozen-lockfile --cwd tooling/boundaries', test: 'vitest run' }
     })
   )
   writeFileSync(
@@ -143,6 +143,18 @@ test('isolated tooling must be private, development-only and limited to its two 
   const root = fixture()
   writeFileSync(join(root, 'package.json'), JSON.stringify({ dependencies: { 'dependency-cruiser': '^18' } }))
   expect((await inspectBoundaries(root, undefined, runner()))[0]?.level).toBe('FAIL')
+})
+
+test('an ordinary install provisions the isolated toolchain, and a missing install names its remedy', async () => {
+  const root = fixture()
+  const manifest = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+  writeFileSync(join(root, 'package.json'), JSON.stringify({ ...manifest, scripts: { prepare: 'husky' } }))
+  expect((await inspectBoundaries(root, undefined, runner()))[0]?.message).toContain('prepare script')
+  const uninstalled = fixture()
+  rmSync(join(uninstalled, 'tooling/boundaries/node_modules'), { recursive: true })
+  const [finding] = await inspectBoundaries(uninstalled, undefined, runner())
+  expect(finding).toMatchObject({ level: 'FAIL' })
+  expect(finding?.message).toContain('bun install --frozen-lockfile --cwd tooling/boundaries')
 })
 
 test('baseline-only, disabled or type-blind rulesets fail before native proof execution', async () => {
@@ -289,7 +301,7 @@ const workspaceFixture = (memberTest = 'vitest run') => {
     join(root, 'package.json'),
     JSON.stringify({
       devDependencies: { 'dependency-cruiser': '^18' },
-      scripts: { test: 'turbo run test' },
+      scripts: { prepare: 'husky && bun install --frozen-lockfile --cwd tooling/boundaries', test: 'turbo run test' },
       workspaces: ['apps/*']
     })
   )

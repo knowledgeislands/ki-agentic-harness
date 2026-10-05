@@ -11,6 +11,8 @@ const execute = promisify(execFile)
 const configuration = '.dependency-cruiser.ts'
 const tooling = 'tooling/boundaries'
 const toolingManifest = 'tooling/boundaries/package.json'
+const installedChecker = `${tooling}/node_modules/dependency-cruiser`
+const installTooling = `bun install --frozen-lockfile --cwd ${tooling}`
 const baselineRules = ['no-circular', 'no-unresolvable']
 // A loaded CI runner needs headroom, but a hung checker must not hold audit indefinitely.
 const timeout = 120_000
@@ -223,9 +225,23 @@ export const inspectBoundaries = async (
           'Product source, entrypoints, build or workspaces exist but the contained .dependency-cruiser.ts ruleset is missing.'
         )
       ]
-    for (const path of [configuration, toolingManifest, `${tooling}/node_modules/dependency-cruiser`]) {
-      if (!contained(root, await realpath(join(root, path))))
-        return [finding('FAIL', `Boundary evidence escapes the repository: ${path}.`)]
+    const prepare = (pkg.scripts as Record<string, unknown> | undefined)?.prepare
+    if (typeof prepare !== 'string' || !prepare.includes(installTooling))
+      return [
+        finding(
+          'FAIL',
+          `The root prepare script must run \`${installTooling}\` so an ordinary install provisions the isolated boundary toolchain.`
+        )
+      ]
+    for (const path of [configuration, toolingManifest, installedChecker]) {
+      let resolved: string
+      try {
+        resolved = await realpath(join(root, path))
+      } catch (error) {
+        if (path !== installedChecker) throw error
+        return [finding('FAIL', `The isolated boundary toolchain is not installed; run \`${installTooling}\`.`)]
+      }
+      if (!contained(root, resolved)) return [finding('FAIL', `Boundary evidence escapes the repository: ${path}.`)]
     }
     const manifest = await readJson(join(root, toolingManifest))
     const dependencies = manifest.dependencies as Record<string, unknown> | undefined
