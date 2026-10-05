@@ -264,6 +264,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 
 - [ ] The public surface of each module is the smallest that serves its callers.
 - [ ] Interface changes are compatible, or their incompatibility is recorded.
+- [ ] The versioning or compatibility rule states when it starts to bind; before a first release, identifier bumps protect no external consumer and add churn.
 - [ ] Error paths return actionable information rather than a generic failure.
 - [ ] Input from outside the process is validated at the boundary.
 - [ ] The contract is stated somewhere a consumer will find it.
