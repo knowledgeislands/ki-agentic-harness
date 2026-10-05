@@ -827,11 +827,13 @@ async function auditRepo(
   kiText: string | null,
   readme: string | null,
   gitignore: string | null,
-  signals: Signals
+  signals: Signals,
+  evidenceMode: 'hosted' | 'content-only' = 'hosted'
 ): Promise<Finding[]> {
+  const hosted = evidenceMode === 'hosted'
   const { f, fail, warn, note } = mk()
   const pkgDesc = pkgDescription(signals.pkg)
-  if (r.isArchived) {
+  if (hosted && r.isArchived) {
     warn('ACCESS-1', 'repo is archived — skipping remaining checks')
     return f
   }
@@ -947,7 +949,7 @@ async function auditRepo(
 
   // ── layer 2: core GitHub ── GH-1
   const issuesPolicy = githubIssuesPolicy(kiText, r.nameWithOwner)
-  if (r.defaultBranchRef?.name !== DEFAULT_BRANCH)
+  if (hosted && r.defaultBranchRef?.name !== DEFAULT_BRANCH)
     fail('GH-1', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
   // License is the declared SPDX id from `[skills.ki-repo] license` (default MIT), decoupled
   // from visibility. The live GitHub license and package.json "license" must match the
@@ -958,11 +960,13 @@ async function auditRepo(
   const declaredKey = declaredLicense.toLowerCase()
   const liveKey = r.licenseInfo?.key ?? null
   // GH-2: declared license, cross-checked against live GitHub + package.json
-  if (proprietary) {
-    if (liveKey && !['other', 'noassertion', 'unlicensed'].includes(liveKey))
-      fail('GH-2', `${KI_CONFIG} declares a proprietary license but GitHub reports "${liveKey}"`)
-  } else if (liveKey !== declaredKey) {
-    fail('GH-2', `license is "${liveKey ?? 'none'}" (want ${declaredLicense} per ${KI_CONFIG})`)
+  if (hosted) {
+    if (proprietary) {
+      if (liveKey && !['other', 'noassertion', 'unlicensed'].includes(liveKey))
+        fail('GH-2', `${KI_CONFIG} declares a proprietary license but GitHub reports "${liveKey}"`)
+    } else if (liveKey !== declaredKey) {
+      fail('GH-2', `license is "${liveKey ?? 'none'}" (want ${declaredLicense} per ${KI_CONFIG})`)
+    }
   }
   if (signals.pkg != null) {
     const pkgLicense = typeof signals.pkg.license === 'string' ? signals.pkg.license : null
@@ -1021,8 +1025,8 @@ async function auditRepo(
   // GitHub and package.json when each surface exists.
   const declaredDescription = ki?.description?.trim()
   if (!declaredDescription) fail('GH-3', `${KI_CONFIG} must declare a non-empty \`description\``)
-  else if (!r.description?.trim()) fail('GH-3', 'GitHub description is empty')
-  else if (r.description.trim() !== declaredDescription)
+  else if (hosted && !r.description?.trim()) fail('GH-3', 'GitHub description is empty')
+  else if (hosted && r.description.trim() !== declaredDescription)
     fail(
       'GH-3',
       `GitHub description ≠ ${KI_CONFIG} description\n      github: ${JSON.stringify(r.description.trim())}\n      config: ${JSON.stringify(declaredDescription)}`
@@ -1033,21 +1037,24 @@ async function auditRepo(
       `package.json description ≠ ${KI_CONFIG} description\n      package.json: ${JSON.stringify(pkgDesc)}\n      config: ${JSON.stringify(declaredDescription)}`,
       'package.json'
     )
-  // MERGE-1: squash-only + auto-delete-branch.
-  if (r.mergeCommitAllowed || r.rebaseMergeAllowed || !r.squashMergeAllowed)
-    fail(
-      'MERGE-1',
-      `merge methods M/S/R = ${r.mergeCommitAllowed ? 'M' : '-'}/${r.squashMergeAllowed ? 'S' : '-'}/${r.rebaseMergeAllowed ? 'R' : '-'} (want -/S/-)`
-    )
-  if (!r.deleteBranchOnMerge) fail('MERGE-1', 'auto-delete head branch on merge is off')
+  if (hosted) {
+    // MERGE-1: squash-only + auto-delete-branch.
+    if (r.mergeCommitAllowed || r.rebaseMergeAllowed || !r.squashMergeAllowed)
+      fail(
+        'MERGE-1',
+        `merge methods M/S/R = ${r.mergeCommitAllowed ? 'M' : '-'}/${r.squashMergeAllowed ? 'S' : '-'}/${r.rebaseMergeAllowed ? 'R' : '-'} (want -/S/-)`
+      )
+    if (!r.deleteBranchOnMerge) fail('MERGE-1', 'auto-delete head branch on merge is off')
 
-  // VIS-1: visibility declared in .ki.toml, checked against live GitHub
-  const declared = ki?.visibility?.toUpperCase()
-  if (!ki) fail('VIS-1', `cannot verify visibility — ${KI_CONFIG} has no [skills.${KI_SECTION}] table (run --educate)`)
-  else if (declared !== 'PUBLIC' && declared !== 'PRIVATE')
-    fail('VIS-1', `${KI_CONFIG} does not declare a valid \`visibility\` (got ${JSON.stringify(ki.visibility)})`)
-  else if (declared !== r.visibility)
-    fail('VIS-1', `visibility is ${r.visibility} but ${KI_CONFIG} declares ${declared}`)
+    // VIS-1: visibility declared in .ki.toml, checked against live GitHub
+    const declared = ki?.visibility?.toUpperCase()
+    if (!ki)
+      fail('VIS-1', `cannot verify visibility — ${KI_CONFIG} has no [skills.${KI_SECTION}] table (run --educate)`)
+    else if (declared !== 'PUBLIC' && declared !== 'PRIVATE')
+      fail('VIS-1', `${KI_CONFIG} does not declare a valid \`visibility\` (got ${JSON.stringify(ki.visibility)})`)
+    else if (declared !== r.visibility)
+      fail('VIS-1', `visibility is ${r.visibility} but ${KI_CONFIG} declares ${declared}`)
+  }
 
   // CHECKS-1 / COV-1 / BP-1 / TOGGLE-1 / TOPICS-1 / SEC-1: per-repo overrides — a check's
   // effective state is its [..checks] value, else the org default. Surface every active
@@ -1145,102 +1152,110 @@ async function auditRepo(
       )
   }
 
-  // TOGGLE-1: GitHub Issues follows the selected adapter; Wiki and Projects stay off.
-  if (r.hasIssuesEnabled !== issuesPolicy.enabled)
-    fail(
-      'TOGGLE-1',
-      `Issues are ${r.hasIssuesEnabled ? 'enabled' : 'disabled'} (want ${issuesPolicy.enabled ? 'enabled' : 'disabled'} because [skills.ki-work-github-issues] is ${issuesPolicy.enabled ? 'declared' : 'not declared'})`
-    )
-  if (enforced('wiki') && r.hasWikiEnabled) fail('TOGGLE-1', 'Wiki is enabled (want off)')
-  if (enforced('projects') && r.hasProjectsEnabled) fail('TOGGLE-1', 'Projects are enabled (want off)')
-
-  // TOPICS-1: topics are per-repo discovery metadata, not a fixed org set. A public
-  // repo carries a non-empty topic set; where package.json declares "keywords" the two
-  // lists must agree modulo GitHub's normalisation (keywords are the in-repo source of
-  // truth and also reach any published npm package).
-  if (r.visibility === 'PUBLIC' && enforced('topics')) {
-    const topics = new Set(topicNames(r.repositoryTopics).map(normaliseTopic))
-    const keywords = new Set(pkgKeywords(signals.pkg))
-    if (topics.size === 0)
-      fail('TOPICS-1', 'no topics — set discovery topics (sync package.json "keywords" where present)')
-    else if (keywords.size) {
-      const missing = [...keywords].filter((k) => !topics.has(k))
-      const extra = [...topics].filter((t) => !keywords.has(t))
-      if (missing.length || extra.length)
-        fail(
-          'TOPICS-1',
-          `topics and package.json "keywords" differ — missing on GitHub: ${missing.join(', ') || '—'}; not in keywords: ${extra.join(', ') || '—'}`
-        )
-    }
-  }
-
-  // BP-1: branch-protection — default OFF — `main` is open unless this repo sets it true.
-  if (enforced('branch-protection')) {
-    let bp: {
-      required_pull_request_reviews?: unknown
-      required_status_checks?: { contexts?: string[]; checks?: { context: string }[] }
-      required_linear_history?: { enabled?: boolean }
-    } | null
-    try {
-      bp = (await ghJSON(`repos/${r.nameWithOwner}/branches/${DEFAULT_BRANCH}/protection`)) as typeof bp
-    } catch {
-      bp = null
-    }
-    if (!bp) fail('BP-1', `no branch protection on ${DEFAULT_BRANCH}`)
-    else {
-      if (bp.required_pull_request_reviews == null) fail('BP-1', 'does not require a pull request')
-      const presentChecks =
-        bp.required_status_checks?.checks?.map((c) => c.context) ?? bp.required_status_checks?.contexts ?? []
-      if (!presentChecks.includes(REQUIRED_CHECK)) fail('BP-1', `required checks omit "${REQUIRED_CHECK}"`)
-      if (bp.required_linear_history?.enabled !== true) fail('BP-1', 'does not require linear history')
-    }
-  }
-
-  // ── layer 3: deeper GitHub ── DEP-1: Dependabot alerts/updates + PR-branch freshness
-  if (!(await ghOk(`repos/${r.nameWithOwner}/vulnerability-alerts`))) fail('DEP-1', 'Dependabot alerts are off')
-  try {
-    if (((await ghJSON(`repos/${r.nameWithOwner}/automated-security-fixes`)) as { enabled?: boolean }).enabled !== true)
-      fail('DEP-1', 'Dependabot security updates are off')
-  } catch {
-    warn('DEP-1', 'could not read automated-security-fixes')
-  }
-  // "Always suggest updating pull request branches" — keeps PRs (Dependabot's included)
-  // current with the base before merge, so a green PR is green against today's main.
-  // REST-only: not exposed in the GraphQL `gh repo view` fields.
-  try {
-    if (((await ghJSON(`repos/${r.nameWithOwner}`)) as { allow_update_branch?: boolean }).allow_update_branch !== true)
-      fail('DEP-1', 'allow_update_branch is off ("Always suggest updating pull request branches")')
-  } catch {
-    warn('DEP-1', 'could not read allow_update_branch')
-  }
   for (const finding of dependabotPolicyFindings(signals.tree))
     (finding.level === 'FAIL' ? fail : warn)('DEP-1', finding.message, finding.subject)
-  // SEC-1: secret scanning + push protection (public).
-  if (r.visibility === 'PUBLIC' && (enforced('secret-scanning') || enforced('push-protection'))) {
-    try {
-      const sa = (
-        (await ghJSON(`repos/${r.nameWithOwner}`)) as {
-          security_and_analysis?: {
-            secret_scanning?: { status?: string }
-            secret_scanning_push_protection?: { status?: string }
-          }
-        }
-      ).security_and_analysis
-      if (enforced('secret-scanning') && sa?.secret_scanning?.status !== 'enabled')
-        fail('SEC-1', 'secret scanning is off')
-      if (enforced('push-protection') && sa?.secret_scanning_push_protection?.status !== 'enabled')
-        fail('SEC-1', 'secret-scanning push protection is off')
-    } catch {
-      warn('SEC-1', 'could not read security_and_analysis')
+
+  // Hosted checks must never execute during a local-content audit.
+  if (hosted) {
+    // TOGGLE-1: GitHub Issues follows the selected adapter; Wiki and Projects stay off.
+    if (r.hasIssuesEnabled !== issuesPolicy.enabled)
+      fail(
+        'TOGGLE-1',
+        `Issues are ${r.hasIssuesEnabled ? 'enabled' : 'disabled'} (want ${issuesPolicy.enabled ? 'enabled' : 'disabled'} because [skills.ki-work-github-issues] is ${issuesPolicy.enabled ? 'declared' : 'not declared'})`
+      )
+    if (enforced('wiki') && r.hasWikiEnabled) fail('TOGGLE-1', 'Wiki is enabled (want off)')
+    if (enforced('projects') && r.hasProjectsEnabled) fail('TOGGLE-1', 'Projects are enabled (want off)')
+
+    // TOPICS-1: topics are per-repo discovery metadata, not a fixed org set. A public
+    // repo carries a non-empty topic set; where package.json declares "keywords" the two
+    // lists must agree modulo GitHub's normalisation (keywords are the in-repo source of
+    // truth and also reach any published npm package).
+    if (r.visibility === 'PUBLIC' && enforced('topics')) {
+      const topics = new Set(topicNames(r.repositoryTopics).map(normaliseTopic))
+      const keywords = new Set(pkgKeywords(signals.pkg))
+      if (topics.size === 0)
+        fail('TOPICS-1', 'no topics — set discovery topics (sync package.json "keywords" where present)')
+      else if (keywords.size) {
+        const missing = [...keywords].filter((k) => !topics.has(k))
+        const extra = [...topics].filter((t) => !keywords.has(t))
+        if (missing.length || extra.length)
+          fail(
+            'TOPICS-1',
+            `topics and package.json "keywords" differ — missing on GitHub: ${missing.join(', ') || '—'}; not in keywords: ${extra.join(', ') || '—'}`
+          )
+      }
     }
-  }
-  // ACT-1
-  try {
-    const al = ((await ghJSON(`repos/${r.nameWithOwner}/actions/permissions`)) as { allowed_actions?: string })
-      .allowed_actions
-    if (al && al !== ALLOWED_ACTIONS) warn('ACT-1', `allowed_actions is "${al}" (standard: ${ALLOWED_ACTIONS})`)
-  } catch {
-    /* not always readable */
+
+    // BP-1: branch-protection — default OFF — `main` is open unless this repo sets it true.
+    if (enforced('branch-protection')) {
+      let bp: {
+        required_pull_request_reviews?: unknown
+        required_status_checks?: { contexts?: string[]; checks?: { context: string }[] }
+        required_linear_history?: { enabled?: boolean }
+      } | null
+      try {
+        bp = (await ghJSON(`repos/${r.nameWithOwner}/branches/${DEFAULT_BRANCH}/protection`)) as typeof bp
+      } catch {
+        bp = null
+      }
+      if (!bp) fail('BP-1', `no branch protection on ${DEFAULT_BRANCH}`)
+      else {
+        if (bp.required_pull_request_reviews == null) fail('BP-1', 'does not require a pull request')
+        const presentChecks =
+          bp.required_status_checks?.checks?.map((c) => c.context) ?? bp.required_status_checks?.contexts ?? []
+        if (!presentChecks.includes(REQUIRED_CHECK)) fail('BP-1', `required checks omit "${REQUIRED_CHECK}"`)
+        if (bp.required_linear_history?.enabled !== true) fail('BP-1', 'does not require linear history')
+      }
+    }
+
+    // ── layer 3: deeper GitHub ── DEP-1: Dependabot alerts/updates + PR-branch freshness
+    if (!(await ghOk(`repos/${r.nameWithOwner}/vulnerability-alerts`))) fail('DEP-1', 'Dependabot alerts are off')
+    try {
+      if (
+        ((await ghJSON(`repos/${r.nameWithOwner}/automated-security-fixes`)) as { enabled?: boolean }).enabled !== true
+      )
+        fail('DEP-1', 'Dependabot security updates are off')
+    } catch {
+      warn('DEP-1', 'could not read automated-security-fixes')
+    }
+    // "Always suggest updating pull request branches" — keeps PRs (Dependabot's included)
+    // current with the base before merge, so a green PR is green against today's main.
+    // REST-only: not exposed in the GraphQL `gh repo view` fields.
+    try {
+      if (
+        ((await ghJSON(`repos/${r.nameWithOwner}`)) as { allow_update_branch?: boolean }).allow_update_branch !== true
+      )
+        fail('DEP-1', 'allow_update_branch is off ("Always suggest updating pull request branches")')
+    } catch {
+      warn('DEP-1', 'could not read allow_update_branch')
+    }
+    // SEC-1: secret scanning + push protection (public).
+    if (r.visibility === 'PUBLIC' && (enforced('secret-scanning') || enforced('push-protection'))) {
+      try {
+        const sa = (
+          (await ghJSON(`repos/${r.nameWithOwner}`)) as {
+            security_and_analysis?: {
+              secret_scanning?: { status?: string }
+              secret_scanning_push_protection?: { status?: string }
+            }
+          }
+        ).security_and_analysis
+        if (enforced('secret-scanning') && sa?.secret_scanning?.status !== 'enabled')
+          fail('SEC-1', 'secret scanning is off')
+        if (enforced('push-protection') && sa?.secret_scanning_push_protection?.status !== 'enabled')
+          fail('SEC-1', 'secret-scanning push protection is off')
+      } catch {
+        warn('SEC-1', 'could not read security_and_analysis')
+      }
+    }
+    // ACT-1
+    try {
+      const al = ((await ghJSON(`repos/${r.nameWithOwner}/actions/permissions`)) as { allowed_actions?: string })
+        .allowed_actions
+      if (al && al !== ALLOWED_ACTIONS) warn('ACT-1', `allowed_actions is "${al}" (standard: ${ALLOWED_ACTIONS})`)
+    } catch {
+      /* not always readable */
+    }
   }
   return f
 }
@@ -1585,6 +1600,7 @@ const LIVE_GITHUB_AREAS = new Set([
 ])
 const MIXED_EVIDENCE_AREAS = new Set(['GH-2', 'GH-3', 'PKG-1'])
 const CONTENT_AREAS = new Set([
+  'DEP-1',
   'FILES-1',
   'FILES-2',
   'FILES-3',
@@ -1646,7 +1662,8 @@ const auditLocalContent = async (nwo: string, content: ContentEvidence): Promise
       content.kiText,
       content.readme,
       content.gitignore,
-      content.signals
+      content.signals,
+      'content-only'
     )
   ).filter((finding) => CONTENT_AREAS.has(finding.area))
 }
