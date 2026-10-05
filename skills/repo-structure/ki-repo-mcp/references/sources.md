@@ -44,10 +44,13 @@ The spec is versioned by date. Track the **latest released** version and note th
 | --------- | ------------------------------------------------------------- | ------- | ------------- |
 | COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)][annotations] | †       | 2026-06-21    |
 | COMMUNITY | [NSA/CISA — MCP security CSI][csi]                            | ‡       | 2026-06-21    |
+| REGISTRY  | [GitHub MCP Registry][github-mcp]                             | §       | 2026-10-05    |
 
 † What the `*Hint` annotations can and can't do — anchors the annotation-driven gate.
 
 ‡ External restatement of MCP server hardening (least privilege, allowlists, logging).
+
+§ MCP server discovery and integration examples; catalogue entries are discovery evidence, not protocol requirements.
 
 ## In-house (the workspace convention)
 
@@ -113,6 +116,7 @@ TOOLS/SEC/AUTH and the Community/In-house rows were not re-fetched this pass (fi
 [auth]: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
 [annotations]: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
 [csi]: https://www.nsa.gov/Portals/75/documents/Cybersecurity/CSI_MCP_SECURITY.pdf
+[github-mcp]: https://github.com/mcp
 
 [semver]: https://semver.org/
 
