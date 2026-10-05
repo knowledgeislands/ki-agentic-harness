@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-109
 area: GOV
 title: Enforce commit gates
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: [KI-HARNESS-GOV-117]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:58:00Z
-updated_at: 2026-09-27T17:10:00Z
+updated_at: 2026-10-05T08:06:12Z
 ---
 
 # KI-HARNESS-GOV-109: Enforce Commit Gates
@@ -24,15 +24,83 @@ A run that cannot execute this repository's commit gates is stopped rather than 
 
 Observed directly in the worktree for coordination task `KNO-34`: `git config core.hooksPath` returns `.husky/_`, and both `.husky/_` and `node_modules` are absent. Five commits landed on that branch without `lint-staged`, without the staged TypeScript check, and without the staged-snapshot `ki-skills` audit. The same commands on the primary checkout run all three. Nothing in the run reported the difference.
 
-The second half of the same gap is the audit. `ki harness list` on this host reports `installed (0)`, and every `ki repo audit --skill <skill>` and `ki dev skill rubric <skill>` exits 1 with `declared skill ki-repo is provided by no declared harness (knowledgeislands/ki-agentic-harness); ... is not installed`. That exit is loud and therefore not itself the defect. The defect is that the repository has no position on what a writer should do when its own declared audits cannot run: an unavailable audit is unknown, not a pass, and nothing in the repository says so or acts on it.
+The second half of the same gap is the audit. `ki harness list` on this host reported `installed (0)`, and every `ki repo audit --skill <skill>` and `ki dev skill rubric <skill>` exited 1 with `declared skill ki-repo is provided by no declared harness (knowledgeislands/ki-agentic-harness); ... is not installed`. That exit is loud and therefore not itself the defect. The defect is that the repository has no position on what a writer should do when its own declared audits cannot run: an unavailable audit is unknown, not a pass, and nothing in the repository says so or acts on it.
 
-Both halves share a cause — the dependency graph a checkout needs to verify itself is not present where the writing happens — and produce opposite symptoms. The hook fails silently; the audit fails loudly but with no defined consequence.
+Both halves share a cause - the dependency graph a checkout needs to verify itself is not present where the writing happens - and produce opposite symptoms. The hook fails silently; the audit fails loudly but with no defined consequence.
 
 ## Boundary
 
-In scope: making the absence of a commit gate a failure rather than a pass in this repository, whether by bootstrapping the worktree, by pointing `core.hooksPath` at a location every worktree resolves, or by a gate that refuses when its tooling is missing; and stating what a writer must do when a declared audit cannot run.
+In scope: making the absence of a commit gate a failure rather than a pass in this repository through a committed hook stub outside `node_modules`; the minimal `SCR-5` acceptance of that binding so this repository's own engineering audit stays clean; and one sentence in `AGENTS.md` stating what a writer must do when a declared audit cannot run.
 
-Out of scope: installing a harness on any particular host, which is a user-environment action and not a repository change; the content of any rubric criterion, which is `KI-HARNESS-GOV-104` and its covering tasks; write-root enforcement, which is coordination task `KNO-10`; and the fleet-wide question of whether other repositories in the estate share the configuration, which needs this repository's answer first.
+Out of scope: installing a harness on any particular host, which is a user-environment action and not a repository change; running `bun install` from a hook; the content of any rubric criterion beyond the `SCR-5` binding form; write-root enforcement, which is coordination task `KNO-10`; and the fleet-wide question of whether other repositories share the configuration, which is [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) and is blocked by this item. Conform-time reporting of pending dependency activation is [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md).
+
+## Current state
+
+Nothing written. `.husky/pre-commit` and `.husky/commit-msg` are committed and carry the gate content; `package.json` has `"prepare": "husky"`, which binds `core.hooksPath` to the generated, untracked `.husky/_`. `hooks/pre-commit.test.ts` and `hooks/commit-msg.test.ts` exercise the committed `.husky` scripts directly. `SCR-5` in `skills/governance/ki-engineering/scripts/rubric/contexts/audit-evidence.ts` accepts only `prepare === 'husky'` and otherwise warns.
+
+## Steps
+
+- [ ] Add `.githooks/pre-commit` and `.githooks/commit-msg` as executable POSIX `sh` stubs. Each resolves `git rev-parse --show-toplevel`, checks the executables its gate needs under `node_modules/.bin/` (`lint-staged`, `syncpack`, `tsc` for pre-commit; `commitlint` for commit-msg), and when any is absent prints the missing names, the exact step `bun install` in that top-level, and a line saying not to bypass with `--no-verify`, then exits 1. When all are present it prefixes `node_modules/.bin` to `PATH` and `exec`s `sh "$root/.husky/<hook>" "$@"`.
+- [ ] Change `package.json` `prepare` to `husky && git config core.hooksPath .githooks`, so the shared `core.hooksPath` names a committed, relative directory that every worktree resolves against its own top-level.
+- [ ] Extend `SCR-5` to accept exactly that `prepare` form when both `.githooks` stubs are safe regular files, keeping `husky` alone as the other passing form; update the item description in `scripts/rubric/items/scripts.ts`, the `SCR-5` paragraph in `standards-engineering.md`, and the `SCR-5` cases in `scripts/rubric/items/index.test.ts`.
+- [ ] Add `hooks/git-hook-stub.test.ts`: a temporary repository with the stubs and `core.hooksPath .githooks`, plus a linked worktree, proving refusal without tooling and delegation with stub executables present.
+- [ ] Add one sentence to `AGENTS.md` under Working here: a declared audit or hook that cannot run is unknown, not a pass; stop and report the activation step rather than committing with `--no-verify`.
+- [ ] Regenerate `skills/governance/ki-engineering/references/rubric.md` with `ki dev skill rubric ki-engineering`, run `bun install` in the primary checkout, and confirm `git config core.hooksPath` returns `.githooks`.
+
+## Files touched
+
+- `.githooks/pre-commit` (new)
+- `.githooks/commit-msg` (new)
+- `package.json`
+- `AGENTS.md`
+- `hooks/git-hook-stub.test.ts` (new)
+- `skills/governance/ki-engineering/scripts/rubric/contexts/audit-evidence.ts`
+- `skills/governance/ki-engineering/scripts/rubric/items/scripts.ts`
+- `skills/governance/ki-engineering/scripts/rubric/items/index.test.ts`
+- `skills/governance/ki-engineering/references/standards-engineering.md`
+- `skills/governance/ki-engineering/references/rubric.md` (generated)
+
+## Verify
+
+Acceptance criteria, each judgeable by someone who did not write this:
+
+1. In a linked worktree with no `node_modules`, `git commit` exits non-zero and its output names the missing executables and `bun install`; no commit is created.
+2. With the gate executables present, the stub runs `.husky/pre-commit` and `.husky/commit-msg` unchanged: a failing staged check still refuses and a clean commit still succeeds.
+3. After `bun install` in the primary checkout, `git config core.hooksPath` returns `.githooks`, and the same value is seen from a linked worktree.
+4. `SCR-5` passes for this repository and for `"prepare": "husky"`, and still warns for any other value; `SCR-11` is unchanged.
+5. `AGENTS.md` states that an unavailable audit or hook is unknown and must be reported, not bypassed.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki repo audit --skill ki-engineering --progress never
+ki repo audit --skill ki-skills --progress never
+git config core.hooksPath
+```
+
+## Dependencies / blocks
+
+`blocks` [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md), which inherits this mechanism for the estate. Paired with [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md) as a cross-reference, not a blocker: that item reports pending activation at conform time; this one refuses at commit time. Neither supersedes the other.
+
+Known limit: a linked worktree whose checked-out revision predates `.githooks/` resolves the shared path to nothing and still commits silently. Base currency is [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md)'s concern; this record does not repair existing worktrees.
+
+## Documentation impact
+
+### Decision Records
+
+None. The stub decision is recorded in this record's Discussion and is local to this repository; [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) carries the estate-level Decision Record.
+
+### Specifications
+
+`standards-engineering.md` gains the second accepted `SCR-5` `prepare` form; `AGENTS.md` gains one sentence on unavailable audits.
+
+### Guides
+
+None.
+
+### Roadmap
+
+[KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) inherits the `.githooks` mechanism.
 
 ## Discussion
 
@@ -40,13 +108,13 @@ Out of scope: installing a harness on any particular host, which is a user-envir
 
 A convention that every worktree runs `bun install` first is exactly the class of rule this repository has just spent an afternoon learning not to trust: it is unenforced, its violation is invisible, and the cost of the violation falls on a later reader. The gate either runs or the commit does not happen. A worktree that cannot verify itself should say so at the moment it tries to write, not leave a clean-looking history behind.
 
-### The trade-off to decide
+### Decision: committed stub that refuses
 
-Bootstrapping the worktree automatically is convenient and makes the gate real, but it means a commit can trigger a dependency install, which is slow and surprising and can fail for network reasons unrelated to the change. Refusing instead is honest and cheap but blocks the writer until they act. A third option is a committed hook stub outside `node_modules` that runs the full gate when the tooling is present and exits non-zero with instructions when it is not, which preserves the refusal without owning an install. The item should choose one and say why, not offer all three.
+Three options were weighed. Bootstrapping the worktree automatically makes the gate real but means a commit can trigger a networked dependency install that is slow, surprising, and can fail for reasons unrelated to the change. Refusing without a binding change is honest but impossible here, because Git finds no hook to refuse with. The chosen option is a committed hook stub outside `node_modules` that runs the full gate when the tooling is present and exits non-zero with instructions when it is not: it preserves the refusal without owning an install, and because `core.hooksPath` is relative, the one shared setting resolves to a committed file in every worktree. The stubs delegate to `.husky/<hook>` rather than absorbing its content, so `SCR-11` and the existing hook tests continue to govern what the gate runs.
 
 ### Relationship to `KI-HARNESS-FND-026`
 
-`KI-HARNESS-FND-026` records that `ki repo conform` does not run `bun install` or report an installation requirement, so a later commit fails with a missing-module error that looks unrelated. That is the same absent dependency graph reaching the same hook from the other direction, and its symptom is a confusing loud failure where this item's symptom is a clean silent pass. They may well resolve together. Keeping them separate at capture avoids deciding that before either is shaped; whichever is adopted first should re-read the other and say plainly if one supersedes it.
+[KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md) records that `ki repo conform` does not run `bun install` or report an installation requirement, so a later commit fails with a missing-module error that looks unrelated. That is the same absent dependency graph reaching the same hook from the other direction. After this item the commit-time symptom becomes an explicit refusal naming `bun install`; FND-026 still owns making conform itself report the pending step, so the two remain separate and complementary.
 
 ### Coordination linkage
 

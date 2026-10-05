@@ -3,13 +3,13 @@ id: KI-HARNESS-REV-011
 area: REV
 title: Review harness automation
 theme: regular-reviews
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-03T02:26:59Z
-updated_at: 2026-10-03T02:26:59Z
+updated_at: 2026-10-05T08:12:37Z
 ---
 
 # KI-HARNESS-REV-011: Review harness automation
@@ -24,10 +24,69 @@ The owner asked for an aggressive recurring review across Harnesses, alongside s
 
 ## Boundary
 
-Decide the portable obligation, its evidence, and the appropriate owner before requiring a schedule or changing another repository. Do not equate a deterministic AUDIT violation with an automatically safe CONFORM repair, convert a genuinely interpretive criterion into a proxy check, or create a duplicate review when an existing recurring definition already covers the same pass.
+In scope: one judgment criterion in `ki-repo-harness` that expresses the portable obligation, satisfied by any existing recurring review definition in the Harness that covers the mechanicalisation pass and has a recorded result, plus the matching standard paragraph.
+
+Out of scope: a mandated schedule, template or new housekeeping definition; a mechanical check of a definition's mere presence, which would not establish that the review happened or that its conclusions were sound; changing another Harness repository, whose adoption is its own work after this criterion publishes; and treating a deterministic AUDIT violation as an automatically safe CONFORM repair or converting an interpretive criterion into a proxy check.
+
+## Current state
+
+`ki-repo-harness`'s `LONG` family (`skills/repo-structure/ki-repo-harness/scripts/rubric/items/longevity.ts`) holds only `LONG-1`, the refresh-path judgment. `standards-compatible-harness.md` has no recurring-review paragraph. This Harness satisfies the intended obligation through [KI-HARNESS-HK-001](../housekeeping/KI-HARNESS-HK-001-engineering-alignment-review.md), whose step 4 challenges judgment-only and hybrid criteria and diagnostic or guarded repairs, and whose `last-run` and `last-run-ref` record a completed run.
+
+## Steps
+
+- [ ] Add a short paragraph to `standards-compatible-harness.md`, within its refresh discipline: a source Harness keeps at least one recurring review whose procedure examines every applicable judgment-only or hybrid AUDIT criterion and report-only CONFORM result for mechanicalisation, and whose latest run records concrete candidates, routed follow-ups, or an evidenced no-change result; any existing definition with that coverage satisfies it.
+- [ ] Add `LONG-2 [J]` "Recurring automation review" to `longevity.ts`, with evidence scope (the Harness's recurring work definitions and their latest recorded run), a prompt asking whether one definition covers the pass and has a recorded, evidenced result within its cadence, outcomes `conforming`, `coverage gap`, `no recorded result`, and guidance to extend an existing definition before creating a new one.
+- [ ] Add `LONG-2` to the expected codes in `scripts/rubric/items/index.test.ts` and regenerate `references/rubric.md` with `ki dev skill rubric ki-repo-harness`.
+- [ ] Record this Harness's own `LONG-2` outcome as `conforming` with HK-001 and its last recorded run as evidence, and capture through `ki-next` whether `ki-techne-harness` and other compatible source Harnesses need receiver trades.
+
+## Files touched
+
+- `skills/repo-structure/ki-repo-harness/references/standards-compatible-harness.md`
+- `skills/repo-structure/ki-repo-harness/scripts/rubric/items/longevity.ts`
+- `skills/repo-structure/ki-repo-harness/scripts/rubric/items/index.test.ts`
+- `skills/repo-structure/ki-repo-harness/references/rubric.md` (generated)
+
+## Verify
+
+Acceptance criteria, each judgeable by someone who did not write this:
+
+1. `LONG-2` publishes as a judgment criterion with no mechanical audit or conform action.
+2. The standard and the criterion both say any existing recurring definition with the coverage and a recorded result satisfies it, and neither names a required file, template or schedule.
+3. The criterion's outcomes distinguish a missing pass from a pass with no recorded result.
+4. This Harness's outcome cites HK-001 and its recorded `last-run-ref`.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki dev skill rubric ki-repo-harness
+ki repo audit --skill ki-repo-harness --progress never
+ki repo audit --skill ki-skills --progress never
+```
+
+## Dependencies / blocks
+
+None. Receiver adoption in other Harnesses follows as their own work.
+
+## Documentation impact
+
+### Decision Records
+
+None.
+
+### Specifications
+
+`standards-compatible-harness.md` gains the recurring-review paragraph.
+
+### Guides
+
+None.
+
+### Roadmap
+
+Possible receiver work in other compatible source Harnesses, captured through `ki-next`.
 
 ## Discussion
 
 ### Portable route
 
-Determine whether `ki-repo-harness`, `ki-skills`, or the stock `ki-work-housekeeping` repository review should express the cross-Harness expectation, and whether an existing recurring definition in each source Harness can satisfy it. The useful outcome is evidenced periodic consideration of every applicable judgment-only or hybrid audit criterion and report-only mechanical repair, with concrete assertions, failing cases, safe-repair boundaries, or an evidenced no-change result. An audit of a template's mere presence would not establish that the review happened or that its conclusions were sound.
+`ki-repo-harness` is the owner because the obligation applies to every compatible source Harness and to nothing else; `ki-skills` REFRESH and REVIEW already describe how to do the pass, and the stock housekeeping review is one way, not the only way, to schedule it. A judgment criterion is chosen over a mechanical one because the useful outcome is evidenced periodic consideration of every applicable judgment-only or hybrid criterion and report-only repair, with concrete assertions, failing cases, safe-repair boundaries, or an evidenced no-change result, and that cannot be read from file presence.
