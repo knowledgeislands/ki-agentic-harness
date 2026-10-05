@@ -116,7 +116,10 @@ test('audit is read-only and returns one stable focused context', () => {
 test('source mirror diagnostics bind only to a declared sources role', () => {
   const repository = createBase()
   const note = join(repository, 'Resources', 'Mirror.md')
-  writeFileSync(note, '---\nnote_type: resource\nsource_path: Records/Example.pdf\n---\n\n# Mirror\n\nSee source.\n')
+  writeFileSync(
+    note,
+    '---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\n---\n\n# Mirror\n\nSee source.\n'
+  )
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('NOT_APPLICABLE')
   writeFileSync(
     join(repository, '.ki.toml'),
@@ -126,12 +129,12 @@ test('source mirror diagnostics bind only to a declared sources role', () => {
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')).toMatchObject({
     level: 'WARN',
     subject: 'Resources/Mirror.md',
-    message: expect.stringContaining('source_sha256')
+    message: expect.stringContaining('mirror_sha256')
   })
   expect(readFileSync(note, 'utf8')).toBe(before)
   writeFileSync(
     note,
-    `---\nnote_type: resource\nsource_path: Records/Example.pdf\nsource_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\nSee source.\n`
+    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\nSee source.\n`
   )
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')).toMatchObject({
     level: 'WARN',
@@ -140,7 +143,16 @@ test('source mirror diagnostics bind only to a declared sources role', () => {
   })
   writeFileSync(
     note,
-    `---\nnote_type: resource\nsource_path: Records/Example.pdf\nsource_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\n${Array.from({ length: 40 }, (_, index) => `fact${index}`).join(' ')}\n`
+    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\n${Array.from({ length: 40 }, (_, index) => `fact${index}`).join(' ')}\n`
+  )
+  expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('PASS')
+  writeFileSync(
+    note,
+    `---\nnote_type: resource\nmirrors: kit-example-sources/Records/Example.xlsx\nmirror_type: indexed\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n# Mirror\n\nTimesheet for April.\n`
+  )
+  writeFileSync(
+    join(repository, 'Resources', 'Derived.md'),
+    `---\nnote_type: resource\nsource_path: kit-example-sources/Records/Export.txt\nsource_sha256: ${'b'.repeat(64)}\n---\n\n# Derived\n\nOne day.\n`
   )
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('PASS')
 })
@@ -153,7 +165,7 @@ test('source mirror auditing skips external symlinked Markdown without following
   )
   const outside = mkdtempSync(join(tmpdir(), 'ki-mirror-outside-'))
   temporaryDirectories.push(outside)
-  writeFileSync(join(outside, 'Private.md'), '---\nsource_path: ../secret.pdf\n---\n')
+  writeFileSync(join(outside, 'Private.md'), '---\nmirrors: ../secret.pdf\n---\n')
   symlinkSync(join(outside, 'Private.md'), join(repository, 'Resources', 'Linked.md'))
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('PASS')
 })
@@ -161,7 +173,7 @@ test('source mirror auditing skips external symlinked Markdown without following
 test('unassessable provenance warns and sources-role binding survives an absent KB table', () => {
   const repository = createBase()
   writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\nstore_roles = ["notes", "sources"]\n')
-  writeFileSync(join(repository, 'Resources', 'Unknown.md'), '---\nsource_path: [\n---\n\n# Unknown\n')
+  writeFileSync(join(repository, 'Resources', 'Unknown.md'), '---\nmirrors: [\n---\n\n# Unknown\n')
   const findings = collectKbAuditEvidence(repository)
   expect(findings.find((finding) => finding.code === 'NOTE-4')).toMatchObject({
     level: 'WARN',
@@ -180,7 +192,7 @@ test('duplicate provenance keys are unassessable rather than accepting the last 
   )
   writeFileSync(
     join(repository, 'Resources', 'Duplicate.md'),
-    `---\nnote_type: resource\nsource_path: ../Outside.pdf\nsource_path: Records/Example.pdf\nsource_sha256: ${'a'.repeat(64)}\n---\n\n${'A durable fact about the synthetic source record. '.repeat(8)}`
+    `---\nnote_type: resource\nmirrors: ../Outside.pdf\nmirrors: kit-example-sources/Records/Example.pdf\nmirror_type: summarised\nmirror_sha256: ${'a'.repeat(64)}\n---\n\n${'A durable fact about the synthetic source record. '.repeat(8)}`
   )
   const findings = collectKbAuditEvidence(repository)
   expect(findings.find((finding) => finding.code === 'NOTE-1a')?.level).toBe('FAIL')

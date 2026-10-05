@@ -38,7 +38,7 @@ This is the convention for **note content inside a base**, including internal li
 
 ## Source mirrors
 
-A base declaring `sources` in `[skills.ki-repo].store_roles` follows the [source mirror content and derived label contract](standards-source-mirrors.md). It owns substantive extracts, store-relative `source_path`, declared `source_sha256` and its enrichment work. Search labels describe only checks over authorised Markdown; neither a label nor a harness audit establishes source existence, fidelity or freshness. This relationship is distinct from an acquisition adapter’s upstream source note.
+A base declaring `sources` in `[skills.ki-repo].store_roles` follows the [source mirror content and derived label contract](standards-source-mirrors.md). It owns substantive extracts, one-file `mirrors` declarations with `mirror_type` and `mirror_sha256`, and its enrichment work. Notes derived from a source rather than mirroring it record `source_path` and `source_sha256` instead, and are not mirrors. Search labels describe only checks over authorised Markdown; neither a label nor a harness audit establishes source existence, fidelity or freshness. Both relationships are distinct from an acquisition adapter’s upstream provenance.
 
 ## Onboarding a base to this skill
 
