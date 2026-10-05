@@ -4,12 +4,12 @@ area: GOV
 title: Surface held workspaces
 theme: governance-consistency
 horizon: now
-status: draft
+status: ready
 blocks: []
-blocked_by: [KI-HARNESS-GOV-107]
+blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T23:55:00Z
-updated_at: 2026-10-05T08:19:22Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-114: Surface held workspaces
@@ -38,7 +38,7 @@ In scope:
 - each entry states that the plane-side gates (task-tree terminality, cooldown, active runs) were not evaluated, and names the human next step: confirm close-readiness in Paperclip, then capture a Triage item through `ki-next` in this repository, decided as land, discard or duplicate;
 - the `mode-audit.md` procedure step that tells the reviewer how to use the listing.
 
-Out of scope: the disposition doctrine, which is already in the standard's `#workspace-retirement`; any removal, prune, rebase, fetch or branch change; any coordination-plane read, including close-readiness; automatic Triage capture; changing the retirement mechanism or its gates; a fleet sweep across repositories; and any new criterion code.
+Out of scope: the disposition doctrine, which is already in the standard's `#workspace-retirement`; any removal, prune, rebase, fetch or branch change; any coordination-plane read by the mechanical audit, including close-readiness (the mechanical operation reads nothing from the coordination plane; only the human procedure step in `mode-audit.md` may consult Paperclip's close-readiness view); automatic Triage capture; changing the retirement mechanism or its gates; a fleet sweep across repositories; and any new criterion code.
 
 ## Current state
 
@@ -84,9 +84,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-Blocked by [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces local-evidence reading into the coordination context and settles its boundary. Shares the `COORD` namespace with [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md) but takes no code: `COORD-15` stays reserved for that record.
-
-Plan complete; ready once [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) is done.
+Nothing blocks this record. Sequencing preference: land after [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces local-evidence reading into the coordination context and settles its boundary, to avoid merge conflicts in the shared coordination context, items and tests. Blocker removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible. Shares the `COORD` namespace with [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md) but takes no code: `COORD-15` stays reserved for that record.
 
 ## Documentation impact
 
@@ -104,7 +102,7 @@ None.
 
 ### Roadmap
 
-Depends on [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces the first mechanical diagnostic on the coordination rubric.
+Sequenced after [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces the first mechanical diagnostic on the coordination rubric, by preference only.
 
 ## Discussion
 

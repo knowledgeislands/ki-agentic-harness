@@ -4,12 +4,12 @@ area: GOV
 title: Decide coordination declaration scope
 theme: governance-consistency
 horizon: now
-status: draft
-blocks: [KI-HARNESS-GOV-107]
+status: ready
+blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-05T08:19:22Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope
@@ -37,12 +37,12 @@ The alternative considered and rejected was declaring it in all registered repos
 
 ## Boundary
 
-In scope: the rule for who declares this skill, the reasoning behind the current two, the named exclusions, the revisit condition, and where that reasoning is durably recorded.
+In scope: the live rule for who declares this skill (every repository admitted to a Paperclip company), what the declaration means, where the skill, role records and execution fabric live, the revisit condition, and recording that rule in the coordination standard.
 
 Out of scope, deliberately:
 
-- reversing the two declarations already made, which were approved on `KNO-19` and stand until this item proposes otherwise;
-- declaring the skill in any further repository, which needs its own approval on its own record;
+- adding or removing a declaration in any repository, which each repository does on its own record;
+- any new cross-repository authority allocation;
 - what the audit actually checks once declared, which is [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md);
 - the content of the coordination rules and the standard, which this item takes as given;
 - any change to `ki-applicability` or to the declaration mechanism itself, which is a `ki-skills` contract.
@@ -51,18 +51,16 @@ Out of scope, deliberately:
 
 The premise of this record no longer holds. Read-only inspection of local `.ki.toml` files on 2026-10-05 found `[skills.ki-agent-coordination-paperclip]` declared in 43 repositories across seven organisation codes: 23 `KIS` repositories (every registered `knowledgeislands` repository with a `.ki.toml`, including `tools-ki`, `ki-techne-principal` and `ki-arcadia-principal`, which this record names as exclusions), plus `HNR`, `ER`, `KIT`, `LGL`, `TMX` and `VA` repositories. The `KIS` declarations landed as `chore: baseline` commits on 2026-09-27, alongside `7d7b247d` ("resolve kinds and shape-driven Paperclip bootstrap") and `00de1d36` (required `organisation_code`, criterion `ORG-1`).
 
-The standard has already moved with them. `standards-agent-coordination-paperclip.md#organisation-identity` says "Every repository using this skill declares its owning Paperclip company code in its own `.ki.toml`", and bootstrap admits a repository to its company through that declaration. The declaration now means "this repository is admitted to a Paperclip company", not "this repository owns the arrangement".
+The standard has already moved with them. `standards-agent-coordination-paperclip.md#organisation-identity` says "Every repository using this skill declares its owning Paperclip company code in its own `.ki.toml`", and bootstrap admits a repository to its company through that declaration. The declaration now means "this repository is admitted to a Paperclip company", not "this repository owns the arrangement". The Decision below records that live rule; nothing awaits the owner.
 
 ## Steps
 
-- [ ] Obtain the owner's answer to the question in `## Discussion` before any further step; the record stays `draft` until then.
-- [ ] Under the recommended option 1, add a `### Declaration scope` subsection under `## Organisation identity` in `standards-agent-coordination-paperclip.md` stating that every repository coordinated through a Paperclip company declares the skill, that the harness and Arcadia own the doctrine, and the condition that reopens the question.
-- [ ] Under option 2 instead, record the two-repository rule and its revisit condition in the same subsection, amend the "every repository using this skill" sentence, and raise trades to the 41 other declaring repositories to remove their declarations; no declaration outside this repository is changed by this record.
+- [ ] Add a `### Declaration scope` subsection under `## Organisation identity` in `standards-agent-coordination-paperclip.md` stating that every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; that the declaration means admission, not ownership of the arrangement; that the skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness`, as a description of where they live rather than an authority allocation; and the revisit condition from the Decision.
 - [ ] Run the verification below and record the results in `## Discussion`.
 
 ## Files touched
 
-Expected, under either answer: `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md` only.
+`skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md` only.
 
 ## Verify
 
@@ -77,7 +75,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-Blocks [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), whose mechanical items run in every declaring repository. Nothing blocks this record.
+Nothing blocks this record and it blocks nothing. Sequencing preference: land before [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), whose mechanical items run in every declaring repository; that record is correct under either scope. Blocker removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible.
 
 ## Documentation impact
 
@@ -95,11 +93,13 @@ None.
 
 ### Roadmap
 
-Blocks [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md). Under option 2 the declaration removals are trades to the other declaring repositories, raised as follow-ons and outside this record's acceptance.
+None. [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) is sequenced after this record by preference only.
 
 ## Discussion
 
 ### The revisit condition
+
+This was the revisit condition for the original two-repository rule; the Decision below replaces it.
 
 The first repository that holds its own distinct coordination arrangement - rather than participating in the single archipelago-wide one - is the trigger to reopen this. At that point the declaration starts describing something repository-local, and the two-repository rule stops being a proxy for "the repositories that own the arrangement's identity anchors".
 
@@ -119,15 +119,6 @@ An empty table is not a null act. It selects the repository into every future cr
 
 Captured from the `KNO-19` proposal document on the external coordination plane, which names this discovery as `D2` and whose section 3 is the scope argument summarised above. That task owns the two declarations; this record owns the rule they were made under.
 
-### Question for Kris - 2026-10-05
-
-The decision to record the two-repository rule cannot be applied as written: 43 repositories now declare the skill, and the standard already requires every repository admitted to a Paperclip company to declare its `organisation_code`. Which rule should the standard record?
-
-1. **Recommended: record the rule that is live.** Every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; the declaration is admission, not ownership of the arrangement. Record separately that the arrangement's doctrine is owned by `ki-agentic-harness` (role records and this skill) and `ki-techne-harness` (execution fabric). Revisit condition: the first criterion that can fail in a declaring repository with no coordinated work, which [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) answers by reporting such repositories as not applicable. No decision record, as decided.
-2. **Restore the two-repository rule.** Remove the declaration from 41 repositories and move organisation binding elsewhere. This reverses the bootstrap design in `7d7b247d` and `ORG-1`, touches every repository, and needs its own record in each.
-
-Until answered this record stays `draft`; [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) is Ready but blocked by it.
-
 ### Decision
 
-Record the two-repository rule and its revisit condition in the coordination standard itself, with no separate decision record. Held pending the owner question above, because the rule contradicts 43 live declarations and the standard's own organisation-identity section; the record stays `draft` until it is answered. Decided by the Fable reviewer under delegated autonomy, reversible.
+Record the live rule: every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; the declaration means admission, not ownership of the arrangement. The skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness` (a description of where they live, not a new cross-repository authority allocation). Revisit condition as written: the first criterion that can fail in a declaring repository with no coordinated work, which [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) answers by reporting such repositories as not applicable. No decision record. Decided by the Fable reviewer under delegated autonomy, reversible; restoring a two-repository rule would be an owner decision.

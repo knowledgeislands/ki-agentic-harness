@@ -4,9 +4,9 @@ area: GOV
 title: Make coordination audit mechanical
 theme: governance-consistency
 horizon: now
-status: draft
-blocks: [KI-HARNESS-GOV-114]
-blocked_by: [KI-HARNESS-GOV-108]
+status: ready
+blocks: []
+blocked_by: []
 baseline_ref: null
 task_links:
   paperclip:
@@ -29,7 +29,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-05T08:19:22Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -123,9 +123,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-Blocked by [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md), which settles how many repositories these checks run in. Blocks [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md), which adds a second local-evidence operation to the same context and should follow this one's evidence-boundary pattern. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001`, the field prerequisites, are done.
-
-Plan complete; ready once [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) is done.
+Nothing blocks this record and it blocks nothing. Sequencing preference: land after [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md), which settles how many repositories these checks run in; this record is correct under either scope because it emits `NOT_APPLICABLE` where no record carries a Paperclip reference. [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md) adds a second local-evidence operation to the same context, should follow this one's evidence-boundary pattern, and is preferably landed after it to avoid merge conflicts. Both blockers removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001`, the field prerequisites, are done.
 
 ## Documentation impact
 
@@ -143,7 +141,7 @@ None.
 
 ### Roadmap
 
-Depends on [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md); unblocks [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md), which adds its listing to the same audit surface. No new rubric code is allocated, so the sibling COORD codes stay free.
+Sequenced after [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) and before [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md), which adds its listing to the same audit surface, by preference only; neither is a blocker. No new rubric code is allocated, so the sibling COORD codes stay free.
 
 ## Task associations
 

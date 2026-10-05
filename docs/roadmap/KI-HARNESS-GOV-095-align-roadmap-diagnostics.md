@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T14:21:37Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-095: Align roadmap diagnostics
@@ -78,6 +78,8 @@ ki repo audit --skill ki-repo-kb-streams --repo <kb fixture or Arcadia checkout>
 ## Dependencies / blocks
 
 None. Follow-on: once this lands, open a trade to `tools-ki` asking `ki repo roadmap list` to apply the structural-validity invariant from the roadmap standard, reporting malformed records and duplicate identifiers with a non-zero exit. That trade does not block this record and this record does not wait on it.
+
+Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-105](KI-HARNESS-GOV-105-state-ordering-in-ledger.md) all edit the shared `ki-work-roadmap` files `scripts/rubric/contexts/roadmap-evidence.ts`, `scripts/rubric/items/index.test.ts` and `references/rubric.md`; this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md) all edit `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
 ## Documentation impact
 

@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-05T08:10:30Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -79,6 +79,8 @@ ki repo audit --skill ki-engineering --progress never
 ## Dependencies / blocks
 
 None. Per-repository adoption follows as separate trades and does not block acceptance here. Raising `DESIGN-3` from `WARN` to `FAIL` is a follow-on once the trades land.
+
+Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md) and [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 
 ## Documentation impact
 

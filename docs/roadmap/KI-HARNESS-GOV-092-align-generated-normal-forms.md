@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T05:43:18Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-092: Align generated normal forms
@@ -40,7 +40,7 @@ Verified on `main` at `19651664`. `standards-engineering.md` section 5 says gene
 
 - [ ] Add a "Generated output and its normaliser" paragraph to section 5 of `standards-engineering.md` stating the three-way classification from Discussion: (1) repository-owned producer and shape, faithfully representable by the normaliser, so the producer emits the normal form; (2) byte identity with an external canonical source is the contract, so the path is excluded and producer drift is proved separately, as `ADR-KI-HARNESS-TOOLCHAIN-005` already requires; (3) the normaliser cannot represent the format, so the narrowest exclusion with a recorded reason. Convenience is not a reason.
 - [ ] Add `GEN-2 [J]`, "generated output matches its normaliser", to `scripts/rubric/items/generated.ts`, with scope (committed generated paths and their producers), prompt (is each path classified, and does a class-1 producer emit its normaliser's fixed point?), outcomes (`conforming`, `producer emits non-normal form`, `exclusion unjustified`, `classification decision required`) and guidance that routes class-1 fixes into the producer, not the formatter configuration.
-- [ ] Update the expected code count in `scripts/rubric/items/index.test.ts` from 60 to 61 and assert `GEN-2` is present.
+- [ ] Increment the expected code count in `scripts/rubric/items/index.test.ts` by one, rather than hardcoding a total, and assert `GEN-2` is present.
 - [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering`.
 - [ ] Add two items to Duplication and reuse in `mode-review.md`, after "Vendored or generated copies are checked for drift by something that fails.": "Repository-owned generated output inside formatter scope was regenerated and formatted with no resulting diff." and "Each generated path excluded from formatting is narrow and names external byte authority or genuine representational incompatibility as its reason."
 
@@ -69,6 +69,10 @@ ki repo audit --skill ki-repo --progress never
 ## Dependencies / blocks
 
 None.
+
+Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
+
+The `mode-review.md` anchor here is the Duplication and reuse lens, outside `Automated verification`, so it is independent of the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) and [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md) batch; [KI-HARNESS-FND-027](KI-HARNESS-FND-027-configure-cloudflare-guide-path.md) edits a different anchor in the same file and whichever lands second rebases.
 
 ## Documentation impact
 

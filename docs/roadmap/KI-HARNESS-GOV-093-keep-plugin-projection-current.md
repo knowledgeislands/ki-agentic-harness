@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T08:50:34Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-093: Keep plugin projection current
@@ -28,11 +28,11 @@ That is one instance of the general case: every skill edit makes the projection 
 
 ## Boundary
 
-In scope: route 2 from Discussion, a read-only check mode on the existing builder that regenerates the projection into a scratch directory, compares it with a `ki-plugins` checkout, and exits non-zero on any difference; its tests; its place in this repository's documented verification gate; and, as the first step, the regeneration that carries `ADR-KI-HARNESS-SKILLS-015` and every later skill change to `ki-plugins`.
+In scope: route 2 from Discussion, a read-only check mode on the existing builder that regenerates the projection into a scratch directory, compares it with a `ki-plugins` checkout, and exits non-zero on any difference; its tests; its place in this repository's documented verification gate; and, as the first step, raising a trade to `ki-plugins` for the regeneration that carries `ADR-KI-HARNESS-SKILLS-015` and every later skill change.
 
-Out of scope: the projection's lossiness, which `ADR-KI-HARNESS-005` settles; hand-editing anything in `ki-plugins`; any change to how other runtimes resolve skills; a pre-commit hook or CI job that depends on a sibling checkout; the builder's stale default output path (`~/kis/knowledgeislands/ki-repo-plugins`), which the check does not rely on; and routes 1 and 3.
+Out of scope: the projection's lossiness, which `ADR-KI-HARNESS-005` settles; any write to `ki-plugins`, including the regeneration itself; any change to how other runtimes resolve skills; a pre-commit hook or CI job that depends on a sibling checkout; the builder's stale default output path (`~/kis/knowledgeislands/ki-repo-plugins`), which the check does not rely on; and routes 1 and 3.
 
-Cross-repository boundary: the regeneration writes and commits in `ki-plugins`, under that repository's authority. `ki-plugins` has been paused since `b425f11` (2026-09-20): its `AGENTS.md` says not to refresh the generated payload "unless the pause is explicitly lifted". Step 1 therefore needs the owner's explicit lift of that pause, recorded in `ki-plugins`, before any write there. The harness-side check (steps 2 onwards) does not depend on it.
+Cross-repository boundary: the regeneration is a trade to `ki-plugins`, executed under that repository's authority. `ki-plugins` has been paused since `b425f11` (2026-09-20): its `AGENTS.md` says not to refresh the generated payload "unless the pause is explicitly lifted", so the owner lifts the pause there when disposing of the trade. This record writes nothing in `ki-plugins`, and its acceptance does not depend on the trade: the check is verified against a scratch build in this repository.
 
 ## Current state
 
@@ -40,7 +40,7 @@ Verified on `main` at `19651664`. `skills/environment/ki-binding-claude/scripts/
 
 ## Steps
 
-- [ ] Regeneration first. Confirm the `ADR-KI-HARNESS-SKILLS-015` content is present in `ki-plugins` (it is, as of `5006188`). With the `ki-plugins` pause explicitly lifted by the owner, run `bun run ki:binding:claude:build-plugin <ki-plugins checkout>` from current `main` and commit the result in `ki-plugins` as one regeneration commit naming this harness revision, so the drift check starts from a current baseline.
+- [ ] Raise a trade to `ki-plugins` for the `ADR-KI-HARNESS-SKILLS-015` regeneration and every later skill change: one regeneration commit from `bun run ki:binding:claude:build-plugin <ki-plugins checkout>` at current `main`, naming this harness revision. The owner lifts the pause there; nothing in this record writes to `ki-plugins`.
 - [ ] Add `--check` to `build-plugin.ts`: build the manifest into a fresh `mkdtemp` scratch directory, compare every generated path's digest with the given output directory, print each added, removed or changed path, exit `1` on any difference or when the output directory or its generated paths are absent, exit `0` when identical, and never write the output directory. Reject `--check` combined with `--dry-run`.
 - [ ] Add tests to `build-plugin.test.ts`: two builds of the same source produce identical digests (determinism); `--check` passes against a freshly built output; changing one projected skill file in the source fixture makes `--check` fail and name that path; the output directory's bytes and mtimes are unchanged by `--check`.
 - [ ] Add the package script `ki:binding:claude:check-plugin` running `bun skills/environment/ki-binding-claude/scripts/build-plugin.ts --check`.
@@ -53,26 +53,26 @@ Verified on `main` at `19651664`. `skills/environment/ki-binding-claude/scripts/
 - `skills/environment/ki-binding-claude/references/standards-claude-binding.md`
 - `package.json`
 - `AGENTS.md`
-- In `ki-plugins`, generated paths only, under step 1: `knowledge-islands/` and the marketplace manifest the builder owns
 
 ## Verify
 
-1. `ki-plugins`' copies of `ki-decision-records` and `ki-specs` rubric contexts match this repository's byte for byte, so a digit-leading scope such as `GDR-5GE-P2-001` is accepted through the plugin.
-2. `bun run ki:binding:claude:check-plugin <ki-plugins checkout>` exits `0` immediately after step 1.
+1. The trade to `ki-plugins` exists, names the regeneration and this harness revision, and leaves the pause decision to that repository; its execution is not a criterion here.
+2. `bun run ki:binding:claude:build-plugin <scratch dir>` into a fresh scratch directory (for example from `mktemp -d`), followed by `bun run ki:binding:claude:check-plugin <scratch dir>`, exits `0`; no `ki-plugins` checkout is needed.
 3. Editing any projected `SKILL.md` in this repository without regenerating makes the same command exit `1` and name that skill's path; reverting restores `0`.
-4. `git -C <ki-plugins checkout> status --porcelain` is empty after any number of `--check` runs.
+4. The scratch output directory's bytes and mtimes are unchanged after any number of `--check` runs.
 5. The new tests pass under `bun run test`.
 
 ```bash
 bun run test
 bunx tsc --noEmit
-bun run ki:binding:claude:check-plugin <ki-plugins checkout>
+bun run ki:binding:claude:build-plugin <scratch dir>
+bun run ki:binding:claude:check-plugin <scratch dir>
 ki repo audit --skill ki-binding-claude --progress never
 ```
 
 ## Dependencies / blocks
 
-None in this repository. Step 1 waits on the owner's explicit lift of the `ki-plugins` pause, which is a condition in that repository rather than a work item here.
+None. The `ki-plugins` regeneration is a receiver-owned trade; the owner lifts the pause there, and it does not block acceptance here.
 
 ## Documentation impact
 

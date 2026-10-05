@@ -35,7 +35,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-05T08:19:22Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -110,7 +110,7 @@ Out of scope: authoring a decision record for the seven rules, since every rule 
 1. The coordination standard has one `### Coordination rules` table with seven rows, each naming a resolvable anchor or decision record; every link resolves under `ki repo audit --skill ki-authoring`.
 2. `standards-repository-roadmaps.md#work-item-discipline` states rule 7 normatively and does not contradict the direct-authority basis in the coordination standard.
 3. `grep -rn -i -E "repositories decide|one writer per checkout|two entry paths|all delivery happens under" skills subagents` returns only the citation table, not restated rule text.
-4. A read-only grep of the three instruction files after the Paperclip update returns citations of the table and none of the rule sentences; the before and after digests are recorded.
+4. A read-only grep of the three instruction files after the Paperclip update returns citations of the table and none of the rule sentences, with the before and after digests recorded in `## Discussion`. This managed agent instruction file update is evidence recorded in Discussion, not a gate on this repository's `done`.
 5. The commands below pass.
 
 ```bash
@@ -125,6 +125,8 @@ ki repo audit --skill ki-authoring --progress never
 ## Dependencies / blocks
 
 Blocked by [KI-HARNESS-GOV-102](KI-HARNESS-GOV-102-decide-role-record-serialization.md): rule 6's row cites the anchor that record creates. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001` were prerequisites for rule 2 and are done.
+
+Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-095](KI-HARNESS-GOV-095-align-roadmap-diagnostics.md) all edit `ki-work-roadmap` `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
 Plan complete; ready once [KI-HARNESS-GOV-102](KI-HARNESS-GOV-102-decide-role-record-serialization.md) is done.
 

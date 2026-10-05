@@ -9,7 +9,7 @@ blocks: [KI-HARNESS-GOV-125]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
@@ -101,6 +101,8 @@ for s in ki-skills ki-work-roadmap ki-repo ki-work-housekeeping ki-decision-reco
 ## Dependencies / blocks
 
 Blocks [KI-HARNESS-GOV-125](KI-HARNESS-GOV-125-share-batch-identifier-grammar.md): `ki-batch` can adopt the shared grammar only after the module exists. Nothing blocks this record. [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) is the same one-fact-many-copies shape applied to the plugin projection but shares no build order.
+
+Sequencing: this record, [KI-HARNESS-GOV-095](KI-HARNESS-GOV-095-align-roadmap-diagnostics.md) and [KI-HARNESS-GOV-105](KI-HARNESS-GOV-105-state-ordering-in-ledger.md) all edit the shared `ki-work-roadmap` files `scripts/rubric/contexts/roadmap-evidence.ts`, `scripts/rubric/items/index.test.ts` and `references/rubric.md`; this record, [KI-HARNESS-GOV-095](KI-HARNESS-GOV-095-align-roadmap-diagnostics.md) and [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md) all edit `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
 ## Documentation impact
 

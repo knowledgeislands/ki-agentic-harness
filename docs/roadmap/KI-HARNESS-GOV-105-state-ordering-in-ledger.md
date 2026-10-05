@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:31:37Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-105: State ordering in ledger
@@ -74,6 +74,8 @@ ki repo conform --skill ki-work-roadmap --dry-run
 ## Dependencies / blocks
 
 None. `KI-HARNESS-GOV-104` is done and pruned, so the ordering text this record mirrors already exists in the standard.
+
+Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-095](KI-HARNESS-GOV-095-align-roadmap-diagnostics.md) all edit the shared `ki-work-roadmap` files `scripts/rubric/contexts/roadmap-evidence.ts`, `scripts/rubric/items/index.test.ts` and `references/rubric.md`. The anchors differ; whichever lands second rebases.
 
 ## Documentation impact
 

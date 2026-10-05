@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-099: Decide decision serial gaps
@@ -48,7 +48,7 @@ Verified on `main` at `19651664`. `standards-decision-records.md:28` says serial
 
 ## Files touched
 
-- `docs/decisions/ADR-KI-HARNESS-SKILLS-016-decision-record-serials-may-contain-gaps.md` (new; serial confirmed at writing)
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-016-decision-record-serials-may-contain-gaps.md` (new; `016` if this record lands before [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md), otherwise the next free serial)
 - `docs/decisions/README.md`
 - `skills/governance/ki-decision-records/references/standards-decision-records.md`
 - `skills/governance/ki-decision-records/scripts/rubric/items/filename.ts`
@@ -72,7 +72,7 @@ ki repo audit --skill ki-decision-records --progress never
 
 ## Dependencies / blocks
 
-None. Follow-on, non-blocking: tell `apps-observatory` the outcome so `KI-OBS-VIS-004` can delete its contiguity check; that repository owns the change.
+None. Serial sequencing: [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) also claims the next free `ADR-KI-HARNESS-SKILLS` serial; whichever lands first takes `016` and the other takes the next free serial. Follow-on, non-blocking: tell `apps-observatory` the outcome so `KI-OBS-VIS-004` can delete its contiguity check; that repository owns the change.
 
 ## Documentation impact
 

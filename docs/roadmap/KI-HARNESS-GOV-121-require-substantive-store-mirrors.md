@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T08:04:05Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-121: Require substantive store mirrors
@@ -99,6 +99,8 @@ Follow-on, outside acceptance: each base's enrichment record conforms its mirror
 ## Dependencies / blocks
 
 None. [KI-HARNESS-FND-028](KI-HARNESS-FND-028-adopt-qmd-kb-search.md) motivates the standard but does not gate it: the mirror contract and its audit are useful to grep and whole-file reads, and neither record needs the other's output. Both records edit `references/mode-query.md`; whichever lands second rebases its one-line change, which is a sequencing note rather than a dependency.
+
+Sequencing: this record and [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) both add a criterion through the shared `ki-repo-kb` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-knowledge-base.md`, and this record and [KI-HARNESS-GOV-131](KI-HARNESS-GOV-131-govern-living-diagrams.md) both edit the counts in `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`. Increment, do not hardcode; whichever lands second rebases.
 
 ## Documentation impact
 

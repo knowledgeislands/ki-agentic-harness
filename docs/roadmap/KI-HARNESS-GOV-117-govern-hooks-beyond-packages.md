@@ -9,7 +9,7 @@ blocks: []
 blocked_by: [KI-HARNESS-GOV-109]
 baseline_ref: null
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-10-05T08:08:55Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages
@@ -42,7 +42,7 @@ Nothing written. `ki-repo` has no hook family; its catalogue lives in `skills/ke
 
 ## Steps
 
-- [ ] Write the Decision Record under `docs/decisions/` at the next free `ADR-KI-HARNESS-SKILLS` serial (currently `016`): `ki-repo` owns existence and binding of `.githooks/pre-commit`; each shape skill owns and verifies its expected content; `SCR-11` is the `ki-engineering` instance; check-only content only. Add it to `docs/decisions/README.md`.
+- [ ] Write the Decision Record under `docs/decisions/` at the next free `ADR-KI-HARNESS-SKILLS` serial (`017` if [KI-HARNESS-GOV-099](KI-HARNESS-GOV-099-decide-decision-serial-gaps.md) has landed): `ki-repo` owns existence and binding of `.githooks/pre-commit`; each shape skill owns and verifies its expected content; `SCR-11` is the `ki-engineering` instance; check-only content only. Add it to `docs/decisions/README.md`.
 - [ ] Add a `HOOK` family to `ki-repo` in `scripts/rubric/items/hooks.ts`: `HOOK-1 [M]` (WARN at introduction, diagnostic) a tracked, executable `.githooks/pre-commit` exists, with a follow-on to raise it to FAIL once estate adoption trades land; `HOOK-2 [M]` (WARN, diagnostic) local `core.hooksPath` resolves to `.githooks`, with guidance naming `git config core.hooksPath .githooks`; `HOOK-J1 [J]` the gate stated in root orientation matches what the hook runs. Register it in `items/index.ts`, gather evidence in `contexts/repository.ts`, and extend `items/index.test.ts`.
 - [ ] Add the hook paragraph to `references/standards-repository.md` and `.githooks/pre-commit` to `ki-repo`'s `SKILL.md` ownership declarations; in `ki-engineering`'s `SKILL.md` and `standards-engineering.md`, record the stub as an engineering contribution and `SCR-11` as its content expectation.
 - [ ] `ki-repo-tools`: add `SHELL-HOOK [M]` in `scripts/rubric/items/shell.ts` requiring that, under the SHELL capability, `.githooks/pre-commit` invokes `shellcheck` and `bats` without a fixing flag; add the row to `standards-tool-repositories.md` and say there whether this agrees with or supersedes the "no `ki-shell` skill" decision.
@@ -52,7 +52,7 @@ Nothing written. `ki-repo` has no hook family; its catalogue lives in `skills/ke
 
 ## Files touched
 
-- `docs/decisions/ADR-KI-HARNESS-SKILLS-016-commit-gate-existence-and-content.md` (new)
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-NNN-commit-gate-existence-and-content.md` (new; the next free `SKILLS` serial, `017` if GOV-099 has landed)
 - `docs/decisions/README.md`
 - `skills/keystone/ki-repo/SKILL.md`
 - `skills/keystone/ki-repo/scripts/rubric/items/hooks.ts` (new)
@@ -102,11 +102,13 @@ ki repo audit --skill ki-skills --progress never
 
 `blocked_by` [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md), which settles the `.githooks` mechanism this item generalises. The record is fully shaped but stays `draft` because `ITEM-5` forbids a `ready` item with a non-done blocker; it becomes `ready` once GOV-109 is done. Adoption by `tools-rig`, the chezmoi source and other repositories follows as separate receiver-owned trades and does not block acceptance here.
 
+Sequencing: this record and [KI-HARNESS-GOV-121](KI-HARNESS-GOV-121-require-substantive-store-mirrors.md) both add a criterion through the shared `ki-repo-kb` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-knowledge-base.md`. Increment, do not hardcode; whichever lands second rebases. A sequencing note, not a dependency.
+
 ## Documentation impact
 
 ### Decision Records
 
-New `ADR-KI-HARNESS-SKILLS-016` (or the next free serial) records the existence-versus-content split.
+A new `ADR-KI-HARNESS-SKILLS` record at the next free serial (`017` if GOV-099 has landed) records the existence-versus-content split.
 
 ### Specifications
 

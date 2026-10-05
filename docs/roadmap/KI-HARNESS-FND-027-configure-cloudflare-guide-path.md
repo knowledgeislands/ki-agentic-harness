@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T12:30:00Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-05T08:41:49Z
 ---
 
 # KI-HARNESS-FND-027: Configure Cloudflare guide path
@@ -73,6 +73,8 @@ ki repo audit --skill ki-repo --progress never
 ## Dependencies / blocks
 
 None. Follow-on, non-blocking: once released, tell `5g-emerge-phase2` it may move its guide to `docs/guides/cloudflare.md`; that repository owns the move.
+
+The `ki-repo` `mode-review.md:233` anchor sits outside `Automated verification`, so it is independent of the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) and [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md) batch; [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md) edits a different anchor in the same file and whichever lands second rebases.
 
 ## Documentation impact
 
