@@ -16,6 +16,8 @@ argument-hint: 'audit | conform | digest | extract | help | improve | educate | 
 
 You are helping the user interact with a **Knowledge Islands** knowledge base - a markdown store organised to the Knowledge Islands structure. This skill carries the operating modes and the structure itself; only a handful of store-level details come from the host project. It assumes the zone model below and does not ask the project to redefine it.
 
+Optional bounded retrieval is governed by the [derived search contract](references/standards-search.md); QUERY selects it only when explicitly provisioned.
+
 ## The Knowledge Islands structure
 
 A Knowledge Islands base is one markdown store with a fixed set of five zones, flanked by an inbound and an outbound staging area. The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are staging areas, not zones, and carry no such index.
@@ -102,7 +104,7 @@ Templates are stubs — headings, frontmatter keys, and inline `<!-- prompts -->
 Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded `CLAUDE.md`, then the root memory index. **Declarative overrides** (the zone alias and the lists below) are read from the base's `.ki.toml` `[skills.ki-repo-kb]` table instead — see the `ki-repo` skill for the shared-file contract; validate your own table (warn on an unrecognised key) and never read another skill's. A base never ships a `<base>-kb` skill: what it needs differently is declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled skill.
 
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
-- **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
+- **Sources store** — whether a paired sources store is declared, following the [source mirror contract](references/standards-source-mirrors.md). _Default:_ none.
 - **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
 - **Zone names** — the canonical folder per zone, overridable per base. A `[skills.ki-repo-kb.zones]` sub-table maps any canonical zone or staging area to this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`, plus the `+` / `-` staging areas).
 - **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]` under `[skills.ki-repo-kb]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md`.

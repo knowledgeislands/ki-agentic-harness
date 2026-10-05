@@ -95,11 +95,35 @@ const NOTE_3: RubricItem<KbNoteContext> = {
   }
 }
 
+const NOTE_4: RubricItem<KbNoteContext> = {
+  code: 'NOTE-4',
+  title: 'substantive source mirrors',
+  description:
+    'Declared source mirrors carry safe store-relative provenance, checksum syntax and a minimum extract; fidelity remains judgment.',
+  sources: [KB, 'standards-source-mirrors.md'],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Have the base owner reconcile mirror provenance and durable extracts; never open a source store during this audit.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => context.sourceMirrors }
+  },
+  judgment: {
+    scope: 'Sampled declared source mirrors and the base-owned enrichment record.',
+    prompt:
+      'Does each extract carry the durable facts a reader would otherwise open the binary for, without private detail of no enduring use? Are fidelity and checksum freshness verified only under base authority?',
+    outcomes: ['conforming', 'mirror enrichment', 'not applicable'],
+    guidance: 'A minimum word count is a pointer diagnostic, not evidence of source fidelity or authorisation.'
+  }
+}
+
 export const NOTE: RubricFamily<KbRubricContext, KbNoteContext> = {
   code: 'NOTE',
   title: 'note conventions',
   description: 'Frontmatter mechanics and note-authoring judgment.',
   standard: FRONTMATTER,
   selectContext: (context) => context.notes,
-  items: [NOTE_1, NOTE_1A, NOTE_1B, NOTE_1C, NOTE_2, NOTE_3]
+  items: [NOTE_1, NOTE_1A, NOTE_1B, NOTE_1C, NOTE_2, NOTE_3, NOTE_4]
 }

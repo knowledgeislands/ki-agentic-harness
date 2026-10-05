@@ -4,19 +4,19 @@ area: FND
 title: Adopt qmd KB search
 theme: foundation-tooling
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:06:04Z
+updated_at: 2026-10-05T11:40:01Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
 
 ## Goal
 
-Agents answer Knowledge Base questions through hybrid search over the base's Markdown instead of grep and whole-file reads, while qmd stays an implementation detail behind `kb_search` on `mcp-ki-kb-fs`, `ki kb search` on the shell and the `ki-repo-kb` QUERY procedure.
+Agents can answer Knowledge Base questions through explicitly provisioned optional hybrid search over the base's Markdown, retaining literal grep and targeted-read fallback, while qmd stays an implementation detail behind `kb_search` on `mcp-ki-kb-fs`, `ki kb search` on the shell and the `ki-repo-kb` QUERY procedure.
 
 ## Context
 
@@ -131,8 +131,14 @@ Run a one-hour direct-CLI qmd pilot first as step one with a recorded go or no-g
 
 ### Runtime shape
 
-One HTTP daemon (`qmd mcp --http --daemon`, localhost only) started by launchd holds the roughly 2 GB of models once; `mcp-ki-kb-fs` calls it over HTTP rather than embedding the SDK, so Desktop, Codex and mcporter do not each load a copy. Named indexes separate trust boundaries so an HNR session never receives kit-legal hits.
+Each explicitly configured operator-managed loopback daemon owns one KB trust boundary and named index. The pinned HTTP handler has no request-level index selector or KB authentication; health is liveness only. The prior single-global-daemon/model-sharing proposal is superseded. KI gateways enforce current authorisation before expansion and snippets; loopback alone cannot prevent other local clients reaching the auxiliary daemon. No launchd or live binding is deployed by this work.
 
 ### Route gaps (resolved)
 
 `mcp-ki-kb-fs` accepts only knowledge trades from this repository, so the `kb_search` request travels as a knowledge trade and that repository decides whether to capture its own work record. chezmoi has no route and is recorded for the owner.
+
+## Pilot result
+
+**Go for optional derived retrieval behind explicitly provisioned KI surfaces.** qmd 2.8.3 at `facd35e01359e59d938bc9418e93fb9318addee3` ran two independent synthetic Alpha/Omega indexes, ten question instances per corpus. The [durable report](../decisions/references/qmd-synthetic-pilot.md) and [complete JSON](../decisions/references/qmd-synthetic-pilot.json) retain every per-question finding, exact characters/bytes and wall time, original and improved grep baselines, supplementary predeclarations, protocol frames and cleanup.
+
+Both methods found 16/16 expected notes on the original instances; qmd had no observed quality, context or latency advantage. The four predeclared paraphrases yielded qmd 4/4 and bounded literal grep 0/4. This limited semantic capability and verified isolation/protocol correctness justify availability, not a production performance claim. The actual explicit-local-GGUF probe passed. The stopped endpoint produced connection refusal; indexes/configs and synthetic projections were removed, with task-owned model cache and reproducibility logs retained. Required idle suite and exact independent review remain pending; this intermediate publication is not acceptance.

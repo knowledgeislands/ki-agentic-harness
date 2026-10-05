@@ -6,6 +6,6 @@ _Gate: if the destination is a canonical zone (`Admin`, `Pillars`, `Resources`) 
 
 1. Run pre-flight.
 2. Determine the destination zone using the routing test.
-3. Propose a filename per the base's naming convention (dated for `Calendar/`; descriptive title elsewhere; mirror the paired sources-store path for source extracts).
+3. Propose a filename per the base's naming convention (dated for `Calendar/`; descriptive title elsewhere; follow the [source mirror contract](standards-source-mirrors.md) for declared source extracts).
 4. Draft per the project's writing standards. Cite every fact to a source path or reference; label analysis explicitly where the base distinguishes fact from analysis.
 5. Confirm, then write.

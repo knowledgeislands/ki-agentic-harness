@@ -16,6 +16,10 @@ Only `[skills.ki-tokenomics]` is read, validate-down. Recognised scalar keys are
 
 `fast` is for mechanical or bulk work, `standard` for well-scoped default work, `reasoning` for hard judgement, and `frontier` for long-horizon autonomous work. These are purposes, not provider names. A runtime's concrete effective or default model is evidence owned by its adapter and cannot revise the repository's declared purpose.
 
+## Retrieval
+
+Prefer bounded snippets and targeted line-range reads before whole-file reads, widening only when the question requires more evidence. Exact identifiers use literal retrieval. Explicitly unavailable or insufficient search falls back to grep and targeted reads. Measure returned context with its actual unit: characters and UTF-8 bytes are not tokenizer counts; token estimates remain labelled `~` and never billing figures. Retrieval performance and quality need measured evidence rather than assumed savings. Route search-surface design to `ki-repo-mcp` and `ki-repo-kb`.
+
 ## Ownership
 
 The tokenomics report names cost and attribution; it does not silently edit another owner’s artifact. Route MCP-server design to `ki-repo-mcp`, installed-skill description quality to `ki-skills`, and runtime instruction, settings, memory, compaction, or tool evidence to the matching runtime adapter. Runtime adapters are separate capabilities, not compatibility fallbacks.

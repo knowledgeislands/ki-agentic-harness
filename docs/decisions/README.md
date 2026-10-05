@@ -2,7 +2,7 @@
 
 This directory holds the Decision Records for the **ki-agentic-harness** and the Knowledge Islands governance skill set it houses — Architecture Decision Records (`ADR-`), Strategy Decision Records (`SDR-`), and Governance Decision Records (`GDR-`), per the prefix table in the `ki-decision-records` skill.
 
-Supporting evidence that is not itself a Decision Record lives in [references/](references/): see the [ICM review](references/interpretable-context-methodology-review.md) and [evaluation-frameworks review](references/evaluation-frameworks-review.md).
+Supporting evidence that is not itself a Decision Record lives in [references/](references/): see the [ICM review](references/interpretable-context-methodology-review.md) [evaluation-frameworks review](references/evaluation-frameworks-review.md), and [qmd synthetic pilot](references/qmd-synthetic-pilot.md).
 
 ## Naming convention
 
@@ -80,6 +80,7 @@ The records are living, compact, and independent. The order below is a **curated
 51. [GDR-KI-HARNESS-012](GDR-KI-HARNESS-012-governed-vendoring-for-shared-estate-code.md) — digested skill-owned source profiles with receiver-owned seams and guarded projection.
 52. [ADR-KI-HARNESS-SKILLS-015](ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) — identifier scope segments accept any declared repository code that carries a letter.
 53. [XDR-KI-HARNESS-001](XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md) — Dependabot alerts and security updates everywhere; no version-update configuration and no dependency auto-merge.
+54. [ADR-KI-HARNESS-TOOLCHAIN-006](ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) — optional qmd derived search behind governed KI surfaces, with explicit independent KB boundaries.
 
 ## Template
 

@@ -1,0 +1,1994 @@
+{
+  "schema": "ki/qmd-synthetic-pilot/v1",
+  "measured_at": "2026-10-05T11:21:35Z",
+  "qmd_version": "2.8.3",
+  "qmd_commit": "facd35e01359e59d938bc9418e93fb9318addee3",
+  "engine_source": "https://github.com/tobi/qmd/tree/facd35e01359e59d938bc9418e93fb9318addee3",
+  "units": "Unicode characters and UTF-8 bytes; no tokenizer measurement",
+  "method_note": "Primary grep baseline uses whole-word case-insensitive OR keywords, max3matches/file, first3candidatefiles and13line targetedwindows. An initial substring baseline accidentally matched rail within trail; its actual measurements are retained separately. Whole-word baseline was rerun without changing qmd measurements.",
+  "summary": {
+    "alpha": {
+      "grep_targeted_reads": {
+        "found": 8,
+        "questions": 8,
+        "median_context_characters": 1228.5,
+        "median_context_bytes": 1228.5,
+        "median_wall_seconds": 0.008650999999999999,
+        "max_wall_seconds": 0.017532,
+        "errors": 0
+      },
+      "qmd_hybrid_rerank": {
+        "found": 8,
+        "questions": 8,
+        "median_context_characters": 1705.5,
+        "median_context_bytes": 1705.5,
+        "median_wall_seconds": 7.744363,
+        "max_wall_seconds": 9.942689,
+        "errors": 0
+      }
+    },
+    "omega": {
+      "grep_targeted_reads": {
+        "found": 8,
+        "questions": 8,
+        "median_context_characters": 1228.5,
+        "median_context_bytes": 1228.5,
+        "median_wall_seconds": 0.0085695,
+        "max_wall_seconds": 0.010366,
+        "errors": 0
+      },
+      "qmd_hybrid_rerank": {
+        "found": 8,
+        "questions": 8,
+        "median_context_characters": 1716.5,
+        "median_context_bytes": 1716.5,
+        "median_wall_seconds": 9.191844,
+        "max_wall_seconds": 10.174943,
+        "errors": 0
+      }
+    }
+  },
+  "questions": [
+    {
+      "question": 1,
+      "kb": "alpha",
+      "query": "When must the service contract be renewed?",
+      "grep_terms": "contract renewal cutoff",
+      "expected_file": "renewal.md",
+      "expected_title": "Renewal",
+      "answer": "The service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 2,
+        "context_characters": 2259,
+        "context_bytes": 2259,
+        "wall_seconds": 0.017532,
+        "pattern": "service|contract|renewed",
+        "returned_files": [
+          "Renewal.md",
+          "Access.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1663,
+        "context_bytes": 1663,
+        "wall_seconds": 9.813018,
+        "results": [
+          {
+            "docid": "#6d0f0a",
+            "score": 0.97,
+            "file": "qmd://alpha/Renewal.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 1: Renewal",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nThe service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.\n\n## Supporting context"
+          },
+          {
+            "docid": "#ddcb96",
+            "score": 0.38,
+            "file": "qmd://alpha/Access.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 7: Access",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context"
+          },
+          {
+            "docid": "#270e28",
+            "score": 0.25,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team ke..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 2,
+        "context_characters": 2259,
+        "context_bytes": 2259,
+        "wall_seconds": 0.011192,
+        "pattern": "service|contract|renewed",
+        "returned_files": [
+          "Renewal.md",
+          "Access.md"
+        ]
+      }
+    },
+    {
+      "question": 2,
+      "kb": "alpha",
+      "query": "How do we recover after a damaged backup?",
+      "grep_terms": "restore corrupted backup",
+      "expected_file": "restoration.md",
+      "expected_title": "Restoration",
+      "answer": "Recover from the last verified snapshot. Mount it read-only, compare the ledger checksum, restore to a spare volume, then ask Oren to approve the integrity report before replacing the active copy.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1197,
+        "context_bytes": 1197,
+        "wall_seconds": 0.008725,
+        "pattern": "recover|damaged|backup",
+        "returned_files": [
+          "Restoration.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1885,
+        "context_bytes": 1885,
+        "wall_seconds": 9.942689,
+        "results": [
+          {
+            "docid": "#b6e4b8",
+            "score": 0.8,
+            "file": "qmd://alpha/Restoration.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 2: Restoration",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team ..."
+          },
+          {
+            "docid": "#270e28",
+            "score": 0.38,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team ke..."
+          },
+          {
+            "docid": "#7dd07a",
+            "score": 0.25,
+            "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 4: Incident",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team kee..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1197,
+        "context_bytes": 1197,
+        "wall_seconds": 0.011027,
+        "pattern": "recover|damaged|backup",
+        "returned_files": [
+          "Restoration.md"
+        ]
+      }
+    },
+    {
+      "question": 3,
+      "kb": "alpha",
+      "query": "Which overnight rail expenses can staff reclaim?",
+      "grep_terms": "night train reimbursement",
+      "expected_file": "travel.md",
+      "expected_title": "Travel",
+      "answer": "Overnight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1158,
+        "context_bytes": 1158,
+        "wall_seconds": 0.008763,
+        "pattern": "overnight|rail|expenses|staff|reclaim",
+        "returned_files": [
+          "Travel.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1714,
+        "context_bytes": 1714,
+        "wall_seconds": 9.202178,
+        "results": [
+          {
+            "docid": "#38dfa6",
+            "score": 1,
+            "file": "qmd://alpha/Travel.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 3: Travel",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context"
+          },
+          {
+            "docid": "#ddcb96",
+            "score": 0.38,
+            "file": "qmd://alpha/Access.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 7: Access",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context"
+          },
+          {
+            "docid": "#7dd07a",
+            "score": 0.25,
+            "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 4: Incident",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team kee..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": false,
+        "candidate_files": 8,
+        "context_characters": 12554,
+        "context_bytes": 12554,
+        "wall_seconds": 0.018351,
+        "pattern": "overnight|rail|expenses|staff|reclaim",
+        "returned_files": [
+          "Incident.md",
+          "Renewal.md",
+          "Access.md"
+        ]
+      }
+    },
+    {
+      "question": 4,
+      "kb": "alpha",
+      "query": "Who receives an amber severity incident?",
+      "grep_terms": "incident amber escalation",
+      "expected_file": "incident.md",
+      "expected_title": "Incident",
+      "answer": "Amber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 3,
+        "context_characters": 3561,
+        "context_bytes": 3561,
+        "wall_seconds": 0.008577,
+        "pattern": "receives|amber|severity|incident",
+        "returned_files": [
+          "Incident.md",
+          "Release.md",
+          "Grant.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1657,
+        "context_bytes": 1657,
+        "wall_seconds": 7.581565,
+        "results": [
+          {
+            "docid": "#7dd07a",
+            "score": 1,
+            "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 4: Incident",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nAmber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.\n\n## Supporting context"
+          },
+          {
+            "docid": "#28bce7",
+            "score": 0.38,
+            "file": "qmd://alpha/Release.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 8: Release",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context"
+          },
+          {
+            "docid": "#38dfa6",
+            "score": 0.25,
+            "file": "qmd://alpha/Travel.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 3: Travel",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 3,
+        "context_characters": 3561,
+        "context_bytes": 3561,
+        "wall_seconds": 0.009149,
+        "pattern": "receives|amber|severity|incident",
+        "returned_files": [
+          "Incident.md",
+          "Release.md",
+          "Grant.md"
+        ]
+      }
+    },
+    {
+      "question": 5,
+      "kb": "alpha",
+      "query": "How long can we keep interviews after the study ends?",
+      "grep_terms": "research recordings erase",
+      "expected_file": "retention.md",
+      "expected_title": "Retention",
+      "answer": "Erase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1275,
+        "context_bytes": 1275,
+        "wall_seconds": 0.008897,
+        "pattern": "interviews|study",
+        "returned_files": [
+          "Retention.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1832,
+        "context_bytes": 1832,
+        "wall_seconds": 7.568131,
+        "results": [
+          {
+            "docid": "#270e28",
+            "score": 1,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#ddcb96",
+            "score": 0.38,
+            "file": "qmd://alpha/Access.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 7: Access",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps..."
+          },
+          {
+            "docid": "#6d0f0a",
+            "score": 0.25,
+            "file": "qmd://alpha/Renewal.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 1: Renewal",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keep..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1275,
+        "context_bytes": 1275,
+        "wall_seconds": 0.012229,
+        "pattern": "interviews|study",
+        "returned_files": [
+          "Retention.md"
+        ]
+      }
+    },
+    {
+      "question": 6,
+      "kb": "alpha",
+      "query": "Find GRANT-742 and its reporting date.",
+      "grep_terms": "GRANT-742",
+      "expected_file": "grant.md",
+      "expected_title": "Grant",
+      "answer": "GRANT-742 supports the river survey. The final report is due 3 December and must include the sampling ledger and equipment costs. Neri signs the report; the funder receives only the aggregate observations.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1185,
+        "context_bytes": 1185,
+        "wall_seconds": 0.008478,
+        "pattern": "GRANT\\-742|reporting",
+        "returned_files": [
+          "Grant.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1697,
+        "context_bytes": 1697,
+        "wall_seconds": 7.907161,
+        "results": [
+          {
+            "docid": "#37ce76",
+            "score": 1,
+            "file": "qmd://alpha/Grant.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 6: Grant",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nGRANT-742 supports the river survey. The final report is due 3 December and must include the sampling ledger and equipment costs. Neri signs the report; the funder receives only the aggregate observations.\n\n## Supporting context"
+          },
+          {
+            "docid": "#ddcb96",
+            "score": 0.38,
+            "file": "qmd://alpha/Access.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 7: Access",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps..."
+          },
+          {
+            "docid": "#38dfa6",
+            "score": 0.25,
+            "file": "qmd://alpha/Travel.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 3: Travel",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1185,
+        "context_bytes": 1185,
+        "wall_seconds": 0.009899,
+        "pattern": "GRANT\\-742|reporting",
+        "returned_files": [
+          "Grant.md"
+        ]
+      }
+    },
+    {
+      "question": 7,
+      "kb": "alpha",
+      "query": "When does a temporary supplier lose system privileges?",
+      "grep_terms": "contractor access expiry",
+      "expected_file": "access.md",
+      "expected_title": "Access",
+      "answer": "Temporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1212,
+        "context_bytes": 1212,
+        "wall_seconds": 0.008576,
+        "pattern": "temporary|supplier|lose",
+        "returned_files": [
+          "Access.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1521,
+        "context_bytes": 1521,
+        "wall_seconds": 7.52591,
+        "results": [
+          {
+            "docid": "#ddcb96",
+            "score": 0.88,
+            "file": "qmd://alpha/Access.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 7: Access",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context"
+          },
+          {
+            "docid": "#7dd07a",
+            "score": 0.38,
+            "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+            "line": 5,
+            "title": "ALPHA operational note 4: Incident",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -4,4 @@ (3 before, 46 after)\n\n# ALPHA operational note 4: Incident\n\n## Decision"
+          },
+          {
+            "docid": "#270e28",
+            "score": 0.25,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 2,
+        "context_characters": 2487,
+        "context_bytes": 2487,
+        "wall_seconds": 0.010626,
+        "pattern": "temporary|supplier|lose",
+        "returned_files": [
+          "Access.md",
+          "Retention.md"
+        ]
+      }
+    },
+    {
+      "question": 8,
+      "kb": "alpha",
+      "query": "What happens if the first production trial fails?",
+      "grep_terms": "release rollback failed canary",
+      "expected_file": "release.md",
+      "expected_title": "Release",
+      "answer": "If the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1245,
+        "context_bytes": 1245,
+        "wall_seconds": 0.00808,
+        "pattern": "production|trial|fails",
+        "returned_files": [
+          "Release.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1717,
+        "context_bytes": 1717,
+        "wall_seconds": 7.185107,
+        "results": [
+          {
+            "docid": "#28bce7",
+            "score": 0.89,
+            "file": "qmd://alpha/Release.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 8: Release",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context"
+          },
+          {
+            "docid": "#7dd07a",
+            "score": 0.38,
+            "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 4: Incident",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nAmber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.\n\n## Supporting context"
+          },
+          {
+            "docid": "#270e28",
+            "score": 0.25,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1245,
+        "context_bytes": 1245,
+        "wall_seconds": 0.01023,
+        "pattern": "production|trial|fails",
+        "returned_files": [
+          "Release.md"
+        ]
+      }
+    },
+    {
+      "question": 9,
+      "kb": "omega",
+      "query": "When must the service contract be renewed?",
+      "grep_terms": "contract renewal cutoff",
+      "expected_file": "renewal.md",
+      "expected_title": "Renewal",
+      "answer": "The service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 2,
+        "context_characters": 2259,
+        "context_bytes": 2259,
+        "wall_seconds": 0.010366,
+        "pattern": "service|contract|renewed",
+        "returned_files": [
+          "Renewal.md",
+          "Access.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1663,
+        "context_bytes": 1663,
+        "wall_seconds": 7.78293,
+        "results": [
+          {
+            "docid": "#4d870e",
+            "score": 0.98,
+            "file": "qmd://omega/Renewal.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 1: Renewal",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nThe service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.\n\n## Supporting context"
+          },
+          {
+            "docid": "#c48979",
+            "score": 0.38,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context"
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.25,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team ke..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 2,
+        "context_characters": 2259,
+        "context_bytes": 2259,
+        "wall_seconds": 0.010651,
+        "pattern": "service|contract|renewed",
+        "returned_files": [
+          "Renewal.md",
+          "Access.md"
+        ]
+      }
+    },
+    {
+      "question": 10,
+      "kb": "omega",
+      "query": "How do we recover after a damaged backup?",
+      "grep_terms": "restore corrupted backup",
+      "expected_file": "restoration.md",
+      "expected_title": "Restoration",
+      "answer": "Recover from the last verified snapshot. Mount it read-only, compare the ledger checksum, restore to a spare volume, then ask Oren to approve the integrity report before replacing the active copy.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1197,
+        "context_bytes": 1197,
+        "wall_seconds": 0.008664,
+        "pattern": "recover|damaged|backup",
+        "returned_files": [
+          "Restoration.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1886,
+        "context_bytes": 1886,
+        "wall_seconds": 8.099181,
+        "results": [
+          {
+            "docid": "#933c6f",
+            "score": 0.79,
+            "file": "qmd://omega/Restoration.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 2: Restoration",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team ..."
+          },
+          {
+            "docid": "#2e20f9",
+            "score": 0.38,
+            "file": "qmd://omega/Incident.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 4: Incident",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team kee..."
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.25,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team ke..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1197,
+        "context_bytes": 1197,
+        "wall_seconds": 0.020098,
+        "pattern": "recover|damaged|backup",
+        "returned_files": [
+          "Restoration.md"
+        ]
+      }
+    },
+    {
+      "question": 11,
+      "kb": "omega",
+      "query": "Which overnight rail expenses can staff reclaim?",
+      "grep_terms": "night train reimbursement",
+      "expected_file": "travel.md",
+      "expected_title": "Travel",
+      "answer": "Overnight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1158,
+        "context_bytes": 1158,
+        "wall_seconds": 0.007909,
+        "pattern": "overnight|rail|expenses|staff|reclaim",
+        "returned_files": [
+          "Travel.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1716,
+        "context_bytes": 1716,
+        "wall_seconds": 9.475144,
+        "results": [
+          {
+            "docid": "#f1672a",
+            "score": 1,
+            "file": "qmd://omega/Travel.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 3: Travel",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context"
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.38,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team ke..."
+          },
+          {
+            "docid": "#c48979",
+            "score": 0.25,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": false,
+        "candidate_files": 8,
+        "context_characters": 12554,
+        "context_bytes": 12554,
+        "wall_seconds": 0.020669,
+        "pattern": "overnight|rail|expenses|staff|reclaim",
+        "returned_files": [
+          "Incident.md",
+          "Renewal.md",
+          "Access.md"
+        ]
+      }
+    },
+    {
+      "question": 12,
+      "kb": "omega",
+      "query": "Who receives an amber severity incident?",
+      "grep_terms": "incident amber escalation",
+      "expected_file": "incident.md",
+      "expected_title": "Incident",
+      "answer": "Amber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 3,
+        "context_characters": 3561,
+        "context_bytes": 3561,
+        "wall_seconds": 0.007674,
+        "pattern": "receives|amber|severity|incident",
+        "returned_files": [
+          "Incident.md",
+          "Grant.md",
+          "Release.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1747,
+        "context_bytes": 1747,
+        "wall_seconds": 9.499136,
+        "results": [
+          {
+            "docid": "#2e20f9",
+            "score": 1,
+            "file": "qmd://omega/Incident.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 4: Incident",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nAmber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.\n\n## Supporting context"
+          },
+          {
+            "docid": "#7ca3eb",
+            "score": 0.38,
+            "file": "qmd://omega/Release.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 8: Release",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context"
+          },
+          {
+            "docid": "#c48979",
+            "score": 0.25,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 3,
+        "context_characters": 3561,
+        "context_bytes": 3561,
+        "wall_seconds": 0.010556,
+        "pattern": "receives|amber|severity|incident",
+        "returned_files": [
+          "Incident.md",
+          "Release.md",
+          "Grant.md"
+        ]
+      }
+    },
+    {
+      "question": 13,
+      "kb": "omega",
+      "query": "How long can we keep interviews after the study ends?",
+      "grep_terms": "research recordings erase",
+      "expected_file": "retention.md",
+      "expected_title": "Retention",
+      "answer": "Erase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1275,
+        "context_bytes": 1275,
+        "wall_seconds": 0.008572,
+        "pattern": "interviews|study",
+        "returned_files": [
+          "Retention.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1832,
+        "context_bytes": 1832,
+        "wall_seconds": 9.6418,
+        "results": [
+          {
+            "docid": "#4ce12f",
+            "score": 1,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#c48979",
+            "score": 0.38,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps..."
+          },
+          {
+            "docid": "#4d870e",
+            "score": 0.25,
+            "file": "qmd://omega/Renewal.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 1: Renewal",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keep..."
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1275,
+        "context_bytes": 1275,
+        "wall_seconds": 0.018265,
+        "pattern": "interviews|study",
+        "returned_files": [
+          "Retention.md"
+        ]
+      }
+    },
+    {
+      "question": 14,
+      "kb": "omega",
+      "query": "Find GRANT-742 and its reporting date.",
+      "grep_terms": "GRANT-742",
+      "expected_file": "grant.md",
+      "expected_title": "Grant",
+      "answer": "GRANT-742 supports the river survey. The final report is due 3 December and must include the sampling ledger and equipment costs. Neri signs the report; the funder receives only the aggregate observations.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1185,
+        "context_bytes": 1185,
+        "wall_seconds": 0.008387,
+        "pattern": "GRANT\\-742|reporting",
+        "returned_files": [
+          "Grant.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1697,
+        "context_bytes": 1697,
+        "wall_seconds": 10.174943,
+        "results": [
+          {
+            "docid": "#dc2183",
+            "score": 1,
+            "file": "qmd://omega/Grant.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 6: Grant",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nGRANT-742 supports the river survey. The final report is due 3 December and must include the sampling ledger and equipment costs. Neri signs the report; the funder receives only the aggregate observations.\n\n## Supporting context"
+          },
+          {
+            "docid": "#c48979",
+            "score": 0.38,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps..."
+          },
+          {
+            "docid": "#f1672a",
+            "score": 0.25,
+            "file": "qmd://omega/Travel.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 3: Travel",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1185,
+        "context_bytes": 1185,
+        "wall_seconds": 0.019522,
+        "pattern": "GRANT\\-742|reporting",
+        "returned_files": [
+          "Grant.md"
+        ]
+      }
+    },
+    {
+      "question": 15,
+      "kb": "omega",
+      "query": "When does a temporary supplier lose system privileges?",
+      "grep_terms": "contractor access expiry",
+      "expected_file": "access.md",
+      "expected_title": "Access",
+      "answer": "Temporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1212,
+        "context_bytes": 1212,
+        "wall_seconds": 0.009089,
+        "pattern": "temporary|supplier|lose",
+        "returned_files": [
+          "Access.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1521,
+        "context_bytes": 1521,
+        "wall_seconds": 8.908544,
+        "results": [
+          {
+            "docid": "#c48979",
+            "score": 0.86,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context"
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.38,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#2e20f9",
+            "score": 0.25,
+            "file": "qmd://omega/Incident.md?index=ki-kb-omega",
+            "line": 5,
+            "title": "OMEGA operational note 4: Incident",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -4,4 @@ (3 before, 46 after)\n\n# OMEGA operational note 4: Incident\n\n## Decision"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 2,
+        "context_characters": 2487,
+        "context_bytes": 2487,
+        "wall_seconds": 0.018649,
+        "pattern": "temporary|supplier|lose",
+        "returned_files": [
+          "Access.md",
+          "Retention.md"
+        ]
+      }
+    },
+    {
+      "question": 16,
+      "kb": "omega",
+      "query": "What happens if the first production trial fails?",
+      "grep_terms": "release rollback failed canary",
+      "expected_file": "release.md",
+      "expected_title": "Release",
+      "answer": "If the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1245,
+        "context_bytes": 1245,
+        "wall_seconds": 0.008567,
+        "pattern": "production|trial|fails",
+        "returned_files": [
+          "Release.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1717,
+        "context_bytes": 1717,
+        "wall_seconds": 8.59407,
+        "results": [
+          {
+            "docid": "#7ca3eb",
+            "score": 0.87,
+            "file": "qmd://omega/Release.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 8: Release",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context"
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.38,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#2e20f9",
+            "score": 0.25,
+            "file": "qmd://omega/Incident.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 4: Incident",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nAmber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      },
+      "grep_substring_initial": {
+        "exit_code": 0,
+        "found": true,
+        "candidate_files": 1,
+        "context_characters": 1245,
+        "context_bytes": 1245,
+        "wall_seconds": 0.009462,
+        "pattern": "production|trial|fails",
+        "returned_files": [
+          "Release.md"
+        ]
+      }
+    }
+  ],
+  "models": [
+    {
+      "file": "hf_ggml-org_qwen3-reranker-0.6b-q8_0.gguf",
+      "bytes": 639153184,
+      "sha256": "22c9979ce4fbcdc5acdc310c6641c32797eff1aa980b8f7a2db8a8ea23429a48"
+    },
+    {
+      "file": "hf_ggml-org_embeddinggemma-300M-Q8_0.gguf",
+      "bytes": 333590944,
+      "sha256": "b5ce9d77a3fc4b3b39ccb5643c36777911cc4eb46a66962eadfa3f5f60490d63"
+    },
+    {
+      "file": "hf_tobil_qmd-query-expansion-1.7B-q4_k_m.gguf",
+      "bytes": 1282438912,
+      "sha256": "000dfb1c06efa6a049e9f64ba921c3740e2454f62abab6fa10e77bd30bb2bcc0"
+    }
+  ],
+  "indexes": {
+    "alpha": {
+      "active_documents": 9,
+      "files": [
+        [
+          "Access.md"
+        ],
+        [
+          "Grant.md"
+        ],
+        [
+          "Incident.md"
+        ],
+        [
+          "Mixed Case Note.md"
+        ],
+        [
+          "Release.md"
+        ],
+        [
+          "Renewal.md"
+        ],
+        [
+          "Restoration.md"
+        ],
+        [
+          "Retention.md"
+        ],
+        [
+          "Travel.md"
+        ]
+      ],
+      "vector_chunks": 25
+    },
+    "omega": {
+      "active_documents": 9,
+      "files": [
+        [
+          "Access.md"
+        ],
+        [
+          "Grant.md"
+        ],
+        [
+          "Incident.md"
+        ],
+        [
+          "Mixed Case Note.md"
+        ],
+        [
+          "Release.md"
+        ],
+        [
+          "Renewal.md"
+        ],
+        [
+          "Restoration.md"
+        ],
+        [
+          "Retention.md"
+        ],
+        [
+          "Travel.md"
+        ]
+      ],
+      "vector_chunks": 25
+    }
+  },
+  "protocol_fixtures": {
+    "health": {
+      "request": null,
+      "status": 200,
+      "response": {
+        "status": "ok",
+        "uptime": 11
+      }
+    },
+    "lexical": {
+      "request": {
+        "searches": [
+          {
+            "type": "lex",
+            "query": "PATH-PROBE-913"
+          }
+        ],
+        "collections": [
+          "alpha"
+        ],
+        "limit": 3,
+        "rerank": false
+      },
+      "status": 200,
+      "response": {
+        "results": [
+          {
+            "docid": "#cd118d",
+            "file": "qmd://alpha/Mixed%20Case%20Note.md",
+            "title": "Mixed Case Note",
+            "score": 1,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 7,
+            "snippet": "7: @@ -6,3 @@ (5 before, 0 after)\n8: \n9: ALPHA PATH-PROBE-913 confirms that spaces, case and URI escaping retain repository provenance.\n10: "
+          }
+        ]
+      }
+    },
+    "plain-query-rejected": {
+      "request": {
+        "query": "PATH-PROBE-913"
+      },
+      "status": 400,
+      "response": {
+        "error": "Missing required field: searches (array)"
+      }
+    },
+    "cli-lexical": {
+      "argv": [
+        "qmd",
+        "--index",
+        "ki-kb-alpha",
+        "search",
+        "PATH-PROBE-913",
+        "--json",
+        "-n",
+        "3"
+      ],
+      "exit_code": 0,
+      "response": [
+        {
+          "docid": "#cd118d",
+          "score": 0.74,
+          "file": "qmd://alpha/Mixed Case Note.md?index=ki-kb-alpha",
+          "line": 7,
+          "title": "Mixed Case Note",
+          "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+          "snippet": "@@ -6,3 @@ (5 before, 0 after)\n\nALPHA PATH-PROBE-913 confirms that spaces, case and URI escaping retain repository provenance.\n"
+        }
+      ]
+    },
+    "hybrid-rerank": {
+      "request": {
+        "searches": [
+          {
+            "type": "lex",
+            "query": "recover backup"
+          },
+          {
+            "type": "vec",
+            "query": "get lost information back after storage damage"
+          }
+        ],
+        "collections": [
+          "alpha"
+        ],
+        "limit": 3,
+        "rerank": true
+      },
+      "status": 200,
+      "wall_seconds": 5.58828,
+      "response": {
+        "results": [
+          {
+            "docid": "#b6e4b8",
+            "file": "qmd://alpha/Restoration.md",
+            "title": "ALPHA operational note 2: Restoration",
+            "score": 0.76,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 9,
+            "snippet": "9: @@ -8,4 @@ (7 before, 42 after)\n10: \n11: Recover from the last verified snapshot. Mount it read-only, compare the ledger checksum, restore to a spare volume, then ask Oren to approve the integrity report before replacing the active copy.\n12: \n13: ## Supporting context"
+          },
+          {
+            "docid": "#270e28",
+            "file": "qmd://alpha/Retention.md",
+            "title": "ALPHA operational note 5: Retention",
+            "score": 0.38,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 1,
+            "snippet": "1: @@ -1,3 @@ (0 before, 50 after)\n2: ---\n3: note_type: resource\n4: ---"
+          },
+          {
+            "docid": "#7dd07a",
+            "file": "qmd://alpha/Incident.md",
+            "title": "ALPHA operational note 4: Incident",
+            "score": 0.25,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 1,
+            "snippet": "1: @@ -1,3 @@ (0 before, 50 after)\n2: ---\n3: note_type: resource\n4: ---"
+          }
+        ]
+      }
+    },
+    "vector": {
+      "request": {
+        "searches": [
+          {
+            "type": "vec",
+            "query": "get lost information back after storage damage"
+          }
+        ],
+        "collections": [
+          "alpha"
+        ],
+        "limit": 3,
+        "rerank": true
+      },
+      "status": 200,
+      "wall_seconds": 2.030672,
+      "response": {
+        "results": [
+          {
+            "docid": "#b6e4b8",
+            "file": "qmd://alpha/Restoration.md",
+            "title": "ALPHA operational note 2: Restoration",
+            "score": 0.75,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 1,
+            "snippet": "1: @@ -1,3 @@ (0 before, 50 after)\n2: ---\n3: note_type: resource\n4: ---"
+          },
+          {
+            "docid": "#270e28",
+            "file": "qmd://alpha/Retention.md",
+            "title": "ALPHA operational note 5: Retention",
+            "score": 0.38,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 9,
+            "snippet": "9: @@ -8,4 @@ (7 before, 42 after)\n10: \n11: Erase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n12: \n13: ## Supporting context"
+          },
+          {
+            "docid": "#7dd07a",
+            "file": "qmd://alpha/Incident.md",
+            "title": "ALPHA operational note 4: Incident",
+            "score": 0.25,
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "line": 1,
+            "snippet": "1: @@ -1,3 @@ (0 before, 50 after)\n2: ---\n3: note_type: resource\n4: ---"
+          }
+        ]
+      }
+    },
+    "protected-canary": {
+      "request": {
+        "searches": [
+          {
+            "type": "lex",
+            "query": "PROTECTED-CANARY UNDECLARED-CANARY"
+          }
+        ],
+        "collections": [
+          "alpha"
+        ],
+        "limit": 3,
+        "rerank": false
+      },
+      "status": 200,
+      "wall_seconds": 0.001443,
+      "response": {
+        "results": []
+      }
+    },
+    "origin-denied": {
+      "request_headers": {
+        "Origin": "https://example.org"
+      },
+      "status": 403,
+      "response": {
+        "jsonrpc": "2.0",
+        "error": {
+          "code": -32003,
+          "message": "Forbidden: Origin not allowed: https://example.org"
+        },
+        "id": null
+      }
+    },
+    "host-denied": {
+      "request_headers": {
+        "Host": "example.org"
+      },
+      "status": 403,
+      "response": {
+        "jsonrpc": "2.0",
+        "error": {
+          "code": -32003,
+          "message": "Forbidden: Host not allowed: example.org"
+        },
+        "id": null
+      }
+    }
+  },
+  "supplementary_predeclaration": [
+    {
+      "kb": "alpha",
+      "query": "What is the safe way to bring lost digital information back after a storage disaster?",
+      "expected_file": "restoration.md",
+      "expected_title": "Restoration",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress"
+    },
+    {
+      "kb": "alpha",
+      "query": "How should an outside vendor lose privileges once its engagement finishes?",
+      "expected_file": "access.md",
+      "expected_title": "Access",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress"
+    },
+    {
+      "kb": "omega",
+      "query": "What is the safe way to bring lost digital information back after a storage disaster?",
+      "expected_file": "restoration.md",
+      "expected_title": "Restoration",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress"
+    },
+    {
+      "kb": "omega",
+      "query": "How should an outside vendor lose privileges once its engagement finishes?",
+      "expected_file": "access.md",
+      "expected_title": "Access",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress"
+    }
+  ],
+  "supplementary_questions": [
+    {
+      "question": 17,
+      "kb": "alpha",
+      "query": "What is the safe way to bring lost digital information back after a storage disaster?",
+      "expected_file": "restoration.md",
+      "expected_title": "Restoration",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": false,
+        "candidate_files": 8,
+        "context_characters": 11790,
+        "context_bytes": 11790,
+        "wall_seconds": 0.017583,
+        "pattern": "is|safe|way|bring|lost|digital|information|back|storage|disaster",
+        "returned_files": [
+          "Incident.md",
+          "Renewal.md",
+          "Access.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1847,
+        "context_bytes": 1847,
+        "wall_seconds": 9.740982,
+        "results": [
+          {
+            "docid": "#b6e4b8",
+            "score": 0.75,
+            "file": "qmd://alpha/Restoration.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 2: Restoration",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team ..."
+          },
+          {
+            "docid": "#270e28",
+            "score": 0.38,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#7dd07a",
+            "score": 0.25,
+            "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 4: Incident",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team kee..."
+          }
+        ],
+        "error": null
+      }
+    },
+    {
+      "question": 18,
+      "kb": "alpha",
+      "query": "How should an outside vendor lose privileges once its engagement finishes?",
+      "expected_file": "access.md",
+      "expected_title": "Access",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress",
+      "grep_targeted_reads": {
+        "exit_code": 1,
+        "found": false,
+        "candidate_files": 0,
+        "context_characters": 2,
+        "context_bytes": 2,
+        "wall_seconds": 0.010586,
+        "pattern": "should|outside|vendor|lose|once|engagement|finishes",
+        "returned_files": []
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1786,
+        "context_bytes": 1786,
+        "wall_seconds": 8.456486,
+        "results": [
+          {
+            "docid": "#ddcb96",
+            "score": 0.94,
+            "file": "qmd://alpha/Access.md?index=ki-kb-alpha",
+            "line": 13,
+            "title": "ALPHA operational note 7: Access",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe ALPHA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps..."
+          },
+          {
+            "docid": "#270e28",
+            "score": 0.38,
+            "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 5: Retention",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#28bce7",
+            "score": 0.25,
+            "file": "qmd://alpha/Release.md?index=ki-kb-alpha",
+            "line": 9,
+            "title": "ALPHA operational note 8: Release",
+            "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      }
+    },
+    {
+      "question": 19,
+      "kb": "omega",
+      "query": "What is the safe way to bring lost digital information back after a storage disaster?",
+      "expected_file": "restoration.md",
+      "expected_title": "Restoration",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress",
+      "grep_targeted_reads": {
+        "exit_code": 0,
+        "found": false,
+        "candidate_files": 8,
+        "context_characters": 11790,
+        "context_bytes": 11790,
+        "wall_seconds": 0.017956,
+        "pattern": "is|safe|way|bring|lost|digital|information|back|storage|disaster",
+        "returned_files": [
+          "Incident.md",
+          "Renewal.md",
+          "Access.md"
+        ]
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1847,
+        "context_bytes": 1847,
+        "wall_seconds": 8.528835,
+        "results": [
+          {
+            "docid": "#933c6f",
+            "score": 0.75,
+            "file": "qmd://omega/Restoration.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 2: Restoration",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team ..."
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.38,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#2e20f9",
+            "score": 0.25,
+            "file": "qmd://omega/Incident.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 4: Incident",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team kee..."
+          }
+        ],
+        "error": null
+      }
+    },
+    {
+      "question": 20,
+      "kb": "omega",
+      "query": "How should an outside vendor lose privileges once its engagement finishes?",
+      "expected_file": "access.md",
+      "expected_title": "Access",
+      "predeclared_at": "2026-10-05T11:23:28Z",
+      "kind": "paraphrase-stress",
+      "grep_targeted_reads": {
+        "exit_code": 1,
+        "found": false,
+        "candidate_files": 0,
+        "context_characters": 2,
+        "context_bytes": 2,
+        "wall_seconds": 0.010617,
+        "pattern": "should|outside|vendor|lose|once|engagement|finishes",
+        "returned_files": []
+      },
+      "qmd_hybrid_rerank": {
+        "exit_code": 0,
+        "found": true,
+        "context_characters": 1687,
+        "context_bytes": 1687,
+        "wall_seconds": 8.446737,
+        "results": [
+          {
+            "docid": "#c48979",
+            "score": 0.93,
+            "file": "qmd://omega/Access.md?index=ki-kb-omega",
+            "line": 13,
+            "title": "OMEGA operational note 7: Access",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -12,4 @@ (11 before, 38 after)\n\nThe OMEGA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps..."
+          },
+          {
+            "docid": "#4ce12f",
+            "score": 0.38,
+            "file": "qmd://omega/Retention.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 5: Retention",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+          },
+          {
+            "docid": "#4d870e",
+            "score": 0.25,
+            "file": "qmd://omega/Renewal.md?index=ki-kb-omega",
+            "line": 9,
+            "title": "OMEGA operational note 1: Renewal",
+            "context": "Synthetic Omega operational knowledge; owner-approved boundary omega-only.",
+            "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nThe service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.\n\n## Supporting context"
+          }
+        ],
+        "error": null
+      }
+    }
+  ],
+  "supplementary_summary": {
+    "alpha": {
+      "grep_targeted_reads": {
+        "found": 0,
+        "questions": 2
+      },
+      "qmd_hybrid_rerank": {
+        "found": 2,
+        "questions": 2
+      }
+    },
+    "omega": {
+      "grep_targeted_reads": {
+        "found": 0,
+        "questions": 2
+      },
+      "qmd_hybrid_rerank": {
+        "found": 2,
+        "questions": 2
+      }
+    }
+  },
+  "decision": {
+    "go": true,
+    "kind": "bounded-functional-optional",
+    "authority": "Principal scope and root review, 2026-10-05",
+    "limits": "No quality/context/latency advantage on original16instances; supplementary4paraphrases demonstrate bounded semantic retrieval. No private, large-corpus or production claim."
+  },
+  "corpora": {
+    "alpha": {
+      "registry_id": "alpha",
+      "trust_boundary": "alpha-only",
+      "index": "ki-kb-alpha",
+      "collection": "alpha",
+      "files": [
+        {
+          "projection_path": "Access.md",
+          "repository_path": "Resources/Access.md",
+          "sha256": "ddcb9610d6585490c5012d3afd43b8b66d0415cdabdb3c841dee6b22721f51a1",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 7: Access\n\n## Decision\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Grant.md",
+          "repository_path": "Resources/Grant.md",
+          "sha256": "37ce767baec033dcfefd998ffb363028f1fac4e717c9deb6100649818eb95899",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 6: Grant\n\n## Decision\n\nGRANT-742 supports the river survey. The final report is due 3 December and must include the sampling ledger and equipment costs. Neri signs the report; the funder receives only the aggregate observations.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Incident.md",
+          "repository_path": "Resources/Incident.md",
+          "sha256": "7dd07a065812b8bbc6ec9e798658ea6946b3a66baa0252f0a15902b9af7cd13a",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 4: Incident\n\n## Decision\n\nAmber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Mixed Case Note.md",
+          "repository_path": "Resources/Mixed Case Note.md",
+          "sha256": "cd118d01bc230abe166448493ce66764de9f2f4605ed9df82e8040d1760f49c3",
+          "content": "---\nnote_type: resource\n---\n\n# Mixed Case Note\n\nALPHA PATH-PROBE-913 confirms that spaces, case and URI escaping retain repository provenance.\n"
+        },
+        {
+          "projection_path": "Release.md",
+          "repository_path": "Resources/Release.md",
+          "sha256": "28bce74289b40dfe4fa69987dd6bd21e1466bdb33bb8e1e92db4c023047be7d2",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 8: Release\n\n## Decision\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Renewal.md",
+          "repository_path": "Resources/Renewal.md",
+          "sha256": "6d0f0aeb38b3ea343e19f8bafa91b6195dbb3ebd1b0ba6c80ad7053df6cc3e3a",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 1: Renewal\n\n## Decision\n\nThe service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Restoration.md",
+          "repository_path": "Resources/Restoration.md",
+          "sha256": "b6e4b8c3f983eb64c325a33a4921812a14f77a9133d7bb1eb1d2c9487cf043ea",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 2: Restoration\n\n## Decision\n\nRecover from the last verified snapshot. Mount it read-only, compare the ledger checksum, restore to a spare volume, then ask Oren to approve the integrity report before replacing the active copy.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Retention.md",
+          "repository_path": "Resources/Retention.md",
+          "sha256": "270e28ff1288b24c4309335dfaa4c3754c684bda52160c684a2dbe4008b0c606",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 5: Retention\n\n## Decision\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Travel.md",
+          "repository_path": "Resources/Travel.md",
+          "sha256": "38dfa60ae1860d9a7f719fb076fa342592eb1dfef856386dda11d83330489fe7",
+          "content": "---\nnote_type: resource\n---\n\n# ALPHA operational note 3: Travel\n\n## Decision\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context\n\nThe ALPHA team keeps supporting operational observation 1 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 2 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 3 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 4 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 5 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 6 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 7 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 8 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 9 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 10 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 11 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 12 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 13 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 14 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 15 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 16 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 17 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 18 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 19 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe ALPHA team keeps supporting operational observation 20 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        }
+      ],
+      "excluded_raw_paths": [
+        "Resources/Protected/Hidden.md",
+        "Undeclared/Hidden.md"
+      ],
+      "qmd_config": "collections:\n  alpha:\n    path: /private/tmp/ki-harness-qmd-pilot-20261005-runtime/projection/alpha\n    pattern: \"**/*.md\"\n    context:\n      \"\": Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.\nmodels:\n  embed: hf:ggml-org/embeddinggemma-300M-GGUF/embeddinggemma-300M-Q8_0.gguf\n  generate: hf:tobil/qmd-query-expansion-1.7B-gguf/qmd-query-expansion-1.7B-q4_k_m.gguf\n  rerank: hf:ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF/qwen3-reranker-0.6b-q8_0.gguf\n"
+    },
+    "omega": {
+      "registry_id": "omega",
+      "trust_boundary": "omega-only",
+      "index": "ki-kb-omega",
+      "collection": "omega",
+      "files": [
+        {
+          "projection_path": "Access.md",
+          "repository_path": "Resources/Access.md",
+          "sha256": "c48979a857984ba57cd5cfb8abd5d1dc6472c3e67c832f47d7e7059c05aba2b7",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 7: Access\n\n## Decision\n\nTemporary contractor credentials expire at the end of their purchase-order period or after fourteen inactive days, whichever comes first. The service owner confirms completion before the operator removes the account.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the access process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Grant.md",
+          "repository_path": "Resources/Grant.md",
+          "sha256": "dc2183c193b43130faac52cd75dea25cb3b9b44b6c931d50d482fc6cd47e1b69",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 6: Grant\n\n## Decision\n\nGRANT-742 supports the river survey. The final report is due 3 December and must include the sampling ledger and equipment costs. Neri signs the report; the funder receives only the aggregate observations.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the grant process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Incident.md",
+          "repository_path": "Resources/Incident.md",
+          "sha256": "2e20f955374ec8905c888ecea94763ede83b855ae2ffb201c440106d33fe97dd",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 4: Incident\n\n## Decision\n\nAmber severity incidents go first to the duty steward Iona within fifteen minutes. She records the customer impact, assigns a responder, and escalates to Theo only if the outage lasts beyond ninety minutes.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the incident process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Mixed Case Note.md",
+          "repository_path": "Resources/Mixed Case Note.md",
+          "sha256": "cd961e5dad9672db37f626e5f642619e6001087d93aa2a08e790c6a175db9fb9",
+          "content": "---\nnote_type: resource\n---\n\n# Mixed Case Note\n\nOMEGA PATH-PROBE-913 confirms that spaces, case and URI escaping retain repository provenance.\n"
+        },
+        {
+          "projection_path": "Release.md",
+          "repository_path": "Resources/Release.md",
+          "sha256": "7ca3ebc1e41f5c94920273c262bbf4a0e802439d8315424cadfd346d77c1e3e6",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 8: Release\n\n## Decision\n\nIf the release canary fails its latency threshold, halt rollout immediately and revert to the previously signed build. Keep the failed trial telemetry, open the incident record, and require a fresh approval before another rollout.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the release process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Renewal.md",
+          "repository_path": "Resources/Renewal.md",
+          "sha256": "4d870e947b62d0ab77bb2a03a574268f28a8f60d5c8f20669a8a4f9ccfd7aaf2",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 1: Renewal\n\n## Decision\n\nThe service contract renewal cutoff is 12 November; Mara approves the renewal and the signed extension goes to Records/Renewal.pdf.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the renewal process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Restoration.md",
+          "repository_path": "Resources/Restoration.md",
+          "sha256": "933c6f86d3f59b76a0abc3e62aed8bcaaf87715afc16e883fdcee4487ee193cf",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 2: Restoration\n\n## Decision\n\nRecover from the last verified snapshot. Mount it read-only, compare the ledger checksum, restore to a spare volume, then ask Oren to approve the integrity report before replacing the active copy.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the restoration process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Retention.md",
+          "repository_path": "Resources/Retention.md",
+          "sha256": "4ce12fed55f97c073c120bcb6339bc73ddfcf46df7ea33a52c4255d67a3c2f15",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 5: Retention\n\n## Decision\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the retention process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        },
+        {
+          "projection_path": "Travel.md",
+          "repository_path": "Resources/Travel.md",
+          "sha256": "f1672a972caccd0128c28025c7233d9e6ccc492a865cdcd1000ec36351913f9d",
+          "content": "---\nnote_type: resource\n---\n\n# OMEGA operational note 3: Travel\n\n## Decision\n\nOvernight sleeper rail fares are reimbursable up to 180 credits when booked seven days ahead. Keep the receipt and attach it to the monthly travel claim. Airfare is excluded from this rule.\n\n## Supporting context\n\nThe OMEGA team keeps supporting operational observation 1 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 2 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 3 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 4 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 5 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 6 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 7 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 8 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 9 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 10 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 11 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 12 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 13 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 14 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 15 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 16 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 17 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 18 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 19 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\nThe OMEGA team keeps supporting operational observation 20 for the travel process. This synthetic history describes the routine checklist, responsible reviewer, recorded handover and local evidence trail. It is illustrative fixture text with no private source or real person.\n\n"
+        }
+      ],
+      "excluded_raw_paths": [
+        "Resources/Protected/Hidden.md",
+        "Undeclared/Hidden.md"
+      ],
+      "qmd_config": "collections:\n  omega:\n    path: /private/tmp/ki-harness-qmd-pilot-20261005-runtime/projection/omega\n    pattern: \"**/*.md\"\n    context:\n      \"\": Synthetic Omega operational knowledge; owner-approved boundary omega-only.\nmodels:\n  embed: hf:ggml-org/embeddinggemma-300M-GGUF/embeddinggemma-300M-Q8_0.gguf\n  generate: hf:tobil/qmd-query-expansion-1.7B-gguf/qmd-query-expansion-1.7B-q4_k_m.gguf\n  rerank: hf:ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF/qwen3-reranker-0.6b-q8_0.gguf\n"
+    }
+  },
+  "pilot_window": {
+    "model_pull_started_at": "2026-10-05T11:07:06Z",
+    "supplementary_finished_at": "2026-10-05T11:36:31Z",
+    "elapsed_seconds_before_cleanup": 1764.253,
+    "limit_seconds": 3600
+  },
+  "local_model_path_probe": {
+    "config": "collections:\n  alpha:\n    path: /private/tmp/ki-harness-qmd-pilot-20261005-runtime/projection/alpha\n    pattern: \"**/*.md\"\n    context:\n      \"\": Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.\nmodels:\n  embed: /tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/models/hf_ggml-org_embeddinggemma-300M-Q8_0.gguf\n  rerank: /tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/models/hf_ggml-org_qwen3-reranker-0.6b-q8_0.gguf\n  generate: /tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/models/hf_tobil_qmd-query-expansion-1.7B-q4_k_m.gguf\n",
+    "query": "get lost information back after storage damage",
+    "results": [
+      {
+        "docid": "#b6e4b8",
+        "score": 0.75,
+        "file": "qmd://alpha/Restoration.md?index=ki-kb-alpha",
+        "line": 1,
+        "title": "ALPHA operational note 2: Restoration",
+        "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+        "snippet": "@@ -1,3 @@ (0 before, 50 after)\n---\nnote_type: resource\n---"
+      },
+      {
+        "docid": "#270e28",
+        "score": 0.38,
+        "file": "qmd://alpha/Retention.md?index=ki-kb-alpha",
+        "line": 9,
+        "title": "ALPHA operational note 5: Retention",
+        "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+        "snippet": "@@ -8,4 @@ (7 before, 42 after)\n\nErase participant interview audio thirty days after the research study closes. Retain only the approved anonymised thematic extract in Resources. Consent evidence stays in the restricted store and is never copied into the search projection.\n\n## Supporting context"
+      },
+      {
+        "docid": "#7dd07a",
+        "score": 0.25,
+        "file": "qmd://alpha/Incident.md?index=ki-kb-alpha",
+        "line": 1,
+        "title": "ALPHA operational note 4: Incident",
+        "context": "Synthetic Alpha operational knowledge; owner-approved boundary alpha-only.",
+        "snippet": "@@ -1,3 @@ (0 before, 50 after)\n---\nnote_type: resource\n---"
+      }
+    ],
+    "exit_code": 0,
+    "finding": "Actual CLI expansion, embedding and reranking accept explicit provisioned local GGUF paths."
+  },
+  "unavailable_probe": {
+    "endpoint": "http://127.0.0.1:18761/health",
+    "error": "<urlopen error [Errno 61] Connection refused>",
+    "finding": "Stopped endpoint is unavailable, not an empty successful retrieval."
+  },
+  "cleanup": {
+    "removed": [
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/ki-kb-alpha.sqlite-shm",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/ki-kb-alpha.sqlite-wal",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/ki-kb-omega.sqlite-wal",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/ki-kb-alpha.sqlite",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/ki-kb-omega.sqlite-shm",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/cache/qmd/ki-kb-omega.sqlite",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/config/ki-kb-alpha.yml",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/config/ki-kb-omega.yml",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/projection",
+      "/tmp/ki-harness-qmd-pilot-20261005-runtime/corpora"
+    ],
+    "retained": [
+      "task-owned model cache",
+      "pinned upstream checkout",
+      "non-sensitive logs and embedded evidence",
+      "synthetic governance audit fixture"
+    ]
+  }
+}

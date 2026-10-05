@@ -25,6 +25,8 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 **house-code** (personal tool) — a daemon cleaner that prunes stale conversation content (old file reads, completed todos, resolved errors) every few turns. Complementary to headroom-ai: headroom compacts what is present, house-code removes what is no longer relevant.
 
+**qmd** — optional derived KB retrieval behind governed KI surfaces. Explicitly provisioned independent KB indexes preserve repository knowledge authority; the bounded synthetic pilot demonstrates retrieval and limited paraphrase capability but no efficiency advantage on its original tiny corpus. No automatic install, binding or private indexing follows from adoption. The [dedicated qmd derived-search decision](ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) owns the full constraints.
+
 ### Available, not governed
 
 **MarkItDown** — converts PDFs and Office documents into token-efficient Markdown at the ingestion boundary. Reachable via the headroom add-on or ad hoc (`uvx markitdown <file>`); its MCP server is Microsoft's, not KI-authored, so it is not a harness `mcp/` artifact. The KI KB is Markdown-native, so its value is confined to the boundary where external binary documents enter — a personal/dev concern.

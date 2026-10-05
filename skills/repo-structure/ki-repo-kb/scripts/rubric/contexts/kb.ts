@@ -1,5 +1,7 @@
 import { accessSync, constants, existsSync, lstatSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
+import { parseDocument } from 'yaml'
+import { classifySourceMirror } from '../../internal/source-mirrors.ts'
 import type {
   AuditOutcome,
   ConformProposal,
@@ -88,11 +90,15 @@ const isFile = (path: string): boolean =>
 const sample = (values: readonly string[], maximum = 10): string =>
   `${values.slice(0, maximum).join('; ')}${values.length > maximum ? `; …+${values.length - maximum} more` : ''}`
 
-const parseConfig = (text: string): { value: KiKbConfig | null; malformed: boolean } => {
+const parseConfig = (text: string): { value: KiKbConfig | null; malformed: boolean; sourcesDeclared?: boolean } => {
   try {
     const document = (Bun.TOML.parse(text) ?? {}) as Record<string, unknown>
+    const storeRoles = (document.skills as Record<string, Record<string, unknown>> | undefined)?.['ki-repo']
+      ?.store_roles
+    const sourcesDeclared = Array.isArray(storeRoles) && storeRoles.includes('sources')
     const table = (document.skills as Record<string, unknown> | undefined)?.[CONFIG_TABLE]
-    if (!table || typeof table !== 'object' || Array.isArray(table)) return { value: null, malformed: false }
+    if (!table || typeof table !== 'object' || Array.isArray(table))
+      return { value: null, malformed: false, sourcesDeclared }
     const record = table as Record<string, unknown>
     const zones =
       record.zones && typeof record.zones === 'object' && !Array.isArray(record.zones)
@@ -126,7 +132,8 @@ const parseConfig = (text: string): { value: KiKbConfig | null; malformed: boole
           ? record.preflight.filter((value): value is string => typeof value === 'string')
           : []
       },
-      malformed: false
+      malformed: false,
+      sourcesDeclared
     }
   } catch {
     return { value: null, malformed: true }
@@ -138,20 +145,30 @@ const markdownFiles = (directory: string, files: string[] = []): string[] => {
     if (entry.name.startsWith('.') || entry.name === 'node_modules') continue
     const path = join(directory, entry.name)
     if (entry.isDirectory()) markdownFiles(path, files)
-    else if (entry.name.endsWith('.md')) files.push(path)
+    else if (entry.name.endsWith('.md') && entry.isFile()) files.push(path)
   }
   return files
 }
 
 const frontmatter = (
   text: string
-): { keys: string[]; terminated: boolean; valid: boolean; noteType: string | null } | null => {
+): {
+  keys: string[]
+  terminated: boolean
+  valid: boolean
+  noteType: string | null
+  fields?: Record<string, unknown>
+  body?: string
+  raw?: string
+} | null => {
   const lines = text.split(/\r?\n/)
   if (lines[0]?.trim() !== '---') return null
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
   if (!match) return { keys: [], terminated: false, valid: false, noteType: null }
   try {
-    const parsed = Bun.YAML.parse(match[1] ?? '')
+    const document = parseDocument(match[1] ?? '')
+    if (document.errors.length) return { keys: [], terminated: true, valid: false, noteType: null }
+    const parsed = document.toJS()
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
       return { keys: [], terminated: true, valid: false, noteType: null }
     const fields = parsed as Record<string, unknown>
@@ -159,7 +176,10 @@ const frontmatter = (
       keys: Object.keys(fields),
       terminated: true,
       valid: true,
-      noteType: typeof fields.note_type === 'string' ? fields.note_type : null
+      noteType: typeof fields.note_type === 'string' ? fields.note_type : null,
+      fields,
+      body: text.slice(match[0].length),
+      raw: match[1]
     }
   } catch {
     return { keys: [], terminated: true, valid: false, noteType: null }
@@ -202,6 +222,7 @@ export type KbNoteContext = {
   readonly frontmatterFences: KbCheck
   readonly frontmatterKeys: KbCheck
   readonly noteType: KbCheck
+  readonly sourceMirrors: KbCheck
 }
 
 export type KbMemoryContext = {
@@ -385,13 +406,35 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
   const outboundZone = zoneOf('-')
   const outbound = `${outboundZone}/`
   const delegatedZones = { streams: zoneOf('Streams'), inbound: inboundZone, outbound: outboundZone }
+  let mirrorWarnings = 0
   for (const path of markdownFiles(root)) {
-    const value = frontmatter(readFileSync(path, 'utf8'))
+    const text = readFileSync(path, 'utf8')
+    const value = frontmatter(text)
     if (!value) continue
     const relative = path.slice(root.length + 1)
     if (!value.terminated || !value.valid) {
       malformedFrontmatter.push(relative)
+      if (parsed.sourcesDeclared) {
+        mirrorWarnings += 1
+        add(
+          'WARN',
+          'NOTE-4',
+          'Mirror provenance is unknown because frontmatter is malformed or unterminated.',
+          relative
+        )
+      }
       continue
+    }
+    if (parsed.sourcesDeclared) {
+      const label = classifySourceMirror({
+        fields: value.fields ?? null,
+        body: value.body ?? '',
+        frontmatter: value.raw
+      })
+      if (label.issues.length) {
+        mirrorWarnings += 1
+        add('WARN', 'NOTE-4', `Source mirror: ${label.issues.join('; ')}.`, relative)
+      }
     }
     for (const key of value.keys) if (!SNAKE_CASE.test(key)) badKeys.push(`${relative}: ${key}`)
     for (const key of required) if (!value.keys.includes(key)) missingRequired.push(`${relative} (${key})`)
@@ -402,6 +445,13 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
     if (value.noteType === 'handoff') retiredHandoffs.push(relative)
     if (value.noteType === 'session-digest' && !relative.startsWith(outbound)) misplacedOutputs.push(relative)
   }
+  if (!parsed.sourcesDeclared) add('NOT_APPLICABLE', 'NOTE-4', 'No declared sources store role.')
+  else if (!mirrorWarnings)
+    add(
+      'PASS',
+      'NOTE-4',
+      'Declared mirrors meet provenance syntax and minimum extract checks; source fidelity is unverified.'
+    )
   add(
     malformedFrontmatter.length ? 'FAIL' : 'PASS',
     'NOTE-1a',
@@ -573,7 +623,8 @@ export const createKbSession = ({
       requiredFrontmatter: check('NOTE-1'),
       frontmatterFences: check('NOTE-1a'),
       frontmatterKeys: check('NOTE-1b'),
-      noteType: check('NOTE-1c')
+      noteType: check('NOTE-1c'),
+      sourceMirrors: check('NOTE-4')
     },
     memory: { anchor: check('MEM-2') },
     links: {}

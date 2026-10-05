@@ -4,12 +4,12 @@ area: GOV
 title: Require substantive store mirrors
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:06:04Z
+updated_at: 2026-10-05T11:09:05Z
 ---
 
 # KI-HARNESS-GOV-121: Require substantive store mirrors

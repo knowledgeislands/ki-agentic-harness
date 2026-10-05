@@ -7,6 +7,7 @@ This normative standard defines the structure, linking, configuration, routing, 
 - [The Knowledge Islands model](#the-knowledge-islands-model)
 - [Identity, provenance, and adoption](#identity-provenance-and-adoption)
 - [Linking within a base](#linking-within-a-base)
+- [Source mirrors](#source-mirrors)
 - [Onboarding a base to this skill](#onboarding-a-base-to-this-skill)
 - [Zone aliases and the `[skills.ki-repo-kb]` config table](#zone-aliases-and-the-skillski-repo-kb-config-table)
 - [Session digest structure](#session-digest-structure)
@@ -35,12 +36,16 @@ Within a base, notes link to one another and to their zone index notes with Obsi
 
 This is the convention for **note content inside a base**, including internal links in table cells; escape an alias separator as `\|` so it is not parsed as a table-column separator. It takes precedence over the general `ki-authoring` relative-link rule for that scoped content. Skill files and other house documents use descriptive relative Markdown links. Canonical cross-repository references use the destination's repository identity and an appropriate portable reference rather than machine-local checkout paths.
 
+## Source mirrors
+
+A base declaring `sources` in `[skills.ki-repo].store_roles` follows the [source mirror content and derived label contract](standards-source-mirrors.md). It owns substantive extracts, store-relative `source_path`, declared `source_sha256` and its enrichment work. Search labels describe only checks over authorised Markdown; neither a label nor a harness audit establishes source existence, fidelity or freshness. This relationship is distinct from an acquisition adapter’s upstream source note.
+
 ## Onboarding a base to this skill
 
 Because the zone model is fixed, onboarding is small - resolve only the **project bindings**, ideally in the base's auto-loaded `CLAUDE.md`:
 
 1. **Notes store** - the canonical alias and location of the notes store, and the alias rule (always use the alias, never the raw mount).
-2. **Sources store** - whether a paired sources store exists, and how note extracts mirror its paths.
+2. **Sources store** - whether a paired sources store is declared, following [Source mirrors](#source-mirrors).
 3. **Scope usage** - whether the base is Pillar-scoped (declare an active Pillar each session) or single-Pillar / flat.
 4. **Writing standards** - language variant, citation format, structural norms (defaults: British English, cite source paths, concise prose).
 5. **Domain pre-flight** - any extra reads before drafting; declared as a `preflight` list in the base's `.ki.toml` `[skills.ki-repo-kb]` table, not in `CLAUDE.md`.
