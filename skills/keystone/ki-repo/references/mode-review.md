@@ -112,6 +112,7 @@ Produce the Assessment output sections from the checklist in their stated order.
 - [ ] Agree the review's purpose, repository boundary, intended readers, time horizon, constraints, and the level of change it may recommend before inspection.
 - [ ] State what is out of scope. A broad request such as "review the architecture" is not permission to rewrite the repository, create Decision Records, or start delivery plans.
 - [ ] If the review could turn on an unspoken product, security, ownership, or compatibility choice, record that uncertainty and interview the user before drawing a conclusion.
+- [ ] Fetch, then name the branch and `HEAD` under review and whether it is behind, ahead of or diverged from its upstream. A stale checkout reports failures that upstream has already resolved; reconcile or state the gap before treating a finding as current.
 - [ ] Read the repository's `AGENTS.md` and applicable KI skills before inspecting governed material.
 - [ ] Read the repository orientation and current work first: `AGENTS.md`, `README`, `.ki.toml` where present, canonical roadmap material, Decision Records, feature definitions, Specifications, Guides, and the implementation surfaces in scope.
 - [ ] Inventory legacy repository-local runtime surfaces when present, including `.claude/commands/` and `.claude/memory/`, rather than assuming the current canonical structure contains all operative guidance.
