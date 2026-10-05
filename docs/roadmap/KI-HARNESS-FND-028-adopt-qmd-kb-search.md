@@ -4,12 +4,12 @@ area: FND
 title: Adopt qmd KB search
 theme: foundation-tooling
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T12:00:59Z
+updated_at: 2026-10-05T12:05:15Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
@@ -150,6 +150,12 @@ Independent reviewer approved clean `e71a769f`, rebound to the shared-metadata a
 ### Mini recap
 
 Local direct-to-main delivery is committed and verified. Source contracts and synthetic evidence are published; root owns acceptance and subsequent pruning. No new work or fleet migration was admitted to the batch.
+
+## Done
+
+Accepted by the principal's approved exact-set outcome batch; root independently reviewed the delivery and reviewer approved exact clean `b79a0941aa74891cca396457a4b9369e69399c5b`. Combined source `b953cb28d06715396692169ac28ae0392e3d664e` passed 874 tests, TypeScript and all required focused audits. Delivered source, limitations and synthetic evidence are recorded in Review. No remote push, publication, private indexing or live provider mutation occurred.
+
+Retain this Done record because Arcadia coordination still refers to the roadmap pathname; that receiver must route its reference to the delivered search decision before pruning. Cross-repository preflight covered 22 local roadmap roots and five declared receiver KB roadmap roots; only roadmap metadata was read.
 
 ## Discussion
 
