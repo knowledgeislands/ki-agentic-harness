@@ -171,6 +171,7 @@ const workspaceMembers = async (root: string, patterns: unknown): Promise<Member
   return members
 }
 
+const implementation = /(?<!\.d)\.[cm]?[jt]sx?$/
 const relativeTypeImport = /^\s*(?:import|export)\s+type\b[^;]*?\bfrom\s*['"]\.\.?\//m
 
 /** Read-only target inspection; destructive mutations are confined to a fresh private snapshot. */
@@ -211,11 +212,17 @@ export const inspectBoundaries = async (
     const productSurface =
       ['main', 'module', 'bin', 'exports'].some((field) => pkg[field] !== undefined) ||
       Boolean((pkg.scripts as Record<string, unknown> | undefined)?.build)
-    if (!configExists && !sources.length && !members.length && !productSurface)
+    // A member is JavaScript/TypeScript product only if its tree holds implementation, wherever it sits; a
+    // declaration shim beside another language's code is not a graph this adapter can prove.
+    const memberTrees = await Promise.all(members.map((member) => regularFiles(root, member.path)))
+    const implemented = [...sources, ...memberTrees.flat().filter((path) => !/(^|\/)dist\//.test(path))].some((path) =>
+      implementation.test(path)
+    )
+    if (!configExists && !implemented && !productSurface)
       return [
         finding(
           'NOT_APPLICABLE',
-          'No product source tree or boundary configuration; scripts-only boundary choices remain judgment.'
+          'No JavaScript or TypeScript product source tree or boundary configuration; scripts-only or other-language boundary choices remain judgment.'
         )
       ]
     if (!configExists)

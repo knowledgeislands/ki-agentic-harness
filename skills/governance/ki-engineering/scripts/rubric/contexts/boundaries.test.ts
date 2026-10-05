@@ -122,6 +122,27 @@ test('missing rulesets fail product repositories but scripts-only shape stays ex
   expect((await inspectBoundaries(root, undefined, runner()))[0]?.level).toBe('NOT_APPLICABLE')
 })
 
+test('other-language workspaces stay unassessed, but member implementation outside src still fails', async () => {
+  const root = fixture()
+  rmSync(join(root, '.dependency-cruiser.ts'))
+  rmSync(join(root, 'src'), { recursive: true })
+  const manifest = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+  writeFileSync(join(root, 'package.json'), JSON.stringify({ ...manifest, workspaces: ['apps/*'] }))
+  mkdirSync(join(root, 'apps/controller/src'), { recursive: true })
+  mkdirSync(join(root, 'apps/controller/dist'), { recursive: true })
+  writeFileSync(
+    join(root, 'apps/controller/package.json'),
+    JSON.stringify({ scripts: { test: 'python3 -m unittest' } })
+  )
+  writeFileSync(join(root, 'apps/controller/src/controller.py'), 'pass\n')
+  writeFileSync(join(root, 'apps/controller/src/types.d.ts'), 'export {}\n')
+  writeFileSync(join(root, 'apps/controller/dist/bundle.js'), '\n')
+  expect((await inspectBoundaries(root, undefined, runner()))[0]?.level).toBe('NOT_APPLICABLE')
+  mkdirSync(join(root, 'apps/controller/lib'), { recursive: true })
+  writeFileSync(join(root, 'apps/controller/lib/client.ts'), 'export const client = 1\n')
+  expect((await inspectBoundaries(root, undefined, runner()))[0]?.level).toBe('FAIL')
+})
+
 test('an escaping configuration cannot supply active enforcement evidence', async () => {
   const root = fixture()
   const outside = fixture()
