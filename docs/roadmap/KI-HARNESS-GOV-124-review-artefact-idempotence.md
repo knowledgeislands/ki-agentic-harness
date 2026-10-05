@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-124
 area: GOV
 title: Review artefact idempotence
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-01T19:49:57Z
+updated_at: 2026-10-05T08:01:30Z
 ---
 
 # KI-HARNESS-GOV-124: Review artefact idempotence
@@ -28,35 +28,92 @@ The obvious check does not work. `git diff --quiet` exits 0 on an untracked file
 
 The shape is general. Any generator, whether of a dataset, a summary table or a rendered capture, can carry a clock, a random seed, an unsorted map iteration or an absolute path into its output. Each makes the artefact's diff worthless and its review more expensive, and none fails a build. That repository already carries the local construction rule in its `AGENTS.md` Key patterns; what is missing is the reviewer-side question.
 
-The `ki-repo` REVIEW checklist has nothing that asks it. The nearest existing ideas presume determinism rather than check it. `skills/keystone/ki-repo/references/mode-review.md:318` asks that vendored or generated copies are checked for drift by something that fails, which only works if regeneration is byte-stable. [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md) at `:47` proposes that REVIEW regenerate output, run the formatter and expect no diff, on "a deterministic, bounded regeneration path"; [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) at `:40`-`:43` prefers a drift check that regenerates and compares, and names determinism as its precondition. Neither asks whether the precondition was established, or how.
+The `ki-repo` REVIEW checklist has nothing that asks it. The nearest existing ideas presume determinism rather than check it. `skills/keystone/ki-repo/references/mode-review.md:319` asks that vendored or generated copies are checked for drift by something that fails, which only works if regeneration is byte-stable. [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md) at `:47` proposes that REVIEW regenerate output, run the formatter and expect no diff, on "a deterministic, bounded regeneration path"; [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) at `:40`-`:43` prefers a drift check that regenerates and compares, and names determinism as its precondition. Neither asks whether the precondition was established, or how.
 
 ## Boundary
 
-In scope: whether the REVIEW checklist gains an idempotence question, its wording and placement; and whether the harness has anything to say about generator determinism as a matter of construction rather than review.
+In scope: one idempotence question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, placed immediately after the zero-result question from [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) and written jointly with it; and one guidance sentence on generator determinism in the `ki-engineering` code-design standard, with no rubric item, no mechanical check and no change to its judgment criteria.
 
-Out of scope: the `5g-emerge-phase2` extractor and catalogue, which are settled there; the formatter-authority question `KI-HARNESS-GOV-092` owns; the plugin projection `KI-HARNESS-GOV-093` owns; and the contents of other lenses.
+Out of scope: the `5g-emerge-phase2` extractor and catalogue, which are settled there; the formatter-authority question [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md) owns; the plugin projection [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) owns; a mechanical determinism check in any rubric; and the contents of other lenses.
 
-## Proposed lens
+## Current state
+
+`Automated verification` starts at `mode-review.md:361`; the consumed-declaration question is `:375` and the count-based-gate question `:376`. `Duplication and reuse` asks at `:319` that generated copies are checked for drift, which presumes byte-stable regeneration without asking whether it was established. `skills/governance/ki-engineering/references/standards-engineering.md` `## Code design` (from `:44`) says nothing about deterministic generation, and its `GEN` rubric family covers only exclusion of managed surfaces. Line numbers are as observed on 2026-10-05; anchor by text.
+
+## Steps
+
+- [ ] Insert one checklist item directly after the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) question, worded: "A committed generated artefact was confirmed byte-identical across two runs over unchanged input, and the evidence names the method, such as comparing digests of both outputs; a clean `git diff --quiet` alone does not count, because it passes on an untracked file."
+- [ ] Add one guidance bullet after the `Prefer clarity to maximal DRY` bullet in `## Code design` of `standards-engineering.md`: a generator whose output is committed SHOULD be deterministic over unchanged input, carrying no clock, random seed, unsorted iteration or absolute path into its bytes, and SHOULD prove it with a two-run digest comparison. State that this is review guidance, not a rubric criterion.
+- [ ] Confirm `ki dev skill rubric ki-engineering` reports the generated rubric unchanged, since no item or source anchor moves.
+- [ ] Run the verification below.
+
+## Files touched
+
+- `skills/keystone/ki-repo/references/mode-review.md`
+- `skills/governance/ki-engineering/references/standards-engineering.md`
+
+## Verify
+
+1. `Automated verification` contains exactly one new idempotence question, immediately after the zero-result question from [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), and it requires both a two-run byte-identity claim and a named method.
+2. The question explicitly excludes `git diff --quiet` alone as evidence.
+3. `standards-engineering.md` gains one determinism bullet under `## Code design`, worded as SHOULD guidance; no file under `skills/governance/ki-engineering/scripts/rubric/` changes and `references/rubric.md` is unchanged.
+4. Added text uses British English and ASCII hyphens only; focused audits report no new finding in either file.
+5. `bun run test` and `bunx tsc --noEmit` pass.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki dev skill rubric ki-engineering
+ki repo audit --skill ki-engineering --progress never
+ki repo audit --skill ki-repo --progress never
+ki repo audit --skill ki-authoring --progress never
+```
+
+## Dependencies / blocks
+
+`blocked_by` and `blocks` are empty by intent. Written jointly with [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) and best landed in the same change, after it. Within the `mode-review.md` batch the preferred order is GOV-096, this record, [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md), then [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md). [KI-HARNESS-GOV-097](KI-HARNESS-GOV-097-extract-format-readers.md) also edits `## Code design` in `standards-engineering.md`; whichever lands second rebases onto the other, a sequencing preference rather than a build order.
+
+## Documentation impact
+
+### Decision Records
+
+None. A REVIEW question and a SHOULD guidance sentence change no structural decision.
+
+### Specifications
+
+None. Neither surface has a specification.
+
+### Guides
+
+None. The website skills-by-outcome guide does not restate REVIEW questions or engineering guidance.
+
+### Roadmap
+
+On delivery, `5GE-P2-GOV-015` in `5g-emerge-phase2` can close, since the lens is now in the shared checklist. That repository has no trade route to this harness by its own decision, so the owner relays the outcome; this record writes nothing there.
+
+## Discussion
+
+### Decision
+
+Add an idempotence question (two-run digest, named method) to `Automated verification` beside the zero-result question from [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md); the construction rule stays with `ki-engineering` as guidance only. Decided by the Fable reviewer under delegated autonomy, reversible.
+
+### Proposed lens
 
 > Was a generated artefact confirmed byte-identical across two runs over unchanged input, and does the evidence name how that was checked?
 
 The second clause earns its place because of the `git diff --quiet` trap. "It is idempotent" and "hashing the output twice gave the same digest" look alike in a review packet and are not the same claim.
 
-## Discussion
-
 ### Relationship to zero-match generators
 
 [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) covers a generator that matches _nothing_, an empty result mistaken for a fact about the data. This covers a generator whose result is _unstable_, a changed result mistaken for a change in the data. Both are a healthy-looking run producing output a reviewer cannot interpret, both came from the same piece of work in the same repository, and both propose a question beside the same lens. The owner may well answer GOV-096 and this record together, perhaps as one question about generator output being interpretable.
 
-GOV-096's line references into `mode-review.md` are stale since it was raised: Automated verification now starts at `:358` (it cites `:354`), and the questions it cites as `:363`, `:366` and `:368` are now `:367`, `:370` and `:372`; its `:390` was the Checklist evolution heading, now `:395`.
+### Placement (resolved)
 
-### Placement
+Resolved by the Decision above: `Automated verification`. As proposed, beside the consumed-declaration question (now `:375`), which shares the reasoning that a clean pass from a gate that cannot see the problem reads exactly like verification. `Duplication and reuse` beside `:319` was the alternative, since the question is the precondition for that drift check to mean anything; it was not taken.
 
-Automated verification (`:358`) beside `:372`, which shares the reasoning that a clean pass from a gate that cannot see the problem reads exactly like verification. Duplication and reuse beside `:318` is the alternative, since the question is the precondition for that drift check to mean anything.
+### Construction rather than review (resolved)
 
-### Construction rather than review
-
-The stronger fix is construction, exactly as GOV-096 argues for its own case: a generator could be required to be deterministic by convention, with a test that runs it twice and compares digests. That is a bigger ask than a checklist question and is the harness's judgement to make. If it is taken, `ki-engineering` is the likely owner, and the review question becomes the fallback rather than the fix, as `KI-HARNESS-GOV-094` decided for its own case.
+Resolved by the Decision above: the construction rule is placed in `ki-engineering` as guidance only, with no rubric item. The stronger fix is construction, exactly as GOV-096 argues for its own case: a generator could be required to be deterministic by convention, with a test that runs it twice and compares digests. That is a bigger ask than a checklist question and is the harness's judgement to make. If it is taken, `ki-engineering` is the likely owner, and the review question becomes the fallback rather than the fix, as `KI-HARNESS-GOV-094` decided for its own case.
 
 ### Origin
 

@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-123
 area: GOV
 title: Review unsettled-source readings
 theme: governance-consistency
-horizon: triage
-status: draft
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-01T19:49:57Z
+updated_at: 2026-10-05T08:02:26Z
 ---
 
 # KI-HARNESS-GOV-123: Review unsettled-source readings
@@ -28,29 +28,85 @@ All of that is captured, but only because the conflict happened to be noticed wh
 
 The shape is general. Any derived artefact, whether a diagram, a summary table or a generated dataset, can silently resolve an ambiguity in its source, and the resolution then looks like a fact. That repository already has conventions for the opposite direction: raise a query rather than edit a source, and do not delete recorded data to fit an inferred constraint. What is missing is the reviewer-side question.
 
-The `ki-repo` REVIEW checklist (`skills/keystone/ki-repo/references/mode-review.md`, lenses from `:168`) has no equivalent. The nearest questions each miss: `:216` asks that a human can follow the repository's story without reconstructing it from unstated context, which is about narrative rather than about a single artefact's provenance; `:226` asks that Decision Records state the current decision and its consequences, which covers choices the repository owns, not readings it was forced to draw from a source it does not own.
+The `ki-repo` REVIEW checklist (`skills/keystone/ki-repo/references/mode-review.md`, lenses from `:169`) has no equivalent. The nearest questions each miss: `:217` asks that a human can follow the repository's story without reconstructing it from unstated context, which is about narrative rather than about a single artefact's provenance; `:227` asks that Decision Records state the current decision and its consequences, which covers choices the repository owns, not readings it was forced to draw from a source it does not own.
 
 ## Boundary
 
-In scope: whether the REVIEW checklist gains an unsettled-source question, its wording, and which lens it belongs in under the placement rule at `mode-review.md:397`.
+In scope: one unsettled-source question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, using the wording proposed in this record.
 
 Out of scope: `SDQ-020`, the CAMARA topology and the diagram itself, which belong to `5g-emerge-phase2` and its source owner; any convention about captions or figure annotation; and the contents of other lenses.
 
-## Proposed lens
+## Current state
+
+No REVIEW question asks whether a delivered artefact records which reading of an unsettled source it drew. The nearest questions, `mode-review.md:217` and `:227`, miss it as the Context explains. `Automated verification` starts at `:361`; the batch siblings land after the count-based-gate question at `:376`. Line numbers are as observed on 2026-10-05; anchor by text.
+
+## Steps
+
+- [ ] Insert one question directly after the [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md) question, or, if the batch siblings have not landed, directly after the count-based-gate question: `- [ ] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.`
+- [ ] Run the verification below.
+
+## Files touched
+
+- `skills/keystone/ki-repo/references/mode-review.md`
+
+## Verify
+
+1. `Automated verification` contains exactly one new unsettled-source question, after the count-versus-rendered question where that exists.
+2. The question requires both the reading drawn and its concrete consequence if another reading wins, matching the proposed lens.
+3. No other lens, rubric, TypeScript or generated file changes for this record.
+4. Added text uses British English and ASCII hyphens only; focused audits report no new finding in `mode-review.md`.
+5. `bun run test` and `bunx tsc --noEmit` pass.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki repo audit --skill ki-repo --progress never
+ki repo audit --skill ki-authoring --progress never
+```
+
+## Dependencies / blocks
+
+`blocked_by` and `blocks` are empty by intent. Sequencing for the `mode-review.md` batch, a preference rather than a build order: [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), this record, then [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md). Each inserts after the previous one's text.
+
+## Documentation impact
+
+### Decision Records
+
+None. A REVIEW checklist question is governed by `Checklist evolution`, not by a Decision Record.
+
+### Specifications
+
+None.
+
+### Guides
+
+None. The website skills-by-outcome guide does not restate REVIEW questions.
+
+### Roadmap
+
+On delivery, `5GE-P2-GOV-014` in `5g-emerge-phase2` no longer needs its local fallback lens and can close. That repository has no trade route to this harness by its own decision, so the owner relays the outcome; this record writes nothing there.
+
+## Discussion
+
+### Decision
+
+Add the unsettled-source lens to the `ki-repo` REVIEW checklist under `Automated verification`, as proposed in this record. Decided by the Fable reviewer under delegated autonomy, reversible.
+
+### Proposed lens
 
 > When a delivered artefact encodes one of several possible readings of an unsettled source, does a record state which reading was drawn, and what concretely changes if another wins?
 
 The second clause is what makes it useful. "This is uncertain" is a caveat a reader can do nothing with. "The Exposure SCAL flow goes into Steering instead, and the 5G Network node comes out of the Far Edge lane" is an instruction, and it can be acted on by someone who was not there when the choice was made.
 
-## Discussion
-
 ### Worked example
 
 Complete and citable in `5g-emerge-phase2`: `SDQ-020` in `docs/notes/source-data-queries.md` for the conflict, `5GE-P2-DATA-007` for the consequence, and commits `3bca997` and `a35da8f` for the artefact and the query.
 
-### Placement
+### Placement (resolved)
 
-`mode-review.md:397` admits a concept only when it is likely to improve future assessments, is not already covered, and fits the broad-to-narrow progression. Documentation and knowledge (`:213`) is the natural home, beside `:224`-`:226`, because the question is about whether a record carries the provenance of a choice. An alternative is Repository purpose and stability (`:172`), next to `:182` on distinguishing intentional boundaries from defects, since an unsettled reading is a known, deliberate departure from certainty.
+Resolved by the Decision above: `Automated verification`, beside the other questions about artefacts that pass their gates yet cannot be interpreted. The analysis as raised, whose alternatives are not taken, follows.
+
+`Checklist evolution` (`mode-review.md:398`) admits a concept only when it is likely to improve future assessments, is not already covered, and fits the broad-to-narrow progression. Documentation and knowledge (`:214`) is the natural home, beside `:225`-`:227`, because the question is about whether a record carries the provenance of a choice. An alternative is Repository purpose and stability (`:173`), next to `:183` on distinguishing intentional boundaries from defects, since an unsettled reading is a known, deliberate departure from certainty.
 
 ### Why not better captions
 
