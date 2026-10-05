@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:58:45Z
+updated_at: 2026-10-05T12:00:59Z
 ---
 
 # KI-HARNESS-GOV-121: Require substantive store mirrors
@@ -127,24 +127,6 @@ None in this repository. A base's own mirroring guide, such as kit-principal's `
 
 None in this repository. The five per-base records named in Steps are the receivers' own work.
 
-## Discussion
-
-### Current user authority (2026-10-05)
-
-The principal approved the shared mirror label contract necessary for search. This delivery retains the full substantive-mirror standard and diagnostic scope above; verification is synthetic and never opens or modifies live private KBs, acquired notes or binary source stores. Derived labels express only checks over the selected Markdown note and declared provenance, with unknown where evidence is incomplete.
-
-### Bases known to hold a sources store
-
-kit-principal (four controlled mirror groups), kit-legal (about 2,150 record-series notes with `source_path` frontmatter), kit-techmedix (about 46 correspondence notes citing store paths), vallearmonia-principal (store declared, no mirrors yet) and er-research (seven resource notes). vallearmonia-website and kit-midnight.ninja have OneDrive directories but do not declare a store; each needs a decision before it can hold mirrors. The obsolete `hnr-principal`, originally listed here, has since been deregistered and is out of scope.
-
-### Extract scope
-
-The extract should state what the binary is, the facts a reader would otherwise open it for, and the checksum that tells a later session whether the extract is stale. Mirrors may link to canonical knowledge but must not duplicate private source detail with no enduring use, following the kit-principal rule.
-
-### Why a word floor rather than a judgment-only check
-
-A pointer-only mirror is cheap to detect and expensive to miss once search ranks by content. The 40-word floor is a deliberately low mechanical tripwire for the pointer case; whether an extract is good enough remains the `NOTE-4` judgment. The threshold lives in the standard so a later review can tune it without changing the contract.
-
 ## Delivery progress
 
 Canonical standards, pure classifier and native NOTE-4 are published in `e71a769f779d3d45ac03886dd9dfc57e2b3d7489`. Strict YAML parsing plus the shared conservative raw grammar reject duplicate, quoted/escaped-key, merge, flow, alias and other ambiguous provenance; malformed notes in a declared-sources base warn unknown rather than earning a positive complete-provenance claim. Shared store-role metadata selects applicability without sibling-table validation. Synthetic fixtures skip external symlink files/directories and never resolve a source store.
@@ -180,3 +162,21 @@ Independent reviewer approved clean `e71a769f`, rebound to the shared-metadata a
 ### Mini recap
 
 Local direct-to-main delivery is committed and verified. Source contracts and synthetic evidence are published; root owns acceptance and subsequent pruning. No new work or fleet migration was admitted to the batch.
+
+## Discussion
+
+### Current user authority (2026-10-05)
+
+The principal approved the shared mirror label contract necessary for search. This delivery retains the full substantive-mirror standard and diagnostic scope above; verification is synthetic and never opens or modifies live private KBs, acquired notes or binary source stores. Derived labels express only checks over the selected Markdown note and declared provenance, with unknown where evidence is incomplete.
+
+### Bases known to hold a sources store
+
+kit-principal (four controlled mirror groups), kit-legal (about 2,150 record-series notes with `source_path` frontmatter), kit-techmedix (about 46 correspondence notes citing store paths), vallearmonia-principal (store declared, no mirrors yet) and er-research (seven resource notes). vallearmonia-website and kit-midnight.ninja have OneDrive directories but do not declare a store; each needs a decision before it can hold mirrors. The obsolete `hnr-principal`, originally listed here, has since been deregistered and is out of scope.
+
+### Extract scope
+
+The extract should state what the binary is, the facts a reader would otherwise open it for, and the checksum that tells a later session whether the extract is stale. Mirrors may link to canonical knowledge but must not duplicate private source detail with no enduring use, following the kit-principal rule.
+
+### Why a word floor rather than a judgment-only check
+
+A pointer-only mirror is cheap to detect and expensive to miss once search ranks by content. The 40-word floor is a deliberately low mechanical tripwire for the pointer case; whether an extract is good enough remains the `NOTE-4` judgment. The threshold lives in the standard so a later review can tune it without changing the contract.

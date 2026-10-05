@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T11:58:45Z
+updated_at: 2026-10-05T12:00:59Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
@@ -115,28 +115,6 @@ None in this repository. A user-facing search guide belongs with the tools-ki or
 
 No formal trade was emitted. Receiving repositories retain their own records and authority under the current explicit scope.
 
-## Discussion
-
-### Current user authority (2026-10-05)
-
-The principal approved the upstream qmd pilot, explicit one-trust-boundary-per-registered-KB policy with no cross-KB sharing by default, registry/index contract, mirror labels and subsequent MCP search. Verification uses synthetic KBs, superseding the earlier private-corpus plan. Local runtime installation and model downloads are allowed for this bounded pilot; live private KB indexing, source-store access, provider operations, push, publish and runtime deployment remain outside authority. The approved harness plan is revised in place before implementation.
-
-### Decision
-
-Run a one-hour direct-CLI qmd pilot first as step one with a recorded go or no-go; the harness owns the Decision Record, the QUERY-mode update and the tokenomics guidance; tools-ki and mcp-ki-kb-fs work are separate trades. Installing qmd locally is fine; no remote services. Decided by the Fable reviewer under delegated autonomy, reversible.
-
-### Why behind the surfaces
-
-`mcp-ki-kb-fs` already knows bases, aliases, zones, access levels, protected paths and writes an audit log; a search hit is a read and belongs behind the same gate. qmd's own MCP has no authentication and only collection-level scoping. A stable `kb_search` vocabulary also lets the engine change without rewriting skills.
-
-### Runtime shape
-
-Each explicitly configured operator-managed loopback daemon owns one KB trust boundary and named index. The pinned HTTP handler has no request-level index selector or KB authentication; health is liveness only. The prior single-global-daemon/model-sharing proposal is superseded. KI gateways enforce current authorisation before expansion and snippets; loopback alone cannot prevent other local clients reaching the auxiliary daemon. No launchd or live binding is deployed by this work.
-
-### Route gaps (resolved)
-
-`mcp-ki-kb-fs` accepts only knowledge trades from this repository, so the `kb_search` request travels as a knowledge trade and that repository decides whether to capture its own work record. chezmoi has no route and is recorded for the owner.
-
 ## Pilot result
 
 **Go for optional derived retrieval behind explicitly provisioned KI surfaces.** qmd 2.8.3 at `facd35e01359e59d938bc9418e93fb9318addee3` ran two independent synthetic Alpha/Omega indexes, ten question instances per corpus. The [durable report](../decisions/references/qmd-synthetic-pilot.md) and [complete JSON](../decisions/references/qmd-synthetic-pilot.json) retain every per-question finding, exact characters/bytes and wall time, original and improved grep baselines, supplementary predeclarations, protocol frames and cleanup.
@@ -172,3 +150,25 @@ Independent reviewer approved clean `e71a769f`, rebound to the shared-metadata a
 ### Mini recap
 
 Local direct-to-main delivery is committed and verified. Source contracts and synthetic evidence are published; root owns acceptance and subsequent pruning. No new work or fleet migration was admitted to the batch.
+
+## Discussion
+
+### Current user authority (2026-10-05)
+
+The principal approved the upstream qmd pilot, explicit one-trust-boundary-per-registered-KB policy with no cross-KB sharing by default, registry/index contract, mirror labels and subsequent MCP search. Verification uses synthetic KBs, superseding the earlier private-corpus plan. Local runtime installation and model downloads are allowed for this bounded pilot; live private KB indexing, source-store access, provider operations, push, publish and runtime deployment remain outside authority. The approved harness plan is revised in place before implementation.
+
+### Decision
+
+Run a one-hour direct-CLI qmd pilot first as step one with a recorded go or no-go; the harness owns the Decision Record, the QUERY-mode update and the tokenomics guidance; tools-ki and mcp-ki-kb-fs work are separate trades. Installing qmd locally is fine; no remote services. Decided by the Fable reviewer under delegated autonomy, reversible.
+
+### Why behind the surfaces
+
+`mcp-ki-kb-fs` already knows bases, aliases, zones, access levels, protected paths and writes an audit log; a search hit is a read and belongs behind the same gate. qmd's own MCP has no authentication and only collection-level scoping. A stable `kb_search` vocabulary also lets the engine change without rewriting skills.
+
+### Runtime shape
+
+Each explicitly configured operator-managed loopback daemon owns one KB trust boundary and named index. The pinned HTTP handler has no request-level index selector or KB authentication; health is liveness only. The prior single-global-daemon/model-sharing proposal is superseded. KI gateways enforce current authorisation before expansion and snippets; loopback alone cannot prevent other local clients reaching the auxiliary daemon. No launchd or live binding is deployed by this work.
+
+### Route gaps (resolved)
+
+`mcp-ki-kb-fs` accepts only knowledge trades from this repository, so the `kb_search` request travels as a knowledge trade and that repository decides whether to capture its own work record. chezmoi has no route and is recorded for the owner.
