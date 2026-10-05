@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-05T11:06:04Z
 ---
 
 # KI-HARNESS-GOV-121: Require substantive store mirrors
@@ -32,7 +32,8 @@ In scope:
 - applicability per base: the rule binds only a base whose `[skills.ki-repo]` `store_roles` includes `sources`;
 - mirror identity by the `source_path` field, not by a new `note_type`, so a mirror keeps the kind appropriate to its zone;
 - the expected shape of each base's own enrichment record, so those records share one form;
-- one mechanical-plus-judgment criterion, `NOTE-4`, that surfaces missing checksums and pointer-only mirrors as `WARN`.
+- one mechanical-plus-judgment criterion, `NOTE-4`, that surfaces missing checksums and pointer-only mirrors as `WARN`;
+- a derived `mirror_content` search label (`extract`, `pointer`, `unknown`, or null for ordinary notes), backed by one pure metadata/body classifier and synthetic fixtures; the label attests only the declared-provenance and minimum-text checks, never source fidelity, source existence or checksum freshness.
 
 Out of scope:
 
@@ -57,6 +58,7 @@ kit-principal's convention, promoted into `ki-repo-kb`, and the pointer-only-mir
 
 - [ ] Add `## Source mirrors` to `standards-knowledge-base.md`: applicability by `store_roles`; the `source_path` and `source_sha256` contract; extract content (what the binary is, the facts a reader would otherwise open it for, links to canonical knowledge rather than duplicated private detail); identity by field rather than `note_type`; the distinction from an acquisition "source note"; and the expected per-base enrichment record (inventory the store against its mirrors, add or extend extracts and checksums, record controlled groups, no binary in Git).
 - [ ] Point onboarding item 2 in the same file, the sources-store binding in `SKILL.md`, `mode-save.md` step 3 and `mode-query.md` step 2 at the new section, replacing their one-line descriptions rather than restating the rule.
+- [ ] Publish the pure classifier in `scripts/internal/source-mirrors.ts` and `references/standards-source-mirrors.md`: recognize `source_path` and `source_sha256`, require safe store-relative paths and 64 hexadecimal characters, count at least 40 body words after removing frontmatter, headings, links and HTML comments, return unknown on malformed or incomplete provenance, and do not follow sources. Fixtures cover links/headings-only, forged metadata, ordinary notes, missing checksums and substantive extracts.
 - [ ] In `scripts/rubric/contexts/kb.ts`, read `[skills.ki-repo].store_roles` from the already parsed `.ki.toml`, and during the existing frontmatter walk collect notes carrying `source_path`; record a `NOTE-4` check: `PASS` with "not applicable" when `sources` is not declared; `WARN` naming each mirror whose `source_sha256` is absent or not 64 hexadecimal characters; `WARN` naming each mirror whose body, after frontmatter, headings and links are removed, holds fewer than 40 words; `PASS` otherwise. Expose it as `notes.sourceMirrors`.
 - [ ] Add `NOTE_4` to `scripts/rubric/items/notes.ts`, sourced to `standards-knowledge-base.md`, mechanical level `WARN` with diagnostic remediation, and a judgment asking whether each sampled extract carries the facts a reader would otherwise open the binary for without private detail of no enduring use.
 - [ ] Extend `scripts/rubric/items/index.test.ts`: add `NOTE-4` to the expected code list and the judgment count, and add fixtures for no `sources` role, a pointer-only mirror, a missing checksum and a substantive mirror.
@@ -66,6 +68,10 @@ kit-principal's convention, promoted into `ki-repo-kb`, and the pointer-only-mir
 
 ## Files touched
 
+- `docs/roadmap/KI-HARNESS-GOV-121-require-substantive-store-mirrors.md`
+- `skills/repo-structure/ki-repo-kb/scripts/internal/source-mirrors.ts` (new)
+- `skills/repo-structure/ki-repo-kb/scripts/internal/source-mirrors.test.ts` (new)
+- `skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md` (new)
 - `skills/repo-structure/ki-repo-kb/references/standards-knowledge-base.md`
 - `skills/repo-structure/ki-repo-kb/SKILL.md`
 - `skills/repo-structure/ki-repo-kb/references/mode-save.md`
@@ -82,7 +88,7 @@ kit-principal's convention, promoted into `ki-repo-kb`, and the pointer-only-mir
 2. Against a fixture base without `sources` in `store_roles`, `NOTE-4` passes as not applicable even when a note carries `source_path`.
 3. Against a fixture base declaring `sources`, a mirror with only a path line reports one `NOTE-4` `WARN` naming its repository-relative path; a mirror lacking `source_sha256` reports a `WARN` naming it; a mirror with a 64-character checksum and a 40-word extract passes.
 4. No `NOTE-4` outcome is `FAIL`, and the audit never reads outside the selected checkout (the fixtures carry no sources store).
-5. `ki repo audit --skill ki-repo-kb` against `/Users/krisbrown/workspaces/kit/personal/kit-principal` reports `NOTE-4` findings for its existing mirrors and changes no file; this is the expected first-day signal, not a failure of this record.
+5. Synthetic fixture bases demonstrate expected first-day `NOTE-4` warnings, safe labels and unchanged source bytes; no live private KB is opened or audited. Search consumers can find the exact schema and fixtures through the KB standard.
 6. `bun run test` and `bunx tsc --noEmit` pass, and the regenerated rubric publishes `NOTE-4`.
 
 ```bash
@@ -91,7 +97,7 @@ bunx tsc --noEmit
 ki dev skill rubric ki-repo-kb
 ki repo audit --skill ki-repo-kb --progress never
 ki repo audit --skill ki-skills --progress never
-ki repo audit --skill ki-repo-kb --repo /Users/krisbrown/workspaces/kit/personal/kit-principal --progress never
+ki repo audit --skill ki-authoring --progress never
 ```
 
 Follow-on, outside acceptance: each base's enrichment record conforms its mirrors and clears `NOTE-4` in its own repository.
@@ -121,6 +127,10 @@ None in this repository. A base's own mirroring guide, such as kit-principal's `
 None in this repository. The five per-base records named in Steps are the receivers' own work.
 
 ## Discussion
+
+### Current user authority (2026-10-05)
+
+The principal approved the shared mirror label contract necessary for search. This delivery retains the full substantive-mirror standard and diagnostic scope above; verification is synthetic and never opens or modifies live private KBs, acquired notes or binary source stores. Derived labels express only checks over the selected Markdown note and declared provenance, with unknown where evidence is incomplete.
 
 ### Bases known to hold a sources store
 

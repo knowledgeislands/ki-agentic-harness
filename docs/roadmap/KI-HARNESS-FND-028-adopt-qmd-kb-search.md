@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T08:06:07Z
+updated_at: 2026-10-05T11:06:04Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
@@ -37,9 +37,9 @@ In scope for the harness:
 
 Delivered elsewhere as separate trades or owner captures, outside this record's acceptance:
 
-- `ki kb index` and `ki kb search` in tools-ki (registry to one named index per trust boundary, collections per repository, `context` from declared purpose, scheduled `update` and `embed`);
+- `ki kb index` and `ki kb search` in tools-ki (registry to one explicit unique trust boundary and independent named index per stable registered KB ID, collections per repository, `context` from declared purpose, scheduled `update` and `embed`);
 - `kb_search` in mcp-ki-kb-fs calling the daemon's `POST /query` with base, zone and access-level scoping and audit-log entries;
-- the mcporter and Desktop binding, the launchd daemon, a pinned mise install and `brew "sqlite"` in chezmoi.
+- the mcporter and Desktop binding, the launchd daemon, a future owner-managed pinned install in chezmoi.
 
 Excluded: metadata frontmatter for qmd filtering, indexing binary source stores directly, any network exposure of the daemon or any remote service, and the store-mirror content standard owned by [KI-HARNESS-GOV-121](KI-HARNESS-GOV-121-require-substantive-store-mirrors.md). Installing qmd and its models locally for the pilot is in scope.
 
@@ -53,12 +53,12 @@ Excluded: metadata frontmatter for qmd filtering, indexing binary source stores 
 
 ## Steps
 
-- [ ] Pilot (step one, time-boxed to one hour): install qmd locally per its README and record the version; index kit-principal and hnr-shared as two separate named indexes; ask eight to ten real questions of each method, qmd CLI (`qmd query --json`) against grep plus reads; record per question whether the right note was found, the characters of context returned, and wall time. Record the results and an explicit go or no-go with its reason in a `## Pilot result` section of this record. Delete the pilot indexes afterwards; the models may stay in the local cache.
+- [ ] Pilot (step one, time-boxed to one hour): install qmd locally per its README and record the version; index task-owned synthetic Alpha and Omega corpora as two separate named indexes with explicit unique trust boundaries; ask eight to ten synthetic questions of each method, qmd CLI (`qmd --index <name> query <question> --json`) against grep plus reads; record per question whether the right note was found, the characters of context returned, and wall time. Record the results and an explicit go or no-go with its reason in a `## Pilot result` section of this record. Delete the pilot indexes afterwards; the models may stay in the local cache.
 - [ ] On no-go: add qmd with the pilot evidence to the "Declined" list in `ADR-KI-HARNESS-TOOLCHAIN-002`, apply only the snippet-first tokenomics guidance below (which does not depend on qmd), mark the remaining steps not applicable, and stop.
 - [ ] On go: write `docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md` (new; take the next free serial at authoring time) adopting qmd as a rebuildable derived index reached only through KI surfaces, citing the pilot, the localhost-only daemon, named indexes per trust boundary, and the rejected direct-agent and per-client-SDK shapes. Add it to `docs/decisions/README.md` and add qmd to "Adopted" in `ADR-KI-HARNESS-TOOLCHAIN-002` with a link.
 - [ ] On go: rewrite `mode-query.md` steps 1 and 2: use `kb_search` (or `ki kb search` on the shell) when bound; search exact identifiers literally; read returned line ranges rather than whole files; cite repository paths, never qmd docids; fall back to grep and targeted reads when no search surface is available.
 - [ ] Add a short "Retrieval" section to `standards-tokenomics.md`: prefer snippet or line-range retrieval to whole-file reads, measure retrieved context in the same terms as standing surfaces, and route search-surface design to `ki-repo-mcp` and `ki-repo-kb`.
-- [ ] On go: raise a work trade to tools-ki for `ki kb index` and `ki kb search`; raise a knowledge trade to mcp-ki-kb-fs describing the `kb_search` need and the missing work route, leaving capture to that repository; record the chezmoi binding, daemon and install need for the owner, since no route exists.
+- [ ] On go: publish the pinned qmd request/response, per-registry-KB trust-boundary and derived mapping contract in `ki-repo-kb/references/standards-search.md`; coordinate tools-ki and mcp-ki-kb-fs consumers under the current explicit user scope. Preserve historical route facts; create no trade or live runtime binding.
 
 ## Files touched
 
@@ -68,8 +68,10 @@ Excluded: metadata frontmatter for qmd filtering, indexing binary source stores 
 - `docs/decisions/README.md` (on go)
 - `skills/repo-structure/ki-repo-kb/references/mode-query.md` (on go)
 - `skills/environment/ki-tokenomics/references/standards-tokenomics.md`
-- `-/_TRADES/knowledgeislands/tools-ki/TRD-<id>.md` (new, on go)
-- `-/_TRADES/knowledgeislands/mcp-ki-kb-fs/TRD-<id>.md` (new, on go)
+- `skills/repo-structure/ki-repo-kb/references/standards-search.md` (new, on go)
+- `skills/repo-structure/ki-repo-kb/SKILL.md` (search contract discoverability, on go)
+- `docs/decisions/references/qmd-synthetic-pilot.md` (durable pilot evidence)
+- `docs/decisions/references/qmd-synthetic-pilot.json` (measured synthetic evidence)
 
 ## Verify
 
@@ -78,7 +80,7 @@ Excluded: metadata frontmatter for qmd filtering, indexing binary source stores 
 3. On go: the new Decision Record passes `ki repo audit --skill ki-decision-records`, is indexed in `docs/decisions/README.md`, and `ADR-KI-HARNESS-TOOLCHAIN-002` links it from "Adopted".
 4. On go: `mode-query.md` names `kb_search`, exact-identifier search, line-range reads, repository-path citations and the grep fallback, and names no qmd command or docid.
 5. `standards-tokenomics.md` holds the retrieval guidance and no budget value changes.
-6. No daemon is exposed beyond localhost, no remote service is configured, and no file outside this repository is written; the trades are recorded as outbound records only.
+6. No daemon is exposed beyond localhost, no remote service is configured, and only task-owned local pilot runtime directories outside this repository are written; no private KB, provider, route, live binding or source store is touched. Named indexes and synthetic projections are removed after the pilot; model cache retention is recorded.
 
 ```bash
 bun run test
@@ -114,6 +116,10 @@ None in this repository. A user-facing search guide belongs with the tools-ki or
 None in this repository beyond the outbound trades.
 
 ## Discussion
+
+### Current user authority (2026-10-05)
+
+The principal approved the upstream qmd pilot, explicit one-trust-boundary-per-registered-KB policy with no cross-KB sharing by default, registry/index contract, mirror labels and subsequent MCP search. Verification uses synthetic KBs, superseding the earlier private-corpus plan. Local runtime installation and model downloads are allowed for this bounded pilot; live private KB indexing, source-store access, provider operations, push, publish and runtime deployment remain outside authority. The approved harness plan is revised in place before implementation.
 
 ### Decision
 
