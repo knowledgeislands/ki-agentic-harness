@@ -6,6 +6,7 @@ This standard defines the provider-specific contract for faithfully acquiring Gr
 
 ## Contents
 
+- [Owned-note scope](#owned-note-scope)
 - [Source boundary](#source-boundary)
 - [Transport recovery](#transport-recovery)
 - [Provider operations](#provider-operations)
@@ -14,6 +15,12 @@ This standard defines the provider-specific contract for faithfully acquiring Gr
 - [Incremental acquisition and amendments](#incremental-acquisition-and-amendments)
 - [Acquisition fidelity](#acquisition-fidelity)
 - [Staging and harvesting boundary](#staging-and-harvesting-boundary)
+
+## Owned-note scope
+
+Granola acquisition covers the connected principal's own meeting notes. Notes owned by someone else and shared with the principal are out of scope: do not read, import, harvest, reconcile, manage, or prepare them for deletion. A principal-owned note remains eligible when the principal shares it with others; a folder name alone does not establish ownership.
+
+Global and folder enumeration, acquisition counts, receiver routing, and manual-release manifests apply to the principal-owned population. When identity metadata reveals an incoming shared note, exclude it without retrieving its content or seeking another access path through the desktop app, browser, local filesystem, or owner. Incoming shared notes do not count as missing acquisitions or block pruning of verified principal-owned notes. An unavailable shared note requires no follow-up. If ownership cannot be established, exclude the note from import and release until its identity evidence establishes that it belongs to the principal.
 
 ## Source boundary
 
