@@ -40,20 +40,23 @@ jobs:
           test "$(realpath "$KI_CLI_INSTALL_DIR/ki")" = "$KI_CLI_INSTALL_DIR/.ki-local-runner"
           grep -F "$RUNNER_TEMP/tools-ki-source/src/main.ts" "$KI_CLI_INSTALL_DIR/.ki-local-runner"
           ki --version
-          ki manage diag | grep -F 'Installation: local'
-          ki manage diag | grep -F "Executable: $RUNNER_TEMP/tools-ki-source/src/main.ts"
+          ki diag | grep -F 'Installation: local'
+          ki diag --full | grep -F "Executable: $RUNNER_TEMP/tools-ki-source/src/main.ts"
           ki bootstrap
           ki registry add --repo .
           local_harness=$(realpath "$GITHUB_WORKSPACE")
           ki dev local set knowledgeislands/ki-agentic-harness "$local_harness"
           ki dev local on knowledgeislands/ki-agentic-harness
-          ki manage diag | grep -F "source: $local_harness"
-          ki manage diag | grep -F 'mode: on'
+          full_diag=$(ki diag --full)
+          grep -F "source: $local_harness" <<<"$full_diag"
+          grep -F 'mode: on' <<<"$full_diag"
           ki repo repair --repo .
           project_key=${GITHUB_WORKSPACE//\//-}
           mkdir -p "$HOME/.claude/projects/$project_key/memory"
           touch "$HOME/.claude/projects/$project_key/memory/MEMORY.md"
-          ki manage diag | grep -F 'Status: valid'
+          diag=$(ki diag)
+          grep -F 'Configuration: valid' <<<"$diag"
+          grep -F 'Registry: valid' <<<"$diag"
           ki harness list | grep -F 'knowledgeislands/ki-agentic-harness'
           {
             printf 'KI_CLI_INSTALL_DIR=%s\n' "$KI_CLI_INSTALL_DIR"

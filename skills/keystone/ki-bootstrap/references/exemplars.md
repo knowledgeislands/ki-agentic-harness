@@ -6,11 +6,11 @@ These examples illustrate the scope boundaries in [the bootstrap standard](stand
 
 ```sh
 ki bootstrap
-ki manage doctor
-ki manage diag
+ki doctor
+ki diag --full
 ```
 
-The first command detects supported agent runtimes, establishes the user configuration, installs the canonical harness, and activates the seven core user skills. `ki-delegation` remains an opt-in standard for durable delegation packets. `ki manage doctor` checks the resulting environment; `ki manage diag` reports the effective configuration, harness inventory, repository, and XDG paths.
+The first command detects supported agent runtimes, establishes the user configuration, installs the canonical harness, and activates the seven core user skills. `ki-delegation` remains an opt-in standard for durable delegation packets. `ki doctor` checks the resulting environment; `ki diag --full` reports the effective configuration, harness inventory, repository, and XDG paths.
 
 Running `ki bootstrap` again leaves correctly managed state in place. Use the refresh form after adding or removing a supported agent runtime or after reconciling installed state:
 

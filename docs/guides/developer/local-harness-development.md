@@ -27,8 +27,8 @@ The command validates the required `skills/`, `subagents/`, and `hooks/` roots b
 Confirm the active installation:
 
 ```bash
-ki manage diag
-ki manage doctor
+ki diag --full
+ki doctor
 ```
 
 Start a new agent session after changing skill activation or switching harness source so the runtime re-scans its skill directories.
@@ -39,7 +39,7 @@ When checkout-local development is complete, restore the verified canonical arch
 
 ```bash
 ki dev local off
-ki manage doctor
+ki doctor
 ```
 
 `ki dev local off` preserves unfamiliar state and fails with recovery guidance rather than deleting an unproven installation.
