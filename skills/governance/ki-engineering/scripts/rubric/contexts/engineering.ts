@@ -76,7 +76,7 @@ export type TurboRubricContext = {
   turbo2: EngineeringEvidence
   turbo3: EngineeringEvidence
 }
-export type DesignRubricContext = Record<string, never>
+export type DesignRubricContext = { design2: EngineeringEvidence }
 export type ReviewRubricContext = { review1: EngineeringEvidence }
 export type TestRubricContext = {
   test1: EngineeringEvidence
@@ -438,7 +438,7 @@ export const createEngineeringSession = async (
       turbo2: evidence('TURBO-2'),
       turbo3: evidence('TURBO-3')
     },
-    design: {},
+    design: { design2: evidence('DESIGN-2') },
     review: { review1: evidence('REVIEW-1') },
     test: {
       test1: evidence('TEST-1'),

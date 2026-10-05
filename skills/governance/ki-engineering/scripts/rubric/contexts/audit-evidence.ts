@@ -27,6 +27,7 @@ import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync, statSyn
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { promisify } from 'node:util'
 import type { PackageScriptClaim, RubricEmitter } from '../../shared/rubric.ts'
+import { inspectBoundaries } from './boundaries.ts'
 import { COMMITLINT_CONFIGURATION, hasCommitMessageBaseline, hasPreCommitBaseline } from './git-hooks.ts'
 
 // Unified severity ladder — shared by every KI checker (checker-contract).
@@ -466,6 +467,7 @@ const mechanicalEngineeringCheckIds = new Set([
   'TURBO-1',
   'TURBO-2',
   'TURBO-3',
+  'DESIGN-2',
   'TEST-1',
   'TEST-2',
   'TEST-3',
@@ -2154,10 +2156,14 @@ export const collectAuditEvidence = async (
       add(record.level, 'TOML-3', record.message, STD, '.ki.toml')
   }
 
-  return findings.map(({ level, area, msg, file }) => ({
-    level,
-    code: area,
-    message: msg,
-    ...(file ? { subject: file } : {})
-  }))
+  const boundaries = await inspectBoundaries(repo, emit)
+  return [
+    ...boundaries,
+    ...findings.map(({ level, area, msg, file }) => ({
+      level,
+      code: area,
+      message: msg,
+      ...(file ? { subject: file } : {})
+    }))
+  ]
 }

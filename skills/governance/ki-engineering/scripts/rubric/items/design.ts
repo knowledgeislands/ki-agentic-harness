@@ -1,5 +1,5 @@
 import type { RubricFamily } from '../../shared/rubric.ts'
-import type { DesignRubricContext, EngineeringRubricContext } from '../contexts/engineering.ts'
+import { auditEvidence, type DesignRubricContext, type EngineeringRubricContext } from '../contexts/engineering.ts'
 
 export const DESIGN: RubricFamily<EngineeringRubricContext, DesignRubricContext> = {
   code: 'DESIGN',
@@ -29,6 +29,16 @@ export const DESIGN: RubricFamily<EngineeringRubricContext, DesignRubricContext>
       description:
         'Boundaries the repository relies on — layer direction, logic-free artifact shells, and the seam its tests exercise — are declared as dependency-cruiser rules, cruised over a graph proved to resolve, and covered by a test that proves the checker can still fail.',
       sources: ['standards-engineering.md#repo-shapes--flat-vs-monorepo-core'],
+      mechanical: {
+        level: 'FAIL',
+        cost: 30,
+        remediation: {
+          class: 'diagnostic',
+          guidance:
+            'Restore the contained ruleset and isolated checker, fix graph resolution, or wire a native deliberate-crossing proof through the bare test entrypoint. Unsupported runner or workspace execution needs a bounded proof adapter; choosing or rewriting architecture is not an automatic repair.'
+        },
+        audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.design2, 'FAIL') }
+      },
       judgment: {
         scope:
           'Declared module boundaries, `.dependency-cruiser.ts` rules and the roots they cruise, its resolution and transpiler configuration, the script that runs them, and the test that proves the checker still reports violations.',

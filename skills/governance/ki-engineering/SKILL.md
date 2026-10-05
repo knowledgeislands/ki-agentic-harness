@@ -6,6 +6,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.ts]
 contributes: ['.ki.toml', '.gitignore', package.json, '.husky/pre-commit', '.husky/commit-msg']
+requires: ['.dependency-cruiser.ts', 'tooling/boundaries/package.json']
 description: >
   Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,
   tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for
@@ -58,7 +59,7 @@ Explain the common TypeScript/Bun toolchain, the direct `ki repo` workflow, the 
 
 ### Mode AUDIT — check a repo's common toolchain
 
-1. Run `ki repo audit --skill ki-engineering` for the focused mechanical pass, or `ki repo audit` for the repository's complete declared set. The native host loads [the canonical item catalogue](scripts/rubric/items/index.ts), runs its code-tool checks, checks the script and CI surface, the `bun test` trap, `tsconfig`/`biome`, capability conditionals, and the `[skills.ki-engineering]` table, then reports findings with rubric codes.
+1. Run `ki repo audit --skill ki-engineering` for the focused mechanical pass, or `ki repo audit` for the repository's complete declared set. The native host loads [the canonical item catalogue](scripts/rubric/items/index.ts), runs its code-tool checks, checks the script and CI surface, the `bun test` trap, `tsconfig`/`biome`, capability conditionals, and the `[skills.ki-engineering]` table, then reports findings with rubric codes. `DESIGN-2` proves a resolved, type-aware graph and executes native boundary assertions in a disposable source copy; disabling semantic rules there must break an assertion naming a removed rule. No product source is mutated, and no architecture is automatically rewritten.
 2. **Apply the judgment items** in [the rubric](references/rubric.md): cohesive, comprehensible code with restrained reuse; any change-aware consistency review the explicit Git evidence makes worthwhile; no per-repo loosening of `strict`/the `noImplicit*` family; the Node `.env` parity call where env is loaded; Vitest-configured source tests actually reaching the 100% bar; Knip entries having real supported callers and authored script trees in scope; and repo-specific scripts not shadowing governed entrypoints. Treat malformed, foreign, or unresolved review trailers as unavailable evidence, never as a signal to infer a boundary.
 3. Ensure the artifact skill is declared in `.ki.toml`; the unscoped `ki repo audit` runs every declared layer. Report by location → criterion → fix, grouped by severity (FAIL first).
 

@@ -79,6 +79,12 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   expect(codes).toContain('KNIP-4')
   expect(codes).toContain('DESIGN-1')
   expect(codes).toContain('DESIGN-2')
+  const boundaries = catalogue.families
+    .find((family) => family.code === 'DESIGN')
+    ?.items.find((item) => item.code === 'DESIGN-2')
+  expect(boundaries?.mechanical?.level).toBe('FAIL')
+  expect(boundaries?.mechanical?.remediation.class).toBe('diagnostic')
+  expect(boundaries?.judgment).toBeDefined()
   expect(codes).toContain('REVIEW-1')
   expect(codes).toContain('SCR-10')
   expect(codes).toContain('SCR-11')
