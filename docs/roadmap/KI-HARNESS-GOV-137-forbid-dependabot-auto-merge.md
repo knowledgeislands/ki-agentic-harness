@@ -4,12 +4,12 @@ area: GOV
 title: Forbid Dependabot auto-merge
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: f0666f8bc52e82046cfc539e30c7dbf416c1173a
 created_at: 2026-10-05T10:25:00Z
-updated_at: 2026-10-05T10:42:23Z
+updated_at: 2026-10-05T10:56:26Z
 ---
 
 # KI-HARNESS-GOV-137: Forbid Dependabot auto-merge
@@ -129,8 +129,16 @@ Goal met within the stated boundary; alerts and security-update checks are uncha
 
 Delivered the standard change, check, test and security DR. Learning route: consider a REVIEW prompt for workflows that call `gh pr merge --auto` under another name; no automatic promotion.
 
+## Done
+
+Accepted 2026-10-05 by Fable reviewer under Kris's delegated authority on the review packet above.
+
 ## Discussion
 
 ### Decision
 
 Owner decision (b), 2026-10-05: Dependabot alerts and security updates on for every repository; Dependabot version-update configuration and every auto-merge workflow removed; routine updates through `bun run ki:deps:update`.
+
+### Acceptance
+
+Fable first returned CHANGES because the review packet followed `Discussion`; after reordering it re-verified at `ccbce52c` and accepted. The `repository.test.ts` timeouts reproduce at baseline and are unrelated to DEP-1; a separate item is suggested.
