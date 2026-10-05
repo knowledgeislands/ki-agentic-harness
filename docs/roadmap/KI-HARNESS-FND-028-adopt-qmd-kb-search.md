@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 00b4b56181a44a2bf77e0a10836e83429f5b62f6
 created_at: 2026-09-30T07:00:00Z
-updated_at: 2026-10-05T12:05:15Z
+updated_at: 2026-10-05T12:11:47Z
 ---
 
 # KI-HARNESS-FND-028: Adopt qmd KB search
@@ -41,7 +41,7 @@ Delivered elsewhere as separate trades or owner captures, outside this record's 
 - `kb_search` in mcp-ki-kb-fs calling the daemon's `POST /query` with base, zone and access-level scoping and audit-log entries;
 - the mcporter and Desktop binding, the launchd daemon, a future owner-managed pinned install in chezmoi.
 
-Excluded: metadata frontmatter for qmd filtering, indexing binary source stores directly, any network exposure of the daemon or any remote service, and the store-mirror content standard owned by [KI-HARNESS-GOV-121](KI-HARNESS-GOV-121-require-substantive-store-mirrors.md). Installing qmd and its models locally for the pilot is in scope.
+Excluded: metadata frontmatter for qmd filtering, indexing binary source stores directly, any network exposure of the daemon or any remote service, and the store-mirror content standard owned by [the delivered source-mirror standard](../../skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md). Installing qmd and its models locally for the pilot is in scope.
 
 ## Current state
 
@@ -95,7 +95,7 @@ Follow-on, outside acceptance: tools-ki, mcp-ki-kb-fs and chezmoi deliver their 
 
 ## Dependencies / blocks
 
-None. [KI-HARNESS-GOV-121](KI-HARNESS-GOV-121-require-substantive-store-mirrors.md) is a cross-reference rather than a dependency: substantive mirrors make search results better, and search makes pointer-only mirrors more visible, but neither record's acceptance needs the other's output. Both edit `mode-query.md`; whichever lands second rebases a one-line change.
+None. [the delivered source-mirror standard](../../skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md) is a cross-reference rather than a dependency: substantive mirrors make search results better, and search makes pointer-only mirrors more visible, but neither record's acceptance needs the other's output. The shared `mode-query.md` changes have landed and are verified together.
 
 ## Documentation impact
 
