@@ -234,6 +234,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Specifications state observable behaviour, constraints, and acceptance evidence precisely enough for implementation and review.
 - [ ] Skill definitions make their triggers, ownership, dependencies, boundaries, and operating modes understandable to a human reviewer.
 - [ ] Every cross-reference resolves, and cites the record that is actually current.
+- [ ] Roadmap pruning preserves surviving references from accessible peers, including identified archived or deregistered repositories, under `ki-accept`'s cross-repository reference preflight; review its coverage and retained blockers without assuming peer-edit authority.
 - [ ] The README positions the repository within the estate.
 - [ ] Anything that could be a skill has been made one.
 

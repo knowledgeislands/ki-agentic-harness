@@ -14,4 +14,6 @@ The [housekeeping template state machine](../../ki-work-housekeeping/references/
 
 ## Last review
 
+On 2026-10-05, the owner approved the cross-repository reference preflight after a Done record remained linked from an archived, deregistered peer. Pruning now distinguishes mechanically discovered references from surviving dependencies, records search coverage, verifies immutable history links, and retains affected records when evidence or repair authority is unavailable. The change grants no peer mutation or publication authority.
+
 On 2026-08-12, the integrated local standards retained selected-adapter resolution, the exact six-heading review packet, completion-observation retention, and the successful-run boundary. `ki-accept` consumes those contracts without creating a remote execution path or a second tracker.
