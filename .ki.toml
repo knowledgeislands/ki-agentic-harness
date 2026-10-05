@@ -138,11 +138,6 @@ export = ["knowledge"]
 import = ["work", "knowledge"]
 standing.import.knowledge = ["shared-capability-maintenance"]
 
-[skills.ki-trades.routes."knowledgeislands/ki-plugins"]
-export = ["knowledge"]
-import = ["work", "knowledge"]
-standing.import.knowledge = ["shared-capability-maintenance"]
-
 [skills.ki-trades.routes."knowledgeislands/ki-specifications"]
 export = ["work", "knowledge"]
 import = ["work", "knowledge"]

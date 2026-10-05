@@ -9,7 +9,7 @@ blocks: [KI-HARNESS-GOV-125]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-05T10:45:00Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
@@ -144,4 +144,4 @@ The shared definition is enforced across vendored copies by a conformance test i
 
 - [ADR-KI-HARNESS-SKILLS-015](../decisions/ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) relaxed both governance instruments
 - [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md) owns the shared-module contract
-- [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) is the same one-fact-many-copies shape applied to the plugin projection
+- [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) was the same one-fact-many-copies shape applied to the plugin projection, now closed as superseded because the projection is retired
