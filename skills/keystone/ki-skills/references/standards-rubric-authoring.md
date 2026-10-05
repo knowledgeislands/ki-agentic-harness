@@ -157,9 +157,10 @@ Skill-specific behaviour shared by both commands belongs in `scripts/rubric/cont
 Once a skill conforms to this structure, ordinary maintenance SHOULD be isolated to the rule being changed:
 
 1. Update the rubric item in its semantic family file.
-2. Add or refine focused context evidence only when the rule needs information or a safe write capability that the existing context does not provide.
-3. Regenerate `references/rubric.md` from the canonical TypeScript catalogue.
-4. Run the skill's focused tests, then exercise its catalogue through the live `ki` host.
+2. Before changing what a criterion requires of a value, search the whole catalogue, including CONFORM writers and scaffolds, for every other place that reads or writes that value, and change them together in one change. Otherwise one criterion warns on what another requires, and CONFORM silently reverts the new requirement.
+3. Add or refine focused context evidence only when the rule needs information or a safe write capability that the existing context does not provide.
+4. Regenerate `references/rubric.md` from the canonical TypeScript catalogue.
+5. Run the skill's focused tests, then exercise its catalogue through the live `ki` host.
 
 The catalogue wiring, session construction, and generic `ki` host SHOULD remain unchanged during an ordinary rule adjustment.
 
