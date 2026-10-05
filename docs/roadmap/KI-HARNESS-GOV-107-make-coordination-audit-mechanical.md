@@ -3,10 +3,10 @@ id: KI-HARNESS-GOV-107
 area: GOV
 title: Make coordination audit mechanical
 theme: governance-consistency
-horizon: triage
+horizon: now
 status: draft
-blocks: []
-blocked_by: []
+blocks: [KI-HARNESS-GOV-114]
+blocked_by: [KI-HARNESS-GOV-108]
 baseline_ref: null
 task_links:
   paperclip:
@@ -29,24 +29,24 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-05T08:19:22Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
 
 ## Goal
 
-An arrangement that breaks a KI–Paperclip coordination rule is caught by running an audit, not only by a reviewer who happens to look. Today the audit for that arrangement cannot fail on any input, so a declaring repository receives a clean result that carries no information about whether the arrangement conforms.
+An arrangement that breaks a KI-Paperclip coordination rule is caught by running an audit, not only by a reviewer who happens to look. Today the audit for that arrangement cannot fail on any input, so a declaring repository receives a clean result that carries no information about whether the arrangement conforms.
 
 ## Context
 
 `ki-agent-coordination-paperclip` was declared for the first time on 2026-09-26, in `ki-agentic-harness` and `ki-techne-harness`, under coordination task `KNO-19`. Before that no repository declared it and `ki repo audit --skill ki-agent-coordination-paperclip` exited `2` with `--skill must name one declared resolved skill`. The declaration removes that exit and produces `PASS=1 WARN=0 FAIL=0` on each repository.
 
-That result is resolution evidence, not conformance evidence, and the skill's own `references/mode-audit.md` now says so in step 3. The reason is structural: every criterion in [the generated rubric](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md) — `COORD-1` repository authority, `COORD-2` identity model, `COORD-3` task-to-work linkage, `COORD-4` workspace isolation, `COORD-5` direct-interaction boundary, `COORD-6` evidence return — is classified `[J]`. `scripts/rubric/items/coordination.ts` registers no audit operation, so the host has nothing to execute. Run with `--reporter-levels all` the audit prints zero criteria; the same host run with `--skill ki-repo` against the same working copy printed more than thirty and caught a real `TOGGLE-1` failure, so the reporter is not suppressing output.
+That result is resolution evidence, not conformance evidence, and the skill's own `references/mode-audit.md` now says so in step 3. The reason is structural: every criterion in [the generated rubric](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md) - `COORD-1` repository authority, `COORD-2` identity model, `COORD-3` task-to-work linkage, `COORD-4` workspace isolation, `COORD-5` direct-interaction boundary, `COORD-6` evidence return - is classified `[J]`. `scripts/rubric/items/coordination.ts` registers no audit operation, so the host has nothing to execute. Run with `--reporter-levels all` the audit prints zero criteria; the same host run with `--skill ki-repo` against the same working copy printed more than thirty and caught a real `TOGGLE-1` failure, so the reporter is not suppressing output.
 
 The consequence is the inert-doctrine condition in a second form. The first form was a rule no repository declared. This form is a declared rule that nothing can fail. Asking what would break if the rule were violated still returns nothing.
 
-Three of the six criteria have a mechanically checkable core, all of them under `COORD-3` and `COORD-1`, and all of them waiting on the same missing thing — a Paperclip task field that carries the governing repository, roadmap identifier and admitted revision as structured data rather than prose:
+Three of the six criteria have a mechanically checkable core, all of them under `COORD-3` and `COORD-1`, and all of them waiting on the same missing thing - a Paperclip task field that carries the governing repository, roadmap identifier and admitted revision as structured data rather than prose:
 
 - a task naming a repository, roadmap identifier and revision triple that does not resolve to a real work item at that revision (`COORD-3`);
 - a governing work item whose covering-task list does not name back the task that names it, or names a different one (`COORD-3`, the two-way-link condition);
@@ -56,15 +56,94 @@ The field does not exist. `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` holds t
 
 ## Boundary
 
-In scope: whether this skill gains mechanical audit items, which criteria they attach to, what evidence each one reads, and where that evidence physically comes from given that one end of every candidate check lives outside any repository.
+Decided 2026-10-05 under delegated owner authority: `COORD-3` gains mechanical checks over repository-local evidence only, namely that a governing identifier triple resolves and that the item-side backlink is present. Every plane-side check stays judgment. This settles the evidence-route question below in favour of the first route; no deposited snapshot and no live coordination-plane read.
+
+In scope:
+
+- a diagnostic mechanical operation on the existing `COORD-3` item, alongside its judgment prompt, reading only the selected checkout's work records under the configured `ki-work` adapter root (`docs/roadmap/` for `roadmap`, `Streams/Roadmap/` for `kb-streams`) and the local Git object store;
+- **triple resolves:** for each record carrying a Paperclip `task_links` reference with relation `implementation` and a non-null `baseline_ref`, the locator triple of this repository, the record `id` and `baseline_ref` resolves: the revision is a commit in the local object store, is an ancestor of `HEAD`, and contains a record file for that `id` under the adapter root;
+- **backlink present:** each qualified Paperclip task identity (`authority`, `scope`, `id`) carried with relation `implementation` has exactly one item-side backlink in the selected revision: one record claims it as governing, matching the standard's rule that a delivery task has at most one governing KI item. A record whose delivery runs outside Paperclip is not required to carry a governing link, because an `evaluation` or `related` link says nothing about who delivers;
+- outcome text that says the plane side was not evaluated, so a pass is never read as live conformance;
+- `NOT_APPLICABLE`, not `PASS`, when the repository selects a remote work adapter or no record carries a Paperclip reference;
+- the `mode-audit.md` procedure update and the regenerated rubric.
 
 Out of scope, deliberately:
 
-- adding the roadmap front-matter field itself, which is `TECHNE-TOOLS-CTRL-001` and a `tools-ki` change, not harness rubric work;
-- changing any normative claim in [the coordination standard](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md), which this item treats as settled and only proposes to make checkable;
+- any read of the coordination plane, including whether the task's prose locator exists or names this item, task status, live claims, or acceptance; those remain the `COORD-3` and `COORD-1` judgment;
+- the task-link field and its shape validation, delivered by `KI-HARNESS-GOV-116` and owned by `ki-work-roadmap`;
+- changing any normative claim in [the coordination standard](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md);
 - which repositories declare the skill, which is [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md);
-- removing or weakening the existing judgment criteria;
-- the seven coordination rules themselves and any decision record that would fix them.
+- the worktree-base assertion, which is [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md), and the held-workspace listing, which is [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md);
+- removing or weakening any judgment criterion, and any new criterion code. `COORD-15` stays free for `GOV-115`.
+
+## Current state
+
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts` defines `COORD-1` to `COORD-14`, all judgment; `ORG-1` and `RUBRIC-1` are the only mechanical items.
+- `scripts/rubric/contexts/coordination.ts` reads only the skill's own `.ki.toml` table; it receives the repository root through `RubricContextOptions.repository` but reads no work record.
+- `scripts/rubric/items/index.test.ts` asserts that no item other than `ORG-1` and `RUBRIC-1` is mechanical.
+- `references/mode-audit.md` step 3 still says the catalogue registers no mechanical operation, which `ORG-1` already made stale.
+- In this repository three records carry Paperclip task links, and none combines an `implementation` link with a non-null `baseline_ref`, so the new checks will report not applicable here on day one; fixtures carry the negative cases.
+- Rubric contexts may read files and run local Git, as `ki-trades` does in `scripts/rubric/contexts/trades.ts`, so no host change in `tools-ki` is needed.
+
+## Steps
+
+- [ ] Extend `PaperclipCoordinationContext` with a `linkage` outcome list computed in `createPaperclipCoordinationSession`: resolve the adapter from the repository's `.ki.toml` `[skills.ki-work]` table, parse record frontmatter under the adapter root, and run local Git (`git cat-file -e <ref>^{commit}`, `git merge-base --is-ancestor <ref> HEAD`, `git ls-tree --name-only <ref> -- <root>`) with no fetch and no write.
+- [ ] Emit one `VIOLATION` per failed triple naming the record, the revision and which part failed; and one per task identity claimed as governing by more than one record, naming every claimant. Emit `PASS` with a count and a plane-side-not-evaluated note otherwise, and `NOT_APPLICABLE` when nothing is in scope.
+- [ ] Add a `mechanical` diagnostic block at level `FAIL` to `COORD-3`, keeping its judgment prompt, with remediation guidance that names the record to correct and says the task side must be reconciled by judgment.
+- [ ] Add context fixtures in `scripts/rubric/contexts/coordination.test.ts` using a temporary Git repository: an unknown revision, a revision not an ancestor of `HEAD`, a revision without the record, a duplicate governing claim, a record with only `evaluation` links that must pass, a clean pass, a remote adapter and a repository with no links.
+- [ ] Update `scripts/rubric/items/index.test.ts` so `COORD-3` is permitted as mechanical and still carries its judgment.
+- [ ] Rewrite `references/mode-audit.md` step 3 to say which results are mechanical, what `COORD-3` checks and what it cannot see, and that a pass is repository-side evidence only.
+- [ ] Regenerate `references/rubric.md` and run the verification below.
+
+## Files touched
+
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/mode-audit.md`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md` (generated)
+
+## Verify
+
+1. Each negative fixture produces exactly one `COORD-3` violation naming the record and the failed part, and the audit exits non-zero.
+2. The passing fixture reports `PASS` with the count of links checked and a statement that the plane side was not evaluated; the remote-adapter and no-link fixtures report `NOT_APPLICABLE`.
+3. The audit makes no network call and no write: `git rev-parse HEAD`, `git status --porcelain` and `git worktree list --porcelain` are byte-identical before and after, and no fetch occurs.
+4. The result depends only on the selected checkout: a commit in a sibling worktree does not change it.
+5. `COORD-3` keeps its judgment prompt, no new criterion code exists, and `mode-audit.md` step 3 no longer claims the catalogue is wholly judgment.
+6. The commands below pass, and the audit against this repository reports `COORD-3` as evaluated.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki dev skill rubric ki-agent-coordination-paperclip
+ki repo audit --skill ki-agent-coordination-paperclip --reporter-levels all --progress never
+ki repo audit --skill ki-authoring --progress never
+```
+
+## Dependencies / blocks
+
+Blocked by [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md), which settles how many repositories these checks run in. Blocks [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md), which adds a second local-evidence operation to the same context and should follow this one's evidence-boundary pattern. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001`, the field prerequisites, are done.
+
+Plan complete; ready once [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) is done.
+
+## Documentation impact
+
+### Decision Records
+
+None. The scope question is answered in the standard by [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md).
+
+### Specifications
+
+None. `docs/specs/` does not describe the coordination rubric; `rubric.md` is regenerated and `mode-audit.md` is corrected as steps above.
+
+### Guides
+
+None.
+
+### Roadmap
+
+Depends on [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md); unblocks [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md), which adds its listing to the same audit surface. No new rubric code is allocated, so the sibling COORD codes stay free.
 
 ## Task associations
 
@@ -78,7 +157,7 @@ This is an association-only recovery check. No active delivery task was verified
 
 ## Discussion
 
-### Pickup checkpoint — 2026-09-27
+### Pickup checkpoint - 2026-09-27
 
 - Verified partial prerequisite delivery: `a98cce65` supplies qualified per-item task links and offline shape validation in `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts`. The matching committed CLI implementation is `c0857d5652060d644fecc7c2f20a308f59feec7c` in `knowledgeislands/tools-ki`, `src/core/work/items.ts::parseTaskLinks`. Historical statements that no field exists are no longer current.
 - The broader claim that the coordination audit cannot fail on any input is also stale: `00de1d36` added organisation configuration validation through `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts::createPaperclipCoordinationSession` and `ORG-1`. This is not task-link, live ownership or independent-acceptance verification. The current `COORD` criteria remain judgments.
@@ -88,11 +167,11 @@ Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062
 
 ### Where the evidence would have to come from
 
-This is the hard part, and it is why the item is captured rather than shaped. Every candidate check has one end in a repository and the other end in a remote coordination plane. A repository-side audit can read a roadmap item's covering-task list; it cannot read the task. Three routes exist and none is obviously right.
+This was the hard part, and it kept the item in Triage until the 2026-10-05 decision chose the first route below. Every candidate check has one end in a repository and the other end in a remote coordination plane. A repository-side audit can read a roadmap item's covering-task list; it cannot read the task. Three routes exist and none is obviously right.
 
 The first is repository-side only: check the half of the two-way link the repository owns, and report the other half as unknown rather than as a pass. That is honest, cheap, and catches a covering-task field that names nothing or contradicts itself, but it cannot catch the orphaned task, which is the failure that actually costs something.
 
-The second is an evidence file: require the arrangement to deposit a snapshot of its task-to-item links into the repository at a named revision, and audit the snapshot. That makes the check mechanical and offline, at the price of a file that can go stale silently — which reintroduces the same class of problem one layer down.
+The second is an evidence file: require the arrangement to deposit a snapshot of its task-to-item links into the repository at a named revision, and audit the snapshot. That makes the check mechanical and offline, at the price of a file that can go stale silently - which reintroduces the same class of problem one layer down.
 
 The third is a live read against the coordination plane. It makes the audit depend on network reach and credentials, which no other criterion in this harness does, and `mode-audit.md` step 5 already requires an unavailable remote view to be recorded as unknown rather than as a pass. That constraint survives whichever route wins.
 
@@ -110,3 +189,7 @@ None of the three candidates replaces a judgment criterion; each adds a mechanic
 ### Governing coordination task
 
 Captured from the `KNO-19` proposal document on the external coordination plane, which names this discovery as `D1`. That task owns the declaration; this record owns the question the declaration exposed.
+
+### Decision
+
+Add mechanical `COORD-3` checks over repository-local evidence only - the identifier triple resolves and the backlink is present - while plane-side checks stay judgment. The other evidence routes discussed above are superseded. Decided by the Fable reviewer under delegated autonomy, reversible.

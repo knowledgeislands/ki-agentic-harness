@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-114
 area: GOV
 title: Surface held workspaces
 theme: governance-consistency
-horizon: triage
+horizon: now
 status: draft
 blocks: []
-blocked_by: []
+blocked_by: [KI-HARNESS-GOV-107]
 baseline_ref: null
 created_at: 2026-09-26T23:55:00Z
-updated_at: 2026-09-26T23:55:00Z
+updated_at: 2026-10-05T08:19:22Z
 ---
 
 # KI-HARNESS-GOV-114: Surface held workspaces
@@ -28,15 +28,89 @@ This was discovered while writing `GOV-113` and was captured after that record's
 
 ## Boundary
 
-In scope: the reporting path that names workspaces whose source task tree is terminal, whose cooldown has elapsed, and whose blocking gate cannot pass, in a form a person or agent can act on.
+Decided 2026-10-05 under delegated owner authority: the report lives in the `ki-agent-coordination-paperclip` audit as a judgment-assisted listing built from locally held workspace evidence. Disposition stays human. This picks the second of the three candidates below without the coordination-plane API.
 
-Out of scope: the doctrine itself, which `GOV-113` owns; changing the retirement mechanism or its gates, which belong to the coordination plane rather than this repository; making the `COORD` family mechanically checkable, which is `KI-HARNESS-GOV-107`; and any automatic disposition — the decision stays a person's.
+In scope:
+
+- a read-only operation attached to the existing `COORD-9` item, keeping its judgment prompt, that lists candidate held workspaces from the selected repository's own Git worktree registry;
+- a candidate is a linked worktree whose merge gate cannot pass on local evidence: a detached `HEAD`, or a branch head that is not an ancestor of the destination branch, where the destination is the primary worktree's branch; each entry names the path, head, branch or detached state, ahead and behind counts against the destination, the head commit's age, and whether its working tree is dirty;
+- outcomes are `INFO` only, never `VIOLATION`, so the audit verdict for the selected checkout never depends on a sibling worktree, preserving the stability boundary from `KI-HARNESS-GOV-110` and [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md);
+- each entry states that the plane-side gates (task-tree terminality, cooldown, active runs) were not evaluated, and names the human next step: confirm close-readiness in Paperclip, then capture a Triage item through `ki-next` in this repository, decided as land, discard or duplicate;
+- the `mode-audit.md` procedure step that tells the reviewer how to use the listing.
+
+Out of scope: the disposition doctrine, which is already in the standard's `#workspace-retirement`; any removal, prune, rebase, fetch or branch change; any coordination-plane read, including close-readiness; automatic Triage capture; changing the retirement mechanism or its gates; a fleet sweep across repositories; and any new criterion code.
+
+## Current state
+
+- The standard's `## Workspace retirement` section defines the five automatic gates and says a workspace held past its cooldown by a gate that can never pass becomes a Triage item in the owning repository. Nothing surfaces such a workspace.
+- `COORD-9` in `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts` is judgment only and asks whether refused workspaces are routed to a repository-owned decision.
+- [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) adds the first local-evidence operation to the coordination context; this record follows the same pattern.
+- Of the five gates, only the clean working tree and the merge gate are readable from the local registry; the others live on the coordination plane.
+
+## Steps
+
+- [ ] Add a `heldWorkspaces` outcome list to the coordination context, built from `git worktree list --porcelain` and, per linked worktree, `git rev-list --left-right --count`, `git merge-base --is-ancestor`, `git log -1 --format=%ct` and `git --no-optional-locks -C <path> status --porcelain`. Skip the primary worktree; the selected checkout, when it is itself a linked worktree, is listed like any other. Run nothing that writes, locks or fetches.
+- [ ] Attach a `heuristic: true` diagnostic mechanical block to `COORD-9` that emits only `INFO` outcomes, one per candidate, or a single `INFO` saying none were found; keep the judgment prompt.
+- [ ] Add fixtures in `scripts/rubric/contexts/coordination.test.ts` with a temporary repository holding a detached worktree, an unmerged branch worktree, a merged branch worktree and a dirty worktree, and assert the listing and that no outcome is a `VIOLATION`.
+- [ ] Update `scripts/rubric/items/index.test.ts` for the new mechanical block.
+- [ ] Add a step to `references/mode-audit.md`: read the `COORD-9` listing, confirm each candidate's plane-side gates through Paperclip's close-readiness view, and for a confirmed held workspace capture a Triage item through `ki-next`; the listing is never permission to remove anything.
+- [ ] Regenerate `references/rubric.md` and run the verification below.
+
+## Files touched
+
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/mode-audit.md`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md` (generated)
+
+## Verify
+
+1. In the fixture repository the detached and unmerged worktrees are listed with path, head, state, ahead and behind counts, age and dirty flag; the merged clean worktree is not listed.
+2. Every `COORD-9` outcome is `INFO`; the audit's exit status is identical with and without the held worktrees present.
+3. Each entry states that plane-side gates were not evaluated and names the Paperclip close-readiness check and `ki-next` capture as the human next step.
+4. The run is read-only: `git worktree list --porcelain`, each worktree's `git rev-parse HEAD` and `git status --porcelain`, and the index files are unchanged, and no fetch occurs.
+5. Run against this repository, the listing names the retained Paperclip worktrees whose branches are unmerged, which a reader can confirm with `git worktree list` and `git branch --no-merged main`.
+6. The commands below pass.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki dev skill rubric ki-agent-coordination-paperclip
+ki repo audit --skill ki-agent-coordination-paperclip --reporter-levels all --progress never
+ki repo audit --skill ki-authoring --progress never
+```
+
+## Dependencies / blocks
+
+Blocked by [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces local-evidence reading into the coordination context and settles its boundary. Shares the `COORD` namespace with [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md) but takes no code: `COORD-15` stays reserved for that record.
+
+Plan complete; ready once [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) is done.
+
+## Documentation impact
+
+### Decision Records
+
+None. The disposition rule is already in the coordination standard; this adds a listing, not a decision.
+
+### Specifications
+
+None. `docs/specs/` does not describe the coordination audit.
+
+### Guides
+
+None.
+
+### Roadmap
+
+Depends on [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces the first mechanical diagnostic on the coordination rubric.
 
 ## Discussion
 
 ### Where the report could live
 
-Three candidates, none chosen. The coordination plane already computes close-readiness per workspace, so a report could belong there and be out of this repository's reach entirely. A `ki` command could read it through the coordination-plane API, which makes this repository depend on a control plane it deliberately treats as optional. A recurring coordination task could walk the list and raise Triage items, which is the cheapest to build and the easiest to forget to check. Adoption should pick one rather than build the cheapest by default.
+Three candidates were considered; the 2026-10-05 decision took a local variant of the second, reading the repository's own worktree registry rather than the coordination-plane API. The coordination plane already computes close-readiness per workspace, so a report could belong there and be out of this repository's reach entirely. A `ki` command could read it through the coordination-plane API, which makes this repository depend on a control plane it deliberately treats as optional. A recurring coordination task could walk the list and raise Triage items, which is the cheapest to build and the easiest to forget to check. Adoption should pick one rather than build the cheapest by default.
 
 ### Why this is capture rather than delivery
 
@@ -45,3 +119,7 @@ The doctrine it serves is judgment-graded and newly written. Until a repository 
 ### Governing coordination task
 
 Discovered under coordination task `KIS-39` while delivering `KI-HARNESS-GOV-113`, and captured into Triage without adoption. Written in that task's worktree rather than the designated primary checkout, under the same human direction and the same recorded deviation as `GOV-113`.
+
+### Decision
+
+The held-workspace report lives in the `ki-agent-coordination-paperclip` audit as a judgment-assisted listing from locally held workspace evidence; disposition stays human. The other candidates above are superseded. Decided by the Fable reviewer under delegated autonomy, reversible.
