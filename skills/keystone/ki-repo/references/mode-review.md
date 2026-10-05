@@ -191,6 +191,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Where root `CLAUDE.md` accompanies `AGENTS.md`, it imports `AGENTS.md` and contains only Claude-specific additions.
 - [ ] Root orientation records only repository-specific facts and points at the governing skill or Decision Record, rather than restating a rule a declared skill already owns.
 - [ ] GitHub Issues and `package.json` bug-reporting metadata agree with the selected work adapter: both are absent unless `ki-work-github-issues` is declared.
+- [ ] A physical roadmap directory (`docs/roadmap/` or `Streams/Roadmap/`) matches the declared `[skills.ki-work]` adapter and its adapter table. Roadmap tooling reads only the declaration, so an undeclared directory is invisible to it and a declared adapter without its table is a usage error.
 - [ ] Short subordinate records, including Agora memberships, use compact dotted keys and inline tables; complex Agora homes and similar records use legible nested tables.
 - [ ] The declared skill set covers every governance capability the repository uses, including capabilities without an automatic detection signal.
 - [ ] Every declared runtime-bound skill is linked into the repository through a KI-managed local projection.
