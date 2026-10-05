@@ -17,3 +17,9 @@ policy: safe-local-v1
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-001-RUN-001 4d73d8fbd90167170f021acb47c86810a2eaceef87b7a61e71f40241d3fe7863 -->
+| Item | Result | Baseline | Result commit | Exception |
+| --- | --- | --- | --- | --- |
+| KI-HARNESS-GOV-121 | done | `00b4b56181a44a2bf77e0a10836e83429f5b62f6` | `e093d3ad08f59376b22ce18c3c74b197fe85fb85` | None |
+| KI-HARNESS-FND-028 | done | `00b4b56181a44a2bf77e0a10836e83429f5b62f6` | `e093d3ad08f59376b22ce18c3c74b197fe85fb85` | None |
+
+<!-- ki-batch-close: KI-HARNESS-BATCH-001 done e093d3ad08f59376b22ce18c3c74b197fe85fb85 -->
