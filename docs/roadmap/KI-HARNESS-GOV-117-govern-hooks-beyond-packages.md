@@ -9,7 +9,7 @@ blocks: []
 blocked_by: [KI-HARNESS-GOV-109]
 baseline_ref: null
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-05T12:10:22Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages
@@ -102,7 +102,7 @@ ki repo audit --skill ki-skills --progress never
 
 `blocked_by` [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md), which settles the `.githooks` mechanism this item generalises. The record is fully shaped but stays `draft` because `ITEM-5` forbids a `ready` item with a non-done blocker; it becomes `ready` once GOV-109 is done. Adoption by `tools-rig`, the chezmoi source and other repositories follows as separate receiver-owned trades and does not block acceptance here.
 
-Sequencing: this record and [KI-HARNESS-GOV-121](KI-HARNESS-GOV-121-require-substantive-store-mirrors.md) both add a criterion through the shared `ki-repo-kb` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-knowledge-base.md`. Increment, do not hardcode; whichever lands second rebases. A sequencing note, not a dependency.
+Sequencing: this record and [the delivered source-mirror standard](../../skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md) both add a criterion through the shared `ki-repo-kb` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-knowledge-base.md`. Increment, do not hardcode; the source-mirror criterion has landed, so rebase these shared counts against the delivered state. A sequencing note, not a dependency.
 
 ## Documentation impact
 

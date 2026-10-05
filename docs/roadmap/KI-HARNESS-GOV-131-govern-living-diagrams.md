@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T09:41:34Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-05T12:10:22Z
 ---
 
 # KI-HARNESS-GOV-131: Govern living diagrams
@@ -57,7 +57,7 @@ Archify itself, its schemas and its viewer stay upstream. Prose style stays with
 - [ ] Port the exporter to `scripts/export-svg.ts`: import `playwright` dynamically and fail closed with an install hint when it is absent; factor argument validation and the external-reference refusal into pure functions; cover them in `scripts/export-svg.test.ts` without launching a browser.
 - [ ] Add the rubric under `scripts/rubric/`: a context reading the manifest, sources, SVGs and read-only Git history; `DIAG-1` (manifest and files agree both ways, `FAIL`); `DIAG-2` (no absolute path or private identity in a source or SVG, `FAIL`); `DIAG-3` (SVG self-contained, no external reference, `FAIL`); `DIAG-4` (a traced path changed since `last_checked`, `WARN`, with judgment on whether the change matches `stale_when`); `DIAG-5` (judgment: `finalize --quality showcase` passes and the type answers the question). Vendor `scripts/shared/rubric.ts` from `ki-guides`; add `index.test.ts`, `publication.ts` and fixture tests for each mechanical item.
 - [ ] Write `references/mode-audit.md`, `mode-conform.md` (scaffold the manifest and README from `assets/` only, never author or regenerate a diagram), `mode-educate.md`, `mode-refresh.md`, `sources.md` (Archify and the considered alternatives) and `exemplars.md` (the Observatory set at a pinned revision); generate `references/rubric.md` with `ki dev skill rubric ki-diagrams`.
-- [ ] Add a one-line Archify entry to "Adopted" in [ADR-KI-HARNESS-TOOLCHAIN-002](../decisions/ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) linking `skills/governance/ki-diagrams/references/standards-diagrams.md`, consistent with how [KI-HARNESS-FND-028](KI-HARNESS-FND-028-adopt-qmd-kb-search.md) records qmd there.
+- [ ] Add a one-line Archify entry to "Adopted" in [ADR-KI-HARNESS-TOOLCHAIN-002](../decisions/ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) linking `skills/governance/ki-diagrams/references/standards-diagrams.md`, consistent with how [the accepted qmd adoption decision](../decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) records qmd there.
 - [ ] Register the skill: run `ki repo conform --skill ki-repo-harness` to republish the generated catalogue in `skills/README.md`; increment the skill counts in `README.md` by one each; increment the counts in `remediation-inventory.test.ts` rather than hardcoding them.
 - [ ] Raise a knowledge trade to ki-website proposing a skills-by-outcome entry for keeping diagrams, and a knowledge trade to apps-observatory reporting that the exporter now ships in `ki-diagrams` so it may retire `scripts/diagrams/export-svg.ts` when it adopts the skill.
 
@@ -113,7 +113,7 @@ Follow-on, outside acceptance: ki-website and apps-observatory dispose of their 
 
 None. Archify upstream command-line SVG export would let the exporter shrink to a wrapper, but the shipped Playwright exporter makes it unnecessary for this record.
 
-Sequencing: this record and [KI-HARNESS-GOV-121](KI-HARNESS-GOV-121-require-substantive-store-mirrors.md) both edit the counts in `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`. Increment, do not hardcode; whichever lands second rebases.
+Sequencing: this record and [the delivered source-mirror standard](../../skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md) both edit the counts in `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`. The source-mirror changes have landed; increment current counts rather than hardcoding them.
 
 ## Documentation impact
 
