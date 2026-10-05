@@ -77,10 +77,10 @@ Run `ki repo educate --skill ki-engineering` to inspect the complete criterion c
 
 **Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
 
-The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, rumdl). Run on its declared cadence (see `references/sources.md`), or when asked "are the engineering standards current".
+The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, rumdl, dependency-cruiser). Run on its declared cadence (see `references/sources.md`), or when asked "are the engineering standards current".
 
 1. **Read [the source list](references/sources.md)** — each pin with its `last reviewed` date.
-2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard, rubric, and [canonical item catalogue](scripts/rubric/items/index.ts): a bumped Bun or Biome line, a TypeScript option deprecation, a changed default.
+2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard, rubric, and [canonical item catalogue](scripts/rubric/items/index.ts): a bumped Bun or Biome line, a TypeScript option deprecation, a changed default. Then check every row of the tool compatibility constraints: whether each consumer still supports the pin it consumes, whether a pin bump under review would break one, and whether a recorded workaround's retirement condition has now been met. Add a row whenever a consumer lags a pin.
 3. **Propose a diff**; confirm before writing.
 4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and the `## Last review` block. What changed goes in the commit.
 
