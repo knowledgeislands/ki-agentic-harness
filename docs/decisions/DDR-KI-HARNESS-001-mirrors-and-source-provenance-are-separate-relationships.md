@@ -23,7 +23,7 @@ Mirrors and source provenance use separate field families, and only the mirror f
 - **Source provenance:** `source_path`, in the same aliased form, and `source_sha256` record where a derived note came from. Many notes may share one source. These fields never make a note a mirror.
 - **Adapter provenance:** an acquisition adapter keeps its own upstream fields and uses neither family unless a note genuinely mirrors or derives from a store file.
 
-The `ki-repo-kb` source-mirror standard, its shared classifier, the `NOTE-4` audit and the KB search response (`ki/kb-search-result/v2`, carrying `mirrors`, `mirror_type` and `mirror_sha256`) implement this decision.
+The `ki-repo-kb` source-mirror standard, its shared classifier, the `NOTE-4` audit and the KB search response, whose results carry `mirrors`, `mirror_type` and `mirror_sha256`, implement this decision.
 
 ## Consequences
 
@@ -31,4 +31,4 @@ The `ki-repo-kb` source-mirror standard, its shared classifier, the `NOTE-4` aud
 - `mirror_type` is authored intent rather than inferred length, so brief `indexed` mirrors of bulk material are conforming rather than warned.
 - One file per mirror keeps the checksum meaningful and lets an owner inventory unmirrored files; bases with list or directory mirrors must split them into single-file mirrors or ordinary index notes.
 - Bases rename mirror checksums to `mirror_sha256`, backfill missing checksums and `mirror_type` values, and move mirrors declared with `source_path` to `mirrors`, each through their own enactment process.
-- Search consumers move to the v2 response, whose mirror fields replace the v1 `source_path` and `source_sha256`.
+- Search results carry `mirrors`, `mirror_type` and `mirror_sha256` in place of `source_path` and `source_sha256`.

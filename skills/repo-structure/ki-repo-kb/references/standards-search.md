@@ -54,7 +54,7 @@ Loopback and qmd's Origin/Host checks are useful transport limits, not KB authen
 
 ## KI response and mirror labels
 
-The shared response uses `schema: ki/kb-search-result/v2` with `registry_id`, `trust_boundary`, `index`, `generation`, `mode` (`query`, `search`, or `vsearch`), `profile`, `candidate_limit: 200`, `exhaustive: false`, boolean `truncated`, both source-store declaration booleans, and `results`.
+The shared response uses `schema: ki/kb-search-result/v1` with `registry_id`, `trust_boundary`, `index`, `generation`, `mode` (`query`, `search`, or `vsearch`), `profile`, `candidate_limit: 200`, `exhaustive: false`, boolean `truncated`, both source-store declaration booleans, and `results`.
 
 Each result carries authorised repository `path`, local `title` and bounded `snippet`, finite `score`, corroborating `docid` (`#` plus the first six raw-content SHA-256 characters), positive `line_start` and ordered `line_end`, and `mirror_content`, `mirrors`, `mirror_type`, `mirror_sha256`. The [source mirror contract](standards-source-mirrors.md) owns recognized mirror declarations, the shared raw-frontmatter eligibility check, labels and fixtures. Invalid declarations project to null in the KI response, with `mirror_content: unknown`; do not imply a usable private source from a malformed declaration.
 
