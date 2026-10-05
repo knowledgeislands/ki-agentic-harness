@@ -4,12 +4,12 @@ area: RTP
 title: Retire Claude plugin projection
 theme: runtime-portability
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c19e358d5f8cbd8cb3b45a664507309f43fbb3dd
 created_at: 2026-10-05T10:40:00Z
-updated_at: 2026-10-05T11:12:24Z
+updated_at: 2026-10-05T11:14:22Z
 ---
 
 # KI-HARNESS-RTP-016: Retire Claude plugin projection
@@ -130,6 +130,7 @@ The harness no longer maintains a Claude plugin projection. `ADR-KI-HARNESS-015`
 - The five governance agents in `subagents/governance/` now reach Claude only by explicit copy or link until `tools-ki` projects `subagents/` into `.claude/agents` (handoff).
 - `ki-website` `skillCatalogue.json5` and `skills.md` are ref-pinned snapshots and still list `ki-repo-plugins` until the next `sync:skills` refresh.
 - `ki-binding-claude/references/rubric.md` was edited by hand because `ki dev skill rubric --write` needs a dev-linked install; the next regeneration should produce the same text.
+- The load-sensitive `repository.test.ts` timeouts predate this item and remain with the follow-up suggested under [KI-HARNESS-GOV-137](KI-HARNESS-GOV-137-forbid-dependabot-auto-merge.md).
 
 ### Post-change review
 
@@ -138,6 +139,10 @@ Independent Fable review judged the `ki-repo-plugins` retirement reversible and 
 ### Mini recap
 
 The plugin projection, its builder and its repository shape are gone; one distribution surface fewer, with the CLI and `npx skills add` covering installation.
+
+## Done
+
+Accepted 2026-10-05 by Fable reviewer under Kris's delegated authority on the review packet above.
 
 ## Discussion
 
