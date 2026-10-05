@@ -282,6 +282,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Security and data
 
 - [ ] Access gating is tested, not merely present.
+- [ ] Long-running reads revalidate revocable access and configuration against a fresh authoritative snapshot before consuming protected data and before returning results.
 - [ ] Default access level is the least privileged that works.
 - [ ] Redaction lists were reviewed against what the code actually logs.
 - [ ] Truncating a value is not being relied on as a confidentiality control.
@@ -325,6 +326,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Tests
 
 - [ ] Tests exercise architectural boundaries rather than internal units.
+- [ ] Minimum-runtime compatibility checks verify the runtime of the actual child and server processes exercised.
 - [ ] Tests work outside-in from the contract.
 - [ ] The test names describe behaviour, not implementation.
 - [ ] Coverage gaps were understood before they were filled.
