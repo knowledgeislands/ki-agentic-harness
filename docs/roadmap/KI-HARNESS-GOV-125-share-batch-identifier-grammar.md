@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-125
 area: GOV
 title: Share batch identifier grammar
 theme: governance-consistency
-horizon: triage
+horizon: now
 status: draft
 blocks: []
-blocked_by: []
+blocked_by: [KI-HARNESS-GOV-094]
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-01T19:49:57Z
+updated_at: 2026-10-05T08:03:47Z
 ---
 
 # KI-HARNESS-GOV-125: Share batch identifier grammar
@@ -44,9 +44,82 @@ The identity check fires first; every `item_ids` entry would fail `identifiers()
 
 ## Boundary
 
-In scope: making `ki-batch` accept every identifier the roadmap standard accepts, by sharing one grammar rather than correcting the five literals in place; and tests that pin digit-leading codes and serials wider than three digits.
+This record is deliberately narrow, and does not overlap [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md). That record creates the shared identifier-grammar module, migrates the six original restating skills, and adds the conformance test that lists `ki-batch` as a pending entry. This record covers only what GOV-094 leaves to `ki-batch`.
 
-Out of scope: the batch authorisation contract, the run ledger and retention semantics, which are unchanged; `5GE-P2-BATCH-001` itself, which belongs to `5g-emerge-phase2`; and whether `<REPO>` should allow digit-leading codes, which `ADR-KI-HARNESS-SKILLS-015` settled.
+In scope:
+
+- `ki-batch`'s adoption of the shared grammar delivered by GOV-094: declare the shared dependency, materialise the copy, replace the five hand-written literals with composed patterns, and clear the conformance test's pending `ki-batch` entry.
+- Resolving `authorisationPath` against `repositoryRoot` rather than the process working directory in `resolveBatchAuthorisation`.
+- Tests that pin digit-leading codes, item serials wider than three digits, and root-relative path resolution.
+
+Out of scope:
+
+- Creating the shared module, the conformance test, or any change to another skill: [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md).
+- The batch authorisation contract, run ledger and retention semantics, which are unchanged; `5GE-P2-BATCH-001` itself, which belongs to `5g-emerge-phase2`; and whether `<REPO>` may lead with a digit, which `ADR-KI-HARNESS-SKILLS-015` settled.
+- The `ki` host's own batch codec in `tools-ki` (`src/core/batch/codec.ts`, `src/core/batch/operations.ts`), which already accepts digit-leading codes but fixes batch and run serials at three digits. Aligning its serial width is a host-side follow-on for `tools-ki` and does not block this record.
+- Disposing of this record as `merged` or otherwise. It stays a separate delivery record; any terminal disposition is the owner's.
+
+## Current state
+
+Verified on `main` at `19651664`: all five literals in Context are unchanged (`authorisation.ts:89`, `:130`, `:207`; `batch-retention.ts:41`; `legacy-batch-migration.ts:85`), and `resolveBatchAuthorisation` still computes `resolve(authorisationPath)` at `authorisation.ts:142`. `ki-batch`'s `SKILL.md` declares no `ki-shared-dependencies:`. Existing tests in `scripts/authorisation.test.ts` pass absolute paths, so the working-directory dependence is untested. The shared module does not exist yet; [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) is `ready`.
+
+## Steps
+
+- [ ] Confirm [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) is `done` and `skills/change-management/ki-work-roadmap/scripts/shared/work-identifiers.ts` exists.
+- [ ] Add `ki-shared-dependencies: [ki-work-roadmap:work-identifiers]` to `ki-batch`'s `SKILL.md` and materialise the byte-identical copy at `skills/change-management/ki-batch/scripts/shared/work-identifiers.ts`.
+- [ ] Replace the five literals with patterns built from the local copy: item identifiers in `identifiers()`, the `-BATCH-` identity and filename check, the `-RUN-` marker, the retention path, and the legacy migration path.
+- [ ] In `resolveBatchAuthorisation`, compute the record path as `resolve(root, authorisationPath)`, so a relative path is taken from the repository root and an absolute path is unchanged. State this in the `ResolveBatchAuthorisationInput` type comment.
+- [ ] Add tests to `scripts/authorisation.test.ts`, `scripts/batch-retention.test.ts` and `scripts/legacy-batch-migration.test.ts`: `5GE-P2-BATCH-001` resolves with `item_ids` such as `5GE-P2-DATA-008` and `KI-HARNESS-GOV-1000`; a `5GE-P2-BATCH-001-RUN-001` marker binds; a digit-leading batch is retained and migrated; and a relative `+/_BATCHES/<id>.md` path resolves when the process working directory is outside the repository.
+- [ ] Remove the pending `ki-batch` entry from the conformance inventory in `skills/change-management/ki-work-roadmap/scripts/shared/work-identifiers.conformance.test.ts`.
+- [ ] Raise a trade to `tools-ki` for widening its batch codec's batch and run serials (`src/core/batch/codec.ts`, `src/core/batch/operations.ts`) from three digits to `\d{3,}`; a follow-on, not an acceptance criterion here.
+
+## Files touched
+
+- `skills/change-management/ki-batch/SKILL.md`
+- `skills/change-management/ki-batch/scripts/shared/work-identifiers.ts` (new)
+- `skills/change-management/ki-batch/scripts/internal/authorisation.ts`
+- `skills/change-management/ki-batch/scripts/internal/batch-retention.ts`
+- `skills/change-management/ki-batch/scripts/internal/legacy-batch-migration.ts`
+- `skills/change-management/ki-batch/scripts/authorisation.test.ts`
+- `skills/change-management/ki-batch/scripts/batch-retention.test.ts`
+- `skills/change-management/ki-batch/scripts/legacy-batch-migration.test.ts`
+- `skills/change-management/ki-work-roadmap/scripts/shared/work-identifiers.conformance.test.ts` (pending entry removed only)
+
+## Verify
+
+1. The Context reproduction, run from a directory outside the repository with a relative `authorisationPath`, returns `kind: 'resolved'` for a fixture `5GE-P2-BATCH-001.md` whose `item_ids` include `5GE-P2-DATA-008`.
+2. `grep -nE "\[A-Z\]\[A-Z0-9-\]\*" skills/change-management/ki-batch/scripts/internal/*.ts` returns nothing.
+3. Every identifier accepted by `ki-work-roadmap`'s `ID_RE` is accepted in `item_ids`, shown by a test that feeds both the same fixture list.
+4. An authorisation path outside `+/_BATCHES/`, relative or absolute, still stops with `batch authorisation is not a canonical local record`.
+5. The conformance test passes with no pending entry and fails if a hand-written repository-code literal is reintroduced into `ki-batch`.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki repo audit --skill ki-skills --progress never
+```
+
+## Dependencies / blocks
+
+Blocked by [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md), which must deliver the shared module and conformance test first. Plan complete; ready once KI-HARNESS-GOV-094 is done. The `tools-ki` codec serial-width alignment is a non-blocking host-side follow-on.
+
+## Documentation impact
+
+### Decision Records
+
+None.
+
+### Specifications
+
+None. `references/standards-batch.md` already names files `<REPO>-BATCH-<NNN>.md` in terms of the roadmap's `<REPO>`; the code now matches it.
+
+### Guides
+
+None.
+
+### Roadmap
+
+[KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) carries the reciprocal `blocks`.
 
 ## Discussion
 
@@ -55,6 +128,12 @@ Out of scope: the batch authorisation contract, the run ledger and retention sem
 This is the class [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) describes, not a new one. `69a0fc80` relaxed the digit-leading rule on 2026-09-24 across four skills; GOV-094 then found `ki-decision-records` and `ki-specs` still enforcing the repealed rule, and listed six restating skills for its decided fix of one shared grammar. `ki-batch` is a seventh that GOV-094's list does not name, and it was found the same way: a downstream repository using a legal code and hitting a wall, rather than anything in this repository reporting the divergence.
 
 That is evidence for GOV-094's structural route over its checklist fallback, because its candidate question relied on a grep for the regex literal, and `ki-batch` never shared it: the repealed roadmap literal was `[A-Z][A-Z0-9-]{1,23}-\d{3,}`, while `ki-batch` has spelled the grammar `[A-Z][A-Z0-9-]*-\d{3}` since `66732390` on 2026-08-09. The owner may reasonably dispose of this record as `merged` into GOV-094 by adding `ki-batch` to its list of restating skills, or keep it separate if `ki-batch` should be fixed ahead of the shared definition.
+
+### Decision
+
+Kept separate rather than merged or withdrawn, and scoped narrowly to resolving `authorisationPath` against `repositoryRoot` plus `ki-batch`'s adoption of the [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) grammar, with the non-overlap stated in both records. Decided by the Fable reviewer under delegated autonomy, reversible.
+
+This record is not merged into [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md); a terminal disposition needs the owner. GOV-094 now names `ki-batch` as its seventh restating skill and owns the shared module and conformance test. This record keeps only what GOV-094 does not cover: `ki-batch`'s adoption of that module, and the working-directory resolution of `authorisationPath` below. The two records share no file except the one-line removal of the pending `ki-batch` entry from the conformance inventory, which this record makes after GOV-094 is done.
 
 ### Fix shape
 
