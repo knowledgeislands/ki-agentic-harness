@@ -15,9 +15,9 @@ const CADENCE_DAYS: Readonly<Record<string, number>> = {
   quarterly: 90
 }
 
-const latestReviewDate = (text: string): string | null => {
+const stalestReviewDate = (text: string): string | null => {
   let column = -1
-  let latest: string | null = null
+  let stalest: string | null = null
   for (const line of text.split(/\r?\n/)) {
     if (!line.trimStart().startsWith('|')) {
       column = -1
@@ -33,9 +33,9 @@ const latestReviewDate = (text: string): string | null => {
       continue
     }
     const date = column < 0 ? undefined : (cells[column] ?? '').match(/\d{4}-\d{2}-\d{2}/)?.[0]
-    if (date && (latest === null || date > latest)) latest = date
+    if (date && (stalest === null || date < stalest)) stalest = date
   }
-  return latest
+  return stalest
 }
 
 export const createRefreshContext = (sources: string | null, now = Date.now()): RefreshContext => {
@@ -64,7 +64,7 @@ export const createRefreshContext = (sources: string | null, now = Date.now()): 
   const refreshClass = markerValid ? parsedClass : null
   const cadence = markerValid ? parsedCadence : null
   const windowDays = markerValid ? parsedWindowDays : null
-  const lastReviewed = latestReviewDate(sources)
+  const lastReviewed = stalestReviewDate(sources)
   const ageDays = lastReviewed ? Math.floor((now - Date.parse(`${lastReviewed}T00:00:00Z`)) / 86_400_000) : null
 
   return { sourcesPresent: true, refreshClass, cadence, windowDays, lastReviewed, ageDays }

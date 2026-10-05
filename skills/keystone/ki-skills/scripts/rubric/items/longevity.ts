@@ -28,7 +28,7 @@ const LONG_3: RubricItem<LongevityRubricContext> = {
   code: 'LONG-3',
   title: 'the declared refresh cadence is being met',
   description:
-    "_The cadence is actually being met._ Where a skill carries `references/sources.md`, its most recent `Last reviewed` date (read from that table column, so dates quoted in prose don't count) is within the skill's **declared per-skill cadence** plus grace; an overdue source list WARNs so AUDIT and the scheduled refresh routine surface it. A `canonical · on-change` skill carries no clock and is exempt — it refreshes when the model changes, not on a calendar. Never a FAIL — staleness is elapsed time, not a defect in the change under review.",
+    "_The cadence is actually being met._ Where a skill carries `references/sources.md`, its stalest `Last reviewed` date (the oldest row in that table column, so a fresh row cannot mask a stale one and dates quoted in prose don't count) is within the skill's **declared per-skill cadence** plus grace; an overdue source list WARNs so AUDIT and the scheduled refresh routine surface it. A `canonical · on-change` skill carries no clock and is exempt — it refreshes when the model changes, not on a calendar. Never a FAIL — staleness is elapsed time, not a defect in the change under review.",
   sources: ['COMMUNITY'],
   mechanical: {
     level: 'WARN',
@@ -48,7 +48,7 @@ const LONG_3: RubricItem<LongevityRubricContext> = {
           {
             status: 'VIOLATION',
             message: context.lastReviewed
-              ? `references/sources.md last reviewed ${context.lastReviewed} (${context.ageDays} days ago), past its ${context.cadence} REFRESH cadence + ${REFRESH_GRACE_DAYS}d grace — run Mode REFRESH`
+              ? `references/sources.md has a source last reviewed ${context.lastReviewed} (${context.ageDays} days ago), past its ${context.cadence} REFRESH cadence + ${REFRESH_GRACE_DAYS}d grace — run Mode REFRESH`
               : `references/sources.md declares a ${context.cadence} cadence but has no \`Last reviewed\` date — run Mode REFRESH`
           }
         ]
