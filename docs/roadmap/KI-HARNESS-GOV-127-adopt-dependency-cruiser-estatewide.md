@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-05T22:10:50Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -42,6 +42,8 @@ Out of scope: each repository's own adoption, which follows as a separate receiv
 - [ ] Adopt in this repository following the `mcp-acquire-whatsapp` pattern: `.dependency-cruiser.ts` with the two baseline rules over `skills/`, `hooks/`, `evals/` and `scripts/`; `tooling/boundaries/package.json`; `scripts/boundaries.ts` and `scripts/boundaries.test.ts` with a module floor near the real count and a deliberate-violation case; add `./scripts` to the `test` script and the new files to `knip.json`.
 - [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering`.
 - [ ] Inventory the repositories that declare `ki-engineering` under `knowledgeislands/`, recording for each applicability, existing enforcement, and whether `scripts/` is covered, in a `## Rollout inventory` section of this record; raise one `ki-trades` handoff per applicable gap.
+- [ ] Make the separate install root part of an ordinary install: the standard prescribes a root `postinstall` script running `bun install --frozen-lockfile --cwd tooling/boundaries` wherever that root exists, and each adopting repository carries it. A fresh clone, or a pull that first introduces the root, otherwise fails the boundary check until someone installs it by hand.
+- [ ] When the install root lacks `dependency-cruiser`, the audit names the remedy (`bun install --frozen-lockfile --cwd tooling/boundaries`) rather than surfacing the raw `ENOENT` from `scripts/rubric/contexts/boundaries.ts`.
 
 ## Files touched
 
@@ -68,6 +70,7 @@ Acceptance criteria, each judgeable by someone who did not write this:
 3. In this repository, `bun run test` runs `scripts/boundaries.test.ts`, which asserts a module count at or above its floor and fails on a deliberate violation; `ki repo audit --skill ki-engineering` reports `DESIGN-3` `PASS`.
 4. The standard states the applicability rule and the exemption route, and `DESIGN-2` remains the judgment criterion for repository-specific directions.
 5. The rollout inventory lists every repository declaring `ki-engineering` with a disposition, and each applicable gap has a trade reference.
+6. In a fresh clone of an adopting repository, a plain `bun install` leaves the boundary check passing; with `tooling/boundaries/node_modules` removed, the audit finding names the install command.
 
 ```bash
 bun run test
@@ -79,6 +82,8 @@ ki repo audit --skill ki-engineering --progress never
 ## Dependencies / blocks
 
 None. Per-repository adoption follows as separate trades and does not block acceptance here. Raising `DESIGN-3` from `WARN` to `FAIL` is a follow-on once the trades land.
+
+The separate install root exists only because `dependency-cruiser` supports `typescript@>=2 <7` and TypeScript 7.0 ships no compiler API. The maintainer intends to add TypeScript 7 support once that API exists ([sverweij/dependency-cruiser#1069](https://github.com/sverweij/dependency-cruiser/issues/1069)), and TypeScript 7.1, planned stable on 2026-11-24, makes stabilising it the release's goal ([microsoft/TypeScript#63703](https://github.com/microsoft/TypeScript/issues/63703)). When a `dependency-cruiser` release accepts TypeScript 7, retire the install root, its `postinstall` and the separate CI install step in favour of root `devDependencies`.
 
 Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md) and [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 
