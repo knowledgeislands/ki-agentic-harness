@@ -552,6 +552,28 @@ test('SCR-2 proposes removal for any whole-repository or focused native governan
   })
 })
 
+test('SCR-5 conform keeps the boundary install on prepare where its install root exists', async () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(repository)
+  mkdirSync(join(repository, 'tooling', 'boundaries'), { recursive: true })
+  writeFileSync(join(repository, 'tooling', 'boundaries', 'package.json'), '{"private":true}\n')
+  writeFileSync(join(repository, 'package.json'), '{"scripts":{"prepare":"husky install"}}\n')
+  const session = await createEngineeringSession(
+    { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
+    () => [{ level: 'WARN', code: 'SCR-5', message: 'prepare drift', subject: 'package.json' }]
+  )
+  const root = session.subjects[1]?.context() as EngineeringRubricContext
+  const family = catalogue.families.find((candidate) => candidate.code === 'SCR') as RubricFamily<
+    EngineeringRubricContext,
+    ScriptsRubricContext
+  >
+  family.items.find((candidate) => candidate.code === 'SCR-5')?.mechanical?.conform?.run(family.selectContext(root))
+
+  expect(JSON.parse(session.proposal().writes[0]?.content ?? '{}').scripts.prepare).toBe(
+    'husky && bun install --frozen-lockfile --cwd tooling/boundaries'
+  )
+})
+
 test('the common hook contract detects missing and ordered baselines', () => {
   expect(hasPreCommitBaseline('')).toBe(false)
   expect(hasPreCommitBaseline('bunx syncpack format --check || exit 1\nbunx lint-staged || exit 1\n')).toBe(false)

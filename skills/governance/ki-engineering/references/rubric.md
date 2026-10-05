@@ -94,7 +94,7 @@ The direct CLI boundary, lifecycle idioms, and clean cutover discipline.
   - _Remediation:_ automatic
 - **SCR-4 [M] — Per-skill wrapper aliases absent** — Package scripts contain no derived `ki:<skill>:<mode>` aliases and no command that invokes `.ki`, `govern.ts`, `educate.ts`, an adapter, or a vendored runtime. (standards-engineering.md)
   - _Remediation:_ automatic
-- **SCR-5 [M] — Lifecycle clean and prepare scripts** — `clean` removes `node_modules` (and `dist` where built), and `prepare` is `husky`. (standards-engineering.md)
+- **SCR-5 [M] — Lifecycle clean and prepare scripts** — `clean` removes `node_modules` (and `dist` where built), and `prepare` is `husky`, followed by `&& bun install --frozen-lockfile --cwd tooling/boundaries` where that isolated install root exists. (standards-engineering.md)
   - _Remediation:_ automatic
 - **SCR-6 [M] — No test-entrypoint bypass** — Only the bare `test` script may use `bun test`; every other script uses `bun run test` to invoke the governed entrypoint. (standards-engineering.md)
   - _Remediation:_ diagnostic — Revise the package scripts to meet the governed script surface, then rerun the audit.

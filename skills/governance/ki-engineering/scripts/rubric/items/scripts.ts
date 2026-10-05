@@ -100,7 +100,7 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
     mechanical(
       'SCR-5',
       'Lifecycle clean and prepare scripts',
-      '`clean` removes `node_modules` (and `dist` where built), and `prepare` is `husky`.',
+      '`clean` removes `node_modules` (and `dist` where built), and `prepare` is `husky`, followed by `&& bun install --frozen-lockfile --cwd tooling/boundaries` where that isolated install root exists.',
       'FAIL',
       (context) => context.scr5,
       { overrideLevels: ['WARN'], conform: true }

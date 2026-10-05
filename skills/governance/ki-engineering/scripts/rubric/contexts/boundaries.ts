@@ -12,7 +12,7 @@ const configuration = '.dependency-cruiser.ts'
 const tooling = 'tooling/boundaries'
 const toolingManifest = 'tooling/boundaries/package.json'
 const installedChecker = `${tooling}/node_modules/dependency-cruiser`
-const installTooling = `bun install --frozen-lockfile --cwd ${tooling}`
+export const BOUNDARY_INSTALL = `bun install --frozen-lockfile --cwd ${tooling}`
 const baselineRules = ['no-circular', 'no-unresolvable']
 // A loaded CI runner needs headroom, but a hung checker must not hold audit indefinitely.
 const timeout = 120_000
@@ -226,11 +226,11 @@ export const inspectBoundaries = async (
         )
       ]
     const prepare = (pkg.scripts as Record<string, unknown> | undefined)?.prepare
-    if (typeof prepare !== 'string' || !prepare.includes(installTooling))
+    if (typeof prepare !== 'string' || !prepare.includes(BOUNDARY_INSTALL))
       return [
         finding(
           'FAIL',
-          `The root prepare script must run \`${installTooling}\` so an ordinary install provisions the isolated boundary toolchain.`
+          `The root prepare script must run \`${BOUNDARY_INSTALL}\` so an ordinary install provisions the isolated boundary toolchain.`
         )
       ]
     for (const path of [configuration, toolingManifest, installedChecker]) {
@@ -239,7 +239,7 @@ export const inspectBoundaries = async (
         resolved = await realpath(join(root, path))
       } catch (error) {
         if (path !== installedChecker) throw error
-        return [finding('FAIL', `The isolated boundary toolchain is not installed; run \`${installTooling}\`.`)]
+        return [finding('FAIL', `The isolated boundary toolchain is not installed; run \`${BOUNDARY_INSTALL}\`.`)]
       }
       if (!contained(root, resolved)) return [finding('FAIL', `Boundary evidence escapes the repository: ${path}.`)]
     }
