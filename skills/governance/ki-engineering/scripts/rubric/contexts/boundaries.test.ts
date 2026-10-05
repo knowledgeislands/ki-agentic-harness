@@ -1,7 +1,7 @@
 import { afterEach, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { inspectBoundaries, provesBoundaryFailure } from './boundaries.ts'
 
 const temporary: string[] = []
@@ -93,10 +93,12 @@ const runner = (
     clean: Result
     mutated: Result
     observed: boolean
+    calls: { args: readonly string[]; cwd: string }[]
   }> = {}
 ) => {
   let tests = 0
-  return async (_program: string, args: readonly string[], _cwd: string) => {
+  return async (_program: string, args: readonly string[], cwd: string) => {
+    overrides.calls?.push({ args, cwd })
     if (args[0] === '--eval') return result(overrides.config ?? configuration())
     if (args[0] === '--input-type=module')
       return result(overrides.transpilers ?? [{ name: 'typescript', available: true }])
@@ -104,9 +106,10 @@ const runner = (
     tests += 1
     const response =
       tests === 1 ? (overrides.clean ?? result(report())) : (overrides.mutated ?? result(report(true), 1))
-    writeFileSync(required(args[args.indexOf('--outputFile') + 1]), response.stdout)
+    const output = required(args[args.indexOf('--outputFile') + 1])
+    writeFileSync(output, response.stdout)
     if (tests === 1 && overrides.observed !== false)
-      writeFileSync(join(_cwd, 'reports/native-cruises.jsonl'), `${JSON.stringify(nativeCruise())}\n`)
+      writeFileSync(join(dirname(output), 'native-cruises.jsonl'), `${JSON.stringify(nativeCruise())}\n`)
     return response
   }
 }
@@ -275,4 +278,79 @@ test('configuration-presence assertions cannot substitute for an observed resolv
   required(required(unresolved.modules[0]).dependencies[0]).couldNotResolve = true
   expect(provesBoundaryFailure(report(), report(true), [unresolved], ['domain-does-not-import-cli'])).toBe(false)
   expect((await inspectBoundaries(fixture(), undefined, runner({ observed: false })))[0]?.level).toBe('FAIL')
+})
+
+const workspaceFixture = (memberTest = 'vitest run') => {
+  const root = fixture()
+  rmSync(join(root, 'src'), { recursive: true })
+  for (const path of ['apps/site/src', 'apps/site/scripts', 'apps/site/node_modules', 'apps/notes'])
+    mkdirSync(join(root, path), { recursive: true })
+  writeFileSync(
+    join(root, 'package.json'),
+    JSON.stringify({
+      devDependencies: { 'dependency-cruiser': '^18' },
+      scripts: { test: 'turbo run test' },
+      workspaces: ['apps/*']
+    })
+  )
+  writeFileSync(join(root, 'apps/site/package.json'), JSON.stringify({ scripts: { test: memberTest } }))
+  writeFileSync(join(root, 'apps/site/src/data.ts'), "export const data = 'value'\n")
+  writeFileSync(join(root, 'apps/site/scripts/boundaries.test.ts'), '// native proof fixture\n')
+  return root
+}
+const workspaceGraph = () => ({
+  modules: [
+    { source: 'apps/site/src/data.ts', dependencies: [] },
+    { source: 'apps/site/scripts/boundaries.test.ts', dependencies: [] }
+  ],
+  summary: { violations: [] }
+})
+
+test('workspace members are cruised and proved under their own bare Vitest entrypoint', async () => {
+  const calls: { args: readonly string[]; cwd: string }[] = []
+  const root = workspaceFixture()
+  const findings = await inspectBoundaries(root, undefined, runner({ graph: workspaceGraph(), calls }))
+  expect(findings[0]?.level).toBe('PASS')
+  expect(findings[0]?.message).toContain('across 1 workspace members')
+  expect(calls.find((call) => call.args.includes('--output-type'))?.args.slice(-2)).toEqual([
+    'apps/site/src',
+    'apps/site/scripts'
+  ])
+  const proofs = calls.filter((call) => call.args[0] === 'run')
+  expect(proofs).toHaveLength(2)
+  for (const proof of proofs) {
+    expect(proof.cwd.endsWith('apps/site')).toBe(true)
+    expect(proof.args.slice(0, 3)).toEqual(['run', 'test', 'scripts/boundaries.test.ts'])
+  }
+})
+
+test('workspace members without a Vitest proof, unsupported patterns or partial graphs cannot pass', async () => {
+  expect(
+    (await inspectBoundaries(workspaceFixture('bun test scripts'), undefined, runner({ graph: workspaceGraph() })))[0]
+      ?.level
+  ).toBe('FAIL')
+  const partial = workspaceGraph()
+  partial.modules.shift()
+  expect((await inspectBoundaries(workspaceFixture(), undefined, runner({ graph: partial })))[0]?.level).toBe('FAIL')
+  for (const workspaces of [['apps/**'], { packages: ['apps/*'] }]) {
+    const root = workspaceFixture()
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({ devDependencies: { 'dependency-cruiser': '^18' }, scripts: { test: 'vitest run' }, workspaces })
+    )
+    expect((await inspectBoundaries(root, undefined, runner({ graph: workspaceGraph() })))[0]?.level).toBe('FAIL')
+  }
+  const root = workspaceFixture()
+  const outside = fixture()
+  symlinkSync(outside, join(root, 'apps/escape'), 'dir')
+  const findings = await inspectBoundaries(root, undefined, runner({ graph: workspaceGraph() }))
+  expect(findings[0]?.message).toContain('Workspace member escapes')
+})
+
+test('a graph without relative type-only imports does not need a type-only edge', async () => {
+  const root = fixture()
+  writeFileSync(join(root, 'src/main.ts'), "import { value } from './types.ts'\nexport const main = value\n")
+  const untyped = graph()
+  required(required(untyped.modules[0]).dependencies[0]).dependencyTypes = ['local', 'import']
+  expect((await inspectBoundaries(root, undefined, runner({ graph: untyped })))[0]?.level).toBe('PASS')
 })

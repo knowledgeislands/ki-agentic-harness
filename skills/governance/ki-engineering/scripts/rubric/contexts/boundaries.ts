@@ -132,6 +132,45 @@ const regularFiles = async (root: string, path: string): Promise<string[]> => {
 
 const readJson = async (path: string): Promise<Record<string, unknown>> => JSON.parse(await readFile(path, 'utf8'))
 
+type Member = { path: string; scripts?: Record<string, unknown> }
+
+/** Expands literal and single-level `dir/*` workspace patterns; any other glob is an unsupported shape, not a pass. */
+const workspaceMembers = async (root: string, patterns: unknown): Promise<Member[]> => {
+  if (!Array.isArray(patterns) || !patterns.every((pattern) => typeof pattern === 'string'))
+    throw new Error('Workspace boundary execution supports only a package.json workspaces array.')
+  const members: Member[] = []
+  for (const pattern of patterns as string[]) {
+    const parent = pattern.endsWith('/*') ? pattern.slice(0, -2) : undefined
+    if (/[*?[\]{}!]/.test(parent ?? pattern))
+      throw new Error(`Workspace pattern ${pattern} needs a native proof adapter.`)
+    let candidates = [pattern]
+    if (parent !== undefined) {
+      try {
+        candidates = (await readdir(join(root, parent), { withFileTypes: true }))
+          // A linked member is still a member: containment below rejects one that escapes.
+          .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
+          .map((entry) => join(parent, entry.name))
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+        candidates = []
+      }
+    }
+    for (const path of candidates) {
+      if (!contained(root, await realpath(join(root, path))))
+        throw new Error(`Workspace member escapes the repository: ${path}.`)
+      try {
+        const manifest = await readJson(join(root, path, 'package.json'))
+        members.push({ path, scripts: manifest.scripts as Record<string, unknown> | undefined })
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+      }
+    }
+  }
+  return members
+}
+
+const relativeTypeImport = /^\s*(?:import|export)\s+type\b[^;]*?\bfrom\s*['"]\.\.?\//m
+
 /** Read-only target inspection; destructive mutations are confined to a fresh private snapshot. */
 export const inspectBoundaries = async (
   repository: string,
@@ -155,7 +194,12 @@ export const inspectBoundaries = async (
         return [finding('NOT_APPLICABLE', 'No package.json; this TypeScript/Bun boundary adapter does not apply.')]
       throw error
     }
-    const sources = (await regularFiles(root, 'src')).filter((path) => /\.[cm]?[jt]sx?$/.test(path))
+    // A workspace graph is proved per member: each member's src and scripts are source roots beside the root src.
+    const members = pkg.workspaces === undefined ? [] : await workspaceMembers(root, pkg.workspaces)
+    const roots = ['src', ...members.flatMap((member) => [join(member.path, 'src'), join(member.path, 'scripts')])]
+    const inventory = await Promise.all(roots.map((path) => regularFiles(root, path)))
+    const sourceRoots = roots.filter((_, index) => inventory[index]?.length)
+    const sources = inventory.flat().filter((path) => /\.[cm]?[jt]sx?$/.test(path))
     let configExists = false
     try {
       configExists = contained(root, await realpath(join(root, configuration)))
@@ -165,7 +209,7 @@ export const inspectBoundaries = async (
     const productSurface =
       ['main', 'module', 'bin', 'exports'].some((field) => pkg[field] !== undefined) ||
       Boolean((pkg.scripts as Record<string, unknown> | undefined)?.build)
-    if (!configExists && !sources.length && !Array.isArray(pkg.workspaces) && !productSurface)
+    if (!configExists && !sources.length && !members.length && !productSurface)
       return [
         finding(
           'NOT_APPLICABLE',
@@ -274,43 +318,55 @@ export const inspectBoundaries = async (
           'The isolated boundary checker has no supported TypeScript transpiler; a zero-module cruise is not a pass.'
         )
       ]
-    // Workspace roots cannot be inferred from semantic regexes. Fail explicitly instead of blessing partial evidence.
-    if (Array.isArray(pkg.workspaces))
-      return [
-        finding(
-          'FAIL',
-          'Workspace boundary execution needs a native workspace-aware proof adapter; do not infer a pass from a root-only cruise.'
-        )
-      ]
     const tests = sources.filter((path) => /(?:^|[./-])boundar(?:y|ies)\.test\.[cm]?[jt]sx?$/.test(path))
-    const scripts = pkg.scripts as Record<string, unknown> | undefined
-    if (!tests.length || scripts?.test !== 'vitest run')
+    // A boundary test runs under its own member's bare Vitest entrypoint, else under the root's; one runner per proof.
+    const runners = new Set(
+      tests.map((path) => {
+        const owner = members.find((member) => path.startsWith(`${member.path}${sep}`))
+        if (owner?.scripts?.test === 'vitest run') return owner.path
+        return (pkg.scripts as Record<string, unknown> | undefined)?.test === 'vitest run' ? '.' : undefined
+      })
+    )
+    const runner = runners.size === 1 ? [...runners][0] : undefined
+    if (runner === undefined)
       return [
         finding(
           'FAIL',
-          'Native failure proof could not be verified: provide a boundary test selected by the bare Vitest test entrypoint, or implement a runner-appropriate proof adapter.'
+          'Native failure proof could not be verified: provide boundary tests selected by one bare Vitest test entrypoint (root or owning workspace member), or implement a runner-appropriate proof adapter.'
         )
       ]
     emit?.({ kind: 'step', label: 'resolved boundary source graph', code: 'DESIGN-2' })
     const graphResult = await run(
       'node',
-      [join(root, tooling, 'node_modules/.bin/depcruise'), '--config', configuration, '--output-type', 'json', 'src'],
+      [
+        join(root, tooling, 'node_modules/.bin/depcruise'),
+        '--config',
+        configuration,
+        '--output-type',
+        'json',
+        ...sourceRoots
+      ],
       root
     )
     const graph = JSON.parse(graphResult.stdout) as Graph
     const paths = new Set(graph.modules.map((module) => module.source))
     const absent = sources.filter((path) => !path.endsWith('.d.ts') && !paths.has(path))
     const edges = graph.modules.flatMap((module) => module.dependencies)
+    // Type-blindness is only observable where relative type-only imports exist; their absence is not a dropped edge.
+    const typed = (await Promise.all(sources.map((path) => readFile(join(root, path), 'utf8')))).some((text) =>
+      relativeTypeImport.test(text)
+    )
     if (
       graphResult.status ||
       !graph.modules.length ||
       absent.length ||
       graph.summary.violations.length ||
       edges.some((edge) => edge.couldNotResolve) ||
-      !edges.some(
-        (edge) =>
-          paths.has(edge.resolved) && edge.couldNotResolve === false && edge.dependencyTypes?.includes('type-only')
-      )
+      (typed &&
+        !edges.some(
+          (edge) =>
+            paths.has(edge.resolved) && edge.couldNotResolve === false && edge.dependencyTypes?.includes('type-only')
+        ))
     )
       return [
         finding(
@@ -329,7 +385,14 @@ export const inspectBoundaries = async (
         return (await realpath(path)) === resolve(path)
       }
     })
-    await symlink(join(root, 'node_modules'), join(snapshot, 'node_modules'), 'dir')
+    for (const path of ['.', ...members.map((member) => member.path)]) {
+      try {
+        await symlink(await realpath(join(root, path, 'node_modules')), join(snapshot, path, 'node_modules'), 'dir')
+      } catch (error) {
+        // A hoisted member has no node_modules of its own; the root install must exist.
+        if (path === '.' || (error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+      }
+    }
     const checkerModules = join(snapshot, tooling, 'node_modules')
     await mkdir(join(checkerModules, '.bin'), { recursive: true })
     for (const entry of await readdir(join(root, tooling, 'node_modules'))) {
@@ -355,9 +418,17 @@ process.stdout.write(output); process.exitCode = status;
 `
     )
     await chmod(checker, 0o755)
-    const args = ['run', 'test', ...tests, '--reporter=json', '--outputFile', reportPath]
+    const args = [
+      'run',
+      'test',
+      ...tests.map((path) => relative(runner, path)),
+      '--reporter=json',
+      '--outputFile',
+      reportPath
+    ]
+    const cwd = join(snapshot, runner)
     emit?.({ kind: 'step', label: 'native boundary proof (private snapshot)', code: 'DESIGN-2' })
-    const cleanResult = await run('bun', args, snapshot)
+    const cleanResult = await run('bun', args, cwd)
     const clean = JSON.parse(await readFile(reportPath, 'utf8')) as TestReport
     if (
       cleanResult.status ||
@@ -383,7 +454,7 @@ process.stdout.write(output); process.exitCode = status;
     // No stale clean report can stand in for a mutant that never reached the reporter.
     await rm(reportPath)
     emit?.({ kind: 'step', label: 'native proof rejects disabled boundaries', code: 'DESIGN-2' })
-    const mutatedResult = await run('bun', args, snapshot)
+    const mutatedResult = await run('bun', args, cwd)
     const mutated = JSON.parse(await readFile(reportPath, 'utf8')) as TestReport
     const removedRules = config.forbidden.filter((rule) => !baselineRules.includes(rule.name)).map((rule) => rule.name)
     if (
@@ -400,7 +471,7 @@ process.stdout.write(output); process.exitCode = status;
     return [
       finding(
         'PASS',
-        `Resolved ${graph.modules.length} modules with type-only edges; native assertions pass and reject disabled semantic rules. Boundary selection and individual rule coverage remain judgment.`
+        `Resolved ${graph.modules.length} modules${typed ? ' with type-only edges' : ''}${members.length ? ` across ${members.length} workspace members` : ''}; native assertions pass and reject disabled semantic rules. Boundary selection and individual rule coverage remain judgment.`
       )
     ]
   } catch (error) {
