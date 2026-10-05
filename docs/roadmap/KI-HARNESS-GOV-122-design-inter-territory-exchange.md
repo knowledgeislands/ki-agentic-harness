@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T04:23:19Z
-updated_at: 2026-10-04T10:59:42Z
+updated_at: 2026-10-05T07:54:24Z
 ---
 
 # KI-HARNESS-GOV-122: Design inter-territory exchange
@@ -51,3 +51,7 @@ Define when a structured trade is warranted for receiver-owned work or knowledge
 ### Design questions
 
 Evaluate identity and discovery, receiver invitation or consent, offline and missing-peer behaviour, provenance, revocation, and where any machine-local association belongs. Compare a one-off handoff with a continuing receiver-owned adoption relationship and an explicit restricted agreement, including how a submitted item can be withdrawn or re-homed without losing the originating work. Reconcile the route-expansion assumptions in [Accept estate work trades](https://github.com/knowledgeislands/ki-agentic-harness/blob/ff6d023be0985ff4d431945fbdf241ef7318b6a3/docs/roadmap/KI-HARNESS-GOV-090-accept-estate-work-trades.md) before changing the trade contract or CLI. The Observatory should be able to distinguish governed membership, external reference, adoption, and exchange in a chart and reader without making its display the authority for those relationships.
+
+### Owner question
+
+Recorded 2026-10-05 by the Fable reviewer during make-ready triage; this record stays draft until Kris answers. Should inter-territory exchange be designed now, or stay unadopted until Arcadia's knowledge-classification sequence step is accepted?

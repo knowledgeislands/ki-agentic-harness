@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-08-10T00:06:22Z
+updated_at: 2026-10-05T07:54:24Z
 ---
 
 ## Goal
@@ -29,3 +29,7 @@ Unblock only when the owner selects the security posture and settles the plugin'
 ### Return condition
 
 The owner must choose the endpoint security posture and settle plugin distribution constraints before either reachability path can be treated as supported.
+
+### Owner question
+
+Recorded 2026-10-05 by the Fable reviewer during make-ready triage; this record stays draft until Kris answers. Should Cowork reach KI MCP servers by bundling them in the sandbox or through authenticated remote endpoints, and what licence and visibility should the plugin carry?

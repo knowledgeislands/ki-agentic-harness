@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T08:20:00Z
-updated_at: 2026-09-30T08:20:00Z
+updated_at: 2026-10-05T07:54:24Z
 ---
 
 # Verify run MCP connection
@@ -32,3 +32,7 @@ Creating and granting the connection is a principal-authorised Paperclip configu
 
 - Which agents need the grant: every repository role, or only those whose tasks use KI MCP servers?
 - Does the bridge need a keep-alive supervisor so that runs do not fail when it stops?
+
+### Owner question
+
+Recorded 2026-10-05 by the Fable reviewer during make-ready triage; this record stays draft until Kris answers. Which Paperclip agents should receive the loopback mcporter MCP grant: every repository role, or only roles whose tasks use KI MCP servers?

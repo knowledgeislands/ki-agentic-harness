@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-08-09T20:58:31Z
-updated_at: 2026-09-14T18:53:27Z
+updated_at: 2026-10-05T07:54:24Z
 ---
 
 ## Goal
@@ -109,3 +109,7 @@ Later delivery and acceptance slices remain separately reviewable steps within t
 ### Delegation
 
 Keep the shared contract and first provider fixture in one coordinator-owned lane. Once that contract is fixed, GitHub and Linear fixture work can proceed independently. The coordinator retains pilot selection, remote authority, integration, and live verification.
+
+### Owner question
+
+Recorded 2026-10-05 by the Fable reviewer during make-ready triage; this record stays draft until Kris answers. Which GitHub repository and which reversible draft Issue are authorised as the live Issues pilot, and who owns its lifecycle metadata and write authority?
