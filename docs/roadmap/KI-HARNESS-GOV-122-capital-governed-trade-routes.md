@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T04:23:19Z
-updated_at: 2026-10-06T10:00:00Z
+updated_at: 2026-10-06T11:00:00Z
 ---
 
 # KI-HARNESS-GOV-122: Capital-governed trade routes
@@ -22,7 +22,7 @@ The `ki-trades` standard, rubric and decision record take trade routes and stand
 
 The territorial model, classification and exchange design moved to Arcadia as [KI-ARCADIA-GOV-016](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Streams/Roadmap/KI-ARCADIA-GOV-016-territorial-classification-and-exchange.md), approved by the owner on 2026-10-06. That record owns the conceptual questions this item formerly held: classification, when a trade is warranted, and cross-territory exchange, whose activation is deferred. This item is re-scoped to the harness's share of delivery. `tools-ki` delivers resolution, the sweep and migration as `KI-TOOL-CLI-104`.
 
-The Capital policy is planned at `Admin/Governance/trade-policy.toml` in the Capital, resolved among registered `ki-repo-kb-principal` repositories whose policy names the host as Capital. Channels expand to exact `(source, receiver, kind)` triples; standing grants live in the same policy. Missing or ambiguous policy is unavailable and fails closed; no Agora is consulted.
+The Capital policy is a `[skills.ki-trades.territory]` table in the Capital's own `.ki.toml`, with `name`, `members`, `[[...channels]]` expanding to exact `(source, receiver, kind)` triples, and `[[...standing]]` grants. The Capital is the unique registered repository whose `.ki.toml` declares `[skills.ki-trades.territory]` listing the island as a member, resolved as Agora homes already are. None is unavailable and several is ambiguous; both fail closed, and no Agora is consulted.
 
 ## Boundary
 
@@ -37,7 +37,7 @@ Draft, re-scoped on 2026-10-06 from design to delivery. The standard, rubric and
 
 ## Steps
 
-- [ ] `skills/governance/ki-trades/scripts/rubric/contexts/trades.ts`: add Capital policy parse and resolution reusing `registeredRepositories`; rewrite `routeEvidence`, the `permitted` check in `recordEvidence` and `standingCaptureEvidence` against policy edges and grants; accept a bare member table and report legacy keys; add Capital-only `policyEvidence`.
+- [ ] `skills/governance/ki-trades/scripts/rubric/contexts/trades.ts`: add Capital policy parse and resolution reusing `registeredRepositories`; rewrite `routeEvidence`, the `permitted` check in `recordEvidence` and `standingCaptureEvidence` against policy edges and grants; accept a bare member table, accept the `territory` sub-table only in the Capital, and report legacy keys; add Capital-only `policyEvidence`.
 - [ ] Rubric items: CONFIG-1 retires `routes` and `subtypes` (WARN in transition, FAIL after); ROUTE-1 reads the Capital policy (unavailable WARN, ambiguous or malformed VIOLATION); new ROUTE-2 warns when declared but named nowhere; new Capital-only POLICY-1 schema, POLICY-2 named islands declare `ki-trades` (unresolvable is INFO), POLICY-3 members agree with Known Lands; AUTH-1 and STANDING-1 wording. Regenerate `references/rubric.md`.
 - [ ] `ki-repo` COV-1 gains a `trades` signal: detected when the resolved Capital policy names the island or local `_TRADES` records exist, so a named but undeclared island fails a full audit.
 - [ ] Rewrite `references/standards-trades.md` participation, standing intake and authority sections and add the Capital policy section; update `ki-trades` and `ki-trade` SKILL text; supersede `GDR-KI-HARNESS-005` in place or by successor per the decision-record standard.
