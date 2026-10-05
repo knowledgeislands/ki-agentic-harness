@@ -101,7 +101,7 @@ Templates are stubs — headings, frontmatter keys, and inline `<!-- prompts -->
 
 ## Project bindings
 
-Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded `CLAUDE.md`, then the root memory index. **Declarative overrides** (the zone alias and the lists below) are read from the base's `.ki.toml` `[skills.ki-repo-kb]` table instead — see the `ki-repo` skill for the shared-file contract; validate your own table (warn on an unrecognised key) and never read another skill's. A base never ships a `<base>-kb` skill: what it needs differently is declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled skill.
+Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded `CLAUDE.md`, then the root memory index. **Declarative overrides** (the zone alias and the lists below) are read from the base's `.ki.toml` `[skills.ki-repo-kb]` table instead — see the `ki-repo` skill for the shared-file contract; validate your own table (warn on an unrecognised key) without validating sibling tables. Consume shared `[skills.ki-repo].store_roles` metadata only to select source-mirror applicability. A base never ships a `<base>-kb` skill: what it needs differently is declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled skill.
 
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store is declared, following the [source mirror contract](references/standards-source-mirrors.md). _Default:_ none.
