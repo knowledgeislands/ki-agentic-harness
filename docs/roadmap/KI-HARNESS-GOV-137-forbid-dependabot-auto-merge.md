@@ -91,12 +91,6 @@ None.
 
 None.
 
-## Discussion
-
-### Decision
-
-Owner decision (b), 2026-10-05: Dependabot alerts and security updates on for every repository; Dependabot version-update configuration and every auto-merge workflow removed; routine updates through `bun run ki:deps:update`.
-
 ## Review
 
 ### Delivered
@@ -112,13 +106,13 @@ The `ki-repo` contract now treats Dependabot as a security signal only: alerts a
 - `skills/keystone/ki-repo/scripts/rubric/items/dependencies.ts` and generated `references/rubric.md`: DEP-1 wording and remediation.
 - `skills/keystone/ki-repo/scripts/rubric/contexts/dependabot-policy.test.ts`: four cases.
 
-No deviation from the plan.
+No deviation from the plan. `created_at` was corrected from a placeholder future time to the actual capture time.
 
 ### Verification
 
 - Focused test `dependabot-policy.test.ts`: 4 pass.
 - `bunx tsc --noEmit`: clean. `bunx biome check skills/keystone/ki-repo/scripts`: clean (infos only).
-- `ki repo audit --progress never`: PASS, 32 skills.
+- `ki repo audit --progress never`: PASS, 32 skills, after moving this packet above `Discussion` (first run at `710a65f3` failed ITEM-3 on section order).
 - `bun run test`: 858 pass, 5 fail - all five are 5 s or 10 s timeouts in `repository.test.ts` and session tests. The same file at baseline `c19e358d` in a clean worktree failed six timeouts under the same machine load, so they are pre-existing load-sensitive timeouts, not regressions.
 - Estate effect: the seven receiving repositories removed both files and each passes `ki repo audit`.
 
@@ -134,3 +128,9 @@ Goal met within the stated boundary; alerts and security-update checks are uncha
 ### Mini recap
 
 Delivered the standard change, check, test and security DR. Learning route: consider a REVIEW prompt for workflows that call `gh pr merge --auto` under another name; no automatic promotion.
+
+## Discussion
+
+### Decision
+
+Owner decision (b), 2026-10-05: Dependabot alerts and security updates on for every repository; Dependabot version-update configuration and every auto-merge workflow removed; routine updates through `bun run ki:deps:update`.
