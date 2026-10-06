@@ -23,7 +23,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-79
       relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-10-04T18:20:00Z
+updated_at: 2026-10-06T01:23:00Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base
@@ -34,7 +34,7 @@ A coordinated worktree's base is the destination branch tip when the worktree is
 
 ## Context
 
-Measured 2026-09-27 across all 25 registered repositories, read-only, from the primary checkouts: 24 of 24 non-primary worktrees are behind their destination tip, by 1 to 48 commits, in `ki-agentic-harness`, `ki-techne-harness`, `ki-techne-principal` and `tools-ki`. None sits at the tip. The actively provisioned set is 1 to 12 behind; the retained set is 34 to 48 behind, which shows the drift is unbounded while a worktree sits. The three worktrees holding unlanded work are the stalest of all, at 48, 44 and 43, so the worst bases are precisely the ones a landing must be computed against. Evidence and the full table: coordination tasks `KIS-70` and `KIS-37`, the latter's plan revision 9 section 9.
+Measured 2026-09-27 across all 25 registered repositories, read-only, from the primary checkouts: 24 of 24 non-primary worktrees are behind their destination tip, by 1 to 48 commits, in `ki-agentic-harness`, `ki-techne-harness`, `ki-techne-principal` and `tools-ki`. None sits at the tip. The `ki-techne-principal` figures are historical: that repository was retired on 2026-10-04 under `KI-ARCADIA-ECO-008`, is archived read-only, and is outside this record's live scope. The actively provisioned set is 1 to 12 behind; the retained set is 34 to 48 behind, which shows the drift is unbounded while a worktree sits. The three worktrees holding unlanded work are the stalest of all, at 48, 44 and 43, so the worst bases are precisely the ones a landing must be computed against. Evidence and the full table: coordination tasks `KIS-70` and `KIS-37`, the latter's plan revision 9 section 9.
 
 Two defects read the same evidence in the same place and therefore share one check, though only the first is a new claim.
 
@@ -171,3 +171,7 @@ Not implemented in the 2026-10-04 estate push. Paperclip task `KIS-79` still hol
 Not started in the second 2026-10-04 pass, for two reasons that only you can clear. The harness half already exists as retained commit `94b6f9f0` on the `KIS-70` branch (standard paragraph, mechanical item, regenerated rubric, `mode-audit.md`), still owned by `KIS-79`. Verify criteria 1 and 2 also need a host operation in `tools-ki`, which has no matching item yet.
 
 **Question:** May this repository take over delivery from `KIS-79` by landing `94b6f9f0` on `main` with its criterion renumbered to `COORD-15`, and should a `tools-ki` handoff item be raised for the host-side execution (this record would then be `blocked by` it)? Until both are answered this record stays `ready`.
+
+### State re-check - 2026-10-06
+
+The record stays `ready` with no baseline, although Step 1 is ticked. That Step is the identifier reservation, not delivery, and the Question above holds the start: delivery ownership still sits with `KIS-79`, so `ki-implement`'s preflight cannot claim it until the owner answers.

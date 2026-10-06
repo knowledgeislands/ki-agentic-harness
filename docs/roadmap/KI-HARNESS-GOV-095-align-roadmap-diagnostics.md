@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T14:21:37Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-06T01:27:00Z
 ---
 
 # KI-HARNESS-GOV-095: Align roadmap diagnostics
@@ -108,6 +108,12 @@ For the same repository revision, supported roadmap audit and listing paths shou
 ### Ownership and verification
 
 The portable rule belongs with the roadmap and Streams governance contracts; executable parsing and command exit behaviour belong in `tools-ki`. Future planning should define fixtures for malformed frontmatter and duplicate identifiers, then verify both KB Streams and non-KB roadmap adapters without coupling either skill to a private CLI implementation.
+
+### Arcadia handoff - legacy-format records
+
+Originating repository: `ki-arcadia-principal`, from its 2026-10-06 roadmap consolidation survey. Relationship: non-blocking; it neither blocks nor is blocked by this record, and no Arcadia item depends on it.
+
+On 2026-10-06, `ki repo audit --skill ki-repo-kb-streams --repo ki-arcadia-principal` (ki 0.6.1) passed although three `Streams/Roadmap/` records are in the legacy format: `KI-ARCADIA-GOV-001`, `KI-ARCADIA-MOD-003` and `KI-ARCADIA-OPS-002` have no `Goal`, `Context`, `Boundary` or `Discussion` sections and carry a `priority` field, and `MOD-003` also carries the retired `candidate` field. They have canonical `id`s that match their filenames, so the invariant in this record's Boundary would still pass them; body sections and retired fields are adapter-owned format, which the Boundary deliberately keeps out of `ki-repo-kb-streams`. Planning should decide whether that is acceptable or whether the KB Streams audit should reach the roadmap adapter's format checks for its records. Either way it is evidence that a structurally valid record can still be far from the work-item format with no mechanical signal.
 
 ### Decision
 

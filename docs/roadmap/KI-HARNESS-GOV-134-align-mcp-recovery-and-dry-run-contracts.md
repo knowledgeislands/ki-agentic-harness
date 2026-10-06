@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T10:57:53Z
-updated_at: 2026-10-05T08:03:00Z
+updated_at: 2026-10-06T01:26:00Z
 ---
 
 # KI-HARNESS-GOV-134: Align MCP safety contracts
@@ -20,9 +20,9 @@ Make the MCP standard's authentication recovery and dry-run guidance consistent 
 
 ## Context
 
-The [MCP server standard](../../skills/repo-structure/ki-repo-mcp/references/standards-mcp-servers.md) correctly hides write-annotated, token-persisting authentication tools at the default read tier, but its recovery guidance in two places unconditionally recommends `*_auth_start`. Fixture-only registration in GSuite and M365 confirmed that the 401 hint names a tool unavailable at that tier. Their receiver-owned intake records are `MCP-GSUITE-FND-007` and `MCP-M365-FND-006`; their implementations and annotations remain local decisions.
+The [MCP server standard](../../skills/repo-structure/ki-repo-mcp/references/standards-mcp-servers.md) correctly hides write-annotated, token-persisting authentication tools at the default read tier, but its recovery guidance in two places unconditionally recommends `*_auth_start`. Fixture-only registration in GSuite and M365 confirmed that the 401 hint names a tool unavailable at that tier. Their receiver-owned records were `MCP-GSUITE-FND-007` and `MCP-M365-FND-006`, both since delivered, accepted and pruned (cited in Dependencies / blocks); their implementations and annotations remain local decisions.
 
-The same standard's dry-run rule does not state clearly that accepting a preview flag on an optional CLI requires the complete operation, including preparatory mutations, to be side-effect-free. Notion Mirror's `roots publish --dry-run` accepts the flag but can still reach mutating branches (`MCP-NOTION-TOOL-009`). Git Audit's commit preview stages into the real index (`MCP-GIT-TOOL-006`). These are receiver-owned defects, not reasons to weaken the standard's access gate or move domain logic into the Harness.
+The same standard's dry-run rule does not state clearly that accepting a preview flag on an optional CLI requires the complete operation, including preparatory mutations, to be side-effect-free. Notion Mirror's `roots publish --dry-run` accepts the flag but could still reach mutating branches (`MCP-NOTION-TOOL-009`). Git Audit's commit preview staged into the real index (`MCP-GIT-TOOL-006`). Both receivers have since fixed, accepted and pruned their records. These are receiver-owned defects, not reasons to weaken the standard's access gate or move domain logic into the Harness.
 
 The existing tool catalogue and guide rubrics already own registered-surface accuracy and usable procedures. Current README tool-name sets match the reviewed registrations; GSuite's access-tier prose is a receiver-specific drift. Catalogue generation is an implementation option, not a house requirement. Superseded-repository routing is likewise governed by existing roadmap and trade authority rules.
 
@@ -77,7 +77,14 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-None. The receiver records `MCP-GSUITE-FND-007`, `MCP-M365-FND-006`, `MCP-NOTION-TOOL-009` and `MCP-GIT-TOOL-006` are judged against this clarified contract but neither block nor are blocked by it; each receiver keeps its own selection, delivery and acceptance. No trade is needed: the receivers already hold their defects, and the clarified standard reaches them through ordinary skill refresh.
+None. The four receiver records are no longer live; each was delivered, accepted and pruned in its own repository on 2026-10-04, so they are cited by repository and revision as historical evidence only:
+
+- `mcp-gsuite` `MCP-GSUITE-FND-007`: fixed in `0df38ad`, accepted in `5b092fc`, pruned in `8d660a9`.
+- `mcp-m365` `MCP-M365-FND-006`: fixed in `becddd7`, accepted in `a163f7a`, pruned in `15a34c3`.
+- `mcp-ki-kb-notion-mirror` `MCP-NOTION-TOOL-009`: fixed in `9d46a5b`, accepted in `129c900`, pruned in `eb00d23`.
+- `mcp-git-audit` `MCP-GIT-TOOL-006`: fixed in `3972535`, accepted in `d07917a`, pruned in `d86f744`.
+
+None of them blocked or was blocked by this record, and this record remains valid: the standard's guidance is still unclarified. No trade is needed; the clarified standard reaches every MCP repository through ordinary skill refresh.
 
 ## Documentation impact
 

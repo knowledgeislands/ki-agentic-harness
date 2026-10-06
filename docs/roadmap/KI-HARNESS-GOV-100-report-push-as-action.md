@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-06T01:21:00Z
 ---
 
 # KI-HARNESS-GOV-100: Report push as action
@@ -95,6 +95,10 @@ None.
 ### Decision
 
 `ki-git` and `ki-recap` phrase push state as an action taken at a revision, never as a current shared-ref fact. Decided by the Fable reviewer under delegated autonomy, reversible. This resolves the pickup checkpoint's open question: the recap procedure does need its own explicit instruction, because its banner text and outstanding-work section are where positional phrasing reappears.
+
+### Scope re-check - 2026-10-06
+
+The record is already narrowed to what `f9dbcd90` left: the revision-bound wording and the recap instruction. At `e30948ad` none of the four Steps has landed. One gap in the plan: Verify item 3 greps the whole `ki-git` skill, which also matches "an unpushed commit" in the hygiene guidance at `skills/governance/ki-git/scripts/rubric/items/hygiene.ts:22` and its generated copy in `references/rubric.md:75`. No Step covers that text, so Verify item 3 would fail as planned. Amend the Steps through `ki-plan` (reword the hygiene guidance and regenerate the rubric, which also changes Verify item 4) or narrow the grep before implementation starts.
 
 ### Pickup checkpoint - 2026-09-27
 

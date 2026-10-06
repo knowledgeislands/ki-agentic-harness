@@ -9,14 +9,14 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-06T01:24:00Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope
 
 ## Goal
 
-Which repositories declare `[skills.ki-agent-coordination-paperclip]` is a recorded decision with its reasoning, its named exclusions and its revisit condition, so that a later reader can tell a deliberate boundary from an accident of who happened to be edited first.
+The coordination standard states which repositories declare `[skills.ki-agent-coordination-paperclip]` and what that declaration means, with its reasoning and revisit condition, so that a later reader can tell a deliberate boundary from an accident of who happened to be edited first.
 
 ## Context
 
@@ -24,12 +24,12 @@ Which repositories declare `[skills.ki-agent-coordination-paperclip]` is a recor
 
 The skill governs an _arrangement_ between Knowledge Islands and a coordination plane. There is one such arrangement across the archipelago, not one per repository, so the declaration is not a description of a repository's contents. That is what makes the scope question real: nothing in a repository's shape answers it.
 
-The reasoning as it currently stands:
+The original two-repository reasoning, kept as history because the Decision below supersedes it:
 
 - `ki-agentic-harness` declares it because it owns `ki-subagents` and, under the rule that a role is a repository record before it is an agent, holds the role records that every coordination agent is a projection of. The accepted coordination-lane delivery places four of those under `subagents/coordination/`. This is where the _agent role_ identity physically lives.
 - `ki-techne-harness` declares it because it holds `TECHNE-TOOLS-CTRL-001`, the unresolved form of the task-to-work linkage contract, and owns the controller and execution fabric where the _workspace_ and _worker_ identities are physically realised.
 - `tools-ki` is excluded because it implements the roadmap front matter in `src/core/work/items.ts` and is therefore the _subject_ of a future field change, not the owner of the arrangement.
-- `ki-techne-principal` is excluded because it holds remote-agent working style as knowledge base material. Knowledge about an arrangement is not the arrangement.
+- `ki-techne-principal` was excluded because it held remote-agent working style as knowledge base material. That repository was retired on 2026-10-04 under `KI-ARCADIA-ECO-008` and is archived read-only, so it has no place in any live scope or exclusion list.
 - `ki-arcadia-principal` is excluded for now, and becomes a candidate if a decision record fixing the coordination rules lands there.
 - The remaining registered repositories are excluded because they are subject to the doctrine through the agents that act on them, not owners of the arrangement.
 
@@ -122,3 +122,7 @@ Captured from the `KNO-19` proposal document on the external coordination plane,
 ### Decision
 
 Record the live rule: every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; the declaration means admission, not ownership of the arrangement. The skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness` (a description of where they live, not a new cross-repository authority allocation). Revisit condition as written: the first criterion that can fail in a declaring repository with no coordinated work, which [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) answers by reporting such repositories as not applicable. No decision record. Decided by the Fable reviewer under delegated autonomy, reversible; restoring a two-repository rule would be an owner decision.
+
+### Re-scope - 2026-10-06
+
+The Goal now names the live rule rather than a decision about named exclusions; Boundary, Steps and Verify already matched it. The retired `ki-techne-principal` is dropped from the live scope: the 2026-10-05 count in Current state included its archived declaration, which needs no change and is not a declaring repository for the purposes of this rule.

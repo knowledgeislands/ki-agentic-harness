@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-10-05T08:13:39Z
+updated_at: 2026-10-06T01:22:00Z
 ---
 
 ## Goal
@@ -100,3 +100,5 @@ The repository-review checklist already asks whether root orientation contains o
 ### History
 
 A 2026-09-27 pickup checkpoint verified `9b2efa68` and `15faa4e7` as partial delivery against local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc`, and treated the personal-file reduction at receiving commit `9511644` as a historical claim rather than a freshly verified migration. Those findings are carried into Current state above.
+
+A 2026-10-06 re-check at `e30948ad` found the record's state honest: what `9b2efa68` delivered is already in Current state, and none of the four Steps has landed, so the record stays `ready` with no baseline rather than being started without delivery.

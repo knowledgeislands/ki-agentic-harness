@@ -35,7 +35,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-06T01:25:00Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -124,7 +124,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-Blocked by [KI-HARNESS-GOV-102](KI-HARNESS-GOV-102-decide-role-record-serialization.md): rule 6's row cites the anchor that record creates. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001` were prerequisites for rule 2 and are done.
+Blocked by [KI-HARNESS-GOV-102](KI-HARNESS-GOV-102-decide-role-record-serialization.md): rule 6's row cites the anchor that record creates. That is the only live blocker. `KI-HARNESS-GOV-116` (accepted in `a7ae2c69`, record pruned in `0b7bbcc4`) and `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` (accepted in `7edbadb`, record pruned in `48d9d42`) were prerequisites for rule 2 and are done; nothing here waits on either.
 
 Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-095](KI-HARNESS-GOV-095-align-roadmap-diagnostics.md) all edit `ki-work-roadmap` `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
@@ -165,13 +165,13 @@ This is an association-only recovery check, not a complete task/worktree census 
 
 - Verified partial delivery: `a98cce65` implemented the item-side association contract. [Task links](../../skills/change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links) and [task-to-work reconciliation](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#task-to-work-relationship) now supply the formerly missing item-side part of rule 2. Receiving-repository commit `c0857d5652060d644fecc7c2f20a308f59feec7c` in `knowledgeislands/tools-ki` implements `src/core/work/items.ts::parseTaskLinks`; its CLI-088 review packet remains awaiting review. That committed snapshot, not unrelated receiving-checkout edits, is the evidence used here.
 - Remaining: complete the seven-rule citation reconciliation, resolve the rule-6 serialization question with GOV-102, and establish rule 7’s actual authority without overriding the current explicit-direct-instruction path. No live agent configuration or removal of duplicated rule text was verified. This item still does not own edits to Paperclip agent configurations.
-- Closure route: revisit the Triage scope against delivered GOV-116 before human-approved adoption or an applicable disposition. Do not recreate the task-link schema or treat historical task associations as active ownership.
+- Closure route (historical; the record has since been adopted and GOV-116 is done): revisit the Triage scope against delivered GOV-116 before human-approved adoption or an applicable disposition. Do not recreate the task-link schema or treat historical task associations as active ownership.
 
 Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062efc` on 2026-09-27. The read-only probe of `http://127.0.0.1:3100/api/health` could not connect; live tasks, current claims and runtime configuration were not verified. The local Git worktree registry was inspected, not every retained worktree’s contents. Before further implementation, reconcile the current destination branch, linked coordination tasks and retained worktrees where applicable, including reachability, patch equivalence and uncommitted work. Missing evidence does not release ownership or lift a hold. This checkpoint is guidance, not a mechanical execution block or a grant to resume. Lifecycle, checkboxes and ownership remain unchanged; retain any later done record until the principal explicitly selects pruning.
 
 The temptation is to treat this as a tidy-up: delete seven paragraphs from three files. It is not, because the copies are currently the only place three of the rules are written down in the form the agents act on, and two rules have no complete home to be sent to.
 
-Rule 2 is the sharp one. `COORD-3` requires each task to identify at most one governing work item, which is the task half. The other half - every governing item naming its covering tasks - has no home because it has no field: roadmap front matter is a closed allow-list checked at parse time in `tools-ki` at `src/core/work/items.ts`, and no covering-task field is in it. Until one is, the item side of rule 2 is prose in a `## Current state` section, which is what the accepted coordination-lane delivery does and says it is doing. That field is owned by `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness`. The honest outcome is a citation to `COORD-3` for the task side and a named, owned gap for the item side, not a citation that quietly overstates its coverage.
+Rule 2 is the sharp one. `COORD-3` requires each task to identify at most one governing work item, which is the task half. The other half - every governing item naming its covering tasks - has no home because it has no field: roadmap front matter is a closed allow-list checked at parse time in `tools-ki` at `src/core/work/items.ts`, and no covering-task field is in it. Until one was, the item side of rule 2 was prose in a `## Current state` section, which is what the accepted coordination-lane delivery did and said it was doing. That field was owned by `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness`, now done. The honest outcome is a citation to `COORD-3` for the task side and a named, owned gap for the item side, not a citation that quietly overstates its coverage.
 
 Rule 7 is the other gap and is probably cheap: "all delivery happens under a roadmap item" is close to what `ki-work-roadmap` already governs, and `ADR-KI-HARNESS-SKILLS-011` decided that non-KB repositories carry roadmaps. Whether either states the rule as a requirement on delivery, rather than as a description of where work items live, has to be read before it is claimed.
 
@@ -183,7 +183,7 @@ What would fail if this were violated? Today, nothing - which is the point. Noth
 
 - The accepted coordination-lane delivery recorded this as a follow-on and declined to add four more copies.
 - `KI-HARNESS-GOV-102` owns what a role record physically is, which rule 6's citation depends on.
-- `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` owns the covering-task front-matter field that rule 2's item side needs.
+- `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` owned the covering-task front-matter field that rule 2's item side needed; it is done (accepted in `ki-techne-harness` `7edbadb`), so rule 2 no longer waits on it.
 
 ### Decision
 

@@ -4,12 +4,12 @@ area: GOV
 title: Adopt Dependency Cruiser estatewide
 theme: governance-consistency
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: e30948ad1e45835c5d2a6140ff5306778a32b9d2
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-05T22:10:50Z
+updated_at: 2026-10-06T01:20:00Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -105,6 +105,32 @@ None.
 
 This record gains a rollout inventory; per-repository adoption follows as trades, and raising `DESIGN-3` to FAIL as a follow-on.
 
+## Rollout inventory
+
+Recorded 2026-10-06 from the primary checkouts under `knowledgeislands/`, read-only. "Enforcement" means a tracked `.dependency-cruiser.ts` with a `tooling/boundaries/` install root, judged by `DESIGN-2`'s mechanical half; it is not yet `DESIGN-3` evidence. Whether each cruise covers `scripts/` was not re-verified here.
+
+| Repository | Applicability | Enforcement and first commit |
+| --- | --- | --- |
+| `mcp-acquire-whatsapp` | applicable | adopted, `fba83c6` (2026-09-19); the reference pattern |
+| `apps-observatory` | applicable | adopted, `eb8e77f` (2026-10-02) |
+| `ki-website` | applicable | adopted, `864bfbb` (2026-10-05) |
+| `mcp-git-audit` | applicable | adopted, `7f55b2f` (2026-10-05) |
+| `mcp-gsuite` | applicable | adopted, `7e4d42a` (2026-10-05) |
+| `mcp-housekeeping-chatgpt` | applicable | adopted, `e221f79` (2026-10-05) |
+| `mcp-housekeeping-claude` | applicable | adopted, `1448e67` (2026-10-05) |
+| `mcp-housekeeping-codex` | applicable | adopted, `118f624` (2026-10-05) |
+| `mcp-ki-kb-fs` | applicable | adopted, `c8090fd` (2026-10-05) |
+| `mcp-ki-kb-notion-mirror` | applicable | adopted, `2831b84` (2026-10-05) |
+| `mcp-m365` | applicable | adopted, `9ee4c71` (2026-10-05) |
+| `tools-git-almanac` | applicable | adopted, `7d26923` (2026-10-05) |
+| `tools-ki` | applicable | adopted, `c34ccc9` (2026-10-05) |
+| `tools-techne` | applicable | adopted, `19c1346` (2026-10-05) |
+| `ki-agentic-harness` | applicable | **gap**: no `.dependency-cruiser.ts` or `tooling/boundaries/`; Step 4, needing the separate install root because the repository is on TypeScript 7 |
+| `ki-arcadia-principal` | proposed exempt | none; its only TypeScript files are `commitlint.config.ts` and `knip.ts`, so there is no source graph to cruise |
+| `ki-techne-harness` | proposed exempt | none; `tsconfig.json` includes `src/**/*.ts`, which is empty, and the controller is Python with one `types.d.ts` |
+
+`homebrew-tap`, `ki-specifications`, `tools-mgit` and `tools-rig` do not declare `ki-engineering` and are out of scope. The two proposed exemptions become final only once Step 1's applicability rule lands; no other applicable gap needs a trade.
+
 ## Discussion
 
 ### Common contract
@@ -114,3 +140,9 @@ The minimum shared check is the two baseline rules plus the two liveness proofs;
 ### Rollout evidence
 
 The two working configurations are starting examples, not a single rule set to copy into unrelated repositories. Verification in each receiving repository should show that the checker visits the intended source roots, resolves the imports used by its rules, and fails on a deliberate crossing.
+
+### Start - 2026-10-06
+
+Started at baseline `e30948ad` to make the lifecycle honest: two Steps were already complete while the record still read `ready`. Work that predates the baseline and is therefore not in its diff: the native boundary verification and per-member workspace adapter (`7f50f664`, `537a9f62`, `8d35cbb1`), the `prepare` install step (`b7e276de`, Step 7) and the named-remedy audit evidence (`a074fc4a`, Step 8). The estate's adoption under `DESIGN-2` is recorded in the Rollout inventory above.
+
+Still open: `DESIGN-3` is absent from `design.ts`, the generated rubric is not regenerated for it, and the harness's own adoption (Step 4) has not started. Step 6 stays open until `scripts/` coverage is recorded per repository. `DESIGN-2`'s mechanical half now checks a complete product-source graph and native failure proof, which overlaps Steps 2 and 3; re-check those Steps against it through `ki-plan` before implementing them, rather than adding a second criterion that proves the same thing.
