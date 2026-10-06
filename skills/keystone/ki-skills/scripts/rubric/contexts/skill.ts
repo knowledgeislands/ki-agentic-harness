@@ -1,4 +1,5 @@
 import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs'
+import { builtinModules } from 'node:module'
 import { basename, dirname, join, relative, resolve, sep } from 'node:path'
 import type { RubricPublication } from '../../shared/rubric.ts'
 import {
@@ -76,10 +77,28 @@ const sourceHarnessName = (directory: string): string | undefined => {
   return undefined
 }
 
-const relativeImportSpecifiers = (source: string): string[] =>
-  [...source.matchAll(/\b(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"](\.\.?\/[^'"]+)['"]/g)].map(
-    (match) => match[1] as string
+const IMPORT_SPECIFIER_PATTERNS = [
+  /^\s*(?:import|export)\s[^;'"()]*?\bfrom\s*['"]([^'"]+)['"]/gm,
+  /^\s*import\s*['"]([^'"]+)['"]/gm,
+  /\bimport\s*\(\s*['"]([^'"]+)['"]/g,
+  /\brequire\s*\(\s*['"]([^'"]+)['"]/g
+]
+
+/** Static, side-effect, dynamic and CommonJS specifiers; a quoted `from` inside a string literal is not a statement. */
+const importSpecifiers = (source: string): string[] => [
+  ...new Set(
+    IMPORT_SPECIFIER_PATTERNS.flatMap((pattern) => [...source.matchAll(pattern)].map((match) => match[1] ?? ''))
   )
+]
+
+const RUNTIME_BUILTINS = new Set(builtinModules)
+
+/** A runtime built-in needs no package resolution: `node:*`, a bare Node built-in, `bun`, or `bun:*`. */
+const isRuntimeBuiltin = (specifier: string): boolean =>
+  specifier.startsWith('node:') ||
+  specifier === 'bun' ||
+  specifier.startsWith('bun:') ||
+  RUNTIME_BUILTINS.has(specifier)
 
 const listScriptFiles = (scriptsDirectory: string): string[] => {
   if (!existsSync(scriptsDirectory)) return []
@@ -312,14 +331,20 @@ export const createSkillRubricContext = (
   const sharedDirectory = join(scriptsDirectory, 'shared')
   const familyEvidence = rubricFamilyModules(scriptsDirectory)
   const imports = listScriptFiles(scriptsDirectory).flatMap((scriptPath) =>
-    relativeImportSpecifiers(readFileSync(scriptPath, 'utf8')).map((specifier) => {
-      const resolved = resolve(dirname(scriptPath), specifier)
-      return {
-        entry: relative(scriptsDirectory, scriptPath),
-        specifier,
-        resolvesInsideScripts: resolved.startsWith(`${scriptsDirectory}/`)
-      }
-    })
+    importSpecifiers(readFileSync(scriptPath, 'utf8'))
+      .filter((specifier) => !isRuntimeBuiltin(specifier))
+      .map((specifier) => {
+        const entry = relative(scriptsDirectory, scriptPath)
+        if (!specifier.startsWith('.') && !specifier.startsWith('/'))
+          return { entry, specifier, packageImport: true, resolvesInsideScripts: false }
+        const resolved = resolve(dirname(scriptPath), specifier)
+        return {
+          entry,
+          specifier,
+          packageImport: false,
+          resolvesInsideScripts: resolved.startsWith(`${scriptsDirectory}/`)
+        }
+      })
   )
 
   return {

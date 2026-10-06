@@ -82,6 +82,8 @@ export type PortabilityRubricContext = {
 type CheckerImport = {
   entry: string
   specifier: string
+  /** A bare package specifier, which an installed skill or compiled `ki` binary cannot resolve. */
+  packageImport: boolean
   resolvesInsideScripts: boolean
 }
 

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { KI_CHECKER } from '../items/ki-checker.ts'
 import { KI_SHAPE } from '../items/ki-shape.ts'
 import { OPTIONAL } from '../items/optional.ts'
 import { selectKiSkillsContext } from './contexts.ts'
@@ -366,5 +367,65 @@ describe('runtime compatibility metadata', () => {
     }
   ])('rejects invalid runtime metadata', ({ frontmatter, message }) => {
     expect(outcomes(frontmatter)).toEqual([{ status: 'VIOLATION', message }])
+  })
+})
+
+describe('script import boundary', () => {
+  const outcomes = (scripts: Record<string, string>) => {
+    const directory = createSkill('skills/ki-example')
+    for (const [path, content] of Object.entries(scripts)) {
+      mkdirSync(join(directory, 'scripts', path, '..'), { recursive: true })
+      writeFileSync(join(directory, 'scripts', path), content)
+    }
+    const checker = selectKiSkillsContext(createSkillRubricContext(directory).context, 'checker')
+    const item = KI_CHECKER.items.find(({ code }) => code === 'KI-CHECKER-2')
+    if (!item?.mechanical?.audit) throw new Error('KI-CHECKER-2 must be mechanical')
+    return item.mechanical.audit.run(checker)
+  }
+
+  test('accepts runtime built-ins, skill-local files and quoted import text', () => {
+    expect(
+      outcomes({
+        'rubric/contexts/a.ts': [
+          "import { readFileSync } from 'node:fs'",
+          "import path from 'path'",
+          "import { $ } from 'bun'",
+          "import { Database } from 'bun:sqlite'",
+          "import type { B } from './b.ts'",
+          'const probe = "import {x} from \'dependency-cruiser\'"'
+        ].join('\n'),
+        'rubric/contexts/b.ts': 'export type B = string\n'
+      })
+    ).toEqual([{ status: 'PASS', message: 'skill script imports remain inside its own payload' }])
+  })
+
+  test('rejects bare package imports in every import form', () => {
+    expect(
+      outcomes({
+        'rubric/contexts/a.ts': [
+          "import { parse } from 'yaml'",
+          "export { x } from '@scope/package/sub'",
+          "import 'side-effect'",
+          "const lazy = await import('lazy-package')",
+          "const cjs = require('cjs-package')",
+          "import {\n  type T,\n  value\n} from 'multi-line'"
+        ].join('\n')
+      }).map(({ message }) => message)
+    ).toEqual(
+      ['yaml', '@scope/package/sub', 'multi-line', 'side-effect', 'lazy-package', 'cjs-package'].map(
+        (specifier) =>
+          `\`scripts/rubric/contexts/a.ts\` imports package \`${specifier}\`; use a runtime built-in or a skill-local file`
+      )
+    )
+  })
+
+  test('still rejects relative imports that escape the scripts directory', () => {
+    expect(outcomes({ 'rubric/contexts/a.ts': "import { x } from '../../../outside.ts'\n" })).toEqual([
+      {
+        status: 'VIOLATION',
+        message:
+          '`scripts/rubric/contexts/a.ts` imports `../../../outside.ts`, which resolves outside its own scripts directory'
+      }
+    ])
   })
 })

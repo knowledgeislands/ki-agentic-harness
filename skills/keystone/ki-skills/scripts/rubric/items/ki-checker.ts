@@ -20,23 +20,25 @@ const KI_CHECKER_2: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-2',
   title: 'skill implementation imports remain inside its own payload',
   description:
-    "A skill's `scripts/**/*.ts` files contain no static `from`, dynamic `import()`, or CommonJS `require()` relative import that resolves outside its own `scripts/` directory. A portable rubric dependency is copied into `scripts/shared/rubric.ts`, so every rubric item and context remains typecheckable inside the skill root.",
+    "A skill's `scripts/**/*.ts` files contain no static `from`, dynamic `import()`, or CommonJS `require()` relative import that resolves outside its own `scripts/` directory, and no bare package import: only runtime built-ins (`node:*`, Node built-ins, `bun`, `bun:*`) and skill-local relative files are allowed, because an installed skill has no `node_modules` and the compiled `ki` binary cannot resolve packages from disk. A portable rubric dependency is copied into `scripts/shared/rubric.ts`, so every rubric item and context remains typecheckable inside the skill root.",
   sources: ['KI'],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Move the dependency inside the skill payload, materialise an explicitly declared shared module, or remove the import after resolving which component owns that code.'
+        'Move the dependency inside the skill payload, replace a package with a runtime built-in such as `Bun.YAML`, materialise an explicitly declared shared module, or remove the import after resolving which component owns that code.'
     },
     audit: {
       phase: 'INSPECT',
       run: ({ imports }) => {
         const violations = imports
-          .filter((entry) => !entry.resolvesInsideScripts)
+          .filter((entry) => entry.packageImport || !entry.resolvesInsideScripts)
           .map((entry) => ({
             status: 'VIOLATION' as const,
-            message: `\`scripts/${entry.entry}\` imports \`${entry.specifier}\`, which resolves outside its own scripts directory`
+            message: entry.packageImport
+              ? `\`scripts/${entry.entry}\` imports package \`${entry.specifier}\`; use a runtime built-in or a skill-local file`
+              : `\`scripts/${entry.entry}\` imports \`${entry.specifier}\`, which resolves outside its own scripts directory`
           }))
         const [first, ...rest] = violations
         return first
