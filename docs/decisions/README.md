@@ -69,7 +69,7 @@ The records are living, compact, and independent. The order below is a **curated
 40. [GDR-KI-HARNESS-003](GDR-KI-HARNESS-003-portable-git-governance-ownership.md) — portable Git governance ownership.
 41. [GDR-KI-HARNESS-004](GDR-KI-HARNESS-004-four-doc-repository-documentation-ownership.md) — four-doc repository documentation ownership.
 42. [ADR-KI-HARNESS-014](ADR-KI-HARNESS-014-route-state-by-authority-and-durability.md) — route Harness state by canonical authority, durability, sensitivity, regeneration, and recovery.
-43. [GDR-KI-HARNESS-005](GDR-KI-HARNESS-005-cross-repository-trade-routes.md) — locally declared, receiver-controlled cross-repository trade submissions.
+43. [GDR-KI-HARNESS-005](GDR-KI-HARNESS-005-cross-repository-trade-routes.md) — archived: locally declared trade routes, superseded by GDR-KI-HARNESS-013.
 44. [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-owner-declared-agoras.md) — owner-declared repository groups with identifiers and titles, optional inclusions, and explicit local target selection.
 45. [GDR-KI-HARNESS-007](GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md) — ownership of document metadata and principal authority.
 46. [GDR-KI-HARNESS-008](GDR-KI-HARNESS-008-portable-work-item-timestamps.md) — portable work-item creation and semantic-update timestamps.
@@ -78,11 +78,12 @@ The records are living, compact, and independent. The order below is a **curated
 49. [ADR-KI-HARNESS-SKILLS-014](ADR-KI-HARNESS-SKILLS-014-explicit-skill-applicability.md) — exhaustive repository applicability classification and detector ownership.
 50. [GDR-KI-HARNESS-011](GDR-KI-HARNESS-011-versioned-source-installation-for-mcp-servers.md) — versioned Git source installation for MCP servers without mandatory package publication.
 51. [GDR-KI-HARNESS-012](GDR-KI-HARNESS-012-governed-vendoring-for-shared-estate-code.md) — digested skill-owned source profiles with receiver-owned seams and guarded projection.
-52. [ADR-KI-HARNESS-SKILLS-015](ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) — identifier scope segments accept any declared repository code that carries a letter.
-53. [XDR-KI-HARNESS-001](XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md) — Dependabot alerts and security updates everywhere; no version-update configuration and no dependency auto-merge.
-54. [ADR-KI-HARNESS-TOOLCHAIN-006](ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) — optional qmd derived search behind governed KI surfaces, with explicit independent KB boundaries.
-55. [ADR-KI-HARNESS-015](ADR-KI-HARNESS-015-retire-the-claude-plugin-projection.md) — retire the Claude plugin projection; the `ki` CLI and `npx skills add` distribute the harness.
-56. [DDR-KI-HARNESS-001](DDR-KI-HARNESS-001-mirrors-and-source-provenance-are-separate-relationships.md) — mirrors and source provenance use separate field families; only `mirrors`, `mirror_type` and `mirror_sha256` make a note a mirror.
+52. [GDR-KI-HARNESS-013](GDR-KI-HARNESS-013-capital-owned-territory-trade-policy.md) — Capital-owned territory trade policy: channels and standing grants replace member route declarations; receiver-controlled trade records.
+53. [ADR-KI-HARNESS-SKILLS-015](ADR-KI-HARNESS-SKILLS-015-identifier-scope-segments-accept-any-legal-repository-code.md) — identifier scope segments accept any declared repository code that carries a letter.
+54. [XDR-KI-HARNESS-001](XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md) — Dependabot alerts and security updates everywhere; no version-update configuration and no dependency auto-merge.
+55. [ADR-KI-HARNESS-TOOLCHAIN-006](ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) — optional qmd derived search behind governed KI surfaces, with explicit independent KB boundaries.
+56. [ADR-KI-HARNESS-015](ADR-KI-HARNESS-015-retire-the-claude-plugin-projection.md) — retire the Claude plugin projection; the `ki` CLI and `npx skills add` distribute the harness.
+57. [DDR-KI-HARNESS-001](DDR-KI-HARNESS-001-mirrors-and-source-provenance-are-separate-relationships.md) — mirrors and source provenance use separate field families; only `mirrors`, `mirror_type` and `mirror_sha256` make a note a mirror.
 
 ## Template
 

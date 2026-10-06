@@ -2,7 +2,7 @@
 id: GDR-KI-HARNESS-005
 title: "Cross-repository trade routes"
 date: 2026-08-06
-status: current
+status: archive
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
 decision_type: governance
 decision_depends_on: ["GDR-KI-FUNDAMENTALS-001"]
