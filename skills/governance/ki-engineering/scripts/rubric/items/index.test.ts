@@ -5,6 +5,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricEmitter, RubricFamily } from '../../shared/rubric.ts'
 import {
+  BUN_RUNTIME,
+  classifyBunRuntime,
   collectPackageScriptSources,
   collectTrackedMjs,
   findRelativeNodeModulesScriptUses,
@@ -15,7 +17,8 @@ import {
   inspectGovernedScriptSurface,
   inspectManagedSurfaceExclusions,
   inspectTurborepo,
-  nextVersionAfter
+  nextVersionAfter,
+  pinnedBunRuntime
 } from '../contexts/audit-evidence.ts'
 import {
   createEngineeringSession,
@@ -868,6 +871,53 @@ test('the adoption clock is set by the next unadopted release, never the latest'
   expect(nextVersionAfter('5.9.3', ['5.9.3', '7.0.2', '6.0.0', '7.0.0-beta.1'])).toBe('6.0.0')
   expect(nextVersionAfter('7.0.2', ['5.9.3', '7.0.2'])).toBeUndefined()
   expect(nextVersionAfter('not-a-version', ['1.0.0'])).toBeUndefined()
+})
+
+test('the pinned Bun runtime is read from an exact packageManager release only', () => {
+  expect(pinnedBunRuntime('bun@1.4.1')).toBe('1.4.1')
+  expect(pinnedBunRuntime('bun@1.4.2+sha512.abc123')).toBe('1.4.2')
+  expect(pinnedBunRuntime('bun@1.4.x')).toBeUndefined()
+  expect(pinnedBunRuntime('npm@10.9.0')).toBeUndefined()
+  expect(pinnedBunRuntime(undefined)).toBeUndefined()
+})
+
+test('the Bun runtime is current, behind, or unknown, and canary builds never make it behind', () => {
+  const times = new Map([
+    ['1.4.1', '2026-09-04T08:39:50Z'],
+    ['1.4.2', '2026-09-05T06:01:35Z'],
+    ['1.4.3-canary.20261005.1', '2026-10-05T14:24:44Z']
+  ])
+  expect(classifyBunRuntime('1.4.1', times)).toBe('behind')
+  expect(classifyBunRuntime('1.4.2', times)).toBe('current')
+  expect(classifyBunRuntime('1.4.2', undefined)).toBe('unknown')
+  expect(classifyBunRuntime('1.4.x', times)).toBe('unknown')
+})
+
+test('a behind Bun runtime shares the adoption window and the dependency hold route', () => {
+  const times = new Map([
+    ['1.4.1', '2026-09-04T08:39:50Z'],
+    ['1.4.2', '2026-09-05T06:01:35Z']
+  ])
+  const runtime = [{ name: BUN_RUNTIME, current: '1.4.1' }]
+  const publishTimes = new Map([[BUN_RUNTIME, times]])
+  expect(gradeDependencyFreshness(runtime, publishTimes, new Map(), new Date('2026-10-06T00:00:00Z'))).toEqual([
+    { state: 'stale', name: 'bun', current: '1.4.1', next: '1.4.2', ageDays: 30 }
+  ])
+  expect(gradeDependencyFreshness(runtime, publishTimes, new Map(), new Date('2026-09-10T00:00:00Z'))).toEqual([
+    { state: 'fresh', name: 'bun', current: '1.4.1', next: '1.4.2', ageDays: 4 }
+  ])
+  const { holds, messages } = inspectDependencyHolds(
+    '[skills.ki-engineering]\ndependency_holds = ["bun — awaiting a Bun regression fix"]\n',
+    [BUN_RUNTIME]
+  )
+  expect(messages).toEqual([])
+  expect(gradeDependencyFreshness(runtime, publishTimes, holds, new Date('2026-10-06T00:00:00Z'))).toEqual([
+    { state: 'held', name: 'bun', current: '1.4.1', reason: 'awaiting a Bun regression fix' }
+  ])
+  expect(
+    inspectDependencyHolds('[skills.ki-engineering]\ndependency_holds = ["bun — awaiting a Bun regression fix"]\n', [])
+      .messages
+  ).toEqual(['stale dependency hold names a package with no available update: bun'])
 })
 
 test('freshness grades FAIL beyond the 14-day window, INFO within it, held and unknown as recorded', () => {

@@ -184,7 +184,7 @@ const lintStaged = {
   '*.md': ['bunx rumdl check --fix']
 }
 const defaults = {
-  'mise.toml': `[tools]\nnode = "22"\nbun = "1.4.1"\n`,
+  'mise.toml': `[tools]\nnode = "22"\nbun = "1.4.2"\n`,
   'tsconfig.json': `{
   "compilerOptions": {
     "target": "es2024",
@@ -284,7 +284,7 @@ const packageContent = (source: string, boundaryInstallRoot: boolean): string | 
   }
   const packageJson = structuredClone(value)
   packageJson.type = 'module'
-  packageJson.packageManager = 'bun@1.4.1'
+  packageJson.packageManager = 'bun@1.4.2'
   packageJson.engines = { ...((packageJson.engines as Record<string, string> | undefined) ?? {}), node: '>=22' }
   const devDependencies = { ...((packageJson.devDependencies as Record<string, string> | undefined) ?? {}) }
   for (const dependency of requiredDev) devDependencies[dependency] ??= versions[dependency] as string

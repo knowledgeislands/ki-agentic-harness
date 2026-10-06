@@ -154,7 +154,9 @@ A repository-footprint replacement prefers the correct clean end state over tran
 
 KI repositories run at the leading edge: when a dependency publishes a newer release, the default is to adopt it, not to defer. A newer release opens a **14-day adoption window**, and the clock is set by the **next version after the one installed** — the first release the repository has not adopted — never by the latest, so a fast-shipping upstream cannot reset it by publishing again. Within the window an available update is informational; beyond it the repository is behind the standard and the audit fails. Updates are applied deliberately — reviewed through `ki repo conform`, or `ki:deps:update` for the blanket `bun update --latest` — and proven by the usual gates rather than assumed safe.
 
-A deliberate hold is recorded, never silent: `dependency_holds` under `[skills.ki-engineering]` (§9) lists each held package as `"<name> — <reason>"`. A held package reports as informational for as long as the hold stands, and a hold whose package has no available update is stale and flagged for removal. When the registry cannot be reached to date a release, freshness is reported as unknown rather than guessed.
+The Bun runtime is a dependency too. The exact release `packageManager` pins is dated against the registry's `bun` package, the same source as every other release date, and graded under the same window and clock, so a repository whose runtime lags is behind the standard in exactly the way a lagging package is. Adopting it means moving `packageManager` and the `mise.toml` `bun` pin together, which `MISE-2` already holds equal. Prerelease canary builds never open the window.
+
+A deliberate hold is recorded, never silent: `dependency_holds` under `[skills.ki-engineering]` (§9) lists each held package as `"<name> — <reason>"`, with the runtime held as `bun`. A held package reports as informational for as long as the hold stands, and a hold whose package has no available update is stale and flagged for removal. When the registry cannot be reached to date a release, freshness is reported as unknown rather than guessed.
 
 ## 2. The governed script surface (core)
 

@@ -4,12 +4,12 @@ area: GOV
 title: Govern Bun runtime freshness
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: efb866bb1fbe7432d99045840d1c15822cb8637f
 created_at: 2026-10-05T23:00:00Z
-updated_at: 2026-10-06T10:20:00Z
+updated_at: 2026-10-06T11:05:00Z
 ---
 
 # KI-HARNESS-GOV-138: Govern Bun runtime freshness
@@ -42,13 +42,13 @@ The harness pins `bun@1.4.1` in `package.json` and `bun = "1.4.1"` in `mise.toml
 
 ## Steps
 
-- [ ] Extend `DEPS-1` rather than add a criterion: treat the pinned runtime as one more dependency named `bun`, read from `packageManager`, so it shares the 14-day window, the next-unadopted-release clock, the `dependency_holds` route and the existing message shapes. Add a pure exported helper that reads the pinned version from `packageManager` and one that classifies the runtime as current, behind or unknown from a publish-time map, and factor the registry lookup into one helper shared with the package lookups.
-- [ ] In `collectAuditEvidence`, look up the `bun` publish times alongside the package lookups. A behind runtime joins the graded list, and joins the available names used to validate holds, so `bun — <reason>` is a valid hold while the runtime is behind and stale once it is current. A current runtime reports in the PASS message. An unreachable registry reports INFO that the runtime's freshness is unknown, never PASS.
-- [ ] Add focused tests in `scripts/rubric/items/index.test.ts` for pinned-version parsing, runtime classification (current, behind with a dated next release, unknown when the lookup failed, prerelease-only newer versions treated as current), and a runtime hold. No test reaches the network.
-- [ ] Update the `DEPS-1` description and guidance in `scripts/rubric/items/dependencies.ts`, regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering --write`, and add the runtime to the dependency-freshness section of `references/standards-engineering.md`.
-- [ ] Bump the harness to Bun 1.4.2 in `package.json` and `mise.toml`, and the CONFORM scaffold defaults in `scripts/rubric/contexts/engineering.ts`.
-- [ ] Record in `references/sources.md` that the runtime gap is closed and the harness and scaffold now pin 1.4.2.
-- [ ] Run the verification below.
+- [x] Extend `DEPS-1` rather than add a criterion: treat the pinned runtime as one more dependency named `bun`, read from `packageManager`, so it shares the 14-day window, the next-unadopted-release clock, the `dependency_holds` route and the existing message shapes. Add a pure exported helper that reads the pinned version from `packageManager` and one that classifies the runtime as current, behind or unknown from a publish-time map, and factor the registry lookup into one helper shared with the package lookups.
+- [x] In `collectAuditEvidence`, look up the `bun` publish times alongside the package lookups. A behind runtime joins the graded list, and joins the available names used to validate holds, so `bun — <reason>` is a valid hold while the runtime is behind and stale once it is current. A current runtime reports in the PASS message. An unreachable registry reports INFO that the runtime's freshness is unknown, never PASS.
+- [x] Add focused tests in `scripts/rubric/items/index.test.ts` for pinned-version parsing, runtime classification (current, behind with a dated next release, unknown when the lookup failed, prerelease-only newer versions treated as current), and a runtime hold. No test reaches the network.
+- [x] Update the `DEPS-1` description and guidance in `scripts/rubric/items/dependencies.ts`, regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering --write`, and add the runtime to the dependency-freshness section of `references/standards-engineering.md`.
+- [x] Bump the harness to Bun 1.4.2 in `package.json` and `mise.toml`, and the CONFORM scaffold defaults in `scripts/rubric/contexts/engineering.ts`.
+- [x] Record in `references/sources.md` that the runtime gap is closed and the harness and scaffold now pin 1.4.2.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -101,6 +101,42 @@ None beyond the engineering standard's dependency-freshness section.
 ### Roadmap
 
 This record only.
+
+## Review
+
+### Delivered
+
+Within the approved boundary, `DEPS-1` now grades the Bun runtime pinned in `packageManager` as the dependency `bun`, under the same 14-day window, next-unadopted-release clock, `dependency_holds` route and message shapes as packages, dated from the npm `bun` package. The harness and the CONFORM scaffold pin Bun 1.4.2. Other runtimes and each configured repository's own bump stay out of scope. Baseline `efb866bb1fbe7432d99045840d1c15822cb8637f`; the result is the implementation commit that carries this packet.
+
+### Change Summary
+
+- `scripts/rubric/contexts/audit-evidence.ts`: exported `BUN_RUNTIME`, `pinnedBunRuntime` and `classifyBunRuntime`; factored the registry lookup into `fetchPublishTimes`, shared by packages and the runtime; a behind runtime joins the graded list and the hold-validation names; an unknown runtime keeps its hold valid and reports INFO, never PASS; a `bun@` pin that is not an exact release reports INFO.
+- Holds are now inspected on every path, including when nothing is outdated, so a hold that outlives its update is flagged as stale as `standards-engineering.md` already states. Previously that check ran only when `bun outdated` listed something.
+- `scripts/rubric/items/dependencies.ts` and the regenerated `references/rubric.md`: `DEPS-1` description, remediation, scope and guidance name the runtime.
+- `references/standards-engineering.md`: the dependency-freshness section covers the runtime; `references/sources.md` records the gap as closed.
+- `scripts/rubric/contexts/engineering.ts`, `package.json`, `mise.toml`: Bun 1.4.2.
+- `scripts/rubric/items/index.test.ts`: pinned-version parsing, current/behind/unknown classification including canary prereleases, the shared window, an active runtime hold and a stale runtime hold. No test reaches the network.
+
+### Verification
+
+- `bun test skills/governance/ki-engineering`: 59 pass, 0 fail.
+- `ki repo audit --repo . --skill ki-engineering` with the harness temporarily at 1.4.1: `DEPS-1` FAIL "beyond the 14-day adoption window: bun 1.4.1 → 1.4.2 (available 31 days)"; at 1.4.2 the skill passes with no `DEPS-1` finding.
+- Unreachable registry: `classifyBunRuntime('1.4.2', undefined)` is `unknown`, and the audit path uses that helper.
+- `ki dev skill rubric ki-engineering`: rubric in sync.
+- `bun run test`: 895 pass, 0 fail. `bunx tsc --noEmit`: clean. `bunx biome check .`: no errors; existing warnings are in unrelated files.
+- `ki repo audit --repo . --progress never --concise`: FAIL=0.
+
+### Outstanding concerns
+
+None. Each configured repository's own bump is receiver-owned and will surface in its own `DEPS-1` once a released `ki` carries this revision, as the planning decisions record.
+
+### Post-change review
+
+The goal is met: an audit now notices a lagging runtime. Scope matches the plan, with one small, standard-aligned widening (hold inspection on the all-current path). Regression risk is low: the only new network call reuses the existing registry host and timeout, and an unreachable registry yields INFO rather than FAIL, so CI gains no new failure mode. Ready for acceptance subject to independent review.
+
+### Mini recap
+
+Delivered runtime freshness inside `DEPS-1`, bumped the harness and scaffold to Bun 1.4.2, and verified the before/after audit and the full gates. No open concerns. Learning route: none beyond the engineering standard text already updated.
 
 ## Discussion
 
