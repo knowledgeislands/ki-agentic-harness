@@ -4,12 +4,12 @@ area: GOV
 title: Render every derived signal
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-05T08:02:07Z
+updated_at: 2026-10-06T17:20:16Z
 ---
 
 # KI-HARNESS-GOV-098: Render every derived signal
@@ -38,8 +38,8 @@ No REVIEW question relates a reported count to the rows a view renders. `Contrac
 
 ## Steps
 
-- [ ] Insert one question directly after the [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) idempotence question, or, if that has not landed, directly after the count-based-gate question: `- [ ] Where a view both reports a count and renders the items it counts, a test over a fixture exercising every subject kind the derivation can produce asserts that the count equals the items rendered.`
-- [ ] Run the verification below.
+- [x] Insert one question directly after the [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) idempotence question, or, if that has not landed, directly after the count-based-gate question: `- [ ] Where a view both reports a count and renders the items it counts, a test over a fixture exercising every subject kind the derivation can produce asserts that the count equals the items rendered.`
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -81,6 +81,39 @@ None. The website skills-by-outcome guide does not restate REVIEW questions.
 ### Roadmap
 
 None. `KI-OBS-VIS-004` in `apps-observatory` owns the instance and needs no change.
+
+## Review
+
+### Delivered
+
+One count-versus-rendered question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, worded exactly as the Step specifies and naming the fixture test as its evidence. `KI-OBS-VIS-004`, other lenses, rubrics, TypeScript and generated files are excluded and unchanged. Baseline `a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe`; implementation commit `8f34487c`.
+
+### Change Summary
+
+- `skills/keystone/ki-repo/references/mode-review.md`: one checklist item. It was inserted directly after the count-based-gate question while [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) was absent. [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) (`5383ceae`) and GOV-124 (`0362c53f`) then landed ahead of it in the same push, so it now sits directly after the idempotence question, as the Step prefers.
+- The resulting order in `Automated verification` is the count-based-gate question, then the zero-result question (GOV-096), the idempotence question (GOV-124) and the count-versus-rendered question (GOV-098), then the ignore-list question, which is the batch sequencing the three records prescribe.
+
+### Verification
+
+- `bun run test`: 940 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `bunx biome check .`: exit 0; pre-existing warnings and infos in unrelated files only.
+- `ki repo audit --skill ki-repo --progress never`: findings identical to the baseline (diffed); the eight pre-existing `RUNTIMES-2` activation findings and the worktree-only `REPO-REG-1` registration finding, none in `mode-review.md`.
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `git diff --stat a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe..8f34487c`: only `mode-review.md`, one insertion.
+- Verify 1 and 2: exactly one new count-versus-rendered question, after the idempotence question; it names a test asserting the count against the rendered items over a fixture covering every subject kind. Verify 3: no other lens, rubric, TypeScript or generated file changes for this record. Verify 4: added text is British English with ASCII hyphens only. Verify 5: tests and type checking pass.
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+The goal is met: REVIEW now asks the completeness question that no lens asked before. Scope held to one Markdown line. There is no regression risk, because nothing mirrors the REVIEW checklist. Independent review by a Fable subagent returned APPROVE, with no blocking or should-fix finding for this record. Ready for acceptance.
+
+### Mini recap
+
+Delivered one REVIEW question, all gates pass, and no concerns are open. Learning route: none beyond the checklist text, since `KI-OBS-VIS-004` already recorded the rule for its instance.
 
 ## Discussion
 

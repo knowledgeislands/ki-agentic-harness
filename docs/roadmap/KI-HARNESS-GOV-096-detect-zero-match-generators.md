@@ -4,12 +4,12 @@ area: GOV
 title: Detect zero-match generators
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-09-26T10:45:00Z
-updated_at: 2026-10-05T08:00:02Z
+updated_at: 2026-10-06T17:20:16Z
 ---
 
 # KI-HARNESS-GOV-096: Detect zero-match generators
@@ -40,9 +40,9 @@ Out of scope: a construction rule requiring generators to warn or exit non-zero 
 
 ## Steps
 
-- [ ] Insert one question directly after the `:376` count-based-gate question (the end of the "reads exactly like verification" pair) and before "No gate is made to pass by widening an ignore list": `- [ ] A generator, extractor or discovery predicate that returned an empty or zero result was confirmed to have found nothing, by a run against a known non-empty case or an asserted floor, rather than assumed to have looked.`
-- [ ] Land it in the same change as the [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) question, which follows it immediately, and check that neither question restates the other.
-- [ ] Run the verification below.
+- [x] Insert one question directly after the `:376` count-based-gate question (the end of the "reads exactly like verification" pair) and before "No gate is made to pass by widening an ignore list": `- [ ] A generator, extractor or discovery predicate that returned an empty or zero result was confirmed to have found nothing, by a run against a known non-empty case or an asserted floor, rather than assumed to have looked.`
+- [x] Land it in the same change as the [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) question, which follows it immediately, and check that neither question restates the other.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -84,6 +84,41 @@ None. The website skills-by-outcome guide selects skills by task and does not re
 ### Roadmap
 
 None beyond the batch sequencing above. `5GE-P2-DATA-006` in `5g-emerge-phase2` owns the instance and needs no change from this delivery.
+
+## Review
+
+### Delivered
+
+One zero-result question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, worded exactly as Step 1 specifies and naming a known non-empty case or an asserted floor as evidence, landed in the same push as the [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) idempotence question that follows it. The construction rule, `5GE-P2-DATA-006`, other lenses, rubrics, TypeScript and generated files are excluded and unchanged. Baseline `a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe`; implementation commit `5383ceae`, with GOV-124 in `0362c53f`.
+
+### Change Summary
+
+- `skills/keystone/ki-repo/references/mode-review.md`: one checklist item directly after the count-based-gate question and immediately before the GOV-124 idempotence question.
+- The resulting order in `Automated verification` is the count-based-gate question, then the zero-result question (GOV-096), the idempotence question (GOV-124) and the count-versus-rendered question (GOV-098), then the ignore-list question, which is the batch sequencing the three records prescribe.
+- The joint landing is one push of two commits, one per record, rather than a single commit, so each record keeps its own implementation evidence.
+
+### Verification
+
+- `bun run test`: 940 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `bunx biome check .`: exit 0; pre-existing warnings and infos in unrelated files only.
+- `ki repo audit --skill ki-repo --progress never`: findings identical to the baseline (diffed); the eight pre-existing `RUNTIMES-2` activation findings and the worktree-only `REPO-REG-1` registration finding, none in `mode-review.md`.
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `git show --stat 5383ceae`: only `mode-review.md`, one insertion.
+- Verify 1: exactly one new zero-result question, after the count-based-gate question and immediately before the idempotence question. Verify 2: a single yes-or-no item naming a known non-empty case or an asserted floor, contrasting "found nothing" with "assumed to have looked". Verify 3: only `mode-review.md` changes for this record. Verify 4: added text is British English with ASCII hyphens only. Verify 5: tests and type checking pass.
+- Step 2 non-restatement check: the zero-result question covers an empty result mistaken for a fact about the data, the idempotence question an unstable result mistaken for a change in the data. Neither restates the other or the count-versus-rendered question from [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md).
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+The review-side goal is met: REVIEW now asks whether an empty result was shown to be a finding. Scope held to one Markdown line, and the construction rule stays unadopted as decided. There is no regression risk, because nothing mirrors the REVIEW checklist. Independent review by a Fable subagent first returned APPROVE WITH CHANGES while GOV-124 was absent; its one should-fix asked for the joint landing or a recorded deviation. GOV-124 was then delivered alongside, and a second Fable review of the joint landing returned APPROVE, confirming that Step 2 is satisfied. Ready for acceptance.
+
+### Mini recap
+
+Delivered one REVIEW question jointly with GOV-124, all gates pass, and no concerns are open. Learning route: the construction rule (generators announce an empty walk) remains unadopted, as the Decision records.
 
 ## Discussion
 

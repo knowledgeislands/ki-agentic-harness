@@ -4,12 +4,12 @@ area: GOV
 title: Review artefact idempotence
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-05T08:01:30Z
+updated_at: 2026-10-06T17:20:16Z
 ---
 
 # KI-HARNESS-GOV-124: Review artefact idempotence
@@ -42,10 +42,10 @@ Out of scope: the `5g-emerge-phase2` extractor and catalogue, which are settled 
 
 ## Steps
 
-- [ ] Insert one checklist item directly after the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) question, worded: "A committed generated artefact was confirmed byte-identical across two runs over unchanged input, and the evidence names the method, such as comparing digests of both outputs; a clean `git diff --quiet` alone does not count, because it passes on an untracked file."
-- [ ] Add one guidance bullet after the `Prefer clarity to maximal DRY` bullet in `## Code design` of `standards-engineering.md`: a generator whose output is committed SHOULD be deterministic over unchanged input, carrying no clock, random seed, unsorted iteration or absolute path into its bytes, and SHOULD prove it with a two-run digest comparison. State that this is review guidance, not a rubric criterion.
-- [ ] Confirm `ki dev skill rubric ki-engineering` reports the generated rubric unchanged, since no item or source anchor moves.
-- [ ] Run the verification below.
+- [x] Insert one checklist item directly after the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) question, worded: "A committed generated artefact was confirmed byte-identical across two runs over unchanged input, and the evidence names the method, such as comparing digests of both outputs; a clean `git diff --quiet` alone does not count, because it passes on an untracked file."
+- [x] Add one guidance bullet after the `Prefer clarity to maximal DRY` bullet in `## Code design` of `standards-engineering.md`: a generator whose output is committed SHOULD be deterministic over unchanged input, carrying no clock, random seed, unsorted iteration or absolute path into its bytes, and SHOULD prove it with a two-run digest comparison. State that this is review guidance, not a rubric criterion.
+- [x] Confirm `ki dev skill rubric ki-engineering` reports the generated rubric unchanged, since no item or source anchor moves.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -90,6 +90,41 @@ None. The website skills-by-outcome guide does not restate REVIEW questions or e
 ### Roadmap
 
 On delivery, `5GE-P2-GOV-015` in `5g-emerge-phase2` can close, since the lens is now in the shared checklist. That repository has no trade route to this harness by its own decision, so the owner relays the outcome; this record writes nothing there.
+
+## Review
+
+### Delivered
+
+One idempotence question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, immediately after the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) zero-result question and landed in the same push. Also one SHOULD guidance bullet on deterministic generation in `## Code design` of the `ki-engineering` standard. The `5g-emerge-phase2` extractor, the GOV-092 and GOV-093 concerns, any rubric or mechanical check, and other lenses are excluded and unchanged. Baseline `a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe`; implementation commit `0362c53f`.
+
+### Change Summary
+
+- `skills/keystone/ki-repo/references/mode-review.md`: one checklist item worded exactly as Step 1, which excludes `git diff --quiet` alone as evidence.
+- `skills/governance/ki-engineering/references/standards-engineering.md`: a `Generate deterministically` bullet after `Prefer clarity to maximal DRY`, carrying every element Step 2 lists and stating that it is review guidance, not a rubric criterion.
+- The resulting order in `Automated verification` is the count-based-gate question, then the zero-result question (GOV-096), the idempotence question (GOV-124) and the count-versus-rendered question (GOV-098), then the ignore-list question, which is the batch sequencing the three records prescribe.
+
+### Verification
+
+- `bun run test`: 940 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `bunx biome check .`: exit 0; pre-existing warnings and infos in unrelated files only.
+- `ki repo audit --skill ki-repo --progress never`: findings identical to the baseline (diffed); the eight pre-existing `RUNTIMES-2` activation findings and the worktree-only `REPO-REG-1` registration finding, none in `mode-review.md`.
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `ki dev skill rubric ki-engineering`: `references/rubric.md` is in sync; nothing under `skills/governance/ki-engineering/scripts/rubric/` changed.
+- `ki repo audit --skill ki-engineering --progress never`: PASS.
+- Verify 1: exactly one new idempotence question, immediately after the zero-result question, requiring a two-run byte-identity claim and a named method. Verify 2: it excludes `git diff --quiet` alone. Verify 3: one SHOULD bullet under `## Code design`, rubric unchanged. Verify 4: added text is British English with ASCII hyphens only. Verify 5: tests and type checking pass.
+
+### Outstanding concerns
+
+None. Two Fable nits were left as they stand. The closing "review guidance, not a rubric criterion" sentence is kept because Step 2 asks for it explicitly. The four-item list in the bullet keeps the Step's own punctuation rather than adding a serial comma.
+
+### Post-change review
+
+The goal is met: a reviewer has a question that asks whether regeneration was shown to be byte-stable, and authors have matching construction guidance outside the rubric. Scope held to two Markdown lines. There is no regression risk, because no rubric, test or generated file mirrors either text. Independent review by a Fable subagent returned APPROVE with two nits only. Ready for acceptance.
+
+### Mini recap
+
+Delivered the idempotence question and the determinism guidance jointly with GOV-096, all gates pass, and no concerns are open. Per Documentation impact, `5GE-P2-GOV-015` in `5g-emerge-phase2` can now close; the owner relays that, since this record writes nothing there.
 
 ## Discussion
 
