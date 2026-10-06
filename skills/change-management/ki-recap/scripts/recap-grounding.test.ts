@@ -36,13 +36,7 @@ const physical = (path: string): string => realpathSync(resolve(path))
  */
 const isolatedEnvironment = (home: string, overrides: Record<string, string> = {}): NodeJS.ProcessEnv => {
   const environment: NodeJS.ProcessEnv = { ...process.env, HOME: home }
-  for (const name of [
-    'CLAUDECODE',
-    'CLAUDE_CODE_SESSION_ID',
-    'CLAUDE_CONFIG_DIR',
-    'CLAUDE_CODE_PROJECT_DIR_NAME',
-    'CODEX_HOME'
-  ])
+  for (const name of ['CLAUDECODE', 'CLAUDE_CODE_SESSION_ID', 'CLAUDE_CONFIG_DIR', 'CLAUDE_CODE_PROJECT_DIR_NAME'])
     delete environment[name]
   return { ...environment, ...overrides }
 }
@@ -496,7 +490,68 @@ describe('recap grounding live-session selection', () => {
         runIsolated(repo, ['--transcript', 'chosen.jsonl'], { transcripts, env }).stdout
       ) as Selected
       expect(explicit.transcript).toBe(claude)
-      expect(explicit.transcriptSelection).toEqual({ method: 'explicit', examined: 1, limitReached: false })
+      expect(explicit.transcriptSelection).toMatchObject({ method: 'explicit', limitReached: false })
+
+      // Under `detect`, a selector still reaches Codex candidates inside Claude Code.
+      const codexByName = JSON.parse(
+        runIsolated(repo, ['--transcript', 'rollout-explicit.jsonl'], { transcripts, env }).stdout
+      ) as Selected
+      expect(codexByName.runtime).toBe('codex')
+      expect(codexByName.transcript).toBe(codex)
+      expect(codexByName.transcriptSelection.method).toBe('explicit')
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('recap grounding live-session overrides', () => {
+  test('--runtime claude with an identity declines rather than falling back to repository discovery', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const config = join(root, 'claude-config')
+    try {
+      initialiseRepository(repo)
+      const project = join(config, 'projects', physical(repo).replace(/[^A-Za-z0-9]/g, '-'))
+      mkdirSync(project, { recursive: true })
+      writeFileSync(join(project, 'other-session.jsonl'), `${claudeToolUse('Read', {})}\n`)
+      const env = { CLAUDECODE: '1', CLAUDE_CODE_SESSION_ID: SESSION, CLAUDE_CONFIG_DIR: config }
+      const forced = JSON.parse(runIsolated(repo, ['--runtime', 'claude'], { home: root, env }).stdout) as Selected
+      expect(forced.transcript).toBeNull()
+      expect(forced.transcriptSelection).toMatchObject({
+        method: 'none',
+        reason: 'live-session-transcript-not-found'
+      })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('--transcripts-dir confines the live-session locator to that directory', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const transcripts = join(root, 'transcripts')
+    const config = join(root, 'claude-config')
+    try {
+      initialiseRepository(repo)
+      mkdirSync(transcripts, { recursive: true })
+      // A live transcript elsewhere under the configured root must not be found.
+      const elsewhere = join(config, 'projects', '-launch-root', `${SESSION}.jsonl`)
+      mkdirSync(dirname(elsewhere), { recursive: true })
+      writeFileSync(elsewhere, `${claudeToolUse('Read', {})}\n`)
+      const env = { CLAUDECODE: '1', CLAUDE_CODE_SESSION_ID: SESSION, CLAUDE_CONFIG_DIR: config }
+      const missing = JSON.parse(runIsolated(repo, [], { transcripts, env }).stdout) as Selected
+      expect(missing.transcript).toBeNull()
+      expect(missing.transcriptSelection).toMatchObject({
+        method: 'none',
+        reason: 'live-session-transcript-not-found'
+      })
+
+      const live = join(transcripts, `${SESSION}.jsonl`)
+      writeFileSync(live, `${claudeToolUse('Edit', { file_path: '/x/live.md' })}\n`)
+      const found = JSON.parse(runIsolated(repo, [], { transcripts, env }).stdout) as Selected
+      expect(found.transcript).toBe(live)
+      expect(found.transcriptSelection).toEqual({ method: 'live-session', examined: 0, limitReached: false })
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

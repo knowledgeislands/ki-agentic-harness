@@ -118,7 +118,10 @@ const COMMIT = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 
 /** Maximum prefix read from one candidate to verify its eligibility metadata. */
 const HEADER_BYTES = 64 * 1024
-/** Maximum candidate headers inspected per runtime before discovery declines. */
+/**
+ * Maximum candidate headers inspected per runtime before discovery declines. It bounds
+ * file reads only; the directory-metadata listing that orders candidates is not capped.
+ */
 const HEADER_FILE_LIMIT = 256
 const SESSION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/
 
@@ -340,7 +343,8 @@ const chooseExplicit = (discoveries: readonly Discovery[], selector: string): Tr
  *   reason; it never substitutes another session or runtime.
  * - A Claude Code runtime without an identity searches only the target's Claude project.
  * - Only an unidentified runtime under `detect` compares both runtimes' newest candidates.
- * - `--runtime codex` and `--transcript` remain explicit repository-matched selections.
+ * - `--runtime codex` and `--transcript` remain explicit repository-matched selections;
+ *   a `--transcript` selector under `detect` searches both runtimes even inside Claude Code.
  */
 const chooseTranscript = ({
   runtime,
@@ -370,7 +374,7 @@ const chooseTranscript = ({
   }
 
   const effective: RuntimeSelector =
-    runtime === 'detect' && (context.claudeCode || context.claudeSessionId) ? 'claude' : runtime
+    runtime === 'detect' && !transcriptSelector && (context.claudeCode || context.claudeSessionId) ? 'claude' : runtime
   const claudeDirectory = transcriptsDir
     ? resolve(transcriptsDir)
     : join(context.claudeProjectsRoot, slugifyRepoPath(repo))
