@@ -20,7 +20,7 @@ Don't hand-apply or document any of these — the toolchain owns them, and resta
 - **Bullet, emphasis, and quote characters; trailing commas; blank-line spacing** — rumdl normalises these.
 - **Heading hierarchy, single H1, duplicate-heading and list rules** — rumdl flags these.
 
-The one place column width _is_ your job is **tables**, and it is now wholly your job. The former formatter padded table columns only when the padded result fit within its print width, leaving wider tables compact; rumdl's `MD060` styles are unconditional, so the house configuration sets `style = "any"`, which accepts either shape and enforces neither. Nothing mechanical will align a table for you — that makes the width conventions below load-bearing rather than advisory.
+The one place column width _is_ your job is **tables**, and it is now wholly your job. The former formatter padded table columns only when the padded result fit within its print width, leaving wider tables compact; rumdl's `MD060` styles are unconditional, so the house configuration leaves the opt-in `MD060` off and enforces neither shape. Nothing mechanical will align a table for you — that makes the width conventions below load-bearing rather than advisory.
 
 ## Migration safety
 

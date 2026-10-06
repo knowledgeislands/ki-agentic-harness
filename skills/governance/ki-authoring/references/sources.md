@@ -8,13 +8,13 @@ The sources behind [the enforcement standard](standards-authoring.md), [the Mark
 
 | Source                      | Governs                                                     | Last reviewed |
 | --------------------------- | ----------------------------------------------------------- | ------------- |
-| [CommonMark spec][cm]       | the Markdown syntax baseline                                | 2026-08-12    |
-| [rumdl rules][ru]           | the `MDxxx` rules enforced, their options, and reflow modes | 2026-08-12    |
-| [rumdl global settings][rgs] | configuration-file and global-setting semantics | 2026-08-12 |
-| [rumdl CLI][rcli] | `check --fix` behaviour and exit semantics | 2026-08-12 |
-| [rumdl releases][rr] | current upstream release | 2026-08-12 |
-| [GitHub alert guidance][ga] | GitHub alert labels, purpose, and Markdown form             | 2026-08-12    |
-| [TOML spec][toml]           | TOML syntax for the shared `.ki.toml`                | 2026-08-12    |
+| [CommonMark spec][cm]       | the Markdown syntax baseline                                | 2026-10-06    |
+| [rumdl rules][ru]           | the `MDxxx` rules enforced, their options, and reflow modes | 2026-10-06    |
+| [rumdl global settings][rgs] | configuration-file and global-setting semantics | 2026-10-06 |
+| [rumdl CLI][rcli] | `check --fix` behaviour and exit semantics | 2026-10-06 |
+| [rumdl releases][rr] | current upstream release | 2026-10-06 |
+| [GitHub alert guidance][ga] | GitHub alert labels, purpose, and Markdown form             | 2026-10-06    |
+| [TOML spec][toml]           | TOML syntax for the shared `.ki.toml`                | 2026-10-06    |
 
 ## Advisory
 
@@ -35,8 +35,11 @@ Advisory sources inform local judgment conventions but are not specifications, m
 
 ## Last review
 
-REFRESH last run **2026-08-12**. CommonMark 0.31.2, TOML 1.1.0, GitHub alerts, rumdl's rules/configuration/CLI documentation, and the rumdl release surface were rechecked.
+REFRESH last run **2026-10-06**. Every source was re-fetched: CommonMark, rumdl rules, global settings, CLI and releases, GitHub alerts, TOML, and Standard Readme. The previous run was 2026-08-12, with Standard Readme added 2026-08-29.
 
+- **2026-10-06 sources:** CommonMark 0.31.2 and TOML v1.1.0 (released 2025-12-24) remain current. GitHub still documents five alert labels and now also advises against consecutive alerts or more than one alert per section. The Standard Readme specification is unchanged; its 1.3.1 release changed packaging only.
+- **2026-10-06 rumdl:** v0.2.78 (2026-09-29) is the latest release on GitHub and npm, and the rules page lists 88 rules up to MD094, 17 of them opt-in. `MD092` (unresolved merge-conflict markers, no autofix) and `MD094` (invalid encoding) are on by default and protect files from being rewritten; never disable them. `MD090` (no horizontal rule before a heading), `MD091` (Markdown inside an HTML block) and `MD093` (no inline formatting in headings) are opt-in, and adopting any of them is a separate house decision: forcing them on would raise 11 `MD090` findings, all in `ki-repo-website-cloudflare/references/mode-educate.md`, and 134 `MD093` findings, 60 of them in `skills/README.md`. The global-settings page lists fewer opt-in rules than the rules page. `bunx rumdl check .` is clean across 517 files.
+- **2026-10-06 reproductions on 0.2.78:** using indicative fixtures rather than the exact recorded ones, `MD005` no longer reproduces, and `MD075` still reports but `--fix` rewrites nothing. The `MD060` placeholder-table, `MD013` pipe-skip and `##]` ATX-heading defects still reproduce; the upstream `##]` patch remains unreleased. No rule configuration changed.
 - **Standard Readme:** Reviewed as a library-oriented advisory source. Purpose, orientation, proportional navigation, installation, usage, contribution, and licence discoverability informed the local README convention; fixed headings, ordering, badges, line thresholds, and licence placement were not imported.
 - **CommonMark:** accessible. Version 0.31.2 (released 2024-01-28) confirmed still current; no newer version. Syntax baseline unchanged.
 - **rumdl:** v0.2.54 released 2026-08-11. A 2026-08-20 direct `rumdl 0.2.54 check --fix` reproduction confirms that MD005 still misreads an ordered list inside a blockquote nested in a list item, and MD075 still misreads pipe-formatted rows after a blockquote; both remain disabled because their fixes can rewrite valid structure. The included `dda35d54d654` fix also treats an aliased wikilink as one MD056 cell under the Obsidian flavor; other flavors deliberately retain GFM pipe semantics. This repository uses the standard flavor and forbids wikilinks, so MD056 is enabled for detection and listed as unfixable to prevent a destructive standard-flavor autofix. `MD033`, `MD036`, and `MD057` remain separate house/content decisions. The global-settings and CLI references are the authority for config discovery and `check --fix`, rather than the rules page alone.
@@ -50,5 +53,6 @@ REFRESH last run **2026-08-12**. CommonMark 0.31.2, TOML 1.1.0, GitHub alerts, r
   - `MD013` reflow silently skips any paragraph containing a `|`, so a wikilink-heavy base is less normalised than a clean gate implies. Non-destructive, and no rule is disabled for it. To re-test: write a wrapped paragraph containing `[[Target|Label]]` and confirm `rumdl check --fix` joins it to one line.
   - `MD060` mis-handles a placeholder table whose only body row holds `-` cells, stripping the padding and leaving it misaligned while reporting clean. Even once fixed, re-enabling needs the separate judgment above, since no style reproduces the former conditional padding: `aligned` rewrites every wide table into one long row and `any` enforces nothing.
   - `MD057` is disabled pending a decision about published skill copies, whose links into the source repository's `docs/` tree resolve there and dangle in the publication. This one waits on a decision here, not on upstream. Triaged: this repository's own findings were all genuine and are fixed, and the findings elsewhere are genuinely broken links except in the retired `ki-plugins` projection, where they were the publication artefact described above. Enabling the rule estate-wide would fail that repository for links correct at source.
+  - `MD005` and `MD075` stay disabled until the exact recorded fixtures are re-tested on 0.2.78; the indicative fixtures suggest `MD005` may be fixed and `MD075` is now non-destructive. The `.rumdl.toml` comments and their canonical template in `skills/governance/ki-authoring/scripts/rubric/contexts/authoring.ts` still cite 0.2.54.
   - rumdl is pre-1.0 and single-maintainer; confirm the house Markdown output is unaffected on each bump. The estate is a fixed point of this configuration, so any diff on upgrade is a regression to investigate rather than an improvement to accept.
   - Biome does not support Markdown at all (no `markdown` key in its schema); if that changes it would displace rumdl's formatter role but not its linter role, since the structural and link-integrity rules have no Biome counterpart.
