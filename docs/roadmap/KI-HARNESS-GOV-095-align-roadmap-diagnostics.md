@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 709f49fec523f596d1b388391bff6aed39ac5198
 created_at: 2026-09-25T14:21:37Z
-updated_at: 2026-10-06T20:54:38Z
+updated_at: 2026-10-06T21:08:00Z
 ---
 
 # KI-HARNESS-GOV-095: Align roadmap diagnostics
@@ -78,7 +78,7 @@ ki repo audit --skill ki-repo-kb-streams --repo <kb fixture or Arcadia checkout>
 
 ## Dependencies / blocks
 
-None. Follow-on: once this lands, open a trade to `tools-ki` asking `ki repo roadmap list` to apply the structural-validity invariant from the roadmap standard, reporting malformed records and duplicate identifiers with a non-zero exit. That trade does not block this record and this record does not wait on it.
+None. Follow-on, raised as `tools-ki` KI-TOOL-CLI-108 on 2026-10-06: a trade to `tools-ki` asking `ki repo roadmap list` to apply the structural-validity invariant from the roadmap standard, reporting malformed records and duplicate identifiers with a non-zero exit. That trade does not block this record and this record does not wait on it.
 
 Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-105](KI-HARNESS-GOV-105-state-ordering-in-ledger.md) all edit the shared `ki-work-roadmap` files `scripts/rubric/contexts/roadmap-evidence.ts`, `scripts/rubric/items/index.test.ts` and `references/rubric.md`; this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md) all edit `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
@@ -104,7 +104,7 @@ None.
 
 ### Delivered
 
-Baseline `709f49fe`. One harness commit delivers both rubric halves and the standard; it moves this record to `awaiting-review`. The `tools-ki` follow-on draft record is raised after this commit lands, and its identifier is added here in a follow-up commit.
+Baseline `709f49fe`. One harness commit delivers both rubric halves and the standard; it moves this record to `awaiting-review`. The `tools-ki` follow-on is raised as draft record [KI-TOOL-CLI-108](https://github.com/knowledgeislands/tools-ki/blob/main/docs/roadmap/KI-TOOL-CLI-108-roadmap-list-structural-validity.md) (`tools-ki` `c9e85ec`), non-blocking in both directions.
 
 ### Change Summary
 
@@ -128,7 +128,7 @@ Baseline `709f49fe`. One harness commit delivers both rubric halves and the stan
 - The Arcadia legacy-format gap stays accepted under the owner decision: records with canonical `id`s but legacy bodies still pass the KB Streams audit.
 - `STREAM-7` restates the identifier grammar rather than importing the roadmap adapter's, and is deliberately more permissive in one case: it accepts a digit-led slug such as `<id>-2026-review.md`, which `ki-work-roadmap` `ITEM-1` rejects because its greedy `FILE_RE` (`roadmap-evidence.ts:38`) captures `<id>-2026` as the identifier. That adapter defect is outside this Boundary and is a candidate follow-on; a future grammar change must update both.
 - Symbolic links under `Streams/Roadmap/` remain outside both `STREAM-6` and `STREAM-7`, since the walk reads regular files only; this predates the change, and repository symlink safety rules own them.
-- `ki repo roadmap list` still does not apply the invariant until the `tools-ki` follow-on lands.
+- `ki repo roadmap list` still does not report duplicate identifiers until `tools-ki` KI-TOOL-CLI-108 lands.
 
 ### Post-change review
 
