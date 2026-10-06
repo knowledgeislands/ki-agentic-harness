@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T14:21:37Z
-updated_at: 2026-10-06T01:27:00Z
+updated_at: 2026-10-06T17:31:00Z
 ---
 
 # KI-HARNESS-GOV-095: Align roadmap diagnostics
@@ -120,3 +120,12 @@ On 2026-10-06, `ki repo audit --skill ki-repo-kb-streams --repo ki-arcadia-princ
 The harness defines the shared invariant, frontmatter validity and no duplicate active identifier, in the Streams and roadmap rubrics; the `tools-ki` list-command change is a separate trade. Decided by the Fable reviewer under delegated autonomy, reversible.
 
 The harness defines the shared invariant, frontmatter validity and duplicate identifier, in the roadmap standard and enforces it in both the roadmap and Streams rubrics. The `tools-ki` list command change is a separate trade. `ki-repo-kb-streams` checks only frontmatter presence, `id` presence and filename agreement, not every adapter-owned field, so it does not duplicate `ki-work-roadmap`'s format validation.
+
+### Decision needed before implementation (2026-10-06)
+
+Delivery was paused without changes on 2026-10-06. The Arcadia handoff above arrived after the Decision. It explicitly asks planning to decide whether `ki-repo-kb-streams` should stop at frontmatter presence, `id` presence and filename agreement, which would leave legacy-format records with no mechanical signal, or reach the roadmap adapter's format checks. The Decision and Boundary choose the former, but nobody has confirmed that choice against the handoff. The owner should confirm one of these:
+
+- keep the Boundary as written, and record the legacy-format gap as accepted or as separate follow-on work;
+- widen `STREAM-7` before implementation.
+
+In the same decision, the owner should confirm whether this delivery raises the `tools-ki` trade, a cross-repository write, or leaves it to the owner.
