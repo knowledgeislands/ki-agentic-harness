@@ -110,6 +110,16 @@ After a hook-backed commit, inspect the actual committed names and diff with `gi
 
 For a delegated worker that must stage outside the shared commit window, a unique temporary `GIT_INDEX_FILE` may isolate its preparatory staging. A separate index does not isolate working files, serialize `HEAD`, or confer commit authority; the worker or coordinator still revalidates the touched paths and takes the same serialized commit window before advancing `HEAD`.
 
+After a separate-index commit, the ordinary index still holds each owned path's parent-commit entry, so Git shows `MM` for a working file that already matches the new commit and a later ordinary commit could reintroduce the old version. Reconcile it within the same serialized write window, touching only the owned paths:
+
+1. Before committing, record the parent `P` from `git rev-parse HEAD` and, for each owned path, its ordinary-index entry from `git ls-files --stage -- <path>`; a new file has no entry.
+2. After committing, require `git rev-parse HEAD^` to equal `P` and `git diff-tree --no-commit-id --name-only -r HEAD` to list only owned paths. A hook may modify an owned path; a hook-added or hook-modified path outside the owned set is a stop.
+3. For each owned path, require its current `git ls-files --stage -- <path>` entry to equal the recorded entry and to match `P:<path>`, or to be absent for a new file.
+4. Only then run `git reset --quiet HEAD -- <path>...` for exactly those paths. It moves a modified path's entry to the new `HEAD` blob, adds a new file's entry and drops a deleted file's entry, without touching working files.
+5. Confirm that `git status --short -- <path>...` no longer shows an index-side difference for any owned path. A remaining working-file difference is a hook effect to review, not a reconciliation failure.
+
+Stop condition: if `HEAD` has advanced past the new commit, any owned path's ordinary-index entry has changed since step 1, or the commit contains an unowned path, change nothing. Report the path and the observed entries, then coordinate. Never substitute a whole-index reset or a `git reset` without a pathspec.
+
 Prefer recoverable, explicit-path commits after independently verified work. A thread must stop and report rather than rebasing, resetting, restoring, or repairing another actor's working files, index, or history.
 
 Do not remove a lock merely because it exists, interrupt a live Git process to clear one, or use destructive history or worktree operations without explicit authority.
