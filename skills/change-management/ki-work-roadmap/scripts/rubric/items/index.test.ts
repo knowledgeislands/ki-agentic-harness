@@ -228,6 +228,37 @@ test('a flat work item and concise root orientation conform', () => {
   expect(readFileSync(join(repository, 'ROADMAP.md'), 'utf8')).not.toContain('TEST-001')
 })
 
+test('a record without leading frontmatter fails ITEM-1 under the structural-validity invariant', () => {
+  const repository = createFixture()
+  writeFileSync(join(repository, 'docs', 'roadmap', 'TEST-002-unformatted-record.md'), '# Unformatted record\n')
+  writeFileSync(join(repository, 'docs', 'roadmap', ISSUE_LEDGER), issueLedger(2))
+
+  expect(inspectRoadmap(repository)).toContainEqual(
+    expect.objectContaining({
+      level: 'FAIL',
+      area: 'ITEM-1',
+      msg: 'work item must begin with YAML frontmatter',
+      file: join('docs', 'roadmap', 'TEST-002-unformatted-record.md')
+    })
+  )
+})
+
+test('two records sharing an id fail ITEM-1 under the structural-validity invariant', () => {
+  const repository = createFixture()
+  const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
+  writeFileSync(join(repository, 'docs', 'roadmap', 'TEST-001-build-it-again.md'), readFileSync(source, 'utf8'))
+
+  expect(
+    inspectRoadmap(repository).filter((finding) => finding.area === 'ITEM-1' && finding.msg.startsWith('duplicate'))
+  ).toEqual([
+    expect.objectContaining({
+      level: 'FAIL',
+      msg: "duplicate work-item id 'TEST-001'",
+      file: join('docs', 'roadmap', 'TEST-001-build-the-foundation.md')
+    })
+  ])
+})
+
 test('frontmatter keys use snake_case', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')

@@ -31,6 +31,8 @@ The container does not prescribe a topical-folder or `groups` vocabulary. Where 
 
 Every record's `id` is unique within the base. AUDIT fails each record whose identifier another record shares, because a collision makes links, trades and closure ambiguous; resolve it by keeping the canonical holder and reallocating the other from `_ISSUES.md`. A pruned record's serial is never reused, but that reuse cannot be seen from the current tree alone.
 
+AUDIT also applies the roadmap standard's [structural-validity invariant](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md): every direct child other than `_ISSUES.md` and a `Roadmap.md` index note must begin with parseable frontmatter whose `id` matches its filename identifier, so no record escapes the identity check by lacking one. It checks only that floor; body sections, other fields and retired fields remain the roadmap adapter's format.
+
 Roadmap horizons and lifecycle are frontmatter fields. Do not represent `Triage`, `Now`, `Next`, `Soon`, `Waiting for`, `Parked`, or `Future` with paths below `Streams/Roadmap/`.
 
 Substantive prospective work is deduplicated against the canonical queue, then captured without an approval gate as a flat `status: draft`, `horizon: triage` roadmap record. Its identity is allocated from the canonical `_ISSUES.md` high-water ledger and reserved by the committed ledger advance that precedes the record, and the capture is reported after creation. Capture records the possibility of work; it does not adopt, prioritise, plan, or authorise delivery.

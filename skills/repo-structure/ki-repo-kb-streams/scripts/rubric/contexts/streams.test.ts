@@ -211,6 +211,106 @@ describe('ki-repo-kb-streams session', () => {
     expect(item?.mechanical?.audit.run(duplicated).map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
   })
 
+  test('fails each Streams roadmap record without valid frontmatter whose id matches its filename', () => {
+    const root = targetFixture()
+    const roadmap = join(root, 'Streams', 'Roadmap')
+    const write = (name: string, content: string) => writeFileSync(join(roadmap, name), content)
+    write('KB-OPS-001-valid.md', '---\nid: KB-OPS-001\ntitle: Valid\n---\n\n# Valid\n')
+    write('KB-OPS-008-2026-review.md', '---\nid: KB-OPS-008\ntitle: Digit-led slug\n---\n\n# Digit-led slug\n')
+    write('_ISSUES.md', '# Ledger without frontmatter\n')
+    write('Roadmap.md', '# Roadmap index note without frontmatter\n')
+    const item = STREAM.items.find((candidate) => candidate.code === 'STREAM-7')
+    const evaluate = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+
+    expect(evaluate().roadmapFrontmatter).toEqual([
+      {
+        level: 'PASS',
+        message: 'Every roadmap record has frontmatter whose id matches its filename identifier.',
+        subject: join('Streams', 'Roadmap')
+      }
+    ])
+
+    write('KB-OPS-002-no-frontmatter.md', '# No frontmatter\n')
+    write('KB-OPS-003-no-id.md', '---\ntitle: No id\n---\n\n# No id\n')
+    write('KB-OPS-004-mismatch.md', '---\nid: KB-OPS-040\ntitle: Mismatch\n---\n\n# Mismatch\n')
+    write('KB-OPS-005-unparseable.md', '---\nid: KB-OPS-005\ntitle: [unclosed\n---\n\n# Unparseable\n')
+    write('notes.md', '---\nid: KB-OPS-006\n---\n\n# Notes\n')
+    write('KB-OPS-007.md', '---\nid: KB-OPS-007\n---\n\n# No slug\n')
+    const malformed = evaluate()
+    const subject = (name: string) => join('Streams', 'Roadmap', name)
+
+    expect(malformed.roadmapFrontmatter).toEqual([
+      {
+        level: 'FAIL',
+        message: `Roadmap record ${subject('KB-OPS-002-no-frontmatter.md')} does not begin with YAML frontmatter.`,
+        subject: subject('KB-OPS-002-no-frontmatter.md')
+      },
+      {
+        level: 'FAIL',
+        message: `Roadmap record ${subject('KB-OPS-003-no-id.md')} has no frontmatter id.`,
+        subject: subject('KB-OPS-003-no-id.md')
+      },
+      {
+        level: 'FAIL',
+        message: `Roadmap record ${subject('KB-OPS-004-mismatch.md')} has id KB-OPS-040, which does not match its filename identifier KB-OPS-004.`,
+        subject: subject('KB-OPS-004-mismatch.md')
+      },
+      {
+        level: 'FAIL',
+        message: `Roadmap record ${subject('KB-OPS-005-unparseable.md')} has frontmatter that is not parseable YAML.`,
+        subject: subject('KB-OPS-005-unparseable.md')
+      },
+      {
+        level: 'FAIL',
+        message: `Roadmap record ${subject('KB-OPS-007.md')} has id KB-OPS-007, but its filename is not of the form KB-OPS-007-<slug>.md.`,
+        subject: subject('KB-OPS-007.md')
+      },
+      {
+        level: 'FAIL',
+        message: `Roadmap record ${subject('notes.md')} has id KB-OPS-006, but its filename is not of the form KB-OPS-006-<slug>.md.`,
+        subject: subject('notes.md')
+      }
+    ])
+    expect(item?.mechanical?.level).toBe('FAIL')
+    expect(item?.mechanical?.audit.run(malformed).map((outcome) => outcome.status)).toEqual(Array(6).fill('VIOLATION'))
+
+    for (const name of [
+      'KB-OPS-002-no-frontmatter.md',
+      'KB-OPS-003-no-id.md',
+      'KB-OPS-004-mismatch.md',
+      'KB-OPS-005-unparseable.md',
+      'KB-OPS-007.md',
+      'notes.md'
+    ])
+      rmSync(join(roadmap, name))
+    expect(evaluate().roadmapFrontmatter.map((evidence) => evidence.level)).toEqual(['PASS'])
+  })
+
+  test('reports a record skipped by the identity check under STREAM-7 and a shared id under STREAM-6', () => {
+    const root = targetFixture()
+    const roadmap = join(root, 'Streams', 'Roadmap')
+    writeFileSync(join(roadmap, 'KIT-007-first.md'), '---\nid: KIT-007\n---\n\n# First\n')
+    writeFileSync(join(roadmap, 'KIT-007-second.md'), '---\nid: KIT-007\n---\n\n# Second\n')
+    writeFileSync(join(roadmap, 'KIT-008-unformatted.md'), '# Unformatted\n')
+    const context = STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+
+    expect(context.roadmapIdentity.map((evidence) => [evidence.level, evidence.subject])).toEqual([
+      ['FAIL', join('Streams', 'Roadmap', 'KIT-007-first.md')],
+      ['FAIL', join('Streams', 'Roadmap', 'KIT-007-second.md')]
+    ])
+    expect(context.roadmapFrontmatter.map((evidence) => [evidence.level, evidence.subject])).toEqual([
+      ['FAIL', join('Streams', 'Roadmap', 'KIT-008-unformatted.md')]
+    ])
+  })
+
+  test('treats a roadmap without records as not applicable for frontmatter', () => {
+    const context = STREAM.selectContext(rootContext(createStreamsSession(options(targetFixture(), 'audit'))))
+
+    expect(context.roadmapFrontmatter).toEqual([
+      { level: 'NOT_APPLICABLE', message: 'No roadmap records are present.' }
+    ])
+  })
+
   test('treats a roadmap without identified records as not applicable', () => {
     const root = targetFixture()
     const context = STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))

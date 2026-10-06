@@ -35,6 +35,7 @@ export type StreamRubricContext = {
   operationalAreas: readonly StreamsEvidence[]
   legacyFolders: readonly StreamsEvidence[]
   roadmapIdentity: readonly StreamsEvidence[]
+  roadmapFrontmatter: readonly StreamsEvidence[]
 }
 
 export type GateRubricContext = {
@@ -137,19 +138,61 @@ const parseConfiguration = (text: string): StreamsConfiguration => {
   }
 }
 
-// The repository roadmap standard requires each record's identifier to be unique. Only
-// direct-child records with an `id` frontmatter value are compared; record format itself
-// belongs to the roadmap adapter.
-const roadmapIdentityEvidence = (root: string, roadmapPath: string): StreamsEvidence[] => {
-  const byId = new Map<string, string[]>()
-  for (const entry of directory(roadmapPath) ? readdirSync(roadmapPath, { withFileTypes: true }) : []) {
-    if (!entry.isFile() || !entry.name.endsWith('.md') || entry.name === '_ISSUES.md') continue
-    const path = join(roadmapPath, entry.name)
-    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(readFileSync(path, 'utf8'))
-    const id = frontmatter?.[1].match(/^id:\s*["']?([^"'\s]+)["']?\s*$/m)?.[1]
-    if (!id) continue
-    byId.set(id, [...(byId.get(id) ?? []), relative(root, path)])
+// The repository roadmap standard's structural-validity invariant: every direct-child record
+// other than the ledger and the KB index note carries parseable frontmatter whose `id` matches
+// its filename identifier, and no two records share an `id`. One walk feeds both STREAM-6 and
+// STREAM-7, so a record STREAM-6 cannot compare is always reported by STREAM-7. The full record
+// format belongs to the roadmap adapter.
+const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', 'Roadmap.md'])
+// Mirrors the roadmap adapter's filename identifier grammar without its slug grammar.
+const FILENAME_IDENTIFIER = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-./
+const WORK_ITEM_IDENTIFIER = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
+
+type RoadmapRecord = { path: string; id?: string; defect?: string }
+
+const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord => {
+  const display = relative(root, path)
+  const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(readFileSync(path, 'utf8'))
+  if (!frontmatter) return { path: display, defect: 'does not begin with YAML frontmatter' }
+  let values: unknown
+  try {
+    values = Bun.YAML.parse(frontmatter[1])
+  } catch {
+    return { path: display, defect: 'has frontmatter that is not parseable YAML' }
   }
+  if (!values || typeof values !== 'object' || Array.isArray(values))
+    return { path: display, defect: 'has frontmatter that is not a YAML mapping' }
+  const raw = (values as Record<string, unknown>).id
+  const id = typeof raw === 'string' ? raw.trim() : ''
+  if (!id) return { path: display, defect: 'has no frontmatter id' }
+  // A slug may begin with digits, so the identifier grammar alone cannot split every filename;
+  // a record conforms when its filename begins with its own well-formed id.
+  if (WORK_ITEM_IDENTIFIER.test(id) && name.startsWith(`${id}-`) && name !== `${id}-.md`) return { path: display, id }
+  const fileId = FILENAME_IDENTIFIER.exec(name)?.[1]
+  if (fileId !== id)
+    return {
+      path: display,
+      id,
+      defect: fileId
+        ? `has id ${id}, which does not match its filename identifier ${fileId}`
+        : `has id ${id}, but its filename is not of the form ${id}-<slug>.md`
+    }
+  return { path: display, id }
+}
+
+const roadmapRecords = (root: string, roadmapPath: string): RoadmapRecord[] =>
+  (directory(roadmapPath) ? readdirSync(roadmapPath, { withFileTypes: true }) : [])
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md') && !ROADMAP_NON_RECORDS.has(entry.name))
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((entry) => roadmapRecord(root, join(roadmapPath, entry.name), entry.name))
+
+const roadmapIdentityEvidence = (
+  root: string,
+  roadmapPath: string,
+  records: readonly RoadmapRecord[]
+): StreamsEvidence[] => {
+  const byId = new Map<string, string[]>()
+  for (const record of records) if (record.id) byId.set(record.id, [...(byId.get(record.id) ?? []), record.path])
   if (byId.size === 0) return [{ level: 'NOT_APPLICABLE', message: 'No identified roadmap records are present.' }]
   const duplicates = [...byId.entries()].filter(([, paths]) => paths.length > 1)
   if (duplicates.length === 0)
@@ -165,6 +208,28 @@ const roadmapIdentityEvidence = (root: string, roadmapPath: string): StreamsEvid
   )
 }
 
+const roadmapFrontmatterEvidence = (
+  root: string,
+  roadmapPath: string,
+  records: readonly RoadmapRecord[]
+): StreamsEvidence[] => {
+  if (records.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No roadmap records are present.' }]
+  const defective = records.filter((record) => record.defect)
+  if (defective.length === 0)
+    return [
+      {
+        level: 'PASS',
+        message: 'Every roadmap record has frontmatter whose id matches its filename identifier.',
+        subject: relative(root, roadmapPath)
+      }
+    ]
+  return defective.map((record) => ({
+    level: 'FAIL' as const,
+    message: `Roadmap record ${record.path} ${record.defect}.`,
+    subject: record.path
+  }))
+}
+
 const sample = (values: readonly string[]): string => values.slice(0, 10).join('; ')
 
 const unavailableContext = (
@@ -177,7 +242,12 @@ const unavailableContext = (
   const notApplicable: StreamsEvidence[] = [{ level: 'NOT_APPLICABLE', message: 'Streams evidence is unavailable.' }]
   return {
     rubric: { publication },
-    stream: { operationalAreas: [evidence], legacyFolders: notApplicable, roadmapIdentity: notApplicable },
+    stream: {
+      operationalAreas: [evidence],
+      legacyFolders: notApplicable,
+      roadmapIdentity: notApplicable,
+      roadmapFrontmatter: notApplicable
+    },
     gate: { anchor: notApplicable },
     config: { parseable: notApplicable, knownKeys: notApplicable, processNote: notApplicable }
   }
@@ -301,9 +371,15 @@ export const createStreamsSession = ({
             subject: processNote
           }
   ]
+  const records = roadmapRecords(root, roadmapPath)
   const context: StreamsRubricContext = {
     rubric: { publication },
-    stream: { operationalAreas, legacyFolders, roadmapIdentity: roadmapIdentityEvidence(root, roadmapPath) },
+    stream: {
+      operationalAreas,
+      legacyFolders,
+      roadmapIdentity: roadmapIdentityEvidence(root, roadmapPath, records),
+      roadmapFrontmatter: roadmapFrontmatterEvidence(root, roadmapPath, records)
+    },
     gate: { anchor },
     config: { parseable, knownKeys, processNote: processNoteEvidence }
   }

@@ -40,6 +40,8 @@ There are no simple or thematic profiles, theme `ROADMAP.md` files, `plans/` dir
 
 The item identifier is globally unique within its repository. A repository chooses one issuing mode: repository-wide `<REPO>-<NNN>`, or fixed-area `<REPO>-<AREA>-<NNN>`.
 
+**Structural validity.** A roadmap container is structurally valid when every direct-child Markdown record other than `_ISSUES.md` (and, in a knowledge base, the `Roadmap.md` index note) begins with valid canonical frontmatter whose `id` matches its filename identifier, and no two retained records share an `id`. Any command that claims structural validation of a roadmap container reports each violation with a stable diagnostic and a non-zero result; one inspection path must not pass or silently skip what another rejects. This invariant is the shared floor, not the full record format, which this standard and the work-item format own.
+
 `<REPO>` is the stable uppercase alphanumeric `repo_code` in the `ki-repo` table and matches `[A-Z0-9][A-Z0-9-]{1,23}`.
 
 `<AREA>` is an uppercase code for a fixed issuing namespace. It is selected when the item opens, recorded as `area:` frontmatter, and never changes. It is not a mutable theme or group.

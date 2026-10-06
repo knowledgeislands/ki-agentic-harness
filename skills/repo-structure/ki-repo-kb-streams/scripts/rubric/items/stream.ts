@@ -83,11 +83,28 @@ const STREAM_6: RubricItem<StreamRubricContext> = {
   }
 }
 
+const STREAM_7: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-7',
+  title: 'roadmap record frontmatter',
+  description:
+    'Every Streams/Roadmap record other than _ISSUES.md and the Roadmap.md index note begins with parseable frontmatter whose id matches its filename identifier.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Give the record canonical frontmatter in the roadmap adapter's work-item format with an id matching its filename, or move a non-record out of Streams/Roadmap/. Full record format remains the roadmap adapter's audit."
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.roadmapFrontmatter, 'FAIL') }
+  }
+}
+
 export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
   code: 'STREAM',
   title: 'Streams structure',
   description: 'Operational-area layout, legacy migration, and adapter routing.',
   standard: SOURCE,
   selectContext: (context) => context.stream,
-  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6]
+  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6, STREAM_7]
 }
