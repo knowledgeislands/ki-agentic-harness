@@ -1,8 +1,8 @@
 import { lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, isAbsolute, join, relative, resolve } from 'node:path'
-import { parse as parseYaml } from 'yaml'
 import type { AuditOutcome, RubricContextOptions, RubricPublicationContext, RubricSession } from '../types.ts'
 import { evaluateHousekeepingSchedule, FULL_COMMIT_REF, type HousekeepingSchedule } from './schedule.ts'
+import { parseStrictYaml as parseYaml } from './strict-yaml.ts'
 
 const TEMPLATE_ID = /^[A-Z0-9][A-Z0-9-]{1,23}-HK-\d{3,}$/
 const RUN_ID = /^[A-Z][A-Z0-9-]{1,31}-\d{3,}$/

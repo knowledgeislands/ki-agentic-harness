@@ -2,7 +2,7 @@
 /** Mechanical auditor for flat non-KB repository work items. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
-import { parse as parseYaml } from 'yaml'
+import { parseStrictYaml as parseYaml } from './strict-yaml.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 export type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }

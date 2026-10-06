@@ -1,6 +1,5 @@
 import { accessSync, constants, existsSync, lstatSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
-import { parseDocument } from 'yaml'
 import { classifySourceMirror } from '../../internal/source-mirrors.ts'
 import type {
   AuditOutcome,
@@ -10,6 +9,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { parseStrictYaml } from './strict-yaml.ts'
 
 export const ZONES = ['Calendar', 'Pillars', 'Resources', 'Streams', 'Admin'] as const
 export const STAGING = ['+', '-'] as const
@@ -166,9 +166,7 @@ const frontmatter = (
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
   if (!match) return { keys: [], terminated: false, valid: false, noteType: null }
   try {
-    const document = parseDocument(match[1] ?? '')
-    if (document.errors.length) return { keys: [], terminated: true, valid: false, noteType: null }
-    const parsed = document.toJS()
+    const parsed = parseStrictYaml(match[1] ?? '')
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
       return { keys: [], terminated: true, valid: false, noteType: null }
     const fields = parsed as Record<string, unknown>
