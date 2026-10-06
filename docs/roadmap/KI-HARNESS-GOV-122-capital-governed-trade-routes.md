@@ -4,12 +4,12 @@ area: GOV
 title: Capital-governed trade routes
 theme: governance-consistency
 horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: d9476ba12327c27af97d02ec6c914060d3a31354
 created_at: 2026-10-01T04:23:19Z
-updated_at: 2026-10-06T15:00:00Z
+updated_at: 2026-10-06T17:30:00Z
 ---
 
 # KI-HARNESS-GOV-122: Capital-governed trade routes
@@ -44,16 +44,17 @@ In progress. The owner collapsed the earlier staged plan on 2026-10-06: one chan
 - [x] `GDR-KI-HARNESS-013` records Capital-owned trade policy and `GDR-KI-HARNESS-005` is archived as superseded.
 - [x] Rework `trades.test.ts` to temporary Capital, member and peer fixtures with a temporary registry.
 - [x] Declare the harness's Capital and strip its member route and subtype tables.
-- [ ] Review and acceptance.
 
 ## Files touched
 
-- `skills/keystone/ki-repo/` (territory rubric items, COV-1 trades signal, `references/standards-repository.md`, presentation test fixture)
-- `skills/governance/ki-trades/` (rubric context, items including new `items/policy.ts`, tests, `references/standards-trades.md`, `references/rubric.md`, `references/sources.md`, `SKILL.md`)
+- `skills/keystone/ki-repo/` (`SKILL.md`; `references/standards-repository.md`, `references/standards-configuration.md` and `references/rubric.md`; `scripts/rubric/contexts/territory.ts` and `territory.test.ts`, `repository.ts`, `audit.ts`, the presentation test fixture; `scripts/rubric/items/territory.ts`, `coverage.ts` and the item index)
+- `skills/governance/ki-trades/` (rubric context and tests, items including new `items/policy.ts`, `references/standards-trades.md`, `references/rubric.md`, `references/sources.md`, `SKILL.md`)
 - `skills/governance/ki-trade/` (`SKILL.md`, `references/standards-trade-operations.md`)
 - `skills/governance/ki-authoring/references/` (`standards-toml.md`, `exemplars.md`)
+- `skills/change-management/ki-next/references/standards-next-work.md` (spelling only)
 - `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
-- `docs/decisions/GDR-KI-HARNESS-013-capital-owned-territory-trade-policy.md`, `GDR-KI-HARNESS-005-cross-repository-trade-routes.md`, `README.md`
+- `skills/README.md` (regenerated catalogue and `ki-trade` arguments line)
+- `docs/decisions/GDR-KI-HARNESS-013-capital-owned-territory-trade-policy.md`, `GDR-KI-HARNESS-005-cross-repository-trade-routes.md`, `GDR-KI-HARNESS-008-portable-work-item-timestamps.md`, `README.md`
 - `.ki.toml`
 
 ## Verify
@@ -64,6 +65,10 @@ In progress. The owner collapsed the earlier staged plan on 2026-10-06: one chan
 ## Dependencies / blocks
 
 No local dependency. The cross-repository relationship is recorded under Discussion.
+
+Landing order matters. Once this lands, `ki-repo` TERR-3 and the `ki-trades` route items read the live Capital, so the Arcadia `.ki.toml` from `KI-ARCADIA-GOV-016` must already be on Arcadia `main`, or the harness's own audit fails TERR-3 and ROUTE-1 against the real registry. Push Arcadia first, then this branch. Released `ki` (v0.6.1 in CI) does not know the `capital` key, so CI fails until `KI-TOOL-CLI-104` is released and the CI `KI_VERSION` pin is bumped; the owner accepted that window.
+
+`ki repo conform` infers a missing `capital` from the registry only when it is unambiguous: a repository that declares its own territory is its own Capital, and otherwise exactly one registered Capital must list it. Where none or several do, conform leaves the key unset and TERR-1 fails with guidance naming the gap or the ambiguity, so membership is never invented.
 
 ## Documentation impact
 
@@ -83,6 +88,39 @@ The `ki-trades` and `ki-repo` standards and generated rubrics, and the `ki-autho
 
 None beyond this record.
 
+## Review
+
+### Delivered
+
+Every harness rubric now reads territory and trade policy from the declared Capital. `ki-repo` gains TERR-1 to TERR-3 and the COV-1 `trades` signal; `ki-trades` resolves the Capital policy, expands channels into exact route triples, reads standing grants from the Capital, and accepts only `map_bonus` in a member `[skills.ki-trades]`. `GDR-KI-HARNESS-013` records the decision and supersedes the archived `GDR-KI-HARNESS-005`. The harness's own `.ki.toml` declares Arcadia as its Capital, with its route and subtype tables removed.
+
+### Change Summary
+
+- `feat(ki-repo)` territory rubric, `feat(ki-trades)` Capital policy resolution, `docs(decisions)` GDR-013, `chore(config)` harness `.ki.toml`, `docs(skills)` regenerated catalogue.
+- Review fixes: `fix(ki-trade)` consistent `ki repo trade policy show|check|compare` naming; `fix(ki-repo)` and `fix(ki-trades)` correct resolution across several territories in one registry and fail an unreadable registered Capital; `docs(decisions)` retargets `GDR-KI-HARNESS-008` to GDR-013; `docs(ki-trades)` uses "itemised" throughout live skill text.
+
+### Verification
+
+- `bun run test`: 940 pass, 0 fail across 146 files. `bunx tsc --noEmit -p .`, biome on touched TypeScript and rumdl on touched Markdown are clean. Rubric-sync and catalogue tests pass.
+- `ki repo audit --repo . --progress never --concise` with the locally built `ki` (`tools-ki` branch `feat/cli-104-capital-trade-policy`) and this harness branch, in an isolated `KI_*_HOME` against a registry of every repository on the rollout branches: no territory or trade failures. Against that registry, `ki repo trade policy check` reports 21 members and 21 conforming in the KI territory.
+
+### Outstanding concerns
+
+- CI stays red until `KI-TOOL-CLI-104` is released and the CI `KI_VERSION` pin moves off v0.6.1.
+- `references/sources.md` keeps "itemized" in a dated changelog line, deliberately left as history.
+
+### Post-change review
+
+A Fable review returned "not yet ready" with nine findings: inconsistent `ki-trade` command naming, resolution across several territories, Capital-side and malformed-registry handling, COV-1 scope, cross-territory wording, unreadable Capital checkouts, a stale GDR-008 dependency, spelling, and record lifecycle and Files touched gaps. All nine are fixed in the commits above or in this record. The owner accepted both interpretation calls on 2026-10-06: the `repository` field attributes a checkout, and an unreadable registered Capital FAILs TERR-3 and gives `ki-trades` an `unreadable` state.
+
+### Mini recap
+
+Capital-owned territory and trade policy is enforced by the harness rubrics, and member route tables are gone. It is ready to land after Arcadia GOV-016.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Cross-repository relationship
@@ -98,3 +136,4 @@ The owner re-scoped this item on 2026-10-06. Its former design questions (classi
 - One change straight to the target state: no staged releases, no WARN transition for retired member keys, and no legacy-compatibility layer.
 - The `capital` key is mandatory and fails immediately; CI failures while released tooling catches up are accepted.
 - The `tools-techne` to `homebrew-tap` work channel is active in the Arcadia policy.
+- An unreadable registered Capital `.ki.toml` FAILs. The checkout is attributed through the registry entry's `repository` field; `ki-repo` reports it under TERR-3, and `ki-trades` resolves it to a new `unreadable` state that grants no routes. On the Capital side, an unreadable member checkout stays INFO ("not checked out here").
