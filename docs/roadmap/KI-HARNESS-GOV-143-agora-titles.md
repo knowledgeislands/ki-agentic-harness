@@ -4,12 +4,12 @@ area: GOV
 title: Agora titles
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
-baseline_ref: 3243cbddad16fe9401d2b4958fb70cb60c61c7ad
+baseline_ref: 6172a1c8846b760640d21ec56f307b1f4dc737b7
 created_at: 2026-10-06T11:05:00Z
-updated_at: 2026-10-06T11:55:00Z
+updated_at: 2026-10-06T12:20:00Z
 ---
 
 # KI-HARNESS-GOV-143: Agora titles
@@ -93,7 +93,7 @@ None beyond this record.
 
 ### Delivered
 
-The approved boundary: `title` becomes a required, non-empty, single-line `ki-agora` declaration key in the standard, the CONFIG-1 rubric and GDR-KI-HARNESS-006, with the identifier kept as the only machine key. Excluded: the CLI parser (KI-TOOL-CLI-106), owner declarations (KI-ARCADIA-GOV-017), releases and remote operations. Baseline `3243cbddad16fe9401d2b4958fb70cb60c61c7ad`; the delivery commits follow it on `main`.
+The approved boundary: `title` becomes a required, non-empty, single-line `ki-agora` declaration key in the standard, the CONFIG-1 rubric and GDR-KI-HARNESS-006, with the identifier kept as the only machine key. Excluded: the CLI parser (KI-TOOL-CLI-106), owner declarations (KI-ARCADIA-GOV-017), releases and remote operations. Baseline `6172a1c8846b760640d21ec56f307b1f4dc737b7`; the delivery commits follow it on `main`.
 
 ### Change Summary
 
@@ -121,9 +121,15 @@ None in this item. Until a harness release includes it, CI that installs the rel
 
 Goal met: the portable contract separates identifier from title and the rubric enforces it with the same rule as the CLI parser. Scope stayed inside `ki-agora` and its decision. Regression risk is limited to owners without a title, which is the intended failure; every owner in the local registry now declares one. Fable review found the review-packet shape, the GDR as-of date, three missing test cases and Unicode line separators; all are addressed. Ready for acceptance.
 
+Review outcome: Fable reviewed the delivery commit and reported one blocking finding (review-packet shape), two should-fix findings (GDR as-of date, missing empty, tab and CR test cases) and two nits (Unicode line separators, house-style dashes). All but the house-style nit are addressed in the follow-up commit; the dashes match this repository's existing style. Gates were rerun after rebasing onto `main`: 908 tests passing and the audit at FAIL=0.
+
 ### Mini recap
 
 Required Agora `title` landed in the `ki-agora` standard, rubric and GDR with focused tests and passing gates; the only open matter is the owner-held harness release. Learning route: none proposed beyond the Arcadia record.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on review packet above.
 
 ## Discussion
 
