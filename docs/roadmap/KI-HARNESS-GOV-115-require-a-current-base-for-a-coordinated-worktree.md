@@ -95,7 +95,7 @@ git merge-base --is-ancestor "$(git rev-parse <destination>)" HEAD \
 
 ## Dependencies / blocks
 
-`blocked_by` is empty by intent. `KI-HARNESS-GOV-107` settles how the _link_ criteria become mechanical and this record does not wait on it, because this assertion's evidence is entirely repository-local. `KI-HARNESS-GOV-110` is not a blocker but is the reason the location assertion belongs in the coordination audit rather than the authoring audit. `KI-HARNESS-GOV-113` and this record add sibling sections to one standard and sibling codes to one criterion namespace, which is a sequencing preference rather than a build order.
+`blocked_by` is empty by intent. `KI-HARNESS-GOV-107` settles how the _link_ criteria become mechanical and this record does not wait on it, because this assertion's evidence is entirely repository-local. `KI-HARNESS-GOV-110` is not a blocker but is the reason the location assertion belongs in the coordination audit rather than the authoring audit. `KI-HARNESS-GOV-113` and this record add sibling sections to one standard and sibling codes to one criterion namespace, which is a sequencing preference rather than a build order. [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md) is related and blocks neither way: it makes the branch the durable unit and the worktree a recreatable checkout, and a recreated worktree is subject to this record's current-base check.
 
 ## Documentation impact
 
