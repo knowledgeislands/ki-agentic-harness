@@ -4,12 +4,12 @@ area: RTP
 title: Select live recap transcript
 theme: runtime-portability
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
-baseline_ref: 837f9460f632b15953e5375a0bd9712e81c9dfda
+baseline_ref: 9876daf2db220b4a3c689241a1e047ca8630f807
 created_at: 2026-10-05T17:29:03Z
-updated_at: 2026-10-06T10:22:14Z
+updated_at: 2026-10-06T11:50:00Z
 ---
 
 # KI-HARNESS-RTP-017: Select live recap transcript
@@ -92,7 +92,7 @@ Closes this record on acceptance. A Codex live-session locator is out of scope u
 ### Delivered
 
 - `recap-grounding.ts` selects the identified Claude Code session's own transcript (`CLAUDE_CODE_SESSION_ID`) by probing every project directory under `CLAUDE_CONFIG_DIR/projects` or `~/.claude/projects`, or only `--transcripts-dir` when given. A missing, duplicated or malformed identity yields no transcript with the reason `live-session-transcript-not-found`, `live-session-transcript-ambiguous` or `live-session-identity-invalid`; it never falls back to Codex or another session.
-- Under `detect`, `CLAUDECODE=1` without an identity restricts selection to the target's Claude project directory. Only an unidentified runtime compares both runtimes. `--runtime codex` and `--transcript` keep explicit repository-matched selection.
+- Under `detect`, `CLAUDECODE=1` without an identity restricts selection to the target's Claude project directory. Only an unidentified runtime compares both runtimes. `--runtime codex` and `--transcript` keep explicit repository-matched selection; under `detect` a `--transcript` selector searches both runtimes even inside Claude Code.
 - Discovery lists candidates from directory metadata only (regular files, no symlinks), orders them newest first, reads at most a 64 KiB prefix per candidate, checks eligibility from complete lines only, and stops at the first eligible match. It inspects at most 256 headers per runtime; reaching the cap reports `discovery-limit` rather than claiming no transcript exists. The selected body is parsed once.
 - The target's Claude project slug now replaces every non-alphanumeric character with `-`, matching the documented rule.
 - JSON output carries `transcriptSelection` (`method`, optional `reason`, `examined`, `limitReached`); text output adds one selection line. Git grounding and the marker comparison are unchanged.
@@ -100,15 +100,15 @@ Closes this record on acceptance. A Codex live-session locator is out of scope u
 
 ### Change Summary
 
-Baseline `837f9460f632b15953e5375a0bd9712e81c9dfda`. Six files: the helper and its tests, three `ki-recap` documentation files, and this record. Seven new boundary tests in two `describe` blocks; the existing tests now run in a scrubbed child environment with a fixture `HOME`, so none reads the real `~/.claude` or `~/.codex` or inherits the live session identity.
+Baseline `9876daf2db220b4a3c689241a1e047ca8630f807`. Six files: the helper and its tests, three `ki-recap` documentation files, and this record. Seven new boundary tests in two `describe` blocks, and a review-fix commit adding three more (a Codex selector inside Claude Code, a declining `--runtime claude` with an identity, and the live locator under `--transcripts-dir`), a comment that the 256 cap bounds header reads but not the metadata listing, and removal of an unused `CODEX_HOME` scrub; the existing tests now run in a scrubbed child environment with a fixture `HOME`, so none reads the real `~/.claude` or `~/.codex` or inherits the live session identity.
 
 ### Verification
 
-- `bun test skills/change-management/ki-recap/scripts/recap-grounding.test.ts`: 20 pass, 0 fail.
-- `bun run test`: 899 pass, 0 fail across 145 files.
+- `bun test skills/change-management/ki-recap`: 22 pass, 0 fail after the review fixes (20 before).
+- `bun run test`: 901 pass, 0 fail across 145 files after the review fixes.
 - `bunx tsc --noEmit`: clean.
 - `bunx biome check .`: no errors; the six remaining warnings are pre-existing in `ki-repo` and `ki-repo-kb` files outside this change.
-- `ki repo audit --repo . --progress never --concise` in the delivery worktree reports FAIL=4, all environmental: the worktree path is not in the local KI registry (REPO-REG-1, ROUTE-1 and the RUNTIMES-2 activation findings) and bun 1.4.2 adoption (DEPS-1) is concurrent `KI-HARNESS-GOV-138` work. The primary checkout reports FAIL=0. The audit is re-run on the rebased branch before push.
+- `ki repo audit --repo . --progress never --concise`: the delivery worktree reports environmental FAILs only (the worktree path is not in the local KI registry); the primary checkout, with this branch fast-forwarded onto main, reports FAIL=0.
 - Manual runs from this Claude Code session: against `mcp-ki-kb-fs` (no Claude project directory) the helper reported `live-session` with 0 headers examined and selected this session's transcript. Forcing `--runtime codex` for `mcp-ki-kb-fs` against the real 6.6 GB archive took 0.29 s and reported `none (discovery-limit)` after 256 headers; the previous helper took 18.4 s and selected the unrelated 2026-08-22 transcript. For `ki-agentic-harness` without an identity, `newest-eligible` after 5 headers in 0.27 s.
 
 ### Outstanding concerns
@@ -119,11 +119,17 @@ Baseline `837f9460f632b15953e5375a0bd9712e81c9dfda`. Six files: the helper and i
 
 ### Post-change review
 
-Pending the independent review before acceptance.
+The goal is met: an identified Claude Code session grounds on its own transcript or declines, and discovery is bounded and reports its work. Scope matches the plan. Regression risk is limited to transcript selection, which stays advisory; Git grounding is unchanged.
+
+Independent review by a Fable subagent found no blocking issues, 20 of 20 tests passing. One should-fix: under `CLAUDECODE` or a session identity, `detect` narrowed a `--transcript` selector to Claude only, contradicting the plan and the documentation. Fixed, with a test naming a Codex basename inside Claude Code. Its nits are also addressed: a decline test for `--runtime claude` with an identity, live-locator tests under `--transcripts-dir` (found and not found), a comment that the header cap does not bound the metadata listing, removal of the unused `CODEX_HOME` scrub, and a re-run of the audit on the rebased branch. Ready for acceptance.
 
 ### Mini recap
 
 KI-HARNESS-RTP-017 (`docs/roadmap/KI-HARNESS-RTP-017-select-live-recap-transcript.md`) delivered live-session transcript selection and bounded discovery in the `ki-recap` grounding helper, verified by the boundary tests and the full suite above. No learning is proposed for promotion outside this record.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 
@@ -144,3 +150,7 @@ The owner adopted this record from Triage into Now and approved it through Ready
 The Triage boundary routed the environment variable's stability to `ki-tokenomics` runtime-adapter evidence. Both tokenomics adapters explicitly treat transcript state as unavailable and do not own transcript locators, so planning recorded the vendor evidence where the helper already cites its transcript sources: `ki-recap` `references/sources.md`. Claude Code documents `CLAUDE_CODE_SESSION_ID` as a supported variable. Codex documents no equivalent, so this item adds no Codex live-session locator.
 
 The bounds are chosen from the measured archive: a 64 KiB header prefix exceeds the largest observed `session_meta` line by about 70 per cent, and newest-first early exit means a typical run reads one or a few headers. The 256-file cap limits a run with no match to about 16 MiB of header reads, instead of the 6.6 GB a full parse would read.
+
+### Acceptance - 2026-10-06
+
+Kris Brown approved closure on 2026-10-06 ("adopt it and push it through"). The rebase onto main before publication rewrote the plan commit, so `baseline_ref` names the published plan commit. The Fable review outcome and its dispositions are recorded under Post-change review; no finding remained open at acceptance.
