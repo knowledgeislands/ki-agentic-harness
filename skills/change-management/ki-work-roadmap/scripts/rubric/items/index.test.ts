@@ -186,6 +186,10 @@ test('roadmap commit guidance separates pruning rather than every lifecycle tran
   expect(metadata).toContain('prior committed done state')
   expect(metadata).toContain('one or more eligible records')
   expect(metadata).toContain('dedicated prune-only commit')
+  expect(metadata).toContain('`chore(roadmap): prune <N> done work record(s)`')
+  expect(metadata).toContain('`- <ID>` body line per record')
+  expect(metadata).toContain('`ki repo roadmap prune` makes that commit by default unless run with `--no-commit`')
+  expect(item?.judgment?.outcomes).toContain('prune commit message nonstandard')
 })
 
 test('the ledger criterion states reservation ordering without claiming to detect it', () => {

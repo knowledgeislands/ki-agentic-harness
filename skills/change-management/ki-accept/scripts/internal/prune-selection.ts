@@ -1,5 +1,7 @@
 export type PruneCandidate = {
   path: string
+  /** Canonical work-record identifier, listed in the prune commit body. */
+  id: string
   regularFile: boolean
   symlink: boolean
   canonical: boolean
@@ -16,9 +18,27 @@ export type PruneSelectionInput = {
   candidates: readonly PruneCandidate[]
 }
 
+/** The standardised prune commit message, matching the one `ki repo roadmap prune` writes by default. */
+export type PruneCommitMessage = { subject: string; body: string }
+
 export type PruneSelectionOutcome =
-  | { kind: 'selected'; paths: readonly string[]; commitBoundary: 'prune-only'; writes: false }
+  | {
+      kind: 'selected'
+      paths: readonly string[]
+      commitBoundary: 'prune-only'
+      commitMessage: PruneCommitMessage
+      writes: false
+    }
   | { kind: 'stop'; reason: string; writes: false }
+
+/** Counted subject, singular for one record, and one `- <ID>` body line per record in identifier order. */
+export const pruneCommitMessage = (ids: readonly string[]): PruneCommitMessage => ({
+  subject: `chore(roadmap): prune ${ids.length} done work record${ids.length === 1 ? '' : 's'}`,
+  body: [...ids]
+    .sort((left, right) => left.localeCompare(right))
+    .map((id) => `- ${id}`)
+    .join('\n')
+})
 
 const selectorIsSafe = (selector: string): boolean =>
   !!selector && !selector.startsWith('/') && !selector.split('/').includes('..') && !selector.includes('\\')
@@ -63,6 +83,7 @@ export const evaluatePruneSelection = ({
     kind: 'selected',
     paths: candidates.map((candidate) => candidate.path),
     commitBoundary: 'prune-only',
+    commitMessage: pruneCommitMessage(candidates.map((candidate) => candidate.id)),
     writes: false
   }
 }

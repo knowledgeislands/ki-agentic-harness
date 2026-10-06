@@ -172,7 +172,7 @@ During a normal next-work cycle, apply the `ki-batch` “Batch retention” rule
 
 Report each confirmed handoff disposition, synergy decision (including excluded near-matches), files changed, selected work, and audit result.
 
-Identify `done` records that are eligible for pruning when useful, but do not delete them; path- or glob-selected pruning belongs to `ki-accept`, while `ki repo roadmap prune` is the separate deterministic selected-repository sweep.
+Identify `done` records that are eligible for pruning when useful, but do not delete them; path- or glob-selected pruning belongs to `ki-accept`, while `ki repo roadmap prune` is the separate deterministic selected-repository sweep, which commits its deletions by default under the standardised prune message unless run with `--no-commit`. Pruning `done` records, including terminal Triage dispositions, is sanctioned cleanup whose archive is Git history.
 
 If no work is eligible, identify the missing condition or scoping decision plainly.
 

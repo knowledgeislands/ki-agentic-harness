@@ -25,7 +25,7 @@ Read [the review-closure procedure](references/standards-acceptance.md) and [the
 1. Resolve the selected adapter and confirm one exact canonical local record at its physical root is either `awaiting-review` with the roadmap-owned six-heading review packet or open Triage with an exact proposed rejected, duplicate, or merged disposition. Remote adapters stop pending `KI-HARNESS-FND-014`.
 2. Present the delivery review packet or proposed intake disposition and require human approval. Batch closure authority may close only the named delivery record, never Triage intake.
 3. Record approved closure as `done`, retain the done record, and ensure that state lands before any later pruning.
-4. Prune only fully resolved regular `done` records selected beneath the exact adapter root, excluding records retained by an unresolved completion-observation trade; selection is deletion authority. A prune-only commit may remove several eligible records together but contains no lifecycle transition or unrelated work.
+4. Prune only fully resolved regular `done` records selected beneath the exact adapter root, excluding records retained by an unresolved completion-observation trade; selection is deletion authority. Terminal Triage dispositions are `done` records and prune alike. A prune-only commit may remove several eligible records together, contains no lifecycle transition or unrelated work, and carries the standardised message: subject `chore(roadmap): prune <N> done work record(s)`, singular for one record, and one `- <ID>` body line per record in identifier order.
 
 It never chooses work, starts implementation, edits plan scope, reconstructs missing verification, or treats a recap or passing command as human approval.
 
@@ -49,7 +49,7 @@ Runtime subagents can help execute bounded review preparation only when separate
 
 `accept <work>` resolves the selected adapter, then reviews one canonical local work record. Delivery closure requires `awaiting-review` and stops for human authority unless an approval-bound batch authorisation explicitly permits that named closure. Terminal Triage closure requires exact human approval of `rejected`, `duplicate`, or `merged`, with the retained canonical target named for duplicate or merged; batch authority never substitutes. Remote execution stops pending `KI-HARNESS-FND-014`.
 
-`prune <work-record-or-glob>...` resolves each explicit pathname or glob only under the selected local adapter's canonical root (`docs/roadmap/` or `Streams/Roadmap/`), rejects traversal, symlinks, incomplete resolution, and retained trade-linked records, verifies every resolved regular work record is `done`, then deletes exactly that set. Quote shell globs. The invocation is the deletion authority: do not ask for a second confirmation. Remote execution stops pending `KI-HARNESS-FND-014`. Use `ki repo roadmap prune` only for the non-KB deterministic repository-roadmap sweep.
+`prune <work-record-or-glob>...` resolves each explicit pathname or glob only under the selected local adapter's canonical root (`docs/roadmap/` or `Streams/Roadmap/`), rejects traversal, symlinks, incomplete resolution, and retained trade-linked records, verifies every resolved regular work record is `done`, then deletes exactly that set. Quote shell globs. The invocation is the deletion authority: do not ask for a second confirmation. Remote execution stops pending `KI-HARNESS-FND-014`. Use `ki repo roadmap prune` only for the non-KB deterministic repository-roadmap sweep; it commits its deletions by default under the standardised message, and `--no-commit` leaves them for a manual commit under the same message.
 
 With no target, identify the required exact accepted item or done records and stop.
 
@@ -57,5 +57,5 @@ With no target, identify the required exact accepted item or done records and st
 
 - This is a process skill, not a universal AUDIT / CONFORM / EDUCATE / REFRESH checker.
 - Human approval is the default; it is never inferred from a clean gate, a commit, a recap, or silence.
-- Done records are retained history until their committed state precedes a dedicated prune-only commit. Process pruning is explicit destructive cleanup in either local adapter; native roadmap pruning is an intentionally explicit non-KB selected-repository sweep.
+- Done records are retained until their committed `done` state precedes a dedicated prune-only commit. Pruning is sanctioned cleanup: Git history is the archive, and pruned records are not restored. `ki repo roadmap prune` makes the prune commit by default unless run with `--no-commit`. Process pruning is explicit destructive cleanup in either local adapter; native roadmap pruning is an intentionally explicit non-KB selected-repository sweep.
 - No KI CLI command, wrapper script, runtime-specific mechanism, push, or release belongs here.

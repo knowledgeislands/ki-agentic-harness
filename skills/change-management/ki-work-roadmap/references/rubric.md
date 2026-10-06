@@ -64,11 +64,11 @@ Canonical generated-index structure, placement, and readiness.
   - _Remediation:_ diagnostic — Correct the configured repository code, theme vocabulary, or fixed area map from authoritative repository configuration.
 - **ROAD-7 [M] — issue-allocation ledger** — docs/roadmap/_ISSUES.md records repository-wide or fixed-area high-water marks. A number is reserved by committing the applicable ledger advance on its own before the record is written, in the one designated writing checkout the repository serialises roadmap writes through. The mechanical checks read the ledger alone — its issuing mode, its exact match against the configured areas, and its high-water floor against retained items — and cannot observe the commit ordering or the checkout that made the advance. (standards-repository-roadmaps.md)
   - _Remediation:_ automatic
-- **ROAD-8 [J] — lifecycle and pruning commit boundaries** — Lifecycle transitions may share their coherent work commit; a prune-only commit removes one or more eligible records only after each has landed as done. (standards-repository-roadmaps.md)
+- **ROAD-8 [J] — lifecycle and pruning commit boundaries** — Lifecycle transitions may share their coherent work commit; a prune-only commit with the standardised message removes one or more eligible records only after each has landed as done. (standards-repository-roadmaps.md)
   - _Evidence scope:_ The Git history and proposed commits that create or transition work records, land accepted done records, or prune selected records.
-  - _Review prompt:_ Review whether lifecycle changes are grouped with their coherent work without requiring intermediate-state commits, and whether every prune commit follows a prior committed done state and contains only eligible work-record removals.
-  - _Outcomes:_ conforming; lifecycle commit over-separated; committed done state missing; prune commit mixed
-  - _Conforming guidance:_ Combine lifecycle changes with the planning, implementation, review, or closure unit they describe. Before pruning, land each selected record as done; then remove one or more eligible records in a dedicated prune-only commit.
+  - _Review prompt:_ Review whether lifecycle changes are grouped with their coherent work without requiring intermediate-state commits, and whether every prune commit follows a prior committed done state, contains only eligible work-record removals, and carries the standardised `chore(roadmap): prune <N> done work record(s)` subject with one `- <ID>` body line per record.
+  - _Outcomes:_ conforming; lifecycle commit over-separated; committed done state missing; prune commit mixed; prune commit message nonstandard
+  - _Conforming guidance:_ Combine lifecycle changes with the planning, implementation, review, or closure unit they describe. Before pruning, land each selected record as done; then remove one or more eligible records in a dedicated prune-only commit under the standardised message; `ki repo roadmap prune` makes that commit by default unless run with `--no-commit`. Git history is the archive; pruned records are not restored.
 
 ## ITEM — items
 

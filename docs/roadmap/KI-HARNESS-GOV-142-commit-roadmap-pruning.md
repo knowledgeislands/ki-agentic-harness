@@ -4,12 +4,12 @@ area: GOV
 title: Commit roadmap pruning
 theme: governance-consistency
 horizon: now
-status: ready
+status: done
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 5b50e549f3d6bf33764bd526dd521f6bea38ca2c
 created_at: 2026-10-06T01:22:00Z
-updated_at: 2026-10-06T10:15:00Z
+updated_at: 2026-10-06T11:40:00Z
 ---
 
 # KI-HARNESS-GOV-142: Commit roadmap pruning
@@ -42,12 +42,12 @@ Out of scope: restoring records already pruned (the owner decided not to restore
 
 ## Steps
 
-- [ ] `ki-work-roadmap` `references/standards-repository-roadmaps.md`: in the pruning paragraph, state that Git history is the archive and pruned records are not restored, define the standardised message (`chore(roadmap): prune <N> done work record(s)` with one `- <ID>` body line per record), and state that `ki repo roadmap prune` commits by default and `--no-commit` leaves the deletions uncommitted for the caller to commit under the same message.
-- [ ] ROAD-8 in `scripts/rubric/items/roadmaps.ts`: review the standardised message as part of the prune-commit boundary; update its focused test and regenerate `references/rubric.md`.
-- [ ] `ki-accept`: `SKILL.md` step 4, `prune` invocation and Notes; `references/standards-acceptance.md` section 4 and the native-command paragraph; state that terminal Triage dispositions are prunable `done` records, the standardised message, and the CLI's default commit and `--no-commit`.
-- [ ] `ki-accept` `scripts/internal/prune-selection.ts`: candidates carry their identifier and a selected outcome carries the standardised commit message; extend `scripts/prune-selection.test.ts`.
-- [ ] `ki-next` `SKILL.md` and `references/standards-next-work.md`: name the native sweep as committing by default.
-- [ ] Regenerate any generated catalogue the changed descriptions feed.
+- [x] `ki-work-roadmap` `references/standards-repository-roadmaps.md`: in the pruning paragraph, state that Git history is the archive and pruned records are not restored, define the standardised message (`chore(roadmap): prune <N> done work record(s)` with one `- <ID>` body line per record), and state that `ki repo roadmap prune` commits by default and `--no-commit` leaves the deletions uncommitted for the caller to commit under the same message.
+- [x] ROAD-8 in `scripts/rubric/items/roadmaps.ts`: review the standardised message as part of the prune-commit boundary; update its focused test and regenerate `references/rubric.md`.
+- [x] `ki-accept`: `SKILL.md` step 4, `prune` invocation and Notes; `references/standards-acceptance.md` section 4 and the native-command paragraph; state that terminal Triage dispositions are prunable `done` records, the standardised message, and the CLI's default commit and `--no-commit`.
+- [x] `ki-accept` `scripts/internal/prune-selection.ts`: candidates carry their identifier and a selected outcome carries the standardised commit message; extend `scripts/prune-selection.test.ts`.
+- [x] `ki-next` `SKILL.md` and `references/standards-next-work.md`: name the native sweep as committing by default.
+- [x] Regenerate any generated catalogue the changed descriptions feed.
 
 ## Files touched
 
@@ -70,8 +70,6 @@ bun run test
 bunx tsc --noEmit
 bunx biome check .
 ki repo audit --skill ki-work-roadmap --progress never
-ki repo audit --skill ki-accept --progress never
-ki repo audit --skill ki-next --progress never
 ki repo audit --repo . --progress never --concise
 ```
 
@@ -98,6 +96,45 @@ None in this repository.
 ### Roadmap
 
 `tools-ki` carries the native command change as `KI-TOOL-CLI-105`.
+
+## Review
+
+### Delivered
+
+From baseline `5b50e549f3d6bf33764bd526dd521f6bea38ca2c`, the roadmap standard, ROAD-8, `ki-accept` and `ki-next` state that pruning `done` records, including terminal Triage dispositions, is sanctioned cleanup whose archive is Git history, that pruned records are not restored, the standardised message (`chore(roadmap): prune <N> done work record(s)`, singular for one, with one `- <ID>` body line per record in identifier order), and that `ki repo roadmap prune` commits by default, restores the records if the commit fails and offers `--dry-run`, while `--no-commit` skips its Git checks and leaves the deletions for a manual commit under the same message after the caller confirms the committed `done` state. No skill text forbids pruning `done` records.
+
+### Change Summary
+
+- `ki-work-roadmap` `references/standards-repository-roadmaps.md`: a pruning paragraph after the prune-commit boundary carrying the archive, message and CLI contract.
+- ROAD-8 in `scripts/rubric/items/roadmaps.ts`: description, prompt, guidance and a new `prune commit message nonstandard` outcome; focused test extended; `references/rubric.md` regenerated with the `tools-ki` renderer against this checkout's catalogue, after confirming the same renderer reproduces the primary checkout's committed file byte for byte.
+- `ki-accept` `SKILL.md` step 4, `prune` invocation and Notes; `references/standards-acceptance.md` section 4, the native-command paragraph and the model paragraph.
+- `ki-accept` `scripts/internal/prune-selection.ts`: candidates carry `id`; a selected outcome carries `commitMessage` from the exported `pruneCommitMessage`; `scripts/prune-selection.test.ts` covers ordering, singular and plural.
+- `ki-next` `SKILL.md` and `references/standards-next-work.md` name the sweep as committing by default.
+- No skill description changed, so no generated catalogue needed regeneration.
+
+### Verification
+
+- `bun run test`: 893 tests pass. `bunx tsc --noEmit` and `bunx biome check .` pass.
+- `printf 'chore(roadmap): prune 2 done work records\n\n- KI-HARNESS-GOV-003\n- KI-HARNESS-GOV-005\n' | bunx commitlint` passes.
+- `ki repo audit --repo . --progress never --concise` in this isolated worktree reports four failing checks, none from this change: `REPO-REG-1` and `ROUTE-1` because the worktree is not a registered checkout, `RUNTIMES-2` user-activation coverage, and `DEPS-1` raised by an unpushed rubric change in the dev-linked primary checkout. The primary checkout, with the same `.ki.toml` and no changes to these surfaces, audits FAIL=0. `ki-accept` and `ki-next` are user skills, not declared in `.ki.toml`, so they have no repository `--skill` audit; the Verify block now lists only `ki-work-roadmap`, whose focused audit resolves the dev-linked primary checkout rather than this worktree. The pre-commit staged-snapshot `ki-skills` audit covers all touched skill roots.
+
+### Outstanding concerns
+
+None in scope. The skill text describes `KI-TOOL-CLI-105`; until a `tools-ki` release carrying it is installed, the manual prune commit under the same message remains correct, as the standard says.
+
+### Post-change review
+
+The goal holds across all four surfaces and matches the `tools-ki` contract. Regression risk is limited to ROAD-8 reviews, which gain one outcome. Ready for acceptance.
+
+### Mini recap
+
+Aligned the pruning doctrine with the owner's decision and the committing CLI. No learning route beyond this record.
+
+## Done
+
+Accepted 2026-10-06 on the review packet above, with Kris Brown's approval relayed by the coordinating session, after the Fable review findings were addressed.
+
+A Fable review found nothing blocking. Its should-fix findings were applied: the Verify block drops `--skill` audits for the undeclared user skills `ki-accept` and `ki-next`; the standard and acceptance procedure document `--dry-run`, restore on a failed commit, and that `--no-commit` skips the Git checks; and the record lifecycle is current. Nits applied: singular and identifier order in `ki-accept` step 4, the default commit in its Notes, and the ROAD-8 guidance wording with its test assertion and regenerated rubric.
 
 ## Discussion
 

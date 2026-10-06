@@ -133,16 +133,22 @@ const ROAD_8: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-8',
   title: 'lifecycle and pruning commit boundaries',
   description:
-    'Lifecycle transitions may share their coherent work commit; a prune-only commit removes one or more eligible records only after each has landed as done.',
+    'Lifecycle transitions may share their coherent work commit; a prune-only commit with the standardised message removes one or more eligible records only after each has landed as done.',
   sources: [SOURCE],
   judgment: {
     scope:
       'The Git history and proposed commits that create or transition work records, land accepted done records, or prune selected records.',
     prompt:
-      'Review whether lifecycle changes are grouped with their coherent work without requiring intermediate-state commits, and whether every prune commit follows a prior committed done state and contains only eligible work-record removals.',
-    outcomes: ['conforming', 'lifecycle commit over-separated', 'committed done state missing', 'prune commit mixed'],
+      'Review whether lifecycle changes are grouped with their coherent work without requiring intermediate-state commits, and whether every prune commit follows a prior committed done state, contains only eligible work-record removals, and carries the standardised `chore(roadmap): prune <N> done work record(s)` subject with one `- <ID>` body line per record.',
+    outcomes: [
+      'conforming',
+      'lifecycle commit over-separated',
+      'committed done state missing',
+      'prune commit mixed',
+      'prune commit message nonstandard'
+    ],
     guidance:
-      'Combine lifecycle changes with the planning, implementation, review, or closure unit they describe. Before pruning, land each selected record as done; then remove one or more eligible records in a dedicated prune-only commit.'
+      'Combine lifecycle changes with the planning, implementation, review, or closure unit they describe. Before pruning, land each selected record as done; then remove one or more eligible records in a dedicated prune-only commit under the standardised message; `ki repo roadmap prune` makes that commit by default unless run with `--no-commit`. Git history is the archive; pruned records are not restored.'
   }
 }
 
