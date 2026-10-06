@@ -429,7 +429,7 @@ Operate one repository's side of a declared cross-repository trade: prepare, ins
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
-- **Arguments:** `prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <add|remove|list|check> | list | show <TRD> | help`
+- **Arguments:** `prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <list|check> | standing <list|check|capture> | policy <show|check> | list | show <TRD> | help`
 - **Dependencies:** `ki-trades`
 - **Runtime:** Portable
 
