@@ -72,9 +72,9 @@ A granted export authorises sender-local preparation and submission while the re
 
 ### Knowledge subtypes and standing intake
 
-Standing intake is an optional, exact grant layered onto an active ordinary `knowledge` route. The Capital's policy owns and describes the subtype vocabulary and grants each `(source, receiver, subtype)` triple; members declare no subtype or standing configuration. Work has no subtype or standing path. A subtype absent from a standing grant, or a grant without its knowledge channel, remains itemized-only; it never degrades into partial standing authority.
+Standing intake is an optional, exact grant layered onto an active ordinary `knowledge` route. The Capital's policy owns and describes the subtype vocabulary and grants each `(source, receiver, subtype)` triple; members declare no subtype or standing configuration. Work has no subtype or standing path. A subtype absent from a standing grant, or a grant without its knowledge channel, remains itemised-only; it never degrades into partial standing authority.
 
-An itemized knowledge record may carry optional `subtype` classification. Existing records without it remain valid. The field is invalid on work, and its presence never upgrades an itemized trade into standing intake.
+An itemised knowledge record may carry optional `subtype` classification. Existing records without it remain valid. The field is invalid on work, and its presence never upgrades an itemised trade into standing intake.
 
 ### Standing intake provenance
 
@@ -102,7 +102,7 @@ Standing intake grants no peer write, review, priority, implementation, publicat
 
 Activation requires a current ordinary knowledge route plus an exact-subtype standing grant in the Capital's trade policy; neither member can grant or withhold it locally. Revocation blocks every new capture immediately, while committed introduction-time evidence remains historical and reviewable. Standing intake grants no peer write, review, priority, implementation, publication, acceptance, completion, or roadmap authority.
 
-Standing intake is not automatic transport or execution. Any future agent that discovers, transfers, applies, or publishes work without a contemporaneous operator must have a separate explicit authority contract covering scheduling, idempotency, isolation, failure recovery, evidence, review, and revocation. A standing grant or `unattended` itemized policy supplies none of that authority.
+Standing intake is not automatic transport or execution. Any future agent that discovers, transfers, applies, or publishes work without a contemporaneous operator must have a separate explicit authority contract covering scheduling, idempotency, isolation, failure recovery, evidence, review, and revocation. A standing grant or `unattended` itemised policy supplies none of that authority.
 
 ## Storage and identity
 
@@ -208,7 +208,7 @@ The receiver alone moves its inbound decision status:
 
 ## Observation policies
 
-A sender chooses one policy for an itemized `TRD-*` record without imposing an obligation on the receiver:
+A sender chooses one policy for an itemised `TRD-*` record without imposing an obligation on the receiver:
 
 - Knowledge or work may use `unattended` — no response is requested, but the sender still waits until explicit receipt is observable.
 - Knowledge or work may use `receipt` — the sender waits only until explicit receipt is observable without making a statement about whether a response was requested.

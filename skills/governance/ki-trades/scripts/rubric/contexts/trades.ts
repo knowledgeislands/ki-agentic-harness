@@ -1169,7 +1169,7 @@ const parseRecord = (root: string, path: string, direction: Direction, channels:
   if (rawSubtype !== undefined && kind !== 'knowledge')
     outcomes.push({
       status: 'VIOLATION',
-      message: 'subtype is optional classification for itemized knowledge trades only',
+      message: 'subtype is optional classification for itemised knowledge trades only',
       subject: path
     })
   if (kind && observation) {

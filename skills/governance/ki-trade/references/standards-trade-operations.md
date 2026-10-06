@@ -50,7 +50,7 @@ Choose exactly one observation policy:
 
 The preparation remains mutable and may be committed repeatedly. Do not create a receiver copy, acknowledgement, comment thread, or separate revision record.
 
-The kind matrix is explicit: knowledge permits `unattended` or `receipt`; work permits `unattended`, `receipt`, `decision`, or `completion`. `unattended` differs from `receipt` only by saying no response is requested. Both remain itemized policies, require an evidenced receiver-created copy before release, and grant no standing intake, execution, acceptance, or publication authority.
+The kind matrix is explicit: knowledge permits `unattended` or `receipt`; work permits `unattended`, `receipt`, `decision`, or `completion`. `unattended` differs from `receipt` only by saying no response is requested. Both remain itemised policies, require an evidenced receiver-created copy before release, and grant no standing intake, execution, acceptance, or publication authority.
 
 ### Observe
 

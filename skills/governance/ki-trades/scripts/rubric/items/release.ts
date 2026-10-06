@@ -7,7 +7,7 @@ const RELEASE_1: RubricItem<OutcomeContext> = {
   code: 'RELEASE-1',
   title: 'release and pruning follow observable lifecycle evidence',
   description:
-    'Unattended and receipt policies on itemized knowledge or work wait for evidenced receipt; unattended requests no response but grants no delivery or execution authority. Work may instead wait for decision or completion. Completion remains unavailable without selected-adapter, owner-valid evidence. Receiver pruning becomes eligible only after release is observable.',
+    'Unattended and receipt policies on itemised knowledge or work wait for evidenced receipt; unattended requests no response but grants no delivery or execution authority. Work may instead wait for decision or completion. Completion remains unavailable without selected-adapter, owner-valid evidence. Receiver pruning becomes eligible only after release is observable.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

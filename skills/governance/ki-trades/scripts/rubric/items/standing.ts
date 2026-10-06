@@ -14,7 +14,7 @@ const STANDING_1: RubricItem<OutcomeContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Correct only receiver-owned provenance, or propose the standing grant to the Capital trade policy; use an itemized knowledge trade whenever exact standing authority cannot be proven.'
+        'Correct only receiver-owned provenance, or propose the standing grant to the Capital trade policy; use an itemised knowledge trade whenever exact standing authority cannot be proven.'
     },
     audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
   }

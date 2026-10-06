@@ -1001,7 +1001,7 @@ test('each trade kind accepts only its supported observation policies', () => {
   expect(messages).toContain('knowledge trades require observation unattended or receipt')
 })
 
-test('itemized subtype classifies knowledge only and never upgrades work', () => {
+test('itemised subtype classifies knowledge only and never upgrades work', () => {
   const { home, local } = fixture()
   const knowledgeId = 'TRD-000000c1'
   const workId = 'TRD-000000c2'
@@ -1029,7 +1029,7 @@ test('itemized subtype classifies knowledge only and never upgrades work', () =>
   const session = createTradesSession(options(local, home, {}))
   expect(mechanicalOutcomes(session, RECORD)).toContainEqual({
     status: 'VIOLATION',
-    message: 'subtype is optional classification for itemized knowledge trades only',
+    message: 'subtype is optional classification for itemised knowledge trades only',
     subject: `-/_TRADES/peer/repo/${workId}.md`
   })
   expect(
