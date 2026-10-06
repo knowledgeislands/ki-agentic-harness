@@ -5,7 +5,7 @@ date: 2026-09-13
 status: current
 decision_type: governance
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
-decision_depends_on: ['GDR-KI-HARNESS-005']
+decision_depends_on: ['GDR-KI-HARNESS-013']
 ---
 
 # GDR-KI-HARNESS-008: Portable work-item timestamps
@@ -32,4 +32,4 @@ When the pair is present, every process that semantically mutates a local work i
 
 ## References
 
-- [GDR-KI-HARNESS-005](GDR-KI-HARNESS-005-cross-repository-trade-routes.md) — receiver-controlled cross-repository work routing.
+- [GDR-KI-HARNESS-013](GDR-KI-HARNESS-013-capital-owned-territory-trade-policy.md) — Capital-owned territory trade policy governing cross-repository work routes and trade records, superseding the archived GDR-KI-HARNESS-005.
