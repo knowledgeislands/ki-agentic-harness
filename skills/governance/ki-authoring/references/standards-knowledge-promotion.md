@@ -28,6 +28,22 @@ Choose the narrowest durable home that reaches the people and agents who need th
 5. Reconcile the source layer: remove a duplicate, replace it with a pointer, or explicitly retain it only when it serves a different audience.
 6. Revisit the placement when its scope changes; promotion is not a reason to preserve obsolete lower-layer copies.
 
+## Classifying user-level instructions
+
+Use this method when an owner asks for an existing user-level instruction file, such as a rendered personal runtime instruction file or one it imports, to be reviewed for content that belongs elsewhere. The input is prose the owner supplies or a tracked source the owner points to, never a scan of a home directory.
+
+1. Take one section at a time.
+2. Compare it with the current standard of the skill or repository that would own it.
+3. Classify it as exactly one of:
+   - **Already owned:** the owning standard already states it. Remove it from the user file or leave a pointer.
+   - **Missing portable doctrine:** reusable doctrine its owner lacks. Generalise it into the owning skill through that skill's change route rather than copying personal prose.
+   - **Conflicting:** it contradicts the current portable standard. Retire it; do not promote it.
+   - **Repository fact:** it applies to one repository. Route it to that repository's `AGENTS.md`.
+   - **Personal or machine-specific:** an interaction preference or local binding. Retain it in user scope.
+4. Verify each affected skill without the user file: in a session that loads no user-level instructions, confirm that the skill's tracked files state every rule the reviewed sections relied on. Route a gap to the owning skill, not back to user scope. When user-level evidence is unavailable, report that as a limit rather than a pass.
+
+The `ki-repo-dotfiles-chezmoi` agent-instruction layering rule points here; `ki-skills`' `KI-SHAPE-10` remains the skill-level portability judgment.
+
 ## Replaceable execution environments
 
 An agent runtime or coordination system is additive, not the durable owner of a repository's knowledge or operating model. Preserve purpose, procedures, authority, accepted decisions, work state, verification evidence, and residual learning in their repository-owned homes. Runtime memory, task conversations, and scheduler history may aid execution but must not be the only record needed to understand or continue the work.

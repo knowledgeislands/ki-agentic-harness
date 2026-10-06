@@ -122,7 +122,7 @@ First route reusable rules and procedures to their owning skill, as `ki-authorin
 
 **Decision rule**: reusable doctrine → owning skill; repository-specific guidance → Layer 1; cross-project personal preference or machine binding → Layer 2. Runtime memory is only an explicitly opted-in personal retrieval aid, never the canonical home for repository or skill rules. Remove a duplicate from its old layer after promotion.
 
-When reviewing a skill against managed personal instructions, check that it still works without those files. If user-level evidence is unavailable, report that limit rather than claiming portability was proven. This placement check complements `ki-skills`' KI-SHAPE-10; it does not replace the skill-quality audit.
+To review managed personal instructions section by section and verify affected skills without them, use the classification method in `ki-authoring`'s knowledge-promotion standard. If user-level evidence is unavailable, report that limit rather than claiming portability was proven. This placement check complements `ki-skills`' KI-SHAPE-10; it does not replace the skill-quality audit.
 
 ## OS/tooling gotchas
 
