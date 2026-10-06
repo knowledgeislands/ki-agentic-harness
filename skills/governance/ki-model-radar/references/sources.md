@@ -30,10 +30,10 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 | [Claude Opus 5 launch][claude-opus] | provider | Identity, access, release | 2026-10-06 |
 | [Claude Fable 5.1 model page][claude-fable] | provider | Identity, access, retention | 2026-10-06 |
 | [Claude model deprecations][claude-lifecycle] | provider | Opus and Fable lifecycle | 2026-10-06 |
-| [Current Claude models][claude-current] | provider | Fable, Opus, Sonnet, and Haiku identities and effort | 2026-09-30 |
+| [Current Claude models][claude-current] | provider | Fable, Opus, Sonnet, and Haiku identities and effort | 2026-10-06 |
 | [OpenAI model catalogue][openai-models] | provider | Current flagship identities and access | 2026-10-06 |
 | [GPT-6 Astra launch][openai-astra] | provider | Astra release and availability | 2026-09-26 |
-| [OpenAI GPT-6 guide][openai-gpt-6] | provider | Current Astra, Sol, and Luna positioning | 2026-09-30 |
+| [OpenAI GPT-6 guide][openai-gpt-6] | provider | Current Astra, Sol, and Luna positioning | 2026-10-06 |
 | [GPT-5.6 Sol model page][openai-sol] | provider | Previous-family Sol identity, alias, and access | 2026-10-06 |
 | [GPT-5.6 Terra model page][openai-terra] | provider | Previous-family Terra identity and access | 2026-09-30 |
 | [Gemini 3.8 Flash model page][gemini-flash] | provider | Identity, capability, stable access | 2026-10-06 |
@@ -58,13 +58,14 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 - 2026-09-30 — Targeted release-triggered review added the current Claude and GPT-6 family identities plus GPT-5.6 Terra as an available previous-family option. Existing route defaults and recommendations did not move: provider positioning alone does not establish Codex or Claude Code route fit. Previously tracked sources outside this targeted review retain their earlier review dates.
 - 2026-10-06 — Weekly review rechecked every tracked source except the GPT-6 Astra launch post, which returned HTTP 403 and keeps its earlier date. The local Zed agent configuration no longer selects Claude Opus 5 or GPT-5.6 Sol: Claude Code uses the `opus` alias (current Opus 5.5) and Codex uses `gpt-6.1-sol`, so both recorded default routes moved outward to available without adding replacement defaults. The OpenAI catalogue dropped GPT-5.6 Sol, which remains available on its own model page. BenchLM advanced to v5.8 (2026-09-30) with data refreshed 2026-10-05; Terminal-Bench 4.0 was announced 2026-08-28; the Arena policy claim moved from the Arena-Rank post to its own policy and changelog records; Harbor and the Claude deprecations page moved URL; the roadmap evidence is pinned to its last commit after leaving main. Artificial Analysis, SWE-bench, and Terminal-Bench pages show no data date, so those `data_as_of` values are unchanged. Grok 4.7 (2026-09-21) now supersedes Grok 4.6 as the recommended xAI model; Gemini 4 Argon (2026-09-30) is a limited preview only.
 - 2026-10-06 — Disposition of the 2026-09-26 candidate-identity follow-up: the 2026-09-30 targeted review discharged it by recording the current Claude and GPT-6 family identities. Route evaluation for any new model needs its own work item with local-fit evidence; this disposition moves no default, route, or recommendation.
+- 2026-10-06 — Owner decision: Claude Opus 5.5 through Claude Code and GPT-6.1 Sol through Codex become new Adopt default routes, matching the local Zed agent configuration. Rechecked the current Claude models overview, Claude deprecations page, and OpenAI GPT-6 guide: `claude-opus-5-5` is active with retirement not sooner than 2027-09-22, and `gpt-6.1-sol` remains a current GPT-6 family choice with no deprecation notice. The superseded Claude Opus 5 and GPT-5.6 Sol routes stay available and outward.
 - The KI recommendation vocabulary is a documented local adaptation of Thoughtworks' four rings: it preserves Adopt, Trial, Assess, and Caution as Hold rather than claiming an exact reproduction.
 - HELM entered maintenance mode on 2026-06-01 and remains watch-level corroborating evidence, not a current frontier-primary source.
 - All named initial model identities were substantiated. Hosted-only variants retain a conservative proprietary distribution classification; no public weights licence was found for those exact variants.
 - Open watch-item: reassess provider availability, retirement notices, pricing, route support, benchmark versions, and data dates during every weekly refresh.
 - Open watch-item: do not promote an open-weight model to Open Source AI Definition conformance without evidence for the definition's data-information, code, and parameter requirements.
 - Open watch-item: keep hosted `qwen3.8-max` separate from Apache-2.0 Qwen3.8 open-weight checkpoints.
-- Open watch-item: the radar records no default route after the 2026-10-06 review. Owner review should decide whether Claude Opus 5.5 through Claude Code and GPT-6.1 Sol through Codex become Adopt defaults, after evaluating them on representative tasks, effort, cost, and effective runtime access.
+- Open watch-item: the 2026-10-06 Claude Opus 5.5 and GPT-6.1 Sol defaults rest on the owner decision and runtime configuration rather than a recorded local-fit evaluation; assess them on representative tasks, effort, cost, and effective runtime access before the next default movement.
 - Open watch-item: decide whether to add Grok 4.7 and repoint the Grok Build route; track Gemini 4 Argon only once it reaches general availability.
 - Open watch-item: re-check the GPT-6 Astra launch post, which blocked automated fetches on 2026-10-06.
 - Open watch-item: Claude Haiku 4.5 may retire from 2026-10-15 onwards; it has no route today.
