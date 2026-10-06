@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T01:19:00Z
-updated_at: 2026-10-06T01:19:00Z
+updated_at: 2026-10-06T21:57:00Z
 ---
 
 # KI-HARNESS-GOV-140: Define MCP release procedure
@@ -37,6 +37,10 @@ Out of scope: per-repository work items. Each `mcp-*` repository's cutover follo
 ### Relationship to the tap consumer chain
 
 `tools-ki` releases already fan out through `homebrew-tap`'s release dispatch. Whether MCP releases should join that chain, or stay source-installed from tags, is an open question for shaping; nothing in the distribution standard requires a tap formula.
+
+### Decision owner
+
+Kris decided on 2026-10-06, in the state-of-play review (`ki-arcadia-principal`, `+/_CHECKPOINTS/state-of-play.md`), that this record stays in Triage and that its adoption decision belongs to the estate-factorisation thread (`ki-arcadia-principal`, `+/_CHECKPOINTS/estate-factorisation.md`), since a shared MCP release procedure is a factorisation choice across the `mcp-*` repositories.
 
 ### Open questions
 
