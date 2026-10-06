@@ -35,15 +35,16 @@ A guide written for somebody working **in this repository** may name internal go
 
 A guide written for somebody **using what the repository produces** may not. That reader has the product, not `docs/decisions/` and not `docs/roadmap/`, so naming a record cites something they cannot see and did not ask about — which is noise where a citation was intended, and a dead end where they take it seriously. Such a guide is bounded by the product: its commands, its configuration, the files it puts on that reader's machine, and its sibling guides.
 
-A collection that groups by audience is declaring which guides are held to which standard. That grouping stays local information architecture — this standard does not mandate `user/` or any other category name — but where it exists, the review reads it as the author's own statement of each guide's audience.
+Because every guide sits in an audience folder, the collection declares which guides are held to which standard. Folder names stay local information architecture — this standard does not mandate `user/` or any other name — and the review reads each folder as the author's own statement of its guides' audience.
 
 ## Guide root and index
 
 - Guides live in **`docs/guides/`**.
 - **`docs/guides/README.md`** is the collection entry point. It gives the reader a concise scope statement and links to each guide or guide area with enough description to choose one.
-- A collection that serves stable, distinct readers should group guides below meaningful concern or audience directories such as `developer/`, `operations/`, or `release/` when that grouping improves the route from the index. Category names are open, local information architecture, not a KI-wide taxonomy. A small collection, shared entry point, or genuinely cross-audience guide may remain directly under the root; flat, grouped, and intentionally mixed collections are all valid.
+- Every guide lives in a folder named for its audience, such as `developer/`, `operator/`, or `user/`, so a guide's location declares its reader. Folder names are open, local information architecture, not a KI-wide taxonomy, but each names a reader rather than a topic. A collection with one audience has one folder. A guide that serves several readers sits with its primary reader, and the index may link it from other areas. Only the root `README.md` sits directly under `docs/guides/`.
+- `docs/guides/references/` holds supporting material that guides link to, not guides for an audience of its own.
 - Developer guide roles such as `developer/definition-of-done.md` and `developer/releasing.md` are optional under this general standard. A specialised repository-kind overlay may require their presence or an exact role path. When the role has a stable audience, that exact path should preserve the collection's audience route rather than bypass it with a root-level filename. `ki-guides` continues to govern ordinary guide placement and form rather than imposing a universal completion checklist or release policy.
-- AUDIT emits no structural finding solely because a guide is directly below `docs/guides/`, and CONFORM never moves an authored guide between categories. Reader and audience clarity remain review judgments.
+- AUDIT fails every guide directly below `docs/guides/` other than the root `README.md`. CONFORM never moves an authored guide between folders. Whether a folder name truly names an audience, and whether each guide sits with its primary reader, remain review judgments.
 - Each guide Markdown file other than the root `README.md` has exactly one H1. It identifies the task, outcome, or operating context; its body gives the conditions, ordered work, verification, and recovery information appropriate to the topic.
 
 ## Boundary and migration rules
@@ -55,4 +56,4 @@ A collection that groups by audience is declaring which guides are held to which
 
 ## Judgment boundary
 
-The checker can prove that a root, entry point, headings, and retired roots are present or absent. It cannot truthfully prove that a procedure is safe, complete, current, or placed in the most useful category. During review, ask whether the index and any audience grouping give each intended reader a clear route, whether specialised exact-role paths preserve that route, and whether a reader can complete the guide's outcome without hidden context, verify success, and recover from known failure states.
+The checker can prove that a root, entry point, headings, audience folders, and retired roots are present or absent. It cannot truthfully prove that a procedure is safe, complete, current, or placed in the most useful category. During review, ask whether the index and audience folders give each intended reader a clear route, whether specialised exact-role paths preserve that route, and whether a reader can complete the guide's outcome without hidden context, verify success, and recover from known failure states.

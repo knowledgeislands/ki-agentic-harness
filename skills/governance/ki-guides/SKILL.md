@@ -19,7 +19,7 @@ You are applying the **Knowledge Islands Guides standard** — the durable home 
 
 1. **The guide root** — repository-local guides live below `docs/guides/`. Its `README.md` is the reader's entry point: it states the collection's scope and links to the guides or guide areas it contains.
 2. **The documentation boundary** — a guide answers **how**. Durable rationale belongs in a Decision Record, observable behaviour and its verification belong in a specification, and planned work belongs in a roadmap item. Do not use `docs/spec/` or `docs/developer/` as parallel documentation systems; a specialised operational owner, not this skill, classifies any `docs/logs/` area.
-3. **The guide shape** — each guide has one H1 and an explicit reader, outcome, or operating context. Nest guides only when the grouping helps a reader find the right procedure; no universal category taxonomy is imposed.
+3. **The guide shape** — each guide has one H1 and an explicit reader, outcome, or operating context. Every guide lives in a folder named for its audience; folder names are local, and no universal taxonomy is imposed.
 4. **The mechanical checker** — `ki repo audit --skill ki-guides` checks the controlled root and index, H1 presence, retired sibling roots, and the generated rubric publication. It leaves placement quality and procedural truth to explicit judgment.
 
 ## Operating modes

@@ -25,6 +25,7 @@ test('the session identifies the controlled root, guides, and retired roots', ()
   expect(context.layout).toEqual({
     directoryExists: true,
     indexExists: true,
+    rootGuides: [],
     headingIssues: ['docs/guides/developer/broken.md'],
     escapingLinks: []
   })
@@ -44,8 +45,16 @@ test('a docs/logs path is left to its specialised owner', () => {
   expect(context.boundary.retiredRoots).toEqual([])
 })
 
-test('flat, grouped, and intentionally mixed collections remain structurally valid', () => {
-  for (const guides of [['overview.md'], ['developer/workflow.md'], ['overview.md', 'developer/workflow.md']]) {
+test('a guide directly below docs/guides is reported; audience folders and references are not', () => {
+  const cases: readonly (readonly [readonly string[], readonly string[]])[] = [
+    [[], []],
+    [['developer/workflow.md'], []],
+    [['developer/release/checklist.md', 'operator/runbook.md'], []],
+    [['references/glossary.md', 'user/start.md'], []],
+    [['overview.md'], ['docs/guides/overview.md']],
+    [['overview.md', 'developer/workflow.md'], ['docs/guides/overview.md']]
+  ]
+  for (const [guides, rootGuides] of cases) {
     const repository = temporaryRepository()
     mkdirSync(join(repository, 'docs/guides'), { recursive: true })
     writeFileSync(join(repository, 'docs/guides/README.md'), '# Guides\n')
@@ -62,6 +71,7 @@ test('flat, grouped, and intentionally mixed collections remain structurally val
     expect(context.layout).toEqual({
       directoryExists: true,
       indexExists: true,
+      rootGuides,
       headingIssues: [],
       escapingLinks: []
     })

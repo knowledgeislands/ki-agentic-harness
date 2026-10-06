@@ -1,5 +1,5 @@
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { isAbsolute, join, relative, resolve } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import type { RubricContextOptions, RubricPublicationContext, RubricSession } from '../../shared/rubric.ts'
 
 const GUIDES_DIRECTORY = 'docs/guides'
@@ -9,6 +9,7 @@ const RETIRED_ROOTS = ['docs/spec', 'docs/developer'] as const
 export type GuidesLayoutContext = {
   readonly directoryExists: boolean
   readonly indexExists: boolean
+  readonly rootGuides: readonly string[]
   readonly headingIssues: readonly string[]
   readonly escapingLinks: readonly string[]
 }
@@ -112,11 +113,12 @@ export const createGuidesSession = ({
   const indexPath = join(directory, INDEX_FILE)
   const indexExists = directoryExists && isFile(indexPath)
   const files = directoryExists ? guideFiles(root, directory) : []
+  const rootGuides = files.filter((file) => dirname(file) === GUIDES_DIRECTORY)
   const headingIssues = files.filter((file) => h1Count(readFileSync(join(root, file), 'utf8')) !== 1)
   const escaping = files.flatMap((file) => escapingLinks(root, file, readFileSync(join(root, file), 'utf8')))
   const context: GuidesRubricContext = {
     rubric: { publication },
-    layout: { directoryExists, indexExists, headingIssues, escapingLinks: escaping },
+    layout: { directoryExists, indexExists, rootGuides, headingIssues, escapingLinks: escaping },
     boundary: { retiredRoots: RETIRED_ROOTS.filter((path) => existsSync(join(root, path))) },
     judgment: {}
   }

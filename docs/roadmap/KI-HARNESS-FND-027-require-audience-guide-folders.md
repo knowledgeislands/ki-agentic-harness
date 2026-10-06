@@ -4,12 +4,12 @@ area: FND
 title: Require audience guide folders
 theme: foundation-tooling
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 6c073477fa23315d60e61de771f4986c77f78bea
 created_at: 2026-09-25T12:30:00Z
-updated_at: 2026-10-06T20:06:56Z
+updated_at: 2026-10-06T20:34:22Z
 ---
 
 # KI-HARNESS-FND-027: Require audience guide folders
@@ -64,19 +64,19 @@ Verified on `main` at `709f49fe`.
 
 ## Steps
 
-- [ ] Write a Decision Record under `docs/decisions/` in the `ADR-KI-HARNESS-SKILLS` series, taking the next free serial at delivery: every guide lives in an open-vocabulary audience folder, enforced mechanically; a multi-audience guide takes its primary audience; `README.md` and `references/` are the only root entries that are not audience folders; the rule supersedes `KI-HARNESS-GOV-083`'s advisory settlement. Record the rejected alternatives: advisory grouping, a fixed vocabulary, a shared-folder exception, and discovery of the Cloudflare guide anywhere in the collection.
-- [ ] Rewrite `standards-guides.md` `:44` and `:46`: a guide's location names its audience; folder names are local; a guide serving several readers sits with its primary reader and the index may link it from other areas; AUDIT fails a guide directly below `docs/guides/`; CONFORM still never moves an authored guide. Add that `references/` holds supporting material, not guides for an audience. Keep `:45` on specialised exact-role paths.
-- [ ] Rewrite `SKILL.md:22` to state the audience-folder rule in one sentence, citing the standard.
-- [ ] Add `rootGuides: readonly string[]` to `GuidesLayoutContext`, populated from the existing `guideFiles` list as the files whose parent is `docs/guides`.
-- [ ] Add GUIDE-5 "every guide lives in an audience folder" to `items/guides.ts`, mechanical FAIL, one VIOLATION per root-level guide naming the file, diagnostic remediation telling the author to move it into its primary audience's folder and update inbound links; register it in the GUIDE family.
-- [ ] Rewrite the ROUTE-2 prompt and guidance: assess whether each folder name genuinely names an audience and whether each guide sits with its primary reader; drop the root-level endorsement and the "do not fail a flat guide" instruction; keep "do not invent a fixed taxonomy" and "do not relocate through CONFORM".
-- [ ] Replace the `guides.test.ts:47` case with fixtures: grouped collection passes; a root-level guide fails and is named; `README.md` alone at the root passes; `references/` content does not trip GUIDE-5; nested folders below an audience folder pass. Update `items/index.test.ts` for the new item code.
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-guides`.
-- [ ] Resolve this repository's `docs/guides/skills-by-outcome.md`: search the registered estate for inbound links; delete the pointer if none remain and update `docs/guides/README.md`, otherwise move it to the audience folder its linkers serve and fix those links.
-- [ ] Before installing the harness change, so no receiving audit fails in between, work through each repository in the Current state table in its own primary checkout, skipping and reporting any with a concurrent writer or dirty guide paths. Read each root-level guide, choose its primary audience folder (reusing an existing folder where it fits; `5g-emerge-phase2` and `5g-emerge-phase3` have only `developer/`, and `infoschematics`' `host-` and `repository-` prefixes suggest their audiences), and `git mv` it there.
-- [ ] Update every inbound link in that repository, including `docs/guides/README.md`, `README.md`, `AGENTS.md`, other guides and any site navigation or build configuration that names a guide path; relative links inside a moved guide gain one `../` where they leave its folder.
-- [ ] Verify and commit there per that repository's Git policy, one Conventional Commit per repository.
-- [ ] For `5g-emerge-phase2`, note in the commit body that this reverses the flattening recorded under `5GE-P2-GOV-010` by principal decision.
+- [x] Write a Decision Record under `docs/decisions/` in the `ADR-KI-HARNESS-SKILLS` series, taking the next free serial at delivery: every guide lives in an open-vocabulary audience folder, enforced mechanically; a multi-audience guide takes its primary audience; `README.md` and `references/` are the only root entries that are not audience folders; the rule supersedes `KI-HARNESS-GOV-083`'s advisory settlement. Record the rejected alternatives: advisory grouping, a fixed vocabulary, a shared-folder exception, and discovery of the Cloudflare guide anywhere in the collection.
+- [x] Rewrite `standards-guides.md` `:44` and `:46`: a guide's location names its audience; folder names are local; a guide serving several readers sits with its primary reader and the index may link it from other areas; AUDIT fails a guide directly below `docs/guides/`; CONFORM still never moves an authored guide. Add that `references/` holds supporting material, not guides for an audience. Keep `:45` on specialised exact-role paths.
+- [x] Rewrite `SKILL.md:22` to state the audience-folder rule in one sentence, citing the standard.
+- [x] Add `rootGuides: readonly string[]` to `GuidesLayoutContext`, populated from the existing `guideFiles` list as the files whose parent is `docs/guides`.
+- [x] Add GUIDE-5 "every guide lives in an audience folder" to `items/guides.ts`, mechanical FAIL, one VIOLATION per root-level guide naming the file, diagnostic remediation telling the author to move it into its primary audience's folder and update inbound links; register it in the GUIDE family.
+- [x] Rewrite the ROUTE-2 prompt and guidance: assess whether each folder name genuinely names an audience and whether each guide sits with its primary reader; drop the root-level endorsement and the "do not fail a flat guide" instruction; keep "do not invent a fixed taxonomy" and "do not relocate through CONFORM".
+- [x] Replace the `guides.test.ts:47` case with fixtures: grouped collection passes; a root-level guide fails and is named; `README.md` alone at the root passes; `references/` content does not trip GUIDE-5; nested folders below an audience folder pass. Update `items/index.test.ts` for the new item code.
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-guides`.
+- [x] Resolve this repository's `docs/guides/skills-by-outcome.md`: search the registered estate for inbound links; delete the pointer if none remain and update `docs/guides/README.md`, otherwise move it to the audience folder its linkers serve and fix those links.
+- [x] Before installing the harness change, so no receiving audit fails in between, work through each repository in the Current state table in its own primary checkout, skipping and reporting any with a concurrent writer or dirty guide paths. Read each root-level guide, choose its primary audience folder (reusing an existing folder where it fits; `5g-emerge-phase2` and `5g-emerge-phase3` have only `developer/`, and `infoschematics`' `host-` and `repository-` prefixes suggest their audiences), and `git mv` it there.
+- [x] Update every inbound link in that repository, including `docs/guides/README.md`, `README.md`, `AGENTS.md`, other guides and any site navigation or build configuration that names a guide path; relative links inside a moved guide gain one `../` where they leave its folder.
+- [x] Verify and commit there per that repository's Git policy, one Conventional Commit per repository.
+- [x] For `5g-emerge-phase2`, note in the commit body that this reverses the flattening recorded under `5GE-P2-GOV-010` by principal decision.
 
 ## Files touched
 
@@ -128,6 +128,55 @@ This repository's `skills-by-outcome.md` pointer, and the moved guides in five r
 ### Roadmap
 
 None beyond this record. The fourteen companion records `GOV-083` found in other repositories, worded around the advisory policy, stay with their owners; the moves here may make some of them redundant, and their owners close them.
+
+## Review
+
+### Delivered
+
+Baseline `6c073477`. The harness change is the commit that moves this record to `awaiting-review`. The estate moves landed first, one local commit per repository, none pushed:
+
+| Repository | Commit | Moves |
+| --- | --- | --- |
+| `5g-emerge-phase2` | `0e17a27` | six guides to `developer/`; the body records the reversal of `5GE-P2-GOV-010` |
+| `5g-emerge-phase3` | `fd4bc02` | `source-sync.md` to `developer/` |
+| `infoschematics` | `95e83e6b` | `host-*` to `host/` and `repository-*` to `developer/`, dropping the prefixes |
+| `vallearmonia-website` | `07e13c2` | `sanctuary-features.md` to `editorial/`, `resources.md` to `ops/` |
+| `kit-midnight.ninja` | `c5b765d` | `tower-review.md` to `operator/` |
+
+No repository was skipped.
+
+### Change Summary
+
+- [ADR-KI-HARNESS-SKILLS-016](../decisions/ADR-KI-HARNESS-SKILLS-016-every-guide-lives-in-an-audience-folder.md) records the rule, the rejected alternatives and the supersession of `GOV-083`'s advisory settlement; the decisions index lists it.
+- `ki-guides` GUIDE-5 fails each Markdown file directly below `docs/guides/` other than `README.md`, from a new `rootGuides` field on the layout context.
+- ROUTE-2 now asks whether each folder names a reader rather than a topic and whether each guide sits with its primary reader; the flat-guide endorsement is gone.
+- `standards-guides.md`, `SKILL.md` and `mode-audit.md` state the rule; `references/` is named as supporting material; `rubric.md` is regenerated.
+- This repository's `docs/guides/skills-by-outcome.md` pointer had no inbound links in the estate and is deleted.
+- The `ki-skills` remediation-inventory test counts rise by one criterion.
+
+### Verification
+
+- `bun run test` on the baseline plus this change alone, in a clean worktree: 950 pass, 0 fail. `bunx tsc --noEmit` passes.
+- `ki dev skill rubric ki-guides` reports the rubric current.
+- `ki repo audit` passes here for `ki-guides`, `ki-repo`, `ki-work-roadmap`, `ki-authoring` and `ki-decision-records`; `ki-skills` passes with one WARN, the LONG-3 source-review age warning present before this work.
+- A probe guide at `docs/guides/zz-probe.md` failed GUIDE-5, named; it was removed.
+- Verify 2's grep returns nothing. Verify 3's `find` is empty in this repository and all five moved repositories, and `ki repo audit --skill ki-guides` passes in each.
+
+### Outstanding concerns
+
+- `5GE-P2-GOV-013` in `5g-emerge-phase2`, still `draft`, asks for the discovery this record rejected; its owner should close it as superseded.
+- `INFOSCHEMATICS-TOOL-041` cites `docs/guides/repository-releasing-packages.md` five times; the guide is now `docs/guides/developer/releasing-packages.md`. Roadmap records were left to their owner.
+- `vallearmonia-website` folders such as `code/`, `content/`, `design/` and `media/` read as topics, so ROUTE-2 review there may ask for regrouping.
+- The uncommitted STREAM-7 change in this checkout adds one more criterion, so the full suite run here fails the remediation-inventory counts until that change bumps them again.
+- The five estate commits are unpushed. Pushing `5g-emerge-phase2` deploys its site, including the edited programme pages.
+
+### Post-change review
+
+The rule now agrees with WCF-26, the `ki-repo-tools` exact-role paths and the `ki-repo` REVIEW question, which all already assumed audience folders. CONFORM still moves nothing; GUIDE-5's remediation is diagnostic.
+
+### Mini recap
+
+Guides must live in an audience folder, AUDIT fails any that do not, and every `ki-guides` repository in the estate already complies.
 
 ## Discussion
 

@@ -110,11 +110,38 @@ const GUIDE_4: RubricItem<GuidesLayoutContext> = {
   }
 }
 
+const GUIDE_5: RubricItem<GuidesLayoutContext> = {
+  code: 'GUIDE-5',
+  title: 'every guide lives in an audience folder',
+  description:
+    'No guide sits directly below `docs/guides/`; apart from the root `README.md`, every guide lives in a folder named for its audience.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Move each named guide into its primary audience's folder below `docs/guides/`, update every inbound link, then rerun the audit."
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context) =>
+        context.rootGuides.length === 0
+          ? [{ status: 'PASS', message: 'Every guide lives in an audience folder.' }]
+          : context.rootGuides.map((file) => ({
+              status: 'VIOLATION',
+              message: 'A guide must live in a folder named for its audience, not directly below docs/guides.',
+              subject: file
+            }))
+    }
+  }
+}
+
 export const GUIDE: RubricFamily<GuidesRubricContext, GuidesLayoutContext> = {
   code: 'GUIDE',
   title: 'guide layout',
   description: 'The controlled guide root has an entry point and identifiable guide documents.',
   standard: SOURCE,
   selectContext: (context) => context.layout,
-  items: [GUIDE_1, GUIDE_2, GUIDE_3, GUIDE_4]
+  items: [GUIDE_1, GUIDE_2, GUIDE_3, GUIDE_4, GUIDE_5]
 }
