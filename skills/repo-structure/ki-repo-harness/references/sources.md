@@ -48,7 +48,7 @@ _REFRESH last run **2026-09-26** (previous: 2026-08-12)._
 
 - [AS] — Monitor for any Agent Skills spec update that adds bundle / harness-level concepts. If agentskills.io ever formalises a multi-skill container, reconcile with this standard. Also: the newly-documented optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) are a `ki-skills` concern to fold in — flag raised, not owned here.
 - [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.
-- Codex subagent discovery is now documented under `.codex/agents/`, but the compatible harness has no publication path for it; disposition is routed to `KI-HARNESS-GOV-112`.
+- Codex subagent discovery is now documented under `.codex/agents/`, but the compatible harness has no publication path for it; dispositioned on 2026-10-06: the runtime capability is recorded, publication remains host-owned and unavailable, and this repository declines a Codex projection.
 - [CH] — Monitor host support for eval capabilities. Evals remain a source shelf until a compatible-payload contract lands; MCP servers remain independent repositories.
 
 [as-spec]: https://agentskills.io/specification

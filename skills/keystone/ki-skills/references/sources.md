@@ -79,7 +79,6 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 | COMMUNITY | [Skill Authoring Patterns][patterns] | Patterns and feedback | 2026-09-26 |
 | COMMUNITY | [obra/superpowers writing-skills][superpowers]† | Convergent conventions | 2026-09-26 |
 | COMMUNITY | [skills.sh — Open Agent Skills Ecosystem][skills-sh] | Registry and security | 2026-09-26 |
-| GASCITY | [Gas City][gas-city] | Multi-agent orchestration and harness-practice discovery | 2026-09-26 |
 | FAFF | [shftwst/faff][faff] | Claude Code delivery-harness and autonomy-gate discovery | 2026-09-26 |
 
 † Community restatement of the best-practices document.
@@ -104,7 +103,7 @@ The README is cited only for the harness's four-part structure. Local decision r
 
 ## Last review
 
-REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskills-index] first; it still lists the same nine pages and the specification retains the portable format and budgets. The review found no immediate standard or rubric change; material follow-ups are routed to `KI-HARNESS-GOV-112`.
+REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskills-index] first; it still lists the same nine pages and the specification retains the portable format and budgets. The review found no immediate standard or rubric change; its material follow-ups were dispositioned on 2026-10-06, as recorded below.
 
 - **SPEC:** portable fields and constraints remain current. `allowed-tools` is the only portable tool declaration and remains experimental; `disallowed-tools` is not in the specification.
 - **Agent Skills home:** accessible; three-stage progressive disclosure (metadata ~100 tok / instructions < 5000 tok / resources on demand). Spec unchanged.
@@ -114,12 +113,12 @@ REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskill
 - **ENG:** published 2025-10-16 and updated 2025-12-18; it remains rationale, not a normative source.
 - **BLOG (Claude blog):** added as a discovery source. Future REFRESH runs scan it for articles materially relevant to agent skills, agentic practice, or authoring workflows; an article is supporting evidence, not a normative rule by itself.
 - **OPENAI (OpenAI News):** added as a discovery source. Future REFRESH runs scan it for articles materially relevant to agent skills, agentic practice, or authoring workflows; an article is supporting evidence, not a normative rule by itself.
-- **GASCITY (Gas City):** the former Gas Town Hall source now redirects to a Beads-native software-factory platform. Its changed orchestration shape is routed to `KI-HARNESS-GOV-112`; its practice remains supporting evidence, not a normative rule by itself.
+- **GASCITY retired (2026-10-06):** the former Gas Town Hall source now redirects to Gas City, a Beads-native software-factory platform. A review of its home page and guide index found work-graph, orchestration, and durable-memory positioning but no skill-authoring or harness practice beyond what this standard and the KI work-record skills already cover, so it was removed as a discovery source. The `ki-agentic-radar` Gas City assessment subject is unaffected.
 - **FAFF (shftwst/faff):** added as a discovery source. Future REFRESH runs review its delivery-loop contracts, autonomy levels, and gate design for transferable lessons; its Claude Code-specific implementation is supporting evidence, not a portable rule by itself.
 - **COMMUNITY:** the reviewed pattern guide, Superpowers guidance, and skills.sh registry remain supporting evidence. They introduce no further portable constraint; the soft ~300-line split suggestion remains below our 500-line WARN and is not adopted as a separate cap.
 - **`skills-ref`:** the repository now explicitly labels the reference library demonstration-only and not for production. Keep it as supporting validation evidence; the specification remains the normative baseline.
 - **In-house scan:** the then-current governed skill set passed its skill-quality audit, including `ki-skills` itself. Exact commands and fleet counts are intentionally omitted because both change as the host and skill set evolve.
-- **Open watch-items:** assess the bounded Gas City, current-model, and AHP follow-ups in `KI-HARNESS-GOV-112`; no other source disagreement requires a standard or rubric change.
+- **Open watch-items:** none; no source disagreement requires a standard or rubric change.
 
 (What past reviews changed in the standard / rubric / linter is in git.)
 
@@ -139,7 +138,6 @@ REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskill
 [claude-blog]: https://claude.com/blog
 [openai-news]: https://openai.com/news/
 [openai-skills]: https://learn.chatgpt.com/docs/build-skills
-[gas-city]: https://gascity.com/
 [faff]: https://github.com/shftwst/faff
 [skills-ref]: https://github.com/agentskills/agentskills/tree/main/skills-ref
 [patterns]: https://generativeprogrammer.com/p/skill-authoring-patterns-from-anthropics

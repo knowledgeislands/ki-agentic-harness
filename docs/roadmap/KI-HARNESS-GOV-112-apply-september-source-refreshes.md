@@ -4,12 +4,12 @@ area: GOV
 title: Apply September source refreshes
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-09-26T18:00:08Z
-updated_at: 2026-10-05T08:19:22Z
+updated_at: 2026-10-06T17:13:34Z
 ---
 
 # KI-HARNESS-GOV-112: Apply September source refreshes
@@ -47,12 +47,12 @@ Out of scope: changing a consumer model default, model-agent route, recommendati
 
 ## Steps
 
-- [ ] **Models:** in the `ki-model-radar` sources ledger, add a dated disposition: the 2026-09-30 targeted review discharged the candidate-identity follow-up; route evaluation for a new model needs its own work item with local-fit evidence; no default moved. Replace the routing pointer in the 2026-09-26 entry.
-- [ ] **AHP:** in the `ki-agentic-radar` sources ledger, add a dated disposition: implementation multiplicity is recorded, interoperability remains unwitnessed, the stance is unchanged and the existing watch-item carries the follow-up.
-- [ ] **Gas City:** read the current Gas City guide once for skill-authoring or harness practice not already covered by the `ki-skills` standard. If none is found, retire `GASCITY`: remove its table row, its `[gas-city]` link definition and its last-review bullet, and add a dated note under `## Last review` saying it was retired and why. If concrete reusable practice is found, keep the source, record the practice in `## Discussion` here, and capture any standard change through `ki-next` rather than making it in this record.
-- [ ] **Codex subagents:** in both the `ki-subagents-chatgpt` and `ki-repo-harness` sources ledgers, replace the routing pointer with a dated disposition: the runtime capability is recorded, publication remains host-owned and unavailable, and this repository declines a Codex projection.
-- [ ] Remove `KI-HARNESS-GOV-112` from the `ki-skills` open watch-items line, and confirm with `grep -rn "GOV-112" skills` that no ledger still routes work here.
-- [ ] Run the verification below and record each finding's outcome in one line under `## Discussion`.
+- [x] **Models:** in the `ki-model-radar` sources ledger, add a dated disposition: the 2026-09-30 targeted review discharged the candidate-identity follow-up; route evaluation for a new model needs its own work item with local-fit evidence; no default moved. Replace the routing pointer in the 2026-09-26 entry.
+- [x] **AHP:** in the `ki-agentic-radar` sources ledger, add a dated disposition: implementation multiplicity is recorded, interoperability remains unwitnessed, the stance is unchanged and the existing watch-item carries the follow-up.
+- [x] **Gas City:** read the current Gas City guide once for skill-authoring or harness practice not already covered by the `ki-skills` standard. If none is found, retire `GASCITY`: remove its table row, its `[gas-city]` link definition and its last-review bullet, and add a dated note under `## Last review` saying it was retired and why. If concrete reusable practice is found, keep the source, record the practice in `## Discussion` here, and capture any standard change through `ki-next` rather than making it in this record.
+- [x] **Codex subagents:** in both the `ki-subagents-chatgpt` and `ki-repo-harness` sources ledgers, replace the routing pointer with a dated disposition: the runtime capability is recorded, publication remains host-owned and unavailable, and this repository declines a Codex projection.
+- [x] Remove `KI-HARNESS-GOV-112` from the `ki-skills` open watch-items line, and confirm with `grep -rn "GOV-112" skills` that no ledger still routes work here.
+- [x] Run the verification below and record each finding's outcome in one line under `## Discussion`.
 
 ## Files touched
 
@@ -102,6 +102,39 @@ None.
 
 None. No model defaults or AHP promotion follow from this pass, and no item is raised in `tools-ki`.
 
+## Review
+
+### Delivered
+
+Disposition pass only, within the recorded boundary, from baseline `a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe`. Each of the four September findings now carries a dated 2026-10-06 disposition in the ledger that raised it, the `GASCITY` discovery source is retired from `ki-skills`, and no ledger routes work to this record. No `radar.toml`, rubric, standard or `.ki.toml` changed, so no default, route, ring, stance or declaration moved. The `ki-agentic-radar` Gas City assessment subject is untouched.
+
+### Change Summary
+
+- `skills/governance/ki-model-radar/references/sources.md`: replaced the 2026-09-26 routing pointer and added a dated disposition bullet (2026-09-30 targeted review discharged the candidate-identity follow-up; route evaluation needs its own work item; nothing moved).
+- `skills/governance/ki-agentic-radar/references/sources.md`: added a `Disposition` review-log row (multiplicity recorded, interoperability unwitnessed, stance unchanged, existing watch item carries the follow-up).
+- `skills/keystone/ki-skills/references/sources.md`: removed the `GASCITY` table row and `[gas-city]` link definition, replaced its last-review bullet with a dated retirement note, repointed the REFRESH summary sentence, and cleared the open watch-items line.
+- `skills/agentic-systems/ki-subagents-chatgpt/references/sources.md` and `skills/repo-structure/ki-repo-harness/references/sources.md`: replaced the routing pointer with the dated Codex-projection disposition.
+
+### Verification
+
+- `grep -rn "GOV-112" skills`: no output.
+- `grep -n -i "gascity\|gas-city" skills/keystone/ki-skills/references/sources.md`: only the dated retirement note.
+- `git diff --stat` touches only the five ledgers above and this record.
+- `bun run test`: 940 pass, 0 fail. `bunx tsc --noEmit`: clean. `bunx biome check .`: no errors.
+- `ki repo audit --skill` for `ki-agentic-radar`, `ki-subagents-chatgpt` and `ki-authoring`: PASS. `ki-skills` and `ki-repo-harness`: FAIL=0, WARN=1, the pre-existing `LONG-3` cadence warning for a `ki-skills` source last reviewed 2026-06-21. `ki-model-radar`: FAIL=0, WARN=1, the pre-existing `LIFECYCLE-1` warning on `radar.toml` evidence `openai-astra-release`, which this record may not edit.
+
+### Outstanding concerns
+
+None for this record. The two audit warnings predate the change and belong to the next `ki-skills` and `ki-model-radar` REFRESH runs.
+
+### Post-change review
+
+The goal is met: every finding has one owning disposition and the routing pointers are gone. Scope held to the five ledgers; regression risk is limited to prose in source registers, covered by the focused audits. Independent Fable review approved with no blocking or should-fix findings; its one nit (an em-dash in the new `GASCITY` bullet label) was applied. Ready for acceptance.
+
+### Mini recap
+
+Recorded four dispositions and retired one discovery source in five `references/sources.md` ledgers. Gates green apart from two pre-existing cadence warnings. Learning route: none proposed; a future model route change or Codex publisher follows its own work item.
+
 ## Discussion
 
 ### Model and route evaluation
@@ -127,3 +160,10 @@ The follow-up is complete when each finding has a documented disposition, any wa
 ### Decision
 
 Disposition pass only: record each finding's outcome and retire the Gas City source unless evidence of reusable practice is found; no model defaults and no AHP promotion. Decided by the Fable reviewer under delegated autonomy, reversible.
+
+### Outcomes
+
+- **Models:** discharged by the 2026-09-30 targeted review; route evaluation needs its own item; no default moved by this pass.
+- **AHP:** multiplicity recorded, interoperability unwitnessed, stance unchanged; the existing cross-implementation watch item carries it.
+- **Gas City:** the home page and guide index (fetched 2026-10-06) offer work-graph, orchestration and durable-memory positioning but no skill-authoring or harness practice not already covered, so `GASCITY` is retired from `ki-skills`.
+- **Codex subagents:** capability recorded, publication host-owned and unavailable, projection declined by `checks.coverage-subagents-chatgpt = false`.
