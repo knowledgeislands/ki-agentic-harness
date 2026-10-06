@@ -208,10 +208,15 @@ Available dependency updates are surfaced and deliberately applied.
 
 → [standard](standards-engineering.md)
 
-Managed discovery surfaces carry consistent tool exclusions.
+Managed discovery surfaces carry consistent tool exclusions, and generated output agrees with its normaliser.
 
 - **GEN-1 [M] — Managed discovery surfaces share exclusions** — Known generated or managed discovery surfaces have matching Biome, Knip, and Markdown exclusions, and no legacy `.ki` runtime exclusion remains. (standards-engineering.md)
   - _Remediation:_ diagnostic — Align the Engineering-owned Biome and Knip exclusions deliberately, use ki-authoring for its wholly owned `.rumdl.toml`, remove legacy runtime exclusions, then rerun the audit. Knip may call managed-surface ignore entries unused configuration hints; that expected hint does not override the cross-tool GEN-1 contract.
+- **GEN-2 [J] — Generated output matches its normaliser** — Each committed generated path is classified by byte ownership: a repository-owned producer emits its normaliser's fixed point, an externally byte-authoritative copy is excluded with separate drift proof, and an unrepresentable format carries the narrowest recorded exclusion. (standards-engineering.md#5-biomejson--rumdl-config-core)
+  - _Evidence scope:_ Committed generated paths, their producers, and the formatter or linter configuration that includes or excludes them.
+  - _Review prompt:_ Is each committed generated path classified as repository-owned, externally byte-authoritative, or unrepresentable by its normaliser; does each repository-owned producer emit its normaliser's fixed point so that regenerating and formatting yields no diff; and does each exclusion name external byte authority or genuine representational incompatibility as its reason?
+  - _Outcomes:_ conforming; producer emits non-normal form; exclusion unjustified; classification decision required
+  - _Conforming guidance:_ Fix a repository-owned producer so it emits the normal form, for example by formatting its output during generation, rather than excluding the path or changing formatter configuration; narrow or justify an exclusion; or record the classification decision the owner must make.
 
 ## TURBO — Workspace task graph
 

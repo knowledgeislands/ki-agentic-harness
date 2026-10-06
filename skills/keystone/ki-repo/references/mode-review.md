@@ -322,6 +322,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Any deliberate duplication is justified in writing and attributable to its source.
 - [ ] Vendored or generated copies record the revision they came from.
 - [ ] Vendored or generated copies are checked for drift by something that fails.
+- [ ] Repository-owned generated output inside formatter scope was regenerated and formatted with no resulting diff.
+- [ ] Each generated path excluded from formatting is narrow and names external byte authority or genuine representational incompatibility as its reason.
 - [ ] Shared configuration comes from one factory rather than parallel copies.
 - [ ] The change does not introduce a second source of truth for an existing fact.
 - [ ] Security-relevant logic has one authoritative definition, or a conformance contract proving equivalence.

@@ -4,12 +4,12 @@ area: GOV
 title: Align generated normal forms
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 68040b3e4e63a83186587410bc84d2db80ff14d4
 created_at: 2026-09-25T05:43:18Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-06T17:21:44Z
 ---
 
 # KI-HARNESS-GOV-092: Align generated normal forms
@@ -38,11 +38,11 @@ Verified on `main` at `19651664`. `standards-engineering.md` section 5 says gene
 
 ## Steps
 
-- [ ] Add a "Generated output and its normaliser" paragraph to section 5 of `standards-engineering.md` stating the three-way classification from Discussion: (1) repository-owned producer and shape, faithfully representable by the normaliser, so the producer emits the normal form; (2) byte identity with an external canonical source is the contract, so the path is excluded and producer drift is proved separately, as `ADR-KI-HARNESS-TOOLCHAIN-005` already requires; (3) the normaliser cannot represent the format, so the narrowest exclusion with a recorded reason. Convenience is not a reason.
-- [ ] Add `GEN-2 [J]`, "generated output matches its normaliser", to `scripts/rubric/items/generated.ts`, with scope (committed generated paths and their producers), prompt (is each path classified, and does a class-1 producer emit its normaliser's fixed point?), outcomes (`conforming`, `producer emits non-normal form`, `exclusion unjustified`, `classification decision required`) and guidance that routes class-1 fixes into the producer, not the formatter configuration.
-- [ ] Increment the expected code count in `scripts/rubric/items/index.test.ts` by one, rather than hardcoding a total, and assert `GEN-2` is present.
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering`.
-- [ ] Add two items to Duplication and reuse in `mode-review.md`, after "Vendored or generated copies are checked for drift by something that fails.": "Repository-owned generated output inside formatter scope was regenerated and formatted with no resulting diff." and "Each generated path excluded from formatting is narrow and names external byte authority or genuine representational incompatibility as its reason."
+- [x] Add a "Generated output and its normaliser" paragraph to section 5 of `standards-engineering.md` stating the three-way classification from Discussion: (1) repository-owned producer and shape, faithfully representable by the normaliser, so the producer emits the normal form; (2) byte identity with an external canonical source is the contract, so the path is excluded and producer drift is proved separately, as `ADR-KI-HARNESS-TOOLCHAIN-005` already requires; (3) the normaliser cannot represent the format, so the narrowest exclusion with a recorded reason. Convenience is not a reason.
+- [x] Add `GEN-2 [J]`, "generated output matches its normaliser", to `scripts/rubric/items/generated.ts`, with scope (committed generated paths and their producers), prompt (is each path classified, and does a class-1 producer emit its normaliser's fixed point?), outcomes (`conforming`, `producer emits non-normal form`, `exclusion unjustified`, `classification decision required`) and guidance that routes class-1 fixes into the producer, not the formatter configuration.
+- [x] Increment the expected code count in `scripts/rubric/items/index.test.ts` by one, rather than hardcoding a total, and assert `GEN-2` is present.
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering`.
+- [x] Add two items to Duplication and reuse in `mode-review.md`, after "Vendored or generated copies are checked for drift by something that fails.": "Repository-owned generated output inside formatter scope was regenerated and formatted with no resulting diff." and "Each generated path excluded from formatting is narrow and names external byte authority or genuine representational incompatibility as its reason."
 
 ## Files touched
 
@@ -51,6 +51,7 @@ Verified on `main` at `19651664`. `standards-engineering.md` section 5 says gene
 - `skills/governance/ki-engineering/scripts/rubric/items/index.test.ts`
 - `skills/governance/ki-engineering/references/rubric.md`
 - `skills/keystone/ki-repo/references/mode-review.md`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` (count only, added during delivery)
 
 ## Verify
 
@@ -91,6 +92,44 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+The producer-normaliser rule with its three-way ownership classification, one judgment criterion and two REVIEW checklist items, from baseline `68040b3e4e63a83186587410bc84d2db80ff14d4`. Exclusions held: no generated file was reformatted, no projection or vendoring exclusion changed, `ki-authoring`'s template contract is untouched, no mechanical regenerate-and-diff criterion was added, and `ADR-KI-HARNESS-TOOLCHAIN-005` needed no amendment because class 2 restates its ownership basis.
+
+### Change Summary
+
+- `skills/governance/ki-engineering/references/standards-engineering.md`: new "Generated output and its normaliser" paragraph in section 5, after the managed-surface exclusion paragraph, stating classes 1 to 3, naming the producer as the fix point for class 1 and citing the ADR for class 2.
+- `skills/governance/ki-engineering/scripts/rubric/items/generated.ts`: `GEN-2 [J]` with the planned scope, prompt, four outcomes and producer-first guidance; the `GEN` family description now also names generated output, so it still describes both items.
+- `skills/governance/ki-engineering/scripts/rubric/items/index.test.ts`: expected code count 60 to 61 and `GEN-2` asserted present.
+- `skills/governance/ki-engineering/references/rubric.md`: regenerated with `ki dev skill rubric ki-engineering --write` from this worktree.
+- `skills/keystone/ki-repo/references/mode-review.md`: the two Duplication and reuse items, immediately after the drift-check item.
+- Approved deviation: `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` counts estate-wide criteria; `criteria` 729 to 730 and `judgment` 283 to 284 for the one new judgment criterion. The plan's Files touched did not anticipate this cross-skill count.
+
+### Verification
+
+1. Section 5 states all three classes, the producer fix point for class 1, and the ADR citation for class 2 without contradicting it.
+2. `ki dev skill rubric ki-engineering` reports `references/rubric.md is in sync`, and the rubric lists `GEN-2 [J] — Generated output matches its normaliser`. The installed harness links the primary checkout, so render and check ran with an isolated temporary XDG configuration whose `knowledgeislands/ki-agentic-harness` install linked this worktree.
+3. `mode-review.md` Duplication and reuse carries both items, one line each, after "Vendored or generated copies are checked for drift by something that fails."
+4. Applied by hand: `apps/site-rig/pipeline/pull.ts` owns producer and JSON shape and Biome represents it, so class 1 with the fix in the producer; `apps/site-tower/data` JSONL cannot be represented by Biome, so class 3 with a recorded narrow exclusion; `.claude/skills` is a byte-exact projection of another source, so class 2 under the ADR.
+
+- `bun run test`: 943 pass, 0 fail. `bunx tsc --noEmit`: clean. `bunx biome check .`: no errors (pre-existing warnings only).
+- `ki repo audit --skill ki-engineering --progress never`: PASS.
+- `ki repo audit --skill ki-repo --progress never`: `ki-repo` content criteria clean; FAIL only on environment findings unrelated to this change: `REPO-REG-1` (the temporary worktree is not in the local repository registry) and `RUNTIMES-2` user-scope runtime activation for eight skills.
+
+### Outstanding concerns
+
+None for the delivered contract. The `ki-repo` audit environment failures are local-registry and runtime-activation state, not repository content.
+
+### Post-change review
+
+The goal is met at the standard and review level: a reviewer reading section 5 alone reaches the same three classifications for the `kit-midnight.ninja` evidence. Scope held to the stated files plus the one count-only test. Regression risk is low: one judgment item and two checklist lines, with counts incremented rather than restructured. Independent Fable review approved with no blocking or should-fix findings; its nit that Files touched omitted the inventory test was applied, and two further nits concern pre-existing text outside this diff. Ready for acceptance.
+
+### Mini recap
+
+Added the producer-normaliser rule, `GEN-2 [J]` and two REVIEW items; regenerated the rubric. Gates green. Learning route proposed: the `ki dev skill rubric --write` path follows the installed harness link, so rubric regeneration from a worktree needs an isolated XDG install; that may merit a `ki-skills` or `tools-ki` note through `ki-next`, not promoted here.
 
 ## Discussion
 
