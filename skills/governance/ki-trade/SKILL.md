@@ -7,7 +7,7 @@ description: >
   Operate one repository's side of a declared cross-repository trade: prepare, inspect, submit, receive,
   release, or prune a work or knowledge record. Use for one concrete trade action; `ki-trades` owns record and
   route governance, while `ki-next` owns receiver disposition.
-argument-hint: 'prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <list|check> | standing <list|check|capture> | policy <show|check> | list | show <TRD> | help'
+argument-hint: 'prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <list|check> | standing <list|check|capture> | list | show <TRD> | help'
 ---
 
 # ki-trade
@@ -38,7 +38,7 @@ Preparation, delivery, receiver decision, and sender observation are separate fa
 - **Receive** one explicitly identified submitted record, or preview and confirm an explicit `--all` batch.
 - **List and show** local records and observable peer state without changing either repository.
 - **Release or prune** only copies whose governed eligibility is currently observable.
-- **Inspect routes** with `routes list|check` and `standing list|check`; routes and standing grants are read from the Capital trade policy and are never edited locally. In a Capital, `policy show|check` presents and sweeps the territory trade policy. A route change is a proposal to the Capital, which preserves every route that still has a dependent record.
+- **Inspect routes** with `routes list|check` and `standing list|check`; routes and standing grants are read from the Capital trade policy and are never edited locally. In a Capital, `ki repo trade policy show|check|compare` presents, sweeps, and compares the territory trade policy. A route change is a proposal to the Capital, which preserves every route that still has a dependent record.
 
 `ki-trades` owns the record, route, authority, and lifecycle contract. The operator must audit before and after a mutation, but this guidance does not claim that the current host makes those audits part of one transaction. Do not infer atomic file publication, preview/write equivalence, or post-write validation from this skill; those are host capabilities and require direct host evidence.
 
