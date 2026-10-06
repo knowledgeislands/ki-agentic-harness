@@ -54,7 +54,7 @@ In progress. The owner collapsed the earlier staged plan on 2026-10-06: one chan
 - `skills/change-management/ki-next/references/standards-next-work.md` (spelling only)
 - `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
 - `skills/README.md` (regenerated catalogue and `ki-trade` arguments line)
-- `docs/decisions/GDR-KI-HARNESS-013-capital-owned-territory-trade-policy.md`, `GDR-KI-HARNESS-005-cross-repository-trade-routes.md`, `GDR-KI-HARNESS-008-portable-work-item-timestamps.md`, `README.md`
+- `docs/decisions/GDR-KI-HARNESS-013-capital-owned-territory-trade-policy.md`, `GDR-KI-HARNESS-005-cross-repository-trade-routes.md`, `README.md`
 - `.ki.toml`
 
 ## Verify
@@ -97,7 +97,7 @@ Every harness rubric now reads territory and trade policy from the declared Capi
 ### Change Summary
 
 - `feat(ki-repo)` territory rubric, `feat(ki-trades)` Capital policy resolution, `docs(decisions)` GDR-013, `chore(config)` harness `.ki.toml`, `docs(skills)` regenerated catalogue.
-- Review fixes: `fix(ki-trade)` consistent `ki repo trade policy show|check|compare` naming; `fix(ki-repo)` and `fix(ki-trades)` correct resolution across several territories in one registry and fail an unreadable registered Capital; `docs(decisions)` retargets `GDR-KI-HARNESS-008` to GDR-013; `docs(ki-trades)` uses "itemised" throughout live skill text.
+- Review fixes: `fix(ki-trade)` consistent `ki repo trade policy show|check|compare` naming; `fix(ki-repo)` and `fix(ki-trades)` correct resolution across several territories in one registry and fail an unreadable registered Capital; `docs(ki-trades)` uses "itemised" throughout live skill text.
 
 ### Verification
 
@@ -111,7 +111,7 @@ Every harness rubric now reads territory and trade policy from the declared Capi
 
 ### Post-change review
 
-A Fable review returned "not yet ready" with nine findings: inconsistent `ki-trade` command naming, resolution across several territories, Capital-side and malformed-registry handling, COV-1 scope, cross-territory wording, unreadable Capital checkouts, a stale GDR-008 dependency, spelling, and record lifecycle and Files touched gaps. All nine are fixed in the commits above or in this record. The owner accepted both interpretation calls on 2026-10-06: the `repository` field attributes a checkout, and an unreadable registered Capital FAILs TERR-3 and gives `ki-trades` an `unreadable` state.
+A Fable review returned "not yet ready" with nine findings: inconsistent `ki-trade` command naming, resolution across several territories, Capital-side and malformed-registry handling, COV-1 scope, cross-territory wording, unreadable Capital checkouts, a GDR-008 dependency on the archived GDR-005, spelling, and record lifecycle and Files touched gaps. Eight are fixed in the commits above or in this record. The GDR-008 retarget was reverted: `ki-decision-records` DEPENDS-4 forbids an earlier record citing a later one, so GDR-008 keeps its historical dependency on GDR-005, whose supersession by GDR-013 is recorded in the index. The owner accepted both interpretation calls on 2026-10-06: the `repository` field attributes a checkout, and an unreadable registered Capital FAILs TERR-3 and gives `ki-trades` an `unreadable` state.
 
 ### Mini recap
 
