@@ -9,6 +9,7 @@ import {
   collectTrackedMjs,
   findRelativeNodeModulesScriptUses,
   gradeDependencyFreshness,
+  inspectCiWorkflow,
   inspectDependencyHolds,
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
@@ -189,6 +190,90 @@ test('engineering check records accept only known mechanical boolean entries', (
     },
     { level: 'WARN', message: 'unknown engineering check record: UNKNOWN-1' }
   ])
+})
+
+test('CI-2 requires a separate test step only when the audit does not run the tests itself', () => {
+  const ci = (...steps: string[]): string =>
+    [
+      'jobs:',
+      '  verify:',
+      '    steps:',
+      '      - uses: jdx/mise-action@v4',
+      ...steps.map((step) => `      - run: ${step}`)
+    ].join('\n')
+  const ci2 = (findings: ReturnType<typeof inspectCiWorkflow>) =>
+    findings.filter((entry) => entry.code === 'CI-2').map((entry) => [entry.level, entry.message])
+  const scripts = { test: 'vitest run', 'test:coverage': 'vitest run --coverage' }
+
+  // The audit runs `bun run test:coverage` (TEST-5): audit alone is the complete gate.
+  const minimal = inspectCiWorkflow({ ci: ci('ki repo audit --repo .'), scripts, auditRunsTests: true })
+  expect(minimal.every((entry) => entry.level === 'PASS')).toBe(true)
+  expect(ci2(minimal).map(([, message]) => message)).toContainEqual(
+    expect.stringContaining('needs no separate test step')
+  )
+
+  // A repeated test or coverage step is redundant work, reported as a warning only.
+  const repeated = inspectCiWorkflow({
+    ci: ci('ki repo audit --repo .', 'bun run test', 'bun run test:coverage'),
+    scripts,
+    auditRunsTests: true
+  })
+  const warning = ci2(repeated).find(([level]) => level === 'WARN')
+  expect(warning?.[1]).toContain('"bun run test", "bun run test:coverage"')
+  expect(repeated.some((entry) => entry.level === 'FAIL')).toBe(false)
+
+  // Tests the audit does not run still need `bun run test`, after the audit.
+  const missing = inspectCiWorkflow({ ci: ci('ki repo audit --repo .'), scripts, auditRunsTests: false })
+  expect(ci2(missing)).toContainEqual(['FAIL', expect.stringContaining('tests the audit does not run')])
+  const ordered = inspectCiWorkflow({
+    ci: ci('ki repo audit --repo .', 'bun run test'),
+    scripts: { test: 'bun test' },
+    auditRunsTests: false
+  })
+  expect(ordered.every((entry) => entry.level === 'PASS')).toBe(true)
+  const reversed = inspectCiWorkflow({
+    ci: ci('bun run test', 'ki repo audit --repo .'),
+    scripts: { test: 'bun test' },
+    auditRunsTests: false
+  })
+  expect(ci2(reversed)).toContainEqual(['FAIL', 'ci.yml must run "ki repo audit --repo ." before "bun run test"'])
+
+  // No test script: nothing further is required.
+  expect(
+    inspectCiWorkflow({ ci: ci('ki repo audit --repo .'), scripts: {}, auditRunsTests: false }).map((e) => e.level)
+  ).toEqual(['PASS', 'PASS'])
+})
+
+test('CI-1 and CI-2 report toolchain, missing-gate, and retired-alias drift', () => {
+  const findings = inspectCiWorkflow({
+    ci: 'steps:\n  - uses: actions/setup-bun@v2\n    with:\n      bun-version: 1.2.0\n  - run: bun run ki:audit\n',
+    scripts: {},
+    auditRunsTests: false
+  })
+  expect(findings.map((entry) => [entry.level, entry.code])).toEqual([
+    ['FAIL', 'CI-1'],
+    ['FAIL', 'CI-1'],
+    ['FAIL', 'CI-2'],
+    ['FAIL', 'CI-2']
+  ])
+  expect(findings[1]?.message).toContain('bun-version')
+  expect(findings[3]?.message).toContain('retired package-script alias')
+  expect(findings.every((entry) => entry.subject === '.github/workflows/ci.yml')).toBe(true)
+})
+
+test('CI-1 warns, without failing, when CI acquires KI from a source checkout', () => {
+  const warnings = (ci: string) =>
+    inspectCiWorkflow({ ci: `- uses: jdx/mise-action@v4\n${ci}`, scripts: {}, auditRunsTests: false })
+      .filter((entry) => entry.code === 'CI-1' && entry.level !== 'PASS')
+      .map((entry) => [entry.level, entry.message])
+  expect(
+    warnings(
+      '- run: |\n    git clone --depth 1 https://github.com/knowledgeislands/tools-ki.git "$RUNNER_TEMP/src"\n    bash "$RUNNER_TEMP/src/install.sh" --link\n'
+    )
+  ).toEqual([['WARN', expect.stringContaining('clones tools-ki and links a KI source checkout')]])
+  // The CLI's own repository links the checkout it builds.
+  expect(warnings('- run: bash ./install.sh --link\n')).toEqual([])
+  expect(warnings('- run: curl -fsSL "$KI_INSTALLER" | bash\n')).toEqual([])
 })
 
 test('TURBO warns for absent, partial, malformed, and incomplete workspace task graphs', () => {

@@ -75,9 +75,9 @@ The single root Node and Bun toolchain declaration.
 
 CI installs the declared toolchain and runs canonical repository gates.
 
-- **CI-1 [M] — CI installs the declared toolchain** — Where `.github/workflows/ci.yml` exists, it uses `jdx/mise-action` and hardcodes no Bun or Node version. (standards-engineering.md)
+- **CI-1 [M] — CI installs the declared toolchain** — Where `.github/workflows/ci.yml` exists, it uses `jdx/mise-action`, hardcodes no Bun or Node version, and installs a released `ki` rather than cloning or linking a KI source checkout (warning only). (standards-engineering.md)
   - _Remediation:_ diagnostic — Align the CI workflow with the declared toolchain and canonical repository gates, then rerun the audit.
-- **CI-2 [M] — CI runs the canonical gates** — `ci.yml` runs `ki repo audit --repo .`, then `bun run test` when tests exist, and does not route governance through package scripts. (standards-engineering.md)
+- **CI-2 [M] — CI runs the canonical gates** — `ci.yml` runs `ki repo audit --repo .`; it adds `bun run test` after the audit only for tests the audit does not run itself (the audit runs `bun run test:coverage` under a root `vitest.config.*`), and does not route governance through package scripts. (standards-engineering.md)
   - _Remediation:_ diagnostic — Align the CI workflow with the declared toolchain and canonical repository gates, then rerun the audit.
 
 ## SCR — Package scripts

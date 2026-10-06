@@ -743,6 +743,109 @@ export const usesCanonicalCoverageReportsDirectory = (
       )
     : ['reports/coverage', './reports/coverage'].includes(reportsDirectory ?? '')
 
+const VITEST_CONFIG_FILES = [
+  'vitest.config.ts',
+  'vitest.config.js',
+  'vitest.config.mts',
+  'vitest.config.cts',
+  'vitest.config.mjs',
+  'vitest.config.cjs'
+] as const
+
+/** The root Vitest configuration that selects the coverage profile, if any. */
+const rootVitestConfig = (has: (path: string) => boolean): string | undefined =>
+  VITEST_CONFIG_FILES.find((file) => has(file))
+
+export type CiWorkflowInspection = {
+  /** The text of `.github/workflows/ci.yml`. */
+  ci: string
+  /** The root package.json scripts. */
+  scripts: Readonly<Record<string, string>>
+  /** True when the audit itself executes the test suite (root Vitest config + `test:coverage`, TEST-5). */
+  auditRunsTests: boolean
+}
+
+/**
+ * Inspect the common CI shape. CI installs the toolchain from mise.toml and invokes the installed
+ * native CLI directly. `bun run test` follows for the repo's self-tests only when the audit does not
+ * already execute them: a Vitest repository with `test:coverage` is tested by the audit itself
+ * (TEST-5), so a separate CI test step would only repeat that run.
+ */
+export const inspectCiWorkflow = ({
+  ci,
+  scripts,
+  auditRunsTests
+}: CiWorkflowInspection): readonly EngineeringEvidenceFinding[] => {
+  const findings: EngineeringEvidenceFinding[] = []
+  const subject = '.github/workflows/ci.yml'
+  const add = (level: EngineeringEvidenceFinding['level'], code: string, message: string): void => {
+    findings.push({ level, code, message, subject })
+  }
+  const commandIndex = (commandValue: string): number => {
+    const escaped = commandValue
+      .trim()
+      .split(/\s+/)
+      .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('[ \\t]+')
+    const command = new RegExp(
+      `(?:^[ \\t]*(?:-[ \\t]*)?(?:run:[ \\t]*)?|&&[ \\t]*|\\|\\|[ \\t]*|;[ \\t]*)(["']?)${escaped}[ \\t]*\\1(?=[ \\t]*(?:&&|\\|\\||;|#|\\r?$))`,
+      'm'
+    )
+    return ci.search(command)
+  }
+  ;/mise-action/.test(ci)
+    ? add('PASS', 'CI-1', 'ci.yml installs the toolchain via jdx/mise-action')
+    : add('FAIL', 'CI-1', 'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)')
+  const hard = ci.match(/\b(bun|node)-version\s*:/)
+  if (hard) add('FAIL', 'CI-1', `ci.yml hardcodes ${hard[1]}-version — remove it; the version comes from mise.toml`)
+  // A consuming repository installs one immutable released `ki`. Only the CLI's own source
+  // repository links the checkout it builds (`./install.sh --link`).
+  const sourceAcquisition = [
+    /\bgit[ \t]+clone\b[^\n]*\btools-ki\b/.test(ci) ? 'clones tools-ki' : '',
+    /(?<!\.\/)\binstall\.sh["']?[ \t]+--link\b/.test(ci) ? 'links a KI source checkout with install.sh --link' : ''
+  ].filter(Boolean)
+  if (sourceAcquisition.length)
+    add(
+      'WARN',
+      'CI-1',
+      `ci.yml ${sourceAcquisition.join(' and ')} — install one immutable released ki through the release installer instead`
+    )
+  // CI names its target explicitly. The bare form remains a valid local CLI
+  // invocation, but a workflow must prove which checkout it governs.
+  const auditIndex = commandIndex('ki repo audit --repo .')
+  auditIndex >= 0
+    ? add('PASS', 'CI-2', 'ci.yml runs the native repository gate "ki repo audit --repo ."')
+    : add('FAIL', 'CI-2', 'ci.yml must run "ki repo audit --repo ." directly')
+  if (auditRunsTests) {
+    add('PASS', 'CI-2', 'the native audit runs "bun run test:coverage" (TEST-5), so CI needs no separate test step')
+    const duplicates = ['bun run test', 'bun run test:coverage'].filter((command) => commandIndex(command) >= 0)
+    if (duplicates.length)
+      add(
+        'WARN',
+        'CI-2',
+        `ci.yml repeats tests the native audit already runs: ${duplicates.map((command) => `"${command}"`).join(', ')} — remove the duplicate step`
+      )
+  } else if (scripts.test) {
+    const testIndex = commandIndex('bun run test')
+    if (testIndex < 0)
+      add(
+        'FAIL',
+        'CI-2',
+        'ci.yml must run the exact command "bun run test" after native audit when package.json exposes tests the audit does not run'
+      )
+    else if (auditIndex >= 0 && auditIndex < testIndex)
+      add('PASS', 'CI-2', 'ci.yml runs the repository self-test suite "bun run test" after native audit')
+    else add('FAIL', 'CI-2', 'ci.yml must run "ki repo audit --repo ." before "bun run test"')
+  }
+  if (/\bbun\s+run\s+ki:(?:audit|conform|educate|help|verify)\b/.test(ci))
+    add(
+      'FAIL',
+      'CI-2',
+      'ci.yml routes governance through a retired package-script alias; invoke "ki repo audit --repo ." directly'
+    )
+  return findings
+}
+
 export const collectAuditEvidence = async (
   repo: string,
   emit?: RubricEmitter,
@@ -982,90 +1085,10 @@ export const collectAuditEvidence = async (
     : add('PASS', 'MISE-3', 'no legacy pin files (.node-version / .nvmrc / .bun-version)', STD)
 
   // ── core (when the repo has CI): the common CI shape ──────────────────────────
-  // CI installs the toolchain from mise.toml and invokes the installed native CLI
-  // directly. `bun run test` follows for the repo's self-tests.
   if (has('.github', 'workflows', 'ci.yml')) {
-    const ci = read('.github', 'workflows', 'ci.yml')
-    const commandIndex = (commandValue: string): number => {
-      const escaped = commandValue
-        .trim()
-        .split(/\s+/)
-        .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-        .join('[ \\t]+')
-      const command = new RegExp(
-        `(?:^[ \\t]*(?:-[ \\t]*)?(?:run:[ \\t]*)?|&&[ \\t]*|\\|\\|[ \\t]*|;[ \\t]*)(["']?)${escaped}[ \\t]*\\1(?=[ \\t]*(?:&&|\\|\\||;|#|\\r?$))`,
-        'm'
-      )
-      return ci.search(command)
-    }
-    const usesMise = /mise-action/.test(ci)
-    usesMise
-      ? add('PASS', 'CI-1', 'ci.yml installs the toolchain via jdx/mise-action', STD, '.github/workflows/ci.yml')
-      : add(
-          'FAIL',
-          'CI-1',
-          'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)',
-          STD,
-          '.github/workflows/ci.yml'
-        )
-    const hard = ci.match(/\b(bun|node)-version\s*:/)
-    if (hard)
-      add(
-        'FAIL',
-        'CI-1',
-        `ci.yml hardcodes ${hard[1]}-version — remove it; the version comes from mise.toml`,
-        STD,
-        '.github/workflows/ci.yml'
-      )
-    // CI names its target explicitly. The bare form remains a valid local CLI
-    // invocation, but a workflow must prove which checkout it governs.
-    const auditIndex = ci.search(
-      /(?:^[ \t]*(?:-[ \t]*)?(?:run:[ \t]*)?|&&[ \t]*|\|\|[ \t]*|;[ \t]*)(["']?)ki[ \t]+repo[ \t]+audit[ \t]+--repo[ \t]+\.[ \t]*\1(?=[ \t]*(?:&&|\|\||;|#|\r?$))/m
-    )
-    auditIndex >= 0
-      ? add(
-          'PASS',
-          'CI-2',
-          'ci.yml runs the native repository gate "ki repo audit --repo ."',
-          STD,
-          '.github/workflows/ci.yml'
-        )
-      : add('FAIL', 'CI-2', 'ci.yml must run "ki repo audit --repo ." directly', STD, '.github/workflows/ci.yml')
-    if (scripts.test) {
-      const testIndex = commandIndex('bun run test')
-      if (testIndex < 0)
-        add(
-          'FAIL',
-          'CI-2',
-          'ci.yml must run the exact command "bun run test" after native audit when package.json exposes tests',
-          STD,
-          '.github/workflows/ci.yml'
-        )
-      else if (auditIndex >= 0 && auditIndex < testIndex)
-        add(
-          'PASS',
-          'CI-2',
-          'ci.yml runs the repository self-test suite "bun run test" after native audit',
-          STD,
-          '.github/workflows/ci.yml'
-        )
-      else
-        add(
-          'FAIL',
-          'CI-2',
-          'ci.yml must run "ki repo audit --repo ." before "bun run test"',
-          STD,
-          '.github/workflows/ci.yml'
-        )
-    }
-    if (/\bbun\s+run\s+ki:(?:audit|conform|educate|help|verify)\b/.test(ci))
-      add(
-        'FAIL',
-        'CI-2',
-        'ci.yml routes governance through a retired package-script alias; invoke "ki repo audit --repo ." directly',
-        STD,
-        '.github/workflows/ci.yml'
-      )
+    const auditRunsTests = Boolean(rootVitestConfig(has)) && Boolean(scripts['test:coverage'])
+    for (const finding of inspectCiWorkflow({ ci: read('.github', 'workflows', 'ci.yml'), scripts, auditRunsTests }))
+      add(finding.level, finding.code, finding.message, STD, finding.subject)
   } else {
     add('NOT_APPLICABLE', 'CI-1', 'no .github/workflows/ci.yml — not applicable', STD)
   }
@@ -1713,14 +1736,7 @@ export const collectAuditEvidence = async (
   // Markdown audit and conform passes) — not checked here (SHAPE-16 ownership split).
 
   // ── capability detection ──────────────────────────────────────────────────────
-  const vitestFile = [
-    'vitest.config.ts',
-    'vitest.config.js',
-    'vitest.config.mts',
-    'vitest.config.cts',
-    'vitest.config.mjs',
-    'vitest.config.cjs'
-  ].find((f) => has(f))
+  const vitestFile = rootVitestConfig(has)
   const hasTests = Boolean(vitestFile) || Boolean(scripts.test)
   const buildScript = scripts.build ?? ''
   const hasBuild = has('tsconfig.build.json') || /\btsc\b/.test(buildScript)
