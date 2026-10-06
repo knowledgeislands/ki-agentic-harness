@@ -52,6 +52,8 @@ Before reporting final repository state, apply the `ki-batch` “Batch retention
 
 Using the whole-thread inventory plus each touched repository's `filesTouched` / `diffStat`: state what changed, what was decided, and why — in the order it happened, not a topic reshuffle. Keep it to what a reader picking this up cold would need: no blow-by-blow tool narration. For each material topic, establish whether it was delivered, explicitly declined, superseded, or remains follow-up; do not treat an earlier recap as a terminal boundary.
 
+State push state as this session's action at the named local `HEAD`, as [`ki-git`](../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority) requires: pushed, or not pushed by this session, never "unpushed" or "the remote is behind". A peer may push the shared ref between two recaps, and Git grounding does not make that position durable.
+
 ## 3. Surface what is outstanding
 
 **Always check whether everything is committed in every touched repository** — even if the session felt "done", verify the working tree for the files this thread touched (staged, unstaged, and untracked) in each one. If any required `repository.status` is `unavailable`, say which Git evidence is unavailable and do not claim clean, committed, or no-actions status for the whole thread. Uncommitted session work is the most common silently-dropped outstanding item. Files dirty from _other_ threads of work are out of scope (per the stay-scoped rule) — note their existence in one line at most, never enumerate or adopt them.
@@ -138,7 +140,7 @@ Render the completion banner only when all of these conditions hold together:
 
 The banner states current evidence rather than a session event, so two recaps over unchanged `HEAD` values both render it. That repetition is correct and deliberately unguarded: it means a banner withheld under conditions 1–3, or missed in error, is recovered by the next recap at which those conditions hold. A condition on recap history would instead make a miss permanent, because the only route back to eligibility would be doing more work — absurd when the claim being made is that no work remains.
 
-An unpushed commit does **not** block the banner. Pushing is a separate user decision and may trigger deployment. The banner attests only that session-owned paths at the named local `HEAD` values have no uncommitted work and that this thread has no outstanding work or unrouted learning; it does not claim unrelated paths are clean or the remote is synchronised.
+A commit this session has not pushed does **not** block the banner. Pushing is a separate user decision and may trigger deployment. The banner attests only that session-owned paths at the named local `HEAD` values have no uncommitted work and that this thread has no outstanding work or unrouted learning; it does not claim unrelated paths are clean or the remote is synchronised.
 
 When every condition passes, render this five-line frame literally and without colour, ANSI escapes, substituted wording, or improvised art:
 

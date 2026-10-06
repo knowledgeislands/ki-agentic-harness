@@ -19,7 +19,7 @@ const HYGIENE_1: RubricItem<GitRubricContext> = {
       'operation coordination required'
     ],
     guidance:
-      'Maintain a thread-local touched-path set, re-check status, `HEAD`, touched diffs, and staged paths before committing, and use `git add -- <path>...` only for enumerated uncontested paths. Inspect the actual commit after hooks and coordinate recovery of unrelated captured changes before rebuilding an unpushed commit. Never use `git add -A`, `git add .`, `git add -u`, `git commit -a`, `git commit -am`, or broad wildcard pathspecs in a shared tree. Leave contested and unrelated work untouched, and serialize only the shared-index and commit window.'
+      'Maintain a thread-local touched-path set, re-check status, `HEAD`, touched diffs, and staged paths before committing, and use `git add -- <path>...` only for enumerated uncontested paths. Inspect the actual commit after hooks and coordinate recovery of unrelated captured changes before rebuilding a commit this session has not pushed. Never use `git add -A`, `git add .`, `git add -u`, `git commit -a`, `git commit -am`, or broad wildcard pathspecs in a shared tree. Leave contested and unrelated work untouched, and serialize only the shared-index and commit window.'
   }
 }
 
