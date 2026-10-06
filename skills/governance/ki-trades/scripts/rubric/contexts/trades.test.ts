@@ -1,5 +1,6 @@
 import { afterEach, expect, test } from 'bun:test'
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
@@ -132,7 +133,8 @@ const scaffold = (root: string): void => {
 
 const stateHome = (home: string): string => join(home, 'state')
 
-const registry = (home: string, roots: readonly string[]): void => {
+/** `claims` adds the registry entry's own `repository` field for the given roots, as the ki CLI writes it. */
+const registry = (home: string, roots: readonly string[], claims: Readonly<Record<string, string>> = {}): void => {
   mkdirSync(stateHome(home), { recursive: true })
   writeFileSync(
     join(stateHome(home), 'registry.toml'),
@@ -141,6 +143,7 @@ const registry = (home: string, roots: readonly string[]): void => {
       '',
       ...roots.flatMap((root, index) => [
         `[repositories.${JSON.stringify(`repository-${index + 1}`)}]`,
+        ...(claims[root] ? [`repository = ${JSON.stringify(claims[root])}`] : []),
         `path = ${JSON.stringify(root)}`,
         ''
       ])
@@ -405,6 +408,102 @@ test('an ambiguous, malformed, or non-listing Capital fails closed', () => {
   ])
 })
 
+test('a registered Capital checkout with an unreadable .ki.toml fails rather than warning unavailable', () => {
+  const { home, capital, local, peer } = fixture()
+  writeFileSync(join(capital, '.ki.toml'), '[skills.ki-repo\nrepository = ')
+  registry(home, [local, peer, capital], { [capital]: CAPITAL })
+  const session = createTradesSession(options(local, home))
+  expect(mechanicalOutcomes(session, ROUTE)).toEqual([
+    {
+      status: 'VIOLATION',
+      message: `territory policy in ${CAPITAL} cannot be read: registered checkout at ${realpathSync(capital)} has an unreadable .ki.toml; no routes are granted`,
+      subject: CAPITAL
+    }
+  ])
+
+  // Without the entry's claim the checkout cannot be attributed, so the Capital is merely unavailable.
+  registry(home, [local, peer, capital])
+  expect(mechanicalOutcomes(createTradesSession(options(local, home)), ROUTE)).toEqual([
+    {
+      status: 'VIOLATION',
+      level: 'WARN',
+      message: `territory policy lives in ${CAPITAL}, not available here`,
+      subject: CAPITAL
+    }
+  ])
+})
+
+test('an undeclared repository or capital leaves routes unresolvable', () => {
+  const { home, local } = fixture()
+  writeConfiguration(local, { repository: LOCAL })
+  expect(mechanicalOutcomes(createTradesSession(options(local, home)), ROUTE)).toEqual([
+    {
+      status: 'NOT_APPLICABLE',
+      message: 'trade routes cannot be resolved: ki-repo capital is not declared as a canonical HTTPS GitHub URL'
+    }
+  ])
+  writeConfiguration(local, { repository: 'local/repo', capital: CAPITAL })
+  const session = createTradesSession(options(local, home))
+  expect(mechanicalOutcomes(session, ROUTE)).toEqual([
+    {
+      status: 'NOT_APPLICABLE',
+      message: 'trade routes cannot be resolved: ki-repo repository is not a canonical HTTPS GitHub home'
+    }
+  ])
+  expect(mechanicalOutcomes(session, ROUTE, 'ROUTE-2')).toEqual([
+    { status: 'NOT_APPLICABLE', message: 'trade routes cannot be resolved; ROUTE-1 reports it' }
+  ])
+})
+
+test('several territories share one registry without cross-talk', () => {
+  const CAPITAL_B = repositoryUrl('capital/other')
+  const FOREIGN = repositoryUrl('foreign/repo')
+  const { home, capital, local, peer } = fixture({
+    members: [CAPITAL, LOCAL, PEER, FOREIGN],
+    policy: {
+      channels: [
+        { id: 'local-to-peer', from: [LOCAL], to: [PEER], kinds: ['work'] },
+        { id: 'local-to-foreign', from: [LOCAL], to: [FOREIGN], kinds: ['work'] }
+      ]
+    }
+  })
+  const capitalB = temporaryDirectory('ki-trades-capital-b-')
+  const foreign = temporaryDirectory('ki-trades-foreign-')
+  // Territory B lists LOCAL and grants it knowledge from FOREIGN; LOCAL never reads that policy.
+  writeConfiguration(capitalB, {
+    repository: CAPITAL_B,
+    capital: CAPITAL_B,
+    territory: [CAPITAL_B, FOREIGN, LOCAL],
+    policy: { channels: [{ id: 'foreign-to-local', from: [FOREIGN], to: [LOCAL], kinds: ['knowledge'] }] }
+  })
+  writeConfiguration(foreign, { repository: FOREIGN, capital: CAPITAL_B })
+  registry(home, [local, peer, capital, capitalB, foreign])
+
+  const localOutcomes = mechanicalOutcomes(createTradesSession(options(local, home)), ROUTE)
+  expect(localOutcomes).toEqual([
+    {
+      status: 'VIOLATION',
+      message: `work export route ${FOREIGN} is inactive: ${FOREIGN} names capital ${JSON.stringify(CAPITAL_B)}, not ${CAPITAL}`,
+      subject: FOREIGN
+    },
+    {
+      status: 'PASS',
+      message: `work export trade route ${LOCAL} → ${PEER} is active`,
+      subject: PEER
+    }
+  ])
+
+  // FOREIGN resolves territory B only: it sees B's knowledge channel and none of territory A's work routes.
+  const foreignOutcomes = mechanicalOutcomes(createTradesSession(options(foreign, home)), ROUTE)
+  expect(foreignOutcomes).toEqual([
+    {
+      status: 'VIOLATION',
+      message: `knowledge export route ${LOCAL} is inactive: ${LOCAL} names capital ${JSON.stringify(CAPITAL)}, not ${CAPITAL_B}`,
+      subject: LOCAL
+    }
+  ])
+})
+
 test('a participating member named in no channel is warned', () => {
   const { home, local } = fixture({ policy: {} })
   const session = createTradesSession(options(local, home))
@@ -443,6 +542,64 @@ test('a granted route stays pending until the peer registers, participates, and 
     message: `work export route ${PEER} is inactive: ${PEER} names capital ${JSON.stringify(elsewhere)}, not ${CAPITAL}`,
     subject: PEER
   })
+})
+
+test('a granted route to a peer registered twice is ambiguous', () => {
+  const { home, capital, local, peer } = fixture({ policy: exchange(['work']) })
+  const twin = temporaryDirectory('ki-trades-peer-twin-')
+  cpSync(join(peer, '.ki.toml'), join(twin, '.ki.toml'))
+  registry(home, [local, peer, twin, capital])
+  const outcomes = mechanicalOutcomes(createTradesSession(options(local, home)), ROUTE)
+  expect(outcomes).toEqual(
+    ['work export route', 'work import route'].map((label) => ({
+      status: 'VIOLATION',
+      message: `${label} ${PEER} is ambiguous across 2 registered repositories`,
+      subject: PEER
+    }))
+  )
+})
+
+test('standing intake is unverifiable, not refused, when the Capital policy is not available here', () => {
+  const { home, local, peer } = fixture({ registerCapital: false })
+  const git = (arguments_: readonly string[]): string =>
+    execFileSync('git', arguments_, { cwd: peer, encoding: 'utf8' }).trim()
+  git(['init', '--quiet'])
+  git(['config', 'user.name', 'KI test'])
+  git(['config', 'user.email', 'test@example.invalid'])
+  writeFileSync(join(peer, 'evidence.md'), '# Evidence\n')
+  git(['add', '--', 'evidence.md'])
+  git(['commit', '--quiet', '-m', 'test: evidence'])
+  const commit = git(['rev-parse', 'HEAD'])
+
+  mkdirSync(join(local, 'docs'), { recursive: true })
+  writeFileSync(
+    join(local, 'docs', 'capture.md'),
+    [
+      '# Capture',
+      '',
+      '<!-- ki-trades:standing-intake -->',
+      '```toml',
+      'schema = "ki-trades/standing-intake/v1"',
+      'id = "STI-0000abcd"',
+      `source = ${toml(PEER)}`,
+      `source_ref = "${commit}:evidence.md#evidence"`,
+      `receiver = ${toml(LOCAL)}`,
+      'kind = "knowledge"',
+      'subtype = "shared-maintenance"',
+      'captured_at = "2026-08-03T12:00:00Z"',
+      'capture = "docs/capture.md#capture"',
+      '```',
+      ''
+    ].join('\n')
+  )
+
+  expect(mechanicalOutcomes(createTradesSession(options(local, home)), STANDING)).toEqual([
+    {
+      status: 'INFO',
+      message: `standing intake STI-0000abcd grant is unverifiable: territory policy lives in ${CAPITAL}, not available here`,
+      subject: 'docs/capture.md:3'
+    }
+  ])
 })
 
 test('standing intake activates only for an exact-subtype grant in the Capital policy', () => {

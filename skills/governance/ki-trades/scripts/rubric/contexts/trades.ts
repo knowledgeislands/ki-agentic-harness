@@ -202,6 +202,11 @@ type Declaration = {
   readonly capital?: unknown
   readonly territory?: unknown
   readonly trades?: Readonly<Record<string, unknown>>
+  /**
+   * Set when the checkout's `.ki.toml` exists but cannot be read or parsed: the checkout then declares
+   * nothing, and only the registry entry's own `repository` claim can attribute it.
+   */
+  readonly unreadable?: { readonly claimed?: string }
 }
 
 const isCapital = (value: Declaration): boolean =>
@@ -245,10 +250,17 @@ const registeredRepositories = (userHome: string): readonly RegisteredRepository
   try {
     const document = Bun.TOML.parse(readFileSync(path, 'utf8')) as Record<string, unknown>
     const repositories = table(document.repositories) ?? {}
-    return Object.values(repositories)
-      .map((entry) => table(entry)?.path)
-      .filter((root): root is string => typeof root === 'string' && isAbsolute(root) && physicalDirectory(root))
-      .map((root) => readDeclaration(realpathSync(root)) ?? { root: realpathSync(root) })
+    return Object.values(repositories).flatMap((value): RegisteredRepository[] => {
+      const entry = table(value)
+      const root = entry?.path
+      if (typeof root !== 'string' || !isAbsolute(root) || !physicalDirectory(root)) return []
+      const real = realpathSync(root)
+      const declared = readDeclaration(real)
+      if (declared) return [declared]
+      if (!containedPhysical(real, join(real, '.ki.toml'), 'file')) return [{ root: real }]
+      const claimed = typeof entry?.repository === 'string' ? entry.repository : undefined
+      return [{ root: real, unreadable: claimed && REPOSITORY.test(claimed) ? { claimed } : {} }]
+    })
   } catch {
     return []
   }
@@ -462,7 +474,14 @@ const parsePolicy = (
 type PolicyResolution =
   | { readonly state: 'resolved'; readonly capital: Declaration; readonly policy: TradePolicy }
   | {
-      readonly state: 'undeclared' | 'unavailable' | 'ambiguous' | 'not-capital' | 'not-member' | 'malformed'
+      readonly state:
+        | 'undeclared'
+        | 'unavailable'
+        | 'unreadable'
+        | 'ambiguous'
+        | 'not-capital'
+        | 'not-member'
+        | 'malformed'
       readonly message: string
     }
 
@@ -483,6 +502,12 @@ const resolvePolicy = (local: Declaration, registered: readonly RegisteredReposi
   if (capital === local.repository) source = local
   else {
     const found = declaring(registered, capital)
+    const broken = registered.filter((candidate) => candidate.unreadable?.claimed === capital)
+    if (found.length === 0 && broken.length > 0)
+      return {
+        state: 'unreadable',
+        message: `territory policy in ${capital} cannot be read: registered checkout at ${broken.map(({ root }) => root).join(', ')} has an unreadable .ki.toml; no routes are granted`
+      }
     if (found.length === 0) return { state: 'unavailable', message: unavailableMessage(capital) }
     if (found.length > 1)
       return {
