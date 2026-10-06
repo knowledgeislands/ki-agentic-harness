@@ -39,6 +39,7 @@ test('owner-declared members and both inclusion kinds pass local validation', ()
   const session = createAgoraSession(
     options(fixture(), {
       team: {
+        title: 'Team',
         purpose: 'Team repositories',
         members: ['https://github.com/knowledgeislands/tools-ki'],
         includes: ['legal', 'https://github.com/example/plain-git-repository']
@@ -47,13 +48,13 @@ test('owner-declared members and both inclusion kinds pass local validation', ()
   )
 
   expect(outcomes(session)).toEqual([
-    { status: 'PASS', message: 'Agora homes use canonical purpose, members, and optional inclusion shape.' }
+    { status: 'PASS', message: 'Agora homes use canonical title, purpose, members, and optional inclusion shape.' }
   ])
 })
 
 test('an empty owner table has no membership side effect', () => {
   expect(outcomes(createAgoraSession(options(fixture(), {})))).toEqual([
-    { status: 'PASS', message: 'Agora homes use canonical purpose, members, and optional inclusion shape.' }
+    { status: 'PASS', message: 'Agora homes use canonical title, purpose, members, and optional inclusion shape.' }
   ])
 })
 
@@ -61,6 +62,7 @@ test('local shape rejects malformed declarations', () => {
   const session = createAgoraSession(
     options(fixture(), {
       Knowledge_Islands: {
+        title: 'Knowledge Islands',
         purpose: '',
         members: ['not a repository', 'https://github.com/knowledgeislands/home']
       }
@@ -80,6 +82,7 @@ test('legacy fields and unknown fields fail closed', () => {
     options(fixture(), {
       team: {
         owner: 'https://github.com/knowledgeislands/home',
+        title: 'Team',
         purpose: 'Team work',
         order: [],
         references: [],
@@ -101,6 +104,7 @@ test('inclusions are distinct, canonical, and cannot include self or a direct pa
   const session = createAgoraSession(
     options(fixture(), {
       team: {
+        title: 'Team',
         purpose: 'Team work',
         members: ['https://github.com/knowledgeislands/tools-ki'],
         includes: [
@@ -128,10 +132,12 @@ test('role-bearing members and repeated members are rejected', () => {
   const session = createAgoraSession(
     options(fixture(), {
       legacy: {
+        title: 'Legacy',
         purpose: 'Shared work',
         members: { 'https://github.com/knowledgeislands/tools-ki': 'observer' }
       },
       repeated: {
+        title: 'Repeated',
         purpose: 'Shared work',
         members: ['https://github.com/knowledgeislands/tools-ki', 'https://github.com/knowledgeislands/tools-ki']
       }
@@ -141,5 +147,26 @@ test('role-bearing members and repeated members are rejected', () => {
   expect(outcomes(session).map((outcome) => outcome.message)).toEqual([
     'home legacy members must be an array of canonical HTTPS GitHub repositories',
     'home repeated members repeats https://github.com/knowledgeislands/tools-ki'
+  ])
+})
+
+test('every Agora requires a non-empty single-line title', () => {
+  const session = createAgoraSession(
+    options(fixture(), {
+      missing: { purpose: 'Shared work', members: [] },
+      blank: { title: '   ', purpose: 'Shared work', members: [] },
+      padded: { title: ' Padded ', purpose: 'Shared work', members: [] },
+      multiline: { title: 'Two\nlines', purpose: 'Shared work', members: [] },
+      typed: { title: 7, purpose: 'Shared work', members: [] },
+      titled: { title: 'Titled', purpose: 'Shared work', members: [] }
+    })
+  )
+
+  expect(outcomes(session).map((outcome) => outcome.message)).toEqual([
+    'home missing requires a non-empty single-line title',
+    'home blank requires a non-empty single-line title',
+    'home padded requires a non-empty single-line title',
+    'home multiline requires a non-empty single-line title',
+    'home typed requires a non-empty single-line title'
   ])
 })

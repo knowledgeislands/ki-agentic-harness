@@ -17,7 +17,7 @@ This governance skill defines the portable declaration of an **Agora**: a purpos
 
 ## What this skill owns
 
-1. **Agora owners** — a registered repository declares each stable, globally unique Agora identifier it owns, its purpose, and canonical repository members. The owner is included automatically; ordinary members declare nothing.
+1. **Agora owners** — a registered repository declares each stable, globally unique Agora identifier it owns, its readable title, its purpose, and canonical repository members. The identifier is the machine key; the title is shown to people. The owner is included automatically; ordinary members declare nothing.
 2. **Inclusions** — an owner may include another named Agora or a canonical Git repository without making its repositories members. Group inclusion projects only that group's owner and direct members. A registered repository resolves through the local registry; an unregistered Git repository needs an explicit machine-local checkout association.
 3. **Portable boundary** — declarations contain no local path, installed-harness location, editor database, app setting, user name, role, or machine-specific state. All projected roots are deduplicated and sorted by local registry key.
 4. **Independent authority** — inclusion affects a working set only. It grants no cross-repository permission or trade route. The `ki` host resolves registry identities and rejects duplicate Agora IDs; `ki agora open --target` and client projection remain separate host and environment capabilities.

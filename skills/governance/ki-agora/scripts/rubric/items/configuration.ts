@@ -7,7 +7,7 @@ const CONFIG_1: RubricItem<OutcomeContext> = {
   code: 'CONFIG-1',
   title: 'Agora homes are canonical',
   description:
-    'An owner-declared Agora has a stable identifier, non-empty purpose, duplicate-free canonical member repositories, and optional duplicate-free inclusions naming Agora identifiers or canonical repositories. An included repository is not a member. Owner identity comes from ki-repo.repository. Unknown fields fail closed.',
+    'An owner-declared Agora has a stable identifier, a required non-empty single-line title, a non-empty purpose, duplicate-free canonical member repositories, and optional duplicate-free inclusions naming Agora identifiers or canonical repositories. An included repository is not a member. Owner identity comes from ki-repo.repository. Unknown fields fail closed.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -23,7 +23,7 @@ const CONFIG_1: RubricItem<OutcomeContext> = {
 export const CONFIG: RubricFamily<AgoraRubricContext, OutcomeContext> = {
   code: 'CONFIG',
   title: 'Agora home declaration',
-  description: 'Purpose, membership, and inclusion are owner-declared and portable.',
+  description: 'Title, purpose, membership, and inclusion are owner-declared and portable.',
   standard: SOURCE,
   selectContext: (context) => context.configuration,
   items: [CONFIG_1]

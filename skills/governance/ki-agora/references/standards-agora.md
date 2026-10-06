@@ -14,18 +14,24 @@ Only an Agora owner declares this skill. Its canonical identity comes from `ki-r
 [skills.ki-agora]
 
 [skills.ki-agora.legal]
+title = "Legal"
 purpose = "Legal casework and research repositories"
 members = ["https://github.com/example/legal-tools"]
 includes = ["equalremedy", "https://github.com/example/plain-git-repository"]
 ```
 
-Each child table name is a globally unique, stable lower-case hyphenated Agora identifier matching `[a-z][a-z0-9-]*[a-z0-9]`. `estate` is reserved for the system-managed registered estate. Each child table requires `purpose` and `members` and admits optional `includes`; unknown keys fail. A member repository declares no `[skills.ki-agora]` table solely for membership.
+Each child table name is a globally unique, stable lower-case hyphenated Agora identifier matching `[a-z][a-z0-9-]*[a-z0-9]`. `estate` is reserved for the system-managed registered estate. Each child table requires `title`, `purpose` and `members` and admits optional `includes`; unknown keys fail. A member repository declares no `[skills.ki-agora]` table solely for membership.
 
+- `title` is the owner-declared readable name shown to people: a non-empty, single-line string without surrounding whitespace. It need not be unique, and it is not a key.
 - `purpose` is a non-empty human explanation of the group.
 - `members` is a duplicate-free array of canonical HTTPS GitHub repository identities. The owner is implicit and must not appear here. Every direct member must resolve to one locally registered KI repository.
 - `includes` is an optional duplicate-free array. An Agora identifier includes that Agora's owner and direct members; a canonical HTTPS GitHub repository identity includes that repository alone. The owner and its direct members cannot also appear as repository inclusions, and an Agora cannot include itself.
 
 An included Agora's own inclusions are not followed. This one-level rule prevents hidden expansion and cycles. Owners may declare opposite directed inclusions when both opening directions are useful. An included root is a working-set participant, not a direct member of the including Agora. The resolver deduplicates roots by canonical repository identity and sorts all projected roots alphabetically by local registry key. The same order governs display, `roots`, opening, and repository selection; no authored order field exists.
+
+## Identifier and title
+
+The identifier is the only machine key. Declarations, lookups, repository selection, projected roots and derived paths use it, for example `-/_CONTEXT/chatgpt/<agora-id>/` and `+/_ACQUIRE/chatgpt/<agora-id>/`. The title is presentation: tools show it to people beside the identifier, and a derived context heading mirrors it. Changing a title neither renames the identifier nor moves material filed under it; the owner of a derived heading refreshes it after the change, and a capture records the identifier and the title observed at capture time. A title grants no access, capture, exchange or other authority.
 
 ## Included repositories
 

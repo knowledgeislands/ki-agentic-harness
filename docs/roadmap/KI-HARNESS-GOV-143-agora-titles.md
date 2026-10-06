@@ -4,12 +4,12 @@ area: GOV
 title: Agora titles
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 3243cbddad16fe9401d2b4958fb70cb60c61c7ad
 created_at: 2026-10-06T11:05:00Z
-updated_at: 2026-10-06T11:05:00Z
+updated_at: 2026-10-06T11:32:00Z
 ---
 
 # KI-HARNESS-GOV-143: Agora titles
@@ -36,11 +36,11 @@ CONFIG-1 accepts only `purpose`, `members` and `includes` and fails `title` as a
 
 ## Steps
 
-- [ ] `scripts/rubric/contexts/agora.ts`: admit `title` and fail a missing, non-string, blank, padded or multi-line title.
-- [ ] `scripts/rubric/items/configuration.ts`: describe the required title; regenerate `references/rubric.md`.
-- [ ] `scripts/rubric/contexts/agora.test.ts`: titled fixtures and a focused title test.
-- [ ] `references/standards-agora.md`: example and `title` bullet, plus an Identifier and title section covering keys, derived paths, presentation, renaming and capture.
-- [ ] `SKILL.md`, `references/sources.md`, GDR-KI-HARNESS-006 and `docs/decisions/README.md`: name the title.
+- [x] `scripts/rubric/contexts/agora.ts`: admit `title` and fail a missing, non-string, blank, padded or multi-line title.
+- [x] `scripts/rubric/items/configuration.ts`: describe the required title; regenerate `references/rubric.md`.
+- [x] `scripts/rubric/contexts/agora.test.ts`: titled fixtures and a focused title test.
+- [x] `references/standards-agora.md`: example and `title` bullet, plus an Identifier and title section covering keys, derived paths, presentation, renaming and capture.
+- [x] `SKILL.md`, `references/sources.md`, GDR-KI-HARNESS-006 and `docs/decisions/README.md`: name the title.
 
 ## Files touched
 
@@ -98,3 +98,11 @@ Originates from `knowledgeislands/ki-arcadia-principal` KI-ARCADIA-GOV-017. tool
 ### Release window
 
 Until the harness is released, CI runs that bootstrap the released harness fail CONFIG-1 for titled owners on the unrecognised key. No release is cut here.
+
+## Review packet
+
+- Rubric: CONFIG-1 admits `title` and fails a declaration whose title is missing, non-string, empty, padded or multi-line with `home <id> requires a non-empty single-line title`. The focused test covers each case and a titled pass; existing fixtures carry titles.
+- Standard: the example, required keys and a `title` bullet, plus a new Identifier and title section: the identifier is the only machine key and folder name, the title is presentation mirrored by derived headings, renaming changes no identifier or captured material, and a title grants no authority.
+- Decision: GDR-KI-HARNESS-006 amended in place for the required title and identifier-only machine key; the decisions index line updated.
+- Gates: `bun run test` 893 passing; `bunx tsc --noEmit` clean; `bunx biome check .` unchanged baseline (6 warnings, 10 infos); `ki dev skill rubric ki-agora` in sync; `ki repo audit --repo . --progress never --concise` FAIL=0. Against this rubric an untitled owner fails CONFIG-1 as intended.
+- Release: owner repositories that declare titles fail the released harness rubric until a harness release includes this item.

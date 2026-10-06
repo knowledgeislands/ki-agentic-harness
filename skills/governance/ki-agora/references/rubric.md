@@ -24,7 +24,7 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 → [standard](standards-agora.md)
 
-Purpose, membership, and inclusion are owner-declared and portable.
+Title, purpose, membership, and inclusion are owner-declared and portable.
 
-- **CONFIG-1 [M] — Agora homes are canonical** — An owner-declared Agora has a stable identifier, non-empty purpose, duplicate-free canonical member repositories, and optional duplicate-free inclusions naming Agora identifiers or canonical repositories. An included repository is not a member. Owner identity comes from ki-repo.repository. Unknown fields fail closed. (standards-agora.md)
+- **CONFIG-1 [M] — Agora homes are canonical** — An owner-declared Agora has a stable identifier, a required non-empty single-line title, a non-empty purpose, duplicate-free canonical member repositories, and optional duplicate-free inclusions naming Agora identifiers or canonical repositories. An included repository is not a member. Owner identity comes from ki-repo.repository. Unknown fields fail closed. (standards-agora.md)
   - _Remediation:_ diagnostic — Correct the local ki-agora home declaration, then rerun the audit.

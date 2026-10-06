@@ -23,6 +23,9 @@ export type AgoraRubricContext = {
 const table = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
 
+const isTitle = (value: unknown): boolean =>
+  typeof value === 'string' && value.trim() === value && value.length > 0 && !/[\r\n]/.test(value)
+
 const pass = (message: string): readonly AuditOutcome[] => [{ status: 'PASS', message }]
 
 const violation = (message: string): AuditOutcome => ({ status: 'VIOLATION', message, subject: '.ki.toml' })
@@ -56,8 +59,9 @@ const parseHomes = (value: unknown, local: string | undefined): AuditOutcome[] =
       outcomes.push(violation(`home ${identifier} must be a table`))
       continue
     }
-    for (const key of Object.keys(home).filter((key) => !['purpose', 'members', 'includes'].includes(key)))
+    for (const key of Object.keys(home).filter((key) => !['title', 'purpose', 'members', 'includes'].includes(key)))
       outcomes.push(violation(`home ${identifier} has unrecognised key ${key}`))
+    if (!isTitle(home.title)) outcomes.push(violation(`home ${identifier} requires a non-empty single-line title`))
     if (typeof home.purpose !== 'string' || !home.purpose.trim())
       outcomes.push(violation(`home ${identifier} requires a non-empty purpose`))
     const members = home.members
@@ -112,7 +116,7 @@ const parseConfiguration = (configuration: Readonly<AgoraConfiguration>, root: s
     configuration: {
       outcomes: configurationOutcomes.length
         ? configurationOutcomes
-        : pass('Agora homes use canonical purpose, members, and optional inclusion shape.')
+        : pass('Agora homes use canonical title, purpose, members, and optional inclusion shape.')
     }
   }
 }

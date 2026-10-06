@@ -6,9 +6,10 @@ The sources behind [the Agora membership standard](standards-agora.md) and its [
 
 | Source | Last reviewed |
 | --- | --- |
-| `GDR-KI-HARNESS-006` — owner-declared Agoras | 2026-09-30 |
+| `GDR-KI-HARNESS-006` — owner-declared Agoras | 2026-10-06 |
 | `ki-repo` configuration and local registered-repository contracts | 2026-09-30 |
 
 ## Last review
 
+- 2026-10-06 — Each Agora declares a required readable `title` separate from its identifier (KI-HARNESS-GOV-143, from KI-ARCADIA-GOV-017). The identifier stays the only machine and path key; the title is presentation and grants no authority.
 - 2026-09-30 — Reciprocal membership now records repository identities without role labels; home, member, and reference remain relationship kinds without cross-repository authority. Canonical repository identity, owner-inclusive projection, explicit local target choice, and the separate registry-derived estate remain current.
