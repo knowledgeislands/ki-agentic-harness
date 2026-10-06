@@ -19,6 +19,7 @@ import { RUNTIMES } from './runtimes.ts'
 import { SEC } from './secrets.ts'
 import { STRUCT } from './structure.ts'
 import { SYNC } from './sync.ts'
+import { TERR } from './territory.ts'
 import { TOGGLE } from './toggle.ts'
 import { TOPICS } from './topics.ts'
 import { VIS } from './visibility.ts'
@@ -44,6 +45,7 @@ export default {
     ACT,
     CHECKS,
     COV,
+    TERR,
     STRUCT,
     ACCESS,
     KIND,

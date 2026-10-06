@@ -25,6 +25,7 @@ import {
   runtimeSkillIgnoreRules
 } from './audit.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
+import { declareCapital, territoryEvidence } from './territory.ts'
 
 const KI_REPO_TABLE = 'ki-repo'
 const KI_AUTHORING_TABLE = 'ki-authoring'
@@ -32,6 +33,7 @@ const KI_REPO_DEFAULT = `[skills.${KI_REPO_TABLE}]
 repo_type = "project"
 primary_shape = "ki-repo-project"
 title = ""              # required — exact README.md H1
+capital = ""            # required — canonical HTTPS GitHub URL of this repository's territory Capital (a Capital names itself)
 description = ""        # required — exact GitHub and package.json description where present
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
 license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Select with https://choosealicense.com/ and validate identifiers at https://spdx.org/licenses/.
@@ -128,6 +130,13 @@ export type RuntimesRubricContext = {
   requestRuntimeSkills?: () => void
 }
 
+export type TerritoryRubricContext = {
+  terr1: readonly AuditOutcome[]
+  terr2: readonly AuditOutcome[]
+  terr3: readonly AuditOutcome[]
+  ensureCapital?: () => void
+}
+
 export type KindRubricContext = {
   kind1: readonly RepoEvidenceFinding[]
   kind2: readonly RepoEvidenceFinding[]
@@ -205,6 +214,7 @@ export type RepoRubricContext = {
   actions: EvidenceRubricContext
   checks: EvidenceRubricContext
   coverage: EvidenceRubricContext
+  territory: TerritoryRubricContext
   structure: StructureRubricContext
   access: EvidenceRubricContext
   kind: KindRubricContext
@@ -418,7 +428,7 @@ const runtimeActivationEvidence = (
 }
 
 export const createRepoSession = async (
-  { mode, repository, publication, emit, repositorySkills }: RubricContextOptions,
+  { mode, repository, userHome, publication, emit, repositorySkills }: RubricContextOptions,
   inspect: RepoEvidenceInspector = (target, report) => collectAuditFindings([target], report)
 ): Promise<RubricSession<RepoRubricContext>> => {
   const target = resolve(repository)
@@ -455,12 +465,17 @@ export const createRepoSession = async (
       ? requiredRuntimeSkills(parsedRuntimeConfiguration.runtimes)
       : []
   const runtimeActivation = runtimeActivationEvidence(runtimeSkillNames, repositorySkills)
+  const territory = territoryEvidence(configSource, userHome)
+  const capitalDeclaration =
+    configSource && territory.inferredCapital ? declareCapital(configSource, territory.inferredCapital) : undefined
+  const coverage = evidence('COV-1')
   let repoConfigurationRequested = false
   let authoringConfigurationRequested = false
   let configurationHeaderRequested = false
   let managedGitignoreRequested = false
   let legacyKiCleanupRequested = false
   let workingAreaScaffoldRequested = false
+  let capitalRequested = false
 
   const context: RepoRubricContext = {
     rubric: { publication },
@@ -513,7 +528,24 @@ export const createRepoSession = async (
     secrets: { evidence: evidence('SEC-1') },
     actions: { evidence: evidence('ACT-1') },
     checks: { evidence: evidence('CHECKS-1') },
-    coverage: { evidence: evidence('COV-1') },
+    coverage: {
+      evidence:
+        territory.coverage.length > 0
+          ? [...coverage.filter((finding) => finding.level !== 'PASS'), ...territory.coverage]
+          : coverage
+    },
+    territory: {
+      terr1: territory.terr1,
+      terr2: territory.terr2,
+      terr3: territory.terr3,
+      ...(mutable && capitalDeclaration
+        ? {
+            ensureCapital: () => {
+              capitalRequested = true
+            }
+          }
+        : {})
+    },
     structure: {
       structure1: evidence('STRUCT-1'),
       structure2: evidence('STRUCT-2'),
@@ -567,6 +599,7 @@ export const createRepoSession = async (
           'ACT',
           'CHECKS',
           'COV',
+          'TERR',
           'STRUCT',
           'ACCESS',
           'KIND',
@@ -594,7 +627,10 @@ export const createRepoSession = async (
             ? KI_AUTHORING_DEFAULT
             : ''
         ].filter(Boolean)
-        const appended = appendBlocks(configSource, blocks)
+        const appended = appendBlocks(
+          capitalRequested && capitalDeclaration ? capitalDeclaration : configSource,
+          blocks
+        )
         const content =
           (configurationHeaderRequested || (!configExists && appended.length > 0)) &&
           !appended.startsWith(KI_CONFIGURATION_HEADER)

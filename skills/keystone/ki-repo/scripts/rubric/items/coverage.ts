@@ -5,7 +5,7 @@ const COV_1: RubricItem<EvidenceRubricContext> = {
   code: 'COV-1',
   title: 'Governance coverage cascade',
   description:
-    'Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides.',
+    'Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides; an island named in its Capital trade policy declares ki-trades.',
   sources: ['standards-configuration.md'],
   mechanical: {
     level: 'FAIL',

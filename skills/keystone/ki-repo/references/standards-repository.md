@@ -32,7 +32,7 @@ Every repo carries these at the root. A local audit reads the selected checkout'
 | `CLAUDE.md` | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7). |
 | `.ki.toml` | Opens with the standard conformance header and declares expected config under `[skills.ki-repo]`. † |
 
-† The values it carries: mandatory `title` and `description`, `visibility`, the declared `license` (SPDX id, default MIT), and any per-repo check overrides. A repository that declares `ki-work-roadmap` also carries its stable `repo_code` here.
+† The values it carries: mandatory `title`, `description`, and `capital` (the territory Capital, a canonical HTTPS GitHub URL), `visibility`, the declared `license` (SPDX id, default MIT), and any per-repo check overrides. A repository that declares `ki-work-roadmap` also carries its stable `repo_code` here.
 
 **Baseline governance is declared, not assumed.** Every Knowledge Islands repo is governed by `ki-repo` **and** `ki-authoring`; both are required declarations — a `.ki.toml` missing `[skills.ki-authoring]` is a FAIL (`authoring-baseline`). Authoring is no longer an implicit universal hidden in the tooling ([ADR-KI-HARNESS-005](../../../../docs/decisions/ADR-KI-HARNESS-005-validate-down-ki-toml-contract.md)); the config shows the full governance set. Portable tokenomics and the real environment capabilities mapped from `[skills.ki-repo].supported_runtimes` are likewise explicit required capabilities. `ki-repo` derives the exact names and checks their declarations without reading sibling-owned contents; verified source resolution and managed runtime projections remain host evidence.
 
@@ -191,6 +191,7 @@ Each repo **declares** its expected visibility in `.ki.toml` (`visibility = "pub
 # .ki.toml — one [table] per skill that needs per-repo options
 [skills.ki-repo]
 title = "Example repository" # exact README.md H1
+capital = "https://github.com/owner/capital" # territory Capital; a Capital names itself
 description = "One sentence describing the repository." # exact GitHub and package.json description where present
 visibility = "public"   # "public" | "private"
 license = "MIT"         # SPDX id; use "UNLICENSED" for proprietary

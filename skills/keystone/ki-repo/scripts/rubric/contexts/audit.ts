@@ -308,6 +308,7 @@ repo_type = "project"
 primary_shape = "ki-repo-project"
 repository = ""         # required — canonical HTTPS GitHub home, for example https://github.com/owner/repository
 title = ""              # required — exact README.md H1
+capital = ""            # required — canonical HTTPS GitHub URL of this repository's territory Capital (a Capital names itself)
 description = ""        # required — exact GitHub and package.json description where present
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
 license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/

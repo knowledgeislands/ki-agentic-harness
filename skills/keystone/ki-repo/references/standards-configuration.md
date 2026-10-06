@@ -11,6 +11,7 @@ The cross-cutting contract for the shared **`.ki.toml`** file every Knowledge Is
 - [Validate your own table](#validate-your-own-table)
 - [Declared divergences](#declared-divergences)
 - [Overridable vs fixed](#overridable-vs-fixed)
+- [Territory and Capital](#territory-and-capital)
 - [Coverage enforcement](#coverage-enforcement)
 - [Scaffolding & ownership](#scaffolding--ownership)
 - [Local registry](#local-registry)
@@ -59,6 +60,7 @@ repo_type = "project"
 primary_shape = "ki-repo-project"
 repository = "https://github.com/owner/repository" # canonical GitHub home
 title = "Example repository" # exact README.md H1
+capital = "https://github.com/owner/capital" # territory Capital; a Capital names itself
 description = "One sentence describing the repository." # exact GitHub and package.json description where present
 visibility = "public"
 license = "MIT"          # SPDX id; default MIT when unset. "UNLICENSED" for proprietary.
@@ -71,7 +73,7 @@ checks.branch-protection = true
 
 `[skills]` is a namespace, not a skill: it makes "this key is a declaration" structural rather than a guess about how the key is spelled. A repository-level setting that belongs to no skill lives in `[repo]` and is never mistaken for one.
 
-`[skills.ki-repo]` carries repository identity and declared facts the auditor checks. `repository` is mandatory and is the canonical HTTPS GitHub home (`https://github.com/<owner>/<repository>`), checked against GitHub's repository identity. `title` and `description` are mandatory: title exactly matches the README H1, while description exactly matches GitHub and package.json where those surfaces exist. `visibility` (`"public"` | `"private"`, matched against GitHub) and `license` (an [SPDX License List](https://spdx.org/licenses/) identifier — default MIT when unset — matched against the live GitHub license, the `LICENSE` file, and `package.json` `"license"`) are independent: a private repo may be MIT, a public repo proprietary. Use [Choose a License](https://choosealicense.com/) as selection guidance; use `"UNLICENSED"` for all-rights-reserved proprietary.
+`[skills.ki-repo]` carries repository identity and declared facts the auditor checks. `repository` is mandatory and is the canonical HTTPS GitHub home (`https://github.com/<owner>/<repository>`), checked against GitHub's repository identity. `title` and `description` are mandatory: title exactly matches the README H1, while description exactly matches GitHub and package.json where those surfaces exist. `visibility` (`"public"` | `"private"`, matched against GitHub) and `license` (an [SPDX License List](https://spdx.org/licenses/) identifier — default MIT when unset — matched against the live GitHub license, the `LICENSE` file, and `package.json` `"license"`) are independent: a private repo may be MIT, a public repo proprietary. Use [Choose a License](https://choosealicense.com/) as selection guidance; use `"UNLICENSED"` for all-rights-reserved proprietary. `capital` is mandatory and names the repository's territory Capital as a full canonical HTTPS GitHub URL with the same grammar as `repository`; a Capital names itself. [Territory and Capital](#territory-and-capital) defines how it is checked.
 
 The third, `supported_runtimes`, is a **repo-wide** fact — the agent runtimes this repo supports. It lives on `[skills.ki-repo]` rather than `[skills.ki-repo-harness]` because it drives orientation and runtime-bound capabilities across the whole repo, not just the four-part harness; a non-harness KI repo can support runtimes too. Native activation resolves it to each runtime's discovery path (Claude Code → `.claude/`, ChatGPT Codex → `.agents/`; see the runtime feature-coverage matrix in `SDR-KI-HARNESS-002`). The key is required: support is a stable repository capability, never inferred from the directories present at a moment in time. Values must name a recognised runtime (`claude-code`, `claude-desktop`, or `chatgpt-codex`), must be non-empty, and must not repeat — the auditor's `RUNTIMES-1` FAILs otherwise. The retired `codex` identifier is rejected with recovery guidance; it is not a compatibility alias.
 
@@ -98,7 +100,7 @@ A skill drawn from a harness outside the declared list keeps a quoted, fully-qua
 [skills."otherowner/other-harness:ki-example"]
 ```
 
-This is the only place a qualified key appears in the file, and it is the same exception shape trade routes use for a partner off the default host.
+This is the only place a qualified key appears in the file.
 
 ## Marker vs config tables
 
@@ -142,6 +144,36 @@ A skill's standard fixes its model; a base or repo may declare **only** the keys
 
 So the option set is **authored, not implicit**: each skill with declarable keys defines and can emit or conform its commented schema/default fragment, so an author sees exactly what may be set and an undocumented key warns (validate-down). `ki-repo` separately owns the file-level contract and required foundation markers. A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to invent an ad-hoc key or fork a skill.
 
+## Territory and Capital
+
+Every repository belongs to exactly one territory, governed by its Capital. `[skills.ki-repo].capital` is required in every `.ki.toml`: a full canonical HTTPS GitHub URL (`https://github.com/<owner>/<repository>`, lower-case owner and name drawn from `[a-z0-9._-]`), compared as an exact string with the Capital's own `[skills.ki-repo].repository`. A Capital is the repository whose `capital` equals its own `repository`. There is no default, alias, or inference at read time; a missing or malformed declaration FAILs.
+
+Only a Capital declares territory membership, and it must:
+
+```toml
+[skills.ki-repo]
+repository = "https://github.com/owner/capital"
+capital = "https://github.com/owner/capital"
+
+[skills.ki-repo.territory]
+name = "Example territory"
+members = [
+  "https://github.com/owner/capital",
+  "https://github.com/owner/member",
+]
+```
+
+`name` is a non-empty string. `members` is a non-empty array of canonical HTTPS GitHub URLs, without duplicates, sorted in ascending string order, and including the Capital itself. No other key is allowed. A repository that is not a Capital and declares `[skills.ki-repo.territory]` FAILs.
+
+Agreement between a declaration and its Capital is checked only through the local registry (`$KI_STATE_HOME/registry.toml` when `KI_STATE_HOME` is set, otherwise `$XDG_STATE_HOME/ki/registry.toml`, otherwise `~/.local/state/ki/registry.toml`). The auditor reads each registered checkout's own `.ki.toml` and identifies it by the `[skills.ki-repo].repository` declared there, never by the registry entry; two registered checkouts declaring one URL are ambiguous. It never scans the filesystem and never consults an Agora.
+
+- **A member** WARNs `territory policy lives in <capital>, not available here` when its Capital is not registered locally, FAILs when the Capital is registered more than once, is not a Capital, or does not list the member, and passes otherwise.
+- **A Capital** FAILs when a member it lists is registered locally but declares a different or missing `capital`; a member not checked out here is reported as information only.
+
+The `TERR` rubric family carries these rules: `TERR-1` (capital declared), `TERR-2` (territory table shape) and `TERR-3` (registry-backed agreement). CONFORM inserts `capital` directly after the `title` line of `[skills.ki-repo]`, or after `repository` when there is no title, but only when the value is inferable: a repository declaring a territory is its own Capital, and otherwise exactly one registered Capital must list the repository. Any other case is left for the owner to declare.
+
+The Capital also owns the territory's trade policy under `[skills.ki-trades.territory]`; `ki-trades` governs its schema and the routes it grants.
+
 ## Coverage enforcement
 
 The file's presence is the **gate of an audit cascade**. Once a repo is confirmed a ki-repo (it carries `.ki.toml`), `ki-repo`'s auditor checks that the repo **declares an opt-in table for every governance skill whose applicability is detectable in it**. A detected-but-undeclared signal FAILs ("looks governed by `ki-<skill>` but declares no `[skills.ki-<skill>]`"); a declared-but-undetected table WARNs as a possibly stale opt-in. Documentation is mechanically owned: content under `docs/decisions/` (or a Knowledge Base's `Admin/Governance/Decisions/`) requires `ki-decision-records`, content under `docs/specs/` requires `ki-specs`, and content under `docs/guides/` requires `ki-guides`.
@@ -173,6 +205,8 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 | `ki-checkpoint` | `+/_CHECKPOINTS/` subarea | `[skills.ki-checkpoint]` |
 
 This is the **one place** `ki-repo` reads across skill tables. It normally reads only table **presence**; app discovery also consumes the core-owned `site-root` solely to locate the selected Vite config and package manifest. The website core still owns and validates that value, preserving _validate down, ignore across_ for its contents. It is an **audit-time enforcement** run by `repo`'s auditor, not behaviour baked into the regular use of each skill. A repo opts out of a single signal with a `coverage-<skill> = false` entry under `[skills.ki-repo.checks]`; the auditor emits an informational note so that deliberate non-activation remains explicit. Website keys are independent: `coverage-website`, `coverage-website-content`, `coverage-website-app`, and `coverage-website-cloudflare` do not disable one another.
+
+Trade coverage is the one signal read from outside the repository. When the repository's Capital resolves through the local registry (`TERR-3` passes, or the repository is the Capital) and its `[skills.ki-trades.territory]` channels name the repository as a source or receiver, a missing `[skills.ki-trades]` FAILs `COV-1`. A Capital policy that is not available here skips the signal, because `TERR-3` already reports the unavailable policy. The signal has no `coverage-` override: a named island must declare the skill or be removed from the Capital's channels.
 
 No marker table is decorative — each is read by code. Most are read by their **owning** skill's auditor too (`-engineering`/`-kb`/`-streams`/`-website`/`-website-cloudflare`/`-mcp` each read their own table when run). `ki-skills`, `ki-subagents`, and its runtime adapters are the documented exception: their checkers lint artifact sets (`SKILL.md` files or native agent projections), not a repo's config, so their opt-in tables are read only by `ki-repo`'s coverage check.
 

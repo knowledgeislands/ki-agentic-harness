@@ -22,6 +22,7 @@ Line-by-line criteria for auditing ki-repo. Classifications are derived from ite
 - [ACT — Actions policy](#act--actions-policy)
 - [CHECKS — Check overrides](#checks--check-overrides)
 - [COV — Governance coverage](#cov--governance-coverage)
+- [TERR — Territory](#terr--territory)
 - [STRUCT — Repository structure](#struct--repository-structure)
 - [ACCESS — Repository access](#access--repository-access)
 - [KIND — Repository kind](#kind--repository-kind)
@@ -185,8 +186,21 @@ Per-repository override schema.
 
 Detected and declared governance coverage.
 
-- **COV-1 [M] — Governance coverage cascade** — Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides. (standards-configuration.md)
+- **COV-1 [M] — Governance coverage cascade** — Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides; an island named in its Capital trade policy declares ki-trades. (standards-configuration.md)
   - _Remediation:_ diagnostic — Align the declared coverage table with detected applicability or record an explicit override, then rerun the audit.
+
+## TERR — Territory
+
+→ [standard](standards-configuration.md)
+
+Capital declaration, Capital-owned territory membership, and registry-backed agreement.
+
+- **TERR-1 [M] — Capital declared** — [skills.ki-repo].capital names the territory Capital as a full canonical HTTPS GitHub URL; a Capital names itself. (standards-configuration.md)
+  - _Remediation:_ automatic
+- **TERR-2 [M] — Territory table shape** — Only a Capital declares [skills.ki-repo.territory], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself. (standards-configuration.md)
+  - _Remediation:_ diagnostic — In a Capital, declare [skills.ki-repo.territory] with name and sorted, unique canonical members including itself; elsewhere remove the table.
+- **TERR-3 [M] — Capital and membership agree** — Through the local registry, the declared Capital is a unique registered Capital listing this repository, and a Capital is named back by each registered member. (standards-configuration.md)
+  - _Remediation:_ diagnostic — Correct capital or the Capital territory members so both sides agree; register the Capital checkout locally to verify a WARN.
 
 ## STRUCT — Repository structure
 
