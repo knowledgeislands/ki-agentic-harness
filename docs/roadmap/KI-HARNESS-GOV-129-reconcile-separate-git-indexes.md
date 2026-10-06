@@ -4,12 +4,12 @@ area: GOV
 title: Reconcile separate Git indexes
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-10-02T06:06:07Z
-updated_at: 2026-10-06T17:15:36Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-129: Reconcile separate Git indexes
@@ -122,6 +122,10 @@ Independent Fable review verdict: approve, with nits only. Applied: the fixture 
 ### Mini recap
 
 Delivered the separate-index reconciliation guidance and a pinning fixture; all gates pass. Proposed learning route: none beyond the standard itself.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

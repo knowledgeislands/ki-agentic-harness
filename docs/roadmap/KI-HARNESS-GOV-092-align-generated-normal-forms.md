@@ -4,12 +4,12 @@ area: GOV
 title: Align generated normal forms
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 68040b3e4e63a83186587410bc84d2db80ff14d4
 created_at: 2026-09-25T05:43:18Z
-updated_at: 2026-10-06T17:21:44Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-092: Align generated normal forms
@@ -130,6 +130,10 @@ The goal is met at the standard and review level: a reviewer reading section 5 a
 ### Mini recap
 
 Added the producer-normaliser rule, `GEN-2 [J]` and two REVIEW items; regenerated the rubric. Gates green. Learning route proposed: the `ki dev skill rubric --write` path follows the installed harness link, so rubric regeneration from a worktree needs an isolated XDG install; that may merit a `ki-skills` or `tools-ki` note through `ki-next`, not promoted here.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

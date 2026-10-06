@@ -4,12 +4,12 @@ area: GOV
 title: Review artefact idempotence
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-06T17:20:16Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-124: Review artefact idempotence
@@ -125,6 +125,10 @@ The goal is met: a reviewer has a question that asks whether regeneration was sh
 ### Mini recap
 
 Delivered the idempotence question and the determinism guidance jointly with GOV-096, all gates pass, and no concerns are open. Per Documentation impact, `5GE-P2-GOV-015` in `5g-emerge-phase2` can now close; the owner relays that, since this record writes nothing there.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

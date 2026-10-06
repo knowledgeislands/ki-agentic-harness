@@ -4,12 +4,12 @@ area: GOV
 title: Apply September source refreshes
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-09-26T18:00:08Z
-updated_at: 2026-10-06T17:13:34Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-112: Apply September source refreshes
@@ -134,6 +134,10 @@ The goal is met: every finding has one owning disposition and the routing pointe
 ### Mini recap
 
 Recorded four dispositions and retired one discovery source in five `references/sources.md` ledgers. Gates green apart from two pre-existing cadence warnings. Learning route: none proposed; a future model route change or Codex publisher follows its own work item.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

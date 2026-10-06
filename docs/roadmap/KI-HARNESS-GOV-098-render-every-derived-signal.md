@@ -4,12 +4,12 @@ area: GOV
 title: Render every derived signal
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-06T17:20:16Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-098: Render every derived signal
@@ -114,6 +114,10 @@ The goal is met: REVIEW now asks the completeness question that no lens asked be
 ### Mini recap
 
 Delivered one REVIEW question, all gates pass, and no concerns are open. Learning route: none beyond the checklist text, since `KI-OBS-VIS-004` already recorded the rule for its instance.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

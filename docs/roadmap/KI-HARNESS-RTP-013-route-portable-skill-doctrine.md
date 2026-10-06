@@ -4,12 +4,12 @@ area: RTP
 title: Route portable skill doctrine
 theme: runtime-portability
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c9ccf3096be175e0d52905d20ab7de361c001347
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-10-06T17:31:36Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 ## Goal
@@ -176,6 +176,10 @@ The goal is met for the bounded scope: the classification method exists in its o
 ### Mini recap
 
 Added the user-level classification method, pointed the chezmoi standard at it, verified `ki-git` in a session with `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1`, and closed the one gap in `ki-git`. Gates green apart from one pre-existing warning. Learning route proposed: the isolated-session recipe and its canary control could become part of the method's verification step, through `ki-next` if wanted.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

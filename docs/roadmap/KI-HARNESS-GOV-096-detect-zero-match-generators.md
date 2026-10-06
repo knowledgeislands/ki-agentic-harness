@@ -4,12 +4,12 @@ area: GOV
 title: Detect zero-match generators
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe
 created_at: 2026-09-26T10:45:00Z
-updated_at: 2026-10-06T17:20:16Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-096: Detect zero-match generators
@@ -119,6 +119,10 @@ The review-side goal is met: REVIEW now asks whether an empty result was shown t
 ### Mini recap
 
 Delivered one REVIEW question jointly with GOV-124, all gates pass, and no concerns are open. Learning route: the construction rule (generators announce an empty walk) remains unadopted, as the Decision records.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

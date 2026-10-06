@@ -4,12 +4,12 @@ area: GOV
 title: State ordering in ledger
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 68040b3e4e63a83186587410bc84d2db80ff14d4
 created_at: 2026-09-26T15:31:37Z
-updated_at: 2026-10-06T17:29:30Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-105: State ordering in ledger
@@ -137,6 +137,10 @@ Independent Fable review returned reject on a single blocking finding: `ROAD-7` 
 ### Mini recap
 
 The ledger now states commit-before-record ordering, and the fleet has a non-destructive, automatic path from the previous body. Proposed learning route: a `ki-skills` or `ki-engineering` note that rubric tests calling `mechanical.audit.run` directly bypass host level validation, so a test should pin `overrideLevels` whenever an item emits a non-declared level.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

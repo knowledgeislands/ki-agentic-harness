@@ -4,12 +4,12 @@ area: GOV
 title: Report push as action
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 564d2d1b62583c051b34f1593d5812023fe4aafd
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-06T17:29:10Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-100: Report push as action
@@ -125,6 +125,10 @@ The goal is met: both skills now ask for the invariant fact, this session's acti
 ### Mini recap
 
 Delivered revision-bound push reporting in `ki-git` and `ki-recap`, after a plan amendment that closed the Verify grep gap. All gates pass. The rubric was verified by an equivalent render rather than the literal dev command. Learning route: `ki dev skill rubric` cannot verify a worktree, so the harness `AGENTS.md` toolchain note could say how to regenerate a rubric from a worktree; that is offered for `ki-next` capture, not promoted here.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 

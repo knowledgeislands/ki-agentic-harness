@@ -4,12 +4,12 @@ area: GOV
 title: Align roadmap diagnostics
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 709f49fec523f596d1b388391bff6aed39ac5198
 created_at: 2026-09-25T14:21:37Z
-updated_at: 2026-10-06T21:08:00Z
+updated_at: 2026-10-06T21:19:43Z
 ---
 
 # KI-HARNESS-GOV-095: Align roadmap diagnostics
@@ -139,6 +139,10 @@ The two inspection paths now agree on the structural floor for any record in eit
 ### Mini recap
 
 A malformed or unidentified `Streams/Roadmap/` record can no longer pass the KB audit silently, the roadmap standard states the shared invariant once, and tests pin both defects in both adapters.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 
