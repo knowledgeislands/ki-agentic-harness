@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-06T17:13:44Z
+updated_at: 2026-10-06T17:23:38Z
 ---
 
 # KI-HARNESS-GOV-100: Report push as action
@@ -30,7 +30,7 @@ Nothing was damaged and no rule was broken by either party: the peer pushed thei
 
 In scope: the wording in `ki-git` and `ki-recap` that reports push state, so that both phrase it as an action this session took or did not take at a named revision, never as a current fact about a shared ref.
 
-Out of scope: the standing no-push rule itself, which worked exactly as intended; concurrent-writer policy, which `ki-git` already governs; the peer's commits, which were legitimate; any change to the recap grounding helper or a new rubric item; and the completion banner's conditions.
+Out of scope: the standing no-push rule itself, which worked exactly as intended; concurrent-writer policy, which `ki-git` already governs; the peer's commits, which were legitimate; any change to the recap grounding helper, a new rubric item, or a rubric criterion (the `HYGIENE` guidance wording is in scope only so that Verify item 3 holds); and the completion banner's conditions.
 
 ## Current state
 
@@ -42,19 +42,22 @@ Out of scope: the standing no-push rule itself, which worked exactly as intended
 - [ ] `standards-git.md:109`: reword "If the unpushed commit captured unrelated work" to "If a commit this session has not pushed captured unrelated work".
 - [ ] `standards-session-recap.md` `## 2. Summarise`: add one sentence applying the `ki-git` rule: state push state as this session's action at the named local `HEAD` (pushed, or not pushed by this session), never as "unpushed" or "the remote is behind"; a peer may push the shared ref between two recaps, and Git grounding does not make that position durable.
 - [ ] `standards-session-recap.md:139`: reword "An unpushed commit does **not** block the banner" to "A commit this session has not pushed does **not** block the banner".
+- [ ] `skills/governance/ki-git/scripts/rubric/items/hygiene.ts`: in the hygiene guidance, reword "before rebuilding an unpushed commit" to "before rebuilding a commit this session has not pushed", then regenerate `references/rubric.md` with `ki dev skill rubric ki-git`. Only the guidance text changes; no criterion, outcome or item code moves.
 - [ ] Run the verification below.
 
 ## Files touched
 
 - `skills/governance/ki-git/references/standards-git.md`
 - `skills/change-management/ki-recap/references/standards-session-recap.md`
+- `skills/governance/ki-git/scripts/rubric/items/hygiene.ts`
+- `skills/governance/ki-git/references/rubric.md` (regenerated)
 
 ## Verify
 
 1. `standards-git.md` states push reporting as an action taken or not taken at a named revision and explains why a shared ref's position is not carried forward.
 2. `standards-session-recap.md` instructs a recap to report push state the same way, with the revision named, and cites `ki-git` as the owner rather than restating the full rule.
 3. `git grep -n -i unpushed -- skills/governance/ki-git skills/change-management/ki-recap` returns no positional claim about a shared ref.
-4. No script, test or rubric item changes; `ki dev skill rubric ki-git` reports the generated rubric unchanged.
+4. The only rubric change is the `HYGIENE` guidance wording in `hygiene.ts` and its regenerated copy in `references/rubric.md`; no criterion, outcome, item code or test changes, and `ki dev skill rubric ki-git` reports the regenerated rubric in sync.
 5. Added text uses British English and ASCII hyphens only; focused audits report no new finding in either file.
 6. `bun run test` and `bunx tsc --noEmit` pass.
 
@@ -99,6 +102,10 @@ None.
 ### Scope re-check - 2026-10-06
 
 The record is already narrowed to what `f9dbcd90` left: the revision-bound wording and the recap instruction. At `e30948ad` none of the four Steps has landed. One gap in the plan: Verify item 3 greps the whole `ki-git` skill, which also matches "an unpushed commit" in the hygiene guidance at `skills/governance/ki-git/scripts/rubric/items/hygiene.ts:22` and its generated copy in `references/rubric.md:75`. No Step covers that text, so Verify item 3 would fail as planned. Amend the Steps through `ki-plan` (reword the hygiene guidance and regenerate the rubric, which also changes Verify item 4) or narrow the grep before implementation starts.
+
+### Plan amendment - 2026-10-06
+
+Resolved the hold below by the first option, at the coordinator's direction and through `ki-plan`: a fifth Step rewords the `HYGIENE` guidance in `hygiene.ts` and regenerates the `ki-git` rubric, Files touched lists both files, the Boundary admits that guidance wording only, and Verify item 4 now expects the regenerated rubric in sync rather than unchanged. Verify item 3's grep is unchanged. The record stays `ready`.
 
 ### Implementation hold - 2026-10-06
 
