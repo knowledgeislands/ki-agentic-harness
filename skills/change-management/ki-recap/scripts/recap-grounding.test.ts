@@ -30,9 +30,31 @@ const evidence = (repo: string, head: string | null, worktree: 'clean' | 'dirty'
 
 const physical = (path: string): string => realpathSync(resolve(path))
 
-const run = (repo: string, transcripts: string, args: readonly string[] = []) => {
-  const result = spawnSync('bun', [helper, repo, '--json', '--transcripts-dir', transcripts, ...args], {
-    encoding: 'utf8'
+/**
+ * A child environment that cannot reach the real `~/.claude` or `~/.codex`, and does not
+ * inherit the invoking runtime's identity. `home` defaults to the transcripts fixture's parent.
+ */
+const isolatedEnvironment = (home: string, overrides: Record<string, string> = {}): NodeJS.ProcessEnv => {
+  const environment: NodeJS.ProcessEnv = { ...process.env, HOME: home }
+  for (const name of [
+    'CLAUDECODE',
+    'CLAUDE_CODE_SESSION_ID',
+    'CLAUDE_CONFIG_DIR',
+    'CLAUDE_CODE_PROJECT_DIR_NAME',
+    'CODEX_HOME'
+  ])
+    delete environment[name]
+  return { ...environment, ...overrides }
+}
+
+type RunOptions = { transcripts?: string | null; home?: string; env?: Record<string, string> }
+
+const runIsolated = (repo: string, args: readonly string[], { transcripts, home, env }: RunOptions) => {
+  const root = home ?? dirname(transcripts ?? repo)
+  const transcriptArgs = transcripts ? ['--transcripts-dir', transcripts] : []
+  const result = spawnSync('bun', [helper, repo, '--json', ...transcriptArgs, ...args], {
+    encoding: 'utf8',
+    env: isolatedEnvironment(root, env)
   })
   return {
     status: result.status ?? 1,
@@ -40,6 +62,9 @@ const run = (repo: string, transcripts: string, args: readonly string[] = []) =>
     output: `${result.stdout ?? ''}${result.stderr ?? ''}`
   }
 }
+
+const run = (repo: string, transcripts: string, args: readonly string[] = []) =>
+  runIsolated(repo, args, { transcripts })
 
 const git = (repository: string, args: readonly string[]): string => {
   const result = spawnSync('git', ['-C', repository, ...args], { encoding: 'utf8' })
@@ -187,7 +212,7 @@ describe('recap grounding runtime selection', () => {
     try {
       mkdirSync(repo, { recursive: true })
       mkdirSync(transcripts, { recursive: true })
-      const help = spawnSync('bun', [helper, '--help'], { encoding: 'utf8' })
+      const help = spawnSync('bun', [helper, '--help'], { encoding: 'utf8', env: isolatedEnvironment(root) })
       expect(help.status).toBe(0)
       expect(help.stdout).toContain('--runtime detect|claude|codex')
       const result = run(repo, transcripts)
@@ -315,6 +340,241 @@ describe('recap grounding runtime selection', () => {
       expect(grounded.filesTouched).toEqual([])
       expect(grounded['ki-work-recap-repository-evidence/v1']).toBeNull()
       expect(grounded.transcriptEvidence).toMatchObject({ status: 'unavailable', current: null })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+})
+
+type Selected = {
+  runtime: string | null
+  transcript: string | null
+  transcriptSelection: { method: string; reason?: string; examined: number; limitReached: boolean }
+  repository: { status: string; root: string | null }
+  untrackedFiles: string[]
+  toolTally: Record<string, number>
+}
+
+const SESSION = '0b7a9c1e-1111-4222-8333-944455556666'
+
+/** Write a Codex rollout below `sessions` with the given mtime offset in seconds. */
+const writeCodex = (sessions: string, name: string, cwd: string, offset: number, body = ''): string => {
+  const path = join(sessions, '2026', '08', '22', name)
+  mkdirSync(dirname(path), { recursive: true })
+  writeFileSync(path, `${codexMeta(cwd)}\n${codexFunction('Read', { file_path: `/x/${name}` })}\n${body}`)
+  const time = Date.now() / 1000 + offset
+  utimesSync(path, time, time)
+  return path
+}
+
+describe('recap grounding live-session selection', () => {
+  test('an identified Claude Code session selects its own transcript, not newer Codex history', () => {
+    const root = fixture()
+    const repo = join(root, 'target_repo')
+    const config = join(root, 'claude-config')
+    const live = join(config, 'projects', '-launch-root', `${SESSION}.jsonl`)
+    try {
+      initialiseRepository(repo)
+      writeFileSync(join(repo, 'untracked.txt'), 'untracked\n')
+      mkdirSync(dirname(live), { recursive: true })
+      writeFileSync(live, `${claudeToolUse('Edit', { file_path: '/x/live.md' })}\n`)
+      utimesSync(live, Date.now() / 1000 - 600, Date.now() / 1000 - 600)
+      writeCodex(join(root, '.codex', 'sessions'), 'rollout-newer.jsonl', physical(repo), 60)
+
+      const env = { CLAUDECODE: '1', CLAUDE_CODE_SESSION_ID: SESSION, CLAUDE_CONFIG_DIR: config }
+      const result = runIsolated(repo, [], { home: root, env })
+      const grounded = JSON.parse(result.stdout) as Selected
+      expect(result.status).toBe(0)
+      expect(grounded.runtime).toBe('claude')
+      expect(grounded.transcript).toBe(live)
+      expect(grounded.toolTally).toEqual({ Edit: 1 })
+      expect(grounded.transcriptSelection).toEqual({ method: 'live-session', examined: 0, limitReached: false })
+      expect(grounded.repository).toMatchObject({ status: 'available', root: physical(repo) })
+      expect(grounded.untrackedFiles).toEqual(['untracked.txt'])
+
+      // Without CLAUDE_CONFIG_DIR, the projects root is the (fixture) home's .claude directory.
+      const homeLive = join(root, '.claude', 'projects', 'another-launch-root', `${SESSION}.jsonl`)
+      mkdirSync(dirname(homeLive), { recursive: true })
+      writeFileSync(homeLive, `${claudeToolUse('Read', { file_path: '/x/home.md' })}\n`)
+      const fromHome = JSON.parse(
+        runIsolated(repo, ['--runtime', 'claude'], {
+          home: root,
+          env: { CLAUDECODE: '1', CLAUDE_CODE_SESSION_ID: SESSION }
+        }).stdout
+      ) as Selected
+      expect(fromHome.transcript).toBe(homeLive)
+      expect(fromHome.transcriptSelection.method).toBe('live-session')
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('declines rather than substitutes when the live transcript is missing, duplicated, or unidentifiable', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const config = join(root, 'claude-config')
+    try {
+      initialiseRepository(repo)
+      writeFileSync(join(repo, 'untracked.txt'), 'untracked\n')
+      mkdirSync(join(config, 'projects', '-launch-root'), { recursive: true })
+      writeFileSync(join(config, 'projects', '-launch-root', 'other-session.jsonl'), `${claudeToolUse('Read', {})}\n`)
+      writeCodex(join(root, '.codex', 'sessions'), 'rollout-target.jsonl', physical(repo), 0)
+      const declined = (sessionId: string): Selected =>
+        JSON.parse(
+          runIsolated(repo, [], {
+            home: root,
+            env: { CLAUDECODE: '1', CLAUDE_CODE_SESSION_ID: sessionId, CLAUDE_CONFIG_DIR: config }
+          }).stdout
+        ) as Selected
+
+      const missing = declined(SESSION)
+      expect(missing.runtime).toBeNull()
+      expect(missing.transcript).toBeNull()
+      expect(missing.toolTally).toEqual({})
+      expect(missing.transcriptSelection).toMatchObject({ method: 'none', reason: 'live-session-transcript-not-found' })
+      expect(missing.repository.status).toBe('available')
+      expect(missing.untrackedFiles).toEqual(['untracked.txt'])
+
+      for (const project of ['-first', '-second']) {
+        mkdirSync(join(config, 'projects', project), { recursive: true })
+        writeFileSync(join(config, 'projects', project, `${SESSION}.jsonl`), `${claudeToolUse('Read', {})}\n`)
+      }
+      expect(declined(SESSION).transcriptSelection).toMatchObject({
+        method: 'none',
+        reason: 'live-session-transcript-ambiguous'
+      })
+      expect(declined('../escape').transcriptSelection).toMatchObject({
+        method: 'none',
+        reason: 'live-session-identity-invalid'
+      })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('a Claude Code runtime without an identity searches only the target Claude project', () => {
+    const root = fixture()
+    const repo = join(root, 'my_repo.v2')
+    const config = join(root, 'claude-config')
+    try {
+      initialiseRepository(repo)
+      writeCodex(join(root, '.codex', 'sessions'), 'rollout-target.jsonl', physical(repo), 0)
+      const env = { CLAUDECODE: '1', CLAUDE_CONFIG_DIR: config }
+      const withoutProject = JSON.parse(runIsolated(repo, [], { home: root, env }).stdout) as Selected
+      expect(withoutProject.runtime).toBeNull()
+      expect(withoutProject.transcriptSelection).toMatchObject({ method: 'none', reason: 'no-eligible-transcript' })
+
+      // The documented slug replaces every non-alphanumeric character, including `_`.
+      const project = join(config, 'projects', physical(repo).replace(/[^A-Za-z0-9]/g, '-'))
+      mkdirSync(project, { recursive: true })
+      writeFileSync(join(project, 'target.jsonl'), `${claudeToolUse('Read', { file_path: '/x/target.md' })}\n`)
+      const withProject = JSON.parse(runIsolated(repo, [], { home: root, env }).stdout) as Selected
+      expect(withProject.runtime).toBe('claude')
+      expect(withProject.transcript).toBe(join(project, 'target.jsonl'))
+      expect(withProject.transcriptSelection).toEqual({ method: 'newest-eligible', examined: 1, limitReached: false })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('explicit Codex runtime and transcript selectors bypass the live-session locator', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const transcripts = join(root, 'transcripts')
+    try {
+      initialiseRepository(repo)
+      const codex = writeCodex(transcripts, 'rollout-explicit.jsonl', physical(repo), 0)
+      const env = { CLAUDECODE: '1', CLAUDE_CODE_SESSION_ID: SESSION }
+      const forced = JSON.parse(runIsolated(repo, ['--runtime', 'codex'], { transcripts, env }).stdout) as Selected
+      expect(forced.runtime).toBe('codex')
+      expect(forced.transcript).toBe(codex)
+      expect(forced.transcriptSelection.method).toBe('newest-eligible')
+
+      const claude = join(transcripts, 'chosen.jsonl')
+      writeFileSync(claude, `${claudeToolUse('Read', { file_path: '/x/chosen.md' })}\n`)
+      const explicit = JSON.parse(
+        runIsolated(repo, ['--transcript', 'chosen.jsonl'], { transcripts, env }).stdout
+      ) as Selected
+      expect(explicit.transcript).toBe(claude)
+      expect(explicit.transcriptSelection).toEqual({ method: 'explicit', examined: 1, limitReached: false })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('recap grounding bounded discovery', () => {
+  test('stops at the newest eligible header without parsing older or large transcript bodies', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const otherRepo = join(root, 'other-repo')
+    const sessions = join(root, 'sessions')
+    try {
+      initialiseRepository(repo)
+      initialiseRepository(otherRepo)
+      for (let index = 0; index < 40; index += 1)
+        writeCodex(sessions, `rollout-older-${index}.jsonl`, physical(repo), -1000 - index)
+      for (let index = 0; index < 5; index += 1)
+        writeCodex(sessions, `rollout-unrelated-${index}.jsonl`, physical(otherRepo), 100 + index)
+      const largeBody = `${codexFunction('Bash', { command: 'x'.repeat(1024) })}\n`.repeat(8 * 1024)
+      const newest = writeCodex(sessions, 'rollout-large.jsonl', physical(repo), 50, largeBody)
+
+      const grounded = JSON.parse(run(repo, sessions, ['--runtime', 'codex']).stdout) as Selected
+      expect(grounded.transcript).toBe(newest)
+      expect(grounded.toolTally).toEqual({ Read: 1, Bash: 8 * 1024 })
+      // Five newer unrelated headers, then the eligible one; no older candidate is inspected.
+      expect(grounded.transcriptSelection).toEqual({ method: 'newest-eligible', examined: 6, limitReached: false })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('declines explicitly when the header limit is reached before an eligible transcript', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const otherRepo = join(root, 'other-repo')
+    const sessions = join(root, 'sessions')
+    try {
+      initialiseRepository(repo)
+      initialiseRepository(otherRepo)
+      for (let index = 0; index < 260; index += 1)
+        writeCodex(sessions, `rollout-unrelated-${index}.jsonl`, physical(otherRepo), 100 + index)
+      writeCodex(sessions, 'rollout-oldest-match.jsonl', physical(repo), -1000)
+
+      const grounded = JSON.parse(run(repo, sessions, ['--runtime', 'codex']).stdout) as Selected
+      expect(grounded.transcript).toBeNull()
+      expect(grounded.transcriptSelection).toEqual({
+        method: 'none',
+        reason: 'discovery-limit',
+        examined: 256,
+        limitReached: true
+      })
+      expect(grounded.repository).toMatchObject({ status: 'available', root: physical(repo) })
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('treats a header without a complete line inside the bounded prefix as ineligible', () => {
+    const root = fixture()
+    const repo = join(root, 'repo')
+    const sessions = join(root, 'sessions')
+    const oversized = join(sessions, 'rollout-oversized.jsonl')
+    try {
+      initialiseRepository(repo)
+      mkdirSync(sessions, { recursive: true })
+      writeFileSync(
+        oversized,
+        `${JSON.stringify({ type: 'session_meta', payload: { cwd: physical(repo), padding: 'x'.repeat(70 * 1024) } })}\n`
+      )
+      const grounded = JSON.parse(run(repo, sessions, ['--runtime', 'codex']).stdout) as Selected
+      expect(grounded.transcript).toBeNull()
+      expect(grounded.transcriptSelection).toEqual({
+        method: 'none',
+        reason: 'no-eligible-transcript',
+        examined: 1,
+        limitReached: false
+      })
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

@@ -11,15 +11,30 @@
  * Usage: bun scripts/recap-grounding.ts [repo-path] [--json]
  *   [--runtime detect|claude|codex] [--transcripts-dir <dir>] [--transcript <session-file>]
  *
- * The helper selects the newest eligible transcript for the resolved repository. Claude
- * candidates live directly in its derived project directory; Codex candidates are regular
- * JSONL files discovered recursively below its sessions directory whose session metadata
- * names the same working directory. It emits files touched, a tool-call tally,
- * high-cost candidates, and repository evidence for the warm recap procedure to interpret.
+ * Inside an identified Claude Code session (`CLAUDE_CODE_SESSION_ID`), the helper selects
+ * that session's own transcript from any Claude project directory, or declines transcript
+ * evidence with a reason; it never substitutes another session or runtime. Otherwise it
+ * selects the newest eligible transcript for the resolved repository: Claude candidates
+ * live directly in its derived project directory; Codex candidates are regular JSONL files
+ * below its sessions directory whose session metadata names the same working directory.
+ * Discovery reads only a bounded header prefix of at most a bounded number of candidates,
+ * newest first, and parses the selected transcript body once. It emits files touched, a
+ * tool-call tally, high-cost candidates, selection evidence, and repository evidence for
+ * the warm recap procedure to interpret.
  */
 
 import { execFileSync } from 'node:child_process'
-import { type Dirent, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
+import {
+  closeSync,
+  type Dirent,
+  lstatSync,
+  openSync,
+  readdirSync,
+  readFileSync,
+  readSync,
+  realpathSync,
+  statSync
+} from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, isAbsolute, join, resolve } from 'node:path'
 
@@ -66,11 +81,19 @@ type TranscriptCandidate = {
   mtime: number
 }
 
+type TranscriptSelection = {
+  method: 'live-session' | 'newest-eligible' | 'explicit' | 'none'
+  reason?: string
+  examined: number
+  limitReached: boolean
+}
+
 type Grounding = {
   repo: string
   repository: RepositoryGrounding
   runtime: Runtime | null
   transcript: string | null
+  transcriptSelection: TranscriptSelection
   filesTouched: string[]
   stagedFiles: string[]
   unstagedFiles: string[]
@@ -90,22 +113,50 @@ type Arguments = {
   transcriptSelector: string | undefined
 }
 
-const slugifyRepoPath = (absolutePath: string): string => absolutePath.replace(/[/.]/g, '-')
-
-const resolveClaudeProjectDir = (repo: string): string => join(homedir(), '.claude', 'projects', slugifyRepoPath(repo))
-
-const resolveCodexSessionsDir = (): string => join(homedir(), '.codex', 'sessions')
 const REPOSITORY_EVIDENCE_MARKER = 'ki-work-recap-repository-evidence/v1'
 const COMMIT = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 
-const readJsonl = (path: string): unknown[] => {
-  let text: string
-  try {
-    text = readFileSync(path, 'utf8')
-  } catch {
-    return []
-  }
+/** Maximum prefix read from one candidate to verify its eligibility metadata. */
+const HEADER_BYTES = 64 * 1024
+/** Maximum candidate headers inspected per runtime before discovery declines. */
+const HEADER_FILE_LIMIT = 256
+const SESSION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/
 
+type RuntimeContext = {
+  /** Claude Code's documented `CLAUDE_CODE_SESSION_ID`, when the helper runs inside a Claude Code session. */
+  claudeSessionId: string | undefined
+  /** Claude Code sets `CLAUDECODE=1` in the subprocesses it spawns. */
+  claudeCode: boolean
+  claudeProjectsRoot: string
+  codexSessionsRoot: string
+}
+
+type Discovery = {
+  candidates: TranscriptCandidate[]
+  examined: number
+  limitReached: boolean
+}
+
+type Choice = {
+  selected: TranscriptCandidate | null
+  selection: TranscriptSelection
+}
+
+const runtimeContext = (environment: NodeJS.ProcessEnv): RuntimeContext => {
+  const configDir = environment.CLAUDE_CONFIG_DIR?.trim()
+  const sessionId = environment.CLAUDE_CODE_SESSION_ID?.trim()
+  return {
+    claudeSessionId: sessionId ? sessionId : undefined,
+    claudeCode: environment.CLAUDECODE === '1',
+    claudeProjectsRoot: join(configDir ? resolve(configDir) : join(homedir(), '.claude'), 'projects'),
+    codexSessionsRoot: join(homedir(), '.codex', 'sessions')
+  }
+}
+
+/** Claude Code's documented project-directory rule: every non-alphanumeric character becomes `-`. */
+const slugifyRepoPath = (absolutePath: string): string => absolutePath.replace(/[^A-Za-z0-9]/g, '-')
+
+const parseJsonLines = (text: string): unknown[] => {
   const records: unknown[] = []
   for (const line of text.split(/\r?\n/)) {
     if (!line.trim()) continue
@@ -118,8 +169,39 @@ const readJsonl = (path: string): unknown[] => {
   return records
 }
 
+const readJsonl = (path: string): unknown[] => {
+  try {
+    return parseJsonLines(readFileSync(path, 'utf8'))
+  } catch {
+    return []
+  }
+}
+
+/**
+ * Read only the complete lines inside a bounded prefix. Returns null when the prefix
+ * holds no complete line, because eligibility metadata cannot then be verified.
+ */
+const readHeaderRecords = (path: string): unknown[] | null => {
+  let descriptor: number | undefined
+  try {
+    descriptor = openSync(path, 'r')
+    const buffer = Buffer.alloc(HEADER_BYTES)
+    const length = readSync(descriptor, buffer, 0, HEADER_BYTES, 0)
+    const text = buffer.subarray(0, length).toString('utf8')
+    if (length < HEADER_BYTES) return parseJsonLines(text)
+    const lastNewline = text.lastIndexOf('\n')
+    return lastNewline < 0 ? null : parseJsonLines(text.slice(0, lastNewline))
+  } catch {
+    return null
+  } finally {
+    if (descriptor !== undefined) closeSync(descriptor)
+  }
+}
+
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
+
+const isSessionMeta = (record: unknown): boolean => asRecord(record)?.type === 'session_meta'
 
 const codexTranscriptCwd = (records: readonly unknown[]): string | null => {
   for (const record of records) {
@@ -137,16 +219,18 @@ const codexTranscriptCwd = (records: readonly unknown[]): string | null => {
   return null
 }
 
-const regularJsonlFiles = (directory: string, recursive: boolean): string[] => {
-  let entries: Dirent[]
+const readEntries = (directory: string): Dirent[] => {
   try {
-    entries = readdirSync(directory, { withFileTypes: true })
+    return readdirSync(directory, { withFileTypes: true })
   } catch {
     return []
   }
+}
 
+/** Regular (non-symlink) `.jsonl` files, found from directory metadata alone. */
+const regularJsonlFiles = (directory: string, recursive: boolean): string[] => {
   const files: string[] = []
-  for (const entry of entries) {
+  for (const entry of readEntries(directory)) {
     const path = join(directory, entry.name)
     if (entry.isFile() && entry.name.endsWith('.jsonl')) files.push(path)
     else if (recursive && entry.isDirectory()) files.push(...regularJsonlFiles(path, true))
@@ -154,43 +238,52 @@ const regularJsonlFiles = (directory: string, recursive: boolean): string[] => {
   return files
 }
 
-const candidate = (runtime: Runtime, path: string): TranscriptCandidate => ({
-  runtime,
-  path,
-  mtime: statSync(path).mtimeMs
-})
-
-const claudeCandidates = (directory: string): TranscriptCandidate[] =>
-  regularJsonlFiles(directory, false)
-    .filter((path) => codexTranscriptCwd(readJsonl(path)) === null)
-    .map((path) => candidate('claude', path))
-
-const codexCandidates = (directory: string, repo: string): TranscriptCandidate[] =>
-  regularJsonlFiles(directory, true)
-    .filter((path) => codexTranscriptCwd(readJsonl(path)) === repo)
-    .map((path) => candidate('codex', path))
-
-const candidateDirectories = ({ repo, transcriptsDir }: Pick<Arguments, 'transcriptsDir'> & { repo: string }) => ({
-  claude: transcriptsDir ? resolve(transcriptsDir) : resolveClaudeProjectDir(repo),
-  codex: transcriptsDir ? resolve(transcriptsDir) : resolveCodexSessionsDir()
-})
-
-const discoverCandidates = ({
-  runtime,
-  repo,
-  transcriptsDir
-}: Pick<Arguments, 'runtime' | 'transcriptsDir'> & { repo: string }): TranscriptCandidate[] => {
-  const directories = candidateDirectories({ repo, transcriptsDir })
-  if (runtime === 'claude') return claudeCandidates(directories.claude)
-  if (runtime === 'codex') return codexCandidates(directories.codex, repo)
-  return [...claudeCandidates(directories.claude), ...codexCandidates(directories.codex, repo)]
+const candidate = (runtime: Runtime, path: string): TranscriptCandidate | null => {
+  try {
+    return { runtime, path, mtime: statSync(path).mtimeMs }
+  } catch {
+    return null
+  }
 }
 
-const selectTranscript = (
-  candidates: readonly TranscriptCandidate[],
+/**
+ * Inspect candidate headers newest first. Without a selector, the first eligible
+ * candidate is the newest eligible one, so discovery stops there. With a selector,
+ * only basename matches are inspected and every eligible match is kept so that an
+ * ambiguous selector is still rejected.
+ */
+const discover = (
+  runtime: Runtime,
+  files: readonly string[],
+  eligible: (header: readonly unknown[]) => boolean,
   selector: string | undefined
-): TranscriptCandidate | null => {
-  if (!selector) return [...candidates].sort((left, right) => right.mtime - left.mtime)[0] ?? null
+): Discovery => {
+  const ordered = files
+    .filter((path) => !selector || basename(path) === selector)
+    .map((path) => candidate(runtime, path))
+    .filter((candidate_): candidate_ is TranscriptCandidate => candidate_ !== null)
+    .sort((left, right) => right.mtime - left.mtime)
+
+  const candidates: TranscriptCandidate[] = []
+  let examined = 0
+  for (const candidate_ of ordered) {
+    if (examined >= HEADER_FILE_LIMIT) return { candidates, examined, limitReached: true }
+    examined += 1
+    const header = readHeaderRecords(candidate_.path)
+    if (!header || !eligible(header)) continue
+    candidates.push(candidate_)
+    if (!selector) break
+  }
+  return { candidates, examined, limitReached: false }
+}
+
+const discoverClaude = (directory: string, selector: string | undefined): Discovery =>
+  discover('claude', regularJsonlFiles(directory, false), (header) => !header.some(isSessionMeta), selector)
+
+const discoverCodex = (directory: string, repo: string, selector: string | undefined): Discovery =>
+  discover('codex', regularJsonlFiles(directory, true), (header) => codexTranscriptCwd(header) === repo, selector)
+
+const validateSelector = (selector: string): void => {
   if (
     selector.length <= '.jsonl'.length ||
     !selector.endsWith('.jsonl') ||
@@ -199,12 +292,114 @@ const selectTranscript = (
     selector.includes('\\')
   )
     throw new Error('`--transcript` must be a basename ending in .jsonl from the eligible transcript candidates')
+}
 
-  const matches = candidates.filter((candidate_) => basename(candidate_.path) === selector)
+const isRegularFile = (path: string): boolean => {
+  try {
+    return lstatSync(path).isFile()
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Locate the invoking Claude Code session's transcript by its identity. Every project
+ * directory is probed rather than deriving the launch slug, so truncated slugs, a named
+ * project directory, and `/cd` relocation do not hide it. Only an unambiguous regular
+ * file qualifies.
+ */
+const locateLiveClaude = (
+  sessionId: string,
+  projectsRoot: string,
+  transcriptsDir: string | undefined
+): { selected: TranscriptCandidate | null; reason?: string } => {
+  if (!SESSION_ID.test(sessionId)) return { selected: null, reason: 'live-session-identity-invalid' }
+  const name = `${sessionId}.jsonl`
+  const directories = transcriptsDir
+    ? [resolve(transcriptsDir)]
+    : readEntries(projectsRoot)
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => join(projectsRoot, entry.name))
+  const matches = directories.map((directory) => join(directory, name)).filter(isRegularFile)
+  if (matches.length === 0) return { selected: null, reason: 'live-session-transcript-not-found' }
+  if (matches.length > 1) return { selected: null, reason: 'live-session-transcript-ambiguous' }
+  return { selected: candidate('claude', matches[0] as string) }
+}
+
+const chooseExplicit = (discoveries: readonly Discovery[], selector: string): TranscriptCandidate => {
+  const matches = discoveries.flatMap((discovery) => discovery.candidates)
   if (matches.length === 0) throw new Error(`selected transcript is not an eligible regular file: ${selector}`)
   if (matches.length > 1)
     throw new Error(`selected transcript basename is ambiguous across eligible candidates: ${selector}`)
-  return matches[0] ?? null
+  return matches[0] as TranscriptCandidate
+}
+
+/**
+ * Selection policy:
+ * - An identified Claude Code session selects its own transcript, or declines with a
+ *   reason; it never substitutes another session or runtime.
+ * - A Claude Code runtime without an identity searches only the target's Claude project.
+ * - Only an unidentified runtime under `detect` compares both runtimes' newest candidates.
+ * - `--runtime codex` and `--transcript` remain explicit repository-matched selections.
+ */
+const chooseTranscript = ({
+  runtime,
+  repo,
+  transcriptsDir,
+  transcriptSelector,
+  context
+}: Pick<Arguments, 'runtime' | 'transcriptsDir' | 'transcriptSelector'> & {
+  repo: string
+  context: RuntimeContext
+}): Choice => {
+  if (transcriptSelector) validateSelector(transcriptSelector)
+
+  if (context.claudeSessionId && !transcriptSelector && runtime !== 'codex') {
+    const live = locateLiveClaude(context.claudeSessionId, context.claudeProjectsRoot, transcriptsDir)
+    return {
+      selected: live.selected,
+      selection: live.selected
+        ? { method: 'live-session', examined: 0, limitReached: false }
+        : {
+            method: 'none',
+            reason: live.reason ?? 'live-session-transcript-not-found',
+            examined: 0,
+            limitReached: false
+          }
+    }
+  }
+
+  const effective: RuntimeSelector =
+    runtime === 'detect' && (context.claudeCode || context.claudeSessionId) ? 'claude' : runtime
+  const claudeDirectory = transcriptsDir
+    ? resolve(transcriptsDir)
+    : join(context.claudeProjectsRoot, slugifyRepoPath(repo))
+  const codexDirectory = transcriptsDir ? resolve(transcriptsDir) : context.codexSessionsRoot
+  const discoveries: Discovery[] = []
+  if (effective !== 'codex') discoveries.push(discoverClaude(claudeDirectory, transcriptSelector))
+  if (effective !== 'claude') discoveries.push(discoverCodex(codexDirectory, repo, transcriptSelector))
+
+  const examined = discoveries.reduce((total, discovery) => total + discovery.examined, 0)
+  const limitReached = discoveries.some((discovery) => discovery.limitReached)
+  if (transcriptSelector) {
+    return {
+      selected: chooseExplicit(discoveries, transcriptSelector),
+      selection: { method: 'explicit', examined, limitReached }
+    }
+  }
+
+  const selected =
+    discoveries.flatMap((discovery) => discovery.candidates).sort((left, right) => right.mtime - left.mtime)[0] ?? null
+  if (selected) return { selected, selection: { method: 'newest-eligible', examined, limitReached } }
+  return {
+    selected: null,
+    selection: {
+      method: 'none',
+      reason: limitReached ? 'discovery-limit' : 'no-eligible-transcript',
+      examined,
+      limitReached
+    }
+  }
 }
 
 const printHelp = (): void => {
@@ -220,7 +415,11 @@ Options:
   --runtime <value>          detect (default), claude, or codex
   --transcripts-dir <dir>    Override the selected runtime transcript root
   --transcript <file>        Select one eligible transcript by basename
-  -h, --help, ?              Show this help and exit`)
+  -h, --help, ?              Show this help and exit
+
+Inside an identified Claude Code session (CLAUDE_CODE_SESSION_ID), the session's own
+transcript is selected, or transcript evidence is declined with a reason. Discovery reads
+only bounded candidate headers, newest first, and Git grounding is always reported.`)
 }
 
 const parseArguments = (args: string[]): Arguments => {
@@ -298,9 +497,9 @@ const helperOutputEvidence = (text: string, repository: string): RepositoryEvide
   }
 }
 
-const transcriptOutputTexts = (transcriptPath: string, runtime: Runtime): string[] => {
+const transcriptOutputTexts = (records: readonly unknown[], runtime: Runtime): string[] => {
   const texts: string[] = []
-  for (const record of readJsonl(transcriptPath)) {
+  for (const record of records) {
     const event = asRecord(record)
     if (!event) continue
     if (runtime === 'claude') {
@@ -322,21 +521,18 @@ const transcriptOutputTexts = (transcriptPath: string, runtime: Runtime): string
 }
 
 const latestTranscriptEvidence = (
-  selected: TranscriptCandidate | null,
+  records: readonly unknown[],
+  runtime: Runtime,
   repository: string
-): RepositoryEvidence | null => {
-  if (!selected) return null
-  return (
-    transcriptOutputTexts(selected.path, selected.runtime)
-      .map((text) => helperOutputEvidence(text, repository))
-      .filter((evidence): evidence is RepositoryEvidence => evidence !== null)
-      .at(-1) ?? null
-  )
-}
+): RepositoryEvidence | null =>
+  transcriptOutputTexts(records, runtime)
+    .map((text) => helperOutputEvidence(text, repository))
+    .filter((evidence): evidence is RepositoryEvidence => evidence !== null)
+    .at(-1) ?? null
 
-const readToolCalls = (transcriptPath: string, runtime: Runtime): ToolCall[] => {
+const readToolCalls = (records: readonly unknown[], runtime: Runtime): ToolCall[] => {
   const calls: ToolCall[] = []
-  for (const record of readJsonl(transcriptPath)) {
+  for (const record of records) {
     const event = asRecord(record)
     if (!event) continue
 
@@ -473,10 +669,18 @@ const main = (): void => {
   const requestedPath = resolve(repoArg ?? process.cwd())
   const repository = groundRepository(requestedPath)
   const repo = repository.status === 'available' ? repository.root : requestedPath
-  const selected = selectTranscript(discoverCandidates({ runtime, repo, transcriptsDir }), transcriptSelector)
-  const calls = selected ? readToolCalls(selected.path, selected.runtime) : []
+  const { selected, selection } = chooseTranscript({
+    runtime,
+    repo,
+    transcriptsDir,
+    transcriptSelector,
+    context: runtimeContext(process.env)
+  })
+  // Parse the selected transcript body once, and only after selection.
+  const records = selected ? readJsonl(selected.path) : []
+  const calls = selected ? readToolCalls(records, selected.runtime) : []
   const currentEvidence = repository.status === 'available' ? repository.evidence : null
-  const baseline = currentEvidence ? latestTranscriptEvidence(selected, repo) : null
+  const baseline = currentEvidence && selected ? latestTranscriptEvidence(records, selected.runtime, repo) : null
   const toolTally: Record<string, number> = {}
   for (const call of calls) toolTally[call.name] = (toolTally[call.name] ?? 0) + 1
 
@@ -485,6 +689,7 @@ const main = (): void => {
     repository,
     runtime: selected?.runtime ?? null,
     transcript: selected?.path ?? null,
+    transcriptSelection: selection,
     filesTouched: repository.status === 'available' ? repository.filesTouched : [],
     stagedFiles: repository.status === 'available' ? repository.stagedFiles : [],
     unstagedFiles: repository.status === 'available' ? repository.unstagedFiles : [],
@@ -504,6 +709,9 @@ const main = (): void => {
   console.log(`repo: ${grounding.repo}`)
   console.log(`runtime: ${grounding.runtime ?? '(none found)'}`)
   console.log(`transcript: ${grounding.transcript ?? '(none found)'}`)
+  console.log(
+    `transcript selection: ${selection.method}${selection.reason ? ` (${selection.reason})` : ''}; headers examined: ${selection.examined}${selection.limitReached ? '; discovery limit reached' : ''}`
+  )
   console.log(`repository: ${grounding.repository.status}`)
   if (grounding.repository.status === 'unavailable') console.log(`repository reason: ${grounding.repository.reason}`)
   console.log(`files touched: ${grounding.filesTouched.length}`)

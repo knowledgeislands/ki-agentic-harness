@@ -4,12 +4,12 @@ area: RTP
 title: Select live recap transcript
 theme: runtime-portability
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 837f9460f632b15953e5375a0bd9712e81c9dfda
 created_at: 2026-10-05T17:29:03Z
-updated_at: 2026-10-06T10:08:00Z
+updated_at: 2026-10-06T10:22:14Z
 ---
 
 # KI-HARNESS-RTP-017: Select live recap transcript
@@ -40,14 +40,14 @@ This item covers live-session selection and bounded discovery within the existin
 
 ## Steps
 
-- [ ] **Live Claude locator.** When the helper runs under an identified Claude Code session (`CLAUDE_CODE_SESSION_ID` present), and the caller has not forced `--runtime codex` or named `--transcript`, locate `<session-id>.jsonl` as a regular file directly inside one project directory under the Claude projects root (`CLAUDE_CONFIG_DIR/projects` or `~/.claude/projects`), or directly inside `--transcripts-dir` when given. Search every project directory rather than deriving the launch slug, so path truncation, `CLAUDE_CODE_PROJECT_DIR_NAME` and `/cd` relocation do not matter. Exactly one match selects that transcript regardless of the target repository. No match, several matches, or a malformed identifier produce no transcript, with an explicit reason, and never fall back to Codex or to another Claude session.
-- [ ] **Runtime policy.** In `detect`, a session identity or `CLAUDECODE=1` identifies the invoking runtime as Claude Code. Without the identity, `CLAUDECODE=1` limits selection to the target's Claude project directory and never substitutes Codex history. Only when no runtime is identified does `detect` keep its current newest-across-both behaviour. `--runtime claude` uses the live locator when an identity exists; `--runtime codex` and `--transcript` keep explicit repository-matched selection.
-- [ ] **Bounded discovery.** List candidates by directory metadata only, keeping the regular-file (no symlink) rule, and order them newest first by modification time. Read at most a 64 KiB prefix of each candidate to check its eligibility from complete lines only, and stop at the first eligible match. That gives the same result as the old newest-of-all rule, because candidates are checked newest first. With `--transcript`, filter by basename before reading anything. Cap header inspection at 256 files per runtime. Reaching the cap without a match makes transcript evidence unavailable, with a `discovery-limit` reason, rather than claiming there is no transcript. Parse the selected transcript body once, after selection.
-- [ ] **Slug correction.** Derive the target's Claude project directory by replacing every non-alphanumeric character with `-`, under the configured Claude root, which matches the documented rule.
-- [ ] **Selection evidence.** Emit `transcriptSelection` in JSON (and one line of text output) with `method` (`live-session`, `newest-eligible`, `explicit` or `none`), an optional `reason`, `examined` (headers read) and `limitReached`. Git grounding fields and the marker comparison stay unchanged.
-- [ ] **Tests.** Add boundary tests with temporary `HOME` and `CLAUDE_CONFIG_DIR` directories and a scrubbed child environment, so no test reads the real `~/.claude` or `~/.codex`, or inherits the live session identity. Cover: live-session selection when the target has no Claude project directory, despite a newer Codex candidate; declining when the identified transcript is missing or duplicated; `CLAUDECODE=1` without an identity never selecting Codex; early exit after one header in a many-file archive containing a large eligible transcript; the discovery cap producing explicit unavailability; an oversized header being ineligible; explicit `--runtime codex` and `--transcript` behaviour preserved; and Git grounding unchanged when transcript evidence is declined.
-- [ ] **Documentation.** Update `ki-recap` `SKILL.md`, the grounding section of `references/standards-session-recap.md`, the helper header, and `references/sources.md` (add the Claude Code environment-variables source and the 2026-10-06 review) to describe live-session preference, declining, the bounds and the unchanged advisory contract.
-- [ ] Run Verify, write the review packet, and set the record to `awaiting-review`.
+- [x] **Live Claude locator.** When the helper runs under an identified Claude Code session (`CLAUDE_CODE_SESSION_ID` present), and the caller has not forced `--runtime codex` or named `--transcript`, locate `<session-id>.jsonl` as a regular file directly inside one project directory under the Claude projects root (`CLAUDE_CONFIG_DIR/projects` or `~/.claude/projects`), or directly inside `--transcripts-dir` when given. Search every project directory rather than deriving the launch slug, so path truncation, `CLAUDE_CODE_PROJECT_DIR_NAME` and `/cd` relocation do not matter. Exactly one match selects that transcript regardless of the target repository. No match, several matches, or a malformed identifier produce no transcript, with an explicit reason, and never fall back to Codex or to another Claude session.
+- [x] **Runtime policy.** In `detect`, a session identity or `CLAUDECODE=1` identifies the invoking runtime as Claude Code. Without the identity, `CLAUDECODE=1` limits selection to the target's Claude project directory and never substitutes Codex history. Only when no runtime is identified does `detect` keep its current newest-across-both behaviour. `--runtime claude` uses the live locator when an identity exists; `--runtime codex` and `--transcript` keep explicit repository-matched selection.
+- [x] **Bounded discovery.** List candidates by directory metadata only, keeping the regular-file (no symlink) rule, and order them newest first by modification time. Read at most a 64 KiB prefix of each candidate to check its eligibility from complete lines only, and stop at the first eligible match. That gives the same result as the old newest-of-all rule, because candidates are checked newest first. With `--transcript`, filter by basename before reading anything. Cap header inspection at 256 files per runtime. Reaching the cap without a match makes transcript evidence unavailable, with a `discovery-limit` reason, rather than claiming there is no transcript. Parse the selected transcript body once, after selection.
+- [x] **Slug correction.** Derive the target's Claude project directory by replacing every non-alphanumeric character with `-`, under the configured Claude root, which matches the documented rule.
+- [x] **Selection evidence.** Emit `transcriptSelection` in JSON (and one line of text output) with `method` (`live-session`, `newest-eligible`, `explicit` or `none`), an optional `reason`, `examined` (headers read) and `limitReached`. Git grounding fields and the marker comparison stay unchanged.
+- [x] **Tests.** Add boundary tests with temporary `HOME` and `CLAUDE_CONFIG_DIR` directories and a scrubbed child environment, so no test reads the real `~/.claude` or `~/.codex`, or inherits the live session identity. Cover: live-session selection when the target has no Claude project directory, despite a newer Codex candidate; declining when the identified transcript is missing or duplicated; `CLAUDECODE=1` without an identity never selecting Codex; early exit after one header in a many-file archive containing a large eligible transcript; the discovery cap producing explicit unavailability; an oversized header being ineligible; explicit `--runtime codex` and `--transcript` behaviour preserved; and Git grounding unchanged when transcript evidence is declined.
+- [x] **Documentation.** Update `ki-recap` `SKILL.md`, the grounding section of `references/standards-session-recap.md`, the helper header, and `references/sources.md` (add the Claude Code environment-variables source and the 2026-10-06 review) to describe live-session preference, declining, the bounds and the unchanged advisory contract.
+- [x] Run Verify, write the review packet, and set the record to `awaiting-review`.
 
 ## Files touched
 
@@ -86,6 +86,44 @@ None.
 ### Roadmap
 
 Closes this record on acceptance. A Codex live-session locator is out of scope until Codex documents a session-identity variable.
+
+## Review
+
+### Delivered
+
+- `recap-grounding.ts` selects the identified Claude Code session's own transcript (`CLAUDE_CODE_SESSION_ID`) by probing every project directory under `CLAUDE_CONFIG_DIR/projects` or `~/.claude/projects`, or only `--transcripts-dir` when given. A missing, duplicated or malformed identity yields no transcript with the reason `live-session-transcript-not-found`, `live-session-transcript-ambiguous` or `live-session-identity-invalid`; it never falls back to Codex or another session.
+- Under `detect`, `CLAUDECODE=1` without an identity restricts selection to the target's Claude project directory. Only an unidentified runtime compares both runtimes. `--runtime codex` and `--transcript` keep explicit repository-matched selection.
+- Discovery lists candidates from directory metadata only (regular files, no symlinks), orders them newest first, reads at most a 64 KiB prefix per candidate, checks eligibility from complete lines only, and stops at the first eligible match. It inspects at most 256 headers per runtime; reaching the cap reports `discovery-limit` rather than claiming no transcript exists. The selected body is parsed once.
+- The target's Claude project slug now replaces every non-alphanumeric character with `-`, matching the documented rule.
+- JSON output carries `transcriptSelection` (`method`, optional `reason`, `examined`, `limitReached`); text output adds one selection line. Git grounding and the marker comparison are unchanged.
+- `SKILL.md`, `references/standards-session-recap.md` § 1 and `references/sources.md` describe the live-session preference, declining, the bounds, and the 2026-10-06 Claude Code environment-variable evidence.
+
+### Change Summary
+
+Baseline `837f9460f632b15953e5375a0bd9712e81c9dfda`. Six files: the helper and its tests, three `ki-recap` documentation files, and this record. Seven new boundary tests in two `describe` blocks; the existing tests now run in a scrubbed child environment with a fixture `HOME`, so none reads the real `~/.claude` or `~/.codex` or inherits the live session identity.
+
+### Verification
+
+- `bun test skills/change-management/ki-recap/scripts/recap-grounding.test.ts`: 20 pass, 0 fail.
+- `bun run test`: 899 pass, 0 fail across 145 files.
+- `bunx tsc --noEmit`: clean.
+- `bunx biome check .`: no errors; the six remaining warnings are pre-existing in `ki-repo` and `ki-repo-kb` files outside this change.
+- `ki repo audit --repo . --progress never --concise` in the delivery worktree reports FAIL=4, all environmental: the worktree path is not in the local KI registry (REPO-REG-1, ROUTE-1 and the RUNTIMES-2 activation findings) and bun 1.4.2 adoption (DEPS-1) is concurrent `KI-HARNESS-GOV-138` work. The primary checkout reports FAIL=0. The audit is re-run on the rebased branch before push.
+- Manual runs from this Claude Code session: against `mcp-ki-kb-fs` (no Claude project directory) the helper reported `live-session` with 0 headers examined and selected this session's transcript. Forcing `--runtime codex` for `mcp-ki-kb-fs` against the real 6.6 GB archive took 0.29 s and reported `none (discovery-limit)` after 256 headers; the previous helper took 18.4 s and selected the unrelated 2026-08-22 transcript. For `ki-agentic-harness` without an identity, `newest-eligible` after 5 headers in 0.27 s.
+
+### Outstanding concerns
+
+- The Claude transcript entry format remains internal and version-sensitive; transcript evidence stays advisory.
+- After `--continue` or an ID-less `--resume`, Claude Code documents that `CLAUDE_CODE_SESSION_ID` may carry the initial startup ID; the locator then selects that transcript or declines, never a different runtime's history.
+- A subagent shares its parent's session identity, so a recap run from a subagent selects the parent session's transcript.
+
+### Post-change review
+
+Pending the independent review before acceptance.
+
+### Mini recap
+
+KI-HARNESS-RTP-017 (`docs/roadmap/KI-HARNESS-RTP-017-select-live-recap-transcript.md`) delivered live-session transcript selection and bounded discovery in the `ki-recap` grounding helper, verified by the boundary tests and the full suite above. No learning is proposed for promotion outside this record.
 
 ## Discussion
 
