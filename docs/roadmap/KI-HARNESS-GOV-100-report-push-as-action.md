@@ -4,12 +4,12 @@ area: GOV
 title: Report push as action
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 564d2d1b62583c051b34f1593d5812023fe4aafd
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-06T17:23:38Z
+updated_at: 2026-10-06T17:29:10Z
 ---
 
 # KI-HARNESS-GOV-100: Report push as action
@@ -38,12 +38,12 @@ Out of scope: the standing no-push rule itself, which worked exactly as intended
 
 ## Steps
 
-- [ ] `standards-git.md:51`: replace the final sentence with: report publication as an action at a revision, for example "this session did not push; local `main` at `abc1234`" or "pushed `abc1234` to `origin/main`", never as a current fact about a shared ref such as "this is unpushed". A shared ref moves under any writer with access, so its position is true only when checked and is re-checked rather than carried forward.
-- [ ] `standards-git.md:109`: reword "If the unpushed commit captured unrelated work" to "If a commit this session has not pushed captured unrelated work".
-- [ ] `standards-session-recap.md` `## 2. Summarise`: add one sentence applying the `ki-git` rule: state push state as this session's action at the named local `HEAD` (pushed, or not pushed by this session), never as "unpushed" or "the remote is behind"; a peer may push the shared ref between two recaps, and Git grounding does not make that position durable.
-- [ ] `standards-session-recap.md:139`: reword "An unpushed commit does **not** block the banner" to "A commit this session has not pushed does **not** block the banner".
-- [ ] `skills/governance/ki-git/scripts/rubric/items/hygiene.ts`: in the hygiene guidance, reword "before rebuilding an unpushed commit" to "before rebuilding a commit this session has not pushed", then regenerate `references/rubric.md` with `ki dev skill rubric ki-git`. Only the guidance text changes; no criterion, outcome or item code moves.
-- [ ] Run the verification below.
+- [x] `standards-git.md:51`: replace the final sentence with: report publication as an action at a revision, for example "this session did not push; local `main` at `abc1234`" or "pushed `abc1234` to `origin/main`", never as a current fact about a shared ref such as "this is unpushed". A shared ref moves under any writer with access, so its position is true only when checked and is re-checked rather than carried forward.
+- [x] `standards-git.md:109`: reword "If the unpushed commit captured unrelated work" to "If a commit this session has not pushed captured unrelated work".
+- [x] `standards-session-recap.md` `## 2. Summarise`: add one sentence applying the `ki-git` rule: state push state as this session's action at the named local `HEAD` (pushed, or not pushed by this session), never as "unpushed" or "the remote is behind"; a peer may push the shared ref between two recaps, and Git grounding does not make that position durable.
+- [x] `standards-session-recap.md:139`: reword "An unpushed commit does **not** block the banner" to "A commit this session has not pushed does **not** block the banner".
+- [x] `skills/governance/ki-git/scripts/rubric/items/hygiene.ts`: in the hygiene guidance, reword "before rebuilding an unpushed commit" to "before rebuilding a commit this session has not pushed", then regenerate `references/rubric.md` with `ki dev skill rubric ki-git`. Only the guidance text changes; no criterion, outcome or item code moves.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -92,6 +92,39 @@ None. The website skills-by-outcome guide does not restate Git reporting convent
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+Push state in `ki-git` and `ki-recap` is now phrased as an action this session took or did not take at a named revision, never as a current fact about a shared ref. The standing no-push rule, concurrent-writer policy, the recap grounding helper, rubric criteria and the banner's conditions are unchanged. Baseline `564d2d1b62583c051b34f1593d5812023fe4aafd`; plan amendment `42b1d053`; implementation `2de98975`.
+
+### Change Summary
+
+- `skills/governance/ki-git/references/standards-git.md`: the publication-authority paragraph's final sentence now gives revision-bound examples and the re-check rationale (Step 1); the hygiene recovery sentence reads "a commit this session has not pushed" (Step 2).
+- `skills/change-management/ki-recap/references/standards-session-recap.md`: `## 2. Summarise` gains the push-reporting instruction, citing `ki-git` by link to `#commit-publication-and-integration-authority` (Step 3); the banner rule reads "A commit this session has not pushed" (Step 4).
+- `skills/governance/ki-git/scripts/rubric/items/hygiene.ts` and `references/rubric.md`: the `HYGIENE` guidance wording only (Step 5, added by the plan amendment).
+- Deviation in the Verify 4 method. `ki dev skill rubric ki-git` resolves the installed dev-linked harness, which is the shared primary checkout, not this worktree, and `--write` would have written into that shared checkout. The regenerated `rubric.md` was therefore produced by applying the identical guidance substitution, then verified as described below.
+
+### Verification
+
+- `git grep -n -i unpushed -- skills/governance/ki-git skills/change-management/ki-recap`: two hits, `standards-git.md:51` and `standards-session-recap.md:55`, both quoted counter-examples rather than positional claims (Verify 3).
+- Rubric sync (Verify 4): the Fable reviewer rendered the worktree's `ki-git` rubric definition through tools-ki's own `renderRubricMarkdown` (`src/core/rubric/render.ts`) and found it byte-identical to `references/rubric.md`. The implementer's independent check imported the worktree's rubric items and found all 33 title, description and guidance strings verbatim in `rubric.md`; with the old `rubric.md` restored it reports the hygiene guidance missing. No criterion, outcome, item code or test changed.
+- `bun run test`: 945 pass, 0 fail. `bunx tsc --noEmit`: clean. `bunx biome check .`: exit 0.
+- `ki repo audit --skill ki-git --progress never`: PASS. `--skill ki-authoring`: PASS. `--skill ki-skills`: only the pre-existing `LONG-3` refresh-cadence warning. `--skill ki-work-roadmap`: PASS.
+- Verify 1, 2 and 5: Steps 1 to 4 applied with every element present, the recap cites `ki-git` rather than restating it, and the added text is British English with ASCII hyphens only.
+
+### Outstanding concerns
+
+None blocking. Run `ki dev skill rubric ki-git` once from the dev-linked primary checkout after it fast-forwards to this delivery, to confirm the literal command reports the rubric in sync. The pre-existing American spelling "serialize" in the same `HYGIENE` guidance is outside this record.
+
+### Post-change review
+
+The goal is met: both skills now ask for the invariant fact, this session's action at a revision, instead of a shared ref's volatile position. Scope held to the planned five Steps across four files plus this record. Regression risk is low, because only prose and one guidance string changed. Independent review by a Fable subagent returned APPROVE WITH CHANGES. Its one should-fix finding was this handoff and the recorded Verify 4 evidence, both done here. Its two nits were left as they stand: the recap instruction runs to two sentences, and "serialize" is pre-existing. Ready for acceptance.
+
+### Mini recap
+
+Delivered revision-bound push reporting in `ki-git` and `ki-recap`, after a plan amendment that closed the Verify grep gap. All gates pass. The rubric was verified by an equivalent render rather than the literal dev command. Learning route: `ki dev skill rubric` cannot verify a worktree, so the harness `AGENTS.md` toolchain note could say how to regenerate a rubric from a worktree; that is offered for `ki-next` capture, not promoted here.
 
 ## Discussion
 
