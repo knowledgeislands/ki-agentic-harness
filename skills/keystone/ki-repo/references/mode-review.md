@@ -381,6 +381,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] A change to a declaration that another tool consumes was verified by running that tool, not only the repository's own gates. A clean pass from a gate that cannot see the consumer reads exactly like verification and stops the reviewer looking.
 - [ ] A change rolled out across repositories was verified by reading each repository's full audit result, warnings included, and accounting for every finding the change introduced. A filter for the criterion the change targets, or for failures only, cannot see a neighbouring criterion the change broke.
 - [ ] Where a gate's result is a count of health-check findings rather than a pass or a fail, the reviewer establishes whether each finding is pre-existing or new, and reads it. A gate satisfied by an unchanged count reads exactly like one satisfied by a clean check, so a standing finding carried forward as "the baseline" survives unread for as long as the count holds.
+- [ ] Where a view both reports a count and renders the items it counts, a test over a fixture exercising every subject kind the derivation can produce asserts that the count equals the items rendered.
 - [ ] No gate was made to pass by widening an ignore list rather than fixing the cause.
 - [ ] Every suppression comment added in this change names a reason.
 
