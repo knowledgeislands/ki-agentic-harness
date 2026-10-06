@@ -154,9 +154,13 @@ test('every Agora requires a non-empty single-line title', () => {
   const session = createAgoraSession(
     options(fixture(), {
       missing: { purpose: 'Shared work', members: [] },
+      empty: { title: '', purpose: 'Shared work', members: [] },
       blank: { title: '   ', purpose: 'Shared work', members: [] },
       padded: { title: ' Padded ', purpose: 'Shared work', members: [] },
+      tabbed: { title: '\tTabbed', purpose: 'Shared work', members: [] },
       multiline: { title: 'Two\nlines', purpose: 'Shared work', members: [] },
+      returned: { title: 'Two\rlines', purpose: 'Shared work', members: [] },
+      separated: { title: 'Two\u2028lines', purpose: 'Shared work', members: [] },
       typed: { title: 7, purpose: 'Shared work', members: [] },
       titled: { title: 'Titled', purpose: 'Shared work', members: [] }
     })
@@ -164,9 +168,13 @@ test('every Agora requires a non-empty single-line title', () => {
 
   expect(outcomes(session).map((outcome) => outcome.message)).toEqual([
     'home missing requires a non-empty single-line title',
+    'home empty requires a non-empty single-line title',
     'home blank requires a non-empty single-line title',
     'home padded requires a non-empty single-line title',
+    'home tabbed requires a non-empty single-line title',
     'home multiline requires a non-empty single-line title',
+    'home returned requires a non-empty single-line title',
+    'home separated requires a non-empty single-line title',
     'home typed requires a non-empty single-line title'
   ])
 })

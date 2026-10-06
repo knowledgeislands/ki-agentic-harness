@@ -1,7 +1,7 @@
 ---
 id: GDR-KI-HARNESS-006
 title: "Owner-declared Agoras"
-date: 2026-08-09
+date: 2026-10-06
 status: current
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
 decision_type: governance

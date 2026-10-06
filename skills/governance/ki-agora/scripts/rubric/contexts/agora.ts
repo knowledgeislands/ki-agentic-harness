@@ -24,7 +24,7 @@ const table = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
 
 const isTitle = (value: unknown): boolean =>
-  typeof value === 'string' && value.trim() === value && value.length > 0 && !/[\r\n]/.test(value)
+  typeof value === 'string' && value.trim() === value && value.length > 0 && !/[\r\n\u2028\u2029]/.test(value)
 
 const pass = (message: string): readonly AuditOutcome[] => [{ status: 'PASS', message }]
 

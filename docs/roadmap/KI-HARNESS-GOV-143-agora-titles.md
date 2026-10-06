@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 3243cbddad16fe9401d2b4958fb70cb60c61c7ad
 created_at: 2026-10-06T11:05:00Z
-updated_at: 2026-10-06T11:32:00Z
+updated_at: 2026-10-06T11:55:00Z
 ---
 
 # KI-HARNESS-GOV-143: Agora titles
@@ -89,6 +89,42 @@ None.
 
 None beyond this record.
 
+## Review
+
+### Delivered
+
+The approved boundary: `title` becomes a required, non-empty, single-line `ki-agora` declaration key in the standard, the CONFIG-1 rubric and GDR-KI-HARNESS-006, with the identifier kept as the only machine key. Excluded: the CLI parser (KI-TOOL-CLI-106), owner declarations (KI-ARCADIA-GOV-017), releases and remote operations. Baseline `3243cbddad16fe9401d2b4958fb70cb60c61c7ad`; the delivery commits follow it on `main`.
+
+### Change Summary
+
+- `scripts/rubric/contexts/agora.ts`: CONFIG-1 admits `title` and fails one that is missing, non-string, empty, padded, or contains CR, LF, U+2028 or U+2029, with `home <id> requires a non-empty single-line title`.
+- `scripts/rubric/contexts/agora.test.ts`: titled fixtures and a focused test for each failing form and a titled pass.
+- `scripts/rubric/items/configuration.ts` and the regenerated `references/rubric.md`: CONFIG-1 and family wording.
+- `references/standards-agora.md`: example, required keys, `title` bullet and an Identifier and title section (identifier as the only key and folder name, title as presentation mirrored by derived headings, renaming moves nothing, no authority).
+- `SKILL.md`, `references/sources.md`, `docs/decisions/README.md`, and GDR-KI-HARNESS-006 amended in place with its as-of date advanced to 2026-10-06.
+- Material decision: `title` is mandatory with no identifier fallback, as decided in KI-ARCADIA-GOV-017. No approved deviations.
+
+### Verification
+
+- `bun run test`: all tests pass, including the ten `ki-agora` tests.
+- `bunx tsc --noEmit`: clean.
+- `bunx biome check .`: no errors; warnings and infos unchanged from the baseline.
+- `ki dev skill rubric ki-agora`: `references/rubric.md` in sync with the catalogue.
+- `ki repo audit --repo . --progress never --concise` in an isolated environment that registers this worktree: FAIL=0.
+- With this harness and a tools-ki build that includes KI-TOOL-CLI-106, `ki repo audit --skill ki-agora` passes for all seven titled owner repositories; an untitled owner fails CONFIG-1.
+
+### Outstanding concerns
+
+None in this item. Until a harness release includes it, CI that installs the released harness reports CONFIG-1 `unrecognised key title` for titled owners; the owner has accepted that window and the coordinator holds the release.
+
+### Post-change review
+
+Goal met: the portable contract separates identifier from title and the rubric enforces it with the same rule as the CLI parser. Scope stayed inside `ki-agora` and its decision. Regression risk is limited to owners without a title, which is the intended failure; every owner in the local registry now declares one. Fable review found the review-packet shape, the GDR as-of date, three missing test cases and Unicode line separators; all are addressed. Ready for acceptance.
+
+### Mini recap
+
+Required Agora `title` landed in the `ki-agora` standard, rubric and GDR with focused tests and passing gates; the only open matter is the owner-held harness release. Learning route: none proposed beyond the Arcadia record.
+
 ## Discussion
 
 ### Cross-repository relationship
@@ -98,11 +134,3 @@ Originates from `knowledgeislands/ki-arcadia-principal` KI-ARCADIA-GOV-017. tool
 ### Release window
 
 Until the harness is released, CI runs that bootstrap the released harness fail CONFIG-1 for titled owners on the unrecognised key. No release is cut here.
-
-## Review packet
-
-- Rubric: CONFIG-1 admits `title` and fails a declaration whose title is missing, non-string, empty, padded or multi-line with `home <id> requires a non-empty single-line title`. The focused test covers each case and a titled pass; existing fixtures carry titles.
-- Standard: the example, required keys and a `title` bullet, plus a new Identifier and title section: the identifier is the only machine key and folder name, the title is presentation mirrored by derived headings, renaming changes no identifier or captured material, and a title grants no authority.
-- Decision: GDR-KI-HARNESS-006 amended in place for the required title and identifier-only machine key; the decisions index line updated.
-- Gates: `bun run test` 893 passing; `bunx tsc --noEmit` clean; `bunx biome check .` unchanged baseline (6 warnings, 10 infos); `ki dev skill rubric ki-agora` in sync; `ki repo audit --repo . --progress never --concise` FAIL=0. Against this rubric an untitled owner fails CONFIG-1 as intended.
-- Release: owner repositories that declare titles fail the released harness rubric until a harness release includes this item.
