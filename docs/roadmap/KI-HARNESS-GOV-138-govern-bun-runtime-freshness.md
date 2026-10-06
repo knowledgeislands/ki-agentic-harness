@@ -4,12 +4,12 @@ area: GOV
 title: Govern Bun runtime freshness
 theme: governance-consistency
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: efb866bb1fbe7432d99045840d1c15822cb8637f
 created_at: 2026-10-05T23:00:00Z
-updated_at: 2026-10-06T11:05:00Z
+updated_at: 2026-10-06T11:40:00Z
 ---
 
 # KI-HARNESS-GOV-138: Govern Bun runtime freshness
@@ -141,6 +141,10 @@ Independent review by a Fable subagent of `86425512` found no blocking issues an
 
 Delivered runtime freshness inside `DEPS-1`, bumped the harness and scaffold to Bun 1.4.2, and verified the before/after audit and the full gates. No open concerns. Learning route: none beyond the engineering standard text already updated.
 
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Evidence source
@@ -160,3 +164,7 @@ Kris Brown approved delivery on 2026-10-06 ("low priority, but I think its strai
 - **Evidence source.** The npm `bun` package, the registry `DEPS-1` already calls, so no new host, credential or failure mode enters the audit. An unreachable registry reports unknown, never PASS, and never fails, so CI gains no new flakiness.
 - **Pin agreement.** Already enforced by `MISE-2`; not duplicated.
 - **Receiver handoffs dropped from this delivery.** Rather than writing a handoff into each configured repository, the extended `DEPS-1` reports each repository's own lag in its own audit once a released `ki` carries this harness revision. That keeps every bump receiver-owned without cross-repository writes from this record.
+
+### Acceptance - 2026-10-06
+
+Kris Brown's 2026-10-06 delivery approval ("lets get it done") covered closure once the gates passed and an independent review was addressed. The Fable review outcome and its dispositions are recorded under Post-change review; no finding remained open at acceptance.
