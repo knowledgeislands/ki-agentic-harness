@@ -12,6 +12,15 @@ independence = "local"
 reviewed_on = "2026-10-06"
 notes = "Local owner evidence for the 2026-09-26 defaults, available higher-tier routes, and initial candidate posture, pinned to its last commit because the roadmap file left main on 2026-09-15; it is not an independent performance evaluation. The 2026-10-06 review found the local Zed agent configuration now selects the opus alias for Claude Code and gpt-6.1-sol for Codex; the owner then decided that Claude Opus 5.5 through Claude Code and GPT-6.1 Sol through Codex become the default routes, matching that configuration without a separate recorded local-fit evaluation."
 
+[evidence.local-default-route-use]
+id = "local-default-route-use"
+title = "Owner decision adopting the 2026-10-06 default routes"
+url = "https://github.com/knowledgeislands/ki-agentic-harness/commit/709f49fec523f596d1b388391bff6aed39ac5198"
+unit = "model-agent"
+independence = "local"
+reviewed_on = "2026-10-06"
+notes = "The pinned commit records the owner's 2026-10-06 decision adopting Claude Opus 5.5 through Claude Code and GPT-6.1 Sol through Codex as defaults. The local-fit evidence is the owner's day-to-day use of both routes, stated by the owner on 2026-10-06 and recorded in the sources ledger changelog rather than at this URL. It is owner practice accepted in lieu of a structured representative-task assessment, not an independent or controlled performance evaluation."
+
 [evidence.benchlm-methodology]
 id = "benchlm-methodology"
 title = "BenchLM BenchAlign methodology"
@@ -127,7 +136,7 @@ url = "https://platform.claude.com/docs/en/about-claude/model-deprecations"
 unit = "provider-endpoint"
 independence = "provider"
 reviewed_on = "2026-10-06"
-notes = "Lists claude-opus-5 active with retirement not sooner than 2027-07-24, claude-opus-5-5 active with retirement not sooner than 2027-09-22, and claude-fable-5-1 active with retirement not sooner than 2027-09-01."
+notes = "Lists claude-opus-5 active with retirement not sooner than 2027-07-24, claude-opus-5-5 active with retirement not sooner than 2027-09-22, claude-fable-5-1 active with retirement not sooner than 2027-09-01, and claude-haiku-4-5-20251001 active with no deprecation notice and retirement not sooner than 2026-10-15; Anthropic gives at least 60 days' notice before retiring a publicly released model."
 
 [evidence.anthropic-current-models]
 id = "anthropic-current-models"
@@ -298,7 +307,34 @@ url = "https://docs.x.ai/developers/models/grok-4.6"
 unit = "provider-endpoint"
 independence = "provider"
 reviewed_on = "2026-10-06"
-notes = "Confirms grok-4.6 as an API identity and hosted model with a 500K context window and no deprecation notice; the models index now recommends grok-4.7, released 2026-09-21."
+notes = "Confirms grok-4.6 as an API identity and hosted model with a 500K context window and no deprecation notice; it neither deprecates grok-4.6 nor names a successor."
+
+[evidence.xai-grok-4-7-release]
+id = "xai-grok-4-7-release"
+title = "SpaceXAI Grok 4.7 launch"
+url = "https://x.ai/news/grok-4-7"
+unit = "provider-endpoint"
+independence = "provider"
+reviewed_on = "2026-10-06"
+notes = "Confirms the 2026-09-21 release and availability in Cursor and Grok Build, through the Grok API, third-party coding harnesses, model routers, and cloud platforms."
+
+[evidence.xai-grok-4-7-model]
+id = "xai-grok-4-7-model"
+title = "SpaceXAI Grok 4.7 model page"
+url = "https://docs.x.ai/developers/models/grok-4.7"
+unit = "provider-endpoint"
+independence = "provider"
+reviewed_on = "2026-10-06"
+notes = "Confirms grok-4.7 as an API identity and hosted model with a 500K context window and no deprecation notice."
+
+[evidence.xai-models]
+id = "xai-models"
+title = "SpaceXAI models and pricing index"
+url = "https://docs.x.ai/developers/models"
+unit = "provider-endpoint"
+independence = "provider"
+reviewed_on = "2026-10-06"
+notes = "Lists grok-4.7 first and recommends it for code and general use, with grok-4.6 still listed at the same price and context window; neither model carries a deprecation notice and no public weights or licence terms are given."
 
 [models]
 
@@ -353,8 +389,8 @@ provider = "Anthropic"
 openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
-reviewed_on = "2026-09-30"
-evidence = ["anthropic-current-models"]
+reviewed_on = "2026-10-06"
+evidence = ["anthropic-current-models", "anthropic-lifecycle"]
 counter_evidence = []
 
 [models.gpt-5-6-sol]
@@ -497,7 +533,18 @@ openness = "proprietary"
 license = "No public model-weights licence identified"
 retirement = "active"
 reviewed_on = "2026-10-06"
-evidence = ["xai-grok-4-6-release", "xai-grok-4-6-model"]
+evidence = ["xai-grok-4-6-release", "xai-grok-4-6-model", "xai-models"]
+counter_evidence = []
+
+[models.grok-4-7]
+id = "grok-4-7"
+display_name = "Grok 4.7"
+provider = "SpaceXAI"
+openness = "proprietary"
+license = "No public model-weights licence identified"
+retirement = "active"
+reviewed_on = "2026-10-06"
+evidence = ["xai-grok-4-7-release", "xai-grok-4-7-model", "xai-models"]
 counter_evidence = []
 
 [routes]
@@ -527,7 +574,7 @@ recommendation = "adopt"
 support = "default"
 movement = "new"
 reviewed_on = "2026-10-06"
-evidence = ["local-model-radar-roadmap", "anthropic-current-models", "anthropic-lifecycle"]
+evidence = ["local-model-radar-roadmap", "local-default-route-use", "anthropic-current-models", "anthropic-lifecycle"]
 counter_evidence = []
 
 [routes.claude-fable-5-1-claude-code-acp]
@@ -583,7 +630,7 @@ recommendation = "adopt"
 support = "default"
 movement = "new"
 reviewed_on = "2026-10-06"
-evidence = ["local-model-radar-roadmap", "openai-models", "openai-gpt-6-guide"]
+evidence = ["local-model-radar-roadmap", "local-default-route-use", "openai-models", "openai-gpt-6-guide"]
 counter_evidence = []
 
 [routes.gemini-3-8-flash-gemini-cli-acp]
@@ -721,9 +768,23 @@ access = "subscription-agent"
 locality = "unavailable"
 recommendation = "assess"
 support = "not-integrated"
-movement = "unchanged"
+movement = "outward"
 reviewed_on = "2026-10-06"
 evidence = ["local-model-radar-roadmap", "xai-grok-4-6-release", "xai-grok-4-6-model"]
+counter_evidence = ["xai-models"]
+
+[routes.grok-4-7-grok-build]
+id = "grok-4-7-grok-build"
+model = "grok-4-7"
+agent = "Grok Build"
+protocol = "Provider-native"
+access = "subscription-agent"
+locality = "unavailable"
+recommendation = "assess"
+support = "not-integrated"
+movement = "new"
+reviewed_on = "2026-10-06"
+evidence = ["local-model-radar-roadmap", "xai-grok-4-7-release", "xai-grok-4-7-model", "xai-models"]
 counter_evidence = []
 
 [benchmarks]

@@ -14,6 +14,7 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 | Source | Class | Governs | Last reviewed |
 | ------ | ----- | ------- | ------------- |
 | [Local model-radar roadmap][local-roadmap] | local | Initial route ownership and recommendation (pinned commit) | 2026-10-06 |
+| [Owner default-route decision][local-defaults] | local | 2026-10-06 default decision (pinned commit); owner-attested day-to-day use | 2026-10-06 |
 | [Thoughtworks Technology Radar FAQ][thoughtworks-radar] | standard | Source ring semantics | 2026-10-06 |
 | [Open Source AI Definition 1.0][osi-osaid] | standard | Open Source AI classification | 2026-10-06 |
 | [BenchLM methodology][benchlm] | independent | BenchAlign aggregation and uncertainty | 2026-10-06 |
@@ -49,6 +50,9 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 | [Qwen3.8-27B checkpoint][qwen-27b] | provider | Workstation-lane weights and licence | 2026-10-06 |
 | [Grok 4.6 launch][grok-launch] | provider | Identity, release, hosted routes | 2026-10-06 |
 | [Grok 4.6 model page][grok-model] | provider | API identity and current access | 2026-10-06 |
+| [Grok 4.7 launch][grok-47-launch] | provider | Identity, release, hosted routes | 2026-10-06 |
+| [Grok 4.7 model page][grok-47-model] | provider | API identity and current access | 2026-10-06 |
+| [SpaceXAI models and pricing index][xai-models] | provider | Current recommended model and listed alternatives | 2026-10-06 |
 
 ## Last review
 
@@ -59,16 +63,16 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 - 2026-10-06 — Weekly review rechecked every tracked source except the GPT-6 Astra launch post, which returned HTTP 403 and keeps its earlier date. The local Zed agent configuration no longer selects Claude Opus 5 or GPT-5.6 Sol: Claude Code uses the `opus` alias (current Opus 5.5) and Codex uses `gpt-6.1-sol`, so both recorded default routes moved outward to available without adding replacement defaults. The OpenAI catalogue dropped GPT-5.6 Sol, which remains available on its own model page. BenchLM advanced to v5.8 (2026-09-30) with data refreshed 2026-10-05; Terminal-Bench 4.0 was announced 2026-08-28; the Arena policy claim moved from the Arena-Rank post to its own policy and changelog records; Harbor and the Claude deprecations page moved URL; the roadmap evidence is pinned to its last commit after leaving main. Artificial Analysis, SWE-bench, and Terminal-Bench pages show no data date, so those `data_as_of` values are unchanged. Grok 4.7 (2026-09-21) now supersedes Grok 4.6 as the recommended xAI model; Gemini 4 Argon (2026-09-30) is a limited preview only.
 - 2026-10-06 — Disposition of the 2026-09-26 candidate-identity follow-up: the 2026-09-30 targeted review discharged it by recording the current Claude and GPT-6 family identities. Route evaluation for any new model needs its own work item with local-fit evidence; this disposition moves no default, route, or recommendation.
 - 2026-10-06 — Owner decision: Claude Opus 5.5 through Claude Code and GPT-6.1 Sol through Codex become new Adopt default routes, matching the local Zed agent configuration. Rechecked the current Claude models overview, Claude deprecations page, and OpenAI GPT-6 guide: `claude-opus-5-5` is active with retirement not sooner than 2027-09-22, and `gpt-6.1-sol` remains a current GPT-6 family choice with no deprecation notice. The superseded Claude Opus 5 and GPT-5.6 Sol routes stay available and outward.
+- 2026-10-06 — Owner follow-up decisions: Grok 4.7 joins the radar, verified against SpaceXAI's launch post, model page, and models index, and a new Grok Build route at Assess and not-integrated takes over from Grok 4.6, whose route moves outward; its ring and support are unchanged, and `outward` records the supersession, with the models index as counter-evidence. The owner's day-to-day use of Claude Opus 5.5 through Claude Code and GPT-6.1 Sol through Codex is recorded as local-fit evidence for both defaults, closing the local-fit watch-item; the owner accepted that use in lieu of a structured assessment on representative tasks, effort, cost, and runtime access. The Claude Haiku 4.5 watch-item now tracks a formal deprecation notice rather than implying retirement on 2026-10-15.
 - The KI recommendation vocabulary is a documented local adaptation of Thoughtworks' four rings: it preserves Adopt, Trial, Assess, and Caution as Hold rather than claiming an exact reproduction.
 - HELM entered maintenance mode on 2026-06-01 and remains watch-level corroborating evidence, not a current frontier-primary source.
 - All named initial model identities were substantiated. Hosted-only variants retain a conservative proprietary distribution classification; no public weights licence was found for those exact variants.
 - Open watch-item: reassess provider availability, retirement notices, pricing, route support, benchmark versions, and data dates during every weekly refresh.
 - Open watch-item: do not promote an open-weight model to Open Source AI Definition conformance without evidence for the definition's data-information, code, and parameter requirements.
 - Open watch-item: keep hosted `qwen3.8-max` separate from Apache-2.0 Qwen3.8 open-weight checkpoints.
-- Open watch-item: the 2026-10-06 Claude Opus 5.5 and GPT-6.1 Sol defaults rest on the owner decision and runtime configuration rather than a recorded local-fit evaluation; assess them on representative tasks, effort, cost, and effective runtime access before the next default movement.
-- Open watch-item: decide whether to add Grok 4.7 and repoint the Grok Build route; track Gemini 4 Argon only once it reaches general availability.
+- Open watch-item: track Gemini 4 Argon only once it reaches general availability.
 - Open watch-item: re-check the GPT-6 Astra launch post, which blocked automated fetches on 2026-10-06.
-- Open watch-item: Claude Haiku 4.5 may retire from 2026-10-15 onwards; it has no route today.
+- Open watch-item: watch for a formal Claude Haiku 4.5 deprecation notice. It remains active with retirement not sooner than 2026-10-15, and Anthropic gives at least 60 days' notice before retiring a publicly released model; it has no route today.
 
 [aa-coding]: https://artificialanalysis.ai/methodology/coding-agents-benchmarking/
 [aa-intelligence]: https://artificialanalysis.ai/methodology/intelligence-benchmarking
@@ -88,12 +92,15 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 [glm-53]: https://huggingface.co/zai-org/GLM-5.3
 [grok-launch]: https://x.ai/news/grok-4-6
 [grok-model]: https://docs.x.ai/developers/models/grok-4.6
+[grok-47-launch]: https://x.ai/news/grok-4-7
+[grok-47-model]: https://docs.x.ai/developers/models/grok-4.7
 [harbor]: https://docs.harborframework.com/core-concepts/index
 [helm-maintenance]: https://github.com/stanford-crfm/helm/blob/main/docs/maintenance_mode.md
 [helm]: https://github.com/stanford-crfm/helm
 [kimi-k3]: https://github.com/MoonshotAI/Kimi-K3
 
 [kimi-k3-license]: https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE
+[local-defaults]: https://github.com/knowledgeislands/ki-agentic-harness/commit/709f49fec523f596d1b388391bff6aed39ac5198
 [local-roadmap]: https://github.com/knowledgeislands/ki-agentic-harness/blob/dd45807722a06cf3e54686f4eaa38c1149836e3a/docs/roadmap/KI-HARNESS-REV-003-establish-model-radar.md
 [openai-astra]: https://openai.com/index/gpt-6-astra/
 [openai-gpt-6]: https://developers.openai.com/api/docs/guides/latest-model
@@ -107,3 +114,4 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 [swe-bench]: https://www.swebench.com/
 [terminal-bench]: https://www.tbench.ai/
 [thoughtworks-radar]: https://www.thoughtworks.com/radar/faq
+[xai-models]: https://docs.x.ai/developers/models
