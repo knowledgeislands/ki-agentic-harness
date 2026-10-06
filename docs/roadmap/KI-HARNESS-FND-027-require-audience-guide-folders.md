@@ -4,12 +4,12 @@ area: FND
 title: Require audience guide folders
 theme: foundation-tooling
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 6c073477fa23315d60e61de771f4986c77f78bea
 created_at: 2026-09-25T12:30:00Z
-updated_at: 2026-10-06T20:34:22Z
+updated_at: 2026-10-06T20:47:38Z
 ---
 
 # KI-HARNESS-FND-027: Require audience guide folders
@@ -177,6 +177,10 @@ The rule now agrees with WCF-26, the `ki-repo-tools` exact-role paths and the `k
 ### Mini recap
 
 Guides must live in an audience folder, AUDIT fails any that do not, and every `ki-guides` repository in the estate already complies.
+
+## Done
+
+Accepted 2026-10-06 by Kris Brown on the review packet above.
 
 ## Discussion
 
