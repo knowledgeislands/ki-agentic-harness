@@ -73,7 +73,7 @@ None.
 
 Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 
-The `mode-review.md` anchor here is the Duplication and reuse lens, outside `Automated verification`, so it is independent of the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) and [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md) batch; [KI-HARNESS-FND-027](KI-HARNESS-FND-027-configure-cloudflare-guide-path.md) edits a different anchor in the same file and whichever lands second rebases.
+The `mode-review.md` anchor here is the Duplication and reuse lens, outside `Automated verification`, so it is independent of the [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) and [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md) batch.
 
 ## Documentation impact
 
