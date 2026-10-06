@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-06T01:21:00Z
+updated_at: 2026-10-06T17:13:44Z
 ---
 
 # KI-HARNESS-GOV-100: Report push as action
@@ -99,6 +99,10 @@ None.
 ### Scope re-check - 2026-10-06
 
 The record is already narrowed to what `f9dbcd90` left: the revision-bound wording and the recap instruction. At `e30948ad` none of the four Steps has landed. One gap in the plan: Verify item 3 greps the whole `ki-git` skill, which also matches "an unpushed commit" in the hygiene guidance at `skills/governance/ki-git/scripts/rubric/items/hygiene.ts:22` and its generated copy in `references/rubric.md:75`. No Step covers that text, so Verify item 3 would fail as planned. Amend the Steps through `ki-plan` (reword the hygiene guidance and regenerate the rubric, which also changes Verify item 4) or narrow the grep before implementation starts.
+
+### Implementation hold - 2026-10-06
+
+Not implemented on pickup, because the plan gap recorded in the scope re-check is still open at `a845446a17fb9f18cc4a7c1bc3aeba0c16894ebe`. `git grep -n -i unpushed` still matches the hygiene guidance at `skills/governance/ki-git/scripts/rubric/items/hygiene.ts:22` and its generated copy at `references/rubric.md:75`, so Verify item 3 would fail with the Steps as written. A planning choice is needed through `ki-plan` before delivery: either add a Step rewording that hygiene guidance and regenerating the `ki-git` rubric, which replaces Verify item 4's "rubric unchanged" expectation, or narrow Verify item 3's grep to the two reference files the Steps edit. Status, Steps and baseline are unchanged.
 
 ### Pickup checkpoint - 2026-09-27
 
