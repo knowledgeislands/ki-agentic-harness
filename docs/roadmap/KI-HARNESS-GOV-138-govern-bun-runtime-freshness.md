@@ -7,7 +7,7 @@ horizon: now
 status: done
 blocks: []
 blocked_by: []
-baseline_ref: efb866bb1fbe7432d99045840d1c15822cb8637f
+baseline_ref: 9c947df03f823b6fbcdcf9ee6c805bb8c3d4fe85
 created_at: 2026-10-05T23:00:00Z
 updated_at: 2026-10-06T11:40:00Z
 ---
@@ -106,7 +106,7 @@ This record only.
 
 ### Delivered
 
-Within the approved boundary, `DEPS-1` now grades the Bun runtime pinned in `packageManager` as the dependency `bun`, under the same 14-day window, next-unadopted-release clock, `dependency_holds` route and message shapes as packages, dated from the npm `bun` package. The harness and the CONFORM scaffold pin Bun 1.4.2. Other runtimes and each configured repository's own bump stay out of scope. Baseline `efb866bb1fbe7432d99045840d1c15822cb8637f`; the result is the implementation commit that carries this packet.
+Within the approved boundary, `DEPS-1` now grades the Bun runtime pinned in `packageManager` as the dependency `bun`, under the same 14-day window, next-unadopted-release clock, `dependency_holds` route and message shapes as packages, dated from the npm `bun` package. The harness and the CONFORM scaffold pin Bun 1.4.2. Other runtimes and each configured repository's own bump stay out of scope. Baseline `9c947df03f823b6fbcdcf9ee6c805bb8c3d4fe85`; the result is the implementation commit that carries this packet.
 
 ### Change Summary
 
