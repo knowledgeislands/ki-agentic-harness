@@ -112,6 +112,7 @@ Within the approved boundary, `DEPS-1` now grades the Bun runtime pinned in `pac
 
 - `scripts/rubric/contexts/audit-evidence.ts`: exported `BUN_RUNTIME`, `pinnedBunRuntime` and `classifyBunRuntime`; factored the registry lookup into `fetchPublishTimes`, shared by packages and the runtime; a behind runtime joins the graded list and the hold-validation names; an unknown runtime keeps its hold valid and reports INFO, never PASS; a `bun@` pin that is not an exact release reports INFO.
 - Holds are now inspected on every path, including when nothing is outdated, so a hold that outlives its update is flagged as stale as `standards-engineering.md` already states. Previously that check ran only when `bun outdated` listed something.
+- Review fixes (second commit): the `DEPS-1` message logic moved into the pure exported `dependencyFreshnessFindings`, which `collectAuditEvidence` feeds with collected evidence. The runtime is graded even when `bun outdated` fails; an npm `bun` package row never duplicates the runtime entry; the runtime row reads `bun (runtime)`; a hold on a non-exact `bun@` pin is not reported stale; runtime currency also shows when packages are outdated. The lookup reads the small `bun/latest` document first and fetches the multi-megabyte release history (30-second timeout) only when the pin is behind; registry documents are cached per process.
 - `scripts/rubric/items/dependencies.ts` and the regenerated `references/rubric.md`: `DEPS-1` description, remediation, scope and guidance name the runtime.
 - `references/standards-engineering.md`: the dependency-freshness section covers the runtime; `references/sources.md` records the gap as closed.
 - `scripts/rubric/contexts/engineering.ts`, `package.json`, `mise.toml`: Bun 1.4.2.
@@ -119,20 +120,22 @@ Within the approved boundary, `DEPS-1` now grades the Bun runtime pinned in `pac
 
 ### Verification
 
-- `bun test skills/governance/ki-engineering`: 59 pass, 0 fail.
-- `ki repo audit --repo . --skill ki-engineering` with the harness temporarily at 1.4.1: `DEPS-1` FAIL "beyond the 14-day adoption window: bun 1.4.1 → 1.4.2 (available 31 days)"; at 1.4.2 the skill passes with no `DEPS-1` finding.
+- `bun test skills/governance/ki-engineering`: 61 pass, 0 fail, including a table test of `dependencyFreshnessFindings` over current, unknown, behind, `bun outdated` unavailable, duplicate `bun` row, non-exact-pin hold and outdated-packages cases.
+- `ki repo audit --repo . --skill ki-engineering` with the harness temporarily at 1.4.1: `DEPS-1` FAIL "beyond the 14-day adoption window: bun (runtime) 1.4.1 → 1.4.2 (available 31 days)" (8.4 s skill audit, including the full-history fetch); at 1.4.2 the skill passes with no `DEPS-1` finding (3.9 s).
 - Unreachable registry: `classifyBunRuntime('1.4.2', undefined)` is `unknown`, and the audit path uses that helper.
 - `ki dev skill rubric ki-engineering`: rubric in sync.
-- `bun run test`: 895 pass, 0 fail. `bunx tsc --noEmit`: clean. `bunx biome check .`: no errors; existing warnings are in unrelated files.
+- `bun run test`: 897 pass, 0 fail. `bunx tsc --noEmit`: clean. `bunx biome check .`: no errors; existing warnings are in unrelated files.
 - `ki repo audit --repo . --progress never --concise`: FAIL=0.
 
 ### Outstanding concerns
 
-None. Each configured repository's own bump is receiver-owned and will surface in its own `DEPS-1` once a released `ki` carries this revision, as the planning decisions record.
+None open. Once a released `ki` carries this revision, configured repositories still pinning Bun 1.4.1 (for example `infoschematics` and `vallearmonia-website`) will FAIL `DEPS-1` until they bump or record a hold; that is the intended signal. Each configured repository's own bump is receiver-owned and will surface in its own `DEPS-1` once a released `ki` carries this revision, as the planning decisions record.
 
 ### Post-change review
 
-The goal is met: an audit now notices a lagging runtime. Scope matches the plan, with one small, standard-aligned widening (hold inspection on the all-current path). Regression risk is low: the only new network call reuses the existing registry host and timeout, and an unreachable registry yields INFO rather than FAIL, so CI gains no new failure mode. Ready for acceptance subject to independent review.
+The goal is met: an audit now notices a lagging runtime. Scope matches the plan, with one small, standard-aligned widening (hold inspection on the all-current path). Regression risk is low: the new network calls reuse the existing registry host, an unreachable registry yields INFO rather than FAIL, and a current runtime costs one small request, so CI gains no new failure mode.
+
+Independent review by a Fable subagent of `86425512` found no blocking issues and four should-fix items: runtime grading skipped when `bun outdated` failed, a possible duplicate `bun` candidate, no test of the audit path's message logic, and the cost of fetching the multi-megabyte `bun` packument on every audit. All four are fixed as described in the Change Summary. Of its nits, the `bun (runtime)` label, the non-exact-pin stale hold, runtime currency alongside outdated packages and the §9 hold-name mention are fixed; the downstream `DEPS-1` failures it flagged are recorded under Outstanding concerns as intended. Ready for acceptance.
 
 ### Mini recap
 

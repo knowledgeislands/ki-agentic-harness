@@ -689,29 +689,175 @@ export const pinnedBunRuntime = (packageManager: unknown): string | undefined =>
   /^bun@(\d+\.\d+\.\d+)(?:\+\S+)?$/.exec(String(packageManager ?? '').trim())?.[1]
 
 /**
- * Whether the pinned runtime has a newer adoptable release. `times` is the registry's
- * version → publish-time map, absent when the lookup failed: that is unknown, never current.
+ * Whether the pinned runtime has a newer adoptable release. `latest` is the registry's
+ * `latest` dist-tag, which settles a current runtime without the full release history;
+ * `times` is the version → publish-time map. Neither known is unknown, never current.
  */
 export const classifyBunRuntime = (
   current: string,
-  times: ReadonlyMap<string, string> | undefined
+  times: ReadonlyMap<string, string> | undefined,
+  latest?: string
 ): 'current' | 'behind' | 'unknown' => {
-  if (!times || !parseRelease(current)) return 'unknown'
+  const installed = parseRelease(current)
+  if (!installed) return 'unknown'
+  const tagged = latest === undefined ? undefined : parseRelease(latest)
+  if (tagged && compareRelease(tagged, installed) <= 0) return 'current'
+  if (!times) return 'unknown'
   return nextVersionAfter(current, [...times.keys()]) ? 'behind' : 'current'
 }
 
-/** A package's registry publish times by version, or undefined when the registry cannot be reached. */
-const fetchPublishTimes = async (name: string): Promise<ReadonlyMap<string, string> | undefined> => {
+export type DependencyFreshnessInput = {
+  /** Rows parsed from `bun outdated`, or undefined when `bun outdated` could not run. */
+  readonly outdated: readonly OutdatedPackage[] | undefined
+  readonly packageManager: unknown
+  readonly runtimeState: 'current' | 'behind' | 'unknown' | undefined
+  readonly publishTimes: ReadonlyMap<string, ReadonlyMap<string, string>>
+  readonly kiConfiguration: string
+  readonly now: Date
+}
+
+export type DependencyFreshnessFinding = { level: Level; msg: string; file?: string }
+
+/**
+ * `DEPS-1` findings from already-collected evidence: outdated packages and the pinned
+ * Bun runtime, graded together under one window and one hold route. Pure, so the audit
+ * path's message logic is testable without `bun outdated` or the registry.
+ */
+export const dependencyFreshnessFindings = ({
+  outdated,
+  packageManager,
+  runtimeState,
+  publishTimes,
+  kiConfiguration,
+  now
+}: DependencyFreshnessInput): readonly DependencyFreshnessFinding[] => {
+  const findings: DependencyFreshnessFinding[] = []
+  const add = (level: Level, msg: string, file?: string) => findings.push({ level, msg, ...(file ? { file } : {}) })
+  const runtime = pinnedBunRuntime(packageManager)
+  const bunPin = String(packageManager ?? '').startsWith('bun@')
+  const runtimeBehind = runtime !== undefined && runtimeState === 'behind'
+  // The runtime owns the name `bun`; an npm `bun` package row would be a second, colliding entry.
+  const packages = (outdated ?? []).filter((o) => !(runtimeBehind && o.name === BUN_RUNTIME))
+  const candidates: OutdatedPackage[] = runtimeBehind
+    ? [...packages, { name: BUN_RUNTIME, current: runtime }]
+    : packages
+  const label = (name: string) => (runtimeBehind && name === BUN_RUNTIME ? 'bun (runtime)' : name)
+
+  // Holds are inspected on every path, so a hold that outlives its update is flagged as
+  // stale. A Bun pin whose freshness is not established may still be behind, so its hold
+  // is not stale.
+  const available = candidates.map((o) => o.name)
+  if (bunPin && !runtimeBehind && runtimeState !== 'current') available.push(BUN_RUNTIME)
+  const { holds, messages } = inspectDependencyHolds(kiConfiguration, available)
+  for (const message of messages) add('WARN', message, '.ki.toml')
+
+  if (outdated === undefined)
+    add('NOT_APPLICABLE', 'bun outdated unavailable — upgrade Bun to check package dependency freshness')
+  if (candidates.length === 0 && outdated !== undefined) {
+    add(
+      'PASS',
+      `all packages up to date (bun outdated)${runtimeState === 'current' && runtime ? `; Bun runtime ${runtime} is the latest release` : ''}`
+    )
+  } else if (candidates.length > 0) {
+    const graded = gradeDependencyFreshness(candidates, publishTimes, holds, now)
+    const dated = (state: 'stale' | 'fresh') =>
+      graded.filter((g): g is Extract<DependencyFreshness, { state: 'stale' | 'fresh' }> => g.state === state)
+    const stale = dated('stale')
+    const fresh = dated('fresh')
+    const held = graded.filter((g): g is Extract<DependencyFreshness, { state: 'held' }> => g.state === 'held')
+    const unknown = graded.filter((g) => g.state === 'unknown')
+    if (stale.length)
+      add(
+        'FAIL',
+        `beyond the ${DEPENDENCY_ADOPTION_WINDOW_DAYS}-day adoption window: ${stale
+          .map((g) => `${label(g.name)} ${g.current} → ${g.next} (available ${g.ageDays} days)`)
+          .join(', ')} — adopt the update or record a dependency hold`
+      )
+    if (fresh.length)
+      add(
+        'INFO',
+        `within the ${DEPENDENCY_ADOPTION_WINDOW_DAYS}-day adoption window: ${fresh
+          .map(
+            (g) => `${label(g.name)} ${g.current} → ${g.next} (available ${g.ageDays} day${g.ageDays === 1 ? '' : 's'})`
+          )
+          .join(', ')}`
+      )
+    if (held.length) add('INFO', `held deliberately: ${held.map((g) => `${label(g.name)} — ${g.reason}`).join('; ')}`)
+    if (unknown.length)
+      add(
+        'INFO',
+        `update available but release age unknown (registry unreachable or unversioned): ${unknown
+          .map((g) => `${label(g.name)} ${g.current}`)
+          .join(', ')} — run \`ki repo conform\``
+      )
+  }
+  if (runtime && runtimeState === 'current' && (outdated === undefined || candidates.length > 0))
+    add('INFO', `Bun runtime ${runtime} is the latest release`, 'package.json')
+  if (runtime && runtimeState !== 'current' && runtimeState !== 'behind')
+    add(
+      'INFO',
+      `Bun runtime ${runtime} freshness unknown (registry unreachable) — rerun the audit with network access`,
+      'package.json'
+    )
+  if (!runtime && bunPin)
+    add(
+      'INFO',
+      `Bun runtime freshness unknown: packageManager ${String(packageManager)} is not an exact release`,
+      'package.json'
+    )
+  return findings
+}
+
+// Registry documents are cached per process, so auditing several repositories in one
+// run fetches each package once. Failures are not cached.
+const registryCache = new Map<string, unknown>()
+
+const fetchRegistry = async (path: string, timeoutMs: number, accept?: string): Promise<unknown> => {
+  if (registryCache.has(path)) return registryCache.get(path)
   try {
-    const encoded = name.startsWith('@') ? name.replace('/', '%2F') : name
-    const response = await fetch(`https://registry.npmjs.org/${encoded}`, { signal: AbortSignal.timeout(10_000) })
+    const response = await fetch(`https://registry.npmjs.org/${path}`, {
+      signal: AbortSignal.timeout(timeoutMs),
+      ...(accept ? { headers: { accept } } : {})
+    })
     if (!response.ok) return undefined
-    const body = (await response.json()) as { time?: Record<string, string> }
-    if (!body.time) return undefined
-    return new Map(Object.entries(body.time).filter(([key]) => key !== 'created' && key !== 'modified'))
+    const body: unknown = await response.json()
+    registryCache.set(path, body)
+    return body
   } catch {
     return undefined
   }
+}
+
+const registryName = (name: string): string => (name.startsWith('@') ? name.replace('/', '%2F') : name)
+
+/** A package's registry publish times by version, or undefined when the registry cannot be reached. */
+const fetchPublishTimes = async (
+  name: string,
+  timeoutMs = 10_000
+): Promise<ReadonlyMap<string, string> | undefined> => {
+  const body = (await fetchRegistry(registryName(name), timeoutMs)) as { time?: Record<string, string> } | undefined
+  if (!body?.time) return undefined
+  return new Map(Object.entries(body.time).filter(([key]) => key !== 'created' && key !== 'modified'))
+}
+
+/** The `latest` dist-tag version: a small document, unlike the multi-megabyte full history. */
+const fetchLatestVersion = async (name: string): Promise<string | undefined> => {
+  const body = (await fetchRegistry(`${registryName(name)}/latest`, 10_000)) as { version?: unknown } | undefined
+  return typeof body?.version === 'string' ? body.version : undefined
+}
+
+/**
+ * The pinned runtime's state, and its publish times when it is behind. The full `bun`
+ * history is several megabytes, so it is fetched only when the `latest` tag is newer.
+ */
+const lookupBunRuntime = async (
+  runtime: string | undefined
+): Promise<{ state: 'current' | 'behind' | 'unknown' | undefined; times?: ReadonlyMap<string, string> }> => {
+  if (!runtime) return { state: undefined }
+  const latest = await fetchLatestVersion(BUN_RUNTIME)
+  if (classifyBunRuntime(runtime, undefined, latest) === 'current') return { state: 'current' }
+  const times = await fetchPublishTimes(BUN_RUNTIME, 30_000)
+  return { state: classifyBunRuntime(runtime, times, latest), times }
 }
 
 export const inspectGovernedScriptSurface = (
@@ -1310,101 +1456,50 @@ export const collectAuditEvidence = async (
   // ── core: dependency freshness — leading edge (bun outdated + registry dates) ──
   // A newer release opens the 14-day adoption window (engineering-standard §1): INFO
   // while the window is open, FAIL once the next unadopted release is two weeks old.
-  // The pinned Bun runtime is graded the same way, as the dependency `bun`.
-  try {
-    const out = (await run('/bin/sh', ['-c', 'bun outdated'], { cwd: repo, encoding: 'utf8' })).stdout.trim()
-    // bun draws the table with U+2502 on a TTY but plain ASCII pipes when piped.
-    const pkgRows = out.split('\n').filter((l) => /[│|]/.test(l) && !l.includes('Package') && !l.includes('Current'))
-    const outdated: OutdatedPackage[] = pkgRows.flatMap((row) => {
-      const cells = row
-        .split(/[│|]/)
-        .map((cell) => cell.trim())
-        .filter(Boolean)
-      const name = cells[0]?.replace(/\s*\((?:dev|peer|optional)\)$/, '')
-      return name && cells[1] && /^\d/.test(cells[1]) ? [{ name, current: cells[1] }] : []
-    })
-    const runtime = pinnedBunRuntime(pkg.packageManager)
-    const lookups = [...new Set([...outdated.map((o) => o.name), ...(runtime ? [BUN_RUNTIME] : [])])]
-    const publishTimes = new Map<string, ReadonlyMap<string, string>>()
-    await Promise.all(
-      lookups.map(async (name) => {
-        const times = await fetchPublishTimes(name)
-        if (times) publishTimes.set(name, times)
+  // The pinned Bun runtime is graded the same way, as the dependency `bun`, whether or
+  // not `bun outdated` runs.
+  {
+    let outdated: OutdatedPackage[] | undefined
+    try {
+      const out = (await run('/bin/sh', ['-c', 'bun outdated'], { cwd: repo, encoding: 'utf8' })).stdout.trim()
+      // bun draws the table with U+2502 on a TTY but plain ASCII pipes when piped.
+      const pkgRows = out.split('\n').filter((l) => /[│|]/.test(l) && !l.includes('Package') && !l.includes('Current'))
+      outdated = pkgRows.flatMap((row) => {
+        const cells = row
+          .split(/[│|]/)
+          .map((cell) => cell.trim())
+          .filter(Boolean)
+        const name = cells[0]?.replace(/\s*\((?:dev|peer|optional)\)$/, '')
+        return name && cells[1] && /^\d/.test(cells[1]) ? [{ name, current: cells[1] }] : []
       })
-    )
-    const runtimeState = runtime ? classifyBunRuntime(runtime, publishTimes.get(BUN_RUNTIME)) : undefined
-    const candidates: OutdatedPackage[] =
-      runtime && runtimeState === 'behind' ? [...outdated, { name: BUN_RUNTIME, current: runtime }] : outdated
-    // Holds are inspected even when everything is current, so a hold that outlives its
-    // update is flagged as stale. A runtime of unknown freshness may still be behind, so
-    // its hold is not stale.
-    const available = candidates.map((o) => o.name)
-    if (runtimeState === 'unknown') available.push(BUN_RUNTIME)
-    const { holds, messages } = inspectDependencyHolds(kiConfiguration ?? '', available)
-    for (const message of messages) add('WARN', 'DEPS-1', message, STD, '.ki.toml')
-    if (candidates.length === 0) {
-      add(
-        'PASS',
-        'DEPS-1',
-        `all packages up to date (bun outdated)${runtimeState === 'current' ? `; Bun runtime ${runtime} is the latest release` : ''}`,
-        STD
-      )
-    } else {
-      const graded = gradeDependencyFreshness(candidates, publishTimes, holds, new Date())
-      const dated = (state: 'stale' | 'fresh') =>
-        graded.filter((g): g is Extract<DependencyFreshness, { state: 'stale' | 'fresh' }> => g.state === state)
-      const stale = dated('stale')
-      const fresh = dated('fresh')
-      const held = graded.filter((g): g is Extract<DependencyFreshness, { state: 'held' }> => g.state === 'held')
-      const unknown = graded.filter((g) => g.state === 'unknown')
-      if (stale.length)
-        add(
-          'FAIL',
-          'DEPS-1',
-          `beyond the ${DEPENDENCY_ADOPTION_WINDOW_DAYS}-day adoption window: ${stale
-            .map((g) => `${g.name} ${g.current} → ${g.next} (available ${g.ageDays} days)`)
-            .join(', ')} — adopt the update or record a dependency hold`,
-          STD
-        )
-      if (fresh.length)
-        add(
-          'INFO',
-          'DEPS-1',
-          `within the ${DEPENDENCY_ADOPTION_WINDOW_DAYS}-day adoption window: ${fresh
-            .map((g) => `${g.name} ${g.current} → ${g.next} (available ${g.ageDays} day${g.ageDays === 1 ? '' : 's'})`)
-            .join(', ')}`,
-          STD
-        )
-      if (held.length)
-        add('INFO', 'DEPS-1', `held deliberately: ${held.map((g) => `${g.name} — ${g.reason}`).join('; ')}`, STD)
-      if (unknown.length)
-        add(
-          'INFO',
-          'DEPS-1',
-          `update available but release age unknown (registry unreachable or unversioned): ${unknown
-            .map((g) => `${g.name} ${g.current}`)
-            .join(', ')} — run \`ki repo conform\``,
-          STD
-        )
+    } catch {
+      outdated = undefined
     }
-    if (runtimeState === 'unknown')
-      add(
-        'INFO',
-        'DEPS-1',
-        `Bun runtime ${runtime} freshness unknown (registry unreachable) — rerun the audit with network access`,
-        STD,
-        'package.json'
-      )
-    if (!runtime && String(pkg.packageManager ?? '').startsWith('bun@'))
-      add(
-        'INFO',
-        'DEPS-1',
-        `Bun runtime freshness unknown: packageManager ${pkg.packageManager} is not an exact release`,
-        STD,
-        'package.json'
-      )
-  } catch {
-    add('NOT_APPLICABLE', 'DEPS-1', 'bun outdated unavailable — upgrade Bun to check dependency freshness', STD)
+    const runtime = pinnedBunRuntime(pkg.packageManager)
+    const publishTimes = new Map<string, ReadonlyMap<string, string>>()
+    const [runtimeLookup] = await Promise.all([
+      lookupBunRuntime(runtime),
+      ...(outdated ?? [])
+        .filter(({ name }) => name !== BUN_RUNTIME)
+        .map(async ({ name }) => {
+          const times = await fetchPublishTimes(name)
+          if (times) publishTimes.set(name, times)
+        })
+    ])
+    if (runtimeLookup.state === 'behind' && runtimeLookup.times) publishTimes.set(BUN_RUNTIME, runtimeLookup.times)
+    else if (outdated?.some(({ name }) => name === BUN_RUNTIME)) {
+      const times = await fetchPublishTimes(BUN_RUNTIME, 30_000)
+      if (times) publishTimes.set(BUN_RUNTIME, times)
+    }
+    for (const finding of dependencyFreshnessFindings({
+      outdated,
+      packageManager: pkg.packageManager,
+      runtimeState: runtimeLookup.state,
+      publishTimes,
+      kiConfiguration: kiConfiguration ?? '',
+      now: new Date()
+    }))
+      add(finding.level, 'DEPS-1', finding.msg, STD, finding.file)
   }
 
   // ── core: the `bun test` bypass trap ──────────────────────────────────────────

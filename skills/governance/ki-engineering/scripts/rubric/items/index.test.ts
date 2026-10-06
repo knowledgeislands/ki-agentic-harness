@@ -9,6 +9,7 @@ import {
   classifyBunRuntime,
   collectPackageScriptSources,
   collectTrackedMjs,
+  dependencyFreshnessFindings,
   findRelativeNodeModulesScriptUses,
   gradeDependencyFreshness,
   inspectCiWorkflow,
@@ -918,6 +919,67 @@ test('a behind Bun runtime shares the adoption window and the dependency hold ro
     inspectDependencyHolds('[skills.ki-engineering]\ndependency_holds = ["bun — awaiting a Bun regression fix"]\n', [])
       .messages
   ).toEqual(['stale dependency hold names a package with no available update: bun'])
+})
+
+test('the latest dist-tag settles a current runtime without the release history', () => {
+  expect(classifyBunRuntime('1.4.2', undefined, '1.4.2')).toBe('current')
+  expect(classifyBunRuntime('1.4.2', undefined, '1.4.1')).toBe('current')
+  expect(classifyBunRuntime('1.4.1', undefined, '1.4.2')).toBe('unknown')
+  expect(classifyBunRuntime('1.4.1', undefined, 'not-a-version')).toBe('unknown')
+  expect(classifyBunRuntime('1.4.1', new Map([['1.4.2', '2026-09-05T06:01:35Z']]), '1.4.2')).toBe('behind')
+})
+
+test('DEPS-1 findings grade the runtime on every audit path', () => {
+  const now = new Date('2026-10-06T00:00:00Z')
+  const runtimeTimes = new Map([
+    ['1.4.1', '2026-09-04T08:39:50Z'],
+    ['1.4.2', '2026-09-05T06:01:35Z']
+  ])
+  const findings = (overrides: Partial<Parameters<typeof dependencyFreshnessFindings>[0]>) =>
+    dependencyFreshnessFindings({
+      outdated: [],
+      packageManager: 'bun@1.4.1',
+      runtimeState: 'current',
+      publishTimes: new Map(),
+      kiConfiguration: '',
+      now,
+      ...overrides
+    }).map(({ level, msg }) => `${level}: ${msg}`)
+  const behind = { runtimeState: 'behind' as const, publishTimes: new Map([[BUN_RUNTIME, runtimeTimes]]) }
+
+  expect(findings({ packageManager: 'bun@1.4.2' })).toEqual([
+    'PASS: all packages up to date (bun outdated); Bun runtime 1.4.2 is the latest release'
+  ])
+  // The PASS covers packages only; the runtime's unknown freshness is never folded into it.
+  expect(findings({ runtimeState: 'unknown' })).toEqual([
+    'PASS: all packages up to date (bun outdated)',
+    'INFO: Bun runtime 1.4.1 freshness unknown (registry unreachable) — rerun the audit with network access'
+  ])
+  expect(findings(behind)).toEqual([
+    'FAIL: beyond the 14-day adoption window: bun (runtime) 1.4.1 → 1.4.2 (available 30 days) — adopt the update or record a dependency hold'
+  ])
+  // A failing `bun outdated` no longer hides the runtime.
+  expect(findings({ ...behind, outdated: undefined })).toEqual([
+    'NOT_APPLICABLE: bun outdated unavailable — upgrade Bun to check package dependency freshness',
+    'FAIL: beyond the 14-day adoption window: bun (runtime) 1.4.1 → 1.4.2 (available 30 days) — adopt the update or record a dependency hold'
+  ])
+  // An npm `bun` package row never duplicates the runtime entry.
+  expect(findings({ ...behind, outdated: [{ name: 'bun', current: '1.4.1' }] })).toHaveLength(1)
+  // A hold on a non-exact pin is not stale: its freshness is unknown.
+  expect(
+    findings({
+      packageManager: 'bun@^1.4.1',
+      runtimeState: undefined,
+      kiConfiguration: '[skills.ki-engineering]\ndependency_holds = ["bun — awaiting a Bun regression fix"]\n'
+    })
+  ).toEqual([
+    'PASS: all packages up to date (bun outdated)',
+    'INFO: Bun runtime freshness unknown: packageManager bun@^1.4.1 is not an exact release'
+  ])
+  // Runtime currency still shows when packages are outdated.
+  expect(findings({ packageManager: 'bun@1.4.2', outdated: [{ name: 'left-pad', current: '1.0.0' }] }).at(-1)).toBe(
+    'INFO: Bun runtime 1.4.2 is the latest release'
+  )
 })
 
 test('freshness grades FAIL beyond the 14-day window, INFO within it, held and unknown as recorded', () => {
