@@ -659,22 +659,41 @@ const validateDependencies = (items: readonly WorkItem[]): void => {
 export const rootRoadmap = (): string =>
   '# Repository roadmap\n\nThis repository manages forward work as canonical structured Markdown work items under [`docs/roadmap/`](docs/roadmap/).\n\nUse `ki` to audit and report these items; `ROADMAP.md` deliberately does not duplicate their queue.\n'
 
-export const issueLedger = (allocation: number | ReadonlyMap<string, number>): string => {
-  if (typeof allocation === 'number')
-    return `---\nlast_id: ${allocation}\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves every repository-scoped roadmap issue number through \`${allocation.toString().padStart(3, '0')}\`. Allocate the next work item as one greater than \`last_id\`; never lower this value or reuse an issued number after a record is pruned.\n`
+type LedgerAllocation = number | ReadonlyMap<string, number>
+type LedgerBody = (allocation: LedgerAllocation) => string
+
+const ledgerAreas = (allocation: ReadonlyMap<string, number>) => {
   const areas = [...allocation.entries()].sort(([left], [right]) => left.localeCompare(right))
   const values = areas.map(([area, lastId]) => `${area}: ${lastId}`).join(', ')
   const detail = areas
     .map(([area, lastId]) => `- \`${area}\` reserves through \`${lastId.toString().padStart(3, '0')}\`.`)
     .join('\n')
+  return { values, detail }
+}
+
+const ledgerBodyAllocateOnly: LedgerBody = (allocation) => {
+  if (typeof allocation === 'number')
+    return `---\nlast_id: ${allocation}\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves every repository-scoped roadmap issue number through \`${allocation.toString().padStart(3, '0')}\`. Allocate the next work item as one greater than \`last_id\`; never lower this value or reuse an issued number after a record is pruned.\n`
+  const { values, detail } = ledgerAreas(allocation)
   return `---\nareas: { ${values} }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. Areas are not mutable themes or groups.\n\n${detail}\n`
 }
 
-const ledgerAllocation = (text: string): number | ReadonlyMap<string, number> | undefined => {
+export const issueLedger: LedgerBody = ledgerBodyAllocateOnly
+
+/**
+ * Earlier canonical ledger bodies, newest first. CONFORM may rewrite a ledger
+ * matching one of these exactly to `issueLedger()`; any other text stays
+ * unrecognised. The canonical body is always matched first.
+ */
+const SUPERSEDED_LEDGER_BODIES: readonly LedgerBody[] = [ledgerBodyAllocateOnly]
+
+export type LedgerForm = 'canonical' | 'superseded'
+
+const parseLedgerAllocation = (text: string): LedgerAllocation | undefined => {
   const matched = text.match(/^---\r?\nlast_id:\s*(\d+)\s*\r?\n---\r?\n/)
   if (matched) {
     const lastId = Number.parseInt(matched[1], 10)
-    return Number.isSafeInteger(lastId) && lastId >= 0 && text === issueLedger(lastId) ? lastId : undefined
+    return Number.isSafeInteger(lastId) && lastId >= 0 ? lastId : undefined
   }
   const areaMatch = text.match(/^---\r?\nareas:\s*\{\s*(.*?)\s*}\s*\r?\n---\r?\n/)
   if (!areaMatch) return undefined
@@ -686,7 +705,17 @@ const ledgerAllocation = (text: string): number | ReadonlyMap<string, number> | 
     if (!Number.isSafeInteger(lastId) || lastId < 0) return undefined
     allocation.set(pair[1], lastId)
   }
-  return allocation.size && text === issueLedger(allocation) ? allocation : undefined
+  return allocation.size ? allocation : undefined
+}
+
+export const ledgerAllocation = (
+  text: string
+): { readonly allocation: LedgerAllocation; readonly form: LedgerForm } | undefined => {
+  const allocation = parseLedgerAllocation(text)
+  if (allocation === undefined) return undefined
+  if (text === issueLedger(allocation)) return { allocation, form: 'canonical' }
+  if (SUPERSEDED_LEDGER_BODIES.some((body) => text === body(allocation))) return { allocation, form: 'superseded' }
+  return undefined
 }
 
 export const inspectRoadmap = (repository: string): readonly Finding[] => {
@@ -734,7 +763,16 @@ export const inspectRoadmap = (repository: string): readonly Finding[] => {
       `docs/roadmap/${ISSUE_LEDGER}`
     )
   else {
-    const allocation = ledgerAllocation(readFileSync(ledgerPath, 'utf8'))
+    const ledger = ledgerAllocation(readFileSync(ledgerPath, 'utf8'))
+    const allocation = ledger?.allocation
+    if (ledger?.form === 'superseded')
+      add(
+        'WARN',
+        'ROAD-7',
+        'ledger body uses a superseded canonical form; run conform',
+        STANDARD,
+        `docs/roadmap/${ISSUE_LEDGER}`
+      )
     if (allocation === undefined)
       add(
         'FAIL',

@@ -11,6 +11,7 @@ import { type Finding, inspectRoadmap } from './roadmap-evidence.ts'
 export type RoadmapAuditContext = {
   readonly findings: readonly Finding[]
   readonly scaffoldIssueLedger?: () => void
+  readonly repairIssueLedger?: () => void
 }
 
 export type RoadmapIndexContext = RoadmapAuditContext & {
@@ -28,18 +29,22 @@ export type RoadmapRubricContext = {
   readonly trades: RoadmapAuditContext
 }
 
-const auditOutcome = (finding: Finding): AuditOutcome => ({
-  status:
-    finding.level === 'FAIL' || finding.level === 'WARN'
-      ? 'VIOLATION'
-      : finding.level === 'NA'
-        ? 'NOT_APPLICABLE'
-        : finding.level === 'INFO'
-          ? 'INFO'
-          : 'PASS',
-  message: finding.msg,
-  ...(finding.file ? { subject: finding.file } : {})
-})
+const auditOutcome = (finding: Finding): AuditOutcome => {
+  const subject = finding.file ? { subject: finding.file } : {}
+  if (finding.level === 'WARN') return { status: 'VIOLATION', level: 'WARN', message: finding.msg, ...subject }
+  return {
+    status:
+      finding.level === 'FAIL'
+        ? 'VIOLATION'
+        : finding.level === 'NA'
+          ? 'NOT_APPLICABLE'
+          : finding.level === 'INFO'
+            ? 'INFO'
+            : 'PASS',
+    message: finding.msg,
+    ...subject
+  }
+}
 
 export const outcomesFor = (
   context: RoadmapAuditContext,
@@ -61,7 +66,10 @@ export const createRoadmapSession = ({
   const context: RoadmapRubricContext = {
     rubric: { publication },
     scope: audit,
-    roadmaps: { ...audit, ...(draft ? { scaffoldIssueLedger: draft.scaffoldIssueLedger } : {}) },
+    roadmaps: {
+      ...audit,
+      ...(draft ? { scaffoldIssueLedger: draft.scaffoldIssueLedger, repairIssueLedger: draft.repairIssueLedger } : {})
+    },
     items: audit,
     index: { ...audit, ...(draft ? { normaliseRoot: draft.normaliseRoot } : {}) },
     execution: audit,

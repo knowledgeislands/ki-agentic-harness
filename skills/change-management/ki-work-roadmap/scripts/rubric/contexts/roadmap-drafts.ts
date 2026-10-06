@@ -1,11 +1,19 @@
-import { existsSync } from 'node:fs'
+import { existsSync, lstatSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { ConformProposal, ConformWrite } from '../../shared/rubric.ts'
-import { type Finding, ISSUE_LEDGER, issueLedger, rootRoadmap, workItemsFor } from './roadmap-evidence.ts'
+import {
+  type Finding,
+  ISSUE_LEDGER,
+  issueLedger,
+  ledgerAllocation,
+  rootRoadmap,
+  workItemsFor
+} from './roadmap-evidence.ts'
 
 export type RoadmapDraft = {
   normaliseRoot: () => void
   scaffoldIssueLedger: () => void
+  repairIssueLedger: () => void
   proposal: () => ConformProposal
 }
 
@@ -34,11 +42,20 @@ export const createRoadmapDraft = (_repository: string, findings: readonly Findi
     const highestRetained = Math.max(0, ...items.map((item) => item.serial))
     addWrite(`docs/roadmap/${ISSUE_LEDGER}`, issueLedger(areas.size ? areas : highestRetained), true)
   }
+  // Rewrites only a ledger whose body exactly matches a superseded canonical form, preserving its allocation.
+  const repairIssueLedger = (): void => {
+    const path = join(_repository, 'docs', 'roadmap', ISSUE_LEDGER)
+    if (!existsSync(path) || !lstatSync(path).isFile()) return
+    const ledger = ledgerAllocation(readFileSync(path, 'utf8'))
+    if (ledger?.form !== 'superseded') return
+    addWrite(`docs/roadmap/${ISSUE_LEDGER}`, issueLedger(ledger.allocation))
+  }
   return {
     normaliseRoot: () => {
       addWrite('ROADMAP.md', rootRoadmap())
     },
     scaffoldIssueLedger,
+    repairIssueLedger,
     proposal: () => ({ writes })
   }
 }

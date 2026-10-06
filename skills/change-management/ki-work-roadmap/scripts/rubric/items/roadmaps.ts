@@ -125,7 +125,13 @@ const ROAD_7: RubricItem<RoadmapAuditContext> = {
       run: (context) =>
         outcomesFor(context, 'ROAD-7', 'The issue-allocation ledger reserves every issued repository or area number.')
     },
-    conform: { phase: 'DERIVED', run: (context) => context.scaffoldIssueLedger?.() }
+    conform: {
+      phase: 'DERIVED',
+      run: (context) => {
+        context.scaffoldIssueLedger?.()
+        context.repairIssueLedger?.()
+      }
+    }
   }
 }
 

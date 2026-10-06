@@ -670,6 +670,47 @@ test('conform never overwrites a malformed issue ledger', () => {
   expect(session.proposal().writes).toEqual([])
 })
 
+const conformIssueLedger = (repository: string) => {
+  const session = catalogue.createSession({ mode: 'conform', repository, userHome: '/tmp', configuration: {} })
+  const context = session.subjects[1]?.context() as RoadmapRubricContext
+  const family = catalogue.families.find((candidate) => candidate.code === 'ROAD')
+  const item = family?.items.find((candidate) => candidate.code === 'ROAD-7') as
+    | RubricItem<typeof context.roadmaps>
+    | undefined
+  item?.mechanical?.conform?.run(context.roadmaps)
+  return session.proposal().writes
+}
+
+const useAreaLedger = (repository: string): void => {
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "foundation-tooling"\n'
+  )
+  const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
+  const target = join(repository, 'docs', 'roadmap', 'TEST-CORE-001-build-the-foundation.md')
+  renameSync(source, target)
+  writeFileSync(target, readFileSync(target, 'utf8').replace('id: TEST-001', 'id: TEST-CORE-001\narea: CORE'))
+}
+
+for (const mode of ['repository', 'area'] as const) {
+  test(`an edited ${mode} ledger body still fails ROAD-7 and conform leaves it untouched`, () => {
+    const repository = createFixture()
+    if (mode === 'area') useAreaLedger(repository)
+    const allocation = mode === 'area' ? new Map([['CORE', 1]]) : 1
+    const edited = issueLedger(allocation).replace('never lower', 'please do not lower')
+    writeFileSync(join(repository, 'docs', 'roadmap', ISSUE_LEDGER), edited)
+    expect(hostedOutcomes(repository, 'ROAD-7')).toContainEqual(
+      expect.objectContaining({
+        status: 'VIOLATION',
+        message: `docs/roadmap/${ISSUE_LEDGER} must use the canonical immutable ledger shape`
+      })
+    )
+    expect(hostedOutcomes(repository, 'ROAD-7')).not.toContainEqual(expect.objectContaining({ level: 'WARN' }))
+    expect(conformIssueLedger(repository)).toEqual([])
+    expect(readFileSync(join(repository, 'docs', 'roadmap', ISSUE_LEDGER), 'utf8')).toBe(edited)
+  })
+}
+
 test('dependency links must be reciprocal', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
