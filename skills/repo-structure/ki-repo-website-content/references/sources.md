@@ -10,9 +10,9 @@ Two layers feed the standard: the **upstream tools** (Eleventy, Tailwind, Lucide
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| ELEVENTY | [Eleventy docs][11ty] | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` | 2026-08-22 |
-| TAILWIND | [Tailwind CSS v4 docs][tw] | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI | 2026-08-22 |
-| LUCIDE | [Lucide docs][lucide] | Icon delivery (UMD passthrough, client educate) | 2026-08-22 |
+| ELEVENTY | [Eleventy docs][11ty] | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` | 2026-10-06 |
+| TAILWIND | [Tailwind CSS v4 docs][tw] | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI | 2026-10-06 |
+| LUCIDE | [Lucide docs][lucide] | Icon delivery (UMD passthrough, client educate) | 2026-10-06 |
 
 ## In-house (the website convention)
 
@@ -20,15 +20,15 @@ The standard is self-contained; it is the source of truth for house style. Any c
 
 | Tag | Source           | Governs                                                                 | Last reviewed |
 | --- | ---------------- | ----------------------------------------------------------------------- | ------------- |
-| ENG | `ki-engineering` | Separately coverage-selected toolchain layer (referenced, not restated) | 2026-08-22    |
+| ENG | `ki-engineering` | Separately coverage-selected toolchain layer (referenced, not restated) | 2026-10-06    |
 
 ## Last review
 
-REFRESH last run **2026-08-22**. Re-fetched all three upstream sources and their current package metadata. The standard remains current: no source change affects its Eleventy 3, config-less Tailwind 4, or vanilla Lucide delivery contract.
+REFRESH last run **2026-10-06**. Re-fetched all three upstream sources and their current package metadata, and re-checked that `ki-engineering` still owns the referenced toolchain layer. The standard remains current: no source change affects its Eleventy 3, config-less Tailwind 4, or vanilla Lucide delivery contract, and its `^3.x` Eleventy pin is not stale.
 
-- **Current packages:** Eleventy remains stable at **3.1.6** and its `4.0.0-alpha.10` canary remains pre-release. `@tailwindcss/cli` is **4.3.3**, a compatible patch update. Vanilla `lucide` is **1.33.0**.
-- **Confirmed conformant upstream:** Eleventy documents `addTransform`, `addDataExtension`, and `eleventy.before`; Tailwind still documents `@import "tailwindcss"` and `@theme`; and Lucide's vanilla package still serves `dist/umd/lucide.min.js` with `createIcons()`. No source renamed or deprecated the standard's required surface.
-- **Open watch-items:** re-anchor Eleventy's config API when v4 becomes stable. Continue to verify the vanilla Lucide UMD distribution and Tailwind's `@import` / `@theme` surface each refresh.
+- **Current packages:** Eleventy remains stable at **3.1.6** (2026-06-02) and `4.0.0-alpha.10` remains pre-release. `@tailwindcss/cli` and `tailwindcss` are **4.3.3** (2026-07-16). Vanilla `lucide` is **1.52.0** (2026-10-04), up from 1.33.0.
+- **Confirmed conformant upstream:** Eleventy documents `addTransform`, `addDataExtension` (with `read: false` and `parser`), and `eleventy.before` with `runMode`; returning `dir` from the config function still works but is marked not preferred in favour of a named `export const config`, and the event `dir` argument is deprecated in favour of `directories`. Tailwind still documents `@import "tailwindcss"` and `@theme inline`. Lucide 1.52.0 still ships `dist/umd/lucide.min.js` exporting `createIcons()`. No source removed the standard's required surface.
+- **Open watch-items:** re-anchor Eleventy's config API when v4 becomes stable, and consider preferring `export const config` over returning `dir`. Continue to verify the vanilla Lucide UMD distribution and Tailwind's `@import` / `@theme` surface each refresh.
 
 [11ty]: https://www.11ty.dev/docs/
 [tw]: https://tailwindcss.com/docs
