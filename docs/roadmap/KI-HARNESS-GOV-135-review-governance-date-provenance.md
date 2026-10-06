@@ -60,7 +60,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-`blocked_by` and `blocks` are empty by intent. This record edits `Repository governance` while [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md) and [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md) edit `Automated verification` of the same file; it is last in the preferred batch order and its text anchor is independent of theirs, so it cannot conflict.
+`blocked_by` and `blocks` are empty by intent. This record edits `Repository governance` while `KI-HARNESS-GOV-096` (done), `KI-HARNESS-GOV-124` (done), `KI-HARNESS-GOV-098` (done) and [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md) edit `Automated verification` of the same file; it is last in the preferred batch order and its text anchor is independent of theirs, so it cannot conflict.
 
 ## Documentation impact
 

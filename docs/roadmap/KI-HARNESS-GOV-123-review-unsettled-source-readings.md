@@ -42,7 +42,7 @@ No REVIEW question asks whether a delivered artefact records which reading of an
 
 ## Steps
 
-- [ ] Insert one question directly after the [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md) question, or, if the batch siblings have not landed, directly after the count-based-gate question: `- [ ] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.`
+- [ ] Insert one question directly after the `KI-HARNESS-GOV-098` (done) question, or, if the batch siblings have not landed, directly after the count-based-gate question: `- [ ] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.`
 - [ ] Run the verification below.
 
 ## Files touched
@@ -66,7 +66,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-`blocked_by` and `blocks` are empty by intent. Sequencing for the `mode-review.md` batch, a preference rather than a build order: [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md), [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md), [KI-HARNESS-GOV-098](KI-HARNESS-GOV-098-render-every-derived-signal.md), this record, then [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md). Each inserts after the previous one's text.
+`blocked_by` and `blocks` are empty by intent. Sequencing for the `mode-review.md` batch, a preference rather than a build order: `KI-HARNESS-GOV-096` (done), `KI-HARNESS-GOV-124` (done), `KI-HARNESS-GOV-098` (done), this record, then [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md). Each inserts after the previous one's text.
 
 ## Documentation impact
 
@@ -115,4 +115,4 @@ A caption saying the topology is contested would help the reader of that one pag
 ### Fallback and origin
 
 - `5GE-P2-GOV-014` in `5g-emerge-phase2` will add the lens to its own `AGENTS.md` as a local review convention if this record is rejected; a rejection here should say so, so that repository can close its item.
-- [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) is the sibling candidate from the same session recap, and the owner may want to dispose of both in one conversation.
+- `KI-HARNESS-GOV-124` (done) is the sibling candidate from the same session recap, and the owner may want to dispose of both in one conversation.

@@ -126,7 +126,7 @@ ki repo audit --skill ki-authoring --progress never
 
 Blocked by [KI-HARNESS-GOV-102](KI-HARNESS-GOV-102-decide-role-record-serialization.md): rule 6's row cites the anchor that record creates. That is the only live blocker. `KI-HARNESS-GOV-116` (accepted in `a7ae2c69`, record pruned in `0b7bbcc4`) and `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` (accepted in `7edbadb`, record pruned in `48d9d42`) were prerequisites for rule 2 and are done; nothing here waits on either.
 
-Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and [KI-HARNESS-GOV-095](KI-HARNESS-GOV-095-align-roadmap-diagnostics.md) all edit `ki-work-roadmap` `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
+Sequencing: this record, [KI-HARNESS-GOV-094](KI-HARNESS-GOV-094-check-constraint-reach.md) and `KI-HARNESS-GOV-095` (done) all edit `ki-work-roadmap` `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
 Plan complete; ready once [KI-HARNESS-GOV-102](KI-HARNESS-GOV-102-decide-role-record-serialization.md) is done.
 

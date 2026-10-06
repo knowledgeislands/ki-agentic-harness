@@ -71,7 +71,7 @@ ki repo audit --skill ki-engineering --progress never
 
 None. Cross-reference with [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md): the same absent dependency graph seen at commit time rather than conform time. Each stands alone and neither supersedes the other. If the conform report later needs a distinct activation section rather than a re-audit finding, that is a `tools-ki` trade raised from this record, not part of it.
 
-Sequencing: this record and [KI-HARNESS-GOV-092](KI-HARNESS-GOV-092-align-generated-normal-forms.md), [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
+Sequencing: this record and `KI-HARNESS-GOV-092` (done), [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 
 ## Documentation impact
 

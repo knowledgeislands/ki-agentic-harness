@@ -66,7 +66,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-`blocked_by` and `blocks` are empty by intent. [KI-HARNESS-GOV-124](KI-HARNESS-GOV-124-review-artefact-idempotence.md) adds a determinism bullet to the same `## Code design` list; whichever lands second rebases onto the other, a sequencing preference rather than a build order.
+`blocked_by` and `blocks` are empty by intent. `KI-HARNESS-GOV-124` (done) adds a determinism bullet to the same `## Code design` list; whichever lands second rebases onto the other, a sequencing preference rather than a build order.
 
 ## Documentation impact
 
@@ -103,4 +103,4 @@ Candidate wording for the standard, as rationale beside the existing reuse rule 
 The cost of getting this wrong is worth naming because it is asymmetric. A copied reader does not fail loudly - it produces confident output from a defect, and here the output was governance signals ranked `blocking`. Duplication that silently drifts is the stated concern; duplication that silently _agrees while both are wrong_ is the same failure with no drift to detect.
 
 - `KI-OBS-VIS-004` in `apps-observatory` owns the instance, the extraction and its regression test. This record owns the reusable rule, because `ki-engineering` and the REVIEW checklist live here and that repository cannot change them.
-- [KI-HARNESS-GOV-096](KI-HARNESS-GOV-096-detect-zero-match-generators.md) is the same hand-over shape and shares this one's reasoning: a clean pass from a gate that cannot see the failure reads exactly like verification.
+- `KI-HARNESS-GOV-096` (done) is the same hand-over shape and shares this one's reasoning: a clean pass from a gate that cannot see the failure reads exactly like verification.
