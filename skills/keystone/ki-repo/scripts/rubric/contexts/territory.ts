@@ -63,20 +63,25 @@ const registryPath = (userHome: string): string => {
   return join(stateHome, 'ki', 'registry.toml')
 }
 
-type Registry = { checkouts: readonly Checkout[]; issue?: string }
+/** A registered checkout whose `.ki.toml` exists but cannot be read, attributed by the registry entry's claim. */
+type Unreadable = { root: string; repository?: string }
+
+type Registry = { checkouts: readonly Checkout[]; unreadable: readonly Unreadable[]; issue?: string }
 
 const readRegistry = (userHome: string): Registry => {
   const path = registryPath(userHome)
-  if (!physicalFile(path)) return { checkouts: [] }
+  if (!physicalFile(path)) return { checkouts: [], unreadable: [] }
   let document: Record<string, unknown>
   try {
     document = Bun.TOML.parse(readFileSync(path, 'utf8')) as Record<string, unknown>
   } catch {
-    return { checkouts: [], issue: `local registry ${path} is not valid TOML` }
+    return { checkouts: [], unreadable: [], issue: `local registry ${path} is not valid TOML` }
   }
   const checkouts: Checkout[] = []
-  for (const entry of Object.values(table(document.repositories) ?? {})) {
-    const root = table(entry)?.path
+  const unreadable: Unreadable[] = []
+  for (const value of Object.values(table(document.repositories) ?? {})) {
+    const entry = table(value)
+    const root = entry?.path
     if (typeof root !== 'string' || !isAbsolute(root) || !physicalDirectory(root)) continue
     const real = realpathSync(root)
     const config = join(real, '.ki.toml')
@@ -87,10 +92,11 @@ const readRegistry = (userHome: string): Registry => {
         ...declaration(Bun.TOML.parse(readFileSync(config, 'utf8')) as Record<string, unknown>)
       })
     } catch {
-      // An unreadable peer declares nothing; the peer's own audit reports its configuration.
+      // An unreadable checkout declares nothing; only the registry entry's claim can attribute it.
+      unreadable.push({ root: real, ...(canonical(entry?.repository) ? { repository: entry.repository } : {}) })
     }
   }
-  return { checkouts }
+  return { checkouts, unreadable }
 }
 
 /** Registered checkouts whose own `.ki.toml` declares `repository`, never the registry entry's claim. */
@@ -189,6 +195,15 @@ const memberAgreement = (
 ): { outcomes: readonly AuditOutcome[]; policy?: Checkout } => {
   const subject = '.ki.toml [skills.ki-repo].capital'
   const found = declaring(registry, capital)
+  const broken = registry.unreadable.filter((checkout) => checkout.repository === capital)
+  if (found.length === 0 && broken.length > 0)
+    return {
+      outcomes: broken.map(({ root }) => ({
+        status: 'VIOLATION' as const,
+        message: `Capital ${capital}: registered checkout at ${root} has an unreadable .ki.toml`,
+        subject
+      }))
+    }
   if (found.length === 0)
     return { outcomes: [{ status: 'VIOLATION', level: 'WARN', message: unavailableMessage(capital), subject }] }
   if (found.length > 1)
@@ -347,12 +362,12 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
     }
   const repository = local.repository
   if (local.capital === repository) {
-    const policyNames = namedInChannels(local, repository) && !local.trades
+    // A Capital's channels live in its own [skills.ki-trades], so it can never lack the table they name.
     return {
       terr1,
       terr2: territoryShape(local),
       terr3: [...capitalAgreement({ ...local, repository }, registry), ...registryNote],
-      coverage: policyNames ? [tradesSignal(repository)] : []
+      coverage: []
     }
   }
   const terr2: readonly AuditOutcome[] =
