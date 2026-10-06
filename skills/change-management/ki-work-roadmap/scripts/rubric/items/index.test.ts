@@ -711,6 +711,52 @@ for (const mode of ['repository', 'area'] as const) {
   })
 }
 
+const preOrderingLedgers = {
+  repository: `---\nlast_id: 1\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves every repository-scoped roadmap issue number through \`001\`. Allocate the next work item as one greater than \`last_id\`; never lower this value or reuse an issued number after a record is pruned.\n`,
+  area: `---\nareas: { CORE: 1 }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. Areas are not mutable themes or groups.\n\n- \`CORE\` reserves through \`001\`.\n`
+} as const
+
+test('ROAD-7 declares the WARN override its superseded-ledger outcome uses', () => {
+  const item = items.find((candidate) => candidate.code === 'ROAD-7')
+  expect(item?.mechanical?.level).toBe('FAIL')
+  expect(item?.mechanical?.overrideLevels).toEqual(['WARN'])
+})
+
+for (const mode of ['repository', 'area'] as const) {
+  test(`the generated ${mode} ledger states commit-before-record ordering`, () => {
+    const ledger = issueLedger(mode === 'area' ? new Map([['CORE', 1]]) : 1)
+    expect(ledger).toContain(
+      "Reserve a number by committing this ledger's advance on its own before writing the record."
+    )
+  })
+
+  test(`a superseded ${mode} ledger body warns, conforms to the canonical body and then passes`, () => {
+    const repository = createFixture()
+    if (mode === 'area') useAreaLedger(repository)
+    const ledgerPath = join(repository, 'docs', 'roadmap', ISSUE_LEDGER)
+    const previous = preOrderingLedgers[mode]
+    writeFileSync(ledgerPath, previous)
+    expect(hostedOutcomes(repository, 'ROAD-7')).toEqual([
+      {
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: 'ledger body uses a superseded canonical form; run conform',
+        subject: `docs/roadmap/${ISSUE_LEDGER}`
+      }
+    ])
+    expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
+    const writes = conformIssueLedger(repository)
+    const canonical = issueLedger(mode === 'area' ? new Map([['CORE', 1]]) : 1)
+    expect(writes).toEqual([{ path: `docs/roadmap/${ISSUE_LEDGER}`, content: canonical }])
+    const frontmatter = (text: string) => text.slice(0, text.indexOf('\n---\n', 4) + 5)
+    expect(frontmatter(canonical)).toBe(frontmatter(previous))
+    writeFileSync(ledgerPath, canonical)
+    expect(hostedOutcomes(repository, 'ROAD-7')).toEqual([
+      { status: 'PASS', message: 'The issue-allocation ledger reserves every issued repository or area number.' }
+    ])
+  })
+}
+
 test('dependency links must be reciprocal', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')

@@ -117,6 +117,7 @@ const ROAD_7: RubricItem<RoadmapAuditContext> = {
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'automatic'
     },

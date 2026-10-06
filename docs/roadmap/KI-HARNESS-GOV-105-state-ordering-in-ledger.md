@@ -4,12 +4,12 @@ area: GOV
 title: State ordering in ledger
 theme: governance-consistency
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 68040b3e4e63a83186587410bc84d2db80ff14d4
 created_at: 2026-09-26T15:31:37Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-06T17:29:30Z
 ---
 
 # KI-HARNESS-GOV-105: State ordering in ledger
@@ -38,20 +38,21 @@ Verified on `main` at `19651664`. `issueLedger()` (`skills/change-management/ki-
 
 ## Steps
 
-- [ ] Phase 1, without changing the generated text: In `roadmap-evidence.ts`, keep the current body generator as the first entry of a short, explicit `SUPERSEDED_LEDGER_BODIES` list of generator functions, each reproducing one earlier canonical text for both issuing modes.
-- [ ] Phase 1: Make `ledgerAllocation()` return the allocation together with whether the body is `canonical` or `superseded`; any other text stays unrecognised.
-- [ ] Phase 1: `ROAD-7` reports a superseded body as a `WARN` with automatic remediation ("ledger body uses a superseded canonical form; run conform"), and an unrecognised body as `FAIL`, unchanged.
-- [ ] Phase 1: In `roadmap-drafts.ts`, let `safeToDraft` accept a superseded ledger, and add a repair that rewrites `_ISSUES.md` to `issueLedger(allocation)` only when the frontmatter allocation is valid and the body matches a superseded entry. Wire it as `ROAD-7`'s `conform` action alongside the existing scaffold in `scripts/rubric/items/roadmaps.ts`.
-- [ ] Phase 1: Tests in `scripts/rubric/items/index.test.ts`: a superseded body in each mode audits as `WARN`, conforms to the canonical body with its allocation unchanged, and then audits as `PASS`; an unrecognised body still fails and `CONFORM` leaves it untouched.
-- [ ] Phase 2, only after Phase 1 has landed: Change `issueLedger()` so both modes say, in one added sentence, that a number is reserved by committing this ledger's advance on its own before the record is written.
-- [ ] Phase 2: Move the previous text into `SUPERSEDED_LEDGER_BODIES`, update existing ledger fixtures to the new body, and add a test that the pre-change body is recognised as superseded.
-- [ ] Phase 2: Run `ki repo conform --skill ki-work-roadmap` in this repository so `docs/roadmap/_ISSUES.md` carries the new body.
+- [x] Phase 1, without changing the generated text: In `roadmap-evidence.ts`, keep the current body generator as the first entry of a short, explicit `SUPERSEDED_LEDGER_BODIES` list of generator functions, each reproducing one earlier canonical text for both issuing modes.
+- [x] Phase 1: Make `ledgerAllocation()` return the allocation together with whether the body is `canonical` or `superseded`; any other text stays unrecognised.
+- [x] Phase 1: `ROAD-7` reports a superseded body as a `WARN` with automatic remediation ("ledger body uses a superseded canonical form; run conform"), and an unrecognised body as `FAIL`, unchanged.
+- [x] Phase 1: In `roadmap-drafts.ts`, let `safeToDraft` accept a superseded ledger, and add a repair that rewrites `_ISSUES.md` to `issueLedger(allocation)` only when the frontmatter allocation is valid and the body matches a superseded entry. Wire it as `ROAD-7`'s `conform` action alongside the existing scaffold in `scripts/rubric/items/roadmaps.ts`.
+- [x] Phase 1: Tests in `scripts/rubric/items/index.test.ts`: a superseded body in each mode audits as `WARN`, conforms to the canonical body with its allocation unchanged, and then audits as `PASS`; an unrecognised body still fails and `CONFORM` leaves it untouched.
+- [x] Phase 2, only after Phase 1 has landed: Change `issueLedger()` so both modes say, in one added sentence, that a number is reserved by committing this ledger's advance on its own before the record is written.
+- [x] Phase 2: Move the previous text into `SUPERSEDED_LEDGER_BODIES`, update existing ledger fixtures to the new body, and add a test that the pre-change body is recognised as superseded.
+- [x] Phase 2: Run `ki repo conform --skill ki-work-roadmap` in this repository so `docs/roadmap/_ISSUES.md` carries the new body.
 
 ## Files touched
 
 - `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts`
 - `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-drafts.ts`
 - `skills/change-management/ki-work-roadmap/scripts/rubric/items/roadmaps.ts`
+- `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap.ts` (context wiring and `WARN` passthrough; added during delivery)
 - `skills/change-management/ki-work-roadmap/scripts/rubric/items/index.test.ts`
 - `skills/change-management/ki-work-roadmap/references/rubric.md` (if the `ROAD-7` publication changes)
 - `docs/roadmap/_ISSUES.md` (phase 2 conform output only)
@@ -94,6 +95,48 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+Both phases within the approved boundary. Phase 1 landed on `main` first as `5d8460f6`: superseded-body recognition, the `ROAD-7` `WARN` and the bounded `CONFORM` repair, with the generated text unchanged. Phase 2 lands in the commit carrying this review: the commit-before-record sentence in both issuing modes, the previous body retained as the superseded entry, and this repository's ledger conformed. Excluded as planned: the ordering rule itself, the frontmatter shape, fuzzy body matching, conform in other repositories, and `Streams/Roadmap/_ISSUES.md`. Baseline `68040b3e4e63a83186587410bc84d2db80ff14d4`.
+
+### Change Summary
+
+- `contexts/roadmap-evidence.ts`: `ledgerAllocation()` is exported and returns `{ allocation, form }`. `form` is `canonical`, or `superseded` when the body exactly matches an entry of `SUPERSEDED_LEDGER_BODIES`; any other body is unrecognised. The canonical form is always matched first. A superseded body adds a `ROAD-7` `WARN` ("ledger body uses a superseded canonical form; run conform"), and the allocation checks still run on it. `issueLedger()` now adds "Reserve a number by committing this ledger's advance on its own before writing the record." in both modes. The pre-change generator is the single superseded entry.
+- `contexts/roadmap-drafts.ts`: `repairIssueLedger` rewrites `_ISSUES.md` to `issueLedger(allocation)` only for a regular file whose body is an exact superseded form. `safeToDraft` blocks only on `FAIL`, so it already accepts a superseded ledger.
+- `contexts/roadmap.ts` (not in the original Files touched): wires `repairIssueLedger` into the `ROAD` context and carries `level: 'WARN'` through `auditOutcome`. No other roadmap finding used `WARN`.
+- `items/roadmaps.ts`: the `ROAD-7` conform runs scaffold then repair. It also declares `overrideLevels: ['WARN']`, because the `ki` host rejects an outcome level that the item does not declare.
+- `items/index.test.ts`: covers an edited body in each mode (`FAIL`, no conform write, file untouched); the ordering sentence in each mode; a literal pre-change body in each mode (`WARN`, then a conform write of only `_ISSUES.md` with unchanged frontmatter, then `PASS`); and the `ROAD-7` `WARN` override declaration.
+- `docs/roadmap/_ISSUES.md`: conformed to the new body.
+- Deviation: in phase 1 the only superseded entry was the canonical body itself, so no distinct superseded text existed. The superseded `WARN`/conform/`PASS` tests therefore land with phase 2; phase 1 tested the unrecognised path only.
+- Deviation: `ki repo conform` cannot run in a worktree whose directory is not a registered repository name. The ledger was rewritten through the same `ledgerAllocation()`/`issueLedger()` repair path. A real `ki repo conform --skill ki-work-roadmap` on a renamed scratch clone, with the worktree as the local harness source, produced a byte-identical file.
+
+### Verification
+
+- `bun test skills/change-management/ki-work-roadmap`: 53 pass, 0 fail.
+- `bun run test`: 950 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `bunx biome check .`: 0 errors (pre-existing warnings and infos only).
+- `ki dev skill rubric ki-work-roadmap`: `references/rubric.md` in sync. The `ROAD-7` publication is unchanged.
+- Host-level checks used `ki` 0.7.0 with an isolated config and data home pointing the local harness at this worktree:
+  - The pre-change ledger audits `ROAD-7` `WARN` (`FAIL=0 WARN=1`), and the new ledger audits `PASS` (Verify 1, 2 and 5).
+  - `ki repo conform --skill ki-work-roadmap --dry-run` on a scratch clone with the pre-change ledger proposes only `docs/roadmap/_ISSUES.md`. The applied result equals this repository's committed ledger byte for byte, with frontmatter unchanged (Verify 2).
+  - An edited body still fails, and conform proposes no write (Verify 3, by test).
+
+### Outstanding concerns
+
+- This is a fleet event, as planned. Each repository whose ledger carries the pre-change body will audit `ROAD-7` `WARN` on its next harness update, until it runs `ki repo conform --skill ki-work-roadmap` under its own authority.
+- Phase 1 (`5d8460f6`) landed before the `overrideLevels` fix. It was dormant there, because no ledger could then classify as superseded.
+
+### Post-change review
+
+Independent Fable review returned reject on a single blocking finding: `ROAD-7` emitted `WARN` without declaring `overrideLevels`, so the `ki` host would have thrown on every superseded ledger. This was fixed with a pinning test, and the fix was verified at host level as above. Should-fix findings were also applied: `contexts/roadmap.ts` is recorded in Files touched, the Steps are ticked, and the test-ordering deviation is explained here. The "newest first" comment nit was dropped. Goal met in both modes, and scope held apart from the wiring file. Regression risk is confined to `ROAD-7`.
+
+### Mini recap
+
+The ledger now states commit-before-record ordering, and the fleet has a non-destructive, automatic path from the previous body. Proposed learning route: a `ki-skills` or `ki-engineering` note that rubric tests calling `mechanical.audit.run` directly bypass host level validation, so a test should pin `overrideLevels` whenever an item emits a non-declared level.
 
 ## Discussion
 

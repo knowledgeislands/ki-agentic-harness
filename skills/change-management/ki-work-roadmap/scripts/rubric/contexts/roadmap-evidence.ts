@@ -671,6 +671,7 @@ const ledgerAreas = (allocation: ReadonlyMap<string, number>) => {
   return { values, detail }
 }
 
+// The ledger body before KI-HARNESS-GOV-105 added the commit-before-record ordering sentence.
 const ledgerBodyAllocateOnly: LedgerBody = (allocation) => {
   if (typeof allocation === 'number')
     return `---\nlast_id: ${allocation}\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves every repository-scoped roadmap issue number through \`${allocation.toString().padStart(3, '0')}\`. Allocate the next work item as one greater than \`last_id\`; never lower this value or reuse an issued number after a record is pruned.\n`
@@ -678,10 +679,19 @@ const ledgerBodyAllocateOnly: LedgerBody = (allocation) => {
   return `---\nareas: { ${values} }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. Areas are not mutable themes or groups.\n\n${detail}\n`
 }
 
-export const issueLedger: LedgerBody = ledgerBodyAllocateOnly
+const RESERVATION_ORDER = "Reserve a number by committing this ledger's advance on its own before writing the record."
+
+const ledgerBodyCommitFirst: LedgerBody = (allocation) => {
+  if (typeof allocation === 'number')
+    return `---\nlast_id: ${allocation}\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves every repository-scoped roadmap issue number through \`${allocation.toString().padStart(3, '0')}\`. Allocate the next work item as one greater than \`last_id\`; never lower this value or reuse an issued number after a record is pruned. ${RESERVATION_ORDER}\n`
+  const { values, detail } = ledgerAreas(allocation)
+  return `---\nareas: { ${values} }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. ${RESERVATION_ORDER} Areas are not mutable themes or groups.\n\n${detail}\n`
+}
+
+export const issueLedger: LedgerBody = ledgerBodyCommitFirst
 
 /**
- * Earlier canonical ledger bodies, newest first. CONFORM may rewrite a ledger
+ * Earlier canonical ledger bodies. CONFORM may rewrite a ledger
  * matching one of these exactly to `issueLedger()`; any other text stays
  * unrecognised. The canonical body is always matched first.
  */
