@@ -95,8 +95,8 @@ ${banner('Foundation')}[repo]
 [skills.ki-engineering.settings]
 enabled = true
 
-${banner('Relationships')}[skills.ki-trades.routes."example/receiver"]
-export = ["work"]
+${banner('Relationships')}[skills.ki-trades.territory.subtypes]
+shared-maintenance = "Example subtype."
 `)
 
     expect(result.issues).toEqual(

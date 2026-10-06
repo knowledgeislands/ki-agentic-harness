@@ -5,16 +5,17 @@ const SOURCE = 'standards-trades.md'
 
 const CONFIG_1: RubricItem<OutcomeContext> = {
   code: 'CONFIG-1',
-  title: 'typed routes use supported canonical identities',
+  title: 'the member table is bare and identities are canonical',
   description:
-    'A participating repository names each trade partner exactly once with its own `[skills.ki-trades.routes."owner/name"]` table, whose `export` and `import` arrays are duplicate-free and drawn from the closed trade-kind set; a direction carrying no kinds is absent rather than empty, an optional presentation-only `map_bonus` is an integer from 0 through 3, and the repository identity comes only from the currently representable GitHub `owner/name` form of `ki-repo.repository`. Unsupported identities are refused.',
+    'A participating repository declares `[skills.ki-trades]` carrying at most a presentation-only `map_bonus` integer from 0 through 3. The retired `routes` and `subtypes` keys fail because routes now come from the Capital trade policy, `territory` is permitted only in a Capital, and any other key fails. The repository identity comes only from the canonical GitHub form of `ki-repo.repository`.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
-      guidance: 'Correct the local ki-trades route declaration, then rerun the audit.'
+      guidance:
+        'Remove retired or unknown ki-trades keys and propose any route change to the Capital trade policy, then rerun the audit.'
     },
     audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
   }
@@ -23,7 +24,7 @@ const CONFIG_1: RubricItem<OutcomeContext> = {
 export const CONFIG: RubricFamily<TradesRubricContext, OutcomeContext> = {
   code: 'CONFIG',
   title: 'Declared participation',
-  description: 'Typed trade routes are explicit, canonical, and owned locally.',
+  description: 'A bare, canonical local ki-trades declaration.',
   standard: SOURCE,
   selectContext: (context) => context.configuration,
   items: [CONFIG_1]

@@ -10,7 +10,8 @@ Line-by-line criteria for auditing ki-trades. Classifications are derived from i
 
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 - [CONFIG — Declared participation](#config--declared-participation)
-- [ROUTE — Typed reciprocal routes](#route--typed-reciprocal-routes)
+- [ROUTE — Capital-granted routes](#route--capital-granted-routes)
+- [POLICY — Capital trade policy](#policy--capital-trade-policy)
 - [SCAFFOLD — Trade scaffold](#scaffold--trade-scaffold)
 - [RECORD — Record shape](#record--record-shape)
 - [AUTH — Write authority](#auth--write-authority)
@@ -32,19 +33,32 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 → [standard](standards-trades.md)
 
-Typed trade routes are explicit, canonical, and owned locally.
+A bare, canonical local ki-trades declaration.
 
-- **CONFIG-1 [M] — typed routes use supported canonical identities** — A participating repository names each trade partner exactly once with its own `[skills.ki-trades.routes."owner/name"]` table, whose `export` and `import` arrays are duplicate-free and drawn from the closed trade-kind set; a direction carrying no kinds is absent rather than empty, an optional presentation-only `map_bonus` is an integer from 0 through 3, and the repository identity comes only from the currently representable GitHub `owner/name` form of `ki-repo.repository`. Unsupported identities are refused. (standards-trades.md)
-  - _Remediation:_ diagnostic — Correct the local ki-trades route declaration, then rerun the audit.
+- **CONFIG-1 [M] — the member table is bare and identities are canonical** — A participating repository declares `[skills.ki-trades]` carrying at most a presentation-only `map_bonus` integer from 0 through 3. The retired `routes` and `subtypes` keys fail because routes now come from the Capital trade policy, `territory` is permitted only in a Capital, and any other key fails. The repository identity comes only from the canonical GitHub form of `ki-repo.repository`. (standards-trades.md)
+  - _Remediation:_ diagnostic — Remove retired or unknown ki-trades keys and propose any route change to the Capital trade policy, then rerun the audit.
 
-## ROUTE — Typed reciprocal routes
+## ROUTE — Capital-granted routes
 
 → [standard](standards-trades.md)
 
-Sender-declared observation and active reciprocal receipt remain distinct typed route facts.
+Routes granted by the Capital trade policy and their per-peer activation.
 
-- **ROUTE-1 [M] — trade routes are typed, declared, and activated reciprocally** — A sender-declared export permits local preparation and submission before the receiver participates. Receipt is active only when exactly one locally registered repository declares the canonical GitHub home, the sender exports that kind to it, and the receiver imports that same kind from the sender. (standards-trades.md)
-  - _Remediation:_ diagnostic — Correct the locally owned route declaration or registered repository configuration, then rerun the audit.
+- **ROUTE-1 [M] — trade routes come from the resolved Capital policy and activate per peer** — Routes and standing grants are read only from the territory trade policy of the repository's declared Capital, resolved as the unique locally registered Capital listing this repository; a malformed or ambiguous policy fails closed and an unregistered Capital warns that the policy is not available here. A granted route is active only when exactly one registered repository declares the peer's canonical GitHub home, declares ki-trades, and names the same Capital. (standards-trades.md)
+  - _Remediation:_ diagnostic — Correct the local capital declaration or register the Capital checkout; route changes are proposed to the Capital, never declared locally.
+- **ROUTE-2 [M] — a participating member is named by its Capital policy** — A territory member that declares ki-trades is named as a source or receiver in at least one channel of its resolved Capital trade policy. The Capital itself hosts the policy and is exempt. (standards-trades.md)
+  - _Remediation:_ diagnostic — Propose a channel naming this repository to the Capital, or remove the ki-trades declaration if the repository does not trade.
+
+## POLICY — Capital trade policy
+
+→ [standard](standards-trades.md)
+
+The Capital-owned territory trade policy and the islands it names.
+
+- **POLICY-1 [M] — the Capital trade policy is well formed** — In a Capital, `[skills.ki-trades.territory]` carries only `subtypes`, `channels`, and `standing`. Each channel declares exactly a unique `id`, a `purpose`, disjoint non-empty canonical `from` and `to` arrays of territory members, and a non-empty duplicate-free subset of work and knowledge, and no route triple is granted twice. Each standing grant names a defined knowledge subtype over disjoint canonical endpoints already joined by a knowledge channel, without duplicates. Any violation fails closed. (standards-trades.md)
+  - _Remediation:_ diagnostic — Correct the Capital trade policy; until it is valid it grants no routes anywhere in the territory.
+- **POLICY-2 [M] — named islands declare ki-trades** — In a Capital, every island the trade policy names that is registered locally declares `[skills.ki-trades]`; an island not checked out here is reported as unverifiable. (standards-trades.md)
+  - _Remediation:_ diagnostic — Hand the named island a declaration of ki-trades through its own repository, or remove it from the policy channels.
 
 ## SCAFFOLD — Trade scaffold
 
@@ -74,7 +88,7 @@ One concise identity moves from mutable preparation to immutable submitted recor
 
 A trade remains a local copy protocol with an immutable raw sender projection and receiver-only local fields.
 
-- **AUTH-1 [M] — sender and receiver write boundaries are preserved** — Preparations and outbound records belong to the local sender, retain their declared export route, and contain no receiver-local fields; inbound records belong to the local receiver, retain an active receipt route, and preserve the submitted sender projection. That projection is compared against the registered peer's counterpart by meaning rather than by byte, so a formatter run is not reported as tampering while any change to the words is; where no registered peer holds the counterpart, the comparison reports as unverifiable rather than passing silently. (standards-trades.md)
+- **AUTH-1 [M] — sender and receiver write boundaries are preserved** — Preparations and outbound records belong to the local sender, retain an export route granted by the Capital trade policy, and contain no receiver-local fields; inbound records belong to the local receiver, retain an active receipt route granted by that policy, and preserve the submitted sender projection. That projection is compared against the registered peer's counterpart by meaning rather than by byte, so a formatter run is not reported as tampering while any change to the words is; where no registered peer holds the counterpart, the comparison reports as unverifiable rather than passing silently. Where the Capital policy is not available here, route authority is reported as unverifiable; an ambiguous or malformed policy grants no route. (standards-trades.md)
   - _Remediation:_ diagnostic — Correct only the locally owned record or route; do not alter a peer repository or the immutable sender projection.
 
 ## STATUS — Delivery and receiver decision
@@ -109,8 +123,8 @@ Absence is an observable release signal only after the sender-selected receipt, 
 
 A narrow two-sided subtype grant permits direct receiver-local knowledge capture without granting peer write or lifecycle authority.
 
-- **STANDING-1 [M] — standing knowledge intake preserves exact authority and provenance** — Every marked STI provenance block is receiver-local, knowledge-only, uniquely identified, anchored to an exact source commit and capture location, and backed by an active or introduction-time reciprocal exact-subtype grant. Revocation blocks new capture while preserving evidence introduced under a former grant. (standards-trades.md)
-  - _Remediation:_ diagnostic — Correct only receiver-owned provenance or route declarations; use an itemized knowledge trade whenever exact standing authority cannot be proven.
+- **STANDING-1 [M] — standing knowledge intake preserves exact authority and provenance** — Every marked STI provenance block is receiver-local, knowledge-only, uniquely identified, anchored to an exact source commit and capture location, and backed by an active or introduction-time exact-subtype standing grant in the Capital trade policy; where that policy is not available here the grant is reported as unverifiable. Revocation blocks new capture while preserving evidence introduced under a former grant. (standards-trades.md)
+  - _Remediation:_ diagnostic — Correct only receiver-owned provenance, or propose the standing grant to the Capital trade policy; use an itemized knowledge trade whenever exact standing authority cannot be proven.
 
 ## ADOPTION — Receiver local authority
 

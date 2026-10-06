@@ -19,8 +19,8 @@ This governance skill defines safe **trade preparation and submission**, not tra
 
 ## What this skill owns
 
-1. **Declared participation** — a repository opts in with its own `ki-trades` table, declaring typed export and import routes in one partner-keyed table each. The current local registry, path projection, and record grammar support only the canonical GitHub `owner/repository` identity from `ki-repo.repository`; another host is unsupported and must be refused rather than represented partially.
-2. **Directional trade routes** — a sender-declared export permits local preparation or submission before receiver participation. Receipt becomes available only when both repositories are registered, the sender exports that trade kind, and the receiver imports it. Pending participation and active reciprocity remain distinct route facts.
+1. **Declared participation** — a repository opts in with its own bare `ki-trades` table, carrying at most `map_bonus`; the retired `routes` and `subtypes` keys fail. The current local registry, path projection, and record grammar support only the canonical GitHub `owner/repository` identity from `ki-repo.repository`; another host is unsupported and must be refused rather than represented partially.
+2. **Capital-granted routes** — typed directional routes, knowledge subtypes, and standing grants come only from the territory trade policy in the Capital's `[skills.ki-trades.territory]`, resolved through the repository's declared `ki-repo.capital`. A granted export permits local preparation or submission before receiver participation. Receipt becomes available only when the peer is registered once, declares ki-trades, and names the same Capital. In a Capital, the skill also validates the policy and checks that each named island declares ki-trades. A malformed or ambiguous policy fails closed.
 3. **Trade phases and identity** — every preparation and submission uses one `TRD-<eight lower-case hexadecimal characters>` identity and declares `kind: work | knowledge`. Every copy declares its own `phase` — `preparing`, `submitted`, or `received`. A committed `phase: preparing` record is mutable and silently observable at the sender's outbound path; submission rewrites the phase to `submitted` on that same path and freezes it.
 4. **Authority and byte boundaries** — the sender writes only preparations and outbound submissions. The receiver creates and updates only its inbound copy. The complete raw sender projection remains byte-stable; only closed receiver-local receipt, decision, rationale, and linkage fields may differ.
 5. **Independent lifecycle axes** — submission, receipt, receiver decision, and sender observation policy are separate facts. Receipt creates an inbound `unconsidered` copy but implies no review or acceptance. The receiver alone moves through `in_progress`, `parked`, `clarify`, `applied`, `adopted`, `retained`, `declined`, or `superseded`.
@@ -33,7 +33,7 @@ The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-trades --repo <repo>`. The structured catalogue validates local configuration, declared and active typed routes, owned scaffold, preparation and submitted-record shape, sender/receiver authority, receipt and decision fields, raw sender-projection agreement, and observation-led release or pruning. Then review whether any direct application, local adoption, or knowledge retention preserves the receiver's independent authority.
+Run `ki repo audit --skill ki-trades --repo <repo>`. The structured catalogue validates the bare member table, the Capital policy and its granted and active typed routes, owned scaffold, preparation and submitted-record shape, sender/receiver authority, receipt and decision fields, raw sender-projection agreement, and observation-led release or pruning. Then review whether any direct application, local adoption, or knowledge retention preserves the receiver's independent authority.
 
 ### Mode CONFORM
 
@@ -45,11 +45,11 @@ Run `ki repo educate --skill ki-trades --repo <repo>` to render the concern and 
 
 ### Mode REFRESH
 
-REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the harness. Reconcile the standard, structured catalogue, generated rubric, sources, and GDR-KI-HARNESS-005 when the contract changes; confirm before changing the authority or lifecycle model.
+REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the harness. Reconcile the standard, structured catalogue, generated rubric, sources, and GDR-KI-HARNESS-013 when the contract changes; confirm before changing the authority or lifecycle model.
 
 ## Notes
 
 - `ki-next` may present an inbound record for exact human-confirmed disposition, but cannot infer a disposition or roadmap transition.
 - `ki-work-roadmap` supplies read-only structural and review guidance; it does not write trade records or gain cross-repository priority authority.
-- The checker reads only registered repository roots and their public `ki-trades` declarations and records. It never scans for repositories or writes a peer checkout.
+- The checker reads only registered repository roots and their public `ki-repo` identity and `ki-trades` declarations, the Capital policy, and records. It never scans for repositories or writes a peer checkout.
 - The `ki` host owns execution, findings, publication, and post-conform verification; judgment aspects remain explicitly unevaluated until reviewed.

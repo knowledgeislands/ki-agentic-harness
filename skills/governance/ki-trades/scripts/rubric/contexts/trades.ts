@@ -12,7 +12,6 @@ const CONFIG_TABLE = 'ki-trades'
 const REPOSITORY_TABLE = 'ki-repo'
 const IDENTITY = /^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/
 const REPOSITORY = /^https:\/\/github\.com\/([a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)\/([a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)$/
-const PARTNER = /^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/
 const TRADE_ID = /^TRD-[0-9a-f]{8}$/
 const SUBTYPE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/
 const UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
@@ -110,10 +109,7 @@ type TradeRecord = {
   readonly rawSenderProjection: string
 }
 
-type RegisteredRepository = {
-  readonly root: string
-  readonly configuration: TradeConfiguration
-}
+type RegisteredRepository = Declaration
 
 export type OutcomeContext = {
   readonly outcomes: readonly AuditOutcome[]
@@ -130,10 +126,20 @@ export type ScaffoldContext = OutcomeContext & {
 
 export type TradeJudgmentContext = Record<never, never>
 
+export type RoutesContext = OutcomeContext & {
+  readonly coverageOutcomes: readonly AuditOutcome[]
+}
+
+export type PolicyContext = {
+  readonly schemaOutcomes: readonly AuditOutcome[]
+  readonly namedOutcomes: readonly AuditOutcome[]
+}
+
 export type TradesRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly configuration: OutcomeContext
-  readonly routes: OutcomeContext
+  readonly routes: RoutesContext
+  readonly policy: PolicyContext
   readonly scaffold: ScaffoldContext
   readonly records: RecordsContext
   readonly authority: OutcomeContext
@@ -181,319 +187,54 @@ const repositoryIdentity = (repository: unknown): { repository?: string; identit
   return match ? { repository, identity: `${match[1]}/${match[2]}` } : {}
 }
 
-const parseConfiguration = (
-  value: Readonly<Record<string, unknown>>,
-  repository: unknown,
-  subject: string
-): { configuration: TradeConfiguration; outcomes: AuditOutcome[] } => {
-  const outcomes: AuditOutcome[] = []
-  const unknown = Object.keys(value).filter((key) => key !== 'map_bonus' && key !== 'routes' && key !== 'subtypes')
-  for (const key of unknown)
-    outcomes.push({
-      status: 'VIOLATION',
-      level: 'WARN',
-      message: `unrecognised ki-trades configuration key ${key}`,
-      subject
-    })
+/** The member keys a bare `[skills.ki-trades]` may carry; `territory` is Capital-only. */
+const MEMBER_KEYS = new Set(['map_bonus'])
+const RETIRED_KEYS = new Set(['routes', 'subtypes'])
+const POLICY_KEYS = new Set(['subtypes', 'channels', 'standing'])
+const CHANNEL_KEYS = ['id', 'purpose', 'from', 'to', 'kinds'] as const
+const STANDING_KEYS = ['subtype', 'from', 'to'] as const
 
-  const local = repositoryIdentity(repository)
-  if (!local.repository || !local.identity)
-    outcomes.push({
-      status: 'VIOLATION',
-      message: 'ki-repo repository must be a canonical HTTPS GitHub home',
-      subject
-    })
-
-  const declaredMapBonus = value.map_bonus
-  const configuredMapBonus = declaredMapBonus === undefined ? 0 : declaredMapBonus
-  if (!validMapBonus(configuredMapBonus))
-    outcomes.push({
-      status: 'VIOLATION',
-      message: 'map_bonus must be an integer from 0 through 3',
-      subject
-    })
-
-  const knowledgeSubtypes: Record<string, string> = {}
-  const subtypeGroups = table(value.subtypes)
-  if (value.subtypes !== undefined && !subtypeGroups)
-    outcomes.push({
-      status: 'VIOLATION',
-      message: 'subtypes must be a table of trade-kind vocabularies',
-      subject
-    })
-  for (const key of Object.keys(subtypeGroups ?? {}).filter((key) => key !== 'knowledge'))
-    outcomes.push({
-      status: 'VIOLATION',
-      message: `subtype vocabulary ${key} is unsupported; standing intake is knowledge-only`,
-      subject
-    })
-  const declaredKnowledgeSubtypes = table(subtypeGroups?.knowledge)
-  if (subtypeGroups?.knowledge !== undefined && !declaredKnowledgeSubtypes)
-    outcomes.push({
-      status: 'VIOLATION',
-      message: 'knowledge subtypes must be a subtype-to-description table',
-      subject
-    })
-  for (const [subtype, description] of Object.entries(declaredKnowledgeSubtypes ?? {})) {
-    if (!SUBTYPE.test(subtype))
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `knowledge subtype ${subtype} must be a lower-case hyphenated identifier`,
-        subject
-      })
-    if (typeof description !== 'string' || !description.trim())
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `knowledge subtype ${subtype} must have a non-empty receiver-owned description`,
-        subject
-      })
-    if (SUBTYPE.test(subtype) && typeof description === 'string' && description.trim())
-      knowledgeSubtypes[subtype] = description
-  }
-
-  // Routes are declared partner-first — one table per peer, keyed by `owner/name` — while the
-  // rest of this skill reasons kind-first. Partner keys are unique by TOML's own prohibition on
-  // defining a key twice, and ordering is immaterial to a map, so neither is re-checked here; both
-  // were hand-written requirements the old direction-first arrays needed and this shape supersedes.
-  const partnerRepository = (partner: string): string | undefined => {
-    if (REPOSITORY.test(partner)) return partner
-    const home = `https://github.com/${partner}`
-    return PARTNER.test(partner) && REPOSITORY.test(home) ? home : undefined
-  }
-
-  const exportsTo: Record<TradeKind, string[]> = { work: [], knowledge: [] }
-  const importsFrom: Record<TradeKind, string[]> = { work: [], knowledge: [] }
-  const standingExports: Record<string, string[]> = {}
-  const standingImports: Record<string, string[]> = {}
-  const declared = table(value.routes)
-  if (value.routes !== undefined && !declared)
-    outcomes.push({
-      status: 'VIOLATION',
-      message: 'routes must be a table of trade partners',
-      subject
-    })
-
-  for (const [partner, route] of Object.entries(declared ?? {})) {
-    const home = partnerRepository(partner)
-    if (!home) {
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `route ${partner} must be keyed by owner/name or a canonical HTTPS GitHub repository URL; non-GitHub endpoints are unsupported`,
-        subject
-      })
-      continue
-    }
-    if (home === local.repository)
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `route ${partner} must not name the local repository`,
-        subject
-      })
-
-    const directions = table(route)
-    if (!directions) {
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `route ${partner} must be a table declaring export and import kinds`,
-        subject
-      })
-      continue
-    }
-    for (const key of Object.keys(directions).filter(
-      (key) => key !== 'export' && key !== 'import' && key !== 'standing'
-    ))
-      outcomes.push({
-        status: 'VIOLATION',
-        level: 'WARN',
-        message: `unrecognised route direction ${key} for ${partner}`,
-        subject
-      })
-
-    for (const [direction, target] of [
-      ['export', exportsTo],
-      ['import', importsFrom]
-    ] as const) {
-      const values = directions[direction]
-      if (values === undefined) continue
-      if (!Array.isArray(values) || values.some((kind) => typeof kind !== 'string')) {
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} ${direction} must be an array of trade kinds`,
-          subject
-        })
-        continue
-      }
-      const kinds = values as string[]
-      if (kinds.length === 0)
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} ${direction} carries no kinds and must be omitted rather than empty`,
-          subject
-        })
-      if (new Set(kinds).size !== kinds.length)
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} ${direction} must not repeat a kind`,
-          subject
-        })
-      for (const kind of kinds) {
-        if (!TRADE_KINDS.includes(kind as TradeKind)) {
-          outcomes.push({
-            status: 'VIOLATION',
-            message: `route ${partner} ${direction} kind ${kind} is not a declared trade kind`,
-            subject
-          })
-          continue
-        }
-        target[kind as TradeKind].push(home)
-      }
-    }
-
-    const standing = table(directions.standing)
-    if (directions.standing !== undefined && !standing)
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `route ${partner} standing must be a table declaring export or import knowledge subtypes`,
-        subject
-      })
-    for (const key of Object.keys(standing ?? {}).filter((key) => key !== 'export' && key !== 'import'))
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `route ${partner} standing direction ${key} is unsupported`,
-        subject
-      })
-    for (const [direction, target] of [
-      ['export', standingExports],
-      ['import', standingImports]
-    ] as const) {
-      const kinds = table(standing?.[direction])
-      if (standing?.[direction] !== undefined && !kinds) {
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} standing ${direction} must be a knowledge subtype table`,
-          subject
-        })
-        continue
-      }
-      for (const key of Object.keys(kinds ?? {}).filter((key) => key !== 'knowledge'))
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} standing ${direction} kind ${key} is unsupported`,
-          subject
-        })
-      const values = kinds?.knowledge
-      if (values === undefined) continue
-      if (!Array.isArray(values) || values.some((subtype) => typeof subtype !== 'string')) {
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} standing ${direction} knowledge must be an array of subtypes`,
-          subject
-        })
-        continue
-      }
-      const subtypes = values as string[]
-      if (subtypes.length === 0)
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} standing ${direction} knowledge must be omitted rather than empty`,
-          subject
-        })
-      if (new Set(subtypes).size !== subtypes.length)
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} standing ${direction} knowledge must not repeat a subtype`,
-          subject
-        })
-      for (const subtype of subtypes) {
-        if (!SUBTYPE.test(subtype))
-          outcomes.push({
-            status: 'VIOLATION',
-            message: `route ${partner} standing ${direction} subtype ${subtype} must be a lower-case hyphenated identifier`,
-            subject
-          })
-        if (direction === 'import' && !(subtype in knowledgeSubtypes))
-          outcomes.push({
-            status: 'VIOLATION',
-            message: `route ${partner} standing import subtype ${subtype} is not defined by the receiver`,
-            subject
-          })
-      }
-      if (!(Array.isArray(directions[direction]) && directions[direction].includes('knowledge')))
-        outcomes.push({
-          status: 'VIOLATION',
-          message: `route ${partner} standing ${direction} requires the ordinary knowledge ${direction} route`,
-          subject
-        })
-      target[home] = subtypes.filter((subtype) => SUBTYPE.test(subtype))
-    }
-  }
-  for (const kind of TRADE_KINDS) {
-    exportsTo[kind].sort((left, right) => left.localeCompare(right))
-    importsFrom[kind].sort((left, right) => left.localeCompare(right))
-  }
-
-  return {
-    configuration: {
-      ...local,
-      exportsTo,
-      importsFrom,
-      knowledgeSubtypes,
-      standingExports,
-      standingImports,
-      mapBonus: validMapBonus(configuredMapBonus) ? configuredMapBonus : 0,
-      participates: true,
-      valid: outcomes.every((outcome) => outcome.status !== 'VIOLATION' || outcome.level === 'WARN')
-    },
-    outcomes
-  }
+/** One registered checkout, identified only by what its own `.ki.toml` declares. */
+type Declaration = {
+  readonly root: string
+  readonly repository?: string
+  readonly identity?: string
+  readonly capital?: unknown
+  readonly territory?: unknown
+  readonly trades?: Readonly<Record<string, unknown>>
 }
 
-const parseRepositoryConfiguration = (root: string): TradeConfiguration => {
+const isCapital = (value: Declaration): boolean =>
+  value.repository !== undefined && value.capital === value.repository && table(value.territory) !== null
+
+const territoryMembers = (value: Declaration): readonly string[] => {
+  const members = table(value.territory)?.members
+  return Array.isArray(members) ? members.filter((member): member is string => typeof member === 'string') : []
+}
+
+const readDeclaration = (root: string): Declaration | undefined => {
   const path = join(root, '.ki.toml')
-  if (!containedPhysical(root, path, 'file'))
-    return {
-      exportsTo: { work: [], knowledge: [] },
-      importsFrom: { work: [], knowledge: [] },
-      knowledgeSubtypes: {},
-      standingExports: {},
-      standingImports: {},
-      mapBonus: 0,
-      participates: false,
-      valid: false
-    }
+  if (!containedPhysical(root, path, 'file')) return undefined
   try {
     const document = Bun.TOML.parse(readFileSync(path, 'utf8')) as Record<string, unknown>
     const skills = table(document.skills) ?? {}
-    const owned = table(skills[CONFIG_TABLE])
-    const repository = table(skills[REPOSITORY_TABLE])?.repository
-    if (!owned)
-      return {
-        ...repositoryIdentity(repository),
-        exportsTo: { work: [], knowledge: [] },
-        importsFrom: { work: [], knowledge: [] },
-        knowledgeSubtypes: {},
-        standingExports: {},
-        standingImports: {},
-        mapBonus: 0,
-        participates: false,
-        valid: false
-      }
-    return parseConfiguration(owned, repository, path).configuration
-  } catch {
+    const repo = table(skills[REPOSITORY_TABLE]) ?? {}
+    const trades = table(skills[CONFIG_TABLE])
     return {
-      exportsTo: { work: [], knowledge: [] },
-      importsFrom: { work: [], knowledge: [] },
-      knowledgeSubtypes: {},
-      standingExports: {},
-      standingImports: {},
-      mapBonus: 0,
-      participates: true,
-      valid: false
+      root,
+      ...repositoryIdentity(repo.repository),
+      capital: repo.capital,
+      territory: repo.territory,
+      ...(trades ? { trades } : {})
     }
+  } catch {
+    return undefined
   }
 }
 
+/** Registry location: `$KI_STATE_HOME`, else `$XDG_STATE_HOME/ki`, else `~/.local/state/ki`. */
 const registryPath = (userHome: string): string => {
+  if (process.env.KI_STATE_HOME) return join(resolve(process.env.KI_STATE_HOME), 'registry.toml')
   const stateHome = process.env.XDG_STATE_HOME ? resolve(process.env.XDG_STATE_HOME) : join(userHome, '.local', 'state')
   return join(stateHome, 'ki', 'registry.toml')
 }
@@ -507,167 +248,486 @@ const registeredRepositories = (userHome: string): readonly RegisteredRepository
     return Object.values(repositories)
       .map((entry) => table(entry)?.path)
       .filter((root): root is string => typeof root === 'string' && isAbsolute(root) && physicalDirectory(root))
-      .map((root) => ({
-        root: realpathSync(root),
-        configuration: parseRepositoryConfiguration(realpathSync(root))
-      }))
+      .map((root) => readDeclaration(realpathSync(root)) ?? { root: realpathSync(root) })
   } catch {
     return []
   }
 }
 
+const declaring = (registered: readonly RegisteredRepository[], repository: string): readonly RegisteredRepository[] =>
+  registered.filter((candidate) => candidate.repository === repository)
+
+/** Validate the bare member table; route and subtype declarations now live only in the Capital policy. */
+const parseConfiguration = (
+  value: Readonly<Record<string, unknown>>,
+  local: Declaration,
+  subject: string
+): { mapBonus: number; outcomes: AuditOutcome[] } => {
+  const outcomes: AuditOutcome[] = []
+  const capitalRepository = local.repository !== undefined && local.capital === local.repository
+  for (const key of Object.keys(value).sort()) {
+    if (MEMBER_KEYS.has(key)) continue
+    if (RETIRED_KEYS.has(key))
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `ki-trades ${key} is retired: routes and knowledge subtypes now come from the Capital's territory trade policy${typeof local.capital === 'string' ? ` in ${local.capital}` : ''}`,
+        subject
+      })
+    else if (key === 'territory') {
+      if (!capitalRepository)
+        outcomes.push({
+          status: 'VIOLATION',
+          message:
+            'ki-trades territory is the Capital trade policy and is permitted only where capital equals repository',
+          subject
+        })
+    } else
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `unrecognised ki-trades configuration key ${key}; a member table carries only map_bonus`,
+        subject
+      })
+  }
+
+  if (!local.repository || !local.identity)
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'ki-repo repository must be a canonical HTTPS GitHub home',
+      subject
+    })
+
+  const configuredMapBonus = value.map_bonus === undefined ? 0 : value.map_bonus
+  if (!validMapBonus(configuredMapBonus))
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'map_bonus must be an integer from 0 through 3',
+      subject
+    })
+  return { mapBonus: validMapBonus(configuredMapBonus) ? configuredMapBonus : 0, outcomes }
+}
+
+type TradePolicy = {
+  readonly subtypes: Readonly<Record<string, string>>
+  /** `source|receiver|kind` to the producing channel id. */
+  readonly routes: ReadonlyMap<string, string>
+  /** `source|receiver|subtype`. */
+  readonly standing: ReadonlySet<string>
+}
+
+const triple = (source: string, receiver: string, last: string): string => `${source}|${receiver}|${last}`
+
+/**
+ * Parse and validate a Capital's `[skills.ki-trades.territory]`. Any violation fails closed:
+ * the policy grants no routes. `named` collects every canonical endpoint for coverage checks,
+ * whether or not the policy is valid.
+ */
+const parsePolicy = (
+  capital: Declaration
+): { policy?: TradePolicy; outcomes: readonly AuditOutcome[]; named: ReadonlySet<string> } => {
+  const subject = `${capital.repository ?? 'Capital'} [skills.ki-trades.territory]`
+  const outcomes: AuditOutcome[] = []
+  const named = new Set<string>()
+  const fail = (message: string): void => {
+    outcomes.push({ status: 'VIOLATION', message, subject })
+  }
+  const value = capital.trades?.territory
+  const territory = table(value)
+  if (value === undefined) return { policy: { subtypes: {}, routes: new Map(), standing: new Set() }, outcomes, named }
+  if (!territory) {
+    fail('territory trade policy must be a table')
+    return { outcomes, named }
+  }
+  for (const key of Object.keys(territory)
+    .filter((key) => !POLICY_KEYS.has(key))
+    .sort())
+    fail(`territory trade policy key ${key} is not allowed; use subtypes, channels, and standing`)
+
+  const members = new Set(territoryMembers(capital))
+  const endpoints = (owner: string, side: 'from' | 'to', raw: unknown): string[] => {
+    if (!Array.isArray(raw) || raw.length === 0) {
+      fail(`${owner} ${side} must be a non-empty array of canonical HTTPS GitHub URLs`)
+      return []
+    }
+    const valid: string[] = []
+    for (const endpoint of raw) {
+      if (typeof endpoint !== 'string' || !REPOSITORY.test(endpoint)) {
+        fail(`${owner} ${side} endpoint ${JSON.stringify(endpoint)} is not a canonical HTTPS GitHub URL`)
+        continue
+      }
+      named.add(endpoint)
+      if (valid.includes(endpoint)) fail(`${owner} ${side} repeats ${endpoint}`)
+      else valid.push(endpoint)
+    }
+    return valid
+  }
+  const disjoint = (owner: string, from: readonly string[], to: readonly string[]): void => {
+    for (const endpoint of from.filter((endpoint) => to.includes(endpoint)))
+      fail(`${owner} names ${endpoint} on both sides; a repository cannot trade with itself`)
+  }
+  const exactKeys = (owner: string, entry: Readonly<Record<string, unknown>>, keys: readonly string[]): void => {
+    for (const key of Object.keys(entry)
+      .filter((key) => !keys.includes(key))
+      .sort())
+      fail(`${owner} key ${key} is not allowed`)
+    for (const key of keys.filter((key) => entry[key] === undefined)) fail(`${owner} must declare ${key}`)
+  }
+
+  const subtypes: Record<string, string> = {}
+  const declaredSubtypes = table(territory.subtypes)
+  if (territory.subtypes !== undefined && !declaredSubtypes)
+    fail('territory subtypes must be a table of knowledge subtype descriptions')
+  for (const [subtype, description] of Object.entries(declaredSubtypes ?? {})) {
+    if (!SUBTYPE.test(subtype)) fail(`knowledge subtype ${subtype} must be a lower-case hyphenated identifier`)
+    if (typeof description !== 'string' || !description.trim())
+      fail(`knowledge subtype ${subtype} must have a non-empty description`)
+    if (SUBTYPE.test(subtype) && typeof description === 'string' && description.trim()) subtypes[subtype] = description
+  }
+
+  const routes = new Map<string, string>()
+  const channelIds = new Set<string>()
+  if (territory.channels !== undefined && !Array.isArray(territory.channels))
+    fail('territory channels must be an array of tables')
+  for (const [index, raw] of (Array.isArray(territory.channels) ? territory.channels : []).entries()) {
+    const entry = table(raw)
+    const label = typeof entry?.id === 'string' ? `channel ${entry.id}` : `channel ${index + 1}`
+    if (!entry) {
+      fail(`${label} must be a table`)
+      continue
+    }
+    exactKeys(label, entry, CHANNEL_KEYS)
+    if (typeof entry.id !== 'string' || !SUBTYPE.test(entry.id))
+      fail(`${label} id must be a lower-case hyphenated identifier`)
+    else if (channelIds.has(entry.id)) fail(`${label} id is not unique`)
+    else channelIds.add(entry.id)
+    if (typeof entry.purpose !== 'string' || !entry.purpose.trim()) fail(`${label} purpose must be a non-empty string`)
+    const from = endpoints(label, 'from', entry.from)
+    const to = endpoints(label, 'to', entry.to)
+    disjoint(label, from, to)
+    const kinds: TradeKind[] = []
+    if (!Array.isArray(entry.kinds) || entry.kinds.length === 0) fail(`${label} kinds must be a non-empty array`)
+    for (const kind of Array.isArray(entry.kinds) ? entry.kinds : []) {
+      if (!TRADE_KINDS.includes(kind as TradeKind))
+        fail(`${label} kind ${JSON.stringify(kind)} is not work or knowledge`)
+      else if (kinds.includes(kind as TradeKind)) fail(`${label} repeats kind ${kind}`)
+      else kinds.push(kind as TradeKind)
+    }
+    for (const source of from)
+      for (const receiver of to) {
+        if (source === receiver) continue
+        for (const kind of kinds) {
+          const key = triple(source, receiver, kind)
+          const previous = routes.get(key)
+          if (previous)
+            fail(`${label} repeats the ${kind} route ${source} -> ${receiver} already granted by ${previous}`)
+          else routes.set(key, label)
+        }
+      }
+  }
+
+  const standing = new Set<string>()
+  if (territory.standing !== undefined && !Array.isArray(territory.standing))
+    fail('territory standing must be an array of tables')
+  for (const [index, raw] of (Array.isArray(territory.standing) ? territory.standing : []).entries()) {
+    const entry = table(raw)
+    const label = `standing grant ${index + 1}`
+    if (!entry) {
+      fail(`${label} must be a table`)
+      continue
+    }
+    exactKeys(label, entry, STANDING_KEYS)
+    const subtype = typeof entry.subtype === 'string' ? entry.subtype : undefined
+    if (!subtype || !(subtype in subtypes))
+      fail(`${label} subtype ${JSON.stringify(entry.subtype)} is not defined in territory subtypes`)
+    const from = endpoints(label, 'from', entry.from)
+    const to = endpoints(label, 'to', entry.to)
+    disjoint(label, from, to)
+    if (!subtype) continue
+    for (const source of from)
+      for (const receiver of to) {
+        if (source === receiver) continue
+        if (!routes.has(triple(source, receiver, 'knowledge')))
+          fail(`${label} ${subtype} ${source} -> ${receiver} has no knowledge channel`)
+        const key = triple(source, receiver, subtype)
+        if (standing.has(key)) fail(`${label} repeats the standing grant ${subtype} ${source} -> ${receiver}`)
+        else standing.add(key)
+      }
+  }
+
+  for (const endpoint of [...named].sort())
+    if (!members.has(endpoint)) fail(`${endpoint} is named by the trade policy but is not a territory member`)
+
+  return outcomes.length > 0 ? { outcomes, named } : { policy: { subtypes, routes, standing }, outcomes, named }
+}
+
+type PolicyResolution =
+  | { readonly state: 'resolved'; readonly capital: Declaration; readonly policy: TradePolicy }
+  | {
+      readonly state: 'undeclared' | 'unavailable' | 'ambiguous' | 'not-capital' | 'not-member' | 'malformed'
+      readonly message: string
+    }
+
+const unavailableMessage = (capital: string): string => `territory policy lives in ${capital}, not available here`
+
+/**
+ * Resolve the trade policy through the local repository's own declared `capital`: the unique
+ * registered checkout declaring that repository, which must be a Capital listing this member.
+ * A Capital resolves its own policy. No Agora and no territory scan is consulted.
+ */
+const resolvePolicy = (local: Declaration, registered: readonly RegisteredRepository[]): PolicyResolution => {
+  const capital = local.capital
+  if (!local.repository)
+    return { state: 'undeclared', message: 'ki-repo repository is not a canonical HTTPS GitHub home' }
+  if (typeof capital !== 'string' || !REPOSITORY.test(capital))
+    return { state: 'undeclared', message: 'ki-repo capital is not declared as a canonical HTTPS GitHub URL' }
+  let source: Declaration
+  if (capital === local.repository) source = local
+  else {
+    const found = declaring(registered, capital)
+    if (found.length === 0) return { state: 'unavailable', message: unavailableMessage(capital) }
+    if (found.length > 1)
+      return {
+        state: 'ambiguous',
+        message: `territory policy in ${capital} is ambiguous across ${found.length} registered checkouts; no routes are granted`
+      }
+    source = found[0] as RegisteredRepository
+  }
+  if (!isCapital(source))
+    return {
+      state: 'not-capital',
+      message: `${capital} is not a Capital (it must name itself as capital and declare [skills.ki-repo.territory]); no routes are granted`
+    }
+  if (!territoryMembers(source).includes(local.repository))
+    return {
+      state: 'not-member',
+      message: `Capital ${capital} does not list ${local.repository} as a territory member; no routes are granted`
+    }
+  const parsed = parsePolicy(source)
+  if (!parsed.policy)
+    return {
+      state: 'malformed',
+      message: `territory trade policy in ${capital} is malformed and fails closed; no routes are granted`
+    }
+  return { state: 'resolved', capital: source, policy: parsed.policy }
+}
+
+/** The per-repository view of a resolved policy, in the shape record and standing checks consume. */
+const effectiveConfiguration = (
+  local: Declaration,
+  resolution: PolicyResolution,
+  mapBonus: number
+): TradeConfiguration => {
+  const exportsTo: Record<TradeKind, string[]> = { work: [], knowledge: [] }
+  const importsFrom: Record<TradeKind, string[]> = { work: [], knowledge: [] }
+  const standingExports: Record<string, string[]> = {}
+  const standingImports: Record<string, string[]> = {}
+  const repository = local.repository
+  if (resolution.state === 'resolved' && repository) {
+    for (const key of resolution.policy.routes.keys()) {
+      const [source, receiver, kind] = key.split('|') as [string, string, TradeKind]
+      if (source === repository) exportsTo[kind].push(receiver)
+      if (receiver === repository) importsFrom[kind].push(source)
+    }
+    for (const key of resolution.policy.standing) {
+      const [source, receiver, subtype] = key.split('|') as [string, string, string]
+      if (source === repository) standingExports[receiver] = [...(standingExports[receiver] ?? []), subtype]
+      if (receiver === repository) standingImports[source] = [...(standingImports[source] ?? []), subtype]
+    }
+    for (const kind of TRADE_KINDS) {
+      exportsTo[kind].sort((left, right) => left.localeCompare(right))
+      importsFrom[kind].sort((left, right) => left.localeCompare(right))
+    }
+  }
+  return {
+    ...(local.repository ? { repository: local.repository } : {}),
+    ...(local.identity ? { identity: local.identity } : {}),
+    exportsTo,
+    importsFrom,
+    knowledgeSubtypes: resolution.state === 'resolved' ? resolution.policy.subtypes : {},
+    standingExports,
+    standingImports,
+    mapBonus,
+    participates: true,
+    valid: resolution.state === 'resolved'
+  }
+}
+
 const routeEvidence = (
   root: string,
-  userHome: string,
-  local: TradeConfiguration
+  local: TradeConfiguration,
+  declaration: Declaration,
+  resolution: PolicyResolution,
+  registered: readonly RegisteredRepository[]
 ): {
   outcomes: readonly AuditOutcome[]
+  coverage: readonly AuditOutcome[]
   active: ReadonlyMap<string, RegisteredRepository>
   standingActive: ReadonlySet<string>
 } => {
-  if (!local.valid || !local.identity || !local.repository)
+  const none = { active: new Map<string, RegisteredRepository>(), standingActive: new Set<string>() }
+  if (resolution.state === 'undeclared')
+    return {
+      outcomes: [{ status: 'NOT_APPLICABLE', message: `trade routes cannot be resolved: ${resolution.message}` }],
+      coverage: [{ status: 'NOT_APPLICABLE', message: 'trade routes cannot be resolved; ROUTE-1 reports it' }],
+      ...none
+    }
+  const capitalSubject = typeof declaration.capital === 'string' ? declaration.capital : '.ki.toml'
+  if (resolution.state !== 'resolved')
     return {
       outcomes: [
         {
-          status: 'NOT_APPLICABLE',
-          message: 'trade routes require a valid local ki-repo repository identity'
+          status: 'VIOLATION',
+          ...(resolution.state === 'unavailable' ? { level: 'WARN' as const } : {}),
+          message: resolution.message,
+          subject: capitalSubject
         }
       ],
-      active: new Map(),
-      standingActive: new Set()
-    }
-  if (TRADE_KINDS.every((kind) => local.exportsTo[kind].length === 0 && local.importsFrom[kind].length === 0))
-    return {
-      outcomes: pass('No trade routes are declared.'),
-      active: new Map(),
-      standingActive: new Set()
+      coverage: [
+        { status: 'NOT_APPLICABLE', message: 'the territory trade policy is not resolved; ROUTE-1 reports it' }
+      ],
+      ...none
     }
 
-  const registered = registeredRepositories(userHome)
+  const repository = local.repository as string
+  const capital = resolution.capital.repository as string
+  const isCapitalRepository = capital === repository
+  const named = TRADE_KINDS.some((kind) => local.exportsTo[kind].length > 0 || local.importsFrom[kind].length > 0)
+  const coverage: readonly AuditOutcome[] = isCapitalRepository
+    ? [{ status: 'NOT_APPLICABLE', message: 'the Capital hosts the territory trade policy' }]
+    : named
+      ? pass('The territory trade policy names this repository in a channel.')
+      : [
+          {
+            status: 'VIOLATION',
+            message: `ki-trades is declared but the territory trade policy in ${capital} names this repository in no channel`,
+            subject: '.ki.toml'
+          }
+        ]
+  if (!named)
+    return {
+      outcomes: pass(`The territory trade policy in ${capital} grants this repository no routes.`),
+      coverage,
+      ...none
+    }
+
   const active = new Map<string, RegisteredRepository>()
   const standingActive = new Set<string>()
   const outcomes: AuditOutcome[] = []
   const physicalRoot = realpathSync(root)
-  if (!registered.some((candidate) => candidate.root === physicalRoot)) {
+  if (!registered.some((candidate) => candidate.root === physicalRoot))
     outcomes.push({
       status: 'VIOLATION',
       message: `local repository ${local.identity} is not present in the KI repository registry`,
       subject: local.identity
     })
-  }
 
-  const validateRoute = (peer: string, direction: 'export' | 'import', kind: TradeKind): void => {
-    const matches = registered.filter((candidate) => candidate.configuration.repository === peer)
-    const otherParty = direction === 'export' ? 'receiver' : 'sender'
+  /** A peer is active when registered once, declaring ki-trades, and naming the same Capital. */
+  const peerState = (
+    peer: string,
+    label: string,
+    otherParty: 'receiver' | 'sender'
+  ): RegisteredRepository | undefined => {
+    const matches = declaring(registered, peer)
     if (matches.length === 0) {
-      outcomes.push({
-        status: 'INFO',
-        message: `declared ${direction} route ${peer} awaits ${otherParty} registration`,
-        subject: peer
-      })
-      return
+      outcomes.push({ status: 'INFO', message: `${label} awaits ${otherParty} registration`, subject: peer })
+      return undefined
     }
     if (matches.length > 1) {
       outcomes.push({
         status: 'VIOLATION',
-        message: `declared ${direction} route ${peer} is ambiguous across ${matches.length} registered repositories`,
+        message: `${label} is ambiguous across ${matches.length} registered repositories`,
         subject: peer
       })
-      return
+      return undefined
     }
-    const [candidate] = matches
-    if (!candidate?.configuration.participates) {
+    const [candidate] = matches as [RegisteredRepository]
+    if (!candidate.trades) {
       outcomes.push({
         status: 'INFO',
-        message: `declared ${direction} route ${peer} awaits ${otherParty} ki-trades participation`,
+        message: `${label} awaits ${otherParty} ki-trades participation`,
         subject: peer
       })
-      return
+      return undefined
     }
-    if (!candidate.configuration.valid) {
+    if (candidate.capital !== capital) {
       outcomes.push({
         status: 'VIOLATION',
-        message: `registered route endpoint ${peer} has malformed ki-trades configuration`,
+        message: `${label} is inactive: ${peer} names capital ${JSON.stringify(candidate.capital)}, not ${capital}`,
         subject: peer
       })
-      return
+      return undefined
     }
-    const reciprocal =
-      direction === 'export' ? candidate.configuration.importsFrom[kind] : candidate.configuration.exportsTo[kind]
-    if (!reciprocal.includes(local.repository ?? '')) {
-      outcomes.push({
-        status: 'INFO',
-        message: `declared ${direction} route ${peer} awaits matching ${otherParty} declaration`,
-        subject: peer
-      })
-      return
-    }
-    if (candidate.configuration.identity) active.set(`${kind}:${candidate.configuration.identity}`, candidate)
-    outcomes.push({
-      status: 'PASS',
-      message: `${kind} ${direction} trade route ${local.repository} ${direction === 'export' ? '→' : '←'} ${peer} is active`,
-      subject: peer
-    })
+    return candidate
   }
-  const validateStanding = (peer: string, direction: 'export' | 'import', subtype: string): void => {
-    const matches = registered.filter((candidate) => candidate.configuration.repository === peer)
-    const otherParty = direction === 'export' ? 'receiver' : 'sender'
-    if (matches.length !== 1) {
-      outcomes.push({
-        status: matches.length > 1 ? 'VIOLATION' : 'INFO',
-        message:
-          matches.length > 1
-            ? `standing ${direction} ${subtype} to ${peer} is ambiguous across ${matches.length} registered repositories`
-            : `standing ${direction} ${subtype} to ${peer} awaits ${otherParty} registration`,
-        subject: peer
-      })
-      return
+
+  for (const kind of TRADE_KINDS)
+    for (const [direction, peers] of [
+      ['export', local.exportsTo[kind]],
+      ['import', local.importsFrom[kind]]
+    ] as const)
+      for (const peer of peers) {
+        const label = `${kind} ${direction} route ${peer}`
+        const candidate = peerState(peer, label, direction === 'export' ? 'receiver' : 'sender')
+        if (!candidate) continue
+        if (candidate.identity) active.set(`${kind}:${candidate.identity}`, candidate)
+        outcomes.push({
+          status: 'PASS',
+          message: `${kind} ${direction} trade route ${repository} ${direction === 'export' ? '→' : '←'} ${peer} is active`,
+          subject: peer
+        })
+      }
+  for (const [direction, grants] of [
+    ['export', local.standingExports],
+    ['import', local.standingImports]
+  ] as const)
+    for (const [peer, subtypes] of Object.entries(grants))
+      for (const subtype of subtypes) {
+        const label = `standing ${direction} ${subtype} ${direction === 'export' ? 'to' : 'from'} ${peer}`
+        if (!peerState(peer, label, direction === 'export' ? 'receiver' : 'sender')) continue
+        outcomes.push({
+          status: 'PASS',
+          message: `standing knowledge ${subtype} ${repository} ${direction === 'export' ? '→' : '←'} ${peer} active`,
+          subject: peer
+        })
+        if (direction === 'import') standingActive.add(`${peer}:${subtype}`)
+      }
+  return { outcomes, coverage, active, standingActive }
+}
+
+/** Capital-only checks: the policy schema (POLICY-1) and that named islands declare ki-trades (POLICY-2). */
+const policyEvidence = (
+  local: Declaration,
+  registered: readonly RegisteredRepository[]
+): { schema: readonly AuditOutcome[]; named: readonly AuditOutcome[] } => {
+  if (!local.repository || local.capital !== local.repository)
+    return {
+      schema: [{ status: 'NOT_APPLICABLE', message: 'not a Capital; the territory trade policy lives in the Capital' }],
+      named: [{ status: 'NOT_APPLICABLE', message: 'not a Capital; the territory trade policy lives in the Capital' }]
     }
-    const [candidate] = matches
-    if (!candidate?.configuration.participates || !candidate.configuration.valid) {
-      outcomes.push({
-        status: candidate?.configuration.participates ? 'VIOLATION' : 'INFO',
-        message: `standing ${direction} ${subtype} to ${peer} awaits valid ${otherParty} ki-trades participation`,
-        subject: peer
-      })
-      return
-    }
-    const reciprocal =
-      direction === 'export'
-        ? candidate.configuration.standingImports[local.repository ?? '']
-        : candidate.configuration.standingExports[local.repository ?? '']
-    if (!reciprocal?.includes(subtype)) {
-      outcomes.push({
-        status: 'INFO',
-        message: `standing ${direction} ${subtype} to ${peer} awaits matching ${otherParty} declaration`,
-        subject: peer
-      })
-      return
-    }
-    if (direction === 'export' && !(subtype in candidate.configuration.knowledgeSubtypes)) {
-      outcomes.push({
+  const parsed = parsePolicy(local)
+  const named: AuditOutcome[] = []
+  for (const island of [...parsed.named].sort()) {
+    if (island === local.repository) continue
+    const found = declaring(registered, island)
+    if (found.length === 0) named.push({ status: 'INFO', message: `${island} not checked out here`, subject: island })
+    else if (found.length > 1)
+      named.push({
         status: 'VIOLATION',
-        message: `standing export ${subtype} to ${peer} lacks receiver-owned subtype definition`,
-        subject: peer
+        message: `${island} is ambiguous across ${found.length} registered repositories`,
+        subject: island
       })
-      return
-    }
-    outcomes.push({
-      status: 'PASS',
-      message: `standing knowledge ${subtype} ${local.repository} ${direction === 'export' ? '→' : '←'} ${peer} active`,
-      subject: peer
-    })
-    if (direction === 'import') standingActive.add(`${peer}:${subtype}`)
+    else if (!found[0]?.trades)
+      named.push({
+        status: 'VIOLATION',
+        message: `${island} is named by the territory trade policy but declares no [skills.ki-trades]`,
+        subject: island
+      })
   }
-  for (const kind of TRADE_KINDS) {
-    for (const peer of local.exportsTo[kind]) validateRoute(peer, 'export', kind)
-    for (const peer of local.importsFrom[kind]) validateRoute(peer, 'import', kind)
+  return {
+    schema: parsed.outcomes.length > 0 ? parsed.outcomes : pass('The territory trade policy is well formed.'),
+    named: named.some((outcome) => outcome.status === 'VIOLATION')
+      ? named
+      : [...pass('Every locally registered island the policy names declares ki-trades.'), ...named]
   }
-  for (const [peer, subtypes] of Object.entries(local.standingExports))
-    for (const subtype of subtypes) validateStanding(peer, 'export', subtype)
-  for (const [peer, subtypes] of Object.entries(local.standingImports))
-    for (const subtype of subtypes) validateStanding(peer, 'import', subtype)
-  return { outcomes, active, standingActive }
 }
 
 const readMarkdownFiles = (root: string, directory: string): readonly string[] => {
@@ -706,14 +766,14 @@ const gitSucceeds = (root: string, args: readonly string[]): boolean =>
 
 const standingCaptureEvidence = (
   root: string,
-  userHome: string,
+  registered: readonly RegisteredRepository[],
   local: TradeConfiguration,
-  standingActive: ReadonlySet<string>
+  standingActive: ReadonlySet<string>,
+  resolution: PolicyResolution
 ): readonly AuditOutcome[] => {
   if (!local.repository) return []
   const outcomes: AuditOutcome[] = []
   const seen = new Map<string, string>()
-  const registered = registeredRepositories(userHome)
   const files = ['docs', 'skills'].flatMap((directory) => readMarkdownFiles(root, directory))
   const marker = STANDING_MARKER.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
   const fence = '```'
@@ -808,7 +868,7 @@ const standingCaptureEvidence = (
         })
       if (!id || !source || !subtype || !sourceRef) continue
 
-      const peer = registered.find((candidate) => candidate.configuration.repository === source)
+      const peer = registered.find((candidate) => candidate.repository === source)
       if (!peer) {
         outcomes.push({
           status: 'INFO',
@@ -831,6 +891,12 @@ const standingCaptureEvidence = (
           message: `standing intake ${id} matches an active exact-subtype grant`,
           subject
         })
+      } else if (resolution.state === 'unavailable') {
+        outcomes.push({
+          status: 'INFO',
+          message: `standing intake ${id} grant is unverifiable: ${resolution.message}`,
+          subject
+        })
       } else if (gitSucceeds(root, ['log', '-1', '--format=%H', `-S${id}`, '--', path])) {
         outcomes.push({
           status: 'INFO',
@@ -840,7 +906,7 @@ const standingCaptureEvidence = (
       } else {
         outcomes.push({
           status: 'VIOLATION',
-          message: `standing intake ${id} lacks an active exact-subtype grant`,
+          message: `standing intake ${id} lacks an active exact-subtype standing grant in the territory trade policy`,
           subject
         })
       }
@@ -1129,7 +1195,8 @@ const completionUnavailable = (record: TradeRecord): boolean =>
 const recordEvidence = (
   root: string,
   local: TradeConfiguration,
-  active: ReadonlyMap<string, RegisteredRepository>
+  active: ReadonlyMap<string, RegisteredRepository>,
+  resolution: PolicyResolution
 ): {
   records: AuditOutcome[]
   phase: AuditOutcome[]
@@ -1183,12 +1250,23 @@ const recordEvidence = (
         message: `${record.direction} record peer identity does not match its two-level path`,
         subject: record.path
       })
+    if (resolution.state === 'unavailable') {
+      authority.push({
+        status: 'INFO',
+        message: `route authority is unverifiable: ${resolution.message}`,
+        subject: record.path
+      })
+      continue
+    }
     const permitted = record.direction === 'inbound' ? local.importsFrom[record.kind] : local.exportsTo[record.kind]
     const peerRepository = `https://github.com/${record.peer}`
     if (!permitted.includes(peerRepository)) {
       authority.push({
         status: 'VIOLATION',
-        message: `${record.kind} ${record.direction} record has no declared local directional trade route to ${record.peer}`,
+        message:
+          resolution.state === 'resolved'
+            ? `${record.kind} ${record.direction} record has no route to ${record.peer} granted by the territory trade policy`
+            : `${record.kind} ${record.direction} record has no granted route to ${record.peer}: ${resolution.message}`,
         subject: record.path
       })
       continue
@@ -1198,7 +1276,7 @@ const recordEvidence = (
     if (record.direction === 'inbound' && !peer) {
       authority.push({
         status: 'VIOLATION',
-        message: `inbound record has no active reciprocal route to ${record.peer}`,
+        message: `inbound record has no active route to ${record.peer} granted by the territory trade policy`,
         subject: record.path
       })
       continue
@@ -1466,23 +1544,28 @@ export const createTradesSession = ({
   publication
 }: RubricContextOptions): RubricSession<TradesRubricContext> => {
   const root = resolve(repository)
-  const parsedConfiguration = parseConfiguration(
-    configuration,
-    parseRepositoryConfiguration(root).repository,
-    '.ki.toml'
-  )
-  const routes = routeEvidence(root, userHome, parsedConfiguration.configuration)
-  const evidence = recordEvidence(root, parsedConfiguration.configuration, routes.active)
-  const standing = standingCaptureEvidence(root, userHome, parsedConfiguration.configuration, routes.standingActive)
+  const declared = readDeclaration(root) ?? { root }
+  // The host passes the owned table; route the local declaration through it so a Capital's
+  // policy is read from exactly the configuration under audit.
+  const local: Declaration = { ...declared, trades: configuration }
+  const parsedConfiguration = parseConfiguration(configuration, local, '.ki.toml')
+  const registered = registeredRepositories(userHome)
+  const resolution = resolvePolicy(local, registered)
+  const effective = effectiveConfiguration(local, resolution, parsedConfiguration.mapBonus)
+  const routes = routeEvidence(root, effective, local, resolution, registered)
+  const policy = policyEvidence(local, registered)
+  const evidence = recordEvidence(root, effective, routes.active, resolution)
+  const standing = standingCaptureEvidence(root, registered, effective, routes.standingActive, resolution)
   let scaffoldRequested = false
   const context: TradesRubricContext = {
     rubric: { publication },
     configuration: {
       outcomes: parsedConfiguration.outcomes.length
         ? parsedConfiguration.outcomes
-        : pass('Trade route declarations are canonical.')
+        : pass('The ki-trades member table is canonical.')
     },
-    routes: { outcomes: routes.outcomes },
+    routes: { outcomes: routes.outcomes, coverageOutcomes: routes.coverage },
+    policy: { schemaOutcomes: policy.schema, namedOutcomes: policy.named },
     scaffold: {
       outcomes: scaffoldEvidence(root).length
         ? scaffoldEvidence(root)
@@ -1521,7 +1604,18 @@ export const createTradesSession = ({
     subjects: [
       { families: ['RUBRIC'], context: () => context },
       {
-        families: ['CONFIG', 'ROUTE', 'SCAFFOLD', 'RECORD', 'AUTH', 'STATUS', 'RELEASE', 'STANDING', 'ADOPTION'],
+        families: [
+          'CONFIG',
+          'ROUTE',
+          'POLICY',
+          'SCAFFOLD',
+          'RECORD',
+          'AUTH',
+          'STATUS',
+          'RELEASE',
+          'STANDING',
+          'ADOPTION'
+        ],
         context: () => context
       }
     ],

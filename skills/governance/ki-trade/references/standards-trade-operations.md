@@ -5,7 +5,7 @@
 ## Contents
 
 - [1. Preflight](#1-preflight)
-- [2. Manage routes](#2-manage-routes)
+- [2. Inspect routes and the Capital policy](#2-inspect-routes-and-the-capital-policy)
 - [3. Prepare and observe](#3-prepare-and-observe)
 - [4. Submit or abandon](#4-submit-or-abandon)
 - [5. Receive](#5-receive)
@@ -22,24 +22,24 @@
 
 Never write outside the selected repository, fetch or push as an implicit transport step, or infer a receiver decision from file presence or silence.
 
-## 2. Manage routes
+## 2. Inspect routes and the Capital policy
 
-Use `ki trade routes add`, `remove`, `list`, or `check` against the selected repository.
+Routes, knowledge subtypes, and standing grants come only from the territory trade policy in the Capital's `[skills.ki-trades.territory]`, resolved through the selected repository's declared `ki-repo.capital`. A member's `[skills.ki-trades]` table carries no routes, so there is no local route or standing mutator. A route change is a proposal to the Capital, accepted under its own authority; the Capital preserves every channel or standing grant that a local preparation, submitted outbound, or retained inbound record still depends on.
 
-`add` changes only the selected local configuration. A sender export may remain pending while the receiver is unregistered or has not declared the matching import. Report that pending state distinctly from an active reciprocal route.
-
-`remove` first resolves the exact typed route and refuses without writing when a local preparation, submitted outbound, or retained inbound still depends on it. Present those record identities so the user can resolve their lifecycles deliberately; never abandon, release, prune, or rewrite them as part of route removal.
+Use `ki trade routes list` or `check`, and `ki trade standing list`, `check`, or `capture`, against the selected repository. In a Capital, `ki repo trade policy show` presents the policy and `ki repo trade policy check` sweeps every named island through the registry, reporting each as conforming, failing, or unverifiable when it is not checked out.
 
 `list` and `check` distinguish:
 
-- the local sender's declared observation route, which permits preparation and submission; and
-- active reciprocal receipt, which additionally requires the matching receiver import and an unambiguous registered endpoint.
+- a granted route, which permits sender-local preparation and submission while the receiver awaits registration or participation; and
+- an active route, which additionally requires an unambiguous registered peer that declares ki-trades and names the same Capital.
+
+When the Capital is not registered locally, report `territory policy lives in <capital>, not available here` and treat route authority as unverifiable. An ambiguous or malformed policy grants nothing.
 
 ## 3. Prepare and observe
 
 ### Prepare
 
-`ki trade prepare <receiver> --kind <work|knowledge> --observation <policy>` creates one sender-local mutable preparation with its final trade identity. Require a declared export route; reciprocity may still be pending.
+`ki trade prepare <receiver> --kind <work|knowledge> --observation <policy>` creates one sender-local mutable preparation with its final trade identity. Require an export route granted by the Capital policy; receiver participation may still be pending.
 
 Choose exactly one observation policy:
 
@@ -60,13 +60,13 @@ Show the committed diff only when the cursor and current commit share comparable
 
 ## 4. Submit or abandon
 
-`ki trade submit <TRD>` must validate one complete preparation and preview its canonical outbound path before changing it. The operation is permitted only when the host demonstrates the transaction boundary it claims; this procedure does not certify atomicity merely because the command exists. Submission changes the same identity to submitted state, freezes its envelope and payload, and consumes the preparation. It does not require an active reciprocal import and does not create the receiver copy.
+`ki trade submit <TRD>` must validate one complete preparation and preview its canonical outbound path before changing it. The operation is permitted only when the host demonstrates the transaction boundary it claims; this procedure does not certify atomicity merely because the command exists. Submission changes the same identity to submitted state, freezes its envelope and payload, and consumes the preparation. It does not require an active route and does not create the receiver copy.
 
 `ki trade abandon <TRD>` applies only to one preparation. Present its exact path and require confirmation before deleting it because abandonment removes the current mutable artifact; committed Git history remains recoverable. Refuse after submission and never convert abandonment into sender release.
 
 ## 5. Receive
 
-`ki trade receive <TRD>` requires one explicit submitted identity and an active reciprocal route for its kind. Preview the sender source and receiver destination, preserve the immutable sender projection byte-for-byte, add only the receiver-owned fields, and record the committed sender reference when it is available.
+`ki trade receive <TRD>` requires one explicit submitted identity and an active route for its kind granted by the Capital policy. Preview the sender source and receiver destination, preserve the immutable sender projection byte-for-byte, add only the receiver-owned fields, and record the committed sender reference when it is available.
 
 `ki trade receive --all` is a convenience operation over independent asynchronous receipts. Its preview lists the identities receivable at that point; with confirmation, the host attempts each listed identity sequentially. A later failure does not retract an earlier receipt, and a preview neither promises that every outbound file was evaluated nor grants receiver authority. Report the actual local results; use one explicit identity when an operator needs a single-record boundary.
 

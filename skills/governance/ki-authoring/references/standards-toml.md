@@ -31,9 +31,7 @@ After an explicit `[skills.<name>]` root, a short subordinate map entry **SHOULD
 ```toml
 [skills.ki-work-roadmap]
 areas.UE = "user-environment"
-
-[skills.ki-trades]
-routes."knowledgeislands/tools-ki" = { export = ["work", "knowledge"], import = ["work", "knowledge"] }
+areas.CORE = "foundation-tooling"
 ```
 
 Use a standard nested table instead when a record is multiline, needs its own comments, carries further nested configuration, or would make an inline value hard to scan. Do not split an inline table across lines merely to retain the compact spelling. Dotted keys and nested tables are presentation-equivalent only when they produce the same parsed table; removing a duplicated or derivable key is a separate semantic change governed by the owning skill.

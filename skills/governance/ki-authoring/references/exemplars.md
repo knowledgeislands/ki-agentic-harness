@@ -113,5 +113,5 @@ areas.CORE = "foundation-tooling"
 # -----------------------------------------------------------------------------
 
 [skills.ki-trades]
-routes."knowledgeislands/tools-ki" = { export = ["work", "knowledge"], import = ["knowledge"] }
+map_bonus = 1
 ```

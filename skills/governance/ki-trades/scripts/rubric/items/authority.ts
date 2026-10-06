@@ -7,7 +7,7 @@ const AUTH_1: RubricItem<OutcomeContext> = {
   code: 'AUTH-1',
   title: 'sender and receiver write boundaries are preserved',
   description:
-    "Preparations and outbound records belong to the local sender, retain their declared export route, and contain no receiver-local fields; inbound records belong to the local receiver, retain an active receipt route, and preserve the submitted sender projection. That projection is compared against the registered peer's counterpart by meaning rather than by byte, so a formatter run is not reported as tampering while any change to the words is; where no registered peer holds the counterpart, the comparison reports as unverifiable rather than passing silently.",
+    "Preparations and outbound records belong to the local sender, retain an export route granted by the Capital trade policy, and contain no receiver-local fields; inbound records belong to the local receiver, retain an active receipt route granted by that policy, and preserve the submitted sender projection. That projection is compared against the registered peer's counterpart by meaning rather than by byte, so a formatter run is not reported as tampering while any change to the words is; where no registered peer holds the counterpart, the comparison reports as unverifiable rather than passing silently. Where the Capital policy is not available here, route authority is reported as unverifiable; an ambiguous or malformed policy grants no route.",
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

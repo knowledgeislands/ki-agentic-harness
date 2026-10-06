@@ -3,6 +3,7 @@ import { createTradesSession, type TradesRubricContext } from '../contexts/trade
 import { ADOPTION } from './adoption.ts'
 import { AUTH } from './authority.ts'
 import { CONFIG } from './configuration.ts'
+import { POLICY } from './policy.ts'
 import { RUBRIC } from './publication.ts'
 import { RECORD } from './records.ts'
 import { RELEASE } from './release.ts'
@@ -16,5 +17,5 @@ export default {
   name: 'ki-trades',
   concern: 'Cross-repository trades',
   createSession: createTradesSession,
-  families: [RUBRIC, CONFIG, ROUTE, SCAFFOLD, RECORD, AUTH, STATUS, RELEASE, STANDING, ADOPTION]
+  families: [RUBRIC, CONFIG, ROUTE, POLICY, SCAFFOLD, RECORD, AUTH, STATUS, RELEASE, STANDING, ADOPTION]
 } satisfies SkillRubricDefinition<TradesRubricContext>
