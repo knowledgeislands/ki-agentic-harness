@@ -6,13 +6,12 @@ kind: deliver
 purpose: debt
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 58dbf3502df5b6bb777b3b28965392cff5932221
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-07T20:52:48Z
+updated_at: 2026-10-07T20:53:18Z
 ---
 
 # KI-HARNESS-GOV-097: Extract format readers
@@ -119,6 +118,10 @@ The goal is met: the standard now gives the correctness reason for extracting a 
 ### Mini recap
 
 Delivered one standard bullet and one exemplar; rubric unchanged and all gates pass. No learning route beyond the standard itself.
+
+## Done
+
+Accepted 2026-10-07 under Kris's standing grant in the state-of-play design decisions (Decisions 12 and 17: "Delivered records count as done ... and are pruned once verified"; Decision 19 authorises continuous delivery of this record), on the review packet above.
 
 ## Discussion
 
