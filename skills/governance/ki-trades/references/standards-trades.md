@@ -2,6 +2,8 @@
 
 This standard defines typed, directional trade routes between registered Knowledge Islands repositories. Routes are granted by the territory trade policy that the Capital owns; a member declares only that it participates. It grants no transport, peer-write, roadmap, priority, implementation, knowledge, or acceptance authority. The structured catalogue enforces the mechanical rules; the generated [rubric](rubric.md) publishes them.
 
+> **Trades are on hold.** Submit no new trade until the territory model is settled. Do the work directly, or record it as work in the receiving repository. Existing trades keep the full support described here, so they can still be received, decided and released.
+
 ## Contents
 
 - [Participation](#participation)

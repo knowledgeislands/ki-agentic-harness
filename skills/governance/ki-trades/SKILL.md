@@ -17,6 +17,8 @@ argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 
 This governance skill defines safe **trade preparation and submission**, not transfer: a sender may make evolving work or knowledge visible without asking a peer to act, then publish an immutable submission while the receiver alone decides receipt, disposition, and any local follow-on work or knowledge. Read [the trade standard](references/standards-trades.md) before creating or reviewing records; [the generated rubric](references/rubric.md) publishes the mechanical and judgment criteria, and [the source list](references/sources.md) records the contract's provenance.
 
+> **Trades are on hold.** Submit no new trade until the territory model is settled. Do the work directly, or record it as work in the receiving repository. Existing trades keep the full support described here, so they can still be received, decided and released.
+
 ## What this skill owns
 
 1. **Declared participation** — a repository opts in with its own bare `ki-trades` table, carrying at most `map_bonus`; the retired `routes` and `subtypes` keys fail. The current local registry, path projection, and record grammar support only the canonical GitHub `owner/repository` identity from `ki-repo.repository`; another host is unsupported and must be refused rather than represented partially.
