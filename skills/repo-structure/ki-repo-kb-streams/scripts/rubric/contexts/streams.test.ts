@@ -406,4 +406,35 @@ describe('ki-repo-kb-streams session', () => {
       }
     ])
   })
+
+  test('checks a folder note but not the design artefacts beside it', () => {
+    const root = targetFixture()
+    const folder = join(root, 'Streams', 'Projects', 'agent-host')
+    mkdirSync(join(folder, 'design'), { recursive: true })
+    writeFileSync(join(root, 'Streams', 'Projects', 'Projects.md'), '# Projects\n\n- [[agent-host]] - The host.\n')
+    writeFileSync(
+      join(folder, 'agent-host.md'),
+      '---\nnote_type: streams/project\ninitiative: techne\nlifecycle: active\n---\n\n# Agent host\n\n## Outcome\n\nA host.\n\n## Notes\n\nA design is in progress.\n'
+    )
+    writeFileSync(join(folder, 'design', 'design.md'), '# Design\n\nThe agent-host design artefacts.\n')
+    writeFileSync(join(folder, 'design', 'agent-host-report.md'), '# Report\n\nCapture KI-ARCADIA-GOV-030.\n')
+    const audit = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).registryNotes
+
+    expect(audit()).toEqual([
+      {
+        level: 'PASS',
+        message: 'Project and Initiative notes link upwards only.',
+        subject: 'Streams/Projects, Streams/Initiatives'
+      }
+    ])
+
+    writeFileSync(join(folder, 'agent-host.md'), '# Agent host\n\n## Update\n\nOn track.\n')
+    expect(audit()).toEqual([
+      {
+        level: 'FAIL',
+        message: 'Registry note carries a dated ## Update section; status lives in the records and lifecycle.',
+        subject: 'Streams/Projects/agent-host/agent-host.md'
+      }
+    ])
+  })
 })

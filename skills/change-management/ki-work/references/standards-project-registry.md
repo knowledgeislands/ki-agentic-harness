@@ -26,12 +26,15 @@ The registry lives in the territory Capital's Knowledge Base in two sibling fold
 Streams/Projects/
   Projects.md          # index note for the folder
   <slug>.md            # one Project note per Project
+  <slug>/              # or, while a design is in progress, a folder
+    <slug>.md          #   whose folder note is the Project note
+    design/            #   the ki-design-loop artefacts, with design.md
 Streams/Initiatives/
   Initiatives.md       # index note for the folder
   <slug>.md            # one Initiative note per Initiative
 ```
 
-A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; an `initiative` value resolves to `Streams/Initiatives/<slug>.md`. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs. A record in another territory names an entry with a [cross-territory reference](#cross-territory-references).
+A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; an `initiative` value resolves to `Streams/Initiatives/<slug>.md`. A registry note that holds a [`ki-design-loop`](../../ki-design-loop/SKILL.md) design folder is instead the folder note `Streams/Projects/<slug>/<slug>.md` or `Streams/Initiatives/<slug>/<slug>.md`, with the same slug, frontmatter and body; the folder holds only that note and its `design/` folder. Either form resolves the slug. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs. A record in another territory names an entry with a [cross-territory reference](#cross-territory-references).
 
 ## Project note
 
@@ -93,7 +96,7 @@ An Initiative note lists neither its Projects nor its records, Activities or hou
 
 Upkeep and other work that never finishes has no Project. Its records name `initiative` directly, usually with `purpose: upkeep`, and recurring runs inherit the Initiative from their template or Activity.
 
-A Project or Initiative shaped through [`ki-design-loop`](../../ki-design-loop/SKILL.md) links its design's Decision Record from the note's `## Notes`. The note links the design; it never copies the brief, reviews, report or decisions.
+A Project or Initiative shaped through [`ki-design-loop`](../../ki-design-loop/SKILL.md) mentions its design folder in `## Notes` while the folder exists, and links any resulting Decision Record once the design is consolidated and the folder deleted. The note never copies the brief, reviews, report or decisions.
 
 ## Links point upwards
 

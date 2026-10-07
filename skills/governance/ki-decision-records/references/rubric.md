@@ -40,6 +40,8 @@ Canonical decision-record filenames and serial namespaces.
   - _Remediation:_ diagnostic — Choose the canonical record identity, then rename or retire the duplicate and update affected citations.
 - **FILENAME-3 [M] — Contiguous serial series** — Within each prefix+scope series the ordinary-record serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt. A deliberate verbatim shared-record mirror (`shared_record: true`) is excluded only when its prefix+scope has no ordinary local records; otherwise it remains part of that local series. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Renumber the series contiguously and update every citation of each shifted record ID.
+- **FILENAME-4 [M] — Self-contained collection** — The decisions directory holds only Decision Records and their index: no `references/` or other subdirectory and no supporting file. Working material lives beside the Project or Initiative it serves and is deleted once consolidated. (standards-decision-records.md)
+  - _Remediation:_ diagnostic — Consolidate what the record needs into its own words, move live working material beside its Project or Initiative, and delete the rest.
 
 ## ROOT — collection-root checks
 
@@ -120,11 +122,15 @@ Present-state decision-record structure and writing quality.
   - _Review prompt:_ Assess whether the title is a short noun phrase rather than a question or full sentence.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Rewrite the title as a concise noun phrase, record a named Gap, or record an explicit exclusion.
-- **BODY-10 [J] — Present-state record** — The record is concise, self-contained, and written as now, without historic, superseding, or forward-looking narration. Such content belongs in the ROADMAP or a KB stream, not in a present-state record. (standards-decision-records.md)
+- **BODY-10 [J] — Present-state record** — The record is concise, self-contained, and written as now, without historic, superseding, rejected-alternative, or forward-looking narration. Such content belongs in the ROADMAP or a KB stream, not in a present-state record. (standards-decision-records.md)
   - _Evidence scope:_ The narrative body of every active decision record.
-  - _Review prompt:_ Assess whether the record is concise and self-contained, stating the present decision without historic, superseding, forward-looking, parked, or not-yet-started narration.
+  - _Review prompt:_ Assess whether the record is concise and self-contained, stating the present decision without historic, superseding, rejected-alternative, options-considered, forward-looking, parked, or not-yet-started narration.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Move lifecycle narration to its appropriate record, revise to present state, record a named Gap, or record an explicit exclusion.
+- **BODY-11 [M] — Links only to sibling records** — A record links only to sibling Decision Records and to external URLs. A relative link or wikilink to any other file - a supporting file, note, guide or work record - is a finding. Cross-repository provenance uses a canonical source reference: an external URL at a known revision. (standards-decision-records.md)
+  - _Remediation:_ diagnostic — State what the record needs in its own words and name the note or skill it grounds in; keep only links to sibling records and canonical external sources.
+- **BODY-12 [M] — No history or alternatives sections** — A record states what is, not what was: no section titled for history, changelog, amendments, supersession, alternatives or options considered. (standards-decision-records.md)
+  - _Remediation:_ diagnostic — Consolidate the current decision and remove the section; state any constraint that still matters as part of the present Context.
 
 ## INDEX — index checks
 

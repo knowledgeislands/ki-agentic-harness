@@ -85,11 +85,17 @@ export type DecisionRecord = {
   headingId?: string
   headingTitle?: string
   missingSections: readonly string[]
+  /** Link targets in the body: Markdown, reference-style and wikilink, outside code. */
+  links: readonly string[]
+  /** Text of every H2-H6 heading in the body. */
+  headings: readonly string[]
   automaticConformEligible: boolean
 }
 
 export type FilenameRubricContext = {
   unparseableFiles: readonly string[]
+  /** Subdirectories and non-Markdown files in the collection, which holds only records and their index. */
+  strayEntries: readonly string[]
   invalidFilenames: readonly string[]
   duplicateIds: ReadonlyMap<string, readonly string[]>
   serialGaps: ReadonlyMap<string, readonly number[]>
@@ -225,6 +231,23 @@ const frontmatterList = (frontmatter: string | undefined, key: string): readonly
   return value.filter((entry): entry is string => typeof entry === 'string').map((entry) => entry.trim())
 }
 
+const stripCode = (body: string): string => body.replace(/^(```|~~~)[\s\S]*?^\1/gm, '').replace(/`[^`\n]*`/g, '')
+
+const bodyLinks = (body: string): string[] => {
+  const text = stripCode(body)
+  return [
+    ...[...text.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)].map((match) => match[1] as string),
+    ...[...text.matchAll(/^\s*\[[^\]]+\]:\s*<?(\S+?)>?(?:\s|$)/gm)].map((match) => match[1] as string),
+    ...[...text.matchAll(/\[\[([^\]]+)\]\]/g)].map((match) => `[[${match[1] as string}]]`)
+  ]
+}
+
+const bodyHeadings = (body: string): string[] =>
+  [...stripCode(body).matchAll(/^#{2,6}\s+(.+?)\s*#*\s*$/gm)].map((match) => match[1] as string)
+
+const strayCollectionEntries = (directory: string, entries: readonly string[]): string[] =>
+  entries.filter((entry) => !entry.startsWith('.') && (!entry.endsWith('.md') || isDirectory(join(directory, entry))))
+
 const readRecords = (directory: string, entries: readonly string[], indexFile: string): DecisionRecord[] => {
   const records: DecisionRecord[] = []
   for (const file of entries.filter((entry) => entry.endsWith('.md') && entry !== indexFile)) {
@@ -271,6 +294,8 @@ const readRecords = (directory: string, entries: readonly string[], indexFile: s
       headingId: id,
       headingTitle,
       missingSections: ['## Context', '## Decision', '## Consequences'].filter((section) => !body.includes(section)),
+      links: bodyLinks(body),
+      headings: bodyHeadings(body),
       automaticConformEligible: file === `${id}-${slugify(headingTitle)}.md`
     })
   }
@@ -542,6 +567,7 @@ export const createDecisionRecordsSession = ({
     rubric: { publication },
     filename: {
       unparseableFiles: unparseableRecordFiles(directory, entries, indexFile),
+      strayEntries: strayCollectionEntries(directory, entries),
       invalidFilenames: records
         .filter((record) => record.file !== record.expectedFilename)
         .map((record) => record.file),

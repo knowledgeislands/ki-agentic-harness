@@ -124,11 +124,41 @@ const FILENAME_3: RubricItem<FilenameRubricContext> = {
   }
 }
 
+const FILENAME_4: RubricItem<FilenameRubricContext> = {
+  code: 'FILENAME-4',
+  title: 'Self-contained collection',
+  description:
+    'The decisions directory holds only Decision Records and their index: no `references/` or other subdirectory and no supporting file. Working material lives beside the Project or Initiative it serves and is deleted once consolidated.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Consolidate what the record needs into its own words, move live working material beside its Project or Initiative, and delete the rest.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context: FilenameRubricContext) =>
+        outcomes(
+          context.strayEntries.map(
+            (entry): AuditOutcome => ({
+              status: 'VIOLATION',
+              message: 'Decisions directory holds a subdirectory or supporting file.',
+              subject: entry
+            })
+          ),
+          'The decisions directory holds only Decision Records and their index.'
+        )
+    }
+  }
+}
+
 export const FILENAME: RubricFamily<DecisionRecordsRubricContext, FilenameRubricContext> = {
   code: 'FILENAME',
   title: 'file and naming checks',
   description: 'Canonical decision-record filenames and serial namespaces.',
   standard: SOURCE,
   selectContext: (context) => context.filename,
-  items: [FILENAME_0, FILENAME_1, FILENAME_2, FILENAME_3]
+  items: [FILENAME_0, FILENAME_1, FILENAME_2, FILENAME_3, FILENAME_4]
 }

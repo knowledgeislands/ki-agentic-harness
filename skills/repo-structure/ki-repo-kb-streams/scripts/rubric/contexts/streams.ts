@@ -287,8 +287,15 @@ const REGISTRY_AREAS = ['Projects', 'Initiatives'] as const
 const WORK_RECORD_REFERENCE = /(?<![\w-])(?!(?:[SPADXOGRK]DR)-)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3}(?!\d)/g
 const UPDATE_SECTION = /^##\s+Update\b/m
 
+// A `ki-design-loop` design folder beside a registry note holds temporary artefacts, not registry notes.
+const DESIGN_FOLDER = /(?:^|[\\/])design[\\/]/
+
 const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidence[] => {
-  const notes = REGISTRY_AREAS.flatMap((area) => markdownPaths(join(streamsPath, area))).sort()
+  const notes = REGISTRY_AREAS.flatMap((area) =>
+    markdownPaths(join(streamsPath, area)).filter(
+      (path) => !DESIGN_FOLDER.test(relative(join(streamsPath, area), path))
+    )
+  ).sort()
   if (notes.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No Project or Initiative notes are present.' }]
   const findings = notes.flatMap((path): StreamsEvidence[] => {
     const subject = relative(root, path)

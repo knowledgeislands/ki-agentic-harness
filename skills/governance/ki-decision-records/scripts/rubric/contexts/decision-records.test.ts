@@ -608,3 +608,81 @@ The decision remains readable. ${note}
     })
   })
 })
+
+describe('self-contained collection', () => {
+  const file = 'ADR-EXAMPLE-001-decide-the-record-shape.md'
+  const sibling = { file: 'ADR-EXAMPLE-002-keep-records-whole.md', content: '# ADR-EXAMPLE-002: Keep records whole\n' }
+
+  test('reports a references directory and a supporting file in the collection', () => {
+    const context = fixture(file, { extra: [{ file: 'evidence.json', content: '{}\n' }] })
+    const root = context as DecisionRecordsRubricContext
+    expect(audit('FILENAME-4', root)?.map((outcome) => outcome.subject)).toEqual(['evidence.json'])
+
+    const nested = mkdtempSync(join(tmpdir(), 'ki-decision-records-refs-'))
+    temporaryRoots.push(nested)
+    const directory = join(nested, 'docs', 'decisions')
+    writeFileSync(join(nested, '.ki.toml'), '[skills.ki-decision-records]\n')
+    mkdirSync(join(directory, 'references'), { recursive: true })
+    writeFileSync(join(directory, 'references', 'brief.md'), '# Brief\n')
+    writeFileSync(join(directory, file), record({}))
+    writeFileSync(join(directory, '.DS_Store'), '')
+    writeFileSync(join(directory, 'README.md'), `# Decisions\n\n1. [ADR-EXAMPLE-001](${file}) — record shape.\n`)
+    const withReferences = createDecisionRecordsSession({
+      mode: 'audit',
+      repository: nested,
+      userHome: tmpdir(),
+      configuration: {}
+    }).subjects[0]?.context() as DecisionRecordsRubricContext
+    expect(audit('FILENAME-4', withReferences)?.map((outcome) => outcome.subject)).toEqual(['references'])
+  })
+
+  test('accepts a collection of records and their index alone', () => {
+    const context = fixture(file, { extra: [sibling] })
+    expect(audit('FILENAME-4', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
+  })
+
+  test('allows links to sibling records and external sources only', () => {
+    const context = fixture(file, {
+      extra: [sibling],
+      legacyDate: [
+        'See [ADR-EXAMPLE-002](ADR-EXAMPLE-002-keep-records-whole.md#decision), [[ADR-EXAMPLE-002-keep-records-whole|the sibling]],',
+        '[the source](https://github.com/example/repo/blob/0123abc/README.md), [above](#context) and `[code](ignored.md)`.',
+        ''
+      ].join('\n')
+    })
+    expect(audit('BODY-11', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
+  })
+
+  test('reports relative links and wikilinks that leave the collection', () => {
+    const context = fixture(file, {
+      extra: [sibling],
+      legacyDate: [
+        'See [the brief](references/brief.md), [the guide](../guides/guide.md), [[Charter]] and',
+        '[ADR-OTHER-001](../../other/ADR-OTHER-001-x.md).',
+        '',
+        '[ref]: ./notes.md',
+        ''
+      ].join('\n')
+    })
+    expect(audit('BODY-11', context as DecisionRecordsRubricContext)?.map((outcome) => outcome.message)).toEqual([
+      'Record links outside the collection: references/brief.md',
+      'Record links outside the collection: ../guides/guide.md',
+      'Record links outside the collection: ../../other/ADR-OTHER-001-x.md',
+      'Record links outside the collection: ./notes.md',
+      'Record links outside the collection: [[Charter]]'
+    ])
+  })
+
+  test('reports history and alternatives sections but not ordinary ones', () => {
+    const plain = fixture(file)
+    expect(audit('BODY-12', plain as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
+
+    const context = fixture(file, {
+      legacyDate: '## Alternatives considered\n\nA.\n\n### History\n\nB.\n\n## Optional extras\n\nC.\n\n'
+    })
+    expect(audit('BODY-12', context as DecisionRecordsRubricContext)?.map((outcome) => outcome.message)).toEqual([
+      'Record has a history or alternatives section: Alternatives considered',
+      'Record has a history or alternatives section: History'
+    ])
+  })
+})

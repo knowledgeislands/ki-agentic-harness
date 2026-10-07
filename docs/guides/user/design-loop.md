@@ -34,9 +34,10 @@ The agent asks for anything missing - the owning repository and your proposal - 
 
 Everything lives in the repository that owns the subject: the territory Capital for a Project or Initiative, or the owning repository for a local design.
 
-- The brief, reviews, report and decisions go verbatim in the decisions collection's `references/` directory, sharing one slug prefix, such as `techne-brief.md`. Each is committed when it is produced.
-- The decisions become one Decision Record in that collection, citing each file.
-- The Project or Initiative note links the Decision Record from its `## Notes`.
+- The brief, reviews, report and decisions go verbatim in a `design/` folder beside the subject, sharing one slug prefix such as `techne-brief.md`. In a Capital that is `Streams/Projects/<slug>/design/`, or `Streams/Initiatives/<slug>/design/` for a subject not yet registered as a Project. The Project note becomes its folder's note, `Streams/Projects/<slug>/<slug>.md`, and `design/` carries a short `design.md` index. A repository without `Streams/` uses `docs/design/<slug>/`.
+- Each artefact is committed as it is produced.
+- The artefacts are temporary. Once the outcome is consolidated, the design folder is deleted.
+- A Decision Record follows only when a decision changes, and an existing record that owns the concern is refined in place. It states the decision as it now stands and cites none of the artefacts.
 
 Local state keeps only runtime material such as agent prompts and status files.
 
@@ -44,7 +45,7 @@ Local state keeps only runtime material such as agent prompts and status files.
 
 The loop ends when the rollout is captured. From there:
 
-- `ki-next` captures each record with the Decision Record in its Context, and selects the pilot;
+- `ki-next` captures each record with the relevant decisions in its Context, and selects the pilot;
 - `ki-plan` readies each record against the decisions;
 - `ki-batch` runs each wave of independent Ready records under your grant, and `ki-accept` closes single records under the same grant.
 

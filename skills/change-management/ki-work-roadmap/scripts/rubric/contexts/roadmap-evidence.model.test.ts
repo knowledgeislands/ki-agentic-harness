@@ -353,6 +353,23 @@ test('the project registry resolves through the capital and the local ki registr
   })
 })
 
+test('a registry note holding a design folder is read as its folder note', () => {
+  const capital = createCapital()
+  const folder = join(capital, 'Streams', 'Projects', 'agent-host')
+  mkdirSync(join(folder, 'design'), { recursive: true })
+  writeFileSync(
+    join(folder, 'agent-host.md'),
+    '---\nnote_type: streams/project\nslug: agent-host\ntitle: Agent host\ninitiative: techne\nlifecycle: active\n---\n\n# Agent host\n'
+  )
+  writeFileSync(join(folder, 'design', 'design.md'), '# Design\n')
+  writeFileSync(join(folder, 'design', 'agent-host-brief.md'), '---\nnote_type: streams/project\nslug: stray\n---\n')
+  const lookup = loadProjectRegistry(capital, {})
+  expect('registry' in lookup && [...lookup.registry.projects].sort()).toEqual([
+    ['agent-host', 'techne'],
+    ['baseline-rollout', 'platform-foundations']
+  ])
+})
+
 test('project membership warns on unknown slugs and fails only on a contradicted initiative', () => {
   const capital = createCapital()
   const member = (fields: string, registry = true): string => {

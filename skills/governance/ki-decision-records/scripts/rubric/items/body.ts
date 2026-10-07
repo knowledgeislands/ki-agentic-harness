@@ -174,15 +174,98 @@ const BODY_10: RubricItem<RecordsRubricContext> = {
   code: 'BODY-10',
   title: 'Present-state record',
   description:
-    'The record is concise, self-contained, and written as now, without historic, superseding, or forward-looking narration. Such content belongs in the ROADMAP or a KB stream, not in a present-state record.',
+    'The record is concise, self-contained, and written as now, without historic, superseding, rejected-alternative, or forward-looking narration. Such content belongs in the ROADMAP or a KB stream, not in a present-state record.',
   sources: [SOURCE],
   judgment: {
     scope: 'The narrative body of every active decision record.',
     prompt:
-      'Assess whether the record is concise and self-contained, stating the present decision without historic, superseding, forward-looking, parked, or not-yet-started narration.',
+      'Assess whether the record is concise and self-contained, stating the present decision without historic, superseding, rejected-alternative, options-considered, forward-looking, parked, or not-yet-started narration.',
     outcomes: ['conforming', 'gap', 'exclusion'],
     guidance:
       'Move lifecycle narration to its appropriate record, revise to present state, record a named Gap, or record an explicit exclusion.'
+  }
+}
+
+const EXTERNAL = /^(?:[a-z][a-z0-9+.-]*:|#)/i
+const HISTORY_HEADING =
+  /^(?:\d+[.)]?\s+)?(?:history|revision history|change ?log|changes|amendments?|supersession|supersedes|superseded(?: by)?|(?:rejected |other )?alternatives(?: considered)?|(?:considered )?options(?: considered)?)\b/i
+
+const outwardLinks = (record: { links: readonly string[] }, siblings: ReadonlySet<string>): string[] =>
+  record.links.filter((link) => {
+    if (link.startsWith('[[')) {
+      const stem = (link.slice(2, -2).split('|')[0] as string).split('#')[0]?.trim() ?? ''
+      return !stem || !siblings.has(stem.replace(/\.md$/, ''))
+    }
+    if (EXTERNAL.test(link)) return false
+    const path = (link.split('#')[0] as string).replace(/^\.\//, '')
+    return path.includes('/') || !siblings.has(decodeURIComponent(path).replace(/\.md$/, ''))
+  })
+
+const BODY_11: RubricItem<RecordsRubricContext> = {
+  code: 'BODY-11',
+  title: 'Links only to sibling records',
+  description:
+    'A record links only to sibling Decision Records and to external URLs. A relative link or wikilink to any other file - a supporting file, note, guide or work record - is a finding. Cross-repository provenance uses a canonical source reference: an external URL at a known revision.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'State what the record needs in its own words and name the note or skill it grounds in; keep only links to sibling records and canonical external sources.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context: RecordsRubricContext) => {
+        const siblings = new Set(context.records.map((record) => record.file.replace(/\.md$/, '')))
+        return outcomes(
+          context.records.flatMap((record) =>
+            outwardLinks(record, siblings).map(
+              (link): AuditOutcome => ({
+                status: 'VIOLATION',
+                message: `Record links outside the collection: ${link}`,
+                subject: record.file
+              })
+            )
+          ),
+          'Every decision record links only to sibling records and external sources.'
+        )
+      }
+    }
+  }
+}
+
+const BODY_12: RubricItem<RecordsRubricContext> = {
+  code: 'BODY-12',
+  title: 'No history or alternatives sections',
+  description:
+    'A record states what is, not what was: no section titled for history, changelog, amendments, supersession, alternatives or options considered.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Consolidate the current decision and remove the section; state any constraint that still matters as part of the present Context.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context: RecordsRubricContext) =>
+        outcomes(
+          context.records.flatMap((record) =>
+            record.headings
+              .filter((heading) => HISTORY_HEADING.test(heading))
+              .map(
+                (heading): AuditOutcome => ({
+                  status: 'VIOLATION',
+                  message: `Record has a history or alternatives section: ${heading}`,
+                  subject: record.file
+                })
+              )
+          ),
+          'No decision record has a history or alternatives section.'
+        )
+    }
   }
 }
 
@@ -192,5 +275,5 @@ export const BODY: RubricFamily<DecisionRecordsRubricContext, RecordsRubricConte
   description: 'Present-state decision-record structure and writing quality.',
   standard: SOURCE,
   selectContext: (context) => context.body,
-  items: [BODY_1, BODY_3, BODY_4, BODY_5, BODY_6, BODY_7, BODY_8, BODY_9, BODY_10]
+  items: [BODY_1, BODY_3, BODY_4, BODY_5, BODY_6, BODY_7, BODY_8, BODY_9, BODY_10, BODY_11, BODY_12]
 }

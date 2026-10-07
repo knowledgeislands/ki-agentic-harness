@@ -94,13 +94,21 @@ const frontmatter = (text: string): Record<string, unknown> | undefined => {
 
 const isDirectory = (path: string): boolean => existsSync(path) && lstatSync(path).isDirectory()
 
-/** Regular Markdown notes directly inside a registry folder, as name and text. */
+/**
+ * Registry notes inside a registry folder, by name and text: each regular Markdown note directly inside it, and the
+ * folder note `<slug>/<slug>.md` of a registry note that holds a `ki-design-loop` design folder.
+ */
 const notes = (directory: string | undefined): [string, string][] =>
   directory === undefined
     ? []
-    : readdirSync(directory, { withFileTypes: true })
-        .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
-        .map((entry) => [entry.name, readFileSync(join(directory, entry.name), 'utf8')])
+    : readdirSync(directory, { withFileTypes: true }).flatMap((entry): [string, string][] => {
+        if (entry.isFile() && entry.name.endsWith('.md'))
+          return [[entry.name, readFileSync(join(directory, entry.name), 'utf8')]]
+        const folderNote = join(directory, entry.name, `${entry.name}.md`)
+        if (entry.isDirectory() && existsSync(folderNote) && lstatSync(folderNote).isFile())
+          return [[`${entry.name}.md`, readFileSync(folderNote, 'utf8')]]
+        return []
+      })
 
 /** Reads one Capital's registry folders, or reports why they are absent. */
 const readRegistry = (root: string): RegistryLookup => {

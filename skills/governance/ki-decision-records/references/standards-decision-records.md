@@ -5,7 +5,7 @@
 - [Naming convention](#naming-convention)
 - [Prefix table](#prefix-table)
 - [Placement](#placement)
-- [Supporting material](#supporting-material)
+- [Self-contained collection](#self-contained-collection)
 - [Frontmatter](#frontmatter)
 - [Sections](#sections)
 - [Templates](#templates)
@@ -54,17 +54,13 @@ Each `decision_type_url` expands from `https://knowledgeislands.info/specificati
 
 The repo type is declared in `.ki.toml` under `[skills.ki-decision-records]` (or inferred from `[skills.ki-repo-kb]` presence). The checker auto-detects the decisions directory (`docs/decisions/` then `Admin/Governance/Decisions/`) and picks the matching index file by mode; pass an explicit path to override.
 
-## Supporting material
+## Self-contained collection
 
-A DR is self-contained: it MUST read completely without following any link, which is why skills, guides, workflows and standards a decision grounds in are named in its body rather than listed as links. Some material genuinely supports a collection without being a decision — a survey of adjacent projects, an evidence table, a coverage matrix, a triage of findings. It is longer than a record body should be, it changes on a different cadence from the decisions it informs, and writing it as a DR would misfile it.
+The decisions directory holds Decision Records and their index, and nothing else: no `references/` or other subdirectory, and no supporting file of any kind. A subdirectory or a non-record file in the collection is a finding (mechanical - FILENAME-4).
 
-That material lives in a `references/` directory **inside** the decisions directory: `docs/decisions/references/` in a code repository, `Admin/Governance/Decisions/references/` in a KB. Keeping it inside the tree is the point. A record may then cite it by a relative sibling path without reaching outside the decisions collection, so the collection stays movable and self-contained as a unit, and a reader who has the decisions has everything they support.
+A record MUST read completely without following any link. It states the decision as it now stands in its own words, rather than pointing at the material that informed it. Briefs, reviews, reports, surveys and evidence tables are working material: a design loop keeps them beside the Project or Initiative it serves and deletes them once their outcome is consolidated, so a record never depends on them. Skills, guides, workflows, standards and notes the decision grounds in are named in the body, never linked.
 
-Do not confuse this directory with the `## References` section, which is a list of followable links inside one record and takes only sibling DRs and external URLs. A supporting file is cited from a record's **body**, where the reader meets it, under the same rule as any other named artefact.
-
-What belongs there: material the collection's records depend on or are informed by, that is not itself a decision. What does not: anything that _is_ a decision, which gets a record; documentation a reader outside the decisions tree is expected to find, which belongs in the documentation corpus; and anything short enough to sit in the one record that needs it.
-
-A supporting file MAY be cited by several records, by one, or by none — standing evidence nothing cites is legitimate. Its filename is an ordinary descriptive slug, not a record identifier, and the checker does not read it as a record. The index MUST say the directory exists and what belongs in it, but supporting files are NOT entries in the ordered list, which carries one item per DR and nothing else.
+A record links only to sibling Decision Records and to external URLs. A relative link or wikilink from a record to any other file - a supporting file, a note, a guide or a work record - is a finding (mechanical - BODY-11). Cross-repository provenance uses a canonical source reference: an external URL to the source at a known revision, such as a pinned GitHub blob URL.
 
 ## Frontmatter
 
@@ -162,7 +158,7 @@ decision_type_url: https://knowledgeislands.info/specifications/decision-records
 
 ## References
 
-- [Source title](../path/to/note.md) -- why cited.
+- [Source title](https://example.org/source) -- why cited.
 ```
 
 ## Collection root
@@ -208,6 +204,7 @@ Reclassifying a record — changing its prefix because it turned out to be about
 - **Voice**: active, present tense. "This island adopts X" not "X was adopted".
 - **Scope**: one decision per DR. If a decision has multiple independently-reconsidered parts, split them.
 - **Edit in place**: a DR is a living record — clarifications, realignments, and changes of direction all **edit the existing record** so it always reads as written today. Before authoring a new record, locate the record that owns the concern; refine or change that record unless the proposed decision is genuinely independent and has standalone durable value. There is no supersession chain, changelog, or historical account; obsolete wording simply goes. A significant change of direction is worth flagging to the human before applying, but it still lands as an in-place edit.
+- **What is, not what was**: a record states the consolidated current decision. It carries no history of how the decision was reached or what it replaced, and no narrative of rejected alternatives or options considered; where a constraint matters, state it as part of the present Context. Sections titled for history, changelog, supersession, alternatives or options considered are a finding (mechanical - BODY-12); prose that narrates them is a judgment finding (BODY-10).
 - **No roadmap or TODO inside a DR**: a record states the decision as it currently stands. Forward-looking, still-to-do, or "revisit later" work is lifted to the repo's ROADMAP (code repo) or a stream (KB) — never narrated in the record as an "open roadmap item", "parked", or "not yet started".
 - **State the decision, not the enforcement detail**: a DR records what was decided and names the concept or standard that carries it — never the volatile identifiers the enforcing skill owns. Do not cite rubric or checker criterion IDs (a `SHAPE-N`, `SCRIPT-N`, `MEM-N` tag) or a standard's section numbers (`§4`): the enforcing skill renumbers them without the decision changing, silently staling the record. Say "the skills rubric enforces this" or "the ki-tokenomics standard covers model-tier selection", and let the skill own the specifics.
 - **Chaining**: the Consequences of one DR become the Context of the next. Write each as if handing off to a future author.

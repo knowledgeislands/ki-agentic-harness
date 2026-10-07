@@ -18,12 +18,17 @@ The loop fixes independence and diversity, not a roster: no stage requires a par
 
 The repository that owns the subject owns its design: the territory Capital for a Project or Initiative, or the owning repository for a repository-local design. Name it in the brief before any other work.
 
-- **Decision Record.** The decisions become one Decision Record under `ki-decision-records` in that repository's decisions collection, with the prefix that skill's rules give the decision - usually governance or architecture. It states the accepted design and quotes any authority grant.
-- **Supporting files.** The brief, each review, the merged report and the decisions file are kept verbatim in the collection's `references/` directory - `docs/decisions/references/` in a code repository, `Admin/Governance/Decisions/references/` in a Knowledge Base. They share one descriptive slug prefix, such as `roadmap-model-brief.md`, `roadmap-model-review-fable.md`, `roadmap-model-report.md` and `roadmap-model-decisions.md`. The Decision Record cites each from its body.
+- **Design folder.** The brief, each review, the merged report and the decisions file live in a `design/` subfolder of the subject, sharing one descriptive slug prefix such as `roadmap-model-brief.md`, `roadmap-model-review-fable.md`, `roadmap-model-report.md` and `roadmap-model-decisions.md`:
+  - In a territory Capital the folder sits under the Project's registry folder, `Streams/Projects/<slug>/design/`, or the Initiative's, `Streams/Initiatives/<slug>/design/`. A subject not yet registered as a Project - a new Project or a cross-cutting model - uses the Initiative it serves.
+  - The registry note then becomes the folder note of its own folder under the index-note rule: `Streams/Projects/<slug>.md` moves to `Streams/Projects/<slug>/<slug>.md`, keeping its slug, frontmatter and body. The [Project registry standard](../../ki-work/references/standards-project-registry.md) accepts either form.
+  - The `design/` folder carries its same-name index note, `design.md`, which names the subject and introduces each artefact.
+  - In a repository without `Streams/`, a repository-local design lives in `docs/design/<subject-slug>/`. A Knowledge Base without a registry designs its territory's Projects and Initiatives in the Capital.
+- **Temporary.** The artefacts are working material, not a record. Once their outcome is consolidated - into a Decision Record where a decision changed, the Project or Initiative note, and the standards and records the rollout touches - delete the design folder in one commit. The folder note stays where it is.
+- **Decision Record only on change.** The loop produces a Decision Record under `ki-decision-records` only when it changes a decision. Where an existing record owns the concern, refine that record in place; otherwise write one new record. The record states the consolidated current decision and quotes any authority grant; it never links or cites the design artefacts, which are deleted.
 - **Commit as produced.** From the brief onward, write and commit each artefact in the owning repository when it is produced, never gathered later. Local state keeps only runtime material: agent prompts, pid, status and report files.
-- **Registry link.** The Project or Initiative note links the Decision Record from its `## Notes`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md).
+- **Registry link.** While the design folder exists, the Project or Initiative note mentions it in its `## Notes`; once a Decision Record carries the outcome, the note links that record instead, under the [Project registry standard](../../ki-work/references/standards-project-registry.md).
 
-`resume <subject>` reads these files by slug prefix; it never relies on a local folder.
+`resume <subject>` reads the design folder; it never relies on a local folder outside the repository.
 
 ## Stage contracts
 
@@ -37,11 +42,11 @@ Start each artefact from its template in `assets/`.
 
 ## Rollout hand-off
 
-- `ki-next` captures each record the decisions call for, with the Decision Record in its Context, and selects the pilot.
+- `ki-next` captures each record the decisions call for, stating the relevant decisions in its Context and naming the Decision Record where one exists, and selects the pilot.
 - `ki-plan` readies each record against the decisions; a record that needs a choice the decisions did not make stops and returns it to the owner.
 - `ki-batch` runs each wave of independent Ready records under the grant's `completion_target`; `ki-accept` closes single records under the same grant.
 - Delegation to background agents follows the delegation contract in force; a high-risk handoff uses `ki-delegation`'s packet when that skill is selected.
 
 ## Stops
 
-Stop and report when the subject has no owning repository, the owner's proposal is missing, fewer than two independent reviews exist, or a decision would be made on the owner's behalf. The loop never pushes, prunes, releases or accepts on its own authority.
+Stop and report when the subject has no owning repository or no home for its design folder, the owner's proposal is missing, fewer than two independent reviews exist, or a decision would be made on the owner's behalf. The loop never pushes, prunes, releases or accepts on its own authority.
