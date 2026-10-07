@@ -103,7 +103,7 @@ components = [
 
 [skills.ki-work-roadmap.areas]
 FND = "Foundation tooling"
-GOV = "Governance consistency"
+GOV = "Governance skills and standards"
 OPS = "Operations"
 REV = "Regular reviews"
 RTP = "Runtime portability"
