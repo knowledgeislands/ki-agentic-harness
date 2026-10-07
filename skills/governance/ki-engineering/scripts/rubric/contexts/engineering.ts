@@ -26,6 +26,7 @@ export type PackageRubricContext = {
   pkg4: EngineeringEvidence
   pkg5: EngineeringEvidence
   pkg6: EngineeringEvidence
+  pkg7: EngineeringEvidence
   synchronise?: () => void
 }
 
@@ -361,6 +362,7 @@ export const createEngineeringSession = async (
     pkg4: evidence('PKG-4'),
     pkg5: evidence('PKG-5'),
     pkg6: evidence('PKG-6'),
+    pkg7: evidence('PKG-7'),
     ...(mutable && packageSource !== undefined
       ? {
           synchronise: () => {

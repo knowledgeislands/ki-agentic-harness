@@ -17,6 +17,7 @@ import {
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
   inspectManagedSurfaceExclusions,
+  inspectToolchainActivation,
   inspectTurborepo,
   nextVersionAfter,
   pinnedBunRuntime
@@ -77,7 +78,7 @@ test('the structured catalogue preserves the engineering criteria', async () => 
   const codes = catalogue.families
     .filter((family) => family.code !== 'RUBRIC')
     .flatMap((family) => family.items.map((item) => item.code))
-  expect(codes).toHaveLength(61)
+  expect(codes).toHaveLength(62)
   expect(new Set(codes).size).toBe(codes.length)
   expect(codes[0]).toBe('PKG-1')
   expect(codes).toContain('TEST-7')
@@ -699,6 +700,80 @@ test('SCR-11 conform repairs common prefixes while preserving repository checks'
   expect(writes.get('.husky/pre-commit')).toBe(`${normalisePreCommit('if test -f custom; then custom-check; fi\n')}`)
   expect(writes.get('.husky/commit-msg')).toBe(`${normaliseCommitMessage('custom-message-check "$1"\n')}`)
   expect(writes.get('commitlint.config.ts')).toBe(COMMITLINT_CONFIGURATION)
+})
+
+test('PKG-7 reports a conformed but uninstalled toolchain until its packages are present', async () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(repository)
+  const declared = {
+    '@biomejs/biome': '^2.5.15',
+    knip: '^6.39.0',
+    rumdl: '^0.2.78',
+    husky: '^9.1.7',
+    'lint-staged': '^17.6.0',
+    syncpack: '^15.3.3',
+    typescript: '^7.0.2'
+  }
+  writeFileSync(
+    join(repository, 'package.json'),
+    `${JSON.stringify({ type: 'module', packageManager: 'bun@1.4.2', devDependencies: declared })}\n`
+  )
+  const session = await createEngineeringSession(
+    { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
+    () => [
+      { level: 'FAIL', code: 'PKG-5', message: 'missing Commitlint', subject: 'package.json' },
+      { level: 'FAIL', code: 'SCR-11', message: 'hook drift' }
+    ]
+  )
+  const root = session.subjects[1]?.context() as EngineeringRubricContext
+  const packageFamily = catalogue.families.find((candidate) => candidate.code === 'PKG') as RubricFamily<
+    EngineeringRubricContext,
+    PackageRubricContext
+  >
+  const scriptFamily = catalogue.families.find((candidate) => candidate.code === 'SCR') as RubricFamily<
+    EngineeringRubricContext,
+    ScriptsRubricContext
+  >
+  const activation = packageFamily.items.find((candidate) => candidate.code === 'PKG-7')
+  expect(activation?.mechanical?.conform).toBeUndefined()
+  expect(activation?.mechanical?.remediation).toMatchObject({ class: 'diagnostic' })
+  packageFamily.items
+    .find((candidate) => candidate.code === 'PKG-5')
+    ?.mechanical?.conform?.run(packageFamily.selectContext(root))
+  scriptFamily.items
+    .find((candidate) => candidate.code === 'SCR-11')
+    ?.mechanical?.conform?.run(scriptFamily.selectContext(root))
+  const proposal = session.proposal()
+  expect(proposal.commands).toBeUndefined()
+  mkdirSync(join(repository, '.husky'), { recursive: true })
+  for (const write of proposal.writes) writeFileSync(join(repository, write.path), write.content)
+
+  const pkg = JSON.parse(readFileSync(join(repository, 'package.json'), 'utf8'))
+  expect(Object.keys(pkg.devDependencies)).toEqual(
+    expect.arrayContaining(['@commitlint/cli', '@commitlint/config-conventional'])
+  )
+  expect(hasPreCommitBaseline(readFileSync(join(repository, '.husky/pre-commit'), 'utf8'))).toBe(true)
+  expect(hasCommitMessageBaseline(readFileSync(join(repository, '.husky/commit-msg'), 'utf8'))).toBe(true)
+  expect(readFileSync(join(repository, 'commitlint.config.ts'), 'utf8')).toBe(COMMITLINT_CONFIGURATION)
+
+  const [pending] = inspectToolchainActivation(repository, pkg.devDependencies)
+  expect(pending?.level).toBe('WARN')
+  expect(pending?.message).toContain('@commitlint/cli, @commitlint/config-conventional')
+  expect(pending?.message).toContain('`bun install`')
+
+  for (const name of Object.keys(pkg.devDependencies)) {
+    mkdirSync(join(repository, 'node_modules', name), { recursive: true })
+    writeFileSync(join(repository, 'node_modules', name, 'package.json'), '{}\n')
+  }
+  expect(inspectToolchainActivation(repository, pkg.devDependencies)).toEqual([
+    {
+      level: 'PASS',
+      code: 'PKG-7',
+      message: 'declared toolchain installed (9 packages)',
+      subject: 'package.json'
+    }
+  ])
+  expect(inspectToolchainActivation(repository, {})[0]?.level).toBe('NOT_APPLICABLE')
 })
 
 test('SCR-11 conform leaves unsafe hook paths untouched', async () => {

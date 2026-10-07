@@ -12,7 +12,11 @@ const mechanical = (
   description: string,
   level: ViolationLevel,
   evidence: (context: PackageRubricContext) => EngineeringEvidence,
-  options: { overrideLevels?: readonly ViolationLevel[]; conform?: (context: PackageRubricContext) => void } = {}
+  options: {
+    overrideLevels?: readonly ViolationLevel[]
+    conform?: (context: PackageRubricContext) => void
+    guidance?: string
+  } = {}
 ): RubricItem<PackageRubricContext> => {
   const base = { code, title, description, sources: ['standards-engineering.md'] as const }
   const shared = {
@@ -39,6 +43,7 @@ const mechanical = (
           remediation: {
             class: 'diagnostic',
             guidance:
+              options.guidance ??
               'Correct the package manifest structure or declare the missing ownership before rerunning the audit.'
           }
         }
@@ -92,6 +97,17 @@ export const PACKAGE: RubricFamily<EngineeringRubricContext, PackageRubricContex
       'FAIL',
       (context) => context.pkg6,
       { overrideLevels: ['WARN'], conform: synchronise }
+    ),
+    mechanical(
+      'PKG-7',
+      'Declared toolchain installed',
+      'Every declared `PKG-5` toolchain package resolves under the root `node_modules`, so a hook or script bound to it can load. CONFORM declares packages but never installs them; this criterion carries the pending activation step.',
+      'WARN',
+      (context) => context.pkg7,
+      {
+        guidance:
+          'Run `bun install` at the repository root, then re-run `ki repo audit --skill ki-engineering`. CONFORM never installs packages.'
+      }
     )
   ]
 }

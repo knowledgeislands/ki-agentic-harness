@@ -55,6 +55,8 @@ The shared package metadata and toolchain dependency surface.
   - _Remediation:_ automatic
 - **PKG-6 [M] — Lint-staged fan-out** — `lint-staged` is present and fans out to Biome on staged code and `rumdl check --fix` on staged authored Markdown. (standards-engineering.md)
   - _Remediation:_ automatic
+- **PKG-7 [M] — Declared toolchain installed** — Every declared `PKG-5` toolchain package resolves under the root `node_modules`, so a hook or script bound to it can load. CONFORM declares packages but never installs them; this criterion carries the pending activation step. (standards-engineering.md)
+  - _Remediation:_ diagnostic — Run `bun install` at the repository root, then re-run `ki repo audit --skill ki-engineering`. CONFORM never installs packages.
 
 ## MISE — Toolchain pins
 

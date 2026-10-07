@@ -7,12 +7,12 @@ purpose: adoption
 project: baseline-rollout
 component: keystone
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: b4a8a6f647cbbaed5633593236dede48a98918f2
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:57:46Z
 ---
 
 ## Goal
@@ -39,17 +39,19 @@ Out of scope: any automatic or optional `bun install` from conform, now or as a 
 
 ## Steps
 
-- [ ] Add `PKG-7 [M]` "Declared toolchain is installed" to `scripts/rubric/items/package.ts`, level `WARN`, remediation class `diagnostic` with guidance naming `bun install` at the repository root and a re-run of `ki repo audit --skill ki-engineering`. It has no conform action.
-- [ ] Compute its evidence in `scripts/rubric/contexts/audit-evidence.ts`: for each `PKG-5` toolchain package declared in `devDependencies`, require `node_modules/<name>/package.json` at the repository root; report `PASS` when all are present, `WARN` listing the missing names plus the exact step when any are absent, and `NOT_APPLICABLE` when nothing is declared. Read only; never spawn a package manager.
-- [ ] Add `PKG-7` to the expected code list and add a fixture in `scripts/rubric/items/index.test.ts`: a Bun repository without Commitlint and without `node_modules`; apply the engineering conform proposal; re-audit and assert `PKG-5` and `SCR-11` pass while `PKG-7` warns naming both Commitlint packages and `bun install`; then create the package directories and assert `PKG-7` passes.
-- [ ] Amend the hook-binding paragraph in `references/standards-engineering.md` to state that conform repairs declarations only, that `PKG-7` carries the pending activation step, and that conform never installs.
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering`.
+- [x] Add `PKG-7 [M]` "Declared toolchain is installed" to `scripts/rubric/items/package.ts`, level `WARN`, remediation class `diagnostic` with guidance naming `bun install` at the repository root and a re-run of `ki repo audit --skill ki-engineering`. It has no conform action.
+- [x] Compute its evidence in `scripts/rubric/contexts/audit-evidence.ts`: for each `PKG-5` toolchain package declared in `devDependencies`, require `node_modules/<name>/package.json` at the repository root; report `PASS` when all are present, `WARN` listing the missing names plus the exact step when any are absent, and `NOT_APPLICABLE` when nothing is declared. Read only; never spawn a package manager.
+- [x] Add `PKG-7` to the expected code list and add a fixture in `scripts/rubric/items/index.test.ts`: a Bun repository without Commitlint and without `node_modules`; apply the engineering conform proposal; re-audit and assert `PKG-5` and `SCR-11` pass while `PKG-7` warns naming both Commitlint packages and `bun install`; then create the package directories and assert `PKG-7` passes.
+- [x] Amend the hook-binding paragraph in `references/standards-engineering.md` to state that conform repairs declarations only, that `PKG-7` carries the pending activation step, and that conform never installs.
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-engineering`.
 
 ## Files touched
 
 - `skills/governance/ki-engineering/scripts/rubric/items/package.ts`
 - `skills/governance/ki-engineering/scripts/rubric/contexts/audit-evidence.ts`
+- `skills/governance/ki-engineering/scripts/rubric/contexts/engineering.ts`
 - `skills/governance/ki-engineering/scripts/rubric/items/index.test.ts`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` (criterion counts)
 - `skills/governance/ki-engineering/references/standards-engineering.md`
 - `skills/governance/ki-engineering/references/rubric.md` (generated)
 
@@ -93,6 +95,42 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+The approved boundary: a read-only `PKG-7 [M]` "Declared toolchain installed" `WARN` criterion in `ki-engineering`, its evidence, a conform-then-re-audit fixture, the standard text and the regenerated rubric. Excluded as planned: any install by conform, any `tools-ki` host change and any hook weakening. Baseline `b4a8a6f647cbbaed5633593236dede48a98918f2`.
+
+### Change Summary
+
+- `package.ts` adds `PKG-7` with diagnostic guidance naming `bun install` at the repository root and the re-audit; it has no conform action. The `mechanical` helper takes an optional guidance string.
+- `audit-evidence.ts` hoists the `PKG-5` toolchain list to `TOOLCHAIN_DEV_DEPENDENCIES` and adds the exported, read-only `inspectToolchainActivation`, which checks `node_modules/<name>/package.json` for each declared toolchain package and reports `PASS`, `WARN` with the missing names and the step, or `NOT_APPLICABLE`.
+- `engineering.ts` carries `pkg7` in the package context. This file was not in the planned list but is the context the item reads.
+- `index.test.ts` raises the criterion count to 62 and adds the fixture; `remediation-inventory.test.ts` takes the matching estate counts (743 criteria, 501 mechanical, 379 diagnostic, 394 report-only).
+- `standards-engineering.md` states that conform repairs declarations only, never installs, and that `PKG-7` carries the activation step. `rubric.md` gains the `PKG-7` entry.
+
+### Verification
+
+- `bun run test`: 1007 pass, 0 fail. `bunx tsc --noEmit`: clean. Coverage of the new function is complete; `package.ts` is at 100%.
+- Criterion 1 and 2: the fixture conforms a Bun repository lacking Commitlint, writes the proposal, and finds the `PKG-5` declarations and `SCR-11` hook and configuration baselines satisfied while `PKG-7` warns naming `@commitlint/cli, @commitlint/config-conventional` and `bun install`; with package directories present `PKG-7` passes.
+- Criterion 3: the proposal carries no commands and `inspectToolchainActivation` only reads the file system.
+- Criterion 4: the worktree checker run directly on this repository reports `PKG-7` `PASS` (9 packages). `ki repo audit --skill ki-engineering` passes.
+- Criterion 5: the standard paragraph states it.
+- The rubric was rendered with the `tools-ki` renderer against the worktree catalogue because `ki dev skill rubric` resolves the installed primary checkout; the only difference from the published file was the `PKG-7` entry.
+- `ki repo audit` on the primary checkout: FAIL=0, WARN=5, all existing. In the worktree the only failures are `REPO-REG-1` and `RUNTIMES-2`, which follow from the unregistered worktree path.
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+The goal holds: conform followed by re-audit now shows an uninstalled toolchain rather than leaving it to the next commit. Scope stayed inside the plan apart from the context file and the estate count test. The regression risk is a `WARN` in any repository whose toolchain is declared but uninstalled. That is the intended signal, and it does not fail. Ready for acceptance.
+
+### Mini recap
+
+`PKG-7` makes declared-but-uninstalled toolchain visible with the exact step, and conform still never installs. Tests, types and audits pass. Learning route: `ki dev skill rubric` cannot render from a linked worktree, a possible `tools-ki` follow-on.
 
 ## Discussion
 

@@ -425,6 +425,59 @@ export const inspectManagedSurfaceExclusions = ({
         }
       ]
 }
+// The toolchain the governance modes invoke directly: PKG-5 requires it declared and
+// PKG-7 requires each declared entry installed at the repository root.
+const TOOLCHAIN_DEV_DEPENDENCIES = [
+  '@biomejs/biome',
+  '@commitlint/cli',
+  '@commitlint/config-conventional',
+  'knip',
+  'rumdl',
+  'husky',
+  'lint-staged',
+  'syncpack',
+  'typescript'
+] as const
+
+/**
+ * PKG-7: a declared toolchain package is installed only when its manifest resolves
+ * under the root `node_modules`. Read only — CONFORM declares packages but never
+ * installs them, so this finding carries the pending activation step instead.
+ */
+export const inspectToolchainActivation = (
+  repository: string,
+  devDependencies: Readonly<Record<string, string>>
+): EngineeringEvidenceFinding[] => {
+  const declared = TOOLCHAIN_DEV_DEPENDENCIES.filter((name) => name in devDependencies)
+  if (!declared.length)
+    return [
+      {
+        level: 'NOT_APPLICABLE',
+        code: 'PKG-7',
+        message: 'no toolchain devDependencies declared',
+        subject: 'package.json'
+      }
+    ]
+  const missing = declared.filter((name) => !existsSync(join(repository, 'node_modules', name, 'package.json')))
+  return missing.length
+    ? [
+        {
+          level: 'WARN',
+          code: 'PKG-7',
+          message: `declared toolchain not installed: ${missing.join(', ')}. Run \`bun install\` at the repository root, then re-run \`ki repo audit --skill ki-engineering\``,
+          subject: 'package.json'
+        }
+      ]
+    : [
+        {
+          level: 'PASS',
+          code: 'PKG-7',
+          message: `declared toolchain installed (${declared.length} packages)`,
+          subject: 'package.json'
+        }
+      ]
+}
+
 type Level = EngineeringEvidenceFinding['level']
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 
@@ -439,6 +492,7 @@ const mechanicalEngineeringCheckIds = new Set([
   'PKG-4',
   'PKG-5',
   'PKG-6',
+  'PKG-7',
   'MISE-1',
   'MISE-2',
   'MISE-3',
@@ -1178,18 +1232,7 @@ export const collectAuditEvidence = async (
   // toolchain is actually declared, rather than left implied. lint-staged is the husky
   // pre-commit fan-out — a governed key in the manifest, so it must be present and wired.
   const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>
-  const REQUIRED_DEV = [
-    '@biomejs/biome',
-    '@commitlint/cli',
-    '@commitlint/config-conventional',
-    'knip',
-    'rumdl',
-    'husky',
-    'lint-staged',
-    'syncpack',
-    'typescript'
-  ]
-  const missingDev = REQUIRED_DEV.filter((d) => !(d in devDeps))
+  const missingDev = TOOLCHAIN_DEV_DEPENDENCIES.filter((d) => !(d in devDeps))
   missingDev.length
     ? add(
         'FAIL',
@@ -1205,6 +1248,8 @@ export const collectAuditEvidence = async (
         STD,
         'package.json'
       )
+  for (const finding of inspectToolchainActivation(repo, devDeps))
+    add(finding.level, finding.code, finding.message, STD, finding.subject)
   const lintStaged = pkg['lint-staged']
   if (!lintStaged || typeof lintStaged !== 'object') {
     add('FAIL', 'PKG-6', 'lint-staged block missing (the husky pre-commit fan-out)', STD, 'package.json')
