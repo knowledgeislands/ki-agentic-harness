@@ -1,15 +1,17 @@
 ---
 id: KI-HARNESS-RTP-002
 title: Reach Cowork MCP servers
+kind: deliver
+initiative: platform-foundations
+component: environment
 area: RTP
-theme: runtime-portability
-horizon: parked
-status: draft
+status: cancelled
+resolution: obsolete
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-10-05T10:45:00Z
+updated_at: 2026-10-07T14:01:35Z
 ---
 
 ## Goal
@@ -23,6 +25,10 @@ Choose between sandbox-bundled servers and authenticated remote endpoints for ho
 ## Boundary
 
 Unblock only when the owner selects the security posture and settles the plugin's license and visibility; web remains a separate manual-connector concern.
+
+## Cancelled
+
+Cancelled 2026-10-07 by Kris Brown, who approved the migration recommendation to cancel this record as obsolete (decision 7 of the roadmap-model rollout, `~/.local/state/ki/state-of-play/design/decisions.md`). The need has gone: the `ki-plugins` route this record depended on is retired under `ADR-KI-HARNESS-015`, so there is no supported Cowork packaging and no MCP server for Cowork to reach. No outstanding changes remain; reinstating Cowork packaging would be new work under its own record.
 
 ## Discussion
 

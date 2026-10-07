@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: roadmap-model
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a448b057a5808f2f985e46d49730ca6213c617d1
 created_at: 2026-10-07T13:54:02Z
-updated_at: 2026-10-07T13:58:53Z
+updated_at: 2026-10-07T14:01:35Z
 ---
 
 # KI-HARNESS-GOV-151: Recognise Initiatives folder
@@ -120,6 +119,10 @@ The goal is met: both folders are recognised in the standard and both checkers, 
 
 Initiatives now have their own registry folder and note schema; the checker reads it and tolerates the old index with a warning. Gates pass. Learning route: the Initiative schema is new vocabulary that Arcadia's migration will test first.
 
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Legacy index
@@ -128,4 +131,4 @@ Arcadia still holds `Streams/Projects/Initiatives.md` until its own migration. R
 
 ### Authority
 
-Decision 8 approves the change and decision 6 (Kris Brown, 7 October 2026) grants carry-through to done for the whole rollout.
+Decision 8 approves the change and decision 6 (Kris Brown, 7 October 2026) grants carry-through to done for the whole rollout: "you can just carry it all the way through, this is a really good example of thought out work", with `completion_target: done`. Closed through `ki-accept` under that grant after rechecking the review evidence on the committed delivery and migration (`6d447cd7`): `bun run test` 970 pass and 0 fail, `bunx tsc --noEmit` clean, and `ki repo audit --skill ki-work-roadmap` FAIL=0.

@@ -1,15 +1,19 @@
 ---
 id: KI-HARNESS-OPS-001
 title: Complete Claude-state cleanup
+kind: deliver
+purpose: upkeep
+initiative: rig
+component: environment
 area: OPS
-theme: operations
-horizon: waiting-for
-status: draft
+status: cancelled
+resolution: duplicate
+resolution_target: DOTFILES-UE-056
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-10-07T10:21:00Z
+updated_at: 2026-10-07T14:01:35Z
 ---
 
 ## Goal
@@ -25,6 +29,10 @@ On 27 September 2026 the principal approved the roadmap ownership split. This re
 ## Boundary
 
 Do not preserve stale counts as a target or broaden cleanup beyond the reviewed set. This record no longer owns cleanup execution or changes to portable housekeeping capabilities. It is not complete merely because the principal record exists; any later disposition remains an explicit lifecycle decision.
+
+## Cancelled
+
+Cancelled 2026-10-07 as a duplicate of DOTFILES-UE-056, carrying out the fold Kris Brown approved on 2026-10-07 and recorded under "Fold into DOTFILES-UE-056" below; the migration proposals Kris approved the same day (decision 7) name the same closure. The chezmoi record owns the whole operation: refreshed inventory, exact approval, execution and verification. This record was only the harness provenance pointer. The target lives in the chezmoi source repository (`~/.local/share/chezmoi`) at `docs/roadmap/DOTFILES-UE-056-review-host-claude-cleanup.md`. No outstanding changes remain here; the cleanup itself remains open under DOTFILES-UE-056, and this closure does not edit it.
 
 ## Discussion
 
@@ -43,3 +51,5 @@ The host principal DOTFILES-UE-056 retains the wait for deliberately authorised 
 ### Fold into DOTFILES-UE-056 - approved 2026-10-07
 
 On 2026-10-07 Kris approved folding this record into chezmoi DOTFILES-UE-056 in the `ki-arcadia-principal` state-of-play review. It is not carried out yet: this record is adopted in Waiting for, so it can take an intake disposition only after an explicit human disposition moves it back into Triage, and a `merged` or `duplicate` target must resolve in this roadmap, while DOTFILES-UE-056 lives in the chezmoi roadmap. The route the skills allow is for Kris to approve moving this record to Triage, then a `rejected` disposition whose rationale records that DOTFILES-UE-056 carries the work, closed through `ki-accept`. Until then it stays a provenance pointer here.
+
+The roadmap model replaced the Triage-and-rejected route with cancellation and a cross-repository `resolution_target`, so the fold is carried out directly; see Cancelled.
