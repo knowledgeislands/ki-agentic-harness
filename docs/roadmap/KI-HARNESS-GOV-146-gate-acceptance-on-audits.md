@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 initiative: platform-foundations
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 9888595c1b5d94fa49ae20a216aa5cc995691b3f
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-07T21:05:01Z
+updated_at: 2026-10-07T21:05:02Z
 ---
 
 # KI-HARNESS-GOV-146: Gate acceptance on audits
@@ -118,6 +117,10 @@ The estate now has a settled, stated answer: a record whose governing audits fai
 ### Mini recap
 
 Delivered the acceptance precondition in `ki-accept`; all gates pass. This record was itself closed under the new rule.
+
+## Done
+
+Accepted 2026-10-07 under Kris's standing grant in the state-of-play design decisions (Decisions 12 and 17: "Delivered records count as done ... and are pruned once verified"; Decision 19 authorises continuous delivery of this record), on the review packet above. The governing audits (`ki-work-roadmap`, `ki-authoring`, `ki-skills`) pass on this record as committed.
 
 ## Discussion
 
