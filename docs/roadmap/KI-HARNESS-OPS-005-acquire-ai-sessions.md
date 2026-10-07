@@ -1,15 +1,18 @@
 ---
 id: KI-HARNESS-OPS-005
 title: Acquire AI sessions
+kind: deliver
+purpose: capability
+project: knowledge-acquisition
+component: acquire
 area: OPS
-theme: operations
 horizon: now
 status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-10-06T01:28:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 ## Goal

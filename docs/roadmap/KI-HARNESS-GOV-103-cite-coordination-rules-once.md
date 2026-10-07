@@ -2,7 +2,10 @@
 id: KI-HARNESS-GOV-103
 area: GOV
 title: Cite coordination rules once
-theme: governance-consistency
+kind: deliver
+purpose: debt
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
 horizon: now
 status: draft
 blocks: []
@@ -35,7 +38,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-06T01:25:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once

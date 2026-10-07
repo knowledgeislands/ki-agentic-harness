@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-135
 area: GOV
 title: Review governance date provenance
-theme: governance-consistency
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: keystone
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T10:59:42Z
-updated_at: 2026-10-05T08:02:49Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-135: Review governance date provenance

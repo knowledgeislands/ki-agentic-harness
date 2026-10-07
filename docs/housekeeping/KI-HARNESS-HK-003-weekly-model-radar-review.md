@@ -8,6 +8,9 @@ grace: P2D
 spawn-policy: when-due
 spawn-horizon: now
 active-run: null
+initiative: platform-foundations
+component: governance
+purpose: upkeep
 ---
 
 # Weekly model radar review

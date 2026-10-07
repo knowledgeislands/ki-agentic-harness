@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-117
 area: GOV
 title: Govern hooks beyond packages
-theme: governance-consistency
+kind: deliver
+purpose: governance
+project: baseline-rollout
+component: governance
 horizon: now
 status: draft
 blocks: []
 blocked_by: [KI-HARNESS-GOV-109]
 baseline_ref: null
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-10-05T12:10:22Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages

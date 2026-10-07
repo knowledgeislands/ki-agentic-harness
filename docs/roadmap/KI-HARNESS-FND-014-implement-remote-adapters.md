@@ -2,14 +2,21 @@
 id: KI-HARNESS-FND-014
 area: FND
 title: Implement remote adapter execution
-theme: foundation-tooling
-horizon: waiting-for
+kind: deliver
+purpose: capability
+initiative: platform-foundations
+component: change-management
+horizon: hold
+hold:
+  reason: waiting-for
+  condition: Kris names the authorised GitHub repository and reversible draft Issue for the live pilot, and who owns its lifecycle metadata and write authority
+  review: 2026-11-07
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-08-09T20:58:31Z
-updated_at: 2026-10-05T07:54:24Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 ## Goal

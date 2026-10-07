@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-087
 area: GOV
 title: Evaluate Obscura browser runtime
-theme: governance-consistency
+kind: investigate
+purpose: learning
+project: knowledge-acquisition
+component: acquire
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-22T06:15:11Z
-updated_at: 2026-10-04T18:25:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 ## Goal

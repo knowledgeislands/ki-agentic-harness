@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-094
 area: GOV
 title: Check constraint reach
-theme: governance-consistency
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: keystone
 horizon: now
 status: ready
 blocks: [KI-HARNESS-GOV-125]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-05T10:45:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach

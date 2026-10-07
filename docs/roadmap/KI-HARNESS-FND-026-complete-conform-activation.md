@@ -2,14 +2,17 @@
 id: KI-HARNESS-FND-026
 area: FND
 title: Complete conform activation
-theme: foundation-tooling
+kind: deliver
+purpose: adoption
+project: baseline-rollout
+component: keystone
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 ## Goal

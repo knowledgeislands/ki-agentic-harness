@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-125
 area: GOV
 title: Share batch identifier grammar
-theme: governance-consistency
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: change-management
 horizon: now
 status: draft
 blocks: []
 blocked_by: [KI-HARNESS-GOV-094]
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-05T08:03:47Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-125: Share batch identifier grammar

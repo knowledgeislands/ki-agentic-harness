@@ -2,7 +2,9 @@
 id: KI-HARNESS-GOV-107
 area: GOV
 title: Make coordination audit mechanical
-theme: governance-consistency
+kind: deliver
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
 horizon: now
 status: ready
 blocks: []
@@ -29,7 +31,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical

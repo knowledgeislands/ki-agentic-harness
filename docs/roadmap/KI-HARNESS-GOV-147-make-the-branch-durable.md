@@ -2,14 +2,15 @@
 id: KI-HARNESS-GOV-147
 area: GOV
 title: Make the branch durable
-theme: governance-consistency
-horizon: triage
-status: draft
+kind: deliver
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
+status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T23:31:00Z
-updated_at: 2026-10-06T23:31:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-147: Make the branch durable

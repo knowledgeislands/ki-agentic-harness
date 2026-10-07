@@ -2,7 +2,10 @@
 id: KI-HARNESS-GOV-091
 area: GOV
 title: Guide opening and deferral
-theme: governance-consistency
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: governance
 horizon: now
 status: ready
 blocks: []
@@ -10,7 +13,7 @@ blocked_by: []
 transferred_from: ki-website
 baseline_ref: null
 created_at: 2026-09-24T19:05:00Z
-updated_at: 2026-10-05T08:05:15Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-091: Guide opening and deferral

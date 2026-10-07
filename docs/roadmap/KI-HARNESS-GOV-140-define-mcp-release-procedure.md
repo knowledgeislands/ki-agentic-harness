@@ -2,14 +2,16 @@
 id: KI-HARNESS-GOV-140
 area: GOV
 title: Define MCP release procedure
-theme: governance-consistency
-horizon: triage
-status: draft
+kind: deliver
+purpose: governance
+project: estate-factorisation
+component: repo-structure
+status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T01:19:00Z
-updated_at: 2026-10-06T21:57:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-140: Define MCP release procedure

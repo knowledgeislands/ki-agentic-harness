@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-127
 area: GOV
 title: Adopt Dependency Cruiser estatewide
-theme: governance-consistency
+kind: deliver
+purpose: adoption
+project: baseline-rollout
+component: governance
 horizon: now
 status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: e30948ad1e45835c5d2a6140ff5306778a32b9d2
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-06T01:20:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide

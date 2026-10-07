@@ -2,14 +2,16 @@
 id: KI-HARNESS-RTP-015
 area: RTP
 title: Verify run MCP connection
-theme: runtime-portability
+kind: investigate
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T08:20:00Z
-updated_at: 2026-10-05T12:00:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # Verify run MCP connection

@@ -2,14 +2,16 @@
 id: KI-HARNESS-GOV-102
 area: GOV
 title: Decide role record serialization
-theme: governance-consistency
+kind: decide
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
 horizon: now
 status: ready
 blocks: [KI-HARNESS-GOV-103]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-05T10:45:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-102: Decide role record serialization

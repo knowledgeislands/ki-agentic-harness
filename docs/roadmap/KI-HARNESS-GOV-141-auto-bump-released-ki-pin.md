@@ -2,14 +2,16 @@
 id: KI-HARNESS-GOV-141
 area: GOV
 title: Auto-bump released ki pin
-theme: governance-consistency
+kind: deliver
+project: estate-factorisation
+component: governance
 horizon: next
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T01:21:00Z
-updated_at: 2026-10-06T21:55:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-141: Auto-bump released ki pin

@@ -1,15 +1,21 @@
 ---
 id: KI-HARNESS-OPS-003
 title: Define OTLP observability
+kind: deliver
+purpose: capability
+initiative: platform-foundations
 area: OPS
-theme: operations
-horizon: parked
+horizon: hold
+hold:
+  reason: parked
+  condition: A concrete operational question cannot be answered from existing local output and Kris chooses OTLP as the remedy, naming a consent and configuration owner
+  review: 2027-01-07
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-21T23:51:38Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 ## Goal

@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-108
 area: GOV
 title: Decide coordination declaration scope
-theme: governance-consistency
+kind: decide
+purpose: governance
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-06T01:24:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope

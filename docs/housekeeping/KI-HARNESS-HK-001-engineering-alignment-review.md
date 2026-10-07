@@ -10,6 +10,8 @@ grace: P7D
 spawn-policy: when-due
 spawn-horizon: now
 active-run: null
+initiative: platform-foundations
+purpose: upkeep
 ---
 
 # Engineering alignment review

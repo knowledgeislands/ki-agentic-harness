@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-123
 area: GOV
 title: Review unsettled-source readings
-theme: governance-consistency
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: governance
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-05T08:02:26Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-123: Review unsettled-source readings

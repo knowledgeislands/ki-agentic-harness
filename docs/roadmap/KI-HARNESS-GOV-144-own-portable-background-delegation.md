@@ -2,14 +2,16 @@
 id: KI-HARNESS-GOV-144
 area: GOV
 title: Own portable background delegation
-theme: governance-consistency
-horizon: triage
-status: draft
+kind: deliver
+purpose: capability
+initiative: platform-foundations
+component: governance
+status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T22:54:11Z
-updated_at: 2026-10-06T23:04:54Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-144: Own portable background delegation

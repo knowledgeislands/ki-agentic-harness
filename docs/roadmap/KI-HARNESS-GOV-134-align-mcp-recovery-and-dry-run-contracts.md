@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-134
 area: GOV
 title: Align MCP safety contracts
-theme: governance-consistency
+kind: deliver
+purpose: corrective
+project: estate-factorisation
+component: repo-structure
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T10:57:53Z
-updated_at: 2026-10-06T01:26:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-134: Align MCP safety contracts

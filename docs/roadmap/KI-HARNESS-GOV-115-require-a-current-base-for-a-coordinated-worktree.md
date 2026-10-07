@@ -2,7 +2,9 @@
 id: KI-HARNESS-GOV-115
 area: GOV
 title: Require current worktree base
-theme: governance-consistency
+kind: deliver
+project: paperclip-bootstrap-and-recovery
+component: agentic-systems
 horizon: now
 status: ready
 blocks: []
@@ -23,7 +25,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-79
       relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-10-06T01:23:00Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base

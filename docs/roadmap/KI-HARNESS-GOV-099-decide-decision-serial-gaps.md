@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-099
 area: GOV
 title: Decide decision serial gaps
-theme: governance-consistency
+kind: decide
+purpose: upkeep
+initiative: platform-foundations
+component: governance
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-099: Decide decision serial gaps

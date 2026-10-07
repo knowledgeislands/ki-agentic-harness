@@ -2,14 +2,17 @@
 id: KI-HARNESS-GOV-109
 area: GOV
 title: Enforce commit gates
-theme: governance-consistency
+kind: deliver
+purpose: governance
+project: baseline-rollout
+component: governance
 horizon: now
 status: ready
 blocks: [KI-HARNESS-GOV-117]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:58:00Z
-updated_at: 2026-10-05T08:41:49Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-109: Enforce Commit Gates

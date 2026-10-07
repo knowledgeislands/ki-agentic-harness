@@ -2,14 +2,16 @@
 id: KI-HARNESS-GOV-145
 area: GOV
 title: Disclose evaluated criteria count
-theme: governance-consistency
-horizon: triage
-status: draft
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: keystone
+status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-06T23:01:19Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-GOV-145: Disclose evaluated criteria count

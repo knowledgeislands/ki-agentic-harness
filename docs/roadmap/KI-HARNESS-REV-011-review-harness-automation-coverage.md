@@ -2,14 +2,17 @@
 id: KI-HARNESS-REV-011
 area: REV
 title: Review harness automation
-theme: regular-reviews
+kind: deliver
+purpose: governance
+project: baseline-rollout
+component: keystone
 horizon: now
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-03T02:26:59Z
-updated_at: 2026-10-05T08:12:37Z
+updated_at: 2026-10-07T14:00:01Z
 ---
 
 # KI-HARNESS-REV-011: Review harness automation
