@@ -33,19 +33,29 @@ The header makes the marker legible without requiring a reader to know the filen
 
 ## Presentation neighbourhoods
 
-A compact `.ki.toml` with at most two declared skill roots beyond the required `ki-repo` and `ki-authoring` foundation MAY omit neighbourhood banners. A substantial file with three or more additional skill roots MUST use the exact three-line `Foundation` banner and at least one other needed banner from this stable sequence:
+A compact `.ki.toml` with at most two declared skill roots beyond the required `ki-repo` and `ki-authoring` foundation MAY omit neighbourhood banners, although `ki-authoring` asks every file to use them. A substantial file with three or more additional skill roots MUST use the exact three-line `Foundation` banner and at least one other needed banner from this stable sequence:
 
 - **Foundation** — `[repo]`, `[skills.ki-repo]`, `[skills.ki-authoring]`, and their immediate configuration.
 - **Repository shape** — the primary repository kind and its structural adapters.
 - **Governance and runtime** — general governance capabilities, bindings, runtime-specific adapters, and their owner configuration.
 - **Change management** — the work selector, selected adapter, housekeeping, and related delivery capabilities.
-- **Relationships** — Agora and trade declarations, normally toward the end because their keyed collections can dominate longer files.
+- **Relationships** — Agora and trade declarations: `[skills.ki-agora]` first, and `[skills.ki-trades]` always the last table in the file.
 
 Use only the neighbourhoods the repository needs. Foundation stays first: `[repo]` remains the first table, `[skills.ki-repo]` the first skill root, and `[skills.ki-authoring]` follows the repository contract it presents. After that, owner affinity takes precedence over a global alphabetic sort. Within a neighbourhood, keep a skill's explicit root and all of its subordinate configuration contiguous, with the root before any child table or dotted child assignment. Otherwise retain a stable local order; alphabetic order is useful only where it does not separate an owner from its adapters or configuration.
 
-Neighbourhood comments are navigational and carry no consumer-visible semantics. The exact conformance header and its following blank line remain the first bytes of the file; decorative rules and section banners follow them. `ki-authoring` owns their TOML presentation, including the strong preference for compact dotted child keys when a complete entry remains readable on one line and the nested-table escape for complex records.
+Neighbourhood comments are navigational and carry no consumer-visible semantics. The exact conformance header and its following blank line remain the first bytes of the file; the neighbourhood banners follow them, with no other decorative rule. `ki-authoring` owns their TOML presentation, including the strong preference for compact dotted child keys when a complete entry remains readable on one line and the nested-table escape for complex records.
 
-Each used banner MUST use the exact three-line comment form, appear at most once, introduce a non-empty declaration group, and follow the sequence above. An owner block MUST NOT cross a neighbourhood banner. `ki-repo` mechanically diagnoses these source-level rules without reserialising TOML or assigning every skill to a hard-coded neighbourhood. `ki-authoring` retains the judgment of whether a non-foundation declaration is placed under the most meaningful banner and whether optional banners improve a compact file.
+Each used banner MUST use the exact three-line comment form, appear at most once, introduce a non-empty declaration group, and follow the sequence above. An owner block MUST NOT cross a neighbourhood banner. `ki-repo` mechanically diagnoses these source-level rules without reserialising TOML or assigning every skill to a hard-coded neighbourhood. `ki-authoring` retains the judgment of whether a non-foundation declaration is placed under the most meaningful banner.
+
+### Layout rules
+
+Every `.ki.toml` follows the five `ki-authoring` TOML layout rules. `ki-repo` checks three of them mechanically as `FILES-10`, on the source text rather than the parsed data:
+
+- Exactly one blank line precedes every table heading and every neighbourhood banner. A comment attached directly above a heading belongs to it, so the blank line comes before the comment.
+- Every array is multiline: the opening bracket ends its line, each element sits on its own line with a trailing comma, and the closing bracket has a line of its own.
+- `[skills.ki-trades]` and its child tables are the last tables in the file, and `[skills.ki-agora]` is the first table under the Relationships banner.
+
+`FILES-10` fails in a repository of the Knowledge Islands Agora and warns elsewhere, as the roadmap's bare-area-list check does. A repository belongs to the Agora when its Capital, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes, declares `[skills.ki-agora.kis]` and either is the repository or lists it in that table's `members`. An unresolvable Capital reads as outside the Agora, so the check warns rather than fails.
 
 ## Harnesses and the skills namespace
 
@@ -53,18 +63,29 @@ A repository names the harnesses that provide its skills once, in `[repo]`, and 
 
 ```toml
 [repo]
-harnesses = ["knowledgeislands/ki-agentic-harness"]
+harnesses = [
+  "knowledgeislands/ki-agentic-harness",
+]
 
 [skills.ki-repo]
 repo_type = "project"
 primary_shape = "ki-repo-project"
-repository = "https://github.com/owner/repository" # canonical GitHub home
-title = "Example repository" # exact README.md H1
-capital = "https://github.com/owner/capital" # territory Capital; a Capital names itself
-description = "One sentence describing the repository." # exact GitHub and package.json description where present
+# Canonical GitHub home
+repository = "https://github.com/owner/repository"
+# Exact README.md H1
+title = "Example repository"
+# Territory Capital; a Capital names itself
+capital = "https://github.com/owner/capital"
+# Exact GitHub and package.json description where present
+description = "One sentence describing the repository."
 visibility = "public"
-license = "MIT"          # SPDX id; default MIT when unset. "UNLICENSED" for proprietary.
-supported_runtimes = ["claude-code", "chatgpt-codex"] # required agent-runtime support surface
+# SPDX id; default MIT when unset. "UNLICENSED" for proprietary.
+license = "MIT"
+# Required agent-runtime support surface
+supported_runtimes = [
+  "claude-code",
+  "chatgpt-codex",
+]
 
 checks.branch-protection = true
 

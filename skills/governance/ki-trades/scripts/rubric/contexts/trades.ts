@@ -7,7 +7,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
-import { type HoldContext, holdContext } from './hold.ts'
+import { type HoldContext, holdContext, holdNoticeStands } from './hold.ts'
 
 const CONFIG_TABLE = 'ki-trades'
 const REPOSITORY_TABLE = 'ki-repo'
@@ -578,6 +578,35 @@ const effectiveConfiguration = (
   }
 }
 
+/**
+ * ROUTE-2 for one member. While the trades hold notice stands, a bare declaration that no channel
+ * names is valid: the hold strips the policy back, so the member is not yet expected to trade.
+ */
+export const memberCoverage = (
+  isCapitalRepository: boolean,
+  named: boolean,
+  capital: string,
+  onHold: boolean
+): readonly AuditOutcome[] =>
+  isCapitalRepository
+    ? [{ status: 'NOT_APPLICABLE', message: 'the Capital hosts the territory trade policy' }]
+    : named
+      ? pass('The territory trade policy names this repository in a channel.')
+      : onHold
+        ? [
+            {
+              status: 'NOT_APPLICABLE',
+              message: `trades are on hold, so ${capital} grants no channel yet and the bare ki-trades declaration is valid`
+            }
+          ]
+        : [
+            {
+              status: 'VIOLATION',
+              message: `ki-trades is declared but the territory trade policy in ${capital} names this repository in no channel`,
+              subject: '.ki.toml'
+            }
+          ]
+
 const routeEvidence = (
   root: string,
   local: TradeConfiguration,
@@ -618,17 +647,7 @@ const routeEvidence = (
   const capital = resolution.capital.repository as string
   const isCapitalRepository = capital === repository
   const named = TRADE_KINDS.some((kind) => local.exportsTo[kind].length > 0 || local.importsFrom[kind].length > 0)
-  const coverage: readonly AuditOutcome[] = isCapitalRepository
-    ? [{ status: 'NOT_APPLICABLE', message: 'the Capital hosts the territory trade policy' }]
-    : named
-      ? pass('The territory trade policy names this repository in a channel.')
-      : [
-          {
-            status: 'VIOLATION',
-            message: `ki-trades is declared but the territory trade policy in ${capital} names this repository in no channel`,
-            subject: '.ki.toml'
-          }
-        ]
+  const coverage = memberCoverage(isCapitalRepository, named, capital, holdNoticeStands())
   if (!named)
     return {
       outcomes: pass(`The territory trade policy in ${capital} grants this repository no routes.`),
@@ -1223,7 +1242,8 @@ const recordEvidence = (
   root: string,
   local: TradeConfiguration,
   active: ReadonlyMap<string, RegisteredRepository>,
-  resolution: PolicyResolution
+  resolution: PolicyResolution,
+  onHold = false
 ): {
   records: AuditOutcome[]
   phase: AuditOutcome[]
@@ -1287,6 +1307,15 @@ const recordEvidence = (
     }
     const permitted = record.direction === 'inbound' ? local.importsFrom[record.kind] : local.exportsTo[record.kind]
     const peerRepository = `https://github.com/${record.peer}`
+    if (!permitted.includes(peerRepository) && onHold) {
+      // The hold strips policies back to bare tables, so a retained record's route is unverifiable, not refused.
+      authority.push({
+        status: 'INFO',
+        message: `route authority is unverifiable: trades are on hold and the territory trade policy grants no ${record.kind} route to ${record.peer}`,
+        subject: record.path
+      })
+      continue
+    }
     if (!permitted.includes(peerRepository)) {
       authority.push({
         status: 'VIOLATION',
@@ -1581,7 +1610,7 @@ export const createTradesSession = ({
   const effective = effectiveConfiguration(local, resolution, parsedConfiguration.mapBonus)
   const routes = routeEvidence(root, effective, local, resolution, registered)
   const policy = policyEvidence(local, registered)
-  const evidence = recordEvidence(root, effective, routes.active, resolution)
+  const evidence = recordEvidence(root, effective, routes.active, resolution, holdNoticeStands())
   const standing = standingCaptureEvidence(root, registered, effective, routes.standingActive, resolution)
   let scaffoldRequested = false
   const context: TradesRubricContext = {

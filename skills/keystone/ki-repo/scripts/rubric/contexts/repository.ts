@@ -32,12 +32,21 @@ const KI_AUTHORING_TABLE = 'ki-authoring'
 const KI_REPO_DEFAULT = `[skills.${KI_REPO_TABLE}]
 repo_type = "project"
 primary_shape = "ki-repo-project"
-title = ""              # required — exact README.md H1
-capital = ""            # required — canonical HTTPS GitHub URL of this repository's territory Capital (a Capital names itself)
-description = ""        # required — exact GitHub and package.json description where present
-visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
-license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Select with https://choosealicense.com/ and validate identifiers at https://spdx.org/licenses/.
-supported_runtimes = ["claude-code", "chatgpt-codex"] # required agent-runtime support surface
+# Required — exact README.md H1
+title = ""
+# Required — canonical HTTPS GitHub URL of this repository's territory Capital (a Capital names itself)
+capital = ""
+# Required — exact GitHub and package.json description where present
+description = ""
+# "public" | "private" — must match the repo's actual GitHub visibility
+visibility = "private"
+# SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Select with https://choosealicense.com/ and validate identifiers at https://spdx.org/licenses/.
+license = "MIT"
+# Required agent-runtime support surface
+supported_runtimes = [
+  "claude-code",
+  "chatgpt-codex",
+]
 
 # Per-repo check overrides — true = enforce, false = don't. Omit any check to take
 # the org default; a repo that fully conforms needs nothing here.
@@ -67,6 +76,7 @@ const GITHUB_CODES = new Set([
   'FILES-7',
   'FILES-8',
   'FILES-9',
+  'FILES-10',
   'GH-1',
   'GH-2',
   'GH-3',
@@ -101,6 +111,7 @@ export type FilesRubricContext = {
   files7: readonly RepoEvidenceFinding[]
   files8: readonly RepoEvidenceFinding[]
   files9: readonly RepoEvidenceFinding[]
+  files10: readonly RepoEvidenceFinding[]
   ensureManagedGitignore?: () => void
   removeLegacyKiOutput?: () => void
   ensureRepoConfiguration?: () => void
@@ -489,6 +500,10 @@ export const createRepoSession = async (
       files7: evidence('FILES-7'),
       files8: evidence('FILES-8'),
       files9: evidence('FILES-9'),
+      // Layout findings fail in the Agora and warn elsewhere.
+      files10: evidence('FILES-10').map((finding) =>
+        territory.agora && finding.level === 'WARN' ? { ...finding, level: 'FAIL' } : finding
+      ),
       ...(mutable && gitignoreInspection && !gitignoreInspection.malformed && !gitignoreInspection.conforming
         ? {
             ensureManagedGitignore: () => {

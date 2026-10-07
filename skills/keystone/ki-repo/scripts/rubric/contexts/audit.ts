@@ -45,7 +45,7 @@ import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpat
 import { isAbsolute, join, resolve } from 'node:path'
 import { promisify } from 'node:util'
 import type { RubricEmitter } from '../../shared/rubric.ts'
-import { inspectConfigurationPresentation } from './configuration-presentation.ts'
+import { inspectConfigurationLayout, inspectConfigurationPresentation } from './configuration-presentation.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
 import { type RepositoryShape, resolveRepositoryShape } from './shapes.ts'
 
@@ -306,13 +306,23 @@ const KI_SECTION = skillTable('ki-repo')
 const KI_REPO_DEFAULT = `[skills.${KI_SECTION}]
 repo_type = "project"
 primary_shape = "ki-repo-project"
-repository = ""         # required — canonical HTTPS GitHub home, for example https://github.com/owner/repository
-title = ""              # required — exact README.md H1
-capital = ""            # required — canonical HTTPS GitHub URL of this repository's territory Capital (a Capital names itself)
-description = ""        # required — exact GitHub and package.json description where present
-visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
-license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/
-supported_runtimes = ["claude-code", "chatgpt-codex"] # required agent-runtime support surface
+# Required — canonical HTTPS GitHub home, for example https://github.com/owner/repository
+repository = ""
+# Required — exact README.md H1
+title = ""
+# Required — canonical HTTPS GitHub URL of this repository's territory Capital (a Capital names itself)
+capital = ""
+# Required — exact GitHub and package.json description where present
+description = ""
+# "public" | "private" — must match the repo's actual GitHub visibility
+visibility = "private"
+# SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/
+license = "MIT"
+# Required agent-runtime support surface
+supported_runtimes = [
+  "claude-code",
+  "chatgpt-codex",
+]
 
 # Per-repo check overrides — true = enforce, false = don't. Omit any check to take
 # the org default; a repo that fully conforms needs nothing here.
@@ -844,6 +854,9 @@ async function auditRepo(
   if (files.has(KI_CONFIG) && kiText?.startsWith(KI_CONFIGURATION_HEADER)) {
     for (const issue of inspectConfigurationPresentation(kiText).issues)
       warn('FILES-9', `configuration presentation: ${issue}`, KI_CONFIG)
+    if (files.has(KI_CONFIG) && kiText?.startsWith(KI_CONFIGURATION_HEADER))
+      for (const issue of inspectConfigurationLayout(kiText))
+        warn('FILES-10', `configuration layout: ${issue}`, KI_CONFIG)
   }
   // ── layer 1: runtime skill ignore contract (gated on the ki-repo marker) ── FILES-4
   const runtimeDeclaration = kiText == null ? undefined : parseSupportedRuntimes(kiText)
@@ -1603,6 +1616,7 @@ const CONTENT_AREAS = new Set([
   'FILES-7',
   'FILES-8',
   'FILES-9',
+  'FILES-10',
   'KIND-1',
   'KIND-2',
   'GH-2',

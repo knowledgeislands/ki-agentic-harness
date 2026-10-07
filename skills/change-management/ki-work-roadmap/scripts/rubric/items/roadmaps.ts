@@ -7,7 +7,7 @@ const ROAD_1: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-1',
   title: 'roadmap structure and root orientation',
   description:
-    'The canonical docs/roadmap structure contains only regular work-item files, the issue ledger, the ideas list and the area-definition README index, and root ROADMAP.md is a concise orientation rather than a duplicate queue.',
+    'The canonical docs/roadmap structure contains only regular work-item files, the issue ledger, the ideas list and an optional README index, and root ROADMAP.md is a concise orientation rather than a duplicate queue.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

@@ -13,7 +13,8 @@ import { ROUTE } from '../items/routes.ts'
 import { SCAFFOLD } from '../items/scaffold.ts'
 import { STANDING } from '../items/standing.ts'
 import { STATUS } from '../items/status.ts'
-import { createTradesSession, tradeReadmes } from './trades.ts'
+import { holdNoticeStands } from './hold.ts'
+import { createTradesSession, memberCoverage, tradeReadmes } from './trades.ts'
 
 const temporaryDirectories: string[] = []
 const initialStateHome = process.env.KI_STATE_HOME
@@ -504,15 +505,24 @@ test('several territories share one registry without cross-talk', () => {
   ])
 })
 
-test('a participating member named in no channel is warned', () => {
+test('a participating member named in no channel is warned, unless trades are on hold', () => {
   const { home, local } = fixture({ policy: {} })
   const session = createTradesSession(options(local, home))
 
-  expect(mechanicalOutcomes(session, ROUTE, 'ROUTE-2')).toEqual([
+  expect(mechanicalOutcomes(session, ROUTE, 'ROUTE-2')).toEqual(
+    memberCoverage(false, false, CAPITAL, holdNoticeStands())
+  )
+  expect(memberCoverage(false, false, CAPITAL, false)).toEqual([
     {
       status: 'VIOLATION',
       message: `ki-trades is declared but the territory trade policy in ${CAPITAL} names this repository in no channel`,
       subject: '.ki.toml'
+    }
+  ])
+  expect(memberCoverage(false, false, CAPITAL, true)).toEqual([
+    {
+      status: 'NOT_APPLICABLE',
+      message: `trades are on hold, so ${CAPITAL} grants no channel yet and the bare ki-trades declaration is valid`
     }
   ])
   expect(ROUTE.items.find((item) => item.code === 'ROUTE-2')?.mechanical?.level).toBe('WARN')
@@ -753,17 +763,24 @@ test('outbound records are valid on a granted export route while receiver partic
   ])
 })
 
-test('records outside a granted route are refused, and unverifiable when the policy is not available', () => {
+test('records outside a granted route are refused, or unverifiable on hold or when the policy is not available', () => {
   const ungranted = fixture({ policy: exchange(['knowledge']) })
   const id = 'TRD-000000a1'
   writeRecord(ungranted.local, '-', 'peer/repo', id, record(id, 'local/repo', 'peer/repo'))
   const refused = mechanicalOutcomes(createTradesSession(options(ungranted.local, ungranted.home)), AUTH)
   expect(refused).toEqual([
-    {
-      status: 'VIOLATION',
-      message: 'work outbound record has no route to peer/repo granted by the territory trade policy',
-      subject: `-/_TRADES/peer/repo/${id}.md`
-    }
+    holdNoticeStands()
+      ? {
+          status: 'INFO',
+          message:
+            'route authority is unverifiable: trades are on hold and the territory trade policy grants no work route to peer/repo',
+          subject: `-/_TRADES/peer/repo/${id}.md`
+        }
+      : {
+          status: 'VIOLATION',
+          message: 'work outbound record has no route to peer/repo granted by the territory trade policy',
+          subject: `-/_TRADES/peer/repo/${id}.md`
+        }
   ])
 
   const unavailable = fixture({ registerCapital: false })

@@ -26,7 +26,7 @@ Every non-KB repository uses one shape.
 ROADMAP.md                              # concise orientation
 docs/roadmap/
   _ISSUES.md                            # durable issue-allocation ledger, sorted first
-  README.md                             # area definitions, fixed-area mode only
+  README.md                             # optional index, never a record
   <REPO>-<NNN>-<slug>.md                # repository-wide issuing mode
   <REPO>-<AREA>-<NNN>-<slug>.md         # fixed-area issuing mode
 ```
@@ -73,7 +73,7 @@ GOV = "Governance and operating model"
 
 In fixed-area mode every item's `area` must be one of the declared codes. A repository must not mix issuing modes.
 
-The title is the area's definition, so the checks stay mechanical: a short noun phrase that starts with a capital letter and names the work the area issues. The roadmap index may expand on its meaning and its boundary with neighbouring areas: `docs/roadmap/README.md` in a project repository, which is an index, not a record, or the `Streams/Roadmap/Roadmap.md` index note in a Knowledge Base. A retired code keeps its entry while retained records use it.
+The title is the area's definition, so the checks stay mechanical: a short noun phrase that starts with a capital letter and names the work the area issues. No separate `## Areas` section is required, and a repository does not keep `docs/roadmap/README.md` only to restate the area map. A roadmap index may still expand on an area's meaning and its boundary with neighbouring areas: `docs/roadmap/README.md` in a project repository, which is an index, not a record, or the `Streams/Roadmap/Roadmap.md` index note in a Knowledge Base. A retired code keeps its entry while retained records use it.
 
 A bare list of codes (`areas = ["FND", "GOV"]`) is the legacy form. The checker fails it in a repository of the Knowledge Islands Agora, resolved through the repository's Capital, and warns elsewhere, because other territories keep the list until they migrate. While a repository keeps the list, its roadmap index defines each code under an `## Areas` heading that names the code in backticks, and the checker warns for each code the index does not name.
 

@@ -40,17 +40,24 @@ type Declaration = {
   territory?: unknown
   /** `[skills.ki-trades]` when the repository declares the skill. */
   trades?: Record<string, unknown>
+  /** `[skills.ki-agora.<ENFORCING_AGORA>]` when the repository owns that Agora. */
+  agora?: Record<string, unknown>
 }
+
+/** The Agora whose repositories must follow the mechanical layout rules; mirrors ki-work-roadmap's enforcing Agora. */
+export const ENFORCING_AGORA = 'kis'
 
 const declaration = (document: Record<string, unknown>): Declaration => {
   const skills = table(document.skills) ?? {}
   const repo = table(skills['ki-repo']) ?? {}
   const trades = table(skills['ki-trades'])
+  const agora = table(table(skills['ki-agora'])?.[ENFORCING_AGORA])
   return {
     repository: repo.repository,
     capital: repo.capital,
     territory: repo.territory,
-    ...(trades ? { trades } : {})
+    ...(trades ? { trades } : {}),
+    ...(agora ? { agora } : {})
   }
 }
 
@@ -123,6 +130,15 @@ export type TerritoryEvidence = {
   coverage: readonly RepoEvidenceFinding[]
   /** The Capital URL TERR-1 conform may insert, when it is unambiguously inferable. */
   inferredCapital?: string
+  /** True when the repository owns or belongs to the enforcing Agora, as declared by its resolved Capital. */
+  agora?: boolean
+}
+
+/** Whether a Capital's enforcing Agora table names the repository, or the Capital itself owns it. */
+const inAgora = (capital: Checkout | Declaration, repository: string): boolean => {
+  if (!capital.agora) return false
+  const listed = capital.agora.members
+  return capital.repository === repository || (Array.isArray(listed) && listed.includes(repository))
 }
 
 const NO_CONFIGURATION: TerritoryEvidence = {
@@ -367,7 +383,8 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
       terr1,
       terr2: territoryShape(local),
       terr3: [...capitalAgreement({ ...local, repository }, registry), ...registryNote],
-      coverage: []
+      coverage: [],
+      ...(inAgora(local, repository) ? { agora: true } : {})
     }
   }
   const terr2: readonly AuditOutcome[] =
@@ -386,7 +403,8 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
     terr2,
     terr3: [...member.outcomes, ...registryNote],
     coverage:
-      member.policy && namedInChannels(member.policy, repository) && !local.trades ? [tradesSignal(repository)] : []
+      member.policy && namedInChannels(member.policy, repository) && !local.trades ? [tradesSignal(repository)] : [],
+    ...(member.policy && inAgora(member.policy, repository) ? { agora: true } : {})
   }
 }
 

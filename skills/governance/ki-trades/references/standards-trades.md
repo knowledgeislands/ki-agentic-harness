@@ -33,7 +33,7 @@ The repository's canonical endpoint is `ki-repo.repository`, a required HTTPS Gi
 
 The per-repository `routes` and `subtypes` keys are retired. Their presence fails immediately; they are never parsed, migrated, or used as a fallback, and the route they once declared is proposed to the Capital instead. `territory` is permitted only where `capital` equals `repository`, because only a Capital hosts the policy. Any other key fails.
 
-A member that declares ki-trades but is named in no channel of its resolved policy is warned: either the Capital has yet to grant it a route or the declaration is surplus. Conversely, `ki-repo` fails a member that a resolved policy names but that does not declare ki-trades.
+A member that declares ki-trades but is named in no channel of its resolved policy is warned: either the Capital has yet to grant it a route or the declaration is surplus. While the hold notice in `SKILL.md` stands, the check is not applicable: the hold strips each policy back to a bare `[skills.ki-trades]`, so an empty policy and unnamed members are valid. For the same reason a retained trade record whose route the stripped policy no longer grants is reported as unverifiable rather than refused. Conversely, `ki-repo` fails a member that a resolved policy names but that does not declare ki-trades.
 
 ## Capital trade policy
 

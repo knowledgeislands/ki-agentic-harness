@@ -4,13 +4,15 @@ import type { AuthoringRubricContext, TomlRubricContext } from '../contexts/auth
 const TOML_VALUES: RubricItem<TomlRubricContext> = {
   code: 'TOML-values',
   title: 'TOML values use the house formatting',
-  description: 'Strings are double-quoted and short lists remain inline (`["a", "b"]`).',
+  description:
+    'Strings are double-quoted, arrays are multiline with one element per line and a trailing comma, there are no inline tables, and comments sit on the line above.',
   sources: ['standards-toml.md#keys-and-values'],
   judgment: {
-    scope: 'Every authored TOML string and short list in the convention scope.',
-    prompt: 'Assess whether TOML strings and short lists follow the house formatting.',
+    scope: 'Every authored TOML string, array, map and comment in the convention scope.',
+    prompt: 'Assess whether TOML strings, arrays, maps and comments follow the house formatting.',
     outcomes: ['conforming', 'reformat required', 'exception required'],
-    guidance: 'Use double-quoted strings and inline short lists, or record the external-contract exception.'
+    guidance:
+      'Use double-quoted strings, multiline arrays, dotted keys or nested tables instead of inline tables, and comments above, or record the external-contract exception.'
   }
 }
 
@@ -18,7 +20,7 @@ const TOML_STRUCTURE: RubricItem<TomlRubricContext> = {
   code: 'TOML-structure',
   title: 'TOML configuration remains compact and navigable',
   description:
-    'Mechanically valid `.ki.toml` structure still uses semantically appropriate neighbourhood banners, while readable short subordinate maps use dotted keys under their explicit owner root.',
+    'Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-agora]` first and `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root.',
   sources: ['standards-toml.md#configuration-structure'],
   judgment: {
     scope: 'Every substantial `.ki.toml` and each short subordinate map in convention scope.',

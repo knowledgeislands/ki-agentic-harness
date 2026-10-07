@@ -299,3 +299,21 @@ describe('COV-1 trades signal', () => {
     expect(statuses(outcomes)).toEqual(['VIOLATION'])
   })
 })
+
+describe('Agora membership', () => {
+  const member = repo(MEMBER, `capital = "${CAPITAL}"\n`)
+  const agora = (members: readonly string[]): string =>
+    `${capitalConfig([CAPITAL, MEMBER, OTHER])}\n[skills.ki-agora.kis]\nmembers = ${JSON.stringify(members)}\n`
+
+  test('the Capital and listed members are in the Agora; others are not', () => {
+    register(checkout(agora([MEMBER])))
+    expect(territoryEvidence(member, '/x').agora).toBe(true)
+    expect(territoryEvidence(repo(OTHER, `capital = "${CAPITAL}"\n`), '/x').agora).toBeUndefined()
+    expect(territoryEvidence(agora([MEMBER]), '/x').agora).toBe(true)
+  })
+
+  test('a Capital without an Agora table places no repository in it', () => {
+    register(checkout(capitalConfig([CAPITAL, MEMBER])))
+    expect(territoryEvidence(member, '/x').agora).toBeUndefined()
+  })
+})

@@ -25,7 +25,7 @@ const ROUTE_2: RubricItem<RoutesContext> = {
   code: 'ROUTE-2',
   title: 'a participating member is named by its Capital policy',
   description:
-    'A territory member that declares ki-trades is named as a source or receiver in at least one channel of its resolved Capital trade policy. The Capital itself hosts the policy and is exempt.',
+    'A territory member that declares ki-trades is named as a source or receiver in at least one channel of its resolved Capital trade policy. The Capital itself hosts the policy and is exempt, and while the trades hold notice stands an unnamed member is not applicable.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',

@@ -25,6 +25,10 @@ export const holdOutcomes = (skill: string, today: string): readonly AuditOutcom
   return [{ status: 'PASS', message: `trades are on hold, due for review by ${due}` }]
 }
 
+/** Whether the skill's hold notice stands, read from the skill beside this checker unless given. */
+export const holdNoticeStands = (skill?: string): boolean =>
+  NOTICE.test(skill ?? (existsSync(SKILL) ? readFileSync(SKILL, 'utf8') : ''))
+
 export const holdContext = (today: string = new Date().toISOString().slice(0, 10)): HoldContext => ({
   outcomes: existsSync(SKILL)
     ? holdOutcomes(readFileSync(SKILL, 'utf8'), today)

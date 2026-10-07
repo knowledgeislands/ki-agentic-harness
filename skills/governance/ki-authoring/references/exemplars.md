@@ -68,7 +68,7 @@ See `skills/repo-structure/ki-repo-kb/SKILL.md` for KB conventions.
 
 ### Well-formed `.ki.toml` structure
 
-Keys are lowercase `snake_case`. Strings are double-quoted. Arrays use the inline `["a", "b"]` form for short lists. One explicit table per skill names the owner (`[skills.ki-repo]`); short subordinate maps use dotted keys under that root, while complex records may use nested tables. Comment non-obvious values with their _why_, not their _what_. A substantial file uses only the navigational neighbourhoods it needs and leaves the exact conformance header first. The contract behind table identity, neighbourhood meaning, and the validate-your-own-table protocol belongs to the `ki-repo` skill; this pattern covers presentation.
+Keys are lowercase `snake_case`. Strings are double-quoted. Arrays are multiline, one element per line with a trailing comma, and there are no inline tables. One explicit table per skill names the owner (`[skills.ki-repo]`); short subordinate maps use dotted keys under that root, while complex records may use nested tables. Comment non-obvious values with their _why_, not their _what_, on the line above. The exact conformance header comes first, then the neighbourhood banners in their fixed order, each heading and banner after exactly one blank line, with `[skills.ki-trades]` last. The contract behind table identity, neighbourhood meaning, and the validate-your-own-table protocol belongs to the `ki-repo` skill; this pattern covers presentation.
 
 ```toml
 # Knowledge Islands repository configuration.
@@ -81,7 +81,9 @@ Keys are lowercase `snake_case`. Strings are double-quoted. Arrays use the inlin
 # -----------------------------------------------------------------------------
 
 [repo]
-harnesses = ["knowledgeislands/ki-agentic-harness"]
+harnesses = [
+  "knowledgeislands/ki-agentic-harness",
+]
 
 [skills.ki-repo]
 repository = "https://github.com/owner/repository"
@@ -106,7 +108,7 @@ checks.branch-protection = true
 adapter = "roadmap"
 
 [skills.ki-work-roadmap]
-areas.CORE = "foundation-tooling"
+areas.CORE = "Foundation tooling"
 
 # -----------------------------------------------------------------------------
 # Relationships

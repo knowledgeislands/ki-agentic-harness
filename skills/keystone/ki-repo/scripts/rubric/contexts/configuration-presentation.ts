@@ -166,3 +166,93 @@ export const inspectConfigurationPresentation = (text: string): ConfigurationPre
 
   return { substantial, issues }
 }
+
+const isHeading = (code: string): boolean => /^\[\[?/.test(code)
+
+const isBannerOpening = (lines: readonly SourceLine[], index: number): boolean =>
+  lines[index]?.raw.trim() === RULE &&
+  CONFIGURATION_NEIGHBOURHOODS.some((name) => lines[index + 1]?.raw.trim() === `# ${name}`)
+
+/** The first line of a heading's attached comment run, which the blank-line rule measures from. */
+const attachedStart = (lines: readonly SourceLine[], index: number): number => {
+  let start = index
+  while (start > 0) {
+    const previous = lines[start - 1] as SourceLine
+    if (previous.code !== '' || !previous.raw.trim().startsWith('#') || previous.raw.trim() === RULE) break
+    start--
+  }
+  return start
+}
+
+const arrayElements = (code: string): number => {
+  try {
+    const parsed = Bun.TOML.parse(`x = [${code}]`) as { x?: unknown }
+    return Array.isArray(parsed.x) ? parsed.x.length : 1
+  } catch {
+    return 1
+  }
+}
+
+/**
+ * Mechanical layout rules every `.ki.toml` shares: exactly one blank line before each table heading
+ * and banner, arrays written one element per line with a trailing comma, and `[skills.ki-trades]` last
+ * with `[skills.ki-agora]` opening Relationships.
+ */
+export const inspectConfigurationLayout = (text: string): readonly string[] => {
+  const lines = sourceLines(text)
+  const issues: string[] = []
+
+  for (const [index, entry] of lines.entries()) {
+    const heading = isHeading(entry.code)
+    if (!heading && !isBannerOpening(lines, index)) continue
+    const start = heading ? attachedStart(lines, index) : index
+    if (start === 0) continue
+    const blank = (at: number): boolean => lines[at]?.raw.trim() === ''
+    if (!blank(start - 1) || (start > 1 && blank(start - 2)))
+      issues.push(
+        `line ${entry.line}: ${heading ? entry.code : 'neighbourhood banner'} must follow exactly one blank line`
+      )
+  }
+
+  let open: SourceLine | undefined
+  for (const entry of lines) {
+    if (!open) {
+      const match = entry.code.match(/^[^[=]+=\s*\[(.*)$/)
+      if (!match) continue
+      if ((match[1] as string).trim() === '') open = entry
+      else issues.push(`line ${entry.line}: arrays must be multiline, one element per line with a trailing comma`)
+      continue
+    }
+    if (entry.code === '' || entry.code === ']') {
+      if (entry.code === ']') open = undefined
+      continue
+    }
+    if (entry.code.endsWith(']')) {
+      issues.push(`line ${entry.line}: the closing bracket of the array opened on line ${open.line} needs its own line`)
+      open = undefined
+    } else if (!entry.code.endsWith(',') || arrayElements(entry.code) > 1)
+      issues.push(`line ${entry.line}: write each array element on its own line with a trailing comma`)
+  }
+
+  const tables = skillTables(lines)
+  const firstTrades = tables.find((table) => table.owner === 'ki-trades')
+  const afterTrades = firstTrades
+    ? lines.find(
+        ({ code, line }) =>
+          line > firstTrades.line &&
+          isHeading(code) &&
+          skillTables([{ line, raw: code, code }])[0]?.owner !== 'ki-trades'
+      )
+    : undefined
+  if (afterTrades) issues.push(`line ${afterTrades.line}: [skills.ki-trades] must be the last table in the file`)
+
+  const relationships = lines.findIndex((_, index) => lines[index + 1]?.raw.trim() === '# Relationships')
+  const agora = tables.find((table) => table.owner === 'ki-agora' && table.root)
+  if (agora && relationships >= 0) {
+    const first = lines.find(({ code, line }) => line > (lines[relationships]?.line ?? 0) && isHeading(code))
+    if (first && first.line !== agora.line)
+      issues.push(`line ${agora.line}: [skills.ki-agora] must be the first table under Relationships`)
+  }
+
+  return issues
+}

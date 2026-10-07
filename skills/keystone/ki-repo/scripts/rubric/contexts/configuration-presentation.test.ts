@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { inspectConfigurationPresentation } from './configuration-presentation.ts'
+import { inspectConfigurationLayout, inspectConfigurationPresentation } from './configuration-presentation.ts'
 
 const header = `# Knowledge Islands repository configuration.
 # Its presence declares conformance with the Knowledge Islands repository standard.
@@ -125,5 +125,51 @@ description = """
 `)
 
     expect(result).toEqual({ substantial: false, issues: [] })
+  })
+})
+
+describe('configuration layout', () => {
+  test('accepts the five-rule layout', () => {
+    expect(
+      inspectConfigurationLayout(`${header}${banner('Foundation')}
+[repo]
+harnesses = [
+  "example/harness",
+]
+
+# Owner comment
+[skills.ki-repo]
+
+${banner('Relationships')}
+[skills.ki-agora]
+
+[skills.ki-trades]
+`)
+    ).toEqual([])
+  })
+
+  test('reports blank-line, array and ordering faults', () => {
+    const issues = inspectConfigurationLayout(`${header}[repo]
+harnesses = ["a", "b"]
+[skills.ki-repo]
+list = [
+  "a", "b",
+  "c"]
+
+
+${banner('Relationships')}
+[skills.ki-trades]
+
+[skills.ki-agora]
+`)
+    expect(issues).toEqual([
+      'line 6: [skills.ki-repo] must follow exactly one blank line',
+      'line 12: neighbourhood banner must follow exactly one blank line',
+      'line 5: arrays must be multiline, one element per line with a trailing comma',
+      'line 8: write each array element on its own line with a trailing comma',
+      'line 9: the closing bracket of the array opened on line 7 needs its own line',
+      'line 18: [skills.ki-trades] must be the last table in the file',
+      'line 18: [skills.ki-agora] must be the first table under Relationships'
+    ])
   })
 })
