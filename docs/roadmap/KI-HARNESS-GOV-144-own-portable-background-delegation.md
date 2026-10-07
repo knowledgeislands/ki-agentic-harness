@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: governance
-horizon: now
-status: ready
+status: done
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: bf687e98984d3356689fabae35d020879a65e32c
 created_at: 2026-10-06T22:54:11Z
-updated_at: 2026-10-07T20:45:01Z
+updated_at: 2026-10-07T21:15:00Z
 ---
 
 # KI-HARNESS-GOV-144: Own portable background delegation
@@ -73,8 +72,8 @@ Out of scope:
 - [x] Add `references/standards-background-runs.md` with detachment, run packet, prompt shape, authority tiers, decisions log, coordination, run queue, monitoring and reporting.
 - [x] Ship generalised authority footers `assets/rules-{none,push,prune,release}.md` and the `assets/run-prompt.md` skeleton for `ki agent --rules`.
 - [x] Add RUN rubric items: a mechanical check that every footer exists and states its tier's grants and prohibitions, plus a judgment item for run prompts; regenerate the rubric and update the sources review.
-- [ ] Deliver `ki agent` in `tools-ki` (separate repository, own commits) and release it.
-- [ ] Reduce the chezmoi interim to a pointer.
+- [x] Deliver `ki agent` in `tools-ki` (separate repository, own commits) and release it.
+- [x] Reduce the chezmoi interim to a pointer.
 
 ## Files touched
 
@@ -112,6 +111,40 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+The `ki-delegation` background-run contract with its run queue, the authority footers and prompt skeleton, and `ki agent` in `tools-ki` v0.8.4, within the approved boundary. Baseline `bf687e98984d3356689fabae35d020879a65e32c`; the chezmoi interim is reduced to a pointer.
+
+### Change Summary
+
+- `skills/governance/ki-delegation`: two contracts; `references/standards-background-runs.md` covers detachment, the run packet, prompt shape, authority tiers, the decisions log, coordination, the run queue, monitoring and reporting; `assets/rules-{none,push,prune,release}.md` and `assets/run-prompt.md`; RUN rubric items.
+- `tools-ki`: `ki agent launch|queue|dispatch|status|watch|wait|new|decide` with Claude Code and Codex adapters, documented in the man page, README, user guide and CHANGELOG; v0.8.4 pins this harness.
+- chezmoi `dot_claude/private_delegation.md` points at `ki-delegation` and `ki agent`.
+
+### Verification
+
+- Harness `bun run test`: 1007 pass, 0 fail; `bunx tsc --noEmit` clean; `ki repo audit --skill ki-delegation` PASS.
+- `tools-ki` `bun run test:coverage`: 1101 pass at 100% coverage; `bunx tsc --noEmit` clean.
+- End-to-end `ki agent launch` of a Claude Code agent wrote its status, report and `DONE`; `ki agent status` and `watch` reported it finished.
+
+### Outstanding concerns
+
+None. `claude-bg` stays in chezmoi until its live runs end, then retires.
+
+### Post-change review
+
+`decide` takes the run as its first operand, so each decision lands in that run's log.
+
+### Mini recap
+
+Delegation is now one runtime-neutral contract with a shared launcher.
+
+## Done
+
+Delivered and verified 2026-10-07 under Kris's state-of-play Decisions 18 and 19, with Decisions 12 and 17 counting delivered records as done ("Delivered records count as done ... and are pruned once verified"). `ki-delegation` carries the background-run contract and run queue; `tools-ki` v0.8.4 ships `ki agent` pinned to this harness; the chezmoi `delegation.md` is a pointer. Harness tests and `bunx tsc --noEmit` pass, `ki repo audit --skill ki-delegation` passes, and an end-to-end `ki agent launch` of a Claude Code agent wrote its status, report and `DONE`, which `ki agent status` and `watch` reported as finished.
 
 ## Discussion
 
