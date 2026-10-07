@@ -1,5 +1,15 @@
 # Project registry standard
 
+## Contents
+
+- [Scope](#scope)
+- [Location](#location)
+- [Project note](#project-note)
+- [Initiative note](#initiative-note)
+- [Cross-territory references](#cross-territory-references)
+- [Membership and authority](#membership-and-authority)
+- [Validation](#validation)
+
 ## Scope
 
 This standard defines the portable shape of a territory's Project and Initiative registry. A territory's Capital owns the registry instance; this harness owns only its schema. Discovering which checkout holds the registry is a runtime concern of the `ki` registry and the checker, not part of a work record.
@@ -19,7 +29,7 @@ Streams/Initiatives/
   <slug>.md            # one Initiative note per Initiative
 ```
 
-A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; an `initiative` value resolves to `Streams/Initiatives/<slug>.md`. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs.
+A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; an `initiative` value resolves to `Streams/Initiatives/<slug>.md`. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs. A record in another territory names an entry with a [cross-territory reference](#cross-territory-references).
 
 ## Project note
 
@@ -79,12 +89,28 @@ The body carries these sections in order:
 
 Upkeep and other work that never finishes has no Project. Its records name `initiative` directly, usually with `purpose: upkeep`, and recurring runs inherit the Initiative from their template or Activity.
 
+## Cross-territory references
+
+A record may serve a Project or Initiative owned by another territory. It then qualifies the value as `<territory>/<slug>`:
+
+```yaml
+project: ki-arcadia-principal/agent-host
+initiative: ki-arcadia-principal/rig
+```
+
+- `<territory>` is the key under which the local `ki` registry, `~/.local/state/ki/registry.toml`, registers the territory's Capital checkout. A territory has no other machine-readable name, and a repository owner can hold several Capitals, so the Capital's registry key is the only unambiguous handle.
+- The named checkout must declare itself a Capital: its `ki-repo` `repository` equals its `capital`.
+- An unqualified slug always means the repository's own Capital territory, so existing values keep their meaning.
+- A qualified value resolves against the named territory's `Streams/Projects/` or `Streams/Initiatives/`; a Project's registered Initiative belongs to the Project's territory.
+
+A territory missing from the local registry, a checkout that is not a Capital, or an unknown slug is a warning, never a failure. Resolution is local and read-only. A qualified reference is classification only: the referenced territory gains no plan, priority, or acceptance authority over the record.
+
 ## Membership and authority
 
 Membership is classification, not authority. A Project may count records from any repository in the territory, and tagging another repository's record with a Project never transfers its plan, priority, or acceptance; the owning repository decides whether its record joins.
 
 ## Validation
 
-The roadmap checker resolves `project` slugs against `Streams/Projects/` and `initiative` slugs against `Streams/Initiatives/` when it can find the registry. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative. A Project whose open records are all terminal is reported for a human lifecycle decision. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
+The roadmap checker resolves `project` slugs against `Streams/Projects/` and `initiative` slugs against `Streams/Initiatives/` of the referenced territory when it can find the registry. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative, including the same slug in a different territory. A Project whose open records are all terminal is reported for a human lifecycle decision. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
 
 Views group by Project and Initiative without copying record lists into a second status source. Each Initiative note's Review replaces the per-theme checkpoints and the territory's state-of-play review; `ki-checkpoint` remains only for ephemeral thread reconstruction.

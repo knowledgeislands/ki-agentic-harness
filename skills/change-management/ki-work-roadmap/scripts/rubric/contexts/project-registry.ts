@@ -39,25 +39,44 @@ export const kiRegistryPath = (environment: NodeJS.ProcessEnv = process.env): st
   return join(homedir(), '.local', 'state', 'ki', 'registry.toml')
 }
 
+/** The local ki registry's repository table, or the reason it cannot be read. */
+const registeredRepositories = (
+  environment: NodeJS.ProcessEnv
+): { readonly repositories: Record<string, unknown> } | { readonly unavailable: string } => {
+  const registryFile = kiRegistryPath(environment)
+  if (!existsSync(registryFile)) return { unavailable: `the local ki registry ${registryFile} is missing` }
+  try {
+    return { repositories: table(table(TOML.parse(readFileSync(registryFile, 'utf8')))?.repositories) ?? {} }
+  } catch {
+    return { unavailable: `the local ki registry ${registryFile} cannot be parsed` }
+  }
+}
+
 const capitalRoot = (repository: string, environment: NodeJS.ProcessEnv): string | { unavailable: string } => {
   const own = repoTable(repository)
   const capital = own?.capital
   if (typeof capital !== 'string' || !capital) return { unavailable: 'the repository declares no ki-repo capital' }
   if (own?.repository === capital) return repository
-  const registryFile = kiRegistryPath(environment)
-  if (!existsSync(registryFile)) return { unavailable: `the local ki registry ${registryFile} is missing` }
-  let repositories: Record<string, unknown> | undefined
-  try {
-    repositories = table(table(TOML.parse(readFileSync(registryFile, 'utf8')))?.repositories)
-  } catch {
-    return { unavailable: `the local ki registry ${registryFile} cannot be parsed` }
-  }
-  for (const entry of Object.values(repositories ?? {})) {
+  const registered = registeredRepositories(environment)
+  if ('unavailable' in registered) return registered
+  for (const entry of Object.values(registered.repositories)) {
     const values = table(entry)
     if (values?.repository !== capital || typeof values.path !== 'string') continue
     if (repoTable(values.path)?.repository === capital) return values.path
   }
   return { unavailable: `no local checkout of the capital ${capital} is registered` }
+}
+
+/** A named territory's Capital checkout: the local-registry entry whose checkout declares itself a Capital. */
+const territoryRoot = (territory: string, environment: NodeJS.ProcessEnv): string | { unavailable: string } => {
+  const registered = registeredRepositories(environment)
+  if ('unavailable' in registered) return registered
+  const path = table(registered.repositories[territory])?.path
+  if (typeof path !== 'string') return { unavailable: `territory '${territory}' is not in the local ki registry` }
+  const declared = repoTable(path)
+  if (typeof declared?.capital !== 'string' || declared.repository !== declared.capital)
+    return { unavailable: `territory '${territory}' is not a registered Capital checkout` }
+  return path
 }
 
 const frontmatter = (text: string): Record<string, unknown> | undefined => {
@@ -80,13 +99,8 @@ const notes = (directory: string | undefined): [string, string][] =>
         .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
         .map((entry) => [entry.name, readFileSync(join(directory, entry.name), 'utf8')])
 
-/** Resolves the Capital's registry; any unavailable step is reported once by the caller, never as a failure. */
-export const loadProjectRegistry = (
-  repository: string,
-  environment: NodeJS.ProcessEnv = process.env
-): RegistryLookup => {
-  const root = capitalRoot(repository, environment)
-  if (typeof root !== 'string') return root
+/** Reads one Capital's registry folders, or reports why they are absent. */
+const readRegistry = (root: string): RegistryLookup => {
   const projectsDirectory = join(root, PROJECTS_DIRECTORY)
   const initiativesDirectory = join(root, INITIATIVES_DIRECTORY)
   const hasProjects = isDirectory(projectsDirectory)
@@ -118,4 +132,34 @@ export const loadProjectRegistry = (
     if (typeof values.slug === 'string' && SLUG_RE.test(values.slug)) initiatives.add(values.slug)
   }
   return { registry: { root, projects, initiatives, legacyInitiativesIndex } }
+}
+
+/** Resolves the repository's own Capital registry; any unavailable step is reported once by the caller, never as a failure. */
+export const loadProjectRegistry = (
+  repository: string,
+  environment: NodeJS.ProcessEnv = process.env
+): RegistryLookup => {
+  const root = capitalRoot(repository, environment)
+  return typeof root === 'string' ? readRegistry(root) : root
+}
+
+/** Resolves the registry of the territory whose Capital the local ki registry keys as `territory`. */
+export const loadTerritoryRegistry = (
+  territory: string,
+  environment: NodeJS.ProcessEnv = process.env
+): RegistryLookup => {
+  const root = territoryRoot(territory, environment)
+  return typeof root === 'string' ? readRegistry(root) : root
+}
+
+export type RegistryReference = { readonly territory?: string; readonly slug: string }
+
+const TERRITORY_RE = /^[a-z0-9][a-z0-9._-]*$/
+
+/** Splits `<territory>/<slug>` or a bare `<slug>`; undefined when the value is neither. */
+export const parseRegistryReference = (value: string): RegistryReference | undefined => {
+  const parts = value.split('/')
+  if (parts.length === 1) return SLUG_RE.test(value) ? { slug: value } : undefined
+  const [territory, slug] = parts
+  return parts.length === 2 && TERRITORY_RE.test(territory) && SLUG_RE.test(slug) ? { territory, slug } : undefined
 }

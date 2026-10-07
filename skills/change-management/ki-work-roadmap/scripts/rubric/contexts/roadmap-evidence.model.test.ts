@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test'
 import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { loadProjectRegistry } from './project-registry.ts'
+import { loadProjectRegistry, loadTerritoryRegistry, parseRegistryReference } from './project-registry.ts'
 import { IDEAS_LIST, ISSUE_LEDGER, inspectRoadmap, issueLedger, rootRoadmap } from './roadmap-evidence.ts'
 
 const temporaryDirectories: string[] = []
@@ -195,7 +195,9 @@ test('classification values are validated and components come from configuration
       expect.objectContaining({ msg: 'kind must be one canonical value' }),
       expect.objectContaining({ msg: 'purpose must be one canonical value' }),
       expect.objectContaining({ msg: 'component must be a lowercase kebab-case slug' }),
-      expect.objectContaining({ msg: 'project must be a lowercase kebab-case slug' })
+      expect.objectContaining({
+        msg: 'project must be a lowercase kebab-case slug, optionally qualified as <territory>/<slug>'
+      })
     ])
   )
   expect(failures(classified('kind: deliver\ncomponent: website'))).toContainEqual(
@@ -328,6 +330,100 @@ test('project membership warns on unknown slugs and fails only on a contradicted
     })
   )
   expect(failures(member('initiative: techne'))).toEqual([])
+})
+
+test('a qualified reference names a territory by its Capital registry key', () => {
+  expect(parseRegistryReference('agent-host')).toEqual({ slug: 'agent-host' })
+  expect(parseRegistryReference('ki-arcadia-principal/agent-host')).toEqual({
+    territory: 'ki-arcadia-principal',
+    slug: 'agent-host'
+  })
+  expect(parseRegistryReference('kit-kris.me.uk/site')).toEqual({ territory: 'kit-kris.me.uk', slug: 'site' })
+  for (const value of ['Agent_Host', 'a/b/c', 'Capital/agent-host', '/agent-host', 'capital/', 'capital/Agent'])
+    expect(parseRegistryReference(value)).toBeUndefined()
+})
+
+test('a territory registry resolves only a registered Capital checkout', () => {
+  const capital = createCapital()
+  const island = temporary('ki-island-')
+  writeFileSync(
+    join(island, '.ki.toml'),
+    '[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "https://example.test/capital"\n'
+  )
+  const state = temporary('ki-state-')
+  const environment = { KI_STATE_HOME: state }
+  expect(loadTerritoryRegistry('capital', environment)).toEqual({
+    unavailable: `the local ki registry ${join(state, 'registry.toml')} is missing`
+  })
+  writeFileSync(
+    join(state, 'registry.toml'),
+    `[repositories."capital"]\nrepository = "https://example.test/capital"\npath = "${capital}"\n\n[repositories."island"]\nrepository = "https://example.test/island"\npath = "${island}"\n`
+  )
+  const resolved = loadTerritoryRegistry('capital', environment)
+  expect('registry' in resolved && [...resolved.registry.projects.keys()]).toEqual(['baseline-rollout'])
+  expect(loadTerritoryRegistry('island', environment)).toEqual({
+    unavailable: "territory 'island' is not a registered Capital checkout"
+  })
+  expect(loadTerritoryRegistry('nowhere', environment)).toEqual({
+    unavailable: "territory 'nowhere' is not in the local ki registry"
+  })
+})
+
+test('qualified membership resolves in the named territory and warns when it cannot', () => {
+  const capital = createCapital()
+  const state = temporary('ki-state-')
+  writeFileSync(
+    join(state, 'registry.toml'),
+    `[repositories."capital"]\nrepository = "https://example.test/capital"\npath = "${capital}"\n`
+  )
+  const member = (fields: string): string => {
+    const repository = createRepository(
+      `kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null\n${fields}`,
+      ''
+    )
+    writeFileSync(
+      join(repository, '.ki.toml'),
+      '[skills.ki-repo]\nrepo_code = "TEST"\nrepository = "https://example.test/own"\ncapital = "https://example.test/own"\n'
+    )
+    return repository
+  }
+  const previous = process.env.KI_STATE_HOME
+  process.env.KI_STATE_HOME = state
+  try {
+    const resolved = member('project: capital/baseline-rollout')
+    expect(failures(resolved)).toEqual([])
+    expect(warnings(resolved)).toEqual([])
+    expect(warnings(member('project: capital/unknown-project\ninitiative: capital/unknown-initiative'))).toEqual(
+      expect.arrayContaining([
+        "project 'capital/unknown-project' is not in the project registry",
+        "initiative 'capital/unknown-initiative' is not in the project registry"
+      ])
+    )
+    const absent = member('project: nowhere/agent-host')
+    expect(failures(absent)).toEqual([])
+    expect(warnings(absent)).toContain(
+      "territory 'nowhere' registry is unavailable: territory 'nowhere' is not in the local ki registry"
+    )
+    expect(warnings(member('initiative: capital/techne'))).toEqual([])
+    expect(warnings(member('project: capital/baseline-rollout\ninitiative: capital/platform-foundations'))).toContain(
+      'initiative is redundant beside a registered project'
+    )
+    expect(failures(member('project: capital/baseline-rollout\ninitiative: capital/techne'))).toContainEqual(
+      expect.objectContaining({
+        msg: "initiative 'capital/techne' contradicts project 'capital/baseline-rollout', which serves 'capital/platform-foundations'"
+      })
+    )
+    const local = member('project: capital/baseline-rollout\ninitiative: platform-foundations')
+    cpSync(join(capital, 'Streams'), join(local, 'Streams'), { recursive: true })
+    expect(failures(local)).toContainEqual(
+      expect.objectContaining({
+        msg: "initiative 'platform-foundations' contradicts project 'capital/baseline-rollout', which serves 'capital/platform-foundations'"
+      })
+    )
+  } finally {
+    if (previous === undefined) delete process.env.KI_STATE_HOME
+    else process.env.KI_STATE_HOME = previous
+  }
 })
 
 test('the retired Initiatives index inside Projects still resolves slugs with a migration warning', () => {

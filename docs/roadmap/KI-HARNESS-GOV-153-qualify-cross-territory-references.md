@@ -7,12 +7,12 @@ purpose: capability
 project: roadmap-model
 component: change-management
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: fba2230c97d119ea5b4efa22b34b786e17329fdc
 created_at: 2026-10-07T14:55:49Z
-updated_at: 2026-10-07T14:55:49Z
+updated_at: 2026-10-07T15:00:44Z
 ---
 
 # KI-HARNESS-GOV-153: Qualify cross-territory references
@@ -43,10 +43,10 @@ Kris approved cross-territory Project references on 7 October 2026 (decision 9 i
 
 ## Steps
 
-- [ ] Define the qualified syntax `<territory>/<slug>`, where `<territory>` is the local-registry key of the territory's Capital, in the work-item format and the registry standard, with resolution, warning and authority rules.
-- [ ] Teach `project-registry.ts` to load a named territory's registry through the local registry, checking that the named checkout declares itself a Capital.
-- [ ] Teach `roadmap-evidence.ts` to accept qualified values, resolve each against its territory, and warn without failing when the territory or slug is unresolvable; keep the contradiction rule within one territory.
-- [ ] Add focused tests; regenerate published rubrics; run the gates and write the review packet.
+- [x] Define the qualified syntax `<territory>/<slug>`, where `<territory>` is the local-registry key of the territory's Capital, in the work-item format and the registry standard, with resolution, warning and authority rules.
+- [x] Teach `project-registry.ts` to load a named territory's registry through the local registry, checking that the named checkout declares itself a Capital.
+- [x] Teach `roadmap-evidence.ts` to accept qualified values, resolve each against its territory, and warn without failing when the territory or slug is unresolvable; keep the contradiction rule within one territory.
+- [x] Add focused tests; regenerate published rubrics; run the gates and write the review packet.
 
 ## Files touched
 
@@ -85,6 +85,45 @@ None.
 ### Roadmap
 
 A matching `tools-ki` record makes `ki roadmap list --by project|initiative` and the migration helper honour qualified references; chezmoi then qualifies its Knowledge Islands values.
+
+## Review
+
+### Delivered
+
+A record's `project`, and a projectless record's `initiative`, may now name another territory's registry entry as `<territory>/<slug>`, where `<territory>` is the local `ki` registry key of that territory's Capital, for example `ki-arcadia-principal/agent-host`. Unqualified slugs keep meaning the repository's own Capital territory. Unresolvable territories and slugs warn and never fail. Excluded: `tools-ki` grouping and migration-helper support, and rewriting chezmoi's values. Baseline `fba2230c97d119ea5b4efa22b34b786e17329fdc`.
+
+### Change Summary
+
+- `skills/change-management/ki-work/references/standards-project-registry.md`: new Cross-territory references section with the syntax, the Capital-key rule, the Capital self-declaration check, unqualified meaning, warning-only resolution and classification-not-authority; Validation names the referenced territory and a cross-territory contradiction; a table of contents, now that the file passes 100 lines.
+- `skills/change-management/ki-work-roadmap/references/standards-work-item-format.md`: the classification table and `project` paragraph admit territory-qualified values.
+- `project-registry.ts`: the registry reader is split from Capital discovery; new `loadTerritoryRegistry` resolves a registry key to a checkout that declares itself a Capital; new `parseRegistryReference` splits `<territory>/<slug>`.
+- `roadmap-evidence.ts`: `project` and `initiative` accept qualified values, each territory resolves once and warns once when unavailable, unknown slugs warn with the full value, and the contradiction rule compares Initiatives within the Project's territory, naming the qualified Initiative.
+- `roadmap-evidence.model.test.ts`: tests for parsing, territory resolution and qualified membership, including a same-slug contradiction across territories.
+
+Decision: the territory key is the Capital's registry key rather than `knowledgeislands`, because the registry holds no territory names and `krisb` owns four Capitals (Discussion, Territory key).
+
+### Verification
+
+- `bun run test`: 973 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `ki repo audit --skill ki-work-roadmap`: FAIL=0, WARN=2, both pre-existing `theme` migration warnings on GOV-149 and GOV-150.
+- `ki repo audit --skill ki-work`: PASS.
+- `ki repo audit --skill ki-skills`: FAIL=0, WARN=1, the pre-existing LONG-3 refresh-cadence warning.
+- `ki dev skill rubric ki-work-roadmap` and `ki-work`: in sync.
+- `bunx rumdl check` on both touched standards: no issues.
+- A scratch copy of chezmoi's roadmap with every `project` and `initiative` qualified as `ki-arcadia-principal/<slug>`: `ki repo audit --skill ki-work-roadmap` FAIL=0 and no registry warning, against the current `project registry is unavailable` warning on the live checkout.
+
+### Outstanding concerns
+
+`ki roadmap list --by project|initiative` and the migration helper in `tools-ki` do not yet understand qualified values; KI-TOOL-CLI-113 owns that. Chezmoi's own value rewrite is its migration under the same rollout.
+
+### Post-change review
+
+The goal is met with no new failure path: a qualified value either resolves or warns. Existing bare slugs resolve exactly as before, and the full suite passes unchanged apart from the widened format message. Regression risk is low and confined to classification warnings. Ready for acceptance.
+
+### Mini recap
+
+Qualified `<capital-key>/<slug>` references now resolve through the local registry, with warnings only when they cannot. Gates pass. Learning route: a friendlier territory alias would need a registry field owned by the `ki` CLI.
 
 ## Discussion
 

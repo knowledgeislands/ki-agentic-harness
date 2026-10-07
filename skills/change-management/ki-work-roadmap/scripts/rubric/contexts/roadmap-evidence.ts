@@ -2,7 +2,13 @@
 /** Mechanical auditor for flat non-KB repository work items. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
-import { loadProjectRegistry } from './project-registry.ts'
+import {
+  loadProjectRegistry,
+  loadTerritoryRegistry,
+  type ProjectRegistry,
+  parseRegistryReference,
+  type RegistryLookup
+} from './project-registry.ts'
 import { parseStrictYaml as parseYaml } from './strict-yaml.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -761,8 +767,16 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     ['initiative', initiative],
     ['component', component]
   ] as const)
-    if (key in parsed.values && (!slug || !SLUG_RE.test(slug)))
-      add('FAIL', 'ITEM-2', `${key} must be a lowercase kebab-case slug`, FORMAT, display)
+    if (key in parsed.values && (!slug || !(key === 'component' ? SLUG_RE.test(slug) : parseRegistryReference(slug))))
+      add(
+        'FAIL',
+        'ITEM-2',
+        key === 'component'
+          ? `${key} must be a lowercase kebab-case slug`
+          : `${key} must be a lowercase kebab-case slug, optionally qualified as <territory>/<slug>`,
+        FORMAT,
+        display
+      )
   if (component && SLUG_RE.test(component) && !configuration?.components.has(component))
     add('FAIL', 'ITEM-2', `component '${component}' must be declared in ki-work-roadmap components`, STANDARD, display)
   if (kind === undefined && status && OPEN_STATUSES.has(status) && !legacyHorizon)
@@ -889,35 +903,50 @@ const validateDependencies = (items: readonly WorkItem[], configuration?: Roadma
   }
 }
 
-/** Project and initiative membership: unresolvable slugs warn; only a contradicted initiative fails. */
+/**
+ * Project and initiative membership: unresolvable references warn; only a contradicted initiative fails. A bare slug
+ * resolves in the repository's own Capital territory; `<territory>/<slug>` resolves in the named territory's registry.
+ */
 const validateClassification = (repository: string, items: readonly WorkItem[]): void => {
   const classified = items.filter((item) => item.project || item.initiative)
   if (!classified.length) return
-  const lookup = loadProjectRegistry(repository)
-  if ('unavailable' in lookup) {
-    add('WARN', 'ITEM-2', `project registry is unavailable: ${lookup.unavailable}`, STANDARD)
-    return
+  const lookups = new Map<string, RegistryLookup>()
+  const registryFor = (territory: string | undefined): ProjectRegistry | undefined => {
+    const key = territory ?? ''
+    if (!lookups.has(key)) {
+      const lookup = territory === undefined ? loadProjectRegistry(repository) : loadTerritoryRegistry(territory)
+      lookups.set(key, lookup)
+      if (!('unavailable' in lookup)) {
+        if (territory === undefined && lookup.registry.legacyInitiativesIndex)
+          tolerate(
+            'Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/',
+            undefined,
+            'ITEM-2',
+            STANDARD
+          )
+      } else if (territory === undefined)
+        add('WARN', 'ITEM-2', `project registry is unavailable: ${lookup.unavailable}`, STANDARD)
+      else add('WARN', 'ITEM-2', `territory '${territory}' registry is unavailable: ${lookup.unavailable}`, STANDARD)
+    }
+    const lookup = lookups.get(key)
+    return lookup && 'registry' in lookup ? lookup.registry : undefined
   }
-  const { projects, initiatives, legacyInitiativesIndex } = lookup.registry
-  if (legacyInitiativesIndex)
-    tolerate(
-      'Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/',
-      undefined,
-      'ITEM-2',
-      STANDARD
-    )
   for (const item of classified) {
-    if (item.project && !projects.has(item.project))
+    const project = item.project ? parseRegistryReference(item.project) : undefined
+    const initiative = item.initiative ? parseRegistryReference(item.initiative) : undefined
+    const projectRegistry = project && registryFor(project.territory)
+    const initiativeRegistry = initiative && registryFor(initiative.territory)
+    if (project && projectRegistry && !projectRegistry.projects.has(project.slug))
       add('WARN', 'ITEM-2', `project '${item.project}' is not in the project registry`, STANDARD, item.file)
-    if (item.initiative && !initiatives.has(item.initiative))
+    if (initiative && initiativeRegistry && !initiativeRegistry.initiatives.has(initiative.slug))
       add('WARN', 'ITEM-2', `initiative '${item.initiative}' is not in the project registry`, STANDARD, item.file)
-    if (!item.project || !item.initiative || !projects.has(item.project)) continue
-    const registered = projects.get(item.project)
-    if (registered && registered !== item.initiative)
+    if (!project || !initiative || !projectRegistry?.projects.has(project.slug) || !initiativeRegistry) continue
+    const registered = projectRegistry.projects.get(project.slug)
+    if (registered && (registered !== initiative.slug || projectRegistry.root !== initiativeRegistry.root))
       add(
         'FAIL',
         'ITEM-2',
-        `initiative '${item.initiative}' contradicts project '${item.project}', which serves '${registered}'`,
+        `initiative '${item.initiative}' contradicts project '${item.project}', which serves '${project.territory ? `${project.territory}/` : ''}${registered}'`,
         STANDARD,
         item.file
       )
