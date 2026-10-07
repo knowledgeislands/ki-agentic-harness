@@ -5,8 +5,9 @@ title: Require current worktree base
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: ready
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-107
 blocks: []
 blocked_by: []
 baseline_ref: null
@@ -25,7 +26,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-79
       relation: implementation
 created_at: 2026-09-27T05:02:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:49Z
 ---
 
 # KI-HARNESS-GOV-115: Require current worktree base
@@ -57,66 +58,6 @@ Out of scope, deliberately:
 - The creation half of the workspace convention that constrains a worktree's path and branch name. That rewrites the existing `## Workspace model` paragraphs and has its own governing item; this record adds one sibling claim about the base revision and rewrites nothing.
 - The two-way-link evidence routes in `KI-HARNESS-GOV-107`. This assertion needs none of them.
 
-## Current state
-
-Nothing written. The claim is absent from the standard, no `COORD` item is mechanical, and the audit against a declaring repository reports `PASS` with zero criteria evaluated, which is resolution evidence rather than conformance evidence. Covering coordination task: `KIS-70`.
-
-## Steps
-
-- [x] Reserve `GOV-115` by committing the `_ISSUES.md` advance on its own, in the designated primary checkout, before this record existed.
-- [ ] Add one normative paragraph to the standard's workspace model: a writing run's isolated checkout is cut from the destination branch tip at provisioning; the recorded baseline is that commit; a checkout whose destination tip is no longer an ancestor of its head is stale and is re-admitted before its work lands.
-- [ ] Add `COORD-10 [M]` to `scripts/rubric/items/coordination.ts` with two assertions on the selected worktree — its path lies outside the repository working tree and outside the Git common directory, and the destination tip is an ancestor of its head — and add `COORD-10` to the expected code list in `scripts/rubric/items/index.test.ts`.
-- [ ] Regenerate `references/rubric.md` and extend `references/mode-audit.md` with how to read the result and the exact re-admit action on failure.
-- [ ] Implement the host-side operation so `ki repo audit --skill ki-agent-coordination-paperclip` executes it. Separate delivery in `tools-ki`.
-
-## Files touched
-
-- `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md` (generated)
-- `skills/agentic-systems/ki-agent-coordination-paperclip/references/mode-audit.md`
-- host implementation in `tools-ki`, separate delivery under its own item
-
-## Verify
-
-Acceptance criteria, each judgeable by someone who did not write this:
-
-1. Audited in a worktree whose destination tip is not an ancestor of its head, the run reports one `COORD-10` finding naming the repository, the selected worktree path, its head, the destination branch and tip, and the behind count, and exits non-zero.
-2. Audited in a worktree at the tip, `COORD-10` passes, and the count of evaluated criteria reported by `--reporter-levels all` is greater than zero. Before this record it is zero.
-3. Audited in a worktree registered beneath a repository's Git common directory, `COORD-10` reports the location assertion and prints the offending path.
-4. The audit mutates nothing: `git worktree list --porcelain` and `git rev-parse HEAD` are byte-identical before and after, and no fetch occurs.
-5. Two audits of the same selected checkout, taken while a sibling worktree commits, return the same `COORD-10` result.
-6. `bun run test` and `bunx tsc --noEmit` pass, and `ki dev skill rubric ki-agent-coordination-paperclip` shows `COORD-10` published in the generated rubric.
-
-```bash
-ki repo audit --skill ki-agent-coordination-paperclip --reporter-levels all
-git merge-base --is-ancestor "$(git rev-parse <destination>)" HEAD \
-  || echo "stale base: behind $(git rev-list --count HEAD..<destination>)"
-```
-
-## Dependencies / blocks
-
-`blocked_by` is empty by intent. `KI-HARNESS-GOV-107` settles how the _link_ criteria become mechanical and this record does not wait on it, because this assertion's evidence is entirely repository-local. `KI-HARNESS-GOV-110` is not a blocker but is the reason the location assertion belongs in the coordination audit rather than the authoring audit. `KI-HARNESS-GOV-113` and this record add sibling sections to one standard and sibling codes to one criterion namespace, which is a sequencing preference rather than a build order. [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md) is related and blocks neither way: it makes the branch the durable unit and the worktree a recreatable checkout, and a recreated worktree is subject to this record's current-base check.
-
-## Documentation impact
-
-### Decision Records
-
-None. The claim follows from the admitted-revision requirement the standard already carries. If review disagrees, this becomes an amendment to the coordination standard rather than a new record.
-
-### Specifications
-
-`standards-agent-coordination-paperclip.md` is the behaviour-level contract and it gains one paragraph in the workspace model. The change is a strengthening: every worktree cut from the destination tip already satisfied the existing named-commit requirement.
-
-### Guides
-
-None. The website skills-by-outcome guide selects skills by task and does not restate the workspace model.
-
-### Roadmap
-
-`KI-HARNESS-GOV-107` gains one cross-reference: this is the first candidate check with both ends inside the repository, so its evidence deadlock does not apply here.
-
 ## Task associations
 
 Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1:3100`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`. Each UUID is the stable task identity.
@@ -125,6 +66,12 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 - [KIS-79](http://127.0.0.1:3100/KIS/issues/KIS-79), `331d6981-2e23-4818-9e4a-dc2ba933e6c3`: held delivery task explicitly naming this governing item and the KIS-70 context. Do not allocate overlapping implementation to a direct agent without resolving this retained ownership first.
 
 This association-only check does not reconcile all worktrees, refresh a branch, release the held delivery, approve its old plan, or change this item's lifecycle. The current coordination standard's branch-refresh policy also needs comparison with this older plan before implementation; do not replay a superseded claim from the baseline above. Keep the evaluation and delivery references on this item for migration after KIS-5's provider-neutral map is implemented. A paused agent or missing machine-readable map is not evidence of availability.
+
+## Cancelled
+
+Approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, which approved every cancel and merge in the easiest-first delivery plan.
+
+Resolution `merged` into [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md): the worktree-base check is one more mechanical `COORD` criterion in the same context. The scope worth keeping is folded into that record's Boundary and Discussion. It leaves no outstanding change of its own.
 
 ## Discussion
 

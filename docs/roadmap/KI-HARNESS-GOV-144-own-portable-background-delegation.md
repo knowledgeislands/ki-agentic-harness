@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T22:54:11Z
-updated_at: 2026-10-07T20:45:00Z
+updated_at: 2026-10-07T20:45:01Z
 ---
 
 # KI-HARNESS-GOV-144: Own portable background delegation
@@ -122,7 +122,7 @@ Noted rather than merged:
 - **Slim-down 1** (approved but unstarted, state-of-play checkpoint): moves communication levels, report shape and the timestamped-update rule from private instructions into a portable skill, probably `ki-authoring`. This record's reporting shape for delegated agents depends on that home; one should cite the other rather than both restate it. No harness record yet exists for Slim-down 1.
 - **`ki-delegation` scope:** see `### Scope decision gate`; this overlap is the decision that gates the record.
 - **`ki-subagents` and `KI-HARNESS-GOV-102`:** role records and their runtime projections are adjacent; a detached agent's prompt is not a role record.
-- **`ki-agent-coordination-paperclip` and `KI-HARNESS-GOV-103`, `GOV-107`, `GOV-114`, `GOV-115`:** Paperclip is another delegation channel with its own isolation, review and integration rules; the authority limits here should be consistent with, not a copy of, those rules.
+- **`ki-agent-coordination-paperclip` and `KI-HARNESS-GOV-103`, `GOV-107`, `GOV-147`:** Paperclip is another delegation channel with its own isolation, review and integration rules; the authority limits here should be consistent with, not a copy of, those rules.
 - **`ki-checkpoint`:** the state-of-play run directory is runtime state, not a checkpoint; the boundary between them should stay explicit.
 
 ### Scope decision gate

@@ -12,7 +12,7 @@ blocks: [KI-HARNESS-GOV-117]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T15:58:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:32:40Z
 ---
 
 # KI-HARNESS-GOV-109: Enforce Commit Gates
@@ -85,7 +85,7 @@ git config core.hooksPath
 
 `blocks` [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md), which inherits this mechanism for the estate. Paired with [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md) as a cross-reference, not a blocker: that item reports pending activation at conform time; this one refuses at commit time. Neither supersedes the other.
 
-Known limit: a linked worktree whose checked-out revision predates `.githooks/` resolves the shared path to nothing and still commits silently. Base currency is [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md)'s concern; this record does not repair existing worktrees.
+Known limit: a linked worktree whose checked-out revision predates `.githooks/` resolves the shared path to nothing and still commits silently. Base currency is [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md)'s concern; this record does not repair existing worktrees.
 
 Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), `KI-HARNESS-GOV-092` (done) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 

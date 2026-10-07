@@ -31,7 +31,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:57Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -67,6 +67,7 @@ In scope:
 - **backlink present:** each qualified Paperclip task identity (`authority`, `scope`, `id`) carried with relation `implementation` has exactly one item-side backlink in the selected revision: one record claims it as governing, matching the standard's rule that a delivery task has at most one governing KI item. A record whose delivery runs outside Paperclip is not required to carry a governing link, because an `evaluation` or `related` link says nothing about who delivers;
 - outcome text that says the plane side was not evaluated, so a pass is never read as live conformance;
 - `NOT_APPLICABLE`, not `PASS`, when the repository selects a remote work adapter or no record carries a Paperclip reference;
+- **current worktree base**, absorbed from `KI-HARNESS-GOV-115`: the coordination standard states that a coordinated worktree's base is the destination branch tip when it is provisioned, and one mechanical `COORD` assertion pair, with both ends inside the repository, reports drift from that base as a fact naming its re-admit action. It reads only the selected checkout's Git worktree registry, its base and the declared destination branch, never repairs, rebases or fetches, and never sweeps sibling worktrees, so the result depends only on the selected checkout;
 - the `mode-audit.md` procedure update and the regenerated rubric.
 
 Out of scope, deliberately:
@@ -75,8 +76,8 @@ Out of scope, deliberately:
 - the task-link field and its shape validation, delivered by `KI-HARNESS-GOV-116` and owned by `ki-work-roadmap`;
 - changing any normative claim in [the coordination standard](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md);
 - which repositories declare the skill, which is [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md);
-- the worktree-base assertion, which is [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md), and the held-workspace listing, which is [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md);
-- removing or weakening any judgment criterion, and any new criterion code. `COORD-15` stays free for `GOV-115`.
+- the held-workspace listing, which [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md) now carries;
+- removing or weakening any judgment criterion, and any new criterion code. `COORD-15` stays free for the worktree-base assertion above.
 
 ## Current state
 
@@ -125,7 +126,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-Nothing blocks this record and it blocks nothing. Sequencing preference: land after [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md), which settles how many repositories these checks run in; this record is correct under either scope because it emits `NOT_APPLICABLE` where no record carries a Paperclip reference. [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md) adds a second local-evidence operation to the same context, should follow this one's evidence-boundary pattern, and is preferably landed after it to avoid merge conflicts. Both blockers removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001`, the field prerequisites, are done.
+Nothing blocks this record and it blocks nothing. Sequencing preference: land after [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md), which settles how many repositories these checks run in; this record is correct under either scope because it emits `NOT_APPLICABLE` where no record carries a Paperclip reference. The held-workspace listing in [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md) adds a further local-evidence operation to the same context, should follow this one's evidence-boundary pattern, and is preferably landed after it to avoid merge conflicts. Both blockers removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible. `KI-HARNESS-GOV-116` and `TECHNE-TOOLS-CTRL-001`, the field prerequisites, are done.
 
 ## Documentation impact
 
@@ -143,7 +144,7 @@ None.
 
 ### Roadmap
 
-Sequenced after [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) and before [KI-HARNESS-GOV-114](KI-HARNESS-GOV-114-surface-held-workspaces.md), which adds its listing to the same audit surface, by preference only; neither is a blocker. No new rubric code is allocated, so the sibling COORD codes stay free.
+Sequenced after [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) and before [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md), which adds the held-workspace listing to the same audit surface, by preference only; neither is a blocker. Apart from the worktree-base assertion pair absorbed from `KI-HARNESS-GOV-115`, no new rubric code is allocated.
 
 ## Task associations
 
@@ -184,7 +185,7 @@ None of the three candidates replaces a judgment criterion; each adds a mechanic
 - The accepted coordination-lane delivery places the four coordination lane records under `subagents/coordination/`. Those records are the subject of `COORD-2`, not of any check proposed here.
 - [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md) decides who declares the skill. It determines how many repositories a mechanical item would run against, and is therefore worth settling first, but it is not build order: a rubric item can be written against one declaring repository.
 - `TECHNE-TOOLS-CTRL-001` in `ki-techne-harness` and the allow-list in `tools-ki` are the real precondition. `blocked_by` is empty because it records build order between records in this roadmap, and neither of those is one; the constraint is stated here instead.
-- The worktree-base assertion captured in [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md) is the first candidate check whose evidence is entirely repository-local: the Git worktree registry, the selected worktree's base, and the declared destination branch are all readable offline in the checkout being audited. None of the three evidence routes above applies to it, so it proceeds independently of this record. What remains here is the link criteria, whose other end is genuinely in the coordination plane.
+- The worktree-base assertion, absorbed from `KI-HARNESS-GOV-115`, is the first candidate check whose evidence is entirely repository-local: the Git worktree registry, the selected worktree's base, and the declared destination branch are all readable offline in the checkout being audited. None of the three evidence routes above applies to it, so it can land before the link criteria, whose other end is genuinely in the coordination plane.
 
 ### Governing coordination task
 
@@ -193,3 +194,7 @@ Captured from the `KNO-19` proposal document on the external coordination plane,
 ### Decision
 
 Add mechanical `COORD-3` checks over repository-local evidence only - the identifier triple resolves and the backlink is present - while plane-side checks stay judgment. The other evidence routes discussed above are superseded. Decided by the Fable reviewer under delegated autonomy, reversible.
+
+### Merged from KI-HARNESS-GOV-115
+
+Kris approved merging `KI-HARNESS-GOV-115` (Require current worktree base) into this record on 2026-10-07, under decision 17 of the state-of-play design: the worktree-base check is one more mechanical `COORD` criterion in the same context. Its scope is the in-scope bullet above. Its full plan - the stale-base and forbidden-location findings, the reported failure shape, the `COORD-10` identifier-collision note, its grandfathering rule and the provisioner request `KIS-71` - is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md). The Steps and Verify sections above predate the merge: re-plan them to include it before implementation.

@@ -6,13 +6,14 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: keystone
-horizon: now
-status: ready
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-123
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T10:59:42Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:49Z
 ---
 
 # KI-HARNESS-GOV-135: Review governance date provenance
@@ -33,55 +34,11 @@ Preserve historical claims unless an authorised correction has evidence. Do not 
 
 Out of scope: estate-wide metadata edits, a new date schema, a mechanical backdating checker, and any correction in a receiving repository, which retains local review and acceptance authority.
 
-## Current state
+## Cancelled
 
-`Repository governance` (`mode-review.md:185`) asks at `:187` that the repository declaration reflects what the repository now contains, but nothing asks what a governance or conformance date evidences. The `ki-repo` mechanical rubric does not read such dates and is not changed. Line numbers are as observed on 2026-10-05; anchor by text.
+Approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, which approved every cancel and merge in the easiest-first delivery plan.
 
-## Steps
-
-- [ ] Insert one question directly after `The repository declaration reflects what the repository now contains.` in `Repository governance`: `- [ ] Each governance or conformance date states what it claims - an evidenced adoption, a preserved historical assertion, or the first surviving declaration - and none is backdated by inference or read as proof of audited conformance.`
-- [ ] Run the verification below.
-
-## Files touched
-
-- `skills/keystone/ki-repo/references/mode-review.md`
-
-## Verify
-
-1. `Repository governance` contains exactly one new date-provenance question, directly after the declaration question.
-2. The question distinguishes the three date kinds named in the Goal and refuses both inferred backdating and reading a date as audited conformance.
-3. No file under `skills/keystone/ki-repo/scripts/` and no generated rubric changes: `git diff --stat` shows only `mode-review.md` for this record.
-4. Added text uses British English and ASCII hyphens only; focused audits report no new finding in `mode-review.md`.
-5. `bun run test` and `bunx tsc --noEmit` pass.
-
-```bash
-bun run test
-bunx tsc --noEmit
-ki repo audit --skill ki-repo --progress never
-ki repo audit --skill ki-authoring --progress never
-```
-
-## Dependencies / blocks
-
-`blocked_by` and `blocks` are empty by intent. This record edits `Repository governance` while `KI-HARNESS-GOV-096` (done), `KI-HARNESS-GOV-124` (done), `KI-HARNESS-GOV-098` (done) and [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md) edit `Automated verification` of the same file; it is last in the preferred batch order and its text anchor is independent of theirs, so it cannot conflict.
-
-## Documentation impact
-
-### Decision Records
-
-None. A judgment prompt in the REVIEW checklist changes no structural decision.
-
-### Specifications
-
-None.
-
-### Guides
-
-None. The website skills-by-outcome guide does not restate REVIEW questions.
-
-### Roadmap
-
-None. Any date corrections a review surfaces are routed to the receiving repository's own roadmap under its authority.
+Resolution `merged` into [KI-HARNESS-GOV-123](KI-HARNESS-GOV-123-review-unsettled-source-readings.md): it is another single judgment prompt in the same `mode-review.md`. The scope worth keeping is folded into that record's Boundary and Discussion. It leaves no outstanding change of its own.
 
 ## Discussion
 

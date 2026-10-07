@@ -10,7 +10,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:57Z
 ---
 
 # KI-HARNESS-RTP-018: Audit inside sandboxed runs
@@ -29,9 +29,9 @@ Origin: first raised as branch-local `KI-HARNESS-RTP-016` on the abandoned Paper
 
 ## Boundary
 
-In scope: where a sandboxed run's harness data root comes from, and what an audit claim made from inside such a run may rest on.
+In scope: where a sandboxed run's harness data root comes from, and what an audit claim made from inside such a run may rest on. Also in scope, merged from `KI-HARNESS-RTP-019`: the Unix domain socket path limit that the same redirected `HOME` imposes on tools binding a control socket below it - skills state the constraint, detect it cheaply before invoking the tool, and respond in an accepted way.
 
-Out of scope: the `KI_MCP_SOURCE` host-configuration question, and repairing the host install, which is intact and readable from inside the sandbox.
+Out of scope: the `KI_MCP_SOURCE` host-configuration question, and repairing the host install, which is intact and readable from inside the sandbox. Changing an agent runtime, patching a third-party tool, or weakening sandbox isolation to make a tool work is also out of scope.
 
 ## Discussion
 
@@ -47,6 +47,12 @@ These compose rather than compete; shaping decides which are load-bearing and wh
 
 The synthetic home differs between runs, so a per-run bootstrap is not a fix. A read-only audit against the host data root is sound; a write-capable verb such as install, refresh or `dev local on` would mutate the user's real data root from inside a run that believes it is isolated. Whether propagation must be read-only, and how that is enforced, belongs here.
 
-### Related
+### Socket paths under a sandboxed home
 
-- [KI-HARNESS-RTP-019](KI-HARNESS-RTP-019-fit-sandbox-socket-paths.md) records another failure caused by the same redirected sandbox `HOME`.
+Merged from `KI-HARNESS-RTP-019` (Fit sandbox socket paths), approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, because it is the same redirected sandbox `HOME`, here breaking socket paths.
+
+A macOS Unix domain socket address is limited to a 104-byte path (`sun_path[104]` in `sys/un.h`). A per-run sandbox home of well over one hundred characters stops any tool whose control socket sits at a fixed offset below it from binding, and the failure presents as an address-length error. Observed instance: a session-manager tool whose socket sits at `<home>/config/<tool>/<tool>.sock` failed under a 142-character sandboxed home because the socket path was 166 characters; the same binary works from an ordinary shell.
+
+Detection compares the intended socket path length with the platform limit before invoking the tool, and reports both numbers. Overriding the home directory for the tool's benefit defeats isolation and is not acceptable. Pointing the tool's socket at a short directory through its own configuration is acceptable, as is declaring that the capability needs a human-driven terminal. A container runtime with a short home path does not have the problem.
+
+Open questions carried over: which existing skills depend on a tool of this shape and state the limitation; whether a short, run-owned scratch directory may hold a socket without weakening isolation; and whether the harness should publish a shared helper that measures the socket-path budget. The salvaged original draft is at `~/.local/state/ki/state-of-play/salvage/KNO-7/`, and the merged record's full text is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-RTP-019-fit-sandbox-socket-paths.md).

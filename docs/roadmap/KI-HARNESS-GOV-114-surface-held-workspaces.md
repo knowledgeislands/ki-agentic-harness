@@ -5,13 +5,14 @@ title: Surface held workspaces
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: ready
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-147
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-26T23:55:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:49Z
 ---
 
 # KI-HARNESS-GOV-114: Surface held workspaces
@@ -42,69 +43,11 @@ In scope:
 
 Out of scope: the disposition doctrine, which is already in the standard's `#workspace-retirement`; any removal, prune, rebase, fetch or branch change; any coordination-plane read by the mechanical audit, including close-readiness (the mechanical operation reads nothing from the coordination plane; only the human procedure step in `mode-audit.md` may consult Paperclip's close-readiness view); automatic Triage capture; changing the retirement mechanism or its gates; a fleet sweep across repositories; and any new criterion code.
 
-## Current state
+## Cancelled
 
-- The standard's `## Workspace retirement` section defines the five automatic gates and says a workspace held past its cooldown by a gate that can never pass becomes a Triage item in the owning repository. Nothing surfaces such a workspace.
-- `COORD-9` in `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts` is judgment only and asks whether refused workspaces are routed to a repository-owned decision.
-- [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) adds the first local-evidence operation to the coordination context; this record follows the same pattern.
-- Of the five gates, only the clean working tree and the merge gate are readable from the local registry; the others live on the coordination plane.
+Approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, which approved every cancel and merge in the easiest-first delivery plan.
 
-## Steps
-
-- [ ] Add a `heldWorkspaces` outcome list to the coordination context, built from `git worktree list --porcelain` and, per linked worktree, `git rev-list --left-right --count`, `git merge-base --is-ancestor`, `git log -1 --format=%ct` and `git --no-optional-locks -C <path> status --porcelain`. Skip the primary worktree; the selected checkout, when it is itself a linked worktree, is listed like any other. Run nothing that writes, locks or fetches.
-- [ ] Attach a `heuristic: true` diagnostic mechanical block to `COORD-9` that emits only `INFO` outcomes, one per candidate, or a single `INFO` saying none were found; keep the judgment prompt.
-- [ ] Add fixtures in `scripts/rubric/contexts/coordination.test.ts` with a temporary repository holding a detached worktree, an unmerged branch worktree, a merged branch worktree and a dirty worktree, and assert the listing and that no outcome is a `VIOLATION`.
-- [ ] Update `scripts/rubric/items/index.test.ts` for the new mechanical block.
-- [ ] Add a step to `references/mode-audit.md`: read the `COORD-9` listing, confirm each candidate's plane-side gates through Paperclip's close-readiness view, and for a confirmed held workspace capture a Triage item through `ki-next`; the listing is never permission to remove anything.
-- [ ] Regenerate `references/rubric.md` and run the verification below.
-
-## Files touched
-
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.test.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/references/mode-audit.md`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md` (generated)
-
-## Verify
-
-1. In the fixture repository the detached and unmerged worktrees are listed with path, head, state, ahead and behind counts, age and dirty flag; the merged clean worktree is not listed.
-2. Every `COORD-9` outcome is `INFO`; the audit's exit status is identical with and without the held worktrees present.
-3. Each entry states that plane-side gates were not evaluated and names the Paperclip close-readiness check and `ki-next` capture as the human next step.
-4. The run is read-only: `git worktree list --porcelain`, each worktree's `git rev-parse HEAD` and `git status --porcelain`, and the index files are unchanged, and no fetch occurs.
-5. Run against this repository, the listing names the retained Paperclip worktrees whose branches are unmerged, which a reader can confirm with `git worktree list` and `git branch --no-merged main`.
-6. The commands below pass.
-
-```bash
-bun run test
-bunx tsc --noEmit
-ki dev skill rubric ki-agent-coordination-paperclip
-ki repo audit --skill ki-agent-coordination-paperclip --reporter-levels all --progress never
-ki repo audit --skill ki-authoring --progress never
-```
-
-## Dependencies / blocks
-
-Nothing blocks this record. Sequencing preference: land after [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces local-evidence reading into the coordination context and settles its boundary, to avoid merge conflicts in the shared coordination context, items and tests. Blocker removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible. Shares the `COORD` namespace with [KI-HARNESS-GOV-115](KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md) but takes no code: `COORD-15` stays reserved for that record.
-
-## Documentation impact
-
-### Decision Records
-
-None. The disposition rule is already in the coordination standard; this adds a listing, not a decision.
-
-### Specifications
-
-None. `docs/specs/` does not describe the coordination audit.
-
-### Guides
-
-None.
-
-### Roadmap
-
-Sequenced after [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), which introduces the first mechanical diagnostic on the coordination rubric, by preference only.
+Resolution `merged` into [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md): once the branch is durable, held workspaces are surfaced and retired by the same rule. The scope worth keeping is folded into that record's Boundary and Discussion. It leaves no outstanding change of its own.
 
 ## Discussion
 

@@ -5,17 +5,13 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 area: OPS
-horizon: hold
-hold:
-  reason: parked
-  condition: A concrete operational question cannot be answered from existing local output and Kris chooses OTLP as the remedy, naming a consent and configuration owner
-  review: 2027-01-07
-status: draft
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:48Z
 ---
 
 ## Goal
@@ -29,6 +25,12 @@ Define an off-by-default `ki-observability` capability for reporting repository 
 ## Boundary
 
 Disabled means no network activity; enabled reporting is best-effort and never changes AUDIT or CONFORM results. Do not introduce transcript scraping or a required gateway in the first slice.
+
+## Cancelled
+
+Approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, which approved every cancel and merge in the easiest-first delivery plan.
+
+Resolution `rejected`: parked with no operational question to answer. Recapture if one arises. It leaves no outstanding change.
 
 ## Discussion
 

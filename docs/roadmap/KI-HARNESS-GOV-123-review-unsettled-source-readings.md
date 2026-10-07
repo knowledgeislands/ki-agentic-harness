@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:57Z
 ---
 
 # KI-HARNESS-GOV-123: Review unsettled-source readings
@@ -35,9 +35,9 @@ The `ki-repo` REVIEW checklist (`skills/keystone/ki-repo/references/mode-review.
 
 ## Boundary
 
-In scope: one unsettled-source question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, using the wording proposed in this record.
+In scope: one unsettled-source question in the `Automated verification` lens of `skills/keystone/ki-repo/references/mode-review.md`, using the wording proposed in this record; and, merged from `KI-HARNESS-GOV-135`, one date-provenance question in the `Repository governance` lens of the same file, asking what evidence supports each governance or conformance date and what that date claims.
 
-Out of scope: `SDQ-020`, the CAMARA topology and the diagram itself, which belong to `5g-emerge-phase2` and its source owner; any convention about captions or figure annotation; and the contents of other lenses.
+Out of scope: `SDQ-020`, the CAMARA topology and the diagram itself, which belong to `5g-emerge-phase2` and its source owner; any convention about captions or figure annotation; and the contents of other lenses beyond the one date-provenance question. For that question: no estate-wide metadata edit, new date schema, mechanical backdating checker, or correction in a receiving repository; historical claims are preserved unless an authorised correction has evidence.
 
 ## Current state
 
@@ -46,6 +46,7 @@ No REVIEW question asks whether a delivered artefact records which reading of an
 ## Steps
 
 - [ ] Insert one question directly after the `KI-HARNESS-GOV-098` (done) question, or, if the batch siblings have not landed, directly after the count-based-gate question: `- [ ] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.`
+- [ ] Insert one question directly after `The repository declaration reflects what the repository now contains.` in `Repository governance` (merged from `KI-HARNESS-GOV-135`): `- [ ] Each governance or conformance date states what it claims - an evidenced adoption, a preserved historical assertion, or the first surviving declaration - and none is backdated by inference or read as proof of audited conformance.`
 - [ ] Run the verification below.
 
 ## Files touched
@@ -56,9 +57,10 @@ No REVIEW question asks whether a delivered artefact records which reading of an
 
 1. `Automated verification` contains exactly one new unsettled-source question, after the count-versus-rendered question where that exists.
 2. The question requires both the reading drawn and its concrete consequence if another reading wins, matching the proposed lens.
-3. No other lens, rubric, TypeScript or generated file changes for this record.
-4. Added text uses British English and ASCII hyphens only; focused audits report no new finding in `mode-review.md`.
-5. `bun run test` and `bunx tsc --noEmit` pass.
+3. `Repository governance` contains exactly one new date-provenance question, directly after the declaration question, distinguishing the three date kinds and refusing both inferred backdating and reading a date as audited conformance.
+4. No other lens, rubric, TypeScript or generated file changes for this record.
+5. Added text uses British English and ASCII hyphens only; focused audits report no new finding in `mode-review.md`.
+6. `bun run test` and `bunx tsc --noEmit` pass.
 
 ```bash
 bun run test
@@ -69,7 +71,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-`blocked_by` and `blocks` are empty by intent. Sequencing for the `mode-review.md` batch, a preference rather than a build order: `KI-HARNESS-GOV-096` (done), `KI-HARNESS-GOV-124` (done), `KI-HARNESS-GOV-098` (done), this record, then [KI-HARNESS-GOV-135](KI-HARNESS-GOV-135-review-governance-date-provenance.md). Each inserts after the previous one's text.
+`blocked_by` and `blocks` are empty by intent. Sequencing for the `mode-review.md` batch, a preference rather than a build order: `KI-HARNESS-GOV-096` (done), `KI-HARNESS-GOV-124` (done), `KI-HARNESS-GOV-098` (done), then this record. Each inserts after the previous one's text; the merged `KI-HARNESS-GOV-135` question edits `Repository governance`, whose text anchor is independent of the others.
 
 ## Documentation impact
 
@@ -119,3 +121,7 @@ A caption saying the topology is contested would help the reader of that one pag
 
 - `5GE-P2-GOV-014` in `5g-emerge-phase2` will add the lens to its own `AGENTS.md` as a local review convention if this record is rejected; a rejection here should say so, so that repository can close its item.
 - `KI-HARNESS-GOV-124` (done) is the sibling candidate from the same session recap, and the owner may want to dispose of both in one conversation.
+
+### Merged from KI-HARNESS-GOV-135
+
+Kris approved merging `KI-HARNESS-GOV-135` (Review governance date provenance) into this record on 2026-10-07, under decision 17 of the state-of-play design: it is another single judgment prompt in the same `mode-review.md`. The territory-governance review found a newly added Legal Conformance entry dated earlier than the first surviving `.ki.toml` declaration; the entry was corrected and older recorded dates were preserved as historical assertions. The reusable question is what each date evidences, not whether old dates are wrong. The merged record's full text is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-GOV-135-review-governance-date-provenance.md).

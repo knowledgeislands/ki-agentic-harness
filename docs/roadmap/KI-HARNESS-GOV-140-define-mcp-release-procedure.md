@@ -6,12 +6,13 @@ kind: deliver
 purpose: governance
 project: estate-factorisation
 component: repo-structure
-status: triage
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T01:19:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:48Z
 ---
 
 # KI-HARNESS-GOV-140: Define MCP release procedure
@@ -33,6 +34,12 @@ Raised by the 2026-10-06 estate roadmap consolidation (finding "MCP release proc
 In scope: one shared procedure owned by the `ki-repo-mcp` standard - release workflow shape, annotated tag, version bump and provenance receipt - reusing `ki-repo-tools` release readiness where it applies, plus any audit criterion needed to tell a governed release from an ad hoc one.
 
 Out of scope: per-repository work items. Each `mcp-*` repository's cutover follows through CONFORM or a trade, not nine duplicate records here. Also out of scope: deciding whether or when any MCP is released, which stays with its owner under `DIST-1`; and npm, MCP Registry or bundle publication, which the distribution standard keeps optional.
+
+## Cancelled
+
+Approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, which approved every cancel and merge in the easiest-first delivery plan.
+
+Resolution `rejected`: no MCP release is wanted yet, and the distribution phase it served waits on the ownerless FND-5 phase of Estate factorisation. Recapture when the first MCP release is planned. It leaves no outstanding change.
 
 ## Discussion
 

@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:57Z
 ---
 
 ## Goal
@@ -60,7 +60,7 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 - [x] Confirm that the official ChatGPT account export is available as the one-time bootstrap candidate.
 - [x] Record the export's external source-store location and archive hash, then inspect its schema, project membership, conversation identity, write-ups, and assets read-only without committing source payloads.
 - [ ] Convert only verified export evidence into the canonical `ki-chatgpt-capture` form and retain explicit omissions for every unsupported field or asset class.
-- [ ] Evaluate the hybrid incremental path: local-cache change nomination, browser retrieval of new or changed readable sessions under KI-HARNESS-GOV-087, and periodic full-export reconciliation before browser coverage is trusted.
+- [ ] Evaluate the hybrid incremental path: local-cache change nomination, browser retrieval of new or changed readable sessions through the isolated Obscura trial merged from `KI-HARNESS-GOV-087` (see Discussion), and periodic full-export reconciliation before browser coverage is trusted.
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
@@ -185,3 +185,11 @@ The intended steady state is to remove source conversations after their complete
 ### Source fidelity
 
 The opaque ChatGPT installed-application store is useful for identity, timestamps, byte counts, hashes, and change detection, but not for recovering readable knowledge or proving project routing. Receiving repositories retain those metadata rather than opaque payload bytes by default. Until an authorised readable source exists, the local store cannot satisfy the complete-session acquisition goal by itself. A user-prepared capture remains safe and useful, but the workflow must clearly distinguish preparing a readable source from acquiring a mapped project.
+
+### Isolated browser trial
+
+Merged from `KI-HARNESS-GOV-087` (Evaluate Obscura browser runtime), approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, because this record's hybrid-path Step already names the trial.
+
+The trial asks whether a self-hosted Obscura headless browser, in a disposable runtime with a deliberately provisioned authentication profile, can enumerate ChatGPT projects and conversations, read complete visible content and emit deterministic checkpoints, correlated with local-cache identities and reconciled against the official export. In order: pin and build one Obscura source revision, stopping if it needs unmanaged credentials or an unsafe installation; run a non-secret synthetic fixture to verify isolation, CDP or Playwright interaction, extraction and teardown; present an isolated session for deliberate interactive sign-in; inventory one bounded project read-only; record omissions and hashes in a local-evaluation packet; then update the agentic radar only as the evidence warrants.
+
+It evaluates and records evidence only: no estate adoption, managed cloud dependency, cookie transfer, password or multi-factor automation, stealth or detection-evasion features, or provider mutation, and it fails closed wherever fidelity cannot be shown. It needs Kris present for the sign-in and Kris's approval to build the unvetted `h4ckf0r0day/obscura` source on this Mac, or a choice of a disposable VM or container instead. The merged record's full plan is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-GOV-087-evaluate-obscura-browser-runtime.md).

@@ -5,12 +5,14 @@ title: Fit sandbox socket paths
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-status: triage
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-RTP-018
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:29:49Z
 ---
 
 # KI-HARNESS-RTP-019: Fit sandbox socket paths
@@ -30,6 +32,12 @@ Origin: an untracked draft (branch-local `KI-HARNESS-RTP-015`) in the retained P
 ## Boundary
 
 This item does not change any agent runtime, patch a third-party tool, or weaken sandbox isolation to make a tool work. It records the constraint, tells skills how to detect it, and states the acceptable responses.
+
+## Cancelled
+
+Approved by Kris on 2026-10-07 under decision 17 of the state-of-play design, which approved every cancel and merge in the easiest-first delivery plan.
+
+Resolution `merged` into [KI-HARNESS-RTP-018](KI-HARNESS-RTP-018-audit-inside-sandboxed-runs.md): it is the same redirected sandbox `HOME`, here breaking socket paths. The scope worth keeping is folded into that record's Boundary and Discussion. It leaves no outstanding change of its own.
 
 ## Discussion
 
