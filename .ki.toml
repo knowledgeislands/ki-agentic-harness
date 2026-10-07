@@ -1,14 +1,14 @@
 # Knowledge Islands repository configuration.
 # Its presence declares conformance with the Knowledge Islands repository standard.
 
-# =============================================================================
-
 # -----------------------------------------------------------------------------
 # Foundation
 # -----------------------------------------------------------------------------
 
 [repo]
-harnesses = ["knowledgeislands/ki-agentic-harness"]
+harnesses = [
+  "knowledgeislands/ki-agentic-harness",
+]
 
 [skills.ki-repo]
 repo_type = "project"
@@ -20,9 +20,15 @@ description = "Knowledge Islands agentic harness — canonical home for Agent Sk
 repo_code = "KI-HARNESS"
 visibility = "public"
 license = "MIT"
-supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
-checks.coverage-checkpoint = false # source repository publishes the optional capability without adopting a checkpoint subarea
-checks.coverage-subagents-chatgpt = false # source repository publishes the adapter without adopting Codex agent projections
+supported_runtimes = [
+  "claude-code",
+  "claude-desktop",
+  "chatgpt-codex",
+]
+# source repository publishes the optional capability without adopting a checkpoint subarea
+checks.coverage-checkpoint = false
+# source repository publishes the adapter without adopting Codex agent projections
+checks.coverage-subagents-chatgpt = false
 
 [skills.ki-authoring]
 
@@ -41,11 +47,11 @@ prefix = "ki"
 
 [skills.ki-engineering]
 
-[skills.ki-binding]
+[skills.ki-decision-records]
 
-[skills.ki-binding-claude]
+[skills.ki-specs]
 
-[skills.ki-binding-chatgpt]
+[skills.ki-guides]
 
 [skills.ki-skills]
 
@@ -55,22 +61,17 @@ prefix = "ki"
 
 [skills.ki-subagents-chatgpt]
 
-[skills.ki-agent-coordination-paperclip]
-organisation_code = "KIS"
-
-[skills.ki-decision-records]
-
 [skills.ki-delegation]
 
-[skills.ki-specs]
+[skills.ki-model-radar]
 
-[skills.ki-guides]
+[skills.ki-agentic-radar]
 
-# -----------------------------------------------------------------------------
-# Change management
-# -----------------------------------------------------------------------------
+[skills.ki-binding]
 
-[skills.ki-git]
+[skills.ki-binding-claude]
+
+[skills.ki-binding-chatgpt]
 
 [skills.ki-housekeeping-claude]
 auto_memory = "disabled"
@@ -83,7 +84,25 @@ auto_memory = "disabled"
 
 [skills.ki-acquire-granola]
 
-[skills.ki-work-housekeeping]
+[skills.ki-tokenomics]
+headroom = "recommended"
+# Cross-skill governance benefits from the higher-reasoning project default.
+preferred_model_type = "reasoning"
+# User-scoped; revisit if the global MCP set is pruned.
+budgets.mcp_servers = 20
+
+[skills.ki-tokenomics-claude]
+
+[skills.ki-tokenomics-chatgpt]
+
+# -----------------------------------------------------------------------------
+# Change management
+# -----------------------------------------------------------------------------
+
+[skills.ki-agent-coordination-paperclip]
+organisation_code = "KIS"
+
+[skills.ki-git]
 
 [skills.ki-work]
 adapter = "roadmap"
@@ -108,21 +127,9 @@ OPS = "Operations"
 REV = "Regular reviews"
 RTP = "Runtime portability"
 
+[skills.ki-work-housekeeping]
+
 [skills.ki-checkpoint]
-
-[skills.ki-tokenomics]
-headroom = "recommended"
-# Cross-skill governance benefits from the higher-reasoning project default.
-preferred_model_type = "reasoning"
-budgets.mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
-
-[skills.ki-tokenomics-claude]
-
-[skills.ki-tokenomics-chatgpt]
-
-[skills.ki-model-radar]
-
-[skills.ki-agentic-radar]
 
 # -----------------------------------------------------------------------------
 # Relationships
