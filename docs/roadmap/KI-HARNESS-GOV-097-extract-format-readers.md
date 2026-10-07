@@ -6,13 +6,13 @@ kind: deliver
 purpose: debt
 initiative: platform-foundations
 component: governance
-horizon: next
-status: ready
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 58dbf3502df5b6bb777b3b28965392cff5932221
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-07T20:34:46Z
+updated_at: 2026-10-07T20:52:48Z
 ---
 
 # KI-HARNESS-GOV-097: Extract format readers
@@ -41,10 +41,10 @@ Out of scope: a new `ki-repo` REVIEW question or `ki-engineering` rubric item (s
 
 ## Steps
 
-- [ ] In `standards-engineering.md` `## Code design`, add one bullet after `Prefer clarity to maximal DRY`: **Extract a format reader at its second caller.** A parser's input space is defined by its format, not its callers, so a second caller is the first independent test of whether it implements the format or only the subset the first caller produced; a copy keeps the untested subset, and a fix reaches only one copy. Link the worked example in `exemplars.md`.
-- [ ] In `references/exemplars.md`, add a `### A format reader extracted at its second caller (Code design)` pattern under `## Selected patterns`: the private YAML frontmatter reader, its `^['"]` unquote defect on inline lists, the three false `blocking` signals the second caller exposed, and why a copy would have kept them. Name `KI-OBS-VIS-004` in `apps-observatory` as the source without linking its roadmap record.
-- [ ] Confirm `ki dev skill rubric ki-engineering` reports the generated rubric unchanged.
-- [ ] Run the verification below.
+- [x] In `standards-engineering.md` `## Code design`, add one bullet after `Prefer clarity to maximal DRY`: **Extract a format reader at its second caller.** A parser's input space is defined by its format, not its callers, so a second caller is the first independent test of whether it implements the format or only the subset the first caller produced; a copy keeps the untested subset, and a fix reaches only one copy. Link the worked example in `exemplars.md`.
+- [x] In `references/exemplars.md`, add a `### A format reader extracted at its second caller (Code design)` pattern under `## Selected patterns`: the private YAML frontmatter reader, its `^['"]` unquote defect on inline lists, the three false `blocking` signals the second caller exposed, and why a copy would have kept them. Name `KI-OBS-VIS-004` in `apps-observatory` as the source without linking its roadmap record.
+- [x] Confirm `ki dev skill rubric ki-engineering` reports the generated rubric unchanged.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -88,6 +88,37 @@ None. The website skills-by-outcome guide does not restate engineering standards
 ### Roadmap
 
 None. `KI-OBS-VIS-004` in `apps-observatory` owns the instance and needs no change.
+
+## Review
+
+### Delivered
+
+The second-caller rationale and its worked example in the `ki-engineering` reuse standard, within the approved boundary: no checklist, rubric, script or `ki-repo` REVIEW change. Baseline `58dbf3502df5b6bb777b3b28965392cff5932221`; the delivery is the commit that carries this packet.
+
+### Change Summary
+
+- `skills/governance/ki-engineering/references/standards-engineering.md`: one `## Code design` bullet, **Extract a format reader at its second caller**, after `Prefer clarity to maximal DRY`. It frames extraction as a correctness reason specific to readers of a shared format, states that it is not a lower threshold for abstraction in general, and links the example.
+- `skills/governance/ki-engineering/references/exemplars.md`: a `### A format reader extracted at its second caller (Code design)` pattern under `## Selected patterns`, ahead of the `.ki.toml` table pattern. It names `KI-OBS-VIS-004` in `apps-observatory` without linking its record and describes the `^['"]` unquote defect, why the first caller hid it, the three false `blocking` signals and why a copy would have kept them.
+
+### Verification
+
+- `ki dev skill rubric ki-engineering`: `references/rubric.md` in sync, unchanged.
+- `ki repo audit --skill ki-engineering --progress never`: PASS.
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `bun run test`: 999 pass, 0 fail. `bunx tsc --noEmit`: clean.
+- Full `ki repo audit` in the worktree: no finding in either file. Its only failures are `REPO-REG-1` and `RUNTIMES-2`, which arise because the temporary worktree path is not registered; the registered primary checkout reports FAIL=0 at the same base.
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+The goal is met: the standard now gives the correctness reason for extracting a format reader at its second caller and a worked example a reader can follow without opening `apps-observatory`. Scope held to the two reference files. Regression risk is nil for code; the bullet is review guidance and adds no rubric item. Ready for acceptance.
+
+### Mini recap
+
+Delivered one standard bullet and one exemplar; rubric unchanged and all gates pass. No learning route beyond the standard itself.
 
 ## Discussion
 
