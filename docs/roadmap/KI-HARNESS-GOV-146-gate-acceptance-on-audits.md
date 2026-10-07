@@ -7,12 +7,12 @@ purpose: governance
 initiative: platform-foundations
 component: change-management
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 9888595c1b5d94fa49ae20a216aa5cc995691b3f
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-07T21:05:00Z
+updated_at: 2026-10-07T21:05:01Z
 ---
 
 # KI-HARNESS-GOV-146: Gate acceptance on audits
@@ -41,9 +41,9 @@ Out of scope: reopening what any accepted record delivered, and repairing pruned
 
 ## Steps
 
-- [ ] In `standards-acceptance.md` step 5, add that delivery acceptance requires the governing audits to pass on the record as it will be committed: the selected adapter's record audit (`ki-work-roadmap` for `roadmap`, `ki-repo-kb-streams` for `kb-streams`), `ki-authoring`, and every audit the record's own `Verify` names, judged by that section's stated criterion. A failure blocks closure; there is no waiver. Fix it and re-run, or return the record to `in-progress` under a failed review.
-- [ ] In `SKILL.md` step 1, add that delivery closure also requires its governing audits to pass.
-- [ ] Run the verification below.
+- [x] In `standards-acceptance.md` step 5, add that delivery acceptance requires the governing audits to pass on the record as it will be committed: the selected adapter's record audit (`ki-work-roadmap` for `roadmap`, `ki-repo-kb-streams` for `kb-streams`), `ki-authoring`, and every audit the record's own `Verify` names, judged by that section's stated criterion. A failure blocks closure; there is no waiver. Fix it and re-run, or return the record to `in-progress` under a failed review.
+- [x] In `SKILL.md` step 1, add that delivery closure also requires its governing audits to pass.
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -86,6 +86,38 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+The acceptance precondition in `ki-accept`, within the approved boundary: governing audits must pass before delivery closure, with no waiver. No hook, CLI, model, test or generated file changed, and cancellation is untouched. Baseline `9888595c1b5d94fa49ae20a216aa5cc995691b3f`; the delivery is the commit that carries this packet.
+
+### Change Summary
+
+- `skills/change-management/ki-accept/references/standards-acceptance.md`, step 5: delivery closure confirms that the governing audits pass on the record as it will be committed - the selected adapter's record audit (`ki-work-roadmap` or `ki-repo-kb-streams`), `ki-authoring`, and every audit the record's `Verify` names, judged by its stated criterion. A failure blocks closure; repair and re-run, or return the record to `in-progress` under a failed review.
+- `skills/change-management/ki-accept/SKILL.md`, step 1: delivery closure requires passing governing audits alongside the review packet.
+- Planning deviation: the plan's verification block first named `ki repo audit --skill ki-accept`, which the CLI rejects because `ki-accept` is not a declared repository skill; it was dropped before delivery, and `ki-skills` covers the skill.
+
+### Verification
+
+- `ki repo audit --skill ki-skills --progress never`: FAIL=0, one pre-existing `LONG-3` refresh-cadence warning.
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `ki repo audit --skill ki-work-roadmap --progress never`: PASS on this record.
+- `bun run test`: 1007 pass, 0 fail. `bunx tsc --noEmit`: clean.
+- Full `ki repo audit` in the worktree: no new finding. Its only failures are `REPO-REG-1` and `RUNTIMES-2`, which arise because the temporary worktree path is not registered; the registered primary checkout reports FAIL=0.
+
+### Outstanding concerns
+
+None. A mechanical gate (hook or CLI) remains a possible later record, as the Decision notes.
+
+### Post-change review
+
+The estate now has a settled, stated answer: a record whose governing audits fail cannot be accepted, which closes the gap that let `KI-HARNESS-GOV-101` reach `done` while failing `ITEM-3` and `MD049`. Scope held to two prose edits. No regression risk to code. Ready for acceptance.
+
+### Mini recap
+
+Delivered the acceptance precondition in `ki-accept`; all gates pass. This record was itself closed under the new rule.
 
 ## Discussion
 
