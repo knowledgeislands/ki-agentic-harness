@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-07-29T00:10:07Z
-updated_at: 2026-09-27T22:06:13Z
+updated_at: 2026-10-07T10:21:00Z
 ---
 
 ## Goal
@@ -39,3 +39,7 @@ Evidence scope: inspected local `main` at `0ad0377a0e7e14b1cd7314bce414d4871b062
 ### Return condition
 
 The host principal DOTFILES-UE-056 retains the wait for deliberately authorised destructive access and a refreshed inventory presented for exact approval before deletion. Follow its evidence here without duplicating its execution plan or broadening its session-and-telemetry boundary.
+
+### Fold into DOTFILES-UE-056 - approved 2026-10-07
+
+On 2026-10-07 Kris approved folding this record into chezmoi DOTFILES-UE-056 in the `ki-arcadia-principal` state-of-play review. It is not carried out yet: this record is adopted in Waiting for, so it can take an intake disposition only after an explicit human disposition moves it back into Triage, and a `merged` or `duplicate` target must resolve in this roadmap, while DOTFILES-UE-056 lives in the chezmoi roadmap. The route the skills allow is for Kris to approve moving this record to Triage, then a `rejected` disposition whose rationale records that DOTFILES-UE-056 carries the work, closed through `ki-accept`. Until then it stays a provenance pointer here.
