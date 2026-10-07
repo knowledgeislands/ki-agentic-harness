@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: change-management
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c315f1860eaec870ac0e913fd2ba296b7457fecd
 created_at: 2026-10-07T14:50:10Z
-updated_at: 2026-10-07T15:27:00Z
+updated_at: 2026-10-07T15:27:56Z
 ---
 
 # KI-HARNESS-GOV-152: Capture the design loop
@@ -135,6 +134,43 @@ None: no repository Specification describes design work.
 
 Two outbound trades, to `tools-ki` and `ki-arcadia-principal`, as planned above. Kris's Techné run is the loop's first use outside the roadmap model.
 
+## Review
+
+### Delivered
+
+Commit `72e9c8a2` (`feat(skills): add the ki-design-loop process skill`) and commit `a9325fdf` (`docs(trades): submit the design-loop trades`) on baseline `c315f186`.
+
+### Change Summary
+
+- `ki-design-loop`: an invocation-only process skill with `start <subject>`, `resume <subject>` and `help`; a standard with the five stage contracts, the artefact-home rule, the rollout hand-off to `ki-next`, `ki-plan`, `ki-batch` and `ki-accept`, and its stops; templates for the brief, a review, the merged report and the decisions file; and source notes citing the 7 October 2026 roadmap-model run.
+- Activation made explicit under decision 10: the skill's "When to use it" section and a new [Run a design loop](../guides/design-loop.md) guide, linked from the guides index, give the invocation `/ki-design-loop start <subject>`, the triggers, the artefact home and the hand-off.
+- `standards-project-registry.md`: a Project's `## Update` or an Initiative's `## Review` links its design's Decision Record and never copies the artefacts.
+- Generated catalogue and root `README.md` capability counts refreshed.
+- Trades: `TRD-756e382d` to `tools-ki`, work with completion observation, to add the skill to the bootstrap core process skills; `TRD-4c4d8f6c` to `ki-arcadia-principal`, knowledge with receipt observation, to file the roadmap-model design as a Decision Record.
+
+### Verification
+
+- `bun run test`: 981 pass, 0 fail. `bunx tsc --noEmit` clean.
+- `ki repo audit`: `ki-skills` FAIL=0, WARN=1, the pre-existing LONG-3 refresh-cadence warning; `ki-repo-harness` FAIL=0, with the same pre-existing warnings; `ki-authoring`, `ki-trades` and `ki-work` PASS; `ki-work-roadmap` FAIL=0, WARN=2, the pre-existing GOV-149 and GOV-150 `theme` tolerance warnings.
+- `ki dev skill rubric ki-work`: in sync. `bunx rumdl check` on every touched Markdown file: no issues.
+- The templates reproduce the headings of the roadmap-model brief, reviews, report and decisions without the local folder.
+
+### Outstanding concerns
+
+The territory trade policy grants the harness only knowledge trades to Arcadia, so the Arcadia filing is a knowledge trade rather than the planned work trade; Arcadia decides whether to capture it as work. Until Arcadia files the design, `references/sources.md` names the run by date and subject. Until `tools-ki` acts, `ki bootstrap` does not install the skill.
+
+### Post-change review
+
+The goal is met inside the boundary: procedure, templates, one registry rule, a guide and two trades; no checker, script or edit to `ki-delegation`, `ki-batch` or GOV-144. Regression risk is low.
+
+### Mini recap
+
+The design loop is now a named, invocable skill whose artefacts live in Git with the subject they shape.
+
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Naming
@@ -152,3 +188,5 @@ The 7 October run used three reviewers on different models and runtimes. The sta
 ### Authority
 
 Kris's instruction of 7 October 2026 asked for this record to be captured, planned, left `ready` in Now and pushed. That is the adoption and readiness approval. Implementation still needs selection through `ki-implement`.
+
+Closed under the decision 6 carry-through grant ("you can just carry it all the way through"), with the review evidence rechecked, through `ki-accept` quoting that grant; decision 10 asked for explicit activation.
