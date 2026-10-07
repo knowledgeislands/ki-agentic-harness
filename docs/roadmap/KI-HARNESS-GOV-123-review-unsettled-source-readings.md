@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 74ce50fe3bc90203421bca301f0308dee8b4eae0
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-07T20:55:02Z
+updated_at: 2026-10-07T20:55:14Z
 ---
 
 # KI-HARNESS-GOV-123: Review unsettled-source readings
@@ -119,6 +118,10 @@ Both questions are in place and each asks for the provenance a reviewer cannot o
 ### Mini recap
 
 Delivered two checklist questions; all gates pass. On closure, the owner relays the outcome to `5GE-P2-GOV-014` in `5g-emerge-phase2`, which has no trade route to the harness.
+
+## Done
+
+Accepted 2026-10-07 under Kris's standing grant in the state-of-play design decisions (Decisions 12 and 17: "Delivered records count as done ... and are pruned once verified"; Decision 19 authorises continuous delivery of this record), on the review packet above.
 
 ## Discussion
 
