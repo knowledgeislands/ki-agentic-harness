@@ -35,7 +35,7 @@ Both halves share a cause - the dependency graph a checkout needs to verify itse
 
 In scope: making the absence of a commit gate a failure rather than a pass in this repository through a committed hook stub outside `node_modules`; the minimal `SCR-5` acceptance of that binding so this repository's own engineering audit stays clean; and one sentence in `AGENTS.md` stating what a writer must do when a declared audit cannot run.
 
-Out of scope: installing a harness on any particular host, which is a user-environment action and not a repository change; running `bun install` from a hook; the content of any rubric criterion beyond the `SCR-5` binding form; write-root enforcement, which is coordination task `KNO-10`; and the fleet-wide question of whether other repositories share the configuration, which is [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) and is blocked by this item. Conform-time reporting of pending dependency activation is [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md).
+Out of scope: installing a harness on any particular host, which is a user-environment action and not a repository change; running `bun install` from a hook; the content of any rubric criterion beyond the `SCR-5` binding form; write-root enforcement, which is coordination task `KNO-10`; and the fleet-wide question of whether other repositories share the configuration, which is [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) and is blocked by this item. Conform-time reporting of pending dependency activation is `KI-HARNESS-FND-026` (done).
 
 ## Current state
 
@@ -83,11 +83,11 @@ git config core.hooksPath
 
 ## Dependencies / blocks
 
-`blocks` [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md), which inherits this mechanism for the estate. Paired with [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md) as a cross-reference, not a blocker: that item reports pending activation at conform time; this one refuses at commit time. Neither supersedes the other.
+`blocks` [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md), which inherits this mechanism for the estate. Paired with `KI-HARNESS-FND-026` (done) as a cross-reference, not a blocker: that item reports pending activation at conform time; this one refuses at commit time. Neither supersedes the other.
 
 Known limit: a linked worktree whose checked-out revision predates `.githooks/` resolves the shared path to nothing and still commits silently. Base currency is [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md)'s concern; this record does not repair existing worktrees.
 
-Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), `KI-HARNESS-GOV-092` (done) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
+Sequencing: this record and `KI-HARNESS-FND-026` (done), `KI-HARNESS-GOV-092` (done) and [KI-HARNESS-GOV-127](KI-HARNESS-GOV-127-adopt-dependency-cruiser-estatewide.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 
 ## Documentation impact
 
@@ -119,7 +119,7 @@ Three options were weighed. Bootstrapping the worktree automatically makes the g
 
 ### Relationship to `KI-HARNESS-FND-026`
 
-[KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md) records that `ki repo conform` does not run `bun install` or report an installation requirement, so a later commit fails with a missing-module error that looks unrelated. That is the same absent dependency graph reaching the same hook from the other direction. After this item the commit-time symptom becomes an explicit refusal naming `bun install`; FND-026 still owns making conform itself report the pending step, so the two remain separate and complementary.
+`KI-HARNESS-FND-026` (done) records that `ki repo conform` does not run `bun install` or report an installation requirement, so a later commit fails with a missing-module error that looks unrelated. That is the same absent dependency graph reaching the same hook from the other direction. After this item the commit-time symptom becomes an explicit refusal naming `bun install`; FND-026 still owns making conform itself report the pending step, so the two remain separate and complementary.
 
 ### Coordination linkage
 

@@ -90,7 +90,7 @@ None. Per-repository adoption follows as separate trades and does not block acce
 
 The separate install root exists only because `dependency-cruiser` supports `typescript@>=2 <7` and TypeScript 7.0 ships no compiler API. The maintainer intends to add TypeScript 7 support once that API exists ([sverweij/dependency-cruiser#1069](https://github.com/sverweij/dependency-cruiser/issues/1069)), and TypeScript 7.1, planned stable on 2026-11-24, makes stabilising it the release's goal ([microsoft/TypeScript#63703](https://github.com/microsoft/TypeScript/issues/63703)). When a `dependency-cruiser` release accepts TypeScript 7, retire the install root, its `prepare` step and the separate CI install step in favour of root `devDependencies`.
 
-Sequencing: this record and [KI-HARNESS-FND-026](KI-HARNESS-FND-026-complete-conform-activation.md), `KI-HARNESS-GOV-092` (done) and [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
+Sequencing: this record and `KI-HARNESS-FND-026` (done), `KI-HARNESS-GOV-092` (done) and [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) all edit the shared `ki-engineering` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-engineering.md`. Increment counts, never hardcode them; whichever lands second rebases. A sequencing note, not a dependency.
 
 ## Documentation impact
 
