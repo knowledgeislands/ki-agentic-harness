@@ -118,7 +118,9 @@ const ROADMAP_CONFIG = 'ki-work-roadmap'
 const REPO_CONFIG = 'ki-repo'
 export const ISSUE_LEDGER = '_ISSUES.md'
 export const IDEAS_LIST = '_IDEAS.md'
-const NON_RECORDS = new Set([ISSUE_LEDGER, IDEAS_LIST])
+/** Roadmap index holding area definitions; not a record. */
+export const ROADMAP_INDEX = 'README.md'
+const NON_RECORDS = new Set([ISSUE_LEDGER, IDEAS_LIST, ROADMAP_INDEX])
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 let findings: Finding[] = []

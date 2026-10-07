@@ -7,7 +7,7 @@ const ROAD_1: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-1',
   title: 'roadmap structure and root orientation',
   description:
-    'The canonical docs/roadmap structure contains only regular work-item files, and root ROADMAP.md is a concise orientation rather than a duplicate queue.',
+    'The canonical docs/roadmap structure contains only regular work-item files, the issue ledger, the ideas list and the area-definition README index, and root ROADMAP.md is a concise orientation rather than a duplicate queue.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -93,7 +93,7 @@ const ROAD_6: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-6',
   title: 'repository work-item code',
   description:
-    'The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a list of codes and any components as a vocabulary; retired themes and area maps warn during migration.',
+    'The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a list of codes and any components as a vocabulary; each declared area is defined under ## Areas in the roadmap index; retired themes and area maps warn during migration.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

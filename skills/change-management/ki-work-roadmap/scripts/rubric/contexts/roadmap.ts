@@ -5,6 +5,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { inspectAreaDefinitions } from './area-definitions.ts'
 import { createRoadmapDraft } from './roadmap-drafts.ts'
 import { type Finding, inspectRoadmap } from './roadmap-evidence.ts'
 
@@ -60,7 +61,7 @@ export const createRoadmapSession = ({
   repository,
   publication
 }: RubricContextOptions): RubricSession<RoadmapRubricContext> => {
-  const findings = inspectRoadmap(repository)
+  const findings = [...inspectRoadmap(repository), ...inspectAreaDefinitions(repository)]
   const draft = mode === 'conform' ? createRoadmapDraft(repository, findings) : undefined
   const audit = { findings }
   const context: RoadmapRubricContext = {

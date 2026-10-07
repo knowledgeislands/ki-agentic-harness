@@ -41,7 +41,7 @@ Repository-roadmap applicability.
 
 Canonical generated-index structure, placement, and readiness.
 
-- **ROAD-1 [M] — roadmap structure and root orientation** — The canonical docs/roadmap structure contains only regular work-item files, and root ROADMAP.md is a concise orientation rather than a duplicate queue. (standards-repository-roadmaps.md)
+- **ROAD-1 [M] — roadmap structure and root orientation** — The canonical docs/roadmap structure contains only regular work-item files, the issue ledger, the ideas list and the area-definition README index, and root ROADMAP.md is a concise orientation rather than a duplicate queue. (standards-repository-roadmaps.md)
   - _Remediation:_ diagnostic — Restore the concise root orientation and canonical roadmap structure without reconstructing or prioritizing the work queue.
 - **ROAD-2 [J] — honest horizon placement** — Triage records are captured, unadopted work without a horizon; adopted records sit in honest horizons for their status; held records name their reason, condition, and review date; cancelled records carry an evidence-backed resolution. (standards-repository-roadmaps.md)
   - _Evidence scope:_ Every horizon, triage adoption boundary, hold, and cancellation.
@@ -60,7 +60,7 @@ Canonical generated-index structure, placement, and readiness.
   - _Review prompt:_ Review triage exits for explicit human adoption and each later promotion, deferral, hold, or release against the readiness contract and plan state.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Confirm the lifecycle move with its owner, record a gap, or record an explicit exclusion; never choose the move automatically.
-- **ROAD-6 [M] — repository work-item code** — The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a list of codes and any components as a vocabulary; retired themes and area maps warn during migration. (standards-repository-roadmaps.md)
+- **ROAD-6 [M] — repository work-item code** — The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a list of codes and any components as a vocabulary; each declared area is defined under ## Areas in the roadmap index; retired themes and area maps warn during migration. (standards-repository-roadmaps.md)
   - _Remediation:_ diagnostic — Correct the configured repository code, areas, or component vocabulary from authoritative repository configuration.
 - **ROAD-7 [M] — issue-allocation ledger** — docs/roadmap/_ISSUES.md records repository-wide or fixed-area high-water marks. A number is reserved by committing the applicable ledger advance on its own before the record is written, in the one designated writing checkout the repository serialises roadmap writes through. The mechanical checks read the ledger alone — its issuing mode, its exact match against the configured areas, and its high-water floor against retained items — and cannot observe the commit ordering or the checkout that made the advance. (standards-repository-roadmaps.md)
   - _Remediation:_ automatic

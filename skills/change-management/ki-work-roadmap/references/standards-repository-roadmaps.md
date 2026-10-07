@@ -26,6 +26,7 @@ Every non-KB repository uses one shape.
 ROADMAP.md                              # concise orientation
 docs/roadmap/
   _ISSUES.md                            # durable issue-allocation ledger, sorted first
+  README.md                             # area definitions, fixed-area mode only
   <REPO>-<NNN>-<slug>.md                # repository-wide issuing mode
   <REPO>-<AREA>-<NNN>-<slug>.md         # fixed-area issuing mode
 ```
@@ -68,6 +69,13 @@ components = ["skills", "checker"]
 ```
 
 In fixed-area mode every item's `area` must be one of the declared codes. A repository must not mix issuing modes.
+
+The `areas` list holds codes only. A fixed-area repository defines what each code covers in its roadmap index, under an `## Areas` heading that names every declared code in backticks:
+
+- a project repository uses `docs/roadmap/README.md`, which is an index, not a record;
+- a Knowledge Base uses its `Streams/Roadmap/Roadmap.md` index note.
+
+The definition is short prose: what work the area issues, and where its boundary with neighbouring areas lies. The checker warns for each declared code the index does not name. A retired code keeps its definition while retained records use it.
 
 The optional `components` list is the repository's kebab-case vocabulary for which part of the repository a record touches. An item's `component`, when present, must be declared there. Components are repository-owned; Projects and Initiatives are territory-owned and live in the [Project registry](../../ki-work/references/standards-project-registry.md).
 
