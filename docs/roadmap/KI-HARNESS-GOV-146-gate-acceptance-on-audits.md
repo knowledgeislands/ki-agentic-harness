@@ -6,12 +6,13 @@ kind: deliver
 purpose: governance
 initiative: platform-foundations
 component: change-management
-status: triage
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T21:05:00Z
 ---
 
 # KI-HARNESS-GOV-146: Gate acceptance on audits
@@ -30,9 +31,61 @@ Origin: first raised as branch-local `KI-HARNESS-GOV-108` ("Repair accepted revi
 
 ## Boundary
 
-In scope: deciding whether a passing governing audit is a precondition of acceptance, which audits count as governing, and where the precondition lives - in `ki-accept`, in a hook, or in the acceptance rubric.
+In scope: state in `ki-accept` that delivery acceptance requires the record's governing audits to pass at the state being accepted, name which audits govern, and say what happens when one fails.
 
-Out of scope: reopening what any accepted record delivered, and repairing pruned records.
+Out of scope: reopening what any accepted record delivered, and repairing pruned records; a hook or CLI enforcement of the rule; a change to the pure `acceptance-cycle.ts` model, whose closure inputs do not carry audit results; and cancellation, which has no delivery evidence to audit.
+
+## Current state
+
+`skills/change-management/ki-accept/references/standards-acceptance.md` `## 1. Resolve the record and closure evidence` step 5 checks status, Steps, delivery evidence and the six-heading `## Review` packet, but no audit result. `SKILL.md` `## What this skill does` step 1 likewise names the packet only. `ki-implement` requires its stated verification before `awaiting-review`, but nothing re-checks it at closure, which is how `KI-HARNESS-GOV-101` closed while failing `ITEM-3` and `MD049`.
+
+## Steps
+
+- [ ] In `standards-acceptance.md` step 5, add that delivery acceptance requires the governing audits to pass on the record as it will be committed: the selected adapter's record audit (`ki-work-roadmap` for `roadmap`, `ki-repo-kb-streams` for `kb-streams`), `ki-authoring`, and every audit the record's own `Verify` names, judged by that section's stated criterion. A failure blocks closure; there is no waiver. Fix it and re-run, or return the record to `in-progress` under a failed review.
+- [ ] In `SKILL.md` step 1, add that delivery closure also requires its governing audits to pass.
+- [ ] Run the verification below.
+
+## Files touched
+
+- `skills/change-management/ki-accept/SKILL.md`
+- `skills/change-management/ki-accept/references/standards-acceptance.md`
+
+## Verify
+
+1. `standards-acceptance.md` names the governing audits, makes their pass a precondition of delivery closure with no waiver, and routes a failure to repair or a failed review.
+2. `SKILL.md` carries the same precondition in one clause.
+3. No script, test or generated file changes.
+4. Added text uses British English and ASCII hyphens only; focused audits report no new finding.
+5. `bun run test` and `bunx tsc --noEmit` pass.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki repo audit --skill ki-skills --progress never
+ki repo audit --skill ki-authoring --progress never
+```
+
+## Dependencies / blocks
+
+`blocked_by` and `blocks` empty by intent.
+
+## Documentation impact
+
+### Decision Records
+
+None. The rule is a precondition in the acceptance procedure, which `ki-accept` owns; no Decision Record owns acceptance gating.
+
+### Specifications
+
+None.
+
+### Guides
+
+None.
+
+### Roadmap
+
+None.
 
 ## Discussion
 
@@ -40,7 +93,10 @@ Out of scope: reopening what any accepted record delivered, and repairing pruned
 
 Acceptance is the human-approved closure step. If it can close a record that its own audits reject, then either the audits are advisory at that boundary or the acceptance step is missing a check; the estate should choose one deliberately.
 
-### Open questions
+### Decision
 
-- Should a failing audit block acceptance outright, or require an explicit recorded waiver?
-- Do findings that predate the change under review count against its acceptance?
+Governing audits must pass before delivery acceptance, stated in `ki-accept`. Adopted from the approved focus plan in the state-of-play design (Decision 19, 2026-10-07: deliver the remaining focus records), whose recommended scope for this record is "State in ki-accept that the governing audits must pass before acceptance."
+
+- **Block or waive:** a failing governing audit blocks outright. A waiver would make the audits advisory at the one boundary where they matter.
+- **Pre-existing findings:** the record-format audits run over the record itself, so any failure there is the record's own. A repository-wide audit governs only through the record's `Verify`, whose stated criterion (for example "no new finding") already says how pre-existing findings count.
+- **Where it lives:** in the `ki-accept` procedure, because acceptance happens there. A hook or CLI gate stays a possible later record.
