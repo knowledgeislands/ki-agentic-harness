@@ -9,7 +9,7 @@ import type {
   ViolationLevel
 } from '../../shared/rubric.ts'
 
-const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects'] as const
+const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Initiatives'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
 const EXECUTION_FAMILIES = ['STREAM', 'GATE', 'CONFIG'] as const
 const LEGACY_FOLDERS = [

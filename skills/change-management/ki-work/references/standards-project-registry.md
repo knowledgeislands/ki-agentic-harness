@@ -8,16 +8,18 @@ This standard defines the portable shape of a territory's Project and Initiative
 
 ## Location
 
-The registry lives in the territory Capital's Knowledge Base at `Streams/Projects/`:
+The registry lives in the territory Capital's Knowledge Base in two sibling folders:
 
 ```text
 Streams/Projects/
   Projects.md          # index note for the folder
-  Initiatives.md       # Initiatives index
   <slug>.md            # one Project note per Project
+Streams/Initiatives/
+  Initiatives.md       # index note for the folder
+  <slug>.md            # one Initiative note per Initiative
 ```
 
-A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs.
+A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; an `initiative` value resolves to `Streams/Initiatives/<slug>.md`. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs.
 
 ## Project note
 
@@ -45,9 +47,35 @@ target: 2026-12-31
 
 The body carries an `## Outcome` section, an `## Update` section, and an `## Ideas` section. The Update takes over the former theme checkpoint: a dated health judgement, the one current decision and its test, the facts it needs, and one next step. Health is a stated judgement, never a count. Ideas holds untracked ideas under the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation). A Project note may link its open records for orientation, but status lives only in each record.
 
-## Initiatives index
+## Initiative note
 
-An Initiative is a long-lived direction that never finishes. Initiatives have no notes of their own: `Initiatives.md` holds one `##` section per Initiative that states its slug as `` Slug `<slug>`. ``, describes its direction, names the Projects that serve it, and describes its projectless upkeep.
+An Initiative is a long-lived direction that never finishes. Each Initiative has its own note, with frontmatter the checker reads:
+
+```yaml
+---
+note_type: streams/initiative
+slug: platform-foundations
+title: Platform foundations
+direction: One sentence stating the long-lived direction.
+lifecycle: active
+lead: Kris Brown
+---
+```
+
+- `slug` matches the filename and never changes.
+- `direction` is one sentence naming the direction the Initiative keeps.
+- `lifecycle` is `active`, `paused`, or `retired`. An Initiative never completes; retiring it is an accountable human decision.
+- `lead` names the accountable person.
+
+The body carries these sections in order:
+
+- `## Direction` expands the direction and its boundary with neighbouring Initiatives.
+- `## Projects` links each Project note whose `initiative` names this Initiative. The Project note's frontmatter is the membership; this section is orientation.
+- `## Upkeep` describes the projectless work the Initiative carries: the components and `purpose: upkeep` records that name it directly.
+- `## Activities` links the recurring Activities and housekeeping templates whose `initiative` names it.
+- `## Review` holds the territory's periodic review of the Initiative: a dated judgement of its direction and Projects, the decisions it needs, and one next step. It never copies record lists or status.
+
+`Initiatives.md` is the folder's index note. It lists the Initiative notes and owns no slugs of its own.
 
 Upkeep and other work that never finishes has no Project. Its records name `initiative` directly, usually with `purpose: upkeep`, and recurring runs inherit the Initiative from their template or Activity.
 
@@ -57,6 +85,6 @@ Membership is classification, not authority. A Project may count records from an
 
 ## Validation
 
-The roadmap checker resolves `project` and `initiative` slugs against the registry when it can find one. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative. A Project whose open records are all terminal is reported for a human lifecycle decision.
+The roadmap checker resolves `project` slugs against `Streams/Projects/` and `initiative` slugs against `Streams/Initiatives/` when it can find the registry. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative. A Project whose open records are all terminal is reported for a human lifecycle decision. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
 
-Views group by Project and Initiative without copying record lists into a second status source. A territory's periodic review of its Initiatives replaces per-theme checkpoints; `ki-checkpoint` remains only for ephemeral thread reconstruction.
+Views group by Project and Initiative without copying record lists into a second status source. Each Initiative note's Review replaces the per-theme checkpoints and the territory's state-of-play review; `ki-checkpoint` remains only for ephemeral thread reconstruction.

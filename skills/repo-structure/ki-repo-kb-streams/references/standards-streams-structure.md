@@ -19,10 +19,11 @@ This standard defines `Streams/` as the operational container of a Knowledge Isl
 Streams/
   Roadmap/
   Projects/        # only in a territory Capital holding the Project registry
+  Initiatives/     # only in a territory Capital holding the Initiative registry
   Trades/          # only when a future KB trade placement is adopted
 ```
 
-`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` is the fixed home of a territory Capital's Project registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project, a `Projects.md` index, and the `Initiatives.md` index. It holds no work records. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
+`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project with a `Projects.md` index, and one note per Initiative with an `Initiatives.md` index. They hold no work records. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
 
 The container does not prescribe a topical-folder or `groups` vocabulary. Where an owning adapter supports topical metadata, the receiving base chooses its vocabulary. That metadata never replaces an operational area or changes an identifier.
 

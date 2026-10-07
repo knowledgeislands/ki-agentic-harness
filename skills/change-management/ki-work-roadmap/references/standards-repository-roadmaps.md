@@ -177,7 +177,8 @@ The model stays at v1: new fields and statuses enter v1 directly, and new record
 - a `done` record still carrying a horizon;
 - a `ready`, `in-progress`, or `awaiting-review` record at a horizon the former rule allowed but the table above does not, such as in-progress at Next;
 - an adopted record without `kind`;
-- the area-to-theme map or `themes` list in `.ki.toml`.
+- the area-to-theme map or `themes` list in `.ki.toml`;
+- a Capital's legacy `Streams/Projects/Initiatives.md` index in place of `Streams/Initiatives/` notes.
 
 The checker still validates deprecated fields where the former rule did, at warning severity. A new-shape value that is present but invalid fails immediately. A repository that passed the former checker gains no new failure. Rejection of the deprecated shapes follows once every repository's open records are migrated, under a separate record. This section is the one place that window is defined.
 

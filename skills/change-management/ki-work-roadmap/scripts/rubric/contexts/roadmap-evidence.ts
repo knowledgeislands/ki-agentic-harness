@@ -898,7 +898,14 @@ const validateClassification = (repository: string, items: readonly WorkItem[]):
     add('WARN', 'ITEM-2', `project registry is unavailable: ${lookup.unavailable}`, STANDARD)
     return
   }
-  const { projects, initiatives } = lookup.registry
+  const { projects, initiatives, legacyInitiativesIndex } = lookup.registry
+  if (legacyInitiativesIndex)
+    tolerate(
+      'Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/',
+      undefined,
+      'ITEM-2',
+      STANDARD
+    )
   for (const item of classified) {
     if (item.project && !projects.has(item.project))
       add('WARN', 'ITEM-2', `project '${item.project}' is not in the project registry`, STANDARD, item.file)

@@ -85,10 +85,12 @@ describe('ki-repo-kb-streams session', () => {
     ])
   })
 
-  test('recognises the Projects registry and the ideas list beside the Roadmap ledger', () => {
+  test('recognises the Projects and Initiatives registry and the ideas list beside the Roadmap ledger', () => {
     const root = targetFixture()
     mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })
     writeFileSync(join(root, 'Streams', 'Projects', 'Projects.md'), '# Projects\n')
+    mkdirSync(join(root, 'Streams', 'Initiatives'), { recursive: true })
+    writeFileSync(join(root, 'Streams', 'Initiatives', 'Initiatives.md'), '# Initiatives\n')
     mkdirSync(join(root, 'Streams', 'Roadmap'), { recursive: true })
     writeFileSync(join(root, 'Streams', 'Roadmap', '_IDEAS.md'), '# Ideas\n\n- Try a faster parser.\n')
     const session = createStreamsSession(options(root, 'audit'))

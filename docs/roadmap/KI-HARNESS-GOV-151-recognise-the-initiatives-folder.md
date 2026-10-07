@@ -7,12 +7,12 @@ purpose: governance
 project: roadmap-model
 component: change-management
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a448b057a5808f2f985e46d49730ca6213c617d1
 created_at: 2026-10-07T13:54:02Z
-updated_at: 2026-10-07T13:54:02Z
+updated_at: 2026-10-07T13:58:53Z
 ---
 
 # KI-HARNESS-GOV-151: Recognise Initiatives folder
@@ -41,11 +41,11 @@ Kris approved the roadmap model on 2026-10-07 (`~/.local/state/ki/state-of-play/
 
 ## Steps
 
-- [ ] Rewrite the registry standard: both folders, the `Initiatives.md` index, the portable Initiative note schema (slug, title, direction, lifecycle, lead; Projects, Upkeep, Activities and Review sections), and remove the "Initiatives index inside Projects" wording.
-- [ ] Add the legacy `Streams/Projects/Initiatives.md` to the roadmap standard's migration tolerance list.
-- [ ] Recognise `Initiatives/` in the KB Streams standard, skill and checker.
-- [ ] Teach `project-registry.ts` to read Initiative notes from `Streams/Initiatives/`, keep reading the legacy index, and report the legacy location once as a migration warning.
-- [ ] Update and add focused tests; regenerate the published rubrics; run the gates and write the review packet.
+- [x] Rewrite the registry standard: both folders, the `Initiatives.md` index, the portable Initiative note schema (slug, title, direction, lifecycle, lead; Projects, Upkeep, Activities and Review sections), and remove the "Initiatives index inside Projects" wording.
+- [x] Add the legacy `Streams/Projects/Initiatives.md` to the roadmap standard's migration tolerance list.
+- [x] Recognise `Initiatives/` in the KB Streams standard, skill and checker.
+- [x] Teach `project-registry.ts` to read Initiative notes from `Streams/Initiatives/`, keep reading the legacy index, and report the legacy location once as a migration warning.
+- [x] Update and add focused tests; regenerate the published rubrics; run the gates and write the review packet.
 
 ## Files touched
 
@@ -81,6 +81,44 @@ None: no human guide describes the registry layout.
 ### Roadmap
 
 Arcadia's registry migration creates the Initiative notes and removes the legacy index.
+
+## Review
+
+### Delivered
+
+The approved boundary: the harness registry standard, the KB Streams standard and skill, the registry loader, the roadmap and Streams checkers, and their tests now recognise `Streams/Initiatives/` beside `Streams/Projects/`, with one note per Initiative and an `Initiatives.md` index. Arcadia's own notes and the removal of its legacy index are excluded. Baseline `a448b057a5808f2f985e46d49730ca6213c617d1`; the component vocabulary this record uses landed in `ed5ae12b`.
+
+### Change Summary
+
+- `skills/change-management/ki-work/references/standards-project-registry.md`: two sibling folders; a new Initiative note section with the portable schema (`slug`, `title`, `direction`, `lifecycle` of active, paused or retired, `lead`; Direction, Projects, Upkeep, Activities and Review sections); the "Initiatives have no notes of their own" index inside Projects is gone; the Review replaces theme checkpoints and the state-of-play review.
+- `skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md`: the legacy `Streams/Projects/Initiatives.md` joins the migration tolerance list.
+- `skills/repo-structure/ki-repo-kb-streams/SKILL.md` and `references/standards-streams-structure.md`: `Initiatives/` is a fixed Capital area.
+- `project-registry.ts`: reads `streams/initiative` notes from `Streams/Initiatives/`, is available when either folder exists, and still reads the legacy index, flagging it. `roadmap-evidence.ts` reports the flag once as a migration warning.
+- `streams.ts`: `Initiatives` is an operational area.
+- Tests: the registry fixture uses Initiative notes, a new test covers the legacy index and its warning, and the Streams test covers both folders.
+
+Decision: the legacy index stays readable with a warning rather than failing, so Arcadia's upkeep records keep resolving until its own migration.
+
+### Verification
+
+- `bun run test`: 970 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- `ki dev skill rubric` for `ki-work-roadmap`, `ki-repo-kb-streams` and `ki-work`: in sync.
+- `ki repo audit --skill ki-work-roadmap`: FAIL=0; the new legacy-index warning appears once against Arcadia's current registry.
+- `ki repo audit --skill ki-repo-kb-streams --repo ../ki-arcadia-principal`: PASS.
+- `ki repo audit --skill ki-skills`: FAIL=0, WARN=1, the pre-existing LONG-3 refresh-cadence warning.
+
+### Outstanding concerns
+
+None in this boundary. Creating Arcadia's Initiative notes and removing its legacy index belong to Arcadia's registry migration.
+
+### Post-change review
+
+The goal is met: both folders are recognised in the standard and both checkers, and the retired wording is gone. Scope stayed inside the boundary. Regression risk is low: an unmigrated Capital gains one warning and no failure, and a Capital with only `Streams/Initiatives/` now resolves. Ready for acceptance under decision 6.
+
+### Mini recap
+
+Initiatives now have their own registry folder and note schema; the checker reads it and tolerates the old index with a warning. Gates pass. Learning route: the Initiative schema is new vocabulary that Arcadia's migration will test first.
 
 ## Discussion
 

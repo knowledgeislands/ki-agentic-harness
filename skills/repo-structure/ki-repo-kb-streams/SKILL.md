@@ -27,10 +27,11 @@ The full detail lives in the references (progressive disclosure): the structure 
 Streams/
   Roadmap/       # flat roadmap work records, its _ISSUES.md ledger, and optional _IDEAS.md
   Projects/      # the territory Project registry, in a Capital only
+  Initiatives/   # the territory Initiative registry, in a Capital only
   Trades/        # reserved for a future KB trade placement, if adopted
 ```
 
-`Roadmap/` is an operational area, not a horizon. Roadmap work keeps its horizon and lifecycle in frontmatter, exactly as project roadmap does; it is not moved between `Triage`, `Now`, `Next`, `Soon`, or other folders. `status: triage` is metadata on a flat `Streams/Roadmap/` record and never a `Streams/Triage/` directory. `Projects/` holds the territory's [Project registry](../../change-management/ki-work/references/standards-project-registry.md) notes and Initiatives index; it is not a work queue. A base may add topical metadata to a record when its owning adapter supports it, but the shared Streams container does not prescribe topical folders or group vocabulary.
+`Roadmap/` is an operational area, not a horizon. Roadmap work keeps its horizon and lifecycle in frontmatter, exactly as project roadmap does; it is not moved between `Triage`, `Now`, `Next`, `Soon`, or other folders. `status: triage` is metadata on a flat `Streams/Roadmap/` record and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` hold the territory's [Project registry](../../change-management/ki-work/references/standards-project-registry.md) notes, one per Project and one per Initiative; neither is a work queue. A base may add topical metadata to a record when its owning adapter supports it, but the shared Streams container does not prescribe topical folders or group vocabulary.
 
 Legacy `Active`, `Background`, `Dormant`, and Focus-style folders are migration inputs, not parts of the target structure. The receiving Knowledge Base chooses how to reconcile each retained record into the appropriate operational area and its owning adapter's format.
 

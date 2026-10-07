@@ -242,10 +242,19 @@ const createCapital = (): string => {
     '[skills.ki-repo]\nrepository = "https://example.test/capital"\ncapital = "https://example.test/capital"\nrepo_code = "CAP"\n'
   )
   mkdirSync(join(capital, 'Streams', 'Projects'), { recursive: true })
+  mkdirSync(join(capital, 'Streams', 'Initiatives'), { recursive: true })
   writeFileSync(
-    join(capital, 'Streams', 'Projects', 'Initiatives.md'),
-    '---\nnote_type: streams/initiatives\n---\n\n# Initiatives\n\n## Platform foundations\n\nSlug `platform-foundations`. The shared base.\n\n## Techne\n\nSlug `techne`. Agent work.\n'
+    join(capital, 'Streams', 'Initiatives', 'Initiatives.md'),
+    '---\nnote_type: streams/initiatives\n---\n\n# Initiatives\n\n- [[platform-foundations]]\n- [[techne]]\n'
   )
+  for (const [slug, title] of [
+    ['platform-foundations', 'Platform foundations'],
+    ['techne', 'Techne']
+  ])
+    writeFileSync(
+      join(capital, 'Streams', 'Initiatives', `${slug}.md`),
+      `---\nnote_type: streams/initiative\nslug: ${slug}\ntitle: ${title}\ndirection: A long-lived direction.\nlifecycle: active\nlead: Kris Brown\n---\n\n# ${title}\n`
+    )
   writeFileSync(
     join(capital, 'Streams', 'Projects', 'baseline-rollout.md'),
     '---\nnote_type: streams/project\nslug: baseline-rollout\ntitle: Baseline rollout\ninitiative: platform-foundations\nlifecycle: active\n---\n\n# Baseline rollout\n'
@@ -258,6 +267,7 @@ test('the project registry resolves through the capital and the local ki registr
   const own = loadProjectRegistry(capital, {})
   expect('registry' in own && [...own.registry.projects]).toEqual([['baseline-rollout', 'platform-foundations']])
   expect('registry' in own && [...own.registry.initiatives].sort()).toEqual(['platform-foundations', 'techne'])
+  expect('registry' in own && own.registry.legacyInitiativesIndex).toBe(false)
 
   const island = temporary('ki-island-')
   writeFileSync(
@@ -295,7 +305,7 @@ test('project membership warns on unknown slugs and fails only on a contradicted
   const unavailable = member('project: baseline-rollout', false)
   expect(failures(unavailable)).toEqual([])
   expect(warnings(unavailable)).toContain(
-    'project registry is unavailable: the capital has no Streams/Projects/ registry'
+    'project registry is unavailable: the capital has no Streams/Projects/ or Streams/Initiatives/ registry'
   )
 
   expect(failures(member('project: baseline-rollout'))).toEqual([])
@@ -318,4 +328,31 @@ test('project membership warns on unknown slugs and fails only on a contradicted
     })
   )
   expect(failures(member('initiative: techne'))).toEqual([])
+})
+
+test('the retired Initiatives index inside Projects still resolves slugs with a migration warning', () => {
+  const capital = createCapital()
+  rmSync(join(capital, 'Streams', 'Initiatives'), { recursive: true })
+  writeFileSync(
+    join(capital, 'Streams', 'Projects', 'Initiatives.md'),
+    '---\nnote_type: streams/initiatives\n---\n\n# Initiatives\n\n## Platform foundations\n\nSlug `platform-foundations`. The shared base.\n\n## Techne\n\nSlug `techne`. Agent work.\n'
+  )
+  const legacy = loadProjectRegistry(capital, {})
+  expect('registry' in legacy && [...legacy.registry.initiatives].sort()).toEqual(['platform-foundations', 'techne'])
+  expect('registry' in legacy && legacy.registry.legacyInitiativesIndex).toBe(true)
+
+  const repository = createRepository(
+    'kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null\ninitiative: techne',
+    ''
+  )
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    '[skills.ki-repo]\nrepo_code = "TEST"\nrepository = "https://example.test/own"\ncapital = "https://example.test/own"\n'
+  )
+  cpSync(join(capital, 'Streams'), join(repository, 'Streams'), { recursive: true })
+  expect(failures(repository)).toEqual([])
+  expect(warnings(repository)).toContain(
+    'migration: Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/'
+  )
+  expect(warnings(repository)).not.toContain("initiative 'techne' is not in the project registry")
 })
