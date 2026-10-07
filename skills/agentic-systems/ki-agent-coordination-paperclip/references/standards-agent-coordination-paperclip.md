@@ -109,7 +109,7 @@ Paperclip and KI lifecycle states remain independent:
 
 - Paperclip `done` means the coordinated execution task ended; it does not accept the KI work item.
 - KI acceptance requires its normal human review and evidence gate.
-- Newly discovered substantive work is captured through the active KI work adapter, normally as unadopted Triage, rather than hidden in a task comment.
+- Newly discovered substantive work is captured through the active KI work adapter, normally as an unadopted triage record, rather than hidden in a task comment.
 - Paperclip may show a task blocked or awaiting review without rewriting the KI record unless an authorised KI lifecycle action occurs.
 
 ## Delivery ownership and local integration

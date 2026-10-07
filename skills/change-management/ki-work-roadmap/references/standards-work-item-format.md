@@ -4,6 +4,9 @@
 
 - [Placement and identity](#placement-and-identity)
 - [Frontmatter](#frontmatter)
+- [Classification](#classification)
+- [Hold](#hold)
+- [Cancellation and resolution](#cancellation-and-resolution)
 - [Body](#body)
 - [Detail by stage](#detail-by-stage)
 
@@ -29,8 +32,29 @@ Streams/Roadmap/<REPO>-<AREA>-<NNN>-<slug>.md
 id: KI-HARNESS-FND-001
 area: FND
 title: Compact descriptive title
-theme: foundation-tooling
-horizon: triage
+status: triage
+blocks: []
+blocked_by: []
+baseline_ref: null
+created_at: 2026-08-12T09:30:00Z
+updated_at: 2026-08-12T09:30:00Z
+---
+```
+
+`id`, `title`, `status`, `blocks`, `blocked_by`, and `baseline_ref` are required. `horizon` is required exactly when the record is adopted and open. `area` is required only when the repository configures fixed issuing areas, and prohibited otherwise. An adopted record also carries `kind`.
+
+An adopted record looks like this:
+
+```yaml
+---
+id: KI-HARNESS-FND-002
+area: FND
+title: Compact descriptive title
+kind: deliver
+purpose: capability
+project: baseline-rollout
+component: checker
+horizon: next
 status: draft
 blocks: []
 blocked_by: []
@@ -40,31 +64,76 @@ updated_at: 2026-08-12T09:30:00Z
 ---
 ```
 
-`id`, `title`, `theme`, `horizon`, `status`, `blocks`, `blocked_by`, and `baseline_ref` are required. `area` is required only when the repository configures fixed issuing areas, and prohibited otherwise.
-
 `title` contains at most four words. It is a compact human label for lists and reports; put scope and nuance in the Goal and Context rather than extending the title.
 
 `candidate` is retired and must be absent.
 
-`horizon` is one of `now`, `next`, `soon`, `waiting-for`, `parked`, `future`, or `triage`. Triage is unadopted intake and normally permits only `status: draft`; Future is adopted long-term work. The sole exception is a human-approved terminal intake disposition recorded as Triage / done.
+`status` is `triage`, `draft`, `ready`, `in-progress`, `awaiting-review`, `done`, or `cancelled`. `triage` is captured but unadopted intake.
 
-`status` is `draft`, `ready`, `in-progress`, `awaiting-review`, or `done`.
-
-`intake_disposition` and `intake_disposition_target` are optional terminal-intake fields. They are forbidden on open Triage and every adopted delivery record. A Triage / done record requires `intake_disposition: rejected`, `intake_disposition: duplicate`, or `intake_disposition: merged`. `intake_disposition_target` is the identifier of another retained canonical work item and is required for `duplicate` or `merged`, but forbidden for `rejected`; it must use the canonical identifier grammar, differ from the closing record, and resolve in the selected roadmap.
+`horizon` is one of `now`, `next`, `soon`, `future`, or `hold`, constrained by status as the [status and horizon table](standards-repository-roadmaps.md#status-and-horizon) states. Triage, done, and cancelled records omit it.
 
 `blocks` and `blocked_by` are arrays of item identifiers and use `[]` when empty.
 
 `blocked_by` states **build order**: this item cannot be executed because something it must build on does not exist yet. It is discharged when that thing exists, not when the record that produced it reaches a particular lifecycle state. An item is therefore not blocked merely because a related record is unreviewed, unaccepted, or unpruned; a blocker whose work has landed is cleared even while its own record is still open. Recording a lifecycle wait as `blocked_by` stalls executable work behind an approval queue and misreports the reason. Where the real constraint is sequencing preference rather than build order, say so in `## Dependencies / blocks` and leave the field empty.
 
-`waiting_on_trades` is an optional flat array of unique `TRD-<eight-hex>` identities. It is valid only when `horizon: waiting-for` and records observed cross-repository conditions rather than local work-item dependencies. Do not place trade identities in `blocks` or `blocked_by`.
-
 `baseline_ref` is `null` until execution begins, then the immutable full lowercase commit ID.
 
-`theme` is the human-readable kebab-case project grouping.
+`area` is the immutable issuing code included in an area-qualified identifier. It is not a mutable group.
 
-`area` is the immutable issuing code included in an area-qualified identifier. It is not a theme or mutable group.
+`theme`, `intake_disposition`, `intake_disposition_target`, and `waiting_on_trades` are retired. The checker tolerates them with a warning only during the [migration tolerance window](standards-repository-roadmaps.md#migration-tolerance).
 
 An optional non-empty `transferred_from` records a durable handoff origin.
+
+### Classification
+
+Classification fields say what sort of work a record is and what it serves. Each has one owner tier that defines its allowed values.
+
+| Field | Owner | Values | Presence |
+| --- | --- | --- | --- |
+| `kind` | this standard | `deliver`, `decide`, `investigate`, `audit` | once adopted |
+| `purpose` | this standard | `capability`, `corrective`, `debt`, `governance`, `learning`, `adoption`, `upkeep` | optional |
+| `project` | territory | a Project registry slug | optional |
+| `initiative` | territory | an Initiative registry slug | projectless records only |
+| `component` | repository | a `components` entry in `.ki.toml` | optional |
+
+`kind` classifies the controlling outcome, not every step. `deliver` produces a change; `decide` closes on an owned decision; `investigate` closes on a finding; `audit` checks an existing state, and is the default for recurring runs. Kind-specific plan and review sections are a later change; today every kind carries the sections below.
+
+`purpose` says why the work exists. Use `upkeep` for work that keeps something accurate and never finishes.
+
+`project` names the finite outcome the record serves; its Initiative is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, names its `initiative` directly instead. Naming both is redundant, and a contradiction with the registry fails. Project and Initiative slugs are territory-scoped kebab-case. An unknown slug or an unavailable registry is a warning, never a failure. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
+
+`component` names the part of the repository the record touches, from the repository's declared vocabulary.
+
+### Hold
+
+A record at `horizon: hold` carries a `hold` mapping; every other record omits it.
+
+```yaml
+horizon: hold
+hold:
+  reason: waiting-for
+  condition: tools-ki releases the roadmap list grouping
+  review: 2026-11-01
+  trades: [TRD-1234abcd]
+```
+
+`reason` is `waiting-for` for an external condition or `parked` for an intentional pause. `condition` is the non-empty named release condition. `review` is an optional ISO date, required in substance where release cannot be observed. `trades` is an optional list of unique `TRD-<eight-hex>` identities whose observable progress forms the condition; it records cross-repository conditions rather than local dependencies, so never place trade identities in `blocks` or `blocked_by`. The body states the exact condition observed.
+
+A held record keeps its status, `baseline_ref`, completed Steps, and review evidence. Release chooses a horizon afresh.
+
+### Cancellation and resolution
+
+`status: cancelled` is the second terminal ending. It requires `resolution`, one of:
+
+- `obsolete` - the need has gone;
+- `rejected` - the work was considered and declined;
+- `duplicate` - another record already owns the same work;
+- `merged` - the work was folded into another record;
+- `superseded` - a later record replaces it.
+
+`resolution_target` is required for `duplicate`, `merged`, and `superseded`, and forbidden otherwise. It is a canonical work-item identifier different from the record, in this or any other repository; repository codes keep identifiers distinct across repositories. A same-repository target should resolve in the roadmap; a cross-repository target is accepted by shape. Only the owning repository closes its own record: closing a duplicate here never closes or edits the target.
+
+`resolution` and `resolution_target` are forbidden on every other status.
 
 ### Task links
 
@@ -141,19 +210,15 @@ The roadmap item is the durable handoff record until its work is planned; extern
 
 ## Detail by stage
 
-### Triage or Future / draft
+### Triage, or Future / draft
 
 `Goal`, `Context`, `Boundary`, and final `Discussion` are sufficient.
 
-They preserve the intended outcome, why the item exists, its deliberate exclusion, and the reasoning needed to shape it later without pretending that it is planned. Triage additionally means the item is captured but not adopted; Future means it has been adopted as long-term work.
+They preserve the intended outcome, why the item exists, its deliberate exclusion, and the reasoning needed to shape it later without pretending that it is planned. `status: triage` means the item is captured but not adopted; Future means it has been adopted as long-term work.
 
-### Triage / done
+### Cancelled
 
-An exact human-approved `rejected`, `duplicate`, or `merged` disposition may close Triage without adopting or implementing the work. Insert `## Intake disposition` after `Boundary`, then terminal `## Done`, then the final `Discussion`. Do not add execution sections or a delivery Review packet merely to close intake.
-
-`## Intake disposition` records the approved Outcome and Rationale. For `duplicate` or `merged`, it also names the retained canonical work-item identifier recorded by `intake_disposition_target`; for `rejected`, it states that no retained target applies. It records the human Approval explicitly. The section must be non-empty and must not claim delivery evidence.
-
-Keep `baseline_ref: null`: no implementation baseline exists. Set `status: done` only in the coherent closure change owned by `ki-accept`.
+A human-approved cancellation may close any open record, including triage, without adopting or implementing the work. Insert terminal `## Cancelled` immediately before the final `Discussion`. It records who approved the cancellation and when, why, and any outstanding changes the cancellation leaves; for a target in another repository it also names that repository and the target's path, so the evidence survives pruning. A record cancelled before it started keeps `baseline_ref: null` and gains no execution sections or Review packet merely to close.
 
 ### Soon / draft
 
@@ -244,9 +309,7 @@ After explicit acceptance, insert terminal `## Done` immediately before `Discuss
 
 `## Done` is required, not optional decoration: the checker rejects a `done` record without it, so a record cannot reach the terminal state by changing `status` alone. It records who accepted the work and when, against the review packet above — `Accepted <date> by <name> on the review packet above.` — and nothing else. Evidence belongs in `## Review`, and anything learned during acceptance belongs in `Discussion`.
 
-For terminal Triage, `## Done` instead records who approved the disposition and when — `Disposed <date> by <name> as <intake_disposition> on the intake evidence above.` — and nothing else. Evidence belongs in `## Intake disposition`.
-
-Retain the accepted record until an explicitly selected prune path or glob.
+Retain the accepted or cancelled record until an explicitly selected prune path or glob.
 
 Pruning destroys the record's contents along with the record. Before selecting an item, confirm that every concern its `### Outstanding concerns` still leaves open is carried by a live identifier elsewhere; a deferral that exists only inside the record being removed ceases to exist, and nothing reports that it did.
 

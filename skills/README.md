@@ -89,7 +89,7 @@ Audit or write Claude Code Markdown/YAML projections of approved portable KI sub
 
 #### `ki-accept`
 
-Close a reviewed local work record as done, record an approved terminal Triage disposition, or prune explicitly selected eligible done records. Use only with human approval; use `ki-implement` for delivery, `ki-plan` for readiness, and `ki-next` for selection or adoption.
+Close a reviewed local work record as done, cancel an open record with an approved resolution, or prune explicitly selected eligible terminal records. Use only with human approval; use `ki-implement` for delivery, `ki-plan` for readiness, and `ki-next` for selection or adoption.
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
@@ -119,7 +119,7 @@ Deliver one approved Ready local work record from immutable baseline through ver
 
 #### `ki-next`
 
-Capture substantive prospective work into unadopted Triage, or select, adopt, promote, and defer work in the shared queue. Use when new work emerges or deciding what comes next; use `ki-plan` for readiness and `ki-trades` for trade transport.
+Capture substantive prospective work as unadopted triage records, or select, adopt, promote, defer, hold, and release work in the shared queue. Use when new work emerges or deciding what comes next; use `ki-plan` for readiness and `ki-trades` for trade transport.
 
 - **Kind:** Process
 - **Applicability:** Invocation Only

@@ -18,7 +18,7 @@ This governance skill owns the shared flat forward-work model. A project reposit
 
 Read [the repository-roadmap standard](references/standards-repository-roadmaps.md) before changing a roadmap shape or lifecycle. Read [the generated rubric](references/rubric.md) for the mechanical and judgment criteria. Work-item details live in [the work-item-format standard](references/standards-work-item-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
 
-Triage captures substantive prospective work without adopting it. The `ki-next` process skill owns capture, human-approved adoption, and later selection transitions.
+A `status: triage` record captures substantive prospective work without adopting it; ideas that do not yet pass the graduation test wait in a Project note or `_IDEAS.md`. The `ki-next` process skill owns capture, human-approved adoption, and later selection transitions.
 
 ## Shared model
 
@@ -32,7 +32,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes. Invoked 
 
 Run `ki repo audit --skill ki-work-roadmap --repo <repo>` for a project repository. The catalogue applies the mechanical criteria in [the generated rubric](references/rubric.md): concise root orientation; configured theme vocabulary; work-item placement, frontmatter, identity, theme grouping, lifecycle, and dependency integrity. A Knowledge Base uses `ki-repo-kb-streams` for container audit while its `Streams/Roadmap/` records follow this shared model.
 
-Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, stage-appropriate detail, final topic-oriented Discussion, honest lifecycle state, and theme coherence. Where declared `ki-trades` records exist, identify inbound submissions that need receiver review, outbound records with observable receiver progress that may warrant local follow-up, trade-aware Waiting-for conditions, and completion-observation references that prevent pruning a done item. Report structural or proposed local roadmap action only: never set a trade disposition, infer adoption or acceptance, move or prune a record, prioritize work, or edit another repository's state. Iterate until mechanical findings are clean and judgment findings are resolved.
+Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, stage-appropriate detail, final topic-oriented Discussion, honest lifecycle state, and coherent classification (`kind`, `purpose`, `project` or `initiative`, `component`). Where declared `ki-trades` records exist, identify inbound submissions that need receiver review, outbound records with observable receiver progress that may warrant local follow-up, trade-aware hold conditions, and completion-observation references that prevent pruning a done item. Report structural or proposed local roadmap action only: never set a trade disposition, infer adoption or acceptance, move or prune a record, prioritize work, or edit another repository's state. Iterate until mechanical findings are clean and judgment findings are resolved.
 
 After changing the catalogue or contexts, run their colocated Bun tests for item identity, frontmatter, horizon, dependency, root orientation, KB, and safe-draft fixtures.
 

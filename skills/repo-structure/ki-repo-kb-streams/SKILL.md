@@ -25,11 +25,12 @@ The full detail lives in the references (progressive disclosure): the structure 
 
 ```text
 Streams/
-  Roadmap/       # flat roadmap work records and its _ISSUES.md ledger
+  Roadmap/       # flat roadmap work records, its _ISSUES.md ledger, and optional _IDEAS.md
+  Projects/      # the territory Project registry, in a Capital only
   Trades/        # reserved for a future KB trade placement, if adopted
 ```
 
-`Roadmap/` is an operational area, not a horizon. Roadmap work keeps its horizon and lifecycle in frontmatter, exactly as project roadmap does; it is not moved between `Triage`, `Now`, `Next`, `Soon`, or other folders. `horizon: triage` is metadata on a flat `Streams/Roadmap/` record and never a `Streams/Triage/` directory. A base may add topical metadata to a record when its owning adapter supports it, but the shared Streams container does not prescribe topical folders or group vocabulary.
+`Roadmap/` is an operational area, not a horizon. Roadmap work keeps its horizon and lifecycle in frontmatter, exactly as project roadmap does; it is not moved between `Triage`, `Now`, `Next`, `Soon`, or other folders. `status: triage` is metadata on a flat `Streams/Roadmap/` record and never a `Streams/Triage/` directory. `Projects/` holds the territory's [Project registry](../../change-management/ki-work/references/standards-project-registry.md) notes and Initiatives index; it is not a work queue. A base may add topical metadata to a record when its owning adapter supports it, but the shared Streams container does not prescribe topical folders or group vocabulary.
 
 Legacy `Active`, `Background`, `Dormant`, and Focus-style folders are migration inputs, not parts of the target structure. The receiving Knowledge Base chooses how to reconcile each retained record into the appropriate operational area and its owning adapter's format.
 
@@ -39,11 +40,13 @@ A roadmap item's `status` is its position in the shared delivery lifecycle:
 
 | Status            | Meaning                                                                 |
 | ----------------- | ----------------------------------------------------------------------- |
+| `triage`          | Captured intake, not yet adopted                                        |
 | `draft`           | Work is being shaped in its roadmap record                              |
 | `ready`           | Stable; no open questions; prerequisites satisfied; approved to deliver |
 | `in-progress`     | Approved rollout underway                                               |
 | `awaiting-review` | Checklist executed; required review packet awaits human closure         |
 | `done`            | Review accepted; retain the completed record until explicit pruning     |
+| `cancelled`       | Closed with a resolution; retain the record until explicit pruning      |
 
 Order: `draft` → `ready` → `in-progress` → `awaiting-review` → `done`.
 
@@ -87,8 +90,8 @@ The Working rules apply on every fire, before any mode procedure loads — ROLLO
 
 These apply to every change (the discipline that keeps the workspace trustworthy):
 
-- **Capture before adoption.** Deduplicate substantive prospective work, then capture it automatically as a flat `status: draft`, `horizon: triage` roadmap record using the canonical issue ledger. Report the new title, path, and ID; creation does not adopt or prioritise the work.
-- **Approval at disposition.** Require explicit human approval before a record leaves triage or is renamed, rejected, or merged. Apply adoption through `ki-next`; route rejected, duplicate, or merged intake to `ki-accept` for retained `done` closure before any later prune. Never infer adoption or disposal from silence or surrounding discussion, and never delete open intake directly.
+- **Capture before adoption.** Deduplicate substantive prospective work, then capture it automatically as a flat `status: triage` roadmap record with no horizon, using the canonical issue ledger, once it passes the roadmap graduation test. Report the new title, path, and ID; creation does not adopt or prioritise the work.
+- **Approval at disposition.** Require explicit human approval before a record leaves triage or is renamed, rejected, or merged. Apply adoption through `ki-next`; route a cancellation with its resolution to `ki-accept` for retained `cancelled` closure before any later prune. Never infer adoption or disposal from silence or surrounding discussion, and never delete open intake directly.
 - **Keep the owned record current.** Update immediately on a decision or status change; the canonical state must never lag.
 - **Load before editing.** Reload the work item or template and its ledger before resuming work.
 - **No `ready` while a prerequisite is below `done`.** No rollout without explicit authorisation.

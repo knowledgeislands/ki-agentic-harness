@@ -20,7 +20,7 @@ Do not select another candidate, promote a horizon, invent plan detail, or treat
 ## 2. Start one delivery
 
 1. Record the full current `HEAD` commit ID as the immutable baseline.
-2. Transition only the approved item to `in-progress`.
+2. Transition only the approved item to `in-progress`, moving it to `horizon: now` in the same change if it was at Next. A held ready or in-progress record resumes only after `ki-next` releases it.
 3. Begin implementation without requiring a standalone lifecycle-start commit. The `in-progress` update may land with the first coherent implementation change, or the completed delivery may land directly from the previously committed `ready` state to `awaiting-review` when every review gate is satisfied.
 
 The baseline describes the starting evidence; it is not a substitute for verification.

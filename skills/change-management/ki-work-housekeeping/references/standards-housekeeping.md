@@ -49,12 +49,24 @@ grace: P7D
 spawn-policy: when-overdue
 spawn-horizon: now
 active-run: null
+initiative: platform-foundations
+component: skills
+purpose: upkeep
 ---
 ```
 
-`status` is `active` or `paused` for Project templates. Retiring a Project template means explicitly ending its schedule and disposing any active run before deleting the template. KB Activities also permit retained `retired` status with rationale and `housekeeping.active_run: null`; retired Activities never enter schedule evaluation. `cadence` and `grace` are ISO-8601 calendar durations using one positive unit: `P<n>D`, `P<n>W`, or `P<n>M`. `last-run` is the evidenced ISO date of the last successfully completed review, or `null` without successful-run evidence. A future `last-run` blocks evaluation. `active-run` is `null` or the linked run identity. `spawn-policy` is `manual`, `when-due`, or `when-overdue`; `spawn-horizon` is one of `now`, `next`, `soon`, `future`, `waiting-for`, or `parked`. The KB profile maps these fields as described below.
+`status` is `active` or `paused` for Project templates. Retiring a Project template means explicitly ending its schedule and disposing any active run before deleting the template. KB Activities also permit retained `retired` status with rationale and `housekeeping.active_run: null`; retired Activities never enter schedule evaluation. `cadence` and `grace` are ISO-8601 calendar durations using one positive unit: `P<n>D`, `P<n>W`, or `P<n>M`. `last-run` is the evidenced ISO date of the last successfully completed review, or `null` without successful-run evidence. A future `last-run` blocks evaluation. `active-run` is `null` or the linked run identity. `spawn-policy` is `manual`, `when-due`, or `when-overdue`; `spawn-horizon` is one of `now`, `next`, `soon`, or `future`. The KB profile maps these fields as described below.
 
-`cadence` and `grace` are ISO-8601 calendar durations using one positive unit: `P<n>D`, `P<n>W`, or `P<n>M`. `last-run` is the evidenced ISO date of the last successfully completed review, or `null` for a template without successful-run evidence. A future `last-run` is invalid completion evidence and blocks evaluation; it cannot postpone calendar review or enable volume-triggered work. `active-run` is `null` or the linked run identity. `spawn-policy` is `manual`, `when-due`, or `when-overdue`; `spawn-horizon` is one of `now`, `next`, `soon`, `future`, `waiting-for`, or `parked`.
+`cadence` and `grace` are ISO-8601 calendar durations using one positive unit: `P<n>D`, `P<n>W`, or `P<n>M`. `last-run` is the evidenced ISO date of the last successfully completed review, or `null` for a template without successful-run evidence. A future `last-run` is invalid completion evidence and blocks evaluation; it cannot postpone calendar review or enable volume-triggered work. `active-run` is `null` or the linked run identity. `spawn-policy` is `manual`, `when-due`, or `when-overdue`; `spawn-horizon` is one of `now`, `next`, `soon`, or `future`. The former `waiting-for` and `parked` values warn during the roadmap [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
+
+Recurring work is classified like any other record, under the [work-item classification](../../ki-work-roadmap/references/standards-work-item-format.md#classification):
+
+- **`initiative`** names the territory Initiative the obligation serves. Recurring work never belongs to a finite Project, so a template declares `initiative` rather than `project`; a template without it warns during the migration window.
+- **`component`** optionally names the repository component the run touches, from the `.ki.toml` vocabulary.
+- **`purpose`** optionally says why the obligation exists, usually `upkeep`.
+- **`kind`** optionally overrides the runs' default `audit`.
+
+Each spawned run inherits `initiative`, `component`, and `purpose`, takes `kind: audit` unless the template sets another kind, and never carries `project`.
 
 Two optional fields enable change-volume scheduling without changing calendar-only templates:
 
@@ -71,7 +83,7 @@ AUDIT accepts only safe regular Markdown files below the selected root, without 
 
 An Activity opts into this lifecycle by declaring a `housekeeping` mapping. Declare and activate `ki-work-housekeeping` alongside `ki-repo-kb-activities`; the latter owns Activity identity, indexing, realization, and the location binding, while this skill owns the recurring profile. An ordinary Activity without the mapping is not a housekeeping template, even if it has a scheduled realization.
 
-Keep `id`, `title`, and `status` at the Activity's top level. Use snake_case inside the mapping: required `cadence`, `last_run`, `grace`, `spawn_policy`, `spawn_horizon`, and `active_run`; optional `commit_threshold` and `last_run_ref`. These map one-to-one to the Project template's hyphenated fields. There is one status, not a second nested lifecycle. All schedule and acceptance rules below apply to those mapped fields.
+Keep `id`, `title`, and `status` at the Activity's top level. Use snake_case inside the mapping: required `cadence`, `last_run`, `grace`, `spawn_policy`, `spawn_horizon`, and `active_run`; optional `commit_threshold`, `last_run_ref`, `initiative`, `component`, `purpose`, and `kind`. These map one-to-one to the Project template's hyphenated fields. There is one status, not a second nested lifecycle. All schedule and acceptance rules below apply to those mapped fields.
 
 ```yaml
 ---
@@ -89,6 +101,8 @@ housekeeping:
   spawn_policy: manual
   spawn_horizon: next
   active_run: null
+  initiative: platform-foundations
+  purpose: upkeep
 ---
 ```
 
@@ -114,7 +128,7 @@ The read-only callable [schedule evaluator](../scripts/rubric/contexts/schedule.
 - **`blocked`**: paused, already reserved by an active run, or invalid schedule input.
 - **`unknown`**: unavailable volume evidence prevents deciding eligibility, with no independently actionable calendar boundary.
 
-After fresh grounding, `ki-next` consumes this result and rechecks the active reservation before any write. For a calendar-due run, `scheduled_for` is the calendar due date; for volume-only or initial runs it is the evaluation date. A non-null `active-run` prevents another spawn. Spawning atomically creates the linked ordinary `draft` at `spawn-horizon` and sets `active-run`, without changing either successful-run field. Manual confirmation authorises only that draft, not implementation or acceptance.
+After fresh grounding, `ki-next` consumes this result and rechecks the active reservation before any write. For a calendar-due run, `scheduled_for` is the calendar due date; for volume-only or initial runs it is the evaluation date. A non-null `active-run` prevents another spawn. Spawning atomically creates the linked ordinary `draft` at `spawn-horizon`, with the inherited classification and `kind: audit` unless the template sets another kind, and sets `active-run`, without changing either successful-run field. Manual confirmation authorises only that draft, not implementation or acceptance.
 
 Only `ki-accept`, as part of one coherent approved closure and template-reconciliation commit, changes the run to `done`, records the evidenced actual completion date in `last-run`, records the verified reviewed revision in `last-run-ref`, and clears `active-run`. Do not first commit a `done` run with a stale active reservation; a prior committed `done` state is required only before later pruning. For a commit-triggered template, unavailable reviewed-revision evidence blocks that success reconciliation; never manufacture the anchor. Calendar-only templates may retain a null anchor. The run's original `scheduled_for` remains unchanged and is no longer copied into `last-run`.
 
@@ -126,4 +140,4 @@ The Activity note is the sole standing definition; a due run becomes a linked it
 
 ## Retention
 
-Completed runs are retained as `done` records in both adapters until `ki-accept prune` receives an explicit selection. A template retains date and immutable review evidence, not a dependency on the continued presence of an unpruned run file. Lightweight working-area tidying remains subject to each specialist area's retention policy; recurring review does not confer general deletion authority.
+Completed runs are retained as `done` or `cancelled` records in both adapters until `ki-accept prune` receives an explicit selection. A template retains date and immutable review evidence, not a dependency on the continued presence of an unpruned run file. Lightweight working-area tidying remains subject to each specialist area's retention policy; recurring review does not confer general deletion authority.

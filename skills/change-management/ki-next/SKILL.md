@@ -4,9 +4,9 @@ ki-kind: process
 ki-applicability: invocation-only
 ki-depends-on: []
 description: >
-  Capture substantive prospective work into unadopted Triage, or select, adopt, promote, and defer work in the
-  shared queue. Use when new work emerges or deciding what comes next; use `ki-plan` for readiness and
-  `ki-trades` for trade transport.
+  Capture substantive prospective work as unadopted triage records, or select, adopt, promote, defer,
+  hold, and release work in the shared queue. Use when new work emerges or deciding what comes next;
+  use `ki-plan` for readiness and `ki-trades` for trade transport.
 argument-hint: 'next [--review] | defer <item> <horizon> | help'
 ---
 
@@ -18,27 +18,27 @@ Selects and prepares forward work through the configured local adapter's canonic
 
 The full procedure is in [the next-work standard](references/standards-next-work.md).
 
-Substantive prospective work is captured without approval only after deduplication and only into `triage` with `status: draft`. Adoption into another horizon requires explicit human approval. Rejected, duplicate, or merged intake requires exact human approval and routes to `ki-accept` for retained `done` closure before any later prune; capture never grants delivery authority.
+Substantive prospective work is captured without approval only after deduplication, only when it passes the graduation test, and only as `status: triage` with no horizon; an idea that does not yet graduate waits in its Project note's Ideas section or `_IDEAS.md`. Adoption to `draft` with a horizon and `kind` requires explicit human approval. Cancelling intake requires exact human approval and routes to `ki-accept`; capture never grants delivery authority.
 
 ## What this skill does
 
 1. **Ground** the configured local adapter's canonical records and issue ledger, active `ki-work-housekeeping` templates, and inbound records validated by declared `ki-trades` governance.
 2. **Triage** incoming submissions through an exact human-confirmed receiver disposition, including the proportionate direct-application gate for a work trade, without treating adoption as roadmap authority.
-3. **Review and capture** relevance: capture substantive, non-duplicate prospective work into Triage automatically; require confirmation to change adopted work.
+3. **Review and capture** relevance: capture substantive, non-duplicate prospective work that passes the graduation test as triage automatically; require confirmation to change adopted work.
 4. **Screen for synergy** across dependency-ready candidates: propose a batch only when the items share a bounded delivery advantage and remain independently executable. A shared theme alone is not enough.
 5. **Select or spawn** one dependency-ready immediate record, or a small, explicitly confirmed synergistic group to plan independently before it can become a `ki-batch` candidate.
-6. **Defer** an explicitly named record only after presenting its exact destination horizon, wording, and affected lifecycle state.
+6. **Defer, hold, or release** an explicitly named record only after presenting its exact destination horizon, hold condition, wording, and affected lifecycle state.
 7. **Hand off for planning** selected Now or Next drafts to `ki-plan`; its adapter creates the right in-place execution detail.
 8. **Maintain temporary batches** through the batch-owned retention rule, and recommend eligible roadmap cleanup without deleting roadmap records.
 
-`ki-next` owns intake review and adoption. It does not close rejected, duplicate, or merged Triage records; after exact human confirmation it hands that disposition to `ki-accept`.
+`ki-next` owns intake review and adoption. It does not cancel records; after exact human confirmation it hands a cancellation, with its resolution, to `ki-accept`.
 
 ## Relationship map
 
 ```text
 ki-recap (optional current-session context)
   └─> ki-next (capture, adoption, selection, promotion, and deferral)
-        ├─> ki-accept (human-approved terminal Triage disposition)
+        ├─> ki-accept (human-approved cancellation with resolution)
         └─> ki-plan (shape each selected repository item through Ready)
               ├─> ki-implement (one Ready item through Awaiting review)
               │     └─> ki-accept (Awaiting review through Done)
@@ -76,7 +76,7 @@ With no argument or `next`, run the full procedure.
 ## Notes
 
 - This is a process skill, not a universal AUDIT / CONFORM / EDUCATE / REFRESH checker.
-- A housekeeping template may create a due run only under its declared spawning policy. Bounded Triage capture is automatic; adoption, selection, and every other queue transition follow the applicable confirmed rule.
+- A housekeeping template may create a due run only under its declared spawning policy. Bounded triage capture is automatic; adoption, selection, and every other queue transition follow the applicable confirmed rule.
 - `ki-next` does not start or authorise a batch from similarity alone. A confirmed candidate group proceeds only to `ki-batch`; implementation still requires that skill's reviewed authorisation.
 - Resolve `[skills.ki-work].adapter` and require its matching declared owner table before reading any local root. The base audit remains the authority for semantic selection validation; this process makes no shape fallback. `roadmap` uses `docs/roadmap/`; `kb-streams` uses `Streams/Roadmap/`; `github-issues` and `linear` stop without writes until their remote execution is separately implemented.
 - `ki-next` may recommend `status: done` records for pruning, but it never deletes them. `ki-accept` owns explicit path or glob selection; `ki repo roadmap prune` is the separate deterministic selected-repository sweep, which commits its deletions by default under the standardised prune message unless run with `--no-commit`.

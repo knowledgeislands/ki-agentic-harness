@@ -28,3 +28,14 @@ Repository feature selection follows the adapter declaration rather than a paral
 The selector owns only the abstract lifecycle vocabulary: capture, queue placement, readiness, delivery evidence, review evidence, closure, and an explicitly selected prune path. It does not define status labels or a state machine. Each adapter owns its concrete record identity, storage, local lifecycle/status mapping, and local rules. A process skill may ask the selector to resolve that adapter but never assumes a filesystem path, remote issue API, or KB zone.
 
 Every adapter carries an explicit mapping for record identity, status/lifecycle translation, authority for writes, conflict handling, and closure semantics. Local adapters may use the repository's configured identifier and, where declared, fixed issuing areas; remote adapters retain the remote system's native identity. It is never an implicit alias for another tracker.
+
+## Abstract record vocabulary
+
+Every adapter maps these abstract terms; the [repository-roadmap standard](../../ki-work-roadmap/references/standards-repository-roadmaps.md) and [work-item format](../../ki-work-roadmap/references/standards-work-item-format.md) give their local shape.
+
+- **Status** - how far work has got: triage (unadopted intake), draft, ready, in progress, awaiting review, and two terminal endings, done and cancelled.
+- **Horizon** - when adopted, open work is intended: now, next, soon, future, or hold. Hold carries a reason, a named release condition, an optional review date, and any observed trades.
+- **Resolution** - why cancelled work ended: obsolete, rejected, duplicate, merged, or superseded, with a qualified target record for the last three. Only the owning repository closes its own record.
+- **Classification** - `kind` (deliver, decide, investigate, audit), optional `purpose`, territory-owned `project` or, for projectless work, `initiative`, and repository-owned `component`.
+
+Projects and Initiatives are territory registry entries under the [Project registry standard](standards-project-registry.md); an adapter maps them to its native grouping where one exists, such as Linear Projects and Initiatives, and otherwise stores the slugs.

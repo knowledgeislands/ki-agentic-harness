@@ -9,6 +9,8 @@ grace: P1D
 spawn-policy: manual
 spawn-horizon: next
 active-run: null
+initiative: example-initiative
+purpose: upkeep
 ---
 
 # Repository review

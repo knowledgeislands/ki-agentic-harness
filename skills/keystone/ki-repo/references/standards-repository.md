@@ -86,7 +86,7 @@ primary_shape = "ki-repo-kb"
 store_roles = ["notes", "sources", "legacy"]
 ```
 
-A KB must declare `ki-repo-kb`. It may also declare `ki-work-roadmap` for the shared record model and its issuing-area or theme configuration, but only alongside `ki-repo-kb-streams`, which owns the `Streams/Roadmap/` container. That declaration does not select the project `roadmap` adapter or authorise a parallel `ROADMAP.md` or `docs/roadmap/` tree: `ki-work` owns adapter compatibility and the roadmap skill owns the artefact prohibition. Conversely, the `ki-repo-kb` structure declaration requires `repo_type = "kb"`. This validates operating model separately from the structural skill that implements its layout.
+A KB must declare `ki-repo-kb`. It may also declare `ki-work-roadmap` for the shared record model and its issuing-area and component configuration, but only alongside `ki-repo-kb-streams`, which owns the `Streams/Roadmap/` container. That declaration does not select the project `roadmap` adapter or authorise a parallel `ROADMAP.md` or `docs/roadmap/` tree: `ki-work` owns adapter compatibility and the roadmap skill owns the artefact prohibition. Conversely, the `ki-repo-kb` structure declaration requires `repo_type = "kb"`. This validates operating model separately from the structural skill that implements its layout.
 
 ### Project shapes
 
@@ -205,7 +205,7 @@ branch-protection = true   # default off — protect `main` on this repo
 [skills.ki-authoring]
 ```
 
-`title` and `description` are mandatory repository identity. The title is exactly the README H1. The description is exactly the GitHub description and, where present, package.json `description`. A repository that declares `ki-work-roadmap` also declares its stable uppercase `repo_code` in this same table; `ki-work-roadmap` consumes that code and owns only its theme mapping.
+`title` and `description` are mandatory repository identity. The title is exactly the README H1. The description is exactly the GitHub description and, where present, package.json `description`. A repository that declares `ki-work-roadmap` also declares its stable uppercase `repo_code` in this same table; `ki-work-roadmap` consumes that code and owns only its issuing-area and component vocabulary.
 
 ## Per-repo overrides
 

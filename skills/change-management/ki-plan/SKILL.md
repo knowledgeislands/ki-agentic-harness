@@ -20,7 +20,7 @@ The class-level standard—horizons, identity, and file shape—is owned by `ki-
 
 ## What this skill does
 
-`ki-plan` resolves the selected record through the repository adapter and enriches it in place. `ki-next` captures unadopted drafts into Triage and separately adopts or promotes them; this skill accepts only selected Now or Next drafts and never creates a duplicate plan record.
+`ki-plan` resolves the selected record through the repository adapter and enriches it in place. `ki-next` captures unadopted triage records and separately adopts or promotes them; this skill accepts only selected Now or Next drafts and never creates a duplicate plan record.
 
 For the selected `roadmap` adapter it adds the work-item execution sections; for selected `kb-streams` it applies the same record model inside the Streams container. Readiness is explicit and all-or-nothing: validate every named record before publishing any `ready` transition. Commit the resulting state with its coherent planning unit; the transition does not require a standalone commit, and an item may first land as `ready` when capture, shaping, and approval occur together. GitHub Issues and Linear selections stop without writes until their remote process execution exists.
 
@@ -45,7 +45,7 @@ Those responsibilities move cleanly to the dedicated process skills; `ki-plan` c
 
 In a KI code repository the canonical record is `docs/roadmap/<REPO>-<NNN>-<slug>.md`, or `docs/roadmap/<REPO>-<AREA>-<NNN>-<slug>.md` where the repository declares fixed issuing areas, authored through this skill—not a runtime-native Plan Mode scratch file.
 
-`ki-work-roadmap` owns the stable `<REPO>` code and any fixed `<AREA>` namespace in `.ki.toml`; `theme` remains the human-readable grouping in frontmatter.
+`ki-work-roadmap` owns the stable `<REPO>` code and any fixed `<AREA>` namespace in `.ki.toml`; grouping lives in the classification fields `kind`, `purpose`, `project`, `initiative`, and `component`.
 
 A native scratch file is only a draft.
 

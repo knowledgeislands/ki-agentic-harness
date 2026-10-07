@@ -55,17 +55,17 @@ Receiver-local standing knowledge intake is not an inbound trade disposition. Wh
 
 Run this pass for `--review`, or briefly when grounded evidence shows a material concern.
 
-Identify only evidence-backed proposals: stale or obsolete work, duplicates, changed Waiting conditions, changed dependencies, or an item at the wrong horizon.
+Identify only evidence-backed proposals: stale or obsolete work, duplicates, changed hold conditions, changed dependencies, or an item at the wrong horizon.
 
-Do not change adopted content until the user confirms exact wording and placement. Bounded Triage capture follows the exception below.
+Do not change adopted content until the user confirms exact wording and placement. Bounded triage capture follows the exception below.
 
 ### Capture substantive prospective work
 
 Any identifier named before publication is provisional. Immediately before allocating, re-read the applicable `_ISSUES.md` scope; if its high-water mark differs from the inspected value or the proposed serial is not exactly one greater, discard the proposed serial and reallocate from the latest value. Then commit the ledger advance on its own, in the repository's designated roadmap writing checkout, before writing the record it reserves. Never treat a plan, recap, approval, warm session context, or an uncommitted working copy as an identifier reservation. The [roadmap standard](../../ki-work-roadmap/references/standards-repository-roadmaps.md#number-reservation) owns that ordering and the write locus it depends on.
 
-During the current interaction, capture a distinct prospective outcome, concern, dependency, or decision once it is substantive enough to state a plain-language Goal, Context, Boundary, and decision-useful Discussion. Do not require prior approval. Allocate the next canonical identity, create one `horizon: triage`, `status: draft` record with matching timestamps, and report the capture after writing it. Capture creates durable intake only; it does not adopt, prioritise, plan, implement, batch, accept, or prune work.
+During the current interaction, capture a distinct prospective outcome, concern, dependency, or decision once it is substantive enough to state a plain-language Goal, Context, Boundary, and decision-useful Discussion, and it passes the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation): it is actionable, a decision with an owner and a needed-by date, or must survive the session. Goal, Context, and Boundary alone are not enough. An idea that does not yet graduate goes to its Project note's `## Ideas` section when the Project is known, otherwise to the repository's `_IDEAS.md`, as a plain bullet without identity. Do not require prior approval. Allocate the next canonical identity, create one `status: triage` record with no horizon and matching timestamps, and report the capture after writing it. Capture creates durable intake only; it does not adopt, prioritise, plan, implement, batch, accept, or prune work.
 
-Before creating a record, search the selected adapter for an existing owner. Do not capture rhetorical examples, already-resolved observations, or duplicates. If an existing Triage record owns the same Goal and Boundary, new decision-useful detail within that boundary may enrich it automatically and must advance its timestamp. If an adopted record owns the concern, report that owner and require confirmation before changing it. Adoption into another horizon requires explicit human approval and remains here. Rejection, duplicate, or merge disposition requires exact human approval and routes to `ki-accept`, which records Triage as `done` before any later prune; it is never a direct deletion. Approval alone never bypasses the lifecycle or done-before-prune rules.
+Before creating a record, search the selected adapter for an existing owner. Do not capture rhetorical examples, already-resolved observations, or duplicates. If an existing triage record owns the same Goal and Boundary, new decision-useful detail within that boundary may enrich it automatically and must advance its timestamp. If an adopted record owns the concern, report that owner and require confirmation before changing it. Adoption requires explicit human approval and remains here: it sets `status: draft`, a horizon, and `kind`, and may set `purpose`, `project` or `initiative`, and `component`. Cancellation as obsolete, rejected, duplicate, merged, or superseded requires exact human approval and routes to `ki-accept`, which records `status: cancelled` before any later prune; it is never a direct deletion. Approval alone never bypasses the lifecycle or done-before-prune rules.
 
 ## 4. Select candidates
 
@@ -74,8 +74,8 @@ Before creating a record, search the selected adapter for an existing owner. Do 
 1. Gather dependency-ready `now` and `next` records. Reuse their canonical record; if several are independently ready, recommend a small ranked set only when each retains its own lifecycle and the user confirms the set and order.
 2. Only when none is eligible, assess `soon` records against the Next entry rule. After confirmation, change horizon to `next`, run the adapter audit, then re-evaluate it at the destination.
 3. Only when Soon has no viable record, assess adopted Future work. Move directly to Next only when the full Next rule is met and Soon adds no value; otherwise move to Soon once the intended outcome and boundary are known. Re-evaluate after every confirmed move.
-4. Review Triage separately from candidate selection. Present the exact destination and why it satisfies that horizon; adopt only after explicit human confirmation, then re-evaluate at the destination.
-5. Reconsider Waiting-for or Parked items only when their named external condition or return trigger changed.
+4. Review triage separately from candidate selection. Present the exact destination horizon, `kind`, and why it satisfies that horizon; adopt only after explicit human confirmation, then re-evaluate at the destination.
+5. Exclude held records from selection. Propose a release only when their named condition changed or their review date has passed.
 
 ### Knowledge Bases
 
@@ -104,9 +104,15 @@ If no group meets every condition, say so briefly and use the ordinary single-it
 
 Resolve the exact record and identify linked dependencies before proposing it.
 
-Use Soon only for understood but non-immediate work; Waiting for only with a named external condition; Parked only with an intentional pause and named return trigger; Future only for adopted long-term work needing re-scoping. Triage is not a deferral destination: moving adopted work back into intake requires an explicit human disposition.
+A defer changes horizon and keeps status, so the destination must admit that status under the [status and horizon table](../../ki-work-roadmap/references/standards-repository-roadmaps.md#status-and-horizon). Use Soon only for understood but non-immediate draft work and Future only for adopted long-term draft work needing re-scoping. Status `triage` is not a deferral destination: moving adopted work back into intake requires an explicit human disposition.
 
-When the named external condition is observation of one or more trades, add the flat `waiting_on_trades: [TRD-…]` field and state in prose whether the item awaits receipt, a terminal receiver decision, or completion of linked receiver-local work. Do not add trade identities to `blocks` or `blocked_by`: those arrays remain local work-item dependencies. Remove `waiting_on_trades` when moving the item out of Waiting for.
+### Hold and release
+
+Hold a record when it deliberately stops progressing until a named condition is met. Set `horizon: hold` and a `hold` mapping with `reason` (`waiting-for` an external condition or `parked` for an intentional pause), the named `condition`, and a `review` date where release cannot be observed. Keep status, `baseline_ref`, completed Steps, and review evidence; a review may wait on Hold for an unavailable reviewer. An in-progress hold older than a month should be reconsidered, because a stale baseline turns resuming into a rebase.
+
+When the condition is observation of one or more trades, list them in `hold.trades: [TRD-…]` and state in prose whether the item awaits receipt, a terminal receiver decision, or completion of linked receiver-local work. Do not add trade identities to `blocks` or `blocked_by`: those arrays remain local work-item dependencies.
+
+Release requires evidence that the condition changed, or a review date that prompts a fresh decision. Choose the destination horizon afresh rather than restoring the previous one, remove the `hold` mapping, and revalidate scope and dependencies at the destination.
 
 Never silently delete, reopen, or detach a canonical execution record.
 
@@ -136,7 +142,7 @@ Two ready candidates can both be worthwhile: a narrow local repair may have low 
 
 Present those facts directly, choose only after the human confirms the order, and record neither candidate as objectively "higher value" once the unavailable dependency or chosen sequencing changes the decision.
 
-Before a selection, adoption, promotion, or deferral write, show selected items, any proposed batch set and order, exact frontmatter or wording changes, and dependency effects. The bounded Triage capture rule above is the sole no-prior-confirmation exception.
+Before a selection, adoption, promotion, or deferral write, show selected items, any proposed batch set and order, exact frontmatter or wording changes, and dependency effects. The bounded triage capture rule above is the sole no-prior-confirmation exception.
 
 When an owner answer is needed, use the runtime's structured ask-user-questions interface if available. Put the item's current state, proposed change, consequence, and canonical record link in the question; use a clickable link only where that interface supports one, and otherwise place the link in adjacent prose. Offer the evidence-backed recommendation as the first selectable response with its reason in the option description where supported. For example, recommend moving a dependency-ready Soon item to Next when its scope is actionable, while offering to keep it in Soon. If evidence does not support a recommendation, say so. A preselected response is not an answer or approval. Use the same content in a concise prose question when no structured interface is available.
 
@@ -172,7 +178,7 @@ During a normal next-work cycle, apply the `ki-batch` “Batch retention” rule
 
 Report each confirmed handoff disposition, synergy decision (including excluded near-matches), files changed, selected work, and audit result.
 
-Identify `done` records that are eligible for pruning when useful, but do not delete them; path- or glob-selected pruning belongs to `ki-accept`, while `ki repo roadmap prune` is the separate deterministic selected-repository sweep, which commits its deletions by default under the standardised prune message unless run with `--no-commit`. Pruning `done` records, including terminal Triage dispositions, is sanctioned cleanup whose archive is Git history.
+Identify `done` and `cancelled` records that are eligible for pruning when useful, but do not delete them; path- or glob-selected pruning belongs to `ki-accept`, while `ki repo roadmap prune` is the separate deterministic selected-repository sweep, which commits its deletions by default under the standardised prune message unless run with `--no-commit`. Pruning `done` and `cancelled` records is sanctioned cleanup whose archive is Git history.
 
 If no work is eligible, identify the missing condition or scoping decision plainly.
 
