@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 project: roadmap-model
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: fba2230c97d119ea5b4efa22b34b786e17329fdc
 created_at: 2026-10-07T14:55:49Z
-updated_at: 2026-10-07T15:00:44Z
+updated_at: 2026-10-07T15:02:03Z
 ---
 
 # KI-HARNESS-GOV-153: Qualify cross-territory references
@@ -125,6 +124,10 @@ The goal is met with no new failure path: a qualified value either resolves or w
 
 Qualified `<capital-key>/<slug>` references now resolve through the local registry, with warnings only when they cannot. Gates pass. Learning route: a friendlier territory alias would need a registry field owned by the `ki` CLI.
 
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Territory key
@@ -133,4 +136,4 @@ Kris suggested `knowledgeislands/agent-host`. The local registry cannot resolve 
 
 ### Authority
 
-Decision 9 (Kris Brown, 7 October 2026) approves the change, and decision 6 grants carry-through to done for the whole rollout, including fast-forward pushes of the commits it makes. That is the adoption, readiness and acceptance authority for this record.
+Decision 9 (Kris Brown, 7 October 2026) approves the change, and decision 6 grants carry-through to done for the whole rollout, including fast-forward pushes of the commits it makes. That is the adoption, readiness and acceptance authority for this record. Closed through `ki-accept` under that grant after rechecking the review evidence on the committed delivery (`31dea9bb`): `bun run test` 973 pass and 0 fail, `bunx tsc --noEmit` clean, and `ki repo audit --skill ki-work-roadmap` FAIL=0.
