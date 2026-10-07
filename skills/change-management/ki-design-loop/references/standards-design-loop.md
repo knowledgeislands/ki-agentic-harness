@@ -21,7 +21,7 @@ The repository that owns the subject owns its design: the territory Capital for 
 - **Decision Record.** The decisions become one Decision Record under `ki-decision-records` in that repository's decisions collection, with the prefix that skill's rules give the decision - usually governance or architecture. It states the accepted design and quotes any authority grant.
 - **Supporting files.** The brief, each review, the merged report and the decisions file are kept verbatim in the collection's `references/` directory - `docs/decisions/references/` in a code repository, `Admin/Governance/Decisions/references/` in a Knowledge Base. They share one descriptive slug prefix, such as `roadmap-model-brief.md`, `roadmap-model-review-fable.md`, `roadmap-model-report.md` and `roadmap-model-decisions.md`. The Decision Record cites each from its body.
 - **Commit as produced.** From the brief onward, write and commit each artefact in the owning repository when it is produced, never gathered later. Local state keeps only runtime material: agent prompts, pid, status and report files.
-- **Registry link.** The Project's `## Update` or the Initiative's `## Review` links the Decision Record, and so do the note's sources, under the [Project registry standard](../../ki-work/references/standards-project-registry.md).
+- **Registry link.** The Project or Initiative note links the Decision Record from its `## Notes`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md).
 
 `resume <subject>` reads these files by slug prefix; it never relies on a local folder.
 

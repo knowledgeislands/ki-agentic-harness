@@ -100,11 +100,45 @@ const STREAM_7: RubricItem<StreamRubricContext> = {
   }
 }
 
+const STREAM_8: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-8',
+  title: 'counts-only issue ledger',
+  description:
+    "Streams/Roadmap/_ISSUES.md is the roadmap adapter's canonical issue ledger: its header and its last_id or area counters, and nothing else.",
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Rewrite the ledger in the roadmap adapter's canonical form from its current high-water marks, never lowering one. Move any migration history or other prose to Git history or a Decision Record."
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.issueLedger, 'FAIL') }
+  }
+}
+
+const STREAM_9: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-9',
+  title: 'upward-only registry notes',
+  description:
+    'Project and Initiative notes under Streams/Projects/ and Streams/Initiatives/ name no work records and carry no dated ## Update section; records link upwards to their Project or Initiative.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or initiative, and ki views list them.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.registryNotes, 'FAIL') }
+  }
+}
+
 export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
   code: 'STREAM',
   title: 'Streams structure',
   description: 'Operational-area layout, legacy migration, and adapter routing.',
   standard: SOURCE,
   selectContext: (context) => context.stream,
-  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6, STREAM_7]
+  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6, STREAM_7, STREAM_8, STREAM_9]
 }

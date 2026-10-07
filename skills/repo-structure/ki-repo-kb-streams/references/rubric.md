@@ -46,6 +46,10 @@ Operational-area layout, legacy migration, and adapter routing.
   - _Remediation:_ diagnostic — Keep the canonical holder of the identifier; reallocate the other record from _ISSUES.md with a committed ledger advance and update its references. Never reuse a pruned serial.
 - **STREAM-7 [M] — roadmap record frontmatter** — Every Streams/Roadmap record other than _ISSUES.md and the Roadmap.md index note begins with parseable frontmatter whose id matches its filename identifier. (standards-streams-structure.md)
   - _Remediation:_ diagnostic — Give the record canonical frontmatter in the roadmap adapter's work-item format with an id matching its filename, or move a non-record out of Streams/Roadmap/. Full record format remains the roadmap adapter's audit.
+- **STREAM-8 [M] — counts-only issue ledger** — Streams/Roadmap/_ISSUES.md is the roadmap adapter's canonical issue ledger: its header and its last_id or area counters, and nothing else. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Rewrite the ledger in the roadmap adapter's canonical form from its current high-water marks, never lowering one. Move any migration history or other prose to Git history or a Decision Record.
+- **STREAM-9 [M] — upward-only registry notes** — Project and Initiative notes under Streams/Projects/ and Streams/Initiatives/ name no work records and carry no dated ## Update section; records link upwards to their Project or Initiative. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or initiative, and ki views list them.
 
 ## GATE — always-loaded gate
 

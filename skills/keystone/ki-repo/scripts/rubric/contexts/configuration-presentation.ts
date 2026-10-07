@@ -193,10 +193,42 @@ const arrayElements = (code: string): number => {
   }
 }
 
+/** Skill subtables whose keys are data: area codes, Agora names, check names, zones, sites, tiers and states. */
+const DATA_MAPS = new Set([
+  'ki-agora.*',
+  'ki-binding.clients',
+  'ki-engineering.checks',
+  'ki-repo.checks',
+  'ki-repo-kb.templates',
+  'ki-repo-kb.zones',
+  'ki-repo-website.sites',
+  'ki-tokenomics.budgets',
+  'ki-tokenomics.model_tier_bindings',
+  'ki-work-github-issues.lifecycle',
+  'ki-work-linear.lifecycle',
+  'ki-work-roadmap.areas'
+])
+
+/** Territory tables stay outside the subtable rule while their model is under separate review. */
+const EXEMPT_SUBTABLES = new Set(['ki-repo.territory', 'ki-trades.territory'])
+
+const KEY = String.raw`(?:"([^"\\]+)"|'([^']+)'|([A-Za-z0-9_-]+))`
+const SUBTABLE = new RegExp(String.raw`^\[\[?\s*skills\s*\.\s*${KEY}\s*\.\s*${KEY}`)
+
+const subtableIssue = ({ code, line }: SourceLine): string | undefined => {
+  const match = code.match(SUBTABLE)
+  if (!match) return undefined
+  const owner = match[1] ?? match[2] ?? match[3]
+  const key = match[4] ?? match[5] ?? match[6]
+  const path = `${owner}.${key}`
+  if (DATA_MAPS.has(path) || DATA_MAPS.has(`${owner}.*`) || EXEMPT_SUBTABLES.has(path)) return undefined
+  return `line ${line}: [skills.${path}] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.${owner}]`
+}
+
 /**
  * Mechanical layout rules every `.ki.toml` shares: exactly one blank line before each table heading
  * and banner, arrays written one element per line with a trailing comma, and `[skills.ki-trades]` last
- * with `[skills.ki-agora]` opening Relationships.
+ * with `[skills.ki-agora]` opening Relationships, and skill subtables reserved for data maps.
  */
 export const inspectConfigurationLayout = (text: string): readonly string[] => {
   const lines = sourceLines(text)
@@ -252,6 +284,11 @@ export const inspectConfigurationLayout = (text: string): readonly string[] => {
     const first = lines.find(({ code, line }) => line > (lines[relationships]?.line ?? 0) && isHeading(code))
     if (first && first.line !== agora.line)
       issues.push(`line ${agora.line}: [skills.ki-agora] must be the first table under Relationships`)
+  }
+
+  for (const entry of lines) {
+    const issue = isHeading(entry.code) ? subtableIssue(entry) : undefined
+    if (issue) issues.push(issue)
   }
 
   return issues

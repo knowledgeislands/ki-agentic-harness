@@ -40,6 +40,7 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'FILENAME-2',
     'FILENAME-3',
     'ROOT-1',
+    'ROOT-2',
     'FM-0',
     'FM-3',
     'FM-4',
@@ -234,4 +235,27 @@ One identifier serves the roadmap and the records.
       ?.mechanical?.audit.run(root.selectContext(rootContext))
       .some((outcome) => outcome.status === 'VIOLATION')
   ).toBe(false)
+})
+
+test('a declared Decision Record scope is a finding, because the scope is always repo_code', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-decision-records-scope-'))
+  temporaryDirectories.push(repository)
+  const family = families.find((candidate) => candidate.code === 'ROOT')
+  const item = family?.items.find((candidate) => candidate.code === 'ROOT-2')
+  const audit = (configuration: Record<string, unknown>) => {
+    const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration })
+    const context = family?.selectContext(
+      session.subjects[1]?.context() as NonNullable<ReturnType<(typeof session.subjects)[1]['context']>>
+    )
+    return item?.mechanical?.audit.run(context as NonNullable<typeof context>)
+  }
+
+  expect(audit({})).toEqual([{ status: 'PASS', message: 'No retired Decision Record scope is declared.' }])
+  expect(audit({ scope: 'KI-ARCADIA' })).toEqual([
+    {
+      status: 'VIOLATION',
+      message: '[skills.ki-decision-records].scope = "KI-ARCADIA" is retired; the scope is always repo_code.',
+      subject: '.ki.toml'
+    }
+  ])
 })

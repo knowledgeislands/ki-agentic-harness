@@ -18,7 +18,7 @@ Selects and prepares forward work through the configured local adapter's canonic
 
 The full procedure is in [the next-work standard](references/standards-next-work.md).
 
-Substantive prospective work is captured without approval only after deduplication, only when it passes the graduation test, and only as `status: triage` with no horizon; an idea that does not yet graduate waits in its Project note's Ideas section or `_IDEAS.md`. Adoption to `draft` with a horizon and `kind` requires explicit human approval. Cancelling intake requires exact human approval and routes to `ki-accept`; capture never grants delivery authority.
+Substantive prospective work is captured without approval only after deduplication, only when it passes the graduation test, and only as `status: triage` with no horizon; an idea that does not yet graduate waits in its Project note's Notes section or `_IDEAS.md`. Adoption to `draft` with a horizon and `kind` requires explicit human approval. Cancelling intake requires exact human approval and routes to `ki-accept`; capture never grants delivery authority.
 
 ## What this skill does
 

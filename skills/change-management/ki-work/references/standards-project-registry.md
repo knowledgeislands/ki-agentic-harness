@@ -6,6 +6,8 @@
 - [Location](#location)
 - [Project note](#project-note)
 - [Initiative note](#initiative-note)
+- [Links point upwards](#links-point-upwards)
+- [Index notes](#index-notes)
 - [Cross-territory references](#cross-territory-references)
 - [Membership and authority](#membership-and-authority)
 - [Validation](#validation)
@@ -33,7 +35,7 @@ A work record's `project` value is a Project slug, so it resolves to `Streams/Pr
 
 ## Project note
 
-A Project is a finite outcome with a lead, a target, health, and a lifecycle. Its note carries this frontmatter:
+A Project is a finite outcome with a lead, a target, and a lifecycle. Its note carries this frontmatter:
 
 ```yaml
 ---
@@ -55,7 +57,12 @@ target: 2026-12-31
 - `lead` names the accountable person.
 - `target` is an ISO date, or `null` when none is set.
 
-The body carries an `## Outcome` section, an `## Update` section, and an `## Ideas` section. The Update takes over the former theme checkpoint: a dated health judgement, the one current decision and its test, the facts it needs, and one next step. Health is a stated judgement, never a count. Ideas holds untracked ideas under the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation). A Project note may link its open records for orientation, but status lives only in each record.
+The body carries only two sections, in order:
+
+- `## Outcome` expands the finite outcome and its test.
+- `## Notes` holds ideas and context: untracked ideas under the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation), boundaries, and links to the Project's Decision Records or other durable knowledge.
+
+The note tracks state with `lifecycle` alone. It carries no dated `## Update`, health or status section and lists no work records; status lives only in each record.
 
 ## Initiative note
 
@@ -77,19 +84,24 @@ lead: Kris Brown
 - `lifecycle` is `active`, `paused`, or `retired`. An Initiative never completes; retiring it is an accountable human decision.
 - `lead` names the accountable person.
 
-The body carries these sections in order:
+The body carries only two sections, in order:
 
 - `## Direction` expands the direction and its boundary with neighbouring Initiatives.
-- `## Projects` links each Project note whose `initiative` names this Initiative. The Project note's frontmatter is the membership; this section is orientation.
-- `## Upkeep` describes the projectless work the Initiative carries: the components and `purpose: upkeep` records that name it directly.
-- `## Activities` links the recurring Activities and housekeeping templates whose `initiative` names it.
-- `## Review` holds the territory's periodic review of the Initiative: a dated judgement of its direction and Projects, the decisions it needs, and one next step. It never copies record lists or status.
+- `## Notes` holds ideas and context, including a plain description of the projectless upkeep the Initiative carries.
 
-`Initiatives.md` is the folder's index note. It lists the Initiative notes and owns no slugs of its own.
+An Initiative note lists neither its Projects nor its records, Activities or housekeeping templates, and carries no dated review or status section.
 
 Upkeep and other work that never finishes has no Project. Its records name `initiative` directly, usually with `purpose: upkeep`, and recurring runs inherit the Initiative from their template or Activity.
 
-A Project or Initiative shaped through [`ki-design-loop`](../../ki-design-loop/SKILL.md) links its design's Decision Record from the Project's `## Update` or the Initiative's `## Review`, and from the note's sources. The note links the design; it never copies the brief, reviews, report or decisions.
+A Project or Initiative shaped through [`ki-design-loop`](../../ki-design-loop/SKILL.md) links its design's Decision Record from the note's `## Notes`. The note links the design; it never copies the brief, reviews, report or decisions.
+
+## Links point upwards
+
+A work record names its Project or Initiative, and a Project names its Initiative. No link points down: a Project note names no work record, and an Initiative note names no Project or record. `ki` views derive the downward lists from the upward links, so the registry never holds a second copy of membership or status. The Streams checker fails a registry note that names a work-record identifier or carries an `## Update` section; Decision Record identifiers are not work records.
+
+## Index notes
+
+`Projects.md` and `Initiatives.md` are the folders' index notes and own no slugs of their own. Under the knowledge-base index-note rule each describes every child note in a line, by what the Project or Initiative is for; neither lists records nor restates status.
 
 ## Cross-territory references
 
@@ -115,4 +127,4 @@ Membership is classification, not authority. A Project may count records from an
 
 The roadmap checker resolves `project` slugs against `Streams/Projects/` and `initiative` slugs against `Streams/Initiatives/` of the referenced territory when it can find the registry. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative, including the same slug in a different territory. A Project whose open records are all terminal is reported for a human lifecycle decision. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
 
-Views group by Project and Initiative without copying record lists into a second status source. Each Initiative note's Review replaces the per-theme checkpoints and the territory's state-of-play review; `ki-checkpoint` remains only for ephemeral thread reconstruction.
+Views group by Project and Initiative without copying record lists into a second status source. Status lives in the records and each note's `lifecycle`; `ki-checkpoint` remains only for ephemeral thread reconstruction.

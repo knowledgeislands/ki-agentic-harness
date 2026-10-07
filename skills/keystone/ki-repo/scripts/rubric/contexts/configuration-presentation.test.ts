@@ -129,7 +129,7 @@ description = """
 })
 
 describe('configuration layout', () => {
-  test('accepts the five-rule layout', () => {
+  test('accepts the six-rule layout', () => {
     expect(
       inspectConfigurationLayout(`${header}${banner('Foundation')}
 [repo]
@@ -170,6 +170,45 @@ ${banner('Relationships')}
       'line 9: the closing bracket of the array opened on line 7 needs its own line',
       'line 18: [skills.ki-trades] must be the last table in the file',
       'line 18: [skills.ki-agora] must be the first table under Relationships'
+    ])
+  })
+
+  test('reserves skill subtables for data maps and leaves territory alone', () => {
+    const issues = inspectConfigurationLayout(`${header}[repo]
+
+[skills.ki-repo]
+
+[skills.ki-repo.territory]
+mode = "example"
+
+[skills.ki-authoring]
+
+[skills.ki-authoring.owned_file_exceptions]
+".rumdl.toml" = "Reason."
+
+[skills.ki-work-roadmap]
+
+[skills.ki-work-roadmap.areas]
+GOV = "Governance"
+
+[skills.ki-engineering]
+
+[skills."ki-engineering".settings]
+enabled = true
+
+[skills.ki-agora]
+
+[skills.ki-agora.kis]
+capital = "example/capital"
+
+[skills.ki-trades]
+
+[skills.ki-trades.territory.subtypes]
+shared = "Example."
+`)
+    expect(issues).toEqual([
+      'line 13: [skills.ki-authoring.owned_file_exceptions] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.ki-authoring]',
+      'line 23: [skills.ki-engineering.settings] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.ki-engineering]'
     ])
   })
 })

@@ -36,6 +36,8 @@ export type StreamRubricContext = {
   legacyFolders: readonly StreamsEvidence[]
   roadmapIdentity: readonly StreamsEvidence[]
   roadmapFrontmatter: readonly StreamsEvidence[]
+  issueLedger: readonly StreamsEvidence[]
+  registryNotes: readonly StreamsEvidence[]
 }
 
 export type GateRubricContext = {
@@ -230,6 +232,100 @@ const roadmapFrontmatterEvidence = (
   }))
 }
 
+// Mirrors the roadmap adapter's canonical issue ledger (`issueLedger` in ki-work-roadmap). The ledger holds its
+// header and counters only, so any other text fails.
+const RESERVATION_ORDER = "Reserve a number by committing this ledger's advance on its own before writing the record."
+
+const canonicalLedger = (allocation: number | ReadonlyMap<string, number>): string => {
+  if (typeof allocation === 'number')
+    return `---\nlast_id: ${allocation}\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves every repository-scoped roadmap issue number through \`${allocation.toString().padStart(3, '0')}\`. Allocate the next work item as one greater than \`last_id\`; never lower this value or reuse an issued number after a record is pruned. ${RESERVATION_ORDER}\n`
+  const areas = [...allocation.entries()].sort(([left], [right]) => left.localeCompare(right))
+  const values = areas.map(([area, lastId]) => `${area}: ${lastId}`).join(', ')
+  const detail = areas
+    .map(([area, lastId]) => `- \`${area}\` reserves through \`${lastId.toString().padStart(3, '0')}\`.`)
+    .join('\n')
+  return `---\nareas: { ${values} }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. ${RESERVATION_ORDER} Areas are not mutable themes or groups.\n\n${detail}\n`
+}
+
+const ledgerAllocation = (text: string): number | ReadonlyMap<string, number> | undefined => {
+  const lastId = /^---\r?\nlast_id:\s*(\d+)\s*\r?\n---\r?\n/.exec(text)
+  if (lastId) return Number.parseInt(lastId[1], 10)
+  const areas = /^---\r?\nareas:\s*\{\s*(.*?)\s*}\s*\r?\n---\r?\n/.exec(text)
+  if (!areas) return undefined
+  const allocation = new Map<string, number>()
+  for (const entry of areas[1].split(',')) {
+    const pair = /^([A-Z][A-Z0-9]*):\s*(\d+)$/.exec(entry.trim())
+    if (!pair || allocation.has(pair[1])) return undefined
+    allocation.set(pair[1], Number.parseInt(pair[2], 10))
+  }
+  return allocation.size ? allocation : undefined
+}
+
+const issueLedgerEvidence = (root: string, roadmapPath: string): StreamsEvidence[] => {
+  const path = join(roadmapPath, '_ISSUES.md')
+  const subject = relative(root, path)
+  if (!existsSync(path)) return [{ level: 'NOT_APPLICABLE', message: 'No issue ledger is present.', subject }]
+  if (!regularFile(path)) return [{ level: 'FAIL', message: 'The issue ledger must be a regular file.', subject }]
+  const text = readFileSync(path, 'utf8')
+  const allocation = ledgerAllocation(text)
+  if (allocation === undefined)
+    return [
+      {
+        level: 'FAIL',
+        message: 'The issue ledger must open with last_id or an areas map of high-water marks.',
+        subject
+      }
+    ]
+  return text === canonicalLedger(allocation)
+    ? [{ level: 'PASS', message: 'The issue ledger holds only its header and counters.', subject }]
+    : [{ level: 'FAIL', message: 'The issue ledger holds content beyond its canonical header and counters.', subject }]
+}
+
+// Registry notes link upwards only: a record names its Project, and a Project its Initiative. Decision Record
+// identifiers share the work-record grammar, so their nine prefixes are excluded.
+const REGISTRY_AREAS = ['Projects', 'Initiatives'] as const
+const WORK_RECORD_REFERENCE = /(?<![\w-])(?!(?:[SPADXOGRK]DR)-)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3}(?!\d)/g
+const UPDATE_SECTION = /^##\s+Update\b/m
+
+const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidence[] => {
+  const notes = REGISTRY_AREAS.flatMap((area) => markdownPaths(join(streamsPath, area))).sort()
+  if (notes.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No Project or Initiative notes are present.' }]
+  const findings = notes.flatMap((path): StreamsEvidence[] => {
+    const subject = relative(root, path)
+    const body = readFileSync(path, 'utf8').replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, '')
+    const references = [...new Set(body.match(WORK_RECORD_REFERENCE) ?? [])]
+    return [
+      ...(references.length
+        ? [
+            {
+              level: 'FAIL' as const,
+              message: `Registry note lists work records (${sample(references)}); records name their Project or Initiative instead.`,
+              subject
+            }
+          ]
+        : []),
+      ...(UPDATE_SECTION.test(body)
+        ? [
+            {
+              level: 'FAIL' as const,
+              message: 'Registry note carries a dated ## Update section; status lives in the records and lifecycle.',
+              subject
+            }
+          ]
+        : [])
+    ]
+  })
+  return findings.length
+    ? findings
+    : [
+        {
+          level: 'PASS',
+          message: 'Project and Initiative notes link upwards only.',
+          subject: REGISTRY_AREAS.map((area) => relative(root, join(streamsPath, area))).join(', ')
+        }
+      ]
+}
+
 const sample = (values: readonly string[]): string => values.slice(0, 10).join('; ')
 
 const unavailableContext = (
@@ -246,7 +342,9 @@ const unavailableContext = (
       operationalAreas: [evidence],
       legacyFolders: notApplicable,
       roadmapIdentity: notApplicable,
-      roadmapFrontmatter: notApplicable
+      roadmapFrontmatter: notApplicable,
+      issueLedger: notApplicable,
+      registryNotes: notApplicable
     },
     gate: { anchor: notApplicable },
     config: { parseable: notApplicable, knownKeys: notApplicable, processNote: notApplicable }
@@ -380,7 +478,9 @@ export const createStreamsSession = ({
       operationalAreas,
       legacyFolders,
       roadmapIdentity: roadmapIdentityEvidence(root, roadmapPath, records),
-      roadmapFrontmatter: roadmapFrontmatterEvidence(root, roadmapPath, records)
+      roadmapFrontmatter: roadmapFrontmatterEvidence(root, roadmapPath, records),
+      issueLedger: issueLedgerEvidence(root, roadmapPath),
+      registryNotes: registryNoteEvidence(root, streamsPath)
     },
     gate: { anchor },
     config: { parseable, knownKeys, processNote: processNoteEvidence }

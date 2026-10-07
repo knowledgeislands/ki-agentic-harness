@@ -50,11 +50,43 @@ const ROOT_1: RubricItem<RootRubricContext> = {
   }
 }
 
+const ROOT_2: RubricItem<RootRubricContext> = {
+  code: 'ROOT-2',
+  title: 'The scope is the repository code',
+  description:
+    "The `<SCOPE>` comes from the repository's `[skills.ki-repo].repo_code`, so `.ki.toml` declares no `[skills.ki-decision-records].scope`.",
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Remove `scope` from `[skills.ki-decision-records]` in `.ki.toml`. The scope is always `[skills.ki-repo].repo_code`; where existing records use another scope, rename them with a human review.'
+    },
+    audit: {
+      phase: 'PREPARE',
+      run: (context: RootRubricContext) =>
+        outcomes(
+          context.declaredScope === undefined
+            ? []
+            : [
+                {
+                  status: 'VIOLATION',
+                  message: `[skills.ki-decision-records].scope = "${context.declaredScope}" is retired; the scope is always repo_code.`,
+                  subject: '.ki.toml'
+                } satisfies AuditOutcome
+              ],
+          'No retired Decision Record scope is declared.'
+        )
+    }
+  }
+}
+
 export const ROOT: RubricFamily<DecisionRecordsRubricContext, RootRubricContext> = {
   code: 'ROOT',
   title: 'collection-root checks',
-  description: 'The first Decision Record in every collection adopts the instrument itself.',
+  description: 'The first Decision Record in every collection adopts the instrument itself, under the repository code.',
   standard: SOURCE,
   selectContext: (context) => context.root,
-  items: [ROOT_1]
+  items: [ROOT_1, ROOT_2]
 }

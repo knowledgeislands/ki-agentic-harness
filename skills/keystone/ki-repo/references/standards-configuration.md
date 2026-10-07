@@ -49,11 +49,12 @@ Each used banner MUST use the exact three-line comment form, appear at most once
 
 ### Layout rules
 
-Every `.ki.toml` follows the five `ki-authoring` TOML layout rules. `ki-repo` checks three of them mechanically as `FILES-10`, on the source text rather than the parsed data:
+Every `.ki.toml` follows the six `ki-authoring` TOML layout rules. `ki-repo` checks four of them mechanically as `FILES-10`, on the source text rather than the parsed data:
 
 - Exactly one blank line precedes every table heading and every neighbourhood banner. A comment attached directly above a heading belongs to it, so the blank line comes before the comment.
 - Every array is multiline: the opening bracket ends its line, each element sits on its own line with a trailing comma, and the closing bracket has a line of its own.
 - `[skills.ki-trades]` and its child tables are the last tables in the file, and `[skills.ki-agora]` is the first table under the Relationships banner.
+- A skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, each `ki-agora.<agora>`, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. `[skills.ki-repo.territory]` and `[skills.ki-trades.territory]` are exempt while their territory model is under separate review.
 
 `FILES-10` fails in a repository of the Knowledge Islands Agora and warns elsewhere, as the roadmap's bare-area-list check does. A repository belongs to the Agora when its Capital, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes, declares `[skills.ki-agora.kis]` and either is the repository or lists it in that table's `members`. An unresolvable Capital reads as outside the Agora, so the check warns rather than fails.
 

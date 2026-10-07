@@ -13,14 +13,17 @@ The cross-format mechanical contract for Knowledge Islands authoring. It is sepa
 
 The `ki-authoring` skill wholly owns `.editorconfig` and `.rumdl.toml`. AUDIT compares each regular file with its canonical template, and CONFORM scaffolds a missing file or replaces a drifted regular file.
 
-An evidenced exception is the narrow safety valve for a repository whose regular owned file must remain non-canonical. It belongs under the owning skill's table and maps an exact currently owned filename to a non-empty reason:
+An evidenced exception is the narrow safety valve for a repository whose regular owned file must remain non-canonical. It is an array of exact currently owned filenames under the owning skill's table, with each reason as a comment on the line above its entry:
 
 ```toml
-[skills.ki-authoring.owned_file_exceptions]
-".rumdl.toml" = "Preserves verbatim correspondence whose list markers are source evidence."
+[skills.ki-authoring]
+owned_file_exceptions = [
+  # Preserves verbatim correspondence whose list markers are source evidence.
+  ".rumdl.toml",
+]
 ```
 
-AUDIT reports declared non-canonical drift as INFO with its reason; it does not count as a warning while the exception applies. CONFORM skips only that named regular drifted file; it does not merge a template delta, interpret local settings, or make the file canonical. Unknown names, blank reasons, a malformed table, and a stale declaration against a canonical file are warnings to correct. A declaration never suppresses scaffolding of a missing file or the safety refusal for an unsafe path.
+AUDIT reports declared non-canonical drift as INFO with its reason; it does not count as a warning while the exception applies. CONFORM skips only that named regular drifted file; it does not merge a template delta, interpret local settings, or make the file canonical. Unknown names, entries without a reason comment, a table form, and a stale declaration against a canonical file are warnings to correct. A declaration never suppresses scaffolding of a missing file or the safety refusal for an unsafe path.
 
 `.prettierrc.json`, `.prettierignore`, and `.markdownlint-cli2.jsonc` are retired. AUDIT warns while any of them survives and CONFORM removes it, because a leftover configuration is not inert: an editor extension reads it and reformats Markdown against a standard this repository no longer holds.
 

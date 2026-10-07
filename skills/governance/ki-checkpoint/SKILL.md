@@ -24,7 +24,7 @@ This governance skill owns the portable checkpoint contract: one concise reposit
 - **Reconstruction, not continuity** — a checkpoint carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, completion signal, roadmap, decision log, or memory system.
 - **Explicit write authority** — create or update only at the user's request or a documented repository-local trigger. Remove only on explicit user direction after durable facts have reached their canonical owners. When the selected thread or content is uncertain, do not write.
 
-Project and Initiative notes supplement checkpoints as the durable home of status: a checkpoint reconstructs a thread, while the note in the territory registry carries the standing outcome, health and updates.
+Project and Initiative notes are not a home for status: a checkpoint reconstructs a thread, a registry note carries only its standing outcome or direction, `lifecycle` and notes, and the work records and `ki` views carry status.
 
 `ki-checkpoint` remains the portable reconstruction record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid checkpoint under `ki-checkpoint`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
 

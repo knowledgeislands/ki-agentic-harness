@@ -226,6 +226,16 @@ test('frontmatter conform removes only safely unnecessary scalar quotes', () => 
   ])
 })
 
+/** Writes `owned_file_exceptions` as `.ki.toml` declares it and returns the parsed skill table. */
+const declareExceptions = (repository: string, entries: readonly (readonly [string, string?])[]) => {
+  const lines = entries.flatMap(([name, reason]) => [...(reason ? [`  # ${reason}`] : []), `  "${name}",`])
+  writeFileSync(
+    join(repository, '.ki.toml'),
+    `[skills.ki-authoring]\nowned_file_exceptions = [\n${lines.join('\n')}\n]\n`
+  )
+  return { owned_file_exceptions: entries.map(([name]) => name) }
+}
+
 test('a declared owned-file exception reports information and suppresses only its drifted-file write', () => {
   const repository = temporaryRepository()
   writeFileSync(join(repository, '.editorconfig'), EDITORCONFIG_DEFAULT)
@@ -235,11 +245,9 @@ test('a declared owned-file exception reports information and suppresses only it
       mode: 'conform',
       repository,
       userHome: tmpdir(),
-      configuration: {
-        owned_file_exceptions: {
-          '.rumdl.toml': 'Preserves verbatim correspondence whose list markers are source evidence.'
-        }
-      }
+      configuration: declareExceptions(repository, [
+        ['.rumdl.toml', 'Preserves verbatim correspondence whose list markers are source evidence.']
+      ])
     },
     () => ({ clean: true })
   )
@@ -287,7 +295,7 @@ test('owned-file exceptions do not suppress missing or unsafe paths', () => {
       mode: 'conform',
       repository: missingRepository,
       userHome: tmpdir(),
-      configuration: { owned_file_exceptions: { '.rumdl.toml': 'Evidence preservation.' } }
+      configuration: declareExceptions(missingRepository, [['.rumdl.toml', 'Evidence preservation.']])
     },
     () => ({ clean: true })
   )
@@ -307,7 +315,7 @@ test('owned-file exceptions do not suppress missing or unsafe paths', () => {
       mode: 'conform',
       repository: unsafeRepository,
       userHome: tmpdir(),
-      configuration: { owned_file_exceptions: { '.rumdl.toml': 'Evidence preservation.' } }
+      configuration: declareExceptions(unsafeRepository, [['.rumdl.toml', 'Evidence preservation.']])
     },
     () => ({ clean: true })
   )
@@ -319,7 +327,7 @@ test('owned-file exceptions do not suppress missing or unsafe paths', () => {
   expect(readFileSync(outside, 'utf8')).toBe('do not replace\n')
 })
 
-test('owned-file exception declarations reject unknown, blank, and stale entries', () => {
+test('owned-file exception declarations reject unknown, unexplained, stale, and table-form entries', () => {
   const repository = temporaryRepository()
   writeFileSync(join(repository, '.editorconfig'), EDITORCONFIG_DEFAULT)
   writeFileSync(join(repository, '.rumdl.toml'), RUMDL_DEFAULT)
@@ -328,13 +336,11 @@ test('owned-file exception declarations reject unknown, blank, and stale entries
       mode: 'audit',
       repository,
       userHome: tmpdir(),
-      configuration: {
-        owned_file_exceptions: {
-          '.rumdl.toml': 'No longer needed.',
-          '.unknown': 'Not owned.',
-          '.editorconfig': ''
-        }
-      }
+      configuration: declareExceptions(repository, [
+        ['.rumdl.toml', 'No longer needed.'],
+        ['.unknown', 'Not owned.'],
+        ['.editorconfig']
+      ])
     },
     () => ({ clean: true })
   )
@@ -356,7 +362,26 @@ test('owned-file exception declarations reject unknown, blank, and stale entries
   })
   expect(outcomes).toContainEqual({
     status: 'VIOLATION',
-    message: 'owned_file_exceptions[".editorconfig"] must have a non-empty reason',
+    message: 'owned_file_exceptions[".editorconfig"] must have its reason as a comment on the line above',
+    subject: 'owned_file_exceptions'
+  })
+
+  const table = createAuthoringSession(
+    {
+      mode: 'audit',
+      repository,
+      userHome: tmpdir(),
+      configuration: { owned_file_exceptions: { '.rumdl.toml': 'Grouped as a table.' } }
+    },
+    () => ({ clean: true })
+  )
+  const tableContext = table.subjects[1]?.context()
+  expect(
+    ownedModule.OWNED.items[0]?.mechanical?.audit.run(tableContext?.owned as NonNullable<typeof tableContext>['owned'])
+  ).toContainEqual({
+    status: 'VIOLATION',
+    message:
+      'owned_file_exceptions["owned_file_exceptions"] must be an array of owned filenames under [skills.ki-authoring], each with its reason as a comment on the line above',
     subject: 'owned_file_exceptions'
   })
 })

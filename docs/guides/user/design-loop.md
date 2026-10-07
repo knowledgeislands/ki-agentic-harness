@@ -36,7 +36,7 @@ Everything lives in the repository that owns the subject: the territory Capital 
 
 - The brief, reviews, report and decisions go verbatim in the decisions collection's `references/` directory, sharing one slug prefix, such as `techne-brief.md`. Each is committed when it is produced.
 - The decisions become one Decision Record in that collection, citing each file.
-- The Project's `## Update` or the Initiative's `## Review` links the Decision Record.
+- The Project or Initiative note links the Decision Record from its `## Notes`.
 
 Local state keeps only runtime material such as agent prompts and status files.
 

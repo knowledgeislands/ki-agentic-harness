@@ -27,7 +27,7 @@ describe('ki-repo-kb-streams rubric catalogue', () => {
     const mechanical = items.filter((item) => item.mechanical)
     const judgment = items.filter((item) => item.judgment)
 
-    expect(mechanical).toHaveLength(9)
+    expect(mechanical).toHaveLength(11)
     expect(mechanical.every((item) => item.mechanical?.remediation)).toBe(true)
     expect(judgment).toHaveLength(3)
     expect(

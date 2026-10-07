@@ -338,4 +338,72 @@ describe('ki-repo-kb-streams session', () => {
       { level: 'NOT_APPLICABLE', message: 'No identified roadmap records are present.' }
     ])
   })
+
+  test('passes a canonical counts-only ledger and fails one carrying extra prose', () => {
+    const root = targetFixture()
+    const ledger = join(root, 'Streams', 'Roadmap', '_ISSUES.md')
+    const canonical =
+      "---\nareas: { GOV: 27, OPS: 11 }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. Reserve a number by committing this ledger's advance on its own before writing the record. Areas are not mutable themes or groups.\n\n- `GOV` reserves through `027`.\n- `OPS` reserves through `011`.\n"
+    writeFileSync(ledger, canonical)
+    expect(STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).issueLedger).toEqual([
+      {
+        level: 'PASS',
+        message: 'The issue ledger holds only its header and counters.',
+        subject: 'Streams/Roadmap/_ISSUES.md'
+      }
+    ])
+
+    writeFileSync(ledger, `${canonical}\n## Owner-reviewed legacy migration\n\nDispositions.\n`)
+    expect(STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).issueLedger).toEqual([
+      {
+        level: 'FAIL',
+        message: 'The issue ledger holds content beyond its canonical header and counters.',
+        subject: 'Streams/Roadmap/_ISSUES.md'
+      }
+    ])
+
+    writeFileSync(ledger, '# Roadmap issue ledger\n\n| Area | High-water mark |\n| --- | --- |\n| `GOV` | 027 |\n')
+    expect(STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).issueLedger[0]?.level).toBe(
+      'FAIL'
+    )
+  })
+
+  test('fails registry notes that list work records or carry an Update section, but not Decision Records', () => {
+    const root = targetFixture()
+    mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })
+    mkdirSync(join(root, 'Streams', 'Initiatives'), { recursive: true })
+    writeFileSync(join(root, 'Streams', 'Projects', 'Projects.md'), '# Projects\n\n- [[website]] - The public site.\n')
+    writeFileSync(
+      join(root, 'Streams', 'Projects', 'website.md'),
+      '---\nnote_type: streams/project\ninitiative: techne\nlifecycle: active\n---\n\n# Website\n\n## Outcome\n\nA site.\n\n## Notes\n\nSee [[GDR-KI-ARCADIA-005-the-roadmap-model|GDR-KI-ARCADIA-005]] and ISO-8601 dates.\n'
+    )
+    writeFileSync(join(root, 'Streams', 'Initiatives', 'techne.md'), '# Techne\n\n## Direction\n\nHosting.\n')
+    const audit = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).registryNotes
+
+    expect(audit()).toEqual([
+      {
+        level: 'PASS',
+        message: 'Project and Initiative notes link upwards only.',
+        subject: 'Streams/Projects, Streams/Initiatives'
+      }
+    ])
+
+    writeFileSync(
+      join(root, 'Streams', 'Initiatives', 'techne.md'),
+      '# Techne\n\n## Projects\n\n- KI-TOOL-CLI-112 - Read the model\n- [[KI-ARCADIA-GOV-026-create-the-registry]]\n\n## Update\n\n**2026-10-07.** On track.\n'
+    )
+    expect(audit()).toEqual([
+      {
+        level: 'FAIL',
+        message:
+          'Registry note lists work records (KI-TOOL-CLI-112; KI-ARCADIA-GOV-026); records name their Project or Initiative instead.',
+        subject: 'Streams/Initiatives/techne.md'
+      },
+      {
+        level: 'FAIL',
+        message: 'Registry note carries a dated ## Update section; status lives in the records and lifecycle.',
+        subject: 'Streams/Initiatives/techne.md'
+      }
+    ])
+  })
 })

@@ -110,6 +110,8 @@ export type RecordsRubricContext = {
 }
 
 export type RootRubricContext = {
+  /** Set when `.ki.toml` still declares the retired `[skills.ki-decision-records].scope`. */
+  declaredScope?: string
   indexFile: string
   indexIds: readonly string[]
   records: readonly DecisionRecord[]
@@ -506,6 +508,7 @@ const replaceFrontmatter = (content: string, frontmatter: string): string | unde
 export const createDecisionRecordsSession = ({
   mode,
   repository,
+  configuration,
   publication
 }: RubricContextOptions): RubricSession<DecisionRecordsRubricContext> => {
   const kbMode = isKb(repository)
@@ -548,7 +551,8 @@ export const createDecisionRecordsSession = ({
     root: {
       indexFile,
       indexIds,
-      records
+      records,
+      ...('scope' in configuration ? { declaredScope: String(configuration.scope) } : {})
     },
     frontmatter: {
       records,

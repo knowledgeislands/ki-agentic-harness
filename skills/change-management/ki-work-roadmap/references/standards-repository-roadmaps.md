@@ -162,7 +162,7 @@ Every confirmed move is re-evaluated at its destination.
 
 An idea has no identifier, horizon, or status, and never owns state. It waits outside the record queue:
 
-- in its Project note's `## Ideas` section when a Project is known, under the [Project registry](../../ki-work/references/standards-project-registry.md); or
+- in its Project note's `## Notes` section when a Project is known, under the [Project registry](../../ki-work/references/standards-project-registry.md); or
 - otherwise as a plain bullet in the repository's `docs/roadmap/_IDEAS.md`, or `Streams/Roadmap/_IDEAS.md` in a Knowledge Base, beside `_ISSUES.md`.
 
 `_IDEAS.md` is not a record. It carries no identity, the structural-validity invariant skips it, and CONFORM never creates or rewrites it. Graduation links the new record from the idea's place and removes the bullet, keeping useful research in the record.
@@ -173,7 +173,7 @@ Goal, Context, and Boundary alone are not enough to make a record. After checkin
 - (b) it is a **decision** with an owner and a needed-by date, adopted as `kind: decide`; or
 - (c) it must **survive the session**: it is deferred, delegated, multi-step, or reviewed by someone else.
 
-Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate in its Project note's Ideas section when the Project is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold.
+Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate in its Project note's Notes section when the Project is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold.
 
 ## Migration tolerance
 

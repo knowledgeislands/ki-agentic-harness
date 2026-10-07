@@ -23,7 +23,7 @@ Streams/
   Trades/          # only when a future KB trade placement is adopted
 ```
 
-`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project with a `Projects.md` index, and one note per Initiative with an `Initiatives.md` index. They hold no work records. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
+`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project with a `Projects.md` index, and one note per Initiative with an `Initiatives.md` index. They hold no work records, and their notes link upwards only: a note names no work record and carries no dated `## Update` section, because each record names its Project or Initiative and `ki` views list the records. AUDIT fails a Project or Initiative note, or either index note, that names a work-record identifier or carries an `## Update` section. Decision Record identifiers are not work records. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
 
 The container does not prescribe a topical-folder or `groups` vocabulary. Where an owning adapter supports topical metadata, the receiving base chooses its vocabulary. That metadata never replaces an operational area or changes an identifier.
 
@@ -34,6 +34,8 @@ The container does not prescribe a topical-folder or `groups` vocabulary. Where 
 Every record's `id` is unique within the base. AUDIT fails each record whose identifier another record shares, because a collision makes links, trades and closure ambiguous; resolve it by keeping the canonical holder and reallocating the other from `_ISSUES.md`. A pruned record's serial is never reused, but that reuse cannot be seen from the current tree alone.
 
 AUDIT also applies the roadmap standard's [structural-validity invariant](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md): every direct child other than `_ISSUES.md`, `_IDEAS.md`, and a `Roadmap.md` index note must begin with parseable frontmatter whose `id` matches its filename identifier, so no record escapes the identity check by lacking one. It checks only that floor; body sections, other fields and retired fields remain the roadmap adapter's format.
+
+`_ISSUES.md` holds counts only. It uses the roadmap standard's canonical ledger form, its header and its `last_id` or area counters, and AUDIT fails any other content, such as migration history or prose about the records. That history belongs in Git or a Decision Record.
 
 Roadmap horizons and lifecycle are frontmatter fields. Do not represent `Triage`, `Now`, `Next`, `Soon`, `Future`, or `Hold` with paths below `Streams/Roadmap/`.
 

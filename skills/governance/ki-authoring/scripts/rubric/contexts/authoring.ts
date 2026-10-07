@@ -253,15 +253,50 @@ const inspectOwnedFile = (repository: string, name: OwnedFile): OwnedFileState =
   return sha256(original) === sha256(canonical[name]) ? 'canonical' : 'drifted'
 }
 
-const ownedFileExceptions = (configuration: Readonly<Record<string, unknown>>): readonly OwnedFileException[] => {
+/**
+ * Reads the comment block directly above each `owned_file_exceptions` element in `.ki.toml`. The array holds
+ * filenames only; each reason is the comment on the line or lines above its entry.
+ */
+const exceptionReasons = (text: string): ReadonlyMap<string, string> => {
+  const reasons = new Map<string, string>()
+  const lines = text.split(/\r?\n/)
+  const opening = lines.findIndex((line) => /^owned_file_exceptions\s*=\s*\[/.test(line.trim()))
+  if (opening < 0) return reasons
+  let comment: string[] = []
+  for (const line of lines.slice(opening + 1)) {
+    const trimmed = line.trim()
+    if (trimmed.startsWith(']')) break
+    if (trimmed.startsWith('#')) comment.push(trimmed.replace(/^#+\s*/, ''))
+    else {
+      const name = /^"([^"]+)"\s*,?$/.exec(trimmed)?.[1]
+      if (name && comment.length) reasons.set(name, comment.join(' ').trim())
+      comment = []
+    }
+  }
+  return reasons
+}
+
+const ownedFileExceptions = (
+  configuration: Readonly<Record<string, unknown>>,
+  configurationText: string
+): readonly OwnedFileException[] => {
   const declared = configuration.owned_file_exceptions
   if (declared === undefined) return []
-  if (!declared || typeof declared !== 'object' || Array.isArray(declared))
-    return [{ name: 'owned_file_exceptions', issue: 'must be a table mapping owned filenames to non-empty reasons' }]
-  return Object.entries(declared).map(([name, value]) => {
-    if (!(name in canonical)) return { name, issue: 'is not a currently owned file' }
-    if (typeof value !== 'string' || !value.trim()) return { name, issue: 'must have a non-empty reason' }
-    return { name, reason: value.trim() }
+  if (!Array.isArray(declared))
+    return [
+      {
+        name: 'owned_file_exceptions',
+        issue:
+          'must be an array of owned filenames under [skills.ki-authoring], each with its reason as a comment on the line above'
+      }
+    ]
+  const reasons = exceptionReasons(configurationText)
+  return declared.map((value) => {
+    if (typeof value !== 'string') return { name: String(value), issue: 'must be an owned filename string' }
+    if (!(value in canonical)) return { name: value, issue: 'is not a currently owned file' }
+    const reason = reasons.get(value)
+    if (!reason) return { name: value, issue: 'must have its reason as a comment on the line above' }
+    return { name: value, reason }
   })
 }
 
@@ -331,7 +366,13 @@ export const createAuthoringSession = (
   const targetExists = existsSync(target) && lstatSync(target).isDirectory()
   const mutable = mode === 'conform' && targetExists
   let normaliseMarkdown = false
-  const exceptions = ownedFileExceptions(configuration)
+  const configurationPath = join(target, '.ki.toml')
+  const exceptions = ownedFileExceptions(
+    configuration,
+    targetExists && existsSync(configurationPath) && lstatSync(configurationPath).isFile()
+      ? readFileSync(configurationPath, 'utf8')
+      : ''
+  )
   const ownedDrafts = (Object.keys(canonical) as OwnedFile[]).map((name) =>
     createOwnedFileDraft(target, name, mutable, exceptions.find((exception) => exception.name === name)?.reason)
   )

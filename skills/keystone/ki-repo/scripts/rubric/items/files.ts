@@ -154,7 +154,7 @@ const FILES_10: RubricItem<FilesRubricContext> = {
   code: 'FILES-10',
   title: 'Configuration layout',
   description:
-    'Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, opens Relationships with [skills.ki-agora] and ends with [skills.ki-trades]. Fails in Agora repositories and warns elsewhere.',
+    'Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, opens Relationships with [skills.ki-agora], ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Agora repositories and warns elsewhere.',
   sources: [CONFIGURATION_SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -162,7 +162,7 @@ const FILES_10: RubricItem<FilesRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Reformat the source without changing parsed TOML: one blank line before each heading and banner, multiline arrays, and ki-trades last.'
+        'Reformat the source without changing parsed TOML: one blank line before each heading and banner, multiline arrays, and ki-trades last. Moving fixed fields out of a non-map subtable changes parsed TOML, so the reader in the owning skill must accept the new shape first.'
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.files10, 'FAIL', ['WARN']) }
   }
