@@ -187,14 +187,14 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 
 - [ ] The repository declaration reflects what the repository now contains.
 - [ ] Each governance or conformance date states what it claims - an evidenced adoption, a preserved historical assertion, or the first surviving declaration - and none is backdated by inference or read as proof of audited conformance.
-- [ ] An Agora is declared only by its owning repository, whose identity supplies the owner. Check its direct members and optional inclusions against intended scope; alphabetical projection and inclusion grant no ownership or authority.
+- [ ] Territory selection derives from the Capital's ordered `territory_members`, including the Capital. Verify canonical identities, optional `territory_prefix` and registry resolution; selection grants no jurisdiction or cross-repository write authority.
 - [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
 - [ ] In a multi-runtime repository, root `AGENTS.md` is the authoritative home for shared runtime-neutral guidance.
 - [ ] Where root `CLAUDE.md` accompanies `AGENTS.md`, it imports `AGENTS.md` and contains only Claude-specific additions.
 - [ ] Root orientation records only repository-specific facts and points at the governing skill or Decision Record, rather than restating a rule a declared skill already owns.
 - [ ] GitHub Issues and `package.json` bug-reporting metadata agree with the selected work adapter: both are absent unless `ki-work-github-issues` is declared.
 - [ ] A physical roadmap directory (`docs/roadmap/` or `Streams/Roadmap/`) matches the declared `[skills.ki-work]` adapter and its adapter table. Roadmap tooling reads only the declaration, so an undeclared directory is invisible to it and a declared adapter without its table is a usage error.
-- [ ] Short subordinate records, including Agora memberships, use compact dotted keys and inline tables; complex Agora homes and similar records use legible nested tables.
+- [ ] Short subordinate data maps use compact dotted keys under their explicit owner root; larger maps use legible nested tables. Arrays remain multiline and inline tables are not used.
 - [ ] The declared skill set covers every governance capability the repository uses, including capabilities without an automatic detection signal.
 - [ ] Every declared runtime-bound skill is linked into the repository through a KI-managed local projection.
 - [ ] Adding a runtime to `supported_runtimes` carried its knock-on surfaces: that runtime's skills directory is git-ignored, excluded from the formatter and dead-code configurations, and its tokenomics adapter is declared and activated.

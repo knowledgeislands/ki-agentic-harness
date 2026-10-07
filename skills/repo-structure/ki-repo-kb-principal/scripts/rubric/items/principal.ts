@@ -65,7 +65,7 @@ const PRINCIPAL_3: RubricItem<PrincipalContext> = {
   code: 'PRINCIPAL-3',
   title: 'territorial declarations agree',
   description:
-    'Charter and Known Lands agree on the territory, its one Capital, canonical repository identities, and governed membership; registry location, Agora inclusion, company binding, or a passing audit does not appoint a principal or grant exchange rights.',
+    'Charter and Known Lands agree on the territory, its one Capital, canonical repository identities, and governed membership; registry location, repository selection, company binding, or a passing audit does not appoint a principal or grant exchange rights.',
   sources: [`${SOURCE}#territorial-declaration`],
   judgment: {
     scope: 'The Charter, internal Known Lands inventory, and their cited authority declarations.',
@@ -73,7 +73,7 @@ const PRINCIPAL_3: RubricItem<PrincipalContext> = {
       'Do the declarations identify one Capital and agree on jurisdiction and membership, with discrepancies retained for the territorial owner rather than resolved from runtime or working-set evidence?',
     outcomes: ['conforming', 'declaration reconciliation required', 'owner decision required'],
     guidance:
-      'Reconcile the authored declarations through the territorial owner; record unresolved differences without inferring authority from registry, Agora, or company state.'
+      'Reconcile the authored declarations through the territorial owner; record unresolved differences without inferring authority from registry, repository selection, or company state.'
   }
 }
 const PRINCIPAL_4: RubricItem<PrincipalContext> = {

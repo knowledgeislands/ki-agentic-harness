@@ -59,7 +59,7 @@ Pruning a `done` or `cancelled` record is sanctioned cleanup. Git history is the
 
 ### Cross-repository reference preflight
 
-Search the owning repository and relevant accessible peers identified by the selected registry or Agora scope, declared relationships, and known inbound references. Include an identified archived or deregistered peer: removal from discovery does not remove its links. Report the roots searched and any relevant unavailable source; a local-only scan is not evidence that peer references are absent. Do not silently widen access to unrelated repositories or fetch private sources.
+Search the owning repository and relevant accessible peers identified by the selected registry or territory scope, declared relationships, and known inbound references. Include an identified archived or deregistered peer: removal from discovery does not remove its links. Report the roots searched and any relevant unavailable source; a local-only scan is not evidence that peer references are absent. Do not silently widen access to unrelated repositories or fetch private sources.
 
 Use mechanical searches for each candidate's canonical path, filename and identifier, then resolve matches as relative Markdown links, wikilinks or repository URLs. Distinguish references removed by the same approved prune from surviving references. A bare historical identifier is not automatically a dangling link; a commit-pinned reference survives only when the named committed record is verified. Review whether surviving prose still depends on the candidate for rationale, authority or correction, rather than treating every search hit as a blocker.
 

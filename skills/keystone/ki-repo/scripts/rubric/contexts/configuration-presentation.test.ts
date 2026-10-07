@@ -141,7 +141,7 @@ harnesses = [
 [skills.ki-repo]
 
 ${banner('Relationships')}
-[skills.ki-agora]
+[skills.ki-binding]
 
 [skills.ki-trades]
 `)
@@ -160,7 +160,7 @@ list = [
 ${banner('Relationships')}
 [skills.ki-trades]
 
-[skills.ki-agora]
+[skills.ki-binding]
 `)
     expect(issues).toEqual([
       'line 6: [skills.ki-repo] must follow exactly one blank line',
@@ -168,8 +168,7 @@ ${banner('Relationships')}
       'line 5: arrays must be multiline, one element per line with a trailing comma',
       'line 8: write each array element on its own line with a trailing comma',
       'line 9: the closing bracket of the array opened on line 7 needs its own line',
-      'line 18: [skills.ki-trades] must be the last table in the file',
-      'line 18: [skills.ki-agora] must be the first table under Relationships'
+      'line 18: [skills.ki-trades] must be the last table in the file'
     ])
   })
 
@@ -196,10 +195,10 @@ GOV = "Governance"
 [skills."ki-engineering".settings]
 enabled = true
 
-[skills.ki-agora]
+[skills.ki-binding]
 
-[skills.ki-agora.kis]
-capital = "example/capital"
+[skills.ki-binding.clients]
+example = "example/client"
 
 [skills.ki-trades]
 

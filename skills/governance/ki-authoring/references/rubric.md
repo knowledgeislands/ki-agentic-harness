@@ -81,7 +81,7 @@ Reviewer-applied TOML formatting conventions.
   - _Review prompt:_ Assess whether TOML strings, arrays, maps and comments follow the house formatting.
   - _Outcomes:_ conforming; reformat required; exception required
   - _Conforming guidance:_ Use double-quoted strings, multiline arrays, dotted keys or nested tables instead of inline tables, and comments above, or record the external-contract exception.
-- **TOML-structure [J] — TOML configuration remains compact and navigable** — Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-agora]` first and `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root. (standards-toml.md#configuration-structure)
+- **TOML-structure [J] — TOML configuration remains compact and navigable** — Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root. (standards-toml.md#configuration-structure)
   - _Evidence scope:_ Every substantial `.ki.toml` and each short subordinate map in convention scope.
   - _Review prompt:_ Assess whether each declaration sits under a meaningful neighbourhood banner and whether dotted child keys keep the complete entry readable.
   - _Outcomes:_ conforming; restructure recommended; nested form justified

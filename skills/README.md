@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 61 skills: 50 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 60 skills: 49 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -330,16 +330,6 @@ Maintain an evidence-backed radar for agentic protocols, interfaces, organisatio
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit | conform | educate | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-agora`
-
-Govern owner-declared Agora membership and inclusion of other Agoras or repositories. Use to define or audit group declarations; the `ki` CLI owns local resolution and environment tooling owns client projections.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

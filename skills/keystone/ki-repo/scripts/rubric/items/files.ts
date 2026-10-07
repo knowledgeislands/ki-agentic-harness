@@ -154,7 +154,7 @@ const FILES_10: RubricItem<FilesRubricContext> = {
   code: 'FILES-10',
   title: 'Configuration layout',
   description:
-    'Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, opens Relationships with [skills.ki-agora], ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Arcadia territory repositories and warns elsewhere.',
+    'Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Arcadia territory repositories and warns elsewhere.',
   sources: [CONFIGURATION_SOURCE],
   mechanical: {
     level: 'FAIL',

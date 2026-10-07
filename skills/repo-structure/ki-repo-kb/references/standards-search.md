@@ -4,7 +4,7 @@ This contract governs optional retrieval behind `kb_search`, `ki kb search` and 
 
 ## Authority and ingestion
 
-Each stable registry KB ID receives one explicit owner-approved unique `search_boundary` assignment and an independent `ki-kb-<registry_id>` index. Reject absent, unsafe or duplicate assignments; do not infer them from a path, basename, visibility, company or Agora. No default cross-KB sharing is allowed. Shared model weights are distinct from private content caches.
+Each stable registry KB ID receives one explicit owner-approved unique `search_boundary` assignment and an independent `ki-kb-<registry_id>` index. Reject absent, unsafe or duplicate assignments; do not infer them from a path, basename, visibility, company or repository selection. No default cross-KB sharing is allowed. Shared model weights are distinct from private content caches.
 
 Each generation is a private derived cache, built afresh from an isolated Markdown projection after declaration, zone, access and protected-path checks. Exclude symlinked files/directories, protected paths, undeclared zones, nested repositories and source-store binaries before the engine sees content. A later output filter cannot repair earlier ingestion or expansion. Refresh into a fresh database rather than carrying content or embeddings from removed or newly private notes. Retention or disposal of old private generations belongs to the owning implementation, never an unmanaged sweep.
 

@@ -40,7 +40,7 @@ A compact `.ki.toml` with at most two declared skill roots beyond the required `
 - **Repository shape** — the primary repository kind and its structural adapters.
 - **Governance and runtime** — general governance capabilities, bindings, runtime-specific adapters, and their owner configuration.
 - **Change management** — the work selector, selected adapter, housekeeping, and related delivery capabilities.
-- **Relationships** — Agora and trade declarations: `[skills.ki-agora]` first, and `[skills.ki-trades]` always the last table in the file.
+- **Relationships** — adopted relationship capabilities, with `[skills.ki-trades]` always the last table in the file.
 
 Use only the neighbourhoods the repository needs. Foundation stays first: `[repo]` remains the first table, `[skills.ki-repo]` the first skill root, and `[skills.ki-authoring]` follows the repository contract it presents. After that, owner affinity takes precedence over a global alphabetic sort. Within a neighbourhood, keep a skill's explicit root and all of its subordinate configuration contiguous, with the root before any child table or dotted child assignment. Otherwise retain a stable local order; alphabetic order is useful only where it does not separate an owner from its adapters or configuration.
 
@@ -54,8 +54,8 @@ Every `.ki.toml` follows the six `ki-authoring` TOML layout rules. `ki-repo` che
 
 - Exactly one blank line precedes every table heading and every neighbourhood banner. A comment attached directly above a heading belongs to it, so the blank line comes before the comment.
 - Every array is multiline: the opening bracket ends its line, each element sits on its own line with a trailing comma, and the closing bracket has a line of its own.
-- `[skills.ki-trades]` and its child tables are the last tables in the file, and `[skills.ki-agora]` is the first table under the Relationships banner.
-- A skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, each `ki-agora.<agora>`, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. `[skills.ki-trades.territory]` is exempt while its trade-policy model is under separate review; the retired `[skills.ki-repo.territory]` is not.
+- `[skills.ki-trades]` and its child tables are the last tables in the file.
+- A skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, client names, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. `[skills.ki-trades.territory]` is exempt while its trade-policy model is under separate review; the retired `[skills.ki-repo.territory]` is not.
 
 `FILES-10` fails in Arcadia territory and warns elsewhere, as the roadmap's bare-area-list check does. Its enforcing Capital is the canonical identity `https://github.com/knowledgeislands/ki-arcadia-principal`, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes. Only repositories listed in that Capital's `territory_members`, including the Capital itself, receive strict enforcement. Short territory or Harness prefixes and retired Agora rosters do not determine this policy. An unavailable or ambiguous Capital reads as outside the enforcing territory, so the check warns rather than fails.
 

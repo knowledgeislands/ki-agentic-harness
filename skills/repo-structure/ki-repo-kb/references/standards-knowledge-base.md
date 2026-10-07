@@ -24,7 +24,7 @@ The standard applies when a base either declares `[skills.ki-repo-kb]` / `[skill
 
 ## Identity, provenance, and adoption
 
-The base's governed declaration identifies its owning island and territory. Knowledge items may inherit that identity rather than repeat it in every note. Territorial authority belongs in the Charter and, for a principal base, its governed Known Lands inventory. A local registry resolves physical locations without assigning jurisdiction; company bindings and Agora working sets remain distinct from territorial authority.
+The base's governed declaration identifies its owning island and territory. Knowledge items may inherit that identity rather than repeat it in every note. Territorial authority belongs in the Charter and, for a principal base, its governed Known Lands inventory. A local registry resolves physical locations without assigning jurisdiction; company bindings and repository selection remain distinct from territorial authority.
 
 Record item-specific provenance and exceptions explicitly: identify the source and relevant revision, whether material is original, an external reference, or an adopted adaptation, and any audience or ownership boundary that differs from the inherited declaration. Kind, subject, lifecycle, audience, and provenance have different jobs. Preserve the existing frontmatter vocabulary: `note_type` classifies kind, tags describe subject, and lifecycle belongs to the owning note type. This contract introduces no new required metadata keys; a reader must be able to recover the meaning from the governed notes and source references.
 

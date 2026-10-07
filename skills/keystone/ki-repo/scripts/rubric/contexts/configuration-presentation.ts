@@ -193,9 +193,8 @@ const arrayElements = (code: string): number => {
   }
 }
 
-/** Skill subtables whose keys are data: area codes, Agora names, check names, zones, sites, tiers and states. */
+/** Skill subtables whose keys are data: area codes, client names, check names, zones, sites, tiers and states. */
 const DATA_MAPS = new Set([
-  'ki-agora.*',
   'ki-binding.clients',
   'ki-engineering.checks',
   'ki-repo.checks',
@@ -228,7 +227,7 @@ const subtableIssue = ({ code, line }: SourceLine): string | undefined => {
 /**
  * Mechanical layout rules every `.ki.toml` shares: exactly one blank line before each table heading
  * and banner, arrays written one element per line with a trailing comma, and `[skills.ki-trades]` last
- * with `[skills.ki-agora]` opening Relationships, and skill subtables reserved for data maps.
+ * and skill subtables reserved for data maps.
  */
 export const inspectConfigurationLayout = (text: string): readonly string[] => {
   const lines = sourceLines(text)
@@ -277,14 +276,6 @@ export const inspectConfigurationLayout = (text: string): readonly string[] => {
       )
     : undefined
   if (afterTrades) issues.push(`line ${afterTrades.line}: [skills.ki-trades] must be the last table in the file`)
-
-  const relationships = lines.findIndex((_, index) => lines[index + 1]?.raw.trim() === '# Relationships')
-  const agora = tables.find((table) => table.owner === 'ki-agora' && table.root)
-  if (agora && relationships >= 0) {
-    const first = lines.find(({ code, line }) => line > (lines[relationships]?.line ?? 0) && isHeading(code))
-    if (first && first.line !== agora.line)
-      issues.push(`line ${agora.line}: [skills.ki-agora] must be the first table under Relationships`)
-  }
 
   for (const entry of lines) {
     const issue = isHeading(entry.code) ? subtableIssue(entry) : undefined

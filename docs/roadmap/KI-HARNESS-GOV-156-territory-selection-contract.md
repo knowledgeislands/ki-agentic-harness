@@ -6,12 +6,12 @@ kind: deliver
 purpose: capability
 initiative: knowledge-islands-model
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 3f1b5cf66efc9710251221573f47e0fbbeffd7d5
 created_at: 2026-10-07T20:07:41Z
-updated_at: 2026-10-07T20:50:07Z
+updated_at: 2026-10-07T21:47:05Z
 ---
 
 # Territory selection contract
@@ -22,7 +22,7 @@ The shared selection contract uses territory membership and preserves governance
 
 ## Context
 
-Kris approved the territory-selection design and its clarified choices with "all agreed" on 7 October 2026. The accepted source is [ADR-KI-ARCADIA-002](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/ADR-KI-ARCADIA-002-territory-derived-repository-selection.md); the [owner's decisions](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/references/territory-selection-decisions.md) grant rollout implementation, push, prune and release. No Project is required.
+Kris approved the territory-selection design and its clarified choices with "all agreed" on 7 October 2026. The accepted source is [ADR-KI-ARCADIA-002](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/ADR-KI-ARCADIA-002-territory-derived-repository-selection.md); the [owner's decisions](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Streams/Initiatives/knowledge-islands-model/design/territory-selection-decisions.md) grant rollout implementation, push, prune and release. No Project is required.
 
 ## Boundary
 
@@ -30,11 +30,7 @@ No CLI implementation, other territory edits, live Paperclip changes, new group 
 
 ## Current state
 
-The shared contract and audit migration are delivered: `ki-repo` specifies `territory_prefix`, the territory handle, directory-name filters and the buffered roots endpoint; configuration layout and roadmap Project-reference enforcement read canonical Arcadia Capital membership; Paperclip admission and report ownership no longer depend on Agora membership. Existing trade-policy changes are separate and must be preserved. This record serves one repository's part of the same rollout; acceptance is not inferred from implementation or publication.
-
-Checkpoint, 2026-10-07: Steps 1-4 are verified with `bun run test` (999 pass), `bunx tsc --noEmit`, in-sync generated rubrics and passing focused `ki-work`, `ki-work-roadmap`, `ki-repo-harness`, `ki-agent-coordination-paperclip` and `ki-skills` audits. Focused `ki-repo` findings in the isolated worktree are environment-only: the unregistered worktree path (`REPO-REG-1`) and runtime activation links (`RUNTIMES-2`), which are identical under the unchanged baseline code.
-
-Step 5 is held until both the `ki` and mgit callers pass. Its staged retirement inventory is the `ki-agora` skill itself and these consumers: `ki-repo` configuration ordering and review wording, `ki-authoring` TOML guidance, the `ki-accept` prune-search scope and `ki-repo-kb-principal` authority descriptions. `ki-next`, `ki-repo-kb` and `ki-trades` carry non-operational mentions only. Retirement preserves all trade semantics and runs as a later isolated unit after the combined pilot.
+The shared selection contract and current consumers now derive repository scope from the Capital's ordered territory membership. The Agora capability is removed, its live consumers and generated publications are reconciled, and both committed caller pilots retain their verified behaviour. The published Streams design-artifact classification and widened delegation behaviour are integrated without rewriting foreign history. This record awaits human review; integration and publication remain with the coordinator.
 
 ## Steps
 
@@ -42,7 +38,7 @@ Step 5 is held until both the `ki` and mgit callers pass. Its staged retirement 
 - [x] Migrate configuration and roadmap enforcement predicates to canonical territorial membership.
 - [x] Decouple Paperclip company admission and report ownership from Agora membership.
 - [x] Verify audit fixtures and publish affected rubric/catalogue evidence.
-- [ ] After both tools pass, retire the Agora capability and current cross-skill consumers.
+- [x] After both tools pass, retire the Agora capability and current cross-skill consumers.
 
 ## Files touched
 
@@ -97,6 +93,32 @@ Explain the new flags, literal-prefix filtering, failure boundaries and hard cut
 ### Roadmap
 
 Use this single bounded record for this repository; create no speculative follow-on queue.
+
+## Review
+
+### Delivered
+
+Completed the approved territory-selection boundary from immutable delivery baseline `2a249ac41c473424b001188bdb37c6f70d1d3b3d`. Preserved the record's original `baseline_ref` and created no new Project, work record, trade policy or acceptance. Local commits deliver the verified result for coordinator integration.
+
+### Change Summary
+
+Retired `skills/governance/ki-agora/`; migrated ki-repo ordering, ki-authoring TOML guidance, ki-accept prune search scope, principal authority wording and current cross-skill references. Reconciled publications and the inventory fixture with the published prerequisite. The contract commit is retained through a recorded task-only rebase; original baseline metadata is unchanged.
+
+### Verification
+
+Harness tests, TypeScript, generated rubric checks, focused ki-repo, ki-authoring, ki-work-roadmap, ki-work, ki-skills, ki-repo-harness and Paperclip audits, and native whole audit pass. ki-accept is verified through its supported acceptance/prune fixtures; principal is audited against declared Arcadia scope. Unchanged committed KI/mgit caller evidence is reused because integration preserves selection semantics.
+
+### Outstanding concerns
+
+No required gate remains failing. Existing whole-audit warnings are recorded separately and remain outside this unit. Coordinator integration, final publication and Kris's human acceptance remain outstanding.
+
+### Post-change review
+
+The goal and hard cut-over are satisfied within the approved paths. Repository selection grants no jurisdiction or cross-repository write authority. Frozen provenance, caller defaults, trade semantics and KIS are preserved. This delivery is ready for human review, not accepted.
+
+### Mini recap
+
+Delivered the bounded retirement with passing source, publication and repository evidence. Retained immutable baselines and caller evidence for integration. No new durable guidance or speculative follow-up is proposed.
 
 ## Discussion
 

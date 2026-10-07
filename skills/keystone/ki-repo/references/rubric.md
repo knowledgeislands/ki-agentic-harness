@@ -66,7 +66,7 @@ Required repository files and document quality, using a local checkout when avai
   - _Remediation:_ automatic
 - **FILES-9 [M] — Configuration presentation structure** — Substantial .ki.toml files use exact ordered neighbourhood banners, open with the foundation block, and keep each explicit skill owner with its child tables. (standards-configuration.md)
   - _Remediation:_ diagnostic — Reorder source without changing parsed TOML: retain the exact header first, add only needed recognised banners, and keep each owner block contiguous.
-- **FILES-10 [M] — Configuration layout** — Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, opens Relationships with [skills.ki-agora], ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Arcadia territory repositories and warns elsewhere. (standards-configuration.md)
+- **FILES-10 [M] — Configuration layout** — Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Arcadia territory repositories and warns elsewhere. (standards-configuration.md)
   - _Remediation:_ diagnostic — Reformat the source without changing parsed TOML: one blank line before each heading and banner, multiline arrays, and ki-trades last. Moving fixed fields out of a non-map subtable changes parsed TOML, so the reader in the owning skill must accept the new shape first.
 - **FILES-J1 [J] — Repository document content** — README and license content is accurate and current. (standards-repository.md)
   - _Evidence scope:_ The repository README and license.

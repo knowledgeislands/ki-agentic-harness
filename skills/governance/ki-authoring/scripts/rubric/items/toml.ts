@@ -20,7 +20,7 @@ const TOML_STRUCTURE: RubricItem<TomlRubricContext> = {
   code: 'TOML-structure',
   title: 'TOML configuration remains compact and navigable',
   description:
-    'Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-agora]` first and `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root.',
+    'Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root.',
   sources: ['standards-toml.md#configuration-structure'],
   judgment: {
     scope: 'Every substantial `.ki.toml` and each short subordinate map in convention scope.',
