@@ -5,13 +5,12 @@ title: Consolidate skills with model
 kind: deliver
 purpose: governance
 project: roadmap-model
-horizon: now
-status: ready
+status: done
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 1647236d9aff870a97ef8561dcaa152e30a682ff
 created_at: 2026-10-07T15:07:03Z
-updated_at: 2026-10-07T15:07:03Z
+updated_at: 2026-10-07T15:17:43Z
 ---
 
 # KI-HARNESS-GOV-154: Consolidate skills with model
@@ -52,11 +51,11 @@ The table above is the current state at baseline.
 
 ## Steps
 
-- [ ] Correct ki-trades RECORD-3 and the roadmap boundary; regenerate its rubric.
-- [ ] State ki-checkpoint's narrowed role in `SKILL.md`, the standard and LIFECYCLE-2; regenerate its rubric.
-- [ ] Correct ki-recap, ki-batch, ki-next, ki-pulse, ki-repo-kb-streams and ki-repo-kb wording.
-- [ ] Repoint the `AGENTS.md` recovery link.
-- [ ] Run the gates and write the review packet.
+- [x] Correct ki-trades RECORD-3 and the roadmap boundary; regenerate its rubric.
+- [x] State ki-checkpoint's narrowed role in `SKILL.md`, the standard and LIFECYCLE-2; regenerate its rubric.
+- [x] Correct ki-recap, ki-batch, ki-next, ki-pulse, ki-repo-kb-streams and ki-repo-kb wording.
+- [x] Repoint the `AGENTS.md` recovery link.
+- [x] Run the gates and write the review packet.
 
 ## Files touched
 
@@ -99,8 +98,51 @@ None in `docs/guides/`; the sweep found no conflict there.
 
 Arcadia's remaining theme checkpoints are reported in the rollout report for Arcadia's migration.
 
+## Review
+
+### Delivered
+
+Commit `cf10b856` (`docs(skills): consolidate skills with the v1 roadmap model`) on baseline `1647236d`.
+
+### Change Summary
+
+- `ki-trades`: RECORD-3 names the Project rather than a theme; the roadmap boundary names `horizon: hold`, `hold.trades` and `hold.condition`. Rubric regenerated.
+- `ki-checkpoint`: a new shared-model bullet, the prohibited-payloads paragraph and LIFECYCLE-2 state the narrowed role - ephemeral thread reconstruction only, never a theme home; Project and Initiative notes own outcome, health, updates and ideas. The description names Project state among the owners. Rubric regenerated.
+- `ki-recap`: held or deferred wording; the checkpoint hand-off routes Project and Initiative status to the registry note.
+- `ki-batch`: ledger exemplar result `held`, with the record at `horizon: hold`.
+- `ki-next`: synergy screen names a shared Project or component.
+- `ki-pulse`: Act hands finite work to `ki-next`'s graduation test; signal Triage is distinguished from the `triage` status.
+- `ki-repo-kb-streams`: capture writes `status: triage` with no horizon, or keeps the work as an idea.
+- `ki-repo-kb`: Streams branch lists `streams/project` and `streams/initiative`.
+- `AGENTS.md`: Paperclip recovery link points at the Project note.
+
+### Verification
+
+- `bun run test`: 973 pass, 0 fail. `bunx tsc --noEmit` clean.
+- `ki repo audit --skill ki-trades`, `ki-checkpoint`, `ki-authoring`: PASS. `ki-skills`: FAIL=0, WARN=1, the pre-existing LONG-3 refresh-cadence warning. `ki-work-roadmap`: FAIL=0, WARN=2, the pre-existing GOV-149 and GOV-150 `theme` tolerance warnings.
+- `ki dev skill rubric ki-trades` and `ki-checkpoint`: in sync. `bunx rumdl check` on the touched Markdown: no issues.
+- A repeat sweep finds the retired terms only in the roadmap standard's tolerance lists, the checkers' tolerated legacy values, and unrelated senses.
+
+### Outstanding concerns
+
+Arcadia still holds the theme checkpoints `+/_CHECKPOINTS/state-of-play.md` and `techne.md`; folding them into Initiative and Project notes is Arcadia's migration under decision 4 and is reported in the rollout report.
+
+### Post-change review
+
+The goal is met inside the boundary: wording only, no new rubric item, no checker behaviour change. Regression risk is low.
+
+### Mini recap
+
+Eight skills and `AGENTS.md` now use the v1 vocabulary.
+
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Authority
 
 Kris's decision 10 of 7 October 2026 asks for this sweep and consolidation, under the decision 6 carry-through grant with `completion_target: done`.
+
+Closed under the decision 6 carry-through grant ("you can just carry it all the way through"), with the review evidence rechecked, through `ki-accept` quoting that grant.
