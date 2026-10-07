@@ -9,7 +9,7 @@ owns: ['+/_CHECKPOINTS/README.md']
 description: >
   Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active
   thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions,
-  roadmap and Project state, durable knowledge, recaps, and runtime continuity stay with their owners.
+  roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <thread> | resume <thread> | update <thread>'
 ---
 
@@ -22,8 +22,9 @@ This governance skill owns the portable checkpoint contract: one concise reposit
 - **Active record** — one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`, where `<thread>` is the user-selected portable name. Updating replaces this snapshot in place; Git supplies history.
 - **Removal** — explicit removal deletes the active record after durable information has reached its proper owners. There is no retired-record state or `_RETIRED` directory; Git supplies recovery history.
 - **Reconstruction, not continuity** — a checkpoint carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, completion signal, roadmap, decision log, or memory system.
-- **Ephemeral threads, not theme homes** - a checkpoint reconstructs one active thread and is removed, on explicit direction, once that thread ends. A Project or Initiative note in the territory registry owns a theme's outcome, health, updates and ideas; Pillars and Decision Records own durable knowledge and rationale. Never keep a standing per-theme or per-Project checkpoint.
 - **Explicit write authority** — create or update only at the user's request or a documented repository-local trigger. Remove only on explicit user direction after durable facts have reached their canonical owners. When the selected thread or content is uncertain, do not write.
+
+Project and Initiative notes supplement checkpoints as the durable home of status: a checkpoint reconstructs a thread, while the note in the territory registry carries the standing outcome, health and updates.
 
 `ki-checkpoint` remains the portable reconstruction record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid checkpoint under `ki-checkpoint`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
 
