@@ -7,12 +7,12 @@ purpose: capability
 initiative: platform-foundations
 component: change-management
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: c315f1860eaec870ac0e913fd2ba296b7457fecd
 created_at: 2026-10-07T14:50:10Z
-updated_at: 2026-10-07T14:50:10Z
+updated_at: 2026-10-07T15:27:00Z
 ---
 
 # KI-HARNESS-GOV-152: Capture the design loop
@@ -84,14 +84,15 @@ The standard gives each stage one contract:
 
 ## Steps
 
-- [ ] Write `skills/change-management/ki-design-loop/SKILL.md`: `ki-kind: process`, `ki-applicability: invocation-only`, optional dependencies on `ki-decision-records` and `ki-delegation`; a description that separates it from `ki-next`, `ki-plan` and `ki-design-inspiration`; `help`, `start <subject>` and `resume <subject>` invocations; and a relationship map from the loop to `ki-next`, `ki-plan` and `ki-batch`.
-- [ ] Write `references/standards-design-loop.md` with the stage contracts and artefact placement rule above.
-- [ ] Add `assets/` templates for the brief, a review, the merged report and the decisions file, each with the headings the standard requires.
-- [ ] Write `references/sources.md`, citing the 7 October 2026 roadmap-model run as the worked exemplar by date and subject until Arcadia files it.
-- [ ] Add to `standards-project-registry.md`: a Project's `## Update` or an Initiative's `## Review` links the Decision Record of any design loop run for it, and its sources cite that record.
-- [ ] Regenerate `skills/README.md` and any rubric the registry change affects.
-- [ ] Prepare two outbound trades with `ki-trade`: to `tools-ki`, add `ki-design-loop` to the bootstrap core process skills; to `ki-arcadia-principal`, file the roadmap-model artefacts as a Decision Record with supporting files and link it from the `roadmap-model` Project note and the `platform-foundations` Initiative note.
-- [ ] Run the gates and write the review packet.
+- [x] Write `skills/change-management/ki-design-loop/SKILL.md`: `ki-kind: process`, `ki-applicability: invocation-only`, optional dependencies on `ki-decision-records` and `ki-delegation`; a description that separates it from `ki-next`, `ki-plan` and `ki-design-inspiration`; `help`, `start <subject>` and `resume <subject>` invocations; and a relationship map from the loop to `ki-next`, `ki-plan` and `ki-batch`.
+- [x] Write `references/standards-design-loop.md` with the stage contracts and artefact placement rule above.
+- [x] Add `assets/` templates for the brief, a review, the merged report and the decisions file, each with the headings the standard requires.
+- [x] Write `references/sources.md`, citing the 7 October 2026 roadmap-model run as the worked exemplar by date and subject until Arcadia files it.
+- [x] Add to `standards-project-registry.md`: a Project's `## Update` or an Initiative's `## Review` links the Decision Record of any design loop run for it, and its sources cite that record.
+- [x] Regenerate `skills/README.md` and any rubric the registry change affects.
+- [x] Prepare two outbound trades with `ki-trade`: to `tools-ki`, add `ki-design-loop` to the bootstrap core process skills; to `ki-arcadia-principal`, file the roadmap-model artefacts as a Decision Record with supporting files and link it from the `roadmap-model` Project note and the `platform-foundations` Initiative note.
+- [x] Make activation explicit (decision 10): the exact invocation, when to use the loop, where its artefacts go and its hand-off, in the skill and in a `docs/guides/design-loop.md` guide linked from the guides index.
+- [x] Run the gates and write the review packet.
 
 ## Files touched
 
@@ -100,7 +101,8 @@ The standard gives each stage one contract:
 - `skills/change-management/ki-design-loop/references/sources.md`
 - `skills/change-management/ki-design-loop/assets/brief.md`, `review.md`, `report.md` and `decisions.md`
 - `skills/change-management/ki-work/references/standards-project-registry.md`
-- `skills/README.md` and any regenerated rubric
+- `skills/README.md` and the root `README.md` capability counts
+- `docs/guides/design-loop.md` and `docs/guides/README.md`
 - `-/_TRADES/` outbound trade records for `tools-ki` and `ki-arcadia-principal`
 
 ## Verify
@@ -127,7 +129,7 @@ None: no repository Specification describes design work.
 
 ### Guides
 
-The website's skills-by-outcome guide should list `ki-design-loop`; that belongs to `ki-website` and follows publication.
+[Run a design loop](../guides/design-loop.md) explains when and how to invoke the loop. The website's skills-by-outcome guide should list `ki-design-loop`; that belongs to `ki-website` and follows publication.
 
 ### Roadmap
 

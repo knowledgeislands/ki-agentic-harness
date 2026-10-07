@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 60 skills: 50 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 61 skills: 50 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -104,6 +104,16 @@ Prepare and run one bounded authority envelope over an exact set of Ready work r
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `batch <work>... | batch outcome <outcome> | run <batch-authorisation> | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-design-loop`
+
+Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed where the subject lives. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, and `ki-design-inspiration` for website visual design.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `start <subject> | resume <subject> | help`
 - **Dependencies:** None
 - **Runtime:** Portable
 
@@ -345,7 +355,7 @@ Govern KI Markdown, TOML, README composition, and durable knowledge placement. U
 
 #### `ki-checkpoint`
 
-Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners.
+Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions, roadmap and Project state, durable knowledge, recaps, and runtime continuity stay with their owners.
 
 - **Kind:** Governance
 - **Applicability:** Detected

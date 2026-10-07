@@ -89,6 +89,8 @@ The body carries these sections in order:
 
 Upkeep and other work that never finishes has no Project. Its records name `initiative` directly, usually with `purpose: upkeep`, and recurring runs inherit the Initiative from their template or Activity.
 
+A Project or Initiative shaped through [`ki-design-loop`](../../ki-design-loop/SKILL.md) links its design's Decision Record from the Project's `## Update` or the Initiative's `## Review`, and from the note's sources. The note links the design; it never copies the brief, reviews, report or decisions.
+
 ## Cross-territory references
 
 A record may serve a Project or Initiative owned by another territory. It then qualifies the value as `<territory>/<slug>`:
