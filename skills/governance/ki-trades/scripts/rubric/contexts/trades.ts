@@ -7,6 +7,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { type HoldContext, holdContext } from './hold.ts'
 
 const CONFIG_TABLE = 'ki-trades'
 const REPOSITORY_TABLE = 'ki-repo'
@@ -147,6 +148,7 @@ export type TradesRubricContext = {
   readonly release: OutcomeContext
   readonly standing: OutcomeContext
   readonly judgment: TradeJudgmentContext
+  readonly hold: HoldContext
 }
 
 const table = (value: unknown): Record<string, unknown> | null =>
@@ -1622,7 +1624,8 @@ export const createTradesSession = ({
     standing: {
       outcomes: standing.length ? standing : pass('Standing intake provenance blocks are valid.')
     },
-    judgment: {}
+    judgment: {},
+    hold: holdContext()
   }
 
   return {
@@ -1639,7 +1642,8 @@ export const createTradesSession = ({
           'STATUS',
           'RELEASE',
           'STANDING',
-          'ADOPTION'
+          'ADOPTION',
+          'HOLD'
         ],
         context: () => context
       }

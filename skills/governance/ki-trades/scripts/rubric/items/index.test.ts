@@ -16,7 +16,8 @@ test('the catalogue exposes the complete ordered trade contract', () => {
     'STATUS',
     'RELEASE',
     'STANDING',
-    'ADOPTION'
+    'ADOPTION',
+    'HOLD'
   ])
   expect(definition.families.flatMap((family) => family.items.map((item) => item.code))).toEqual([
     'RUBRIC-1',
@@ -33,7 +34,8 @@ test('the catalogue exposes the complete ordered trade contract', () => {
     'STATUS-1',
     'RELEASE-1',
     'STANDING-1',
-    'ADOPTION-1'
+    'ADOPTION-1',
+    'HOLD-1'
   ])
 })
 
@@ -43,6 +45,7 @@ test('the catalogue and family modules keep narrow public surfaces', async () =>
     'adoption',
     'authority',
     'configuration',
+    'hold',
     'policy',
     'publication',
     'records',

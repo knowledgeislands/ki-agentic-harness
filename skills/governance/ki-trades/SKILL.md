@@ -17,7 +17,7 @@ argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 
 This governance skill defines safe **trade preparation and submission**, not transfer: a sender may make evolving work or knowledge visible without asking a peer to act, then publish an immutable submission while the receiver alone decides receipt, disposition, and any local follow-on work or knowledge. Read [the trade standard](references/standards-trades.md) before creating or reviewing records; [the generated rubric](references/rubric.md) publishes the mechanical and judgment criteria, and [the source list](references/sources.md) records the contract's provenance.
 
-> **Trades are on hold.** Submit no new trade until the territory model is settled. Do the work directly, or record it as work in the receiving repository. Existing trades keep the full support described here, so they can still be received, decided and released.
+> **Trades are on hold, due for review by 2026-10-14.** Submit no new trade until the territory model is settled. Do the work directly, or record it as work in the receiving repository. Existing trades keep the full support described here, so they can still be received, decided and released.
 
 ## What this skill owns
 
@@ -48,6 +48,8 @@ Run `ki repo educate --skill ki-trades --repo <repo>` to render the concern and 
 ### Mode REFRESH
 
 REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the harness. Reconcile the standard, structured catalogue, generated rubric, sources, and GDR-KI-HARNESS-013 when the contract changes; confirm before changing the authority or lifecycle model.
+
+While the hold notice above stands, REFRESH reports that the hold is due for review by its date; `HOLD-1` warns in AUDIT once that date has passed. At the date the owner either re-enables trades, removing the notice and bringing this skill up to date with the territory model, or renews the hold by changing the date in the notice, which is the only place it is written.
 
 ## Notes
 

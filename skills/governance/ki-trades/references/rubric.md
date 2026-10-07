@@ -19,6 +19,7 @@ Line-by-line criteria for auditing ki-trades. Classifications are derived from i
 - [RELEASE — Release and pruning](#release--release-and-pruning)
 - [STANDING — Standing knowledge intake](#standing--standing-knowledge-intake)
 - [ADOPTION — Receiver local authority](#adoption--receiver-local-authority)
+- [HOLD — Trades hold review](#hold--trades-hold-review)
 
 ## RUBRIC — Generated rubric publication
 
@@ -137,3 +138,12 @@ Human-confirmed disposition remains distinct from local work selection, acceptan
   - _Review prompt:_ Confirm that applied is limited to one bounded, reversible, independently verifiable local work change with no material design, dependency, migration, public-contract, or cross-repository effect; every other work disposition remains separately confirmed, every retention remains a local knowledge decision, and none grants sender authority.
   - _Outcomes:_ conforming; separate local work required; decline or clarify required
   - _Conforming guidance:_ Keep the trade decision separate from local prioritisation and acceptance; create or link local work only through its own confirmed lifecycle.
+
+## HOLD — Trades hold review
+
+→ [standard](../SKILL.md)
+
+A hold on new trades carries a review date, so it is renewed or lifted rather than left standing.
+
+- **HOLD-1 [M] — the trades hold is reviewed by its date** — While the skill carries its "Trades are on hold" notice, the notice names the date by which the hold is due for review, and that date has not passed. At the date the owner either re-enables trades and brings ki-trades up to date with the territory model, or renews the hold with a new date. (../SKILL.md)
+  - _Remediation:_ diagnostic — Ask the owner to review the hold: remove the notice and bring the trade standard up to date with the territory model, or renew the hold by changing its review date in SKILL.md.
