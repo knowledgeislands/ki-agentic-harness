@@ -5,5 +5,5 @@ Practical instructions for using, operating, contributing to, and maintaining th
 ## Guide areas
 
 - [Choose a skill by outcome](https://knowledgeislands.info/guidance/skills/by-outcome/) — route an intended result to the smallest useful capability or delivery journey without first knowing a skill name.
-- [Run a design loop](design-loop.md) — shape a Project, Initiative or cross-cutting model with `/ki-design-loop start <subject>` before any work record exists, and hand the rollout to `ki-next`, `ki-plan` and `ki-batch`.
+- [User guides](user/README.md) — running the harness's process skills, starting with [a design loop](user/design-loop.md): shape a Project, Initiative or cross-cutting model with `/ki-design-loop start <subject>` before any work record exists, and hand the rollout to `ki-next`, `ki-plan` and `ki-batch`.
 - [Developer guides](developer/README.md) — lightweight contributor workflows for local harness development and testing.

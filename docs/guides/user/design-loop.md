@@ -1,6 +1,6 @@
 # Run a design loop
 
-Use the `ki-design-loop` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's [standard](../../skills/change-management/ki-design-loop/references/standards-design-loop.md) owns the stage contracts; this guide explains when and how to start it.
+Use the `ki-design-loop` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's standard, `references/standards-design-loop.md`, owns the stage contracts; this guide explains when and how to start it.
 
 ## When to use it
 
