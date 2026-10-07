@@ -51,7 +51,7 @@ When this record lands, `private_delegation.md` is removed or reduced to a point
 
 In scope:
 
-- Give `ki-delegation` a second, runtime-neutral contract for routine background runs: detached agents that survive an interrupt; the run packet (prompt, status, pid, log, report, `DONE`); prompt shape; generalised authority tiers and their reusable footers; the numbered decisions log; coordination between agents; the non-blocking monitor and its exited-without-`DONE` flag; and low-noise reporting. Retire the "not required for routine runtime delegation" rule.
+- Give `ki-delegation` a second, runtime-neutral contract for routine background runs: detached agents that survive an interrupt; the run packet (prompt, status, pid, log, report, `DONE`); prompt shape; generalised authority tiers and their reusable footers; the numbered decisions log; coordination between agents; the run queue, its concurrency-capped dispatcher and the waiter that wakes the coordinator on each finish (Decision 19 addendum); the non-blocking monitor and its exited-without-`DONE` flag; and low-noise reporting. Retire the "not required for routine runtime delegation" rule.
 - Name `ki agent` in `tools-ki` as the reference launcher; it carries the Claude Code and Codex adapters. `claude-desktop` cannot launch detached agents and gets no adapter.
 - Reduce the chezmoi interim `delegation.md` to a pointer. `claude-bg` stays until live runs end, then retires.
 
@@ -69,10 +69,10 @@ Out of scope:
 
 ## Steps
 
-- [ ] Rescope `ki-delegation`: description, scope, triggers and modes cover two contracts; retire the routine-delegation exclusion.
-- [ ] Add `references/standards-background-runs.md` with detachment, run packet, prompt shape, authority tiers, decisions log, coordination, monitoring and reporting.
-- [ ] Ship generalised authority footers `assets/rules-{none,push,prune,release}.md` and the `assets/run-prompt.md` skeleton for `ki agent --rules`.
-- [ ] Add RUN rubric items: a mechanical check that every footer exists and states its tier's grants and prohibitions, plus a judgment item for run prompts; regenerate the rubric and update the sources review.
+- [x] Rescope `ki-delegation`: description, scope, triggers and modes cover two contracts; retire the routine-delegation exclusion.
+- [x] Add `references/standards-background-runs.md` with detachment, run packet, prompt shape, authority tiers, decisions log, coordination, run queue, monitoring and reporting.
+- [x] Ship generalised authority footers `assets/rules-{none,push,prune,release}.md` and the `assets/run-prompt.md` skeleton for `ki agent --rules`.
+- [x] Add RUN rubric items: a mechanical check that every footer exists and states its tier's grants and prohibitions, plus a judgment item for run prompts; regenerate the rubric and update the sources review.
 - [ ] Deliver `ki agent` in `tools-ki` (separate repository, own commits) and release it.
 - [ ] Reduce the chezmoi interim to a pointer.
 
@@ -145,6 +145,8 @@ Realistic resolutions, not chosen here:
 Kris may also refine one of these or choose a different owner. Record his decision and its date here; if it outlives the item, route it to a Decision Record.
 
 **Decision (Kris, 2026-10-07, state-of-play Decision 18):** option 1, widen `ki-delegation`. It gets two contracts, the existing high-risk packet and a routine background-run contract, and the "not required for routine runtime delegation" rule is retired. Delegation lives in skills and tools, never in agent-specific or host-specific setup: the launcher becomes a runtime-neutral `ki agent` command in `tools-ki` with the Claude Code and Codex adapters inside it. The chezmoi interim shrinks to a pointer and then retires. Kris also asked for immediate adoption into Now and delivery.
+
+**Addendum (Kris, 2026-10-07, state-of-play Decision 19):** keep agents moving. The contract and `ki agent` gain a run queue in priority order, a detached concurrency-capped dispatcher that launches the next queued agent as soon as any finishes, and a waiter that wakes the coordinator on each finish so it reports to the owner and re-arms it. Queued work still waits on `DONE` gates.
 
 ### Open questions
 

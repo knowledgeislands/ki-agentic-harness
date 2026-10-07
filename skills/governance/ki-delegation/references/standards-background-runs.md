@@ -9,6 +9,7 @@
 - [Authority tiers](#authority-tiers)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
+- [Run queue](#run-queue)
 - [Monitoring](#monitoring)
 - [Reporting](#reporting)
 - [Reference launcher](#reference-launcher)
@@ -86,6 +87,15 @@ The log is run state, not a Decision Record. A decision that outlives the work g
 - **Pushing:** never push someone else's unpushed commits without asking the owner.
 - **Ambiguity:** stop and report rather than guess.
 
+## Run queue
+
+Keep agents moving. A coordinator never waits for a whole batch to finish before starting the next piece of work.
+
+- **Queue:** ready-made prompts wait in the run's queue, each with its agent name and launch options. Queue order sets priority; reorder the queue, not the prompts, to change it.
+- **Dispatcher:** one detached dispatcher per run keeps up to a set number of agents running. As soon as any running agent finishes, it launches the next queued agent, logs each launch, and exits when the queue is empty and nothing is running.
+- **Gates:** queued work still waits on `DONE` gates. A queued agent that depends on another is launched with its wait, and waits in the foreground as under [Coordination](#coordination).
+- **Waiter:** the coordinator keeps one background waiter armed. It blocks until the next agent finishes, prints that agent's name and last status (or that it exited without `DONE`), and marks it seen. On each wake, the coordinator reports the finish to the owner and re-arms the waiter.
+
 ## Monitoring
 
 The launching session stays non-blocking. One monitor per run prints a single line every two minutes listing each agent's latest status, and ends with `ALL FINISHED` once no agent is still running.
@@ -102,7 +112,7 @@ The report has three parts: **Done** (one line per outcome), **Failed** (if any)
 
 ## Reference launcher
 
-`ki agent` in `tools-ki` is the reference launcher. It writes the run packet under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, and provides `status` and `watch`. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md).
+`ki agent` in `tools-ki` is the reference launcher. It writes the run packet under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, and provides `status` and `watch`, plus `queue`, `dispatch` and `wait --next` for the run queue. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md).
 
 Runtime mechanics belong in the launcher, not in this skill or in personal setup.
 

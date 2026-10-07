@@ -6,7 +6,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers,
-  decisions log, coordination, monitoring) and durable packets for approved high-risk handoffs. Use when
+  decisions log, coordination, run queue, monitoring) and durable packets for approved high-risk handoffs. Use when
   delegating to background agents or writing a delegation brief; `ki agent` launches runs.
 argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | refresh'
 ---
@@ -15,7 +15,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | ref
 
 `ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-- **Background runs** - routine delegation to detached agents: detachment, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, monitoring, and low-noise reporting. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
+- **Background runs** - routine delegation to detached agents: detachment, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, and low-noise reporting. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
 - **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
