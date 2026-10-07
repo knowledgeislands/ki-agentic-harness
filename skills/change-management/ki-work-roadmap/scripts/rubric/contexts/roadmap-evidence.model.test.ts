@@ -1,8 +1,13 @@
 import { afterEach, expect, test } from 'bun:test'
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { loadProjectRegistry, loadTerritoryRegistry, parseRegistryReference } from './project-registry.ts'
+import {
+  isAgoraRepository,
+  loadProjectRegistry,
+  loadTerritoryRegistry,
+  parseRegistryReference
+} from './project-registry.ts'
 import { IDEAS_LIST, ISSUE_LEDGER, inspectRoadmap, issueLedger, rootRoadmap } from './roadmap-evidence.ts'
 
 const temporaryDirectories: string[] = []
@@ -103,7 +108,7 @@ test('the horizon table admits each status only at its horizons', () => {
 test('an adopted open record without kind warns', () => {
   const repository = createRepository('horizon: future\nstatus: draft\nbaseline_ref: null', '')
   expect(failures(repository)).toEqual([])
-  expect(warnings(repository)).toContain('migration: an adopted record should declare kind')
+  expect(warnings(repository)).toContain('legacy: an adopted record should declare kind')
 })
 
 test('hold requires a valid mapping and is forbidden elsewhere', () => {
@@ -211,24 +216,82 @@ test('classification values are validated and components come from configuration
   )
 })
 
-test('fixed areas are a code list; the legacy theme map and themes list warn', () => {
+test('fixed areas map codes to titles; a bare list fails in the Agora and warns outside it', () => {
   const repository = createRepository('kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null', '')
-  writeFileSync(
-    join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\nthemes = ["tooling"]\n'
+  const configure = (repo: string, roadmap: string) =>
+    writeFileSync(
+      join(repository, '.ki.toml'),
+      `[skills.ki-repo]\nrepo_code = "TEST"\n${repo}\n[skills.ki-work-roadmap]\n${roadmap}`
+    )
+  const legacyList = 'a bare areas list is the legacy form; map each code to its title, e.g. GOV = "Governance"'
+  configure('', 'themes = ["tooling"]\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ROAD-6', msg: 'retired: ki-work-roadmap themes; remove the themes list' })
   )
-  expect(failures(repository)).toEqual([])
-  expect(warnings(repository)).toContain('migration: ki-work-roadmap themes are retired; remove the themes list')
-  writeFileSync(
-    join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\nareas = ["core"]\n'
+  configure('', 'areas = ["core"]\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ROAD-6', msg: 'ki-work-roadmap areas must map uppercase area codes to titles' })
   )
+  configure('', 'areas = "CORE"\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ROAD-6', msg: 'ki-work-roadmap areas must map uppercase area codes to titles' })
+  )
+  configure('', 'areas = ["CORE"]\n')
+  expect(warnings(repository)).toContain(`outside the Agora, ${legacyList}`)
+  configure(
+    'repository = "https://example.test/capital"\ncapital = "https://example.test/capital"\n\n[skills.ki-agora.kis]\ntitle = "Knowledge Islands"\n',
+    'areas = ["CORE"]\n'
+  )
+  expect(failures(repository)).toContainEqual(expect.objectContaining({ area: 'ROAD-6', msg: legacyList }))
+  configure('', 'areas.CORE = "Core delivery"\n')
+  expect(inspectRoadmap(repository).filter((finding) => finding.area === 'ROAD-6')).toEqual([])
+  configure('', 'areas.CORE = "foundation-tooling"\n')
   expect(failures(repository)).toContainEqual(
     expect.objectContaining({
-      area: 'ROAD-6',
-      msg: 'ki-work-roadmap areas must be a non-empty list of uppercase area codes'
+      msg: "area CORE maps to theme 'foundation-tooling'; the area-to-theme map is retired, so map the code to its title"
     })
   )
+  configure('', 'areas.CORE = "  "\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ msg: 'area CORE must map to a title that starts with a capital letter' })
+  )
+  configure('', 'areas.CORE = 1\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ msg: 'area CORE must map to a title that starts with a capital letter' })
+  )
+  configure('', 'areas.core = "Core"\n')
+  expect(failures(repository)).toContainEqual(expect.objectContaining({ msg: 'roadmap area codes must be uppercase' }))
+  configure('', 'areas = {}\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ msg: 'ki-work-roadmap areas must not be empty when declared' })
+  )
+})
+
+test('Agora membership comes from the Capital and an unreadable Capital reads as outside', () => {
+  const capital = createCapital()
+  const island = temporary('ki-island-')
+  writeFileSync(
+    join(island, '.ki.toml'),
+    '[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "https://example.test/capital"\n'
+  )
+  const state = temporary('ki-state-')
+  writeFileSync(
+    join(state, 'registry.toml'),
+    `[repositories."capital"]\nrepository = "https://example.test/capital"\npath = "${capital}"\n`
+  )
+  const environment = { KI_STATE_HOME: state }
+  expect(isAgoraRepository(island, environment)).toBe(false)
+  const config = join(capital, '.ki.toml')
+  const base = readFileSync(config, 'utf8')
+  writeFileSync(config, `${base}\n[skills.ki-agora.kis]\nmembers = ["https://example.test/island"]\n`)
+  expect(isAgoraRepository(island, environment)).toBe(true)
+  expect(isAgoraRepository(capital, environment)).toBe(true)
+  writeFileSync(config, `${base}\n[skills.ki-agora.kis]\ntitle = "Knowledge Islands"\n`)
+  expect(isAgoraRepository(island, environment)).toBe(false)
+  expect(isAgoraRepository(island, {})).toBe(false)
+  expect(isAgoraRepository(temporary('ki-bare-'), environment)).toBe(false)
+  writeFileSync(config, `${base}\n[skills.ki-agora.kis\n`)
+  expect(isAgoraRepository(capital, environment)).toBe(false)
 })
 
 test('the ideas list beside the ledger is not a record', () => {
@@ -448,7 +511,7 @@ test('the retired Initiatives index inside Projects still resolves slugs with a 
   cpSync(join(capital, 'Streams'), join(repository, 'Streams'), { recursive: true })
   expect(failures(repository)).toEqual([])
   expect(warnings(repository)).toContain(
-    'migration: Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/'
+    'legacy: Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/'
   )
   expect(warnings(repository)).not.toContain("initiative 'techne' is not in the project registry")
 })

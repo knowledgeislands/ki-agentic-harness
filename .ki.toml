@@ -89,7 +89,6 @@ auto_memory = "disabled"
 adapter = "roadmap"
 
 [skills.ki-work-roadmap]
-areas = ["FND", "GOV", "OPS", "REV", "RTP"]
 # Mirrors the skills/ family directories.
 components = [
   "acquire",
@@ -101,6 +100,13 @@ components = [
   "keystone",
   "repo-structure",
 ]
+
+[skills.ki-work-roadmap.areas]
+FND = "Foundation tooling"
+GOV = "Governance consistency"
+OPS = "Operations"
+REV = "Regular reviews"
+RTP = "Runtime portability"
 
 [skills.ki-checkpoint]
 

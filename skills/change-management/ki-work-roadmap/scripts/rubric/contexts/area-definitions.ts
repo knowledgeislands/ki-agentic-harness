@@ -24,6 +24,7 @@ export const areasSection = (text: string): string | undefined => {
 
 /**
  * Warns once per declared area the roadmap index does not name in backticks under `## Areas`.
+ * A code-to-title map defines every code by its title, so only the legacy bare list is checked here.
  * Configuration errors are ROAD-6 failures elsewhere; this check reads only a well-formed code list.
  */
 export const inspectAreaDefinitions = (repository: string): readonly Finding[] => {

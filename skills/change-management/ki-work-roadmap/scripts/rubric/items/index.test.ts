@@ -126,6 +126,9 @@ const writeTerminalTriage = (repository: string, dispositionFields: string, disp
   return item
 }
 
+const unretiredFailures = (repository: string) =>
+  inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL' && !finding.msg.startsWith('retired: '))
+
 const addRetainedTarget = (repository: string): void => {
   const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   const target = join(repository, 'docs', 'roadmap', 'TEST-002-build-the-foundation.md')
@@ -323,7 +326,7 @@ test('an area-qualified work item uses its configured namespace and area ledger'
   const repository = createFixture()
   writeFileSync(
     join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "foundation-tooling"\n'
+    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "Foundation tooling"\n'
   )
   const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   const target = join(repository, 'docs', 'roadmap', 'TEST-CORE-001-build-the-foundation.md')
@@ -335,10 +338,7 @@ test('an area-qualified work item uses its configured namespace and area ledger'
 
 test('a repository code and work-item identifier may begin with a digit', () => {
   const repository = createFixture()
-  writeFileSync(
-    join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "5GE"\n\n[skills.ki-work-roadmap]\nthemes = ["foundation-tooling"]\n'
-  )
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\nrepo_code = "5GE"\n\n[skills.ki-work-roadmap]\n')
   const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   const target = join(repository, 'docs', 'roadmap', '5GE-001-build-the-foundation.md')
   renameSync(source, target)
@@ -350,35 +350,29 @@ test('fixed areas reject an unknown namespace and a ledger below its retained se
   const repository = createFixture()
   writeFileSync(
     join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "foundation-tooling"\n'
+    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "Foundation tooling"\n'
   )
   const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   const target = join(repository, 'docs', 'roadmap', 'TEST-CORE-001-build-the-foundation.md')
   renameSync(source, target)
   writeFileSync(target, readFileSync(target, 'utf8').replace('id: TEST-001', 'id: TEST-CORE-001\narea: OTHER'))
   writeFileSync(join(repository, 'docs', 'roadmap', ISSUE_LEDGER), issueLedger(new Map([['CORE', 0]])))
-  expect(inspectRoadmap(repository)).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({ area: 'ITEM-1' }),
-      expect.objectContaining({
-        level: 'WARN',
-        area: 'ROAD-6',
-        msg: 'migration: the area-to-theme map is retired; declare areas = ["CODE", ...]'
-      })
-    ])
-  )
+  expect(inspectRoadmap(repository)).toEqual(expect.arrayContaining([expect.objectContaining({ area: 'ITEM-1' })]))
   writeFileSync(target, readFileSync(target, 'utf8').replace('area: OTHER', 'area: CORE'))
   expect(inspectRoadmap(repository)).toContainEqual(
     expect.objectContaining({ area: 'ROAD-7', msg: 'issue ledger area CORE high-water 0 is below retained issue 1' })
   )
 })
 
-test('Triage accepts draft captured work but rejects an adopted lifecycle state', () => {
+test('the retired triage horizon fails, and an adopted lifecycle state there still fails', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   writeFileSync(item, readFileSync(item, 'utf8').replace('horizon: next', 'horizon: triage'))
+  expect(inspectRoadmap(repository)).toContainEqual(
+    expect.objectContaining({ level: 'FAIL', msg: "retired: horizon 'triage'; use status triage without a horizon" })
+  )
 
-  expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
+  expect(unretiredFailures(repository)).toEqual([])
 
   writeFileSync(item, readFileSync(item, 'utf8').replace('status: draft', 'status: ready'))
   expect(inspectRoadmap(repository)).toContainEqual(
@@ -390,11 +384,11 @@ test('terminal Triage rejected disposition is done without delivery evidence or 
   const repository = createFixture()
   const item = writeTerminalTriage(repository, 'intake_disposition: rejected')
 
-  expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
+  expect(unretiredFailures(repository)).toEqual([])
 
   writeFileSync(item, readFileSync(item, 'utf8').replace('baseline_ref: null', `baseline_ref: ${'a'.repeat(40)}`))
   expect(inspectRoadmap(repository)).toContainEqual(
-    expect.objectContaining({ area: 'ITEM-2', msg: 'migration: terminal Triage item baseline_ref must remain null' })
+    expect.objectContaining({ area: 'ITEM-2', msg: 'legacy: terminal Triage item baseline_ref must remain null' })
   )
 })
 
@@ -421,7 +415,7 @@ test('terminal Triage rejects delivery sections', () => {
     expect(inspectRoadmap(repository)).toContainEqual(
       expect.objectContaining({
         area: 'ITEM-3',
-        msg: `migration: terminal Triage must not contain delivery sections: ${heading}`
+        msg: `legacy: terminal Triage must not contain delivery sections: ${heading}`
       })
     )
   }
@@ -434,14 +428,14 @@ test('terminal Triage duplicate and merged dispositions require a retained targe
     expect(inspectRoadmap(missingTargetRepository)).toContainEqual(
       expect.objectContaining({
         area: 'ITEM-2',
-        msg: `migration: ${disposition} Triage disposition requires intake_disposition_target`
+        msg: `legacy: ${disposition} Triage disposition requires intake_disposition_target`
       })
     )
 
     const validRepository = createFixture()
     addRetainedTarget(validRepository)
     writeTerminalTriage(validRepository, `intake_disposition: ${disposition}\nintake_disposition_target: TEST-002`)
-    expect(inspectRoadmap(validRepository).filter((finding) => finding.level === 'FAIL')).toEqual([])
+    expect(unretiredFailures(validRepository)).toEqual([])
   }
 })
 
@@ -451,7 +445,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(missingDispositionRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'migration: terminal Triage intake_disposition must be rejected, duplicate, or merged'
+      msg: 'legacy: terminal Triage intake_disposition must be rejected, duplicate, or merged'
     })
   )
 
@@ -460,7 +454,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(rejectedTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'migration: rejected Triage disposition must not name intake_disposition_target'
+      msg: 'legacy: rejected Triage disposition must not name intake_disposition_target'
     })
   )
 
@@ -469,7 +463,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(malformedTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'migration: intake_disposition_target must be a canonical work-item ID'
+      msg: 'legacy: intake_disposition_target must be a canonical work-item ID'
     })
   )
 
@@ -478,7 +472,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(selfTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'migration: intake_disposition_target must differ from the disposed item'
+      msg: 'legacy: intake_disposition_target must differ from the disposed item'
     })
   )
 
@@ -487,7 +481,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(unresolvedTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: "migration: intake_disposition_target 'TEST-002' does not resolve to a retained work item"
+      msg: "legacy: intake_disposition_target 'TEST-002' does not resolve to a retained work item"
     })
   )
 
@@ -496,7 +490,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(emptyRationaleRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-3',
-      msg: 'migration: terminal Triage item requires a non-empty ## Intake disposition'
+      msg: 'legacy: terminal Triage item requires a non-empty ## Intake disposition'
     })
   )
 })
@@ -512,7 +506,7 @@ test('intake disposition fields are forbidden outside terminal Triage', () => {
   expect(inspectRoadmap(repository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'migration: intake disposition fields are valid only for terminal Triage items'
+      msg: 'retired: intake_disposition fields; cancel the record with a resolution'
     })
   )
 
@@ -527,7 +521,7 @@ test('intake disposition fields are forbidden outside terminal Triage', () => {
   expect(inspectRoadmap(openTriageRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'migration: intake disposition fields are valid only for terminal Triage items'
+      msg: 'retired: intake_disposition fields; cancel the record with a resolution'
     })
   )
 })
@@ -719,7 +713,7 @@ const conformIssueLedger = (repository: string) => {
 const useAreaLedger = (repository: string): void => {
   writeFileSync(
     join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "foundation-tooling"\n'
+    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap.areas]\nCORE = "Foundation tooling"\n'
   )
   const source = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   const target = join(repository, 'docs', 'roadmap', 'TEST-CORE-001-build-the-foundation.md')
@@ -826,7 +820,7 @@ test('KB scope follows the declared repository kind, not a directory shape', () 
   const repository = createFixture()
   writeFileSync(
     join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\nrepo_type = "kb"\n\n[skills.ki-work-roadmap]\nthemes = ["foundation-tooling"]\n'
+    '[skills.ki-repo]\nrepo_code = "TEST"\nrepo_type = "kb"\n\n[skills.ki-work-roadmap]\n'
   )
   expect(inspectRoadmap(repository)).toContainEqual(
     expect.objectContaining({ area: 'SCOPE-1', level: 'FAIL', msg: expect.stringContaining('ki-repo-kb-streams') })
@@ -839,22 +833,19 @@ test('KB scope follows the declared repository kind, not a directory shape', () 
   expect(inspectRoadmap(repository).filter((finding) => finding.area === 'SCOPE-1')).toEqual([])
 })
 
-test('a retired theme field warns under migration tolerance', () => {
+test('a retired theme field fails', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   writeFileSync(item, readFileSync(item, 'utf8').replace('kind: deliver', 'kind: deliver\ntheme: other-theme'))
-  const findings = inspectRoadmap(repository)
-  expect(findings.filter((finding) => finding.level === 'FAIL')).toEqual([])
-  expect(findings).toContainEqual(
+  expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([
     expect.objectContaining({
-      level: 'WARN',
       area: 'ITEM-2',
-      msg: 'migration: theme is retired; classify with project, initiative or component'
+      msg: 'retired: theme; classify with project, initiative or component'
     })
-  )
+  ])
 })
 
-test('trade waits use a flat canonical identity array only at Waiting for', () => {
+test('waiting_on_trades is retired', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   writeFileSync(
@@ -868,33 +859,6 @@ test('trade waits use a flat canonical identity array only at Waiting for', () =
       )
   )
   expect(inspectRoadmap(repository).filter((finding) => finding.area === 'TRADE-2')).toEqual([
-    expect.objectContaining({
-      level: 'WARN',
-      msg: 'migration: waiting_on_trades is retired; name the trades in hold.trades'
-    })
+    expect.objectContaining({ level: 'FAIL', msg: 'retired: waiting_on_trades; name the trades in hold.trades' })
   ])
-
-  writeFileSync(item, readFileSync(item, 'utf8').replace('horizon: waiting-for', 'horizon: soon'))
-  expect(inspectRoadmap(repository)).toContainEqual(
-    expect.objectContaining({
-      area: 'TRADE-2',
-      msg: 'migration: waiting_on_trades is valid only at the waiting-for horizon'
-    })
-  )
-
-  writeFileSync(
-    item,
-    readFileSync(item, 'utf8')
-      .replace('horizon: soon', 'horizon: waiting-for')
-      .replace('waiting_on_trades: [TRD-1234abcd]', 'waiting_on_trades: [TRD-INVALID, TRD-INVALID]')
-  )
-  expect(inspectRoadmap(repository)).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        area: 'TRADE-2',
-        msg: 'migration: waiting_on_trades must contain only canonical trade identities'
-      }),
-      expect.objectContaining({ area: 'TRADE-2', msg: 'migration: waiting_on_trades must not repeat a trade identity' })
-    ])
-  )
 })

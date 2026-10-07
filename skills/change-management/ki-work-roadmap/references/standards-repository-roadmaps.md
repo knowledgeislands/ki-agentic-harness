@@ -57,31 +57,31 @@ The filename repeats the identifier followed by a lowercase kebab-case slug.
 
 `area` declares only the issuing namespace. Grouping lives in the classification fields of [the work-item format](standards-work-item-format.md#classification): `kind`, `purpose`, `project`, `initiative`, and `component`.
 
-A repository in repository-wide mode declares no issuing vocabulary. A fixed-area repository declares its durable area codes as a list:
+A repository in repository-wide mode declares no issuing vocabulary. A fixed-area repository declares its durable area codes as a map from code to title:
 
 ```toml
 [skills.ki-repo]
 repo_code = "KI-HARNESS"
 
 [skills.ki-work-roadmap]
-areas = ["FND", "GOV"]
 components = ["skills", "checker"]
+
+[skills.ki-work-roadmap.areas]
+FND = "Foundations and tooling"
+GOV = "Governance and operating model"
 ```
 
 In fixed-area mode every item's `area` must be one of the declared codes. A repository must not mix issuing modes.
 
-The `areas` list holds codes only. A fixed-area repository defines what each code covers in its roadmap index, under an `## Areas` heading that names every declared code in backticks:
+The title is the area's definition, so the checks stay mechanical: a short noun phrase that starts with a capital letter and names the work the area issues. The roadmap index may expand on its meaning and its boundary with neighbouring areas: `docs/roadmap/README.md` in a project repository, which is an index, not a record, or the `Streams/Roadmap/Roadmap.md` index note in a Knowledge Base. A retired code keeps its entry while retained records use it.
 
-- a project repository uses `docs/roadmap/README.md`, which is an index, not a record;
-- a Knowledge Base uses its `Streams/Roadmap/Roadmap.md` index note.
-
-The definition is short prose: what work the area issues, and where its boundary with neighbouring areas lies. The checker warns for each declared code the index does not name. A retired code keeps its definition while retained records use it.
+A bare list of codes (`areas = ["FND", "GOV"]`) is the legacy form. The checker fails it in a repository of the Knowledge Islands Agora, resolved through the repository's Capital, and warns elsewhere, because other territories keep the list until they migrate. While a repository keeps the list, its roadmap index defines each code under an `## Areas` heading that names the code in backticks, and the checker warns for each code the index does not name.
 
 The optional `components` list is the repository's kebab-case vocabulary for which part of the repository a record touches. An item's `component`, when present, must be declared there. Components are repository-owned; Projects and Initiatives are territory-owned and live in the [Project registry](../../ki-work/references/standards-project-registry.md).
 
 Keep statuses, horizons, lifecycle moves, work-item location, and reporting behaviour universal rather than per-repository configuration.
 
-The former `theme` grouping is deprecated. The area-to-theme map (`areas.FND = "foundation-tooling"`) and the `themes = [...]` list remain readable with a checker warning during the [migration tolerance window](#migration-tolerance); new configuration uses the area list.
+The former `theme` grouping is retired. The checker fails a `themes = [...]` list and an area-to-theme map, whose values are theme slugs (`FND = "foundation-tooling"`) rather than titles.
 
 ## Status and horizon
 
@@ -177,18 +177,15 @@ Unknown implementation is fine for an investigation or decision, and a missing p
 
 ## Migration tolerance
 
-The model stays at v1: new fields and statuses enter v1 directly, and new records use the new shape immediately. While existing records migrate, the checker tolerates these deprecated shapes with a warning, never a failure:
+The model stays at v1: new fields and statuses entered v1 directly. The migration window has closed, and done records were pruned rather than migrated. The checker now fails these retired shapes in any record or configuration:
 
-- a `theme` field;
-- `horizon: waiting-for` or `horizon: parked`, including `waiting_on_trades` at `waiting-for`;
-- `horizon: triage`, whether open intake at `status: draft` or a terminal disposition at `status: done` with `intake_disposition` or `intake_disposition_target`;
-- a `done` record still carrying a horizon;
-- a `ready`, `in-progress`, or `awaiting-review` record at a horizon the former rule allowed but the table above does not, such as in-progress at Next;
-- an adopted record without `kind`;
-- the area-to-theme map or `themes` list in `.ki.toml`;
-- a Capital's legacy `Streams/Projects/Initiatives.md` index in place of `Streams/Initiatives/` notes.
+- a `theme` field, or a `themes` list or area-to-theme map in `.ki.toml`;
+- `horizon: waiting-for` or `horizon: parked`, which `horizon: hold` with a `hold` mapping replaces;
+- `horizon: triage`, which `status: triage` without a horizon replaces;
+- `waiting_on_trades`, which `hold.trades` replaces;
+- `intake_disposition` and `intake_disposition_target`, which a cancellation with a `resolution` replaces.
 
-The checker still validates deprecated fields where the former rule did, at warning severity. A new-shape value that is present but invalid fails immediately. A repository that passed the former checker gains no new failure. Rejection of the deprecated shapes follows once every repository's open records are migrated, under a separate record. This section is the one place that window is defined.
+A few residual shapes still only warn: a `done` record carrying Now or Next, an open record at a horizon the former rule allowed but the table above does not, an adopted record without `kind`, and a Capital's retired `Streams/Projects/Initiatives.md` index. This section is the one place these rules are defined.
 
 ## Work-item discipline
 

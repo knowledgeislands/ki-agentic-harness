@@ -3,6 +3,7 @@
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import {
+  isAgoraRepository,
   loadProjectRegistry,
   loadTerritoryRegistry,
   type ProjectRegistry,
@@ -43,17 +44,19 @@ export type WorkItem = {
 }
 type RoadmapConfiguration = {
   readonly repoCode: string
-  readonly areas: ReadonlySet<string>
+  /** Issuing area codes, each with its title; a legacy bare list leaves the title undefined. */
+  readonly areas: ReadonlyMap<string, string | undefined>
   readonly components: ReadonlySet<string>
 }
 
 export const HORIZONS = ['now', 'next', 'soon', 'future', 'hold'] as const
-/** Pre-v1 horizons, read only under migration tolerance. */
+/** Retired pre-v1 horizons, recognised only so the checker can fail them. */
 export const LEGACY_HORIZONS = ['waiting-for', 'parked', 'triage'] as const
 
 const ID_RE = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
 const FILE_RE = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
 const AREA_RE = /^[A-Z][A-Z0-9]*$/
+const AREA_TITLE_RE = /^[A-Z0-9]\S*(?: \S+)*$/
 const COMMIT_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 const TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
 const TRADE_RE = /^TRD-[0-9a-f]{8}$/
@@ -105,7 +108,7 @@ const RECORD_FIELDS = new Set([
   'transferred_from',
   'housekeeping_template',
   'scheduled_for',
-  // Retired fields, read only under migration tolerance.
+  // Retired fields, recognised only so the checker can fail them.
   'theme',
   'waiting_on_trades',
   'intake_disposition',
@@ -301,37 +304,45 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
         ? (table as Record<string, unknown>)
         : undefined
     if (values?.themes !== undefined)
-      tolerate('ki-work-roadmap themes are retired; remove the themes list', '.ki.toml', 'ROAD-6', STANDARD)
+      retire('ki-work-roadmap themes; remove the themes list', '.ki.toml', 'ROAD-6', STANDARD)
     const configuredAreas = values?.areas
-    const areas = new Set<string>()
+    const areas = new Map<string, string | undefined>()
     if (Array.isArray(configuredAreas)) {
       if (!configuredAreas.length || configuredAreas.some((area) => typeof area !== 'string' || !AREA_RE.test(area))) {
-        add(
-          'FAIL',
-          'ROAD-6',
-          'ki-work-roadmap areas must be a non-empty list of uppercase area codes',
-          STANDARD,
-          '.ki.toml'
-        )
+        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must map uppercase area codes to titles', STANDARD, '.ki.toml')
         return undefined
       }
       if (new Set(configuredAreas).size !== configuredAreas.length) {
         add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not repeat an area code', STANDARD, '.ki.toml')
         return undefined
       }
-      for (const area of configuredAreas) areas.add(area)
+      const legacyList = 'a bare areas list is the legacy form; map each code to its title, e.g. GOV = "Governance"'
+      if (isAgoraRepository(repository)) add('FAIL', 'ROAD-6', legacyList, STANDARD, '.ki.toml')
+      else add('WARN', 'ROAD-6', `outside the Agora, ${legacyList}`, STANDARD, '.ki.toml')
+      for (const area of configuredAreas) areas.set(area, undefined)
     } else if (configuredAreas !== undefined) {
       if (typeof configuredAreas !== 'object' || configuredAreas === null) {
-        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must be a list of area codes', STANDARD, '.ki.toml')
+        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must map uppercase area codes to titles', STANDARD, '.ki.toml')
         return undefined
       }
-      tolerate('the area-to-theme map is retired; declare areas = ["CODE", ...]', '.ki.toml', 'ROAD-6', STANDARD)
-      for (const area of Object.keys(configuredAreas)) {
+      for (const [area, title] of Object.entries(configuredAreas)) {
         if (!AREA_RE.test(area)) {
           add('FAIL', 'ROAD-6', 'roadmap area codes must be uppercase', STANDARD, '.ki.toml')
           return undefined
         }
-        areas.add(area)
+        if (typeof title !== 'string' || !AREA_TITLE_RE.test(title)) {
+          add(
+            'FAIL',
+            'ROAD-6',
+            typeof title === 'string' && SLUG_RE.test(title)
+              ? `area ${area} maps to theme '${title}'; the area-to-theme map is retired, so map the code to its title`
+              : `area ${area} must map to a title that starts with a capital letter`,
+            STANDARD,
+            '.ki.toml'
+          )
+          return undefined
+        }
+        areas.set(area, title)
       }
       if (!areas.size) {
         add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not be empty when declared', STANDARD, '.ki.toml')
@@ -517,12 +528,13 @@ const validateBody = (item: WorkItem): void => {
   }
 }
 
-/**
- * Migration tolerance (KI-HARNESS-GOV-150): pre-v1 record and configuration shapes warn and never fail, so a
- * repository that passed the earlier checker gains no failure. Enforcement after migration belongs to a later record.
- */
+/** Residual pre-v1 shapes that still only warn; see the standard's closed migration window. */
 const tolerate = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): void =>
-  add('WARN', area, `migration: ${msg}`, ref, file)
+  add('WARN', area, `legacy: ${msg}`, ref, file)
+
+/** Retired pre-v1 shapes (KI-HARNESS-GOV-150): the migration window has closed, so each one fails. */
+const retire = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): void =>
+  add('FAIL', area, `retired: ${msg}`, ref, file)
 
 const validateHorizon = (
   status: string | undefined,
@@ -536,8 +548,8 @@ const validateHorizon = (
     return
   }
   if (legacy) {
-    tolerate(
-      `horizon '${horizon}' is retired; use ${horizon === 'triage' ? 'status triage without a horizon' : 'horizon hold with a hold mapping'}`,
+    retire(
+      `horizon '${horizon}'; use ${horizon === 'triage' ? 'status triage without a horizon' : 'horizon hold with a hold mapping'}`,
       display
     )
     if (horizon === 'triage' && status !== 'draft' && status !== 'done')
@@ -659,10 +671,9 @@ const validateLegacyIntake = (
   display: string
 ): void => {
   const hasTarget = 'intake_disposition_target' in values
-  if (('intake_disposition' in values || hasTarget) && !terminalTriage)
-    tolerate('intake disposition fields are valid only for terminal Triage items', display)
+  if ('intake_disposition' in values || hasTarget)
+    retire('intake_disposition fields; cancel the record with a resolution', display)
   if (!terminalTriage) return
-  tolerate('terminal Triage is retired; cancel the record with a resolution', display)
   if (!disposition || !INTAKE_DISPOSITIONS.has(disposition))
     tolerate('terminal Triage intake_disposition must be rejected, duplicate, or merged', display)
   if (disposition === 'rejected' && hasTarget)
@@ -783,20 +794,10 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add('FAIL', 'ITEM-2', `component '${component}' must be declared in ki-work-roadmap components`, STANDARD, display)
   if (kind === undefined && status && OPEN_STATUSES.has(status) && !legacyHorizon)
     tolerate('an adopted record should declare kind', display)
-  if ('theme' in parsed.values) tolerate('theme is retired; classify with project, initiative or component', display)
+  if ('theme' in parsed.values) retire('theme; classify with project, initiative or component', display)
   validateLegacyIntake(parsed.values, id, terminalTriage, intakeDisposition, intakeDispositionTarget, display)
-  if ('waiting_on_trades' in parsed.values) {
-    tolerate('waiting_on_trades is retired; name the trades in hold.trades', display, 'TRADE-2')
-    if (!waitingOnTrades?.length) tolerate('waiting_on_trades must be a non-empty flat array', display, 'TRADE-2')
-    else {
-      if (waitingOnTrades.some((trade) => !TRADE_RE.test(trade)))
-        tolerate('waiting_on_trades must contain only canonical trade identities', display, 'TRADE-2')
-      if (new Set(waitingOnTrades).size !== waitingOnTrades.length)
-        tolerate('waiting_on_trades must not repeat a trade identity', display, 'TRADE-2')
-    }
-    if (horizon !== 'waiting-for')
-      tolerate('waiting_on_trades is valid only at the waiting-for horizon', display, 'TRADE-2')
-  }
+  if ('waiting_on_trades' in parsed.values)
+    retire('waiting_on_trades; name the trades in hold.trades', display, 'TRADE-2')
   if (baselineRef !== null && (typeof baselineRef !== 'string' || !COMMIT_RE.test(baselineRef)))
     add('FAIL', 'ITEM-2', 'baseline_ref must be null or a full lowercase commit ID', FORMAT, display)
   if ((createdAt === undefined) !== (updatedAt === undefined))

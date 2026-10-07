@@ -22,15 +22,18 @@ const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unk
 const table = (value: unknown): Record<string, unknown> | undefined =>
   typeof value === 'object' && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined
 
-const repoTable = (root: string): Record<string, unknown> | undefined => {
+/** The `[skills]` table of a checkout's `.ki.toml`, or undefined when it is absent or unreadable. */
+const skillsTable = (root: string): Record<string, unknown> | undefined => {
   const config = join(root, '.ki.toml')
   if (!existsSync(config)) return undefined
   try {
-    return table(table(table(TOML.parse(readFileSync(config, 'utf8')))?.skills)?.['ki-repo'])
+    return table(table(TOML.parse(readFileSync(config, 'utf8')))?.skills)
   } catch {
     return undefined
   }
 }
+
+const repoTable = (root: string): Record<string, unknown> | undefined => table(skillsTable(root)?.['ki-repo'])
 
 /** The local ki registry: `$KI_STATE_HOME`, else `$XDG_STATE_HOME/ki`, else `~/.local/state/ki`. */
 export const kiRegistryPath = (environment: NodeJS.ProcessEnv = process.env): string => {
@@ -113,7 +116,7 @@ const readRegistry = (root: string): RegistryLookup => {
   for (const [name, text] of notes(hasProjects ? projectsDirectory : undefined)) {
     const values = frontmatter(text)
     if (name === 'Initiatives.md') {
-      // Retired index: readable during the migration tolerance window only.
+      // Retired index: still read, with a warning.
       legacyInitiativesIndex = true
       const declared = Array.isArray(values?.initiatives) ? values.initiatives : []
       for (const slug of declared) if (typeof slug === 'string' && SLUG_RE.test(slug)) initiatives.add(slug)
@@ -150,6 +153,23 @@ export const loadTerritoryRegistry = (
 ): RegistryLookup => {
   const root = territoryRoot(territory, environment)
   return typeof root === 'string' ? readRegistry(root) : root
+}
+
+/** The Agora whose repositories must declare areas as a code-to-title map; other territories migrate later. */
+export const ENFORCING_AGORA = 'kis'
+
+/**
+ * Whether the repository owns or belongs to the enforcing Agora, as declared by its own Capital's `ki-agora` table.
+ * An unresolvable Capital reads as outside the Agora, so the caller warns rather than fails.
+ */
+export const isAgoraRepository = (repository: string, environment: NodeJS.ProcessEnv = process.env): boolean => {
+  const identity = repoTable(repository)?.repository
+  const root = capitalRoot(repository, environment)
+  if (typeof identity !== 'string' || typeof root !== 'string') return false
+  const agora = table(table(skillsTable(root)?.['ki-agora'])?.[ENFORCING_AGORA])
+  if (!agora) return false
+  const members = Array.isArray(agora.members) ? agora.members : []
+  return identity === repoTable(root)?.repository || members.includes(identity)
 }
 
 export type RegistryReference = { readonly territory?: string; readonly slug: string }

@@ -13,10 +13,7 @@ const findingsFor = (taskLinks: string): string[] => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-task-links-'))
   directories.push(repository)
   mkdirSync(join(repository, 'docs', 'roadmap'), { recursive: true })
-  writeFileSync(
-    join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\nthemes = ["foundation-tooling"]\n'
-  )
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\n')
   writeFileSync(join(repository, 'ROADMAP.md'), rootRoadmap())
   writeFileSync(join(repository, 'docs', 'roadmap', '_ISSUES.md'), issueLedger(1))
   writeFileSync(
@@ -24,7 +21,6 @@ const findingsFor = (taskLinks: string): string[] => {
     `---
 id: TEST-001
 title: Build foundation
-theme: foundation-tooling
 horizon: next
 status: draft
 blocks: []

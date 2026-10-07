@@ -80,7 +80,7 @@ updated_at: 2026-08-12T09:30:00Z
 
 `area` is the immutable issuing code included in an area-qualified identifier. It is not a mutable group.
 
-`theme`, `intake_disposition`, `intake_disposition_target`, and `waiting_on_trades` are retired. The checker tolerates them with a warning only during the [migration tolerance window](standards-repository-roadmaps.md#migration-tolerance).
+`theme`, `intake_disposition`, `intake_disposition_target`, and `waiting_on_trades` are retired. The [migration window](standards-repository-roadmaps.md#migration-tolerance) has closed, so the checker fails them.
 
 An optional non-empty `transferred_from` records a durable handoff origin.
 
