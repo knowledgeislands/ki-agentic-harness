@@ -26,14 +26,14 @@ const TERR_2: RubricItem<TerritoryRubricContext> = {
   code: 'TERR-2',
   title: 'Territory declaration shape',
   description:
-    'Only a Capital declares territory_name and territory_members in [skills.ki-repo], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself. The retired [skills.ki-repo.territory] table fails.',
+    'Only a Capital declares territory_name, territory_members and optional territory_prefix in [skills.ki-repo]: a non-empty name, sorted unique canonical members including itself, and a lower-case slug prefix when present. The retired [skills.ki-repo.territory] table fails.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo]; elsewhere remove them. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.'
+        'In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo], with an optional lower-case slug territory_prefix; elsewhere remove these keys. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.terr2 }
   }

@@ -37,31 +37,30 @@ type Declaration = {
   repository?: unknown
   capital?: unknown
   /** `territory_name` and `territory_members`, gathered when either key is declared. */
-  territory?: { name?: unknown; members?: unknown }
+  territory?: { name?: unknown; members?: unknown; prefix?: unknown }
   /** The retired `[skills.ki-repo.territory]` table, when it is still present. */
   legacy?: unknown
   /** `[skills.ki-trades]` when the repository declares the skill. */
   trades?: Record<string, unknown>
-  /** `[skills.ki-agora.<ENFORCING_AGORA>]` when the repository owns that Agora. */
-  agora?: Record<string, unknown>
 }
 
-/** The Agora whose repositories must follow the mechanical layout rules; mirrors ki-work-roadmap's enforcing Agora. */
-export const ENFORCING_AGORA = 'kis'
+/** Canonical Capital whose territory keeps the existing strict layout enforcement. */
+export const ENFORCING_CAPITAL = 'https://github.com/knowledgeislands/ki-arcadia-principal'
 
 const declaration = (document: Record<string, unknown>): Declaration => {
   const skills = table(document.skills) ?? {}
   const repo = table(skills['ki-repo']) ?? {}
   const trades = table(skills['ki-trades'])
-  const agora = table(table(skills['ki-agora'])?.[ENFORCING_AGORA])
-  const declared = repo.territory_name !== undefined || repo.territory_members !== undefined
+  const declared =
+    repo.territory_name !== undefined || repo.territory_members !== undefined || repo.territory_prefix !== undefined
   return {
     repository: repo.repository,
     capital: repo.capital,
-    ...(declared ? { territory: { name: repo.territory_name, members: repo.territory_members } } : {}),
+    ...(declared
+      ? { territory: { name: repo.territory_name, members: repo.territory_members, prefix: repo.territory_prefix } }
+      : {}),
     ...(repo.territory !== undefined ? { legacy: repo.territory } : {}),
-    ...(trades ? { trades } : {}),
-    ...(agora ? { agora } : {})
+    ...(trades ? { trades } : {})
   }
 }
 
@@ -134,16 +133,13 @@ export type TerritoryEvidence = {
   coverage: readonly RepoEvidenceFinding[]
   /** The Capital URL TERR-1 conform may insert, when it is unambiguously inferable. */
   inferredCapital?: string
-  /** True when the repository owns or belongs to the enforcing Agora, as declared by its resolved Capital. */
-  agora?: boolean
+  /** True when the resolved enforcing Capital lists the repository in territory_members. */
+  enforcingTerritory?: boolean
 }
 
-/** Whether a Capital's enforcing Agora table names the repository, or the Capital itself owns it. */
-const inAgora = (capital: Checkout | Declaration, repository: string): boolean => {
-  if (!capital.agora) return false
-  const listed = capital.agora.members
-  return capital.repository === repository || (Array.isArray(listed) && listed.includes(repository))
-}
+/** Enforcement uses canonical territorial identity and membership, never short handles or Agora rosters. */
+const inEnforcingTerritory = (capital: Checkout | Declaration, repository: string): boolean =>
+  isCapital(capital) && capital.repository === ENFORCING_CAPITAL && members(capital).includes(repository)
 
 const NO_CONFIGURATION: TerritoryEvidence = {
   terr1: [
@@ -176,7 +172,7 @@ const legacyTable = (local: Declaration): readonly AuditOutcome[] =>
       ]
 
 const territoryShape = (local: Declaration): readonly AuditOutcome[] => {
-  const subject = '.ki.toml [skills.ki-repo] territory_name, territory_members'
+  const subject = '.ki.toml [skills.ki-repo] territory_name, territory_members, territory_prefix'
   const territory = local.territory
   if (!territory)
     return [
@@ -184,6 +180,15 @@ const territoryShape = (local: Declaration): readonly AuditOutcome[] => {
       { status: 'VIOLATION', message: 'a Capital must declare territory_name and territory_members', subject }
     ]
   const outcomes: AuditOutcome[] = [...legacyTable(local)]
+  if (
+    territory.prefix !== undefined &&
+    (typeof territory.prefix !== 'string' || !/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(territory.prefix))
+  )
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'territory_prefix must be a lower-case slug beginning with a letter',
+      subject
+    })
   if (typeof territory.name !== 'string' || territory.name.trim().length === 0)
     outcomes.push({ status: 'VIOLATION', message: 'territory_name must be a non-empty string', subject })
   const listed = territory.members
@@ -400,7 +405,7 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
       terr2: territoryShape(local),
       terr3: [...capitalAgreement({ ...local, repository }, registry), ...registryNote],
       coverage: [],
-      ...(inAgora(local, repository) ? { agora: true } : {})
+      ...(inEnforcingTerritory(local, repository) ? { enforcingTerritory: true } : {})
     }
   }
   const terr2: readonly AuditOutcome[] =
@@ -412,8 +417,8 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
             : [
                 {
                   status: 'VIOLATION' as const,
-                  message: `only a Capital may declare territory_name or territory_members; this repository names ${local.capital} as its Capital`,
-                  subject: '.ki.toml [skills.ki-repo] territory_name, territory_members'
+                  message: `only a Capital may declare territory_name, territory_members or territory_prefix; this repository names ${local.capital} as its Capital`,
+                  subject: '.ki.toml [skills.ki-repo] territory_name, territory_members, territory_prefix'
                 }
               ]),
           ...legacyTable(local)
@@ -425,7 +430,7 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
     terr3: [...member.outcomes, ...registryNote],
     coverage:
       member.policy && namedInChannels(member.policy, repository) && !local.trades ? [tradesSignal(repository)] : [],
-    ...(member.policy && inAgora(member.policy, repository) ? { agora: true } : {})
+    ...(member.policy && inEnforcingTerritory(member.policy, repository) ? { enforcingTerritory: true } : {})
   }
 }
 

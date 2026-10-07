@@ -12,6 +12,7 @@ The cross-cutting contract for the shared **`.ki.toml`** file every Knowledge Is
 - [Declared divergences](#declared-divergences)
 - [Overridable vs fixed](#overridable-vs-fixed)
 - [Territory and Capital](#territory-and-capital)
+- [Territory selection](#territory-selection)
 - [Coverage enforcement](#coverage-enforcement)
 - [Scaffolding & ownership](#scaffolding--ownership)
 - [Local registry](#local-registry)
@@ -56,7 +57,7 @@ Every `.ki.toml` follows the six `ki-authoring` TOML layout rules. `ki-repo` che
 - `[skills.ki-trades]` and its child tables are the last tables in the file, and `[skills.ki-agora]` is the first table under the Relationships banner.
 - A skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, each `ki-agora.<agora>`, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. `[skills.ki-trades.territory]` is exempt while its trade-policy model is under separate review; the retired `[skills.ki-repo.territory]` is not.
 
-`FILES-10` fails in a repository of the Knowledge Islands Agora and warns elsewhere, as the roadmap's bare-area-list check does. A repository belongs to the Agora when its Capital, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes, declares `[skills.ki-agora.kis]` and either is the repository or lists it in that table's `members`. An unresolvable Capital reads as outside the Agora, so the check warns rather than fails.
+`FILES-10` fails in Arcadia territory and warns elsewhere, as the roadmap's bare-area-list check does. Its enforcing Capital is the canonical identity `https://github.com/knowledgeislands/ki-arcadia-principal`, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes. Only repositories listed in that Capital's `territory_members`, including the Capital itself, receive strict enforcement. Short territory or Harness prefixes and retired Agora rosters do not determine this policy. An unavailable or ambiguous Capital reads as outside the enforcing territory, so the check warns rather than fails.
 
 ## Harnesses and the skills namespace
 
@@ -183,7 +184,7 @@ territory_members = [
 ]
 ```
 
-`territory_name` is a non-empty string. `territory_members` is a non-empty array of canonical HTTPS GitHub URLs, without duplicates, sorted in ascending string order, and including the Capital itself. A repository that is not a Capital and declares either key FAILs. The retired `[skills.ki-repo.territory]` table, with `name` and `members`, is never read: it FAILs with the remediation to move them to `territory_name` and `territory_members` and remove the table.
+`territory_name` is a non-empty string. `territory_members` is a non-empty array of canonical HTTPS GitHub URLs, without duplicates, sorted in ascending string order, and including the Capital itself. An optional `territory_prefix` is a lower-case slug matching `^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$`. Only a Capital may declare any of these three keys. The retired `[skills.ki-repo.territory]` table, with `name` and `members`, is never read: it FAILs with the remediation to move them to `territory_name` and `territory_members` and remove the table.
 
 Agreement between a declaration and its Capital is checked only through the local registry (`$KI_STATE_HOME/registry.toml` when `KI_STATE_HOME` is set, otherwise `$XDG_STATE_HOME/ki/registry.toml`, otherwise `~/.local/state/ki/registry.toml`). The auditor reads each registered checkout's own `.ki.toml` and identifies it by the `[skills.ki-repo].repository` declared there, never by the registry entry; two registered checkouts declaring one URL are ambiguous. It never scans the filesystem and never consults an Agora.
 
@@ -193,6 +194,21 @@ Agreement between a declaration and its Capital is checked only through the loca
 The `TERR` rubric family carries these rules: `TERR-1` (capital declared), `TERR-2` (territory declaration shape) and `TERR-3` (registry-backed agreement). CONFORM inserts `capital` directly after the `title` line of `[skills.ki-repo]`, or after `repository` when there is no title, but only when the value is inferable: a repository declaring a territory is its own Capital, and otherwise exactly one registered Capital must list the repository. Any other case is left for the owner to declare.
 
 The Capital also owns the territory's trade policy under `[skills.ki-trades.territory]`; `ki-trades` governs its schema and the routes it grants.
+
+## Territory selection
+
+The accepted [territory-selection decision](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/ADR-KI-ARCADIA-002-territory-derived-repository-selection.md) replaces Agora working-set selection with the Capital's authoritative `territory_members`. This selection grants no jurisdiction, cross-repository write permission, trade route or acceptance authority.
+
+A territory's handle is its Capital's explicit `territory_prefix`, or its Capital's local registry key when the prefix is absent. An explicit prefix selects the Capital itself, never repositories whose names begin with that prefix. A prefixed Capital's registry key remains local identity metadata and is not a second territory alias. Resolve handles across registered Capitals, reject malformed naming metadata and duplicate handles, and reject a registry-key fallback that collides with another Capital's explicit prefix. Canonical repository URLs identify membership; the registry resolves their local checkout paths. Arcadia's chosen handle is `ki`; its Paperclip organisation code remains `KIS`.
+
+KI and mgit share these selection rules:
+
+- `-t, --territory <handle>` selects exactly the named Capital's declared territory; `--estate` selects the caller's registered estate. These scopes are mutually exclusive and cannot accompany an explicit repository selection. Each caller retains its native default when neither scope nor explicit repository selection is given.
+- Repeated `-f, --filter <prefix>` values match the repository checkout directory's basename, literally and case-sensitively, with OR semantics. Prefixes must be non-empty. A filter only narrows the selected scope, including a caller's native default, and is applied before Git worktree expansion. Glob syntax has no special meaning; there is no legacy glob option or Agora alias.
+- Validate scope, Capital and membership metadata, complete member registration, identity ambiguity and the naming metadata needed for every candidate before filtering. A missing registration or ambiguous member is a failure even when a filter would exclude it. Then validate the selected physical roots and each caller's runtime requirements. An unavailable selected checkout, empty selection or zero filter matches fails before any operation; an unavailable checkout excluded by the filter does not prevent the remaining selected operations.
+- Caller-specific command eligibility and native defaults remain owned by that caller. Neither filtering nor worktree expansion changes membership or the scope's authority.
+
+The read-only machine endpoint is `ki territory roots --null --territory <handle> [--filter <prefix>...]`, or `ki territory roots --null --estate [--filter <prefix>...]`; the short flags `-t` and `-f` have the same meaning. It returns deterministic, deduplicated registered primary checkout roots as NUL-delimited absolute paths. Resolve and validate the complete request before writing any stdout bytes. Failure emits diagnostics on stderr and a non-zero exit status, with no partial roots. Other tooling may consume this endpoint as a buffered selection interface without importing KI runtime or authority rules.
 
 ## Coverage enforcement
 

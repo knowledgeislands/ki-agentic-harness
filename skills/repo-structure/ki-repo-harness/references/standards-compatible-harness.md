@@ -110,6 +110,8 @@ prefix = "ki"
 
 The prefix is provider-authored metadata in the existing Harness-governance table, not a value inferred from repository identity or capability names. Changing it changes the published capability namespace and requires an explicit provider decision.
 
+`ki-repo` separately owns the Capital's optional `territory_prefix` and territory-selection handle. The main KI Harness keeps its capability prefix `ki`, aligned with Arcadia's territory handle. Specialist Harnesses retain their own provider prefix: sharing Arcadia's territory does not require a Techné Harness to rename its capabilities to `ki`. Territory selection resolves a Capital and its declared members, never capability-name prefixes.
+
 If a physical readable `.ki.toml` exists without `[skills.ki-repo-harness]`, CONFORM may append exactly one keyless marker while preserving all existing bytes apart from normalising the trailing newline before the append:
 
 ```toml

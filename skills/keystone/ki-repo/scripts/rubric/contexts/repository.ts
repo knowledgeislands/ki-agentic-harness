@@ -500,9 +500,9 @@ export const createRepoSession = async (
       files7: evidence('FILES-7'),
       files8: evidence('FILES-8'),
       files9: evidence('FILES-9'),
-      // Layout findings fail in the Agora and warn elsewhere.
+      // Layout findings fail in Arcadia territory and warn elsewhere.
       files10: evidence('FILES-10').map((finding) =>
-        territory.agora && finding.level === 'WARN' ? { ...finding, level: 'FAIL' } : finding
+        territory.enforcingTerritory && finding.level === 'WARN' ? { ...finding, level: 'FAIL' } : finding
       ),
       ...(mutable && gitignoreInspection && !gitignoreInspection.malformed && !gitignoreInspection.conforming
         ? {

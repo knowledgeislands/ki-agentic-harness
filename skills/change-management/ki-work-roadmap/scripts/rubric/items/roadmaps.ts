@@ -93,7 +93,7 @@ const ROAD_6: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-6',
   title: 'repository work-item code',
   description:
-    'The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a map from code to title and any components as a vocabulary; a bare area list fails in the Knowledge Islands Agora and warns elsewhere, where each listed code is defined under ## Areas in the roadmap index; retired themes and area-to-theme maps fail.',
+    'The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a map from code to title and any components as a vocabulary; a bare area list fails in the Arcadia territory and warns elsewhere, where each listed code is defined under ## Areas in the roadmap index; retired themes and area-to-theme maps fail.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

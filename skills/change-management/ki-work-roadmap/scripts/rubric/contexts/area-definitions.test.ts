@@ -65,20 +65,20 @@ test('a Knowledge Base defines its areas in the Streams roadmap index note', () 
   expect(inspectAreaDefinitions(undefinedArea)[1]?.file).toBe(AREA_INDEX_KB)
 })
 
-test('a Knowledge Base bare areas list fails in the Agora and warns outside it', () => {
+test('a Knowledge Base bare areas list fails in Arcadia territory and warns outside it', () => {
   const legacyList = 'a bare areas list is the legacy form; map each code to its title, e.g. GOV = "Governance"'
   const outside = repository(KB, { path: AREA_INDEX_KB, text: '## Areas\n\n`GOV`\n' })
   expect(inspectAreaDefinitions(outside)).toEqual([
     {
       level: 'WARN',
       area: 'ROAD-6',
-      msg: `outside the Agora, ${legacyList}`,
+      msg: `outside Arcadia territory, ${legacyList}`,
       ref: expect.any(String),
       file: '.ki.toml'
     }
   ])
   const capital = repository(
-    '[skills.ki-repo]\nrepo_type = "kb"\nrepo_code = "DEMO"\nrepository = "https://example.test/capital"\ncapital = "https://example.test/capital"\n\n[skills.ki-agora.kis]\ntitle = "Knowledge Islands"\n\n[skills.ki-work-roadmap]\nareas = ["GOV"]\n',
+    '[skills.ki-repo]\nrepo_type = "kb"\nrepo_code = "DEMO"\nrepository = "https://github.com/knowledgeislands/ki-arcadia-principal"\ncapital = "https://github.com/knowledgeislands/ki-arcadia-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-arcadia-principal"]\n\n[skills.ki-work-roadmap]\nareas = ["GOV"]\n',
     { path: AREA_INDEX_KB, text: '## Areas\n\n`GOV`\n' }
   )
   expect(inspectAreaDefinitions(capital)).toEqual([

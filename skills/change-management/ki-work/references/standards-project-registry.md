@@ -111,11 +111,11 @@ A work record names its Project or Initiative, and a Project names its Initiativ
 A record may serve a Project or Initiative owned by another territory. It then qualifies the value as `<territory>/<slug>`:
 
 ```yaml
-project: ki-arcadia-principal/agent-host
-initiative: ki-arcadia-principal/rig
+project: ki/agent-host
+initiative: ki/rig
 ```
 
-- `<territory>` is the key under which the local `ki` registry, `~/.local/state/ki/registry.toml`, registers the territory's Capital checkout. A territory has no other machine-readable name, and a repository owner can hold several Capitals, so the Capital's registry key is the only unambiguous handle.
+- `<territory>` is the handle defined by `ki-repo`: the Capital's explicit `territory_prefix`, or its local registry key when the prefix is absent. This is the same handle used by `-t, --territory`; registered Capital keys retain their separate role as local identity metadata. Resolve exactly one registered Capital and reject duplicate handles or prefix/fallback collisions rather than guessing.
 - The named checkout must declare itself a Capital: its `ki-repo` `repository` equals its `capital`.
 - An unqualified slug always means the repository's own Capital territory, so existing values keep their meaning.
 - A qualified value resolves against the named territory's `Streams/Projects/` or `Streams/Initiatives/`; a Project's registered Initiative belongs to the Project's territory.

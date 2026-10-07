@@ -3,7 +3,7 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } f
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
-  isAgoraRepository,
+  isEnforcingTerritoryRepository,
   loadProjectRegistry,
   loadTerritoryRegistry,
   parseRegistryReference
@@ -223,7 +223,7 @@ test('classification values are validated and components come from configuration
   )
 })
 
-test('fixed areas map codes to titles; a bare list fails in the Agora and warns outside it', () => {
+test('fixed areas map codes to titles; a bare list fails in Arcadia territory and warns outside it', () => {
   const repository = createRepository('kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null', '')
   const configure = (repo: string, roadmap: string) =>
     writeFileSync(
@@ -244,9 +244,9 @@ test('fixed areas map codes to titles; a bare list fails in the Agora and warns 
     expect.objectContaining({ area: 'ROAD-6', msg: 'ki-work-roadmap areas must map uppercase area codes to titles' })
   )
   configure('', 'areas = ["CORE"]\n')
-  expect(warnings(repository)).toContain(`outside the Agora, ${legacyList}`)
+  expect(warnings(repository)).toContain(`outside Arcadia territory, ${legacyList}`)
   configure(
-    'repository = "https://example.test/capital"\ncapital = "https://example.test/capital"\n\n[skills.ki-agora.kis]\ntitle = "Knowledge Islands"\n',
+    'repository = "https://github.com/knowledgeislands/ki-arcadia-principal"\ncapital = "https://github.com/knowledgeislands/ki-arcadia-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-arcadia-principal"]\n',
     'areas = ["CORE"]\n'
   )
   expect(failures(repository)).toContainEqual(expect.objectContaining({ area: 'ROAD-6', msg: legacyList }))
@@ -283,31 +283,35 @@ test('fixed areas map codes to titles; a bare list fails in the Agora and warns 
   )
 })
 
-test('Agora membership comes from the Capital and an unreadable Capital reads as outside', () => {
+test('territorial enforcement uses the canonical Capital roster and warns for unresolved policy', () => {
   const capital = createCapital()
   const island = temporary('ki-island-')
+  const arcadia = 'https://github.com/knowledgeislands/ki-arcadia-principal'
   writeFileSync(
     join(island, '.ki.toml'),
-    '[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "https://example.test/capital"\n'
+    `[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "${arcadia}"\n`
   )
   const state = temporary('ki-state-')
   writeFileSync(
     join(state, 'registry.toml'),
-    `[repositories."capital"]\nrepository = "https://example.test/capital"\npath = "${capital}"\n`
+    `[repositories."capital"]\nrepository = "${arcadia}"\npath = "${capital}"\n`
   )
   const environment = { KI_STATE_HOME: state }
-  expect(isAgoraRepository(island, environment)).toBe(false)
   const config = join(capital, '.ki.toml')
-  const base = readFileSync(config, 'utf8')
-  writeFileSync(config, `${base}\n[skills.ki-agora.kis]\nmembers = ["https://example.test/island"]\n`)
-  expect(isAgoraRepository(island, environment)).toBe(true)
-  expect(isAgoraRepository(capital, environment)).toBe(true)
-  writeFileSync(config, `${base}\n[skills.ki-agora.kis]\ntitle = "Knowledge Islands"\n`)
-  expect(isAgoraRepository(island, environment)).toBe(false)
-  expect(isAgoraRepository(island, {})).toBe(false)
-  expect(isAgoraRepository(temporary('ki-bare-'), environment)).toBe(false)
-  writeFileSync(config, `${base}\n[skills.ki-agora.kis\n`)
-  expect(isAgoraRepository(capital, environment)).toBe(false)
+  const policy = `[skills.ki-repo]\nrepository = "${arcadia}"\ncapital = "${arcadia}"\nterritory_name = "Knowledge Islands"\n`
+  expect(isEnforcingTerritoryRepository(island, environment)).toBe(false)
+  writeFileSync(config, `${policy}territory_members = ["${arcadia}", "https://example.test/island"]\n`)
+  expect(isEnforcingTerritoryRepository(island, environment)).toBe(true)
+  expect(isEnforcingTerritoryRepository(capital, environment)).toBe(true)
+  writeFileSync(
+    config,
+    `${policy}territory_members = ["${arcadia}"]\n\n[skills.ki-agora.kis]\nmembers = ["https://example.test/island"]\n`
+  )
+  expect(isEnforcingTerritoryRepository(island, environment)).toBe(false)
+  expect(isEnforcingTerritoryRepository(island, {})).toBe(false)
+  expect(isEnforcingTerritoryRepository(temporary('ki-bare-'), environment)).toBe(false)
+  writeFileSync(config, `${policy}territory_members = [\n`)
+  expect(isEnforcingTerritoryRepository(capital, environment)).toBe(false)
 })
 
 test('the ideas list beside the ledger is not a record', () => {
@@ -428,7 +432,7 @@ test('project membership warns on unknown slugs and fails only on a contradicted
   expect(failures(member('initiative: techne'))).toEqual([])
 })
 
-test('a qualified reference names a territory by its Capital registry key', () => {
+test('a qualified reference parses a territory handle or prefix-less Capital registry key', () => {
   expect(parseRegistryReference('agent-host')).toEqual({ slug: 'agent-host' })
   expect(parseRegistryReference('ki-arcadia-principal/agent-host')).toEqual({
     territory: 'ki-arcadia-principal',
@@ -458,10 +462,47 @@ test('a territory registry resolves only a registered Capital checkout', () => {
   const resolved = loadTerritoryRegistry('capital', environment)
   expect('registry' in resolved && [...resolved.registry.projects.keys()]).toEqual(['baseline-rollout'])
   expect(loadTerritoryRegistry('island', environment)).toEqual({
-    unavailable: "territory 'island' is not a registered Capital checkout"
+    unavailable: "territory 'island' is not a registered Capital handle"
   })
   expect(loadTerritoryRegistry('nowhere', environment)).toEqual({
     unavailable: "territory 'nowhere' is not in the local ki registry"
+  })
+})
+
+test('territory handles use explicit prefixes, reject aliases and detect prefix/fallback collisions', () => {
+  const capital = createCapital()
+  writeFileSync(
+    join(capital, '.ki.toml'),
+    `${readFileSync(join(capital, '.ki.toml'), 'utf8')}territory_prefix = "ki"\n`
+  )
+  const state = temporary('ki-state-')
+  const environment = { KI_STATE_HOME: state }
+  const registered = `[repositories."capital-local"]\npath = "${capital}"\n`
+  writeFileSync(join(state, 'registry.toml'), registered)
+  expect('registry' in loadTerritoryRegistry('ki', environment)).toBe(true)
+  expect(loadTerritoryRegistry('capital-local', environment)).toEqual({
+    unavailable: "territory 'capital-local' is not a registered Capital handle"
+  })
+  expect(loadTerritoryRegistry('ki-extra', environment)).toEqual({
+    unavailable: "territory 'ki-extra' is not in the local ki registry"
+  })
+
+  const other = createCapital()
+  writeFileSync(
+    join(other, '.ki.toml'),
+    '[skills.ki-repo]\nrepository = "https://example.test/other"\ncapital = "https://example.test/other"\n'
+  )
+  writeFileSync(join(state, 'registry.toml'), `${registered}\n[repositories."ki"]\npath = "${other}"\n`)
+  expect(loadTerritoryRegistry('ki', environment)).toEqual({
+    unavailable: "territory handle 'ki' is ambiguous in the local ki registry"
+  })
+  writeFileSync(
+    join(other, '.ki.toml'),
+    '[skills.ki-repo]\nrepository = "https://example.test/other"\ncapital = "https://example.test/other"\nterritory_prefix = "ki"\n'
+  )
+  writeFileSync(join(state, 'registry.toml'), `${registered}\n[repositories."other"]\npath = "${other}"\n`)
+  expect(loadTerritoryRegistry('ki', environment)).toEqual({
+    unavailable: "territory handle 'ki' is ambiguous in the local ki registry"
   })
 })
 

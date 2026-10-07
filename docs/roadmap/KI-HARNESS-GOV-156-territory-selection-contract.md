@@ -6,12 +6,12 @@ kind: deliver
 purpose: capability
 initiative: knowledge-islands-model
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 3f1b5cf66efc9710251221573f47e0fbbeffd7d5
 created_at: 2026-10-07T20:07:41Z
-updated_at: 2026-10-07T20:07:41Z
+updated_at: 2026-10-07T20:50:07Z
 ---
 
 # Territory selection contract
@@ -30,14 +30,18 @@ No CLI implementation, other territory edits, live Paperclip changes, new group 
 
 ## Current state
 
-The duplicated Agora roster is still in use. Existing trade-policy changes are separate and must be preserved. This record serves one repository's part of the same rollout; acceptance is not inferred from implementation or publication.
+The shared contract and audit migration are delivered: `ki-repo` specifies `territory_prefix`, the territory handle, directory-name filters and the buffered roots endpoint; configuration layout and roadmap Project-reference enforcement read canonical Arcadia Capital membership; Paperclip admission and report ownership no longer depend on Agora membership. Existing trade-policy changes are separate and must be preserved. This record serves one repository's part of the same rollout; acceptance is not inferred from implementation or publication.
+
+Checkpoint, 2026-10-07: Steps 1-4 are verified with `bun run test` (999 pass), `bunx tsc --noEmit`, in-sync generated rubrics and passing focused `ki-work`, `ki-work-roadmap`, `ki-repo-harness`, `ki-agent-coordination-paperclip` and `ki-skills` audits. Focused `ki-repo` findings in the isolated worktree are environment-only: the unregistered worktree path (`REPO-REG-1`) and runtime activation links (`RUNTIMES-2`), which are identical under the unchanged baseline code.
+
+Step 5 is held until both the `ki` and mgit callers pass. Its staged retirement inventory is the `ki-agora` skill itself and these consumers: `ki-repo` configuration ordering and review wording, `ki-authoring` TOML guidance, the `ki-accept` prune-search scope and `ki-repo-kb-principal` authority descriptions. `ki-next`, `ki-repo-kb` and `ki-trades` carry non-operational mentions only. Retirement preserves all trade semantics and runs as a later isolated unit after the combined pilot.
 
 ## Steps
 
-- [ ] Specify territory_prefix, directory-name filters and the buffered roots interface.
-- [ ] Migrate configuration and roadmap enforcement predicates to canonical territorial membership.
-- [ ] Decouple Paperclip company admission and report ownership from Agora membership.
-- [ ] Verify audit fixtures and publish affected rubric/catalogue evidence.
+- [x] Specify territory_prefix, directory-name filters and the buffered roots interface.
+- [x] Migrate configuration and roadmap enforcement predicates to canonical territorial membership.
+- [x] Decouple Paperclip company admission and report ownership from Agora membership.
+- [x] Verify audit fixtures and publish affected rubric/catalogue evidence.
 - [ ] After both tools pass, retire the Agora capability and current cross-skill consumers.
 
 ## Files touched

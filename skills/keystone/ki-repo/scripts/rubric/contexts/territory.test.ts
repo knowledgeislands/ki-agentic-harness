@@ -6,7 +6,7 @@ import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { COV } from '../items/coverage.ts'
 import { TERR } from '../items/territory.ts'
 import { createRepoSession } from './repository.ts'
-import { declareCapital, territoryEvidence } from './territory.ts'
+import { declareCapital, ENFORCING_CAPITAL, territoryEvidence } from './territory.ts'
 
 const CAPITAL = 'https://github.com/example/capital'
 const MEMBER = 'https://github.com/example/member'
@@ -148,6 +148,25 @@ describe('TERR-2 territory table shape', () => {
     expect(messages.some((message) => message.includes("include the Capital's own repository"))).toBe(true)
   })
 
+  test('territory_prefix is optional, Capital-only and a lower-case slug', () => {
+    for (const prefix of ['ki', 'a', 'equal-remedy', 'ki2'])
+      expect(
+        statuses(territoryEvidence(`${capitalConfig([CAPITAL])}territory_prefix = "${prefix}"\n`, '/x').terr2)
+      ).toEqual(['PASS'])
+    for (const prefix of ['', 'KI', '2ki', 'ki_', 'ki--bad', 'ki-', ' ki'])
+      expect(
+        territoryEvidence(`${capitalConfig([CAPITAL])}territory_prefix = "${prefix}"\n`, '/x').terr2.some(
+          ({ status }) => status === 'VIOLATION'
+        )
+      ).toBe(true)
+    expect(territoryEvidence(`${capitalConfig([CAPITAL])}territory_prefix = 2\n`, '/x').terr2[0]?.message).toContain(
+      'territory_prefix'
+    )
+    expect(
+      territoryEvidence(repo(MEMBER, `capital = "${CAPITAL}"\nterritory_prefix = "ki"\n`), '/x').terr2[0]?.message
+    ).toContain('only a Capital')
+  })
+
   test('a Capital still holding the retired table is told to move it to the flat keys', () => {
     const legacy = `\n[skills.ki-repo.territory]\nname = "x"\nmembers = ["${CAPITAL}"]\n`
     const alone = territoryEvidence(`${repo(CAPITAL, `capital = "${CAPITAL}"\n`)}${legacy}`, '/x').terr2
@@ -167,7 +186,9 @@ describe('TERR-2 territory table shape', () => {
       '/x'
     )
     expect(statuses(evidence.terr2)).toEqual(['VIOLATION'])
-    expect(evidence.terr2[0]?.message).toContain('only a Capital may declare territory_name or territory_members')
+    expect(evidence.terr2[0]?.message).toContain(
+      'only a Capital may declare territory_name, territory_members or territory_prefix'
+    )
     const legacy = territoryEvidence(
       `${repo(MEMBER, `capital = "${CAPITAL}"\n`)}\n[skills.ki-repo.territory]\nname = "x"\nmembers = ["${MEMBER}"]\n`,
       '/x'
@@ -325,20 +346,37 @@ describe('COV-1 trades signal', () => {
   })
 })
 
-describe('Agora membership', () => {
-  const member = repo(MEMBER, `capital = "${CAPITAL}"\n`)
-  const agora = (members: readonly string[]): string =>
-    `${capitalConfig([CAPITAL, MEMBER, OTHER])}\n[skills.ki-agora.kis]\nmembers = ${JSON.stringify(members)}\n`
+describe('territorial enforcement', () => {
+  const policy = (members: readonly string[], prefix = ''): string =>
+    `${capitalConfig([...members].sort(), '', ENFORCING_CAPITAL)}${prefix}`
+  const member = repo(MEMBER, `capital = "${ENFORCING_CAPITAL}"\n`)
 
-  test('the Capital and listed members are in the Agora; others are not', () => {
-    register(checkout(agora([MEMBER])))
-    expect(territoryEvidence(member, '/x').agora).toBe(true)
-    expect(territoryEvidence(repo(OTHER, `capital = "${CAPITAL}"\n`), '/x').agora).toBeUndefined()
-    expect(territoryEvidence(agora([MEMBER]), '/x').agora).toBe(true)
+  test('canonical Arcadia membership enforces the Capital and every listed member without an Agora table', () => {
+    const capital = policy([ENFORCING_CAPITAL, MEMBER])
+    register(checkout(capital))
+    expect(territoryEvidence(member, '/x').enforcingTerritory).toBe(true)
+    expect(
+      territoryEvidence(repo(OTHER, `capital = "${ENFORCING_CAPITAL}"\n`), '/x').enforcingTerritory
+    ).toBeUndefined()
+    expect(territoryEvidence(capital, '/x').enforcingTerritory).toBe(true)
   })
 
-  test('a Capital without an Agora table places no repository in it', () => {
-    register(checkout(capitalConfig([CAPITAL, MEMBER])))
-    expect(territoryEvidence(member, '/x').agora).toBeUndefined()
+  test('handles and obsolete Agora rosters cannot widen or suppress enforcement', () => {
+    register(
+      checkout(
+        `${capitalConfig([CAPITAL, MEMBER])}territory_prefix = "ki"\n\n[skills.ki-agora.kis]\nmembers = ["${MEMBER}"]\n`
+      )
+    )
+    expect(territoryEvidence(repo(MEMBER, `capital = "${CAPITAL}"\n`), '/x').enforcingTerritory).toBeUndefined()
+    register(checkout(policy([ENFORCING_CAPITAL, MEMBER], 'territory_prefix = "different"\n')))
+    expect(territoryEvidence(member, '/x').enforcingTerritory).toBe(true)
+  })
+
+  test('unavailable or ambiguous Arcadia policy keeps the warn population', () => {
+    expect(territoryEvidence(member, '/x').enforcingTerritory).toBeUndefined()
+    const first = checkout(policy([ENFORCING_CAPITAL, MEMBER]))
+    const second = checkout(policy([ENFORCING_CAPITAL, MEMBER]))
+    register(first, second)
+    expect(territoryEvidence(member, '/x').enforcingTerritory).toBeUndefined()
   })
 })

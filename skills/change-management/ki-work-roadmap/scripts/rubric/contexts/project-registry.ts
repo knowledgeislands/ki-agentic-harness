@@ -62,24 +62,46 @@ const capitalRoot = (repository: string, environment: NodeJS.ProcessEnv): string
   if (own?.repository === capital) return repository
   const registered = registeredRepositories(environment)
   if ('unavailable' in registered) return registered
-  for (const entry of Object.values(registered.repositories)) {
-    const values = table(entry)
-    if (values?.repository !== capital || typeof values.path !== 'string') continue
-    if (repoTable(values.path)?.repository === capital) return values.path
-  }
-  return { unavailable: `no local checkout of the capital ${capital} is registered` }
+  const found = Object.values(registered.repositories).flatMap((entry) => {
+    const path = table(entry)?.path
+    if (typeof path !== 'string') return []
+    const declared = repoTable(path)
+    return declared?.repository === capital && declared.capital === capital ? [path] : []
+  })
+  if (found.length > 1) return { unavailable: `the capital ${capital} has ambiguous registered checkouts` }
+  return found[0] ?? { unavailable: `no local checkout of the capital ${capital} is registered` }
 }
 
-/** A named territory's Capital checkout: the local-registry entry whose checkout declares itself a Capital. */
+/** Resolve the same Capital handle used by CLI territory selection, never a prefixed Capital's registry-key alias. */
 const territoryRoot = (territory: string, environment: NodeJS.ProcessEnv): string | { unavailable: string } => {
   const registered = registeredRepositories(environment)
   if ('unavailable' in registered) return registered
-  const path = table(registered.repositories[territory])?.path
-  if (typeof path !== 'string') return { unavailable: `territory '${territory}' is not in the local ki registry` }
-  const declared = repoTable(path)
-  if (typeof declared?.capital !== 'string' || declared.repository !== declared.capital)
-    return { unavailable: `territory '${territory}' is not a registered Capital checkout` }
-  return path
+  const capitals: { key: string; path: string; identity: string; handle: string }[] = []
+  for (const [key, entry] of Object.entries(registered.repositories)) {
+    const path = table(entry)?.path
+    if (typeof path !== 'string') continue
+    const declared = repoTable(path)
+    if (typeof declared?.repository !== 'string' || declared.repository !== declared.capital) continue
+    const prefix = declared.territory_prefix
+    if (prefix !== undefined && (typeof prefix !== 'string' || !/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(prefix)))
+      return { unavailable: `registered Capital '${key}' has an invalid territory_prefix` }
+    capitals.push({ key, path, identity: declared.repository, handle: typeof prefix === 'string' ? prefix : key })
+  }
+  const collisions = capitals.filter((candidate, index) =>
+    capitals.some((other, otherIndex) => index !== otherIndex && candidate.handle === other.handle)
+  )
+  if (collisions.length)
+    return { unavailable: `territory handle '${collisions[0]?.handle}' is ambiguous in the local ki registry` }
+  const found = capitals.filter(({ handle }) => handle === territory)
+  const [capital] = found
+  if (found.length === 1 && capital) {
+    if (capitals.filter(({ identity }) => identity === capital.identity).length !== 1)
+      return { unavailable: `territory '${territory}' has ambiguous registered Capital identity` }
+    return capital.path
+  }
+  if (registered.repositories[territory] !== undefined)
+    return { unavailable: `territory '${territory}' is not a registered Capital handle` }
+  return { unavailable: `territory '${territory}' is not in the local ki registry` }
 }
 
 const frontmatter = (text: string): Record<string, unknown> | undefined => {
@@ -154,7 +176,7 @@ export const loadProjectRegistry = (
   return typeof root === 'string' ? readRegistry(root) : root
 }
 
-/** Resolves the registry of the territory whose Capital the local ki registry keys as `territory`. */
+/** Resolves the named territory handle through registered Capitals' declared prefixes or prefix-less registry keys. */
 export const loadTerritoryRegistry = (
   territory: string,
   environment: NodeJS.ProcessEnv = process.env
@@ -163,21 +185,22 @@ export const loadTerritoryRegistry = (
   return typeof root === 'string' ? readRegistry(root) : root
 }
 
-/** The Agora whose repositories must declare areas as a code-to-title map; other territories migrate later. */
-export const ENFORCING_AGORA = 'kis'
+/** Canonical Capital whose territory must use the existing strict area-map enforcement. */
+export const ENFORCING_CAPITAL = 'https://github.com/knowledgeislands/ki-arcadia-principal'
 
-/**
- * Whether the repository owns or belongs to the enforcing Agora, as declared by its own Capital's `ki-agora` table.
- * An unresolvable Capital reads as outside the Agora, so the caller warns rather than fails.
- */
-export const isAgoraRepository = (repository: string, environment: NodeJS.ProcessEnv = process.env): boolean => {
+/** Unresolvable Capitals warn; canonical territory_members, never handles or Agora rosters, determine enforcement. */
+export const isEnforcingTerritoryRepository = (
+  repository: string,
+  environment: NodeJS.ProcessEnv = process.env
+): boolean => {
   const identity = repoTable(repository)?.repository
   const root = capitalRoot(repository, environment)
   if (typeof identity !== 'string' || typeof root !== 'string') return false
-  const agora = table(table(skillsTable(root)?.['ki-agora'])?.[ENFORCING_AGORA])
-  if (!agora) return false
-  const members = Array.isArray(agora.members) ? agora.members : []
-  return identity === repoTable(root)?.repository || members.includes(identity)
+  const capital = repoTable(root)
+  const members = Array.isArray(capital?.territory_members) ? capital.territory_members : []
+  return (
+    capital?.repository === ENFORCING_CAPITAL && capital.capital === ENFORCING_CAPITAL && members.includes(identity)
+  )
 }
 
 export type RegistryReference = { readonly territory?: string; readonly slug: string }

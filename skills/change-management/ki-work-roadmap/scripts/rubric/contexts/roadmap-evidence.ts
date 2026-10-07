@@ -4,7 +4,7 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import { AREA_CODE, SCOPE_SEGMENT } from '../../shared/work-identifiers.ts'
 import {
-  isAgoraRepository,
+  isEnforcingTerritoryRepository,
   loadProjectRegistry,
   loadTerritoryRegistry,
   type ProjectRegistry,
@@ -122,11 +122,11 @@ const ROADMAP_CONFIG = 'ki-work-roadmap'
 const REPO_CONFIG = 'ki-repo'
 const LEGACY_AREA_LIST = 'a bare areas list is the legacy form; map each code to its title, e.g. GOV = "Governance"'
 
-/** The legacy bare areas list fails in the Knowledge Islands Agora and warns outside it. */
+/** The legacy bare areas list fails in the Arcadia territory and warns outside it. */
 export const legacyAreaList = (repository: string): { level: 'FAIL' | 'WARN'; msg: string } =>
-  isAgoraRepository(repository)
+  isEnforcingTerritoryRepository(repository)
     ? { level: 'FAIL', msg: LEGACY_AREA_LIST }
-    : { level: 'WARN', msg: `outside the Agora, ${LEGACY_AREA_LIST}` }
+    : { level: 'WARN', msg: `outside Arcadia territory, ${LEGACY_AREA_LIST}` }
 
 export const ISSUE_LEDGER = '_ISSUES.md'
 export const IDEAS_LIST = '_IDEAS.md'

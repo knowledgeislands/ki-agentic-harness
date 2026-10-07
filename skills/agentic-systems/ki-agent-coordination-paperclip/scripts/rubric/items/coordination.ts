@@ -130,13 +130,13 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       description:
         'Bootstrap resolves company identity from verified context and styling from repository kind and primary shape, preserving approval boundaries.',
       sources: [
-        `${STANDARD}#resolving-the-current-company-and-agora`,
+        `${STANDARD}#resolving-the-current-company-and-territory`,
         'standards-existing-estate-onboarding.md#project-styling',
         'standards-existing-estate-onboarding.md#approve-an-outcome-not-every-step',
         'standards-existing-estate-onboarding.md#minimum-needed-to-start-useful-work'
       ],
       judgment: judgment(
-        'Does bootstrap resolve company/Agora identity and deterministic styling, reuse existing work and approvals, group known steps into a bounded outcome, distinguish immediate blockers from later improvements, and verify live adoption without repeated setup-only approvals or treating source rollout as operational success?'
+        'Does bootstrap resolve company/territory identity and deterministic styling, reuse existing work and approvals, group known steps into a bounded outcome, distinguish immediate blockers from later improvements, and verify live adoption without repeated setup-only approvals or treating source rollout as operational success?'
       )
     },
     {

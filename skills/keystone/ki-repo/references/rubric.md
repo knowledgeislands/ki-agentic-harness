@@ -66,7 +66,7 @@ Required repository files and document quality, using a local checkout when avai
   - _Remediation:_ automatic
 - **FILES-9 [M] — Configuration presentation structure** — Substantial .ki.toml files use exact ordered neighbourhood banners, open with the foundation block, and keep each explicit skill owner with its child tables. (standards-configuration.md)
   - _Remediation:_ diagnostic — Reorder source without changing parsed TOML: retain the exact header first, add only needed recognised banners, and keep each owner block contiguous.
-- **FILES-10 [M] — Configuration layout** — Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, opens Relationships with [skills.ki-agora], ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Agora repositories and warns elsewhere. (standards-configuration.md)
+- **FILES-10 [M] — Configuration layout** — Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, opens Relationships with [skills.ki-agora], ends with [skills.ki-trades], and reserves skill subtables for data maps. Fails in Arcadia territory repositories and warns elsewhere. (standards-configuration.md)
   - _Remediation:_ diagnostic — Reformat the source without changing parsed TOML: one blank line before each heading and banner, multiline arrays, and ki-trades last. Moving fixed fields out of a non-map subtable changes parsed TOML, so the reader in the owning skill must accept the new shape first.
 - **FILES-J1 [J] — Repository document content** — README and license content is accurate and current. (standards-repository.md)
   - _Evidence scope:_ The repository README and license.
@@ -199,8 +199,8 @@ Capital declaration, Capital-owned territory membership, and registry-backed agr
 
 - **TERR-1 [M] — Capital declared** — [skills.ki-repo].capital names the territory Capital as a full canonical HTTPS GitHub URL; a Capital names itself. (standards-configuration.md)
   - _Remediation:_ automatic
-- **TERR-2 [M] — Territory declaration shape** — Only a Capital declares territory_name and territory_members in [skills.ki-repo], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself. The retired [skills.ki-repo.territory] table fails. (standards-configuration.md)
-  - _Remediation:_ diagnostic — In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo]; elsewhere remove them. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.
+- **TERR-2 [M] — Territory declaration shape** — Only a Capital declares territory_name, territory_members and optional territory_prefix in [skills.ki-repo]: a non-empty name, sorted unique canonical members including itself, and a lower-case slug prefix when present. The retired [skills.ki-repo.territory] table fails. (standards-configuration.md)
+  - _Remediation:_ diagnostic — In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo], with an optional lower-case slug territory_prefix; elsewhere remove these keys. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.
 - **TERR-3 [M] — Capital and membership agree** — Through the local registry, the declared Capital is a unique registered Capital listing this repository, and a Capital is named back by each registered member. (standards-configuration.md)
   - _Remediation:_ diagnostic — Correct capital or the Capital territory members so both sides agree; register the Capital checkout locally to verify a WARN.
 
