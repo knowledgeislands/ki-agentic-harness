@@ -3,13 +3,12 @@ id: KI-HARNESS-GOV-149
 area: GOV
 title: Adopt roadmap model
 theme: governance-consistency
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 8345d0cc89fde567390ef6dd9bdce6f647b9b9d8
 created_at: 2026-10-07T12:26:37Z
-updated_at: 2026-10-07T15:30:00Z
+updated_at: 2026-10-07T16:00:00Z
 ---
 
 # KI-HARNESS-GOV-149: Adopt roadmap model
@@ -158,6 +157,10 @@ The goal is met: every lifecycle skill now speaks the v1 model, and old values r
 
 The roadmap model v1 standards landed across the change-management, housekeeping and Streams skills, verified by the full test suite, type check, Markdown lint and focused audits with no new finding. No concern remains open. A possible learning route is a `ki-skills` check that a skill description never names a retired horizon, offered to `ki-skills` rather than promoted here.
 
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Migration tolerance
@@ -171,3 +174,7 @@ Decision 2 keeps v1 and tolerates the old values during migration. The standard 
 - **Hold shape.** `hold` is a nested mapping with `reason` (`waiting-for` or `parked`), `condition`, optional `review` date and optional `trades`.
 - **Registry discovery.** The checker resolves `[skills.ki-repo].capital` through the local `ki` registry to the Capital checkout's `Streams/Projects/`; a repository that is its own Capital reads its own. Missing anything means a warning only.
 - **Ideas file.** `_IDEAS.md` sits beside `_ISSUES.md` and holds plain bullets with no identifiers, horizons or status.
+
+### Acceptance authority
+
+Closed through `ki-accept` under the standing grant in `~/.local/state/ki/state-of-play/design/decisions.md`, decision 6 (Kris Brown, 7 October 2026): "you can just carry it all the way through, this is a really good example of thought out work", with `completion_target: done` for every phase of the rollout. The review evidence was rechecked on the committed delivery (`1780ff75`) before closure: `bun run test` 969 pass and 0 fail, `bunx tsc --noEmit` clean, the published roadmap rubric current, and `ki repo audit` FAIL=0 for `ki-skills`, `ki-work-roadmap`, `ki-authoring`, `ki-repo-harness` and `ki-work-housekeeping`.

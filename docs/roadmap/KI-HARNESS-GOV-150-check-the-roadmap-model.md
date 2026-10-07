@@ -3,13 +3,12 @@ id: KI-HARNESS-GOV-150
 area: GOV
 title: Check roadmap model
 theme: governance-consistency
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 8345d0cc89fde567390ef6dd9bdce6f647b9b9d8
 created_at: 2026-10-07T12:26:37Z
-updated_at: 2026-10-07T15:40:00Z
+updated_at: 2026-10-07T16:00:00Z
 ---
 
 # KI-HARNESS-GOV-150: Check roadmap model
@@ -139,6 +138,10 @@ The goal is met: the checker enforces the v1 shape for new values and only warns
 
 The checker and its helpers now implement roadmap model v1 with migration tolerance, verified by the full suite, the type check, regenerated rubrics and a five-repository old-versus-new comparison. No concern remains open. A possible learning route is a `ki` validation hint naming `overrideLevels` when an outcome uses an undeclared level, offered to `tools-ki` rather than promoted here.
 
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Tolerance levels
@@ -157,3 +160,7 @@ Skill scripts do not import across skill roots, so the checker carries its own m
 - **Done at a horizon.** A done record still at now or next warns under tolerance; done at any other horizon fails as before, so no previously failing record now passes silently.
 - **Active work at next.** In-progress or awaiting-review at next warns under tolerance rather than failing, because the old model allowed it.
 - **Override levels.** `ki` validates every outcome level against the item's declaration, so the items that emit tolerance warnings declare `overrideLevels: ['WARN']`.
+
+### Acceptance authority
+
+Closed through `ki-accept` under the standing grant in `~/.local/state/ki/state-of-play/design/decisions.md`, decision 6 (Kris Brown, 7 October 2026): "you can just carry it all the way through, this is a really good example of thought out work", with `completion_target: done` for every phase of the rollout. The review evidence was rechecked on the committed delivery (`1549ad35`) before closure: `bun run test` 969 pass and 0 fail, `bunx tsc --noEmit` clean, the published roadmap rubric current, and `ki repo audit` FAIL=0 for `ki-skills`, `ki-work-roadmap`, `ki-authoring`, `ki-repo-harness` and `ki-work-housekeeping`.
