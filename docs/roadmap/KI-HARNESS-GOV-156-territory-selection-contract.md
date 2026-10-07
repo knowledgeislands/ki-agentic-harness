@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 3f1b5cf66efc9710251221573f47e0fbbeffd7d5
 created_at: 2026-10-07T20:07:41Z
-updated_at: 2026-10-07T21:47:05Z
+updated_at: 2026-10-07T22:06:43Z
 ---
 
 # Territory selection contract
@@ -108,9 +108,13 @@ Retired `skills/governance/ki-agora/`; migrated ki-repo ordering, ki-authoring T
 
 Harness tests, TypeScript, generated rubric checks, focused ki-repo, ki-authoring, ki-work-roadmap, ki-work, ki-skills, ki-repo-harness and Paperclip audits, and native whole audit pass. ki-accept is verified through its supported acceptance/prune fixtures; principal is audited against declared Arcadia scope. Unchanged committed KI/mgit caller evidence is reused because integration preserves selection semantics.
 
+Final coordinator integration starts at fetched published main and contains only the packet-owned contract and retirement commits. The combined harness passes 1,005 source tests, TypeScript, the whole registered-context audit, all required focused audits and eight generated-rubric checks against its deliberately selected source/runtime. No foreign unpublished ancestors are included.
+
 ### Outstanding concerns
 
 No required gate remains failing. Existing whole-audit warnings are recorded separately and remain outside this unit. Coordinator integration, final publication and Kris's human acceptance remain outstanding.
+
+Publication is held with the tools because the KI clean-install harness pin predates this contract and its exact acquisition needs a narrow authority addition. Source verification is complete; human acceptance remains outstanding.
 
 ### Post-change review
 
