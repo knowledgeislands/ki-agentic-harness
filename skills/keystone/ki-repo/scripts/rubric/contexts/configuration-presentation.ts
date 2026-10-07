@@ -209,8 +209,8 @@ const DATA_MAPS = new Set([
   'ki-work-roadmap.areas'
 ])
 
-/** Territory tables stay outside the subtable rule while their model is under separate review. */
-const EXEMPT_SUBTABLES = new Set(['ki-repo.territory', 'ki-trades.territory'])
+/** The trade-policy territory table stays outside the subtable rule while its model is under separate review. */
+const EXEMPT_SUBTABLES = new Set(['ki-trades.territory'])
 
 const KEY = String.raw`(?:"([^"\\]+)"|'([^']+)'|([A-Za-z0-9_-]+))`
 const SUBTABLE = new RegExp(String.raw`^\[\[?\s*skills\s*\.\s*${KEY}\s*\.\s*${KEY}`)

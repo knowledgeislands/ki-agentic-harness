@@ -199,8 +199,8 @@ Capital declaration, Capital-owned territory membership, and registry-backed agr
 
 - **TERR-1 [M] — Capital declared** — [skills.ki-repo].capital names the territory Capital as a full canonical HTTPS GitHub URL; a Capital names itself. (standards-configuration.md)
   - _Remediation:_ automatic
-- **TERR-2 [M] — Territory table shape** — Only a Capital declares [skills.ki-repo.territory], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself. (standards-configuration.md)
-  - _Remediation:_ diagnostic — In a Capital, declare [skills.ki-repo.territory] with name and sorted, unique canonical members including itself; elsewhere remove the table.
+- **TERR-2 [M] — Territory declaration shape** — Only a Capital declares territory_name and territory_members in [skills.ki-repo], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself. The retired [skills.ki-repo.territory] table fails. (standards-configuration.md)
+  - _Remediation:_ diagnostic — In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo]; elsewhere remove them. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.
 - **TERR-3 [M] — Capital and membership agree** — Through the local registry, the declared Capital is a unique registered Capital listing this repository, and a Capital is named back by each registered member. (standards-configuration.md)
   - _Remediation:_ diagnostic — Correct capital or the Capital territory members so both sides agree; register the Capital checkout locally to verify a WARN.
 

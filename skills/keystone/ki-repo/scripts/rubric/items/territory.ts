@@ -24,16 +24,16 @@ const TERR_1: RubricItem<TerritoryRubricContext> = {
 
 const TERR_2: RubricItem<TerritoryRubricContext> = {
   code: 'TERR-2',
-  title: 'Territory table shape',
+  title: 'Territory declaration shape',
   description:
-    'Only a Capital declares [skills.ki-repo.territory], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself.',
+    'Only a Capital declares territory_name and territory_members in [skills.ki-repo], and a Capital must: a non-empty name and sorted, unique, canonical members that include itself. The retired [skills.ki-repo.territory] table fails.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'In a Capital, declare [skills.ki-repo.territory] with name and sorted, unique canonical members including itself; elsewhere remove the table.'
+        'In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo]; elsewhere remove them. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.terr2 }
   }

@@ -173,7 +173,7 @@ ${banner('Relationships')}
     ])
   })
 
-  test('reserves skill subtables for data maps and leaves territory alone', () => {
+  test('reserves skill subtables for data maps and leaves only the trade-policy territory alone', () => {
     const issues = inspectConfigurationLayout(`${header}[repo]
 
 [skills.ki-repo]
@@ -207,6 +207,7 @@ capital = "example/capital"
 shared = "Example."
 `)
     expect(issues).toEqual([
+      'line 8: [skills.ki-repo.territory] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.ki-repo]',
       'line 13: [skills.ki-authoring.owned_file_exceptions] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.ki-authoring]',
       'line 23: [skills.ki-engineering.settings] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.ki-engineering]'
     ])

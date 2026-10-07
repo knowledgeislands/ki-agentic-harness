@@ -100,15 +100,10 @@ const writeConfiguration = (
       '[skills.ki-repo]',
       `repository = ${toml(settings.repository)}`,
       ...(settings.capital === undefined ? [] : [`capital = ${toml(settings.capital)}`]),
-      '',
       ...(settings.territory
-        ? [
-            '[skills.ki-repo.territory]',
-            'name = "Test territory"',
-            `members = ${toml([...settings.territory].sort())}`,
-            ''
-          ]
+        ? ['territory_name = "Test territory"', `territory_members = ${toml([...settings.territory].sort())}`]
         : []),
+      '',
       ...(settings.trades === false ? [] : ['[skills.ki-trades]', '']),
       ...(settings.policy ? policyToml(settings.policy) : [])
     ].join('\n')

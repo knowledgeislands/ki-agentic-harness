@@ -54,7 +54,7 @@ Every `.ki.toml` follows the six `ki-authoring` TOML layout rules. `ki-repo` che
 - Exactly one blank line precedes every table heading and every neighbourhood banner. A comment attached directly above a heading belongs to it, so the blank line comes before the comment.
 - Every array is multiline: the opening bracket ends its line, each element sits on its own line with a trailing comma, and the closing bracket has a line of its own.
 - `[skills.ki-trades]` and its child tables are the last tables in the file, and `[skills.ki-agora]` is the first table under the Relationships banner.
-- A skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, each `ki-agora.<agora>`, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. `[skills.ki-repo.territory]` and `[skills.ki-trades.territory]` are exempt while their territory model is under separate review.
+- A skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, each `ki-agora.<agora>`, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. `[skills.ki-trades.territory]` is exempt while its trade-policy model is under separate review; the retired `[skills.ki-repo.territory]` is not.
 
 `FILES-10` fails in a repository of the Knowledge Islands Agora and warns elsewhere, as the roadmap's bare-area-list check does. A repository belongs to the Agora when its Capital, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes, declares `[skills.ki-agora.kis]` and either is the repository or lists it in that table's `members`. An unresolvable Capital reads as outside the Agora, so the check warns rather than fails.
 
@@ -170,29 +170,27 @@ So the option set is **authored, not implicit**: each skill with declarable keys
 
 Every repository belongs to exactly one territory, governed by its Capital. `[skills.ki-repo].capital` is required in every `.ki.toml`: a full canonical HTTPS GitHub URL (`https://github.com/<owner>/<repository>`, lower-case owner and name drawn from `[a-z0-9._-]`), compared as an exact string with the Capital's own `[skills.ki-repo].repository`. A Capital is the repository whose `capital` equals its own `repository`. There is no default, alias, or inference at read time; a missing or malformed declaration FAILs.
 
-Only a Capital declares territory membership, and it must:
+Only a Capital declares territory membership, and it must, directly in `[skills.ki-repo]`:
 
 ```toml
 [skills.ki-repo]
 repository = "https://github.com/owner/capital"
 capital = "https://github.com/owner/capital"
-
-[skills.ki-repo.territory]
-name = "Example territory"
-members = [
+territory_name = "Example territory"
+territory_members = [
   "https://github.com/owner/capital",
   "https://github.com/owner/member",
 ]
 ```
 
-`name` is a non-empty string. `members` is a non-empty array of canonical HTTPS GitHub URLs, without duplicates, sorted in ascending string order, and including the Capital itself. No other key is allowed. A repository that is not a Capital and declares `[skills.ki-repo.territory]` FAILs.
+`territory_name` is a non-empty string. `territory_members` is a non-empty array of canonical HTTPS GitHub URLs, without duplicates, sorted in ascending string order, and including the Capital itself. A repository that is not a Capital and declares either key FAILs. The retired `[skills.ki-repo.territory]` table, with `name` and `members`, is never read: it FAILs with the remediation to move them to `territory_name` and `territory_members` and remove the table.
 
 Agreement between a declaration and its Capital is checked only through the local registry (`$KI_STATE_HOME/registry.toml` when `KI_STATE_HOME` is set, otherwise `$XDG_STATE_HOME/ki/registry.toml`, otherwise `~/.local/state/ki/registry.toml`). The auditor reads each registered checkout's own `.ki.toml` and identifies it by the `[skills.ki-repo].repository` declared there, never by the registry entry; two registered checkouts declaring one URL are ambiguous. It never scans the filesystem and never consults an Agora.
 
 - **A member** WARNs `territory policy lives in <capital>, not available here` when its Capital is not registered locally, FAILs when the Capital is registered more than once, is not a Capital, or does not list the member, and passes otherwise. A registered checkout whose `.ki.toml` cannot be read or parsed declares nothing; when the registry entry's own `repository` claims the Capital and no readable checkout declares it, the member FAILs with `registered checkout at <path> has an unreadable .ki.toml` instead of the unavailable WARN.
 - **A Capital** FAILs when a member it lists is registered locally but declares a different or missing `capital`; a member not checked out here is reported as information only.
 
-The `TERR` rubric family carries these rules: `TERR-1` (capital declared), `TERR-2` (territory table shape) and `TERR-3` (registry-backed agreement). CONFORM inserts `capital` directly after the `title` line of `[skills.ki-repo]`, or after `repository` when there is no title, but only when the value is inferable: a repository declaring a territory is its own Capital, and otherwise exactly one registered Capital must list the repository. Any other case is left for the owner to declare.
+The `TERR` rubric family carries these rules: `TERR-1` (capital declared), `TERR-2` (territory declaration shape) and `TERR-3` (registry-backed agreement). CONFORM inserts `capital` directly after the `title` line of `[skills.ki-repo]`, or after `repository` when there is no title, but only when the value is inferable: a repository declaring a territory is its own Capital, and otherwise exactly one registered Capital must list the repository. Any other case is left for the owner to declare.
 
 The Capital also owns the territory's trade policy under `[skills.ki-trades.territory]`; `ki-trades` governs its schema and the routes it grants.
 

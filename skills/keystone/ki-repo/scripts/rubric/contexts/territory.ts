@@ -7,14 +7,13 @@ import type { RepoEvidenceFinding } from './audit.ts'
  * Capital declaration, territory membership, and the registry-backed agreement check.
  *
  * A repository names its territory Capital in `[skills.ki-repo].capital`; a Capital names
- * itself and alone declares `[skills.ki-repo.territory]`. Agreement is checked only through
+ * itself and alone declares `territory_name` and `territory_members` there. Agreement is checked only through
  * the local ki registry and the `.ki.toml` files of registered checkouts. Nothing here
  * scans the filesystem or consults an Agora.
  */
 
 const CANONICAL_REPOSITORY =
   /^https:\/\/github\.com\/([a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)\/([a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)$/
-const TERRITORY_KEYS = new Set(['name', 'members'])
 
 const table = (value: unknown): Record<string, unknown> | undefined =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined
@@ -37,7 +36,10 @@ const physicalDirectory = (path: string): boolean => {
 type Declaration = {
   repository?: unknown
   capital?: unknown
-  territory?: unknown
+  /** `territory_name` and `territory_members`, gathered when either key is declared. */
+  territory?: { name?: unknown; members?: unknown }
+  /** The retired `[skills.ki-repo.territory]` table, when it is still present. */
+  legacy?: unknown
   /** `[skills.ki-trades]` when the repository declares the skill. */
   trades?: Record<string, unknown>
   /** `[skills.ki-agora.<ENFORCING_AGORA>]` when the repository owns that Agora. */
@@ -52,10 +54,12 @@ const declaration = (document: Record<string, unknown>): Declaration => {
   const repo = table(skills['ki-repo']) ?? {}
   const trades = table(skills['ki-trades'])
   const agora = table(table(skills['ki-agora'])?.[ENFORCING_AGORA])
+  const declared = repo.territory_name !== undefined || repo.territory_members !== undefined
   return {
     repository: repo.repository,
     capital: repo.capital,
-    territory: repo.territory,
+    ...(declared ? { territory: { name: repo.territory_name, members: repo.territory_members } } : {}),
+    ...(repo.territory !== undefined ? { legacy: repo.territory } : {}),
     ...(trades ? { trades } : {}),
     ...(agora ? { agora } : {})
   }
@@ -111,10 +115,10 @@ const declaring = (registry: Registry, repository: string): readonly Checkout[] 
   registry.checkouts.filter((checkout) => checkout.repository === repository)
 
 const isCapital = (value: Declaration): boolean =>
-  canonical(value.repository) && value.capital === value.repository && table(value.territory) !== undefined
+  canonical(value.repository) && value.capital === value.repository && value.territory !== undefined
 
 const members = (value: Declaration): readonly string[] => {
-  const listed = table(value.territory)?.members
+  const listed = value.territory?.members
   return Array.isArray(listed) ? listed.filter((member): member is string => typeof member === 'string') : []
 }
 
@@ -154,29 +158,39 @@ const NO_CONFIGURATION: TerritoryEvidence = {
   coverage: []
 }
 
+const LEGACY_SUBJECT = '.ki.toml [skills.ki-repo.territory]'
+
+/** The retired table is reported with its migration, never read as a territory. */
+const legacyTable = (local: Declaration): readonly AuditOutcome[] =>
+  local.legacy === undefined
+    ? []
+    : [
+        {
+          status: 'VIOLATION',
+          message:
+            local.capital === local.repository
+              ? '[skills.ki-repo.territory] is retired; move its name and members to territory_name and territory_members under [skills.ki-repo], then remove the table'
+              : '[skills.ki-repo.territory] is retired and only a Capital declares a territory; remove the table',
+          subject: LEGACY_SUBJECT
+        }
+      ]
+
 const territoryShape = (local: Declaration): readonly AuditOutcome[] => {
-  const subject = '.ki.toml [skills.ki-repo.territory]'
-  const territory = table(local.territory)
-  if (local.territory !== undefined && !territory)
-    return [{ status: 'VIOLATION', message: '[skills.ki-repo.territory] must be a table', subject }]
+  const subject = '.ki.toml [skills.ki-repo] territory_name, territory_members'
+  const territory = local.territory
   if (!territory)
-    return [{ status: 'VIOLATION', message: 'a Capital must declare [skills.ki-repo.territory]', subject }]
-  const outcomes: AuditOutcome[] = []
-  for (const key of Object.keys(territory)
-    .filter((key) => !TERRITORY_KEYS.has(key))
-    .sort())
-    outcomes.push({
-      status: 'VIOLATION',
-      message: `[skills.ki-repo.territory] key ${key} is not allowed; use name and members`,
-      subject
-    })
+    return [
+      ...legacyTable(local),
+      { status: 'VIOLATION', message: 'a Capital must declare territory_name and territory_members', subject }
+    ]
+  const outcomes: AuditOutcome[] = [...legacyTable(local)]
   if (typeof territory.name !== 'string' || territory.name.trim().length === 0)
-    outcomes.push({ status: 'VIOLATION', message: 'territory name must be a non-empty string', subject })
+    outcomes.push({ status: 'VIOLATION', message: 'territory_name must be a non-empty string', subject })
   const listed = territory.members
   if (!Array.isArray(listed) || listed.length === 0) {
     outcomes.push({
       status: 'VIOLATION',
-      message: 'territory members must be a non-empty array of canonical HTTPS GitHub URLs',
+      message: 'territory_members must be a non-empty array of canonical HTTPS GitHub URLs',
       subject
     })
     return outcomes
@@ -185,7 +199,7 @@ const territoryShape = (local: Declaration): readonly AuditOutcome[] => {
   for (const member of invalid)
     outcomes.push({
       status: 'VIOLATION',
-      message: `territory member ${JSON.stringify(member)} is not a canonical HTTPS GitHub URL`,
+      message: `territory_members entry ${JSON.stringify(member)} is not a canonical HTTPS GitHub URL`,
       subject
     })
   const valid = listed.filter(canonical)
@@ -193,14 +207,16 @@ const territoryShape = (local: Declaration): readonly AuditOutcome[] => {
   for (const member of duplicates)
     outcomes.push({ status: 'VIOLATION', message: `territory member ${member} is listed more than once`, subject })
   if (invalid.length === 0 && valid.some((member, index) => index > 0 && (valid[index - 1] ?? '') > member))
-    outcomes.push({ status: 'VIOLATION', message: 'territory members must be sorted in ascending order', subject })
+    outcomes.push({ status: 'VIOLATION', message: 'territory_members must be sorted in ascending order', subject })
   if (!valid.includes(local.repository as string))
     outcomes.push({
       status: 'VIOLATION',
-      message: `territory members must include the Capital's own repository ${String(local.repository)}`,
+      message: `territory_members must include the Capital's own repository ${String(local.repository)}`,
       subject
     })
-  return outcomes.length > 0 ? outcomes : [{ status: 'PASS', message: 'territory table is well formed' }]
+  return outcomes.length > 0
+    ? outcomes
+    : [{ status: 'PASS', message: 'territory_name and territory_members are well formed' }]
 }
 
 /** A member resolves its Capital through its own declaration and the local registry. */
@@ -238,7 +254,7 @@ const memberAgreement = (
       outcomes: [
         {
           status: 'VIOLATION',
-          message: `${capital} is registered at ${checkout.root} but is not a Capital: it must name itself as capital and declare [skills.ki-repo.territory]`,
+          message: `${capital} is registered at ${checkout.root} but is not a Capital: it must name itself as capital and declare territory_members`,
           subject
         }
       ]
@@ -264,7 +280,7 @@ const capitalAgreement = (local: Declaration & { repository: string }, registry:
   const outcomes: AuditOutcome[] = []
   for (const member of members(local)) {
     if (member === local.repository || !canonical(member)) continue
-    const subject = `.ki.toml [skills.ki-repo.territory] ${member}`
+    const subject = `.ki.toml [skills.ki-repo].territory_members ${member}`
     const found = declaring(registry, member)
     if (found.length === 0) outcomes.push({ status: 'INFO', message: `${member} not checked out here`, subject })
     else if (found.length > 1)
@@ -300,7 +316,7 @@ const namedInChannels = (policy: Declaration, repository: string): boolean => {
 
 const inferCapital = (local: Declaration, registry: Registry): string | undefined => {
   if (!canonical(local.repository)) return undefined
-  if (local.territory !== undefined) return local.repository
+  if (local.territory !== undefined || local.legacy !== undefined) return local.repository
   const capitals = registry.checkouts.filter(
     (checkout) => isCapital(checkout) && members(checkout).includes(local.repository as string)
   )
@@ -388,14 +404,19 @@ export const territoryEvidence = (configSource: string | undefined, userHome: st
     }
   }
   const terr2: readonly AuditOutcome[] =
-    local.territory === undefined
+    local.territory === undefined && local.legacy === undefined
       ? [{ status: 'NOT_APPLICABLE', message: 'not a Capital; territory membership is declared by the Capital' }]
       : [
-          {
-            status: 'VIOLATION',
-            message: `only a Capital may declare [skills.ki-repo.territory]; this repository names ${local.capital} as its Capital`,
-            subject: '.ki.toml [skills.ki-repo.territory]'
-          }
+          ...(local.territory === undefined
+            ? []
+            : [
+                {
+                  status: 'VIOLATION' as const,
+                  message: `only a Capital may declare territory_name or territory_members; this repository names ${local.capital} as its Capital`,
+                  subject: '.ki.toml [skills.ki-repo] territory_name, territory_members'
+                }
+              ]),
+          ...legacyTable(local)
         ]
   const member = memberAgreement(repository, local.capital, registry)
   return {

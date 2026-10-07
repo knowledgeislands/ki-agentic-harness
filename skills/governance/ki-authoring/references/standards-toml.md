@@ -29,7 +29,7 @@ In `.ki.toml`, the exact conformance header, skill-root declarations, semantic n
 3. **No inline tables, multiline arrays.** As [Keys and values](#keys-and-values) states.
 4. **Comments above.** A comment goes on the line above what it describes, never at the end of a line.
 5. **Relationships order.** Within Relationships, `[skills.ki-agora]` comes first and `[skills.ki-trades]` is always the last table in the file.
-6. **Subtables for data maps only.** Use a subtable only for a genuine data map, whose keys are data: `[skills.ki-work-roadmap.areas]` maps area codes to titles, and each `[skills.ki-agora.<agora>]` is keyed by an Agora name. Never use a subtable to group a fixed set of fields; those keys belong in the skill's own table. A list of names that each need a reason is an array, with each reason as a comment on the line above its entry. `[skills.ki-repo.territory]` and `[skills.ki-trades.territory]` are exempt while their territory model is under separate review.
+6. **Subtables for data maps only.** Use a subtable only for a genuine data map, whose keys are data: `[skills.ki-work-roadmap.areas]` maps area codes to titles, and each `[skills.ki-agora.<agora>]` is keyed by an Agora name. Never use a subtable to group a fixed set of fields; those keys belong in the skill's own table. A list of names that each need a reason is an array, with each reason as a comment on the line above its entry. `[skills.ki-trades.territory]` is exempt while its trade-policy model is under separate review.
 
 `ki-repo` checks rules 2, the array part of 3, 5 and 6 mechanically, and defines the compact/substantial banner threshold and the banner ordering in the shared configuration contract. Each banner is a concise three-line comment:
 

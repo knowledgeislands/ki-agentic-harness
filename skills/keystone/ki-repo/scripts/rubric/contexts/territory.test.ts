@@ -63,7 +63,7 @@ const repo = (repository: string, extra = ''): string =>
   `[skills.ki-repo]\nrepository = "${repository}"\ntitle = "Example"\n${extra}`
 
 const capitalConfig = (members: readonly string[], trades = '', capital = CAPITAL): string =>
-  `${repo(capital, `capital = "${capital}"\n`)}\n[skills.ki-repo.territory]\nname = "Example"\nmembers = ${JSON.stringify(members)}\n${trades}`
+  `${repo(capital, `capital = "${capital}"\nterritory_name = "Example"\nterritory_members = ${JSON.stringify(members)}\n`)}${trades}`
 
 const channel = (from: string, to: string): string =>
   `\n[skills.ki-trades]\n\n[[skills.ki-trades.territory.channels]]\nid = "c"\npurpose = "p"\nfrom = ["${from}"]\nto = ["${to}"]\nkinds = ["work"]\n`
@@ -79,12 +79,14 @@ describe('TERR-1 capital declaration', () => {
     expect(evidence.inferredCapital).toBe(CAPITAL)
   })
 
-  test('a repository declaring a territory infers itself', () => {
-    const evidence = territoryEvidence(
+  test('a repository declaring a territory, or the retired table, infers itself', () => {
+    const flat = territoryEvidence(repo(CAPITAL, `territory_members = ["${CAPITAL}"]\n`), '/nonexistent')
+    expect(flat.inferredCapital).toBe(CAPITAL)
+    const legacy = territoryEvidence(
       `${repo(CAPITAL)}\n[skills.ki-repo.territory]\nname = "x"\nmembers = ["${CAPITAL}"]\n`,
       '/nonexistent'
     )
-    expect(evidence.inferredCapital).toBe(CAPITAL)
+    expect(legacy.inferredCapital).toBe(CAPITAL)
   })
 
   test('no inference without a unique Capital, with diagnostic guidance', () => {
@@ -134,22 +136,45 @@ describe('TERR-2 territory table shape', () => {
     expect(statuses(territoryEvidence(repo(CAPITAL, `capital = "${CAPITAL}"\n`), '/x').terr2)).toEqual(['VIOLATION'])
     expect(statuses(territoryEvidence(capitalConfig([CAPITAL, MEMBER]), '/x').terr2)).toEqual(['PASS'])
     const messages = territoryEvidence(
-      `${repo(CAPITAL, `capital = "${CAPITAL}"\n`)}\n[skills.ki-repo.territory]\nname = ""\nmembers = ["${OTHER}", "${MEMBER}", "${MEMBER}"]\nextra = 1\n`,
+      repo(
+        CAPITAL,
+        `capital = "${CAPITAL}"\nterritory_name = ""\nterritory_members = ["${OTHER}", "${MEMBER}", "${MEMBER}"]\n`
+      ),
       '/x'
     ).terr2.map(({ message }) => message)
-    expect(messages.some((message) => message.includes('key extra is not allowed'))).toBe(true)
-    expect(messages.some((message) => message.includes('name must be a non-empty string'))).toBe(true)
+    expect(messages.some((message) => message.includes('territory_name must be a non-empty string'))).toBe(true)
     expect(messages.some((message) => message.includes('listed more than once'))).toBe(true)
     expect(messages.some((message) => message.includes('sorted in ascending order'))).toBe(true)
     expect(messages.some((message) => message.includes("include the Capital's own repository"))).toBe(true)
   })
 
+  test('a Capital still holding the retired table is told to move it to the flat keys', () => {
+    const legacy = `\n[skills.ki-repo.territory]\nname = "x"\nmembers = ["${CAPITAL}"]\n`
+    const alone = territoryEvidence(`${repo(CAPITAL, `capital = "${CAPITAL}"\n`)}${legacy}`, '/x').terr2
+    expect(alone.map(({ message }) => message)).toEqual([
+      '[skills.ki-repo.territory] is retired; move its name and members to territory_name and territory_members under [skills.ki-repo], then remove the table',
+      'a Capital must declare territory_name and territory_members'
+    ])
+    expect(alone[0]?.subject).toBe('.ki.toml [skills.ki-repo.territory]')
+    const both = territoryEvidence(`${capitalConfig([CAPITAL])}${legacy}`, '/x').terr2
+    expect(statuses(both)).toEqual(['VIOLATION'])
+    expect(both[0]?.message).toContain('is retired; move its name and members')
+  })
+
   test('a non-Capital may not declare a territory', () => {
     const evidence = territoryEvidence(
-      `${repo(MEMBER, `capital = "${CAPITAL}"\n`)}\n[skills.ki-repo.territory]\nname = "x"\nmembers = ["${MEMBER}"]\n`,
+      repo(MEMBER, `capital = "${CAPITAL}"\nterritory_name = "x"\nterritory_members = ["${MEMBER}"]\n`),
       '/x'
     )
     expect(statuses(evidence.terr2)).toEqual(['VIOLATION'])
+    expect(evidence.terr2[0]?.message).toContain('only a Capital may declare territory_name or territory_members')
+    const legacy = territoryEvidence(
+      `${repo(MEMBER, `capital = "${CAPITAL}"\n`)}\n[skills.ki-repo.territory]\nname = "x"\nmembers = ["${MEMBER}"]\n`,
+      '/x'
+    ).terr2
+    expect(legacy.map(({ message }) => message)).toEqual([
+      '[skills.ki-repo.territory] is retired and only a Capital declares a territory; remove the table'
+    ])
     expect(statuses(territoryEvidence(repo(MEMBER, `capital = "${CAPITAL}"\n`), '/x').terr2)).toEqual([
       'NOT_APPLICABLE'
     ])
@@ -200,7 +225,7 @@ describe('TERR-3 agreement', () => {
     expect(outcome).toEqual({
       status: 'VIOLATION',
       message: `territory member ${MEMBER} is ambiguous: 2 registered checkouts declare it (${realpathSync(first)}, ${realpathSync(second)})`,
-      subject: `.ki.toml [skills.ki-repo.territory] ${MEMBER}`
+      subject: `.ki.toml [skills.ki-repo].territory_members ${MEMBER}`
     })
   })
 

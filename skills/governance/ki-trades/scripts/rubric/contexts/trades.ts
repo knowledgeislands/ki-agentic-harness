@@ -212,10 +212,10 @@ type Declaration = {
 }
 
 const isCapital = (value: Declaration): boolean =>
-  value.repository !== undefined && value.capital === value.repository && table(value.territory) !== null
+  value.repository !== undefined && value.capital === value.repository && value.territory !== undefined
 
 const territoryMembers = (value: Declaration): readonly string[] => {
-  const members = table(value.territory)?.members
+  const members = value.territory
   return Array.isArray(members) ? members.filter((member): member is string => typeof member === 'string') : []
 }
 
@@ -231,7 +231,7 @@ const readDeclaration = (root: string): Declaration | undefined => {
       root,
       ...repositoryIdentity(repo.repository),
       capital: repo.capital,
-      territory: repo.territory,
+      territory: repo.territory_members,
       ...(trades ? { trades } : {})
     }
   } catch {
@@ -521,7 +521,7 @@ const resolvePolicy = (local: Declaration, registered: readonly RegisteredReposi
   if (!isCapital(source))
     return {
       state: 'not-capital',
-      message: `${capital} is not a Capital (it must name itself as capital and declare [skills.ki-repo.territory]); no routes are granted`
+      message: `${capital} is not a Capital (it must name itself as capital and declare territory_members in [skills.ki-repo]); no routes are granted`
     }
   if (!territoryMembers(source).includes(local.repository))
     return {
