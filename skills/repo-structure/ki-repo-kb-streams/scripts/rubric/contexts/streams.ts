@@ -9,7 +9,7 @@ import type {
   ViolationLevel
 } from '../../shared/rubric.ts'
 
-const OPERATIONAL_AREAS = ['Roadmap', 'Trades'] as const
+const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
 const EXECUTION_FAMILIES = ['STREAM', 'GATE', 'CONFIG'] as const
 const LEGACY_FOLDERS = [
@@ -139,11 +139,11 @@ const parseConfiguration = (text: string): StreamsConfiguration => {
 }
 
 // The repository roadmap standard's structural-validity invariant: every direct-child record
-// other than the ledger and the KB index note carries parseable frontmatter whose `id` matches
+// other than the ledger, the ideas list and the KB index note carries parseable frontmatter whose `id` matches
 // its filename identifier, and no two records share an `id`. One walk feeds both STREAM-6 and
 // STREAM-7, so a record STREAM-6 cannot compare is always reported by STREAM-7. The full record
 // format belongs to the roadmap adapter.
-const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', 'Roadmap.md'])
+const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', '_IDEAS.md', 'Roadmap.md'])
 // Mirrors the roadmap adapter's filename identifier grammar without its slug grammar.
 const FILENAME_IDENTIFIER = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-./
 const WORK_ITEM_IDENTIFIER = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
@@ -322,7 +322,9 @@ export const createStreamsSession = ({
     }
   ]
   const roadmapPath = join(streamsPath, 'Roadmap')
-  const hasRoadmapRecords = markdownPaths(roadmapPath).some((path) => basename(path) !== '_ISSUES.md')
+  const hasRoadmapRecords = markdownPaths(roadmapPath).some(
+    (path) => !['_ISSUES.md', '_IDEAS.md'].includes(basename(path))
+  )
   const anchorFiles = ['CLAUDE.md', 'AGENTS.md'].filter((name) => regularFile(join(root, name)))
   const anchored = anchorFiles.some((name) => {
     const content = readFileSync(join(root, name), 'utf8')

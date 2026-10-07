@@ -27,12 +27,12 @@ const ROAD_2: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-2',
   title: 'honest horizon placement',
   description:
-    'Open Triage contains captured, unadopted draft work; terminal Triage records an evidence-backed done disposition; adopted items sit in honest delivery horizons, and Waiting-for items name their external condition.',
+    'Triage records are captured, unadopted work without a horizon; adopted records sit in honest horizons for their status; held records name their reason, condition, and review date; cancelled records carry an evidence-backed resolution.',
   sources: [SOURCE],
   judgment: {
-    scope: 'Every horizon, Triage adoption boundary, and Waiting-for condition.',
+    scope: 'Every horizon, triage adoption boundary, hold, and cancellation.',
     prompt:
-      'Review whether open Triage items remain unadopted drafts, terminal Triage items carry evidence-backed done dispositions, moves into delivery horizons have explicit human adoption, and Waiting-for items name their external condition.',
+      'Review whether triage records remain unadopted and horizon-free, moves out of triage have explicit human adoption, held records name an honest condition, and cancelled records carry an evidence-backed resolution.',
     outcomes: ['conforming', 'gap', 'exclusion'],
     guidance:
       'Confirm placement with the owning authority, record a gap, or record an explicit exclusion; do not move work automatically.'
@@ -77,12 +77,12 @@ const ROAD_5: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-5',
   title: 'horizon transitions and readiness',
   description:
-    'Capture into Triage needs no adoption decision; leaving Triage requires explicit human adoption, and later horizon promotion and deferral meet the readiness contract.',
+    'Capture into triage needs no adoption decision; leaving triage requires explicit human adoption, and later horizon promotion, deferral, hold, and release meet the readiness contract.',
   sources: [SOURCE],
   judgment: {
-    scope: 'Every proposed Triage adoption, promotion, deferral, and its readiness evidence.',
+    scope: 'Every proposed triage adoption, promotion, deferral, hold, release, and its readiness evidence.',
     prompt:
-      'Review Triage exits for explicit human adoption and each later promotion or deferral against the readiness contract and plan state.',
+      'Review triage exits for explicit human adoption and each later promotion, deferral, hold, or release against the readiness contract and plan state.',
     outcomes: ['conforming', 'gap', 'exclusion'],
     guidance:
       'Confirm the lifecycle move with its owner, record a gap, or record an explicit exclusion; never choose the move automatically.'
@@ -93,14 +93,15 @@ const ROAD_6: RubricItem<RoadmapAuditContext> = {
   code: 'ROAD-6',
   title: 'repository work-item code',
   description:
-    'The ki-repo table declares a valid stable repository code; roadmap configuration declares either repository-wide themes or fixed area-to-theme namespaces.',
+    'The ki-repo table declares a valid stable repository code; roadmap configuration declares any identifier areas as a list of codes and any components as a vocabulary; retired themes and area maps warn during migration.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Correct the configured repository code, theme vocabulary, or fixed area map from authoritative repository configuration.'
+        'Correct the configured repository code, areas, or component vocabulary from authoritative repository configuration.'
     },
     audit: {
       phase: 'INSPECT',

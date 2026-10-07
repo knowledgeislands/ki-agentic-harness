@@ -85,6 +85,23 @@ describe('ki-repo-kb-streams session', () => {
     ])
   })
 
+  test('recognises the Projects registry and the ideas list beside the Roadmap ledger', () => {
+    const root = targetFixture()
+    mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })
+    writeFileSync(join(root, 'Streams', 'Projects', 'Projects.md'), '# Projects\n')
+    mkdirSync(join(root, 'Streams', 'Roadmap'), { recursive: true })
+    writeFileSync(join(root, 'Streams', 'Roadmap', '_IDEAS.md'), '# Ideas\n\n- Try a faster parser.\n')
+    const session = createStreamsSession(options(root, 'audit'))
+    const context = STREAM.selectContext(rootContext(session))
+
+    expect(context.operationalAreas[0]).toEqual({
+      level: 'PASS',
+      message: 'Streams contains the configured Roadmap operational area.',
+      subject: 'Streams'
+    })
+    expect(JSON.stringify(context)).not.toContain('_IDEAS.md')
+  })
+
   test('flags retained Housekeeping definitions for deliberate reconciliation without moving or deleting them', () => {
     const root = targetFixture()
     const directory = join(root, 'Streams', 'Housekeeping')

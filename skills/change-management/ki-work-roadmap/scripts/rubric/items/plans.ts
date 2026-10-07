@@ -27,7 +27,7 @@ const mechanical = (
 const EXEC_1 = mechanical(
   'EXEC-1',
   'in-place execution record',
-  'A work item entering execution retains its concise issue context and adds the required execution sections in the same file; awaiting-review and delivery-done records carry the ordered review packet, while terminal Triage carries intake-disposition evidence.',
+  'A work item entering execution retains its concise issue context and adds the required execution sections in the same file; awaiting-review and delivery-done records carry the ordered review packet, while cancelled records carry a resolution and Cancelled section.',
   'Every execution record is an enriched canonical work item.'
 )
 
@@ -35,7 +35,7 @@ const EXEC_2: RubricItem<RoadmapAuditContext> = {
   code: 'EXEC-2',
   title: 'stage-appropriate work-item detail',
   description:
-    'Triage and Future items preserve the issue and its discussion; terminal Triage adds disposition evidence; Soon adds useful shaping; immediate and active items have concrete Steps, checkable Verify, honest Current state, and minimal Files touched.',
+    'Triage and Future items preserve the issue and its discussion; cancelled records add resolution evidence; Soon adds useful shaping; immediate and active items have concrete Steps, checkable Verify, honest Current state, and minimal Files touched.',
   sources: [SOURCE],
   judgment: {
     scope: 'The stage-appropriate detail in every canonical work item.',
@@ -51,7 +51,7 @@ const EXEC_3: RubricItem<RoadmapAuditContext> = {
   code: 'EXEC-3',
   title: 'honest execution status',
   description:
-    'Draft awaits readiness approval; ready awaits execution; in-progress reflects live work; awaiting-review carries the required review packet; done is a retained closure record. Delivery states beyond draft are Now or Next; evidence-backed terminal intake remains in Triage.',
+    'Draft awaits readiness approval; ready awaits execution; in-progress reflects live work; awaiting-review carries the required review packet; done is a retained closure record. ready sits at Now, Next, or hold, and active delivery at Now or hold; triage, done, and cancelled records carry no horizon.',
   sources: [SOURCE],
   judgment: {
     scope: 'The declared lifecycle status and retained evidence of every work item.',

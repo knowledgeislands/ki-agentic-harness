@@ -8,7 +8,13 @@ const TEMPLATE_ID = /^[A-Z0-9][A-Z0-9-]{1,23}-HK-\d{3,}$/
 const RUN_ID = /^[A-Z][A-Z0-9-]{1,31}-\d{3,}$/
 const CADENCE = /^P[1-9]\d*[DWM]$/
 const DATE = /^\d{4}-\d{2}-\d{2}$/
-const HORIZONS = new Set(['now', 'next', 'soon', 'future', 'waiting-for', 'parked'])
+const HORIZONS = new Set(['now', 'next', 'soon', 'future'])
+/** Pre-v1 spawn horizons, read only under roadmap migration tolerance. */
+const LEGACY_HORIZONS = new Set(['waiting-for', 'parked'])
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const KINDS = new Set(['deliver', 'decide', 'investigate', 'audit'])
+const PURPOSES = new Set(['capability', 'corrective', 'debt', 'governance', 'learning', 'adoption', 'upkeep'])
+const CLASSIFICATION_FIELDS = ['initiative', 'component', 'purpose', 'kind'] as const
 const RUN_STATES = new Set(['draft', 'ready', 'in-progress', 'awaiting-review'])
 const KB_SCHEDULE_FIELDS = new Set([
   'cadence',
@@ -18,7 +24,8 @@ const KB_SCHEDULE_FIELDS = new Set([
   'spawn_horizon',
   'active_run',
   'commit_threshold',
-  'last_run_ref'
+  'last_run_ref',
+  ...CLASSIFICATION_FIELDS
 ])
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
@@ -130,6 +137,16 @@ const hasBodySection = (body: string, heading: string): boolean => {
   return Boolean(section?.[1].trim())
 }
 
+/** Roadmap migration tolerance: retired or missing classification is reported, never failed. */
+const migrationNotices = (values: Readonly<Record<string, string>>): string[] => {
+  const notices: string[] = []
+  const horizon = values['spawn-horizon'] ?? ''
+  if (LEGACY_HORIZONS.has(horizon))
+    notices.push(`Migration: spawn-horizon '${horizon}' is retired; spawn at now, next, soon or future.`)
+  if (!('initiative' in values)) notices.push('Migration: the template should declare the initiative its runs serve.')
+  return notices
+}
+
 const repositoryLayout = (root: string): { kb: boolean; templateRoot: string; errors: string[] } => {
   const config = join(root, '.ki.toml')
   const project = { kb: false, templateRoot: join(root, 'docs', 'housekeeping'), errors: [] }
@@ -196,7 +213,7 @@ const templateErrors = ({
     'active-run'
   ])
   for (const key of expected) if (!(key in parsed.values)) errors.push(`is missing frontmatter field '${key}'`)
-  const allowed = new Set([...expected, 'commit-threshold', 'last-run-ref'])
+  const allowed = new Set([...expected, 'commit-threshold', 'last-run-ref', ...CLASSIFICATION_FIELDS])
   const unexpected = Object.keys(parsed.values).filter((key) => !allowed.has(key))
   if (unexpected.length) errors.push(`has unexpected frontmatter field(s): ${unexpected.join(', ')}`)
 
@@ -225,7 +242,14 @@ const templateErrors = ({
     errors.push('last-run-ref requires successful last-run date evidence')
   if (!['manual', 'when-due', 'when-overdue'].includes(parsed.values['spawn-policy'] ?? ''))
     errors.push('has an invalid spawn-policy')
-  if (!HORIZONS.has(parsed.values['spawn-horizon'] ?? '')) errors.push('has an invalid spawn-horizon')
+  const horizon = parsed.values['spawn-horizon'] ?? ''
+  if (!HORIZONS.has(horizon) && !LEGACY_HORIZONS.has(horizon)) errors.push('has an invalid spawn-horizon')
+  for (const key of ['initiative', 'component'] as const)
+    if (key in parsed.values && !SLUG.test(parsed.values[key] ?? ''))
+      errors.push(`${key} must be a lowercase kebab-case slug`)
+  if ('purpose' in parsed.values && !PURPOSES.has(parsed.values.purpose ?? ''))
+    errors.push('purpose must be one canonical value')
+  if ('kind' in parsed.values && !KINDS.has(parsed.values.kind ?? '')) errors.push('kind must be one canonical value')
   if (parsed.values['active-run'] !== 'null' && !RUN_ID.test(parsed.values['active-run'] ?? ''))
     errors.push("active-run must be 'null' or a work-record identity")
   for (const heading of ['Goal', 'Procedure', 'Successful-run evidence', 'Obsolescence'])
@@ -343,6 +367,8 @@ export const createHousekeepingSession = ({
           : 'Housekeeping template has a complete lifecycle, identity, schedule, body, and linkage contract.',
         subject: template.subject
       })
+      for (const message of migrationNotices(template.values))
+        outcomes.push({ status: 'INFO', message, subject: template.subject })
       if (template.errors.length) continue
       const values = template.values
       if (values.status === 'retired') {

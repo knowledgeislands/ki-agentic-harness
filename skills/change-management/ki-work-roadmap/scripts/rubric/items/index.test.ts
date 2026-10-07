@@ -32,14 +32,14 @@ const createFixture = (): string => {
   mkdirSync(join(repository, 'docs', 'roadmap'), { recursive: true })
   writeFileSync(
     join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\nthemes = ["foundation-tooling"]\n'
+    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\ncomponents = ["checker"]\n'
   )
   writeFileSync(
     join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md'),
     `---
 id: TEST-001
 title: Build the foundation
-theme: foundation-tooling
+kind: deliver
 horizon: next
 status: draft
 blocks: []
@@ -175,7 +175,7 @@ test('the structured catalogue represents the flat work-item standard', () => {
 })
 
 test('the canonical horizons preserve the delivery queue and append Triage as separate intake', () => {
-  expect(HORIZONS).toEqual(['now', 'next', 'soon', 'waiting-for', 'parked', 'future', 'triage'])
+  expect(HORIZONS).toEqual(['now', 'next', 'soon', 'future', 'hold'])
 })
 
 test('roadmap commit guidance separates pruning rather than every lifecycle transition', () => {
@@ -361,8 +361,9 @@ test('fixed areas reject an unknown namespace and a ledger below its retained se
     expect.arrayContaining([
       expect.objectContaining({ area: 'ITEM-1' }),
       expect.objectContaining({
-        area: 'ITEM-2',
-        msg: 'item area must map to its theme in ki-work-roadmap configuration'
+        level: 'WARN',
+        area: 'ROAD-6',
+        msg: 'migration: the area-to-theme map is retired; declare areas = ["CODE", ...]'
       })
     ])
   )
@@ -393,7 +394,7 @@ test('terminal Triage rejected disposition is done without delivery evidence or 
 
   writeFileSync(item, readFileSync(item, 'utf8').replace('baseline_ref: null', `baseline_ref: ${'a'.repeat(40)}`))
   expect(inspectRoadmap(repository)).toContainEqual(
-    expect.objectContaining({ area: 'ITEM-2', msg: 'terminal Triage item baseline_ref must remain null' })
+    expect.objectContaining({ area: 'ITEM-2', msg: 'migration: terminal Triage item baseline_ref must remain null' })
   )
 })
 
@@ -418,7 +419,10 @@ test('terminal Triage rejects delivery sections', () => {
       )
     )
     expect(inspectRoadmap(repository)).toContainEqual(
-      expect.objectContaining({ area: 'ITEM-3', msg: `terminal Triage must not contain delivery sections: ${heading}` })
+      expect.objectContaining({
+        area: 'ITEM-3',
+        msg: `migration: terminal Triage must not contain delivery sections: ${heading}`
+      })
     )
   }
 })
@@ -430,7 +434,7 @@ test('terminal Triage duplicate and merged dispositions require a retained targe
     expect(inspectRoadmap(missingTargetRepository)).toContainEqual(
       expect.objectContaining({
         area: 'ITEM-2',
-        msg: `${disposition} Triage disposition requires intake_disposition_target`
+        msg: `migration: ${disposition} Triage disposition requires intake_disposition_target`
       })
     )
 
@@ -447,7 +451,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(missingDispositionRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'terminal Triage intake_disposition must be rejected, duplicate, or merged'
+      msg: 'migration: terminal Triage intake_disposition must be rejected, duplicate, or merged'
     })
   )
 
@@ -456,7 +460,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(rejectedTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'rejected Triage disposition must not name intake_disposition_target'
+      msg: 'migration: rejected Triage disposition must not name intake_disposition_target'
     })
   )
 
@@ -465,7 +469,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(malformedTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'intake_disposition_target must be a canonical work-item ID'
+      msg: 'migration: intake_disposition_target must be a canonical work-item ID'
     })
   )
 
@@ -474,7 +478,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(selfTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'intake_disposition_target must differ from the disposed item'
+      msg: 'migration: intake_disposition_target must differ from the disposed item'
     })
   )
 
@@ -483,7 +487,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(unresolvedTargetRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: "intake_disposition_target 'TEST-002' must resolve to a retained work item"
+      msg: "migration: intake_disposition_target 'TEST-002' does not resolve to a retained work item"
     })
   )
 
@@ -492,7 +496,7 @@ test('terminal Triage requires an allowed disposition, valid target shape, and d
   expect(inspectRoadmap(emptyRationaleRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-3',
-      msg: 'terminal Triage item requires a non-empty ## Intake disposition'
+      msg: 'migration: terminal Triage item requires a non-empty ## Intake disposition'
     })
   )
 })
@@ -508,7 +512,7 @@ test('intake disposition fields are forbidden outside terminal Triage', () => {
   expect(inspectRoadmap(repository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'intake disposition fields are valid only for terminal Triage items'
+      msg: 'migration: intake disposition fields are valid only for terminal Triage items'
     })
   )
 
@@ -523,7 +527,7 @@ test('intake disposition fields are forbidden outside terminal Triage', () => {
   expect(inspectRoadmap(openTriageRepository)).toContainEqual(
     expect.objectContaining({
       area: 'ITEM-2',
-      msg: 'intake disposition fields are valid only for terminal Triage items'
+      msg: 'migration: intake disposition fields are valid only for terminal Triage items'
     })
   )
 })
@@ -557,7 +561,7 @@ test('invalid lifecycle placement and missing execution sections fail', () => {
   )
   const failures = inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')
   expect(failures).toContainEqual(
-    expect.objectContaining({ area: 'ITEM-2', msg: 'non-draft item must be in now or next' })
+    expect.objectContaining({ area: 'ITEM-2', msg: 'in-progress record must sit at now, hold' })
   )
   expect(failures).toContainEqual(expect.objectContaining({ area: 'ITEM-3' }))
 })
@@ -829,20 +833,23 @@ test('KB scope follows the declared repository kind, not a directory shape', () 
   )
   writeFileSync(
     join(repository, '.ki.toml'),
-    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\nthemes = ["foundation-tooling"]\n'
+    '[skills.ki-repo]\nrepo_code = "TEST"\n\n[skills.ki-work-roadmap]\ncomponents = ["checker"]\n'
   )
   mkdirSync(join(repository, 'Streams', 'Roadmap'), { recursive: true })
   expect(inspectRoadmap(repository).filter((finding) => finding.area === 'SCOPE-1')).toEqual([])
 })
 
-test('item themes must be declared by the repository roadmap configuration', () => {
+test('a retired theme field warns under migration tolerance', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
-  writeFileSync(item, readFileSync(item, 'utf8').replace('theme: foundation-tooling', 'theme: other-theme'))
-  expect(inspectRoadmap(repository)).toContainEqual(
+  writeFileSync(item, readFileSync(item, 'utf8').replace('kind: deliver', 'kind: deliver\ntheme: other-theme'))
+  const findings = inspectRoadmap(repository)
+  expect(findings.filter((finding) => finding.level === 'FAIL')).toEqual([])
+  expect(findings).toContainEqual(
     expect.objectContaining({
+      level: 'WARN',
       area: 'ITEM-2',
-      msg: 'item theme must be declared by ki-work-roadmap configuration'
+      msg: 'migration: theme is retired; classify with project, initiative or component'
     })
   )
 })
@@ -860,11 +867,19 @@ test('trade waits use a flat canonical identity array only at Waiting for', () =
         '\n'
       )
   )
-  expect(inspectRoadmap(repository).filter((finding) => finding.area === 'TRADE-2')).toEqual([])
+  expect(inspectRoadmap(repository).filter((finding) => finding.area === 'TRADE-2')).toEqual([
+    expect.objectContaining({
+      level: 'WARN',
+      msg: 'migration: waiting_on_trades is retired; name the trades in hold.trades'
+    })
+  ])
 
   writeFileSync(item, readFileSync(item, 'utf8').replace('horizon: waiting-for', 'horizon: soon'))
   expect(inspectRoadmap(repository)).toContainEqual(
-    expect.objectContaining({ area: 'TRADE-2', msg: 'waiting_on_trades is valid only at the waiting-for horizon' })
+    expect.objectContaining({
+      area: 'TRADE-2',
+      msg: 'migration: waiting_on_trades is valid only at the waiting-for horizon'
+    })
   )
 
   writeFileSync(
@@ -877,9 +892,9 @@ test('trade waits use a flat canonical identity array only at Waiting for', () =
     expect.arrayContaining([
       expect.objectContaining({
         area: 'TRADE-2',
-        msg: 'waiting_on_trades must contain only canonical trade identities'
+        msg: 'migration: waiting_on_trades must contain only canonical trade identities'
       }),
-      expect.objectContaining({ area: 'TRADE-2', msg: 'waiting_on_trades must not repeat a trade identity' })
+      expect.objectContaining({ area: 'TRADE-2', msg: 'migration: waiting_on_trades must not repeat a trade identity' })
     ])
   )
 })

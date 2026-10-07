@@ -2,19 +2,28 @@
 /** Mechanical auditor for flat non-KB repository work items. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
+import { loadProjectRegistry } from './project-registry.ts'
 import { parseStrictYaml as parseYaml } from './strict-yaml.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 export type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-export type Horizon = (typeof HORIZONS)[number]
+export type Horizon = (typeof HORIZONS)[number] | (typeof LEGACY_HORIZONS)[number]
 export type WorkItem = {
   readonly id: string
   readonly area: string | null
   readonly serial: number
   readonly title: string
-  readonly theme: string
-  readonly horizon: Horizon
+  readonly theme: string | null
+  readonly horizon: Horizon | null
   readonly status: string
+  readonly kind: string | undefined
+  readonly purpose: string | undefined
+  readonly project: string | undefined
+  readonly initiative: string | undefined
+  readonly component: string | undefined
+  readonly resolution: string | undefined
+  readonly resolutionTarget: string | undefined
+  readonly terminalTriage: boolean
   readonly blocks: readonly string[]
   readonly blockedBy: readonly string[]
   readonly waitingOnTrades: readonly string[]
@@ -28,15 +37,16 @@ export type WorkItem = {
 }
 type RoadmapConfiguration = {
   readonly repoCode: string
-  readonly themes: ReadonlySet<string>
-  readonly areas: ReadonlyMap<string, string>
+  readonly areas: ReadonlySet<string>
+  readonly components: ReadonlySet<string>
 }
 
-export const HORIZONS = ['now', 'next', 'soon', 'waiting-for', 'parked', 'future', 'triage'] as const
+export const HORIZONS = ['now', 'next', 'soon', 'future', 'hold'] as const
+/** Pre-v1 horizons, read only under migration tolerance. */
+export const LEGACY_HORIZONS = ['waiting-for', 'parked', 'triage'] as const
 
 const ID_RE = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
 const FILE_RE = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
-const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const AREA_RE = /^[A-Z][A-Z0-9]*$/
 const COMMIT_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 const TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
@@ -46,15 +56,63 @@ const TASK_RELATIONS = new Set(['evaluation', 'implementation', 'review', 'integ
 const TASK_FIELDS = ['authority', 'scope', 'id', 'key', 'url', 'relation'] as const
 const TASK_LINKS_PARSE_ERROR = Symbol('task_links parse error')
 const MAX_TITLE_WORDS = 4
-const STATUS = new Set(['draft', 'ready', 'in-progress', 'awaiting-review', 'done'])
+const STATUS = new Set(['triage', 'draft', 'ready', 'in-progress', 'awaiting-review', 'done', 'cancelled'])
+const OPEN_STATUSES = new Set(['draft', 'ready', 'in-progress', 'awaiting-review'])
+const TERMINAL_STATUSES = new Set(['done', 'cancelled'])
+const HORIZONS_BY_STATUS: Readonly<Record<string, readonly string[]>> = {
+  draft: HORIZONS,
+  ready: ['now', 'next', 'hold'],
+  'in-progress': ['now', 'hold'],
+  'awaiting-review': ['now', 'hold']
+}
+const HOLD_REASONS = new Set(['waiting-for', 'parked'])
+const HOLD_FIELDS = new Set(['reason', 'condition', 'review', 'trades'])
+const HOLD_STALE_DAYS = 31
+const HOLD_PARSE_ERROR = Symbol('hold parse error')
+const RESOLUTIONS = new Set(['obsolete', 'rejected', 'duplicate', 'merged', 'superseded'])
+const TARGETED_RESOLUTIONS = new Set(['duplicate', 'merged', 'superseded'])
+const KINDS = new Set(['deliver', 'decide', 'investigate', 'audit'])
+const PURPOSES = new Set(['capability', 'corrective', 'debt', 'governance', 'learning', 'adoption', 'upkeep'])
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const INTAKE_DISPOSITIONS = new Set(['rejected', 'duplicate', 'merged'])
-const IMMEDIATE = new Set<Horizon>(['now', 'next'])
+const IMMEDIATE = new Set<string>(['now', 'next'])
+const RECORD_FIELDS = new Set([
+  'id',
+  'area',
+  'title',
+  'kind',
+  'purpose',
+  'project',
+  'initiative',
+  'component',
+  'horizon',
+  'hold',
+  'status',
+  'resolution',
+  'resolution_target',
+  'blocks',
+  'blocked_by',
+  'task_links',
+  'baseline_ref',
+  'created_at',
+  'updated_at',
+  'transferred_from',
+  'housekeeping_template',
+  'scheduled_for',
+  // Retired fields, read only under migration tolerance.
+  'theme',
+  'waiting_on_trades',
+  'intake_disposition',
+  'intake_disposition_target'
+])
 const STANDARD = 'references/standards-repository-roadmaps.md'
 const FORMAT = 'references/standards-work-item-format.md'
 const RUBRIC = 'references/rubric.md'
 const ROADMAP_CONFIG = 'ki-work-roadmap'
 const REPO_CONFIG = 'ki-repo'
 export const ISSUE_LEDGER = '_ISSUES.md'
+export const IDEAS_LIST = '_IDEAS.md'
+const NON_RECORDS = new Set([ISSUE_LEDGER, IDEAS_LIST])
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 let findings: Finding[] = []
@@ -84,6 +142,16 @@ const parseTaskLinks = (lines: readonly string[], display: string): unknown => {
     const detail = error instanceof Error ? error.message.split('\n')[0] : 'parse failed'
     add('FAIL', 'ITEM-1', `task_links YAML is invalid: ${detail}`, FORMAT, display)
     return TASK_LINKS_PARSE_ERROR
+  }
+}
+
+const parseHold = (lines: readonly string[], display: string): unknown => {
+  try {
+    return (parseYaml(`hold:\n${lines.join('\n')}`) as { hold?: unknown } | null)?.hold
+  } catch (error) {
+    const detail = error instanceof Error ? error.message.split('\n')[0] : 'parse failed'
+    add('FAIL', 'ITEM-2', `hold YAML is invalid: ${detail}`, FORMAT, display)
+    return HOLD_PARSE_ERROR
   }
 }
 
@@ -142,6 +210,18 @@ const parseFrontmatter = (
     }
     const [, key, raw] = field
     if (key in values) add('FAIL', 'ITEM-1', `frontmatter repeats '${key}'`, FORMAT, display)
+    if (key === 'hold') {
+      if (raw) {
+        add('FAIL', 'ITEM-2', 'hold must be a nested mapping', FORMAT, display)
+        values[key] = HOLD_PARSE_ERROR
+        continue
+      }
+      const nested: string[] = []
+      while (index + 1 < lines.length && (lines[index + 1] === '' || /^\s+/.test(lines[index + 1])))
+        nested.push(lines[++index])
+      values[key] = parseHold(nested, display)
+      continue
+    }
     if (key === 'task_links') {
       if (raw) {
         add('FAIL', 'ITEM-1', 'task_links must be a nested provider map', FORMAT, display)
@@ -212,57 +292,67 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
       typeof table === 'object' && table !== null && !Array.isArray(table)
         ? (table as Record<string, unknown>)
         : undefined
-    const configuredThemes = values?.themes
-    if (configuredThemes !== undefined && (!Array.isArray(configuredThemes) || configuredThemes.length === 0)) {
-      add('FAIL', 'ROAD-6', 'roadmap themes must be a non-empty array when declared', STANDARD, '.ki.toml')
-      return undefined
-    }
-    if (
-      Array.isArray(configuredThemes) &&
-      configuredThemes.some((theme) => typeof theme !== 'string' || !THEME_RE.test(theme))
-    ) {
-      add('FAIL', 'ROAD-6', 'ki-work-roadmap themes must contain only lowercase kebab-case names', STANDARD, '.ki.toml')
-      return undefined
-    }
-    if (Array.isArray(configuredThemes) && new Set(configuredThemes).size !== configuredThemes.length) {
-      add('FAIL', 'ROAD-6', 'ki-work-roadmap themes must not repeat a theme name', STANDARD, '.ki.toml')
-      return undefined
-    }
+    if (values?.themes !== undefined)
+      tolerate('ki-work-roadmap themes are retired; remove the themes list', '.ki.toml', 'ROAD-6', STANDARD)
     const configuredAreas = values?.areas
-    const areas = new Map<string, string>()
-    if (configuredAreas !== undefined) {
-      if (typeof configuredAreas !== 'object' || configuredAreas === null || Array.isArray(configuredAreas)) {
-        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must be a code-to-theme table', STANDARD, '.ki.toml')
+    const areas = new Set<string>()
+    if (Array.isArray(configuredAreas)) {
+      if (!configuredAreas.length || configuredAreas.some((area) => typeof area !== 'string' || !AREA_RE.test(area))) {
+        add(
+          'FAIL',
+          'ROAD-6',
+          'ki-work-roadmap areas must be a non-empty list of uppercase area codes',
+          STANDARD,
+          '.ki.toml'
+        )
         return undefined
       }
-      for (const [area, theme] of Object.entries(configuredAreas as Record<string, unknown>)) {
-        if (!AREA_RE.test(area) || typeof theme !== 'string' || !THEME_RE.test(theme)) {
-          add(
-            'FAIL',
-            'ROAD-6',
-            'roadmap area codes must be uppercase and map to lowercase kebab-case themes',
-            STANDARD,
-            '.ki.toml'
-          )
+      if (new Set(configuredAreas).size !== configuredAreas.length) {
+        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not repeat an area code', STANDARD, '.ki.toml')
+        return undefined
+      }
+      for (const area of configuredAreas) areas.add(area)
+    } else if (configuredAreas !== undefined) {
+      if (typeof configuredAreas !== 'object' || configuredAreas === null) {
+        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must be a list of area codes', STANDARD, '.ki.toml')
+        return undefined
+      }
+      tolerate('the area-to-theme map is retired; declare areas = ["CODE", ...]', '.ki.toml', 'ROAD-6', STANDARD)
+      for (const area of Object.keys(configuredAreas)) {
+        if (!AREA_RE.test(area)) {
+          add('FAIL', 'ROAD-6', 'roadmap area codes must be uppercase', STANDARD, '.ki.toml')
           return undefined
         }
-        if (Array.isArray(configuredThemes) && !configuredThemes.includes(theme)) {
-          add('FAIL', 'ROAD-6', 'every roadmap area must map to a declared theme', STANDARD, '.ki.toml')
-          return undefined
-        }
-        areas.set(area, theme)
+        areas.add(area)
       }
       if (!areas.size) {
         add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not be empty when declared', STANDARD, '.ki.toml')
         return undefined
       }
     }
-    const themes = new Set(Array.isArray(configuredThemes) ? configuredThemes : areas.values())
-    if (!themes.size) {
-      add('FAIL', 'ROAD-6', 'roadmap must declare themes or a non-empty areas table', STANDARD, '.ki.toml')
-      return undefined
+    const configuredComponents = values?.components
+    const components = new Set<string>()
+    if (configuredComponents !== undefined) {
+      if (
+        !Array.isArray(configuredComponents) ||
+        configuredComponents.some((component) => typeof component !== 'string' || !SLUG_RE.test(component))
+      ) {
+        add(
+          'FAIL',
+          'ROAD-6',
+          'ki-work-roadmap components must be a list of lowercase kebab-case names',
+          STANDARD,
+          '.ki.toml'
+        )
+        return undefined
+      }
+      if (new Set(configuredComponents).size !== configuredComponents.length) {
+        add('FAIL', 'ROAD-6', 'ki-work-roadmap components must not repeat a name', STANDARD, '.ki.toml')
+        return undefined
+      }
+      for (const component of configuredComponents) components.add(component)
     }
-    return { repoCode: code, themes, areas }
+    return { repoCode: code, areas, components }
   } catch {
     add('FAIL', 'ROAD-6', 'cannot parse .ki.toml', STANDARD, '.ki.toml')
     return undefined
@@ -289,12 +379,18 @@ const REVIEW_SECTIONS = [
 
 const requiredSections = (item: WorkItem): readonly string[] => {
   const sections: string[] = ['Goal', 'Context', 'Boundary']
-  if (item.horizon === 'triage' && item.status === 'done') {
+  if (item.terminalTriage) {
     sections.push('Intake disposition', 'Done', 'Discussion')
     return sections
   }
+  if (item.status === 'triage' || item.status === 'cancelled') {
+    if (item.status === 'cancelled') sections.push('Cancelled')
+    sections.push('Discussion')
+    return sections
+  }
   if (item.status === 'draft' && item.horizon === 'soon') sections.push('Shaping')
-  if (item.status !== 'draft' || IMMEDIATE.has(item.horizon)) sections.push(...EXECUTION_SECTIONS)
+  if (item.status !== 'draft' || (item.horizon !== null && IMMEDIATE.has(item.horizon)))
+    sections.push(...EXECUTION_SECTIONS)
   if (item.status === 'awaiting-review' || item.status === 'done') sections.push('Review')
   if (item.status === 'done') sections.push('Done')
   sections.push('Discussion')
@@ -371,15 +467,21 @@ const validateDocumentationImpact = (item: WorkItem): void => {
 const validateBody = (item: WorkItem): void => {
   const present = headings(item.body)
   const required = requiredSections(item)
-  if (item.horizon === 'triage' && item.status === 'done') {
+  if (item.terminalTriage || (item.status === 'cancelled' && item.baselineRef === null)) {
     const deliveryHeadings = present.filter((heading) =>
       [...EXECUTION_SECTIONS, 'Delegation', 'Review'].includes(heading)
     )
-    if (deliveryHeadings.length)
+    if (deliveryHeadings.length && item.terminalTriage)
+      tolerate(
+        `terminal Triage must not contain delivery sections: ${deliveryHeadings.join(', ')}`,
+        item.file,
+        'ITEM-3'
+      )
+    else if (deliveryHeadings.length)
       add(
         'FAIL',
         'ITEM-3',
-        `terminal Triage must not contain delivery sections: ${deliveryHeadings.join(', ')}`,
+        `a record cancelled before it started must not contain delivery sections: ${deliveryHeadings.join(', ')}`,
         FORMAT,
         item.file
       )
@@ -388,8 +490,14 @@ const validateBody = (item: WorkItem): void => {
   if (JSON.stringify(sequence) !== JSON.stringify(required))
     add('FAIL', 'ITEM-3', `body must contain ${required.join(' → ')} in order`, FORMAT, item.file)
   if (!sectionContent(item.body, 'Goal')) add('FAIL', 'ITEM-3', '## Goal must be non-empty', FORMAT, item.file)
-  if (item.horizon === 'triage' && item.status === 'done' && !sectionContent(item.body, 'Intake disposition'))
-    add('FAIL', 'ITEM-3', 'terminal Triage item requires a non-empty ## Intake disposition', FORMAT, item.file)
+  if (item.terminalTriage && !sectionContent(item.body, 'Intake disposition'))
+    tolerate('terminal Triage item requires a non-empty ## Intake disposition', item.file, 'ITEM-3')
+  if (item.status === 'cancelled') {
+    if (!sectionContent(item.body, 'Cancelled'))
+      add('FAIL', 'ITEM-3', '## Cancelled must be non-empty', FORMAT, item.file)
+    else if (present.at(-2) !== 'Cancelled')
+      add('FAIL', 'ITEM-3', '## Cancelled must immediately precede ## Discussion', FORMAT, item.file)
+  }
   if (present.at(-1) !== 'Discussion')
     add('FAIL', 'ITEM-3', '## Discussion must be the final top-level section', FORMAT, item.file)
   if (required.includes('Steps')) validateSteps(item)
@@ -399,6 +507,164 @@ const validateBody = (item: WorkItem): void => {
     if (review && JSON.stringify(subsectionHeadings(review)) !== JSON.stringify(REVIEW_SECTIONS))
       add('FAIL', 'ITEM-3', `## Review must contain ${REVIEW_SECTIONS.join(' → ')} in order`, FORMAT, item.file)
   }
+}
+
+/**
+ * Migration tolerance (KI-HARNESS-GOV-150): pre-v1 record and configuration shapes warn and never fail, so a
+ * repository that passed the earlier checker gains no failure. Enforcement after migration belongs to a later record.
+ */
+const tolerate = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): void =>
+  add('WARN', area, `migration: ${msg}`, ref, file)
+
+const validateHorizon = (
+  status: string | undefined,
+  horizon: string | undefined,
+  legacy: boolean,
+  display: string
+): void => {
+  if (!status || !STATUS.has(status)) return
+  if (horizon === undefined) {
+    if (OPEN_STATUSES.has(status)) add('FAIL', 'ITEM-2', `${status} record must declare a horizon`, FORMAT, display)
+    return
+  }
+  if (legacy) {
+    tolerate(
+      `horizon '${horizon}' is retired; use ${horizon === 'triage' ? 'status triage without a horizon' : 'horizon hold with a hold mapping'}`,
+      display
+    )
+    if (horizon === 'triage' && status !== 'draft' && status !== 'done')
+      add('FAIL', 'ITEM-2', 'open Triage item must remain draft until adopted', FORMAT, display)
+    else if (horizon !== 'triage' && status !== 'draft')
+      add('FAIL', 'ITEM-2', 'non-draft item must be in now or next', FORMAT, display)
+    return
+  }
+  if (!(HORIZONS as readonly string[]).includes(horizon)) return
+  if (status === 'done') {
+    if (IMMEDIATE.has(horizon)) tolerate('a done record no longer carries a horizon', display)
+    else add('FAIL', 'ITEM-2', 'a done record carries no horizon', FORMAT, display)
+    return
+  }
+  if (status === 'triage' || status === 'cancelled') {
+    add('FAIL', 'ITEM-2', `a ${status} record carries no horizon`, FORMAT, display)
+    return
+  }
+  const allowed = HORIZONS_BY_STATUS[status] ?? []
+  if (allowed.includes(horizon)) return
+  if (horizon === 'next') tolerate(`${status} at next is retired; move it to now or hold`, display)
+  else add('FAIL', 'ITEM-2', `${status} record must sit at ${allowed.join(', ')}`, FORMAT, display)
+}
+
+const isoDate = (value: unknown): boolean => {
+  const text = value instanceof Date ? value.toISOString().slice(0, 10) : value
+  return typeof text === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(text) && !Number.isNaN(Date.parse(text))
+}
+
+const validateHold = (
+  values: Record<string, unknown>,
+  status: string | undefined,
+  horizon: string | undefined,
+  updatedAt: string | undefined,
+  display: string
+): void => {
+  if (horizon !== 'hold') {
+    if ('hold' in values) add('FAIL', 'ITEM-2', 'hold is valid only at horizon hold', FORMAT, display)
+    return
+  }
+  const hold = values.hold
+  if (hold === HOLD_PARSE_ERROR) return
+  if (!hold || typeof hold !== 'object' || Array.isArray(hold)) {
+    add('FAIL', 'ITEM-2', 'horizon hold requires a hold mapping with reason and condition', FORMAT, display)
+    return
+  }
+  const fields = hold as Record<string, unknown>
+  const unexpected = Object.keys(fields).filter((key) => !HOLD_FIELDS.has(key))
+  if (unexpected.length)
+    add('FAIL', 'ITEM-2', `hold has unexpected field(s): ${unexpected.join(', ')}`, FORMAT, display)
+  if (typeof fields.reason !== 'string' || !HOLD_REASONS.has(fields.reason))
+    add('FAIL', 'ITEM-2', 'hold.reason must be waiting-for or parked', FORMAT, display)
+  if (typeof fields.condition !== 'string' || !fields.condition.trim())
+    add('FAIL', 'ITEM-2', 'hold.condition must name the release condition', FORMAT, display)
+  if ('review' in fields && !isoDate(fields.review))
+    add('FAIL', 'ITEM-2', 'hold.review must be an ISO date', FORMAT, display)
+  if ('trades' in fields) {
+    const trades = fields.trades
+    if (!Array.isArray(trades) || !trades.length)
+      add('FAIL', 'TRADE-2', 'hold.trades must be a non-empty list', FORMAT, display)
+    else {
+      if (trades.some((trade) => typeof trade !== 'string' || !TRADE_RE.test(trade)))
+        add('FAIL', 'TRADE-2', 'hold.trades must contain only canonical trade identities', FORMAT, display)
+      if (new Set(trades).size !== trades.length)
+        add('FAIL', 'TRADE-2', 'hold.trades must not repeat a trade identity', FORMAT, display)
+    }
+  }
+  if (
+    status === 'in-progress' &&
+    updatedAt &&
+    canonicalTimestamp(updatedAt) &&
+    Date.now() - Date.parse(updatedAt) > HOLD_STALE_DAYS * 86_400_000
+  )
+    add(
+      'WARN',
+      'ITEM-2',
+      `in-progress hold has not been updated for over ${HOLD_STALE_DAYS} days; review its release condition`,
+      FORMAT,
+      display
+    )
+}
+
+const validateResolution = (
+  values: Record<string, unknown>,
+  id: string | undefined,
+  status: string | undefined,
+  resolution: string | undefined,
+  target: string | undefined,
+  display: string
+): void => {
+  if (status === 'cancelled') {
+    if (!resolution) add('FAIL', 'ITEM-2', 'cancelled record requires a resolution', FORMAT, display)
+    else if (!RESOLUTIONS.has(resolution))
+      add('FAIL', 'ITEM-2', 'resolution must be one canonical value', FORMAT, display)
+  } else if ('resolution' in values)
+    add('FAIL', 'ITEM-2', 'resolution is valid only on a cancelled record', FORMAT, display)
+  if (resolution && TARGETED_RESOLUTIONS.has(resolution)) {
+    if (!target?.trim()) add('FAIL', 'ITEM-2', `${resolution} resolution requires resolution_target`, FORMAT, display)
+    else if (!ID_RE.test(target))
+      add('FAIL', 'ITEM-2', 'resolution_target must be a canonical work-item ID', FORMAT, display)
+    else if (target === id)
+      add('FAIL', 'ITEM-2', 'resolution_target must differ from the cancelled record', FORMAT, display)
+  } else if ('resolution_target' in values)
+    add(
+      'FAIL',
+      'ITEM-2',
+      'resolution_target is valid only for a duplicate, merged or superseded resolution',
+      FORMAT,
+      display
+    )
+}
+
+const validateLegacyIntake = (
+  values: Record<string, unknown>,
+  id: string | undefined,
+  terminalTriage: boolean,
+  disposition: string | undefined,
+  target: string | undefined,
+  display: string
+): void => {
+  const hasTarget = 'intake_disposition_target' in values
+  if (('intake_disposition' in values || hasTarget) && !terminalTriage)
+    tolerate('intake disposition fields are valid only for terminal Triage items', display)
+  if (!terminalTriage) return
+  tolerate('terminal Triage is retired; cancel the record with a resolution', display)
+  if (!disposition || !INTAKE_DISPOSITIONS.has(disposition))
+    tolerate('terminal Triage intake_disposition must be rejected, duplicate, or merged', display)
+  if (disposition === 'rejected' && hasTarget)
+    tolerate('rejected Triage disposition must not name intake_disposition_target', display)
+  else if ((disposition === 'duplicate' || disposition === 'merged') && (!hasTarget || !target?.trim()))
+    tolerate(`${disposition} Triage disposition requires intake_disposition_target`, display)
+  else if ((disposition === 'duplicate' || disposition === 'merged') && target && !ID_RE.test(target))
+    tolerate('intake_disposition_target must be a canonical work-item ID', display)
+  else if ((disposition === 'duplicate' || disposition === 'merged') && target === id)
+    tolerate('intake_disposition_target must differ from the disposed item', display)
 }
 
 const parseItem = (repository: string, name: string, configuration?: RoadmapConfiguration): WorkItem | undefined => {
@@ -424,6 +690,13 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   const theme = value('theme')
   const horizon = value('horizon') as Horizon | undefined
   const status = value('status')
+  const kind = value('kind')
+  const purpose = value('purpose')
+  const project = value('project')
+  const initiative = value('initiative')
+  const component = value('component')
+  const resolution = value('resolution')
+  const resolutionTarget = value('resolution_target')
   const blocks = Array.isArray(parsed.values.blocks) ? (parsed.values.blocks as string[]) : undefined
   const blockedBy = Array.isArray(parsed.values.blocked_by) ? (parsed.values.blocked_by as string[]) : undefined
   const waitingOnTrades = Array.isArray(parsed.values.waiting_on_trades)
@@ -434,43 +707,10 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   const intakeDispositionTarget = value('intake_disposition_target')
   const createdAt = value('created_at')
   const updatedAt = value('updated_at')
-  for (const key of [
-    'id',
-    'title',
-    'theme',
-    'horizon',
-    'status',
-    'blocks',
-    'blocked_by',
-    'baseline_ref',
-    'created_at',
-    'updated_at'
-  ]) {
+  for (const key of ['id', 'title', 'status', 'blocks', 'blocked_by', 'baseline_ref', 'created_at', 'updated_at']) {
     if (!(key in parsed.values)) add('FAIL', 'ITEM-1', `frontmatter is missing '${key}'`, FORMAT, display)
   }
-  const unexpected = Object.keys(parsed.values).filter(
-    (key) =>
-      ![
-        'id',
-        'area',
-        'title',
-        'theme',
-        'horizon',
-        'status',
-        'blocks',
-        'blocked_by',
-        'waiting_on_trades',
-        'task_links',
-        'baseline_ref',
-        'intake_disposition',
-        'intake_disposition_target',
-        'created_at',
-        'updated_at',
-        'transferred_from',
-        'housekeeping_template',
-        'scheduled_for'
-      ].includes(key)
-  )
+  const unexpected = Object.keys(parsed.values).filter((key) => !RECORD_FIELDS.has(key))
   if (unexpected.length)
     add('FAIL', 'ITEM-1', `frontmatter has unexpected field(s): ${unexpected.join(', ')}`, FORMAT, display)
   if ('task_links' in parsed.values) {
@@ -481,7 +721,6 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   if (!title?.trim()) add('FAIL', 'ITEM-1', 'title must be non-empty', FORMAT, display)
   else if (title.trim().split(/\s+/).length > MAX_TITLE_WORDS)
     add('FAIL', 'ITEM-1', `title must contain at most ${MAX_TITLE_WORDS} words`, FORMAT, display)
-  if (!theme || !THEME_RE.test(theme)) add('FAIL', 'ITEM-2', 'theme must be lowercase kebab-case', FORMAT, display)
   const configuredArea = configuration && area && configuration.areas.has(area) ? area : undefined
   const issueNumber =
     configuration && id
@@ -501,29 +740,46 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add(
       'FAIL',
       'ITEM-1',
-      'item identifier must use the configured repository code, optional configured area code, and a zero-padded issue number',
+      'item identifier must use configured repository code, optional configured area code, and zero-padded issue number',
       FORMAT,
       display
     )
-  if (!configuration || !theme || !configuration.themes.has(theme))
-    add('FAIL', 'ITEM-2', 'item theme must be declared by ki-work-roadmap configuration', FORMAT, display)
-  if (configuration?.areas.size && (!area || configuration.areas.get(area) !== theme))
-    add('FAIL', 'ITEM-2', 'item area must map to its theme in ki-work-roadmap configuration', FORMAT, display)
-  if (!horizon || !HORIZONS.includes(horizon))
-    add('FAIL', 'ITEM-2', 'horizon must be one canonical value', FORMAT, display)
   if (!status || !STATUS.has(status)) add('FAIL', 'ITEM-2', 'status must be one lifecycle value', FORMAT, display)
   if (!blocks || !blockedBy) add('FAIL', 'ITEM-2', 'blocks and blocked_by must be arrays', FORMAT, display)
+  const legacyHorizon = horizon !== undefined && (LEGACY_HORIZONS as readonly string[]).includes(horizon)
+  const terminalTriage = horizon === 'triage' && status === 'done'
+  if (horizon !== undefined && !legacyHorizon && !(HORIZONS as readonly string[]).includes(horizon))
+    add('FAIL', 'ITEM-2', 'horizon must be one canonical value', FORMAT, display)
+  validateHorizon(status, horizon, legacyHorizon, display)
+  validateHold(parsed.values, status, horizon, updatedAt, display)
+  validateResolution(parsed.values, id, status, resolution, resolutionTarget, display)
+  if (kind !== undefined && !KINDS.has(kind)) add('FAIL', 'ITEM-2', 'kind must be one canonical value', FORMAT, display)
+  if (purpose !== undefined && !PURPOSES.has(purpose))
+    add('FAIL', 'ITEM-2', 'purpose must be one canonical value', FORMAT, display)
+  for (const [key, slug] of [
+    ['project', project],
+    ['initiative', initiative],
+    ['component', component]
+  ] as const)
+    if (key in parsed.values && (!slug || !SLUG_RE.test(slug)))
+      add('FAIL', 'ITEM-2', `${key} must be a lowercase kebab-case slug`, FORMAT, display)
+  if (component && SLUG_RE.test(component) && !configuration?.components.has(component))
+    add('FAIL', 'ITEM-2', `component '${component}' must be declared in ki-work-roadmap components`, STANDARD, display)
+  if (kind === undefined && status && OPEN_STATUSES.has(status) && !legacyHorizon)
+    tolerate('an adopted record should declare kind', display)
+  if ('theme' in parsed.values) tolerate('theme is retired; classify with project, initiative or component', display)
+  validateLegacyIntake(parsed.values, id, terminalTriage, intakeDisposition, intakeDispositionTarget, display)
   if ('waiting_on_trades' in parsed.values) {
-    if (!waitingOnTrades?.length)
-      add('FAIL', 'TRADE-2', 'waiting_on_trades must be a non-empty flat array', FORMAT, display)
+    tolerate('waiting_on_trades is retired; name the trades in hold.trades', display, 'TRADE-2')
+    if (!waitingOnTrades?.length) tolerate('waiting_on_trades must be a non-empty flat array', display, 'TRADE-2')
     else {
       if (waitingOnTrades.some((trade) => !TRADE_RE.test(trade)))
-        add('FAIL', 'TRADE-2', 'waiting_on_trades must contain only canonical trade identities', FORMAT, display)
+        tolerate('waiting_on_trades must contain only canonical trade identities', display, 'TRADE-2')
       if (new Set(waitingOnTrades).size !== waitingOnTrades.length)
-        add('FAIL', 'TRADE-2', 'waiting_on_trades must not repeat a trade identity', FORMAT, display)
+        tolerate('waiting_on_trades must not repeat a trade identity', display, 'TRADE-2')
     }
     if (horizon !== 'waiting-for')
-      add('FAIL', 'TRADE-2', 'waiting_on_trades is valid only at the waiting-for horizon', FORMAT, display)
+      tolerate('waiting_on_trades is valid only at the waiting-for horizon', display, 'TRADE-2')
   }
   if (baselineRef !== null && (typeof baselineRef !== 'string' || !COMMIT_RE.test(baselineRef)))
     add('FAIL', 'ITEM-2', 'baseline_ref must be null or a full lowercase commit ID', FORMAT, display)
@@ -535,51 +791,9 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     else if (Date.parse(createdAt) > Date.parse(updatedAt))
       add('FAIL', 'ITEM-2', 'created_at must not be later than updated_at', FORMAT, display)
   }
-  const terminalTriage = horizon === 'triage' && status === 'done'
-  const hasIntakeDisposition = 'intake_disposition' in parsed.values
-  const hasIntakeDispositionTarget = 'intake_disposition_target' in parsed.values
-  if ((hasIntakeDisposition || hasIntakeDispositionTarget) && !terminalTriage)
-    add('FAIL', 'ITEM-2', 'intake disposition fields are valid only for terminal Triage items', FORMAT, display)
-  if (terminalTriage) {
-    if (!intakeDisposition || !INTAKE_DISPOSITIONS.has(intakeDisposition))
-      add(
-        'FAIL',
-        'ITEM-2',
-        'terminal Triage intake_disposition must be rejected, duplicate, or merged',
-        FORMAT,
-        display
-      )
-    if (intakeDisposition === 'rejected' && hasIntakeDispositionTarget)
-      add('FAIL', 'ITEM-2', 'rejected Triage disposition must not name intake_disposition_target', FORMAT, display)
-    if (
-      (intakeDisposition === 'duplicate' || intakeDisposition === 'merged') &&
-      (!hasIntakeDispositionTarget || !intakeDispositionTarget?.trim())
-    )
-      add(
-        'FAIL',
-        'ITEM-2',
-        `${intakeDisposition} Triage disposition requires intake_disposition_target`,
-        FORMAT,
-        display
-      )
-    else if (
-      (intakeDisposition === 'duplicate' || intakeDisposition === 'merged') &&
-      intakeDispositionTarget &&
-      !ID_RE.test(intakeDispositionTarget)
-    )
-      add('FAIL', 'ITEM-2', 'intake_disposition_target must be a canonical work-item ID', FORMAT, display)
-    else if ((intakeDisposition === 'duplicate' || intakeDisposition === 'merged') && intakeDispositionTarget === id)
-      add('FAIL', 'ITEM-2', 'intake_disposition_target must differ from the disposed item', FORMAT, display)
-  }
-  if (horizon === 'triage') {
-    if (status && status !== 'draft' && status !== 'done')
-      add('FAIL', 'ITEM-2', 'open Triage item must remain draft until adopted', FORMAT, display)
-  } else if (status && status !== 'draft' && horizon && !IMMEDIATE.has(horizon))
-    add('FAIL', 'ITEM-2', 'non-draft item must be in now or next', FORMAT, display)
-  if (terminalTriage && baselineRef !== null)
-    add('FAIL', 'ITEM-2', 'terminal Triage item baseline_ref must remain null', FORMAT, display)
-  if (status === 'draft' && baselineRef !== null)
-    add('FAIL', 'ITEM-2', 'draft item baseline_ref must be null', FORMAT, display)
+  if (terminalTriage && baselineRef !== null) tolerate('terminal Triage item baseline_ref must remain null', display)
+  if ((status === 'draft' || status === 'triage') && baselineRef !== null)
+    add('FAIL', 'ITEM-2', `${status} item baseline_ref must be null`, FORMAT, display)
   if (
     status &&
     ['in-progress', 'awaiting-review', 'done'].includes(status) &&
@@ -588,16 +802,23 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   )
     add('FAIL', 'ITEM-2', 'executing or completed item needs an immutable baseline_ref', FORMAT, display)
   const serial = Number.parseInt(id?.split('-').at(-1) ?? '', 10)
-  if (!id || !title || !theme || !horizon || !status || !blocks || !blockedBy || !Number.isSafeInteger(serial))
-    return undefined
+  if (!id || !title || !status || !blocks || !blockedBy || !Number.isSafeInteger(serial)) return undefined
   const item: WorkItem = {
     id,
     area: area ?? null,
     serial,
     title,
-    theme,
-    horizon,
+    theme: theme ?? null,
+    horizon: horizon ?? null,
     status,
+    kind,
+    purpose,
+    project,
+    initiative,
+    component,
+    resolution,
+    resolutionTarget,
+    terminalTriage,
     blocks,
     blockedBy,
     waitingOnTrades: waitingOnTrades ?? [],
@@ -618,12 +839,12 @@ export const workItemsFor = (repository: string, configuration?: RoadmapConfigur
   const directory = join(root, 'docs', 'roadmap')
   if (!existsSync(directory) || !lstatSync(directory).isDirectory()) return []
   return readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.md') && entry.name !== ISSUE_LEDGER)
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md') && !NON_RECORDS.has(entry.name))
     .sort((left, right) => left.name.localeCompare(right.name))
     .flatMap((entry) => [parseItem(root, entry.name, configuration)].filter((item): item is WorkItem => Boolean(item)))
 }
 
-const validateDependencies = (items: readonly WorkItem[]): void => {
+const validateDependencies = (items: readonly WorkItem[], configuration?: RoadmapConfiguration): void => {
   const byId = new Map(items.map((item) => [item.id, item]))
   for (const item of items) {
     if (
@@ -633,10 +854,22 @@ const validateDependencies = (items: readonly WorkItem[]): void => {
       item.intakeDispositionTarget !== item.id &&
       !byId.has(item.intakeDispositionTarget)
     )
+      tolerate(
+        `intake_disposition_target '${item.intakeDispositionTarget}' does not resolve to a retained work item`,
+        item.file
+      )
+    if (
+      item.resolutionTarget &&
+      ID_RE.test(item.resolutionTarget) &&
+      item.resolutionTarget !== item.id &&
+      configuration &&
+      item.resolutionTarget.startsWith(`${configuration.repoCode}-`) &&
+      !byId.has(item.resolutionTarget)
+    )
       add(
-        'FAIL',
+        'WARN',
         'ITEM-2',
-        `intake_disposition_target '${item.intakeDispositionTarget}' must resolve to a retained work item`,
+        `resolution_target '${item.resolutionTarget}' does not resolve to a retained work item; cite its revision in ## Cancelled`,
         FORMAT,
         item.file
       )
@@ -654,6 +887,45 @@ const validateDependencies = (items: readonly WorkItem[]): void => {
     )
       add('FAIL', 'ITEM-5', 'active item has a non-done blocker', FORMAT, item.file)
   }
+}
+
+/** Project and initiative membership: unresolvable slugs warn; only a contradicted initiative fails. */
+const validateClassification = (repository: string, items: readonly WorkItem[]): void => {
+  const classified = items.filter((item) => item.project || item.initiative)
+  if (!classified.length) return
+  const lookup = loadProjectRegistry(repository)
+  if ('unavailable' in lookup) {
+    add('WARN', 'ITEM-2', `project registry is unavailable: ${lookup.unavailable}`, STANDARD)
+    return
+  }
+  const { projects, initiatives } = lookup.registry
+  for (const item of classified) {
+    if (item.project && !projects.has(item.project))
+      add('WARN', 'ITEM-2', `project '${item.project}' is not in the project registry`, STANDARD, item.file)
+    if (item.initiative && !initiatives.has(item.initiative))
+      add('WARN', 'ITEM-2', `initiative '${item.initiative}' is not in the project registry`, STANDARD, item.file)
+    if (!item.project || !item.initiative || !projects.has(item.project)) continue
+    const registered = projects.get(item.project)
+    if (registered && registered !== item.initiative)
+      add(
+        'FAIL',
+        'ITEM-2',
+        `initiative '${item.initiative}' contradicts project '${item.project}', which serves '${registered}'`,
+        STANDARD,
+        item.file
+      )
+    else add('WARN', 'ITEM-2', 'initiative is redundant beside a registered project', STANDARD, item.file)
+  }
+  const members = new Map<string, WorkItem[]>()
+  for (const item of items) if (item.project) members.set(item.project, [...(members.get(item.project) ?? []), item])
+  for (const [project, records] of members)
+    if (records.every((item) => TERMINAL_STATUSES.has(item.status)))
+      add(
+        'INFO',
+        'ITEM-2',
+        `project '${project}' has no open records here; completing it remains a human decision`,
+        STANDARD
+      )
 }
 
 export const rootRoadmap = (): string =>
@@ -762,7 +1034,8 @@ export const inspectRoadmap = (repository: string): readonly Finding[] => {
     if (ids.has(item.id)) add('FAIL', 'ITEM-1', `duplicate work-item id '${item.id}'`, FORMAT, item.file)
     ids.add(item.id)
   }
-  validateDependencies(items)
+  validateDependencies(items, configuration)
+  validateClassification(root, items)
   const ledgerPath = join(roadmap, ISSUE_LEDGER)
   if (!existsSync(ledgerPath) || lstatSync(ledgerPath).isSymbolicLink() || !lstatSync(ledgerPath).isFile())
     add(

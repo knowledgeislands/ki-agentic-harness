@@ -5,7 +5,8 @@ export type PruneCandidate = {
   regularFile: boolean
   symlink: boolean
   canonical: boolean
-  status: 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done'
+  status: 'triage' | 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done' | 'cancelled'
+  /** The record has landed in its terminal state, `done` or `cancelled`, in an earlier commit. */
   committedDone: boolean | 'unknown'
   retainedByCompletionObservationTrade: boolean | 'unknown'
 }
@@ -61,7 +62,8 @@ export const evaluatePruneSelection = ({
   for (const candidate of candidates) {
     if (!candidate.regularFile || candidate.symlink || !candidate.canonical)
       return { kind: 'stop', reason: `${candidate.path} is not a regular canonical work record`, writes: false }
-    if (candidate.status !== 'done') return { kind: 'stop', reason: `${candidate.path} is not done`, writes: false }
+    if (candidate.status !== 'done' && candidate.status !== 'cancelled')
+      return { kind: 'stop', reason: `${candidate.path} is not done or cancelled`, writes: false }
     if (candidate.committedDone === false)
       return { kind: 'stop', reason: `${candidate.path} has not landed as done`, writes: false }
     if (candidate.committedDone === 'unknown')

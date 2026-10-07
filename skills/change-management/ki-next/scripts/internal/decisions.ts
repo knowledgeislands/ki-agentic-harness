@@ -45,10 +45,25 @@ export const resolveSelectedAdapter = (configuration: unknown): AdapterDecision 
 
 export type Candidate = {
   readonly id: string
-  readonly horizon: 'now' | 'next' | 'soon' | 'future' | 'waiting-for' | 'parked' | 'triage'
-  readonly status: 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done'
+  readonly horizon: 'now' | 'next' | 'soon' | 'future' | 'hold' | null
+  readonly status: 'triage' | 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done' | 'cancelled'
   readonly dependenciesReady: boolean
 }
+
+type Destination = Exclude<Candidate['horizon'], null>
+
+const ALLOWED_HORIZONS: Readonly<Record<Candidate['status'], readonly Destination[]>> = {
+  triage: [],
+  draft: ['now', 'next', 'soon', 'future', 'hold'],
+  ready: ['now', 'next', 'hold'],
+  'in-progress': ['now', 'hold'],
+  'awaiting-review': ['now', 'hold'],
+  done: [],
+  cancelled: []
+}
+
+const admits = (status: Candidate['status'], destination: Destination): boolean =>
+  ALLOWED_HORIZONS[status].includes(destination)
 
 export const rankCandidates = (candidates: readonly Candidate[]): readonly string[] =>
   candidates
@@ -71,8 +86,12 @@ export const captureDecision = (input: {
   readonly substantive: boolean
   readonly existingOwner: boolean
   readonly resolvedOrRhetorical: boolean
-}): 'capture-triage' | 'refuse' =>
-  input.substantive && !input.existingOwner && !input.resolvedOrRhetorical ? 'capture-triage' : 'refuse'
+  /** The graduation test: actionable, an owned decision, or work that must survive the session. */
+  readonly graduates?: boolean
+}): 'capture-triage' | 'capture-idea' | 'refuse' => {
+  if (!input.substantive || input.existingOwner || input.resolvedOrRhetorical) return 'refuse'
+  return input.graduates === false ? 'capture-idea' : 'capture-triage'
+}
 
 export type IssueLedgerSnapshot =
   | { readonly mode: 'repository'; readonly lastId: number }
@@ -118,30 +137,42 @@ export const issueAllocationDecision = (input: {
 
 export const adoptionDecision = (
   candidate: Candidate,
-  destination: Candidate['horizon'],
+  destination: Destination,
   confirmed: boolean,
   destinationReady: boolean
 ): 'adopt' | 'refuse' =>
-  confirmed &&
-  destinationReady &&
-  candidate.horizon === 'triage' &&
-  candidate.status === 'draft' &&
-  destination !== 'triage'
+  confirmed && destinationReady && candidate.status === 'triage' && candidate.horizon === null && destination !== 'hold'
     ? 'adopt'
     : 'refuse'
 
+/** Defer or hold keeps status, baseline, completed steps and review evidence; only the horizon moves. */
 export const deferralDecision = (
   candidate: Candidate,
-  destination: Candidate['horizon'],
+  destination: Destination,
   confirmed: boolean,
   hasRequiredCondition: boolean
 ): 'defer' | 'refuse' =>
   confirmed &&
-  candidate.status !== 'done' &&
-  candidate.horizon !== 'triage' &&
-  destination !== 'triage' &&
-  ((destination !== 'waiting-for' && destination !== 'parked') || hasRequiredCondition)
+  candidate.horizon !== null &&
+  candidate.horizon !== 'hold' &&
+  admits(candidate.status, destination) &&
+  (destination !== 'hold' || hasRequiredCondition)
     ? 'defer'
+    : 'refuse'
+
+/** Release needs evidence that the hold condition changed, then a fresh horizon and revalidated scope. */
+export const releaseDecision = (
+  candidate: Candidate,
+  destination: Destination,
+  conditionChanged: boolean,
+  revalidated: boolean
+): 'release' | 'refuse' =>
+  candidate.horizon === 'hold' &&
+  destination !== 'hold' &&
+  conditionChanged &&
+  revalidated &&
+  admits(candidate.status, destination)
+    ? 'release'
     : 'refuse'
 
 export const housekeepingSpawnDecision = (input: {

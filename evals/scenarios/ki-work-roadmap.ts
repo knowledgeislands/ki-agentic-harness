@@ -16,19 +16,19 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-work-roadmap',
-    id: 'repo-roadmap-id-theme-and-triage',
+    id: 'repo-roadmap-id-and-triage-capture',
     prompt:
-      "Capture 'replace stale links' in the seo theme, but do not adopt it yet. I want a generic filename and a candidate field. Anything to correct?",
+      "Capture 'replace stale links' for the seo work, but do not adopt it yet. I want a generic filename, a theme field, and a candidate field. Anything to correct?",
     assertions: [
       { name: 'repository-scoped issue identifier', re: /<REPO>-<NNN>|SEO|001/i },
       { name: 'flat placement', re: /docs\/roadmap\//i },
-      { name: 'explicit theme field', re: /theme/i },
-      { name: 'unadopted triage horizon', re: /triage/i },
-      { name: 'draft delivery maturity', re: /draft/i },
+      { name: 'triage status', re: /status:\s*triage|triage status|status.*triage/i },
+      { name: 'no horizon before adoption', re: /no horizon|without.*horizon|horizon.*(absent|null|omit|none)/i },
+      { name: 'classification replaces theme', re: /kind|project|initiative|component|classif/i },
       { name: 'retired candidate field', re: /candidate.*(retired|remove|absent|invalid|unsupported)/i }
     ],
     rubric:
-      'House fact: each item is docs/roadmap/<REPO>-<NNN>-<slug>.md and carries explicit theme, horizon, status, and dependencies. Captured but unadopted work is draft in Triage; the candidate field is retired.'
+      'House fact: each item is docs/roadmap/<REPO>-<NNN>-<slug>.md. Captured but unadopted work has status triage and no horizon; adoption assigns a status and a horizon. Classification uses kind, purpose, project or initiative, and component rather than the retired theme field; the candidate field is retired.'
   },
   {
     skill: 'ki-work-roadmap',
@@ -46,18 +46,19 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-work-roadmap',
-    id: 'repo-roadmap-terminal-triage-disposition',
+    id: 'repo-roadmap-cancel-duplicate',
     prompt:
-      'This Triage item duplicates KI-WEB-SEO-005. The human approved closing it. Should I delete it now or add delivery evidence first?',
+      'This triage record duplicates KI-WEB-SEO-005. The human approved closing it. Should I delete it now or add delivery evidence first?',
     assertions: [
-      { name: 'retained done closure', re: /done|retain/i },
-      { name: 'intake disposition evidence', re: /intake.disposition|duplicate/i },
-      { name: 'canonical retained target', re: /KI-WEB-SEO-005/i },
+      { name: 'retained cancelled closure', re: /cancel|retain/i },
+      { name: 'duplicate resolution', re: /resolution.*duplicate|duplicate/i },
+      { name: 'canonical resolution target', re: /KI-WEB-SEO-005/i },
+      { name: 'cancelled section', re: /##\s*Cancelled|Cancelled section/i },
       { name: 'no fabricated delivery', re: /not|do not|without.*(delivery|implementation)|no.*review/i },
-      { name: 'later prune boundary', re: /later|prior commit|before.*prun|done.*prun/i }
+      { name: 'later prune boundary', re: /later|prior commit|before.*prun|cancel.*prun/i }
     ],
     rubric:
-      'House fact: exact human-approved rejected, duplicate, or merged intake closes through ki-accept as retained Triage / done. Duplicate and merged dispositions name the retained canonical item. The closure has intake evidence, not fabricated implementation evidence, and must land before a later prune-only commit.'
+      'House fact: exact human-approved obsolete, rejected, duplicate, merged, or superseded work closes through ki-accept as status cancelled with a resolution. Duplicate, merged, and superseded resolutions name the retained record in resolution_target. The record gains a ## Cancelled section before Discussion and carries no fabricated delivery evidence; the cancellation lands before a later prune-only commit.'
   },
   {
     skill: 'ki-work-roadmap',

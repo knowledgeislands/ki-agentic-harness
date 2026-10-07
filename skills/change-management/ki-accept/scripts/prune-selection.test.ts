@@ -78,7 +78,7 @@ test('stops without writes for an invalid root, traversal, incomplete resolution
     evaluatePruneSelection(input({ candidates: [{ ...input().candidates[0], status: 'awaiting-review' }] }))
   ).toMatchObject({
     kind: 'stop',
-    reason: 'KI-HARNESS-001-complete.md is not done',
+    reason: 'KI-HARNESS-001-complete.md is not done or cancelled',
     writes: false
   })
   expect(

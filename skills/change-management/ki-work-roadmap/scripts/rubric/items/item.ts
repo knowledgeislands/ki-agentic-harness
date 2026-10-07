@@ -34,12 +34,13 @@ export const ITEM: RubricFamily<RoadmapRubricContext, RoadmapAuditContext> = {
     ITEM_1,
     {
       code: 'ITEM-2',
-      title: 'item state and theme grouping',
+      title: 'item state and classification',
       description:
-        'Each item has valid theme, horizon, adoption boundary, status, baseline, dependency, and mandatory timestamp-pair fields.',
+        'Each item has valid status, horizon for its status, hold, resolution, classification, baseline, dependency, and mandatory timestamp-pair fields.',
       sources: [SOURCE],
       mechanical: {
         level: 'FAIL',
+        overrideLevels: ['WARN'],
         remediation: {
           class: 'diagnostic',
           guidance:
@@ -59,6 +60,7 @@ export const ITEM: RubricFamily<RoadmapRubricContext, RoadmapAuditContext> = {
       sources: [FORMAT],
       mechanical: {
         level: 'FAIL',
+        overrideLevels: ['WARN'],
         remediation: {
           class: 'diagnostic',
           guidance:

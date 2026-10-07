@@ -21,12 +21,13 @@ const TRADE_1: RubricItem<RoadmapAuditContext> = {
 
 const TRADE_2: RubricItem<RoadmapAuditContext> = {
   code: 'TRADE-2',
-  title: 'trade-aware waiting and pruning',
+  title: 'trade-aware holds and pruning',
   description:
-    'Trade waits use one flat canonical identity array only at Waiting for, name the exact observed condition in prose, and retain done work referenced by unresolved completion observation.',
+    'Trade waits use one flat canonical identity array in hold.trades, name the exact observed condition in hold.condition, and retain done work referenced by unresolved completion observation.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'guarded',
       guidance:

@@ -22,15 +22,14 @@ const input = (overrides: Partial<AcceptanceCycleInput> = {}): AcceptanceCycleIn
   ...overrides
 })
 
-const triageItem = (overrides: Partial<Extract<AcceptanceCycleInput['item'], { kind: 'triage' }>> = {}) => ({
-  kind: 'triage' as const,
+const cancelItem = (overrides: Partial<Extract<AcceptanceCycleInput['item'], { kind: 'cancel' }>> = {}) => ({
+  kind: 'cancel' as const,
   id: 'KI-HARNESS-002',
   canonical: true,
   pathWithinRoot: true,
-  horizon: 'triage' as const,
-  status: 'draft' as const,
-  disposition: 'rejected' as const,
-  dispositionEvidence: 'The concern is no longer applicable.',
+  status: 'triage' as const,
+  resolution: 'rejected' as const,
+  cancellationEvidence: 'The concern is no longer applicable.',
   targetId: null,
   ...overrides
 })
@@ -105,31 +104,37 @@ test('housekeeping completion requires actual completion and verified reviewed-r
   })
 })
 
-test('closes explicitly approved terminal Triage dispositions without delivery evidence or writes', () => {
-  expect(evaluateAcceptanceCycle(input({ item: triageItem() }))).toEqual({
-    kind: 'triage-to-done',
-    disposition: 'rejected',
-    targetId: null,
-    writes: false
-  })
-  for (const disposition of ['duplicate', 'merged'] as const)
-    expect(
-      evaluateAcceptanceCycle(
-        input({ item: triageItem({ disposition, targetId: '5GE-P2-001', dispositionEvidence: 'Owned there.' }) })
-      )
-    ).toEqual({
-      kind: 'triage-to-done',
-      disposition,
-      targetId: '5GE-P2-001',
+test('cancels any explicitly approved open record without delivery evidence or writes', () => {
+  for (const status of ['triage', 'draft', 'ready', 'in-progress', 'awaiting-review'] as const)
+    expect(evaluateAcceptanceCycle(input({ item: cancelItem({ status }) }))).toEqual({
+      kind: 'cancel',
+      transition: 'open-to-cancelled',
+      resolution: 'rejected',
+      targetId: null,
       writes: false
     })
+  expect(evaluateAcceptanceCycle(input({ item: cancelItem({ resolution: 'obsolete' }) }))).toMatchObject({
+    kind: 'cancel',
+    resolution: 'obsolete'
+  })
+  for (const resolution of ['duplicate', 'merged', 'superseded'] as const)
+    expect(
+      evaluateAcceptanceCycle(
+        input({ item: cancelItem({ resolution, targetId: '5GE-P2-001', cancellationEvidence: 'Owned there.' }) })
+      )
+    ).toEqual({ kind: 'cancel', transition: 'open-to-cancelled', resolution, targetId: '5GE-P2-001', writes: false })
 })
 
-test('requires exact human authority and complete disposition evidence for terminal Triage closure', () => {
+test('requires an open record, exact human authority and complete cancellation evidence', () => {
+  for (const status of ['done', 'cancelled'] as const)
+    expect(evaluateAcceptanceCycle(input({ item: cancelItem({ status }) }))).toMatchObject({
+      kind: 'stop',
+      reason: `only an open record can be cancelled, not ${status}`
+    })
   expect(
     evaluateAcceptanceCycle(
       input({
-        item: triageItem(),
+        item: cancelItem(),
         authority: {
           kind: 'batch',
           approved: true,
@@ -139,45 +144,44 @@ test('requires exact human authority and complete disposition evidence for termi
         }
       })
     )
-  ).toMatchObject({ kind: 'stop', reason: 'exact explicit human approval is required for triage disposition' })
+  ).toMatchObject({ kind: 'stop', reason: 'exact explicit human approval is required for cancellation' })
   expect(
-    evaluateAcceptanceCycle(input({ item: triageItem(), authority: { kind: 'human', explicitApproval: false } }))
-  ).toMatchObject({ kind: 'stop', reason: 'exact explicit human approval is required for triage disposition' })
-  expect(evaluateAcceptanceCycle(input({ item: triageItem({ dispositionEvidence: '   ' }) }))).toMatchObject({
+    evaluateAcceptanceCycle(input({ item: cancelItem(), authority: { kind: 'human', explicitApproval: false } }))
+  ).toMatchObject({ kind: 'stop', reason: 'exact explicit human approval is required for cancellation' })
+  expect(evaluateAcceptanceCycle(input({ item: cancelItem({ cancellationEvidence: ' ' }) }))).toMatchObject({
     kind: 'stop',
-    reason: 'triage disposition evidence is required'
+    reason: 'cancellation evidence is required'
   })
-  expect(evaluateAcceptanceCycle(input({ item: triageItem({ targetId: 'KI-HARNESS-001' }) }))).toMatchObject({
+  expect(evaluateAcceptanceCycle(input({ item: cancelItem({ targetId: 'KI-HARNESS-001' }) }))).toMatchObject({
     kind: 'stop',
-    reason: 'rejected triage disposition must not name a target record'
+    reason: 'rejected cancellation must not name a target record'
   })
-  for (const disposition of ['duplicate', 'merged'] as const)
-    expect(evaluateAcceptanceCycle(input({ item: triageItem({ disposition, targetId: null }) }))).toMatchObject({
+  for (const resolution of ['duplicate', 'merged', 'superseded'] as const) {
+    expect(evaluateAcceptanceCycle(input({ item: cancelItem({ resolution, targetId: null }) }))).toMatchObject({
       kind: 'stop',
-      reason: `${disposition} triage disposition must name its target record`
-    })
-  for (const disposition of ['duplicate', 'merged'] as const) {
-    expect(
-      evaluateAcceptanceCycle(input({ item: triageItem({ disposition, targetId: 'not-canonical' }) }))
-    ).toMatchObject({
-      kind: 'stop',
-      reason: `${disposition} triage disposition target must be a canonical work-item identifier`
+      reason: `${resolution} cancellation must name its target record`
     })
     expect(
-      evaluateAcceptanceCycle(input({ item: triageItem({ disposition, targetId: 'KI-HARNESS-002' }) }))
+      evaluateAcceptanceCycle(input({ item: cancelItem({ resolution, targetId: 'not-canonical' }) }))
     ).toMatchObject({
       kind: 'stop',
-      reason: `${disposition} triage disposition target must differ from the intake item`
+      reason: `${resolution} cancellation target must be a canonical work-item identifier`
+    })
+    expect(
+      evaluateAcceptanceCycle(input({ item: cancelItem({ resolution, targetId: 'KI-HARNESS-002' }) }))
+    ).toMatchObject({
+      kind: 'stop',
+      reason: `${resolution} cancellation target must differ from the cancelled record`
     })
   }
   expect(
     evaluateAcceptanceCycle(
       input({
-        item: triageItem(),
+        item: cancelItem(),
         housekeeping: { kind: 'disposition', activeRun: 'KI-HARNESS-002', itemId: 'KI-HARNESS-002' }
       })
     )
-  ).toMatchObject({ kind: 'stop', reason: 'triage disposition cannot reconcile housekeeping state' })
+  ).toMatchObject({ kind: 'stop', reason: 'cancellation cannot reconcile housekeeping state' })
 })
 
 test('stops without writes for unsupported adapters, invalid evidence, and unapproved closure', () => {

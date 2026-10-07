@@ -51,26 +51,30 @@ export type HousekeepingCompletion =
       replacementMatches: boolean
     }
 
+export type CancelResolution = 'obsolete' | 'rejected' | 'duplicate' | 'merged' | 'superseded'
+
+const TARGETED_RESOLUTIONS: ReadonlySet<CancelResolution> = new Set(['duplicate', 'merged', 'superseded'])
+const OPEN_STATUSES: ReadonlySet<string> = new Set(['triage', 'draft', 'ready', 'in-progress', 'awaiting-review'])
+
 export type AcceptanceCycleItem =
   | {
       kind: 'delivery'
       id: string
       canonical: boolean
       pathWithinRoot: boolean
-      status: 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done'
+      status: 'triage' | 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done' | 'cancelled'
       stepsComplete: boolean
       deliveryEvidencePresent: boolean
       reviewHeadings: readonly string[]
     }
   | {
-      kind: 'triage'
+      kind: 'cancel'
       id: string
       canonical: boolean
       pathWithinRoot: boolean
-      horizon: 'triage'
-      status: 'draft'
-      disposition: 'rejected' | 'duplicate' | 'merged'
-      dispositionEvidence: string
+      status: 'triage' | 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done' | 'cancelled'
+      resolution: CancelResolution
+      cancellationEvidence: string
       targetId: string | null
     }
 
@@ -96,8 +100,9 @@ export type AcceptanceCycleOutcome =
       writes: false
     }
   | {
-      kind: 'triage-to-done'
-      disposition: 'rejected' | 'duplicate' | 'merged'
+      kind: 'cancel'
+      transition: 'open-to-cancelled'
+      resolution: CancelResolution
       targetId: string | null
       writes: false
     }
@@ -132,36 +137,36 @@ export const evaluateAcceptanceCycle = ({
   if (!item.canonical || !item.pathWithinRoot)
     return { kind: 'stop', reason: 'work record is not canonical beneath the selected adapter root', writes: false }
 
-  if (item.kind === 'triage') {
+  if (item.kind === 'cancel') {
+    if (!OPEN_STATUSES.has(item.status))
+      return { kind: 'stop', reason: `only an open record can be cancelled, not ${item.status}`, writes: false }
     if (housekeeping.kind !== 'none')
-      return { kind: 'stop', reason: 'triage disposition cannot reconcile housekeeping state', writes: false }
+      return { kind: 'stop', reason: 'cancellation cannot reconcile housekeeping state', writes: false }
     if (authority.kind !== 'human' || !authority.explicitApproval)
-      return { kind: 'stop', reason: 'exact explicit human approval is required for triage disposition', writes: false }
-    if (!item.dispositionEvidence.trim())
-      return { kind: 'stop', reason: 'triage disposition evidence is required', writes: false }
-    if (item.disposition === 'rejected' && item.targetId !== null)
-      return { kind: 'stop', reason: 'rejected triage disposition must not name a target record', writes: false }
-    if (item.disposition !== 'rejected' && !item.targetId?.trim())
+      return { kind: 'stop', reason: 'exact explicit human approval is required for cancellation', writes: false }
+    if (!item.cancellationEvidence.trim())
+      return { kind: 'stop', reason: 'cancellation evidence is required', writes: false }
+    const targeted = TARGETED_RESOLUTIONS.has(item.resolution)
+    if (!targeted && item.targetId !== null)
+      return { kind: 'stop', reason: `${item.resolution} cancellation must not name a target record`, writes: false }
+    if (targeted && !item.targetId?.trim())
+      return { kind: 'stop', reason: `${item.resolution} cancellation must name its target record`, writes: false }
+    if (targeted && !WORK_ITEM_ID_RE.test(item.targetId as string))
       return {
         kind: 'stop',
-        reason: `${item.disposition} triage disposition must name its target record`,
+        reason: `${item.resolution} cancellation target must be a canonical work-item identifier`,
         writes: false
       }
-    if (item.disposition !== 'rejected' && !WORK_ITEM_ID_RE.test(item.targetId as string))
+    if (targeted && item.targetId === item.id)
       return {
         kind: 'stop',
-        reason: `${item.disposition} triage disposition target must be a canonical work-item identifier`,
-        writes: false
-      }
-    if (item.disposition !== 'rejected' && item.targetId === item.id)
-      return {
-        kind: 'stop',
-        reason: `${item.disposition} triage disposition target must differ from the intake item`,
+        reason: `${item.resolution} cancellation target must differ from the cancelled record`,
         writes: false
       }
     return {
-      kind: 'triage-to-done',
-      disposition: item.disposition,
+      kind: 'cancel',
+      transition: 'open-to-cancelled',
+      resolution: item.resolution,
       targetId: item.targetId,
       writes: false
     }

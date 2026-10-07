@@ -36,6 +36,7 @@ const template = (id = 'KI-HARNESS-HK-001') =>
     'grace: P7D',
     'spawn-policy: when-due',
     'spawn-horizon: next',
+    'initiative: platform-foundations',
     'active-run: null',
     '---',
     '',
@@ -149,6 +150,7 @@ const activity = (status = 'active') =>
     '  grace: P1D',
     '  spawn_policy: when-due',
     '  spawn_horizon: next',
+    '  initiative: platform-foundations',
     '  active_run: null',
     '---',
     template().split('\n---\n')[1]
@@ -346,5 +348,38 @@ test('rejects unsafe entries and duplicate or stale active-run linkage', () => {
   )
   expect(results.find((outcome) => outcome.subject?.endsWith('HK-002-monthly-maintenance.md'))?.message).toContain(
     'active-run cannot be linked by more than one housekeeping template'
+  )
+})
+
+test('a retired spawn horizon or missing initiative is a migration notice, while invalid classification fails', () => {
+  const repository = temporaryDirectory()
+  const root = join(repository, 'docs', 'housekeeping')
+  mkdirSync(root, { recursive: true })
+  const path = join(root, 'KI-HARNESS-HK-001-monthly-maintenance.md')
+  writeFileSync(
+    path,
+    template().replace('spawn-horizon: next', 'spawn-horizon: parked').replace('initiative: platform-foundations\n', '')
+  )
+  const legacy = outcomes(repository)
+  expect(legacy.filter((outcome) => outcome.status === 'VIOLATION')).toEqual([])
+  expect(legacy.map((outcome) => outcome.message)).toEqual(
+    expect.arrayContaining([
+      "Migration: spawn-horizon 'parked' is retired; spawn at now, next, soon or future.",
+      'Migration: the template should declare the initiative its runs serve.'
+    ])
+  )
+  writeFileSync(
+    path,
+    template().replace(
+      'initiative: platform-foundations',
+      'initiative: Platform\ncomponent: skills\npurpose: fun\nkind: build'
+    )
+  )
+  expect(outcomes(repository)).toContainEqual(
+    expect.objectContaining({
+      status: 'VIOLATION',
+      message:
+        'Housekeeping template is invalid: initiative must be a lowercase kebab-case slug; purpose must be one canonical value; kind must be one canonical value.'
+    })
   )
 })

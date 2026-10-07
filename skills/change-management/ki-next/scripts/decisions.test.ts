@@ -7,6 +7,7 @@ import {
   issueAllocationDecision,
   promotionDecision,
   rankCandidates,
+  releaseDecision,
   resolveSelectedAdapter,
   tradeDisposition
 } from './internal/decisions.ts'
@@ -47,12 +48,7 @@ test('ranks only dependency-ready immediate records and preserves confirmation g
     promotionDecision({ id: 'SOON-1', horizon: 'soon', status: 'draft', dependenciesReady: true }, false, false)
   ).toBe('refuse')
   expect(
-    deferralDecision(
-      { id: 'NOW-1', horizon: 'now', status: 'draft', dependenciesReady: true },
-      'waiting-for',
-      true,
-      false
-    )
+    deferralDecision({ id: 'NOW-1', horizon: 'now', status: 'draft', dependenciesReady: true }, 'hold', true, false)
   ).toBe('refuse')
 })
 
@@ -61,12 +57,28 @@ test('captures only substantive unowned work and gates triage adoption', () => {
     'capture-triage'
   )
   expect(captureDecision({ substantive: true, existingOwner: true, resolvedOrRhetorical: false })).toBe('refuse')
-  const triage = { id: 'TRIAGE-1', horizon: 'triage' as const, status: 'draft' as const, dependenciesReady: true }
+  expect(
+    captureDecision({ substantive: true, existingOwner: false, resolvedOrRhetorical: false, graduates: false })
+  ).toBe('capture-idea')
+  const triage = { id: 'TRIAGE-1', horizon: null, status: 'triage' as const, dependenciesReady: true }
   expect(adoptionDecision(triage, 'future', false, true)).toBe('refuse')
   expect(adoptionDecision(triage, 'future', true, true)).toBe('adopt')
   expect(adoptionDecision(triage, 'next', true, false)).toBe('refuse')
+  expect(adoptionDecision(triage, 'hold', true, true)).toBe('refuse')
   expect(deferralDecision(triage, 'future', true, true)).toBe('refuse')
-  expect(deferralDecision({ ...triage, horizon: 'future' }, 'triage', true, true)).toBe('refuse')
+})
+
+test('defer and hold keep status inside the horizon table, and release needs evidence', () => {
+  const started = { id: 'RUN-1', horizon: 'now' as const, status: 'in-progress' as const, dependenciesReady: true }
+  expect(deferralDecision(started, 'soon', true, true)).toBe('refuse')
+  expect(deferralDecision(started, 'hold', true, false)).toBe('refuse')
+  expect(deferralDecision(started, 'hold', true, true)).toBe('defer')
+  const held = { ...started, horizon: 'hold' as const }
+  expect(releaseDecision(held, 'now', false, true)).toBe('refuse')
+  expect(releaseDecision(held, 'now', true, false)).toBe('refuse')
+  expect(releaseDecision(held, 'next', true, true)).toBe('refuse')
+  expect(releaseDecision(held, 'now', true, true)).toBe('release')
+  expect(releaseDecision(started, 'now', true, true)).toBe('refuse')
 })
 
 test('re-reads issue-ledger scope immediately before publishing record and ledger atomically', () => {
