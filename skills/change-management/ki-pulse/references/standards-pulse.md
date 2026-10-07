@@ -52,7 +52,7 @@ A disposition does not grant Pulse ownership of its destination:
 
 - Route **Read / learn** to `ki-repo-kb` SAVE only when the selected repository is the intended Knowledge Base. If another declared repository owns it, use `ki-trades`.
 - Add **Watch** only to an existing owning record with a named monitoring trigger. If no such record exists, keep it transient; do not create a Pulse log or subscription.
-- Route **Act** from a changed normative source to the owning governance skill's REFRESH mode. Present other finite work to `ki-next` in the owning repository; Pulse neither creates nor selects that work itself.
+- Route **Act** from a changed normative source to the owning governance skill's REFRESH mode. Present other finite work to `ki-next` in the owning repository, which applies its graduation test and keeps the work as an idea or captures a `status: triage` record; Pulse neither creates nor selects that work itself.
 - **Discard** writes nothing.
 
 Durable read, watch, and act hand-offs require explicit user authority and the destination owner's normal gates. If the owner is absent, unresolved, remote-only, or refuses the hand-off, report `none / unavailable` and create no artifact. Never write directly into another repository or destination as a shortcut.

@@ -92,6 +92,8 @@ The `Streams` zone's internal structure is owned by `ki-repo-kb-streams`; these 
 | Note type          | Path context                                     | Defined by      |
 | ------------------ | ------------------------------------------------ | --------------- |
 | `streams/zone`     | `Streams/Streams.md` (zone root)                 | `ki-repo-kb-streams` |
+| `streams/project` | `Streams/Projects/<slug>.md` (Project note) | `ki-work` |
+| `streams/initiative` | `Streams/Initiatives/<slug>.md` (Initiative note) | `ki-work` |
 | _adapter-owned_ | Roadmap work-record metadata | `ki-work-roadmap` |
 
 ### Pillars branch (`pillars/`)

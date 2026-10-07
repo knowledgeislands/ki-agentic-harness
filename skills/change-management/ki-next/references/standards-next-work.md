@@ -90,7 +90,7 @@ Before selecting one viable non-KB item, compare the whole dependency-ready cand
 - their planned changes can be sequenced without conflicting writes, concealed dependencies, or one item's result changing another item's honest scope; and
 - each item is independently executable at its position, with satisfied dependencies and no unapproved decision required.
 
-Do not treat a shared theme, adjacent numbering, the same repository, or a desire for throughput as synergy. Related work that changes the same uncertain contract, needs a new decision, or would make a failure hard to isolate stays separate.
+Do not treat a shared Project or component, adjacent numbering, the same repository, or a desire for throughput as synergy. Related work that changes the same uncertain contract, needs a new decision, or would make a failure hard to isolate stays separate.
 
 For each safe candidate group, present the named items in proposed order, the concrete advantage, the evidence that keeps them independent, the shared verification where relevant, and the mandatory stops that `ki-batch` will enforce. Also state why any superficially related candidate was excluded.
 

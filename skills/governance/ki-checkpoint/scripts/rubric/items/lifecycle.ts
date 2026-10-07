@@ -30,7 +30,7 @@ const LIFECYCLE_2: RubricItem<LifecycleContext> = {
   code: 'LIFECYCLE-2',
   title: 'snapshot content is current and durable facts are promoted',
   description:
-    'The active record is a concise current reconstruction snapshot. Decisions, accepted work state, and reusable knowledge already live with their canonical owners; removal follows explicit direction and does not manufacture completion.',
+    'The active record is a concise current reconstruction snapshot of one ephemeral thread, never a standing theme home. Decisions, accepted work state, Project and Initiative status, and reusable knowledge already live with their canonical owners; removal follows explicit direction and does not manufacture completion.',
   sources: [SOURCE],
   judgment: {
     scope: 'Every checkpoint snapshot, its named durable owners, and removal authority.',

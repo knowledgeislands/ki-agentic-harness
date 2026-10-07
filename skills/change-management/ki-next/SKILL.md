@@ -25,7 +25,7 @@ Substantive prospective work is captured without approval only after deduplicati
 1. **Ground** the configured local adapter's canonical records and issue ledger, active `ki-work-housekeeping` templates, and inbound records validated by declared `ki-trades` governance.
 2. **Triage** incoming submissions through an exact human-confirmed receiver disposition, including the proportionate direct-application gate for a work trade, without treating adoption as roadmap authority.
 3. **Review and capture** relevance: capture substantive, non-duplicate prospective work that passes the graduation test as triage automatically; require confirmation to change adopted work.
-4. **Screen for synergy** across dependency-ready candidates: propose a batch only when the items share a bounded delivery advantage and remain independently executable. A shared theme alone is not enough.
+4. **Screen for synergy** across dependency-ready candidates: propose a batch only when the items share a bounded delivery advantage and remain independently executable. A shared Project or component alone is not enough.
 5. **Select or spawn** one dependency-ready immediate record, or a small, explicitly confirmed synergistic group to plan independently before it can become a `ki-batch` candidate.
 6. **Defer, hold, or release** an explicitly named record only after presenting its exact destination horizon, hold condition, wording, and affected lifecycle state.
 7. **Hand off for planning** selected Now or Next drafts to `ki-plan`; its adapter creates the right in-place execution detail.

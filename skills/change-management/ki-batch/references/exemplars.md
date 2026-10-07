@@ -25,7 +25,7 @@ policy: safe-local-v1
 | Item | Result | Baseline | Result commit | Exception |
 | --- | --- | --- | --- | --- |
 | KI-EXAMPLE-001 | awaiting-review | `abc1234` | `def5678` | None |
-| KI-EXAMPLE-002 | parked | `def5678` | — | Public API choice requires human decision |
+| KI-EXAMPLE-002 | held | `def5678` | — | Public API choice requires human decision |
 ```
 
-The hash covers the frontmatter except itself and the H1 before `## Run ledger`. The parked item remains accounted for; its canonical record carries the detailed decision need. No item is closed, pruned, pushed, or released by this `awaiting-review` envelope.
+The hash covers the frontmatter except itself and the H1 before `## Run ledger`. The held item remains accounted for; its canonical record sits at `horizon: hold` and carries the detailed decision need. No item is closed, pruned, pushed, or released by this `awaiting-review` envelope.

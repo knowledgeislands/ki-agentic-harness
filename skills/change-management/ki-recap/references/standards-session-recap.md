@@ -178,7 +178,7 @@ Apply these scenario checks when offering it:
 | Clean recap | Say “No actions”; do not manufacture a `ki-next` handoff. |
 | Future work is merely visible in the repository | Omit it from the recap; it is neither an outstanding thread nor a Specific action. |
 | User asks to choose future work | Route to `ki-next`, which re-grounds the roadmap before selection. |
-| Deferred work was already parked on the roadmap | Record it as what happened, not outstanding. |
+| Work was already deferred or held on the roadmap | Record it as what happened, not outstanding. |
 | Learning route is unapproved | Label it as a proposal; neither recap nor `ki-next` writes it. |
 
 ## 8. Preserve the handoff and compact at the boundary
@@ -233,7 +233,7 @@ Run this composition only when the user explicitly invokes `ki-recap checkpoint 
 2. Require the exact human-selected `<thread>` and explicit authority to update it. Resolve only `+/_CHECKPOINTS/<thread>.md`; refuse missing, ambiguous, nested, runtime-derived, or mismatched identity.
 3. Ground the hand-off in the current immutable `HEAD`. If required work is uncommitted, require one complete portable patch against that exact baseline; a partial diff, shared working tree, transcript, runtime session, or provider snapshot is insufficient.
 4. Require the scoped authority, result destination, and expected verification that the receiving agent needs. Refuse repository mismatch, stale baseline, missing input, or an interrupted prior update without writing; re-ground all evidence before any retry.
-5. Invoke the existing `ki-checkpoint` UPDATE procedure with concise reconstruction state and references to durable owners. Never embed a transcript or make the checkpoint the only copy of a decision, accepted work state, patch, or result.
+5. Invoke the existing `ki-checkpoint` UPDATE procedure with concise reconstruction state and references to durable owners. Never embed a transcript or make the checkpoint the only copy of a decision, accepted work state, patch, or result. A Project or Initiative's health, update and ideas go to its registry note, not to a checkpoint.
 6. Return a hand-off containing repository identity, thread, authority scope, result destination, verification plan, and committed baseline or portable-patch reference. A fresh agent must be able to reconstruct the governed task from those portable inputs without the originating transcript or shared filesystem.
 
 The pure [`checkpoint-handoff.ts`](../scripts/internal/checkpoint-handoff.ts) model exercises this no-write preflight. It is evidence for the procedure, not a host command or a replacement for live repository and checkpoint validation.

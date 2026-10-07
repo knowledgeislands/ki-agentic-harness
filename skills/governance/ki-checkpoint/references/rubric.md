@@ -73,7 +73,7 @@ Update, resume, and removal preserve one active snapshot without inventing lifec
   - _Review prompt:_ Does the proposed lifecycle correction preserve explicit user authority and the single active snapshot rule?
   - _Outcomes:_ conforming; explicit update required; explicit removal required
   - _Conforming guidance:_ Do not change state or timestamps until the user supplies UPDATE direction; REMOVE deletes the record.
-- **LIFECYCLE-2 [J] — snapshot content is current and durable facts are promoted** — The active record is a concise current reconstruction snapshot. Decisions, accepted work state, and reusable knowledge already live with their canonical owners; removal follows explicit direction and does not manufacture completion. (standards-checkpoints.md)
+- **LIFECYCLE-2 [J] — snapshot content is current and durable facts are promoted** — The active record is a concise current reconstruction snapshot of one ephemeral thread, never a standing theme home. Decisions, accepted work state, Project and Initiative status, and reusable knowledge already live with their canonical owners; removal follows explicit direction and does not manufacture completion. (standards-checkpoints.md)
   - _Evidence scope:_ Every checkpoint snapshot, its named durable owners, and removal authority.
   - _Review prompt:_ Is each active snapshot current and concise, with durable facts promoted to their canonical owners and any removal grounded in explicit user direction rather than inferred completion?
   - _Outcomes:_ conforming; explicit update required; promote durable fact

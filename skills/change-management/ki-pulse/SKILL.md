@@ -42,7 +42,7 @@ Inspect only the supplied interests, queries, and optional sources. Consider at 
 
 ### Triage
 
-Triage only signals gathered or supplied for the current invocation. For each signal, preserve evidence and uncertainty, verify any actionable technical or governance claim against a primary source where one exists, and assign exactly one disposition: **Read / learn**, **Watch**, **Act**, or **Discard**.
+Triage only signals gathered or supplied for the current invocation. Signal Triage sorts observations; it is not the roadmap `triage` status. For each signal, preserve evidence and uncertainty, verify any actionable technical or governance claim against a primary source where one exists, and assign exactly one disposition: **Read / learn**, **Watch**, **Act**, or **Discard**.
 
 Propose or perform no implementation. If a durable destination is unavailable or unconfirmed, return the cited disposition as transient session output and create nothing.
 

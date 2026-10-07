@@ -14,4 +14,4 @@ When the human authorises autonomous completion and consolidated acceptance, use
 
 Carry every admitted item as far as its own approved plan allows. Take decisions already settled by the item; park choices outside the envelope. Continue only items proven independent of a stopped item.
 
-Run focused checks per item and one aggregate final gate. Capture non-blocking improvements as candidates for the next batch rather than widening this one. State what was decided, assumed, verified, parked, and not observed working. Corrective work becomes a new item; do not reopen a delivered record merely to erase its delivery account.
+Run focused checks per item and one aggregate final gate. Capture non-blocking improvements as candidates for the next batch rather than widening this one. State what was decided, assumed, verified, held, and not observed working. Corrective work becomes a new item; do not reopen a delivered record merely to erase its delivery account.
