@@ -119,6 +119,14 @@ const FORMAT = 'references/standards-work-item-format.md'
 const RUBRIC = 'references/rubric.md'
 const ROADMAP_CONFIG = 'ki-work-roadmap'
 const REPO_CONFIG = 'ki-repo'
+const LEGACY_AREA_LIST = 'a bare areas list is the legacy form; map each code to its title, e.g. GOV = "Governance"'
+
+/** The legacy bare areas list fails in the Knowledge Islands Agora and warns outside it. */
+export const legacyAreaList = (repository: string): { level: 'FAIL' | 'WARN'; msg: string } =>
+  isAgoraRepository(repository)
+    ? { level: 'FAIL', msg: LEGACY_AREA_LIST }
+    : { level: 'WARN', msg: `outside the Agora, ${LEGACY_AREA_LIST}` }
+
 export const ISSUE_LEDGER = '_ISSUES.md'
 export const IDEAS_LIST = '_IDEAS.md'
 /** Roadmap index holding area definitions; not a record. */
@@ -316,9 +324,8 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
         add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not repeat an area code', STANDARD, '.ki.toml')
         return undefined
       }
-      const legacyList = 'a bare areas list is the legacy form; map each code to its title, e.g. GOV = "Governance"'
-      if (isAgoraRepository(repository)) add('FAIL', 'ROAD-6', legacyList, STANDARD, '.ki.toml')
-      else add('WARN', 'ROAD-6', `outside the Agora, ${legacyList}`, STANDARD, '.ki.toml')
+      const legacy = legacyAreaList(repository)
+      add(legacy.level, 'ROAD-6', legacy.msg, STANDARD, '.ki.toml')
       for (const area of configuredAreas) areas.set(area, undefined)
     } else if (configuredAreas !== undefined) {
       if (typeof configuredAreas !== 'object' || configuredAreas === null) {

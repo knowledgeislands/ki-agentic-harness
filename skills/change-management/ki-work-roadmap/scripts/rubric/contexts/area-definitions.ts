@@ -1,7 +1,7 @@
 /** Area-definition check: every declared issuing area is named in the repository's roadmap index. */
 import { existsSync, lstatSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Finding } from './roadmap-evidence.ts'
+import { type Finding, legacyAreaList } from './roadmap-evidence.ts'
 
 const STANDARD = 'references/standards-repository-roadmaps.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
@@ -26,6 +26,7 @@ export const areasSection = (text: string): string | undefined => {
  * Warns once per declared area the roadmap index does not name in backticks under `## Areas`.
  * A code-to-title map defines every code by its title, so only the legacy bare list is checked here.
  * Configuration errors are ROAD-6 failures elsewhere; this check reads only a well-formed code list.
+ * A Knowledge Base skips the repository-roadmap evidence, so its legacy list is reported here.
  */
 export const inspectAreaDefinitions = (repository: string): readonly Finding[] => {
   let parsed: Record<string, unknown>
@@ -37,17 +38,23 @@ export const inspectAreaDefinitions = (repository: string): readonly Finding[] =
   const skills = table(parsed.skills)
   const areas = table(skills?.['ki-work-roadmap'])?.areas
   if (!Array.isArray(areas) || !areas.length || !areas.every((area) => typeof area === 'string')) return []
-  const index = table(skills?.['ki-repo'])?.repo_type === 'kb' ? AREA_INDEX_KB : AREA_INDEX_PROJECT
+  const kb = table(skills?.['ki-repo'])?.repo_type === 'kb'
+  const index = kb ? AREA_INDEX_KB : AREA_INDEX_PROJECT
   const path = join(repository, index)
   const text = existsSync(path) && lstatSync(path).isFile() ? readFileSync(path, 'utf8') : undefined
   const section = text === undefined ? undefined : areasSection(text)
-  return (areas as string[])
-    .filter((area) => !section?.includes(`\`${area}\``))
-    .map((area) => ({
-      level: 'WARN' as const,
-      area: 'ROAD-6',
-      msg: `area '${area}' has no definition; name it in backticks under ## Areas in ${index}`,
-      ref: STANDARD,
-      file: index
-    }))
+  const legacy: Finding[] = kb
+    ? [{ ...legacyAreaList(repository), area: 'ROAD-6', ref: STANDARD, file: '.ki.toml' }]
+    : []
+  return legacy.concat(
+    (areas as string[])
+      .filter((area) => !section?.includes(`\`${area}\``))
+      .map((area) => ({
+        level: 'WARN' as const,
+        area: 'ROAD-6',
+        msg: `area '${area}' has no definition; name it in backticks under ## Areas in ${index}`,
+        ref: STANDARD,
+        file: index
+      }))
+  )
 }
