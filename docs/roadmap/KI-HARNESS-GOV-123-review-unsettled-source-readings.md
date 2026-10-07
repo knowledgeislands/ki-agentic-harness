@@ -6,13 +6,13 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
+horizon: next
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-07T20:29:57Z
+updated_at: 2026-10-07T20:34:47Z
 ---
 
 # KI-HARNESS-GOV-123: Review unsettled-source readings

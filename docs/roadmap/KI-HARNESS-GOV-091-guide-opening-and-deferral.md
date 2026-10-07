@@ -6,14 +6,14 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
+horizon: next
 status: ready
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: null
 created_at: 2026-09-24T19:05:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:34:46Z
 ---
 
 # KI-HARNESS-GOV-091: Guide opening and deferral

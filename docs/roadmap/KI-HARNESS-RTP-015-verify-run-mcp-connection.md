@@ -5,13 +5,13 @@ title: Verify run MCP connection
 kind: investigate
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
+horizon: next
 status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T08:20:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:34:47Z
 ---
 
 # Verify run MCP connection

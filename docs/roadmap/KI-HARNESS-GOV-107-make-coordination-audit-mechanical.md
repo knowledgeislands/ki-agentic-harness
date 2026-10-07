@@ -5,7 +5,7 @@ title: Make coordination audit mechanical
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
+horizon: next
 status: ready
 blocks: []
 blocked_by: []
@@ -31,7 +31,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-07T20:29:57Z
+updated_at: 2026-10-07T20:34:47Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical

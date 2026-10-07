@@ -5,13 +5,13 @@ title: Auto-bump released ki pin
 kind: deliver
 project: estate-factorisation
 component: governance
-horizon: next
+horizon: now
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T01:21:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:34:43Z
 ---
 
 # KI-HARNESS-GOV-141: Auto-bump released ki pin
