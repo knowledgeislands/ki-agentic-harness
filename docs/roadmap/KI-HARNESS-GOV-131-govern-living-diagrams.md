@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-04T09:41:34Z
-updated_at: 2026-10-07T20:34:47Z
+updated_at: 2026-10-07T20:43:51Z
 ---
 
 # KI-HARNESS-GOV-131: Govern living diagrams
@@ -116,7 +116,7 @@ Follow-on, outside acceptance: ki-website and apps-observatory dispose of their 
 
 None. Archify upstream command-line SVG export would let the exporter shrink to a wrapper, but the shipped Playwright exporter makes it unnecessary for this record.
 
-Diagram consumers, non-blocking in both directions: `KI-WEB-SITE-001` in `ki-website` (interactive island diagram, waiting for isometric graphics) owns the rendered artefact, and `KI-ARCADIA-MOD-003` in `ki-arcadia-principal` (island visualisation) owns the aesthetics and geography model it would draw. Both are expected to follow whatever diagram governance this record lands, but neither waits on it and it waits on neither.
+Diagram consumers, non-blocking in both directions: `KI-WEB-SITE-001` in `ki-website` (interactive island diagram, waiting for isometric graphics) owns the rendered artefact and, since `KI-ARCADIA-MOD-003` in `ki-arcadia-principal` was cancelled on 2026-10-07, the geography need it would draw. It is expected to follow whatever diagram governance this record lands, but neither waits on the other.
 
 Sequencing: this record and [the delivered source-mirror standard](../../skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md) both edit the counts in `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`. The source-mirror changes have landed; increment current counts rather than hardcoding them.
 

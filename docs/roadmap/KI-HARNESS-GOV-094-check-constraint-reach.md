@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-07T20:34:46Z
+updated_at: 2026-10-07T20:43:51Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
@@ -141,7 +141,7 @@ Against it: the checklist's own rule prefers deleting an item that never fires, 
 
 One shared identifier grammar, enforced by a conformance test across the vendored copies rather than imported from `tools-ki`, with `ki-batch` added as the seventh restating skill. Decided by the Fable reviewer under delegated autonomy, reversible.
 
-The shared definition is enforced across vendored copies by a conformance test in this repository, not imported from `tools-ki`; skills stay independently installable under `ADR-KI-HARNESS-012`, and the shared-module contract already gives each consumer a local copy. `ki-batch` is added as the seventh restating skill. The `ki-batch` evidence from [KI-HARNESS-GOV-125](KI-HARNESS-GOV-125-share-batch-identifier-grammar.md) also confirms the structural route over the checklist fallback: `ki-batch` spelled the grammar `[A-Z][A-Z0-9-]*-\d{3}` and never shared the roadmap's literal, so a grep for that literal would not have found it. The conformance test therefore scans for the grammar's shape in named skills, not only for one spelling.
+The shared definition is enforced across vendored copies by a conformance test in this repository, not imported from `tools-ki`; skills stay independently installable under `ADR-KI-HARNESS-012`, and the shared-module contract already gives each consumer a local copy. `ki-batch` is added as the seventh restating skill. The `ki-batch` evidence from `KI-HARNESS-GOV-125` also confirms the structural route over the checklist fallback: `ki-batch` spelled the grammar `[A-Z][A-Z0-9-]*-\d{3}` and never shared the roadmap's literal, so a grep for that literal would not have found it. The conformance test therefore scans for the grammar's shape in named skills, not only for one spelling.
 
 **Why `ki-work-roadmap` is the provider.** Its standard owns the `<REPO>` grammar (`standards-repository-roadmaps.md`), and `ki-repo` validates `repo_code` only because `ki-work-roadmap` is declared. A shared-module dependency is packaging rather than governance, so `ki-repo` depending on a `ki-work-roadmap` module creates no composition edge.
 
