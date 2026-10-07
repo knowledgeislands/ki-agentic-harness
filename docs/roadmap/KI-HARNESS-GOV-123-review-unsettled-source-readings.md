@@ -6,13 +6,13 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: next
-status: ready
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 74ce50fe3bc90203421bca301f0308dee8b4eae0
 created_at: 2026-10-01T19:49:57Z
-updated_at: 2026-10-07T20:34:47Z
+updated_at: 2026-10-07T20:55:02Z
 ---
 
 # KI-HARNESS-GOV-123: Review unsettled-source readings
@@ -45,9 +45,9 @@ No REVIEW question asks whether a delivered artefact records which reading of an
 
 ## Steps
 
-- [ ] Insert one question directly after the `KI-HARNESS-GOV-098` (done) question, or, if the batch siblings have not landed, directly after the count-based-gate question: `- [ ] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.`
-- [ ] Insert one question directly after `The repository declaration reflects what the repository now contains.` in `Repository governance` (merged from `KI-HARNESS-GOV-135`): `- [ ] Each governance or conformance date states what it claims - an evidenced adoption, a preserved historical assertion, or the first surviving declaration - and none is backdated by inference or read as proof of audited conformance.`
-- [ ] Run the verification below.
+- [x] Insert one question directly after the `KI-HARNESS-GOV-098` (done) question, or, if the batch siblings have not landed, directly after the count-based-gate question: `- [x] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.`
+- [x] Insert one question directly after `The repository declaration reflects what the repository now contains.` in `Repository governance` (merged from `KI-HARNESS-GOV-135`): `- [x] Each governance or conformance date states what it claims - an evidenced adoption, a preserved historical assertion, or the first surviving declaration - and none is backdated by inference or read as proof of audited conformance.`
+- [x] Run the verification below.
 
 ## Files touched
 
@@ -90,6 +90,35 @@ None. The website skills-by-outcome guide does not restate REVIEW questions.
 ### Roadmap
 
 On delivery, `5GE-P2-GOV-014` in `5g-emerge-phase2` no longer needs its local fallback lens and can close. That repository has no trade route to this harness by its own decision, so the owner relays the outcome; this record writes nothing there.
+
+## Review
+
+### Delivered
+
+Two REVIEW questions in `ki-repo` `mode-review.md`, within the approved boundary: the unsettled-source question and, merged from `KI-HARNESS-GOV-135`, the date-provenance question. No other lens, rubric, TypeScript or generated file changed. Baseline `74ce50fe3bc90203421bca301f0308dee8b4eae0`; the delivery is the commit that carries this packet.
+
+### Change Summary
+
+- `skills/keystone/ki-repo/references/mode-review.md`, `Automated verification`: the unsettled-source question, verbatim from Steps, directly after the count-versus-rendered question from `KI-HARNESS-GOV-098`.
+- The same file, `Repository governance`: the date-provenance question, verbatim from Steps, directly after `The repository declaration reflects what the repository now contains.`
+
+### Verification
+
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `ki repo audit --skill ki-repo --progress never`: no finding in `mode-review.md`. Its only failures are `REPO-REG-1` and `RUNTIMES-2`, which arise because the temporary worktree path is not registered; the registered primary checkout reports FAIL=0.
+- `bun run test`: 1006 pass, 0 fail. `bunx tsc --noEmit`: clean.
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+Both questions are in place and each asks for the provenance a reviewer cannot otherwise see: which reading of an unsettled source an artefact drew and what changes if another wins, and what a governance date actually claims. Scope held to one file and two lines. No regression risk to code or generated output. Ready for acceptance.
+
+### Mini recap
+
+Delivered two checklist questions; all gates pass. On closure, the owner relays the outcome to `5GE-P2-GOV-014` in `5g-emerge-phase2`, which has no trade route to the harness.
 
 ## Discussion
 

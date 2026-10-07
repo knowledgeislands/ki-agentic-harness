@@ -186,6 +186,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Repository governance
 
 - [ ] The repository declaration reflects what the repository now contains.
+- [ ] Each governance or conformance date states what it claims - an evidenced adoption, a preserved historical assertion, or the first surviving declaration - and none is backdated by inference or read as proof of audited conformance.
 - [ ] An Agora is declared only by its owning repository, whose identity supplies the owner. Check its direct members and optional inclusions against intended scope; alphabetical projection and inclusion grant no ownership or authority.
 - [ ] `.ki.toml` is a readable review surface that follows `ki-authoring` TOML presentation conventions.
 - [ ] In a multi-runtime repository, root `AGENTS.md` is the authoritative home for shared runtime-neutral guidance.
@@ -386,6 +387,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] A generator, extractor or discovery predicate that returned an empty or zero result was confirmed to have found nothing, by a run against a known non-empty case or an asserted floor, rather than assumed to have looked.
 - [ ] A committed generated artefact was confirmed byte-identical across two runs over unchanged input, and the evidence names the method, such as comparing digests of both outputs; a clean `git diff --quiet` alone does not count, because it passes on an untracked file.
 - [ ] Where a view both reports a count and renders the items it counts, a test over a fixture exercising every subject kind the derivation can produce asserts that the count equals the items rendered.
+- [ ] A delivered artefact that encodes one of several possible readings of an unsettled source has a record stating which reading was drawn and what concretely changes if another wins.
 - [ ] No gate was made to pass by widening an ignore list rather than fixing the cause.
 - [ ] Every suppression comment added in this change names a reason.
 
