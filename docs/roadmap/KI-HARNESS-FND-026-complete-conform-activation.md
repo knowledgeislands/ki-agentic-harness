@@ -6,13 +6,12 @@ kind: deliver
 purpose: adoption
 project: baseline-rollout
 component: keystone
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b4a8a6f647cbbaed5633593236dede48a98918f2
 created_at: 2026-09-25T05:34:19Z
-updated_at: 2026-10-07T20:57:46Z
+updated_at: 2026-10-07T21:08:04Z
 ---
 
 ## Goal
@@ -131,6 +130,10 @@ The goal holds: conform followed by re-audit now shows an uninstalled toolchain 
 ### Mini recap
 
 `PKG-7` makes declared-but-uninstalled toolchain visible with the exact step, and conform still never installs. Tests, types and audits pass. Learning route: `ki dev skill rubric` cannot render from a linked worktree, a possible `tools-ki` follow-on.
+
+## Done
+
+Accepted 2026-10-07 by Kris Brown on the review packet above.
 
 ## Discussion
 
