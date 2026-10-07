@@ -3,6 +3,8 @@ import type { McpRubricContext, McpToolsContext } from '../contexts/mcp.ts'
 
 const STANDARD = 'standards-mcp-servers.md#3-tool-naming'
 const RESULT_STANDARD = 'standards-mcp-servers.md#13-spec-conformance-tool-results-errors--metadata'
+const SECURITY_STANDARD = 'standards-mcp-servers.md#6-security-invariants'
+const OAUTH_STANDARD = 'standards-mcp-servers.md#14-oauth-security-auth-server-repos'
 
 const registrations = (source: string): string[] => {
   const callers = new Set(['registerTool'])
@@ -17,7 +19,7 @@ const TOOL_1: RubricItem<McpToolsContext> = {
   title: 'MCP tool surface',
   description:
     'Registered tool names use snake-case app/resource/action forms; source-local structured output declarations are paired with outputSchema; and group registration order is stable. This is not runtime registration, security, or response evidence.',
-  sources: [STANDARD, RESULT_STANDARD],
+  sources: [STANDARD, SECURITY_STANDARD, RESULT_STANDARD, OAUTH_STANDARD],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -83,7 +85,7 @@ const TOOL_1: RubricItem<McpToolsContext> = {
     scope:
       'The full public MCP tool surface, result envelopes, annotations, documentation, and applicable OAuth requirements.',
     prompt:
-      'Review plural/singular resource choices, CLI mirroring and README catalogues; confirm the annotation-driven access gate, annotation presets, dry-run defaults, read default, audit/error envelopes, path and subprocess hardening, bounded schemas, error aggregation, output sanitisation, and the applicable OAuth security requirements. Optional metadata remains opt-in.',
+      'Review plural/singular resource choices, CLI mirroring and README catalogues; confirm the annotation-driven access gate, annotation presets, dry-run defaults and that dry runs are side-effect-free across the complete operation, read default, audit/error envelopes, path and subprocess hardening, bounded schemas, error aggregation, output sanitisation, and the applicable OAuth security requirements, including 401 recovery hints that name a path reachable at the configured access tier. Optional metadata remains opt-in.',
     outcomes: ['conforming', 'gap', 'exclusion'],
     guidance:
       'Make API or security changes only with the owning authority; otherwise record a named gap or explicit justified exclusion.'

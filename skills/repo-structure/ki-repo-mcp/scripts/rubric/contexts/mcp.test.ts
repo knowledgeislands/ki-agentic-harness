@@ -367,6 +367,19 @@ test('result-envelope evidence ignores helper and main modules', () => {
   )
 })
 
+test('tool-surface review cites the dry-run and tier-reachable recovery rules', () => {
+  const item = TOOL.items.find((candidate) => candidate.code === 'TOOL-1')
+
+  expect(item?.sources).toEqual(
+    expect.arrayContaining([
+      'standards-mcp-servers.md#6-security-invariants',
+      'standards-mcp-servers.md#14-oauth-security-auth-server-repos'
+    ])
+  )
+  expect(item?.judgment?.prompt).toContain('side-effect-free across the complete operation')
+  expect(item?.judgment?.prompt).toContain('reachable at the configured access tier')
+})
+
 test('smoke execution is reported without launching repository code', () => {
   const { repository } = fixture()
   const session = createMcpSession(options(repository, 'audit'))

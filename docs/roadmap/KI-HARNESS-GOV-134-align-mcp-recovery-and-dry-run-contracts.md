@@ -7,12 +7,12 @@ purpose: corrective
 project: estate-factorisation
 component: repo-structure
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 58dbf3502df5b6bb777b3b28965392cff5932221
 created_at: 2026-10-04T10:57:53Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:53:49Z
 ---
 
 # KI-HARNESS-GOV-134: Align MCP safety contracts
@@ -44,13 +44,13 @@ Out of scope: a new skill; a mandated generated tool catalogue; any receiver imp
 
 ## Steps
 
-- [ ] Rewrite section 6 item 11's 401 clause: a 401 names a recovery path the caller can reach at its configured access level. Where `*_auth_start` is registered at that level, name it; otherwise name the out-of-band remedy the repository ships (its `mcp-<name>-auth` bin or equivalent CLI) and the `MCP_<APP>_ACCESS_LEVEL` change that would expose the tool. A hint must never name a tool that is not registered.
-- [ ] Replace section 14 item 6's duplicate clause with a cross-reference to section 6 item 11, keeping its own token-redaction requirement, so the rule has one normative home.
-- [ ] Extend section 6 item 7: a dry run, whether a tool's `dry_run` argument or an optional CLI's `--dry-run` flag, covers the complete operation; preparatory steps (staging into an index, temporary or cache writes, lock or token acquisition, remote calls with effects) are side-effect-free as well as the final mutation. A flag combination that cannot be previewed without effects is rejected before any effect. Replace "approximate otherwise" with that rule.
-- [ ] In `TOOL-1`, add `standards-mcp-servers.md#6-security-invariants` and `standards-mcp-servers.md#14-oauth-security-auth-server-repos` to `sources`, and change the judgment prompt so it asks reviewers to confirm that dry runs are side-effect-free across the complete operation and that 401 recovery hints name a path reachable at the configured access tier.
-- [ ] Add a test to `scripts/rubric/contexts/mcp.test.ts` asserting that `TOOL-1` cites both new anchors and that its prompt names complete-operation dry runs and tier-reachable recovery.
-- [ ] Update the access-gate line in `references/mode-audit.md` to include complete-operation dry runs and tier-reachable 401 hints.
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-repo-mcp`.
+- [x] Rewrite section 6 item 11's 401 clause: a 401 names a recovery path the caller can reach at its configured access level. Where `*_auth_start` is registered at that level, name it; otherwise name the out-of-band remedy the repository ships (its `mcp-<name>-auth` bin or equivalent CLI) and the `MCP_<APP>_ACCESS_LEVEL` change that would expose the tool. A hint must never name a tool that is not registered.
+- [x] Replace section 14 item 6's duplicate clause with a cross-reference to section 6 item 11, keeping its own token-redaction requirement, so the rule has one normative home.
+- [x] Extend section 6 item 7: a dry run, whether a tool's `dry_run` argument or an optional CLI's `--dry-run` flag, covers the complete operation; preparatory steps (staging into an index, temporary or cache writes, lock or token acquisition, remote calls with effects) are side-effect-free as well as the final mutation. A flag combination that cannot be previewed without effects is rejected before any effect. Replace "approximate otherwise" with that rule.
+- [x] In `TOOL-1`, add `standards-mcp-servers.md#6-security-invariants` and `standards-mcp-servers.md#14-oauth-security-auth-server-repos` to `sources`, and change the judgment prompt so it asks reviewers to confirm that dry runs are side-effect-free across the complete operation and that 401 recovery hints name a path reachable at the configured access tier.
+- [x] Add a test to `scripts/rubric/contexts/mcp.test.ts` asserting that `TOOL-1` cites both new anchors and that its prompt names complete-operation dry runs and tier-reachable recovery.
+- [x] Update the access-gate line in `references/mode-audit.md` to include complete-operation dry runs and tier-reachable 401 hints.
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-repo-mcp`.
 
 ## Files touched
 
