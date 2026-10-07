@@ -6,13 +6,12 @@ kind: deliver
 purpose: corrective
 project: estate-factorisation
 component: repo-structure
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 58dbf3502df5b6bb777b3b28965392cff5932221
 created_at: 2026-10-04T10:57:53Z
-updated_at: 2026-10-07T20:53:49Z
+updated_at: 2026-10-07T20:54:27Z
 ---
 
 # KI-HARNESS-GOV-134: Align MCP safety contracts
@@ -106,6 +105,39 @@ None. No guide in this repository restates the 401 hint or the dry-run rule.
 ### Roadmap
 
 None beyond this record.
+
+## Review
+
+### Delivered
+
+The approved boundary: both 401 recovery passages, the complete-operation dry-run rule, `TOOL-1` sources and prompt, the `mode-audit.md` access-gate line, one focused test and the regenerated rubric. No receiver repository, section 4 classification or new skill. Baseline `58dbf3502df5b6bb777b3b28965392cff5932221`; delivered in `842dbd1f`.
+
+### Change Summary
+
+- `standards-mcp-servers.md`: section 6 item 7 states that a dry run, tool argument or optional CLI flag, covers preparatory and final effects and that an unpreviewable combination is rejected before any effect; "approximate otherwise" is gone. Section 6 item 11 makes the 401 hint conditional on the configured access level, naming the shipped out-of-band remedy and the `MCP_<APP>_ACCESS_LEVEL` change otherwise. Section 14 item 6 keeps token redaction and cross-refers to section 6 item 11.
+- `tools.ts`: `TOOL-1` cites sections 3, 6, 13 and 14; its prompt names complete-operation dry runs and tier-reachable recovery hints.
+- `mcp.test.ts`: one case asserting both anchors and both prompt checks; it failed before the `tools.ts` change and passes after it.
+- `mode-audit.md` and the generated `rubric.md` follow.
+
+### Verification
+
+- `bun run test`: 1000 pass, 0 fail. `bunx tsc --noEmit`: clean.
+- `ki dev skill rubric ki-repo-mcp`: in sync after `--write`, rendered from the worktree harness.
+- `ki repo audit --skill ki-authoring` and `--skill ki-work-roadmap`: PASS. `--skill ki-skills`: one pre-existing LONG-3 refresh-cadence warning in `ki-skills`, unrelated. `ki-repo-mcp` is not declared by this repository, so it was audited against `mcp-gsuite` with the changed rubric: PASS.
+- Whole-repository `ki repo audit` in the isolated worktree reports only REPO-REG-1 and RUNTIMES-2 findings, which come from the unregistered worktree path and its absent local skill projections, not from this change.
+- `grep auth_start` shows no unconditional 401 remedy; section 4 is unchanged.
+
+### Outstanding concerns
+
+None. Receivers pick up the clarified standard through ordinary skill refresh.
+
+### Post-change review
+
+The goal holds: the standard now states one truthful contract that matches the access gate. Scope stayed inside the five planned files. Regression risk is low: the only executable change is two source anchors and prompt wording.
+
+### Mini recap
+
+Delivered and verified; accepted under Kris's standing decision (Decision 12 and Decision 17). No learning route beyond the standard itself.
 
 ## Discussion
 
