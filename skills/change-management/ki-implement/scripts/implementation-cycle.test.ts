@@ -71,7 +71,7 @@ test('stops without writes for unresolved or remote adapters and every authority
     evaluateImplementationCycle(input({ adapter: { kind: 'remote-execution-unavailable', adapter: 'github-issues' } }))
   ).toMatchObject({
     kind: 'stop',
-    reason: 'selected github-issues adapter cannot execute pending KI-HARNESS-FND-014',
+    reason: 'selected github-issues adapter cannot execute',
     writes: false
   })
   for (const item of [

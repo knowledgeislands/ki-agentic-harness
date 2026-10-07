@@ -29,7 +29,7 @@ The `lifecycle` table names exact remote workflow values for queue, readiness, r
 
 A Linear Issue is the remote record. Its description and comments are the intended locations for plan, delivery, and review evidence. Never infer human acceptance from a workflow state name alone. Completion maps to the declared `done` value.
 
-A team move is an authority-gated migration stop, not a normal lifecycle transition. Before any future authorised operation, `KI-HARNESS-FND-014` must re-resolve the current locator, team, workflow mapping, retained aliases, and fields that Linear may remap or clear, then obtain fresh authority for the new write set. This skill performs none of those reads or writes.
+A team move is an authority-gated migration stop, not a normal lifecycle transition. Before any future authorised operation, a remote executor must re-resolve the current locator, team, workflow mapping, retained aliases, and fields that Linear may remap or clear, then obtain fresh authority for the new write set. This skill performs none of those reads or writes.
 
 Linear archives closed inactive Issues automatically; it has no manual archive action. Deletion is distinct, recoverable only for Linear's documented retention period, and is not a KI prune operation. This adapter defines no archive, delete, or prune action.
 
@@ -39,4 +39,4 @@ The adapter projects Linear's provider-native Issue creation and update timestam
 
 ## Execution boundary
 
-Remote discovery, authentication, stale-read checks, conflict handling, and every mutation fail closed pending `KI-HARNESS-FND-014`. A future executor must re-read each Issue immediately before an approved write and stop on changed workflow metadata, concurrent human updates, missing permissions, uncertain current locator/team, or moved-field uncertainty.
+Remote discovery, authentication, stale-read checks, conflict handling, and every mutation fail closed. A future executor must re-read each Issue immediately before an approved write and stop on changed workflow metadata, concurrent human updates, missing permissions, uncertain current locator/team, or moved-field uncertainty.

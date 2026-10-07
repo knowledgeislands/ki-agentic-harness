@@ -14,7 +14,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 # KI GitHub Issues change management
 
-This skill configures and explains one GitHub repository's Issues as a future forward-work adapter. It does not mirror Issues into a local roadmap, resolve remote work for a process, or make remote writes. Until `KI-HARNESS-FND-014` delivers selected-adapter resolution and authorised remote execution, a shared process selecting this adapter stops rather than guessing a local path or GitHub operation.
+This skill configures and explains one GitHub repository's Issues as a future forward-work adapter. It does not mirror Issues into a local roadmap, resolve remote work for a process, or make remote writes. No remote executor is implemented, so a shared process selecting this adapter stops rather than guessing a local path or GitHub operation.
 
 `<owner>/<repository>#<number>` is the **current mutable locator**, not durable cross-transfer identity. GitHub can transfer an open Issue, changing its repository namespace and potentially its number; retain the prior locator as historical alias evidence and re-resolve the current locator before any future operation.
 
@@ -36,7 +36,7 @@ Run `ki repo conform --skill ki-work-github-issues --repo <repo> --dry-run`. It 
 
 ### Mode EDUCATE
 
-Explain the configuration, lifecycle metadata mapping, mutable-locator migration stop, and no-remote-execution boundary. Do not route a shared process through GitHub until `KI-HARNESS-FND-014` supplies the authorised resolver and executor.
+Explain the configuration, lifecycle metadata mapping, mutable-locator migration stop, and no-remote-execution boundary. Do not route a shared process through GitHub until an authorised remote resolver and executor exist.
 
 ### Mode REFRESH
 

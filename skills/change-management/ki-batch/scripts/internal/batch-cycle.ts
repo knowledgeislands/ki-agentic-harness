@@ -63,7 +63,7 @@ export const evaluateBatchCycle = ({
   if (!authorisation.timeboxActive) return stop('batch authorisation timebox has expired')
   if (adapter.kind === 'unresolved') return stop(`selected adapter is unresolved: ${adapter.reason}`)
   if (adapter.kind === 'remote-execution-unavailable')
-    return stop(`selected ${adapter.adapter} adapter cannot execute a batch pending KI-HARNESS-FND-014`)
+    return stop(`selected ${adapter.adapter} adapter cannot execute a batch`)
   if (
     !authorisation.runBinding ||
     authorisation.runBinding.approvedPayloadSha256 !== authorisation.approvedPayloadSha256

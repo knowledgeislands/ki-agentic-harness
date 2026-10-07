@@ -131,7 +131,7 @@ export const evaluateAcceptanceCycle = ({
   if (adapter.kind === 'remote-execution-unavailable')
     return {
       kind: 'stop',
-      reason: `selected ${adapter.adapter} adapter cannot accept pending KI-HARNESS-FND-014`,
+      reason: `selected ${adapter.adapter} adapter cannot accept`,
       writes: false
     }
   if (!item.canonical || !item.pathWithinRoot)

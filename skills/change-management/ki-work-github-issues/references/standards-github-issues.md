@@ -31,7 +31,7 @@ The root `[skills.ki-work-github-issues]` declaration is also the repository-loc
 
 An Issue is the remote record. Its body and comments are the intended locations for plan, delivery, and review evidence. Never infer readiness from `open` or acceptance from a merged pull request. `done` maps to the declared closed value; closed Issues are retained evidence. This adapter defines no archive or delete/prune operation.
 
-A transfer is an authority-gated migration stop, not a normal lifecycle transition. Before any future authorised operation, `KI-HARNESS-FND-014` must re-resolve the current repository and locator, verify the Issue is not a pull request, inspect the current lifecycle fields and retained aliases, identify transferred labels/milestones that did not survive, and obtain fresh authority for the new write set. This skill performs none of those reads or writes.
+A transfer is an authority-gated migration stop, not a normal lifecycle transition. Before any future authorised operation, a remote executor must re-resolve the current repository and locator, verify the Issue is not a pull request, inspect the current lifecycle fields and retained aliases, identify transferred labels/milestones that did not survive, and obtain fresh authority for the new write set. This skill performs none of those reads or writes.
 
 ## Timestamp projection
 
@@ -39,4 +39,4 @@ The adapter projects GitHub's provider-native Issue creation and update timestam
 
 ## Execution boundary
 
-Remote discovery, authentication, filtering, stale-read checks, conflict handling, and every mutation fail closed pending `KI-HARNESS-FND-014`. A future executor must re-read each Issue immediately before an approved write and stop on changed lifecycle metadata, conflicting human updates, missing permissions, an uncertain current locator, or an Issue response that represents a pull request.
+Remote discovery, authentication, filtering, stale-read checks, conflict handling, and every mutation fail closed. A future executor must re-read each Issue immediately before an approved write and stop on changed lifecycle metadata, conflicting human updates, missing permissions, an uncertain current locator, or an Issue response that represents a pull request.

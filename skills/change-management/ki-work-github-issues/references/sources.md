@@ -18,7 +18,7 @@ The adapter standard is normative for KI configuration, migration stops, and no-
 
 ## Last review
 
-On 2026-09-26, GitHub still documented dependencies and sub-issues as separate relationships, organisation issue fields and project fields as distinct metadata planes, transfers as redirecting old URLs while moving an open Issue, permanent Issue deletion as distinct from project-item archive, and REST Issues endpoints as able to return pull requests. The adapter therefore continues to treat displayed references as mutable locators and remains fail-closed pending `KI-HARNESS-FND-014`.
+On 2026-09-26, GitHub still documented dependencies and sub-issues as separate relationships, organisation issue fields and project fields as distinct metadata planes, transfers as redirecting old URLs while moving an open Issue, permanent Issue deletion as distinct from project-item archive, and REST Issues endpoints as able to return pull requests. The adapter therefore continues to treat displayed references as mutable locators and remains fail-closed.
 
 [dependencies]: https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies
 [subissues]: https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues

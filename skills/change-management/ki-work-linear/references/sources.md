@@ -14,7 +14,7 @@ The adapter standard is normative for KI configuration, migration stops, and no-
 
 ## Last review
 
-On 2026-09-26, Linear still documented team-specific workflows, a new issue identifier and URL after a team move, old-locator search and redirects, and destination-field remapping or removal. Archiving remains automatic, while deleted items remain recoverable for 30 days. The adapter therefore continues to treat displayed identifiers as mutable locators and remains fail-closed pending `KI-HARNESS-FND-014`.
+On 2026-09-26, Linear still documented team-specific workflows, a new issue identifier and URL after a team move, old-locator search and redirects, and destination-field remapping or removal. Archiving remains automatic, while deleted items remain recoverable for 30 days. The adapter therefore continues to treat displayed identifiers as mutable locators and remains fail-closed.
 
 [workflow]: https://linear.app/docs/configuring-workflows
 [move]: https://linear.app/docs/editing-issues

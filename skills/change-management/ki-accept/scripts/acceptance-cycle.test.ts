@@ -196,7 +196,7 @@ test('stops without writes for unsupported adapters, invalid evidence, and unapp
     evaluateAcceptanceCycle(input({ adapter: { kind: 'remote-execution-unavailable', adapter: 'linear' } }))
   ).toMatchObject({
     kind: 'stop',
-    reason: 'selected linear adapter cannot accept pending KI-HARNESS-FND-014',
+    reason: 'selected linear adapter cannot accept',
     writes: false
   })
   const delivery = input().item

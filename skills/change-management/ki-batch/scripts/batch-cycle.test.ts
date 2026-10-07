@@ -50,7 +50,7 @@ test('stops without writes when adapter, authority, or repository preflight is i
     evaluateBatchCycle(input({ adapter: { kind: 'remote-execution-unavailable', adapter: 'linear' } }))
   ).toMatchObject({
     kind: 'stop',
-    reason: 'selected linear adapter cannot execute a batch pending KI-HARNESS-FND-014',
+    reason: 'selected linear adapter cannot execute a batch',
     writes: false
   })
   expect(evaluateBatchCycle(input({ authorisation: { ...input().authorisation, runBinding: null } }))).toMatchObject({

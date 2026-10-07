@@ -55,7 +55,7 @@ export const evaluateImplementationCycle = ({
   if (adapter.kind === 'remote-execution-unavailable')
     return {
       kind: 'stop',
-      reason: `selected ${adapter.adapter} adapter cannot execute pending KI-HARNESS-FND-014`,
+      reason: `selected ${adapter.adapter} adapter cannot execute`,
       writes: false
     }
   if (!item.canonical)
