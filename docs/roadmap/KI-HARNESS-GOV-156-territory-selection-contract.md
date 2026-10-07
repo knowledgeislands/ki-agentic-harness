@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 3f1b5cf66efc9710251221573f47e0fbbeffd7d5
 created_at: 2026-10-07T20:07:41Z
-updated_at: 2026-10-07T22:06:43Z
+updated_at: 2026-10-07T22:29:21Z
 ---
 
 # Territory selection contract
@@ -30,7 +30,7 @@ No CLI implementation, other territory edits, live Paperclip changes, new group 
 
 ## Current state
 
-The shared selection contract and current consumers now derive repository scope from the Capital's ordered territory membership. The Agora capability is removed, its live consumers and generated publications are reconciled, and both committed caller pilots retain their verified behaviour. The published Streams design-artifact classification and widened delegation behaviour are integrated without rewriting foreign history. This record awaits human review; integration and publication remain with the coordinator.
+The approved rollout is published through fast-forward task-owned source integration. [KI v0.9.0](https://github.com/knowledgeislands/tools-ki/releases/tag/v0.9.0) and [mgit v0.16.0](https://github.com/knowledgeislands/tools-mgit/releases/tag/v0.16.0) are immutable and exact-tag installations pass. KI has signed archive/checksum verification, successful clean Linux installation and fresh local bootstrap of the pinned territory harness; mgit has absolute executable and manual proof. Installed callers agree for `-t ki -f tools-` and `--estate -f mcp-`, preserving membership and the ki/KIS identities. The automatic [KI formula handoff](https://github.com/knowledgeislands/homebrew-tap/pull/27) and [mgit formula handoff](https://github.com/knowledgeislands/homebrew-tap/pull/29) merged with required checks passing; both exact Homebrew upgrades and user versions are verified. Frozen design evidence, trade routing and Techne Programme Hold remain unchanged. All four records retain awaiting-review status; no acceptance or pruning occurred.
 
 ## Steps
 
@@ -110,11 +110,11 @@ Harness tests, TypeScript, generated rubric checks, focused ki-repo, ki-authorin
 
 Final coordinator integration starts at fetched published main and contains only the packet-owned contract and retirement commits. The combined harness passes 1,005 source tests, TypeScript, the whole registered-context audit, all required focused audits and eight generated-rubric checks against its deliberately selected source/runtime. No foreign unpublished ancestors are included.
 
+Final publication evidence: [KI v0.9.0](https://github.com/knowledgeislands/tools-ki/releases/tag/v0.9.0) and [mgit v0.16.0](https://github.com/knowledgeislands/tools-mgit/releases/tag/v0.16.0). [Verified source CI](https://github.com/knowledgeislands/ki-agentic-harness/actions/runs/37694841052) passed. Both automatic Homebrew formula handoffs merged with passing required checks, exact versions were upgraded, and read-only installed caller parity passed for both approved scopes. Immutable baseline records and original delivery packets remain unchanged.
+
 ### Outstanding concerns
 
-No required gate remains failing. Existing whole-audit warnings are recorded separately and remain outside this unit. Coordinator integration, final publication and Kris's human acceptance remain outstanding.
-
-Publication is held with the tools because the KI clean-install harness pin predates this contract and its exact acquisition needs a narrow authority addition. Source verification is complete; human acceptance remains outstanding.
+Human acceptance remains outstanding. No mandatory rollout gate is failing or unchecked. Work remains awaiting review; no record was accepted or pruned. Foreign primary-checkout changes and historical user state are preserved.
 
 ### Post-change review
 
