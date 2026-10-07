@@ -12,4 +12,7 @@ export type DelegationRubricContext = {
   packets: {
     outcomes: readonly AuditOutcome[]
   }
+  footers: {
+    outcomes: readonly AuditOutcome[]
+  }
 }

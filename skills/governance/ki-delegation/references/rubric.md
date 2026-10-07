@@ -1,6 +1,6 @@
 <!-- GENERATED FILE: produced by `ki dev skill rubric`. Do not hand-edit; edit scripts/rubric/items/, then rerun `ki dev skill rubric <skill> --write`. -->
 
-# Generated rubric — delegation packets
+# Generated rubric — delegation packets and background runs
 
 > **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `ki dev skill rubric ki-delegation --write`.
 
@@ -9,6 +9,7 @@ Line-by-line criteria for auditing ki-delegation. Classifications are derived fr
 ## Contents
 
 - [PACKET — delegation packets](#packet--delegation-packets)
+- [RUN — background runs](#run--background-runs)
 
 ## PACKET — delegation packets
 
@@ -22,3 +23,17 @@ Opted-in durable delegation-packet structure and governance quality.
   - _Review prompt:_ Does the work need a durable packet rather than ordinary runtime delegation, and are the worker inputs, scope, authority, isolation, locked decisions, escalation boundaries, return contract, and verification gates appropriate for that high-risk handoff?
   - _Outcomes:_ conforming; revise packet; escalate to planner
   - _Conforming guidance:_ Use a packet only when its durable authority and audit evidence add value beyond the runtime brief. Record a packet revision only after the responsible authority chooses the worker scope, isolation, locked decisions, escalation boundary, return evidence, and verification gate; leave worker selection, model choice, scheduling, and integration to the active process and runtime.
+
+## RUN — background runs
+
+→ [standard](standards-background-runs.md)
+
+Shipped authority footers and the quality of background-run prompts.
+
+- **RUN-1 [M] — authority footers grant exactly their tier** — Each shipped authority footer exists, carries the shared prohibitions, includes every grant of its tier and below, and grants nothing above it. (standards-background-runs.md)
+  - _Remediation:_ diagnostic — Restore the footer wording in the canonical harness skill so each tier grants exactly what the standard lists.
+- **RUN-2 [J] — run prompts are cold-agent ready and authority-bounded** — A background-run prompt cites the numbered owner decision that authorises it, has numbered steps, a verification step and a report path, forbids background subagents and ending while waiting, and ends with the lowest sufficient authority footer. (standards-background-runs.md)
+  - _Evidence scope:_ Background-run prompts, decisions logs and run reports the delegating owner selects for review.
+  - _Review prompt:_ Does each prompt cite a real numbered decision, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report?
+  - _Outcomes:_ conforming; revise prompt; escalate to owner
+  - _Conforming guidance:_ Revise a prompt only within the authority its cited decision grants; escalate to the owner when the work needs a higher tier or a decision that does not exist yet.

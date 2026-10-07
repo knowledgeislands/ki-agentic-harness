@@ -14,7 +14,7 @@ A delegation packet is an explicit, durable brief for high-risk delegated work i
 
 It translates a runtime subagent brief into a reviewable artifact before workers are dispatched.
 
-Use it only when mutation risk, cross-agent handoff, or later audit need makes durable authority and escalation evidence valuable. It is not required for routine runtime delegation, and it does not replace the work item’s plan, authority, baseline, review packet, or acceptance decision. The standard defines the durable packet; the executing runtime and process supply worker creation, task selection, sandbox, permissions, model choice, scheduling, and result integration.
+Add a packet when mutation risk, cross-agent handoff, or later audit need makes durable authority and escalation evidence valuable. Every delegated run, routine or high-risk, follows the [background-run standard](standards-background-runs.md); the packet adds the durable record on top of it. A packet does not replace the work item’s plan, authority, baseline, review packet, or acceptance decision. The standard defines the durable packet; the executing runtime and process supply worker creation, task selection, sandbox, permissions, model choice, scheduling, and result integration.
 
 ## Packet shape
 

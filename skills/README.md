@@ -375,7 +375,7 @@ Create or audit typed KI Decision Records for durable rationale and authority. U
 
 #### `ki-delegation`
 
-Govern durable packets for approved high-risk agent delegation: authority, isolation, locked decisions, escalation, verification, and return. Use when a cross-agent brief must survive a handoff; process skills own execution and `ki-trades` cross-repository transfer.
+Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

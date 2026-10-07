@@ -5,23 +5,24 @@ ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern durable packets for approved high-risk agent delegation: authority, isolation, locked decisions,
-  escalation, verification, and return. Use when a cross-agent brief must survive a handoff; process skills
-  own execution and `ki-trades` cross-repository transfer.
+  Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers,
+  decisions log, coordination, monitoring) and durable packets for approved high-risk handoffs. Use when
+  delegating to background agents or writing a delegation brief; `ki agent` launches runs.
 argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | refresh'
 ---
 
 # Knowledge Islands delegation standard
 
-`ki-delegation` owns the portable, durable governance delta for an explicit delegation packet embedded in an approved governed work record.
+`ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-It does not select work, authorise execution, choose a model, spawn a worker, accept results, or transfer work between repositories.
+- **Background runs** - routine delegation to detached agents: detachment, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, monitoring, and low-noise reporting. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
+- **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
-Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet, [the generated rubric](references/rubric.md) for its mechanical and judgment criteria, and [the sources](references/sources.md) when refreshing the standard.
+[The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
 
-Use a packet only when an approved delegated change has enough mutation risk, cross-agent handoff, or later audit need that its fixed decisions and authority boundaries must be durable. Do not create one for ordinary runtime delegation merely because a task is independent or bounded.
+It does not select work, authorise execution, choose a model, accept results, or transfer work between repositories. `ki agent` in `tools-ki` is the reference launcher and holds the runtime adapters; this skill names no runtime-specific mechanics.
 
-This standard supplies the durable packet contract to an executing process such as `ki-implement`; it is not an execution command. Runtime and process owners decide whether to delegate, create workers, select models, schedule capacity, and integrate results.
+Use a packet only when an approved delegated change has enough mutation risk, cross-agent handoff, or later audit need that its fixed decisions and authority boundaries must be durable. Every background run, with or without a packet, follows the background-run standard.
 
 ## Operating modes
 
@@ -33,9 +34,9 @@ Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
 
 Run `ki repo audit --skill ki-delegation --repo <repo>`.
 
-The native rubric inspects only durable delegation packets: a roadmap record opts in by carrying `## Delegation` with both `### Locked decisions` and `### Escalate` sections plus a worker brief.
+The native rubric checks that this skill's authority footers exist and grant exactly their tier, then reviews run prompts against the background-run standard.
 
-It checks the mechanically legible packet shape, then reviews whether packet activation, locked decisions, authority, isolation, escalation boundaries, return contract, and verification gates are actually sound.
+For durable packets, a roadmap record opts in by carrying `## Delegation` with both `### Locked decisions` and `### Escalate` sections plus a worker brief. The rubric checks the mechanically legible packet shape, then reviews whether packet activation, locked decisions, authority, isolation, escalation boundaries, return contract, and verification gates are actually sound.
 
 Ordinary `## Delegation` plan notes without the packet marker remain under `ki-work-roadmap` and are not a failure here.
 
@@ -45,13 +46,15 @@ Run `ki repo conform --skill ki-delegation --repo <repo> --dry-run` before apply
 
 CONFORM makes no authored packet-content change.
 
-It never creates a packet, chooses a worker or model, invents a locked decision, alters an escalation boundary, or grants execution authority.
+It never creates a packet or run prompt, chooses a worker or model, invents a locked decision, alters an escalation boundary, or grants execution authority.
 
 ### Mode EDUCATE
 
+For a background run, explain the run packet and prompt shape, and offer `ki agent new` for a prompt skeleton with the right footer.
+
 For one explicitly selected approved work record, explain or add the packet shape from [the delegation-packet standard](references/standards-delegation-packets.md).
 
-Ask the planner to supply every semantic value; EDUCATE never guesses the delegation design.
+Ask the delegating owner or planner to supply every semantic value; EDUCATE never guesses the delegation design or its authority tier.
 
 ### Mode REFRESH
 
@@ -59,13 +62,14 @@ Ask the planner to supply every semantic value; EDUCATE never guesses the delega
 
 When invoked from an installed copy, stop and redirect to the harness.
 
-Read [the sources](references/sources.md), compare durable delegation practice and its sources against [the standard](references/standards-delegation-packets.md) and rubric, then update the source review in the same commit as any normative change.
+Read [the sources](references/sources.md), compare delegation practice and its sources against both standards and the rubric, then update the source review in the same commit as any normative change.
 
 ### Mode HELP
 
-Explain the durable-packet activation boundary, the packet shape, runtime and process ownership of ordinary subagent execution, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, Paperclip delegation in `ki-agent-coordination-paperclip`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
 
 ## Notes
 
-- A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle or a replacement for ordinary runtime delegation guidance.
+- A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
+- A run's state directory is runtime state, not a `ki-checkpoint` checkpoint or a Decision Record.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

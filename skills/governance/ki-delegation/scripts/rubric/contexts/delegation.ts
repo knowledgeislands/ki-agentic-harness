@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import type { AuditOutcome, RubricContextOptions, RubricSession } from '../../shared/rubric.ts'
 import type { DelegationRubricContext } from '../types.ts'
+import { footerOutcomes } from './footers.ts'
 
 const REQUIRED_SECTIONS = ['Locked decisions', 'Escalate']
 const REQUIRED_WORKER_FIELDS = [
@@ -67,9 +68,10 @@ const packetOutcomes = (subject: string, section: string): AuditOutcome[] => {
     : [{ status: 'PASS', message: 'Delegation packet has the required durable brief structure.', subject }]
 }
 
-export const createDelegationSession = ({
-  repository
-}: RubricContextOptions): RubricSession<DelegationRubricContext> => {
+export const createDelegationSession = (
+  { repository }: RubricContextOptions,
+  assetsDirectory?: string
+): RubricSession<DelegationRubricContext> => {
   const root = resolve(repository)
   const outcomes: AuditOutcome[] = []
   const presentAdapters: string[] = []
@@ -103,10 +105,13 @@ export const createDelegationSession = ({
   const context: DelegationRubricContext = {
     packets: {
       outcomes
+    },
+    footers: {
+      outcomes: footerOutcomes(assetsDirectory)
     }
   }
   return {
-    subjects: [{ families: ['PACKET'], context: () => context }],
+    subjects: [{ families: ['PACKET', 'RUN'], context: () => context }],
     proposal: () => ({ writes: [] })
   }
 }

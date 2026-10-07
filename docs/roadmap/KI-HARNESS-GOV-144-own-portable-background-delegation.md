@@ -71,7 +71,7 @@ Out of scope:
 
 - [ ] Rescope `ki-delegation`: description, scope, triggers and modes cover two contracts; retire the routine-delegation exclusion.
 - [ ] Add `references/standards-background-runs.md` with detachment, run packet, prompt shape, authority tiers, decisions log, coordination, monitoring and reporting.
-- [ ] Ship generalised authority footers `references/footers/rules-{none,push,prune,release}.md` for `ki agent --rules`.
+- [ ] Ship generalised authority footers `assets/rules-{none,push,prune,release}.md` and the `assets/run-prompt.md` skeleton for `ki agent --rules`.
 - [ ] Add RUN rubric items: a mechanical check that every footer exists and states its tier's grants and prohibitions, plus a judgment item for run prompts; regenerate the rubric and update the sources review.
 - [ ] Deliver `ki agent` in `tools-ki` (separate repository, own commits) and release it.
 - [ ] Reduce the chezmoi interim to a pointer.
@@ -81,7 +81,7 @@ Out of scope:
 - `skills/governance/ki-delegation/SKILL.md`
 - `skills/governance/ki-delegation/references/standards-delegation-packets.md`
 - `skills/governance/ki-delegation/references/standards-background-runs.md`
-- `skills/governance/ki-delegation/references/footers/rules-*.md`
+- `skills/governance/ki-delegation/assets/rules-*.md` and `assets/run-prompt.md`
 - `skills/governance/ki-delegation/references/rubric.md` and `references/sources.md`
 - `skills/governance/ki-delegation/scripts/rubric/` items, contexts and tests
 

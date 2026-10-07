@@ -1,0 +1,111 @@
+# Background-run standard
+
+## Contents
+
+- [Scope](#scope)
+- [Detachment](#detachment)
+- [Run packet](#run-packet)
+- [Prompt shape](#prompt-shape)
+- [Authority tiers](#authority-tiers)
+- [Decisions log](#decisions-log)
+- [Coordination](#coordination)
+- [Monitoring](#monitoring)
+- [Reporting](#reporting)
+- [Reference launcher](#reference-launcher)
+- [Mechanical boundary](#mechanical-boundary)
+
+## Scope
+
+A background run is routine delegation of substantive work to one or more detached agents. Anyone running Knowledge Islands work through an agent uses this contract, whatever the runtime.
+
+It complements the [delegation-packet standard](standards-delegation-packets.md): a packet makes an approved high-risk handoff durable inside a work record, while a background run governs how any delegated agent is launched, reports, coordinates and is watched. A high-risk run carries both.
+
+Process skills still select, authorise, plan and accept work. Paperclip-coordinated delegation follows `ki-agent-coordination-paperclip`; subagent role definitions follow `ki-subagents`.
+
+## Detachment
+
+Launch every background agent detached from the launching session, in its own session, with standard input from `/dev/null` and output to its log. It must survive an interrupt of the launching session.
+
+An in-session background subagent runs under the turn that launched it and dies when that turn is interrupted, even when it still looks live. Use it only for work that may be lost.
+
+## Run packet
+
+A run is a named set of agents sharing one state directory. Each agent has five files:
+
+| File | Content |
+| --- | --- |
+| `<name>.prompt.md` | The prompt as launched, with its authority footer and progress protocol |
+| `<name>.status` | One line, `HH:MM <TZ> - plain-language activity`, in the owner's local time |
+| `<name>.pid` | The detached process identifier |
+| `<name>.log` | The runtime's combined output |
+| `<name>.report.md` | The final report |
+
+The agent overwrites its status at each change of activity and at least every two minutes, writes its report, then writes `DONE` as the last line of its status. `DONE` is the only completion signal.
+
+The semantics are portable; the file names are the reference layout the launcher writes.
+
+## Prompt shape
+
+A run prompt is cold-agent ready. It contains, in order:
+
+1. the task, citing the numbered owner decision that authorises it;
+2. numbered steps;
+3. a verification step;
+4. the report path;
+5. the instructions "Do not use background subagents." and "Never end your session while waiting.";
+6. one authority footer, appended last.
+
+A long wait belongs in the foreground: the agent checks the condition every two minutes and updates its status meanwhile.
+
+## Authority tiers
+
+Each prompt ends with exactly one footer from this skill's `assets/`. Footers are cumulative and generalised; the task supplies the specifics.
+
+| Tier | Footer | Adds |
+| --- | --- | --- |
+| none | [rules-none.md](../assets/rules-none.md) | Local commits only; no remote call of any kind |
+| push | [rules-push.md](../assets/rules-push.md) | `git fetch` and fast-forward `git push` of the agent's own commits |
+| prune | [rules-prune.md](../assets/rules-prune.md) | Deleting `done` or `cancelled` work records the cited decision approves |
+| release | [rules-release.md](../assets/rules-release.md) | Only the release calls the task names, one by one |
+
+No grant is implied. Every remote call an agent may make is named explicitly, either in its footer or in the task. A higher tier needs a cited owner decision. No footer authorises accepting work, force-pushing, `--no-verify`, handling secrets, or pushing commits the agent did not make.
+
+Authority limits stay consistent with `ki-agent-coordination-paperclip`, which owns Paperclip delivery and integration grants.
+
+## Decisions log
+
+Each owner approval for delegated work becomes one numbered, dated entry in the run's decisions log, quoted in the owner's own words where possible. Numbers never repeat. A prompt cites its authority by number ("Decision 18"), never by paraphrase alone.
+
+The log is run state, not a Decision Record. A decision that outlives the work goes to a Decision Record through `ki-decision-records`.
+
+## Coordination
+
+- **Ordering:** an agent that depends on another waits until that agent's status ends `DONE`, checking every two minutes.
+- **Isolation:** parallel agents in one repository each use their own Git worktree. A lone agent may use the primary checkout.
+- **Commits:** pull with `--ff-only` before committing, commit only explicit paths, and leave other uncommitted changes untouched, following `ki-git`.
+- **Pushing:** never push someone else's unpushed commits without asking the owner.
+- **Ambiguity:** stop and report rather than guess.
+
+## Monitoring
+
+The launching session stays non-blocking. One monitor per run prints a single line every two minutes listing each agent's latest status, and ends with `ALL FINISHED` once no agent is still running.
+
+An agent whose process has exited without `DONE` is flagged, never counted as finished.
+
+After an interrupt, check the agent processes before saying anything is running. Relaunch a lost agent rather than wait for a notification that will not come.
+
+## Reporting
+
+The owner sees only status one-liners and each agent's final report. Tooling output, commit identifiers and step narration stay in the log and report, unless the owner asks.
+
+The report has three parts: **Done** (one line per outcome), **Failed** (if any), and **Needs \<owner\>** (decisions or actions). Omit an empty part. Verbosity follows the owner's communication level in their instructions; this standard does not restate it.
+
+## Reference launcher
+
+`ki agent` in `tools-ki` is the reference launcher. It writes the run packet under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, and provides `status` and `watch`. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md).
+
+Runtime mechanics belong in the launcher, not in this skill or in personal setup.
+
+## Mechanical boundary
+
+The native rubric checks that each authority footer exists, carries the shared prohibitions, and grants exactly its tier. It cannot judge whether a prompt cites a real decision, whether its steps are sufficient, or whether a tier is warranted; the RUN judgment item reviews those.
