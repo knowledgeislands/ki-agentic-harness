@@ -6,12 +6,13 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: governance
-status: triage
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T22:54:11Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T20:45:00Z
 ---
 
 # KI-HARNESS-GOV-144: Own portable background delegation
@@ -20,7 +21,7 @@ updated_at: 2026-10-07T14:00:01Z
 
 Anyone running Knowledge Islands work through an agent can delegate substantive work to detached background agents by following one runtime-neutral contract, with each supported agentic system adding only a minimal shim for how it launches and monitors those agents.
 
-The record was captured with `ki-delegation` as that owner, but `ki-delegation` currently excludes routine runtime delegation. Which skill owns the contract is an open decision reserved to Kris; see `### Scope decision gate` under Discussion.
+Kris decided the owner on 2026-10-07: `ki-delegation` widens to carry two contracts, the existing durable high-risk packet and a routine background-run contract. The runtime shims live in a runtime-neutral `ki agent` command in `tools-ki`, not in agent-specific or host-specific setup. See `### Scope decision gate` under Discussion.
 
 ## Context
 
@@ -50,15 +51,67 @@ When this record lands, `private_delegation.md` is removed or reduced to a point
 
 In scope:
 
-- Give one skill, chosen by Kris at the scope decision gate, runtime-neutral ownership for all Knowledge Islands use of: detached agents that survive an interrupt; the prompt, status, report and `DONE` packet contract; the non-blocking monitor cadence and its exited-without-`DONE` flag; the low-noise reporting shape as it applies to delegated agents; and agent authority limits.
-- Define a minimal shim per bound agentic system - at least `claude-code` and `chatgpt-codex`, and `claude-desktop` if it can launch detached agents at all - carrying only runtime-specific launch and monitor mechanics, following the existing runtime-binding pattern.
-- Remove or reduce the chezmoi interim to a pointer.
+- Give `ki-delegation` a second, runtime-neutral contract for routine background runs: detached agents that survive an interrupt; the run packet (prompt, status, pid, log, report, `DONE`); prompt shape; generalised authority tiers and their reusable footers; the numbered decisions log; coordination between agents; the non-blocking monitor and its exited-without-`DONE` flag; and low-noise reporting. Retire the "not required for routine runtime delegation" rule.
+- Name `ki agent` in `tools-ki` as the reference launcher; it carries the Claude Code and Codex adapters. `claude-desktop` cannot launch detached agents and gets no adapter.
+- Reduce the chezmoi interim `delegation.md` to a pointer. `claude-bg` stays until live runs end, then retires.
 
 Out of scope:
 
 - Paperclip-coordinated delegation, which `ki-agent-coordination-paperclip` owns.
 - Subagent role definition, which `ki-subagents` and its runtime projections own.
 - Selecting, authorising or accepting work, which the process skills own.
+- The `tools-ki` command itself, which `tools-ki` owns; this record names it as the reference launcher and ships the footers it appends.
+
+## Current state
+
+- `skills/governance/ki-delegation` owns only the durable high-risk packet, and its standard says the packet "is not required for routine runtime delegation".
+- The working practice lives in chezmoi: `dot_claude/private_delegation.md`, the `bin/executable_claude-bg` launcher, and rollout-specific rules footers under `~/.local/state/claude-bg/gov-020/src/`.
+
+## Steps
+
+- [ ] Rescope `ki-delegation`: description, scope, triggers and modes cover two contracts; retire the routine-delegation exclusion.
+- [ ] Add `references/standards-background-runs.md` with detachment, run packet, prompt shape, authority tiers, decisions log, coordination, monitoring and reporting.
+- [ ] Ship generalised authority footers `references/footers/rules-{none,push,prune,release}.md` for `ki agent --rules`.
+- [ ] Add RUN rubric items: a mechanical check that every footer exists and states its tier's grants and prohibitions, plus a judgment item for run prompts; regenerate the rubric and update the sources review.
+- [ ] Deliver `ki agent` in `tools-ki` (separate repository, own commits) and release it.
+- [ ] Reduce the chezmoi interim to a pointer.
+
+## Files touched
+
+- `skills/governance/ki-delegation/SKILL.md`
+- `skills/governance/ki-delegation/references/standards-delegation-packets.md`
+- `skills/governance/ki-delegation/references/standards-background-runs.md`
+- `skills/governance/ki-delegation/references/footers/rules-*.md`
+- `skills/governance/ki-delegation/references/rubric.md` and `references/sources.md`
+- `skills/governance/ki-delegation/scripts/rubric/` items, contexts and tests
+
+## Verify
+
+- `bun run test` passes and `bunx tsc --noEmit` is clean.
+- `ki repo audit --skill ki-delegation` and `ki dev skill rubric ki-delegation` pass.
+- An end-to-end `ki agent launch` of a trivial Claude Code agent writes a status, a report and `DONE`, and `ki agent status` and `watch` show it finished.
+
+## Dependencies / blocks
+
+None. The `tools-ki` release pins the harness commit that ships the footers.
+
+## Documentation impact
+
+### Decision Records
+
+None; the decision is recorded below and the standard states the current contract.
+
+### Specifications
+
+None.
+
+### Guides
+
+`tools-ki` documents `ki agent` in its man page and user guide.
+
+### Roadmap
+
+None.
 
 ## Discussion
 
@@ -91,8 +144,12 @@ Realistic resolutions, not chosen here:
 
 Kris may also refine one of these or choose a different owner. Record his decision and its date here; if it outlives the item, route it to a Decision Record.
 
+**Decision (Kris, 2026-10-07, state-of-play Decision 18):** option 1, widen `ki-delegation`. It gets two contracts, the existing high-risk packet and a routine background-run contract, and the "not required for routine runtime delegation" rule is retired. Delegation lives in skills and tools, never in agent-specific or host-specific setup: the launcher becomes a runtime-neutral `ki agent` command in `tools-ki` with the Claude Code and Codex adapters inside it. The chezmoi interim shrinks to a pointer and then retires. Kris also asked for immediate adoption into Now and delivery.
+
 ### Open questions
 
-- Should the execution packet's file layout (`<name>.prompt.md`, `.status`, `.report.md`, `.pid`) be portable, or only its semantics?
-- Does a Codex shim need a detachment mechanism of its own, or can one shared launcher serve both runtimes?
-- Should `claude-bg` move into the harness or `tools-ki` as the Claude Code shim, or stay a personal chezmoi script?
+Resolved by Decision 18:
+
+- The run packet's semantics are portable; its file names (`<name>.prompt.md`, `.status`, `.pid`, `.log`, `.report.md`) are the reference layout `ki agent` writes.
+- One shared launcher serves both runtimes; only the command line differs per adapter.
+- `claude-bg` moves into `tools-ki` as `ki agent` and then retires.
