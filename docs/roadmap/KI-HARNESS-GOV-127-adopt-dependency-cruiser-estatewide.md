@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: e30948ad1e45835c5d2a6140ff5306778a32b9d2
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T17:25:00Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -34,6 +34,8 @@ In scope: the portable `ki-engineering` policy and one mechanical audit criterio
 Out of scope: each repository's own adoption, which follows as a separate receiver-owned trade per repository; repository-specific boundary directions, which remain with each source owner, so the harness must not invent them from folder names; any CONFORM action that writes a ruleset; and imposing the tool on non-TypeScript repositories without a separate applicability decision. A zero-module cruise is never passing evidence.
 
 ## Current state
+
+**Trades are on hold (2026-10-07).** Decision 11 of the state-of-play design stops new trades. Where the steps below raise a `ki-trades` hand-off, record the work directly in the receiving repository's roadmap instead.
 
 `DESIGN-2 [J]` in `skills/governance/ki-engineering/scripts/rubric/items/design.ts` asks the judgment question about stated and enforced boundaries; no mechanical criterion inspects a `.dependency-cruiser.ts`, and `DesignRubricContext` in `scripts/rubric/contexts/engineering.ts` is empty. This repository is on TypeScript 7 (`package.json`), which dependency-cruiser does not support, so its own adoption needs the separate install root the standard already prescribes. `mcp-acquire-whatsapp` provides the working pattern: `.dependency-cruiser.ts`, `tooling/boundaries/package.json` pinning `dependency-cruiser` with TypeScript 6, `scripts/boundaries.ts` with a module floor, and `scripts/boundaries.test.ts` in the suite.
 

@@ -6,13 +6,13 @@ kind: deliver
 purpose: governance
 project: baseline-rollout
 component: keystone
-horizon: now
-status: ready
+status: cancelled
+resolution: obsolete
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-03T02:26:59Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T17:20:40Z
 ---
 
 # KI-HARNESS-REV-011: Review harness automation
@@ -87,6 +87,12 @@ None.
 ### Roadmap
 
 Possible receiver work in other compatible source Harnesses, captured through `ki-next`.
+
+## Cancelled
+
+Approved by Kris on 2026-10-07 under decision 13 of the state-of-play design ("Yes please, lets reduce stuff": cancel and prune obsolete or ownerless records).
+
+Its recurring-review criterion is already met by housekeeping template HK-001 (monthly engineering alignment). Prompting every skill refresh now belongs to the skill-refresh Project in `knowledgeislands/ki-arcadia-principal` (`Streams/Projects/skill-refresh.md`). No outstanding changes.
 
 ## Discussion
 

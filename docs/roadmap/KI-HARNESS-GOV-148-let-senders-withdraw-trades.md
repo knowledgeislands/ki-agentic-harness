@@ -6,12 +6,13 @@ kind: deliver
 purpose: capability
 project: territories-and-trades
 component: governance
-status: triage
+status: cancelled
+resolution: obsolete
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-06T23:49:32Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-07T17:20:40Z
 ---
 
 # KI-HARNESS-GOV-148: Let senders withdraw trades
@@ -44,6 +45,12 @@ Out of scope:
 ## Dependencies / blocks
 
 Blocks `tools-ki` [KI-TOOL-CLI-111](https://github.com/knowledgeislands/tools-ki/blob/main/docs/roadmap/KI-TOOL-CLI-111-surface-undeliverable-trades.md) as build order: its withdraw command implements semantics this standard must define first. `KI-TOOL-CLI-111` records the reciprocal blocked-by. The link is stated here rather than in `blocks`, because those fields hold only identifiers that resolve in this roadmap.
+
+## Cancelled
+
+Approved by Kris on 2026-10-07 under decision 13 of the state-of-play design ("Yes please, lets reduce stuff": cancel and prune obsolete or ownerless records).
+
+Trades are on hold (decision 11), and sender-side withdrawal overlaps KI-TOOL-CLI-111 in `knowledgeislands/tools-ki`, cancelled with it. The trades hold review due 2026-10-14 (HOLD-1 in `ki-trades`) decides whether trades return; any withdrawal design is re-specified then. No outstanding changes.
 
 ## Discussion
 
