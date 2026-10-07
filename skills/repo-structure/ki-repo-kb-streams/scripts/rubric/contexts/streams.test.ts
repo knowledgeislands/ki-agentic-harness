@@ -368,6 +368,26 @@ describe('ki-repo-kb-streams session', () => {
     )
   })
 
+  test('reads a digit-leading area counter but fails an all-digit one', () => {
+    const root = targetFixture()
+    const ledger = join(root, 'Streams', 'Roadmap', '_ISSUES.md')
+    const canonical =
+      "---\nareas: { 5GE: 12, ENG: 3 }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. Reserve a number by committing this ledger's advance on its own before writing the record. Areas are not mutable themes or groups.\n\n- `5GE` reserves through `012`.\n- `ENG` reserves through `003`.\n"
+    const audit = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).issueLedger
+
+    writeFileSync(ledger, canonical)
+    expect(audit().map((evidence) => evidence.level)).toEqual(['PASS'])
+
+    writeFileSync(ledger, canonical.replaceAll('5GE', '555'))
+    expect(audit()).toEqual([
+      {
+        level: 'FAIL',
+        message: 'The issue ledger must open with last_id or an areas map of high-water marks.',
+        subject: 'Streams/Roadmap/_ISSUES.md'
+      }
+    ])
+  })
+
   test('fails registry notes that list work records or carry an Update section, but not Decision Records', () => {
     const root = targetFixture()
     mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })

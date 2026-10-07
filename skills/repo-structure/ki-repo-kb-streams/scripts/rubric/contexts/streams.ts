@@ -8,6 +8,7 @@ import type {
   RubricSession,
   ViolationLevel
 } from '../../shared/rubric.ts'
+import { SCOPE_SEGMENT } from '../../shared/work-identifiers.ts'
 
 const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Initiatives'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
@@ -247,6 +248,8 @@ const canonicalLedger = (allocation: number | ReadonlyMap<string, number>): stri
   return `---\nareas: { ${values} }\n---\n\n# Roadmap issue ledger\n\nThis ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. ${RESERVATION_ORDER} Areas are not mutable themes or groups.\n\n${detail}\n`
 }
 
+const LEDGER_AREA_ENTRY = new RegExp(`^(${SCOPE_SEGMENT}):\\s*(\\d+)$`)
+
 const ledgerAllocation = (text: string): number | ReadonlyMap<string, number> | undefined => {
   const lastId = /^---\r?\nlast_id:\s*(\d+)\s*\r?\n---\r?\n/.exec(text)
   if (lastId) return Number.parseInt(lastId[1], 10)
@@ -254,7 +257,7 @@ const ledgerAllocation = (text: string): number | ReadonlyMap<string, number> | 
   if (!areas) return undefined
   const allocation = new Map<string, number>()
   for (const entry of areas[1].split(',')) {
-    const pair = /^([A-Z][A-Z0-9]*):\s*(\d+)$/.exec(entry.trim())
+    const pair = LEDGER_AREA_ENTRY.exec(entry.trim())
     if (!pair || allocation.has(pair[1])) return undefined
     allocation.set(pair[1], Number.parseInt(pair[2], 10))
   }

@@ -2,6 +2,7 @@
 /** Mechanical auditor for flat non-KB repository work items. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
+import { AREA_CODE, SCOPE_SEGMENT } from '../../shared/work-identifiers.ts'
 import {
   isAgoraRepository,
   loadProjectRegistry,
@@ -55,7 +56,7 @@ export const LEGACY_HORIZONS = ['waiting-for', 'parked', 'triage'] as const
 
 const ID_RE = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
 const FILE_RE = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
-const AREA_RE = /^[A-Z][A-Z0-9]*$/
+const LEDGER_AREA_ENTRY = new RegExp(`^(${SCOPE_SEGMENT}):\\s*(\\d+)$`)
 const AREA_TITLE_RE = /^[A-Z0-9]\S*(?: \S+)*$/
 const COMMIT_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 const TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
@@ -316,7 +317,10 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
     const configuredAreas = values?.areas
     const areas = new Map<string, string | undefined>()
     if (Array.isArray(configuredAreas)) {
-      if (!configuredAreas.length || configuredAreas.some((area) => typeof area !== 'string' || !AREA_RE.test(area))) {
+      if (
+        !configuredAreas.length ||
+        configuredAreas.some((area) => typeof area !== 'string' || !AREA_CODE.test(area))
+      ) {
         add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must map uppercase area codes to titles', STANDARD, '.ki.toml')
         return undefined
       }
@@ -333,8 +337,14 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
         return undefined
       }
       for (const [area, title] of Object.entries(configuredAreas)) {
-        if (!AREA_RE.test(area)) {
-          add('FAIL', 'ROAD-6', 'roadmap area codes must be uppercase', STANDARD, '.ki.toml')
+        if (!AREA_CODE.test(area)) {
+          add(
+            'FAIL',
+            'ROAD-6',
+            'roadmap area codes must be uppercase alphanumeric with at least one letter',
+            STANDARD,
+            '.ki.toml'
+          )
           return undefined
         }
         if (typeof title !== 'string' || !AREA_TITLE_RE.test(title)) {
@@ -1027,7 +1037,7 @@ const parseLedgerAllocation = (text: string): LedgerAllocation | undefined => {
   if (!areaMatch) return undefined
   const allocation = new Map<string, number>()
   for (const entry of areaMatch[1].split(',')) {
-    const pair = entry.trim().match(/^([A-Z][A-Z0-9]*):\s*(\d+)$/)
+    const pair = entry.trim().match(LEDGER_AREA_ENTRY)
     if (!pair || allocation.has(pair[1])) return undefined
     const lastId = Number.parseInt(pair[2], 10)
     if (!Number.isSafeInteger(lastId) || lastId < 0) return undefined

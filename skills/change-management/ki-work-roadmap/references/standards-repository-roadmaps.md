@@ -47,7 +47,7 @@ The item identifier is globally unique within its repository. A repository choos
 
 `<REPO>` is the stable uppercase alphanumeric `repo_code` in the `ki-repo` table and matches `[A-Z0-9][A-Z0-9-]{1,23}`.
 
-`<AREA>` is an uppercase code for a fixed issuing namespace. It is selected when the item opens, recorded as `area:` frontmatter, and never changes. It is not a mutable theme or group.
+`<AREA>` is an uppercase alphanumeric code for a fixed issuing namespace. It matches the Decision Record scope-segment grammar `[A-Z0-9]*[A-Z][A-Z0-9]*`, so it may lead with a digit, as in `5GE`, but must contain at least one letter. `scripts/shared/work-identifiers.ts` is its single definition. It is selected when the item opens, recorded as `area:` frontmatter, and never changes. It is not a mutable theme or group.
 
 `<NNN>` is a zero-padded serial allocated from `001`. In repository-wide mode it is one repository sequence. In fixed-area mode it is one sequence per area. Never lower a high-water mark, fill a gap, or reuse a number after pruning. An identifier proposed during planning is provisional, not reserved. A serial becomes reserved only when its advanced ledger is committed, and the commit that advances the ledger precedes the commit that writes the record. The writer must re-read the applicable `_ISSUES.md` high-water mark immediately before allocating, allocate one greater than that current value, and commit the advance before the record exists. If the ledger changed since inspection, discard the proposed serial and reallocate from the latest value. [Number reservation](#number-reservation) owns the ordering and the write locus it depends on.
 

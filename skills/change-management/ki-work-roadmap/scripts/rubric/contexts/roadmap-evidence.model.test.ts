@@ -8,7 +8,14 @@ import {
   loadTerritoryRegistry,
   parseRegistryReference
 } from './project-registry.ts'
-import { IDEAS_LIST, ISSUE_LEDGER, inspectRoadmap, issueLedger, rootRoadmap } from './roadmap-evidence.ts'
+import {
+  IDEAS_LIST,
+  ISSUE_LEDGER,
+  inspectRoadmap,
+  issueLedger,
+  ledgerAllocation,
+  rootRoadmap
+} from './roadmap-evidence.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -259,8 +266,17 @@ test('fixed areas map codes to titles; a bare list fails in the Agora and warns 
   expect(failures(repository)).toContainEqual(
     expect.objectContaining({ msg: 'area CORE must map to a title that starts with a capital letter' })
   )
+  const areaGrammar = 'roadmap area codes must be uppercase alphanumeric with at least one letter'
   configure('', 'areas.core = "Core"\n')
-  expect(failures(repository)).toContainEqual(expect.objectContaining({ msg: 'roadmap area codes must be uppercase' }))
+  expect(failures(repository)).toContainEqual(expect.objectContaining({ msg: areaGrammar }))
+  configure('', 'areas.555 = "Numbered delivery"\n')
+  expect(failures(repository)).toContainEqual(expect.objectContaining({ msg: areaGrammar }))
+  configure('', 'areas.5GE = "5G Emerge delivery"\n')
+  expect(inspectRoadmap(repository).filter((finding) => finding.area === 'ROAD-6')).toEqual([])
+  configure('', 'areas = ["555"]\n')
+  expect(failures(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ROAD-6', msg: 'ki-work-roadmap areas must map uppercase area codes to titles' })
+  )
   configure('', 'areas = {}\n')
   expect(failures(repository)).toContainEqual(
     expect.objectContaining({ msg: 'ki-work-roadmap areas must not be empty when declared' })
@@ -531,4 +547,20 @@ test('the retired Initiatives index inside Projects still resolves slugs with a 
     'legacy: Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/'
   )
   expect(warnings(repository)).not.toContain("initiative 'techne' is not in the project registry")
+})
+
+test('the issue ledger accepts a digit-leading area code but not an all-digit one', () => {
+  const ledger = issueLedger(
+    new Map([
+      ['5GE', 12],
+      ['ENG', 3]
+    ])
+  )
+  expect(ledgerAllocation(ledger)?.allocation).toEqual(
+    new Map([
+      ['5GE', 12],
+      ['ENG', 3]
+    ])
+  )
+  expect(ledgerAllocation(ledger.replace('5GE: 12', '555: 12'))).toBeUndefined()
 })

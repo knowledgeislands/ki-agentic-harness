@@ -2,7 +2,7 @@
 name: ki-repo-kb-streams
 ki-kind: governance
 ki-applicability: detected
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 ki-depends-on: []
 description: >
   Govern the KI knowledge-base Streams container and flat Roadmap records. Use for KB
