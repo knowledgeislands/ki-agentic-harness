@@ -355,7 +355,7 @@ Govern KI Markdown, TOML, README composition, and durable knowledge placement. U
 
 #### `ki-checkpoint`
 
-Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions, roadmap and Project state, durable knowledge, recaps, and runtime continuity stay with their owners.
+Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners.
 
 - **Kind:** Governance
 - **Applicability:** Detected
