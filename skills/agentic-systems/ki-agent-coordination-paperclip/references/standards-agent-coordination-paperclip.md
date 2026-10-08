@@ -34,6 +34,12 @@ organisation_code = "KIS"
 
 `organisation_code` is required, non-empty, and uppercase letters or digits beginning with a letter; `ER` is valid. No other keys are recognised in this skill's table. The value identifies the company that owns this repository's Paperclip project, not the repository's `repo_code`, a territory handle, or necessarily Paperclip's current issue prefix. Territorial membership never silently assigns or changes it; Arcadia keeps `KIS` while using the territory handle `ki`. Reconcile a company rename or ownership transfer explicitly against existing project and task bindings before changing the declaration.
 
+### Declaration scope
+
+A repository declares this skill when it is admitted to a Paperclip company's scope, and the declaration carries that company's `organisation_code`. The skill is `declaration-only`: no repository shape implies it, so admission is the criterion. The declaration means "this repository is admitted to a company", not "this repository owns the coordination arrangement". There is one arrangement across the archipelago. As a description of where things live, not an allocation of authority, the skill and its role records live in `ki-agentic-harness` and the execution fabric lives in `ki-techne-harness`.
+
+Declaring every admitted repository selects each one into every criterion this skill later gains. Reopen the scope when a criterion first fails in a declaring repository that has no coordinated work. Until then, an audit reports such a repository as not applicable rather than failing it. Also reopen it when a repository first holds its own distinct coordination arrangement rather than taking part in the shared one. Restoring a narrower owner-only scope is an owner decision.
+
 ### Resolving the current company and territory
 
 A bootstrap task obtains the current company identity from its Paperclip run and agent context. Resolve the organisation code, admitted territory and explicitly designated home repository from the company's approved binding or existing repository-task evidence. Territory uses the Capital's `territory_prefix`, or its registry key when no prefix is declared, as governed by `ki-repo`. The issue prefix and company display name are corroborating metadata, not a transformation rule: changing the case of a company code does not select a territory or home. When the binding is absent or ambiguous, record a bootstrap decision and propose the repository-project discovery needed to establish it. A caller need not repeat known identity in every task brief.

@@ -7,12 +7,12 @@ purpose: governance
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-08T08:12:26Z
+updated_at: 2026-10-08T08:13:36Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope
@@ -58,8 +58,8 @@ The standard has already moved with them. `standards-agent-coordination-papercli
 
 ## Steps
 
-- [ ] Add a `### Declaration scope` subsection under `## Organisation identity` in `standards-agent-coordination-paperclip.md` stating that every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; that the declaration means admission, not ownership of the arrangement; that the skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness`, as a description of where they live rather than an authority allocation; and the revisit condition from the Decision.
-- [ ] Run the verification below and record the results in `## Discussion`.
+- [x] Add a `### Declaration scope` subsection under `## Organisation identity` in `standards-agent-coordination-paperclip.md` stating that every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; that the declaration means admission, not ownership of the arrangement; that the skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness`, as a description of where they live rather than an authority allocation; and the revisit condition from the Decision.
+- [x] Run the verification below and record the results in `## Discussion`.
 
 ## Files touched
 
@@ -97,6 +97,36 @@ None.
 ### Roadmap
 
 None. `KI-HARNESS-GOV-107` is sequenced after this record by preference only.
+
+## Review
+
+### Delivered
+
+KI-HARNESS-GOV-108 is delivered: the declaration scope is written into the coordination standard.
+
+### Change Summary
+
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`: new `### Declaration scope` subsection under `## Organisation identity`. It states the live rule (a repository admitted to a Paperclip company declares the skill with that company's `organisation_code`), that the declaration means admission rather than ownership of the arrangement, where the skill, role records and execution fabric live as description rather than authority allocation, and the revisit conditions recorded in the Decision above.
+- No `.ki.toml` was edited.
+
+### Verification
+
+- `ki repo audit --skill ki-agent-coordination-paperclip --progress never`: PASS.
+- `ki repo audit --skill ki-authoring --progress never`: PASS.
+- `ki repo audit --skill ki-skills --progress never`: FAIL=0, one pre-existing `LONG-3` refresh-cadence warning.
+- `bun run test`: 1005 pass, 0 fail. `bunx tsc --noEmit`: clean.
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+The standard now answers who declares the skill, why, and what reopens the question, so a later reader can tell the broad declaring set is deliberate. Scope held to one prose subsection.
+
+### Mini recap
+
+One subsection added to the coordination standard; decision recorded in the standard itself with no Decision Record, as the Decision above directs.
 
 ## Discussion
 
