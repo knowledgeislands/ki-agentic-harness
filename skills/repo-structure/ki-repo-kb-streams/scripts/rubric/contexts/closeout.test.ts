@@ -60,6 +60,7 @@ test('a Project with no open record anywhere is due for its close-out assessment
   const { capital, member, outsider, environment } = territory()
   project(capital, 'served-by-member', 'active')
   project(capital, 'served-from-outside', 'active')
+  project(capital, 'served-by-registry-key', 'active')
   project(capital, 'finished', 'active')
   project(capital, 'assessed', 'paused', '### Close-out assessment\n\nDelivered.\n')
   project(capital, 'not-started', 'planned')
@@ -68,6 +69,7 @@ test('a Project with no open record anywhere is due for its close-out assessment
   record(member, join('docs', 'roadmap'), 'EX-MEM-001-a.md', 'served-by-member', 'draft')
   record(outsider, join('Streams', 'Roadmap'), 'EX-OUT-001-a.md', 'ex/served-from-outside', 'triage')
   record(outsider, join('docs', 'roadmap'), 'EX-OUT-002-a.md', 'finished', 'draft')
+  record(outsider, join('docs', 'roadmap'), 'EX-OUT-003-a.md', 'capital/served-by-registry-key', 'ready')
   record(capital, join('Streams', 'Roadmap'), 'EX-CAP-001-a.md', 'finished', 'done')
   const evidence = closeOutEvidence(capital, join(capital, 'Streams'), environment)
   expect(levels(evidence)).toEqual({

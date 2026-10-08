@@ -90,8 +90,11 @@ const projectNotes = (root: string, projectsPath: string): ProjectNote[] =>
       ]
     })
 
-/** Open records per Project slug: bare slugs from the Capital's members, qualified `<handle>/<slug>` from anywhere. */
-const openRecords = (checkouts: Iterable<string>, capital: string, handle: string | undefined): Map<string, number> => {
+/**
+ * Open records per Project slug: bare slugs from the Capital's members, and `<handle>/<slug>` from anywhere, where a
+ * handle is the Capital's territory prefix or its registry key.
+ */
+const openRecords = (checkouts: Iterable<string>, capital: string, handles: readonly string[]): Map<string, number> => {
   const counts = new Map<string, number>()
   for (const checkout of new Set(checkouts)) {
     const member = repoTable(checkout)?.capital === capital
@@ -104,12 +107,8 @@ const openRecords = (checkouts: Iterable<string>, capital: string, handle: strin
         const project = values?.project
         const status = values?.status
         if (typeof project !== 'string' || (typeof status === 'string' && TERMINAL_STATUSES.has(status))) continue
-        const slug =
-          handle && project.startsWith(`${handle}/`)
-            ? project.slice(handle.length + 1)
-            : member && !project.includes('/')
-              ? project
-              : undefined
+        const handle = handles.find((candidate) => project.startsWith(`${candidate}/`))
+        const slug = handle ? project.slice(handle.length + 1) : member && !project.includes('/') ? project : undefined
         if (slug) counts.set(slug, (counts.get(slug) ?? 0) + 1)
       }
     }
@@ -134,8 +133,8 @@ export const closeOutEvidence = (
   if (projects.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No Project notes are present.' }]
   const registered = registeredCheckouts(environment)
   const ownKey = [...(registered ?? [])].find(([, path]) => path === resolve(root))?.[0]
-  const handle = typeof own?.territory_prefix === 'string' ? own.territory_prefix : ownKey
-  const counts = openRecords([resolve(root), ...(registered?.values() ?? [])], capital, handle)
+  const handles = [own?.territory_prefix, ownKey].filter((handle): handle is string => typeof handle === 'string')
+  const counts = openRecords([resolve(root), ...(registered?.values() ?? [])], capital, handles)
   // Without the registry, records outside the Capital are invisible, so a finished-looking Project is only noted.
   const due = registered ? ('WARN' as const) : ('INFO' as const)
   const findings = projects.flatMap((project): StreamsEvidence[] => {
