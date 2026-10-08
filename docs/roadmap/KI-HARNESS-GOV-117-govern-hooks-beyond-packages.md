@@ -9,7 +9,7 @@ component: governance
 horizon: now
 status: draft
 blocks: []
-blocked_by: [KI-HARNESS-GOV-109]
+blocked_by: []
 baseline_ref: null
 created_at: 2026-09-27T17:05:00Z
 updated_at: 2026-10-07T14:00:01Z
@@ -31,11 +31,11 @@ The consequence is observed rather than theoretical. Four Markdown findings were
 
 ## Boundary
 
-In scope: a two-layer split, agreed 2026-09-27 and confirmed 2026-10-05. `ki-repo`, being `ki-applicability: baseline`, requires only that a repository has a committed mechanical trigger bound to a gate and that its root orientation says what that gate runs. Each shape skill then declares and verifies its own expected hook content. `ki-repo` owns the existence question because it is the only skill that reaches every repository; it never owns the content question, because the content is toolchain-specific and `ki-repo` cannot know it. The trigger mechanism is the one [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) chooses: a committed `.githooks/pre-commit` bound through a relative `core.hooksPath`.
+In scope: a two-layer split, agreed 2026-09-27 and confirmed 2026-10-05. `ki-repo`, being `ki-applicability: baseline`, requires only that a repository has a committed mechanical trigger bound to a gate and that its root orientation says what that gate runs. Each shape skill then declares and verifies its own expected hook content. `ki-repo` owns the existence question because it is the only skill that reaches every repository; it never owns the content question, because the content is toolchain-specific and `ki-repo` cannot know it. The trigger mechanism is the one `KI-HARNESS-GOV-109` (done) chooses: a committed `.githooks/pre-commit` bound through a relative `core.hooksPath`.
 
 In scope also: requiring shape skills that today say nothing to say something. `ki-engineering` already states its expectation as `SCR-11` and needs only to be read as an instance of the general rule. `ki-repo-tools`, `ki-repo-kb`, and `ki-repo-dotfiles-chezmoi` each gain one hook-content criterion here, the last because the chezmoi source is the observed failure. A Decision Record fixes the split.
 
-Out of scope: the mechanism by which an absent gate becomes a failure, which is [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) and blocks this item; the content of any individual repository's hook, which each repository owns; adding hooks to `tools-rig`, the chezmoi source, or any other repository, which are receiver-owned trades raised after delivery; hook-content criteria for the remaining shape skills, captured through `ki-next` as follow-ons; and amending `ADR-DOTFILES-006` in the chezmoi source, which is that repository's decision. Moving a commit-gate criterion wholesale into `ki-repo` was considered and rejected: the baseline skill cannot carry a requirement it has no means to express.
+Out of scope: the mechanism by which an absent gate becomes a failure, which is `KI-HARNESS-GOV-109` (done) and blocks this item; the content of any individual repository's hook, which each repository owns; adding hooks to `tools-rig`, the chezmoi source, or any other repository, which are receiver-owned trades raised after delivery; hook-content criteria for the remaining shape skills, captured through `ki-next` as follow-ons; and amending `ADR-DOTFILES-006` in the chezmoi source, which is that repository's decision. Moving a commit-gate criterion wholesale into `ki-repo` was considered and rejected: the baseline skill cannot carry a requirement it has no means to express.
 
 Also out of scope: changing what `SCR-11` requires. Its package-backed scope is correct for what it requires (`bunx lint-staged`, Syncpack, and Commitlint are package-manager commands), and widening it would make a Bash repository fail a criterion it has no means to satisfy.
 
@@ -88,7 +88,7 @@ Acceptance criteria, each judgeable by someone who did not write this:
 2. `HOOK-2` warns with the exact `git config core.hooksPath .githooks` step when the local binding is absent, and passes when it resolves.
 3. No `ki-repo` criterion inspects what the hook runs; each content check lives in a shape skill, and none accepts a `--fix` or `--write` invocation.
 4. `SHELL-HOOK`, the `ki-repo-kb` gate criterion, and `GIT-2` each fail on a hook that omits their expected command and pass on one that has it.
-5. `SCR-11` behaviour is unchanged, and this repository passes `HOOK-1` and `HOOK-2` through the [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) stub.
+5. `SCR-11` behaviour is unchanged, and this repository passes `HOOK-1` and `HOOK-2` through the `KI-HARNESS-GOV-109` (done) stub.
 6. The Decision Record exists, is indexed, and the `SYNC-1` re-alignment between each touched standard, published rubric and checker holds.
 
 ```bash
@@ -103,7 +103,7 @@ ki repo audit --skill ki-skills --progress never
 
 ## Dependencies / blocks
 
-`blocked_by` [KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md), which settles the `.githooks` mechanism this item generalises. The record is fully shaped but stays `draft` because `ITEM-5` forbids a `ready` item with a non-done blocker; it becomes `ready` once GOV-109 is done. Adoption by `tools-rig`, the chezmoi source and other repositories follows as separate receiver-owned trades and does not block acceptance here.
+Its build-order blocker, `KI-HARNESS-GOV-109` (done), landed the `.githooks` mechanism this item generalises, so `blocked_by` is discharged. Adoption by `tools-rig`, the chezmoi source and other repositories follows as separate receiver-owned trades and does not block acceptance here.
 
 Sequencing: this record and [the delivered source-mirror standard](../../skills/repo-structure/ki-repo-kb/references/standards-source-mirrors.md) both add a criterion through the shared `ki-repo-kb` files `scripts/rubric/items/index.test.ts`, `references/rubric.md` and `references/standards-knowledge-base.md`. Increment, do not hardcode; the source-mirror criterion has landed, so rebase these shared counts against the delivered state. A sequencing note, not a dependency.
 
@@ -133,7 +133,7 @@ The four skill changes after the `ki-repo` family are independent and can run as
 
 ### Why this waits on GOV-109
 
-[KI-HARNESS-GOV-109](KI-HARNESS-GOV-109-fail-when-commit-gates-absent.md) records that `core.hooksPath` is `.husky/_`, produced per working directory by `bun install`, so a linked worktree resolves it to a directory that does not exist and commits with no diagnostic; five commits landed on the `KNO-34` branch with none of the three gates running. Its Boundary defers the fleet-wide question to this item, which therefore inherits whichever mechanism GOV-109 chooses and should not pick a different one.
+`KI-HARNESS-GOV-109` (done) records that `core.hooksPath` is `.husky/_`, produced per working directory by `bun install`, so a linked worktree resolves it to a directory that does not exist and commits with no diagnostic; five commits landed on the `KNO-34` branch with none of the three gates running. Its Boundary defers the fleet-wide question to this item, which therefore inherits whichever mechanism GOV-109 chooses and should not pick a different one.
 
 ### The split follows from what each layer can know
 

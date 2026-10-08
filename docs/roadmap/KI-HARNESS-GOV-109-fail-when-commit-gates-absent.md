@@ -7,7 +7,7 @@ purpose: governance
 project: baseline-rollout
 component: governance
 status: done
-blocks: [KI-HARNESS-GOV-117]
+blocks: []
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-09-26T15:58:00Z
