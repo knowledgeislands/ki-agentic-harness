@@ -35,7 +35,7 @@ export const CI: RubricFamily<EngineeringRubricContext, CiRubricContext> = {
     item(
       'CI-1',
       'CI installs the declared toolchain',
-      'Where `.github/workflows/ci.yml` exists, it uses `jdx/mise-action`, hardcodes no Bun or Node version, and installs a released `ki` rather than cloning or linking a KI source checkout (warning only).',
+      'Where `.github/workflows/ci.yml` exists, it uses `jdx/mise-action`, hardcodes no Bun or Node version, and installs a released `ki` rather than cloning or linking a KI source checkout, reading its release tag from `.github/ki-version`, which an `update-ki-pin.yml` receiver proposes (warning only).',
       'WARN',
       (context) => context.ci1
     ),

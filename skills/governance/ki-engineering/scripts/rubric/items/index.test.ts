@@ -16,6 +16,7 @@ import {
   inspectDependencyHolds,
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
+  inspectKiPin,
   inspectManagedSurfaceExclusions,
   inspectToolchainActivation,
   inspectTurborepo,
@@ -266,6 +267,38 @@ test('CI-1 and CI-2 report toolchain, missing-gate, and retired-alias drift', ()
   expect(findings[1]?.message).toContain('bun-version')
   expect(findings[3]?.message).toContain('retired package-script alias')
   expect(findings.every((entry) => entry.subject === '.github/workflows/ci.yml')).toBe(true)
+})
+
+test('CI-1 warns until the released ki pin lives in .github/ki-version with an update-ki-pin receiver', () => {
+  const levels = (findings: ReturnType<typeof inspectKiPin>) =>
+    findings.map((entry) => [entry.level, entry.subject, entry.message])
+  const reading = 'run: KI_VERSION=$(tr -d "[:space:]" < .github/ki-version)\n'
+
+  // A CI with no released ki is outside this evidence.
+  expect(inspectKiPin({ ci: 'run: ki repo audit --repo .\n', pin: undefined, hasReceiver: false })).toEqual([])
+
+  // An inline workflow pin can be bumped only with the App's Workflows permission.
+  expect(levels(inspectKiPin({ ci: 'env:\n  KI_VERSION: v0.9.0\n', pin: undefined, hasReceiver: false }))).toEqual([
+    ['WARN', '.github/workflows/ci.yml', expect.stringContaining('pins KI_VERSION inline')]
+  ])
+
+  // The adopted shape: CI reads the pin file and the receiver proposes its bumps.
+  expect(levels(inspectKiPin({ ci: reading, pin: 'v0.9.0\n', hasReceiver: true }))).toEqual([
+    ['PASS', '.github/ki-version', expect.stringContaining('update-ki-pin.yml receiver')]
+  ])
+
+  // A pin file nobody bumps, nobody reads, or that holds no exact tag is drift.
+  expect(levels(inspectKiPin({ ci: reading, pin: 'v0.9.0\n', hasReceiver: false }))).toEqual([
+    ['WARN', '.github/ki-version', expect.stringContaining('has no update-ki-pin.yml receiver')]
+  ])
+  expect(levels(inspectKiPin({ ci: 'run: ki --version\n', pin: 'v0.9.0', hasReceiver: true }))).toEqual([
+    ['WARN', '.github/workflows/ci.yml', expect.stringContaining('does not read .github/ki-version')],
+    ['PASS', '.github/ki-version', expect.stringContaining('update-ki-pin.yml receiver')]
+  ])
+  expect(levels(inspectKiPin({ ci: reading, pin: 'latest\n', hasReceiver: true }))).toEqual([
+    ['WARN', '.github/ki-version', expect.stringContaining('exact v-prefixed release tag')],
+    ['PASS', '.github/ki-version', expect.stringContaining('update-ki-pin.yml receiver')]
+  ])
 })
 
 test('CI-1 warns, without failing, when CI acquires KI from a source checkout', () => {

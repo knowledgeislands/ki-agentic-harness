@@ -1087,6 +1087,51 @@ export const inspectCiWorkflow = ({
   return findings
 }
 
+export type KiPinInspection = {
+  /** The text of `.github/workflows/ci.yml`. */
+  ci: string
+  /** The text of `.github/ki-version`, or undefined when the file is absent. */
+  pin: string | undefined
+  /** True when `.github/workflows/update-ki-pin.yml` exists. */
+  hasReceiver: boolean
+}
+
+/**
+ * CI-1 released-pin evidence. CI that installs a released `ki` reads its version from
+ * `.github/ki-version`, which the repository's `update-ki-pin.yml` receiver bumps through a
+ * reviewed pull request. An inline `KI_VERSION` in a workflow could be bumped only by a token
+ * holding the release App's Workflows permission. Warnings only: adoption follows through conform.
+ */
+export const inspectKiPin = ({ ci, pin, hasReceiver }: KiPinInspection): readonly EngineeringEvidenceFinding[] => {
+  const findings: EngineeringEvidenceFinding[] = []
+  const add = (level: EngineeringEvidenceFinding['level'], message: string, subject: string): void => {
+    findings.push({ level, code: 'CI-1', message, subject })
+  }
+  if (/^[ \t]*KI_VERSION[ \t]*:[ \t]*["']?v\d/m.test(ci))
+    add(
+      'WARN',
+      'ci.yml pins KI_VERSION inline — move the release tag to .github/ki-version so the update-ki-pin.yml receiver can propose its bump',
+      '.github/workflows/ci.yml'
+    )
+  if (pin === undefined) return findings
+  if (!/^v\d+\.\d+\.\d+\n?$/.test(pin))
+    add('WARN', '.github/ki-version must hold one exact v-prefixed release tag, such as v0.9.0', '.github/ki-version')
+  else if (!ci.includes('.github/ki-version'))
+    add(
+      'WARN',
+      'ci.yml does not read .github/ki-version — install the pinned release from it',
+      '.github/workflows/ci.yml'
+    )
+  hasReceiver
+    ? add('PASS', '.github/ki-version is proposed by the update-ki-pin.yml receiver', '.github/ki-version')
+    : add(
+        'WARN',
+        '.github/ki-version has no update-ki-pin.yml receiver — add one so each released ki is proposed automatically',
+        '.github/ki-version'
+      )
+  return findings
+}
+
 export const collectAuditEvidence = async (
   repo: string,
   emit?: RubricEmitter,
@@ -1319,7 +1364,15 @@ export const collectAuditEvidence = async (
   // ── core (when the repo has CI): the common CI shape ──────────────────────────
   if (has('.github', 'workflows', 'ci.yml')) {
     const auditRunsTests = Boolean(rootVitestConfig(has)) && Boolean(scripts['test:coverage'])
-    for (const finding of inspectCiWorkflow({ ci: read('.github', 'workflows', 'ci.yml'), scripts, auditRunsTests }))
+    const ci = read('.github', 'workflows', 'ci.yml')
+    for (const finding of [
+      ...inspectCiWorkflow({ ci, scripts, auditRunsTests }),
+      ...inspectKiPin({
+        ci,
+        pin: has('.github', 'ki-version') ? read('.github', 'ki-version') : undefined,
+        hasReceiver: has('.github', 'workflows', 'update-ki-pin.yml')
+      })
+    ])
       add(finding.level, finding.code, finding.message, STD, finding.subject)
   } else {
     add('NOT_APPLICABLE', 'CI-1', 'no .github/workflows/ci.yml — not applicable', STD)
