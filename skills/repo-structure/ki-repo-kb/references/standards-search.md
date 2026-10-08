@@ -1,6 +1,6 @@
 # Optional derived KB search
 
-This contract governs optional retrieval behind `kb_search`, `ki kb search` and [QUERY](mode-query.md). The [adoption decision](../../../../docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) and [synthetic pilot](../../../../docs/decisions/references/qmd-synthetic-pilot.md) record the bounded functional go and measured costs. Search is explicitly provisioned; unavailable search falls back to literal grep and targeted reads.
+This contract governs optional retrieval behind `kb_search`, `ki kb search` and [QUERY](mode-query.md). The [adoption decision](../../../../docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) records the bounded functional go and the synthetic pilot's measured costs. Search is explicitly provisioned; unavailable search falls back to literal grep and targeted reads.
 
 ## Authority and ingestion
 

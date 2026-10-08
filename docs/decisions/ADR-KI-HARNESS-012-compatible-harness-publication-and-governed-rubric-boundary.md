@@ -22,9 +22,9 @@ Knowledge Islands needs compatible harnesses to publish typed capabilities while
 
 ## Decision
 
-Knowledge Islands adopts the **compatible harness** as the published unit. The current compatible payload is a verified archive containing regular `skills/`, `subagents/`, and `hooks/` directories. The host derives a harness identity from its installed `<owner>/<repository>` path and discovers skills from their `SKILL.md` frontmatter. The base `knowledgeislands/ki-agentic-harness` is the baseline compatible harness. A checkout, cache, runtime projection, or repository `.ki/` directory is never an implicit harness or operation source.
+Knowledge Islands adopts the **compatible harness** as the published unit. The current compatible payload is a verified archive containing regular `skills/`, `subagents/`, and `hooks/` directories. The host derives a harness identity from its installed `<owner>/<repository>` path and discovers skills from their `SKILL.md` frontmatter. Harness identifiers use lowercase owner and name segments separated by one `/`; neither segment is empty, `.` or `..`, and an identifier is not a filesystem path. The base `knowledgeislands/ki-agentic-harness` is the baseline compatible harness. A checkout, cache, runtime projection, or repository `.ki/` directory is never an implicit harness or operation source.
 
-A skill is addressed as `<harness-id>:<skill-name>`. Other capability kinds reserve `<harness-id>:<kind>/<name>` when the host supports them. A skill's source directory and frontmatter remain authoritative. For governed skills, the harness contributes only the skill-specific rubric definition, evidence/context builders, and declared safe repairs; no unlisted or escaping file becomes executable.
+A skill is addressed as `<harness-id>:<skill-name>`. Other capability kinds reserve `<harness-id>:<kind>/<name>` when the host supports them. A skill's source directory and frontmatter remain authoritative. For governed skills, the harness contributes only the skill-specific rubric definition, evidence/context builders, and declared safe repairs; no unlisted or escaping file becomes executable. The host loads a recognised rubric definition in process only after validating the harness and its inventory, and passes it an immutable context: the physical repository root where applicable, the selected capability identity, the parsed declared configuration and the verified harness identity. AUDIT is read-only. CONFORM declares its intended safe repairs to a transaction that validates the complete write set before the first write, honours dry-run and re-audits after commit.
 
 The harness defines this payload and capability semantics only. `tools-ki` owns acquisition evidence, installation layout, capability activation, repository resolution, public commands, governed-rubric execution, reporting, migration, release delivery, and support diagnostics. The host selects, validates, orders, and runs compatible rubric definitions through one generic runtime. Missing, incompatible, undeclared, or untrusted capabilities fail before a write.
 
@@ -38,7 +38,7 @@ Repositories remain declarative through `.ki.toml`, but a clean clone requires t
 
 Skills retain ownership of their standards, rubrics, evidence, and declared mechanical repairs, while `tools-ki` owns the generic checker, reporter, mode, ordering, and transaction runtime. The former bootstrap aggregate, generated `.ki/bin` wrappers, repository manifest, and package-script aliases to them are retired without a compatibility path. Existing user and repository ownership protections remain part of activation and migration rather than reasons to retain the executor.
 
-The direct-payload capability and governed-rubric boundary is in the [compatible harness contract](references/compatible-harness-contract.md). `tools-ki` records its host-specific installation, command, repository, and delivery decisions separately.
+The `ki-repo-harness` compatible harness standard carries the checkable source and payload detail. `tools-ki` records its host-specific installation, command, repository, and delivery decisions separately.
 
 ## References
 

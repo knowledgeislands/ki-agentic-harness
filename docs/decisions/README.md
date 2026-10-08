@@ -2,7 +2,7 @@
 
 This directory holds the Decision Records for the **ki-agentic-harness** and the Knowledge Islands governance skill set it houses — Architecture Decision Records (`ADR-`), Strategy Decision Records (`SDR-`), and Governance Decision Records (`GDR-`), per the prefix table in the `ki-decision-records` skill.
 
-Supporting evidence that is not itself a Decision Record lives in [references/](references/): see the [ICM review](references/interpretable-context-methodology-review.md) [evaluation-frameworks review](references/evaluation-frameworks-review.md), and [qmd synthetic pilot](references/qmd-synthetic-pilot.md).
+The directory holds only Decision Records and this index; each record states its decision in its own words.
 
 ## Naming convention
 

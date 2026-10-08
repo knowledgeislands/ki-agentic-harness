@@ -7,7 +7,7 @@ Provenance only: the record of what changed lives in git, not a changelog here. 
 ## In-house
 
 - **[ADR] [ADR-KI-HARNESS-012](../../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md)** — harness payload, capability, and native-rubric ownership. Last reviewed 2026-08-12.
-- **[HC] [Compatible harness contract](../../../../docs/decisions/references/compatible-harness-contract.md)** — harness identity, capability identity, and activation boundary. Last reviewed 2026-08-12.
+- **[HC] [Compatible harness decision, ADR-KI-HARNESS-012](../../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md)** — harness identity, capability identity, and activation boundary. Last reviewed 2026-08-12.
 - **[TK] installed `ki --help` surfaces** — current public grammar, bootstrap, activation, local development, and diagnostics. Last reviewed 2026-08-12.
 - **[KR] `ki-repo` skill** — `.ki.toml` and declared repository coverage. Last reviewed 2026-08-12.
 

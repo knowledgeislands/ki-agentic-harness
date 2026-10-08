@@ -18,7 +18,7 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
 | [AH] | [ki-agentic-harness README][ah-readme] | The KI canonical source-harness implementation § | 2026-09-26 |
-| [CH] | [Compatible harness contract][compatible] | Installed identity, direct payload, capability, host, and activation boundaries | 2026-09-26 |
+| [CH] | [ADR-KI-HARNESS-012][compatible] | Installed identity, direct payload, capability, host, and activation boundaries | 2026-09-26 |
 | [KR] | `ki-repo` skill | The `.ki.toml` contract and what makes a KI-governed repository | 2026-09-26 |
 | [KS] | `ki-skills` skill | The governed-rubric family, session, and host boundary ‡ | 2026-09-26 |
 | [KE] | `ki-engineering` skill | Development toolchain ownership outside compatible-harness installation semantics | 2026-09-26 |
@@ -54,4 +54,4 @@ _REFRESH last run **2026-09-26** (previous: 2026-08-12)._
 [as-spec]: https://agentskills.io/specification
 [cc-subagents]: https://code.claude.com/docs/en/sub-agents
 [ah-readme]: ../../../../README.md
-[compatible]: ../../../../docs/decisions/references/compatible-harness-contract.md
+[compatible]: ../../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md
