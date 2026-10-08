@@ -3,7 +3,7 @@ name: ki-specs
 ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 description: >
   Create or audit repository Specifications: accepted behaviour and quality requirements with conformance
   state, verification plans, and evidence. Use `ki-decision-records` for why, `ki-guides` for procedures, and

@@ -5,7 +5,7 @@ ki-applicability: baseline
 ki-detects: [ki-checkpoint, ki-decision-records, ki-engineering, ki-guides, ki-repo-homebrew-tap, ki-repo-kb, ki-repo-kb-streams, ki-repo-mcp, ki-repo-specifications, ki-repo-tools, ki-repo-website, ki-repo-website-app, ki-repo-website-cloudflare, ki-repo-website-content, ki-skills, ki-specs, ki-subagents, ki-subagents-chatgpt, ki-subagents-claude]
 ki-runtime-binding: true
 ki-depends-on: [ki-authoring, ki-git]
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 owns: ['.gitignore']
 contributes: ['.ki.toml']
 requires: ['.githooks/pre-commit']

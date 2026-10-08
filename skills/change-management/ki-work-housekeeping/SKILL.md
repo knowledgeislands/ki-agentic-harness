@@ -3,6 +3,7 @@ name: ki-work-housekeeping
 ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: []
+ki-shared-dependencies: [ki-work-roadmap:work-identifiers]
 contributes: ['.ki.toml']
 description: >
   Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates

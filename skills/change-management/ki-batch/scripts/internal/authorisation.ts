@@ -139,7 +139,7 @@ export const resolveBatchAuthorisation = ({
 }: ResolveBatchAuthorisationInput): BatchAuthorisationResolution => {
   const root = resolve(repositoryRoot)
   const directory = resolve(root, AUTHORISATION_DIRECTORY)
-  const path = resolve(authorisationPath)
+  const path = resolve(root, authorisationPath)
   const pathWithinDirectory = relative(directory, path)
   if (
     !pathWithinDirectory ||

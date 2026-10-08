@@ -6,6 +6,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { prefixedIdentifierSource, SCOPE, SERIAL } from '../../shared/work-identifiers.ts'
 import { projectSharedDecisionRecord } from './shared-projection.ts'
 
 const CODE_DIR = 'docs/decisions'
@@ -50,15 +51,15 @@ const PREFIX_TO_TYPE: Record<string, { decisionType: string; decisionTypeUrl: st
     decisionTypeUrl: 'https://knowledgeislands.info/specifications/decision-records/kdr'
   }
 }
-const ID = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*)-(XXX|\d{3,})$/
-const INDEX_ENTRY =
-  /^\s*(\d+)\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,}))\]\(([^)]+)\)/
-const INDEX_ENTRY_TARGET =
-  /^(\s*\d+\.\s+\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,}))\]\()([^)]+)(\).*)$/
-const DECISION_LINK = /\[((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,}))\]\(([^)]+)\)/
-const BODY_CITATION =
-  /(?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*-(?:XXX|\d{3,})/g
-const HEADING = /^#\s+((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z0-9]*[A-Z][A-Z0-9-]*-(?:XXX|\d{3,})):\s+(.+)$/m
+const DECISION_PREFIXES = Object.keys(PREFIX_TO_TYPE)
+const DECISION_SERIAL = `(?:XXX|${SERIAL})`
+const DECISION_ID = prefixedIdentifierSource(DECISION_PREFIXES, DECISION_SERIAL)
+const ID = new RegExp(`^(${DECISION_PREFIXES.join('|')})-(${SCOPE})-(XXX|${SERIAL})$`)
+const INDEX_ENTRY = new RegExp(`^\\s*(\\d+)\\.\\s+\\[(${DECISION_ID})\\]\\(([^)]+)\\)`)
+const INDEX_ENTRY_TARGET = new RegExp(`^(\\s*\\d+\\.\\s+\\[(${DECISION_ID})\\]\\()([^)]+)(\\).*)$`)
+const DECISION_LINK = new RegExp(`\\[(${DECISION_ID})\\]\\(([^)]+)\\)`)
+const BODY_CITATION = new RegExp(DECISION_ID, 'g')
+const HEADING = new RegExp(`^#\\s+(${DECISION_ID}):\\s+(.+)$`, 'm')
 
 export type DecisionRecord = {
   file: string

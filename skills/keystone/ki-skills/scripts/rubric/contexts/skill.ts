@@ -325,6 +325,7 @@ export const createSkillRubricContext = (
 
   const name = frontmatter.keys.get('name')
   const description = frontmatter.keys.get('description')
+  const sharedDependencies = frontmatterList(frontmatter.keys.get('ki-shared-dependencies'))
   const localGovernanceSource = isLocalGovernanceSource(directory)
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
   const scriptsDirectory = join(directory, 'scripts')
@@ -378,7 +379,7 @@ export const createSkillRubricContext = (
         imports,
         rootSkill: name === 'ki-skills',
         declaredSharedModules: frontmatterList(frontmatter.keys.get('ki-shared-modules')),
-        sharedDependencies: frontmatterList(frontmatter.keys.get('ki-shared-dependencies')),
+        sharedDependencies,
         legacyLibPresent: existsSync(join(scriptsDirectory, 'lib')),
         presentSharedModules: existsSync(sharedDirectory)
           ? readdirSync(sharedDirectory, { withFileTypes: true })
@@ -387,7 +388,7 @@ export const createSkillRubricContext = (
               .sort()
           : [],
         rubricModuleExists: existsSync(join(sharedDirectory, 'rubric.ts')),
-        structuredRubricRequired: name === 'ki-skills' || frontmatter.present.has('ki-shared-dependencies'),
+        structuredRubricRequired: name === 'ki-skills' || sharedDependencies.includes('ki-skills:rubric'),
         ...familyEvidence
       },
       ...(name === 'ki-skills' ? { rubric: { publication } } : {}),

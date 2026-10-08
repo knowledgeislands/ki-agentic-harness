@@ -8,7 +8,7 @@ import type {
   RubricSession,
   ViolationLevel
 } from '../../shared/rubric.ts'
-import { SCOPE_SEGMENT } from '../../shared/work-identifiers.ts'
+import { SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
 
 const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Initiatives'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
@@ -148,8 +148,8 @@ const parseConfiguration = (text: string): StreamsConfiguration => {
 // format belongs to the roadmap adapter.
 const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', '_IDEAS.md', 'Roadmap.md'])
 // Mirrors the roadmap adapter's filename identifier grammar without its slug grammar.
-const FILENAME_IDENTIFIER = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-./
-const WORK_ITEM_IDENTIFIER = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
+const FILENAME_IDENTIFIER = new RegExp(`^(${workIdentifierSource()})-.`)
+const WORK_ITEM_IDENTIFIER = workIdentifier()
 
 type RoadmapRecord = { path: string; id?: string; defect?: string }
 

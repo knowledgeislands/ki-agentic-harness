@@ -45,6 +45,7 @@ import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpat
 import { isAbsolute, join, resolve } from 'node:path'
 import { promisify } from 'node:util'
 import type { RubricEmitter } from '../../shared/rubric.ts'
+import { isRepositoryCode } from '../../shared/work-identifiers.ts'
 import { inspectConfigurationLayout, inspectConfigurationPresentation } from './configuration-presentation.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
 import { type RepositoryShape, resolveRepositoryShape } from './shapes.ts'
@@ -922,10 +923,7 @@ async function auditRepo(
     else if (readmeTitle(readme) !== ki.title.trim())
       fail('FILES-2', `README.md H1 must equal ${KI_CONFIG} title`, 'README.md')
     if (!ki.description?.trim()) fail('FILES-2', `${KI_CONFIG} must declare a non-empty \`description\``, KI_CONFIG)
-    if (
-      declaresRootTable(kiText ?? '', skillTable('ki-work-roadmap')) &&
-      !/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(ki.repoCode ?? '')
-    )
+    if (declaresRootTable(kiText ?? '', skillTable('ki-work-roadmap')) && !isRepositoryCode(ki.repoCode))
       fail(
         'FILES-2',
         `${KI_CONFIG} ki-repo repo_code must be a stable uppercase identifier when ki-work-roadmap is declared`,

@@ -2,7 +2,13 @@
 /** Mechanical auditor for flat non-KB repository work items. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
-import { AREA_CODE, SCOPE_SEGMENT } from '../../shared/work-identifiers.ts'
+import {
+  AREA_CODE,
+  isRepositoryCode,
+  SCOPE_SEGMENT,
+  workIdentifier,
+  workIdentifierSource
+} from '../../shared/work-identifiers.ts'
 import {
   isEnforcingTerritoryRepository,
   loadProjectRegistry,
@@ -54,8 +60,8 @@ export const HORIZONS = ['now', 'next', 'soon', 'future', 'hold'] as const
 /** Retired pre-v1 horizons, recognised only so the checker can fail them. */
 export const LEGACY_HORIZONS = ['waiting-for', 'parked', 'triage'] as const
 
-const ID_RE = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
-const FILE_RE = /^([A-Z0-9][A-Z0-9-]{1,23}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
+const ID_RE = workIdentifier()
+const FILE_RE = new RegExp(`^(${workIdentifierSource()})-([a-z0-9]+(?:-[a-z0-9]+)*)\\.md$`)
 const LEDGER_AREA_ENTRY = new RegExp(`^(${SCOPE_SEGMENT}):\\s*(\\d+)$`)
 const AREA_TITLE_RE = /^[A-Z0-9]\S*(?: \S+)*$/
 const COMMIT_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
@@ -297,7 +303,7 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
         ? (repoTable as Record<string, unknown>)
         : undefined
     const code = repoValues?.repo_code
-    if (typeof code !== 'string' || !/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(code)) {
+    if (typeof code !== 'string' || !isRepositoryCode(code)) {
       add(
         'FAIL',
         'ROAD-6',

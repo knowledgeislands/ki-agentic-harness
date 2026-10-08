@@ -429,3 +429,16 @@ describe('script import boundary', () => {
     ])
   })
 })
+
+describe('structured rubric requirement', () => {
+  const required = (frontmatter: string): boolean =>
+    selectKiSkillsContext(createSkillRubricContext(createSkill('skills/ki-example', frontmatter)).context, 'checker')
+      .structuredRubricRequired
+
+  test('follows the rubric dependency rather than any shared dependency', () => {
+    expect(required('ki-shared-dependencies: [ki-skills:rubric]')).toBe(true)
+    expect(required('ki-shared-dependencies: [ki-work-roadmap:work-identifiers, ki-skills:rubric]')).toBe(true)
+    expect(required('ki-shared-dependencies: [ki-work-roadmap:work-identifiers]')).toBe(false)
+    expect(required('')).toBe(false)
+  })
+})

@@ -225,3 +225,15 @@ mandatory_stops: [unapproved-decision]
     writes: false
   })
 })
+
+test('resolves a repository-relative authorisation path against the repository root, not the working directory', () => {
+  const { root } = fixture()
+  expect(
+    resolveBatchAuthorisation({
+      repositoryRoot: root,
+      authorisationPath: '+/_BATCHES/KI-HARNESS-BATCH-001.md',
+      repositoryIdentity: repository,
+      now
+    })
+  ).toMatchObject({ kind: 'resolved', authorisation: { id: 'KI-HARNESS-BATCH-001' } })
+})

@@ -1,5 +1,8 @@
 import type { AuditOutcome, RubricFamily, RubricItem, RubricOutcomes } from '../../shared/rubric.ts'
+import { SCOPE } from '../../shared/work-identifiers.ts'
 import type { DecisionRecordsRubricContext, RootRubricContext } from '../contexts/decision-records.ts'
+
+const FIRST_RECORD = new RegExp(`^GDR-${SCOPE}-001$`)
 
 const SOURCE = 'standards-decision-records.md'
 const ADOPTION_TITLE = 'Adopting Decision Records'
@@ -25,7 +28,7 @@ const ROOT_1: RubricItem<RootRubricContext> = {
       run: (context: RootRubricContext) => {
         const firstId = context.indexIds[0]
         const first = firstId ? context.records.find((record) => record.id === firstId) : undefined
-        if (!first || !/^GDR-[A-Z0-9]*[A-Z][A-Z0-9]*(?:-[A-Z0-9]*[A-Z][A-Z0-9]*)*-001$/.test(first.id))
+        if (!first || !FIRST_RECORD.test(first.id))
           return [
             {
               status: 'VIOLATION',

@@ -3,7 +3,7 @@ name: ki-decision-records
 ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 description: >
   Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted
   behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
