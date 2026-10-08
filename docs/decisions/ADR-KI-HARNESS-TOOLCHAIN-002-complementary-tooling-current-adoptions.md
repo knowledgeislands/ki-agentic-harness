@@ -27,6 +27,8 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 **[qmd](https://github.com/tobi/qmd/tree/facd35e01359e59d938bc9418e93fb9318addee3)** — optional derived KB retrieval behind governed KI surfaces. Explicitly provisioned independent KB indexes preserve repository knowledge authority; the bounded synthetic pilot demonstrates retrieval and limited paraphrase capability but no efficiency advantage on its original tiny corpus. No automatic install, binding or private indexing follows from adoption. The dedicated qmd derived-search decision, indexed in the decision directory, owns the full constraints.
 
+**[Archify](https://tt-a1i.github.io/archify/)** - the diagram tool for living diagrams, an optional prerequisite installed through Rig; the `ki-diagrams` skill's Diagrams standard (its "The tool: Archify" section) carries the rationale and the alternatives considered.
+
 ### Available, not governed
 
 **MarkItDown** — converts PDFs and Office documents into token-efficient Markdown at the ingestion boundary. Reachable via the headroom add-on or ad hoc (`uvx markitdown <file>`); its MCP server is Microsoft's, not KI-authored, so it is not a harness `mcp/` artifact. The KI KB is Markdown-native, so its value is confined to the boundary where external binary documents enter — a personal/dev concern.

@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 60 skills: 49 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 61 skills: 50 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -370,6 +370,16 @@ Govern agent delegation: routine detached background runs (run packet, prompt sh
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <work-item> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-diagrams`
+
+Create, audit or refresh a repository's living Archify diagrams: committed sources and SVGs, the manifest, privacy, type choice and freshness. Use to keep diagrams that explain a system; use `ki-authoring` for prose and `ki-guides` for where a guide embeds a figure.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

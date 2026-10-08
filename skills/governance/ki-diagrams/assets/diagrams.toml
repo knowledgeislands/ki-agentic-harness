@@ -1,0 +1,11 @@
+# Living diagrams manifest: one table per diagram, keyed by its slug.
+# See the ki-diagrams standard for each field. Delete this example table once a real one exists.
+
+[architecture]
+type = "architecture"
+question = "What are the parts, and how do they connect?"
+audience = "New contributors and reviewers"
+traced = ["src"]
+stale_when = "a part is added or removed, or a dependency changes direction"
+regenerate = "Build an Archify architecture diagram of this repository from its source. Cite file and line for every node and finalize at showcase quality with --repo-root."
+last_checked = "0000000"
