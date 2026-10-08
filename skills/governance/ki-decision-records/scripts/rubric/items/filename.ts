@@ -131,7 +131,7 @@ const FILENAME_4: RubricItem<FilenameRubricContext> = {
     'The decisions directory holds only Decision Records and their index: no `references/` or other subdirectory and no supporting file. Working material lives beside the Project or Initiative it serves and is deleted once consolidated.',
   sources: [SOURCE],
   mechanical: {
-    level: 'WARN',
+    level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:

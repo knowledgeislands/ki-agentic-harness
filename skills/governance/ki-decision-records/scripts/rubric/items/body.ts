@@ -208,7 +208,7 @@ const BODY_11: RubricItem<RecordsRubricContext> = {
     'A record links only to sibling Decision Records and to external URLs. A relative link or wikilink to any other file - a supporting file, note, guide or work record - is a finding. Cross-repository provenance uses a canonical source reference: an external URL at a known revision.',
   sources: [SOURCE],
   mechanical: {
-    level: 'WARN',
+    level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
