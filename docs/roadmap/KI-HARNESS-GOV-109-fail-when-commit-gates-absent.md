@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: baseline-rollout
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: [KI-HARNESS-GOV-117]
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-09-26T15:58:00Z
-updated_at: 2026-10-08T08:10:50Z
+updated_at: 2026-10-08T08:11:33Z
 ---
 
 # KI-HARNESS-GOV-109: Enforce Commit Gates
@@ -136,6 +135,10 @@ The approved boundary: committed `.githooks` stubs that refuse a commit whose ga
 ### Outstanding concerns
 
 None.
+
+## Done
+
+Accepted 2026-10-08 by Kris Brown on the review packet above.
 
 ## Discussion
 
