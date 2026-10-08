@@ -41,7 +41,7 @@ Hand the result to Steward for review and Convenor for integration ownership. A 
 
 ## Orchestration
 
-One writer per checkout. Concurrent mutating work takes separate worktrees or clones, never a shared mutable directory; read-only inspection may share a filesystem view.
+Checkout isolation follows [coordination rule 4](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#coordination-rules), whose home is the [workspace model](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md#workspace-model).
 
 Scope you find past the item's edge is captured to Triage through `ki-next` and named in your report. It is never a bonus commit.
 

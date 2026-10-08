@@ -3,6 +3,7 @@
 ## Contents
 
 - [Position and authority](#position-and-authority)
+  - [Coordination rules](#coordination-rules)
 - [Organisation identity](#organisation-identity)
 - [Project ownership and coordination boundary](#project-ownership-and-coordination-boundary)
 - [Identity model](#identity-model)
@@ -22,6 +23,20 @@
 Paperclip coordinates execution around a Knowledge Island group or archipelago. It may own agent scheduling, operational tasks, run state, and execution-workspace bindings. It does not own the durable knowledge, repository history, KI work lifecycle, acceptance decision, or authority envelope those tasks act within.
 
 A Paperclip assignment grants coordination context, not repository authority. Every mutation still needs the authority already carried by the governing KI work, direct user instruction, and repository rules. A Paperclip status transition cannot push, merge, deploy, accept, close, or prune KI work by implication.
+
+### Coordination rules
+
+Seven rules govern the Knowledge Islands-Paperclip boundary. Each has one normative home; this table is the single place that lists them. Agent configuration and role records cite a row of this table rather than restating the rule.
+
+| Rule | Normative home |
+| --- | --- |
+| 1 - Repositories decide; Paperclip coordinates | [Position and authority](#position-and-authority) and [Knowledge boundary](#knowledge-boundary) |
+| 2 - Every task names its governing work, and every item names its tasks | [Task-to-work relationship](#task-to-work-relationship) and the work-item [task links](../../../change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links) |
+| 3 - Discovered work goes to KI Triage | `ki-next` [capture of substantive prospective work](../../../change-management/ki-next/references/standards-next-work.md#capture-substantive-prospective-work) |
+| 4 - One writer per checkout | [Workspace model](#workspace-model) |
+| 5 - Two entry paths, one set of checks | [Interaction and skill composition](#interaction-and-skill-composition) |
+| 6 - A role is a repository record before it is an agent | [ADR-KI-HARNESS-AGENTS-002](../../../../docs/decisions/ADR-KI-HARNESS-AGENTS-002-portable-subagent-contract-and-runtime-adapters.md) and `ki-subagents` [record and projections](../../ki-subagents/references/standards-portable-subagents.md#record-and-projections) |
+| 7 - All delivery happens under a roadmap item | `ki-work-roadmap` [work-item discipline](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md#work-item-discipline) |
 
 ## Organisation identity
 

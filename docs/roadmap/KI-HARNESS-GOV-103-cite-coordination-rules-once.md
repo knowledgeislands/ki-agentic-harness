@@ -7,7 +7,7 @@ purpose: debt
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: aaebd2d06691d2e21442563dfdf3fe8f03184825
@@ -38,7 +38,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-08T08:48:44Z
+updated_at: 2026-10-08T08:50:11Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -92,11 +92,11 @@ Out of scope: authoring a decision record for the seven rules, since every rule 
 
 ## Steps
 
-- [ ] Confirm each of the six existing homes still states its rule at the cited anchor on the admitted baseline; record any drift in `## Discussion` and stop if a home no longer carries its rule.
-- [ ] Add the rule 7 sentence to `## Work-item discipline` in `standards-repository-roadmaps.md`, deferring the direct-authority exception to the coordination standard rather than restating it.
-- [ ] Add a `### Coordination rules` subsection under `## Position and authority` in the coordination standard: a seven-row table of rule name and citation, plus one sentence that agent configuration and role records cite a row rather than restating it. Add it to `## Contents`.
-- [ ] Replace the rule 4 restatement in `subagents/coordination/ki-wright.md` with a one-line citation of `#workspace-model`, keeping the role's own instruction about Triage capture intact.
-- [ ] Regenerate any generated rubric whose cited sources moved, and run the verification below.
+- [x] Confirm each of the six existing homes still states its rule at the cited anchor on the admitted baseline; record any drift in `## Discussion` and stop if a home no longer carries its rule.
+- [x] Add the rule 7 sentence to `## Work-item discipline` in `standards-repository-roadmaps.md`, deferring the direct-authority exception to the coordination standard rather than restating it.
+- [x] Add a `### Coordination rules` subsection under `## Position and authority` in the coordination standard: a seven-row table of rule name and citation, plus one sentence that agent configuration and role records cite a row rather than restating it. Add it to `## Contents`.
+- [x] Replace the rule 4 restatement in `subagents/coordination/ki-wright.md` with a one-line citation of `#workspace-model`, keeping the role's own instruction about Triage capture intact.
+- [x] Regenerate any generated rubric whose cited sources moved, and run the verification below.
 
 ## Files touched
 
@@ -156,6 +156,40 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 - [KIS-5 plan](http://127.0.0.1:3100/KIS/issues/KIS-5#document-plan), `b76a4ec9-be48-4a3c-8568-7885b5e6789b`: related per-item task-link work. Its replacement proposal separates harness contract ownership from tools-ki implementation; it does not resume or transfer the held Techné record cited below.
 
 This is an association-only recovery check, not a complete task/worktree census or an availability grant. No active implementation claim was verified, but none was released either. Before direct or coordinated implementation, reconcile retained work and ownership and obtain the normal selection/readiness authority. Keep these references on this item; migrate them to the provider-neutral map only after KIS-5's contract and parser are available.
+
+## Review
+
+### Delivered
+
+KI-HARNESS-GOV-103's repository scope is delivered: each of the seven coordination rules is citable from one row of one table, rule 7 is normative, and the `ki-wright` role record cites rather than restates rule 4.
+
+### Change Summary
+
+- Confirmed the six existing homes on the admitted baseline: rules 1, 2, 4 and 5 at their coordination-standard anchors (rule 2 also at the work-item `#task-links`), rule 3 at `ki-next` `#capture-substantive-prospective-work`, rule 6 at `ADR-KI-HARNESS-AGENTS-002` and `#record-and-projections`. No drift.
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`: new `### Coordination rules` subsection under `## Position and authority` with the seven-row citation table and the cite-not-restate sentence; added to `## Contents`.
+- `skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md`: opening sentence of `## Work-item discipline` makes rule 7 normative and defers the direct-authority basis to the coordination standard.
+- `subagents/coordination/ki-wright.md`: the rule 4 restatement is replaced by a one-line citation; the Triage capture instruction is unchanged.
+- `docs/roadmap/KI-HARNESS-GOV-162-cite-rules-in-paperclip.md`: captured in triage for the split-out Paperclip managed-instruction step.
+- Neither generated rubric needed regeneration; both are in sync.
+
+### Verification
+
+- `ki repo audit --skill` `ki-agent-coordination-paperclip`, `ki-work-roadmap`, `ki-subagents`, `ki-subagents-claude`, `ki-authoring`: PASS. `ki-skills`: FAIL=0, one pre-existing `LONG-3` warning.
+- `ki dev skill rubric` for `ki-agent-coordination-paperclip` and `ki-work-roadmap`: in sync.
+- Verify 3 grep returns only the four rule-name rows of the citation table.
+- `bun run test`: 1033 pass, 0 fail. `bunx tsc --noEmit`: clean.
+
+### Outstanding concerns
+
+The three local Paperclip agent instruction files still carry their diverged copies until `KI-HARNESS-GOV-162` is delivered by an operator with Paperclip access. No mechanical check yet notices a reappearing copy, as the Boundary records.
+
+### Post-change review
+
+A coordination-plane configuration now has one governed table to cite, at a stable anchor, and every row resolves under `ki-authoring`. Rule 7 states a requirement on delivery rather than describing where items live, without contradicting the direct-authority basis.
+
+### Mini recap
+
+Citation table, rule 7 sentence and one role-record citation landed; the coordination-plane edit is a named follow-on.
 
 ## Discussion
 
