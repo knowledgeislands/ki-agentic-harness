@@ -5,13 +5,12 @@ title: Territory selection contract
 kind: deliver
 purpose: capability
 initiative: knowledge-islands-model
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 3f1b5cf66efc9710251221573f47e0fbbeffd7d5
 created_at: 2026-10-07T20:07:41Z
-updated_at: 2026-10-07T22:29:21Z
+updated_at: 2026-10-08T19:24:22Z
 ---
 
 # Territory selection contract
@@ -30,7 +29,7 @@ No CLI implementation, other territory edits, live Paperclip changes, new group 
 
 ## Current state
 
-The approved rollout is published through fast-forward task-owned source integration. [KI v0.9.0](https://github.com/knowledgeislands/tools-ki/releases/tag/v0.9.0) and [mgit v0.16.0](https://github.com/knowledgeislands/tools-mgit/releases/tag/v0.16.0) are immutable and exact-tag installations pass. KI has signed archive/checksum verification, successful clean Linux installation and fresh local bootstrap of the pinned territory harness; mgit has absolute executable and manual proof. Installed callers agree for `-t ki -f tools-` and `--estate -f mcp-`, preserving membership and the ki/KIS identities. The automatic [KI formula handoff](https://github.com/knowledgeislands/homebrew-tap/pull/27) and [mgit formula handoff](https://github.com/knowledgeislands/homebrew-tap/pull/29) merged with required checks passing; both exact Homebrew upgrades and user versions are verified. Frozen design evidence, trade routing and Techne Programme Hold remain unchanged. All four records retain awaiting-review status; no acceptance or pruning occurred.
+The approved rollout is published through fast-forward task-owned source integration. [KI v0.9.0](https://github.com/knowledgeislands/tools-ki/releases/tag/v0.9.0) and [mgit v0.16.0](https://github.com/knowledgeislands/tools-mgit/releases/tag/v0.16.0) are immutable and exact-tag installations pass. KI has signed archive/checksum verification, successful clean Linux installation and fresh local bootstrap of the pinned territory harness; mgit has absolute executable and manual proof. Installed callers agree for `-t ki -f tools-` and `--estate -f mcp-`, preserving membership and the ki/KIS identities. The automatic [KI formula handoff](https://github.com/knowledgeislands/homebrew-tap/pull/27) and [mgit formula handoff](https://github.com/knowledgeislands/homebrew-tap/pull/29) merged with required checks passing; both exact Homebrew upgrades and user versions are verified. Frozen design evidence, trade routing and Techne Programme Hold remain unchanged. Kris Brown accepted all four territory-selection records on 8 October 2026. The accepted delivery is retained, with local closure recorded below; no records were pruned.
 
 ## Steps
 
@@ -114,15 +113,19 @@ Final publication evidence: [KI v0.9.0](https://github.com/knowledgeislands/tool
 
 ### Outstanding concerns
 
-Human acceptance remains outstanding. No mandatory rollout gate is failing or unchecked. Work remains awaiting review; no record was accepted or pruned. Foreign primary-checkout changes and historical user state are preserved.
+Kris Brown accepted the delivery on 8 October 2026. No mandatory rollout gate is failing or unchecked. No record was pruned. Foreign primary-checkout changes and historical user state are preserved.
 
 ### Post-change review
 
-The goal and hard cut-over are satisfied within the approved paths. Repository selection grants no jurisdiction or cross-repository write authority. Frozen provenance, caller defaults, trade semantics and KIS are preserved. This delivery is ready for human review, not accepted.
+The goal and hard cut-over are satisfied within the approved paths. Repository selection grants no jurisdiction or cross-repository write authority. Frozen provenance, caller defaults, trade semantics and KIS are preserved. Kris Brown has accepted this delivery on its review packet.
 
 ### Mini recap
 
 Delivered the bounded retirement with passing source, publication and repository evidence. Retained immutable baselines and caller evidence for integration. No new durable guidance or speculative follow-up is proposed.
+
+## Done
+
+Accepted 2026-10-08 by Kris Brown on the review packet above.
 
 ## Discussion
 
