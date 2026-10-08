@@ -6,13 +6,13 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: governance
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 68da7df79364efae9b0baa03df2b89ae2c3bdbba
 created_at: 2026-10-04T09:41:34Z
-updated_at: 2026-10-07T20:43:51Z
+updated_at: 2026-10-08T08:58:24Z
 ---
 
 # KI-HARNESS-GOV-131: Govern living diagrams
