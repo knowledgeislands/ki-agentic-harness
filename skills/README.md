@@ -359,7 +359,7 @@ Create or audit typed KI Decision Records for durable rationale and authority. U
 
 - **Kind:** Governance
 - **Applicability:** Detected
-- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | new <scope> "<title>" | refresh`
+- **Arguments:** `audit [dir] | conform [dir] | consolidate [dir] | educate [dir] | help | new <scope> "<title>" | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

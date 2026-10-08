@@ -7,7 +7,7 @@ ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 description: >
   Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted
   behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
-argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <scope> "<title>" | refresh'
+argument-hint: 'audit [dir] | conform [dir] | consolidate [dir] | educate [dir] | help | new <scope> "<title>" | refresh'
 ---
 
 # Knowledge Islands Decision Records standard
@@ -40,7 +40,7 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **NEW** (draft a new DR). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **CONSOLIDATE** (bring the whole collection back to the consolidated current decisions, run in every regular repository review) and **NEW** (draft a new DR). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT
 
@@ -49,6 +49,10 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **NEW** (
 ### Mode CONFORM
 
 → Read [the CONFORM procedure](references/mode-conform.md).
+
+### Mode CONSOLIDATE
+
+→ Read [the CONSOLIDATE procedure](references/mode-consolidate.md).
 
 ### Mode EDUCATE
 

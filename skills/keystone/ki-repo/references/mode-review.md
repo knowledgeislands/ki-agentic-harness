@@ -117,6 +117,7 @@ Produce the Assessment output sections from the checklist in their stated order.
 - [ ] Read the repository orientation and current work first: `AGENTS.md`, `README`, `.ki.toml` where present, canonical roadmap material, Decision Records, feature definitions, Specifications, Guides, and the implementation surfaces in scope.
 - [ ] Inventory legacy repository-local runtime surfaces when present, including `.claude/commands/` and `.claude/memory/`, rather than assuming the current canonical structure contains all operative guidance.
 - [ ] Read every Decision Record in the agreed scope rather than inferring collection quality from its index or a sample.
+- [ ] Run the `ki-decision-records` CONSOLIDATE assessment on every review, weekly runs included: its mechanical checks over the whole collection, and its record-by-record reading over the agreed scope.
 - [ ] Collect inspectable evidence rather than impressions, covering architecture and dependency boundaries; data flow and extension points; source, build, test, and runtime entry points; configuration ownership, secrets, migration, and failure paths; documentation correspondence; maintainability signals; and what each relevant check does not establish.
 - [ ] Inspect live configuration, runtime state, and external source material only when the invocation permits it.
 - [ ] A broad review uses independent product, human-experience, and engineering lenses before reconciling findings.
@@ -160,7 +161,7 @@ Use these sections in order. Omit one only when the invocation records why it do
 5. **Strongest choices to retain** - identify the architecture, product, and operating decisions that should be preserved.
 6. **Material uncertainties** - record questions, competing interpretations, and reviewer answers that affected findings.
 7. **Prioritised findings** - present stable identifiers, classification, evidence, consequence, confidence, and proposed route.
-8. **Knowledge consolidation** - recommend record-by-record Decision Record disposition and any documentation, Specification, Guide, or skill restructuring.
+8. **Knowledge consolidation** - give the record-by-record Decision Record disposition from the `ki-decision-records` CONSOLIDATE assessment, which its rewrite steps apply once the owner approves it, and recommend any documentation, Specification, Guide, or skill restructuring.
 9. **Human use and configuration** - assess comprehension, progressive disclosure, realistic configuration, and operator feedback.
 10. **Engineering maturity** - assess performance, maintainability, safety, verification, operations, and release consistency.
 11. **Recommended delivery sequence** - order bounded follow-up by dependency without authorising implementation.
@@ -230,7 +231,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Decision records state the current decision, its rationale, and its future consequences rather than accumulating a chronological change history.
 - [ ] Every `decision_depends_on` entry identifies a logical prerequisite rather than a merely related, earlier, or cited record.
 - [ ] Amend an existing decision record in place rather than creating a successor that merely clarifies or expands scope.
-- [ ] Supersede a decision record only when the decision is genuinely reversed.
+- [ ] A superseded or merged decision record is retired, with its index entry and inbound references updated, rather than kept beside its replacement.
 - [ ] A shared decision record is updated coherently in every repository that projects it.
 - [ ] Guide areas make their intended audience, task, and reading path obvious.
 - [ ] Every guide under `docs/guides/` lives in an explicit audience subdirectory, such as `user/`, `developer/`, or `agent/`.
