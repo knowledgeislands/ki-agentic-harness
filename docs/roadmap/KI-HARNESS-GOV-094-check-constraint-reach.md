@@ -6,13 +6,13 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: keystone
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 134f4685656237ed664ddeb02d8f4c8a5e5b4184
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-07T20:43:51Z
+updated_at: 2026-10-08T09:05:02Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
