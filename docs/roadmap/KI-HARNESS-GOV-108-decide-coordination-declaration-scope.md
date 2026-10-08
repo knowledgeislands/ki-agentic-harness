@@ -6,13 +6,12 @@ kind: decide
 purpose: governance
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-08T08:13:36Z
+updated_at: 2026-10-08T08:14:31Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope
@@ -127,6 +126,10 @@ The standard now answers who declares the skill, why, and what reopens the quest
 ### Mini recap
 
 One subsection added to the coordination standard; decision recorded in the standard itself with no Decision Record, as the Decision above directs.
+
+## Done
+
+Accepted 2026-10-08 under Kris's standing grant in the state-of-play design decisions (Decisions 12 and 17: delivered records count as done and are pruned once verified; Decision 19 authorises continuous delivery of this record), on the review packet above. The governing audits (`ki-work-roadmap`, `ki-authoring`, `ki-agent-coordination-paperclip`) pass on this record as committed.
 
 ## Discussion
 
