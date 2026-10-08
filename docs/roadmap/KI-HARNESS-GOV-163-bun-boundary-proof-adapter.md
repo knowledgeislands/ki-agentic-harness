@@ -18,9 +18,9 @@ updated_at: 2026-10-08T10:20:00Z
 
 ## Context
 
-`KI-HARNESS-GOV-127` planned this repository's own adoption, but its re-plan against `DESIGN-2` found the existing adapter cannot see it. The flat adapter cruises root `src/` only and runs boundary tests through a bare `vitest run` entrypoint (`skills/governance/ki-engineering/scripts/rubric/contexts/boundaries.ts`). This repository has no `src/`; its TypeScript lives under `skills/`, `hooks/`, `evals/` and `**/scripts/`, and its `test` script is `bun test`. Today `DESIGN-2` reports it not applicable. Committing a `.dependency-cruiser.ts` without a matching adapter turns that into a `FAIL` the repository cannot clear, so adoption waits for the adapter.
+`KI-HARNESS-GOV-127` (done) planned this repository's own adoption, but its re-plan against `DESIGN-2` found the existing adapter cannot see it. The flat adapter cruises root `src/` only and runs boundary tests through a bare `vitest run` entrypoint (`skills/governance/ki-engineering/scripts/rubric/contexts/boundaries.ts`). This repository has no `src/`; its TypeScript lives under `skills/`, `hooks/`, `evals/` and `**/scripts/`, and its `test` script is `bun test`. Today `DESIGN-2` reports it not applicable. Committing a `.dependency-cruiser.ts` without a matching adapter turns that into a `FAIL` the repository cannot clear, so adoption waits for the adapter.
 
-The same `KI-HARNESS-GOV-127` inventory found that every flat adopter cruises `src/` only. Root `scripts/` TypeScript goes unchecked in `mcp-acquire-whatsapp`, `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, `tools-ki` and, in `apps-observatory`, `scripts/diagrams/`.
+The same `KI-HARNESS-GOV-127` (done) inventory found that every flat adopter cruises `src/` only. Root `scripts/` TypeScript goes unchecked in `mcp-acquire-whatsapp`, `mcp-git-audit`, `mcp-gsuite`, `mcp-housekeeping-claude`, `mcp-ki-kb-fs`, `mcp-ki-kb-notion-mirror`, `mcp-m365`, `tools-git-almanac`, `tools-ki` and, in `apps-observatory`, `scripts/diagrams/`.
 
 ## Boundary
 
@@ -30,4 +30,4 @@ Out of scope: choosing any repository's boundary directions, and trades while tr
 
 ## Discussion
 
-Captured as the remaining part of `KI-HARNESS-GOV-127` during the Baseline rollout.
+Captured as the remaining part of `KI-HARNESS-GOV-127` (done) during the Baseline rollout.
