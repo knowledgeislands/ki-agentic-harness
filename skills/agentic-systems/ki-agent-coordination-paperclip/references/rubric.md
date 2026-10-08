@@ -28,7 +28,8 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does the arrangement distinguish the durable agent role from each run or session, workspace, and worker?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **COORD-3 [J] — Task-to-work linkage** — Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle. (standards-agent-coordination-paperclip.md#task-to-work-relationship, ../../../change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch)
+- **COORD-3 [M + J] — Task-to-work linkage** — Each Paperclip task has an unambiguous governing KI work relationship and independent lifecycle. (standards-agent-coordination-paperclip.md#task-to-work-relationship, ../../../change-management/ki-work-roadmap/references/standards-work-item-format.md#task-links, standards-agent-coordination-paperclip.md#delivery-ownership-and-local-integration, standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch)
+  - _Remediation:_ diagnostic — Correct the named work record: point baseline_ref at a commit on HEAD that contains the record, or keep the implementation link on the one record that governs the task. A pass is repository-side evidence only; reconcile the task side and live claims by judgment.
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does each delivery name its authority, repository, current destination, baseline and owners; reconcile the governing item’s task_links with its task-side prose backlink; refresh a diverged candidate without unauthorised history rewriting; verify and independently review that result; and preserve the independent KI lifecycle without treating an association as a live claim or acceptance?
   - _Outcomes:_ conforming; gap; exclusion
@@ -88,6 +89,8 @@ Repository authority, identity separation, work linkage, workspace isolation, an
   - _Review prompt:_ Does each run that needs KI MCP access reach its own host's bridge through a granted Paperclip connection verified in a real run, with a missing grant reported as a prerequisite and no audit home-pinning, laptop tunnel or cloud connector substituted?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **COORD-15 [M] — Selected worktree location and base** — A selected linked worktree lies outside the repository working tree and Git common directory, and contains the current destination tip. (standards-agent-coordination-paperclip.md#workspace-model)
+  - _Remediation:_ diagnostic — Re-admit the checkout before its work lands: bring it to the current destination tip, record that commit as the new baseline, and recompute the change against it. Provision a worktree registered inside the working tree or Git common directory again under the Paperclip-owned root. This criterion reports; it never moves, rebases, prunes or fetches for a worktree.
 
 ## ORG — Paperclip organisation identity
 

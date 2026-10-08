@@ -4,7 +4,7 @@ import catalogue from './index.ts'
 
 const items = catalogue.families.flatMap((family) => family.items as readonly RubricItem<unknown>[])
 
-test('Paperclip coordination keeps relationship criteria judgment-led', () => {
+test('Paperclip coordination keeps relationship criteria judgment-led beside local-evidence checks', () => {
   expect(catalogue.name).toBe('ki-agent-coordination-paperclip')
   expect(items.map((item) => item.code)).toEqual([
     'COORD-1',
@@ -21,10 +21,17 @@ test('Paperclip coordination keeps relationship criteria judgment-led', () => {
     'COORD-12',
     'COORD-13',
     'COORD-14',
+    'COORD-15',
     'ORG-1',
     'RUBRIC-1'
   ])
-  expect(items.every((item) => !item.mechanical || ['ORG-1', 'RUBRIC-1'].includes(item.code))).toBe(true)
+  expect(items.filter((item) => item.mechanical).map((item) => item.code)).toEqual([
+    'COORD-3',
+    'COORD-15',
+    'ORG-1',
+    'RUBRIC-1'
+  ])
+  expect(items.find((item) => item.code === 'COORD-3')?.judgment?.prompt).toContain('task-side prose backlink')
 })
 
 test('the roadmap write locus is assessed separately from workspace isolation', () => {

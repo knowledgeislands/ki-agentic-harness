@@ -44,7 +44,16 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       ],
       judgment: judgment(
         'Does each delivery name its authority, repository, current destination, baseline and owners; reconcile the governing item’s task_links with its task-side prose backlink; refresh a diverged candidate without unauthorised history rewriting; verify and independently review that result; and preserve the independent KI lifecycle without treating an association as a live claim or acceptance?'
-      )
+      ),
+      mechanical: {
+        level: 'FAIL',
+        remediation: {
+          class: 'diagnostic',
+          guidance:
+            'Correct the named work record: point baseline_ref at a commit on HEAD that contains the record, or keep the implementation link on the one record that governs the task. A pass is repository-side evidence only; reconcile the task side and live claims by judgment.'
+        },
+        audit: { phase: 'INSPECT', run: ({ linkage }) => linkage.outcomes }
+      }
     },
     {
       code: 'COORD-4',
@@ -176,6 +185,22 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       judgment: judgment(
         "Does each run that needs KI MCP access reach its own host's bridge through a granted Paperclip connection verified in a real run, with a missing grant reported as a prerequisite and no audit home-pinning, laptop tunnel or cloud connector substituted?"
       )
+    },
+    {
+      code: 'COORD-15',
+      title: 'Selected worktree location and base',
+      description:
+        'A selected linked worktree lies outside the repository working tree and Git common directory, and contains the current destination tip.',
+      sources: [`${STANDARD}#workspace-model`],
+      mechanical: {
+        level: 'FAIL',
+        remediation: {
+          class: 'diagnostic',
+          guidance:
+            'Re-admit the checkout before its work lands: bring it to the current destination tip, record that commit as the new baseline, and recompute the change against it. Provision a worktree registered inside the working tree or Git common directory again under the Paperclip-owned root. This criterion reports; it never moves, rebases, prunes or fetches for a worktree.'
+        },
+        audit: { phase: 'INSPECT', run: ({ worktreeBase }) => worktreeBase.outcomes }
+      }
     }
   ]
 }
