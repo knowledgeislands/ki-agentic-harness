@@ -105,7 +105,7 @@ for s in ki-skills ki-work-roadmap ki-repo ki-work-housekeeping ki-decision-reco
 
 Nothing blocks this record and it blocks nothing. The `ki-batch` adoption merged from `KI-HARNESS-GOV-125` follows the module's creation within this record. [KI-HARNESS-GOV-093](KI-HARNESS-GOV-093-keep-plugin-projection-current.md) is the same one-fact-many-copies shape applied to the plugin projection but shares no build order.
 
-Sequencing: this record, `KI-HARNESS-GOV-095` (done) and `KI-HARNESS-GOV-105` (done) all edit the shared `ki-work-roadmap` files `scripts/rubric/contexts/roadmap-evidence.ts`, `scripts/rubric/items/index.test.ts` and `references/rubric.md`; this record, `KI-HARNESS-GOV-095` (done) and [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md) all edit `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
+Sequencing: this record, `KI-HARNESS-GOV-095` (done) and `KI-HARNESS-GOV-105` (done) all edit the shared `ki-work-roadmap` files `scripts/rubric/contexts/roadmap-evidence.ts`, `scripts/rubric/items/index.test.ts` and `references/rubric.md`; this record, `KI-HARNESS-GOV-095` (done) and `KI-HARNESS-GOV-103` (done) all edit `references/standards-repository-roadmaps.md`. The anchors differ; whichever lands second rebases.
 
 ## Documentation impact
 
