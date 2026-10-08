@@ -5,11 +5,11 @@ title: Make coordination audit mechanical
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: c96d4018c78c7de5052cbeed68d4bb4d86278193
 task_links:
   paperclip:
     - authority: http://127.0.0.1:3100
@@ -31,7 +31,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-07T20:34:47Z
+updated_at: 2026-10-08T08:23:37Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -74,7 +74,7 @@ Out of scope, deliberately:
 
 - any read of the coordination plane, including whether the task's prose locator exists or names this item, task status, live claims, or acceptance; those remain the `COORD-3` and `COORD-1` judgment;
 - the task-link field and its shape validation, delivered by `KI-HARNESS-GOV-116` and owned by `ki-work-roadmap`;
-- changing any normative claim in [the coordination standard](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md);
+- changing any normative claim in [the coordination standard](../../skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md), other than adding the worktree-base paragraph absorbed from `KI-HARNESS-GOV-115`;
 - which repositories declare the skill, which is [KI-HARNESS-GOV-108](KI-HARNESS-GOV-108-decide-coordination-declaration-scope.md);
 - the held-workspace listing, which [KI-HARNESS-GOV-147](KI-HARNESS-GOV-147-make-the-branch-durable.md) now carries;
 - removing or weakening any judgment criterion, and any new criterion code. `COORD-15` stays free for the worktree-base assertion above.
@@ -90,18 +90,23 @@ Out of scope, deliberately:
 
 ## Steps
 
-- [ ] Extend `PaperclipCoordinationContext` with a `linkage` outcome list computed in `createPaperclipCoordinationSession`: resolve the adapter from the repository's `.ki.toml` `[skills.ki-work]` table, parse record frontmatter under the adapter root, and run local Git (`git cat-file -e <ref>^{commit}`, `git merge-base --is-ancestor <ref> HEAD`, `git ls-tree --name-only <ref> -- <root>`) with no fetch and no write.
+- [ ] Add `contexts/local-evidence.ts` and extend `PaperclipCoordinationContext` with `linkage` and `worktreeBase` outcome lists: resolve the adapter from the repository's `.ki.toml` `[skills.ki-work]` table, parse record frontmatter under the adapter root, and run local Git (`git cat-file -e <ref>^{commit}`, `git merge-base --is-ancestor <ref> HEAD`, `git ls-tree --name-only <ref> -- <root>`, `git rev-parse`, `git worktree list --porcelain`) with no fetch and no write.
 - [ ] Emit one `VIOLATION` per failed triple naming the record, the revision and which part failed; and one per task identity claimed as governing by more than one record, naming every claimant. Emit `PASS` with a count and a plane-side-not-evaluated note otherwise, and `NOT_APPLICABLE` when nothing is in scope.
 - [ ] Add a `mechanical` diagnostic block at level `FAIL` to `COORD-3`, keeping its judgment prompt, with remediation guidance that names the record to correct and says the task side must be reconciled by judgment.
-- [ ] Add context fixtures in `scripts/rubric/contexts/coordination.test.ts` using a temporary Git repository: an unknown revision, a revision not an ancestor of `HEAD`, a revision without the record, a duplicate governing claim, a record with only `evaluation` links that must pass, a clean pass, a remote adapter and a repository with no links.
-- [ ] Update `scripts/rubric/items/index.test.ts` so `COORD-3` is permitted as mechanical and still carries its judgment.
-- [ ] Rewrite `references/mode-audit.md` step 3 to say which results are mechanical, what `COORD-3` checks and what it cannot see, and that a pass is repository-side evidence only.
+- [ ] Add `COORD-15`, mechanical diagnostic at level `FAIL`: when the selected checkout is a linked worktree, it lies outside the primary working tree and Git common directory, and contains the tip of the destination branch (the locally recorded `origin` default branch, else `main`); the primary working tree reports `NOT_APPLICABLE`.
+- [ ] Add the base paragraph absorbed from `KI-HARNESS-GOV-115` to the standard's workspace model.
+- [ ] Add fixtures in `scripts/rubric/contexts/local-evidence.test.ts` using temporary Git repositories: an unknown revision, a revision not an ancestor of `HEAD`, a revision without the record, a duplicate governing claim, a record with only `evaluation` links that must pass, a clean pass, a remote adapter, a repository with no links, a current and a stale linked worktree, a worktree inside the Git common directory, and a read-only, sibling-independent run.
+- [ ] Update `scripts/rubric/items/index.test.ts` so `COORD-3` and `COORD-15` are permitted as mechanical and `COORD-3` still carries its judgment, and the `ki-skills` remediation inventory counts.
+- [ ] Rewrite `references/mode-audit.md` step 3 to say which results are mechanical, what `COORD-3` and `COORD-15` check and what they cannot see, and that a pass is repository-side evidence only.
 - [ ] Regenerate `references/rubric.md` and run the verification below.
 
 ## Files touched
 
 - `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts`
-- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/local-evidence.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/local-evidence.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
 - `skills/agentic-systems/ki-agent-coordination-paperclip/references/mode-audit.md`
@@ -113,8 +118,9 @@ Out of scope, deliberately:
 2. The passing fixture reports `PASS` with the count of links checked and a statement that the plane side was not evaluated; the remote-adapter and no-link fixtures report `NOT_APPLICABLE`.
 3. The audit makes no network call and no write: `git rev-parse HEAD`, `git status --porcelain` and `git worktree list --porcelain` are byte-identical before and after, and no fetch occurs.
 4. The result depends only on the selected checkout: a commit in a sibling worktree does not change it.
-5. `COORD-3` keeps its judgment prompt, no new criterion code exists, and `mode-audit.md` step 3 no longer claims the catalogue is wholly judgment.
-6. The commands below pass, and the audit against this repository reports `COORD-3` as evaluated.
+5. `COORD-3` keeps its judgment prompt, `COORD-15` is the only new criterion code, and `mode-audit.md` step 3 no longer claims the catalogue is wholly judgment.
+6. A linked worktree behind its destination tip produces one `COORD-15` violation naming the worktree, head, destination tip and behind count; one inside the Git common directory fails the location assertion; the primary working tree reports `NOT_APPLICABLE`.
+7. The commands below pass, and the audit against this repository reports `COORD-3` as evaluated.
 
 ```bash
 bun run test
@@ -197,4 +203,4 @@ Add mechanical `COORD-3` checks over repository-local evidence only - the identi
 
 ### Merged from KI-HARNESS-GOV-115
 
-Kris approved merging `KI-HARNESS-GOV-115` (Require current worktree base) into this record on 2026-10-07, under decision 17 of the state-of-play design: the worktree-base check is one more mechanical `COORD` criterion in the same context. Its scope is the in-scope bullet above. Its full plan - the stale-base and forbidden-location findings, the reported failure shape, the `COORD-10` identifier-collision note, its grandfathering rule and the provisioner request `KIS-71` - is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md). The Steps and Verify sections above predate the merge: re-plan them to include it before implementation.
+Kris approved merging `KI-HARNESS-GOV-115` (Require current worktree base) into this record on 2026-10-07, under decision 17 of the state-of-play design: the worktree-base check is one more mechanical `COORD` criterion in the same context. Its scope is the in-scope bullet above. Its full plan - the stale-base and forbidden-location findings, the reported failure shape, the `COORD-10` identifier-collision note, its grandfathering rule and the provisioner request `KIS-71` - is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-GOV-115-require-a-current-base-for-a-coordinated-worktree.md). The Steps and Verify sections above were re-planned to include it on 2026-10-08, taking `COORD-15` because `COORD-10` is now Repository skill baseline. Delivery is fresh on `main` rather than a replay of the retained `KIS-79` branch at `94b6f9f0`, whose host-side resolution is unnecessary because the rubric context reads local Git itself.
