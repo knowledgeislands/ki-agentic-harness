@@ -6,12 +6,12 @@ kind: decide
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: [KI-HARNESS-GOV-103]
 blocked_by: []
 baseline_ref: 65e9c84e4db54198d9ce83ccdc783bb71f90ffcb
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-08T08:34:48Z
+updated_at: 2026-10-08T08:43:28Z
 ---
 
 # KI-HARNESS-GOV-102: Decide role record serialization
@@ -54,12 +54,12 @@ Decided 2026-10-05 under delegated owner authority: **keep the fusion and say so
 
 ## Steps
 
-- [ ] Amend `ADR-KI-HARNESS-AGENTS-002` in place: the portable record is carried by the designated primary projection, the `ki-subagents-claude` Markdown file under a domain directory of `subagents/`; its record fields are `name`, `description` and the instruction body; every other projection corresponds to the primary and never establishes the record; a disagreement resolves to the primary. Replace the "distinct runtime projections" sentence with the domain layout the tree uses and the extension-based discovery the adapters implement. Revise the Consequences bullet that requires both projections for every role so it matches `checks.coverage-subagents-chatgpt = false`, and state the cost the fusion accepts: the portable criteria are judged against the primary file.
-- [ ] Add a `## Record and projections` section to `standards-portable-subagents.md` holding the field partition: record fields are identity (`name`), selection (`description`) and the instruction body carrying lane, grounding, hand-offs, orchestration and outcome evidence; projection fields are every other key an adapter supports. Name the Claude projection as primary and cite the amended decision. Adjust `## Purpose` so "does not define a native serialization" reads consistently with a designated primary carrier.
-- [ ] Add one sentence to the opening of `standards-subagent-definitions.md` naming this projection as the primary carrier of the record, and one to `standards-codex-subagents.md` stating that a Codex file's `name`, `description` and `developer_instructions` must correspond to the primary's record fields and that its remaining keys are projection fields.
-- [ ] Add one sentence to `## Position` in `skills/agentic-systems/ki-subagents/SKILL.md` pointing at the primary-carrier rule, without restating it.
-- [ ] Rewrite the opening and `## Convention` of `subagents/README.md` to describe the files as primary Claude projections carrying the record, list the record fields and say the other frontmatter keys are projection fields, and drop the "pending a research spike" wording.
-- [ ] Run the verification below and record the results in `## Discussion`.
+- [x] Amend `ADR-KI-HARNESS-AGENTS-002` in place: the portable record is carried by the designated primary projection, the `ki-subagents-claude` Markdown file under a domain directory of `subagents/`; its record fields are `name`, `description` and the instruction body; every other projection corresponds to the primary and never establishes the record; a disagreement resolves to the primary. Replace the "distinct runtime projections" sentence with the domain layout the tree uses and the extension-based discovery the adapters implement. Revise the Consequences bullet that requires both projections for every role so it matches `checks.coverage-subagents-chatgpt = false`, and state the cost the fusion accepts: the portable criteria are judged against the primary file.
+- [x] Add a `## Record and projections` section to `standards-portable-subagents.md` holding the field partition: record fields are identity (`name`), selection (`description`) and the instruction body carrying lane, grounding, hand-offs, orchestration and outcome evidence; projection fields are every other key an adapter supports. Name the Claude projection as primary and cite the amended decision. Adjust `## Purpose` so "does not define a native serialization" reads consistently with a designated primary carrier.
+- [x] Add one sentence to the opening of `standards-subagent-definitions.md` naming this projection as the primary carrier of the record, and one to `standards-codex-subagents.md` stating that a Codex file's `name`, `description` and `developer_instructions` must correspond to the primary's record fields and that its remaining keys are projection fields.
+- [x] Add one sentence to `## Position` in `skills/agentic-systems/ki-subagents/SKILL.md` pointing at the primary-carrier rule, without restating it.
+- [x] Rewrite the opening and `## Convention` of `subagents/README.md` to describe the files as primary Claude projections carrying the record, list the record fields and say the other frontmatter keys are projection fields, and drop the "pending a research spike" wording.
+- [x] Run the verification below and record the results in `## Discussion`.
 
 ## Files touched
 
@@ -108,6 +108,39 @@ None. `subagents/README.md` is updated as a step above; no guide describes role 
 ### Roadmap
 
 Unblocks [KI-HARNESS-GOV-103](KI-HARNESS-GOV-103-cite-coordination-rules-once.md).
+
+## Review
+
+### Delivered
+
+KI-HARNESS-GOV-102 is delivered: the fusion decision is written into `ADR-KI-HARNESS-AGENTS-002` and the record/projection field partition into `ki-subagents`.
+
+### Change Summary
+
+- `docs/decisions/ADR-KI-HARNESS-AGENTS-002-portable-subagent-contract-and-runtime-adapters.md`, amended in place: the record is carried by the designated primary `ki-subagents-claude` file under a `subagents/` domain directory; record fields are `name`, `description` and the body; other projections correspond and never establish the record, and the primary prevails on disagreement. The non-existent "distinct runtime projections" level is replaced by the domain layout with extension-based discovery. Consequences now match `checks.coverage-subagents-chatgpt = false` and name the fusion cost and revisit condition.
+- `skills/agentic-systems/ki-subagents/references/standards-portable-subagents.md`: new `## Record and projections` section holding the partition; `## Purpose` now points at the primary carrier.
+- `skills/agentic-systems/ki-subagents/SKILL.md`, both adapter standards and `subagents/README.md`: one statement each of the primary-carrier rule and the partition; the README drops the "pending research spike" wording.
+- No role record under `subagents/` changed and no rubric item changed classification; the `ki-subagents` rubric is in sync.
+- Deviation: the partition section names `model`, `color` and `tools` as projection-field examples but not a Codex key, because `PORT-1` rejects an unqualified runtime reference in the portable standard.
+
+### Verification
+
+- `ki repo audit --skill ki-subagents`, `ki-subagents-claude`, `ki-decision-records`, `ki-authoring`: PASS.
+- `ki repo audit --skill ki-skills`: FAIL=0, one pre-existing `LONG-3` refresh-cadence warning.
+- `ki dev skill rubric ki-subagents`: in sync.
+- `bun run test`: 1025 pass, 0 fail. `bunx tsc --noEmit`: clean.
+
+### Outstanding concerns
+
+None.
+
+### Post-change review
+
+Whether `color` is part of a role now has one answer from any of the decision, the portable standard, either adapter or the README: it is a projection field. The `#record-and-projections` anchor KI-HARNESS-GOV-103 needs for rule 6 now exists.
+
+### Mini recap
+
+Decision amended in place, partition written once in `ki-subagents` and cited from the adapters and README; no new Decision Record.
 
 ## Discussion
 

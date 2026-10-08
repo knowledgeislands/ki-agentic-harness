@@ -1,10 +1,10 @@
 # agents
 
-Knowledge Islands agent definitions live here, grouped by domain. Today these are **Claude Code subagents** — one `.md` file per agent — which is the current, validated shape. Whether other runtimes' subagent formats (e.g. OpenAI Codex CLI) share that shape is a provisional, open question pending a research spike; see [SDR-KI-HARNESS-002](../docs/decisions/SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md) for the multi-runtime intent and `ki-subagents` (its portable-core framing) for what is expected to carry across.
+Knowledge Islands agent definitions live here, grouped by domain. Each is a **Claude Code subagent** file, one `.md` file per agent. That file is the designated primary projection of a portable role and carries the role record itself, as [ADR-KI-HARNESS-AGENTS-002](../docs/decisions/ADR-KI-HARNESS-AGENTS-002-portable-subagent-contract-and-runtime-adapters.md) decides. This repository declares no Codex projection; one would correspond to the primary and never establish the record.
 
 ## Convention
 
-Under Claude Code — the current runtime — each agent is a Markdown file with YAML frontmatter (`name` and `description` required; `model`/`tools`/`disallowedTools`/`permissionMode`/`color` optional) followed by a system-prompt body, per the [Claude Code subagents spec](https://code.claude.com/docs/en/sub-agents). The `name` field must be unique across the whole tree. A future runtime may express the same agent differently; `name`, `description`, the system prompt, and coarse tool-scoping are the provisional portable core, and the rest is Claude Code-specific (see `ki-subagents`).
+Each agent is a Markdown file with YAML frontmatter followed by a system-prompt body, per the [Claude Code subagents spec](https://code.claude.com/docs/en/sub-agents). The **record fields** are `name`, `description`, and the body; `name` must be unique across the whole tree. Every other frontmatter key - `model`, `tools`, `disallowedTools`, `permissionMode`, `color` and the rest - is a **projection field** owned by `ki-subagents-claude`, not part of the role. The partition is defined in `ki-subagents` under [Record and projections](../skills/agentic-systems/ki-subagents/references/standards-portable-subagents.md#record-and-projections).
 
 The governing skill for what makes a good agent definition is **`ki-subagents`** (under [skills/](../skills)) — the agents twin of `ki-skills`. Run its AUDIT mode over any agent, or the whole set, before shipping.
 

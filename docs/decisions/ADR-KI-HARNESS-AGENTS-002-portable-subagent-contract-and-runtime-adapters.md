@@ -22,7 +22,7 @@ Runtime adapters compose the parent and own native representation:
 - `ki-subagents-claude` owns Claude Code Markdown, YAML frontmatter, discovery paths, fields, and source-shape checks.
 - `ki-subagents-chatgpt` owns Codex standalone TOML, discovery paths, fields, and source-shape checks.
 
-Runtime-native definitions live under distinct runtime projections within the `subagents/` source shelf. Definitions with the same portable identity are corresponding projections, not copies that establish one another's correctness. Source conformance never proves installation, activation, effective settings, invocation, or outcome quality.
+The portable role record has no serialization of its own. It is carried by one designated primary projection: the `ki-subagents-claude` Markdown file under a domain directory of the `subagents/` source shelf, such as `subagents/governance/`. Its record fields are `name`, `description` and the instruction body; every other key is a projection field that only an adapter governs. Adapters discover their projections by file extension within that domain layout. Any other projection with the same portable identity corresponds to the primary and never establishes the record; where they disagree on a record field, the primary prevails. Source conformance never proves installation, activation, effective settings, invocation, or outcome quality.
 
 The `tools-ki` host owns publication and activation. It must select only the projection for the target runtime, reject missing or ambiguous projections, and report unavailable capability when it cannot perform that mapping. Harness skills and source files must not claim host support from descriptor metadata or filesystem presence alone.
 
@@ -30,8 +30,9 @@ The `tools-ki` host owns publication and activation. It must select only the pro
 
 - Claude Code and Codex can evolve their native formats without changing the portable semantic contract.
 - Runtime-only fields and defaults cannot leak into `ki-subagents` or be mechanically enforced by both adapters.
-- The Harness must carry and audit both native projections for every subagent it claims to support on both runtimes.
-- Cross-runtime semantic parity can be checked by normalized identity and meaning, while native syntax remains adapter-owned.
+- The Harness carries and audits a native projection only for each runtime it declares; a repository that declines a runtime's subagent coverage, as this one does with `checks.coverage-subagents-chatgpt = false`, carries the primary alone.
+- Fusing record and primary projection is a knowing cost: portable criteria are judged against the primary Claude Code file, and a second projection can only correspond to it, never contradict it. Reopen this when a role needs a portable fact that no runtime field or instruction body can carry.
+- Cross-runtime semantic parity can be checked by comparing a corresponding projection's record fields with the primary's, while native syntax remains adapter-owned.
 - The current host has no implemented subagent publisher for either runtime, so publication and activation remain explicitly unavailable until `tools-ki` implements and verifies the runtime projection boundary.
 - Additional runtimes require a new adapter and native projection, not conditionals in the portable parent.
 

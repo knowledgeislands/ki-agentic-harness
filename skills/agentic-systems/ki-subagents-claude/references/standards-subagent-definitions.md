@@ -1,6 +1,6 @@
 # Claude Code subagent source projections
 
-`ki-subagents` owns the portable role: identity, selection purpose, core instructions, lane, grounding, hand-offs, orchestration intent, and outcome evidence. This adapter owns only the Claude Code Markdown/YAML projection and candidate source discovery.
+`ki-subagents` owns the portable role: identity, selection purpose, core instructions, lane, grounding, hand-offs, orchestration intent, and outcome evidence. This adapter owns only the Claude Code Markdown/YAML projection and candidate source discovery. That projection is the designated primary: it carries the portable role record, whose record fields are `name`, `description`, and the instruction body; every other key here is a projection field (see [Record and projections](../../ki-subagents/references/standards-portable-subagents.md#record-and-projections)).
 
 ## Source format
 

@@ -1,5 +1,7 @@
 # Codex standalone subagent source projections
 
+A Codex file is a corresponding projection, never the role record. The `ki-subagents-claude` Markdown file is the designated primary; a Codex `name`, `description`, and `developer_instructions` must agree with its record fields, and every other key is a projection field (see [Record and projections](../../ki-subagents/references/standards-portable-subagents.md#record-and-projections)).
+
 ## Runtime binding
 
 ## Source format
