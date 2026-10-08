@@ -6,13 +6,12 @@ kind: deliver
 purpose: adoption
 project: baseline-rollout
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e30948ad1e45835c5d2a6140ff5306778a32b9d2
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-08T09:11:01Z
+updated_at: 2026-10-08T09:11:42Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -155,6 +154,10 @@ Dropping `DESIGN-3` keeps one criterion per proof: a second warning-level criter
 ### Mini recap
 
 The estate's boundary-checker policy is complete and every repository has a disposition; the harness's own adoption and the `scripts/` gaps wait on a `bun test` proof adapter in `KI-HARNESS-GOV-163`.
+
+## Done
+
+Accepted 2026-10-08 by Kris Brown on the review packet above.
 
 ## Discussion
 
