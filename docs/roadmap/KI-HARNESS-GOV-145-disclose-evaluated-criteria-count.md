@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: keystone
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 68da7df79364efae9b0baa03df2b89ae2c3bdbba
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-08T08:58:36Z
+updated_at: 2026-10-08T09:20:35Z
 ---
 
 # KI-HARNESS-GOV-145: Disclose evaluated criteria count
@@ -46,9 +45,9 @@ Verified on harness `main` `68da7df7` and `tools-ki` `main` `76ac4d33`:
 
 ## Steps
 
-- [ ] In `tools-ki`, carry a per-skill criteria count from the audit operation to the reporter: mechanical items planned, mechanical items evaluated (at least one outcome other than `NOT_APPLICABLE`), and items with a judgment aspect, which remain unassessed by the host.
-- [ ] Append `CRITERIA: EVALUATED=<e>/<m> JUDGMENT=<j>` to the repository summary, the concise summary, each multi-repository line and the totals, and to each per-skill result line.
-- [ ] Add `REPO-AUDIT-010 - Criteria coverage disclosure` to `docs/specs/repository-audit.md`, a contract test, and an `Unreleased` changelog entry; update exact-output tests.
+- [x] In `tools-ki`, carry a per-skill criteria count from the audit operation to the reporter: mechanical items planned, mechanical items evaluated (at least one outcome other than `NOT_APPLICABLE`), and items with a judgment aspect, which remain unassessed by the host.
+- [x] Append `CRITERIA: EVALUATED=<e>/<m> JUDGMENT=<j>` to the repository summary, the concise summary, each multi-repository line and the totals, and to each per-skill result line.
+- [x] Add `REPO-AUDIT-010 - Criteria coverage disclosure` to `docs/specs/repository-audit.md`, a contract test, and an `Unreleased` changelog entry; update exact-output tests.
 
 ## Files touched
 
@@ -66,7 +65,7 @@ ki repo audit
 ki repo audit --skill ki-work-roadmap
 ```
 
-The harness audit summary must show a non-zero `EVALUATED` count for `ki-work-roadmap`; a `ki-git` audit must show `EVALUATED=0/0` with a non-zero `JUDGMENT` count.
+The harness audit summary must show a non-zero `EVALUATED` count for `ki-work-roadmap`, and a `ki-git` audit must show its judgment criteria as a non-zero `JUDGMENT` count.
 
 ## Dependencies / blocks
 
@@ -100,3 +99,7 @@ A green summary is used as evidence in reviews, acceptance and delegated-agent r
 
 - The count appears in the default summary at every reporter level. It is cheap, and a disclosure hidden behind a flag would not reach the reviewer who most needs it.
 - A skill that evaluated no mechanical criterion keeps its `PASS` verdict. A distinct verdict would change verdict and exit semantics, which the Boundary excludes; `EVALUATED=0/0` beside a non-zero `JUDGMENT` makes the case visible instead.
+
+### Delivery - 2026-10-08
+
+`tools-ki` `main` now discloses `CRITERIA: EVALUATED=<e>/<m> JUDGMENT=<j>` beside every audit verdict, specified as `REPO-AUDIT-010` with a contract test; `bun run test:coverage` (1,096 tests, 100% coverage) and `bunx tsc --noEmit` pass. Against this repository the unreleased build reports `ki-work-roadmap` as `EVALUATED=15/15 JUDGMENT=11` and `ki-git` as `EVALUATED=1/1 JUDGMENT=7`. The installed `ki` shows the count only after the next `tools-ki` release.
