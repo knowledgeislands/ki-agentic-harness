@@ -2,6 +2,20 @@
 
 Use this checklist before publishing a release of a repository governed by `ki-repo-tools`. It turns the standard's existing requirements into a reviewable release candidate; it does not select work, publish a release, or take ownership of a companion Homebrew formula.
 
+## Release on demand
+
+This is the one release-timing policy for every Knowledge Islands tooling project that publishes releases: the `tools-*` command-line tools, the `mcp-*` servers under `ki-repo-mcp` source distribution, and any other repository that cuts versioned releases. Each repository's releasing guide points here and keeps only its mechanical steps.
+
+- **Hold releases by default.** Do not release after each change or each delivered work record. Release only when at least one of these holds:
+  1. something else needs the new capability, such as CI enforcement in another repository, or another person or machine that installs the released tool;
+  2. there is something significant to ship; or
+  3. significant changes have accumulated since the last release.
+- **Consolidate.** Releases due only because changes have accumulated wait for a set point in the day and ship together, rather than one release per change.
+- **Delivered work closes without a release.** A work record's delivery, review and acceptance never wait for a release, and an agent never releases as part of delivery. A release is a separate, explicitly authorised action.
+- **The owner rebuilds locally.** The owner uses new capability before a release by rebuilding the tool from `main` through the repository's documented local rebuild, not by cutting a release.
+- **Pins move only where needed.** A repository's CI `KI_VERSION` pin, held in `.github/ki-version` under `ki-engineering`, moves only when that repository needs the new version. The `ki-engineering` pin receiver fits this rule because it only proposes: it opens a pull request for each new release, and the pin moves when a person merges that proposal for a repository that needs it. A proposal a repository does not need may stay open or be closed; an older pin is not a failure. Whether routine pin bumps may merge automatically is a separate decision; if it is ever granted, adopting an auto-merging receiver is that repository's opt-in to track every release.
+- **Fewer releases cost less downstream.** Consolidated releases keep the tap, website and pin proposals that each release triggers infrequent; the release automation removes the per-release handling cost, not the reason to hold.
+
 ## 1. Establish the candidate
 
 - Complete [the change-readiness checklist](standards-change-readiness.md), then read the repository's `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` for its exact gates and publication procedure. The local guides name this shared policy and retain executable local steps rather than duplicate common obligations.

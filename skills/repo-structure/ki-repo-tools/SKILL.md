@@ -64,7 +64,7 @@ A `tools-*` repo opts into this standard by declaring `[skills.ki-repo-tools]` i
 
 Before presenting any tool change for review, read [the change-readiness checklist](references/standards-change-readiness.md). It keeps shared documentation, verification, and authority questions in one place while each repository's developer guide retains its own executable gates and recovery detail.
 
-Before preparing or reviewing a tool release, read [the release-readiness checklist](references/standards-release-readiness.md). It consolidates the existing version, documentation, validation, and distribution obligations into one staged human checklist; it does not create another skill mode or take ownership from `ki-engineering` or `ki-repo-homebrew-tap`.
+Before preparing or reviewing a tool release, read [the release-readiness checklist](references/standards-release-readiness.md). Its [release-on-demand policy](references/standards-release-readiness.md#release-on-demand) is the one rule for when any KI tooling project releases: hold by default, release only when something needs it, and never release as part of delivering work. The checklist consolidates the existing version, documentation, validation, and distribution obligations into one staged human checklist; it does not create another skill mode or take ownership from `ki-engineering` or `ki-repo-homebrew-tap`.
 
 ## Operating modes
 

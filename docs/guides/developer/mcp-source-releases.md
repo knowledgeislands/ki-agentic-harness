@@ -11,4 +11,4 @@ Use this procedure after the server's repository checks pass and the repository 
 
 The release must not publish the MCP server package to npm merely to make installation possible. Registry metadata, release assets, MCPB bundles, and compiled executables are optional additions; they do not replace the tag, commit, locked build, entry point, or installer provenance receipt.
 
-The governing contract is the `ki-repo-mcp` source-distribution standard. The repository owner chooses versions and release timing; the Harness audit never creates tags or releases.
+The governing contract is the `ki-repo-mcp` source-distribution standard. The repository owner chooses versions, and release timing follows the `ki-repo-tools` release-on-demand policy; the Harness audit never creates tags or releases.

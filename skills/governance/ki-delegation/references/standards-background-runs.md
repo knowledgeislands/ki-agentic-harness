@@ -124,7 +124,7 @@ A project thread coordinates exactly one Project, or one named estate area, for 
 
 - **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current.
 - **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises.
-- **Master thread:** the owner's designated master thread owns cross-project priorities, releases, and decisions touching more than one Project. A project thread raises those there.
+- **Master thread:** the owner's designated master thread owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A project thread raises those there.
 - **Naming:** where the runtime can name a session, the thread takes its Project's name so the master thread can find it.
 - **Opening:** open a project thread only where there is active work to drive. A dormant Project needs no thread.
 
