@@ -6,8 +6,7 @@ kind: deliver
 purpose: debt
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: aaebd2d06691d2e21442563dfdf3fe8f03184825
@@ -38,7 +37,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-08T08:50:11Z
+updated_at: 2026-10-08T08:50:26Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
@@ -190,6 +189,10 @@ A coordination-plane configuration now has one governed table to cite, at a stab
 ### Mini recap
 
 Citation table, rule 7 sentence and one role-record citation landed; the coordination-plane edit is a named follow-on.
+
+## Done
+
+Accepted 2026-10-08 under Kris's standing grant in the state-of-play design decisions (Decisions 12 and 17: delivered records count as done and are pruned once verified; Decision 19 authorises continuous delivery of this record), on the review packet above. The governing audits (`ki-work-roadmap`, `ki-authoring`, `ki-agent-coordination-paperclip`, `ki-subagents`) pass on this record as committed. The Paperclip instruction-file step continues as `KI-HARNESS-GOV-162`.
 
 ## Discussion
 
