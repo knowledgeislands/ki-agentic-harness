@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: governance
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 68da7df79364efae9b0baa03df2b89ae2c3bdbba
 created_at: 2026-10-04T09:41:34Z
-updated_at: 2026-10-08T08:58:24Z
+updated_at: 2026-10-08T10:40:00Z
 ---
 
 # KI-HARNESS-GOV-131: Govern living diagrams
@@ -53,16 +52,16 @@ Archify itself, its schemas and its viewer stay upstream. Prose style stays with
 
 ## Steps
 
-- [ ] Scaffold `skills/governance/ki-diagrams/` through `ki-skills` Mode EDUCATE: `SKILL.md` with `ki-kind: governance`, `ki-applicability: declaration-only`, `ki-depends-on: []`, `ki-shared-dependencies: [ki-skills:rubric]`, modes AUDIT, CONFORM, EDUCATE and REFRESH, and a `compatibility` field declaring Archify and Playwright with Chromium as optional prerequisites.
-- [ ] Write `references/standards-diagrams.md`: the Archify choice and its rationale, moved from this record's "Tooling considered" with its sources; the five diagram types and how a question maps to one; committed forms (`docs/diagrams/<slug>.<type>.json` and `<slug>.svg`; HTML committed only by a repository that serves it, otherwise rebuilt under `+/diagrams/`); the manifest; naming; privacy (no local absolute path, private repository name or personal identity in a source or SVG); the regeneration and freshness procedure; both embedding cases, each linking onward to the interactive view; and degradation without Archify (AUDIT runs on committed files alone; EDUCATE, REFRESH and export stop with the Rig install instruction).
-- [ ] Define the manifest as `docs/diagrams/diagrams.toml`, one table per slug with `type`, `question`, `audience`, `traced`, `stale_when`, `regenerate` and `last_checked`, as the machine-readable authority; `docs/diagrams/README.md` remains the reader-facing index that embeds each SVG. Ship both templates under `assets/`.
-- [ ] State that no diagram set is mandatory for any repository shape; give a recommended starter set per shape (project and harness: architecture and one workflow; MCP server: architecture and one request sequence; Knowledge Base: none by default) as EDUCATE guidance.
-- [ ] Port the exporter to `scripts/export-svg.ts`: import `playwright` dynamically and fail closed with an install hint when it is absent; factor argument validation and the external-reference refusal into pure functions; cover them in `scripts/export-svg.test.ts` without launching a browser.
-- [ ] Add the rubric under `scripts/rubric/`: a context reading the manifest, sources, SVGs and read-only Git history; `DIAG-1` (manifest and files agree both ways, `FAIL`); `DIAG-2` (no absolute path or private identity in a source or SVG, `FAIL`); `DIAG-3` (SVG self-contained, no external reference, `FAIL`); `DIAG-4` (a traced path changed since `last_checked`, `WARN`, with judgment on whether the change matches `stale_when`); `DIAG-5` (judgment: `finalize --quality showcase` passes and the type answers the question). Vendor `scripts/shared/rubric.ts` from `ki-guides`; add `index.test.ts`, `publication.ts` and fixture tests for each mechanical item.
-- [ ] Write `references/mode-audit.md`, `mode-conform.md` (scaffold the manifest and README from `assets/` only, never author or regenerate a diagram), `mode-educate.md`, `mode-refresh.md`, `sources.md` (Archify and the considered alternatives) and `exemplars.md` (the Observatory set at a pinned revision); generate `references/rubric.md` with `ki dev skill rubric ki-diagrams`.
-- [ ] Add a one-line Archify entry to "Adopted" in [ADR-KI-HARNESS-TOOLCHAIN-002](../decisions/ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) linking `skills/governance/ki-diagrams/references/standards-diagrams.md`, consistent with how [the accepted qmd adoption decision](../decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) records qmd there.
-- [ ] Register the skill: run `ki repo conform --skill ki-repo-harness` to republish the generated catalogue in `skills/README.md`; increment the skill counts in `README.md` by one each; increment the counts in `remediation-inventory.test.ts` rather than hardcoding them.
-- [ ] Raise a knowledge trade to ki-website proposing a skills-by-outcome entry for keeping diagrams, and a knowledge trade to apps-observatory reporting that the exporter now ships in `ki-diagrams` so it may retire `scripts/diagrams/export-svg.ts` when it adopts the skill.
+- [x] Scaffold `skills/governance/ki-diagrams/` through `ki-skills` Mode EDUCATE: `SKILL.md` with `ki-kind: governance`, `ki-applicability: declaration-only`, `ki-depends-on: []`, `ki-shared-dependencies: [ki-skills:rubric]`, modes AUDIT, CONFORM, EDUCATE and REFRESH, and a `compatibility` field declaring Archify and Playwright with Chromium as optional prerequisites.
+- [x] Write `references/standards-diagrams.md`: the Archify choice and its rationale, moved from this record's "Tooling considered" with its sources; the five diagram types and how a question maps to one; committed forms (`docs/diagrams/<slug>.<type>.json` and `<slug>.svg`; HTML committed only by a repository that serves it, otherwise rebuilt under `+/diagrams/`); the manifest; naming; privacy (no local absolute path, private repository name or personal identity in a source or SVG); the regeneration and freshness procedure; both embedding cases, each linking onward to the interactive view; and degradation without Archify (AUDIT runs on committed files alone; EDUCATE, REFRESH and export stop with the Rig install instruction).
+- [x] Define the manifest as `docs/diagrams/diagrams.toml`, one table per slug with `type`, `question`, `audience`, `traced`, `stale_when`, `regenerate` and `last_checked`, as the machine-readable authority; `docs/diagrams/README.md` remains the reader-facing index that embeds each SVG. Ship both templates under `assets/`.
+- [x] State that no diagram set is mandatory for any repository shape; give a recommended starter set per shape (project and harness: architecture and one workflow; MCP server: architecture and one request sequence; Knowledge Base: none by default) as EDUCATE guidance.
+- [x] Port the exporter to `scripts/export-svg.ts`: import `playwright` dynamically and fail closed with an install hint when it is absent; factor argument validation and the external-reference refusal into pure functions; cover them in `scripts/export-svg.test.ts` without launching a browser.
+- [x] Add the rubric under `scripts/rubric/`: a context reading the manifest, sources, SVGs and read-only Git history; `DIAG-1` (manifest and files agree both ways, `FAIL`); `DIAG-2` (no absolute path or private identity in a source or SVG, `FAIL`); `DIAG-3` (SVG self-contained, no external reference, `FAIL`); `DIAG-4` (a traced path changed since `last_checked`, `WARN`, with judgment on whether the change matches `stale_when`); `DIAG-5` (judgment: `finalize --quality showcase` passes and the type answers the question). Vendor `scripts/shared/rubric.ts` from `ki-guides`; add `index.test.ts`, `publication.ts` and fixture tests for each mechanical item.
+- [x] Write `references/mode-audit.md`, `mode-conform.md` (scaffold the manifest and README from `assets/` only, never author or regenerate a diagram), `mode-educate.md`, `mode-refresh.md`, `sources.md` (Archify and the considered alternatives) and `exemplars.md` (the Observatory set at a pinned revision); generate `references/rubric.md` with `ki dev skill rubric ki-diagrams`.
+- [x] Add a one-line Archify entry to "Adopted" in [ADR-KI-HARNESS-TOOLCHAIN-002](../decisions/ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) linking `skills/governance/ki-diagrams/references/standards-diagrams.md`, consistent with how [the accepted qmd adoption decision](../decisions/ADR-KI-HARNESS-TOOLCHAIN-006-qmd-derived-kb-search-index.md) records qmd there.
+- [x] Register the skill: run `ki repo conform --skill ki-repo-harness` to republish the generated catalogue in `skills/README.md`; increment the skill counts in `README.md` by one each; increment the counts in `remediation-inventory.test.ts` rather than hardcoding them.
+- [x] Split to KI-HARNESS-GOV-164, because the `ki-trades` standard puts new trades on hold, the step to raise a knowledge trade to ki-website proposing a skills-by-outcome entry for keeping diagrams, and a knowledge trade to apps-observatory reporting that the exporter now ships in `ki-diagrams` so it may retire `scripts/diagrams/export-svg.ts` when it adopts the skill.
 
 ## Files touched
 
@@ -137,6 +136,42 @@ None in this repository. The skills-by-outcome guide is website-owned and reache
 ### Roadmap
 
 None in this repository beyond the outbound trades.
+
+## Review
+
+### Delivered
+
+The `ki-diagrams` governance skill in `0d6cddb1`: the Diagrams standard with the Archify rationale and the alternatives considered, `assets/` templates, the four mode references, `sources.md`, `exemplars.md` pinned to the Observatory set, the generated `rubric.md`, the SVG exporter, and the `DIAG-1` to `DIAG-5` rubric with fixture tests. Archify is listed under "Adopted" in ADR-KI-HARNESS-TOOLCHAIN-002, and the catalogue, `README.md` counts and remediation inventory are updated. The two trades are split to KI-HARNESS-GOV-164.
+
+### Change Summary
+
+- The shared rubric module is vendored from its canonical `ki-skills` copy rather than from `ki-guides`, whose copy is older.
+- The ADR line names the skill's Diagrams standard in prose instead of linking it: `ki-decision-records` `BODY-11` refuses a record link outside the decision collection.
+
+### Verification
+
+1. `ki repo audit --skill ki-skills` reports no failure; its one warning is the existing `LONG-3` cadence on another skill's sources. The catalogue lists `ki-diagrams` and `README.md` reads 61 skills, 50 governance.
+2. The standard carries the rationale and sources; ADR-KI-HARNESS-TOOLCHAIN-002 has the one Archify line; no Decision Record was added. `ki repo audit --skill ki-decision-records` passes.
+3. On a local clone of `apps-observatory` with a generated `diagrams.toml` and `[skills.ki-diagrams]`, `ki repo audit --skill ki-diagrams` passes `DIAG-1` to `DIAG-3` with no failure; `DIAG-4` warns on every diagram because traced files changed after each pilot `last_checked`. The fixture tests cover each failing case listed.
+4. The clone's working tree stayed clean after the audit, which ran without Playwright in the harness.
+5. Without Playwright the exporter exits 1 with the install hint. With it, exporting a fresh `finalize` of `beacon-request` gave an SVG byte-identical to the Observatory's committed one and to the Observatory exporter's output.
+6. `bun run test` (1048 pass), `bunx tsc --noEmit`, `ki dev skill rubric ki-diagrams` (in sync) and `ki repo audit --skill ki-authoring` pass.
+
+### Outstanding concerns
+
+KI-HARNESS-GOV-164 carries the ki-website and apps-observatory handoffs.
+
+### Post-change review
+
+`DIAG-4` reads only Git history and leaves the `stale_when` match to judgment, so a repository is warned, never failed, for code that moved under a diagram. The audit needs neither Archify nor Playwright, so a repository can adopt the skill before anyone there installs either.
+
+### Mini recap
+
+Diagrams now have one harness standard and a checker; adoption, and telling the website and the Observatory, are separate work.
+
+## Done
+
+Recorded done 2026-10-08 by the delegated delivery run on the verification above.
 
 ## Discussion
 
