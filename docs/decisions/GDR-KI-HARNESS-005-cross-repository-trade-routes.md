@@ -5,7 +5,7 @@ date: 2026-08-06
 status: archive
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
 decision_type: governance
-decision_depends_on: ["GDR-KI-FUNDAMENTALS-001"]
+decision_depends_on: ["GDR-KI-ARCADIA-006"]
 ---
 
 # GDR-KI-HARNESS-005: Cross-repository trade routes
@@ -52,4 +52,4 @@ The initial capability depends on mutually visible repositories in the local KI 
 
 ## References
 
-- [GDR-KI-FUNDAMENTALS-001](GDR-KI-FUNDAMENTALS-001-knowledge-islands-ecosystem-fundamentals.md) — the repository authority and choreography model this decision preserves.
+- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) — the repository authority and choreography model this decision preserves.

@@ -23,7 +23,7 @@ The line is **prose documents against code**, not distance. A guide may link or 
 
 A guide MUST NOT link any other Markdown document outside its own collection: a `README.md`, an `AGENTS.md`, a roadmap item, a changelog, or another repository's documentation. Sibling guides in the same collection are the exception and the point — they are how a collection is navigated.
 
-Where a guide needs a document the collection does not contain, it names it in prose, exactly as a Decision Record names the guides and standards it grounds in. `ADR-KI-WEBSITE-003` identifies a record without depending on it, and the identifier survives a prune that would break a link. Supporting material a guide genuinely needs lives in `docs/guides/references/`, inside the tree, where a relative sibling path reaches it.
+Where a guide needs a document the collection does not contain, it names it in prose, exactly as a Decision Record names the guides and standards it grounds in. `ADR-KI-WEB-003` identifies a record without depending on it, and the identifier survives a prune that would break a link. Supporting material a guide genuinely needs lives in `docs/guides/references/`, inside the tree, where a relative sibling path reaches it.
 
 External URLs are permitted as supplementary. The guide must still read completely without following them.
 

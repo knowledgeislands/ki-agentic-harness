@@ -33,7 +33,7 @@ The installer must perform local source builds and manage Git access for private
 
 ## References
 
-- [GDR-KI-FUNDAMENTALS-001](GDR-KI-FUNDAMENTALS-001-knowledge-islands-ecosystem-fundamentals.md)
+- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md)
 - [Semantic Versioning 2.0.0](https://semver.org/)
 - [Git tag documentation](https://git-scm.com/docs/git-tag)
 - [Bun install documentation](https://bun.sh/docs/pm/cli/install)

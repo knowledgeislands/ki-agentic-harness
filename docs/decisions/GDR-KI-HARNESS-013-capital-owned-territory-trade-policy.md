@@ -5,7 +5,7 @@ date: 2026-10-06
 status: current
 decision_type: governance
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
-decision_depends_on: ['GDR-KI-FUNDAMENTALS-001', 'GDR-KI-HARNESS-006']
+decision_depends_on: ['GDR-KI-ARCADIA-006', 'GDR-KI-HARNESS-006']
 ---
 
 # GDR-KI-HARNESS-013: Capital-owned territory trade policy
@@ -38,5 +38,5 @@ The capability depends on the Capital and its members being visible in the local
 
 ## References
 
-- [GDR-KI-FUNDAMENTALS-001](GDR-KI-FUNDAMENTALS-001-knowledge-islands-ecosystem-fundamentals.md) - the repository authority and choreography model this decision preserves.
+- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) - the repository authority and choreography model this decision preserves.
 - [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-owner-declared-agoras.md) - owner-declared Agoras, which select working sets but grant no route.

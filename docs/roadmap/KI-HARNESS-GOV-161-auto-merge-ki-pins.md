@@ -18,7 +18,7 @@ Decide whether a released `ki` pin bump opened by an `update-ki-pin.yml` receive
 
 ## Context
 
-`KI-HARNESS-GOV-141`, done on 2026-10-08, stated the released-pin receiver contract in the `ki-engineering` standard. Its bump pull request rewrites only `.github/ki-version` and merges after human review, because XDR-KI-HARNESS-001 requires a person to review dependency changes. KI Website already auto-merges exact version-only tool updates under its own decision, ODR-KI-WEBSITE-001, so the estate has a precedent for bounded automation.
+`KI-HARNESS-GOV-141`, done on 2026-10-08, stated the released-pin receiver contract in the `ki-engineering` standard. Its bump pull request rewrites only `.github/ki-version` and merges after human review, because XDR-KI-HARNESS-001 requires a person to review dependency changes. KI Website already auto-merges exact version-only tool updates under its own decision, ODR-KI-WEB-001, so the estate has a precedent for bounded automation.
 
 Auto-merging the pin would amend XDR-KI-HARNESS-001 for this one dependency, so it is the organisation owner's decision, not the delivering agent's.
 
