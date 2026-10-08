@@ -331,35 +331,18 @@ describe('new collection adoption root', () => {
   })
 })
 
-describe('shared record mirrors', () => {
-  const shared = {
-    file: 'ADR-EXAMPLE-002-shared-decision.md',
-    id: 'ADR-EXAMPLE-002',
-    title: 'Shared decision',
-    sharedRecord: true
-  }
-  const ordinary = { ...shared, sharedRecord: false }
-
-  test('excludes a deliberately marked shared record from the receiving collection serial series', () => {
-    const context = rootFixture({ files: [shared], indexIds: [shared.id] })
-
-    expect(context?.filename.serialGaps).toEqual(new Map())
-    expect(audit('FILENAME-3', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
-  })
-
-  test('retains the shared record in its canonical local series', () => {
+describe('serial gaps', () => {
+  test('a series with a gap produces no filename finding', () => {
     const first = { file: 'ADR-EXAMPLE-001-first-decision.md', id: 'ADR-EXAMPLE-001', title: 'First decision' }
     const third = { file: 'ADR-EXAMPLE-003-third-decision.md', id: 'ADR-EXAMPLE-003', title: 'Third decision' }
-    const context = rootFixture({ files: [first, shared, third], indexIds: [first.id, shared.id, third.id] })
-
-    expect(context?.filename.serialGaps).toEqual(new Map())
-    expect(audit('FILENAME-3', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
-  })
-
-  test('retains serial continuity enforcement for an ordinary local record', () => {
-    const context = rootFixture({ files: [ordinary], indexIds: [ordinary.id] })
-
-    expect(audit('FILENAME-3', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('VIOLATION')
+    const context = rootFixture({
+      files: [first, third],
+      indexIds: [first.id, third.id]
+    }) as DecisionRecordsRubricContext
+    const codes = families.flatMap((family) => family.items.map((candidate) => candidate.code))
+    const filenameCodes = codes.filter((code) => code.startsWith('FILENAME-'))
+    for (const code of filenameCodes)
+      expect((audit(code, context) ?? []).filter((outcome) => outcome.status === 'VIOLATION')).toEqual([])
   })
 })
 

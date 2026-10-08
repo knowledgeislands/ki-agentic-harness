@@ -38,8 +38,6 @@ Canonical decision-record filenames and serial namespaces.
   - _Remediation:_ diagnostic — Rename the record to its canonical ID and title slug, then update every affected citation.
 - **FILENAME-2 [M] — Unique serial within prefix and scope** — NNN is unique per prefix within its `<SCOPE>` namespace; two files may share the same integer if they carry different prefixes; no two files share the same prefix+scope+serial combination. `XXX` files are exempt from uniqueness. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Choose the canonical record identity, then rename or retire the duplicate and update affected citations.
-- **FILENAME-3 [M] — Contiguous serial series** — Within each prefix+scope series the ordinary-record serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt. A deliberate verbatim shared-record mirror (`shared_record: true`) is excluded only when its prefix+scope has no ordinary local records; otherwise it remains part of that local series. (standards-decision-records.md)
-  - _Remediation:_ diagnostic — Renumber the series contiguously and update every citation of each shifted record ID.
 - **FILENAME-4 [M] — Self-contained collection** — The decisions directory holds only Decision Records and their index: no `references/` or other subdirectory and no supporting file. Working material lives beside the Project or Initiative it serves and is deleted once consolidated. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Consolidate what the record needs into its own words, move live working material beside its Project or Initiative, and delete the rest.
 
@@ -158,8 +156,8 @@ Complete, current, and readable decision-record indexes.
   - _Review prompt:_ Compare every index gloss with its decision record's heading title, excluding the ID prefix.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Align the gloss with its record heading, record a named Gap, or record an explicit exclusion.
-- **INDEX-8 [M] — Ascending serial reveal order** — Within each prefix, serials ascend in reveal order; a higher serial never precedes a lower serial. A violation is fixed by renumbering rather than reordering out of sequence. (standards-decision-records.md)
-  - _Remediation:_ diagnostic — Renumber the affected records and citations rather than reordering serials out of sequence.
+- **INDEX-8 [M] — Ascending serial reveal order** — Within each prefix, serials ascend in reveal order; a higher serial never precedes a lower serial. A violation is fixed by moving the entry to its serial position; an issued serial is never renumbered to suit the narrative. (standards-decision-records.md)
+  - _Remediation:_ diagnostic — Move the entry to its serial position in the index; never renumber an issued record.
 
 ## DEPENDS — dependency-graph checks
 
@@ -168,7 +166,7 @@ Complete, current, and readable decision-record indexes.
 Declared decision dependencies resolve, stay acyclic, precede their dependents, and prose points backward.
 
 - **DEPENDS-1 [M] — Every dependency in a local scope resolves to a record** — Each `decision_depends_on` entry is a canonical `<PREFIX>-<SCOPE>-NNN` code, and each entry whose scope this collection owns names a record the collection holds. Cross-scope (cross-repo) targets are permitted and are not resolved here. (standards-decision-records.md)
-  - _Remediation:_ diagnostic — Correct the dependency to the record it means, or remove it where the target was retired; a renumbered series sweeps this field with every other citation.
+  - _Remediation:_ diagnostic — Correct the dependency to the record it means, or remove it where the target was retired; the new code of a reclassified record replaces the old one here with every other citation.
 - **DEPENDS-2 [M] — The dependency graph is acyclic** — Taken across every prefix at once, `decision_depends_on` forms a directed acyclic graph: no record depends on itself, directly or through a chain. A cycle asserts that each record in it must be read before the others, which no reading order satisfies. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Drop the edge that is a cross-reference rather than a dependency, or merge records that genuinely cannot be reconsidered independently into the one that owns the concern.
 - **DEPENDS-3 [M] — A dependency precedes its dependent in the index** — Where both records appear in the index's ordered list, a declared dependency appears before the record that depends on it, so reading top to bottom never asks for a decision on trust. Ascending serials give this within one prefix; a cross-prefix edge is constrained by nothing else. (standards-decision-records.md)

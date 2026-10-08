@@ -179,13 +179,13 @@ const INDEX_8: RubricItem<IndexRubricContext> = {
   code: 'INDEX-8',
   title: 'Ascending serial reveal order',
   description:
-    'Within each prefix, serials ascend in reveal order; a higher serial never precedes a lower serial. A violation is fixed by renumbering rather than reordering out of sequence.',
+    'Within each prefix, serials ascend in reveal order; a higher serial never precedes a lower serial. A violation is fixed by moving the entry to its serial position; an issued serial is never renumbered to suit the narrative.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Renumber the affected records and citations rather than reordering serials out of sequence.'
+      guidance: 'Move the entry to its serial position in the index; never renumber an issued record.'
     },
     audit: {
       phase: 'DERIVED',

@@ -95,35 +95,6 @@ const FILENAME_2: RubricItem<FilenameRubricContext> = {
   }
 }
 
-const FILENAME_3: RubricItem<FilenameRubricContext> = {
-  code: 'FILENAME-3',
-  title: 'Contiguous serial series',
-  description:
-    'Within each prefix+scope series the ordinary-record serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt. A deliberate verbatim shared-record mirror (`shared_record: true`) is excluded only when its prefix+scope has no ordinary local records; otherwise it remains part of that local series.',
-  sources: [SOURCE],
-  mechanical: {
-    level: 'WARN',
-    remediation: {
-      class: 'diagnostic',
-      guidance: 'Renumber the series contiguously and update every citation of each shifted record ID.'
-    },
-    audit: {
-      phase: 'INSPECT',
-      run: (context: FilenameRubricContext) =>
-        outcomes(
-          [...context.serialGaps].map(
-            ([series, serials]): AuditOutcome => ({
-              status: 'VIOLATION',
-              message: `Serial series is missing ${serials.map((serial) => String(serial).padStart(3, '0')).join(', ')}.`,
-              subject: series
-            })
-          ),
-          'Every numbered decision-record series starts at 001 and is contiguous.'
-        )
-    }
-  }
-}
-
 const FILENAME_4: RubricItem<FilenameRubricContext> = {
   code: 'FILENAME-4',
   title: 'Self-contained collection',
@@ -160,5 +131,5 @@ export const FILENAME: RubricFamily<DecisionRecordsRubricContext, FilenameRubric
   description: 'Canonical decision-record filenames and serial namespaces.',
   standard: SOURCE,
   selectContext: (context) => context.filename,
-  items: [FILENAME_0, FILENAME_1, FILENAME_2, FILENAME_3, FILENAME_4]
+  items: [FILENAME_0, FILENAME_1, FILENAME_2, FILENAME_4]
 }

@@ -85,6 +85,7 @@ The records are living, compact, and independent. The order below is a **curated
 56. [DDR-KI-HARNESS-001](DDR-KI-HARNESS-001-mirrors-and-source-provenance-are-separate-relationships.md) — mirrors and source provenance use separate field families; only `mirrors`, `mirror_type` and `mirror_sha256` make a note a mirror.
 57. [ADR-KI-HARNESS-SKILLS-016](ADR-KI-HARNESS-SKILLS-016-every-guide-lives-in-an-audience-folder.md) — every guide lives in an open-vocabulary audience folder, enforced mechanically.
 58. [ADR-KI-HARNESS-SKILLS-017](ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) — `ki-repo` owns commit-gate existence and binding; each shape skill owns the check-only content.
+59. [ADR-KI-HARNESS-SKILLS-018](ADR-KI-HARNESS-SKILLS-018-decision-record-serials-may-contain-gaps.md) — Decision Record serials are issued in ascending order and never reused; gaps are permitted and contiguity is not audited.
 
 ## Template
 

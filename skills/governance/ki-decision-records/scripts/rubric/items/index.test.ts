@@ -38,7 +38,6 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'FILENAME-0',
     'FILENAME-1',
     'FILENAME-2',
-    'FILENAME-3',
     'FILENAME-4',
     'ROOT-1',
     'ROOT-2',
