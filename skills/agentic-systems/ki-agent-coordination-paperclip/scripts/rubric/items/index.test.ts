@@ -27,6 +27,7 @@ test('Paperclip coordination keeps relationship criteria judgment-led beside loc
   ])
   expect(items.filter((item) => item.mechanical).map((item) => item.code)).toEqual([
     'COORD-3',
+    'COORD-9',
     'COORD-15',
     'ORG-1',
     'RUBRIC-1'

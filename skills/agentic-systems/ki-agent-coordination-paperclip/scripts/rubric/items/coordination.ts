@@ -117,11 +117,21 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       code: 'COORD-9',
       title: 'Workspace retirement',
       description:
-        'Isolated workspaces end through Paperclip: the automatic sweep uses five gates, while warned early close requires explicit work disposition.',
+        'The branch is durable and the worktree disposable: a merged or abandoned branch’s worktree is removed, unmerged branches are never deleted, the automatic sweep uses five gates, and warned early close requires explicit work disposition.',
       sources: [`${STANDARD}#workspace-retirement`],
       judgment: judgment(
-        'Does the automatic sweep apply its five gates and recorded cooldown, while a person-requested early close inspects close-readiness and requires explicit authority to disposition retained or uncertain work behind warnings? Are refused workspaces routed to a repository-owned decision rather than left as residue?'
-      )
+        'Does each run commit to its task branch before it stops, so that worktrees of merged or abandoned branches are removed and a departed agent’s dirty or orphaned worktree is flagged rather than retained? Does the automatic sweep apply its five gates and recorded cooldown, while a person-requested early close inspects close-readiness and requires explicit authority to disposition retained or uncertain work behind warnings? Are branches that can never pass the merge gate routed to a repository-owned decision rather than left as residue?'
+      ),
+      mechanical: {
+        level: 'WARN',
+        remediation: {
+          class: 'diagnostic',
+          guidance:
+            'For each listed workspace, confirm its close-readiness in Paperclip, then capture a Triage item through ki-next in the owning repository to land it, discard it or record it as duplicate. The listing is never permission to remove a worktree or delete a branch.'
+        },
+        heuristic: true,
+        audit: { phase: 'INSPECT', run: ({ heldWorkspaces }) => heldWorkspaces.outcomes }
+      }
     },
     {
       code: 'COORD-10',

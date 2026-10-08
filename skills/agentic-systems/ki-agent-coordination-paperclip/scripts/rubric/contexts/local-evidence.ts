@@ -228,3 +228,69 @@ export const worktreeBaseOutcomes = (repository: string): AuditOutcome[] => {
   }
   return outcomes
 }
+
+type RegisteredWorktree = { path: string; head?: string; branch?: string; detached: boolean }
+
+const registeredWorktrees = (git: Git): RegisteredWorktree[] =>
+  git('worktree', 'list', '--porcelain')
+    .stdout.split(/\n\n+/)
+    .flatMap((block) => {
+      const lines = block.split('\n')
+      const path = lines.find((line) => line.startsWith('worktree '))?.slice(9)
+      if (!path || lines.includes('bare')) return []
+      const head = lines.find((line) => line.startsWith('HEAD '))?.slice(5)
+      const branch = lines.find((line) => line.startsWith('branch '))?.slice(7)
+      return [{ path, head, branch, detached: lines.includes('detached') }]
+    })
+
+const DAY = 86_400
+
+/**
+ * `COORD-9` held-workspace listing: the linked worktrees whose merge gate cannot pass on local
+ * evidence, a detached `HEAD` or a branch head that is not an ancestor of the primary worktree's
+ * branch. Outcomes are `INFO` only, so the selected checkout's verdict never depends on a sibling.
+ */
+export const heldWorkspaceOutcomes = (repository: string, now = Date.now()): AuditOutcome[] => {
+  const git = gitIn(repository)
+  if (!git('rev-parse', '--git-dir').ok)
+    return [{ status: 'NOT_APPLICABLE', message: 'the selected checkout is not a Git working tree' }]
+  const [primary, ...linked] = registeredWorktrees(git)
+  if (!primary?.branch)
+    return [
+      {
+        status: 'NOT_APPLICABLE',
+        message: 'the primary worktree has no branch checked out, so no destination is readable'
+      }
+    ]
+  const destination = primary.branch.replace(/^refs\/heads\//, '')
+  const held = linked.flatMap((worktree): AuditOutcome[] => {
+    const head = worktree.head
+    if (!head) return []
+    const branch = worktree.branch?.replace(/^refs\/heads\//, '')
+    if (branch && git('merge-base', '--is-ancestor', head, primary.branch ?? '').ok) return []
+    const [ahead = '?', behind = '?'] = git(
+      'rev-list',
+      '--left-right',
+      '--count',
+      `${head}...${primary.branch}`
+    ).stdout.split(/\s+/)
+    const committed = Number(git('log', '-1', '--format=%ct', head).stdout)
+    const age = Number.isFinite(committed) && committed > 0 ? Math.floor((now / 1000 - committed) / DAY) : undefined
+    const status = gitIn(worktree.path)('status', '--porcelain')
+    const dirty = !status.ok ? 'working tree unreadable' : status.stdout ? 'dirty' : 'clean'
+    return [
+      {
+        status: 'INFO',
+        subject: worktree.path,
+        message: `held workspace ${worktree.path}: ${branch ? `branch ${branch}` : 'detached HEAD'} at ${head.slice(0, 12)}, ${ahead} ahead and ${behind} behind ${destination}, head committed ${age === undefined ? 'at an unknown time' : `${age} day${age === 1 ? '' : 's'} ago`}, ${dirty}; plane-side gates (task-tree terminality, cooldown, active runs) were not evaluated. Next: confirm close-readiness in Paperclip, then capture a Triage item through ki-next to land, discard or record it as duplicate`
+      }
+    ]
+  })
+  if (held.length) return held
+  return [
+    {
+      status: 'INFO',
+      message: `no linked worktree is held: ${linked.length} linked worktree${linked.length === 1 ? '' : 's'} on branches merged into ${destination}`
+    }
+  ]
+}

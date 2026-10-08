@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { linkageOutcomes, worktreeBaseOutcomes } from './local-evidence.ts'
+import { heldWorkspaceOutcomes, linkageOutcomes, worktreeBaseOutcomes } from './local-evidence.ts'
 
 const roots: string[] = []
 
@@ -188,4 +188,47 @@ test('the audit is read-only and depends only on the selected checkout', () => {
   record(worktree, 'X-GOV-002', null, [link('1', 'implementation')])
   commit(worktree, 'sibling claim')
   expect([linkageOutcomes(root), worktreeBaseOutcomes(root)]).toEqual(first)
+})
+
+test('held workspaces list detached and unmerged worktrees as information only', () => {
+  const root = repository()
+  commit(root, 'base')
+  const parent = realpathSync(mkdtempSync(join(tmpdir(), 'coord-held-')))
+  roots.push(parent)
+  const add = (name: string, ...args: string[]) => {
+    const path = join(parent, name)
+    git(root, 'worktree', 'add', '--quiet', ...args, path, 'main')
+    return path
+  }
+  const detached = add('detached', '--detach')
+  const unmerged = add('unmerged', '-b', 'unmerged')
+  commit(unmerged, 'unlanded')
+  const merged = add('merged', '-b', 'merged')
+  writeFileSync(join(merged, 'scratch.txt'), 'untracked\n')
+  const dirty = add('dirty', '-b', 'dirty')
+  commit(dirty, 'unlanded too')
+  writeFileSync(join(dirty, 'scratch.txt'), 'untracked\n')
+  commit(root, 'advance')
+  const before = git(root, 'worktree', 'list', '--porcelain')
+  const outcomes = heldWorkspaceOutcomes(root)
+  expect(git(root, 'worktree', 'list', '--porcelain')).toBe(before)
+  expect(statuses(outcomes)).toEqual(['INFO', 'INFO', 'INFO'])
+  const [first, second, third] = [detached, dirty, unmerged].map((path) =>
+    outcomes.find(({ subject }) => subject === path)
+  )
+  expect(first?.message).toContain('detached HEAD')
+  expect(second?.message).toContain(', dirty;')
+  expect(second?.message).toContain('plane-side gates')
+  expect(second?.message).toContain('ki-next')
+  expect(third?.message).toContain('branch unmerged')
+  expect(third?.message).toContain('1 ahead and 1 behind main')
+  expect(third?.message).toContain(', clean;')
+})
+
+test('no held workspace yields one information outcome', () => {
+  const root = repository()
+  commit(root, 'base')
+  expect(heldWorkspaceOutcomes(root)).toEqual([
+    { status: 'INFO', message: 'no linked worktree is held: 0 linked worktrees on branches merged into main' }
+  ])
 })

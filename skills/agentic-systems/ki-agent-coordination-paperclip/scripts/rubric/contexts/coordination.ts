@@ -4,13 +4,15 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
-import { linkageOutcomes, worktreeBaseOutcomes } from './local-evidence.ts'
+import { heldWorkspaceOutcomes, linkageOutcomes, worktreeBaseOutcomes } from './local-evidence.ts'
 
 export type PaperclipCoordinationContext = {
   rubric: RubricPublicationContext
   organisation: { outcomes: readonly AuditOutcome[] }
   /** `COORD-3` repository-side task-link evidence; the coordination plane is never read. */
   linkage: { outcomes: readonly AuditOutcome[] }
+  /** `COORD-9` linked worktrees whose merge gate cannot pass on local evidence; `INFO` only. */
+  heldWorkspaces: { outcomes: readonly AuditOutcome[] }
   /** `COORD-15` location and base of the selected checkout when it is a linked worktree. */
   worktreeBase: { outcomes: readonly AuditOutcome[] }
 }
@@ -42,6 +44,7 @@ export const createPaperclipCoordinationSession = ({
         : [{ status: 'PASS', message: 'Organisation code is explicitly configured.' }]
     },
     linkage: { outcomes: linkageOutcomes(repository) },
+    heldWorkspaces: { outcomes: heldWorkspaceOutcomes(repository) },
     worktreeBase: { outcomes: worktreeBaseOutcomes(repository) }
   }
   return {

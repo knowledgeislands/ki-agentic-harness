@@ -144,11 +144,11 @@ The owning repositories must agree a remote-delivery policy before remote implem
 
 A remote host also needs its own MCP route under [host surface selection](../../../environment/ki-binding/references/standards-cross-surface-binding.md#host-surface-selection). It runs its own mcporter bridge and canonical inventory, with secrets from a service-scoped store rather than the principal's interactive vault. Keep the deployment private and reach it through a session manager or mesh network, so that the loopback bridge remains admissible. Do not tunnel runs back to a laptop bridge by default. Public exposure requires a separately decided authenticated HTTPS bridge endpoint, because Paperclip refuses private endpoints in that mode.
 
-A human-requested programme hold preserves existing commits, uncommitted files and work records. Record the reason, retained results, resume prerequisites and next owner without cancelling or accepting the work. Reaching the prerequisites does not automatically lift the hold: the human decides whether to resume, reshape or retire the work in light of the local evidence.
+A human-requested programme hold preserves task branches, their commits and work records; a run commits any uncommitted state to its task branch when the hold takes effect, so nothing it keeps exists only in a worktree. Record the reason, retained results, resume prerequisites and next owner without cancelling or accepting the work. Reaching the prerequisites does not automatically lift the hold: the human decides whether to resume, reshape or retire the work in light of the local evidence.
 
 ## Recovery and visibility
 
-When branch output has accumulated, bound new implementation and inventory existing work before expanding concurrency. Classify each result as awaiting review, awaiting integration, integrated, superseded or explicitly abandoned, with its repository, task, branch or commit, destination and next owner. Compare both commit reachability and patch equivalence; neither an old task state nor a missing workspace proves that work is disposable. Inventory evidence belongs with the existing work, not a parallel backlog.
+When branch output has accumulated, bound new implementation and inventory existing work before expanding concurrency. Classify each result as awaiting review, awaiting integration, integrated, superseded or explicitly abandoned, with its repository, task, branch or commit, destination and next owner. Compare both commit reachability and patch equivalence; a missing workspace proves nothing, because the branch holds the work, and neither an old task state nor an unmerged branch proves that work is disposable. Inventory evidence belongs with the existing work, not a parallel backlog.
 
 Prove one bounded delivery through review, local integration, evidence reconciliation and safe workspace retirement before increasing concurrency. Admit a current baseline at dispatch and record it for that delivery; an old company-wide pin is not evidence that a new task starts from current repository state. Serialise integration and roadmap writes per repository, independently of per-agent concurrency limits.
 
@@ -170,7 +170,9 @@ A repository's ordinary Paperclip workflow may project the bounded task-branch p
 
 Selected Paperclip agents may receive the independently scoped review or integration capabilities defined by `ki-git`. Paperclip may enforce or project a repository-owned grant, but assignment, role title, credentials, broad autonomy, and a `done` task state do not originate or widen it. An integration agent acts only within that grant and does not treat local or remote integration as KI acceptance.
 
-Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, local branch or worktree identity when applicable, and any uncommitted starting state admitted into scope. Never infer a clean or current checkout from the agent name.
+Record enough workspace evidence to reproduce what the task saw: repository, baseline revision, task branch, and any uncommitted starting state admitted into scope. The branch, not the worktree, is the durable unit of coordinated work: a coordinated task records its repository and branch, and the worktree path is derived from them. A worktree is a disposable checkout of that branch; when it is missing, coordination recreates it from the branch head rather than failing the run. Never infer a clean or current checkout from the agent name.
+
+Nothing lives only in a worktree. A run commits its work to the task branch, as a work-in-progress commit if it is not yet verified, before it stops, pauses or hands off. Uncommitted state left at a stop is a defect of that run, not something retention exists to protect.
 
 ### Human-readable workspace names
 
@@ -178,7 +180,7 @@ Use human-readable company and repository components beneath the runtime-owned r
 
 UUIDs may remain internal identities; they are not the default human-facing worktree name. For explicitly authorised work without a governing KI item, use its readable Paperclip task key rather than inventing a roadmap identifier. Resolve the name using supported provisioning fields; do not invent a roadmap template variable the runtime cannot render. Where automatic provisioning can only render the Paperclip key, use that short fallback and record the governing KI identifier in task evidence until code-first provisioning is supported.
 
-A naming-policy change applies to new workspaces. Existing workspaces keep their current branch, path and execution-workspace binding until a scoped migration verifies retained content and updates Git and Paperclip consistently. Never rename a directory or branch alone, break a restart path, or discard work merely to conform its name.
+A naming-policy change applies to new workspaces. Existing workspaces keep their current branch until a scoped migration verifies retained content and updates Git and Paperclip consistently. Because a missing worktree is recreated from its branch, a migration need not preserve directory bindings, but it never renames a branch alone or discards work merely to conform its name.
 
 ### Roadmap records are the exception
 
@@ -190,21 +192,21 @@ A coordinated run therefore crosses back to the primary checkout to take its num
 
 ## Workspace retirement
 
-An isolated workspace ends through Paperclip's own retirement mechanism and through nothing else. No agent removes a worktree, deletes a branch Paperclip created, or deletes a workspace directory by hand. Paperclip supports an automatic terminal sweep and a person-requested early close; both record the outcome and use guarded cleanup. Hand-removal records nothing and leaves an active workspace record pointing at a path that no longer exists.
+Removing a worktree is safe; deleting an unmerged branch is not. Because the branch holds the work, a worktree whose branch is merged or explicitly abandoned is removed, and a later run that needs the checkout recreates it from the branch. No agent deletes an unmerged branch or a branch Paperclip created; branch deletion follows `ki-git` and the merge gate. Paperclip supports an automatic terminal sweep and a person-requested early close; both record the outcome and use guarded cleanup, so prefer them to removing a worktree by hand, which records nothing.
 
 The automatic terminal sweep destroys only the artefacts it created, and only when every gate passes:
 
 1. the source task and every task in its subtree are terminal;
-2. the working tree is clean, counting untracked entries as dirty;
+2. the working tree is clean, counting untracked entries as dirty, which the commit-before-stop duty above makes the normal state rather than a reason to hold;
 3. the branch is merged into its base, where neither an unmerged nor an unknown delivery state qualifies;
 4. no queued or running run holds the workspace or the source task;
 5. the configured cooldown since the most recent terminal transition in the task tree has elapsed.
 
 A person-requested early close has a different readiness decision, not these five automatic gates. Paperclip blocks it when Git status cannot be verified or an isolated workspace remains linked to open tasks; dirty or untracked files and unmerged, ahead, or behind branch state are warnings rather than automatic blockers. The person must inspect the individual workspace's close-readiness assessment and planned cleanup, and explicitly disposition any retained or uncertain work before authorising a warned close. A warning is not permission to discard work, and an agent must not turn early close into a way around a delivery hold or review and integration gate.
 
-A workspace still on disk is therefore not evidence of a leak. A held workspace is the mechanism declining to destroy unlanded work, which is the behaviour this rule wants. An arrangement records the cooldown it is configured with, including a cooldown of zero, where automatic retirement follows immediately once the other four gates pass; an unrecorded cooldown cannot be audited.
+A worktree still on disk after its branch is merged or explicitly abandoned is residue, and is removed. A dirty or orphaned worktree of a departed agent is flagged for disposition, not retained by default: its uncommitted state is the departed run's defect, and the disposition decides whether to commit it to the branch or discard it. An arrangement records the cooldown it is configured with, including a cooldown of zero, where automatic retirement follows immediately once the other four gates pass; an unrecorded cooldown cannot be audited.
 
-A workspace held past its cooldown by a gate that can never pass is neither debris nor the mechanism's problem to solve. It is unlanded work nobody has been asked about, so it is raised as a Triage item in the repository that owns the checkout and decided there: land it, discard it, or record it as a duplicate of work already landed. A detached `HEAD` is the clearest case, because no branch state can satisfy the merge gate.
+A branch whose state can never pass the merge gate is neither debris nor the mechanism's problem to solve. It is unlanded work nobody has been asked about, so it is raised as a Triage item in the repository that owns the checkout and decided there: land it, discard it, or record it as a duplicate of work already landed. A detached `HEAD` is the clearest case, because no branch state can satisfy the merge gate.
 
 Read early-close readiness from Paperclip's close-readiness assessment for the individual workspace. A delivery state carried in a workspace list is not evidence, because it may be an unpopulated default rather than a reading.
 
