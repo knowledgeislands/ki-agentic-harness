@@ -85,6 +85,7 @@ test('the structured catalogue preserves every KB criterion', () => {
     'GATE-1'
   ])
   expect(items.filter((item) => item.judgment)).toHaveLength(7)
+  expect(items.find((item) => item.code === 'LINK-1')?.mechanical?.level).toBe('FAIL')
   expect(items.filter((item) => item.judgment).every((item) => Boolean(item.judgment?.prompt.trim()))).toBe(true)
 })
 
@@ -157,6 +158,40 @@ test('source mirror diagnostics bind only to a declared sources role', () => {
     `---\nnote_type: resource\nsource_path: kit-example-sources/Records/Export.txt\nsource_sha256: ${'b'.repeat(64)}\n---\n\n# Derived\n\nOne day.\n`
   )
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('PASS')
+})
+
+test('wikilink uniqueness fails only links that Obsidian could resolve to more than one note', () => {
+  const repository = createBase()
+  const write = (path: string, text: string): void => {
+    mkdirSync(dirname(join(repository, path)), { recursive: true })
+    writeFileSync(join(repository, path), text)
+  }
+  const link = () => collectKbAuditEvidence(repository).filter((finding) => finding.code === 'LINK-1')
+  write('Pillars/Process/Process.md', '# Process\n\nSee [[Activities]] and [[Glossary|terms]].\n')
+  write('Admin/Activities/Activities.md', '# Activities\n')
+  write('Resources/Glossary.md', '# Glossary\n')
+  expect(link()).toEqual([expect.objectContaining({ level: 'PASS', message: expect.stringContaining('+/ and -/') })])
+
+  write('Pillars/Activities/Activities.md', '# Activities\n\nSee [[Pillars/Activities/Activities]] here.\n')
+  write('+/Glossary.md', '# Staged glossary\n\nSee [[Activities]].\n')
+  expect(link()).toEqual([
+    expect.objectContaining({
+      level: 'FAIL',
+      message: expect.stringContaining('Pillars/Process/Process.md: [[Activities]]')
+    })
+  ])
+  expect(link()[0]?.message).not.toContain('Glossary')
+  expect(link()[0]?.message).not.toContain('+/')
+
+  write(
+    'Pillars/Process/Process.md',
+    '# Process\n\nSee [[Admin/Activities/Activities|Activities]], ![[diagram.svg]] and `[[Activities]]`.\n\n```\n[[activities]]\n```\n'
+  )
+  write('Pillars/Activities/Notes.md', '# Notes\n\nSee [[Activities#Scope]] beside this note.\n')
+  expect(link()[0]?.level).toBe('PASS')
+
+  write('Calendar/Day.md', '# Day\n\nSee [[ACTIVITIES\\|table alias]].\n')
+  expect(link()[0]?.message).toContain('Calendar/Day.md: [[ACTIVITIES]]')
 })
 
 test('source mirror auditing skips external symlinked Markdown without following sources', () => {

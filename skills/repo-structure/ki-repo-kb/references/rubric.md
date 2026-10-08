@@ -143,11 +143,12 @@ Memory-index accuracy and its always-loaded anchor.
 
 → [standard](standards-knowledge-base.md)
 
-Judgment review of Obsidian wikilink content.
+Mechanical wikilink uniqueness and judgment review of Obsidian wikilink content.
 
-- **LINK-1 [J] — Obsidian note linking** — Base note content uses shortest-unique Obsidian wikilinks, with aliased full paths for contents lists. (standards-knowledge-base.md)
+- **LINK-1 [M + J] — Obsidian note linking** — Base note content uses shortest-unique Obsidian wikilinks, with aliased full paths for contents lists. (standards-knowledge-base.md)
+  - _Remediation:_ diagnostic — Qualify each ambiguous wikilink with the shortest path prefix that makes it unique, or rename one of the colliding notes, then rerun the audit.
   - _Evidence scope:_ Sampled base notes and the prescribed linking convention.
-  - _Review prompt:_ Do sampled base notes use the prescribed Obsidian wikilink convention?
+  - _Review prompt:_ Beyond the mechanical uniqueness check, do sampled base notes use the shortest unique form and the aliased full paths the convention prescribes?
   - _Outcomes:_ conforming; note revision; convention clarification
   - _Conforming guidance:_ Revise links to the established convention; do not change the convention from a sample alone.
 

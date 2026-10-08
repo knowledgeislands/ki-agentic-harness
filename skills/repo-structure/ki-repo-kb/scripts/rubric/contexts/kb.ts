@@ -158,6 +158,39 @@ const markdownFiles = (directory: string, files: string[] = []): string[] => {
   return files
 }
 
+const WIKILINK = /!?\[\[([^\]|#^\n]*)(?:[#^][^\]|\n]*)?(?:\\?\|[^\]\n]*)?\]\]/g
+const CODE = /```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]*`/g
+
+/**
+ * Bare or partial-path wikilinks that Obsidian could resolve to more than one note. Obsidian
+ * resolves a link first beside the linking note, then as a full path, and otherwise matches it
+ * case-insensitively against the end of every note path, so a second note with the same leaf
+ * name silently makes each existing bare link that falls through to that match ambiguous.
+ */
+const ambiguousWikilinks = (root: string, notes: readonly string[]): string[] => {
+  const byLeaf = new Map<string, string[]>()
+  for (const note of notes) {
+    const key = note.slice(0, -'.md'.length).toLowerCase()
+    const leaf = key.slice(key.lastIndexOf('/') + 1)
+    byLeaf.set(leaf, [...(byLeaf.get(leaf) ?? []), key])
+  }
+  const ambiguous: string[] = []
+  for (const note of notes) {
+    const text = readFileSync(join(root, note), 'utf8')
+    const folder = note.includes('/') ? `${note.slice(0, note.lastIndexOf('/')).toLowerCase()}/` : ''
+    for (const match of text.replace(CODE, '').matchAll(WIKILINK)) {
+      const name = (match[1] ?? '').replace(/\\$/, '').trim()
+      const target = name.replace(/\.md$/i, '').toLowerCase()
+      if (!target || /\.[a-z0-9]+$/.test(target) || target.startsWith('/')) continue
+      const candidates = byLeaf.get(target.slice(target.lastIndexOf('/') + 1)) ?? []
+      if (candidates.some((path) => path === target || path === `${folder}${target}`)) continue
+      const matches = candidates.filter((path) => path.endsWith(`/${target}`))
+      if (matches.length > 1) ambiguous.push(`${note}: [[${name}]]`)
+    }
+  }
+  return [...new Set(ambiguous)]
+}
+
 const frontmatter = (
   text: string
 ): {
@@ -235,7 +268,9 @@ export type KbMemoryContext = {
   readonly anchor: KbCheck
 }
 
-export type KbLinkContext = Record<never, never>
+export type KbLinkContext = {
+  readonly uniqueTargets: KbCheck
+}
 
 export type KbGateContext = {
   readonly hook: KbCheck
@@ -448,7 +483,8 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
   const outbound = `${outboundZone}/`
   const delegatedZones = { streams: zoneOf('Streams'), inbound: inboundZone, outbound: outboundZone }
   let mirrorWarnings = 0
-  for (const path of markdownFiles(root)) {
+  const notes = markdownFiles(root)
+  for (const path of notes) {
     const text = readFileSync(path, 'utf8')
     const value = frontmatter(text)
     if (!value) continue
@@ -526,6 +562,18 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
           .filter(Boolean)
           .join('; ')}.`
       : 'Frontmatter uses note_type and does not use the legacy type field.'
+  )
+  const staging = STAGING.map((zone) => `${zoneOf(zone)}/`)
+  const linked = notes
+    .map((path) => path.slice(root.length + 1))
+    .filter((path) => !staging.some((folder) => path.startsWith(folder)))
+  const ambiguous = ambiguousWikilinks(root, linked)
+  add(
+    ambiguous.length ? 'FAIL' : 'PASS',
+    'LINK-1',
+    ambiguous.length
+      ? `Wikilinks resolve to more than one note; qualify each with a unique path: ${sample(ambiguous)}.`
+      : `Every wikilink outside ${staging.join(' and ')} resolves to at most one note.`
   )
   add(
     misplacedOutputs.length ? 'FAIL' : 'PASS',
@@ -668,7 +716,7 @@ export const createKbSession = ({
       sourceMirrors: check('NOTE-4')
     },
     memory: { anchor: check('MEM-2') },
-    links: {},
+    links: { uniqueTargets: check('LINK-1') },
     gate: { hook: check('GATE-1') }
   }
 
