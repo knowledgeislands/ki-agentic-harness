@@ -6,13 +6,13 @@ kind: decide
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 083750846f738b1b115796b483e879a847d6c94d
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-07T20:34:46Z
+updated_at: 2026-10-08T13:06:18Z
 ---
 
 # KI-HARNESS-GOV-099: Decide decision serial gaps
