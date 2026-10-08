@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: repo-structure
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c6193e3787ec714f1f242343b45dbe3ff565c51b
 created_at: 2026-10-07T17:20:21Z
-updated_at: 2026-10-08T09:25:09Z
+updated_at: 2026-10-08T13:26:12Z
 ---
 
 # KI-HARNESS-GOV-155: Detect wikilink name collisions
@@ -44,10 +43,10 @@ Verified on `main` `c6193e37`:
 
 ## Steps
 
-- [ ] Add a mechanical diagnostic aspect at level `FAIL` to `LINK-1`, keeping its judgment for the shortest form and contents-list aliases.
-- [ ] In `collectKbAuditEvidence`, reuse the note walk: for every note outside the staging areas, extract wikilinks and embeds (ignoring code, headings, block references, aliases and non-Markdown targets) and fail each link that Obsidian could resolve to more than one note. Follow Obsidian's order: a link resolving beside its own note or as an exact full path is unambiguous; otherwise it matches case-insensitively against the end of every note path.
-- [ ] Add a fixture test covering a clean base, a new colliding leaf name, staging exclusion, path-qualified, same-folder, embedded, code and escaped-alias links.
-- [ ] Regenerate `references/rubric.md` and add the enforcement sentence to the standard's linking paragraph.
+- [x] Add a mechanical diagnostic aspect at level `FAIL` to `LINK-1`, keeping its judgment for the shortest form and contents-list aliases.
+- [x] In `collectKbAuditEvidence`, reuse the note walk: for every note outside the staging areas, extract wikilinks and embeds (ignoring code, headings, block references, aliases and non-Markdown targets) and fail each link that Obsidian could resolve to more than one note. Follow Obsidian's order: a link resolving beside its own note or as an exact full path is unambiguous; otherwise it matches case-insensitively against the end of every note path.
+- [x] Add a fixture test covering a clean base, a new colliding leaf name, staging exclusion, path-qualified, same-folder, embedded, code and escaped-alias links.
+- [x] Regenerate `references/rubric.md` and add the enforcement sentence to the standard's linking paragraph.
 
 ## Files touched
 
@@ -96,3 +95,7 @@ This record only.
 
 - The check scans notes directly rather than storing a registry: the walk already exists, and a registry would be one more generated file to keep in step.
 - A shared leaf name alone is not a failure. Every folder's same-name index note makes repeated leaf names normal (`Activities.md` in three places), and a path-qualified link to any of them is correct. The defect is a link that can resolve to more than one note, which is exactly what a new colliding note silently creates.
+
+### Delivery - 2026-10-08
+
+`LINK-1` now carries a mechanical `FAIL` aspect: the Knowledge Base audit scans every note outside `+/` and `-/` and reports each wikilink or embed that Obsidian could resolve to more than one note, keeping the judgment prompt for shortest form and contents-list aliases. `bun run test` (1,050 tests) and `bunx tsc --noEmit` pass, and the `ki-skills` audit has no failures. Run from source, the check passes Vallearmonia Principal and fails Arcadia Principal, Kit Principal and Kit HNR on their existing ambiguous links; each base repairs them through its own process, and the installed `ki` applies the check after the harness payload next updates.
