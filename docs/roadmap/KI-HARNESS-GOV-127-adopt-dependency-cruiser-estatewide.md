@@ -7,12 +7,12 @@ purpose: adoption
 project: baseline-rollout
 component: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: e30948ad1e45835c5d2a6140ff5306778a32b9d2
 created_at: 2026-10-02T05:27:09Z
-updated_at: 2026-10-08T10:20:00Z
+updated_at: 2026-10-08T09:11:01Z
 ---
 
 # KI-HARNESS-GOV-127: Adopt Dependency Cruiser estatewide
@@ -41,12 +41,12 @@ Out of scope: this repository's own adoption and the `bun test` proof adapter it
 
 ## Steps
 
-- [ ] Amend `standards-engineering.md`: the applicability rule (every `ki-engineering` repository whose TypeScript or JavaScript implementation modules import one another, in its compiler roots, workspace members or tracked `scripts/`; tool configuration files alone do not make a repository applicable; any other exemption is a recorded per-repository override), and `scripts/` coverage unless excluded with a stated reason. The baseline rules, the separate install root and the zero-module and deliberate-crossing requirements are already stated there.
+- [x] Amend `standards-engineering.md`: the applicability rule (every `ki-engineering` repository whose TypeScript or JavaScript implementation modules import one another, in its compiler roots, workspace members or tracked `scripts/`; tool configuration files alone do not make a repository applicable; any other exemption is a recorded per-repository override), and `scripts/` coverage unless excluded with a stated reason. The baseline rules, the separate install root and the zero-module and deliberate-crossing requirements are already stated there.
 - [x] Discharged by `DESIGN-2`, re-planned 2026-10-08: no `DESIGN-3`. `DESIGN-2`'s mechanical half already fails a missing ruleset or baseline rule, an unavailable transpiler, an empty or partial graph and a checker whose native proof does not fail when semantic rules are removed. A second criterion would prove the same thing.
 - [x] Discharged with Step 2: no new evidence or `DesignRubricContext` field; `DESIGN-2`'s evidence in `scripts/rubric/contexts/boundaries.ts` and its tests stand.
 - [x] Moved to `KI-HARNESS-GOV-163`, re-planned 2026-10-08: this repository's adoption. `DESIGN-2`'s adapter cruises root `src/` and runs boundary tests through `vitest run`; this repository has no `src/` and runs `bun test`, so a committed ruleset would turn its not-applicable result into a `FAIL` it cannot clear until a `bun test` adapter exists.
 - [x] Moved to `KI-HARNESS-GOV-163` with Step 4: no criterion changes here, so `references/rubric.md` needs no regeneration.
-- [ ] Record each repository's `scripts/` coverage and disposition in the `## Rollout inventory` section, and route each gap to a follow-on record while trades are on hold.
+- [x] Record each repository's `scripts/` coverage and disposition in the `## Rollout inventory` section, and route each gap to a follow-on record while trades are on hold.
 - [x] Make the separate install root part of an ordinary install: the standard prescribes a root `prepare` step running `bun install --frozen-lockfile --cwd tooling/boundaries` wherever that root exists, and each adopting repository carries it. A fresh clone, or a pull that first introduces the root, otherwise fails the boundary check until someone installs it by hand.
 - [x] When the install root lacks `dependency-cruiser`, the audit names the remedy (`bun install --frozen-lockfile --cwd tooling/boundaries`) rather than surfacing the raw `ENOENT` from `scripts/rubric/contexts/boundaries.ts`.
 
@@ -99,29 +99,62 @@ This record gains a rollout inventory; this repository's adoption and the `scrip
 
 ## Rollout inventory
 
-Recorded 2026-10-06 from the primary checkouts under `knowledgeislands/`, read-only. "Enforcement" means a tracked `.dependency-cruiser.ts` with a `tooling/boundaries/` install root, judged by `DESIGN-2`'s mechanical half; it is not yet `DESIGN-3` evidence. Whether each cruise covers `scripts/` was not re-verified here.
+Recorded 2026-10-06 from the primary checkouts under `knowledgeislands/`, read-only, and completed 2026-10-08 with `scripts/` coverage. "Enforcement" means a tracked `.dependency-cruiser.ts` with a `tooling/boundaries/` install root, judged by `DESIGN-2`'s mechanical half. "`scripts/` coverage" reads the roots each repository's boundary test cruises against its tracked root `scripts/` TypeScript.
 
-| Repository | Applicability | Enforcement and first commit |
-| --- | --- | --- |
-| `mcp-acquire-whatsapp` | applicable | adopted, `fba83c6` (2026-09-19); the reference pattern |
-| `apps-observatory` | applicable | adopted, `eb8e77f` (2026-10-02) |
-| `ki-website` | applicable | adopted, `864bfbb` (2026-10-05) |
-| `mcp-git-audit` | applicable | adopted, `7f55b2f` (2026-10-05) |
-| `mcp-gsuite` | applicable | adopted, `7e4d42a` (2026-10-05) |
-| `mcp-housekeeping-chatgpt` | applicable | adopted, `e221f79` (2026-10-05) |
-| `mcp-housekeeping-claude` | applicable | adopted, `1448e67` (2026-10-05) |
-| `mcp-housekeeping-codex` | applicable | adopted, `118f624` (2026-10-05) |
-| `mcp-ki-kb-fs` | applicable | adopted, `c8090fd` (2026-10-05) |
-| `mcp-ki-kb-notion-mirror` | applicable | adopted, `2831b84` (2026-10-05) |
-| `mcp-m365` | applicable | adopted, `9ee4c71` (2026-10-05) |
-| `tools-git-almanac` | applicable | adopted, `7d26923` (2026-10-05) |
-| `tools-ki` | applicable | adopted, `c34ccc9` (2026-10-05) |
-| `tools-techne` | applicable | adopted, `19c1346` (2026-10-05) |
-| `ki-agentic-harness` | applicable | **gap**: no `.dependency-cruiser.ts` or `tooling/boundaries/`; Step 4, needing the separate install root because the repository is on TypeScript 7 |
-| `ki-arcadia-principal` | proposed exempt | none; its only TypeScript files are `commitlint.config.ts` and `knip.ts`, so there is no source graph to cruise |
-| `ki-techne-harness` | proposed exempt | none; `tsconfig.json` includes `src/**/*.ts`, which is empty, and the controller is Python with one `types.d.ts` |
+| Repository | Applicability | Enforcement and first commit | `scripts/` coverage |
+| --- | --- | --- | --- |
+| `mcp-acquire-whatsapp` | applicable | adopted, `fba83c6` (2026-09-19); the reference pattern | **gap**: cruises `src/`; 2 root `scripts/` modules unchecked |
+| `apps-observatory` | applicable | adopted, `eb8e77f` (2026-10-02) | **gap**: cruises member `src/` and root files; `scripts/diagrams/` unchecked |
+| `ki-website` | applicable | adopted, `864bfbb` (2026-10-05) | covered: no root `scripts/` TypeScript |
+| `mcp-git-audit` | applicable | adopted, `7f55b2f` (2026-10-05) | **gap**: cruises `src/`; 1 module unchecked |
+| `mcp-gsuite` | applicable | adopted, `7e4d42a` (2026-10-05) | **gap**: cruises `src/`; 3 modules unchecked |
+| `mcp-housekeeping-chatgpt` | applicable | adopted, `e221f79` (2026-10-05) | covered: no root `scripts/` TypeScript |
+| `mcp-housekeeping-claude` | applicable | adopted, `1448e67` (2026-10-05) | **gap**: cruises `src/`; 1 module unchecked |
+| `mcp-housekeeping-codex` | applicable | adopted, `118f624` (2026-10-05) | covered: no root `scripts/` TypeScript |
+| `mcp-ki-kb-fs` | applicable | adopted, `c8090fd` (2026-10-05) | **gap**: cruises `src/`; 2 modules unchecked |
+| `mcp-ki-kb-notion-mirror` | applicable | adopted, `2831b84` (2026-10-05) | **gap**: cruises `src/`; 1 module unchecked |
+| `mcp-m365` | applicable | adopted, `9ee4c71` (2026-10-05) | **gap**: cruises `src/`; 4 modules unchecked |
+| `tools-git-almanac` | applicable | adopted, `7d26923` (2026-10-05) | **gap**: cruises `src/`; 1 module unchecked |
+| `tools-ki` | applicable | adopted, `c34ccc9` (2026-10-05) | **gap**: cruises `src/`; 2 modules unchecked |
+| `tools-techne` | applicable | adopted, `19c1346` (2026-10-05) | covered: no root `scripts/` TypeScript |
+| `ki-agentic-harness` | applicable | **gap**: no `.dependency-cruiser.ts` or `tooling/boundaries/`; `KI-HARNESS-GOV-163` | not yet cruised |
+| `ki-arcadia-principal` | exempt | none: its only TypeScript is `commitlint.config.ts` and `knip.ts`, configuration with no graph | not applicable |
+| `ki-techne-harness` | exempt | none: `src/**/*.ts` is empty and the controller is Python with one `types.d.ts` | not applicable |
 
-`homebrew-tap`, `ki-specifications`, `tools-mgit` and `tools-rig` do not declare `ki-engineering` and are out of scope. The two proposed exemptions become final only once Step 1's applicability rule lands; no other applicable gap needs a trade.
+`homebrew-tap`, `ki-specifications`, `tools-mgit` and `tools-rig` do not declare `ki-engineering` and are out of scope. Both exemptions follow from the applicability rule's configuration-only clause and need no override record. Every gap routes to `KI-HARNESS-GOV-163`: the harness adoption directly, and the `scripts/` gaps as receiver roadmap records once `DESIGN-2` can prove root `scripts/` coverage, because trades are on hold and a receiver change the audit cannot yet see would be unverifiable.
+
+## Review
+
+### Delivered
+
+The `ki-engineering` standard now states when a repository must carry a boundary checker, how an exemption is recorded, and that tracked `scripts/` is a source root. The rollout inventory records every repository's disposition and `scripts/` coverage. The planned `DESIGN-3` was dropped because `DESIGN-2`'s mechanical half already proves the same liveness, and this repository's adoption moved to `KI-HARNESS-GOV-163` with the `bun test` adapter it needs.
+
+### Change Summary
+
+- `standards-engineering.md`: one new dependency-direction bullet with the applicability rule (implementation modules that import one another, in compiler roots, workspace members or tracked `scripts/`), the configuration-only clause, the exemption route (`DESIGN-2 = false` in `[skills.ki-engineering.checks]` with its reason) and the `scripts/` coverage requirement.
+- This record: re-planned Steps 2 to 5, a `scripts/` coverage column and final dispositions in the rollout inventory.
+- `KI-HARNESS-GOV-163` captured for the `bun test` adapter, this repository's adoption and the receiver `scripts/` hand-offs.
+
+### Verification
+
+- `bun run test`: 1033 pass, 0 fail (an earlier run hung in `hooks/plan-stamp.test.ts` with a `spawnSync` child waiting on stdin under concurrent suites; the rerun passed). `bunx tsc --noEmit`: clean. No code changed, so coverage is unchanged.
+- `ki repo audit --skill ki-authoring` and `--skill ki-work-roadmap`: PASS. `rumdl check` on the standard: clean. No criterion changed, so `references/rubric.md` needs no regeneration.
+- Criterion 1: the new bullet states the rule, the exemption route and `scripts/` coverage; the `### Mechanical boundary evidence` section still assigns liveness and directions to `DESIGN-2`.
+- Criterion 2: `items/design.ts` has no `DESIGN-3`; the re-plan names the `boundaries.ts` checks that discharge it.
+- Criterion 3: the inventory lists all seventeen repositories that declare `ki-engineering`, read from each primary checkout's boundary test roots and tracked `scripts/*.ts`; every gap names `KI-HARNESS-GOV-163`.
+- Criterion 4: delivered before the baseline by `b7e276de` and `a074fc4a` (Steps 7 and 8); `DESIGN-2` fails with the install command when `tooling/boundaries/node_modules` is absent.
+
+### Outstanding concerns
+
+The flat `DESIGN-2` adapter cruises `src/` only, so it cannot yet see the ten `scripts/` gaps the standard now names; until `KI-HARNESS-GOV-163` lands they are judgment findings, not mechanical ones.
+
+### Post-change review
+
+Dropping `DESIGN-3` keeps one criterion per proof: a second warning-level criterion over the same cruise would have reported the same failure twice. The two exemptions follow from the configuration-only clause rather than override records, so neither repository carries a `false` entry it does not need.
+
+### Mini recap
+
+The estate's boundary-checker policy is complete and every repository has a disposition; the harness's own adoption and the `scripts/` gaps wait on a `bun test` proof adapter in `KI-HARNESS-GOV-163`.
 
 ## Discussion
 
