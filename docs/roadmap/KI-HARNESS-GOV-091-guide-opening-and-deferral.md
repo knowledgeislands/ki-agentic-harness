@@ -6,14 +6,13 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: febc70bd3b5c642d0e53ecc60b202a204f748ef2
 created_at: 2026-09-24T19:05:00Z
-updated_at: 2026-10-08T09:00:27Z
+updated_at: 2026-10-08T09:01:01Z
 ---
 
 # KI-HARNESS-GOV-091: Guide opening and deferral
@@ -147,6 +146,10 @@ The opening measure reuses the same guide set and fence handling as `GUIDE-3`, s
 ### Mini recap
 
 Guides must now open by saying what the reader will be able to do, checked as a 120-character floor, and review asks whether each link carries a fact rather than deferring to it.
+
+## Done
+
+Accepted 2026-10-08 under Kris Brown's standing decision that delivered and verified work counts as accepted, on the review packet above.
 
 ## Discussion
 
