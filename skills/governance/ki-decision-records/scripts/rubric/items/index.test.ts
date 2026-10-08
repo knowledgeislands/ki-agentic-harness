@@ -42,6 +42,7 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'FILENAME-4',
     'ROOT-1',
     'ROOT-2',
+    'ROOT-3',
     'FM-0',
     'FM-3',
     'FM-4',
@@ -260,5 +261,82 @@ test('a declared Decision Record scope is a finding, because the scope is always
       message: '[skills.ki-decision-records].scope = "KI-ARCADIA" is retired; the scope is always repo_code.',
       subject: '.ki.toml'
     }
+  ])
+})
+
+test('every record scope equals repo_code or begins with repo_code-, with no exception', () => {
+  const recordFor = (id: string, title: string, shared = false) => `---
+id: ${id}
+title: '${title}'
+date: 2026-10-08
+status: current
+decision_type: governance
+decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
+${shared ? 'shared_record: true\n' : ''}---
+
+# ${id}: ${title}
+
+## Context
+
+The repository records a decision.
+
+## Decision
+
+The repository adopts it.
+
+## Consequences
+
+The decision remains readable.
+`
+  const audit = (toml: string, ids: readonly string[]) => {
+    const repository = mkdtempSync(join(tmpdir(), 'ki-decision-records-record-scope-'))
+    temporaryDirectories.push(repository)
+    const directory = join(repository, 'docs', 'decisions')
+    mkdirSync(directory, { recursive: true })
+    writeFileSync(join(repository, '.ki.toml'), toml)
+    for (const [index, id] of ids.entries())
+      writeFileSync(
+        join(directory, `${id}-decision-${index + 1}.md`),
+        recordFor(id, `Decision ${index + 1}`, id.includes('FUNDAMENTALS'))
+      )
+    const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+    const family = families.find((candidate) => candidate.code === 'ROOT')
+    const context = family?.selectContext(
+      session.subjects[1]?.context() as NonNullable<ReturnType<(typeof session.subjects)[1]['context']>>
+    )
+    return family?.items
+      .find((candidate) => candidate.code === 'ROOT-3')
+      ?.mechanical?.audit.run(context as NonNullable<typeof context>)
+  }
+  const declared = '[skills.ki-repo]\nrepo_code = "KI-TOOL"\n'
+
+  expect(audit(declared, ['GDR-KI-TOOL-001', 'ADR-KI-TOOL-CLI-001'])).toEqual([
+    { status: 'PASS', message: 'Every record scope is KI-TOOL or begins with KI-TOOL-.' }
+  ])
+  expect(audit(declared, ['GDR-KI-TOOL-001', 'GDR-KI-TOOLS-001', 'GDR-KI-FUNDAMENTALS-001'])).toEqual([
+    {
+      status: 'VIOLATION',
+      message:
+        'GDR-KI-FUNDAMENTALS-001 has scope KI-FUNDAMENTALS; the scope must be KI-TOOL or begin with KI-TOOL-, for example GDR-KI-TOOL-NNN.',
+      subject: 'GDR-KI-FUNDAMENTALS-001-decision-3.md'
+    },
+    {
+      status: 'VIOLATION',
+      message:
+        'GDR-KI-TOOLS-001 has scope KI-TOOLS; the scope must be KI-TOOL or begin with KI-TOOL-, for example GDR-KI-TOOL-NNN.',
+      subject: 'GDR-KI-TOOLS-001-decision-2.md'
+    }
+  ])
+  expect(audit('[skills.ki-repo]\nrepo_code = "5GE-DEMO"\n', ['GDR-5GE-DEMO-001', 'ADR-IBC2026-001'])).toEqual([
+    expect.objectContaining({ status: 'VIOLATION', subject: 'ADR-IBC2026-001-decision-2.md' })
+  ])
+  expect(audit('[skills.ki-decision-records]\n', ['GDR-ANY-001'])).toEqual([
+    { status: 'PASS', message: 'No repo_code is declared, so record scopes are not compared.' }
+  ])
+  expect(audit('not = [valid toml', ['GDR-ANY-001'])).toEqual([
+    { status: 'PASS', message: 'No repo_code is declared, so record scopes are not compared.' }
+  ])
+  expect(audit('[skills.ki-repo]\nrepo_code = ""\n', ['GDR-ANY-001'])).toEqual([
+    { status: 'PASS', message: 'No repo_code is declared, so record scopes are not compared.' }
   ])
 })

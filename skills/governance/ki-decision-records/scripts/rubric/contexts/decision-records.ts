@@ -118,6 +118,8 @@ export type RecordsRubricContext = {
 export type RootRubricContext = {
   /** Set when `.ki.toml` still declares the retired `[skills.ki-decision-records].scope`. */
   declaredScope?: string
+  /** The repository's `[skills.ki-repo].repo_code`, when declared. */
+  repoCode?: string
   indexFile: string
   indexIds: readonly string[]
   records: readonly DecisionRecord[]
@@ -171,22 +173,26 @@ const findKiConfig = (start: string): string | undefined => {
   return undefined
 }
 
-const isKb = (target: string): boolean => {
+const repoTable = (target: string): Record<string, unknown> | undefined => {
   const config = findKiConfig(target)
-  if (!config) return false
+  if (!config) return undefined
   try {
     const parsed = TOML.parse(readFileSync(config, 'utf8')) as Record<string, unknown>
     const skills = parsed.skills
     const table = skills && typeof skills === 'object' ? (skills as Record<string, unknown>)[REPO_CONFIG] : undefined
-    return (
-      typeof table === 'object' &&
-      table !== null &&
-      !Array.isArray(table) &&
-      (table as Record<string, unknown>).repo_type === 'kb'
-    )
+    return typeof table === 'object' && table !== null && !Array.isArray(table)
+      ? (table as Record<string, unknown>)
+      : undefined
   } catch {
-    return false
+    return undefined
   }
+}
+
+const isKb = (target: string): boolean => repoTable(target)?.repo_type === 'kb'
+
+const repoCode = (target: string): string | undefined => {
+  const code = repoTable(target)?.repo_code
+  return typeof code === 'string' && code.length > 0 ? code : undefined
 }
 
 const isDirectory = (path: string): boolean =>
@@ -537,6 +543,7 @@ export const createDecisionRecordsSession = ({
   publication
 }: RubricContextOptions): RubricSession<DecisionRecordsRubricContext> => {
   const kbMode = isKb(repository)
+  const code = repoCode(repository)
   const directory = resolveDirectory(repository, kbMode)
   const exists = isDirectory(directory)
   const entries = exists ? readdirSync(directory).sort() : []
@@ -578,7 +585,8 @@ export const createDecisionRecordsSession = ({
       indexFile,
       indexIds,
       records,
-      ...('scope' in configuration ? { declaredScope: String(configuration.scope) } : {})
+      ...('scope' in configuration ? { declaredScope: String(configuration.scope) } : {}),
+      ...(code ? { repoCode: code } : {})
     },
     frontmatter: {
       records,

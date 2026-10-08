@@ -82,11 +82,49 @@ const ROOT_2: RubricItem<RootRubricContext> = {
   }
 }
 
+const ROOT_3: RubricItem<RootRubricContext> = {
+  code: 'ROOT-3',
+  title: 'Every record scope belongs to the repository',
+  description:
+    "Every Decision Record identifier's `<SCOPE>` equals the repository's `[skills.ki-repo].repo_code` or begins with `<repo_code>-` for a sub-domain. There is no exception, including for a record mirrored from another repository.",
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Rename the record under the repository code (`<PREFIX>-<repo_code>-NNN`, or `<PREFIX>-<repo_code>-<SUB>-NNN` for a sub-domain), renumber it into that series, and update its index entry and every citation. A record owned by another repository is cited by its canonical URL rather than copied.'
+    },
+    audit: {
+      phase: 'PREPARE',
+      run: (context: RootRubricContext) => {
+        const code = context.repoCode
+        if (code === undefined)
+          return [{ status: 'PASS', message: 'No repo_code is declared, so record scopes are not compared.' }] as const
+        return outcomes(
+          context.records
+            .filter((record) => record.scope !== code && !record.scope.startsWith(`${code}-`))
+            .map(
+              (record) =>
+                ({
+                  status: 'VIOLATION',
+                  message: `${record.id} has scope ${record.scope}; the scope must be ${code} or begin with ${code}-, for example ${record.prefix}-${code}-NNN.`,
+                  subject: record.file
+                }) satisfies AuditOutcome
+            ),
+          `Every record scope is ${code} or begins with ${code}-.`
+        )
+      }
+    }
+  }
+}
+
 export const ROOT: RubricFamily<DecisionRecordsRubricContext, RootRubricContext> = {
   code: 'ROOT',
   title: 'collection-root checks',
-  description: 'The first Decision Record in every collection adopts the instrument itself, under the repository code.',
+  description:
+    'The first Decision Record in every collection adopts the instrument itself, and every record is scoped to the repository code.',
   standard: SOURCE,
   selectContext: (context) => context.root,
-  items: [ROOT_1, ROOT_2]
+  items: [ROOT_1, ROOT_2, ROOT_3]
 }

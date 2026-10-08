@@ -47,12 +47,14 @@ Canonical decision-record filenames and serial namespaces.
 
 → [standard](standards-decision-records.md)
 
-The first Decision Record in every collection adopts the instrument itself, under the repository code.
+The first Decision Record in every collection adopts the instrument itself, and every record is scoped to the repository code.
 
 - **ROOT-1 [M] — Every collection begins by adopting the instrument** — Every collection begins its index with `GDR-<SCOPE>-001` whose title contains "Adopting Decision Records" (a compound title such as "Adopt decision records and documentation instruments" satisfies it). (standards-decision-records.md)
   - _Remediation:_ diagnostic — Create or retitle the collection root with a human review of its record identity and contents.
 - **ROOT-2 [M] — The scope is the repository code** — The `<SCOPE>` comes from the repository's `[skills.ki-repo].repo_code`, so `.ki.toml` declares no `[skills.ki-decision-records].scope`. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Remove `scope` from `[skills.ki-decision-records]` in `.ki.toml`. The scope is always `[skills.ki-repo].repo_code`; where existing records use another scope, rename them with a human review.
+- **ROOT-3 [M] — Every record scope belongs to the repository** — Every Decision Record identifier's `<SCOPE>` equals the repository's `[skills.ki-repo].repo_code` or begins with `<repo_code>-` for a sub-domain. There is no exception, including for a record mirrored from another repository. (standards-decision-records.md)
+  - _Remediation:_ diagnostic — Rename the record under the repository code (`<PREFIX>-<repo_code>-NNN`, or `<PREFIX>-<repo_code>-<SUB>-NNN` for a sub-domain), renumber it into that series, and update its index entry and every citation. A record owned by another repository is cited by its canonical URL rather than copied.
 
 ## FM — frontmatter checks
 
