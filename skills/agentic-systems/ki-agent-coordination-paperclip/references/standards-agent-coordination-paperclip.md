@@ -251,6 +251,14 @@ A Paperclip run is a host-bound runtime under [host surface selection](../../../
 
 The supported route is a Paperclip remote MCP connection to the host bridge, granted to the agents that need it through Paperclip's connection mechanism. Paperclip admits a private or loopback endpoint unless the deployment is both authenticated and publicly exposed. Bootstrap verifies MCP access in a real run, as it does skill access. A missing connection or grant is a provisioning prerequisite for the principal, not permission to write runtime configuration or to substitute a claude.ai connector.
 
+### Host tools in runs
+
+The same isolation hides the user's KI data, configuration and state roots from `ki`. Unpinned, every harness-backed verb fails with `declared skill <name> is provided by no declared harness`, naming a data root under the run directory; that is an environment fact, not a missing install or a repository finding. Repository-only verbs such as `ki repo roadmap list` are unaffected.
+
+Carry the host roots into a run per invocation, never through the run's ambient environment: pin `PAPERCLIP_GITHUB_HOST_HOME` on the `ki` command itself, as [the audit procedure](mode-audit.md) shows. Bootstrap does not add `KI_DATA_HOME` or an XDG override to an agent's configuration, because every later process in the run would then reach host state it cannot verify. The pinned reach is read-only: audits, inventories, `doctor`, `diag` and roadmap reads. Verbs that write host state — `harness`, `update`, `repair`, `cleanup`, `bootstrap`, `skill`, `dev`, `registry` and `mcp` mutations, and any conform or `--write` mode — are host maintenance. A run reports them as a prerequisite for a human shell, and never runs them against pinned roots. An audit claim made from a run names the pin it used, the repository and the admitted revision; a claim the run cannot reach is evidenced from a non-sandboxed shell at a named revision.
+
+The redirected home also breaks tools that bind a Unix domain socket below it. A macOS socket address is limited to 104 bytes (`sun_path` in `sys/un.h`), and a run's home path can exceed one hundred characters on its own, so a session manager, editor daemon or agent supervisor that places its control socket at a fixed offset under the home fails with an opaque address-length error. Before invoking such a tool, compare the intended socket path's length with the platform limit, and report both numbers as evidence rather than interpreting the tool's error. Two responses are acceptable: point the tool's socket at a short directory through the tool's own configuration, where it supports that, or record that the capability needs a human-driven terminal. Overriding the home directory for the tool, patching the tool or weakening run isolation is not acceptable.
+
 ## Evidence and completion
 
 Before reporting coordinated work complete, apply the delivery completion rule above and reconcile four evidence classes:

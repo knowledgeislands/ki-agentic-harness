@@ -138,9 +138,9 @@ export const COORD: RubricFamily<PaperclipCoordinationContext, PaperclipCoordina
       title: 'Repository skill baseline',
       description:
         'Every repository role verifies declared skills and prerequisites in its actual task workspace; company assignment remains a separate check.',
-      sources: [`${STANDARD}#repository-skills-are-the-execution-baseline`],
+      sources: [`${STANDARD}#repository-skills-are-the-execution-baseline`, `${STANDARD}#host-tools-in-runs`],
       judgment: judgment(
-        'Does the run verify repository instructions, declared skills, required dependencies, harness identity, and runtime discovery at its admitted revision, with coordinator skill access and managed instruction drift checked separately?'
+        "Does the run verify repository instructions, declared skills, required dependencies, harness identity, and runtime discovery at its admitted revision, with coordinator skill access and managed instruction drift checked separately? Does it reach host KI state only through a per-invocation pin for read verbs, leave host-writing verbs to a human shell, and check a socket-binding tool's path length before invoking it?"
       )
     },
     {

@@ -19,7 +19,7 @@ _On-demand procedure for the coordination AUDIT mode. The position, shared model
        ki repo audit --skill ki-agent-coordination-paperclip --repo <repo>
    ```
 
-   Unpinned, the host reports `declared skill <name> is provided by no declared harness` because no harness is installed under the run-scoped home. Unset all three: the repository registry lives under `XDG_STATE_HOME`, and leaving it pinned to the run directory produces a spurious `REPO-REG-1` failure on every repository. Outside a Paperclip run, invoke `ki` directly.
+   Unpinned, the host reports `declared skill <name> is provided by no declared harness` because no harness is installed under the run-scoped home. Unset all three: the repository registry lives under `XDG_STATE_HOME`, and leaving it pinned to the run directory produces a spurious `REPO-REG-1` failure on every repository. Pin per invocation, never in the run's environment, and only for read verbs; the [coordination standard](standards-agent-coordination-paperclip.md#host-tools-in-runs) lists the verbs a run leaves to a human shell. Outside a Paperclip run, invoke `ki` directly.
 
 3. **Read the mechanical result as repository-side evidence, not conformance evidence.** `ORG-1` checks the declaration, `COORD-3` and `COORD-15` read only the selected checkout's local evidence, and `COORD-9` lists the repository's own worktree registry for information; every other COORD criterion is judgment. No mechanical operation reads the coordination plane, fetches, or writes.
 
