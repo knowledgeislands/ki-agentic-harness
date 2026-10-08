@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T10:30:00Z
-updated_at: 2026-10-08T10:30:00Z
+updated_at: 2026-10-08T13:33:20Z
 ---
 
 # KI-HARNESS-GOV-164: Hand off living diagrams
@@ -46,3 +46,7 @@ Each receiver holds a trade or a work record naming `ki-diagrams` and the outcom
 ### Dependencies
 
 Waits on the trade hold in the `ki-trades` standard, or on an operator able to record work directly in each receiver. Neither receiver's work blocks this record.
+
+### Handoff evidence
+
+On 2026-10-08, with Kris's approval, the work was recorded directly in each receiver as a Triage record naming `ki-diagrams`, the outcome above and this record as origin: `ki-website` KI-WEB-SITE-043 and `apps-observatory` KI-OBS-OPS-002. Neither blocks this record and this record blocks neither. The acceptance evidence is therefore met; the record stays in triage until Kris disposes of it through `ki-accept`.
