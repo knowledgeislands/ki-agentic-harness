@@ -7,7 +7,7 @@ project: estate-factorisation
 component: governance
 horizon: now
 status: in-progress
-blocks: []
+blocks: [KI-HARNESS-GOV-161]
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-10-06T01:21:00Z
