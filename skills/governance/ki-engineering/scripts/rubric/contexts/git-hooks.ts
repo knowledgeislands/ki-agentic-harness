@@ -1,3 +1,5 @@
+import { BOUNDARY_INSTALL } from './boundaries.ts'
+
 export const PRE_COMMIT_COMMANDS = ['bunx lint-staged || exit 1', 'bunx syncpack format --check || exit 1'] as const
 
 export const COMMIT_MSG_COMMAND = 'bunx commitlint --edit "$1" || exit 1'
@@ -33,3 +35,15 @@ export const hasPreCommitBaseline = (source: string): boolean =>
   source.startsWith(`${PRE_COMMIT_COMMANDS.join('\n')}\n`)
 
 export const hasCommitMessageBaseline = (source: string): boolean => source.startsWith(`${COMMIT_MSG_COMMAND}\n`)
+
+// Committed hook stubs outside `node_modules`: bound through a relative `core.hooksPath`,
+// they resolve in every working tree and refuse a commit whose gate tooling is absent.
+export const HOOK_STUB_DIRECTORY = '.githooks'
+export const HOOK_STUBS = ['pre-commit', 'commit-msg'] as const
+export const HOOK_STUB_BINDING = `git config core.hooksPath ${HOOK_STUB_DIRECTORY}`
+
+/** Accepted `prepare` forms: plain Husky first, then the stub binding where both stubs are committed. */
+export const acceptedPrepares = (boundaryInstallRoot: boolean, stubsCommitted: boolean): string[] => {
+  const boundary = boundaryInstallRoot ? ` && ${BOUNDARY_INSTALL}` : ''
+  return [`husky${boundary}`, ...(stubsCommitted ? [`husky && ${HOOK_STUB_BINDING}${boundary}`] : [])]
+}

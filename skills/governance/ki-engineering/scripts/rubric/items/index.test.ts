@@ -31,6 +31,7 @@ import {
   type ScriptsRubricContext
 } from '../contexts/engineering.ts'
 import {
+  acceptedPrepares,
   COMMITLINT_CONFIGURATION,
   hasCommitMessageBaseline,
   hasPreCommitBaseline,
@@ -663,6 +664,41 @@ test('SCR-5 conform keeps the boundary install on prepare where its install root
   expect(JSON.parse(session.proposal().writes[0]?.content ?? '{}').scripts.prepare).toBe(
     'husky && bun install --frozen-lockfile --cwd tooling/boundaries'
   )
+})
+
+test('SCR-5 accepts the hook stub binding only where both stubs are committed', () => {
+  expect(acceptedPrepares(false, false)).toEqual(['husky'])
+  expect(acceptedPrepares(false, true)).toEqual(['husky', 'husky && git config core.hooksPath .githooks'])
+  expect(acceptedPrepares(true, true)).toEqual([
+    'husky && bun install --frozen-lockfile --cwd tooling/boundaries',
+    'husky && git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
+  ])
+})
+
+const conformPrepare = async (prepare: string, stubs: readonly string[]): Promise<string> => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(repository)
+  mkdirSync(join(repository, '.githooks'))
+  for (const stub of stubs) writeFileSync(join(repository, '.githooks', stub), '#!/bin/sh\n')
+  writeFileSync(join(repository, 'package.json'), JSON.stringify({ scripts: { prepare } }))
+  const session = await createEngineeringSession(
+    { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
+    () => [{ level: 'WARN', code: 'SCR-5', message: 'prepare drift', subject: 'package.json' }]
+  )
+  const root = session.subjects[1]?.context() as EngineeringRubricContext
+  const family = catalogue.families.find((candidate) => candidate.code === 'SCR') as RubricFamily<
+    EngineeringRubricContext,
+    ScriptsRubricContext
+  >
+  family.items.find((candidate) => candidate.code === 'SCR-5')?.mechanical?.conform?.run(family.selectContext(root))
+  return JSON.parse(session.proposal().writes[0]?.content ?? '{}').scripts.prepare
+}
+
+test('SCR-5 conform keeps a chosen hook stub binding and drops one whose stubs are absent', async () => {
+  const bound = 'husky && git config core.hooksPath .githooks'
+  expect(await conformPrepare(`${bound} && echo drift`, ['pre-commit', 'commit-msg'])).toBe(bound)
+  expect(await conformPrepare(bound, ['pre-commit'])).toBe('husky')
+  expect(await conformPrepare('husky install', ['pre-commit', 'commit-msg'])).toBe('husky')
 })
 
 test('the common hook contract detects missing and ordered baselines', () => {

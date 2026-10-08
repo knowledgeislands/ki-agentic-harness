@@ -19,7 +19,7 @@ The `ki-skills` skill and its cited decisions own the dependency, optional-augme
 - **Markdown and TOML** → use `ki-authoring` for formatting, authored shape, and knowledge placement.
 - **TypeScript and Bun** → use `ki-engineering` for code, tests, package scripts, and toolchain configuration.
 - **Git** → use `ki-git` for portable commit and hygiene policy. This repository's local delta is a solo direct-to-`main` workflow with no PR gate; branches remain available for an isolated review boundary. Its pre-commit hook runs `lint-staged`, TypeScript for staged `.ts` changes, and a staged-snapshot `ki-skills` audit for touched skill roots.
-- **Verification** → run `bun run test`, `bunx tsc --noEmit`, and the relevant focused `ki repo audit --skill <skill>` sequentially. Record fleet findings separately from failures in the contract under change.
+- **Verification** → run `bun run test`, `bunx tsc --noEmit`, and the relevant focused `ki repo audit --skill <skill>` sequentially. Record fleet findings separately from failures in the contract under change. A declared audit or hook that cannot run is unknown, not a pass: stop and report the activation step it needs rather than committing with `--no-verify`.
 
 ## Paperclip local delivery
 

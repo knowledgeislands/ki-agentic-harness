@@ -49,7 +49,7 @@
     "clean": "rm -rf node_modules",
     "ki:deps:update": "bun update --latest",
     "ki:harness:eval": "bun evals/harness.ts",
-    "prepare": "husky",
+    "prepare": "husky && git config core.hooksPath .githooks",
     "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks ./evals"
   },
   "type": "module"

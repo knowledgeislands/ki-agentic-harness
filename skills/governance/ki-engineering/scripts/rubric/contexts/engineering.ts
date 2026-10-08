@@ -11,8 +11,15 @@ import type {
   ViolationLevel
 } from '../../shared/rubric.ts'
 import { collectAuditEvidence, type EngineeringEvidenceFinding } from './audit-evidence.ts'
-import { BOUNDARY_INSTALL } from './boundaries.ts'
-import { COMMITLINT_CONFIGURATION, normaliseCommitMessage, normalisePreCommit } from './git-hooks.ts'
+import {
+  acceptedPrepares,
+  COMMITLINT_CONFIGURATION,
+  HOOK_STUB_BINDING,
+  HOOK_STUB_DIRECTORY,
+  HOOK_STUBS,
+  normaliseCommitMessage,
+  normalisePreCommit
+} from './git-hooks.ts'
 import { inspectConsistencyReviewEvidence } from './review-evidence.ts'
 
 const ENGINEERING_TABLE = 'ki-engineering'
@@ -276,7 +283,7 @@ const isSafeRegularFile = (path: string): boolean => {
   return metadata.isFile() && !metadata.isSymbolicLink()
 }
 
-const packageContent = (source: string, boundaryInstallRoot: boolean): string | undefined => {
+const packageContent = (source: string, boundaryInstallRoot: boolean, stubsCommitted: boolean): string | undefined => {
   let value: Record<string, unknown>
   try {
     value = JSON.parse(source) as Record<string, unknown>
@@ -304,7 +311,9 @@ const packageContent = (source: string, boundaryInstallRoot: boolean): string | 
   }
   scripts['ki:deps:update'] = 'bun update --latest'
   scripts.clean = scripts.clean?.includes('node_modules') ? scripts.clean : 'rm -rf dist node_modules'
-  scripts.prepare = boundaryInstallRoot ? `husky && ${BOUNDARY_INSTALL}` : 'husky'
+  // Keep a repository's chosen stub binding; otherwise restore plain Husky.
+  const [husky, stubbed] = acceptedPrepares(boundaryInstallRoot, stubsCommitted)
+  scripts.prepare = stubbed && scripts.prepare?.includes(HOOK_STUB_BINDING) ? stubbed : (husky as string)
   packageJson.scripts = Object.fromEntries(
     Object.entries(scripts).sort(([first], [second]) => first.localeCompare(second))
   )
@@ -495,7 +504,11 @@ export const createEngineeringSession = async (
     proposal: () => {
       const writes: ConformWrite[] = []
       if (synchronisePackage && packageSource !== undefined) {
-        const content = packageContent(packageSource, existsSync(join(target, 'tooling', 'boundaries', 'package.json')))
+        const content = packageContent(
+          packageSource,
+          existsSync(join(target, 'tooling', 'boundaries', 'package.json')),
+          HOOK_STUBS.every((hook) => isSafeRegularFile(join(target, HOOK_STUB_DIRECTORY, hook)))
+        )
         if (content !== undefined && content !== packageSource) writes.push({ path: 'package.json', content })
       }
       if (synchroniseHooks) {

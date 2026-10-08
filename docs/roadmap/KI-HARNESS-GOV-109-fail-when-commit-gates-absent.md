@@ -7,12 +7,12 @@ purpose: governance
 project: baseline-rollout
 component: governance
 horizon: now
-status: ready
+status: awaiting-review
 blocks: [KI-HARNESS-GOV-117]
 blocked_by: []
-baseline_ref: null
+baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-09-26T15:58:00Z
-updated_at: 2026-10-07T20:32:40Z
+updated_at: 2026-10-08T08:10:50Z
 ---
 
 # KI-HARNESS-GOV-109: Enforce Commit Gates
@@ -43,12 +43,12 @@ Nothing written. `.husky/pre-commit` and `.husky/commit-msg` are committed and c
 
 ## Steps
 
-- [ ] Add `.githooks/pre-commit` and `.githooks/commit-msg` as executable POSIX `sh` stubs. Each resolves `git rev-parse --show-toplevel`, checks the executables its gate needs under `node_modules/.bin/` (`lint-staged`, `syncpack`, `tsc` for pre-commit; `commitlint` for commit-msg), and when any is absent prints the missing names, the exact step `bun install` in that top-level, and a line saying not to bypass with `--no-verify`, then exits 1. When all are present it prefixes `node_modules/.bin` to `PATH` and `exec`s `sh "$root/.husky/<hook>" "$@"`.
-- [ ] Change `package.json` `prepare` to `husky && git config core.hooksPath .githooks`, so the shared `core.hooksPath` names a committed, relative directory that every worktree resolves against its own top-level.
-- [ ] Extend `SCR-5` to accept exactly that `prepare` form when both `.githooks` stubs are safe regular files, keeping `husky` alone as the other passing form; update the item description in `scripts/rubric/items/scripts.ts`, the `SCR-5` paragraph in `standards-engineering.md`, and the `SCR-5` cases in `scripts/rubric/items/index.test.ts`.
-- [ ] Add `hooks/git-hook-stub.test.ts`: a temporary repository with the stubs and `core.hooksPath .githooks`, plus a linked worktree, proving refusal without tooling and delegation with stub executables present.
-- [ ] Add one sentence to `AGENTS.md` under Working here: a declared audit or hook that cannot run is unknown, not a pass; stop and report the activation step rather than committing with `--no-verify`.
-- [ ] Regenerate `skills/governance/ki-engineering/references/rubric.md` with `ki dev skill rubric ki-engineering`, run `bun install` in the primary checkout, and confirm `git config core.hooksPath` returns `.githooks`.
+- [x] Add `.githooks/pre-commit` and `.githooks/commit-msg` as executable POSIX `sh` stubs. Each resolves `git rev-parse --show-toplevel`, checks the executables its gate needs under `node_modules/.bin/` (`lint-staged`, `syncpack`, `tsc` for pre-commit; `commitlint` for commit-msg), and when any is absent prints the missing names, the exact step `bun install` in that top-level, and a line saying not to bypass with `--no-verify`, then exits 1. When all are present it prefixes `node_modules/.bin` to `PATH` and `exec`s `sh "$root/.husky/<hook>" "$@"`.
+- [x] Change `package.json` `prepare` to `husky && git config core.hooksPath .githooks`, so the shared `core.hooksPath` names a committed, relative directory that every worktree resolves against its own top-level.
+- [x] Extend `SCR-5` to accept exactly that `prepare` form when both `.githooks` stubs are safe regular files, keeping `husky` alone as the other passing form; update the item description in `scripts/rubric/items/scripts.ts`, the `SCR-5` paragraph in `standards-engineering.md`, and the `SCR-5` cases in `scripts/rubric/items/index.test.ts`.
+- [x] Add `hooks/git-hook-stub.test.ts`: a temporary repository with the stubs and `core.hooksPath .githooks`, plus a linked worktree, proving refusal without tooling and delegation with stub executables present.
+- [x] Add one sentence to `AGENTS.md` under Working here: a declared audit or hook that cannot run is unknown, not a pass; stop and report the activation step rather than committing with `--no-verify`.
+- [x] Regenerate `skills/governance/ki-engineering/references/rubric.md` with `ki dev skill rubric ki-engineering`, run `bun install` in the primary checkout, and confirm `git config core.hooksPath` returns `.githooks`.
 
 ## Files touched
 
@@ -58,6 +58,8 @@ Nothing written. `.husky/pre-commit` and `.husky/commit-msg` are committed and c
 - `AGENTS.md`
 - `hooks/git-hook-stub.test.ts` (new)
 - `skills/governance/ki-engineering/scripts/rubric/contexts/audit-evidence.ts`
+- `skills/governance/ki-engineering/scripts/rubric/contexts/engineering.ts`
+- `skills/governance/ki-engineering/scripts/rubric/contexts/git-hooks.ts`
 - `skills/governance/ki-engineering/scripts/rubric/items/scripts.ts`
 - `skills/governance/ki-engineering/scripts/rubric/items/index.test.ts`
 - `skills/governance/ki-engineering/references/standards-engineering.md`
@@ -106,6 +108,34 @@ None.
 ### Roadmap
 
 [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) inherits the `.githooks` mechanism.
+
+## Review
+
+### Delivered
+
+The approved boundary: committed `.githooks` stubs that refuse a commit whose gate tooling is absent and otherwise delegate to the governed Husky hooks, the `prepare` binding, the `SCR-5` acceptance of that form, a stub test over a real linked worktree, and the `AGENTS.md` sentence on audits that cannot run. Excluded as planned: any install from a hook, any host harness installation and any estate-wide change, which stays with [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md). Baseline `9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3`.
+
+### Change Summary
+
+- `.githooks/pre-commit` and `.githooks/commit-msg` check `lint-staged`, `syncpack` and `tsc`, or `commitlint`, under `node_modules/.bin`; when any is missing they name it, the `bun install` step and the `--no-verify` prohibition, and exit 1. Otherwise they put `node_modules/.bin` on `PATH` and run `.husky/<hook>` unchanged.
+- `package.json` `prepare` is `husky && git config core.hooksPath .githooks`.
+- `git-hooks.ts` gains the stub constants and `acceptedPrepares`, shared by the audit and conform paths. `audit-evidence.ts` passes `SCR-5` on either accepted form, the stub form only while both stubs are safe regular files. `engineering.ts` conform keeps a chosen stub binding instead of resetting it to plain `husky`; this file was not in the planned list but owns the conform write, which would otherwise have undone the binding.
+- `index.test.ts` covers the accepted forms, with and without the boundary install, and the conform keep and drop cases. `hooks/git-hook-stub.test.ts` builds a repository and linked worktree bound to `.githooks`.
+- `scripts.ts`, `standards-engineering.md` and `rubric.md` describe the second accepted form; `AGENTS.md` gains the sentence under Working here.
+
+### Verification
+
+- `bun run test`: 1012 pass, 0 fail. `bunx tsc --noEmit`: clean. `git-hooks.ts` coverage 100%.
+- Criterion 1: in a linked worktree with no `node_modules` the commit exits non-zero naming `lint-staged syncpack tsc` and `bun install`, and `HEAD` is unchanged; `commit-msg` refuses the same way on its own missing `commitlint`.
+- Criterion 2: with the executables present the stubs delegate; a failing stand-in `.husky/pre-commit` still refuses and a passing one commits, with `commit-msg` receiving the message file.
+- Criterion 3: the fixture's linked worktree reads `core.hooksPath` as `.githooks`; `bun install` in this worktree set the shared value to `.githooks`. It was restored to `.husky/_` until the stubs reach `main`, so that checkouts without them keep their hooks, and is re-bound by `bun install` in the primary checkout after the push.
+- Criterion 4: the worktree's evidence collector on this repository reports `SCR-5` `PASS` for the stub form and `SCR-11` `PASS`. `ki repo audit` reads the installed primary checkout, so until the push it still shows the old `SCR-5` warning.
+- `ki dev skill rubric` resolves the installed primary checkout, so the `rubric.md` line was edited to match the new item description.
+- `ki repo audit` on the primary checkout: FAIL=0, WARN=5, all existing. In the worktree the only failures are `REPO-REG-1` and `RUNTIMES-2`, which follow from the unregistered worktree path.
+
+### Outstanding concerns
+
+None.
 
 ## Discussion
 

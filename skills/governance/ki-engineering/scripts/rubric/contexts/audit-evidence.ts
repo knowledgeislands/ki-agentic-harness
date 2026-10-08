@@ -27,8 +27,15 @@ import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync, statSyn
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { promisify } from 'node:util'
 import type { PackageScriptClaim, RubricEmitter } from '../../shared/rubric.ts'
-import { BOUNDARY_INSTALL, inspectBoundaries } from './boundaries.ts'
-import { COMMITLINT_CONFIGURATION, hasCommitMessageBaseline, hasPreCommitBaseline } from './git-hooks.ts'
+import { inspectBoundaries } from './boundaries.ts'
+import {
+  acceptedPrepares,
+  COMMITLINT_CONFIGURATION,
+  HOOK_STUB_DIRECTORY,
+  HOOK_STUBS,
+  hasCommitMessageBaseline,
+  hasPreCommitBaseline
+} from './git-hooks.ts'
 
 // Unified severity ladder — shared by every KI checker (checker-contract).
 // area is the minted rubric code (references/rubric.md); ref is its
@@ -1420,17 +1427,21 @@ export const collectAuditEvidence = async (
         'package.json'
       )
     : add('PASS', 'SCR-4', 'no per-skill or path-based governance wrappers', STD, 'package.json')
-  // clean (removes node_modules; may also remove dist) + prepare = husky, plus the boundary install where present
+  // clean (removes node_modules; may also remove dist) + prepare = husky, optionally binding the committed
+  // hook stubs, plus the boundary install where present
   scripts.clean?.includes('node_modules')
     ? add('PASS', 'SCR-5', `clean = ${JSON.stringify(scripts.clean)}`, STD, 'package.json')
     : add('FAIL', 'SCR-5', 'clean must remove node_modules (e.g. "rm -rf {dist,node_modules}")', STD, 'package.json')
-  const expectedPrepare = has('tooling', 'boundaries', 'package.json') ? `husky && ${BOUNDARY_INSTALL}` : 'husky'
-  scripts.prepare === expectedPrepare
-    ? add('PASS', 'SCR-5', `prepare = ${JSON.stringify(expectedPrepare)}`, STD, 'package.json')
+  const preparations = acceptedPrepares(
+    has('tooling', 'boundaries', 'package.json'),
+    HOOK_STUBS.every((hook) => isSafeRegularFile(HOOK_STUB_DIRECTORY, hook))
+  )
+  preparations.includes(scripts.prepare ?? '')
+    ? add('PASS', 'SCR-5', `prepare = ${JSON.stringify(scripts.prepare)}`, STD, 'package.json')
     : add(
         'WARN',
         'SCR-5',
-        `prepare should be ${JSON.stringify(expectedPrepare)}, got ${JSON.stringify(scripts.prepare)}`,
+        `prepare should be ${preparations.map((form) => JSON.stringify(form)).join(' or ')}, got ${JSON.stringify(scripts.prepare)}`,
         STD,
         'package.json'
       )
