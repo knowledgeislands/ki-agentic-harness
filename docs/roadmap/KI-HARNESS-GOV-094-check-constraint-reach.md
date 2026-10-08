@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: keystone
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 134f4685656237ed664ddeb02d8f4c8a5e5b4184
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-08T11:35:00Z
+updated_at: 2026-10-08T11:45:00Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
@@ -160,6 +159,10 @@ The split leaves the conformance test with an explicit pending note rather than 
 ### Mini recap
 
 Every migrated skill now reads one identifier grammar, and a test fails when a copy drifts or a skill spells the grammar by hand again.
+
+## Done
+
+Accepted 2026-10-08 under Kris Brown's standing decision that delivered and verified work counts as accepted, on the review packet above.
 
 ## Discussion
 
