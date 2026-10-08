@@ -7,12 +7,12 @@ purpose: governance
 project: baseline-rollout
 component: governance
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-10-07T14:00:01Z
+updated_at: 2026-10-08T07:40:00Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages
@@ -41,21 +41,22 @@ Also out of scope: changing what `SCR-11` requires. Its package-backed scope is 
 
 ## Current state
 
-Nothing written. `ki-repo` has no hook family; its catalogue lives in `skills/keystone/ki-repo/scripts/rubric/items/index.ts` and its evidence in `scripts/rubric/contexts/repository.ts`. `ki-engineering`'s `SKILL.md` declares `.husky/pre-commit` and `.husky/commit-msg` under `contributes:`. `ki-repo-tools` has `SHELL-LINT` and `SHELL-TEST` in `scripts/rubric/items/shell.ts`, which check CI wiring only, and is `detected` on `install.sh` plus `bin/<exe>`. `ki-repo-kb` and `ki-repo-dotfiles-chezmoi` say nothing about hooks. `standards-tool-repositories.md` records the deliberate absence of a `ki-shell` skill ("YAGNI at n=1").
+Nothing written. `ki-repo` has no hook family; its catalogue lives in `skills/keystone/ki-repo/scripts/rubric/items/index.ts` and its evidence in `scripts/rubric/contexts/repository.ts`. `ki-engineering`'s `SKILL.md` declares `.husky/pre-commit` and `.husky/commit-msg` under `contributes:`, and since `KI-HARNESS-GOV-109` (done) its `SCR-5` accepts `prepare` binding `.githooks` where both stubs are committed; this repository carries those stubs and binds them. `ki-repo-tools` has `SHELL-LINT` and `SHELL-TEST` in `scripts/rubric/items/shell.ts`, which check CI wiring only, and is `detected` on `install.sh` plus `bin/<exe>`. `ki-repo-kb` and `ki-repo-dotfiles-chezmoi` say nothing about hooks. `standards-tool-repositories.md` records the deliberate absence of a `ki-shell` skill ("YAGNI at n=1"). The next free `ADR-KI-HARNESS-SKILLS` serial is `017` whether or not [KI-HARNESS-GOV-099](KI-HARNESS-GOV-099-decide-decision-serial-gaps.md) lands, because the run `001`-`016` has no gap.
 
 ## Steps
 
-- [ ] Write the Decision Record under `docs/decisions/` at the next free `ADR-KI-HARNESS-SKILLS` serial (`017` if [KI-HARNESS-GOV-099](KI-HARNESS-GOV-099-decide-decision-serial-gaps.md) has landed): `ki-repo` owns existence and binding of `.githooks/pre-commit`; each shape skill owns and verifies its expected content; `SCR-11` is the `ki-engineering` instance; check-only content only. Add it to `docs/decisions/README.md`.
-- [ ] Add a `HOOK` family to `ki-repo` in `scripts/rubric/items/hooks.ts`: `HOOK-1 [M]` (WARN at introduction, diagnostic) a tracked, executable `.githooks/pre-commit` exists, with a follow-on to raise it to FAIL once estate adoption trades land; `HOOK-2 [M]` (WARN, diagnostic) local `core.hooksPath` resolves to `.githooks`, with guidance naming `git config core.hooksPath .githooks`; `HOOK-J1 [J]` the gate stated in root orientation matches what the hook runs. Register it in `items/index.ts`, gather evidence in `contexts/repository.ts`, and extend `items/index.test.ts`.
-- [ ] Add the hook paragraph to `references/standards-repository.md` and `.githooks/pre-commit` to `ki-repo`'s `SKILL.md` ownership declarations; in `ki-engineering`'s `SKILL.md` and `standards-engineering.md`, record the stub as an engineering contribution and `SCR-11` as its content expectation.
-- [ ] `ki-repo-tools`: add `SHELL-HOOK [M]` in `scripts/rubric/items/shell.ts` requiring that, under the SHELL capability, `.githooks/pre-commit` invokes `shellcheck` and `bats` without a fixing flag; add the row to `standards-tool-repositories.md` and say there whether this agrees with or supersedes the "no `ki-shell` skill" decision.
-- [ ] `ki-repo-kb`: add one criterion in a new `scripts/rubric/items/gate.ts` requiring `.githooks/pre-commit` to run `ki repo audit` check-only; document it in `standards-knowledge-base.md`.
-- [ ] `ki-repo-dotfiles-chezmoi`: add `GIT-2 [M]` in `scripts/rubric/items/git.ts` requiring `.githooks/pre-commit` to run `ki repo audit` check-only; document it in `standards-chezmoi-dotfiles.md`.
-- [ ] Add tests for each new criterion in the owning skill's `items/index.test.ts`, regenerate each touched `references/rubric.md`, and capture follow-ons through `ki-next` for the remaining shape skills and for receiver trades to `tools-rig` and the chezmoi source.
+- [ ] Write `ADR-KI-HARNESS-SKILLS-017` under `docs/decisions/`: `ki-repo` owns existence and binding of `.githooks/pre-commit`; each shape skill owns and verifies its expected content; `SCR-11` is the `ki-engineering` instance; content is check-only. Add it to `docs/decisions/README.md`.
+- [ ] Add a `HOOK` family to `ki-repo` in `scripts/rubric/items/hooks.ts`, after `WORK`: `HOOK-1 [M]` (WARN at introduction, diagnostic) `.githooks/pre-commit` is tracked with executable mode `100755` and is a safe regular file; `HOOK-2 [M]` (WARN, diagnostic) local `core.hooksPath` is `.githooks`, with guidance naming `git config core.hooksPath .githooks`, `NOT_APPLICABLE` when `HOOK-1` has no stub to bind or when the run is in CI (`CI` set) with no local binding, since the binding is a property of each clone; `HOOK-J1 [J]` the gate stated in root orientation matches what the hook runs. Register it in `items/index.ts`, gather evidence in `contexts/repository.ts`, and extend the tests.
+- [ ] Add the hook paragraph to `references/standards-repository.md` and declare `.githooks/pre-commit` under `ki-repo`'s `requires:` (it checks existence and never writes); in `ki-engineering`'s `SKILL.md` add `.githooks/pre-commit` and `.githooks/commit-msg` under `contributes:` and in `standards-engineering.md` record the stub as an engineering contribution and `SCR-11` as its content expectation.
+- [ ] Shape criteria share one rule: with no `.githooks/pre-commit` they are `NOT_APPLICABLE`, because existence is `HOOK-1`'s; an unsafe hook is a violation; otherwise the expected command must appear on a non-comment line with no `--fix` or `--write` on that line. Each shape skill declares `.githooks/pre-commit` under `contributes:` and its level is `FAIL`.
+- [ ] `ki-repo-tools`: add `SHELL-HOOK [M]` in `scripts/rubric/items/shell.ts` requiring that, under the SHELL capability, `.githooks/pre-commit` invokes `shellcheck` and `bats`; add the row to `standards-tool-repositories.md`, stating that a criterion inside `ki-repo-tools` agrees with the "no `ki-shell` skill" decision rather than superseding it.
+- [ ] `ki-repo-kb`: add `GATE-1 [M]` in a new `scripts/rubric/items/gate.ts` requiring `.githooks/pre-commit` to run `ki repo audit` check-only, with `ki repo conform` a violation; document it in `standards-knowledge-base.md`.
+- [ ] `ki-repo-dotfiles-chezmoi`: add `GIT-2 [M]` in `scripts/rubric/items/git.ts` with the same `ki repo audit` requirement; document it in `standards-chezmoi-dotfiles.md`.
+- [ ] Add tests for each new criterion in the owning skill, regenerate each touched `references/rubric.md`, and capture follow-ons through `ki-next` for the remaining shape skills, for raising `HOOK-1` to FAIL, and for receiver trades to `tools-rig` and the chezmoi source.
 
 ## Files touched
 
-- `docs/decisions/ADR-KI-HARNESS-SKILLS-NNN-commit-gate-existence-and-content.md` (new; the next free `SKILLS` serial, `017` if GOV-099 has landed)
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content.md` (new)
 - `docs/decisions/README.md`
 - `skills/keystone/ki-repo/SKILL.md`
 - `skills/keystone/ki-repo/scripts/rubric/items/hooks.ts` (new)
@@ -111,7 +112,7 @@ Sequencing: this record and [the delivered source-mirror standard](../../skills/
 
 ### Decision Records
 
-A new `ADR-KI-HARNESS-SKILLS` record at the next free serial (`017` if GOV-099 has landed) records the existence-versus-content split.
+`ADR-KI-HARNESS-SKILLS-017` records the existence-versus-content split.
 
 ### Specifications
 
