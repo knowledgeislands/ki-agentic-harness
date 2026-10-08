@@ -7,12 +7,12 @@ purpose: upkeep
 initiative: platform-foundations
 component: keystone
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 134f4685656237ed664ddeb02d8f4c8a5e5b4184
 created_at: 2026-09-25T09:06:24Z
-updated_at: 2026-10-08T09:05:02Z
+updated_at: 2026-10-08T11:35:00Z
 ---
 
 # KI-HARNESS-GOV-094: Check constraint reach
@@ -62,13 +62,13 @@ Shared modules exist today for `ki-skills:rubric`, `ki-repo-website:site-selecti
 
 ## Steps
 
-- [ ] Add `skills/change-management/ki-work-roadmap/scripts/shared/work-identifiers.ts` exporting the repository-code source (`[A-Z0-9][A-Z0-9-]{1,23}`), scope-segment source (`[A-Z0-9]*[A-Z][A-Z0-9]*`), serial source (`\d{3,}`), and anchored builders for an item identifier, an area or infix-suffixed identifier (for `-HK-`, `-BATCH-`, `-RUN-`), a multi-segment scope, and a decision-record or requirement identifier with a supplied prefix set. Builtins only, no sibling import.
-- [ ] Declare `ki-shared-modules: [work-identifiers]` in `ki-work-roadmap`'s `SKILL.md` and add `ki-work-roadmap:work-identifiers` to `ki-shared-dependencies:` in `ki-repo`, `ki-work-housekeeping`, `ki-accept`, `ki-decision-records` and `ki-specs`.
-- [ ] Materialise a byte-identical copy at `scripts/shared/work-identifiers.ts` in each of those five skills.
-- [ ] Replace each literal listed under Current state with an import from the local copy. Align `ki-work-housekeeping`'s `RUN_ID` with the shared repository-code grammar, and use one scope-segment form for every `ki-decision-records` pattern.
-- [ ] Add `work-identifiers.test.ts` beside the provider module pinning: a digit-leading code (`5GE-P2-DATA-008`), a four-digit serial, a 24-character code accepted and 25 rejected, a digit-only scope segment rejected, and each composed suffix form.
-- [ ] Add the conformance test `work-identifiers.conformance.test.ts` beside the provider. It resolves the harness `skills/` root from its own path, then fails when (a) any `scripts/shared/work-identifiers.ts` copy is not byte-identical to the provider, (b) a skill declaring the dependency lacks its copy, or (c) a non-test `.ts` file in any of the seven restating skills contains a hand-written repository-code or scope-segment literal. The inventory names all seven; `ki-batch` is an explicit pending entry marked with `KI-HARNESS-GOV-125`, reported by name rather than silently skipped. The test only reads files, so it adds no cross-skill import.
-- [ ] Regenerate any rubric publication whose wording changes (`ki dev skill rubric <skill>`), and update `ki-work-roadmap`'s standard to name the module as the single definition of the `<REPO>` grammar.
+- [x] Add `skills/change-management/ki-work-roadmap/scripts/shared/work-identifiers.ts` exporting the repository-code source (`[A-Z0-9][A-Z0-9-]{1,23}`), scope-segment source (`[A-Z0-9]*[A-Z][A-Z0-9]*`), serial source (`\d{3,}`), and anchored builders for an item identifier, an area or infix-suffixed identifier (for `-HK-`, `-BATCH-`, `-RUN-`), a multi-segment scope, and a decision-record or requirement identifier with a supplied prefix set. Builtins only, no sibling import.
+- [x] Declare `ki-shared-modules: [work-identifiers]` in `ki-work-roadmap`'s `SKILL.md` and add `ki-work-roadmap:work-identifiers` to `ki-shared-dependencies:` in `ki-repo`, `ki-work-housekeeping`, `ki-accept`, `ki-decision-records` and `ki-specs`.
+- [x] Materialise a byte-identical copy at `scripts/shared/work-identifiers.ts` in each of those five skills.
+- [x] Replace each literal listed under Current state with an import from the local copy. Align `ki-work-housekeeping`'s `RUN_ID` with the shared repository-code grammar, and use one scope-segment form for every `ki-decision-records` pattern.
+- [x] Add `work-identifiers.test.ts` beside the provider module pinning: a digit-leading code (`5GE-P2-DATA-008`), a four-digit serial, a 24-character code accepted and 25 rejected, a digit-only scope segment rejected, and each composed suffix form.
+- [x] Add the conformance test `work-identifiers.conformance.test.ts` beside the provider. It resolves the harness `skills/` root from its own path, then fails when (a) any `scripts/shared/work-identifiers.ts` copy is not byte-identical to the provider, (b) a skill declaring the dependency lacks its copy, or (c) a non-test `.ts` file in any of the seven restating skills contains a hand-written repository-code or scope-segment literal. The inventory names all seven; `ki-batch` is an explicit pending entry marked with `KI-HARNESS-GOV-125`, reported by name rather than silently skipped. The test only reads files, so it adds no cross-skill import.
+- [x] Regenerate any rubric publication whose wording changes (`ki dev skill rubric <skill>`), and update `ki-work-roadmap`'s standard to name the module as the single definition of the `<REPO>` grammar.
 
 ## Files touched
 
@@ -124,6 +124,30 @@ None.
 ### Roadmap
 
 The `ki-batch` half, formerly `KI-HARNESS-GOV-125`, is now part of this record.
+
+## Review
+
+### Delivered
+
+- `ki-work-roadmap:work-identifiers` is the single definition of the scope-segment, repository-code and serial grammar, with composed builders for work, infixed and prefixed identifiers. `ki-work-roadmap`'s standard names it as the executable `<REPO>` grammar.
+- `ki-repo`, `ki-work-housekeeping`, `ki-decision-records`, `ki-specs` declare the dependency and, with `ki-repo-kb-streams`, which already carried a copy, hold byte-identical copies and import them instead of hand-written literals. `ki-work-housekeeping`'s run identifier now accepts digit-leading codes, and `ki-decision-records` uses one scope form throughout.
+- The conformance test fails on a diverging or missing copy, on an undeclared copy, and on a hand-written grammar shape in any restating or declaring skill, naming the file and line.
+- KI-CHECKER-4 now requires a structured rubric only from skills that depend on `ki-skills:rubric`, not from any shared dependency.
+- `ki-batch` resolves a relative authorisation path against the repository root, with a test.
+
+### Outstanding concerns
+
+`ki-accept` and `ki-batch` do not yet adopt the module. Declaring the dependency in either fails `ki repo audit --skill ki-skills` until a harness payload carrying the KI-CHECKER-4 change is installed, because the audit runs the installed checker. The adoption, including `ki-batch`'s five alpha-leading sites, moves to [KI-HARNESS-GOV-165](KI-HARNESS-GOV-165-adopt-identifier-grammar-in-process-skills.md), and the conformance test names the two skills as pending under that record.
+
+### Verification
+
+1. `bun run test` passes (1056 tests) and `bunx tsc --noEmit` is clean.
+2. Focused audits pass for `ki-work-roadmap`, `ki-work-housekeeping`, `ki-decision-records` and `ki-specs`. `ki-skills` reports only the existing LONG-3 refresh warning. `ki-repo` passes in the primary checkout; in the delivery worktree it fails only on worktree registration and runtime activation, which are properties of the location.
+3. `ki dev skill rubric` reports every touched skill's publication in sync; no criterion wording changed.
+
+### Mini recap
+
+Every migrated skill now reads one identifier grammar, and a test fails when a copy drifts or a skill spells the grammar by hand again.
 
 ## Discussion
 
