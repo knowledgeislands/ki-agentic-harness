@@ -5,13 +5,12 @@ title: Make the branch durable
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 3162261eb46a53bcb160b1d5e33ec6541456cc9d
 created_at: 2026-10-06T23:31:00Z
-updated_at: 2026-10-08T08:30:40Z
+updated_at: 2026-10-08T08:32:08Z
 ---
 
 # KI-HARNESS-GOV-147: Make the branch durable
@@ -48,12 +47,12 @@ Out of scope:
 
 ## Steps
 
-- [ ] Rewrite the coordination standard as listed under Rules changes: the branch as the recorded durable identity with a recreatable worktree, the commit-before-stop duty, safe worktree removal with unmerged branches never deleted, flagged rather than retained dirty or orphaned worktrees, the migration rule without directory bindings, and the hold and recovery clauses restated on branches.
-- [ ] Update `COORD-9`'s description and judgment prompt to the new retirement rule.
-- [ ] Add the held-workspace listing to `contexts/local-evidence.ts` as `heldWorkspaces`, built from `git worktree list --porcelain` and, per linked worktree, `git rev-list --left-right --count`, `git merge-base --is-ancestor`, `git log -1 --format=%ct` and `git status --porcelain` with optional locks off; nothing writes, locks or fetches.
-- [ ] Attach a `heuristic` diagnostic mechanical block to `COORD-9` that emits only `INFO`, one per held worktree or one saying none is held, keeping the judgment prompt.
-- [ ] Add fixtures with detached, unmerged, merged and dirty worktrees, asserting the listing, no `VIOLATION` and an unchanged worktree registry; update `index.test.ts` and the `ki-skills` remediation inventory counts.
-- [ ] Add the `COORD-9` listing to `mode-audit.md` step 3, regenerate `references/rubric.md`, and run the verification below.
+- [x] Rewrite the coordination standard as listed under Rules changes: the branch as the recorded durable identity with a recreatable worktree, the commit-before-stop duty, safe worktree removal with unmerged branches never deleted, flagged rather than retained dirty or orphaned worktrees, the migration rule without directory bindings, and the hold and recovery clauses restated on branches.
+- [x] Update `COORD-9`'s description and judgment prompt to the new retirement rule.
+- [x] Add the held-workspace listing to `contexts/local-evidence.ts` as `heldWorkspaces`, built from `git worktree list --porcelain` and, per linked worktree, `git rev-list --left-right --count`, `git merge-base --is-ancestor`, `git log -1 --format=%ct` and `git status --porcelain` with optional locks off; nothing writes, locks or fetches.
+- [x] Attach a `heuristic` diagnostic mechanical block to `COORD-9` that emits only `INFO`, one per held worktree or one saying none is held, keeping the judgment prompt.
+- [x] Add fixtures with detached, unmerged, merged and dirty worktrees, asserting the listing, no `VIOLATION` and an unchanged worktree registry; update `index.test.ts` and the `ki-skills` remediation inventory counts.
+- [x] Add the `COORD-9` listing to `mode-audit.md` step 3, regenerate `references/rubric.md`, and run the verification below.
 
 ## Files touched
 
@@ -91,6 +90,10 @@ None.
 ### Roadmap
 
 None beyond this record.
+
+## Done
+
+Delivered and verified 2026-10-08: harness tests, type check and the coordination fixtures pass; the fixtures list detached, unmerged and dirty worktrees as information only, skip a merged one and leave the worktree registry unchanged. Accepted under Kris's standing decision that delivered and verified work counts as accepted. Arcadia amends its `paperclip-bootstrap-and-recovery` checkpoint for the new retirement rule.
 
 ## Discussion
 
