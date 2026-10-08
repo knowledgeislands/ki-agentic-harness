@@ -7,12 +7,12 @@ purpose: upkeep
 initiative: platform-foundations
 component: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 083750846f738b1b115796b483e879a847d6c94d
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-08T13:06:18Z
+updated_at: 2026-10-08T13:13:12Z
 ---
 
 # KI-HARNESS-GOV-099: Decide decision serial gaps
@@ -41,13 +41,13 @@ Verified on `main` at `19651664`. `standards-decision-records.md:28` says serial
 
 ## Steps
 
-- [ ] Write the next free `ADR-KI-HARNESS-SKILLS-NNN` (expected `018`) under `docs/decisions/`, "Decision-record serials may contain gaps", using `ki-decision-records`: serials are issued in ascending order from `001` and never reused; pruning, reclassification and failed or abandoned reservations leave gaps; contiguity is not an audit criterion. Add it to `docs/decisions/README.md`.
-- [ ] Rewrite the `NNN` bullet in `standards-decision-records.md`: issuance starts at `001` and each new serial is one greater than the highest ever issued in its series; an issued serial is never reused or reassigned; gaps are permitted and carry no meaning; contiguity is not an audit criterion. A pending `XXX` record takes the next serial above that high-water mark.
-- [ ] Rewrite the reclassification sentence in the same bullet: the record takes the next serial in its new series, its old serial is left vacant and never reused, and nothing is renumbered. Remove the continuity-only clause of the shared-record mirror exception, keeping any wording that still governs uniqueness.
-- [ ] Remove `FILENAME-3` from `scripts/rubric/items/filename.ts`, the `serialGaps` computation and field from `scripts/rubric/contexts/decision-records.ts`, and the `FILENAME-3` tests and code-list entry; retire the code rather than reuse it.
-- [ ] Add a test that a collection with a gap in a series (for example `ADR-X-001` and `ADR-X-003`) produces no finding from any `FILENAME` item.
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-decision-records`.
-- [ ] Raise a trade to `apps-observatory` so `KI-OBS-VIS-004` deletes its serial-contiguity check; a follow-on, not an acceptance criterion here.
+- [x] Write the next free `ADR-KI-HARNESS-SKILLS-NNN` (expected `018`) under `docs/decisions/`, "Decision-record serials may contain gaps", using `ki-decision-records`: serials are issued in ascending order from `001` and never reused; pruning, reclassification and failed or abandoned reservations leave gaps; contiguity is not an audit criterion. Add it to `docs/decisions/README.md`.
+- [x] Rewrite the `NNN` bullet in `standards-decision-records.md`: issuance starts at `001` and each new serial is one greater than the highest ever issued in its series; an issued serial is never reused or reassigned; gaps are permitted and carry no meaning; contiguity is not an audit criterion. A pending `XXX` record takes the next serial above that high-water mark.
+- [x] Rewrite the reclassification sentence in the same bullet: the record takes the next serial in its new series, its old serial is left vacant and never reused, and nothing is renumbered. Remove the continuity-only clause of the shared-record mirror exception, keeping any wording that still governs uniqueness.
+- [x] Remove `FILENAME-3` from `scripts/rubric/items/filename.ts`, the `serialGaps` computation and field from `scripts/rubric/contexts/decision-records.ts`, and the `FILENAME-3` tests and code-list entry; retire the code rather than reuse it.
+- [x] Add a test that a collection with a gap in a series (for example `ADR-X-001` and `ADR-X-003`) produces no finding from any `FILENAME` item.
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-decision-records`.
+- [x] Raise a trade to `apps-observatory` so `KI-OBS-VIS-004` deletes its serial-contiguity check; a follow-on, not an acceptance criterion here. Not raised: the `ki-trades` hold on new trades applies, so it is carried as an outstanding concern.
 
 ## Files touched
 
@@ -94,6 +94,43 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+- The Decision Records standard now issues serials in ascending order from `001`, never reuses or reassigns an issued serial, permits gaps, and states that contiguity is not an audit criterion. A pending `XXX` record takes the next serial above the high-water mark.
+- A reclassified record takes the next serial in its new series and leaves its old serial vacant; nothing is renumbered. The shared-record mirror's continuity-only exclusion is gone, and a mirror's serial still counts towards uniqueness.
+- `FILENAME-3` and its `serialGaps` evidence are removed and the code is retired. A test pins that a series with a gap produces no `FILENAME` finding.
+- `ADR-KI-HARNESS-SKILLS-018` records the rule and is indexed.
+
+### Change Summary
+
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-018-decision-record-serials-may-contain-gaps.md` (new) and `docs/decisions/README.md`.
+- `skills/governance/ki-decision-records/`: `references/standards-decision-records.md`, generated `references/rubric.md`, `scripts/rubric/contexts/decision-records.ts` and its test, and `scripts/rubric/items/filename.ts`, `index-records.ts`, `depends.ts` and `index.test.ts`.
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`: criterion counts fall by one mechanical diagnostic criterion.
+
+### Verification
+
+1. The standard states that gaps are permitted, serials are never reused, and contiguity is not an audit criterion; no sentence requires contiguity or renumbering.
+2. `grep -rn -i "contiguous\|serialGaps\|FILENAME-3" skills/governance/ki-decision-records` returns nothing.
+3. The new gap fixture (`ADR-EXAMPLE-001`, `ADR-EXAMPLE-003`) reports no `FILENAME` violation.
+4. `bun run test` passes (1054 tests), `bunx tsc --noEmit` is clean, and `ki repo audit --skill ki-decision-records` passes with the new record indexed. `ki-skills` reports only its existing LONG-3 refresh warning.
+5. `references/rubric.md` was rendered from the worktree's catalogue with the `tools-ki` renderer, which reproduces the primary checkout's committed publication byte for byte; `ki dev skill rubric --write` resolves the dev-linked primary checkout, not the worktree.
+
+### Outstanding concerns
+
+- The trade asking `apps-observatory` to delete its contiguity check under `KI-OBS-VIS-004` is not raised, because the `ki-trades` standard holds new trades until the territory model is settled. It needs raising, or recording directly in that repository, once the hold lifts.
+- `INDEX-8` previously said a reveal-order violation is fixed by renumbering. That contradicted the never-reassigned rule, so its description and guidance, and the standard's matching sentence, now move the index entry to its serial position instead.
+- `ki-specs` keeps its own requirement-serial gap check; requirement serials are a separate instrument and were out of scope.
+
+### Post-change review
+
+The change only removes a constraint and corrects wording that depended on it, so no existing collection gains a finding. Retiring rather than reusing `FILENAME-3` keeps old audit output unambiguous.
+
+### Mini recap
+
+Decision Record serials are now identifiers that are never reused: gaps are allowed, nothing is renumbered, and the contiguity check is gone.
 
 ## Discussion
 
