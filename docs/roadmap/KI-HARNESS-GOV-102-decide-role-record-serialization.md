@@ -5,13 +5,13 @@ title: Decide role record serialization
 kind: decide
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: [KI-HARNESS-GOV-103]
 blocked_by: []
-baseline_ref: null
+baseline_ref: 65e9c84e4db54198d9ce83ccdc783bb71f90ffcb
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-07T20:34:47Z
+updated_at: 2026-10-08T08:34:48Z
 ---
 
 # KI-HARNESS-GOV-102: Decide role record serialization
