@@ -5,13 +5,12 @@ title: Audit inside sandboxed runs
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c94f5a394a6e4621374224c61ffd81fa5b80e009
 created_at: 2026-10-06T23:01:19Z
-updated_at: 2026-10-08T08:42:15Z
+updated_at: 2026-10-08T08:58:33Z
 ---
 
 # KI-HARNESS-RTP-018: Audit inside sandboxed runs
@@ -45,11 +44,11 @@ Settled 2026-10-08 under Kris's delivery authorisation (state-of-play Decision 1
 
 ## Steps
 
-- [ ] Add a "Host tools in runs" subsection to the coordination standard after "MCP access in runs": invocation-scoped data-root pinning, read-only reach, how an audit claim from a run is evidenced, and the socket-path constraint with its detection and accepted responses.
-- [ ] Point `mode-audit.md` step 2 at the subsection and state that the pin serves read verbs only.
-- [ ] Extend `COORD-10`'s sources and judgment to host-tool reach inside a run, and regenerate `references/rubric.md`.
-- [ ] In tools-ki, pass the data root to declared-skill resolution so the no-provider error names the root searched and whether it exists; cover it through the CLI seam.
-- [ ] Run the harness and tools-ki verification below.
+- [x] Add a "Host tools in runs" subsection to the coordination standard after "MCP access in runs": invocation-scoped data-root pinning, read-only reach, how an audit claim from a run is evidenced, and the socket-path constraint with its detection and accepted responses.
+- [x] Point `mode-audit.md` step 2 at the subsection and state that the pin serves read verbs only.
+- [x] Extend `COORD-10`'s sources and judgment to host-tool reach inside a run, and regenerate `references/rubric.md`.
+- [x] In tools-ki, pass the data root to declared-skill resolution so the no-provider error names the root searched and whether it exists; cover it through the CLI seam.
+- [x] Run the harness and tools-ki verification below.
 
 ## Files touched
 
@@ -82,6 +81,10 @@ None.
 ### Roadmap
 
 A follow-on is needed only if Kris wants the run's ambient environment provisioned with a data root; that is a Paperclip agent-configuration change under the programme hold.
+
+## Done
+
+Delivered and verified 2026-10-08: the coordination standard's "Host tools in runs" subsection, the audit procedure and `COORD-10` landed in the harness with tests and type check passing; tools-ki `f0ef4cc` names the data root, with its tests at full coverage. Run with a synthetic `HOME`, `ki repo audit` now reports `data root /tmp/.../.local/share/ki does not exist; check KI_DATA_HOME, XDG_DATA_HOME and HOME`. Accepted under Kris's standing decision that delivered and verified work counts as accepted.
 
 ## Discussion
 
