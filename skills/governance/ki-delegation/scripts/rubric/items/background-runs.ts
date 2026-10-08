@@ -38,6 +38,22 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
         guidance:
           'Revise a prompt only within the authority its cited decision grants; escalate to the owner when the work needs a higher tier or a decision that does not exist yet.'
       }
+    },
+    {
+      code: 'RUN-3',
+      title: 'coordinators stay responsive and project threads stay current',
+      description:
+        'A coordinating thread does only quick one-step checks and short bookkeeping itself and hands longer work to background agents; a project thread follows the bootstrap, keeps its checkpoint current, records approvals before launching, and consolidates in-force decisions out of the run directory.',
+      sources: ['standards-background-runs.md'],
+      judgment: {
+        scope:
+          'Coordinating-thread transcripts, project checkpoints, decisions logs and project recaps the owner selects for review.',
+        prompt:
+          'Did the coordinator avoid blocking the owner, does each project thread work through background agents from a current checkpoint, and does anything durable exist only in the run directory?',
+        outcomes: ['conforming', 'delegate longer work', 'consolidate decisions', 'escalate to owner'],
+        guidance:
+          'Move longer coordinator work into background agents, and consolidate in-force decisions into a Decision Record, skill or checkpoint; escalate to the master thread when a direction touches more than one Project.'
+      }
     }
   ]
 }

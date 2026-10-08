@@ -37,3 +37,8 @@ Shipped authority footers and the quality of background-run prompts.
   - _Review prompt:_ Does each prompt cite a real numbered decision, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report?
   - _Outcomes:_ conforming; revise prompt; escalate to owner
   - _Conforming guidance:_ Revise a prompt only within the authority its cited decision grants; escalate to the owner when the work needs a higher tier or a decision that does not exist yet.
+- **RUN-3 [J] — coordinators stay responsive and project threads stay current** — A coordinating thread does only quick one-step checks and short bookkeeping itself and hands longer work to background agents; a project thread follows the bootstrap, keeps its checkpoint current, records approvals before launching, and consolidates in-force decisions out of the run directory. (standards-background-runs.md)
+  - _Evidence scope:_ Coordinating-thread transcripts, project checkpoints, decisions logs and project recaps the owner selects for review.
+  - _Review prompt:_ Did the coordinator avoid blocking the owner, does each project thread work through background agents from a current checkpoint, and does anything durable exist only in the run directory?
+  - _Outcomes:_ conforming; delegate longer work; consolidate decisions; escalate to owner
+  - _Conforming guidance:_ Move longer coordinator work into background agents, and consolidate in-force decisions into a Decision Record, skill or checkpoint; escalate to the master thread when a direction touches more than one Project.

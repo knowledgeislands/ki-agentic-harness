@@ -4,6 +4,7 @@
 
 - [Scope](#scope)
 - [Detachment](#detachment)
+- [Coordinator responsiveness](#coordinator-responsiveness)
 - [Run packet](#run-packet)
 - [Prompt shape](#prompt-shape)
 - [Authority tiers](#authority-tiers)
@@ -12,12 +13,15 @@
 - [Run queue](#run-queue)
 - [Monitoring](#monitoring)
 - [Reporting](#reporting)
+- [Project threads](#project-threads)
 - [Reference launcher](#reference-launcher)
 - [Mechanical boundary](#mechanical-boundary)
 
 ## Scope
 
-A background run is routine delegation of substantive work to one or more detached agents. Anyone running Knowledge Islands work through an agent uses this contract, whatever the runtime.
+A background run is routine delegation of substantive work to one or more background agents. Anyone running Knowledge Islands work through an agent uses this contract, whatever the runtime.
+
+A **background agent** is a worker launched detached through `ki agent` under this contract. An **in-session subagent** runs inside the launching session's turn and is not a background agent.
 
 It complements the [delegation-packet standard](standards-delegation-packets.md): a packet makes an approved high-risk handoff durable inside a work record, while a background run governs how any delegated agent is launched, reports, coordinates and is watched. A high-risk run carries both.
 
@@ -27,7 +31,11 @@ Process skills still select, authorise, plan and accept work. Paperclip-coordina
 
 Launch every background agent detached from the launching session, in its own session, with standard input from `/dev/null` and output to its log. It must survive an interrupt of the launching session.
 
-An in-session background subagent runs under the turn that launched it and dies when that turn is interrupted, even when it still looks live. Use it only for work that may be lost.
+An in-session subagent runs under the turn that launched it and dies when that turn is interrupted, even when it still looks live. Use it only for work that may be lost.
+
+## Coordinator responsiveness
+
+The coordinating thread stays responsive to the owner. It does only quick one-step checks and short bookkeeping itself: status reads, queueing, recording decisions and relaying outcomes. It hands anything longer - set-up, prompt rewriting, multi-file or multi-step repository work - to a background agent. If a turn would block the owner for more than a moment, delegate it instead.
 
 ## Run packet
 
@@ -77,7 +85,7 @@ Authority limits stay consistent with `ki-agent-coordination-paperclip`, which o
 
 Each owner approval for delegated work becomes one numbered, dated entry in the run's decisions log, quoted in the owner's own words where possible. Numbers never repeat. A prompt cites its authority by number ("Decision 18"), never by paraphrase alone.
 
-The log is run state, not a Decision Record. A decision that outlives the work goes to a Decision Record through `ki-decision-records`.
+The run directory, decisions log included, is non-durable, machine-local working material under the XDG state root: it is not backed up or synced, and it is not a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the run directory.
 
 ## Coordination
 
@@ -109,6 +117,39 @@ After an interrupt, check the agent processes before saying anything is running.
 The owner sees only status one-liners and each agent's final report. Tooling output, commit identifiers and step narration stay in the log and report, unless the owner asks.
 
 The report has three parts: **Done** (one line per outcome), **Failed** (if any), and **Needs \<owner\>** (decisions or actions). Omit an empty part. Verbosity follows the owner's communication level in their instructions; this standard does not restate it.
+
+## Project threads
+
+A project thread coordinates exactly one Project, or one named estate area, for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under this contract, in a run named after the Project, and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
+
+- **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current.
+- **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises.
+- **Master thread:** the owner's designated master thread owns cross-project priorities, releases, and decisions touching more than one Project. A project thread raises those there.
+- **Naming:** where the runtime can name a session, the thread takes its Project's name so the master thread can find it.
+- **Opening:** open a project thread only where there is active work to drive. A dormant Project needs no thread.
+
+### Bootstrap
+
+A one-line opener brings a new or already-running thread onto this contract, for example `Re-bootstrap as the <project> project thread under ki-delegation.` The thread then:
+
+1. reads this contract;
+2. checks `ki agent status` for its runs and any legacy runs, and reconciles what is actually running rather than assuming;
+3. creates or reconciles the Project's checkpoint;
+4. reports in three lines where the Project stands, what is running, and what it needs from the owner.
+
+### Directions from the master thread
+
+The master thread propagates common instructions. Rules go to their durable owner, a skill or a Decision Record. Thread-level directions go into each affected Project's checkpoint under a short `From the master thread` section that holds current directions only.
+
+A project thread re-reads its checkpoint at every project recap and before launching work, acts on new directions, and removes each direction once it is absorbed. Where the runtime can message another live session on the same machine, the master thread may also nudge the project thread to re-read it. The checkpoint stays the source of truth, so directions also reach threads on other machines.
+
+### Project recap
+
+A project recap is a plain-language roll-up for the owner of what has changed in the Project since the last recap. It is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
+
+It opens with a header naming the Project and its Initiative as links, the thread, and the window covered (`since <time of last recap>`), so recaps from several threads read side by side. It then covers what was delivered, decided, started, stopped or blocked, and newly captured; what is running now; and what needs the owner. It cites records by full identifier as links, with no tool output and no commit identifiers.
+
+Its sources are the run's decisions log, background-agent reports finished since the last recap, and the Project's records. The thread gives a recap on request, such as "recap", and proactively when several background agents have finished since the last one or the owner returns after a gap. It notes the time of each recap in its checkpoint, so "since the last recap" is well defined.
 
 ## Reference launcher
 
