@@ -130,20 +130,32 @@ The `ki-batch` half, formerly `KI-HARNESS-GOV-125`, is now part of this record.
 ### Delivered
 
 - `ki-work-roadmap:work-identifiers` is the single definition of the scope-segment, repository-code and serial grammar, with composed builders for work, infixed and prefixed identifiers. `ki-work-roadmap`'s standard names it as the executable `<REPO>` grammar.
-- `ki-repo`, `ki-work-housekeeping`, `ki-decision-records`, `ki-specs` declare the dependency and, with `ki-repo-kb-streams`, which already carried a copy, hold byte-identical copies and import them instead of hand-written literals. `ki-work-housekeeping`'s run identifier now accepts digit-leading codes, and `ki-decision-records` uses one scope form throughout.
+- `ki-repo`, `ki-work-housekeeping`, `ki-decision-records` and `ki-specs` declare the dependency and, with `ki-repo-kb-streams`, which already carried a copy, hold byte-identical copies and import them instead of hand-written literals. `ki-work-housekeeping`'s run identifier now accepts digit-leading codes, and `ki-decision-records` uses one scope form throughout.
 - The conformance test fails on a diverging or missing copy, on an undeclared copy, and on a hand-written grammar shape in any restating or declaring skill, naming the file and line.
 - KI-CHECKER-4 now requires a structured rubric only from skills that depend on `ki-skills:rubric`, not from any shared dependency.
 - `ki-batch` resolves a relative authorisation path against the repository root, with a test.
 
-### Outstanding concerns
+### Change Summary
 
-`ki-accept` and `ki-batch` do not yet adopt the module. Declaring the dependency in either fails `ki repo audit --skill ki-skills` until a harness payload carrying the KI-CHECKER-4 change is installed, because the audit runs the installed checker. The adoption, including `ki-batch`'s five alpha-leading sites, moves to [KI-HARNESS-GOV-165](KI-HARNESS-GOV-165-adopt-identifier-grammar-in-process-skills.md), and the conformance test names the two skills as pending under that record.
+- `skills/change-management/ki-work-roadmap/`: `scripts/shared/work-identifiers.ts` with its unit and conformance tests, `scripts/rubric/contexts/roadmap-evidence.ts`, and `references/standards-repository-roadmaps.md`.
+- `skills/keystone/ki-repo/`, `skills/change-management/ki-work-housekeeping/`, `skills/governance/ki-decision-records/` and `skills/governance/ki-specs/`: `SKILL.md` dependency, materialised copy, and rubric contexts or items.
+- `skills/repo-structure/ki-repo-kb-streams/`: refreshed copy and `scripts/rubric/contexts/streams.ts`.
+- `skills/keystone/ki-skills/scripts/rubric/contexts/skill.ts` and its test: KI-CHECKER-4 trigger.
+- `skills/change-management/ki-batch/scripts/internal/authorisation.ts` and its test: root-relative path.
 
 ### Verification
 
 1. `bun run test` passes (1056 tests) and `bunx tsc --noEmit` is clean.
 2. Focused audits pass for `ki-work-roadmap`, `ki-work-housekeeping`, `ki-decision-records` and `ki-specs`. `ki-skills` reports only the existing LONG-3 refresh warning. `ki-repo` passes in the primary checkout; in the delivery worktree it fails only on worktree registration and runtime activation, which are properties of the location.
 3. `ki dev skill rubric` reports every touched skill's publication in sync; no criterion wording changed.
+
+### Outstanding concerns
+
+`ki-accept` and `ki-batch` do not yet adopt the module. Declaring the dependency in either fails `ki repo audit --skill ki-skills` until a harness payload carrying the KI-CHECKER-4 change is installed, because the audit runs the installed checker. The adoption, including `ki-batch`'s five alpha-leading sites, moves to [KI-HARNESS-GOV-165](KI-HARNESS-GOV-165-adopt-process-identifier-grammar.md), and the conformance test names the two skills as pending under that record.
+
+### Post-change review
+
+The split leaves the conformance test with an explicit pending note rather than a silent gap, so the remaining two skills cannot drift unnoticed in the meantime: their hand-written literals are already known and inventoried in KI-HARNESS-GOV-165.
 
 ### Mini recap
 

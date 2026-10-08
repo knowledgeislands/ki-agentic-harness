@@ -1,7 +1,7 @@
 ---
 id: KI-HARNESS-GOV-165
 area: GOV
-title: Adopt identifier grammar in process skills
+title: Adopt process identifier grammar
 kind: deliver
 purpose: upkeep
 initiative: platform-foundations
@@ -14,7 +14,7 @@ created_at: 2026-10-08T11:30:00Z
 updated_at: 2026-10-08T11:30:00Z
 ---
 
-# KI-HARNESS-GOV-165: Adopt identifier grammar in process skills
+# KI-HARNESS-GOV-165: Adopt process identifier grammar
 
 ## Goal
 
