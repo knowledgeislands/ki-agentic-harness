@@ -6,13 +6,12 @@ kind: decide
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 083750846f738b1b115796b483e879a847d6c94d
 created_at: 2026-09-26T12:39:00Z
-updated_at: 2026-10-08T13:13:12Z
+updated_at: 2026-10-08T13:13:25Z
 ---
 
 # KI-HARNESS-GOV-099: Decide decision serial gaps
@@ -131,6 +130,10 @@ The change only removes a constraint and corrects wording that depended on it, s
 ### Mini recap
 
 Decision Record serials are now identifiers that are never reused: gaps are allowed, nothing is renumbered, and the contiguity check is gone.
+
+## Done
+
+Accepted 2026-10-08 under Kris Brown's standing decision that delivered and verified work counts as accepted, on the review packet above.
 
 ## Discussion
 
