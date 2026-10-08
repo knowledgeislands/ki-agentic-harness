@@ -7,13 +7,13 @@ purpose: upkeep
 initiative: platform-foundations
 component: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: febc70bd3b5c642d0e53ecc60b202a204f748ef2
 created_at: 2026-09-24T19:05:00Z
-updated_at: 2026-10-08T08:51:53Z
+updated_at: 2026-10-08T09:00:27Z
 ---
 
 # KI-HARNESS-GOV-091: Guide opening and deferral
@@ -53,16 +53,16 @@ Out of scope: `docs/decisions/` and the skills' own `references/`, which are not
 
 ## Steps
 
-- [ ] `references/standards-guides.md`: add `## A guide opens with its outcome` before `## A guide is self-contained`. A guide MUST open, before its first `##`, with prose saying what the reader will be able to do, at least 120 characters of it; the H1, front matter, headings and HTML blocks do not count, and a page that describes itself has not met the rule.
-- [ ] `references/standards-guides.md` `## A guide is self-contained`: add one paragraph that link text carries a fact the guide has already stated, never the place the answer lives; remove the link and the sentence should still say something true and useful. State that this is a review judgment, not a phrase list.
-- [ ] `references/standards-guides.md` `## Judgment boundary`: add the link-text question to the review questions and note that the opening floor is checked mechanically while its quality is not.
-- [ ] `scripts/rubric/contexts/guides.ts`: add `openingIssues` to `GuidesLayoutContext`, computed over the same `files` set as `headingIssues` with a lead reader that skips front matter, the H1, blank lines and lines starting `<`, stops at the first `##` outside a fence, and joins the remaining trimmed lines with single spaces.
-- [ ] `scripts/rubric/items/guides.ts`: add `GUIDE-5 [M]`, level `FAIL`, diagnostic remediation, sourced from `standards-guides.md#a-guide-opens-with-its-outcome`, reporting each offending guide with its measured length.
-- [ ] `scripts/rubric/items/routing.ts`: add `ROUTE-4 [J]`, sourced from `standards-guides.md#a-guide-is-self-contained`, with scope, prompt, outcomes and guidance that forbid failing a phrase mechanically.
-- [ ] `scripts/rubric/items/index.test.ts`: add `GUIDE-5` and `ROUTE-4` to the ordered code list and `GUIDE-5` to the diagnostic set; assert `ROUTE-4` is judgment-only.
-- [ ] `scripts/rubric/contexts/guides.test.ts`: add fixtures for a 119-character lead (reported), a 120-character lead (clear), a lead behind front matter and H1 (measured correctly), and a short root `README.md` (exempt).
-- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-guides --write`.
-- [ ] Run the focused audit over every registered repository that declares `ki-guides`, read-only, and record which ones newly fail `GUIDE-5` in the review packet as fleet findings for their owners, not as failures of this delivery.
+- [x] `references/standards-guides.md`: add `## A guide opens with its outcome` before `## A guide is self-contained`. A guide MUST open, before its first `##`, with prose saying what the reader will be able to do, at least 120 characters of it; the H1, front matter, headings and HTML blocks do not count, and a page that describes itself has not met the rule.
+- [x] `references/standards-guides.md` `## A guide is self-contained`: add one paragraph that link text carries a fact the guide has already stated, never the place the answer lives; remove the link and the sentence should still say something true and useful. State that this is a review judgment, not a phrase list.
+- [x] `references/standards-guides.md` `## Judgment boundary`: add the link-text question to the review questions and note that the opening floor is checked mechanically while its quality is not.
+- [x] `scripts/rubric/contexts/guides.ts`: add `openingIssues` to `GuidesLayoutContext`, computed over the same `files` set as `headingIssues` with a lead reader that skips front matter, the H1, blank lines and lines starting `<`, stops at the first `##` outside a fence, and joins the remaining trimmed lines with single spaces.
+- [x] `scripts/rubric/items/guides.ts`: add `GUIDE-5 [M]`, level `FAIL`, diagnostic remediation, sourced from `standards-guides.md#a-guide-opens-with-its-outcome`, reporting each offending guide with its measured length.
+- [x] `scripts/rubric/items/routing.ts`: add `ROUTE-4 [J]`, sourced from `standards-guides.md#a-guide-is-self-contained`, with scope, prompt, outcomes and guidance that forbid failing a phrase mechanically.
+- [x] `scripts/rubric/items/index.test.ts`: add `GUIDE-5` and `ROUTE-4` to the ordered code list and `GUIDE-5` to the diagnostic set; assert `ROUTE-4` is judgment-only.
+- [x] `scripts/rubric/contexts/guides.test.ts`: add fixtures for a 119-character lead (reported), a 120-character lead (clear), a lead behind front matter and H1 (measured correctly), and a short root `README.md` (exempt).
+- [x] Regenerate `references/rubric.md` with `ki dev skill rubric ki-guides --write`.
+- [x] Run the focused audit over every registered repository that declares `ki-guides`, read-only, and record which ones newly fail `GUIDE-5` in the review packet as fleet findings for their owners, not as failures of this delivery.
 
 ## Files touched
 
@@ -112,6 +112,41 @@ None expected in this repository: its five guides already meet the opening floor
 ### Roadmap
 
 None required. `KI-WEB-SITE-027` in `ki-website` raised this as non-blocking in both directions and needs no reply to close; `KI-TOOL-CLI-083` in `tools-ki` is no longer present.
+
+## Review
+
+### Delivered
+
+- `ki-guides` standard gains `## A guide opens with its outcome`, a link-text paragraph under `## A guide is self-contained`, and both questions in `## Judgment boundary`.
+- `GUIDE-6 [M]` fails a guide with fewer than 120 characters of prose before its first `##`, naming the file and its measured length. Front matter, the H1, blank lines and HTML lines do not count, and the root `docs/guides/README.md` is never assessed.
+- `ROUTE-4 [J]` asks whether each link's text carries a fact the guide states; its guidance forbids failing a phrase mechanically.
+- The plan named the opening criterion `GUIDE-5`, but that code was already taken by the audience-folder rule, so it landed as `GUIDE-6`.
+- `ki-skills`' remediation inventory pin moved by one mechanical and one judgment criterion.
+
+### Change Summary
+
+- `skills/governance/ki-guides/`: `references/standards-guides.md` and generated `references/rubric.md`; `scripts/rubric/contexts/guides.ts` and its test; `scripts/rubric/items/guides.ts`, `routing.ts` and `index.test.ts`.
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`: criterion counts.
+
+### Verification
+
+1. Fixtures: a 119-character lead is reported with its length, a 120-character lead passes, front matter, the H1 and an HTML comment are excluded from the measure, a lead with no section heading is still measured, and a short root `README.md` is exempt.
+2. `bun run test` passes and `bunx tsc --noEmit` is clean.
+3. `references/rubric.md` was regenerated from the worktree's own definition with the `tools-ki` renderer, which reproduces the committed `ki-skills` and `ki-decision-records` catalogues byte for byte. `ki dev skill rubric --write` resolves the dev-linked primary checkout, not the worktree, so it could not publish here.
+4. `ki repo audit --skill ki-guides` and `--skill ki-skills` pass in the worktree.
+5. Fleet read-out, read-only: the new opening context over all 28 registered repositories that declare `ki-guides` and hold `docs/guides/` finds no guide below the floor, so no repository newly fails `GUIDE-6`.
+
+### Outstanding concerns
+
+- Repositories see `GUIDE-6` and `ROUTE-4` only once their installed harness carries this change.
+
+### Post-change review
+
+The opening measure reuses the same guide set and fence handling as `GUIDE-3`, so the root index stays exempt and a fenced `#` line is prose rather than a heading. The link-text rule stays a judgment, as decided: no phrase list exists to drift.
+
+### Mini recap
+
+Guides must now open by saying what the reader will be able to do, checked as a 120-character floor, and review asks whether each link carries a fact rather than deferring to it.
 
 ## Discussion
 
