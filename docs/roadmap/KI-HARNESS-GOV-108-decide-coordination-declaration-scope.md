@@ -46,7 +46,7 @@ Out of scope, deliberately:
 
 - adding or removing a declaration in any repository, which each repository does on its own record;
 - any new cross-repository authority allocation;
-- what the audit actually checks once declared, which is [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md);
+- what the audit actually checks once declared, which is `KI-HARNESS-GOV-107`;
 - the content of the coordination rules and the standard, which this item takes as given;
 - any change to `ki-applicability` or to the declaration mechanism itself, which is a `ki-skills` contract.
 
@@ -78,7 +78,7 @@ ki repo audit --skill ki-authoring --progress never
 
 ## Dependencies / blocks
 
-Nothing blocks this record and it blocks nothing. Sequencing preference: land before [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), whose mechanical items run in every declaring repository; that record is correct under either scope. Blocker removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible.
+Nothing blocks this record and it blocks nothing. Sequencing preference: land before `KI-HARNESS-GOV-107`, whose mechanical items run in every declaring repository; that record is correct under either scope. Blocker removed as ordering only; decided by the Fable reviewer under delegated autonomy, reversible.
 
 ## Documentation impact
 
@@ -96,7 +96,7 @@ None.
 
 ### Roadmap
 
-None. [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) is sequenced after this record by preference only.
+None. `KI-HARNESS-GOV-107` is sequenced after this record by preference only.
 
 ## Discussion
 
@@ -124,7 +124,7 @@ Captured from the `KNO-19` proposal document on the external coordination plane,
 
 ### Decision
 
-Record the live rule: every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; the declaration means admission, not ownership of the arrangement. The skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness` (a description of where they live, not a new cross-repository authority allocation). Revisit condition as written: the first criterion that can fail in a declaring repository with no coordinated work, which [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) answers by reporting such repositories as not applicable. No decision record. Decided by the Fable reviewer under delegated autonomy, reversible; restoring a two-repository rule would be an owner decision.
+Record the live rule: every repository admitted to a Paperclip company declares the skill with its owning `organisation_code`; the declaration means admission, not ownership of the arrangement. The skill and role records live in `ki-agentic-harness` and the execution fabric in `ki-techne-harness` (a description of where they live, not a new cross-repository authority allocation). Revisit condition as written: the first criterion that can fail in a declaring repository with no coordinated work, which `KI-HARNESS-GOV-107` answers by reporting such repositories as not applicable. No decision record. Decided by the Fable reviewer under delegated autonomy, reversible; restoring a two-repository rule would be an owner decision.
 
 ### Re-scope - 2026-10-06
 

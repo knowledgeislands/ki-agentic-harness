@@ -43,7 +43,7 @@ Out of scope:
 - Paperclip provisioner code that recreates a missing worktree. No KI repository owns it, as with the provisioner request `KIS-71` carried for the current-base requirement; this record states the requirement the provisioner must meet.
 - Branch deletion and remote-branch policy, which stay with `ki-git` and the existing merge gate.
 - Removing, salvaging or pruning any existing worktree or branch. The 2026-10-07 cleanup has already been done under its own approval.
-- The base-currency claim and its mechanical check, which [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md) now carries.
+- The base-currency claim and its mechanical check, which `KI-HARNESS-GOV-107` now carries.
 
 ## Discussion
 
@@ -59,7 +59,7 @@ Each is in the coordination standard unless stated otherwise.
 
 ### Relationship to KI-HARNESS-GOV-107
 
-Related, and neither blocks the other. The current-base requirement, merged from `KI-HARNESS-GOV-115` into [KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), requires a coordinated worktree's base to be the destination tip at provisioning and reports drift; this record changes what is durable and how worktrees end. A worktree recreated from its branch is subject to the same current-base check, so the two compose. Both add to the standard's workspace model, which is a sequencing preference for whichever lands second, not a build order.
+Related, and neither blocks the other. The current-base requirement, merged from `KI-HARNESS-GOV-115` into `KI-HARNESS-GOV-107`, requires a coordinated worktree's base to be the destination tip at provisioning and reports drift; this record changes what is durable and how worktrees end. A worktree recreated from its branch is subject to the same current-base check, so the two compose. Both add to the standard's workspace model, which is a sequencing preference for whichever lands second, not a build order.
 
 ### Merged from KI-HARNESS-GOV-114
 

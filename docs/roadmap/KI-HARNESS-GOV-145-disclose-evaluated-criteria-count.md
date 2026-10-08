@@ -24,7 +24,7 @@ A reader of an audit summary can tell how many criteria the run actually evaluat
 
 `ki repo audit` reports findings and a per-skill verdict. It does not report how many criteria it evaluated. On 2026-10-07 the summary of `ki repo audit --skill ki-work-roadmap --repo .` on this repository still reads only `PASS · 1 skill`. A judgment-only capability, or a declaration that selects no mechanical criterion, therefore passes with a summary identical to a fully checked pass.
 
-[KI-HARNESS-GOV-107](KI-HARNESS-GOV-107-make-coordination-audit-mechanical.md), already depends on this signal: the current-base assertion it absorbed expects the count of evaluated criteria reported by `--reporter-levels all` to rise above zero. The `apps-observatory` surface also consumes audit summaries, so the disclosure has a reader beyond the command line.
+`KI-HARNESS-GOV-107`, already depends on this signal: the current-base assertion it absorbed expects the count of evaluated criteria reported by `--reporter-levels all` to rise above zero. The `apps-observatory` surface also consumes audit summaries, so the disclosure has a reader beyond the command line.
 
 Origin: first raised as branch-local `KI-HARNESS-GOV-107` on the abandoned Paperclip branch `paperclip/KNO-3-record-the-ki-paperclip-boundary-as-a-decision-record-and-activate-it`, commit `49adfa64` (`docs(roadmap): capture the audit disclosure and acceptance gate findings`). The branch serial collides with a different record on `main`, so the finding is captured again here. A patch copy is kept at `~/.local/state/ki/state-of-play/salvage/KNO-3/`. The cleanup that retired the branch is tracked in the `ki-arcadia-principal` checkpoint `+/_CHECKPOINTS/state-of-play.md`.
 
