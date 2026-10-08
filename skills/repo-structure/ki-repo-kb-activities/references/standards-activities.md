@@ -20,7 +20,13 @@ An activity note that carries frontmatter declares:
 | `realization` | The execution form described below.    |
 | `author`      | Who authored or adopted this activity. |
 
-The `ki-repo-kb` skill owns general note frontmatter such as tags and dates.
+An active Activity also names its home in `initiative`, as described under [Home](#home). The `ki-repo-kb` skill owns general note frontmatter such as tags and dates.
+
+## Home
+
+Every active Activity names the territory Initiative it serves in a top-level `initiative` key, so recurring work is never lost. The value is an Initiative slug in the territory's [Project registry](../../../change-management/ki-work/references/standards-project-registry.md), qualified as `<territory>/<slug>` when the Initiative belongs to another territory. An Activity with a housekeeping profile may instead rely on the profile's `initiative`, which its runs inherit; when both are present they agree. AUDIT warns when an active Activity names no Initiative, or two that disagree; paused and retired Activities need none.
+
+Recurring work belongs to an Initiative, never to a finite Project, because an Initiative never completes. The link points upwards only: the Initiative note does not list its Activities.
 
 ## Realization
 

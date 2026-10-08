@@ -134,11 +134,28 @@ const STREAM_9: RubricItem<StreamRubricContext> = {
   }
 }
 
+const STREAM_10: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-10',
+  title: 'Project close-out assessment',
+  description:
+    "A Capital's active or paused Project with no open record in any locally registered checkout, or a completed or cancelled Project, carries a ### Close-out assessment in its ## Notes before its lead closes it.",
+  sources: [`${SOURCE}#project-close-out`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Assess what was delivered against the Project's Outcome and whether follow-up or remedial work is needed, capture that work as triage records in the owning repositories, and write the assessment in ## Notes; the lead then decides whether to close the Project."
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.projectCloseOut, 'WARN') }
+  }
+}
+
 export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
   code: 'STREAM',
   title: 'Streams structure',
   description: 'Operational-area layout, legacy migration, and adapter routing.',
   standard: SOURCE,
   selectContext: (context) => context.stream,
-  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6, STREAM_7, STREAM_8, STREAM_9]
+  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6, STREAM_7, STREAM_8, STREAM_9, STREAM_10]
 }

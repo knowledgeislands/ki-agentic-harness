@@ -50,6 +50,8 @@ Operational-area layout, legacy migration, and adapter routing.
   - _Remediation:_ diagnostic — Rewrite the ledger in the roadmap adapter's canonical form from its current high-water marks, never lowering one. Move any migration history or other prose to Git history or a Decision Record.
 - **STREAM-9 [M] — upward-only registry notes** — Project and Initiative notes under Streams/Projects/ and Streams/Initiatives/ name no work records and carry no dated ## Update section; records link upwards to their Project or Initiative. (standards-streams-structure.md)
   - _Remediation:_ diagnostic — Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or initiative, and ki views list them.
+- **STREAM-10 [M] — Project close-out assessment** — A Capital's active or paused Project with no open record in any locally registered checkout, or a completed or cancelled Project, carries a ### Close-out assessment in its ## Notes before its lead closes it. (standards-streams-structure.md#project-close-out)
+  - _Remediation:_ diagnostic — Assess what was delivered against the Project's Outcome and whether follow-up or remedial work is needed, capture that work as triage records in the owning repositories, and write the assessment in ## Notes; the lead then decides whether to close the Project.
 
 ## GATE — always-loaded gate
 

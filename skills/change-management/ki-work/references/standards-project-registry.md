@@ -5,6 +5,7 @@
 - [Scope](#scope)
 - [Location](#location)
 - [Project note](#project-note)
+- [Close-out assessment](#close-out-assessment)
 - [Initiative note](#initiative-note)
 - [Links point upwards](#links-point-upwards)
 - [Index notes](#index-notes)
@@ -56,7 +57,7 @@ target: 2026-12-31
 - `slug` matches the filename and never changes.
 - `outcome` is one sentence naming the finite outcome.
 - `initiative` is the slug of the Initiative the Project serves.
-- `lifecycle` is `planned`, `active`, `paused`, `completed`, or `cancelled`. Completing or cancelling a Project is an accountable human decision; it is never inferred from its records' status.
+- `lifecycle` is `planned`, `active`, `paused`, `completed`, or `cancelled`. Completing or cancelling a Project is an accountable human decision taken after its [close-out assessment](#close-out-assessment); it is never inferred from its records' status.
 - `lead` names the accountable person.
 - `target` is an ISO date, or `null` when none is set.
 
@@ -66,6 +67,14 @@ The body carries only two sections, in order:
 - `## Notes` holds ideas and context: untracked ideas under the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation), boundaries, and links to the Project's Decision Records or other durable knowledge.
 
 The note tracks state with `lifecycle` alone. It carries no dated `## Update`, health or status section and lists no work records; status lives only in each record.
+
+## Close-out assessment
+
+A Project outlives its records. When its records have all finished it does not close: its lead, or an agent for the lead, writes a close-out assessment under a `### Close-out assessment` heading in `## Notes`. The assessment states, in a few plain sentences, what was delivered against the Outcome, what was not, and whether follow-up or remedial work is needed. Any such work is captured as `triage` records in the owning repositories. A captured record that still serves the Outcome names the Project, which then stays open until that work finishes; other work names the Project or Initiative it serves. Only then does the lead decide to complete or cancel the Project.
+
+The assessment names no work-record identifiers, because links point upwards. It states the current position, so a later assessment replaces an earlier one. A Project cancelled before delivery begins gets the same assessment, saying what is left undone and where any surviving need now lives.
+
+Recurring work never closes and never waits for an assessment: its home is an Initiative, which never completes, and each Activity or housekeeping definition names it.
 
 ## Initiative note
 
@@ -128,6 +137,6 @@ Membership is classification, not authority. A Project may count records from an
 
 ## Validation
 
-The roadmap checker resolves `project` slugs against `Streams/Projects/` and `initiative` slugs against `Streams/Initiatives/` of the referenced territory when it can find the registry. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative, including the same slug in a different territory. A Project whose open records are all terminal is reported for a human lifecycle decision. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
+The roadmap checker resolves `project` slugs against `Streams/Projects/` and `initiative` slugs against `Streams/Initiatives/` of the referenced territory when it can find the registry. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and an `initiative` fails only when the registry assigns that Project to a different Initiative, including the same slug in a different territory. The Streams checker on the Capital reports a Project with no open record as due for its close-out assessment, and an assessed one as awaiting its lead's close decision. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
 
 Views group by Project and Initiative without copying record lists into a second status source. Status lives in the records and each note's `lifecycle`; `ki-checkpoint` remains only for ephemeral thread reconstruction.

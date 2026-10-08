@@ -17,6 +17,8 @@ export type ActivityNote = {
   readonly frontmatter: Readonly<Record<string, string>> | null
   readonly malformedFrontmatter: boolean
   readonly recurring: boolean
+  /** The `initiative` named inside a `housekeeping` profile, which spawned runs inherit. */
+  readonly recurringInitiative: string | undefined
 }
 
 export type ActivitiesContext = {
@@ -88,7 +90,12 @@ const housekeepingDeclared = (root: string): boolean => {
 }
 const parseFrontmatter = (
   text: string
-): { value: Readonly<Record<string, string>> | null; malformed: boolean; recurring: boolean } => {
+): {
+  value: Readonly<Record<string, string>> | null
+  malformed: boolean
+  recurring: boolean
+  recurringInitiative?: string
+} => {
   if (text.split(/\r?\n/, 1)[0]?.trim() !== '---') return { value: null, malformed: false, recurring: false }
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
   if (!match) return { value: null, malformed: true, recurring: false }
@@ -96,12 +103,22 @@ const parseFrontmatter = (
     const parsed = Bun.YAML.parse(match[1] ?? '')
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
       return { value: null, malformed: true, recurring: false }
+    const profile = (parsed as Record<string, unknown>).housekeeping
+    const profileInitiative =
+      profile && typeof profile === 'object' && !Array.isArray(profile)
+        ? (profile as Record<string, unknown>).initiative
+        : undefined
     const fields = Object.fromEntries(
       Object.entries(parsed as Record<string, unknown>).filter(
         (entry): entry is [string, string] => typeof entry[1] === 'string'
       )
     )
-    return { value: fields, malformed: false, recurring: Object.hasOwn(parsed, 'housekeeping') }
+    return {
+      value: fields,
+      malformed: false,
+      recurring: Object.hasOwn(parsed, 'housekeeping'),
+      recurringInitiative: typeof profileInitiative === 'string' && profileInitiative ? profileInitiative : undefined
+    }
   } catch {
     return { value: null, malformed: true, recurring: false }
   }
@@ -187,7 +204,8 @@ export const createActivitiesSession = ({
             title: titleFromNote(text, link),
             frontmatter: frontmatter.value,
             malformedFrontmatter: frontmatter.malformed,
-            recurring: frontmatter.recurring
+            recurring: frontmatter.recurring,
+            recurringInitiative: frontmatter.recurringInitiative
           }
         })
     : []

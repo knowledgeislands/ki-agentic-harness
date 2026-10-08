@@ -9,6 +9,7 @@ import type {
   ViolationLevel
 } from '../../shared/rubric.ts'
 import { SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
+import { closeOutEvidence } from './closeout.ts'
 
 const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Initiatives'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
@@ -39,6 +40,7 @@ export type StreamRubricContext = {
   roadmapFrontmatter: readonly StreamsEvidence[]
   issueLedger: readonly StreamsEvidence[]
   registryNotes: readonly StreamsEvidence[]
+  projectCloseOut: readonly StreamsEvidence[]
 }
 
 export type GateRubricContext = {
@@ -354,7 +356,8 @@ const unavailableContext = (
       roadmapIdentity: notApplicable,
       roadmapFrontmatter: notApplicable,
       issueLedger: notApplicable,
-      registryNotes: notApplicable
+      registryNotes: notApplicable,
+      projectCloseOut: notApplicable
     },
     gate: { anchor: notApplicable },
     config: { parseable: notApplicable, knownKeys: notApplicable, processNote: notApplicable }
@@ -490,7 +493,8 @@ export const createStreamsSession = ({
       roadmapIdentity: roadmapIdentityEvidence(root, roadmapPath, records),
       roadmapFrontmatter: roadmapFrontmatterEvidence(root, roadmapPath, records),
       issueLedger: issueLedgerEvidence(root, roadmapPath),
-      registryNotes: registryNoteEvidence(root, streamsPath)
+      registryNotes: registryNoteEvidence(root, streamsPath),
+      projectCloseOut: closeOutEvidence(root, streamsPath)
     },
     gate: { anchor },
     config: { parseable, knownKeys, processNote: processNoteEvidence }

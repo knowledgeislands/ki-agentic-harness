@@ -5,6 +5,7 @@ This standard defines `Streams/` as the operational container of a Knowledge Isl
 ## Contents
 
 - [Operational container](#operational-container)
+- [Project close-out](#project-close-out)
 - [Roadmap](#roadmap)
 - [Recurring Activities](#recurring-activities)
 - [Future trades](#future-trades)
@@ -27,6 +28,10 @@ Streams/
 
 The container does not prescribe a topical-folder or `groups` vocabulary. Where an owning adapter supports topical metadata, the receiving base chooses its vocabulary. That metadata never replaces an operational area or changes an identifier.
 
+## Project close-out
+
+A Project does not close when its records finish: it first gets the [close-out assessment](../../../change-management/ki-work/references/standards-project-registry.md#close-out-assessment), a `### Close-out assessment` heading inside its note's `## Notes`. In a Capital, AUDIT counts each Project's open records, those not `done` or `cancelled`, across the Capital and every checkout in the local ki registry: a bare `project` slug counts from the Capital's members, and a `<territory>/<slug>` value counts from anywhere. It warns on an `active` or `paused` Project with no open record and no assessment, and on a `completed` or `cancelled` Project with no assessment. An assessed Project with no open record is reported as awaiting its lead's close decision. Without a readable registry, records outside the Capital are invisible, so a Project with no open record is reported only for information. A `planned` Project is not assessed.
+
 ## Roadmap
 
 `Streams/Roadmap/` is the KB placement equivalent of a project repository’s `docs/roadmap/`. It contains flat finite work records, its `_ISSUES.md` allocation ledger, and an optional `_IDEAS.md` list of ungraduated ideas. The [repository roadmap standard](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md) owns the record format, lifecycle, identifier grammar, and horizon metadata.
@@ -45,7 +50,7 @@ Explicit human approval is required before a captured record leaves triage or is
 
 ## Recurring Activities
 
-Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). An Activity with the `housekeeping` profile uses `ki-work-housekeeping` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
+Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). Each active Activity names the Initiative that is its home. An Activity with the `housekeeping` profile uses `ki-work-housekeeping` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
 
 A due run is a linked ordinary roadmap record in `Streams/Roadmap/`. Its horizon and lifecycle remain record metadata; it is not moved into a Streams state folder.
 

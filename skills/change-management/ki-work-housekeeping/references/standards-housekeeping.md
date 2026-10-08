@@ -61,7 +61,7 @@ purpose: upkeep
 
 Recurring work is classified like any other record, under the [work-item classification](../../ki-work-roadmap/references/standards-work-item-format.md#classification):
 
-- **`initiative`** names the territory Initiative the obligation serves. Recurring work never belongs to a finite Project, so a template declares `initiative` rather than `project`; a template without it warns during the migration window.
+- **`initiative`** names the territory Initiative the obligation serves. The Initiative is the obligation's home: recurring work never belongs to a finite Project, so a template declares `initiative` rather than `project`; a template without it warns during the migration window.
 - **`component`** optionally names the repository component the run touches, from the `.ki.toml` vocabulary.
 - **`purpose`** optionally says why the obligation exists, usually `upkeep`.
 - **`kind`** optionally overrides the runs' default `audit`.

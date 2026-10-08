@@ -352,6 +352,52 @@ const ACT_F_4: RubricItem<ActivitiesContext> = {
   }
 }
 
+const ACT_F_5: RubricItem<ActivitiesContext> = {
+  code: 'ACT-F-5',
+  title: 'activity home',
+  description:
+    'An active Activity names the territory Initiative it serves in `initiative`, or in its housekeeping profile, so recurring work keeps a home.',
+  sources: [`${SOURCE}#home`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Name the Initiative the Activity serves, agreed with its owner; a housekeeping profile that already names one needs no second field.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        const stop = unavailable(context)
+        if (stop) return stop
+        const outcomes = notesWithFrontmatter(context)
+          .filter((note) => note.frontmatter?.status === 'active')
+          .map((note): AuditOutcome => {
+            const declared = note.frontmatter?.initiative
+            const profile = note.recurringInitiative
+            if (declared && profile && declared !== profile)
+              return {
+                status: 'VIOLATION',
+                message: `initiative '${declared}' disagrees with the housekeeping profile's '${profile}'`,
+                subject: note.relative
+              }
+            const home = declared ?? profile
+            return home
+              ? { status: 'PASS', message: `serves Initiative '${home}'`, subject: note.relative }
+              : {
+                  status: 'VIOLATION',
+                  message: 'active Activity names no Initiative; recurring work needs a home',
+                  subject: note.relative
+                }
+          })
+        return outcomes.length
+          ? oneOrMore(outcomes)
+          : [{ status: 'NOT_APPLICABLE', message: 'no active frontmatter-bearing activity notes found' }]
+      }
+    }
+  }
+}
+
 const ACT_R_1: RubricItem<ActivitiesContext> = {
   code: 'ACT-R-1',
   title: 'slash-command skill field',
@@ -631,6 +677,7 @@ export const ACT: RubricFamily<ActivitiesRubricContext, ActivitiesContext> = {
     ACT_F_2,
     ACT_F_3,
     ACT_F_4,
+    ACT_F_5,
     ACT_R_1,
     ACT_R_2,
     ACT_R_3,
