@@ -6,13 +6,13 @@ kind: decide
 purpose: governance
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-07T20:34:47Z
+updated_at: 2026-10-08T08:12:26Z
 ---
 
 # KI-HARNESS-GOV-108: Decide coordination declaration scope
