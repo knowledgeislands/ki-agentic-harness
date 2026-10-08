@@ -5,8 +5,7 @@ title: Make coordination audit mechanical
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: in-progress
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c96d4018c78c7de5052cbeed68d4bb4d86278193
@@ -31,7 +30,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-70
       relation: related
 created_at: 2026-09-26T15:14:21Z
-updated_at: 2026-10-08T08:23:37Z
+updated_at: 2026-10-08T08:24:44Z
 ---
 
 # KI-HARNESS-GOV-107: Make coordination audit mechanical
@@ -90,15 +89,15 @@ Out of scope, deliberately:
 
 ## Steps
 
-- [ ] Add `contexts/local-evidence.ts` and extend `PaperclipCoordinationContext` with `linkage` and `worktreeBase` outcome lists: resolve the adapter from the repository's `.ki.toml` `[skills.ki-work]` table, parse record frontmatter under the adapter root, and run local Git (`git cat-file -e <ref>^{commit}`, `git merge-base --is-ancestor <ref> HEAD`, `git ls-tree --name-only <ref> -- <root>`, `git rev-parse`, `git worktree list --porcelain`) with no fetch and no write.
-- [ ] Emit one `VIOLATION` per failed triple naming the record, the revision and which part failed; and one per task identity claimed as governing by more than one record, naming every claimant. Emit `PASS` with a count and a plane-side-not-evaluated note otherwise, and `NOT_APPLICABLE` when nothing is in scope.
-- [ ] Add a `mechanical` diagnostic block at level `FAIL` to `COORD-3`, keeping its judgment prompt, with remediation guidance that names the record to correct and says the task side must be reconciled by judgment.
-- [ ] Add `COORD-15`, mechanical diagnostic at level `FAIL`: when the selected checkout is a linked worktree, it lies outside the primary working tree and Git common directory, and contains the tip of the destination branch (the locally recorded `origin` default branch, else `main`); the primary working tree reports `NOT_APPLICABLE`.
-- [ ] Add the base paragraph absorbed from `KI-HARNESS-GOV-115` to the standard's workspace model.
-- [ ] Add fixtures in `scripts/rubric/contexts/local-evidence.test.ts` using temporary Git repositories: an unknown revision, a revision not an ancestor of `HEAD`, a revision without the record, a duplicate governing claim, a record with only `evaluation` links that must pass, a clean pass, a remote adapter, a repository with no links, a current and a stale linked worktree, a worktree inside the Git common directory, and a read-only, sibling-independent run.
-- [ ] Update `scripts/rubric/items/index.test.ts` so `COORD-3` and `COORD-15` are permitted as mechanical and `COORD-3` still carries its judgment, and the `ki-skills` remediation inventory counts.
-- [ ] Rewrite `references/mode-audit.md` step 3 to say which results are mechanical, what `COORD-3` and `COORD-15` check and what they cannot see, and that a pass is repository-side evidence only.
-- [ ] Regenerate `references/rubric.md` and run the verification below.
+- [x] Add `contexts/local-evidence.ts` and extend `PaperclipCoordinationContext` with `linkage` and `worktreeBase` outcome lists: resolve the adapter from the repository's `.ki.toml` `[skills.ki-work]` table, parse record frontmatter under the adapter root, and run local Git (`git cat-file -e <ref>^{commit}`, `git merge-base --is-ancestor <ref> HEAD`, `git ls-tree --name-only <ref> -- <root>`, `git rev-parse`, `git worktree list --porcelain`) with no fetch and no write.
+- [x] Emit one `VIOLATION` per failed triple naming the record, the revision and which part failed; and one per task identity claimed as governing by more than one record, naming every claimant. Emit `PASS` with a count and a plane-side-not-evaluated note otherwise, and `NOT_APPLICABLE` when nothing is in scope.
+- [x] Add a `mechanical` diagnostic block at level `FAIL` to `COORD-3`, keeping its judgment prompt, with remediation guidance that names the record to correct and says the task side must be reconciled by judgment.
+- [x] Add `COORD-15`, mechanical diagnostic at level `FAIL`: when the selected checkout is a linked worktree, it lies outside the primary working tree and Git common directory, and contains the tip of the destination branch (the locally recorded `origin` default branch, else `main`); the primary working tree reports `NOT_APPLICABLE`.
+- [x] Add the base paragraph absorbed from `KI-HARNESS-GOV-115` to the standard's workspace model.
+- [x] Add fixtures in `scripts/rubric/contexts/local-evidence.test.ts` using temporary Git repositories: an unknown revision, a revision not an ancestor of `HEAD`, a revision without the record, a duplicate governing claim, a record with only `evaluation` links that must pass, a clean pass, a remote adapter, a repository with no links, a current and a stale linked worktree, a worktree inside the Git common directory, and a read-only, sibling-independent run.
+- [x] Update `scripts/rubric/items/index.test.ts` so `COORD-3` and `COORD-15` are permitted as mechanical and `COORD-3` still carries its judgment, and the `ki-skills` remediation inventory counts.
+- [x] Rewrite `references/mode-audit.md` step 3 to say which results are mechanical, what `COORD-3` and `COORD-15` check and what they cannot see, and that a pass is repository-side evidence only.
+- [x] Regenerate `references/rubric.md` and run the verification below.
 
 ## Files touched
 
@@ -161,6 +160,10 @@ Verified on 2026-09-27 against the local Paperclip instance at `http://127.0.0.1
 - [KIS-70](http://127.0.0.1:3100/KIS/issues/KIS-70), `1040aaa6-dc73-4b11-9b6f-b2f0ad0d2a42`: related current-base evaluation; its plan distinguishes this item from governing GOV-115.
 
 This is an association-only recovery check. No active delivery task was verified, but this is not a complete task/worktree census or an availability grant. Neither task-link backfill nor a paused agent releases retained work. Reconcile ownership and the changed evidence assumptions before selecting or shaping this Triage item; its horizon, lifecycle and audit boundary remain unchanged. Keep references here until KIS-5's provider-neutral map is implemented.
+
+## Done
+
+Delivered and verified 2026-10-08: harness tests, type check and the coordination fixtures pass; run in this repository, `COORD-3` reports a pass over its two Paperclip-linked records with the plane side not evaluated, and `COORD-15` reports a linked worktree's behind count against `main`. Accepted under Kris's standing decision that delivered and verified work counts as accepted.
 
 ## Discussion
 
