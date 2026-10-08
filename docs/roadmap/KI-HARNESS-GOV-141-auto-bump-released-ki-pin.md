@@ -5,13 +5,12 @@ title: Auto-bump released ki pin
 kind: deliver
 project: estate-factorisation
 component: governance
-horizon: now
-status: awaiting-review
-blocks: [KI-HARNESS-GOV-161]
+status: done
+blocks: []
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-10-06T01:21:00Z
-updated_at: 2026-10-08T10:30:00Z
+updated_at: 2026-10-08T10:45:00Z
 ---
 
 # KI-HARNESS-GOV-141: Auto-bump released ki pin
@@ -121,6 +120,10 @@ The receiver re-reads the latest `tools-ki` release instead of trusting the even
 ### Mini recap
 
 Each repository now has a documented, copyable receiver that turns a `ki` release into a reviewed one-line pin bump. CI-1 points each repository towards adopting it.
+
+## Done
+
+Accepted 2026-10-08 by Kris Brown on the review packet above.
 
 ## Discussion
 
