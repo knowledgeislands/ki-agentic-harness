@@ -5,13 +5,12 @@ title: Decide role record serialization
 kind: decide
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: now
-status: awaiting-review
+status: done
 blocks: [KI-HARNESS-GOV-103]
 blocked_by: []
 baseline_ref: 65e9c84e4db54198d9ce83ccdc783bb71f90ffcb
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-08T08:43:28Z
+updated_at: 2026-10-08T08:43:54Z
 ---
 
 # KI-HARNESS-GOV-102: Decide role record serialization
@@ -141,6 +140,10 @@ Whether `color` is part of a role now has one answer from any of the decision, t
 ### Mini recap
 
 Decision amended in place, partition written once in `ki-subagents` and cited from the adapters and README; no new Decision Record.
+
+## Done
+
+Accepted 2026-10-08 under Kris's standing grant in the state-of-play design decisions (Decisions 12 and 17: delivered records count as done and are pruned once verified; Decision 19 authorises continuous delivery of this record), on the review packet above. The governing audits (`ki-work-roadmap`, `ki-authoring`, `ki-subagents`, `ki-subagents-claude`, `ki-decision-records`) pass on this record as committed.
 
 ## Discussion
 
