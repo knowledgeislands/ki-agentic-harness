@@ -85,6 +85,7 @@ The records are living, compact, and independent. The order below is a **curated
 56. [ADR-KI-HARNESS-015](ADR-KI-HARNESS-015-retire-the-claude-plugin-projection.md) — retire the Claude plugin projection; the `ki` CLI and `npx skills add` distribute the harness.
 57. [DDR-KI-HARNESS-001](DDR-KI-HARNESS-001-mirrors-and-source-provenance-are-separate-relationships.md) — mirrors and source provenance use separate field families; only `mirrors`, `mirror_type` and `mirror_sha256` make a note a mirror.
 58. [ADR-KI-HARNESS-SKILLS-016](ADR-KI-HARNESS-SKILLS-016-every-guide-lives-in-an-audience-folder.md) — every guide lives in an open-vocabulary audience folder, enforced mechanically.
+59. [ADR-KI-HARNESS-SKILLS-017](ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) — `ki-repo` owns commit-gate existence and binding; each shape skill owns the check-only content.
 
 ## Template
 

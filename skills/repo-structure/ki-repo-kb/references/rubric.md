@@ -16,6 +16,7 @@ Line-by-line criteria for auditing ki-repo-kb. Classifications are derived from 
 - [NOTE — note conventions](#note--note-conventions)
 - [MEM — memory cascade](#mem--memory-cascade)
 - [LINK — base linking](#link--base-linking)
+- [GATE — commit gate](#gate--commit-gate)
 
 ## RUBRIC — Generated rubric publication
 
@@ -149,3 +150,12 @@ Judgment review of Obsidian wikilink content.
   - _Review prompt:_ Do sampled base notes use the prescribed Obsidian wikilink convention?
   - _Outcomes:_ conforming; note revision; convention clarification
   - _Conforming guidance:_ Revise links to the established convention; do not change the convention from a sample alone.
+
+## GATE — commit gate
+
+→ [standard](standards-knowledge-base.md)
+
+What a Knowledge Base commit gate runs.
+
+- **GATE-1 [M] — check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists. (standards-knowledge-base.md)
+  - _Remediation:_ diagnostic — Make `.githooks/pre-commit` run `ki repo audit` without a rewriting flag, then rerun the audit.

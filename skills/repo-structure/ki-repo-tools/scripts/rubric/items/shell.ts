@@ -83,11 +83,61 @@ const SHELL_TEST: RubricItem<ShellToolsContext> = {
   }
 }
 
+const HOOK = '.githooks/pre-commit'
+
+/** A command runs check-only when it sits on a non-comment line that carries no rewriting flag. */
+const runsCheckOnly = (text: string, command: RegExp): boolean =>
+  text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .some((line) => !line.startsWith('#') && command.test(line) && !/(^|\s)--(fix|write)\b/.test(line))
+
+const SHELL_HOOK: RubricItem<ShellToolsContext> = {
+  code: 'SHELL-HOOK',
+  title: 'Shell commit gate',
+  description:
+    'Where a committed `.githooks/pre-commit` exists, a shell entrypoint repository runs `shellcheck` and `bats` from it check-only; `ki-repo` HOOK-1 owns whether the hook exists.',
+  sources: SOURCE,
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance: 'Add check-only `shellcheck` and `bats` lines to `.githooks/pre-commit`, then rerun the audit.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        const skipped = unavailable(context)
+        if (skipped) return skipped
+        if (!context.primary || !context.shell)
+          return one({ status: 'NOT_APPLICABLE', message: 'Primary executable is not a shell entrypoint.' })
+        if (context.hook === 'missing')
+          return one({ status: 'NOT_APPLICABLE', message: `No committed ${HOOK}; ki-repo HOOK-1 owns its existence.` })
+        if (context.hook === 'unsafe')
+          return one({ status: 'VIOLATION', message: `${HOOK} is not a safe regular file.`, subject: HOOK })
+        const missing = [
+          ['shellcheck', /\bshellcheck\b/],
+          ['bats', /\bbats\b/]
+        ]
+          .filter(([, command]) => !runsCheckOnly(context.hookText, command as RegExp))
+          .map(([name]) => name as string)
+        return missing.length === 0
+          ? one({ status: 'PASS', message: `${HOOK} runs shellcheck and bats check-only.`, subject: HOOK })
+          : one({
+              status: 'VIOLATION',
+              message: `${HOOK} does not run ${missing.join(' or ')} check-only.`,
+              subject: HOOK
+            })
+      }
+    }
+  }
+}
+
 export const SHELL: RubricFamily<ToolsRubricContext, ShellToolsContext> = {
   code: 'SHELL',
   title: 'shell capabilities',
   description: 'Shell-specific CI requirements.',
   standard: STANDARD,
   selectContext: (context) => context.shell,
-  items: [SHELL_LINT, SHELL_TEST]
+  items: [SHELL_LINT, SHELL_TEST, SHELL_HOOK]
 }

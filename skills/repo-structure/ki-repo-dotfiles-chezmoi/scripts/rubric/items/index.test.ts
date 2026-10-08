@@ -58,6 +58,7 @@ test('the catalogue preserves every chezmoi criterion in family order', () => {
     'CHEZMOI-J1',
     'BIN-1',
     'GIT-1',
+    'GIT-2',
     'PATTERN-J1',
     'PATTERN-J2',
     'CONFIG-J1',
@@ -78,7 +79,7 @@ test('criteria declare complete v1 remediation and review metadata', () => {
   const mechanical = items.filter((item) => item.mechanical)
   const judgment = items.filter((item) => item.judgment)
 
-  expect(mechanical).toHaveLength(6)
+  expect(mechanical).toHaveLength(7)
   expect(mechanical.every((item) => item.mechanical?.remediation)).toBe(true)
   expect(judgment).toHaveLength(8)
   for (const item of judgment) {
@@ -157,4 +158,33 @@ test('conform refuses a symlinked or dangling ignore target', () => {
     expect(root.shape.requestIgnoreCreate).toBeUndefined()
     expect(session.proposal().writes).toEqual([])
   }
+})
+
+test('GIT-2 requires a committed gate to run ki repo audit check-only', () => {
+  const repository = fixture()
+  const family = catalogue.families.find((entry) => entry.code === 'GIT') as RubricFamily<ChezmoiRubricContext, unknown>
+  const item = family.items.find((entry) => entry.code === 'GIT-2')?.mechanical
+  if (!item) throw new Error('GIT-2 mechanical item is missing')
+  const outcome = () => {
+    const session = createChezmoiSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+    const subject = session.subjects.find((entry) => entry.families.includes('GIT'))
+    if (!subject) throw new Error('chezmoi session has no GIT subject')
+    return item.audit.run(family.selectContext(subject.context()))[0]
+  }
+  expect(outcome()?.status).toBe('NOT_APPLICABLE')
+
+  mkdirSync(join(repository, '.githooks'))
+  const hook = join(repository, '.githooks', 'pre-commit')
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --write\n')
+  expect(outcome()?.message).toContain('does not run `ki repo audit` check-only')
+
+  writeFileSync(hook, '#!/bin/sh\nki repo conform --skill ki-repo-dotfiles-chezmoi\n')
+  expect(outcome()?.message).toContain('runs `ki repo conform`')
+
+  writeFileSync(hook, '#!/bin/sh\nexec ki repo audit\n')
+  expect(outcome()?.status).toBe('PASS')
+
+  rmSync(hook)
+  symlinkSync(join(repository, 'dot_zshrc.tmpl'), hook)
+  expect(outcome()?.status).toBe('VIOLATION')
 })

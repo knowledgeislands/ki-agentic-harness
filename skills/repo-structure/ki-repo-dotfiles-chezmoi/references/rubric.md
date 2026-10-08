@@ -50,10 +50,12 @@ Chezmoi source-attribute naming for direct bin files.
 
 → [standard](standards-chezmoi-dotfiles.md)
 
-Stray lock files that block Git operations.
+Stray lock files that block Git operations, and what the commit gate runs.
 
 - **GIT-1 [M] — Git lock hygiene** — No stray physical `.git/*.lock` files remain in the repository. (standards-chezmoi-dotfiles.md)
   - _Remediation:_ diagnostic — Inspect the lock’s owning process and repository boundary, then use the governed stale-lock recovery procedure; do not remove it blindly.
+- **GIT-2 [M] — Check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists. (standards-chezmoi-dotfiles.md)
+  - _Remediation:_ diagnostic — Make `.githooks/pre-commit` run `ki repo audit` without a rewriting flag, then rerun the audit.
 
 ## PATTERN — App-mutated configuration
 

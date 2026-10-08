@@ -10,6 +10,7 @@ The canonical configuration a Knowledge Islands repo should carry, so repos pres
 - [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
 - [Working areas](#working-areas)
+- [Commit gate](#commit-gate)
 - [Repository kind and Knowledge Base stores](#repository-kind-and-knowledge-base-stores)
 - [Repository write authority](#repository-write-authority)
 - [Visibility](#visibility)
@@ -127,6 +128,12 @@ A declared capability with a stable specialist working-area subarea owns an exac
 - `ki-checkpoint` owns `+/_CHECKPOINTS/README.md` and active checkpoint records.
 - `ki-trades` owns `+/_TRADES/README.md`, `-/_TRADES/README.md`, and cross-repository trade records.
 - `ki-repo-kb` owns `-/_DIGESTS/README.md` and session digests in a Knowledge Base.
+
+## Commit gate
+
+Every KI repository should commit an executable `.githooks/pre-commit` and bind it with the relative `git config core.hooksPath .githooks`, so the gate travels with the source and reaches every linked worktree ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). `ki-repo` owns only existence and binding: `HOOK-1` checks that the hook is a safe regular file tracked with mode `100755`, and `HOOK-2` checks the local binding, naming the exact command when it is absent or points elsewhere. `HOOK-2` is not applicable without a committed hook, or in CI where no local binding is configured. Both start at WARN while the estate converges; `ki-repo` never writes the hook.
+
+What the hook runs belongs to the repository's shape skill. `ki-engineering` contributes the package-backed stubs and `SCR-11` owns their content; other shape skills each declare one content criterion that is not applicable without a hook and requires its check-only command on a non-comment line. A gate that cannot run is unknown, not a pass: the hook stops with the activation step rather than inviting `--no-verify`.
 
 ## Layer 2 — core GitHub settings
 

@@ -87,6 +87,14 @@ const isReadableDirectory = (path: string): boolean => {
 }
 const isFile = (path: string): boolean =>
   existsSync(path) && !lstatSync(path).isSymbolicLink() && lstatSync(path).isFile()
+const isPresent = (path: string): boolean => {
+  try {
+    lstatSync(path)
+    return true
+  } catch {
+    return false
+  }
+}
 const sample = (values: readonly string[], maximum = 10): string =>
   `${values.slice(0, maximum).join('; ')}${values.length > maximum ? `; …+${values.length - maximum} more` : ''}`
 
@@ -229,6 +237,10 @@ export type KbMemoryContext = {
 
 export type KbLinkContext = Record<never, never>
 
+export type KbGateContext = {
+  readonly hook: KbCheck
+}
+
 export type KbRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly zones: KbZoneContext
@@ -238,6 +250,7 @@ export type KbRubricContext = {
   readonly notes: KbNoteContext
   readonly memory: KbMemoryContext
   readonly links: KbLinkContext
+  readonly gate: KbGateContext
 }
 
 export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFinding[] => {
@@ -396,6 +409,31 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
         : 'Root orientation does not anchor the memory cascade.',
       anchor
     )
+  }
+  // `ki-repo` owns whether the commit gate exists; GATE-1 reads only what it runs.
+  const hookDirectory = join(root, '.githooks')
+  const hookPath = join(root, '.githooks/pre-commit')
+  if (!isDirectory(hookDirectory) || !isPresent(hookPath)) {
+    if (isPresent(hookDirectory) && lstatSync(hookDirectory).isSymbolicLink())
+      add('FAIL', 'GATE-1', 'The .githooks directory is a symbolic link, not committed source.', '.githooks')
+    else add('NOT_APPLICABLE', 'GATE-1', 'No committed .githooks/pre-commit; ki-repo HOOK-1 owns its existence.')
+  } else if (!isFile(hookPath))
+    add('FAIL', 'GATE-1', '.githooks/pre-commit is not a safe regular file.', '.githooks/pre-commit')
+  else {
+    const lines = readFileSync(hookPath, 'utf8')
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => !line.startsWith('#'))
+    if (lines.some((line) => /\bki repo conform\b/.test(line)))
+      add(
+        'FAIL',
+        'GATE-1',
+        '.githooks/pre-commit runs `ki repo conform`; the gate must be check-only.',
+        '.githooks/pre-commit'
+      )
+    else if (lines.some((line) => /\bki repo audit\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)))
+      add('PASS', 'GATE-1', '.githooks/pre-commit runs `ki repo audit` check-only.', '.githooks/pre-commit')
+    else add('FAIL', 'GATE-1', '.githooks/pre-commit does not run `ki repo audit` check-only.', '.githooks/pre-commit')
   }
   const required = config?.requiredFrontmatter ?? []
   const malformedFrontmatter: string[] = []
@@ -630,13 +668,14 @@ export const createKbSession = ({
       sourceMirrors: check('NOTE-4')
     },
     memory: { anchor: check('MEM-2') },
-    links: {}
+    links: {},
+    gate: { hook: check('GATE-1') }
   }
 
   return {
     subjects: [
       { families: ['RUBRIC'], context: () => context },
-      { families: ['ZONE', 'CONFIG', 'ADMIN', 'ROUTE', 'NOTE', 'MEM', 'LINK'], context: () => context }
+      { families: ['ZONE', 'CONFIG', 'ADMIN', 'ROUTE', 'NOTE', 'MEM', 'LINK', 'GATE'], context: () => context }
     ],
     proposal: () => draft?.proposal() ?? { writes: [] }
   }

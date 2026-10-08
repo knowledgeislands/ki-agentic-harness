@@ -4,6 +4,7 @@ ki-kind: governance
 ki-applicability: declaration-only
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-authoring]
+contributes: ['.githooks/pre-commit']
 description: >
   Audit or conform KI chezmoi source repositories: source-versus-target editing, app-mutated configuration,
   shell and `bin/` layout, prefixes, fragments, comments, and reverse merges. Use for dotfiles structure, not

@@ -121,6 +121,8 @@ Shell-specific CI requirements.
   - _Remediation:_ diagnostic — Add or correct the shellcheck CI evidence through the repository’s maintained workflow.
 - **SHELL-TEST [M] — Shell test CI** — Shell entrypoints have a physical Bats suite referenced by CI. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Add or correct the Bats suite and CI evidence through the repository’s maintained test workflow.
+- **SHELL-HOOK [M] — Shell commit gate** — Where a committed `.githooks/pre-commit` exists, a shell entrypoint repository runs `shellcheck` and `bats` from it check-only; `ki-repo` HOOK-1 owns whether the hook exists. (standards-tool-repositories.md)
+  - _Remediation:_ diagnostic — Add check-only `shellcheck` and `bats` lines to `.githooks/pre-commit`, then rerun the audit.
 
 ## LANG — language capabilities
 

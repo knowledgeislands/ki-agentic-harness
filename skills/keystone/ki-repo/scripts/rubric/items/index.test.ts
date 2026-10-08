@@ -29,7 +29,8 @@ describe('ki-repo rubric catalogue', () => {
       'DOC',
       'OVR',
       'SYNC',
-      'WORK'
+      'WORK',
+      'HOOK'
     ])
     const codes = definition.families.flatMap((family) => family.items.map((item) => item.code))
     expect(new Set(codes).size).toBe(codes.length)

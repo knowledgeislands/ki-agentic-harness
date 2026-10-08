@@ -8,6 +8,7 @@ ki-depends-on: [ki-authoring, ki-git]
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['.gitignore']
 contributes: ['.ki.toml']
+requires: ['.githooks/pre-commit']
 description: >
   Audit or conform the universal KI repository contract declared by `.ki.toml`, including setup, GitHub
   settings, and top-level `+` and `-` working areas. Use for whole-repository review; specialised `ki-repo-*`,

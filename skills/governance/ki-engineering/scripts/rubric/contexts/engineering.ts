@@ -15,7 +15,6 @@ import {
   acceptedPrepares,
   COMMITLINT_CONFIGURATION,
   HOOK_STUB_BINDING,
-  HOOK_STUB_DIRECTORY,
   HOOK_STUBS,
   normaliseCommitMessage,
   normalisePreCommit
@@ -507,7 +506,7 @@ export const createEngineeringSession = async (
         const content = packageContent(
           packageSource,
           existsSync(join(target, 'tooling', 'boundaries', 'package.json')),
-          HOOK_STUBS.every((hook) => isSafeRegularFile(join(target, HOOK_STUB_DIRECTORY, hook)))
+          HOOK_STUBS.every((hook) => isSafeRegularFile(join(target, hook)))
         )
         if (content !== undefined && content !== packageSource) writes.push({ path: 'package.json', content })
       }

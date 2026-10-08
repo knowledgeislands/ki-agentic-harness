@@ -25,6 +25,7 @@ import {
   runtimeSkillIgnoreRules
 } from './audit.ts'
 import { inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
+import { type HooksRubricContext, hookEvidence } from './hooks.ts'
 import { declareCapital, territoryEvidence } from './territory.ts'
 
 const KI_REPO_TABLE = 'ki-repo'
@@ -234,6 +235,7 @@ export type RepoRubricContext = {
   overrides: Record<string, never>
   synchronisation: Record<string, never>
   workingAreas: WorkingAreasRubricContext
+  hooks: HooksRubricContext
 }
 
 export const auditEvidence = (
@@ -593,7 +595,8 @@ export const createRepoSession = async (
             }
           }
         : {})
-    }
+    },
+    hooks: hookEvidence(target)
   }
 
   return {
@@ -622,7 +625,8 @@ export const createRepoSession = async (
           'DESCFIT',
           'OVR',
           'SYNC',
-          'WORK'
+          'WORK',
+          'HOOK'
         ],
         context: () => context
       }

@@ -52,7 +52,8 @@ test('the structured catalogue preserves every KB criterion', () => {
     'ROUTE',
     'NOTE',
     'MEM',
-    'LINK'
+    'LINK',
+    'GATE'
   ])
   expect(items.map((item) => item.code)).toEqual([
     'ZONE-1',
@@ -80,7 +81,8 @@ test('the structured catalogue preserves every KB criterion', () => {
     'NOTE-4',
     'MEM-1',
     'MEM-2',
-    'LINK-1'
+    'LINK-1',
+    'GATE-1'
   ])
   expect(items.filter((item) => item.judgment)).toHaveLength(7)
   expect(items.filter((item) => item.judgment).every((item) => Boolean(item.judgment?.prompt.trim()))).toBe(true)
@@ -472,4 +474,28 @@ test('delegation does not cover obsolete batch paths or noncanonical checkpoint 
   const finding = collectKbAuditEvidence(repository).find((candidate) => candidate.code === 'NOTE-1c')
   expect(finding?.level).toBe('FAIL')
   for (const relativePath of records) expect(finding?.message).toContain(relativePath)
+})
+
+test('GATE-1 requires a committed gate to run ki repo audit check-only', () => {
+  const repository = createBase()
+  const gate = () => collectKbAuditEvidence(repository).find((finding) => finding.code === 'GATE-1')
+  expect(gate()?.level).toBe('NOT_APPLICABLE')
+
+  mkdirSync(join(repository, '.githooks'))
+  const hook = join(repository, '.githooks', 'pre-commit')
+  writeFileSync(hook, '#!/bin/sh\n# ki repo audit\n')
+  expect(gate()?.message).toContain('does not run `ki repo audit` check-only')
+
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --fix\n')
+  expect(gate()?.level).toBe('FAIL')
+
+  writeFileSync(hook, '#!/bin/sh\nki repo audit\nki repo conform\n')
+  expect(gate()?.message).toContain('runs `ki repo conform`')
+
+  writeFileSync(hook, '#!/bin/sh\nki repo audit || exit 1\n')
+  expect(gate()?.level).toBe('PASS')
+
+  rmSync(hook)
+  symlinkSync(join(repository, 'AGENTS.md'), hook)
+  expect(gate()?.message).toContain('not a safe regular file')
 })

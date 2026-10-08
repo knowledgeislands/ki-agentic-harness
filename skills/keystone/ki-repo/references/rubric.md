@@ -32,6 +32,7 @@ Line-by-line criteria for auditing ki-repo. Classifications are derived from ite
 - [OVR — Override rationale](#ovr--override-rationale)
 - [SYNC — Standard synchronisation](#sync--standard-synchronisation)
 - [WORK — Working areas](#work--working-areas)
+- [HOOK — Commit gate](#hook--commit-gate)
 
 ## RUBRIC — Generated rubric publication
 
@@ -322,3 +323,19 @@ Required generic inbound and outbound working-area scaffold and direction.
   - _Review prompt:_ Review that +/ and -/ remain temporary directional material rather than a shadow canonical store or archive.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Move material to its canonical store, record a named gap, or record an explicit repository-level exclusion.
+
+## HOOK — Commit gate
+
+→ [standard](standards-repository.md)
+
+Existence and binding of the committed pre-commit gate; its content belongs to shape skills.
+
+- **HOOK-1 [M] — Committed commit gate** — A tracked, executable `.githooks/pre-commit` exists; what it runs belongs to the repository's shape skills. (standards-repository.md)
+  - _Remediation:_ diagnostic — Commit an executable `.githooks/pre-commit` that runs the repository's check-only gate, then bind it with `git config core.hooksPath .githooks`.
+- **HOOK-2 [M] — Commit gate bound** — The clone’s `core.hooksPath` resolves to `.githooks`, so the committed gate runs on every commit. (standards-repository.md)
+  - _Remediation:_ diagnostic — Run `git config core.hooksPath .githooks` in the clone, then rerun the audit.
+- **HOOK-J1 [J] — Stated gate matches the hook** — The gate root orientation tells a writer to run matches what the committed pre-commit hook runs. (standards-repository.md)
+  - _Evidence scope:_ Root orientation (`AGENTS.md`, `README.md`) and `.githooks/pre-commit`.
+  - _Review prompt:_ Compare the checks root orientation says run before a commit with the commands the committed hook runs, including any hook it delegates to.
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Align the orientation or the hook, or record why a stated check cannot run at commit time.

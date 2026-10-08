@@ -57,6 +57,8 @@ export type ShellToolsContext = {
   readonly tests: DirectoryState
   readonly bats: boolean
   readonly unsafeTestEntries: readonly string[]
+  readonly hook: FileState
+  readonly hookText: string
 }
 
 export type LanguageToolsContext = {
@@ -238,6 +240,17 @@ export const createToolsSession = ({
   const primaryText = primaryPath ? (readableText(primaryPath) ?? '') : ''
   const shell = /^#!.*\b(bash|sh|dash|zsh|ksh)\b/.test(primaryText.split(/\r?\n/, 1)[0] ?? '')
 
+  // `ki-repo` owns whether the commit gate exists; this context reads only what it runs.
+  const hookDirectory = rootState === 'physical' ? nodeKind(join(root, '.githooks')) : 'missing'
+  const hookKind = hookDirectory === 'directory' ? nodeKind(join(root, '.githooks/pre-commit')) : 'missing'
+  const hook: FileState =
+    hookDirectory === 'unsafe' || hookKind === 'unsafe' || hookKind === 'directory'
+      ? 'unsafe'
+      : hookKind === 'file'
+        ? 'physical'
+        : 'missing'
+  const hookText = hook === 'physical' ? (readableText(join(root, '.githooks/pre-commit')) ?? '') : ''
+
   const installPath = join(root, 'install.sh')
   const installKind = rootState === 'physical' ? nodeKind(installPath) : 'missing'
   const install: ExecutableState =
@@ -400,7 +413,9 @@ export const createToolsSession = ({
       unsafeWorkflowEntries,
       tests: inspectedTests.state,
       bats,
-      unsafeTestEntries: inspectedTests.unsafe
+      unsafeTestEntries: inspectedTests.unsafe,
+      hook,
+      hookText
     },
     language: { applicable, packageJson },
     manual: {

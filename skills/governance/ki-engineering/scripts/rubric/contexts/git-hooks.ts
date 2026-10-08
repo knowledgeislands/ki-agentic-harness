@@ -39,7 +39,7 @@ export const hasCommitMessageBaseline = (source: string): boolean => source.star
 // Committed hook stubs outside `node_modules`: bound through a relative `core.hooksPath`,
 // they resolve in every working tree and refuse a commit whose gate tooling is absent.
 export const HOOK_STUB_DIRECTORY = '.githooks'
-export const HOOK_STUBS = ['pre-commit', 'commit-msg'] as const
+export const HOOK_STUBS = ['.githooks/pre-commit', '.githooks/commit-msg'] as const
 export const HOOK_STUB_BINDING = `git config core.hooksPath ${HOOK_STUB_DIRECTORY}`
 
 /** Accepted `prepare` forms: plain Husky first, then the stub binding where both stubs are committed. */

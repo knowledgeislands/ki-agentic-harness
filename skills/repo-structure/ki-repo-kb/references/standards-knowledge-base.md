@@ -11,6 +11,7 @@ This normative standard defines the structure, linking, configuration, routing, 
 - [Onboarding a base to this skill](#onboarding-a-base-to-this-skill)
 - [Zone aliases and the `[skills.ki-repo-kb]` config table](#zone-aliases-and-the-skillski-repo-kb-config-table)
 - [Session digest structure](#session-digest-structure)
+- [Commit gate](#commit-gate)
 - [Per-base config, not an extension skill](#per-base-config-not-an-extension-skill)
 
 ## The Knowledge Islands model
@@ -86,6 +87,10 @@ Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DD
 - **Facts Learned** - durable facts surfaced during the session.
 - **Related Work** - links to the notes, Pillars, or streams touched.
 - **Keywords** - retrieval terms.
+
+## Commit gate
+
+A Knowledge Base has no package toolchain to gate its commits, so its committed `.githooks/pre-commit` runs `ki repo audit` (`GATE-1`). The gate is check-only: a line that runs `ki repo conform`, or passes `--fix` or `--write` to the audit, fails, because a commit gate reports and never rewrites. Without a committed hook `GATE-1` is not applicable; `ki-repo` `HOOK-1` owns whether the hook exists and `HOOK-2` whether it is bound ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
 
 ## Per-base config, not an extension skill
 

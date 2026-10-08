@@ -42,6 +42,8 @@ export type GitContext = {
   repositoryState: RepositoryState
   applicable: boolean
   locks: readonly string[] | null
+  hook: 'missing' | 'unsafe' | 'physical'
+  hookText: string
 }
 
 export type ReviewContext = {
@@ -162,6 +164,15 @@ const inspectGitLocks = (repository: string, state: RepositoryState): readonly s
   return locks.sort()
 }
 
+// `ki-repo` owns whether the commit gate exists; GIT-2 reads only what it runs.
+const inspectHook = (repository: string, state: RepositoryState): Pick<GitContext, 'hook' | 'hookText'> => {
+  const directory = state === 'physical' ? pathState(join(repository, '.githooks')) : 'missing'
+  const hook = directory === 'directory' ? pathState(join(repository, '.githooks/pre-commit')) : directory
+  if (hook === 'file' && directory === 'directory')
+    return { hook: 'physical', hookText: readFileSync(join(repository, '.githooks/pre-commit'), 'utf8') }
+  return { hook: hook === 'missing' || hook === 'file' ? 'missing' : 'unsafe', hookText: '' }
+}
+
 export const hasRecognisedPrefix = (name: string): boolean =>
   RECOGNISED_PREFIXES.some((prefix) => name.startsWith(prefix))
 
@@ -198,7 +209,13 @@ export const createChezmoiSession = ({
     rubric: { publication },
     shape,
     bin: { repository: root, repositoryState: state, applicable, entries: inspectBin(root, state) },
-    git: { repository: root, repositoryState: state, applicable, locks: inspectGitLocks(root, state) },
+    git: {
+      repository: root,
+      repositoryState: state,
+      applicable,
+      locks: inspectGitLocks(root, state),
+      ...inspectHook(root, state)
+    },
     review: { repository: root, applicable }
   }
   return {

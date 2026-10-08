@@ -4,6 +4,7 @@ ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
+contributes: ['.githooks/pre-commit']
 description: >
   Audit or scaffold a KI `tools-*` repository containing one CLI, installer, releases, changelog, CI, help,
   completion, and optional manual. Use `ki-repo-homebrew-tap` for formulae, `ki-engineering` for

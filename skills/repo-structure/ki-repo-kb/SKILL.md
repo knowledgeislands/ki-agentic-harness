@@ -5,6 +5,7 @@ ki-applicability: detected
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-repo-kb-activities, ki-repo-kb-live-artifacts, ki-repo-kb-streams]
 owns: ['-/_DIGESTS/README.md']
+contributes: ['.githooks/pre-commit']
 description: >
   Create, query, update, distil, or audit a KI knowledge base using Calendar, Pillars, Resources, Streams, and
   directional `+` and `-` areas. Use for notes, session digests, search, or zone conformance;

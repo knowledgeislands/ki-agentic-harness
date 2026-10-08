@@ -7,12 +7,12 @@ purpose: governance
 project: baseline-rollout
 component: governance
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 53d15e1bc8b11dd0bb10e42619a8d7458b2236d3
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-10-08T07:40:00Z
+updated_at: 2026-10-08T08:30:50Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages
@@ -45,18 +45,18 @@ Nothing written. `ki-repo` has no hook family; its catalogue lives in `skills/ke
 
 ## Steps
 
-- [ ] Write `ADR-KI-HARNESS-SKILLS-017` under `docs/decisions/`: `ki-repo` owns existence and binding of `.githooks/pre-commit`; each shape skill owns and verifies its expected content; `SCR-11` is the `ki-engineering` instance; content is check-only. Add it to `docs/decisions/README.md`.
-- [ ] Add a `HOOK` family to `ki-repo` in `scripts/rubric/items/hooks.ts`, after `WORK`: `HOOK-1 [M]` (WARN at introduction, diagnostic) `.githooks/pre-commit` is tracked with executable mode `100755` and is a safe regular file; `HOOK-2 [M]` (WARN, diagnostic) local `core.hooksPath` is `.githooks`, with guidance naming `git config core.hooksPath .githooks`, `NOT_APPLICABLE` when `HOOK-1` has no stub to bind or when the run is in CI (`CI` set) with no local binding, since the binding is a property of each clone; `HOOK-J1 [J]` the gate stated in root orientation matches what the hook runs. Register it in `items/index.ts`, gather evidence in `contexts/repository.ts`, and extend the tests.
-- [ ] Add the hook paragraph to `references/standards-repository.md` and declare `.githooks/pre-commit` under `ki-repo`'s `requires:` (it checks existence and never writes); in `ki-engineering`'s `SKILL.md` add `.githooks/pre-commit` and `.githooks/commit-msg` under `contributes:` and in `standards-engineering.md` record the stub as an engineering contribution and `SCR-11` as its content expectation.
-- [ ] Shape criteria share one rule: with no `.githooks/pre-commit` they are `NOT_APPLICABLE`, because existence is `HOOK-1`'s; an unsafe hook is a violation; otherwise the expected command must appear on a non-comment line with no `--fix` or `--write` on that line. Each shape skill declares `.githooks/pre-commit` under `contributes:` and its level is `FAIL`.
-- [ ] `ki-repo-tools`: add `SHELL-HOOK [M]` in `scripts/rubric/items/shell.ts` requiring that, under the SHELL capability, `.githooks/pre-commit` invokes `shellcheck` and `bats`; add the row to `standards-tool-repositories.md`, stating that a criterion inside `ki-repo-tools` agrees with the "no `ki-shell` skill" decision rather than superseding it.
-- [ ] `ki-repo-kb`: add `GATE-1 [M]` in a new `scripts/rubric/items/gate.ts` requiring `.githooks/pre-commit` to run `ki repo audit` check-only, with `ki repo conform` a violation; document it in `standards-knowledge-base.md`.
-- [ ] `ki-repo-dotfiles-chezmoi`: add `GIT-2 [M]` in `scripts/rubric/items/git.ts` with the same `ki repo audit` requirement; document it in `standards-chezmoi-dotfiles.md`.
-- [ ] Add tests for each new criterion in the owning skill, regenerate each touched `references/rubric.md`, and capture follow-ons through `ki-next` for the remaining shape skills, for raising `HOOK-1` to FAIL, and for receiver trades to `tools-rig` and the chezmoi source.
+- [x] Write `ADR-KI-HARNESS-SKILLS-017` under `docs/decisions/`: `ki-repo` owns existence and binding of `.githooks/pre-commit`; each shape skill owns and verifies its expected content; `SCR-11` is the `ki-engineering` instance; content is check-only. Add it to `docs/decisions/README.md`.
+- [x] Add a `HOOK` family to `ki-repo` in `scripts/rubric/items/hooks.ts`, after `WORK`: `HOOK-1 [M]` (WARN at introduction, diagnostic) `.githooks/pre-commit` is tracked with executable mode `100755` and is a safe regular file; `HOOK-2 [M]` (WARN, diagnostic) local `core.hooksPath` is `.githooks`, with guidance naming `git config core.hooksPath .githooks`, `NOT_APPLICABLE` when `HOOK-1` has no stub to bind or when the run is in CI (`CI` set) with no local binding, since the binding is a property of each clone; `HOOK-J1 [J]` the gate stated in root orientation matches what the hook runs. Register it in `items/index.ts`, gather evidence in `contexts/repository.ts`, and extend the tests.
+- [x] Add the hook paragraph to `references/standards-repository.md` and declare `.githooks/pre-commit` under `ki-repo`'s `requires:` (it checks existence and never writes); in `ki-engineering`'s `SKILL.md` add `.githooks/pre-commit` and `.githooks/commit-msg` under `contributes:` and in `standards-engineering.md` record the stub as an engineering contribution and `SCR-11` as its content expectation.
+- [x] Shape criteria share one rule: with no `.githooks/pre-commit` they are `NOT_APPLICABLE`, because existence is `HOOK-1`'s; an unsafe hook is a violation; otherwise the expected command must appear on a non-comment line with no `--fix` or `--write` on that line. Each shape skill declares `.githooks/pre-commit` under `contributes:` and its level is `FAIL`.
+- [x] `ki-repo-tools`: add `SHELL-HOOK [M]` in `scripts/rubric/items/shell.ts` requiring that, under the SHELL capability, `.githooks/pre-commit` invokes `shellcheck` and `bats`; add the row to `standards-tool-repositories.md`, stating that a criterion inside `ki-repo-tools` agrees with the "no `ki-shell` skill" decision rather than superseding it.
+- [x] `ki-repo-kb`: add `GATE-1 [M]` in a new `scripts/rubric/items/gate.ts` requiring `.githooks/pre-commit` to run `ki repo audit` check-only, with `ki repo conform` a violation; document it in `standards-knowledge-base.md`.
+- [x] `ki-repo-dotfiles-chezmoi`: add `GIT-2 [M]` in `scripts/rubric/items/git.ts` with the same `ki repo audit` requirement; document it in `standards-chezmoi-dotfiles.md`.
+- [x] Add tests for each new criterion in the owning skill, regenerate each touched `references/rubric.md`, and capture follow-ons through `ki-next` for the remaining shape skills, for raising `HOOK-1` to FAIL, and for receiver trades to `tools-rig` and the chezmoi source.
 
 ## Files touched
 
-- `docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content.md` (new)
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md` (new)
 - `docs/decisions/README.md`
 - `skills/keystone/ki-repo/SKILL.md`
 - `skills/keystone/ki-repo/scripts/rubric/items/hooks.ts` (new)
@@ -125,6 +125,40 @@ None.
 ### Roadmap
 
 Follow-ons through `ki-next` for the remaining shape skills, for raising `HOOK-1` to FAIL, and for receiver trades to `tools-rig` and the chezmoi source.
+
+## Review
+
+### Delivered
+
+`ki-repo` now owns commit-gate existence and binding through a new `HOOK` family, and each of `ki-repo-tools`, `ki-repo-kb` and `ki-repo-dotfiles-chezmoi` owns one check-only content criterion, under [ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md). Follow-ons are captured as triage: `KI-HARNESS-GOV-158` (remaining shape skills), `KI-HARNESS-GOV-159` (raise `HOOK-1` and `HOOK-2` to FAIL) and `KI-HARNESS-GOV-160` (receiver trades to `tools-rig` and the chezmoi source).
+
+### Change Summary
+
+- `ki-repo`: `HOOK-1` (WARN, tracked `100755` safe regular file), `HOOK-2` (WARN, relative `core.hooksPath .githooks` binding; not applicable without a hook or in CI without a binding) and `HOOK-J1`, evidence in `contexts/hooks.ts`; `requires: ['.githooks/pre-commit']`; a Commit gate section in `standards-repository.md`.
+- `ki-engineering`: `contributes:` gains both stubs; `HOOK_STUBS` now holds the repository-relative paths, so the declared filenames occur in the implementation; the standard records the stubs as its contribution and `SCR-11` as their content expectation. `SCR-11` itself is unchanged.
+- `ki-repo-tools` `SHELL-HOOK`, `ki-repo-kb` `GATE-1` (new `items/gate.ts`) and `ki-repo-dotfiles-chezmoi` `GIT-2`, each FAIL, each declaring `contributes: ['.githooks/pre-commit']`, with standard text and regenerated `rubric.md`.
+- The remediation inventory counts rise by the six new criteria (five diagnostic mechanical, one judgment).
+
+### Verification
+
+- `bun run test`: 1019 pass, 0 fail. `bunx tsc --noEmit`: clean. `rumdl check` on touched documentation: clean. Coverage: `ki-repo` `contexts/hooks.ts` and `ki-repo-kb` `items/gate.ts` 100% of lines; the new branches in the tools, KB and chezmoi contexts are exercised by their tests.
+- Criteria 1-2: `contexts/hooks.test.ts` covers a repository with no `package.json` and no hook (`HOOK-1` warns, `HOOK-2` not applicable), an untracked, non-executable or symlinked hook, the exact `git config core.hooksPath .githooks` step, a wrong binding, the passing binding, and CI.
+- Criteria 3-4: `ki-repo` reads only existence, mode and binding. `SHELL-HOOK`, `GATE-1` and `GIT-2` tests fail a hook whose command is commented out or carries `--fix` or `--write`, fail `ki repo conform` and an unsafe hook, and pass a check-only line.
+- Criterion 5: the worktree's own `ki-repo` catalogue run against this repository reports `HOOK-1` and `HOOK-2` passing through the `KI-HARNESS-GOV-109` (done) stub; `SCR-11` code is untouched.
+- Criterion 6: the record is indexed as entry 59; `ki repo audit --skill ki-decision-records` reports only its three existing warnings. Each touched `rubric.md` was rendered from the worktree catalogue with the `tools-ki` renderer and matches exactly, and the worktree `ki-skills` catalogue reports no `SYNC-1` or `KI-SHAPE-16` finding.
+- `ki repo audit` runs the installed primary checkout's skill code, so the worktree audits were run through the worktree catalogues directly. In the worktree the installed `ki repo audit --skill ki-repo` reports only `REPO-REG-1` and `RUNTIMES-2`, which follow from the unregistered worktree path.
+
+### Outstanding concerns
+
+None blocking. Repositories without a committed hook now see a `HOOK-1` warning until `KI-HARNESS-GOV-160` and the receivers' own work land; that is the intended convergence signal.
+
+### Post-change review
+
+The split matches the decision: no `ki-repo` code reads hook content, and every content criterion is not applicable without a hook, so a repository is never failed twice for one absence. The three shape criteria share one rule but each skill carries its own small reader, because the shape skills share no module beyond the vendored rubric contract; `KI-HARNESS-GOV-158` is where a shared helper would earn its place if more shapes join.
+
+### Mini recap
+
+Commit gates are now governed beyond package-backed repositories: `ki-repo` asks whether the gate exists and is bound, and the tools, Knowledge Base and chezmoi shapes say what it must run.
 
 ## Discussion
 

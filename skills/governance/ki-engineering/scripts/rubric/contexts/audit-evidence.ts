@@ -31,7 +31,6 @@ import { inspectBoundaries } from './boundaries.ts'
 import {
   acceptedPrepares,
   COMMITLINT_CONFIGURATION,
-  HOOK_STUB_DIRECTORY,
   HOOK_STUBS,
   hasCommitMessageBaseline,
   hasPreCommitBaseline
@@ -1434,7 +1433,7 @@ export const collectAuditEvidence = async (
     : add('FAIL', 'SCR-5', 'clean must remove node_modules (e.g. "rm -rf {dist,node_modules}")', STD, 'package.json')
   const preparations = acceptedPrepares(
     has('tooling', 'boundaries', 'package.json'),
-    HOOK_STUBS.every((hook) => isSafeRegularFile(HOOK_STUB_DIRECTORY, hook))
+    HOOK_STUBS.every((hook) => isSafeRegularFile(hook))
   )
   preparations.includes(scripts.prepare ?? '')
     ? add('PASS', 'SCR-5', `prepare = ${JSON.stringify(scripts.prepare)}`, STD, 'package.json')

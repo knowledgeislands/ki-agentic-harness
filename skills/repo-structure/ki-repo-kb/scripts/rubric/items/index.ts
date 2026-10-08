@@ -2,6 +2,7 @@ import type { SkillRubricDefinition } from '../../shared/rubric.ts'
 import { createKbSession, type KbRubricContext } from '../contexts/kb.ts'
 import { ADMIN } from './admin.ts'
 import { CONFIG } from './config.ts'
+import { GATE } from './gate.ts'
 import { LINK } from './links.ts'
 import { MEM } from './memory.ts'
 import { NOTE } from './notes.ts'
@@ -14,5 +15,5 @@ export default {
   name: 'ki-repo-kb',
   concern: 'Knowledge Islands knowledge bases',
   createSession: createKbSession,
-  families: [RUBRIC, ZONE, CONFIG, ADMIN, ROUTE, NOTE, MEM, LINK]
+  families: [RUBRIC, ZONE, CONFIG, ADMIN, ROUTE, NOTE, MEM, LINK, GATE]
 } satisfies SkillRubricDefinition<KbRubricContext>

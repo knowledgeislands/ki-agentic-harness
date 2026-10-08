@@ -10,6 +10,7 @@ import { DESCFIT } from './description-fit.ts'
 import { DOC } from './documentation.ts'
 import { FILES } from './files.ts'
 import { GH } from './gh.ts'
+import { HOOK } from './hooks.ts'
 import { KIND } from './kind.ts'
 import { MERGE } from './merge.ts'
 import { OVR } from './overrides.ts'
@@ -54,6 +55,7 @@ export default {
     DOC,
     OVR,
     SYNC,
-    WORK
+    WORK,
+    HOOK
   ]
 } satisfies SkillRubricDefinition<RepoRubricContext>

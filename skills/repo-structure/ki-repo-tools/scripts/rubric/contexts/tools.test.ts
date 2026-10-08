@@ -2,11 +2,12 @@ import { afterEach, expect, test } from 'bun:test'
 import { execFileSync } from 'node:child_process'
 import { chmodSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { CONFIG } from '../items/config.ts'
 import { MAN } from '../items/manual.ts'
 import { SHARED } from '../items/shared-code.ts'
+import { SHELL } from '../items/shell.ts'
 import { TOOL } from '../items/tool.ts'
 import { createToolsSession } from './tools.ts'
 
@@ -514,4 +515,33 @@ test('an unrelated physical repository is not applicable', () => {
 
   expect(toolItem('TOOL-BIN').audit.run(TOOL.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
   expect(configItem().audit.run(CONFIG.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
+})
+
+test('SHELL-HOOK reads the committed gate only when it exists and requires check-only shell checks', () => {
+  const { repository } = fixture()
+  const primary = join(repository, 'bin', basename(repository).replace(/^tools-/, ''))
+  writeFileSync(primary, '#!/bin/sh\n')
+  const hookItem = SHELL.items.find((entry) => entry.code === 'SHELL-HOOK')?.mechanical
+  if (!hookItem) throw new Error('SHELL-HOOK mechanical item is missing')
+  const status = () => {
+    const subject = createToolsSession(options(repository, 'audit')).subjects[0]
+    if (!subject) throw new Error('ki-repo-tools session has no repository subject')
+    return hookItem.audit.run(SHELL.selectContext(subject.context()))[0]
+  }
+  expect(status()?.status).toBe('NOT_APPLICABLE')
+
+  mkdirSync(join(repository, '.githooks'))
+  const hook = join(repository, '.githooks', 'pre-commit')
+  writeFileSync(hook, '#!/bin/sh\n# shellcheck bin/demo\nbats tests/\n')
+  expect(status()?.message).toContain('does not run shellcheck check-only')
+
+  writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo --fix\nbats tests/\n')
+  expect(status()?.status).toBe('VIOLATION')
+
+  writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo\nbats tests/\n')
+  expect(status()?.status).toBe('PASS')
+
+  rmSync(hook)
+  symlinkSync(join(repository, 'install.sh'), hook)
+  expect(status()?.message).toContain('not a safe regular file')
 })
