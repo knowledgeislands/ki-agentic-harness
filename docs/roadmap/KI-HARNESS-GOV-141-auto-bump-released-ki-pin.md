@@ -6,12 +6,12 @@ kind: deliver
 project: estate-factorisation
 component: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: [KI-HARNESS-GOV-161]
 blocked_by: []
 baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-10-06T01:21:00Z
-updated_at: 2026-10-08T09:00:00Z
+updated_at: 2026-10-08T10:30:00Z
 ---
 
 # KI-HARNESS-GOV-141: Auto-bump released ki pin
@@ -38,16 +38,16 @@ Out of scope: auto-merge of the bump PR, which would amend XDR-KI-HARNESS-001 an
 
 ## Current state
 
-Planned and started on 2026-10-08; the open questions are settled in Discussion. The receiver is per repository, the pin moves out of the workflow into `.github/ki-version`, and the bump PR is reviewed by a person. The tap-side registry and payload need no change: the tap's existing event already carries `tool` and `source_repository`, and the receiver re-reads the latest immutable `tools-ki` release rather than trusting the payload.
+Delivered on 2026-10-08 and awaiting review. The `ki-engineering` standard states the released-pin receiver contract, CI-1 warns until a repository follows it, and the harness has adopted it with an inert `update-ki-pin.yml`. Live operation waits on the organisation owner installing the release App on each adopting repository and setting its variable and secret.
 
 ## Steps
 
-- [ ] State the released-pin contract in `standards-engineering.md` under the CI workflow standard: the `.github/ki-version` pin, the `update-ki-pin.yml` receiver, its triggers, verification and PR boundary.
-- [ ] Add the receiver workflow and the pin-reading install step to `exemplars.md`.
-- [ ] Add CI-1 evidence: warn when `ci.yml` pins `KI_VERSION` inline, when the pin file is malformed, or when the pin file has no receiver; pass when both are present. Cover it with focused tests and regenerate the rubric.
-- [ ] Adopt in the harness: `.github/ki-version`, `ci.yml` reading it, and an inert-until-provisioned `update-ki-pin.yml`.
-- [ ] Correct the `ki-repo-tools` release-readiness sentence: tool repositories hold the App credentials only to mint a tap-scoped token for their dispatch.
-- [ ] Capture KI-HARNESS-GOV-161 for the auto-merge decision and a `homebrew-tap` triage record for registering receiver-ready repositories.
+- [x] State the released-pin contract in `standards-engineering.md` under the CI workflow standard: the `.github/ki-version` pin, the `update-ki-pin.yml` receiver, its triggers, verification and PR boundary.
+- [x] Add the receiver workflow and the pin-reading install step to `exemplars.md`.
+- [x] Add CI-1 evidence: warn when `ci.yml` pins `KI_VERSION` inline, when the pin file is malformed, or when the pin file has no receiver; pass when both are present. Cover it with focused tests and regenerate the rubric.
+- [x] Adopt in the harness: `.github/ki-version`, `ci.yml` reading it, and an inert-until-provisioned `update-ki-pin.yml`.
+- [x] Correct the `ki-repo-tools` release-readiness sentence: tool repositories hold the App credentials only to mint a tap-scoped token for their dispatch.
+- [x] Capture KI-HARNESS-GOV-161 for the auto-merge decision and a `homebrew-tap` triage record for registering receiver-ready repositories.
 
 ## Files touched
 
@@ -80,7 +80,47 @@ None here. The tap's release App operations guide covers onboarding a consumer.
 
 ### Roadmap
 
-KI-HARNESS-GOV-161 captures the auto-merge decision; a `homebrew-tap` triage record captures registration of receiver-ready repositories.
+KI-HARNESS-GOV-161 captures the auto-merge decision; `homebrew-tap` BREW-013 captures registration of receiver-ready repositories.
+
+## Review
+
+### Delivered
+
+- The `ki-engineering` standard states the released `ki` pin contract: the `.github/ki-version` pin, the `update-ki-pin.yml` receiver, its triggers, its verification and its reviewed pull request.
+- CI-1 now gives four warnings, each of which a repository can act on: the pin is inline in `ci.yml`, the pin file is malformed, `ci.yml` does not read the pin file, or the pin file has no receiver. CI-1 passes once both the pin file and the receiver are present.
+- `exemplars.md` carries the pin-reading step and the full receiver, which can be copied without edits.
+- The harness reads its pin from `.github/ki-version`, still `v0.8.4`, and carries the receiver. The receiver stays skipped until `KI_TOOLS_RELEASE_BOT_APP_ID` is set.
+- `ki-repo-tools` release readiness now says correctly that tool repositories hold the App credentials only to mint a token scoped to the tap.
+- KI-HARNESS-GOV-161 and `homebrew-tap` BREW-013 are captured.
+
+### Change Summary
+
+- `skills/governance/ki-engineering/`: `standards-engineering.md`, `exemplars.md` and `rubric.md`; `inspectKiPin` in `scripts/rubric/contexts/audit-evidence.ts`, wired into `collectAuditEvidence`; the CI-1 description in `scripts/rubric/items/ci.ts`; and a focused test in `scripts/rubric/items/index.test.ts`.
+- `skills/repo-structure/ki-repo-tools/references/standards-release-readiness.md`: one sentence.
+- `.github/ki-version`, `.github/workflows/ci.yml` and `.github/workflows/update-ki-pin.yml`.
+- `docs/roadmap/KI-HARNESS-GOV-161-auto-merge-ki-pins.md`.
+- `rubric.md` was edited by hand to match `ci.ts`. Regenerating it would have meant relinking the shared `ki` development checkout.
+
+### Verification
+
+1. `bun run test` passes: 1024 tests, 0 failures. `bunx tsc --noEmit` is clean. The focused run of `scripts/rubric/items/index.test.ts` covers every branch of `inspectKiPin`.
+2. `ki repo audit --repo .` in the worktree gives no `ki-engineering` finding and no CI-1 warning for the harness. Its only WARNs are the existing `ki-model-radar` and `ki-skills` freshness warnings. Its only FAILs come from the temporary worktree location: REPO-REG-1, because the worktree is not registered, and RUNTIMES-2, which follows from that. The registered primary checkout gives no FAIL.
+3. The focused `ki-engineering` and `ki-work-roadmap` audits pass.
+4. Both workflows parse as YAML. The `update-ki-pin.yml` job's `if` requires `vars.KI_TOOLS_RELEASE_BOT_APP_ID`, so it is skipped until the App is provisioned.
+
+### Outstanding concerns
+
+- The receiver has not run on GitHub. Its first live run comes after the App is installed on the harness and its credentials are set. Until then the job is skipped by design.
+- Other repositories adopt the receiver through CONFORM. Until they do, CI-1 gives them the new warnings, which are advisory only.
+- The tap's own `ci.yml` still pins `KI_VERSION: v0.8.4` inline, although `ki` v0.9.0 is released. That pin is the tap's to move.
+
+### Post-change review
+
+The receiver re-reads the latest `tools-ki` release instead of trusting the event payload. It acts only on an immutable release that is newer than the pin. It writes only the pin file on its own branch. Its token is scoped to its own repository, and it never merges. Its failure modes are therefore a skip, or a pull request that a person reviews.
+
+### Mini recap
+
+Each repository now has a documented, copyable receiver that turns a `ki` release into a reviewed one-line pin bump. CI-1 points each repository towards adopting it.
 
 ## Discussion
 
