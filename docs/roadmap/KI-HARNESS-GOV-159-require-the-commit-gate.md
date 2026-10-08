@@ -18,7 +18,7 @@ updated_at: 2026-10-08T08:28:53Z
 
 ## Context
 
-`KI-HARNESS-GOV-117` introduced `HOOK-1` (committed, executable, safe hook) and `HOOK-2` (relative `core.hooksPath .githooks` binding) at WARN under [ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md), because most repositories had no committed hook when the criteria landed. Raising them is a separate reviewed step so the estate can converge first.
+`KI-HARNESS-GOV-117` (done) introduced `HOOK-1` (committed, executable, safe hook) and `HOOK-2` (relative `core.hooksPath .githooks` binding) at WARN under [ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md), because most repositories had no committed hook when the criteria landed. Raising them is a separate reviewed step so the estate can converge first.
 
 ## Boundary
 
@@ -26,4 +26,4 @@ In scope: confirming estate convergence from fresh `ki repo audit` evidence, rai
 
 ## Discussion
 
-Captured as a follow-on of `KI-HARNESS-GOV-117` during the Baseline rollout.
+Captured as a follow-on of `KI-HARNESS-GOV-117` (done) during the Baseline rollout.

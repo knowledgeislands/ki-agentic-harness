@@ -18,7 +18,7 @@ Every shape skill whose repositories carry their own verification gates states w
 
 ## Context
 
-[ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) splits the commit gate: `ki-repo` owns existence and binding (`HOOK-1`, `HOOK-2`), and each shape skill owns content. `KI-HARNESS-GOV-117` gave content criteria to `ki-engineering` (`SCR-11`), `ki-repo-tools` (`SHELL-HOOK`), `ki-repo-kb` (`GATE-1`) and `ki-repo-dotfiles-chezmoi` (`GIT-2`). The other shape skills under `skills/repo-structure/` - including `ki-repo-homebrew-tap`, `ki-repo-specifications`, `ki-repo-project` and `ki-repo-mcp` - still say nothing, so a repository of those shapes passes `HOOK-1` with any hook content at all.
+[ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) splits the commit gate: `ki-repo` owns existence and binding (`HOOK-1`, `HOOK-2`), and each shape skill owns content. `KI-HARNESS-GOV-117` (done) gave content criteria to `ki-engineering` (`SCR-11`), `ki-repo-tools` (`SHELL-HOOK`), `ki-repo-kb` (`GATE-1`) and `ki-repo-dotfiles-chezmoi` (`GIT-2`). The other shape skills under `skills/repo-structure/` - including `ki-repo-homebrew-tap`, `ki-repo-specifications`, `ki-repo-project` and `ki-repo-mcp` - still say nothing, so a repository of those shapes passes `HOOK-1` with any hook content at all.
 
 ## Boundary
 
@@ -26,4 +26,4 @@ In scope: deciding, per remaining shape skill, whether it has a check-only comma
 
 ## Discussion
 
-Captured as a follow-on of `KI-HARNESS-GOV-117` during the Baseline rollout.
+Captured as a follow-on of `KI-HARNESS-GOV-117` (done) during the Baseline rollout.

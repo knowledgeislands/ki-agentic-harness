@@ -41,7 +41,7 @@ Verified on `main` at `19651664`. `standards-decision-records.md:28` says serial
 
 ## Steps
 
-- [ ] Write the next free `ADR-KI-HARNESS-SKILLS-NNN` (expected `016`) under `docs/decisions/`, "Decision-record serials may contain gaps", using `ki-decision-records`: serials are issued in ascending order from `001` and never reused; pruning, reclassification and failed or abandoned reservations leave gaps; contiguity is not an audit criterion. Add it to `docs/decisions/README.md`.
+- [ ] Write the next free `ADR-KI-HARNESS-SKILLS-NNN` (expected `018`) under `docs/decisions/`, "Decision-record serials may contain gaps", using `ki-decision-records`: serials are issued in ascending order from `001` and never reused; pruning, reclassification and failed or abandoned reservations leave gaps; contiguity is not an audit criterion. Add it to `docs/decisions/README.md`.
 - [ ] Rewrite the `NNN` bullet in `standards-decision-records.md`: issuance starts at `001` and each new serial is one greater than the highest ever issued in its series; an issued serial is never reused or reassigned; gaps are permitted and carry no meaning; contiguity is not an audit criterion. A pending `XXX` record takes the next serial above that high-water mark.
 - [ ] Rewrite the reclassification sentence in the same bullet: the record takes the next serial in its new series, its old serial is left vacant and never reused, and nothing is renumbered. Remove the continuity-only clause of the shared-record mirror exception, keeping any wording that still governs uniqueness.
 - [ ] Remove `FILENAME-3` from `scripts/rubric/items/filename.ts`, the `serialGaps` computation and field from `scripts/rubric/contexts/decision-records.ts`, and the `FILENAME-3` tests and code-list entry; retire the code rather than reuse it.
@@ -51,7 +51,7 @@ Verified on `main` at `19651664`. `standards-decision-records.md:28` says serial
 
 ## Files touched
 
-- `docs/decisions/ADR-KI-HARNESS-SKILLS-016-decision-record-serials-may-contain-gaps.md` (new; `016` if this record lands before [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md), otherwise the next free serial)
+- `docs/decisions/ADR-KI-HARNESS-SKILLS-018-decision-record-serials-may-contain-gaps.md` (new; `016` and `017` are taken, the latter by `KI-HARNESS-GOV-117` (done), so `018` unless another record lands first)
 - `docs/decisions/README.md`
 - `skills/governance/ki-decision-records/references/standards-decision-records.md`
 - `skills/governance/ki-decision-records/scripts/rubric/items/filename.ts`
@@ -75,7 +75,7 @@ ki repo audit --skill ki-decision-records --progress never
 
 ## Dependencies / blocks
 
-None. Serial sequencing: [KI-HARNESS-GOV-117](KI-HARNESS-GOV-117-govern-hooks-beyond-packages.md) also claims the next free `ADR-KI-HARNESS-SKILLS` serial; whichever lands first takes `016` and the other takes the next free serial. Follow-on, non-blocking: tell `apps-observatory` the outcome so `KI-OBS-VIS-004` can delete its contiguity check; that repository owns the change.
+None. Serial sequencing: `KI-HARNESS-GOV-117` (done) took `ADR-KI-HARNESS-SKILLS-017`; this record takes the next free serial. Follow-on, non-blocking: tell `apps-observatory` the outcome so `KI-OBS-VIS-004` can delete its contiguity check; that repository owns the change.
 
 ## Documentation impact
 
