@@ -7,10 +7,10 @@ purpose: debt
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: aaebd2d06691d2e21442563dfdf3fe8f03184825
 task_links:
   paperclip:
     - authority: http://127.0.0.1:3100
@@ -38,7 +38,7 @@ task_links:
       url: http://127.0.0.1:3100/KIS/issues/KIS-5
       relation: related
 created_at: 2026-09-26T14:34:49Z
-updated_at: 2026-10-08T08:48:08Z
+updated_at: 2026-10-08T08:48:44Z
 ---
 
 # KI-HARNESS-GOV-103: Cite coordination rules once
