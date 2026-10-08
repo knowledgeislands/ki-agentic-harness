@@ -6,12 +6,12 @@ kind: deliver
 project: estate-factorisation
 component: governance
 horizon: now
-status: draft
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 9c930be71faa94f8bc55f3d67d3b9b3d2a63bdb3
 created_at: 2026-10-06T01:21:00Z
-updated_at: 2026-10-07T20:34:43Z
+updated_at: 2026-10-08T09:00:00Z
 ---
 
 # KI-HARNESS-GOV-141: Auto-bump released ki pin
@@ -32,47 +32,55 @@ Raised by the 2026-10-06 estate roadmap consolidation (finding "released ki pin 
 
 ## Boundary
 
-In scope: the harness-owned receiver contract - the event a consumer accepts, the pin it rewrites, and how the bump PR proves itself through the ordinary gates and auto-merge - expressed in `ki-engineering` CI-1 or the CI shape skill, with conformance through `ki repo conform`.
+In scope: the harness-owned receiver contract - the event a consumer accepts, the pin it rewrites, and how the bump PR proves itself through the ordinary gates - expressed in the `ki-engineering` CI workflow standard and exemplars, with a CI-1 warning so `ki repo conform` can find unadopted repositories; the harness's own adoption as the reference receiver; and the `ki-repo-tools` release-readiness sentence on tool-repository credentials, routed here from `homebrew-tap` BREW-012.
 
-Out of scope: registering consumers in the tap, which `homebrew-tap` owns; per-repository adoption, which follows through CONFORM or trades rather than one record per repository; and any change to the 14-day freshness window.
+Out of scope: auto-merge of the bump PR, which would amend XDR-KI-HARNESS-001 and moves to KI-HARNESS-GOV-161; registering consumers in the tap, which `homebrew-tap` owns; per-repository adoption beyond the harness, which follows through CONFORM or trades rather than one record per repository; and any change to the 14-day freshness window.
 
 ## Current state
 
-Adopted into Next on 2026-10-06 and not yet planned through `ki-plan`. No receiver contract exists. The only registered consumer is `knowledgeislands/ki-website`, whose receiver updates website content rather than a CI pin. The other repositories that pin `KI_VERSION` still move the pin by hand.
+Planned and started on 2026-10-08; the open questions are settled in Discussion. The receiver is per repository, the pin moves out of the workflow into `.github/ki-version`, and the bump PR is reviewed by a person. The tap-side registry and payload need no change: the tap's existing event already carries `tool` and `source_repository`, and the receiver re-reads the latest immutable `tools-ki` release rather than trusting the payload.
 
 ## Steps
 
-- [ ] Plan through `ki-plan`: settle the open questions below, choose where the receiver contract is expressed, and replace these steps with a reviewable plan.
+- [ ] State the released-pin contract in `standards-engineering.md` under the CI workflow standard: the `.github/ki-version` pin, the `update-ki-pin.yml` receiver, its triggers, verification and PR boundary.
+- [ ] Add the receiver workflow and the pin-reading install step to `exemplars.md`.
+- [ ] Add CI-1 evidence: warn when `ci.yml` pins `KI_VERSION` inline, when the pin file is malformed, or when the pin file has no receiver; pass when both are present. Cover it with focused tests and regenerate the rubric.
+- [ ] Adopt in the harness: `.github/ki-version`, `ci.yml` reading it, and an inert-until-provisioned `update-ki-pin.yml`.
+- [ ] Correct the `ki-repo-tools` release-readiness sentence: tool repositories hold the App credentials only to mint a tap-scoped token for their dispatch.
+- [ ] Capture KI-HARNESS-GOV-161 for the auto-merge decision and a `homebrew-tap` triage record for registering receiver-ready repositories.
 
 ## Files touched
 
-To be settled by planning. Expected: `ki-engineering` CI-1 or the CI shape skill's references and checks in this repository; tap-side registry changes land in `homebrew-tap`, not here.
+`skills/governance/ki-engineering/references/standards-engineering.md`, `exemplars.md`, `rubric.md` (generated), `scripts/rubric/contexts/audit-evidence.ts` and `scripts/rubric/items/ci.ts` with their tests; `skills/repo-structure/ki-repo-tools/references/standards-release-readiness.md`; `.github/ki-version`, `.github/workflows/ci.yml` and `.github/workflows/update-ki-pin.yml`; and the new KI-HARNESS-GOV-161 record.
 
 ## Verify
 
-To be settled by planning. At minimum, `ki repo audit --skill ki-work-roadmap` passes and the chosen skill's focused audit passes.
+1. `bun run test` passes and the new CI-1 evidence has full coverage.
+2. `ki repo audit --repo .` passes in the harness, with no CI-1 warning for the harness itself.
+3. The `ki-engineering` and `ki-work-roadmap` focused audits pass.
+4. `update-ki-pin.yml` parses as YAML and its job is skipped until `KI_TOOLS_RELEASE_BOT_APP_ID` is set.
 
 ## Dependencies / blocks
 
-No local blocker. This item blocks `homebrew-tap` BREW-011, which is folded into it (see Context and Discussion).
+No local blocker. `homebrew-tap` BREW-011 was closed as merged into this item. KI-HARNESS-GOV-161 is blocked by this item: auto-merge can only be decided for a receiver that exists. Live operation in any repository waits on the organisation owner installing the release App there and provisioning its credentials, under BREW-005.
 
 ## Documentation impact
 
 ### Decision Records
 
-To be settled by planning; a per-repository receiver versus central fan-out choice may warrant one.
+None. The design follows existing decisions: each consumer owns its response to a tap event, and XDR-KI-HARNESS-001 keeps a person reviewing dependency changes. Changing the latter for this pin is KI-HARNESS-GOV-161's decision.
 
 ### Specifications
 
-To be settled by planning; the receiver contract is expected to live in a skill standard rather than `docs/specs/`.
+None; the receiver contract lives in the `ki-engineering` standard.
 
 ### Guides
 
-To be settled by planning.
+None here. The tap's release App operations guide covers onboarding a consumer.
 
 ### Roadmap
 
-BREW-011 in `homebrew-tap` closes or is respecified once this item's plan places the tap-side registry work.
+KI-HARNESS-GOV-161 captures the auto-merge decision; a `homebrew-tap` triage record captures registration of receiver-ready repositories.
 
 ## Discussion
 
@@ -86,5 +94,11 @@ Kris approved adoption from Triage into Next on 2026-10-06, as a disposition of 
 
 ### Open questions
 
-- Per-repository receiver workflow, or central fan-out from one workflow that opens the bump PRs itself? A central fan-out needs a credential with write access to every consumer; a per-repository receiver needs only the existing dispatch.
-- Should the bump also refresh the active KI skill collection CI verifies, or only the executable pin?
+Settled on 2026-10-08 in planning:
+
+- **Per-repository receiver.** Each repository carries its own `update-ki-pin.yml`. It keeps the established rule that each consumer owns its response to a tap event, and the App's existing Contents and Pull requests permissions suffice. A central fan-out would make the tap write into other repositories, which the tap's boundary does not allow.
+- **Executable pin only.** A `ki` release embeds the canonical harness revision, so bumping the executable pin refreshes the verified skill collection too.
+
+### Decision
+
+The pin moves from an inline `KI_VERSION` in `ci.yml` to `.github/ki-version`, because a token that edits `.github/workflows/` needs the App's Workflows permission, which would let the App rewrite CI in every installed repository. The receiver treats the event only as a trigger and re-reads the latest immutable `tools-ki` release itself, with a daily schedule as backstop, so it works before the tap registers the repository. The bump PR is reviewed and merged by a person under XDR-KI-HARNESS-001. Decided by the delivering agent under delegated autonomy; reversible.
