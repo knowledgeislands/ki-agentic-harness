@@ -10,7 +10,18 @@ test('the catalogue exposes the ordered Guides criteria', () => {
     definition.families
       .filter((family) => family.code !== 'RUBRIC')
       .flatMap((family) => family.items.map((item) => item.code))
-  ).toEqual(['GUIDE-1', 'GUIDE-2', 'GUIDE-3', 'GUIDE-4', 'GUIDE-5', 'ROUTE-1', 'ROUTE-2', 'ROUTE-3'])
+  ).toEqual([
+    'GUIDE-1',
+    'GUIDE-2',
+    'GUIDE-3',
+    'GUIDE-4',
+    'GUIDE-5',
+    'GUIDE-6',
+    'ROUTE-1',
+    'ROUTE-2',
+    'ROUTE-3',
+    'ROUTE-4'
+  ])
 })
 
 test('the catalogue and family modules keep their public surfaces narrow', async () => {
@@ -37,6 +48,7 @@ test('only derived publication is automatic; authoring and routing remain non-ex
     'GUIDE-3',
     'GUIDE-4',
     'GUIDE-5',
+    'GUIDE-6',
     'ROUTE-1'
   ])
   expect(items.find((item) => item.code === 'ROUTE-2')?.judgment).toMatchObject({
@@ -45,4 +57,7 @@ test('only derived publication is automatic; authoring and routing remain non-ex
     outcomes: expect.any(Array),
     guidance: expect.stringContaining('Do not invent a fixed directory taxonomy')
   })
+  const route4 = items.find((item) => item.code === 'ROUTE-4')
+  expect(route4?.mechanical).toBeUndefined()
+  expect(route4?.judgment?.guidance).toContain('Do not mechanically fail a phrase')
 })

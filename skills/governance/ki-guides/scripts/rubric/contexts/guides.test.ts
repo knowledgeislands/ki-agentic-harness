@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createGuidesSession } from './guides.ts'
 
+const LEAD = 'x'.repeat(120)
+
 const temporaryRepository = (): string => mkdtempSync(join(tmpdir(), 'ki-guides-'))
 
 test('the session identifies the controlled root, guides, and retired roots', () => {
@@ -27,6 +29,11 @@ test('the session identifies the controlled root, guides, and retired roots', ()
     indexExists: true,
     rootGuides: [],
     headingIssues: ['docs/guides/developer/broken.md'],
+    openingIssues: [
+      { file: 'docs/guides/developer/broken.md', length: 5 },
+      { file: 'docs/guides/developer/example.md', length: 39 },
+      { file: 'docs/guides/developer/workflow.md', length: 0 }
+    ],
     escapingLinks: []
   })
   expect(context.boundary.retiredRoots).toEqual(['docs/spec'])
@@ -61,7 +68,7 @@ test('a guide directly below docs/guides is reported; audience folders and refer
     for (const guide of guides) {
       const path = join(repository, 'docs/guides', guide)
       mkdirSync(join(path, '..'), { recursive: true })
-      writeFileSync(path, '# Guide\n')
+      writeFileSync(path, `# Guide\n\n${LEAD}\n`)
     }
 
     const session = createGuidesSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
@@ -73,6 +80,7 @@ test('a guide directly below docs/guides is reported; audience folders and refer
       indexExists: true,
       rootGuides,
       headingIssues: [],
+      openingIssues: [],
       escapingLinks: []
     })
     expect(session.proposal()).toEqual({ writes: [] })
@@ -104,5 +112,29 @@ test('a link to a document outside the collection escapes; code paths and siblin
   expect(context.layout.escapingLinks).toEqual([
     'docs/guides/developer/workflow.md -> ../../decisions/ADR-001-a-decision.md',
     'docs/guides/developer/workflow.md -> ../../../AGENTS.md#working-here'
+  ])
+})
+
+test('a guide opening shorter than 120 characters of prose is reported; the root index is exempt', () => {
+  const repository = temporaryRepository()
+  mkdirSync(join(repository, 'docs/guides/developer'), { recursive: true })
+  writeFileSync(join(repository, 'docs/guides/README.md'), '# Guides\n\nShort.\n')
+  const guides: Record<string, string> = {
+    'short.md': `# Short\n\n${'x'.repeat(119)}\n\n## Steps\n\n${LEAD}\n`,
+    'floor.md': `# Floor\n\n${LEAD}\n\n## Steps\n`,
+    'wrapped.md': `---\ntitle: ${LEAD}\n---\n\n# Wrapped\n\n<!-- ${LEAD} -->\n${'y'.repeat(60)}\n${'z'.repeat(59)}\n\n## Steps\n`,
+    'unbroken.md': `# Unbroken\n\n${'w'.repeat(40)}\n`
+  }
+  for (const [name, content] of Object.entries(guides)) {
+    writeFileSync(join(repository, 'docs/guides/developer', name), content)
+  }
+
+  const session = createGuidesSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+  const context = session.subjects[1]?.context()
+  if (!context) throw new Error('ki-guides session did not expose its repository subject')
+
+  expect(context.layout.openingIssues).toEqual([
+    { file: 'docs/guides/developer/short.md', length: 119 },
+    { file: 'docs/guides/developer/unbroken.md', length: 40 }
   ])
 })

@@ -37,6 +37,8 @@ The controlled guide root has an entry point and identifiable guide documents.
   - _Remediation:_ diagnostic — Name the document in prose instead of linking it, or move the material the guide needs into docs/guides/references/, then rerun the audit.
 - **GUIDE-5 [M] — every guide lives in an audience folder** — No guide sits directly below `docs/guides/`; apart from the root `README.md`, every guide lives in a folder named for its audience. (standards-guides.md#guide-root-and-index)
   - _Remediation:_ diagnostic — Move each named guide into its primary audience's folder below `docs/guides/`, update every inbound link, then rerun the audit.
+- **GUIDE-6 [M] — a guide opens with its outcome** — Every guide below `docs/guides/`, except its root `README.md`, has at least 120 characters of prose before its first `##`; front matter, the H1, and HTML lines do not count. (standards-guides.md#a-guide-opens-with-its-outcome)
+  - _Remediation:_ diagnostic — Open each affected guide, before its first `##`, with prose saying what the reader will be able to do once they have read it, then rerun the audit.
 
 ## ROUTE — documentation routing
 
@@ -56,3 +58,8 @@ Guides are the durable how without creating parallel documentation systems.
   - _Review prompt:_ For each guide, who is the reader, and does every artefact the guide names sit within their reach? A reader working in this repository can open a Decision Record or a roadmap item that is named. A reader using what the repository produces holds the product and not `docs/decisions/` or `docs/roadmap/`, so naming a record there cites something they cannot open and did not ask about.
   - _Outcomes:_ conforming; guide revision; reclassify material
   - _Conforming guidance:_ State the substance the record decided, in the guide, in terms of what the reader does — or move the material to a guide whose reader can reach it. Do not infer audience from a directory name alone where the guide itself says otherwise, and do not mechanically fail a named identifier: whether a reader can reach it is a judgment about that reader.
+- **ROUTE-4 [J] — link text carries a fact, not a deferral** — Each link in a guide carries a fact the guide has already stated; no link text stands in for content the guide owes its reader. (standards-guides.md#a-guide-is-self-contained)
+  - _Evidence scope:_ Every link in every guide below `docs/guides/`, read with the sentence that holds it.
+  - _Review prompt:_ For each link, remove it: does the sentence still say something true and useful? A link that cites a fact the guide has already stated passes. A link whose text is where the answer lives, such as "the full guide", "see the README" or a bare "here", defers the content the guide owes its reader.
+  - _Outcomes:_ conforming; guide revision
+  - _Conforming guidance:_ State the fact in the guide and keep the link as a citation of it, or drop the link. Do not mechanically fail a phrase: a phrase list refuses honest sentences and passes dishonest ones, so whether link text carries a fact is a judgment about the sentence.

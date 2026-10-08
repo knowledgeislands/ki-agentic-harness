@@ -137,11 +137,38 @@ const GUIDE_5: RubricItem<GuidesLayoutContext> = {
   }
 }
 
+const GUIDE_6: RubricItem<GuidesLayoutContext> = {
+  code: 'GUIDE-6',
+  title: 'a guide opens with its outcome',
+  description:
+    'Every guide below `docs/guides/`, except its root `README.md`, has at least 120 characters of prose before its first `##`; front matter, the H1, and HTML lines do not count.',
+  sources: ['standards-guides.md#a-guide-opens-with-its-outcome'],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Open each affected guide, before its first `##`, with prose saying what the reader will be able to do once they have read it, then rerun the audit.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context) =>
+        context.openingIssues.length === 0
+          ? [{ status: 'PASS', message: 'Every guide opens with at least 120 characters of prose.' }]
+          : context.openingIssues.map(({ file, length }) => ({
+              status: 'VIOLATION',
+              message: `A guide must open with at least 120 characters of prose before its first section; this one has ${length}.`,
+              subject: file
+            }))
+    }
+  }
+}
+
 export const GUIDE: RubricFamily<GuidesRubricContext, GuidesLayoutContext> = {
   code: 'GUIDE',
   title: 'guide layout',
   description: 'The controlled guide root has an entry point and identifiable guide documents.',
   standard: SOURCE,
   selectContext: (context) => context.layout,
-  items: [GUIDE_1, GUIDE_2, GUIDE_3, GUIDE_4, GUIDE_5]
+  items: [GUIDE_1, GUIDE_2, GUIDE_3, GUIDE_4, GUIDE_5, GUIDE_6]
 }

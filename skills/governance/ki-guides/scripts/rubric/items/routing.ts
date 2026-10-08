@@ -64,11 +64,27 @@ const ROUTE_3: RubricItem<GuidesRubricContext> = {
   }
 }
 
+const ROUTE_4: RubricItem<GuidesRubricContext> = {
+  code: 'ROUTE-4',
+  title: 'link text carries a fact, not a deferral',
+  description:
+    'Each link in a guide carries a fact the guide has already stated; no link text stands in for content the guide owes its reader.',
+  sources: ['standards-guides.md#a-guide-is-self-contained'],
+  judgment: {
+    scope: 'Every link in every guide below `docs/guides/`, read with the sentence that holds it.',
+    prompt:
+      'For each link, remove it: does the sentence still say something true and useful? A link that cites a fact the guide has already stated passes. A link whose text is where the answer lives, such as "the full guide", "see the README" or a bare "here", defers the content the guide owes its reader.',
+    outcomes: ['conforming', 'guide revision'],
+    guidance:
+      'State the fact in the guide and keep the link as a citation of it, or drop the link. Do not mechanically fail a phrase: a phrase list refuses honest sentences and passes dishonest ones, so whether link text carries a fact is a judgment about the sentence.'
+  }
+}
+
 export const ROUTE: RubricFamily<GuidesRubricContext, GuidesRubricContext> = {
   code: 'ROUTE',
   title: 'documentation routing',
   description: 'Guides are the durable how without creating parallel documentation systems.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [ROUTE_1, ROUTE_2, ROUTE_3]
+  items: [ROUTE_1, ROUTE_2, ROUTE_3, ROUTE_4]
 }

@@ -15,6 +15,10 @@ A non-Knowledge-Base repository uses four durable documentation concerns. `ki-re
 
 Each source has one job. A guide names a Decision Record, Specification, or roadmap item when that helps a reader act, but it does not link one and does not duplicate the source's authority. A guide that relies on stable system behaviour routes to the applicable existing Specification. Where no durable behaviour contract exists, identify the gap for `ki-specs`; do not manufacture speculative requirements or require an unrelated corpus before publishing the guide.
 
+## A guide opens with its outcome
+
+A guide MUST open, before its first `##`, with prose saying what the reader will be able to do once they have read it, in at least 120 characters. Front matter, the H1, headings, and HTML blocks do not count towards that floor. A page that opens by describing itself - "this page summarises material in X" - has told the reader nothing they can act on and does not meet the rule, whatever its length.
+
 ## A guide is self-contained
 
 A guide MUST read completely without following any link. The collection is therefore movable as a unit: a reader who has `docs/guides/` has everything its guides depend on, and the collection can be published, copied, or relocated without carrying a trail of documents behind it. This mirrors the same requirement on a Decision Record, and for the same reason.
@@ -26,6 +30,8 @@ A guide MUST NOT link any other Markdown document outside its own collection: a 
 Where a guide needs a document the collection does not contain, it names it in prose, exactly as a Decision Record names the guides and standards it grounds in. `ADR-KI-WEB-003` identifies a record without depending on it, and the identifier survives a prune that would break a link. Supporting material a guide genuinely needs lives in `docs/guides/references/`, inside the tree, where a relative sibling path reaches it.
 
 External URLs are permitted as supplementary. The guide must still read completely without following them.
+
+Link text carries a fact the guide has already stated; it is never the place the answer lives. Remove the link and the sentence should still say something true and useful. Link text such as "the full guide", "see the README", or a bare "here" fails that test because the content the guide owes is behind it. This is a review judgment about each sentence, not a phrase list: a list refuses honest sentences and passes dishonest ones.
 
 ### What a reader can be expected to reach
 
@@ -56,4 +62,4 @@ Because every guide sits in an audience folder, the collection declares which gu
 
 ## Judgment boundary
 
-The checker can prove that a root, entry point, headings, audience folders, and retired roots are present or absent. It cannot truthfully prove that a procedure is safe, complete, current, or placed in the most useful category. During review, ask whether the index and audience folders give each intended reader a clear route, whether specialised exact-role paths preserve that route, and whether a reader can complete the guide's outcome without hidden context, verify success, and recover from known failure states.
+The checker can prove that a root, entry point, headings, audience folders, and retired roots are present or absent. It cannot truthfully prove that a procedure is safe, complete, current, or placed in the most useful category. During review, ask whether the index and audience folders give each intended reader a clear route, whether specialised exact-role paths preserve that route, and whether a reader can complete the guide's outcome without hidden context, verify success, and recover from known failure states. Ask too whether each link's text carries a fact the guide states rather than standing in for content it owes. The checker measures the length of a guide's opening prose; whether that opening says what the reader will be able to do is a review judgment.

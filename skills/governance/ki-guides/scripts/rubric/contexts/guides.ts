@@ -5,13 +5,20 @@ import type { RubricContextOptions, RubricPublicationContext, RubricSession } fr
 const GUIDES_DIRECTORY = 'docs/guides'
 const INDEX_FILE = 'README.md'
 const RETIRED_ROOTS = ['docs/spec', 'docs/developer'] as const
+const OPENING_FLOOR = 120
 
 export type GuidesLayoutContext = {
   readonly directoryExists: boolean
   readonly indexExists: boolean
   readonly rootGuides: readonly string[]
   readonly headingIssues: readonly string[]
+  readonly openingIssues: readonly GuideOpeningIssue[]
   readonly escapingLinks: readonly string[]
+}
+
+export type GuideOpeningIssue = {
+  readonly file: string
+  readonly length: number
 }
 
 export type GuidesBoundaryContext = {
@@ -103,6 +110,31 @@ const h1Count = (content: string): number => {
   return count
 }
 
+/**
+ * The prose a reader meets before the first `##`.
+ *
+ * Front matter, the H1, blank lines and HTML lines are not prose, so they do
+ * not count towards the opening; the lead stops at the first H2 outside a fence.
+ */
+const openingLead = (content: string): string => {
+  const lines = content.split('\n')
+  let start = 0
+  if (lines[0]?.trim() === '---') {
+    const end = lines.findIndex((line, index) => index > 0 && line.trim() === '---')
+    if (end > 0) start = end + 1
+  }
+  const lead: string[] = []
+  let fenced = false
+  for (const line of lines.slice(start)) {
+    if (/^\s*(`{3,}|~{3,})/.test(line)) fenced = !fenced
+    else if (!fenced && /^##\s/.test(line)) break
+    const trimmed = line.trim()
+    if (trimmed === '' || (!fenced && (/^#\s/.test(trimmed) || trimmed.startsWith('<')))) continue
+    lead.push(trimmed)
+  }
+  return lead.join(' ')
+}
+
 export const createGuidesSession = ({
   repository,
   publication
@@ -115,10 +147,13 @@ export const createGuidesSession = ({
   const files = directoryExists ? guideFiles(root, directory) : []
   const rootGuides = files.filter((file) => dirname(file) === GUIDES_DIRECTORY)
   const headingIssues = files.filter((file) => h1Count(readFileSync(join(root, file), 'utf8')) !== 1)
+  const openingIssues = files
+    .map((file) => ({ file, length: openingLead(readFileSync(join(root, file), 'utf8')).length }))
+    .filter((issue) => issue.length < OPENING_FLOOR)
   const escaping = files.flatMap((file) => escapingLinks(root, file, readFileSync(join(root, file), 'utf8')))
   const context: GuidesRubricContext = {
     rubric: { publication },
-    layout: { directoryExists, indexExists, rootGuides, headingIssues, escapingLinks: escaping },
+    layout: { directoryExists, indexExists, rootGuides, headingIssues, openingIssues, escapingLinks: escaping },
     boundary: { retiredRoots: RETIRED_ROOTS.filter((path) => existsSync(join(root, path))) },
     judgment: {}
   }
