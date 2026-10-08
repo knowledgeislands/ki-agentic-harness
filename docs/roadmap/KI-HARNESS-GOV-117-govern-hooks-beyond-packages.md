@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: baseline-rollout
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 53d15e1bc8b11dd0bb10e42619a8d7458b2236d3
 created_at: 2026-09-27T17:05:00Z
-updated_at: 2026-10-08T08:30:50Z
+updated_at: 2026-10-08T08:31:38Z
 ---
 
 # KI-HARNESS-GOV-117: Govern Hooks Beyond Packages
@@ -159,6 +158,10 @@ The split matches the decision: no `ki-repo` code reads hook content, and every 
 ### Mini recap
 
 Commit gates are now governed beyond package-backed repositories: `ki-repo` asks whether the gate exists and is bound, and the tools, Knowledge Base and chezmoi shapes say what it must run.
+
+## Done
+
+Accepted 2026-10-08 by Kris Brown on the review packet above.
 
 ## Discussion
 
