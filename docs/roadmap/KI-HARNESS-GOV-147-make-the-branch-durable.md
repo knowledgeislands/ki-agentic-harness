@@ -5,12 +5,13 @@ title: Make the branch durable
 kind: deliver
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-status: triage
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 3162261eb46a53bcb160b1d5e33ec6541456cc9d
 created_at: 2026-10-06T23:31:00Z
-updated_at: 2026-10-07T20:29:57Z
+updated_at: 2026-10-08T08:30:40Z
 ---
 
 # KI-HARNESS-GOV-147: Make the branch durable
@@ -45,6 +46,52 @@ Out of scope:
 - Removing, salvaging or pruning any existing worktree or branch. The 2026-10-07 cleanup has already been done under its own approval.
 - The base-currency claim and its mechanical check, which `KI-HARNESS-GOV-107` now carries.
 
+## Steps
+
+- [ ] Rewrite the coordination standard as listed under Rules changes: the branch as the recorded durable identity with a recreatable worktree, the commit-before-stop duty, safe worktree removal with unmerged branches never deleted, flagged rather than retained dirty or orphaned worktrees, the migration rule without directory bindings, and the hold and recovery clauses restated on branches.
+- [ ] Update `COORD-9`'s description and judgment prompt to the new retirement rule.
+- [ ] Add the held-workspace listing to `contexts/local-evidence.ts` as `heldWorkspaces`, built from `git worktree list --porcelain` and, per linked worktree, `git rev-list --left-right --count`, `git merge-base --is-ancestor`, `git log -1 --format=%ct` and `git status --porcelain` with optional locks off; nothing writes, locks or fetches.
+- [ ] Attach a `heuristic` diagnostic mechanical block to `COORD-9` that emits only `INFO`, one per held worktree or one saying none is held, keeping the judgment prompt.
+- [ ] Add fixtures with detached, unmerged, merged and dirty worktrees, asserting the listing, no `VIOLATION` and an unchanged worktree registry; update `index.test.ts` and the `ki-skills` remediation inventory counts.
+- [ ] Add the `COORD-9` listing to `mode-audit.md` step 3, regenerate `references/rubric.md`, and run the verification below.
+
+## Files touched
+
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/standards-agent-coordination-paperclip.md`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/mode-audit.md`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/references/rubric.md` (generated)
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/coordination.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/local-evidence.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/contexts/local-evidence.test.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/coordination.ts`
+- `skills/agentic-systems/ki-agent-coordination-paperclip/scripts/rubric/items/index.test.ts`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
+
+## Verify
+
+1. The standard no longer forbids removing a worktree by hand, forbids deleting an unmerged branch, requires a commit before a run stops, and no longer reads a workspace on disk as the mechanism protecting work.
+2. Detached and unmerged worktrees are listed under `COORD-9` with path, branch or detached state, head, ahead and behind counts, head-commit age, dirty flag, a plane-side-not-evaluated statement and the `ki-next` next step; a merged worktree is not listed; no outcome is a `VIOLATION`.
+3. The listing leaves `git worktree list --porcelain` unchanged and makes no fetch.
+4. `bun run test`, `bunx tsc --noEmit` and `ki repo audit` pass.
+
+## Documentation impact
+
+### Decision Records
+
+None. The standard owns workspace retirement and is refined in place.
+
+### Specifications
+
+None. `docs/specs/` does not describe coordination workspaces.
+
+### Guides
+
+None.
+
+### Roadmap
+
+None beyond this record.
+
 ## Discussion
 
 ### Rules this changes
@@ -65,8 +112,10 @@ Related, and neither blocks the other. The current-base requirement, merged from
 
 Kris approved merging `KI-HARNESS-GOV-114` (Surface held workspaces) into this record on 2026-10-07, under decision 17 of the state-of-play design: once the branch is durable, held workspaces are surfaced and retired by the same rule. Its held-workspace listing is now the in-scope bullet above. Its full plan, including the fixture-based verification and the files touched, is at [its last open revision](https://github.com/knowledgeislands/ki-agentic-harness/blob/05d6acecb33dc19a6ac4aab7b077700c5ae9d2fc/docs/roadmap/KI-HARNESS-GOV-114-surface-held-workspaces.md).
 
-### Open questions
+### Open questions, settled for this delivery
 
-- What signals that an agent has departed, so that its dirty worktree may be flagged rather than treated as in use?
-- Should the commit-before-stop duty be enforced by a stop hook, or by a mechanical coordination check on the branch?
-- Is an explicitly abandoned branch deleted, retained under a recorded disposition, or tagged before its worktree goes?
+Settled 2026-10-08 under Kris's delivery authorisation (state-of-play Decision 19), reversible:
+
+- **Departure.** Whether an agent has departed is a plane-side fact, so it stays judgment. The local listing gives the evidence a reviewer needs - dirty flag, head-commit age, ahead and behind counts - and the disposition stays human.
+- **Enforcement.** The commit-before-stop duty is normative in the standard and judged under `COORD-9`; the held-workspace listing surfaces its breaches as dirty worktrees. A stop hook or a mechanical branch check is not added here, because no run-stop event is visible to a repository audit.
+- **Abandoned branches.** An explicitly abandoned branch is retained under its recorded disposition; deletion stays with `ki-git` and the merge gate, which this record leaves out of scope.
