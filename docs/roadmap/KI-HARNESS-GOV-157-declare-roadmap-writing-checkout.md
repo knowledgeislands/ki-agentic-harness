@@ -1,16 +1,16 @@
 ---
 id: KI-HARNESS-GOV-157
 area: GOV
-title: Declare the roadmap writing checkout
+title: Declare roadmap writing checkout
 status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T07:24:10Z
-updated_at: 2026-10-08T07:24:10Z
+updated_at: 2026-10-08T07:27:50Z
 ---
 
-# KI-HARNESS-GOV-157: Declare the Roadmap Writing Checkout
+# KI-HARNESS-GOV-157: Declare Roadmap Writing Checkout
 
 ## Goal
 
