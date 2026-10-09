@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 0f87bf6d1d0bb6e9e3eb453aac452e9c4670f326
 created_at: 2026-10-08T10:30:00Z
-updated_at: 2026-10-09T06:46:48Z
+updated_at: 2026-10-09T06:50:00Z
 ---
 
 # KI-HARNESS-GOV-164: Hand off living diagrams
@@ -36,7 +35,7 @@ The receivers own whether and when to act. Out of scope: any change in either re
 
 ## Current state
 
-Delivered by direct handoff on 2026-10-08: each receiver holds a Triage record naming `ki-diagrams` and the outcome above. Awaiting Kris's review.
+Delivered by direct handoff on 2026-10-08: each receiver holds a Triage record naming `ki-diagrams` and the outcome above. Kris Brown accepted it on 2026-10-09.
 
 ## Steps
 
@@ -103,6 +102,10 @@ The handoff told each receiver once, as the Boundary required, and changed nothi
 ### Mini recap
 
 Delivered by direct handoff rather than by trade; the acceptance evidence is met.
+
+## Done
+
+Accepted 2026-10-09 by Kris Brown (GOV-020 owner decision 4) on the review packet above, resolved as delivered by direct handoff to KI-WEB-SITE-043 and KI-OBS-OPS-002.
 
 ## Discussion
 
