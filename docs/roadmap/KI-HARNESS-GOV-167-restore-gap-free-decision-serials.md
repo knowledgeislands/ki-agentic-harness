@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 35e36d4ef8c46aebfe76d24aaad7b1fd5358d210
 created_at: 2026-10-09T07:40:00Z
-updated_at: 2026-10-09T08:30:00Z
+updated_at: 2026-10-09T08:35:00Z
 ---
 
 # KI-HARNESS-GOV-167: Restore gap-free decision serials
@@ -119,6 +118,10 @@ The change restores a constraint that every current canonical collection already
 ### Mini recap
 
 Decision Record serials are contiguous again, records are amended in place, and a removal or reclassification renumbers with a citation sweep.
+
+## Done
+
+Accepted 2026-10-09 under Kris Brown's GOV-020 owner decision 6, which approved this outcome, on the review packet above.
 
 ## Discussion
 
