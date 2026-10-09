@@ -122,19 +122,19 @@ The report has three parts: **Done** (one line per outcome), **Failed** (if any)
 
 A project thread coordinates exactly one Project, or one named estate area, for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under this contract, in a run named after the Project, and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
 
-- **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current.
+- **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current. The checkpoint is named `<initiative>.<project>.md` and the master thread's `_state-of-play.md`, under [the checkpoint naming rule](../../ki-checkpoint/references/standards-checkpoints.md#project-thread-naming); a Project that changes Initiative has its checkpoint renamed in the same change.
 - **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises.
 - **Master thread:** the owner's designated master thread owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A project thread raises those there.
-- **Naming:** where the runtime can name a session, the thread takes its Project's name so the master thread can find it.
+- **Naming:** where the runtime can name a session, the thread takes the checkpoint's `label`, such as `Techne: agent-host`, so the master thread can find it. The label is presentation only; [the checkpoint label rule](../../ki-checkpoint/references/standards-checkpoints.md#thread-label) owns its form.
 - **Opening:** open a project thread only where there is active work to drive. A dormant Project needs no thread.
 
 ### Bootstrap
 
-A one-line opener brings a new or already-running thread onto this contract, for example `Re-bootstrap as the <project> project thread under ki-delegation.` The thread then:
+A one-line opener brings a new or already-running thread onto this contract, for example `Re-bootstrap as the <project> project thread under ki-delegation.` The opener uses the Project name alone, and the master thread's opener uses `state-of-play`. The thread then:
 
 1. reads this contract;
 2. checks `ki agent status` for its runs and any legacy runs, and reconciles what is actually running rather than assuming;
-3. creates or reconciles the Project's checkpoint;
+3. resolves the Project name to the single `+/_CHECKPOINTS/*.<project>.md` checkpoint, or `_state-of-play.md` for the master thread, under `ki-checkpoint` RESUME, stopping to ask the owner if no file or more than one file matches; then creates or reconciles that checkpoint;
 4. reports in three lines where the Project stands, what is running, and what it needs from the owner.
 
 ### Directions from the master thread

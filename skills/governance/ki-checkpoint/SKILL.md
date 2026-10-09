@@ -19,7 +19,7 @@ This governance skill owns the portable checkpoint contract: one concise reposit
 
 ## Shared model
 
-- **Active record** — one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`, where `<thread>` is the user-selected portable name. Updating replaces this snapshot in place; Git supplies history.
+- **Active record** — one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`, where `<thread>` is the user-selected portable name. A Project's thread is named `<initiative>.<project>` and the master thread `_state-of-play`; an optional `label` carries the human's client-side thread name for presentation only ([naming and label](references/standards-checkpoints.md#project-thread-naming)). Updating replaces this snapshot in place; Git supplies history.
 - **Removal** — explicit removal deletes the active record after durable information has reached its proper owners. There is no retired-record state or `_RETIRED` directory; Git supplies recovery history.
 - **Reconstruction, not continuity** — a checkpoint carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, completion signal, roadmap, decision log, or memory system.
 - **Explicit write authority** — create or update only at the user's request or a documented repository-local trigger. Remove only on explicit user direction after durable facts have reached their canonical owners. When the selected thread or content is uncertain, do not write.
@@ -64,7 +64,7 @@ REMOVE is an agent procedure, not a current `ki repo` host command. Require expl
 
 ### Mode RESUME
 
-RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<thread>`, resolve only `+/_CHECKPOINTS/<thread>.md`, and read it in full. Verify the filename, `thread`, H1, and `state: active` agree before using `Next step` to continue in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named active record is absent or invalid, stop and report the exact problem.
+RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<thread>` or, from an opener, the Project name. Resolve `+/_CHECKPOINTS/<thread>.md` when it exists, otherwise the single `*.<project>.md` record, or `_state-of-play.md` for the master thread; if no file or more than one file matches, stop and ask. Never resolve by `label`. Read the record in full and verify the filename, `thread`, H1, and `state: active` agree before using `Next step` to continue in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named active record is absent or invalid, stop and report the exact problem.
 
 ### Mode UPDATE
 

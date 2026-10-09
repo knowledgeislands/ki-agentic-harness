@@ -48,18 +48,24 @@ A retained capability scaffold contains one flat active record set; Git supplies
 
 Closed metadata and document shape make one snapshot portable and deterministically readable.
 
-- **RECORD-1 [M-heuristic + J] — record identity is human-selected and consistent** — Each filename stem is a non-empty single path component that is neither `.` nor `..` and does not encode a mechanically recognisable opaque runtime-session identifier. The filename, `thread` field, and H1 repeat the same human-selected thread name. (standards-checkpoints.md)
+- **RECORD-1 [M-heuristic + J] — record identity is human-selected and consistent** — Each filename stem is a non-empty single path component that is neither `.` nor `..` and does not encode a mechanically recognisable opaque runtime-session identifier; dotted `<initiative>.<project>` names and the leading-underscore master name `_state-of-play` are valid. The filename, `thread` field, and H1 repeat the same human-selected thread name. (standards-checkpoints.md)
   - _Remediation:_ guarded — Correct record identity only through an explicit user-selected thread update.
   - _Evidence scope:_ Every checkpoint filename, thread field, and H1.
   - _Review prompt:_ Is each thread name a stable human-selected lookup key rather than a vendor or runtime identifier?
   - _Outcomes:_ conforming; explicit rename required; escalate to user
   - _Conforming guidance:_ Keep the user-selected thread as the lookup key; do not derive or replace it from runtime metadata.
-- **RECORD-2 [M + J] — frontmatter and headings use the closed schema** — Active records declare exactly type, thread, state, created_at, and updated_at. Every record uses the exact H1 and ordered Objective, Current state, Decisions made, Files touched, Open questions, and Next step H2 sections, each with substantive content. (standards-checkpoints.md)
+- **RECORD-2 [M + J] — frontmatter and headings use the closed schema** — Active records declare type, thread, state, created_at, and updated_at, plus at most the optional label, which is a non-empty single-line string when present. Every record uses the exact H1 and ordered Objective, Current state, Decisions made, Files touched, Open questions, and Next step H2 sections, each with substantive content. (standards-checkpoints.md)
   - _Remediation:_ guarded — Correct authored record schema only through an explicit checkpoint update.
   - _Evidence scope:_ The authored frontmatter, headings, and reconstruction sections of every record.
   - _Review prompt:_ Can the schema correction be made without inventing or discarding user-owned reconstruction state?
   - _Outcomes:_ conforming; explicit update required; escalate to user
   - _Conforming guidance:_ Ask the user to update uncertain authored content; the checker must not infer missing checkpoint state.
+- **RECORD-3 [M + J] — record carries a presentation label** — Each active record carries a `label`: the exact thread name the human uses in their client, of the form `<Initiative title>: <project>`, or `Master: state-of-play` for the master thread. The label is presentation only and never used for resolution. (standards-checkpoints.md)
+  - _Remediation:_ guarded — Add the label through an explicit checkpoint update; resolution still goes by thread and Project name.
+  - _Evidence scope:_ Every checkpoint label.
+  - _Review prompt:_ Does each label match the name the human uses for the thread in their client?
+  - _Outcomes:_ conforming; explicit update required; escalate to user
+  - _Conforming guidance:_ Take the label from the human; never derive identity or resolution from it.
 
 ## LIFECYCLE — Checkpoint lifecycle
 

@@ -6,6 +6,8 @@ A checkpoint is a concise repository-owned reconstruction snapshot for one activ
 
 - [Activation and ownership](#activation-and-ownership)
 - [Record location and identity](#record-location-and-identity)
+  - [Project-thread naming](#project-thread-naming)
+- [Thread label](#thread-label)
 - [Exact record form](#exact-record-form)
 - [Optional runtime reminder consumers](#optional-runtime-reminder-consumers)
 - [Update lifecycle](#update-lifecycle)
@@ -27,26 +29,43 @@ An active checkpoint is one regular Markdown file at `+/_CHECKPOINTS/<thread>.md
 
 `<thread>` is a non-empty, human-selected single path component. It cannot be `.` or `..`, contain a path separator, or encode an opaque runtime-session identifier. The filename stem, `thread` field, and H1 must agree exactly. There is at most one active record for a thread; nested, timestamped, symlinked, archived, and alternate layouts are invalid.
 
+### Project-thread naming
+
+Where the repository keeps a Project registry ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)), a checkpoint for a Project's thread is named `<initiative>.<project>`, using the `initiative` key from the Project note and the Project's own key, for example `techne.agent-host` or `rig.mac-studio-bootstrap`. Related checkpoints then sort together. The repository's master thread is named `_state-of-play`, so that it sorts first. A checkpoint with no Project keeps a plain human-selected name, prefixed with an Initiative key only when one obviously fits.
+
+The full name appears in the filename stem, `thread` field, and H1. When a Project moves to another Initiative, rename its checkpoint, `thread` field, H1, and every reference in the same change.
+
+A human opener names only the Project, for example `Re-bootstrap as the agent-host project thread under ki-delegation.`; [RESUME](#resume-lifecycle) resolves it to the full name.
+
+## Thread label
+
+An active record carries an optional `label`: the exact name the human gives the thread in their editor or agent client, so that it can be copied straight in. Its form is `<Initiative title>: <project>`, for example `Techne: agent-host`, `Rig: mac-studio-bootstrap`, or `Platform Foundations: chezmoi`; the master thread's label is `Master: state-of-play`. A checkpoint with no Project uses a short descriptive label of the same shape.
+
+A label is presentation only. Resolution and identity always go by the thread name and Project name, never the label, and a label may change without renaming the record. A missing label is a recommendation (WARN), not a failure.
+
 ## Exact record form
 
-An active record has exactly these frontmatter fields:
+An active record has exactly these frontmatter fields, with `label` recommended and every other field required:
 
 ```yaml
 ---
 type: ki-checkpoint
-thread: portable-checkpoints
+thread: ki.portable-checkpoints
+label: 'Knowledge Islands: portable-checkpoints'
 state: active
 created_at: 2026-08-06T12:00:00Z
 updated_at: 2026-08-06T14:30:00Z
 ---
 ```
 
+When present, `label` is a non-empty single-line string; quote it in YAML because it contains a colon.
+
 Timestamps use UTC RFC 3339 second precision. `created_at` is no later than `updated_at`.
 
 After frontmatter, the record uses exactly this heading sequence, with substantive content beneath every H2:
 
 ```markdown
-# portable-checkpoints
+# ki.portable-checkpoints
 
 ## Objective
 
@@ -92,10 +111,12 @@ The supplied hand-off names the physical repository identity, immutable committe
 
 The manual portable flow is deliberately small:
 
-1. Require the user-selected thread name.
-2. Resolve only the exact active path.
+1. Require the user-selected thread name or, from an opener, the Project name.
+2. Resolve to one exact active path: `+/_CHECKPOINTS/<thread>.md` when that file exists; otherwise the single `+/_CHECKPOINTS/*.<project>.md` record whose final dot-separated component is the Project name; and `_state-of-play.md` for the master thread (`state-of-play`). If no file or more than one file matches, stop and ask the human which record is meant.
 3. Read the whole record and validate its identity and `state: active`.
 4. Reconstruct the work from the six sections and continue from `Next step`.
+
+The label never takes part in resolution.
 
 Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that produced the checkpoint.
 

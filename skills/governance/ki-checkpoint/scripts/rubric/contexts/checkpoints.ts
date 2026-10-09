@@ -10,6 +10,7 @@ import type {
 
 const CONFIG_TABLE = 'ki-checkpoint'
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
+const OPTIONAL_FIELDS = ['label'] as const
 const UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const OPAQUE_SESSION_NAME = /^(?:sess(?:ion)?|conversation)[_-][a-z0-9]{12,}$/i
@@ -37,7 +38,11 @@ type ParsedCheckpoint = {
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
 export type ScaffoldContext = OutcomeContext & { readonly ensureScaffold?: () => void }
-export type RecordContext = { readonly identity: readonly AuditOutcome[]; readonly schema: readonly AuditOutcome[] }
+export type RecordContext = {
+  readonly identity: readonly AuditOutcome[]
+  readonly schema: readonly AuditOutcome[]
+  readonly label: readonly AuditOutcome[]
+}
 export type LifecycleContext = { readonly mechanical: readonly AuditOutcome[] }
 
 export type CheckpointsRubricContext = {
@@ -114,15 +119,17 @@ const recordEvidence = (
 ): {
   identity: readonly AuditOutcome[]
   schema: readonly AuditOutcome[]
+  label: readonly AuditOutcome[]
   lifecycle: readonly AuditOutcome[]
   boundary: readonly AuditOutcome[]
 } => {
   if (absent) {
     const outcome = [{ status: 'NOT_APPLICABLE' as const, message: absent }]
-    return { identity: outcome, schema: outcome, lifecycle: outcome, boundary: outcome }
+    return { identity: outcome, schema: outcome, label: outcome, lifecycle: outcome, boundary: outcome }
   }
   const identity: AuditOutcome[] = []
   const schema: AuditOutcome[] = []
+  const label: AuditOutcome[] = []
   const lifecycle: AuditOutcome[] = []
   const boundary: AuditOutcome[] = []
   const activeThreads = new Set<string>()
@@ -187,12 +194,31 @@ const recordEvidence = (
         })
     }
 
-    const expectedFields = ACTIVE_FIELDS
-    const actualFields = Object.keys(fields).sort()
-    if (actualFields.join('\n') !== [...expectedFields].sort().join('\n'))
+    const actualFields = Object.keys(fields)
+    if (
+      ACTIVE_FIELDS.some((field) => !actualFields.includes(field)) ||
+      actualFields.some(
+        (field) =>
+          !(ACTIVE_FIELDS as readonly string[]).includes(field) &&
+          !(OPTIONAL_FIELDS as readonly string[]).includes(field)
+      )
+    )
       schema.push({
         status: 'VIOLATION',
         message: 'active checkpoint frontmatter must use only its closed field set',
+        subject: record.path
+      })
+    if ('label' in fields) {
+      if (typeof fields.label !== 'string' || fields.label.trim().length === 0 || /[\r\n]/.test(fields.label))
+        schema.push({
+          status: 'VIOLATION',
+          message: 'label must be a non-empty single-line string',
+          subject: record.path
+        })
+    } else
+      label.push({
+        status: 'VIOLATION',
+        message: 'checkpoint has no label naming the thread for the human client',
         subject: record.path
       })
     if (fields.type !== 'ki-checkpoint')
@@ -256,6 +282,7 @@ const recordEvidence = (
   return {
     identity: one(identity, 'Every checkpoint has one consistent human-selected thread identity.'),
     schema: one(schema, 'Every checkpoint uses the closed metadata and heading schema.'),
+    label: one(label, 'Every checkpoint carries a presentation label.'),
     lifecycle: one(lifecycle, 'Checkpoint states, uniqueness, and timestamps are coherent.'),
     boundary: one(boundary, 'No mechanically recognisable transcript or session-continuity dependency is present.')
   }
@@ -264,7 +291,7 @@ const recordEvidence = (
 export const checkpointReadme = {
   path: '+/_CHECKPOINTS/README.md',
   content:
-    '# Checkpoints\n\nThis directory retains active, human-named reconstruction snapshots while `ki-checkpoint` is declared. Checkpoint records are temporary inputs to further repository work. Removing a checkpoint deletes its record after durable information is routed; this README remains as the capability boundary. Git supplies recovery history.\n'
+    "# Checkpoints\n\nThis directory retains active, human-named reconstruction snapshots while `ki-checkpoint` is declared. A Project's thread is named `<initiative>.<project>.md` and the master thread `_state-of-play.md`; each record's `label` is the human's client-side thread name, for presentation only. Checkpoint records are temporary inputs to further repository work. Removing a checkpoint deletes its record after durable information is routed; this README remains as the capability boundary. Git supplies recovery history.\n"
 } as const
 
 export const createCheckpointsSession = ({
@@ -353,7 +380,7 @@ export const createCheckpointsSession = ({
       ),
       ...(mode === 'conform' && canConformScaffold ? { ensureScaffold: () => (scaffoldRequested = true) } : {})
     },
-    records: { identity: evidence.identity, schema: evidence.schema },
+    records: { identity: evidence.identity, schema: evidence.schema, label: evidence.label },
     lifecycle: { mechanical: evidence.lifecycle },
     boundary: { outcomes: evidence.boundary }
   }

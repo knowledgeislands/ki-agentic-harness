@@ -26,10 +26,12 @@ const fixture = (): { repository: string; checkpointDirectory: string } => {
 
 const record = ({
   thread = 'release-audit',
+  label = 'Release: release-audit',
   state = 'active',
   body = ''
 }: {
   thread?: string
+  label?: string | null
   state?: string
   body?: string
 } = {}) =>
@@ -37,6 +39,7 @@ const record = ({
     '---',
     'type: ki-checkpoint',
     `thread: ${thread}`,
+    ...(label === null ? [] : [`label: '${label}'`]),
     `state: ${state}`,
     'created_at: 2026-08-12T10:00:00Z',
     'updated_at: 2026-08-12T11:00:00Z',
@@ -165,4 +168,36 @@ test('closed schema refuses a checkpoint-selected marker', () => {
   const value = context(repository)
 
   expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))[0]?.status).toBe('VIOLATION')
+})
+
+test('dotted Project-thread and leading-underscore master names pass identity', () => {
+  const { repository, checkpointDirectory } = fixture()
+  writeFileSync(
+    join(checkpointDirectory, 'techne.agent-host.md'),
+    record({ thread: 'techne.agent-host', label: 'Techne: agent-host' })
+  )
+  writeFileSync(
+    join(checkpointDirectory, '_state-of-play.md'),
+    record({ thread: '_state-of-play', label: 'Master: state-of-play' })
+  )
+  const value = context(repository)
+
+  for (const code of ['RECORD-1', 'RECORD-2', 'RECORD-3'])
+    expect(mechanical(RECORD, code).audit.run(RECORD.selectContext(value))[0]?.status).toBe('PASS')
+})
+
+test('a missing label warns and an empty label fails the closed schema', () => {
+  const { repository, checkpointDirectory } = fixture()
+  writeFileSync(join(checkpointDirectory, 'release-audit.md'), record({ label: null }))
+  const value = context(repository)
+  const labelItem = mechanical(RECORD, 'RECORD-3')
+
+  expect(labelItem.level).toBe('WARN')
+  expect(labelItem.audit.run(RECORD.selectContext(value))[0]?.status).toBe('VIOLATION')
+  expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))[0]?.status).toBe('PASS')
+
+  writeFileSync(join(checkpointDirectory, 'release-audit.md'), record({ label: '' }))
+  expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(context(repository)))[0]?.status).toBe(
+    'VIOLATION'
+  )
 })
