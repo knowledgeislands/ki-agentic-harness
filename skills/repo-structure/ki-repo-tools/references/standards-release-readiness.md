@@ -4,7 +4,7 @@ Use this checklist before publishing a release of a repository governed by `ki-r
 
 ## Release on demand
 
-This is the one release-timing policy for every Knowledge Islands tooling project that publishes releases: the `tools-*` command-line tools, the `mcp-*` servers under `ki-repo-mcp` source distribution, and any other repository that cuts versioned releases. Each repository's releasing guide points here and keeps only its mechanical steps.
+This is the one release-timing policy for every Knowledge Islands tooling project that publishes releases: the `tools-*` command-line tools, the `mcp-*` servers under `ki-repo-mcp` source distribution, and any other repository that cuts versioned releases. Each repository's releasing guide points here and keeps only its mechanical steps. Arcadia's [Release Cascade](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Operations/Processes/Release%20Cascade.md) process note is the owner's overview of how a release then reaches the tap, the website, each repository's `ki` pin and the owner's machines; this policy stays normative.
 
 - **Hold releases by default.** Do not release after each change or each delivered work record. Release only when at least one of these holds:
   1. something else needs the new capability, such as CI enforcement in another repository, or another person or machine that installs the released tool;
