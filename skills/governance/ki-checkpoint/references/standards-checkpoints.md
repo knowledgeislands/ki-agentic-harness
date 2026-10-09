@@ -82,6 +82,8 @@ After frontmatter, the record uses exactly this heading sequence, with substanti
 
 The H1 repeats the thread name exactly. `Decisions made`, `Files touched`, and `Open questions` may say `None` when that is the truthful current state; an empty section is not a useful reconstruction snapshot.
 
+A coordinating thread under `ki-delegation` keeps its parked side topics in `Open questions` as dated one-line items, under [its parking rule](../../ki-delegation/references/standards-background-runs.md#parking-tangents); they never form an additional H2.
+
 ## Optional runtime reminder consumers
 
 A runtime-specific reminder consumer is separately opt-in. It may act only when its native event contract is independently evidenced and all of the following are true:

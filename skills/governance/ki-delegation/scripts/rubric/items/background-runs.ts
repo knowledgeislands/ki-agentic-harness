@@ -54,6 +54,22 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
         guidance:
           'Move longer coordinator work into background agents, and consolidate in-force decisions into a Decision Record, skill or checkpoint; escalate to the master thread when a direction touches more than one Project.'
       }
+    },
+    {
+      code: 'RUN-4',
+      title: 'threads park tangents, link records and keep checkouts current',
+      description:
+        'A coordinating thread parks passing side topics as dated one-line items under its checkpoint Open questions, cites and links every record, checkpoint, Initiative and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.',
+      sources: ['standards-background-runs.md'],
+      judgment: {
+        scope:
+          'Coordinating-thread transcripts, status lines, reports, project recaps and checkpoints the owner selects for review.',
+        prompt:
+          "Were side topics parked without derailing the work and later homed or dropped, does every mention of a record, checkpoint, Initiative or Project carry its full identifier and a local link, and are the owner's primary checkouts current, with dirty or diverged ones reported rather than altered?",
+        outcomes: ['conforming', 'park or home tangents', 'fix references', 'refresh checkouts', 'escalate to owner'],
+        guidance:
+          'Move tangents into checkpoint Open questions or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it.'
+      }
     }
   ]
 }

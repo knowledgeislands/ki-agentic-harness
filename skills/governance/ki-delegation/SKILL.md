@@ -15,7 +15,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | ref
 
 `ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-- **Background runs** - routine delegation to background agents: detachment, coordinator responsiveness, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, low-noise reporting, and project threads with their bootstrap and project recap. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
+- **Background runs** - routine delegation to background agents: detachment, coordinator responsiveness, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, low-noise reporting, project threads with their bootstrap and project recap, and the thread working rules for parking tangents, linking records and keeping primary checkouts current. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
 - **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.

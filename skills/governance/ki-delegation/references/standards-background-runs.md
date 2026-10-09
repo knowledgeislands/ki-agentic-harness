@@ -14,6 +14,7 @@
 - [Monitoring](#monitoring)
 - [Reporting](#reporting)
 - [Project threads](#project-threads)
+- [Thread working rules](#thread-working-rules)
 - [Reference launcher](#reference-launcher)
 - [Mechanical boundary](#mechanical-boundary)
 
@@ -150,6 +151,30 @@ A project recap is a plain-language roll-up for the owner of what has changed in
 It opens with a header naming the Project and its Initiative as links, the thread, and the window covered (`since <time of last recap>`), so recaps from several threads read side by side. It then covers what was delivered, decided, started, stopped or blocked, and newly captured; what is running now; and what needs the owner. It cites records by full identifier as links, with no tool output and no commit identifiers.
 
 Its sources are the run's decisions log, background-agent reports finished since the last recap, and the Project's records. The thread gives a recap on request, such as "recap", and proactively when several background agents have finished since the last one or the owner returns after a gap. It notes the time of each recap in its checkpoint, so "since the last recap" is well defined.
+
+## Thread working rules
+
+These rules apply to every coordinating thread: the master thread and each project thread.
+
+### Parking tangents
+
+When the owner raises a side topic in passing, the thread records it as one dated line, says it is parked, and carries on with the current work. It does not explore the tangent unasked.
+
+Parked items live in the thread's checkpoint under `Open questions`, each as `- Parked <YYYY-MM-DD>: <one line>`. They need no section of their own: [the checkpoint record form](../../ki-checkpoint/references/standards-checkpoints.md#exact-record-form) fixes the six sections.
+
+On request, such as "what's parked?", the thread lists its parked items. When the owner picks one up, it gets a home - a Project, a work record through `ki-next`, or another thread's checkpoint - or is dropped, and the thread removes it from `Open questions` in the same update.
+
+### Linking records
+
+Whenever a thread mentions a roadmap or work record, a checkpoint, an Initiative or a Project, it cites the full identifier, such as `KI-HARNESS-GOV-144` rather than `GOV-144`, because area codes repeat across repositories.
+
+It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the remote URL only when there is no local copy. This applies to status lines, reports and project recaps alike.
+
+### Keeping primary checkouts current
+
+Background agents work in worktrees and push their own commits, so the owner's primary checkouts fall behind. The coordinating thread fast-forward pulls each affected primary checkout periodically: after a background agent that pushed finishes, and before a project recap.
+
+It pulls only with `--ff-only` into a clean checkout. A checkout with uncommitted changes, or one that has diverged from its upstream, is skipped and reported to the owner rather than stashed, rebased or reset. The pull is a quick one-step check under [Coordinator responsiveness](#coordinator-responsiveness); anything needing repair goes to a background agent or the owner.
 
 ## Reference launcher
 
