@@ -7,12 +7,12 @@ purpose: upkeep
 initiative: platform-foundations
 component: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 04c73b6fb30a5626f8cd19bedd925a8a6cc1f93d
 created_at: 2026-10-08T09:30:00Z
-updated_at: 2026-10-09T08:25:00Z
+updated_at: 2026-10-09T08:40:00Z
 ---
 
 # KI-HARNESS-GOV-161: Auto-Merge ki Pins
@@ -38,10 +38,10 @@ Kris decided on 2026-10-09 (GOV-020 owner decision 7) that automatic `ki` pin bu
 
 ## Steps
 
-- [ ] Amend XDR-KI-HARNESS-001 in place: dependency changes keep human review, except a released `ki` pin bump inside the `knowledgeislands` organisation, which may auto-merge when its diff touches only the pin file, the required checks pass under a `main` ruleset the App cannot bypass, and the release's signed checksum manifest verifies. Name the organisation limit explicitly.
-- [ ] Make this repository's receiver request squash auto-merge only after confirming the proposal diff is the pin file alone and that `main` has rules requiring status checks; otherwise leave the pull request for review. Pin `actions/create-github-app-token` to a commit SHA, as `tools-ki` does.
-- [ ] Update the `ki-engineering` receiver contract and exemplar to match, with the scope limit.
-- [ ] Align the `ki-repo-tools` release-readiness wording, which still calls auto-merge a separate future decision.
+- [x] Amend XDR-KI-HARNESS-001 in place: dependency changes keep human review, except a released `ki` pin bump inside the `knowledgeislands` organisation, which may auto-merge when its diff touches only the pin file, the required checks pass under a `main` ruleset the App cannot bypass, and the release's signed checksum manifest verifies. Name the organisation limit explicitly.
+- [x] Make this repository's receiver request squash auto-merge only after confirming the proposal diff is the pin file alone and that `main` has rules requiring status checks; otherwise leave the pull request for review. Pin `actions/create-github-app-token` to a commit SHA, as `tools-ki` does.
+- [x] Update the `ki-engineering` receiver contract and exemplar to match, with the scope limit.
+- [x] Align the `ki-repo-tools` release-readiness wording, which still calls auto-merge a separate future decision.
 
 ## Files touched
 
@@ -84,6 +84,38 @@ None.
 ### Roadmap
 
 KI-HARNESS-GOV-168 and BREW-013 carry the rollout.
+
+## Review
+
+### Delivered
+
+- XDR-KI-HARNESS-001 keeps human review for dependency changes, except a released `ki` pin bump in the `knowledgeislands` organisation whose diff is the pin file alone, whose required checks pass under rules the App cannot bypass, and whose signed checksum manifest verifies. Other organisations are named as out of scope.
+- `update-ki-pin.yml` requests squash auto-merge only after `gh pr diff` shows `.github/ki-version` alone and `main` has a `required_status_checks` rule; otherwise it leaves the proposal for review. `actions/create-github-app-token` is pinned to the `v2.2.2` commit SHA, and the bot's pull request title is now a Conventional Commit so the squash commit conforms.
+- The `ki-engineering` standard and exemplar, and the `ki-repo-tools` release-readiness rule, state the same contract.
+
+### Change Summary
+
+Commit `e4377ffa` touches the receiver, XDR-KI-HARNESS-001 and its index entry, `standards-engineering.md`, `exemplars.md` and `standards-release-readiness.md`.
+
+### Verification
+
+1. XDR-KI-HARNESS-001 names the three conditions and the organisation limit; every other dependency change stays human-reviewed.
+2. The exemplar's workflow body is byte-identical to `.github/workflows/update-ki-pin.yml`; `actionlint` 1.7.12 passes; `gh pr diff 25 --name-only` returns `.github/ki-version` only.
+3. CI installs the pin through `install.sh`, which verifies the signed `ki-checksums.txt` manifest and the archive hash before CI can pass.
+4. `bun run test`: 1064 pass, 0 fail. `bunx tsc --noEmit`: clean. `ki repo audit --skill ki-engineering` and `--skill ki-decision-records`: PASS. The pre-commit `ki-skills` audit: only the existing LONG-3 refresh warning.
+
+### Outstanding concerns
+
+- The receiver cannot see ruleset bypass actors with its token, so "the App cannot bypass" rests on the organisation owner's ruleset setup.
+- Nothing runs until the owner installs the App here, stores its credentials and adds the `main` ruleset; PR #25 (`v0.10.0`) stays a hand merge.
+
+### Post-change review
+
+The guard fails closed: a missing ruleset or an unexpected path leaves an ordinary reviewed pull request, as before.
+
+### Mini recap
+
+Released `ki` pin bumps may now auto-merge in `knowledgeislands` repositories behind pin-only, required-check and signed-checksum guards.
 
 ## Discussion
 
