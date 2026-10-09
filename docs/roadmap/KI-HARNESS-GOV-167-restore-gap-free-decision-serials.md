@@ -7,12 +7,12 @@ purpose: upkeep
 initiative: platform-foundations
 component: governance
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 35e36d4ef8c46aebfe76d24aaad7b1fd5358d210
 created_at: 2026-10-09T07:40:00Z
-updated_at: 2026-10-09T07:55:00Z
+updated_at: 2026-10-09T08:00:00Z
 ---
 
 # KI-HARNESS-GOV-167: Restore gap-free decision serials
