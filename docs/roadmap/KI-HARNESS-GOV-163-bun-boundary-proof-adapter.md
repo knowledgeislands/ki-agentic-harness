@@ -2,12 +2,17 @@
 id: KI-HARNESS-GOV-163
 area: GOV
 title: Bun boundary proof adapter
-status: triage
+kind: deliver
+purpose: capability
+initiative: platform-foundations
+component: governance
+horizon: future
+status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T10:20:00Z
-updated_at: 2026-10-08T10:20:00Z
+updated_at: 2026-10-09T15:47:59Z
 ---
 
 # KI-HARNESS-GOV-163: Bun boundary proof adapter
@@ -31,3 +36,7 @@ Out of scope: choosing any repository's boundary directions, and trades while tr
 ## Discussion
 
 Captured as the remaining part of `KI-HARNESS-GOV-127` (done) during the Baseline rollout.
+
+### Deferral
+
+Kris adopted and deferred this record to `future` on 2026-10-09: nothing is blocked by it; pick it up when a Bun repository needs the check.
