@@ -176,7 +176,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 
 - [ ] The repository fulfils its delineated responsibility within the wider project ecosystem.
 - [ ] Each roadmap outcome sits with the repository responsible for delivering it, not merely the repository where its symptom was discovered. Assess the record's actual scope and acceptance evidence rather than inferring ownership from its title or current location.
-- [ ] Mixed-repository work has one principal record accountable for the combined outcome and final verification, with reciprocal links to bounded downstream records where other repositories must deliver changes. Each downstream retains its own execution and acceptance authority; moving ownership does not silently change priority, lifecycle state or acceptance.
+- [ ] Mixed-repository work has one principal record accountable for the combined outcome and final verification, and each other repository that must deliver a change receives a bounded handoff that names the originating repository, states the need in plain terms and says whether it blocks. Neither side links to or cites the other's roadmap record or identifier, because records are pruned; link only durable documentation such as guides, specifications or manifests. Each downstream retains its own execution and acceptance authority; moving ownership does not silently change priority, lifecycle state or acceptance.
 - [ ] The repository has a clear stable baseline against which future change can be judged.
 - [ ] The repository records enough of that baseline that maintaining it does not depend on personal memory.
 - [ ] Every known departure from the stable baseline is explicit and represented by active work.

@@ -72,7 +72,7 @@ updated_at: 2026-08-12T09:30:00Z
 
 `horizon` is one of `now`, `next`, `soon`, `future`, or `hold`, constrained by status as the [status and horizon table](standards-repository-roadmaps.md#status-and-horizon) states. Triage, done, and cancelled records omit it.
 
-`blocks` and `blocked_by` are arrays of item identifiers and use `[]` when empty.
+`blocks` and `blocked_by` are arrays of item identifiers and use `[]` when empty. They name records in this repository only. Describe work another repository must deliver in `## Dependencies / blocks`: name that repository, state the need in plain terms and link only durable documentation, never its roadmap record or identifier, because records are pruned and such links break.
 
 `blocked_by` states **build order**: this item cannot be executed because something it must build on does not exist yet. It is discharged when that thing exists, not when the record that produced it reaches a particular lifecycle state. An item is therefore not blocked merely because a related record is unreviewed, unaccepted, or unpruned; a blocker whose work has landed is cleared even while its own record is still open. Recording a lifecycle wait as `blocked_by` stalls executable work behind an approval queue and misreports the reason. Where the real constraint is sequencing preference rather than build order, say so in `## Dependencies / blocks` and leave the field empty.
 

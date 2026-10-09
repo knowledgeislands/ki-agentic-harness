@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T08:45:00Z
-updated_at: 2026-10-09T21:18:31Z
+updated_at: 2026-10-09T21:53:46Z
 ---
 
 # KI-HARNESS-GOV-168: Roll out pin receivers
@@ -23,7 +23,7 @@ Every `knowledgeislands` repository that installs a released `ki` in CI keeps it
 
 ## Context
 
-KI-HARNESS-GOV-161 amended XDR-KI-HARNESS-001 so that a released `ki` pin bump may auto-merge in the `knowledgeislands` organisation behind pin-only, required-check and signed-checksum guards, and updated the `ki-engineering` receiver contract and exemplar. Kris approved installing `ki-tools-release-bot` across the organisation (GOV-020 owner decision 7, 2026-10-09). Only this harness has adopted the receiver; the repositories below still pin `KI_VERSION` inline in a workflow, which the receiver cannot edit because the App has no Workflows permission.
+KI-HARNESS-GOV-161 amended XDR-KI-HARNESS-001 so that a released `ki` pin bump may auto-merge in the `knowledgeislands` organisation behind pin-only, required-check and signed-checksum guards, and updated the `ki-engineering` receiver contract and exemplar. Kris approved installing `ki-tools-release-bot` across the organisation (state-of-play owner decision 7, 2026-10-09). Only this harness has adopted the receiver; the repositories below still pin `KI_VERSION` inline in a workflow, which the receiver cannot edit because the App has no Workflows permission.
 
 Inline pins found on 2026-10-09, all at `v0.8.4`:
 
@@ -115,7 +115,7 @@ None beyond this record; a `tools-ki` source-build choice may become its own rec
 - `tools-ki` installs its own `ki` in CI; check whether a receiver there should track its own releases or whether its CI should build from source instead.
 - `homebrew-tap` registration of a repository before its App installation fails the tap's token mint for every consumer, as the tap's release App operations guide explains, so registration follows provisioning.
 - The receiver accepts the tap's existing `tool-release-published` event unchanged and treats it only as a trigger, so the registry and its payload need no change; the receiver contract comes from KI-HARNESS-GOV-141.
-- Merged on 2026-10-09 with Kris's approval (state-of-play decisions log, Decision 21): this record absorbed `homebrew-tap` BREW-013 (Register ki pin receivers), which is cancelled as merged into it. The tap registration it covered is now the registration step above.
+- Merged on 2026-10-09 with Kris's approval (state-of-play decisions log, Decision 21): this record absorbed the `homebrew-tap` work to register the `ki` pin receivers, which `homebrew-tap` cancelled as merged into it. The tap registration it covered is now the registration step above.
 - Plan through `ki-plan`, batching repositories whose owner setup is complete.
 
 ### Adoption
