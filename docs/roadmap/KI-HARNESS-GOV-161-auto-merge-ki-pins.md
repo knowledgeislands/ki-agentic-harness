@@ -2,12 +2,17 @@
 id: KI-HARNESS-GOV-161
 area: GOV
 title: Auto-merge ki pins
-status: triage
+kind: deliver
+purpose: upkeep
+initiative: platform-foundations
+component: governance
+horizon: now
+status: ready
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 04c73b6fb30a5626f8cd19bedd925a8a6cc1f93d
 created_at: 2026-10-08T09:30:00Z
-updated_at: 2026-10-09T07:00:00Z
+updated_at: 2026-10-09T08:20:00Z
 ---
 
 # KI-HARNESS-GOV-161: Auto-Merge ki Pins
@@ -25,7 +30,60 @@ Auto-merging the pin would amend XDR-KI-HARNESS-001 for this one dependency, so 
 ## Boundary
 
 - **In:** whether to auto-merge, the conditions it would need (required checks, branch rules the App cannot bypass, a version-only diff), and the XDR-KI-HARNESS-001 amendment if the answer is yes.
-- **Out:** the receiver itself, which `KI-HARNESS-GOV-141` delivered; App installation and credentials, which the organisation owner provisions per repository.
+- **Out:** the receiver itself, which `KI-HARNESS-GOV-141` delivered; App installation, credentials, rulesets and repository settings, which the organisation owner provisions per repository; converting the inline-pin repositories, captured as KI-HARNESS-GOV-168; tap registration, owned by BREW-013 in `homebrew-tap`.
+
+## Current state
+
+Kris decided on 2026-10-09 (GOV-020 owner decision 7) that automatic `ki` pin bumps and their automatic merge are acceptable, and that `ki-tools-release-bot` may be installed across Knowledge Islands repositories in the `knowledgeislands` GitHub organisation only. XDR-KI-HARNESS-001 still says no repository auto-merges dependency pull requests, the `ki-engineering` receiver contract says a person merges the pin bump, and this repository's `update-ki-pin.yml` opens its pull request for review.
+
+## Steps
+
+- [ ] Amend XDR-KI-HARNESS-001 in place: dependency changes keep human review, except a released `ki` pin bump inside the `knowledgeislands` organisation, which may auto-merge when its diff touches only the pin file, the required checks pass under a `main` ruleset the App cannot bypass, and the release's signed checksum manifest verifies. Name the organisation limit explicitly.
+- [ ] Make this repository's receiver request squash auto-merge only after confirming the proposal diff is the pin file alone and that `main` has rules requiring status checks; otherwise leave the pull request for review. Pin `actions/create-github-app-token` to a commit SHA, as `tools-ki` does.
+- [ ] Update the `ki-engineering` receiver contract and exemplar to match, with the scope limit.
+- [ ] Align the `ki-repo-tools` release-readiness wording, which still calls auto-merge a separate future decision.
+
+## Files touched
+
+- `docs/decisions/XDR-KI-HARNESS-001-dependabot-security-updates-without-auto-merge.md`
+- `.github/workflows/update-ki-pin.yml`
+- `skills/governance/ki-engineering/references/standards-engineering.md` and `exemplars.md`
+- `skills/repo-structure/ki-repo-tools/references/standards-release-readiness.md`
+
+## Verify
+
+1. XDR-KI-HARNESS-001 permits auto-merge only for a released `ki` pin bump in the `knowledgeislands` organisation, under the three named conditions, and keeps every other dependency change human-reviewed.
+2. The receiver and the exemplar copy are identical in their workflow body, and the receiver never requests auto-merge without a pin-only diff and branch rules requiring status checks.
+3. The required CI check installs the new pin through the signed-manifest installer, so a checksum or signature failure blocks the merge.
+
+```bash
+bun run test
+bunx tsc --noEmit
+ki repo audit --skill ki-engineering
+ki repo audit --skill ki-decision-records
+```
+
+## Dependencies / blocks
+
+None. The receiver stays inert until the organisation owner installs the App here, stores its variable and secret, adds the `main` ruleset and keeps auto-merge enabled.
+
+## Documentation impact
+
+### Decision Records
+
+XDR-KI-HARNESS-001 is amended in place.
+
+### Specifications
+
+`standards-engineering.md`, `exemplars.md` and `standards-release-readiness.md`, as above.
+
+### Guides
+
+None.
+
+### Roadmap
+
+KI-HARNESS-GOV-168 and BREW-013 carry the rollout.
 
 ## Discussion
 
