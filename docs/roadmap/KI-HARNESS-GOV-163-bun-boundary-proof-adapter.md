@@ -6,13 +6,13 @@ kind: deliver
 purpose: capability
 project: baseline-rollout
 component: governance
-horizon: future
-status: draft
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T10:20:00Z
-updated_at: 2026-10-09T21:18:31Z
+updated_at: 2026-10-09T21:40:00Z
 ---
 
 # KI-HARNESS-GOV-163: Bun boundary proof adapter
@@ -32,6 +32,10 @@ The same `KI-HARNESS-GOV-127` (done) inventory found that every flat adopter cru
 In scope: a `bun test` native proof adapter and declared source roots beyond `src/` in `DESIGN-2`'s mechanical evidence; this repository's `.dependency-cruiser.ts`, `tooling/boundaries/` install root, `prepare` step, boundary test with a module floor and deliberate-violation case, and `knip.json` entries; the regenerated `ki-engineering` rubric; and receiver roadmap records asking each repository above to cover or exclude its root `scripts/`.
 
 Out of scope: choosing any repository's boundary directions, and trades while trades are on hold.
+
+## Cancelled
+
+Cancelled 2026-10-09 as rejected, approved by Kris Brown (state-of-play decisions log, Decision 31): deferred under Decision 10 with no planned delivery, so Kris chose not to keep it as a work record. It is kept as a one-line idea in Arcadia's baseline-rollout Project note (`ki-arcadia-principal`, `Streams/Projects/baseline-rollout.md`). It leaves no outstanding change.
 
 ## Discussion
 
