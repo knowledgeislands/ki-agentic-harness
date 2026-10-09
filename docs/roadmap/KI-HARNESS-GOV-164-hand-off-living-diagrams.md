@@ -6,12 +6,13 @@ kind: deliver
 purpose: capability
 initiative: platform-foundations
 component: governance
-status: triage
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 0f87bf6d1d0bb6e9e3eb453aac452e9c4670f326
 created_at: 2026-10-08T10:30:00Z
-updated_at: 2026-10-08T13:33:20Z
+updated_at: 2026-10-09T06:46:48Z
 ---
 
 # KI-HARNESS-GOV-164: Hand off living diagrams
@@ -33,6 +34,76 @@ In scope: telling each receiver, once, what `ki-diagrams` offers it:
 
 The receivers own whether and when to act. Out of scope: any change in either receiving repository.
 
+## Current state
+
+Delivered by direct handoff on 2026-10-08: each receiver holds a Triage record naming `ki-diagrams` and the outcome above. Awaiting Kris's review.
+
+## Steps
+
+- [x] Record the `ki-website` handoff directly as KI-WEB-SITE-043, with Kris's approval.
+- [x] Record the `apps-observatory` handoff directly as KI-OBS-OPS-002, with Kris's approval.
+- [x] Record the handoff evidence here.
+
+## Files touched
+
+- `docs/roadmap/KI-HARNESS-GOV-164-hand-off-living-diagrams.md`
+
+## Verify
+
+1. `ki-website` `docs/roadmap/` holds KI-WEB-SITE-043 naming `ki-diagrams` and the skills-by-outcome entry, and it is on `origin/main`.
+2. `apps-observatory` `docs/roadmap/` holds KI-OBS-OPS-002 naming `ki-diagrams` and the exporter retirement, and it is on `origin/main`.
+3. `ki repo audit --skill ki-work-roadmap` passes in this repository.
+
+## Dependencies / blocks
+
+None. Neither receiver's record blocks this one.
+
+## Documentation impact
+
+### Decision Records
+
+None.
+
+### Specifications
+
+None.
+
+### Guides
+
+None.
+
+### Roadmap
+
+This record only.
+
+## Review
+
+### Delivered
+
+- `ki-website` and `apps-observatory` each hold a Triage record naming `ki-diagrams` and the outcome it offers them, recorded directly under the trade hold.
+
+### Change Summary
+
+- `ki-website` KI-WEB-SITE-043 and `apps-observatory` KI-OBS-OPS-002 (each receiver's own commits).
+- This record's handoff evidence (`0f87bf6d`).
+
+### Verification
+
+- Both receiver records exist in their primary checkouts, which match `origin/main`.
+- `ki repo audit --skill ki-work-roadmap` passes.
+
+### Outstanding concerns
+
+None. Each receiver owns whether and when it acts.
+
+### Post-change review
+
+The handoff told each receiver once, as the Boundary required, and changed nothing else in either repository beyond its own record.
+
+### Mini recap
+
+Delivered by direct handoff rather than by trade; the acceptance evidence is met.
+
 ## Discussion
 
 ### Route
@@ -49,4 +120,4 @@ Waits on the trade hold in the `ki-trades` standard, or on an operator able to r
 
 ### Handoff evidence
 
-On 2026-10-08, with Kris's approval, the work was recorded directly in each receiver as a Triage record naming `ki-diagrams`, the outcome above and this record as origin: `ki-website` KI-WEB-SITE-043 and `apps-observatory` KI-OBS-OPS-002. Neither blocks this record and this record blocks neither. The acceptance evidence is therefore met; the record stays in triage until Kris disposes of it through `ki-accept`.
+On 2026-10-08, with Kris's approval, the work was recorded directly in each receiver as a Triage record naming `ki-diagrams`, the outcome above and this record as origin: `ki-website` KI-WEB-SITE-043 and `apps-observatory` KI-OBS-OPS-002. Neither blocks this record and this record blocks neither. The acceptance evidence is therefore met.
