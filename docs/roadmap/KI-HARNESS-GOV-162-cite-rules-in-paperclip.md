@@ -6,12 +6,13 @@ kind: deliver
 purpose: debt
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-status: triage
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T08:47:44Z
-updated_at: 2026-10-08T08:47:44Z
+updated_at: 2026-10-09T21:01:43Z
 ---
 
 # KI-HARNESS-GOV-162: Cite rules in Paperclip
@@ -31,6 +32,10 @@ Read-only inspection on 2026-10-05 found the rule text in three managed agent in
 In scope: under a Paperclip coordination task linked from this record's `task_links`, replace the rule text in those three files with a citation of the rule table at an admitted harness revision, through Paperclip's supported managed-instruction route on the local instance, and record before and after digests of each file.
 
 Out of scope: any remote or non-local Paperclip operation, which the Techne Programme Hold excludes; any change to the rule table or the rules' normative homes; and a mechanical check that a copy has reappeared.
+
+## Cancelled
+
+Cancelled 2026-10-09 as rejected, approved by Kris Brown (state-of-play decisions log, Decision 22): Kris chose not to keep this as a work record. It is kept as a one-line idea in Arcadia's paperclip-bootstrap-and-recovery Project (`ki-arcadia-principal`, `Streams/Projects/paperclip-bootstrap-and-recovery.md`). It leaves no outstanding change.
 
 ## Discussion
 

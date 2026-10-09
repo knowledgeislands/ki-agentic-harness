@@ -2,12 +2,14 @@
 id: KI-HARNESS-GOV-160
 area: GOV
 title: Trade receiver commit gates
-status: triage
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-158
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T08:28:53Z
-updated_at: 2026-10-08T08:28:53Z
+updated_at: 2026-10-09T21:01:43Z
 ---
 
 # KI-HARNESS-GOV-160: Trade Receiver Commit Gates
@@ -23,6 +25,10 @@ updated_at: 2026-10-08T08:28:53Z
 ## Boundary
 
 In scope: preparing and submitting one `ki-trades` work trade to each receiver, naming the criteria and the check-only rule. Out of scope: writing either repository's hook, amending `ADR-DOTFILES-006` in the chezmoi source, and any remote operation beyond the trade transport the receiver accepts.
+
+## Cancelled
+
+Cancelled 2026-10-09 as merged, approved by Kris Brown (state-of-play decisions log, Decision 21). Its goal, context and boundary now form the "Receiver trades" stage of [KI-HARNESS-GOV-158](KI-HARNESS-GOV-158-enforce-the-commit-gate.md). It leaves no outstanding change.
 
 ## Discussion
 

@@ -2,12 +2,14 @@
 id: KI-HARNESS-GOV-157
 area: GOV
 title: Declare roadmap writing checkout
-status: triage
+status: cancelled
+resolution: merged
+resolution_target: KI-TOOL-CLI-115
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T07:24:10Z
-updated_at: 2026-10-08T07:27:50Z
+updated_at: 2026-10-09T21:01:43Z
 ---
 
 # KI-HARNESS-GOV-157: Declare Roadmap Writing Checkout
@@ -26,6 +28,10 @@ Handoff from Arcadia: [ODR-KI-ARCADIA-001](https://github.com/knowledgeislands/k
 
 - **In:** where a designation is declared (estate-wide, per repository in `.ki.toml`, or per machine), how `ki` and skills read it, and a recommendation on whether a remote-history serialisation design is worth opening.
 - **Out:** the host-marker refusal in `tools-ki` (KI-TOOL-CLI-115); the two-checkout rule in personal instructions (chezmoi DOTFILES-UE-072); any change to GDR-KI-ARCADIA-004, which only Arcadia's Enactment Process can make.
+
+## Cancelled
+
+Cancelled 2026-10-09 as merged, approved by Kris Brown (state-of-play decisions log, Decision 21). `tools-ki` owns the enforcing behaviour, so its record absorbs this one: KI-TOOL-CLI-115 in `tools-ki` at `docs/roadmap/KI-TOOL-CLI-115-enforce-roadmap-writing-checkout.md` now also decides where a designated writing checkout is declared and whether a remote-history serialisation design is worth opening. Any `ki-work-roadmap` standard text that decision needs returns here through a `ki-trades` work trade.
 
 ## Discussion
 

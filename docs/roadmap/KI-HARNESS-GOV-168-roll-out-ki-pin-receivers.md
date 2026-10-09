@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T08:45:00Z
-updated_at: 2026-10-09T15:47:59Z
+updated_at: 2026-10-09T21:01:59Z
 ---
 
 # KI-HARNESS-GOV-168: Roll out pin receivers
@@ -50,7 +50,7 @@ Inline pins found on 2026-10-09, all at `v0.8.4`:
 
 ## Boundary
 
-- **In:** per repository, moving the inline pin to `.github/ki-version`, adding the receiver copied from the `ki-engineering` exemplar, and handing tap registration to BREW-013 in `homebrew-tap` once the repository's App installation and credentials exist. Each repository owns and commits its own conversion, through `ki-trades` where the work crosses repositories.
+- **In:** per repository, moving the inline pin to `.github/ki-version`, adding the receiver copied from the `ki-engineering` exemplar, and, once the repository's App installation and credentials exist, a `ki-trades` work trade asking `homebrew-tap` to add it to the tap's dispatch registry `.github/tool-release-consumers.json` and replay a `ki` release to it. Each repository owns and commits its own conversion, through `ki-trades` where the work crosses repositories.
 - **Out:** `hnr-agentic-harness` (`humansnotrobots`) and `infoschematics`, which are outside the `knowledgeislands` organisation and keep reviewed pin changes; App installation, credentials, rulesets and repository settings, reserved for the organisation owner.
 
 ## Current state
@@ -68,25 +68,25 @@ Verified locally on 2026-10-09:
 - [ ] Decide with Kris how `tools-ki` should be handled: a receiver tracking its own releases, or CI building from source; record the answer under Discussion.
 - [ ] For each repository, prepare one outbound `ki-trades` work trade asking it to move its inline pin to `.github/ki-version` at the current release and add `update-ki-pin.yml` copied from the `ki-engineering` exemplar. Send first to repositories whose owner setup is complete; the others wait, since a receiver cannot open pull requests until the bot is installed.
 - [ ] Ask Kris to complete each waiting repository's owner setup in order: `main` ruleset first, then App installation, App ID variable, private-key secret and auto-merge setting.
-- [ ] Once a repository is provisioned and converted, hand its tap-dispatch registration to BREW-013 in `homebrew-tap` through a trade, never before provisioning.
+- [ ] Once a repository is provisioned and converted, send `homebrew-tap` a work trade to add it to `.github/tool-release-consumers.json` and replay a `ki` release to it, never before provisioning. `ki-agentic-harness` is provisioned already and can be the first entry.
 - [ ] Track each trade's receipt and outcome in Discussion, run Verify, assemble the review packet and set this record `awaiting-review`.
 
 ## Files touched
 
 - This record.
-- Outbound trade records under this repository's `ki-trades` root, one per receiving repository plus BREW-013 hand-offs.
+- Outbound trade records under this repository's `ki-trades` root, one per receiving repository plus the `homebrew-tap` registration trades.
 - No file in another repository: each receiver commits its own conversion.
 
 ## Verify
 
 - Every in-scope repository's CI reads `.github/ki-version` and carries `update-ki-pin.yml`, confirmed by its own `ki repo audit --skill ki-engineering` with no pin-receiver warning.
 - Each converted repository has received at least one bot-opened pin-bump pull request that auto-merged after its required check, or the record names why one has not yet fired.
-- `homebrew-tap` lists every converted repository as a dispatch consumer.
+- `homebrew-tap` lists every converted repository as a dispatch consumer in `.github/tool-release-consumers.json`, its release-event tests pass, and a replayed `ki` release reaches each newly registered receiver, which exits without a pull request when its pin is current.
 - `ki repo audit --skill ki-trades` passes here.
 
 ## Dependencies / blocks
 
-Follows KI-HARNESS-GOV-161, which decided automatic pin moves, and the release-bot setup BOT-1 to BOT-4. Each repository depends on Kris completing its owner setup in the order above. Tap registration depends on BREW-013 in `homebrew-tap`.
+Follows KI-HARNESS-GOV-161, which decided automatic pin moves, and the release-bot setup BOT-1 to BOT-4. Each repository depends on Kris completing its owner setup in the order above. Tap registration is a `homebrew-tap` registry change made through a trade.
 
 ## Delegation
 
@@ -113,7 +113,9 @@ None beyond this record; a `tools-ki` source-build choice may become its own rec
 ## Discussion
 
 - `tools-ki` installs its own `ki` in CI; check whether a receiver there should track its own releases or whether its CI should build from source instead.
-- `homebrew-tap` registration of a repository before its App installation fails the tap's token mint for every consumer, so registration follows provisioning.
+- `homebrew-tap` registration of a repository before its App installation fails the tap's token mint for every consumer, as the tap's release App operations guide explains, so registration follows provisioning.
+- The receiver accepts the tap's existing `tool-release-published` event unchanged and treats it only as a trigger, so the registry and its payload need no change; the receiver contract comes from KI-HARNESS-GOV-141.
+- Merged on 2026-10-09 with Kris's approval (state-of-play decisions log, Decision 21): this record absorbed `homebrew-tap` BREW-013 (Register ki pin receivers), which is cancelled as merged into it. The tap registration it covered is now the registration step above.
 - Plan through `ki-plan`, batching repositories whose owner setup is complete.
 
 ### Adoption

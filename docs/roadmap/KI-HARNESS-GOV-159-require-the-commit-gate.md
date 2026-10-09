@@ -2,12 +2,14 @@
 id: KI-HARNESS-GOV-159
 area: GOV
 title: Require the commit gate
-status: triage
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-158
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T08:28:53Z
-updated_at: 2026-10-08T08:28:53Z
+updated_at: 2026-10-09T21:01:43Z
 ---
 
 # KI-HARNESS-GOV-159: Require the Commit Gate
@@ -23,6 +25,10 @@ updated_at: 2026-10-08T08:28:53Z
 ## Boundary
 
 In scope: confirming estate convergence from fresh `ki repo audit` evidence, raising both levels, and updating the `ki-repo` standard and rubric. Out of scope: adding hooks to repositories, which each receiver owns through trades; content criteria.
+
+## Cancelled
+
+Cancelled 2026-10-09 as merged, approved by Kris Brown (state-of-play decisions log, Decision 21). Its goal, context and boundary now form the "Raising the levels" stage of [KI-HARNESS-GOV-158](KI-HARNESS-GOV-158-enforce-the-commit-gate.md). It leaves no outstanding change.
 
 ## Discussion
 
