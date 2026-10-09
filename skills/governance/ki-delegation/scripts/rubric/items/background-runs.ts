@@ -70,6 +70,22 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
         guidance:
           'Move tangents into checkpoint Open questions or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it.'
       }
+    },
+    {
+      code: 'RUN-5',
+      title: 'threads report answerably and refresh their guidance',
+      description:
+        "A coordinating thread tags each needs item mnemonically with plain context, a recommendation and links, asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
+      sources: ['standards-background-runs.md'],
+      judgment: {
+        scope:
+          'Coordinating-thread transcripts, reports, summaries, decisions logs and checkpoints the owner selects for review.',
+        prompt:
+          "Could the owner answer each needs item cold by its tag, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
+        outcomes: ['conforming', 'retag needs items', 'log decisions', 'refresh guidance', 'escalate to owner'],
+        guidance:
+          'Give each needs item a mnemonic tag, plain context, a recommendation and links; record missing decisions before further launches; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
+      }
     }
   ]
 }

@@ -119,6 +119,14 @@ The owner sees only status one-liners and each agent's final report. Tooling out
 
 The report has three parts: **Done** (one line per outcome), **Failed** (if any), and **Needs \<owner\>** (decisions or actions). Omit an empty part. Verbosity follows the owner's communication level in their instructions; this standard does not restate it.
 
+A coordinating thread - the master thread or a project thread - also follows these practices with the owner:
+
+- **Needs items:** each item under **Needs \<owner\>** carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can reply "BOT-1 do it". Each item gives enough plain context to be answered cold, a recommendation where the thread has one, and links under [Linking records](#linking-records).
+- **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch.
+- **Summary:** on request, the thread gives one consolidated list: what is done since the owner's last message or a named mark, what is in progress, and everything still outstanding. It is distinct from a [project recap](#project-recap), which covers one Project since the last recap.
+- **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another thread, the thread gives it in a code block ready to copy.
+- **Decisions:** the thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises.
+
 ## Project threads
 
 A project thread coordinates exactly one Project, or one named estate area, for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under this contract, in a run named after the Project, and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
@@ -175,6 +183,16 @@ It links each one to the local file by absolute path, so that it opens in the ow
 Background agents work in worktrees and push their own commits, so the owner's primary checkouts fall behind. The coordinating thread fast-forward pulls each affected primary checkout periodically: after a background agent that pushed finishes, and before a project recap.
 
 It pulls only with `--ff-only` into a clean checkout. A checkout with uncommitted changes, or one that has diverged from its upstream, is skipped and reported to the owner rather than stashed, rebased or reset. The pull is a quick one-step check under [Coordinator responsiveness](#coordinator-responsiveness); anything needing repair goes to a background agent or the owner.
+
+### Refreshing this guidance
+
+A coordinating thread re-reads this skill's thread guidance - [Reporting](#reporting), [Project threads](#project-threads) and these thread working rules - on its own, without the owner asking:
+
+- at bootstrap or re-bootstrap;
+- before each checkpoint update;
+- whenever the skill has changed since its last read.
+
+To detect a change, it compares the latest commit touching `skills/governance/ki-delegation` in the `ki-agentic-harness` checkout, from `git log -1 --format=%h -- skills/governance/ki-delegation`, with the revision it last read. It notes that revision in its checkpoint's `Current state` as `ki-delegation read at <revision>`. It then follows the current text and, when anything changed, tells the owner in one line what changed.
 
 ## Reference launcher
 
