@@ -140,3 +140,17 @@ test('classifies only the exact verified empty retired directory as prunable', (
     classify({ kind: 'empty-directory', path: '+/_AUTHORISATIONS/empty', regularContainedEmptyDirectory: true })
   ).toMatchObject({ outcome: 'retain', writes: false })
 })
+
+test('classifies a legacy record whose repository code leads with a digit', () => {
+  const original = contents()
+  const relabelled = original.replaceAll('PROJECT-', '5GE-P2-')
+  const evidence = record({
+    path: '+/_AUTHORISATIONS/5GE-P2-BATCH-001.md',
+    contents: relabelled.replaceAll(
+      approvedPayloadSha256(original) as string,
+      approvedPayloadSha256(relabelled) as string
+    ),
+    items: [{ id: '5GE-P2-001', state: 'inactive', retainedOutcomeEvidence: 'docs/roadmap/5GE-P2-001.md#review' }]
+  })
+  expect(classify(evidence)).toMatchObject({ outcome: 'prune', sourcePath: evidence.path, writes: false })
+})

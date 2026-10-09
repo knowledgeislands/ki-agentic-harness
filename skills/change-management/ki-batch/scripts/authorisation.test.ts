@@ -237,3 +237,32 @@ test('resolves a repository-relative authorisation path against the repository r
     })
   ).toMatchObject({ kind: 'resolved', authorisation: { id: 'KI-HARNESS-BATCH-001' } })
 })
+
+test('accepts a digit-leading repository code and serials wider than three digits', () => {
+  const original = record()
+  const relabelled = original
+    .replaceAll('KI-HARNESS-BATCH-001', '5GE-P2-BATCH-001')
+    .replace('item_ids: [KI-HARNESS-FND-013]', 'item_ids: [5GE-P2-001, 5GE-P2-GOV-1001]')
+  const approved = relabelled.replace(
+    approvedPayloadSha256(original) as string,
+    approvedPayloadSha256(relabelled) as string
+  )
+  const hash = approvedPayloadSha256(approved) as string
+  const root = mkdtempSync(join(tmpdir(), 'ki-batch-authorisation-'))
+  const directory = join(root, '+', '_BATCHES')
+  mkdirSync(directory, { recursive: true })
+  const path = join(directory, '5GE-P2-BATCH-001.md')
+  writeFileSync(path, `${approved}\n## Run ledger\n\n<!-- ki-batch-run: 5GE-P2-BATCH-001-RUN-001 ${hash} -->\n`)
+
+  expect(
+    resolveBatchAuthorisation({ repositoryRoot: root, authorisationPath: path, repositoryIdentity: repository, now })
+  ).toMatchObject({
+    kind: 'resolved',
+    authorisation: {
+      id: '5GE-P2-BATCH-001',
+      itemIds: ['5GE-P2-001', '5GE-P2-GOV-1001'],
+      runBinding: { id: '5GE-P2-BATCH-001-RUN-001', approvedPayloadSha256: hash }
+    },
+    writes: false
+  })
+})

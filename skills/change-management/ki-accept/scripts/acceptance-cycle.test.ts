@@ -123,6 +123,12 @@ test('cancels any explicitly approved open record without delivery evidence or w
         input({ item: cancelItem({ resolution, targetId: '5GE-P2-001', cancellationEvidence: 'Owned there.' }) })
       )
     ).toEqual({ kind: 'cancel', transition: 'open-to-cancelled', resolution, targetId: '5GE-P2-001', writes: false })
+  for (const targetId of ['5GE-P2-1001', 'KI-HARNESS-GOV-1001'])
+    expect(
+      evaluateAcceptanceCycle(
+        input({ item: cancelItem({ resolution: 'superseded', targetId, cancellationEvidence: 'Replaced there.' }) })
+      )
+    ).toMatchObject({ kind: 'cancel', targetId })
 })
 
 test('requires an open record, exact human authority and complete cancellation evidence', () => {

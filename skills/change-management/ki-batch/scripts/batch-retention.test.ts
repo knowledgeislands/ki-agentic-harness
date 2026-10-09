@@ -123,3 +123,18 @@ test('retains malformed records, altered authority, absent ledgers and mismatche
   }
   expect(selectRetirableBatches({ records: [batch], repositoryIdentity: 'foreign', now }).selected).toEqual([])
 })
+
+test('selects a batch whose repository code leads with a digit', () => {
+  const original = record()
+  const relabelled = original.contents.replaceAll('PROJECT-', '5GE-P2-')
+  const batch: BatchRetentionEvidence = {
+    ...original,
+    path: '+/_BATCHES/5GE-P2-BATCH-001.md',
+    contents: relabelled.replaceAll(
+      approvedPayloadSha256(original.contents) as string,
+      approvedPayloadSha256(relabelled) as string
+    ),
+    items: [{ id: '5GE-P2-001', state: 'inactive', retainedOutcomeEvidence: 'docs/roadmap/5GE-P2-001.md#review' }]
+  }
+  expect(select([batch])).toEqual({ selected: [batch.path], retained: [], writes: false })
+})

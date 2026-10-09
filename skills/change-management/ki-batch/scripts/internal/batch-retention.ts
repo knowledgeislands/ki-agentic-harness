@@ -1,3 +1,4 @@
+import { workIdentifierSource } from '../shared/work-identifiers.ts'
 import { parseBatchAuthorisation } from './authorisation.ts'
 
 export type BatchRetentionEvidence = {
@@ -33,12 +34,14 @@ const instant = (value: string | null): number | undefined => {
   return Number.isFinite(parsed) && new Date(parsed).toISOString() === value.replace('Z', '.000Z') ? parsed : undefined
 }
 
+const BATCH_PATH = new RegExp(`^\\+/_BATCHES/(${workIdentifierSource('BATCH')}\\.md)$`)
+
 const retentionReason = (
   record: BatchRetentionEvidence,
   repositoryIdentity: string,
   now: number
 ): string | undefined => {
-  const match = /^\+\/_BATCHES\/([A-Z][A-Z0-9-]*-BATCH-\d{3}\.md)$/.exec(record.path)
+  const match = BATCH_PATH.exec(record.path)
   if (!match || match[0] !== record.path || record.regularContainedFile !== true)
     return 'not a canonical contained regular batch file'
   if (record.committedUnchanged !== true) return 'uncommitted or changed batch record'

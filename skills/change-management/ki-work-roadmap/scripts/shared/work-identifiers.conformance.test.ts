@@ -10,16 +10,15 @@ const SKILLS = resolve(import.meta.dir, '../../../..')
 const PROVIDER = resolve(import.meta.dir, 'work-identifiers.ts')
 const DEPENDENCY = 'ki-work-roadmap:work-identifiers'
 
-/**
- * The provider and the skills that restated the grammar before the shared module existed. `ki-accept` and `ki-batch`
- * join once KI-CHECKER-4 no longer reads any shared dependency as a structured rubric (KI-HARNESS-GOV-165).
- */
+/** The provider and the skills that restated the grammar before the shared module existed. */
 const RESTATING = [
   'change-management/ki-work-roadmap',
   'keystone/ki-repo',
   'change-management/ki-work-housekeeping',
   'governance/ki-decision-records',
-  'governance/ki-specs'
+  'governance/ki-specs',
+  'change-management/ki-accept',
+  'change-management/ki-batch'
 ] as const
 
 /** The grammar's shapes, in any spelling a restating skill has used: a repository code, and a scope segment. */

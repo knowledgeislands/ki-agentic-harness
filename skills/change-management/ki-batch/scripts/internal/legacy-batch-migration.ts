@@ -1,9 +1,11 @@
 import { createHash } from 'node:crypto'
+import { workIdentifierSource } from '../shared/work-identifiers.ts'
 import { parseBatchAuthorisation } from './authorisation.ts'
 import { type BatchRetentionEvidence, selectRetirableBatches } from './batch-retention.ts'
 
 const LEGACY_DIRECTORY = '+/_AUTHORISATIONS'
 const CANONICAL_DIRECTORY = '+/_BATCHES'
+const LEGACY_BATCH_PATH = new RegExp(`^\\+/_AUTHORISATIONS/(${workIdentifierSource('BATCH')}\\.md)$`)
 
 type CanonicalItemEvidence = BatchRetentionEvidence['items'][number]
 
@@ -82,7 +84,7 @@ export const classifyLegacyBatchMigration = ({
     }
   }
 
-  const sourceMatch = /^\+\/_AUTHORISATIONS\/([A-Z][A-Z0-9-]*-BATCH-\d{3}\.md)$/.exec(evidence.path)
+  const sourceMatch = LEGACY_BATCH_PATH.exec(evidence.path)
   if (!sourceMatch || sourceMatch[0] !== evidence.path || !evidence.regularContainedFile)
     return retain(evidence.path, 'not a contained regular legacy batch record')
   if (!evidence.committedUnchanged) return retain(evidence.path, 'uncommitted or changed legacy batch record')

@@ -1,3 +1,5 @@
+import { workIdentifier } from '../shared/work-identifiers.ts'
+
 export const REVIEW_PACKET_HEADINGS = [
   'Delivered',
   'Change Summary',
@@ -7,7 +9,7 @@ export const REVIEW_PACKET_HEADINGS = [
   'Mini recap'
 ] as const
 
-const WORK_ITEM_ID_RE = /^[A-Z0-9][A-Z0-9-]{1,23}-\d{3,}$/
+const WORK_ITEM_ID_RE = workIdentifier()
 
 export type AcceptanceAdapter =
   | { kind: 'local'; adapter: 'roadmap' | 'kb-streams'; root: 'docs/roadmap' | 'Streams/Roadmap' }

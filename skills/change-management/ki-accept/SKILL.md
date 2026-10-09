@@ -3,6 +3,7 @@ name: ki-accept
 ki-kind: process
 ki-applicability: invocation-only
 ki-depends-on: []
+ki-shared-dependencies: [ki-work-roadmap:work-identifiers]
 description: >
   Close a reviewed local work record as done, cancel an open record with an approved resolution, or prune
   explicitly selected eligible terminal records. Use only with human approval; use `ki-implement` for delivery,

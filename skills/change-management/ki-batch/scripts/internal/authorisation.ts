@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { lstatSync, readFileSync } from 'node:fs'
 import { relative, resolve } from 'node:path'
+import { SERIAL, workIdentifier, workIdentifierSource } from '../shared/work-identifiers.ts'
 
 const AUTHORISATION_DIRECTORY = '+/_BATCHES'
 const CURRENT_AUTHORISATION_FIELDS = new Set([
@@ -83,10 +84,15 @@ const timestamp = (value: unknown): string | undefined =>
     ? value
     : undefined
 
+const WORK_ITEM_ID = workIdentifier()
+const BATCH_ID = workIdentifier('BATCH')
+const RUN_MARKER = new RegExp(
+  `^<!-- ki-batch-run: (${workIdentifierSource('BATCH')}-RUN-${SERIAL}) ([0-9a-f]{64}) -->$`,
+  'm'
+)
+
 const identifiers = (value: unknown): readonly string[] | undefined =>
-  Array.isArray(value) &&
-  value.length > 0 &&
-  value.every((item) => typeof item === 'string' && /^[A-Z][A-Z0-9-]*-\d{3}$/.test(item))
+  Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string' && WORK_ITEM_ID.test(item))
     ? (value as readonly string[])
     : undefined
 
@@ -127,7 +133,7 @@ const runBinding = (body: string): BatchRunBinding | undefined | null => {
   const sections = body.split(RUN_LEDGER_HEADING)
   if (sections.length === 1) return null
   if (sections.length !== 2) return undefined
-  const marker = /^<!-- ki-batch-run: ([A-Z][A-Z0-9-]*-RUN-\d{3}) ([0-9a-f]{64}) -->$/m.exec(sections[1])
+  const marker = RUN_MARKER.exec(sections[1])
   return marker ? { id: marker[1], approvedPayloadSha256: marker[2] } : undefined
 }
 
@@ -204,7 +210,7 @@ export const parseBatchAuthorisation = ({
   const actualPayloadHash = approvedPayloadSha256(contents)
   const binding = runBinding(body)
 
-  if (typeof id !== 'string' || !/^[A-Z][A-Z0-9-]*-BATCH-\d{3}$/.test(id) || filename !== `${id}.md`)
+  if (typeof id !== 'string' || !BATCH_ID.test(id) || filename !== `${id}.md`)
     return stop('batch authorisation has an invalid identity or filename')
   if (currentShape && payloadBody(body)?.trim() !== `# ${id}`)
     return stop('batch authorisation body must contain only its matching identity heading before the run ledger')
@@ -221,7 +227,7 @@ export const parseBatchAuthorisation = ({
     return stop('batch authorisation has invalid approval evidence')
   if (typeof payloadHash !== 'string' || !/^[0-9a-f]{64}$/.test(payloadHash) || payloadHash !== actualPayloadHash)
     return stop('batch authorisation payload no longer matches its approval')
-  if (typeof runId !== 'string' || !new RegExp(`^${id}-RUN-\\d{3}$`).test(runId))
+  if (typeof runId !== 'string' || !new RegExp(`^${id}-RUN-${SERIAL}$`).test(runId))
     return stop('batch authorisation has an invalid run identity')
   if (binding === undefined) return stop('batch run ledger lacks an approval binding')
   if (binding && (binding.id !== runId || binding.approvedPayloadSha256 !== payloadHash))

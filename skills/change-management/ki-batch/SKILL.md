@@ -4,6 +4,7 @@ ki-kind: process
 ki-applicability: invocation-only
 ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
+ki-shared-dependencies: [ki-work-roadmap:work-identifiers]
 description: >
   Prepare and run one bounded authority envelope over an exact set of Ready work records in one repository.
   Use for an approved autonomous roadmap window or synergistic independent set; individual planning, delivery,
