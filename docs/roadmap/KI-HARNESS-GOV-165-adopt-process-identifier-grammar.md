@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: d1ba51a48139913490e61ff071dedf156dacd98f
 created_at: 2026-10-08T11:30:00Z
-updated_at: 2026-10-09T16:00:59Z
+updated_at: 2026-10-09T20:58:19Z
 ---
 
 # KI-HARNESS-GOV-165: Adopt process identifier grammar
@@ -124,6 +123,10 @@ The goal is met: both process skills take the grammar from the single shared def
 ### Mini recap
 
 Moved `ki-accept` and `ki-batch` onto the shared identifier grammar, so digit-leading repository codes such as `5GE-P2` and serials above 999 work in batch envelopes. Verification passed in full. No learning route proposed.
+
+## Done
+
+Accepted 2026-10-09 by Kris Brown on the review packet above (state-of-play decisions log, Decision 20).
 
 ## Discussion
 

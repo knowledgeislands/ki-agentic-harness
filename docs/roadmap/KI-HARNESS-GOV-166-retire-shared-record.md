@@ -6,13 +6,12 @@ kind: deliver
 purpose: debt
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e440152f2902a40c20e8ddb4dc1d2d2da7341e29
 created_at: 2026-10-08T13:49:15Z
-updated_at: 2026-10-09T15:56:09Z
+updated_at: 2026-10-09T20:58:19Z
 ---
 
 # KI-HARNESS-GOV-166: Retire shared_record
@@ -119,6 +118,10 @@ The goal is met: only local records remain in the contract. Scope held to the re
 ### Mini recap
 
 Removed a vestigial cross-collection mirroring mechanism from `ki-decision-records` and its specification and decision. Verification passed in full. Possible learning route, not promoted: `ki dev skill rubric` cannot render a worktree's rubric, which makes worktree delivery of rubric changes depend on a manual comparison; a `--root` option in `tools-ki` would remove that step.
+
+## Done
+
+Accepted 2026-10-09 by Kris Brown on the review packet above (state-of-play decisions log, Decision 20).
 
 ## Discussion
 
