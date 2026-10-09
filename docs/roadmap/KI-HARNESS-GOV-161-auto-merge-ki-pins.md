@@ -7,12 +7,12 @@ purpose: upkeep
 initiative: platform-foundations
 component: governance
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 04c73b6fb30a5626f8cd19bedd925a8a6cc1f93d
 created_at: 2026-10-08T09:30:00Z
-updated_at: 2026-10-09T08:20:00Z
+updated_at: 2026-10-09T08:25:00Z
 ---
 
 # KI-HARNESS-GOV-161: Auto-Merge ki Pins
