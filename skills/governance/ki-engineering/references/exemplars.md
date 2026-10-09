@@ -193,7 +193,7 @@ Verify adoption by running the build twice: the second run reports `FULL TURBO`.
     printf 'KI_VERSION=%s\n' "$KI_VERSION" >> "$GITHUB_ENV"
 ```
 
-Its `.github/workflows/update-ki-pin.yml` receiver proposes each newer immutable `tools-ki` release as a pull request that rewrites only the pin file, so the release App needs no Workflows permission. The job is inert until the App is installed on the repository and its variable and secret are set; the tap's `tool-release-published` dispatch only shortens the daily schedule's latency. A copy needs no edits: the token is scoped to the running repository by name.
+Its `.github/workflows/update-ki-pin.yml` receiver proposes each newer immutable `tools-ki` release as a pull request that rewrites only the pin file, so the release App needs no Workflows permission. It requests squash auto-merge only after confirming that the pull request's diff is the pin file alone and that `main` has rules requiring status checks, so the required CI check, which installs the new pin through the signed checksum manifest, gates the merge; otherwise the proposal waits for review. The job is inert until the App is installed on the repository and its variable and secret are set; the tap's `tool-release-published` dispatch only shortens the daily schedule's latency. A copy needs no edits: the token is scoped to the running repository by name.
 
 ```yaml
 name: Update ki pin
@@ -201,7 +201,9 @@ name: Update ki pin
 # Proposes a .github/ki-version bump when tools-ki publishes an immutable
 # release. Inert until the release App is installed here and its variable and
 # secret are set; the daily schedule backstops a missed dispatch. The pull
-# request merges only after human review (XDR-KI-HARNESS-001).
+# request auto-merges once required checks pass only when its diff is the pin
+# file alone and main's rules require status checks; otherwise a person
+# reviews it (XDR-KI-HARNESS-001).
 on:
   repository_dispatch:
     types: [tool-release-published]
@@ -226,7 +228,7 @@ jobs:
     steps:
       - name: Create tools release bot token
         id: release-bot
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         with:
           app-id: ${{ vars.KI_TOOLS_RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.KI_TOOLS_RELEASE_BOT_PRIVATE_KEY }}
@@ -266,9 +268,20 @@ jobs:
           git switch -c "$branch"
           git commit -m "chore(ci): install ki $version" -- .github/ki-version
           git push origin "$branch"
-          gh pr create --base main --head "$branch" \
-            --title "Install ki $version in CI" \
-            --body "Moves the released \`ki\` pin from $current to $version, the latest immutable \`knowledgeislands/tools-ki\` release. Merge after review once CI passes."
+          pr=$(gh pr create --base main --head "$branch" \
+            --title "chore(ci): install ki $version" \
+            --body "Moves the released \`ki\` pin from $current to $version, the latest immutable \`knowledgeislands/tools-ki\` release. CI installs it through the signed checksum manifest.")
+          # Auto-merge only a pin-only diff behind rules that require checks;
+          # the App cannot bypass them, and CI proves the checksum verifies.
+          changed=$(gh pr diff "$pr" --name-only)
+          checks=$(gh api "repos/$GITHUB_REPOSITORY/rules/branches/main" \
+            --jq '[.[] | select(.type == "required_status_checks")] | length')
+          if [[ "$changed" != ".github/ki-version" || "$checks" == "0" ]]; then
+            echo "$pr left for review: diff or branch rules not eligible" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          gh pr merge "$pr" --auto --squash
+          echo "$pr auto-merges once required checks pass" >> "$GITHUB_STEP_SUMMARY"
 ```
 
 ### A format reader extracted at its second caller (Code design)
