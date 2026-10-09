@@ -2,12 +2,13 @@
 id: KI-HARNESS-GOV-158
 area: GOV
 title: Enforce the commit gate
+project: baseline-rollout
 status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T08:28:53Z
-updated_at: 2026-10-09T20:58:51Z
+updated_at: 2026-10-09T21:18:31Z
 ---
 
 # KI-HARNESS-GOV-158: Enforce the Commit Gate

@@ -4,7 +4,7 @@ area: GOV
 title: Roll up since mark
 kind: deliver
 purpose: capability
-initiative: platform-foundations
+project: ways-of-working
 component: governance
 horizon: next
 status: ready
@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T12:00:00Z
-updated_at: 2026-10-09T17:14:29Z
+updated_at: 2026-10-09T21:18:31Z
 ---
 
 # KI-HARNESS-GOV-169: Roll Up Since Mark

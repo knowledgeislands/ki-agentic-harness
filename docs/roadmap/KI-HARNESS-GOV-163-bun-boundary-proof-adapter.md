@@ -4,7 +4,7 @@ area: GOV
 title: Bun boundary proof adapter
 kind: deliver
 purpose: capability
-initiative: platform-foundations
+project: baseline-rollout
 component: governance
 horizon: future
 status: draft
@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T10:20:00Z
-updated_at: 2026-10-09T15:47:59Z
+updated_at: 2026-10-09T21:18:31Z
 ---
 
 # KI-HARNESS-GOV-163: Bun boundary proof adapter

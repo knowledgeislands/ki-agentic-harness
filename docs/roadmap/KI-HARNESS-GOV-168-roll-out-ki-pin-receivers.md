@@ -4,7 +4,7 @@ area: GOV
 title: Roll out pin receivers
 kind: deliver
 purpose: adoption
-initiative: platform-foundations
+project: baseline-rollout
 component: governance
 horizon: next
 status: draft
@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T08:45:00Z
-updated_at: 2026-10-09T21:01:59Z
+updated_at: 2026-10-09T21:18:31Z
 ---
 
 # KI-HARNESS-GOV-168: Roll out pin receivers
