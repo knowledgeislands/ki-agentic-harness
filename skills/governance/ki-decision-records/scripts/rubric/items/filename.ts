@@ -99,7 +99,7 @@ const FILENAME_5: RubricItem<FilenameRubricContext> = {
   code: 'FILENAME-5',
   title: 'Contiguous serial series',
   description:
-    'Within each prefix+scope series the ordinary-record serials start at `001` and are contiguous. A gap left by a removed or reclassified record is closed by renumbering the series and sweeping every citation of the shifted codes in the same change. `XXX` pending files are exempt. A deliberate verbatim shared-record mirror (`shared_record: true`) is excluded only when its prefix+scope has no ordinary local records; otherwise it remains part of that local series.',
+    'Within each prefix+scope series the serials start at `001` and are contiguous. A gap left by a removed or reclassified record is closed by renumbering the series and sweeping every citation of the shifted codes in the same change. `XXX` pending files are exempt.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

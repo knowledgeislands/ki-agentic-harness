@@ -48,7 +48,6 @@ test('the structured catalogue preserves every decision-record criterion', () =>
     'FM-4',
     'FM-5',
     'FM-6',
-    'FM-7',
     'TYPE-FIT-1',
     'BODY-1',
     'BODY-3',
@@ -265,14 +264,14 @@ test('a declared Decision Record scope is a finding, because the scope is always
 })
 
 test('every record scope equals repo_code or begins with repo_code-, with no exception', () => {
-  const recordFor = (id: string, title: string, shared = false) => `---
+  const recordFor = (id: string, title: string) => `---
 id: ${id}
 title: '${title}'
 date: 2026-10-08
 status: current
 decision_type: governance
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
-${shared ? 'shared_record: true\n' : ''}---
+---
 
 # ${id}: ${title}
 
@@ -295,10 +294,7 @@ The decision remains readable.
     mkdirSync(directory, { recursive: true })
     writeFileSync(join(repository, '.ki.toml'), toml)
     for (const [index, id] of ids.entries())
-      writeFileSync(
-        join(directory, `${id}-decision-${index + 1}.md`),
-        recordFor(id, `Decision ${index + 1}`, id.includes('FUNDAMENTALS'))
-      )
+      writeFileSync(join(directory, `${id}-decision-${index + 1}.md`), recordFor(id, `Decision ${index + 1}`))
     const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
     const family = families.find((candidate) => candidate.code === 'ROOT')
     const context = family?.selectContext(

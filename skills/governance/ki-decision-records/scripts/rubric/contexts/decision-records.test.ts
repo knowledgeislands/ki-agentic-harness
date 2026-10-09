@@ -78,7 +78,7 @@ const fixture = (
   }).subjects[0]?.context()
 }
 
-const rootRecord = ({ id, title, sharedRecord = false }: { id: string; title: string; sharedRecord?: boolean }) => {
+const rootRecord = ({ id, title }: { id: string; title: string }) => {
   const prefix = id.slice(0, 3)
   const decisionType = prefix === 'GDR' ? 'governance' : 'architecture'
   return `---
@@ -88,7 +88,7 @@ date: 2026-07-22
 status: current
 decision_type: ${decisionType}
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/${prefix.toLowerCase()}
-${sharedRecord ? 'shared_record: true\n' : ''}---
+---
 
 # ${id}: ${title}
 
@@ -110,7 +110,7 @@ const rootFixture = ({
   files,
   indexIds
 }: {
-  files: ReadonlyArray<{ file: string; id: string; title: string; sharedRecord?: boolean }>
+  files: ReadonlyArray<{ file: string; id: string; title: string }>
   indexIds: readonly string[]
 }) => {
   const root = mkdtempSync(join(tmpdir(), 'ki-decision-records-root-'))
@@ -362,38 +362,6 @@ describe('contiguous serial series', () => {
     const context = rootFixture({ files: [first, pending], indexIds: [first.id, pending.id] })
 
     expect(context?.filename.serialGaps).toEqual(new Map())
-  })
-})
-
-describe('shared record mirrors', () => {
-  const shared = {
-    file: 'ADR-EXAMPLE-002-shared-decision.md',
-    id: 'ADR-EXAMPLE-002',
-    title: 'Shared decision',
-    sharedRecord: true
-  }
-  const ordinary = { ...shared, sharedRecord: false }
-
-  test('excludes a deliberately marked shared record from the receiving collection serial series', () => {
-    const context = rootFixture({ files: [shared], indexIds: [shared.id] })
-
-    expect(context?.filename.serialGaps).toEqual(new Map())
-    expect(audit('FILENAME-5', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
-  })
-
-  test('retains the shared record in its canonical local series', () => {
-    const first = { file: 'ADR-EXAMPLE-001-first-decision.md', id: 'ADR-EXAMPLE-001', title: 'First decision' }
-    const third = { file: 'ADR-EXAMPLE-003-third-decision.md', id: 'ADR-EXAMPLE-003', title: 'Third decision' }
-    const context = rootFixture({ files: [first, shared, third], indexIds: [first.id, shared.id, third.id] })
-
-    expect(context?.filename.serialGaps).toEqual(new Map())
-    expect(audit('FILENAME-5', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
-  })
-
-  test('retains serial continuity enforcement for an ordinary local record', () => {
-    const context = rootFixture({ files: [ordinary], indexIds: [ordinary.id] })
-
-    expect(audit('FILENAME-5', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('VIOLATION')
   })
 })
 

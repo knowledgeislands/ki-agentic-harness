@@ -40,7 +40,7 @@ Canonical decision-record filenames and serial namespaces.
   - _Remediation:_ diagnostic — Choose the canonical record identity, then rename or retire the duplicate and update affected citations.
 - **FILENAME-4 [M] — Self-contained collection** — The decisions directory holds only Decision Records and their index: no `references/` or other subdirectory and no supporting file. Working material lives beside the Project or Initiative it serves and is deleted once consolidated. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Consolidate what the record needs into its own words, move live working material beside its Project or Initiative, and delete the rest.
-- **FILENAME-5 [M] — Contiguous serial series** — Within each prefix+scope series the ordinary-record serials start at `001` and are contiguous. A gap left by a removed or reclassified record is closed by renumbering the series and sweeping every citation of the shifted codes in the same change. `XXX` pending files are exempt. A deliberate verbatim shared-record mirror (`shared_record: true`) is excluded only when its prefix+scope has no ordinary local records; otherwise it remains part of that local series. (standards-decision-records.md)
+- **FILENAME-5 [M] — Contiguous serial series** — Within each prefix+scope series the serials start at `001` and are contiguous. A gap left by a removed or reclassified record is closed by renumbering the series and sweeping every citation of the shifted codes in the same change. `XXX` pending files are exempt. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Renumber the series contiguously from 001 and update every citation of each shifted record ID.
 
 ## ROOT — collection-root checks
@@ -72,8 +72,6 @@ Required universal decision metadata.
   - _Remediation:_ diagnostic — Align decision-type metadata with the canonical filename prefix after confirming the record classification.
 - **FM-6 [M] — Core decision metadata** — `id`, `title`, `date`, and `status` are present; ID and title compose the H1 and date uses YYYY-MM-DD. (standards-decision-records.md)
   - _Remediation:_ diagnostic — Complete the required metadata from the canonical H1, filename, and record type.
-- **FM-7 [M] — Shared decision projection eligibility** — A shared record has only decision-owned frontmatter or an explicitly excluded container field and can produce a deterministic identity projection. (standards-decision-records.md)
-  - _Remediation:_ diagnostic — Remove or explicitly govern unknown frontmatter before comparing shared records; do not infer repository-local exclusions.
 
 ## TYPE-FIT — decision classification
 

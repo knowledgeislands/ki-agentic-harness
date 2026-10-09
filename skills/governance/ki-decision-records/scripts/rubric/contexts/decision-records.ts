@@ -7,7 +7,6 @@ import type {
   RubricSession
 } from '../../shared/rubric.ts'
 import { prefixedIdentifierSource, SCOPE, SERIAL } from '../../shared/work-identifiers.ts'
-import { projectSharedDecisionRecord } from './shared-projection.ts'
 
 const CODE_DIR = 'docs/decisions'
 const KB_DIR = 'Admin/Governance/Decisions'
@@ -80,9 +79,6 @@ export type DecisionRecord = {
   decisionTypeUrl?: string
   decisionType?: string
   dependsOn: readonly string[]
-  sharedRecord: boolean
-  sharedProjection?: string
-  sharedProjectionIssue?: string
   headingId?: string
   headingTitle?: string
   missingSections: readonly string[]
@@ -270,8 +266,6 @@ const readRecords = (directory: string, entries: readonly string[], indexFile: s
     const id = `${prefix}-${scope}-${serial}`
     const headingTitle = heading[2].trim()
     const expected = PREFIX_TO_TYPE[prefix] as { decisionType: string; decisionTypeUrl: string }
-    const sharedRecord = frontmatterValue(frontmatter, 'shared_record') === 'true'
-    const sharedProjection = sharedRecord ? projectSharedDecisionRecord(content) : undefined
     records.push({
       file,
       id,
@@ -295,9 +289,6 @@ const readRecords = (directory: string, entries: readonly string[], indexFile: s
         ? { decisionType: frontmatterValue(frontmatter, 'decision_type') }
         : {}),
       dependsOn: frontmatterList(frontmatter, 'decision_depends_on'),
-      sharedRecord,
-      ...(sharedProjection?.projection ? { sharedProjection: sharedProjection.projection } : {}),
-      ...(sharedProjection?.issue ? { sharedProjectionIssue: sharedProjection.issue } : {}),
       headingId: id,
       headingTitle,
       missingSections: ['## Context', '## Decision', '## Consequences'].filter((section) => !body.includes(section)),
@@ -321,16 +312,10 @@ const unparseableRecordFiles = (directory: string, entries: readonly string[], i
 const serialEvidence = (records: readonly DecisionRecord[]) => {
   const idsToFiles = new Map<string, string[]>()
   const serialsBySeries = new Map<string, number[]>()
-  const localSerialSeries = new Set(
-    records
-      .filter((record) => record.serial !== 'XXX' && !record.sharedRecord)
-      .map((record) => `${record.prefix}-${record.scope}`)
-  )
   for (const record of records) {
     idsToFiles.set(record.id, [...(idsToFiles.get(record.id) ?? []), record.file])
     const key = `${record.prefix}-${record.scope}`
-    if (record.serial !== 'XXX' && (!record.sharedRecord || localSerialSeries.has(key)))
-      serialsBySeries.set(key, [...(serialsBySeries.get(key) ?? []), Number(record.serial)])
+    if (record.serial !== 'XXX') serialsBySeries.set(key, [...(serialsBySeries.get(key) ?? []), Number(record.serial)])
   }
   const serialGaps = new Map<string, number[]>()
   for (const [series, serials] of serialsBySeries) {

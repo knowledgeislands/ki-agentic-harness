@@ -7,12 +7,12 @@ purpose: debt
 initiative: platform-foundations
 component: governance
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: e440152f2902a40c20e8ddb4dc1d2d2da7341e29
 created_at: 2026-10-08T13:49:15Z
-updated_at: 2026-10-09T15:49:01Z
+updated_at: 2026-10-09T15:56:09Z
 ---
 
 # KI-HARNESS-GOV-166: Retire shared_record
@@ -38,12 +38,12 @@ In scope: confirming that no repository in the territory still uses `shared_reco
 
 ## Steps
 
-- [ ] Re-confirm that no repository in the territory carries `shared_record` on a Decision Record.
-- [ ] Delete `shared-projection.ts` and its test; remove `sharedRecord` and the projection fields from the Decision Record context, so every record counts in its prefix+scope serial series.
-- [ ] Retire FM-7 and drop the mirror exemption from FILENAME-5's description; remove the shared-record fixtures and tests.
-- [ ] Remove the marker from `SKILL.md`, the standard and the audit mode, and regenerate `references/rubric.md`.
-- [ ] Mark GOV-012 deprecated in place with a one-line reason, and remove the shared-identity paragraph and consequence from GDR-KI-HARNESS-007.
-- [ ] Run Verify, assemble the review packet and set this record `awaiting-review`.
+- [x] Re-confirm that no repository in the territory carries `shared_record` on a Decision Record.
+- [x] Delete `shared-projection.ts` and its test; remove `sharedRecord` and the projection fields from the Decision Record context, so every record counts in its prefix+scope serial series.
+- [x] Retire FM-7 and drop the mirror exemption from FILENAME-5's description; remove the shared-record fixtures and tests.
+- [x] Remove the marker from `SKILL.md`, the standard and the audit mode, and regenerate `references/rubric.md`.
+- [x] Mark GOV-012 deprecated in place with a one-line reason, and remove the shared-identity paragraph and consequence from GDR-KI-HARNESS-007.
+- [x] Run Verify, assemble the review packet and set this record `awaiting-review`.
 
 ## Files touched
 
@@ -83,6 +83,42 @@ None: no guide describes shared records.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+Retired the `shared_record` Decision Record mechanism within the approved boundary: standard, skill, audit mode, rubric, code and tests no longer describe it; GOV-012 is deprecated in place; GDR-KI-HARNESS-007 no longer decides shared identity. `ROOT-3` scope rules and canonical source references are unchanged. Baseline `e440152f2902a40c20e8ddb4dc1d2d2da7341e29`; the delivery commit follows it on `main`.
+
+### Change Summary
+
+- `ki-decision-records`: deleted `scripts/rubric/contexts/shared-projection.ts` and its test; removed `sharedRecord` and the projection fields from `decision-records.ts`, so every record now counts in its prefix+scope serial series; retired FM-7 from `items/frontmatter.ts`; dropped the mirror exemption from FILENAME-5 in `items/filename.ts`; removed shared-record fixtures and the `shared record mirrors` tests from `decision-records.test.ts` and `items/index.test.ts`.
+- `SKILL.md`, `references/standards-decision-records.md` and `references/mode-audit.md` no longer mention the marker; `references/rubric.md` drops FM-7 and the FILENAME-5 exemption.
+- `ki-skills/scripts/internal/remediation-inventory.test.ts`: the structured-criterion inventory falls by one (FM-7, a diagnostic mechanical criterion).
+- `docs/specs/governance.md`: GOV-012 struck through and marked deprecated with its reason.
+- `docs/decisions/GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md`: shared-identity paragraph and dependent consequence removed in place.
+- Deviation: `ki dev skill rubric` renders only the dev-linked primary checkout, so `references/rubric.md` was edited by hand in the worktree and then compared with `tools-ki`'s `renderRubricMarkdown` output for the worktree's rubric items: byte-identical.
+
+### Verification
+
+- `git grep -n shared_record` outside `docs/roadmap/`: no matches.
+- `bun run test`: 1059 pass, 0 fail.
+- `bunx tsc --noEmit`: pass.
+- Rubric publication: rendered catalogue identical to `references/rubric.md`.
+- `ki repo audit --skill ki-decision-records`: PASS. `ki repo audit --skill ki-specs`: PASS. `ki repo audit --skill ki-skills`: FAIL=0, WARN=1 (pre-existing LONG-3 refresh-cadence warning on `ki-skills` sources, unrelated).
+
+### Outstanding concerns
+
+- Territory evidence is a local search of repositories checked out under `~/workspaces`; a repository not checked out locally was not searched. The only hit, an `apps-observatory` parser test fixture, is not a governed record and is left alone.
+- Installed checkers keep FM-7 until the next harness release reaches them; with no live `shared_record` record it cannot fire.
+
+### Post-change review
+
+The goal is met: only local records remain in the contract. Scope held to the record's boundary. Regression risk is low: a stray `shared_record: true` on a record now just counts in its local series, which is the stricter behaviour. Ready for acceptance.
+
+### Mini recap
+
+Removed a vestigial cross-collection mirroring mechanism from `ki-decision-records` and its specification and decision. Verification passed in full. Possible learning route, not promoted: `ki dev skill rubric` cannot render a worktree's rubric, which makes worktree delivery of rubric changes depend on a manual comparison; a `--root` option in `tools-ki` would remove that step.
 
 ## Discussion
 
