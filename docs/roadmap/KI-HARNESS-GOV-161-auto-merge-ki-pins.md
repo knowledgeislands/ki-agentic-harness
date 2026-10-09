@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 initiative: platform-foundations
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 04c73b6fb30a5626f8cd19bedd925a8a6cc1f93d
 created_at: 2026-10-08T09:30:00Z
-updated_at: 2026-10-09T08:40:00Z
+updated_at: 2026-10-09T08:50:00Z
 ---
 
 # KI-HARNESS-GOV-161: Auto-Merge ki Pins
@@ -116,6 +115,10 @@ The guard fails closed: a missing ruleset or an unexpected path leaves an ordina
 ### Mini recap
 
 Released `ki` pin bumps may now auto-merge in `knowledgeislands` repositories behind pin-only, required-check and signed-checksum guards.
+
+## Done
+
+Accepted 2026-10-09 under Kris Brown's GOV-020 owner decision 7, which approved this outcome, on the review packet above.
 
 ## Discussion
 
