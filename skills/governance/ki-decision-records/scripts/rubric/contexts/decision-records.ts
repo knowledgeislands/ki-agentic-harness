@@ -99,6 +99,7 @@ export type FilenameRubricContext = {
   strayEntries: readonly string[]
   invalidFilenames: readonly string[]
   duplicateIds: ReadonlyMap<string, readonly string[]>
+  serialGaps: ReadonlyMap<string, readonly number[]>
 }
 
 export type DependsRubricContext = {
@@ -317,10 +318,33 @@ const unparseableRecordFiles = (directory: string, entries: readonly string[], i
       return !HEADING.test(body)
     })
 
-const duplicateIdEvidence = (records: readonly DecisionRecord[]): ReadonlyMap<string, readonly string[]> => {
+const serialEvidence = (records: readonly DecisionRecord[]) => {
   const idsToFiles = new Map<string, string[]>()
-  for (const record of records) idsToFiles.set(record.id, [...(idsToFiles.get(record.id) ?? []), record.file])
-  return new Map([...idsToFiles].filter(([, files]) => files.length > 1))
+  const serialsBySeries = new Map<string, number[]>()
+  const localSerialSeries = new Set(
+    records
+      .filter((record) => record.serial !== 'XXX' && !record.sharedRecord)
+      .map((record) => `${record.prefix}-${record.scope}`)
+  )
+  for (const record of records) {
+    idsToFiles.set(record.id, [...(idsToFiles.get(record.id) ?? []), record.file])
+    const key = `${record.prefix}-${record.scope}`
+    if (record.serial !== 'XXX' && (!record.sharedRecord || localSerialSeries.has(key)))
+      serialsBySeries.set(key, [...(serialsBySeries.get(key) ?? []), Number(record.serial)])
+  }
+  const serialGaps = new Map<string, number[]>()
+  for (const [series, serials] of serialsBySeries) {
+    const unique = [...new Set(serials)].sort((left, right) => left - right)
+    const maximum = unique.at(-1) ?? 0
+    const missing = Array.from({ length: maximum }, (_, index) => index + 1).filter(
+      (serial) => !unique.includes(serial)
+    )
+    if (missing.length > 0) serialGaps.set(series, missing)
+  }
+  return {
+    duplicateIds: new Map([...idsToFiles].filter(([, files]) => files.length > 1)),
+    serialGaps
+  }
 }
 
 const revealOrderEvidence = (indexIds: readonly string[]): readonly { id: string; previous: number }[] => {
@@ -540,7 +564,7 @@ export const createDecisionRecordsSession = ({
   const indexCounts = new Map<string, number>()
   for (const id of indexIds) indexCounts.set(id, (indexCounts.get(id) ?? 0) + 1)
   const records = readRecords(directory, entries, indexFile)
-  const duplicateIds = duplicateIdEvidence(records)
+  const { duplicateIds, serialGaps } = serialEvidence(records)
   const indexDraft =
     mode === 'conform' && indexExists && isRegularFile(indexPath)
       ? createIndexDraft(repository, indexPath, indexContent)
@@ -555,7 +579,8 @@ export const createDecisionRecordsSession = ({
       invalidFilenames: records
         .filter((record) => record.file !== record.expectedFilename)
         .map((record) => record.file),
-      duplicateIds
+      duplicateIds,
+      serialGaps
     },
     root: {
       indexFile,

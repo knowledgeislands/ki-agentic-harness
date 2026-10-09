@@ -17,7 +17,7 @@ const DEPENDS_1: RubricItem<DependsRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Correct the dependency to the record it means, or remove it where the target was retired; the new code of a reclassified record replaces the old one here with every other citation.'
+        'Correct the dependency to the record it means, or remove it where the target was retired; a renumbered series sweeps this field with every other citation.'
     },
     audit: {
       phase: 'INSPECT',
