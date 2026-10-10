@@ -12,14 +12,14 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T21:50:21Z
-updated_at: 2026-10-10T05:45:05Z
+updated_at: 2026-10-10T16:38:12Z
 ---
 
 # KI-HARNESS-GOV-170: Keep Resolution Targets Local
 
 ## Goal
 
-A cancelled `duplicate`, `merged` or `superseded` record names a `resolution_target` only in its own repository. Where the replacing work lives in another repository, the record names that repository and describes the work in plain terms in `## Cancelled`, without citing the other repository's record identifier.
+A cancelled `duplicate`, `merged` or `superseded` record names a `resolution_target` only in its own repository. Where the replacing work lives in another repository, the record names that repository and describes the work in plain terms in `## Cancelled`, without citing the other repository's record identifier or linking to it.
 
 ## Context
 
@@ -29,7 +29,7 @@ The [work-item format standard](../../skills/change-management/ki-work-roadmap/r
 
 ## Boundary
 
-In scope: the standard text, the rubric check in `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts` and its tests, and a handoff to `tools-ki`. Out of scope: done or cancelled records that already cite a cross-repository target; they leave with pruning.
+In scope: the work-item format and repository roadmaps standards, `ki-accept`'s [acceptance standard](../../skills/change-management/ki-accept/references/standards-acceptance.md), which also allows cross-repository resolution targets, the rubric check in `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts` and its tests, and a handoff to `tools-ki`. Out of scope: done or cancelled records that already cite a cross-repository target; they leave with pruning.
 
 ## Current state
 
@@ -42,8 +42,7 @@ Verified on 2026-10-10:
 
 ## Steps
 
-- [ ] Decide how a cross-repository duplicate, merge or supersession is recorded once its target cannot be named (see Discussion).
-- [ ] Change the work-item format, repository roadmaps and acceptance standards so `resolution_target` must resolve in the same repository, and cross-repository replacement is described in plain terms in `## Cancelled`.
+- [ ] Change the work-item format, repository roadmaps and acceptance standards so `resolution_target` must resolve in the same repository, and a duplicate of, or merge into, another repository's work keeps its resolution with no `resolution_target`, naming that repository in plain words in `## Cancelled` with no identifier or link.
 - [ ] Make `roadmap-evidence.ts` fail a `resolution_target` whose repository code is not this repository's, with tests in `roadmap-evidence.model.test.ts`.
 - [ ] Check the `ki-work-roadmap` eval scenario and `ki-accept` skill wording still agree.
 - [ ] Hand the matching work-item model change to `tools-ki` in plain language, through `ki-trades`.
@@ -87,3 +86,4 @@ A plain-language handoff to `tools-ki` for its work-item model.
 
 - Once a target must be local, a cross-repository replacement cannot use `duplicate`, `merged` or `superseded` with a target. Options: allow those resolutions without a target when the replacement lives elsewhere, or record such a case as `obsolete` with the plain description in `## Cancelled`.
 - Adoption corrected the rubric path in Boundary to its location under `skills/change-management/ki-work-roadmap/`, and found the acceptance standard also needs the change; confirm both sit within the agreed scope at planning.
+- Settled by the owner on 2026-10-10: the acceptance standard is in scope, and a duplicate of, or merge into, another repository's work is recorded in plain words naming the repository, with no identifier or link.
