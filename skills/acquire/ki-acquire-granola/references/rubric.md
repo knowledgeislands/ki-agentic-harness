@@ -34,12 +34,17 @@ Complete enumeration, faithful source projections, immutable checkpoints.
   - _Review prompt:_ Does the checkpoint evidence name its revalidation coverage and avoid claiming unchanged content from identity listing alone?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **ACQUIRE-4 [J] — handling checkpoints survive capture removal** — Verified preservation permits temporary capture removal while retained handling checkpoints prevent unchanged reimport and surface amendments for review. (standards-granola-acquisition.md#staging-and-harvesting-boundary)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does removal follow verified durable preservation, retain the handling checkpoint, avoid unchanged recapture, and distinguish amendments from missing staged evidence?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## ROUTING — Granola receiver routing
 
 → [standard](standards-granola-acquisition.md)
 
-Folder evidence, inferred unfoldered coverage, visible receiver conflicts.
+Folder evidence, explicit flag policies, central packages, visible receiver conflicts.
 
 - **ROUTING-1 [J] — folder evidence reconciled** — Folder membership comes from complete query context and unfoldered identity is inferred only from the complete global-minus-folder union. (standards-granola-acquisition.md#folder-unfoldered-and-receiver-evidence)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
@@ -49,6 +54,16 @@ Folder evidence, inferred unfoldered coverage, visible receiver conflicts.
 - **ROUTING-2 [J] — receiver conflicts fail closed** — Conflicting folder mappings require human selection; multi-repository acquisition requires explicit intentional duplication. (standards-granola-acquisition.md#folder-unfoldered-and-receiver-evidence)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Are unmatched, overlapping, excluded, and conflicting identities visible without silent precedence or duplication?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **ROUTING-3 [J] — flag-only outcomes stay visible** — Explicit unfoldered and residual flag policies report identity evidence without reading content or claiming acquisition. (standards-granola-acquisition.md#receiver-declaration-and-flag-only-outcomes)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Are flagged identities reported on each run without detail or transcript reads, implicit routing, or acquired-content claims?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **ROUTING-4 [J] — central captures preserve every route** — Many selected folders may share one receiver; each UUID has one package preserving all memberships and explicit territory routes, with multi-territory packages awaiting review. (standards-granola-acquisition.md#receiver-declaration-and-flag-only-outcomes, standards-granola-acquisition.md#staging-and-harvesting-boundary)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does each UUID have one safe capture package with every observed membership, explicit territory mapping, and no silent choice between multiple territories?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

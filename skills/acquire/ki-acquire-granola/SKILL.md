@@ -6,7 +6,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 ki-acquire-adapter: granola
 ki-acquire-actions: [import, status, reconcile, reset]
-ki-acquire-repository-properties: [folder_ids, duplicate_folder_ids, unfoldered, residual]
+ki-acquire-repository-properties: [folder_ids, duplicate_folder_ids, unfoldered, residual, capture_root, folder_territories]
 ki-acquire-invocation-properties: [refresh-transcripts]
 ki-acquire-capabilities: [account, folders, meetings, details, transcripts]
 ki-acquire-omissions: [source-url, source-timestamps, tags, attachments, media, source-version, deletion-tombstone]
@@ -38,7 +38,7 @@ The official MCP currently exposes account information, folders, date-window mee
 
 The MCP exposes no native pagination, completeness indicator, update version, source URL, media, or deletion tombstone in the verified surface. The standard therefore requires caller-managed date-window splitting, query-context folder evidence, inferred unfoldered membership, and explicit content revalidation rather than pretending those capabilities exist.
 
-Granola's shared-screen snapshots are source images attached to notes. The current MCP does not enumerate or return them. For a Knowledge Base receiver, use Granola desktop's image stack to observe the count and download each original image, then run `ki acquire images --adapter granola --repo <repo> --source <meeting-uuid> --directory <exports> --expected <count>`. The CLI verifies UUID-named exports and stores original bytes with a checksum manifest beside the acquired meeting Markdown. The observed count remains manual source evidence; recheck it before preparing any cleanout. See the acquisition and retirement standards.
+Granola's shared-screen snapshots are source images attached to notes. The current MCP does not enumerate or return them. For an eligible receiver, use Granola desktop's image stack to observe the count and download each original image, then run `ki acquire images --adapter granola --repo <repo> --source <meeting-uuid> --directory <exports> --expected <count>`. The CLI verifies UUID-named exports and stores original bytes with a checksum manifest beside the acquired meeting Markdown. The observed count remains manual source evidence; recheck it before preparing any cleanout. See the acquisition and retirement standards.
 
 ## Operating modes
 
@@ -56,7 +56,7 @@ Run AUDIT first. `ki repo conform --skill ki-acquire-granola --repo <repo> --dry
 
 ### Mode EDUCATE
 
-Explain the four provider operations, complete-history window splitting, folder and unfoldered evidence, fail-closed receiver conflicts, immutable content versions, normal versus exhaustive revalidation, explicit omissions, and optional retirement gate. Do not perform acquisition or source mutation.
+Explain the four provider operations, complete-history window splitting, many-folder receiver routing, flag-only outcomes, temporary capture packages, retained handling checkpoints, normal versus exhaustive revalidation, explicit omissions, and the optional retirement gate. Do not perform acquisition or source mutation.
 
 ### Mode REFRESH
 
@@ -64,7 +64,7 @@ Run only against the canonical skill in `ki-agentic-harness`. When invoked from 
 
 ## Off-ramps
 
-- `tools-ki` owns the public command, provider-neutral KEP builder, repository selection, Harbour writes, and checkpoint persistence.
+- `tools-ki` owns the public command, provider-neutral KEP builder, repository selection, capture writes, and checkpoint persistence.
 - Arcadia owns the provider-neutral acquisition lifecycle and semantics shared with non-Granola sources.
 - `ki-trades` owns movement of harvested knowledge or correction work between repositories.
 - Granola account administration and application-managed connector disablement remain outside this skill.

@@ -37,6 +37,17 @@ export const ACQUIRE = {
       judgment: judgment(
         'Does the checkpoint evidence name its revalidation coverage and avoid claiming unchanged content from identity listing alone?'
       )
+    },
+
+    {
+      code: 'ACQUIRE-4',
+      title: 'handling checkpoints survive capture removal',
+      description:
+        'Verified preservation permits temporary capture removal while retained handling checkpoints prevent unchanged reimport and surface amendments for review.',
+      sources: ['standards-granola-acquisition.md#staging-and-harvesting-boundary'],
+      judgment: judgment(
+        'Does removal follow verified durable preservation, retain the handling checkpoint, avoid unchanged recapture, and distinguish amendments from missing staged evidence?'
+      )
     }
   ]
 } satisfies RubricFamily<GranolaRubricContext, GranolaRubricContext>
