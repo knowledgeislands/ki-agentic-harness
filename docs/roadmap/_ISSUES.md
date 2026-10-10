@@ -1,5 +1,5 @@
 ---
-areas: { FND: 28, GOV: 170, OPS: 8, REV: 11, RTP: 19 }
+areas: { FND: 28, GOV: 172, OPS: 8, REV: 11, RTP: 19 }
 ---
 
 # Roadmap issue ledger
@@ -7,7 +7,7 @@ areas: { FND: 28, GOV: 170, OPS: 8, REV: 11, RTP: 19 }
 This ledger reserves fixed issuing-area namespaces. Allocate the next work item in its area as one greater than that area's high-water mark; never lower a value or reuse an issued number after a record is pruned. Reserve a number by committing this ledger's advance on its own before writing the record. Areas are not mutable themes or groups.
 
 - `FND` reserves through `028`.
-- `GOV` reserves through `170`.
+- `GOV` reserves through `172`.
 - `OPS` reserves through `008`.
 - `REV` reserves through `011`.
 - `RTP` reserves through `019`.
