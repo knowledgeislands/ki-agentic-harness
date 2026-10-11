@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 project: ways-of-working
 component: governance
-horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: bd6e29b5e0d567fb5ebb83566ddd46b3f6ba778b
 created_at: 2026-10-09T12:00:00Z
-updated_at: 2026-10-11T02:52:55Z
+updated_at: 2026-10-11T04:29:09Z
 ---
 
 # KI-HARNESS-GOV-169: Roll Up Since Mark
@@ -135,6 +134,10 @@ Read § Recap since the mark cold: it states how to strike a mark, its exact lin
 ### Mini recap
 
 Coordinating threads now share one recap since the owner's mark, held in the checkpoint, with the Summary as the light proactive form. `ki-delegation` is the durable home; no memory or knowledge-base note was promoted.
+
+## Done
+
+Accepted 2026-10-11 by Kris Brown on the review packet above (state-of-play decisions log, Decision 47). Re-checked at acceptance: `bun run test` 1,062 pass, 0 fail; `bunx tsc --noEmit` pass; `ki repo audit` for `ki-work-roadmap`, `ki-authoring`, `ki-delegation`, `ki-checkpoint` and `ki-skills` report no failures.
 
 ## Discussion
 
