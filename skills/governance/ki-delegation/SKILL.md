@@ -15,7 +15,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | ref
 
 `ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-- **Background runs** - routine delegation to background agents: detachment, coordinator responsiveness, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, low-noise reporting, project threads with their bootstrap and project recap, and the thread working rules for owner-facing reporting, parking tangents, linking records, keeping primary checkouts current and refreshing this guidance. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
+- **Background runs** - routine delegation to background agents: detachment, coordinator responsiveness, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, low-noise reporting, project threads with their bootstrap, and the thread working rules for owner-facing reporting, the recap since the mark, parking tangents, linking records, keeping primary checkouts current and refreshing this guidance. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
 - **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
@@ -72,5 +72,5 @@ Explain the two contracts and when a packet is added to a run, the project-threa
 
 - A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
 - A run's state directory is non-durable, machine-local runtime state, not a `ki-checkpoint` checkpoint or a Decision Record; in-force decisions are consolidated into their durable owner.
-- A project recap is a project-level roll-up, distinct from the session-level `ki-recap`.
+- The recap since the mark is a coordinating thread's roll-up since the owner's mark, for the master thread and each project thread; `ki-recap` stays the single-session summary.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

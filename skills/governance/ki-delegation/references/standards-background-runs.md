@@ -123,7 +123,7 @@ A coordinating thread - the master thread or a project thread - also follows the
 
 - **Needs items:** each item under **Needs \<owner\>** carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can reply "BOT-1 do it". Each item gives enough plain context to be answered cold, a recommendation where the thread has one, and links under [Linking records](#linking-records).
 - **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch.
-- **Summary:** on request, the thread gives one consolidated list: what is done since the owner's last message or a named mark, what is in progress, and everything still outstanding. It is distinct from a [project recap](#project-recap), which covers one Project since the last recap.
+- **Summary:** the thread gives one consolidated list of what is done since the owner's last message, what is in progress, and everything still outstanding. It is the form of the proactive update when several background agents have finished or the owner returns after a gap, and is also given on request. A request for everything "since the mark" gets the [recap](#recap-since-the-mark) instead.
 - **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another thread, the thread gives it in a code block ready to copy.
 - **Decisions:** the thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises.
 
@@ -131,7 +131,7 @@ A coordinating thread - the master thread or a project thread - also follows the
 
 A project thread coordinates exactly one Project, or one named estate area, for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under this contract, in a run named after the Project, and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
 
-- **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current. The checkpoint is named `<initiative>.<project>.md` and the master thread's `_state-of-play.md`, under [the checkpoint naming rule](../../ki-checkpoint/references/standards-checkpoints.md#project-thread-naming); a Project that changes Initiative has its checkpoint renamed in the same change.
+- **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current. The checkpoint is named `<initiative>.<project>.md` and the master thread's `_state-of-play.md`, under [the checkpoint naming rule](../../ki-checkpoint/references/standards-checkpoints.md#project-thread-naming); a Project that changes Initiative has its checkpoint renamed in the same change. The checkpoint also holds the thread's [mark](#recap-since-the-mark).
 - **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises.
 - **Master thread:** the owner's designated master thread owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A project thread raises those there.
 - **Naming:** where the runtime can name a session, the thread takes the checkpoint's `label`, such as `Techne: agent-host`, so the master thread can find it. The label is presentation only; [the checkpoint label rule](../../ki-checkpoint/references/standards-checkpoints.md#thread-label) owns its form.
@@ -150,25 +150,29 @@ A one-line opener brings a new or already-running thread onto this contract, for
 
 The master thread propagates common instructions. Rules go to their durable owner, a skill or a Decision Record. Thread-level directions go into each affected Project's checkpoint under a short `From the master thread` section that holds current directions only.
 
-A project thread re-reads its checkpoint at every project recap and before launching work, acts on new directions, and removes each direction once it is absorbed. Where the runtime can message another live session on the same machine, the master thread may also nudge the project thread to re-read it. The checkpoint stays the source of truth, so directions also reach threads on other machines.
-
-### Project recap
-
-A project recap is a plain-language roll-up for the owner of what has changed in the Project since the last recap. It is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
-
-It opens with a header naming the Project and its Initiative as links, the thread, and the window covered (`since <time of last recap>`), so recaps from several threads read side by side. It then covers what was delivered, decided, started, stopped or blocked, and newly captured; what is running now; and what needs the owner. It cites records by full identifier as links, with no tool output and no commit identifiers.
-
-Its sources are the run's decisions log, background-agent reports finished since the last recap, and the Project's records. The thread gives a recap on request, such as "recap", and proactively when several background agents have finished since the last one or the owner returns after a gap. It notes the time of each recap in its checkpoint, so "since the last recap" is well defined.
+A project thread re-reads its checkpoint at every recap and before launching work, acts on new directions, and removes each direction once it is absorbed. Where the runtime can message another live session on the same machine, the master thread may also nudge the project thread to re-read it. The checkpoint stays the source of truth, so directions also reach threads on other machines.
 
 ## Thread working rules
 
 These rules apply to every coordinating thread: the master thread and each project thread.
 
+### Recap since the mark
+
+A recap is a plain-language roll-up for the owner of what has changed in the thread's scope since its mark. Every coordinating thread gives one. A project thread's scope is its Project; the master thread's scope is only what the master thread itself deals with, the records and decisions it raised or owns, not every Project's records. A recap is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
+
+- **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`. The timestamp bounds Git history, work-record transitions and background-agent reports; the decision number bounds the decisions log exactly. Per-repository commit identifiers stay out.
+- **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike. Giving a recap does not move it, so a recap can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line.
+- **Shape:** a recap opens with a header naming the thread, its Project and Initiative as links where it has them, and the window covered (`since <mark>`), so recaps from several threads read side by side. It then covers what was delivered, decided, started, stopped or blocked, and newly captured; what is running now; and what is outstanding. It cites records by full identifier as links, with no tool output and no commit identifiers.
+- **Outstanding:** the checkpoint's Needs-you items, open work records in the thread's scope, running or queued background agents, and parked tangents.
+- **Sources:** the run's decisions log after Decision N; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's Needs-you items and parked tangents.
+- **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#reporting) form, so they do not repeat everything since a distant mark.
+- **No mark yet:** the first recap covers the window since the checkpoint's last-recap time, if it notes one, or else its `created_at`, states that window in its header, and strikes the first mark. A thread whose checkpoint still notes a last-recap time converts it into a mark when the [refresh rule](#refreshing-this-guidance) tells it this guidance changed.
+
 ### Parking tangents
 
 When the owner raises a side topic in passing, the thread records it as one dated line, says it is parked, and carries on with the current work. It does not explore the tangent unasked.
 
-Parked items live in the thread's checkpoint under `Open questions`, each as `- Parked <YYYY-MM-DD>: <one line>`. They need no section of their own: [the checkpoint record form](../../ki-checkpoint/references/standards-checkpoints.md#exact-record-form) fixes the six sections.
+Parked items live in the thread's checkpoint under `Open questions`, each as `- Parked <YYYY-MM-DD>: <one line>`. They need no section of their own: [the checkpoint record form](../../ki-checkpoint/references/standards-checkpoints.md#exact-record-form) fixes the six sections. They count as outstanding in the thread's [recap](#recap-since-the-mark).
 
 On request, such as "what's parked?", the thread lists its parked items. When the owner picks one up, it gets a home - a Project, a work record through `ki-next`, or another thread's checkpoint - or is dropped, and the thread removes it from `Open questions` in the same update.
 
@@ -176,11 +180,11 @@ On request, such as "what's parked?", the thread lists its parked items. When th
 
 Whenever a thread mentions a roadmap or work record, a checkpoint, an Initiative or a Project, it cites the full identifier, such as `KI-HARNESS-GOV-144` rather than `GOV-144`, because area codes repeat across repositories.
 
-It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the remote URL only when there is no local copy. This applies to status lines, reports and project recaps alike.
+It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the remote URL only when there is no local copy. This applies to status lines, reports and recaps alike.
 
 ### Keeping primary checkouts current
 
-Background agents work in worktrees and push their own commits, so the owner's primary checkouts fall behind. The coordinating thread fast-forward pulls each affected primary checkout periodically: after a background agent that pushed finishes, and before a project recap.
+Background agents work in worktrees and push their own commits, so the owner's primary checkouts fall behind. The coordinating thread fast-forward pulls each affected primary checkout periodically: after a background agent that pushed finishes, and before a recap.
 
 It pulls only with `--ff-only` into a clean checkout. A checkout with uncommitted changes, or one that has diverged from its upstream, is skipped and reported to the owner rather than stashed, rebased or reset. The pull is a quick one-step check under [Coordinator responsiveness](#coordinator-responsiveness); anything needing repair goes to a background agent or the owner.
 

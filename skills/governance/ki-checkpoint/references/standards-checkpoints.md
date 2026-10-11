@@ -84,7 +84,7 @@ The H1 repeats the thread name exactly. `Decisions made`, `Files touched`, and `
 
 A coordinating thread under `ki-delegation` keeps its parked side topics in `Open questions` as dated one-line items, under [its parking rule](../../ki-delegation/references/standards-background-runs.md#parking-tangents); they never form an additional H2.
 
-It also notes in `Current state` the `ki-delegation` revision it last read, under [its refresh rule](../../ki-delegation/references/standards-background-runs.md#refreshing-this-guidance).
+It also notes in `Current state` the `ki-delegation` revision it last read, under [its refresh rule](../../ki-delegation/references/standards-background-runs.md#refreshing-this-guidance). It keeps its mark there too, as one line under [its mark rule](../../ki-delegation/references/standards-background-runs.md#recap-since-the-mark); striking a new mark replaces it.
 
 ## Optional runtime reminder consumers
 

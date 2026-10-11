@@ -47,7 +47,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       sources: ['standards-background-runs.md'],
       judgment: {
         scope:
-          'Coordinating-thread transcripts, project checkpoints, decisions logs and project recaps the owner selects for review.',
+          'Coordinating-thread transcripts, project checkpoints, decisions logs and recaps the owner selects for review.',
         prompt:
           'Did the coordinator avoid blocking the owner, does each project thread work through background agents from a current checkpoint, and does anything durable exist only in the run directory?',
         outcomes: ['conforming', 'delegate longer work', 'consolidate decisions', 'escalate to owner'],
@@ -63,7 +63,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       sources: ['standards-background-runs.md'],
       judgment: {
         scope:
-          'Coordinating-thread transcripts, status lines, reports, project recaps and checkpoints the owner selects for review.',
+          'Coordinating-thread transcripts, status lines, reports, recaps and checkpoints the owner selects for review.',
         prompt:
           "Were side topics parked without derailing the work and later homed or dropped, does every mention of a record, checkpoint, Initiative or Project carry its full identifier and a local link, and are the owner's primary checkouts current, with dirty or diverged ones reported rather than altered?",
         outcomes: ['conforming', 'park or home tangents', 'fix references', 'refresh checkouts', 'escalate to owner'],
@@ -73,18 +73,25 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
     },
     {
       code: 'RUN-5',
-      title: 'threads report answerably and refresh their guidance',
+      title: 'threads report answerably, recap since the mark and refresh their guidance',
       description:
-        "A coordinating thread tags each needs item mnemonically with plain context, a recommendation and links, asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
+        "A coordinating thread tags each needs item mnemonically with plain context, a recommendation and links, asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
       sources: ['standards-background-runs.md'],
       judgment: {
         scope:
-          'Coordinating-thread transcripts, reports, summaries, decisions logs and checkpoints the owner selects for review.',
+          'Coordinating-thread transcripts, reports, summaries, recaps, decisions logs and checkpoints the owner selects for review.',
         prompt:
-          "Could the owner answer each needs item cold by its tag, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
-        outcomes: ['conforming', 'retag needs items', 'log decisions', 'refresh guidance', 'escalate to owner'],
+          "Could the owner answer each needs item cold by its tag, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
+        outcomes: [
+          'conforming',
+          'retag needs items',
+          'log decisions',
+          'restore the mark',
+          'refresh guidance',
+          'escalate to owner'
+        ],
         guidance:
-          'Give each needs item a mnemonic tag, plain context, a recommendation and links; record missing decisions before further launches; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
+          'Give each needs item a mnemonic tag, plain context, a recommendation and links; record missing decisions before further launches; restore the mark line in Current state and recap from it; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
       }
     }
   ]
