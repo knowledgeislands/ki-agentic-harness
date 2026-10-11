@@ -5,13 +5,12 @@ title: Central Granola Acquisition
 kind: deliver
 purpose: capability
 component: acquire
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 7a794a46c314547984bbb36ffdd730acd57e5b81
 created_at: 2026-10-10T05:54:16Z
-updated_at: 2026-10-10T06:00:56Z
+updated_at: 2026-10-11T02:23:09Z
 ---
 
 # Central Granola Acquisition
@@ -93,6 +92,10 @@ The revised portable contract meets the approved many-folders-to-one design whil
 ### Mini recap
 
 Central Granola receiving and temporary capture handling now have one portable contract and generated rubric, verified by the full Harness suite and focused audits. The existing source-review warning remains visible. The updated acquisition standard is the durable learning route; no additional memory, knowledge-base note, or acceptance record was promoted automatically.
+
+## Done
+
+Accepted 2026-10-11 by Kris Brown on the review packet above (state-of-play decisions log, Decision 38: roadmap triage approved in full).
 
 ## Discussion
 
