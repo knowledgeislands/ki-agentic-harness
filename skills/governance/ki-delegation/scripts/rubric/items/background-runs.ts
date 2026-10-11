@@ -75,13 +75,13 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-5',
       title: 'threads report answerably, recap since the mark and refresh their guidance',
       description:
-        "A coordinating thread tags each needs item mnemonically with plain context, a recommendation and links, asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
+        "A coordinating thread tags each needs item with a stable mnemonic, never a number, with plain context, a recommendation and links, asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark that carry every open item forward across marks, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
       sources: ['standards-background-runs.md'],
       judgment: {
         scope:
           'Coordinating-thread transcripts, reports, summaries, recaps, decisions logs and checkpoints the owner selects for review.',
         prompt:
-          "Could the owner answer each needs item cold by its tag, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
+          "Could the owner answer each needs item cold by a tag that kept its meaning until resolved, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full whenever it arose, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
         outcomes: [
           'conforming',
           'retag needs items',
@@ -91,7 +91,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
           'escalate to owner'
         ],
         guidance:
-          'Give each needs item a mnemonic tag, plain context, a recommendation and links; record missing decisions before further launches; restore the mark line in Current state and recap from it; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
+          'Give each needs item a stable mnemonic tag, plain context, a recommendation and links; record missing decisions before further launches; restore the mark line in Current state and recap from it; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
       }
     }
   ]

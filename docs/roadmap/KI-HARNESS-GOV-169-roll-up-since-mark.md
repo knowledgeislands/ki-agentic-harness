@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: bd6e29b5e0d567fb5ebb83566ddd46b3f6ba778b
 created_at: 2026-10-09T12:00:00Z
-updated_at: 2026-10-11T02:36:39Z
+updated_at: 2026-10-11T02:52:55Z
 ---
 
 # KI-HARNESS-GOV-169: Roll Up Since Mark
@@ -115,6 +115,7 @@ Delivered the recap since the mark from immutable baseline `bd6e29b5e0d567fb5ebb
 - `ki-delegation` `SKILL.md`: the Background runs line names the recap since the mark under thread working rules, and the Notes bullet keeps `ki-recap` as the single-session summary.
 - `standards-checkpoints.md` § Exact record form: one sentence placing the mark in `Current state` under the mark rule, replaced when a new one is struck.
 - `background-runs.ts`: RUN-5 now covers the mark and recaps since it, with a "restore the mark" outcome; RUN-3 and RUN-4 evidence scopes say "recaps". `references/rubric.md` regenerated.
+- Amendment on Decision 45: § Recap since the mark now carries outstanding forward across marks, so striking resets only the delivered-to-captured window and never drops an open item; § Reporting makes Needs tags stable and never numbered. RUN-5 covers both and `references/rubric.md` is regenerated.
 
 ### Verification
 
