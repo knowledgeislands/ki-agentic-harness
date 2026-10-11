@@ -5,13 +5,12 @@ title: Design system standard
 kind: deliver
 purpose: capability
 component: design
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e1c6243e514d4bd5cd43585540b229e58cc4c4ca
 created_at: 2026-10-11T03:40:00Z
-updated_at: 2026-10-11T09:40:00Z
+updated_at: 2026-10-11T11:12:28Z
 ---
 
 # KI-HARNESS-GOV-173: Design System Standard
@@ -33,7 +32,7 @@ The harness already held `ki-design-inspiration` for visual references and `ki-d
 
 ## Current state
 
-Committed on `main` in the primary checkout, after the ledger advance on its own; not pushed. A harness release then lets adopting repositories declare the skill.
+Delivered on `main` and pushed on 2026-10-11 (`a3a5d292`, `bc231293`, `ce65b6b1`). Each territory's master thread carries the rollout to its repositories with a user interface.
 
 ## Steps
 
@@ -118,6 +117,10 @@ Read cold, the standard tells a maintainer where each design statement goes and 
 ### Mini recap
 
 The design-record method from the Phase 3 calendars work is now a harness standard with a checker; adopting it is a three-key declaration once released.
+
+## Done
+
+Accepted 2026-10-11 by Kris Brown on the review packet above, with the instruction to roll the skill out through each territory's state of play. Re-checked at acceptance in a clone at `ce65b6b1`: `bun run test` 1,072 pass, 0 fail; `bunx tsc --noEmit` pass; `bun test --isolate ./skills/design/ki-design-system` 10 pass; `ki dev skill rubric ki-design-system` in sync; `ki repo audit` for `ki-authoring` passes, and for `ki-skills`, `ki-repo-harness` and `ki-work-roadmap` reports no failures, only warnings that predate this record.
 
 ## Discussion
 
