@@ -1,7 +1,7 @@
 ---
 id: GDR-KI-HARNESS-013
 title: Capital-owned territory trade policy
-date: 2026-10-06
+date: 2026-10-11
 status: current
 decision_type: governance
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
@@ -32,11 +32,11 @@ Repositories belong to a territory governed by a Capital. Arcadia Principal's te
 
 The territory's routes become one reviewable policy that a Capital can sweep against every named island, and a route change becomes a proposal to the Capital accepted under its authority rather than a pair of local edits. The `ki-repo` audit fails a repository without a canonical `capital`, and fails a member that the policy names but that does not declare ki-trades; the `ki-trades` audit warns a participating member that no channel names.
 
-No grant confers cross-repository write, publication, roadmap, priority, implementation, acceptance, or completion authority, and Agora membership confers no route. Any future automatic transport, application, or publication still requires a separate authority contract for scheduling, idempotency, isolation, recovery, evidence, review, and revocation.
+No grant confers cross-repository write, publication, roadmap, priority, implementation, acceptance, or completion authority, and territory membership or selection confers no route. Any future automatic transport, application, or publication still requires a separate authority contract for scheduling, idempotency, isolation, recovery, evidence, review, and revocation.
 
 The capability depends on the Capital and its members being visible in the local KI registry. Where a member's Capital is not checked out, the audit reports the member's record route authority as unverifiable instead of proving or refusing it. Retiring member route tables is immediate: repositories still declaring them fail until the declaration moves to the Capital's policy. The route-declaration model of GDR-KI-HARNESS-005 is archived.
 
 ## References
 
 - [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) - the repository authority and choreography model this decision preserves.
-- [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-owner-declared-agoras.md) - owner-declared Agoras, which select working sets but grant no route.
+- [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-territory-derived-working-sets.md) - territory-derived working sets, which select repositories but grant no route.
