@@ -6,7 +6,8 @@ ki-depends-on: []
 description: >
   Find website design inspiration in curated galleries and turn selected examples into practical directions
   for navigation, sections, calls to action, grids, motion, and other UI patterns. Use for visual references
-  and adaptation ideas; website repository structure belongs to `ki-repo-website`.
+  and adaptation ideas; website repository structure belongs to `ki-repo-website`, and keeping a design
+  system to `ki-design-system`.
 argument-hint: 'help | inspire <website-or-component> | refresh'
 ---
 

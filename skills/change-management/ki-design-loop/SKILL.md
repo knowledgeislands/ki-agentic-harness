@@ -8,7 +8,7 @@ description: >
   Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent
   reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the
   subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to
-  ready one record, and `ki-design-inspiration` for website visual design.
+  ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
 argument-hint: 'start <subject> | resume <subject> | help'
 ---
 

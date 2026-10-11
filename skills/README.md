@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 61 skills: 50 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 62 skills: 51 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -109,7 +109,7 @@ Prepare and run one bounded authority envelope over an exact set of Ready work r
 
 #### `ki-design-loop`
 
-Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, and `ki-design-inspiration` for website visual design.
+Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
@@ -221,11 +221,21 @@ Govern flat local work items, roadmap horizons, lifecycle detail, dependencies, 
 
 #### `ki-design-inspiration`
 
-Find website design inspiration in curated galleries and turn selected examples into practical directions for navigation, sections, calls to action, grids, motion, and other UI patterns. Use for visual references and adaptation ideas; website repository structure belongs to `ki-repo-website`.
+Find website design inspiration in curated galleries and turn selected examples into practical directions for navigation, sections, calls to action, grids, motion, and other UI patterns. Use for visual references and adaptation ideas; website repository structure belongs to `ki-repo-website`, and keeping a design system to `ki-design-system`.
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `help | inspire <website-or-component> | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-design-system`
+
+Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for design-system method; use `ki-design-inspiration` for visual references and `ki-design-loop` for project shape.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
