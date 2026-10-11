@@ -31,7 +31,7 @@ An active checkpoint is one regular Markdown file at `+/_CHECKPOINTS/<thread>.md
 
 ### Project-thread naming
 
-Where the repository keeps a Project registry ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)), a checkpoint for a Project's thread is named `<initiative>.<project>`, using the `initiative` key from the Project note and the Project's own key, for example `techne.agent-host` or `rig.mac-studio-bootstrap`. Related checkpoints then sort together. The repository's master thread is named `_state-of-play`, so that it sorts first. A checkpoint with no Project keeps a plain human-selected name, prefixed with an Initiative key only when one obviously fits.
+Where the repository keeps a Project registry ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)), a checkpoint for a Project's thread is named `<initiative>.<project>`, using the `initiative` key from the Project note and the Project's own key, for example `techne.agent-host` or `rig.mac-studio-bootstrap`. Related checkpoints then sort together. A territory Capital's [territory master thread](../../ki-delegation/references/standards-background-runs.md#territory-master-thread) is named `_state-of-play`, so that it sorts first; there is one per Capital and no other repository has one. A checkpoint with no Project keeps a plain human-selected name, prefixed with an Initiative key only when one obviously fits.
 
 The full name appears in the filename stem, `thread` field, and H1. When a Project moves to another Initiative, rename its checkpoint, `thread` field, H1, and every reference in the same change.
 

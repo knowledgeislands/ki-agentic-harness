@@ -19,7 +19,7 @@ This governance skill owns the portable checkpoint contract: one concise reposit
 
 ## Shared model
 
-- **Active record** — one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`, where `<thread>` is the user-selected portable name. A Project's thread is named `<initiative>.<project>` and the master thread `_state-of-play`; an optional `label` carries the human's client-side thread name for presentation only ([naming and label](references/standards-checkpoints.md#project-thread-naming)). Updating replaces this snapshot in place; Git supplies history.
+- **Active record** — one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`, where `<thread>` is the user-selected portable name. A Project's thread is named `<initiative>.<project>` and a territory Capital's master thread `_state-of-play`; an optional `label` carries the human's client-side thread name for presentation only ([naming and label](references/standards-checkpoints.md#project-thread-naming)). Updating replaces this snapshot in place; Git supplies history.
 - **Removal** — explicit removal deletes the active record after durable information has reached its proper owners. There is no retired-record state or `_RETIRED` directory; Git supplies recovery history.
 - **Reconstruction, not continuity** — a checkpoint carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, completion signal, roadmap, decision log, or memory system.
 - **Explicit write authority** — create or update only at the user's request or a documented repository-local trigger. Remove only on explicit user direction after durable facts have reached their canonical owners. When the selected thread or content is uncertain, do not write.

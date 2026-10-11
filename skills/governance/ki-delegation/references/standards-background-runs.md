@@ -135,9 +135,48 @@ A project thread coordinates exactly one Project, or one named estate area, for 
 
 - **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current. The checkpoint is named `<initiative>.<project>.md` and the master thread's `_state-of-play.md`, under [the checkpoint naming rule](../../ki-checkpoint/references/standards-checkpoints.md#project-thread-naming); a Project that changes Initiative has its checkpoint renamed in the same change. The checkpoint also holds the thread's [mark](#recap-since-the-mark).
 - **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises.
-- **Master thread:** the owner's designated master thread owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A project thread raises those there.
+- **Master thread:** the [territory master thread](#territory-master-thread) owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A project thread raises those there.
 - **Naming:** where the runtime can name a session, the thread takes the checkpoint's `label`, such as `Techne: agent-host`, so the master thread can find it. The label is presentation only; [the checkpoint label rule](../../ki-checkpoint/references/standards-checkpoints.md#thread-label) owns its form.
-- **Opening:** open a project thread only where there is active work to drive. A dormant Project needs no thread.
+- **Opening:** open a project thread only where there is active work to drive, within the master thread's [cap](#territory-master-thread). A dormant Project needs no thread.
+- **Scope:** it works only its own Project's records. Work that belongs to another Project goes to that Project's thread or checkpoint through the master thread.
+
+### Territory master thread
+
+Each territory Capital has one territory master thread. Its checkpoint is `+/_CHECKPOINTS/_state-of-play.md` in that Capital, labelled `Master: state-of-play`, and it does project management only: it runs no delivery itself and routes all real work to Project threads.
+
+- **Registry:** the Initiatives and Projects it manages are defined in the Capital's `Streams/` registry under the `ki-work` Project registry standard, and their work records live in the roadmaps of the territory's repositories.
+- **Owns:** cross-Project priorities, releases, decisions touching more than one Project, [directions](#directions-from-the-master-thread) to Project threads, and the Project-thread queue.
+- **Cap:** at most three or four Project threads are active at once, plus the master. The master keeps the active threads and the ordered queue in its checkpoint's `Current state`, each with its label, checkpoint and opener, and opens the next queued thread when an active one closes.
+- **Seeding:** before a Project thread opens, the master creates or reconciles its `<initiative>.<project>.md` checkpoint and gives the owner its [opener](#opening-a-thread), so the thread opens with one message.
+- **Other territories:** it coordinates with another territory's master only through the owner. A master never acts with authority in another territory's repositories; each Capital keeps its own ownership, and cross-repository work moves under `ki-trades` or the receiving repository's own process.
+
+### Opening a thread
+
+The owner opens a thread in the Capital's checkout, names it with the checkpoint's `label` where the runtime can name a session, and pastes one opener. The master thread prepares the checkpoint first, so every thread opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the thread and leaves state to the checkpoint.
+
+For a territory master thread:
+
+```text
+Bootstrap as the state-of-play territory master thread for <territory> under ki-delegation.
+Label: Master: state-of-play. Checkpoint: +/_CHECKPOINTS/_state-of-play.md in <capital>.
+Project management only: priorities, the Project-thread queue (cap three or four), decisions and releases; route real work to Project threads.
+Background agents: run substantive work through `ki agent` in run `state-of-play`; stay responsive.
+Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
+First step: follow the Bootstrap in ki-delegation, then report in three lines.
+```
+
+For a Project thread:
+
+```text
+Bootstrap as the <project> project thread under ki-delegation.
+Label: <Initiative title>: <project>. Checkpoint: +/_CHECKPOINTS/<initiative>.<project>.md in <capital>.
+Project: <project> (Initiative <initiative>); work only this Project's records.
+Background agents: run substantive work through `ki agent` in run `<project>`; stay responsive.
+Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
+First step: follow the Bootstrap in ki-delegation, then report in three lines.
+```
+
+The one-line `Re-bootstrap as the <project> project thread under ki-delegation.` form under [Bootstrap](#bootstrap) remains enough for a thread already on this contract.
 
 ### Bootstrap
 
@@ -156,7 +195,7 @@ A project thread re-reads its checkpoint at every recap and before launching wor
 
 ## Thread working rules
 
-These rules apply to every coordinating thread: the master thread and each project thread.
+These rules apply to every coordinating thread: the territory master thread and each project thread.
 
 ### Recap since the mark
 
