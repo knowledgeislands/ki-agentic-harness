@@ -38,6 +38,8 @@ An in-session subagent runs under the turn that launched it and dies when that t
 
 The coordinating thread stays responsive to the owner. It does only quick one-step checks and short bookkeeping itself: status reads, queueing, recording decisions and relaying outcomes. It hands anything longer - set-up, prompt rewriting, multi-file or multi-step repository work - to a background agent. If a turn would block the owner for more than a moment, delegate it instead.
 
+A new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work.
+
 ## Run packet
 
 A run is a named set of agents sharing one state directory. Each agent has five files:
