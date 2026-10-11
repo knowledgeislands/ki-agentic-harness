@@ -4,6 +4,7 @@ ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
+contributes: ['.ki.toml']
 description: >
   Create, audit or refresh how a repository keeps its user-interface design: the token source, the design
   guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for

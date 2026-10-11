@@ -50,7 +50,7 @@ The rule for every home is the same: state a thing once, in its home, and elsewh
 
 ## The token source
 
-The token source is the canonical home of every design value: colour, type, spacing, radius, shadow, motion and breakpoints where the platform allows. Every other artefact, including the design guide, names a token and never repeats its value, because a repeated value drifts the first time the token changes.
+The token source is the canonical home of every design value: colour, type, spacing, radius, shadow, motion and breakpoints where the platform allows. Every other artefact, including the design guide, names a token and never repeats its value, because a repeated value drifts the first time the token changes. A value the token source does not yet hold may be stated in the guide until it gets a token; colour always has one.
 
 - Values are composed, not listed, wherever the platform allows it: a theme supplies hue and chroma anchors, a mode supplies lightness steps, and each colour is computed from them, so a theme or mode cannot drift on one token alone.
 - A colour that carries meaning, such as a status or a category, belongs to a meaning palette that does not change with the reader's chosen theme.
@@ -59,7 +59,9 @@ The token source is the canonical home of every design value: colour, type, spac
 
 ## The design guide
 
-The design guide is the practical how: the rules a maintainer follows to design or change a page so it looks and behaves like the rest. It is an ordinary guide under `ki-guides`, in the audience folder of the people who build the interface, usually `docs/guides/developer/`. A product with several distinct surfaces may keep one guide per surface.
+The design guide is the practical how: the rules a maintainer follows to design or change a page so it looks and behaves like the rest. It is an ordinary guide under `ki-guides`, in the audience folder of the people who build the interface, usually `docs/guides/developer/`, and listed in the collection's `docs/guides/README.md`. A product with several distinct surfaces may keep one guide per surface.
+
+`ki-guides` audits the guide's form alongside this skill: its outcome-first opening, its audience folder and its self-containment. So the guide names a Decision Record or Specification by its identifier and never links it, links sibling guides freely, and links any code it explains, such as the token source and the check scripts. This skill audits what the guide says, not how it is shaped.
 
 The guide states current rules in the present tense. It holds no history and no rationale beyond the one clause a reader needs to apply a rule well; the reason lives in a Decision Record the guide may name. It repeats no token value. A guide's sections follow the reader's work, and a complete guide covers:
 
@@ -72,7 +74,7 @@ The guide states current rules in the present tense. It holds no history and no 
 7. **Interaction and accessibility** - keyboard, focus, roles and touch targets.
 8. **Enhancement** - what is rendered without script and what script adds.
 9. **Words** - the voice and terms of interface text.
-10. **Before you merge** - the checks and the manual review a change needs.
+10. **Before you merge** - the checks and the manual review a change needs. Where the collection has a definition-of-done guide, this section holds the design steps only and that guide links it.
 
 A section the product does not need may be left out. [The guide skeleton](../assets/design-guide.md) gives the headings without content.
 
@@ -107,7 +109,7 @@ A design question about the shape of a Project or a model that several repositor
 
 A design rule that a machine can check has a check, and the guide's merge section names it. Rules that need a person are listed there as review steps. Checks fall into four groups:
 
-- **Token checks** - contrast for every text and non-text pair in every theme and mode, hue held across modes, every colour mix measured or recorded with a reason, every categorical slot covered.
+- **Token checks** - contrast for every text and non-text pair in every theme and mode, hue held across modes, every colour mix measured or recorded with a reason, every categorical slot covered, and no theme or mode changing layout, which `ki-repo-website-content` already requires of a content site.
 - **Content checks** - the page's facts and links are present without script; a registry and its rendered pages agree.
 - **Behaviour checks** - keyboard operation, focus handling and an automated accessibility scan of each view.
 - **Visual checks** - screenshots of key pages across themes, modes and widths, compared on change.
@@ -125,7 +127,7 @@ Every design system that adopts this standard meets four requirements, whatever 
 
 ## Projections
 
-A design tool outside the repository, such as a design-system artifact, a Figma library or a design canvas, is a projection of the token source and the guide. It is refreshed from them and never edited as the source. The guide records where each projection lives and when it was last refreshed. A projection that disagrees with the token source is stale, whatever its date.
+A design tool outside the repository, such as a design-system artifact, a Figma library or a design canvas, is a projection of the token source and the guide. It is refreshed from them and never edited as the source. The guide names each projection and where it lives; the projection carries the date and source revision it was last refreshed from, so the guide holds no state that dates. A projection that disagrees with the token source is stale, whatever its date.
 
 ## Configuration
 

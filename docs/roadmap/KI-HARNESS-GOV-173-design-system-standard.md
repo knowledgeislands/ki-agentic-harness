@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: e1c6243e514d4bd5cd43585540b229e58cc4c4ca
 created_at: 2026-10-11T03:40:00Z
-updated_at: 2026-10-11T04:50:00Z
+updated_at: 2026-10-11T09:40:00Z
 ---
 
 # KI-HARNESS-GOV-173: Design System Standard
@@ -28,7 +28,7 @@ The harness already held `ki-design-inspiration` for visual references and `ki-d
 
 ## Boundary
 
-- **In:** the `ki-design-system` skill with its standard, modes, exemplar, sources, guide skeleton and structured rubric; reciprocal off-ramps in `ki-design-inspiration` and `ki-design-loop`; the regenerated capability catalogue and README counts.
+- **In:** the `ki-design-system` skill with its standard, modes, exemplar, sources, guide skeleton and structured rubric; reciprocal off-ramps in `ki-design-inspiration`, `ki-design-loop` and the boundaries of `ki-repo-website-content`; the regenerated capability catalogue and README counts.
 - **Out:** any repository's own design guide or tokens; changes to the Guides, Specifications, Decision Records or design-loop standards; declaring the skill in `5g-emerge-phase3`, which waits for a harness release that carries it; the website-owned skills-by-outcome guide.
 
 ## Current state
@@ -44,11 +44,12 @@ Committed on `main` in the primary checkout, after the ledger advance on its own
 - [x] Regenerate the capability catalogue and README counts with `ki repo conform --skill ki-repo-harness`.
 - [x] Update the fleet remediation inventory counts the new catalogue changes.
 - [x] Pilot the checker on `5g-emerge-phase3` with a temporary declaration.
+- [x] Review the fit with `ki-guides` and the sibling skills: state that `ki-guides` audits the design guide's form alongside, that the guide names records rather than linking them, and that it is listed in the collection index; let a value with no token stay in the guide until it gets one; keep projection refresh dates on the projection rather than in the guide; drop site-specific front matter from the skeleton; name the theme and mode layout check `ki-repo-website-content` already requires; declare `contributes: ['.ki.toml']`; add the reciprocal boundary to `ki-repo-website-content`.
 
 ## Files touched
 
 - `skills/design/ki-design-system/` (new): `SKILL.md`, `assets/design-guide.md`, `references/` (standard, four modes, exemplars, sources, generated rubric), `scripts/shared/rubric.ts`, `scripts/rubric/contexts/design.ts` and its test, `scripts/rubric/items/` (`index.ts`, `design.ts`, `publication.ts`, index test)
-- `skills/design/ki-design-inspiration/SKILL.md` and `skills/change-management/ki-design-loop/SKILL.md` (descriptions)
+- `skills/design/ki-design-inspiration/SKILL.md` and `skills/change-management/ki-design-loop/SKILL.md` (descriptions); `skills/repo-structure/ki-repo-website-content/SKILL.md` (boundaries)
 - `skills/README.md` (generated catalogue) and `README.md` (counts)
 - `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` (fleet counts)
 - `docs/roadmap/_ISSUES.md` and this record
@@ -91,7 +92,8 @@ Closes this record on acceptance.
 ### Change Summary
 
 - New skill with standard, modes, exemplar, sources, guide skeleton and an eight-item rubric (five mechanical, three judgment).
-- Reciprocal off-ramps in `ki-design-inspiration` and `ki-design-loop`.
+- Reciprocal off-ramps in `ki-design-inspiration` and `ki-design-loop`, and a boundary in `ki-repo-website-content`.
+- Fit review against `ki-guides`: the guide's form is that skill's, audited alongside; this skill audits what the guide says.
 - Catalogue and README counts regenerated: 62 skills, 51 governance and 11 process; fleet inventory counts updated.
 
 ### Verification

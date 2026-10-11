@@ -1,7 +1,3 @@
----
-title: <Surface> design
----
-
 # Design the <surface>'s pages
 
 <Who this guide is for and what they will be able to do once they have read it: design or change a page so it looks and behaves like the rest. Name the token source by its path, and say that the token source, the checks and the tests win where they disagree with this guide.>

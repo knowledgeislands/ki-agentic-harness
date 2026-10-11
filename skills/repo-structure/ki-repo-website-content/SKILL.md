@@ -108,6 +108,7 @@ Reciprocal off-ramps — each names this skill back for the site-build layer:
 - **Serving the built `dist/`** — the `wrangler.jsonc`, Workers Static Assets, custom domains, deploy scripts → `ki-repo-website-cloudflare`. The `dist/` is the seam between the two.
 - **Any Worker that is not a static site** (bots, ingress receivers, APIs, Durable Objects), and general Cloudflare/Workers usage → the generic `cloudflare` / `wrangler` skills.
 - **A repo's GitHub settings, security, and the universal local files** → `ki-repo`.
+- **Where design knowledge lives beyond `tokens.css`** — the design guide, design Decision Records and Specifications, the design checks, and design work from brief to rule → `ki-design-system`. This skill's `tokens.css` is that skill's token source.
 
 ## Notes
 
