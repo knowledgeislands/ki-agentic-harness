@@ -13,7 +13,7 @@ decision_type: architecture
 
 Knowledge Islands acquisition is a model-wide architecture. Arcadia owns the lifecycle and boundaries for acquiring external knowledge, including AI sessions, communications, documents, and future sources. The lifecycle is not a Harness concern merely because the first provider adapters serve AI clients.
 
-The Harness owns reusable agent capabilities. `ki-housekeeping-claude` and `ki-housekeeping-codex` guide provider-specific session work, while their paired MCPs expose source mechanics. Claude Code and Codex use different storage and protocol mechanisms, so their adapters need a comparable surface without becoming a second knowledge architecture.
+The Harness owns reusable agent capabilities. `ki-housekeeping-claude` and `ki-housekeeping-chatgpt` guide provider-specific session work, the latter covering both ChatGPT and Codex local stores, while their paired MCPs expose source mechanics. Claude Code and Codex use different storage and protocol mechanisms, so their adapters need a comparable surface without becoming a second knowledge architecture.
 
 ## Decision
 
