@@ -148,6 +148,7 @@ Each territory Capital has one territory master thread. Its checkpoint is `+/_CH
 - **Owns:** cross-Project priorities, releases, decisions touching more than one Project, [directions](#directions-from-the-master-thread) to Project threads, and the Project-thread queue.
 - **Cap:** at most three or four Project threads are active at once, plus the master. The master keeps the active threads and the ordered queue in its checkpoint's `Current state`, each with its label, checkpoint and opener, and opens the next queued thread when an active one closes.
 - **Seeding:** before a Project thread opens, the master creates or reconciles its `<initiative>.<project>.md` checkpoint and gives the owner its [opener](#opening-a-thread), so the thread opens with one message.
+- **Run:** run names share one machine-wide namespace, so the master's run is `<territory>-state-of-play`, using the territory handle; a master run that predates this rule may keep its existing name. A Project thread's run takes the Project name, prefixed with the territory handle where another territory already uses that name.
 - **Other territories:** it coordinates with another territory's master only through the owner. A master never acts with authority in another territory's repositories; each Capital keeps its own ownership, and cross-repository work moves under `ki-trades` or the receiving repository's own process.
 
 ### Opening a thread
@@ -160,7 +161,7 @@ For a territory master thread:
 Bootstrap as the state-of-play territory master thread for <territory> under ki-delegation.
 Label: Master: state-of-play. Checkpoint: +/_CHECKPOINTS/_state-of-play.md in <capital>.
 Project management only: priorities, the Project-thread queue (cap three or four), decisions and releases; route real work to Project threads.
-Background agents: run substantive work through `ki agent` in run `state-of-play`; stay responsive.
+Background agents: run substantive work through `ki agent` in run `<territory>-state-of-play`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
 First step: follow the Bootstrap in ki-delegation, then report in three lines.
 ```
@@ -171,7 +172,7 @@ For a Project thread:
 Bootstrap as the <project> project thread under ki-delegation.
 Label: <Initiative title>: <project>. Checkpoint: +/_CHECKPOINTS/<initiative>.<project>.md in <capital>.
 Project: <project> (Initiative <initiative>); work only this Project's records.
-Background agents: run substantive work through `ki agent` in run `<project>`; stay responsive.
+Background agents: run substantive work through `ki agent` in run `<run>`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
 First step: follow the Bootstrap in ki-delegation, then report in three lines.
 ```
