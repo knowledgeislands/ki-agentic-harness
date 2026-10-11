@@ -7,12 +7,12 @@ purpose: capability
 project: ways-of-working
 component: governance
 horizon: next
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: bd6e29b5e0d567fb5ebb83566ddd46b3f6ba778b
 created_at: 2026-10-09T12:00:00Z
-updated_at: 2026-10-09T21:18:31Z
+updated_at: 2026-10-11T02:32:43Z
 ---
 
 # KI-HARNESS-GOV-169: Roll Up Since Mark
@@ -27,7 +27,7 @@ Kris runs a master state-of-play thread and Project threads, each delegating to 
 
 The owner strikes a mark, a baseline captured at a moment, and later asks for a roll-up since that mark: delivered, decided, started, stopped or blocked, newly captured, and outstanding.
 
-Kris settled the design on 2026-10-09 (state-of-play decisions log, Decision 16); see [Owner decisions](#owner-decisions---2026-10-09). The remaining detail is answered below with recommended defaults that Kris has still to confirm.
+Kris settled the design on 2026-10-09 (state-of-play decisions log, Decision 16); see [Owner decisions](#owner-decisions---2026-10-09). Kris confirmed every recommended default for the remaining detail on 2026-10-11 (Decision 39); see [Confirmed defaults](#confirmed-defaults---2026-10-11).
 
 The plan builds on the [reporting practices](../../skills/governance/ki-delegation/references/standards-background-runs.md#reporting) and the [guidance-refresh rule](../../skills/governance/ki-delegation/references/standards-background-runs.md#refreshing-this-guidance) that commit b03a5d55 added to `ki-delegation`: the refresh rule is how running threads learn the new mark rule, and the Summary practice is the light-weight counterpart to the roll-up.
 
@@ -38,7 +38,7 @@ The plan builds on the [reporting practices](../../skills/governance/ki-delegati
 
 ## Shaping
 
-The approach is settled by the owner decisions and the recommended defaults below. The record moves to `next` and `ready` on Kris's instruction of 2026-10-09 to plan it to Ready. If Kris rejects any recommendation, the record returns to `draft` and is replanned before delivery.
+The approach is settled by the owner decisions and the confirmed defaults below. The record moved to `next` and `ready` on Kris's instruction of 2026-10-09 to plan it to Ready, and to `in-progress` on Kris's confirmation of 2026-10-11 (Decision 39).
 
 ## Current state
 
@@ -51,7 +51,7 @@ The approach is settled by the owner decisions and the recommended defaults belo
 
 ## Steps
 
-- [ ] Re-ground: confirm Kris's answers to the tagged recommendations in [Recommended defaults](#recommended-defaults-for-kris-to-confirm). Apply any change and, if one alters scope, return the record to `draft` and replan.
+- [x] Re-ground: confirm Kris's answers to the tagged recommendations in [Confirmed defaults](#confirmed-defaults---2026-10-11). Apply any change and, if one alters scope, return the record to `draft` and replan.
 - [ ] In `standards-background-runs.md`, replace § Project recap with a § Recap since the mark under Thread working rules, so it applies to the master thread and to each project thread. It defines the mark (one per thread, replaced when struck, held in the checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`), striking it on the owner's word ("mark"), the scope per thread, the window `since <mark>`, the sections (delivered, decided, started, stopped or blocked, newly captured, running now, outstanding), the definition of outstanding, the sources, and the no-mark default.
 - [ ] Update § Reporting's Summary bullet to "since the owner's last message", pointing a "since the mark" request at the recap, and make it the form of a proactive update.
 - [ ] Update § Project threads, § Directions from the master thread, § Parking tangents, § Linking records and § Keeping primary checkouts current to say "recap" for every coordinating thread, and repoint each `#project-recap` link.
@@ -83,7 +83,7 @@ No roadmap dependency. Builds on the reporting and guidance-refresh rules commit
 
 ## Delegation
 
-Suitable for one background agent under the `deliver` footer, citing Decision 16 and Kris's confirmation of the tagged recommendations. One lane; no parallel split is useful.
+Suitable for one background agent under the `deliver` footer, citing Decision 16 and Decision 39, Kris's confirmation of the tagged recommendations. One lane; no parallel split is useful.
 
 ## Documentation impact
 
@@ -117,9 +117,9 @@ Kris answered the design questions in the state-of-play thread (decisions log, D
 
 These answer the original questions on whether a mark belongs to one thread or spans threads, whether several coexist, how outstanding is defined, the relation to the project recap and `ki-recap`, and which skill owns it.
 
-### Recommended defaults for Kris to confirm
+### Confirmed defaults - 2026-10-11
 
-These answer the remaining questions. They are recommendations, not decisions, until Kris confirms them.
+These answer the remaining questions. Kris confirmed every one unchanged on 2026-10-11 (state-of-play decisions log, Decision 39), so no scope change follows.
 
 - **MARK-FORM:** a mark is a UTC timestamp plus the thread's decisions-log position, written in `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`. The timestamp bounds Git history, work-record transitions and background-agent reports; the decision number bounds the log exactly. Per-repository commit identifiers are left out: they bloat the checkpoint, and reports avoid commit identifiers.
 - **MARK-STRIKE:** only the owner moves the mark, by saying "mark" (or "recap and mark" to roll up and then re-strike). Giving a recap does not move it, so a roll-up can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line.
