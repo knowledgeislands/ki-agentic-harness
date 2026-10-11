@@ -5,13 +5,13 @@ title: Verify run MCP connection
 kind: investigate
 project: paperclip-bootstrap-and-recovery
 component: agentic-systems
-horizon: next
-status: ready
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-30T08:20:00Z
-updated_at: 2026-10-07T20:34:47Z
+updated_at: 2026-10-11T02:23:38Z
 ---
 
 # Verify run MCP connection
@@ -77,6 +77,10 @@ None.
 ### Roadmap
 
 Closes this record on acceptance. A bridge keep-alive supervisor, if needed, is a separate draft.
+
+## Cancelled
+
+Cancelled 2026-10-11 as rejected, approved by Kris Brown (state-of-play decisions log, Decision 38: roadmap triage approved in full). Paperclip work waits on the Techne hold and the record had been idle since 2026-10-07, so Kris chose not to keep it as a work record. It is kept as a one-line idea in Arcadia's paperclip-bootstrap-and-recovery Project note (`ki-arcadia-principal`, `Streams/Projects/paperclip-bootstrap-and-recovery.md`). It leaves no outstanding change.
 
 ## Discussion
 

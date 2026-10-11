@@ -3,12 +3,13 @@ id: KI-HARNESS-GOV-158
 area: GOV
 title: Enforce the commit gate
 project: baseline-rollout
-status: triage
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-08T08:28:53Z
-updated_at: 2026-10-09T21:18:31Z
+updated_at: 2026-10-11T02:23:38Z
 ---
 
 # KI-HARNESS-GOV-158: Enforce the Commit Gate
@@ -38,6 +39,10 @@ The work runs in three stages, in this order: content criteria, receiver trades,
 - **Content criteria:** In scope: deciding, per remaining shape skill, whether it has a check-only command worth requiring and, where it does, one content criterion following the shared rule (not applicable without a hook; unsafe hook a violation; command on a non-comment line without `--fix` or `--write`; level FAIL), with tests, standard text and `contributes: ['.githooks/pre-commit']`. A shape whose repositories are always package-backed may instead rely on `SCR-11` and say so. Out of scope: existence and binding, which `ki-repo` owns; any repository's actual hook.
 - **Receiver trades:** In scope: preparing and submitting one `ki-trades` work trade to each receiver, naming the criteria and the check-only rule. Out of scope: writing either repository's hook, amending `ADR-DOTFILES-006` in the chezmoi source, and any remote operation beyond the trade transport the receiver accepts.
 - **Raising the levels:** In scope: confirming estate convergence from fresh `ki repo audit` evidence, raising both levels, and updating the `ki-repo` standard and rubric. Out of scope: adding hooks to repositories, which each receiver owns through trades; content criteria.
+
+## Cancelled
+
+Cancelled 2026-10-11 as rejected, approved by Kris Brown (state-of-play decisions log, Decision 38: roadmap triage approved in full). An estate-wide rollout with no owner yet, so Kris chose not to keep it as a work record. It is kept as a one-line idea in Arcadia's baseline-rollout Project note (`ki-arcadia-principal`, `Streams/Projects/baseline-rollout.md`). It leaves no outstanding change.
 
 ## Discussion
 
