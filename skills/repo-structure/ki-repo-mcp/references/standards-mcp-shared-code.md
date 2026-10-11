@@ -19,8 +19,8 @@ The inventory compared physical file digests, exports, SDK package family, coloc
 | Surface | Exact current cluster | Classification |
 | ------- | --------------------- | -------------- |
 | Access gate | `mcp-gsuite`, `mcp-ki-kb-fs`, `mcp-m365` | Modern v2 candidate |
-| Access gate | `mcp-housekeeping-chatgpt`, `mcp-housekeeping-codex` | Legacy v1 candidate |
-| Results | `mcp-housekeeping-chatgpt`, `mcp-housekeeping-codex` | Legacy result candidate |
+| Access gate | `mcp-housekeeping-chatgpt` | Legacy v1 candidate |
+| Results | `mcp-housekeeping-chatgpt` | Legacy result candidate |
 | Annotations | None | Capability variants |
 | Audit log | None | Shared engine plus local security seam required |
 
@@ -33,7 +33,6 @@ The inventory compared physical file digests, exports, SDK package family, coloc
 | `mcp-gsuite` | v2 | 5 | Exact modern access cluster; remote annotations; mail/body redaction; text plus modern results | Candidate after local mail sanitizer seam is explicit |
 | `mcp-housekeeping-chatgpt` | v1 | 4 | Exact legacy access and result clusters; read-only annotations; host-specific audit redaction | Existing host-configuration warning remains owned locally; profile migration separate |
 | `mcp-housekeeping-claude` | v2 | 4 | Modern access near-match; destructive local annotations; host audit redaction; no result helper | Do not create result helper speculatively |
-| `mcp-housekeeping-codex` | v1 | 0 | Exact legacy access and result clusters; read-only annotations; host audit redaction | Existing `MCP-HC-FND-001` remains receiver owner; add vendoring only after test coverage exists |
 | `mcp-ki-kb-fs` | v2 | 4 | Exact modern access cluster; local read/write annotations; KB-path redaction; extended results | Candidate after local KB sanitizer and result extensions are explicit |
 | `mcp-ki-kb-notion-mirror` | v2 | 6 | Modern access near-match; remote annotations; Notion redaction; modern results reorder only | Candidate after local Notion sanitizer seam is explicit |
 | `mcp-m365` | v2 | 7 | Exact modern access cluster; broad remote annotations; mail/body redaction; extended results | Candidate after local mail sanitizer and result extensions are explicit |
@@ -54,6 +53,5 @@ CONFORM may create only missing managed files when all destinations are containe
 
 1. Prove the two core profiles against Harness fixtures.
 2. Pilot `modern-v2-core` in `mcp-git-audit`, whose utility coverage and relatively narrow result surface provide the safest modern boundary.
-3. Do not pilot legacy vendoring in `mcp-housekeeping-codex` until `MCP-HC-FND-001` supplies utility coverage.
-4. Extract and test the audit sanitizer seam before managing any `audit-log.ts`.
-5. After a pilot proves byte-stable projection and drift detection, capture one bounded receiver item only in repositories that still need migration. Do not create nine speculative roadmap records from this inventory alone.
+3. Extract and test the audit sanitizer seam before managing any `audit-log.ts`.
+4. After a pilot proves byte-stable projection and drift detection, capture one bounded receiver item only in repositories that still need migration. Do not create eight speculative roadmap records from this inventory alone.

@@ -38,7 +38,6 @@ Inline pins found on 2026-10-09, all at `v0.8.4`:
 - `mcp-gsuite`
 - `mcp-housekeeping-chatgpt`
 - `mcp-housekeeping-claude`
-- `mcp-housekeeping-codex`
 - `mcp-ki-kb-fs`
 - `mcp-ki-kb-notion-mirror`
 - `mcp-m365`
@@ -58,7 +57,7 @@ Inline pins found on 2026-10-09, all at `v0.8.4`:
 Verified locally on 2026-10-09:
 
 - `ki-agentic-harness` already reads `.github/ki-version` (`v0.10.0`) and carries `update-ki-pin.yml`. The release bot is now installed on it with its App ID variable and private-key secret set, and its `main` ruleset exists (verified 2026-10-09). It is the reference receiver.
-- The 20 repositories listed above still pin `KI_VERSION: v0.8.4` inline in their CI workflow, with no `.github/ki-version` and no receiver.
+- The 19 repositories listed above still pin `KI_VERSION: v0.8.4` inline in their CI workflow, with no `.github/ki-version` and no receiver.
 - `ki-engineering`'s CI criterion warns when a workflow does not read `.github/ki-version` or lacks the receiver; its exemplar carries the receiver to copy.
 - The release bot is installed only on `homebrew-tap`, `ki-website` and `ki-agentic-harness`. Every further repository needs the same `main` ruleset in place before the bot is installed there, as [Arcadia's Release Cascade](/Users/krisbrown/workspaces/kit/knowledgeislands/ki-arcadia-principal/Admin/Operations/Processes/Release%20Cascade.md) sets out. Rulesets, App installation, credentials and the auto-merge setting are Kris's to change.
 

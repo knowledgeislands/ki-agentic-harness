@@ -36,7 +36,7 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 ¶ OAuth 2.1 framework, token audience, PKCE, dynamic client registration — relevant to the gmail / m365 auth-servers.
 
-※ Which dated revision is current and whether a released SDK supports it. All six original sibling repositories now declare the v2 server package (2.3.0) and so select the 2026-07-28 profile; three newer repositories (`mcp-acquire-whatsapp`, `mcp-housekeeping-chatgpt`, `mcp-housekeeping-codex`) declare the v1 SDK (`^1.32.0`) and the 2025-11-25 profile.
+※ Which dated revision is current and whether a released SDK supports it. All six original sibling repositories now declare the v2 server package (2.3.0) and so select the 2026-07-28 profile; two newer repositories (`mcp-acquire-whatsapp`, `mcp-housekeeping-chatgpt`) declare the v1 SDK (`^1.32.0`) and the 2025-11-25 profile.
 
 ## Community
 
@@ -61,7 +61,7 @@ The standard is defined as the **majority shape** across the six sibling repos u
 | REPOS  | The six sibling repos †     | Layout, config, tool naming, shared `utils/`, the toolchain ‡ | 2026-10-06    |
 | CLAUDE | Each repo's own `CLAUDE.md` | Per-repo invariants ※                                         | 2026-10-06    |
 
-† `mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gsuite`, `mcp-m365`, `mcp-housekeeping-claude`, `mcp-ki-kb-notion-mirror`. Three newer v1 repositories (`mcp-acquire-whatsapp`, `mcp-housekeeping-chatgpt`, `mcp-housekeeping-codex`) are not yet part of the majority basis.
+† `mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gsuite`, `mcp-m365`, `mcp-housekeeping-claude`, `mcp-ki-kb-notion-mirror`. Two newer v1 repositories (`mcp-acquire-whatsapp`, `mcp-housekeeping-chatgpt`) are not yet part of the majority basis.
 
 ‡ Layout, config injection, tool naming, the shared `utils/` helpers, the package/tsconfig/vitest/biome toolchain.
 
@@ -94,9 +94,9 @@ REFRESH last ran **2026-10-06**. Every row was re-fetched except the NSA/CISA CS
 
 **Open watch-items:**
 
-- Correct the sibling names in the standard and `SKILL.md`, which still say `mcp-ki-repo-kb-fs` and `mcp-ki-repo-kb-notion-mirror`, and decide whether the three newer v1 repositories join the majority basis.
+- Correct the sibling names in the standard and `SKILL.md`, which still say `mcp-ki-repo-kb-fs` and `mcp-ki-repo-kb-notion-mirror`, and decide whether the two newer v1 repositories join the majority basis.
 - Add 2026-07-28 TOOLS, SEC and AUTH rows beside the 2025-11-25 ones, and make the structured-output rule profile-dependent (object versus any JSON value).
-- Track the three AGENTS.md profile declarations above, sibling pins against SDK 2.3.1, and migration of the three v1 repositories.
+- Track the three AGENTS.md profile declarations above, sibling pins against SDK 2.3.1, and migration of the two v1 repositories.
 - Find a reachable host for the NSA/CISA CSI.
 - Unchanged: rate limiting for any future remote server, and the open annotation vocabulary proposals.
 
