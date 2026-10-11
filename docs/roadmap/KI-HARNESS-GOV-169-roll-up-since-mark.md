@@ -7,12 +7,12 @@ purpose: capability
 project: ways-of-working
 component: governance
 horizon: next
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: bd6e29b5e0d567fb5ebb83566ddd46b3f6ba778b
 created_at: 2026-10-09T12:00:00Z
-updated_at: 2026-10-11T02:32:43Z
+updated_at: 2026-10-11T02:36:39Z
 ---
 
 # KI-HARNESS-GOV-169: Roll Up Since Mark
@@ -52,13 +52,13 @@ The approach is settled by the owner decisions and the confirmed defaults below.
 ## Steps
 
 - [x] Re-ground: confirm Kris's answers to the tagged recommendations in [Confirmed defaults](#confirmed-defaults---2026-10-11). Apply any change and, if one alters scope, return the record to `draft` and replan.
-- [ ] In `standards-background-runs.md`, replace § Project recap with a § Recap since the mark under Thread working rules, so it applies to the master thread and to each project thread. It defines the mark (one per thread, replaced when struck, held in the checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`), striking it on the owner's word ("mark"), the scope per thread, the window `since <mark>`, the sections (delivered, decided, started, stopped or blocked, newly captured, running now, outstanding), the definition of outstanding, the sources, and the no-mark default.
-- [ ] Update § Reporting's Summary bullet to "since the owner's last message", pointing a "since the mark" request at the recap, and make it the form of a proactive update.
-- [ ] Update § Project threads, § Directions from the master thread, § Parking tangents, § Linking records and § Keeping primary checkouts current to say "recap" for every coordinating thread, and repoint each `#project-recap` link.
-- [ ] Update `ki-delegation` `SKILL.md`'s Background runs line and Notes bullet to name the recap since the mark and keep `ki-recap` as the single-session summary.
-- [ ] In `standards-checkpoints.md` § Exact record form, add one sentence: a coordinating thread keeps its mark in `Current state`, under `ki-delegation`'s mark rule, and striking a new one replaces it.
-- [ ] Extend RUN-5 in `background-runs.ts` to cover keeping the mark in the checkpoint and giving recaps since it, update RUN-3 and RUN-4 evidence-scope wording from "project recaps" to "recaps", and regenerate `references/rubric.md` with `ki dev skill rubric ki-delegation`.
-- [ ] Run Verify, write the evidence into Discussion, and set the record `awaiting-review`.
+- [x] In `standards-background-runs.md`, replace § Project recap with a § Recap since the mark under Thread working rules, so it applies to the master thread and to each project thread. It defines the mark (one per thread, replaced when struck, held in the checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`), striking it on the owner's word ("mark"), the scope per thread, the window `since <mark>`, the sections (delivered, decided, started, stopped or blocked, newly captured, running now, outstanding), the definition of outstanding, the sources, and the no-mark default.
+- [x] Update § Reporting's Summary bullet to "since the owner's last message", pointing a "since the mark" request at the recap, and make it the form of a proactive update.
+- [x] Update § Project threads, § Directions from the master thread, § Parking tangents, § Linking records and § Keeping primary checkouts current to say "recap" for every coordinating thread, and repoint each `#project-recap` link.
+- [x] Update `ki-delegation` `SKILL.md`'s Background runs line and Notes bullet to name the recap since the mark and keep `ki-recap` as the single-session summary.
+- [x] In `standards-checkpoints.md` § Exact record form, add one sentence: a coordinating thread keeps its mark in `Current state`, under `ki-delegation`'s mark rule, and striking a new one replaces it.
+- [x] Extend RUN-5 in `background-runs.ts` to cover keeping the mark in the checkpoint and giving recaps since it, update RUN-3 and RUN-4 evidence-scope wording from "project recaps" to "recaps", and regenerate `references/rubric.md` with `ki dev skill rubric ki-delegation`.
+- [x] Run Verify, write the evidence into Discussion, and set the record `awaiting-review`.
 
 ## Files touched
 
@@ -102,6 +102,38 @@ The `ki-delegation` background-run standard and the `ki-checkpoint` record-form 
 ### Roadmap
 
 Closes this record on acceptance. A cross-thread roll-up spanning every Project thread, if wanted later, is new work through `ki-next`.
+
+## Review
+
+### Delivered
+
+Delivered the recap since the mark from immutable baseline `bd6e29b5e0d567fb5ebb83566ddd46b3f6ba778b`, on Decision 16 and Decision 39 with every recommended default confirmed unchanged. Every coordinating thread, the master thread and each project thread, now keeps one owner-struck mark in its checkpoint's `Current state` and gives a recap since it on request; proactive updates use the Summary. No `ki agent`, `ki-recap` or checkpoint-shape change, and no migration of existing checkpoints, which threads absorb through the refresh rule.
+
+### Change Summary
+
+- `standards-background-runs.md`: removed § Project recap and added § Recap since the mark under Thread working rules, with the mark, striking, shape, outstanding, sources, when, and no-mark rules. The Summary bullet now uses "since the owner's last message", is the proactive form, and routes "since the mark" to the recap. § Project threads names the mark in the checkpoint; § Directions from the master thread, § Linking records and § Keeping primary checkouts current say "recap"; § Parking tangents counts parked items as outstanding.
+- `ki-delegation` `SKILL.md`: the Background runs line names the recap since the mark under thread working rules, and the Notes bullet keeps `ki-recap` as the single-session summary.
+- `standards-checkpoints.md` § Exact record form: one sentence placing the mark in `Current state` under the mark rule, replaced when a new one is struck.
+- `background-runs.ts`: RUN-5 now covers the mark and recaps since it, with a "restore the mark" outcome; RUN-3 and RUN-4 evidence scopes say "recaps". `references/rubric.md` regenerated.
+
+### Verification
+
+- `grep -rn -i -e 'last recap' -e 'named mark' -e 'project-recap' skills/governance` returns nothing.
+- `ki dev skill rubric ki-delegation` reports `references/rubric.md` in sync after regeneration. The dev-linked install points at the primary checkout, so it ran against the worktree through a temporary `XDG_DATA_HOME` harness link for that command only.
+- `bun run test`: 1,062 pass, 0 fail. `bunx tsc --noEmit`: pass.
+- `ki repo audit --skill ki-delegation`: PASS. `ki repo audit --skill ki-checkpoint`: PASS. `ki repo audit --skill ki-skills`: FAIL=0, WARN=1; the warning is the pre-existing fleet finding LONG-3 (a `references/sources.md` source last reviewed 2026-06-21), unrelated to this change.
+
+### Outstanding concerns
+
+None in scope. Running threads pick the rule up through the refresh rule; any private mark kept outside a checkpoint, such as in a run directory, needs moving into the checkpoint by its thread.
+
+### Post-change review
+
+Read § Recap since the mark cold: it states how to strike a mark, its exact line in `Current state`, the window, sections, outstanding set, sources and the no-mark start, for both the master thread and a project thread, without needing this record. MARK-NONE's first strike is the one case where the thread, not the owner, sets the mark; the text says so explicitly, matching the confirmed default.
+
+### Mini recap
+
+Coordinating threads now share one recap since the owner's mark, held in the checkpoint, with the Summary as the light proactive form. `ki-delegation` is the durable home; no memory or knowledge-base note was promoted.
 
 ## Discussion
 
