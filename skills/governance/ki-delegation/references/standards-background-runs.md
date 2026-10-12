@@ -67,6 +67,12 @@ A run prompt is cold-agent ready. It contains, in order:
 5. the instructions "Do not use background subagents." and "Never end your session while waiting.";
 6. one authority footer, appended last.
 
+When writing the steps and rules:
+
+- Before forbidding a pattern, check whether the target repository already uses it as an established idiom. If it does, sanction it on the repository's own terms or raise the change as a separate decision.
+- For a read-only audit, name the read-only checks, such as `prettier --check` or `rumdl check`, and forbid `lint:md` and any formatter run with `--write` or `--fix`.
+- When hook or script work runs automatically on every matching event, propose an adversarial review by independent security and correctness reviewers, each finding reproduced by a separate agent, where multi-agent orchestration is authorised.
+
 A long wait belongs in the foreground: the agent checks the condition every two minutes and updates its status meanwhile.
 
 ## Authority tiers

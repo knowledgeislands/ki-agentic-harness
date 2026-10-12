@@ -7,6 +7,7 @@ This normative standard defines the structure, linking, configuration, routing, 
 - [The Knowledge Islands model](#the-knowledge-islands-model)
 - [Identity, provenance, and adoption](#identity-provenance-and-adoption)
 - [Linking within a base](#linking-within-a-base)
+- [Index note shape](#index-note-shape)
 - [Source mirrors](#source-mirrors)
 - [Onboarding a base to this skill](#onboarding-a-base-to-this-skill)
 - [Zone aliases and the `[skills.ki-repo-kb]` config table](#zone-aliases-and-the-skillski-repo-kb-config-table)
@@ -36,6 +37,12 @@ The receiver chooses whether external knowledge becomes canonical local knowledg
 Within a base, notes link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths. The five index-carrying zones resolve as `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`; the inbound `+/` and outbound `-/` are staging, not zones, with no same-name index. Body links use the shortest unique path — a bare filename when it is unique, the minimum disambiguating prefix when it is not — and check for filename collisions before writing a bare link; a `## Contents` list always uses the full path with an alias (`[[Full/Path/Note|Note Name]]`). The `LINK-1` audit enforces uniqueness mechanically: it fails any bare or partial-path wikilink outside the staging areas that Obsidian could resolve to more than one note, so adding a note whose leaf name repeats an existing one surfaces every link it makes ambiguous. A link that resolves beside its own note or as a full path is unambiguous; whether a link is the _shortest_ unique form remains a judgment.
 
 This is the convention for **note content inside a base**, including internal links in table cells; escape an alias separator as `\|` so it is not parsed as a table-column separator. It takes precedence over the general `ki-authoring` relative-link rule for that scoped content. Skill files and other house documents use descriptive relative Markdown links. Canonical cross-repository references use the destination's repository identity and an appropriate portable reference rather than machine-local checkout paths.
+
+## Index note shape
+
+Wherever a base gives a folder a same-name index note, that note contextualises and points rather than duplicating content. Its `note_type` follows the index taxonomy. The body opens with a prose `## Overview` of the folder's purpose and how its contents fit together, then gives each direct child its own H2 section of two to four substantive sentences: what it covers, why it exists and what a reader will find. A `## Contents` list is a last resort for children that cannot be contextualised in prose; a bare list of child names with one-line descriptions is a navigation menu that adds nothing to the folder tree.
+
+The `+/` and `-/` staging areas and their subfolders carry no same-name index. `+/` is an inbox, not an asset store: an image or diagram belongs in the folder of the note it supports.
 
 ## Source mirrors
 
