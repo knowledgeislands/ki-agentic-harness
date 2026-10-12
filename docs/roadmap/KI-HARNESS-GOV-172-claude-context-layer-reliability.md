@@ -2,12 +2,14 @@
 id: KI-HARNESS-GOV-172
 area: GOV
 title: Claude context layer reliability
-status: triage
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-171
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-10T16:49:02Z
-updated_at: 2026-10-10T16:49:02Z
+updated_at: 2026-10-12T19:57:00Z
 ---
 
 # KI-HARNESS-GOV-172: Claude Context Layer Reliability
@@ -36,6 +38,10 @@ This is a non-blocking handoff from Arcadia Principal. It blocks nothing in Arca
 
 - In scope: deciding whether this belongs in the `ki-tokenomics-claude` audit standard or in guidance, and confirming the layer behaviour.
 - Out of scope: portable budget policy, which `ki-tokenomics` owns, and Arcadia's notes, which are already retired.
+
+## Cancelled
+
+Kris approved this cancellation on 12 October 2026 (state-of-play thread, Decision 147), accepting the triage review's proposal as written. Both records came from the same Arcadia handoff about where a rule should live, so one guidance change carries both. The Claude context-layer point is merged into KI-HARNESS-GOV-171 (`docs/roadmap/KI-HARNESS-GOV-171-standing-surface-design-rules.md`) as its Claude adapter note; confirming current Claude Code layer behaviour travels with it. No outstanding changes remain here.
 
 ## Discussion
 

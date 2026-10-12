@@ -2,19 +2,21 @@
 id: KI-HARNESS-GOV-171
 area: GOV
 title: Standing-surface design rules
-status: triage
+kind: deliver
+status: draft
+horizon: next
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-10T16:49:02Z
-updated_at: 2026-10-10T16:49:02Z
+updated_at: 2026-10-12T19:57:00Z
 ---
 
 # KI-HARNESS-GOV-171: Standing-Surface Design Rules
 
 ## Goal
 
-`ki-tokenomics` tells repository owners how to keep their always-loaded instructions small, not only how large they may be: one routing authority, lessons carried in memory rather than read at load time, and two points at which to review the standing surface before it outgrows its budget.
+`ki-tokenomics` tells repository owners how to keep their always-loaded instructions small, not only how large they may be: one routing authority, resolved lessons carried in repository guidance rather than in runtime path memory or a load-time note, and two points at which to review the standing surface before it outgrows its budget.
 
 ## Context
 
@@ -23,19 +25,74 @@ Arcadia Principal is retiring its Claude-specific knowledge-base notes, so that 
 The points, in runtime-neutral terms:
 
 - **One routing authority.** Keep a single routing authority for a repository: a skill defers to the root instructions instead of restating them, because every restatement is standing context paid for twice and a source of drift.
-- **Resolved lessons in memory, not in a load-time note.** Carry resolved operational lessons in the runtime's memory, where they are active without a read, rather than in a note that every session must load.
+- **Resolved lessons in repository guidance, not in path memory or a load-time note.** Carry resolved operational lessons into the repository's own guidance (root `AGENTS.md`, the owning skill, or the knowledge base), where every runtime finds them, rather than in a runtime's path memory or in a note that every session must load. Kris decided on 12 October 2026 to stop relying on path memory (state-of-play thread, Decision 142), which reverses the point as Arcadia first recorded it.
 - **Review the instructions file as it nears its budget.** Arcadia's former Claude note used about 10,000 bytes, roughly 2,500 tokens, which is the `instructions` default; growth past that point was the signal to prune or move material on demand.
 - **Ask before adding a permanent always-loaded section.** Before adding one, ask whether the material could be read only when it is needed, through a skill or an on-demand note.
 
 This is a non-blocking handoff from Arcadia Principal. It blocks nothing in Arcadia or here.
 
+### Claude adapter note
+
+Merged from KI-HARNESS-GOV-172 on 12 October 2026. `ki-tokenomics-claude` should explain which Claude context layers load every time and which load only on demand or conditionally, so that an owner places a rule meant to hold every time in an always-on layer. As Arcadia recorded it in Cowork:
+
+- The system prompt and project instructions are always on.
+- The memory index is always loaded, but memory files are read only on demand, so rules held in them apply only conditionally.
+- `CLAUDE.md` loads only when its folder is mounted.
+- Skills load only when invoked.
+- Hence a rule meant to hold every time belongs in an always-on layer.
+
+Confirm the layering against current Claude Code behaviour before relying on it. The point explains where a rule should live rather than how much context it costs, so it may sit better as guidance than as an audit criterion.
+
 ## Boundary
 
-- In scope: deciding whether these points belong in the `ki-tokenomics` standard, its educate mode, or guidance, and wording them runtime-neutrally.
+- In scope: deciding whether these points belong in the `ki-tokenomics` standard, its educate mode, or guidance, and wording them runtime-neutrally; and the Claude adapter note on context-layer reliability below, merged from the former KI-HARNESS-GOV-172, in `ki-tokenomics-claude` guidance after confirming current Claude Code layer behaviour.
 - Out of scope: changing the default budgets, any runtime adapter's evidence collection, and Arcadia's notes, which are already retired.
+- If the two parts must stay in separate skills' changes, plan them as separate Steps within this record.
+
+## Current state
+
+Not yet grounded. `ki-plan` records the current source facts before Ready.
+
+## Steps
+
+- [ ] Plan this record under `ki-plan` before Ready, replacing these placeholder sections.
+
+## Files touched
+
+Not yet planned.
+
+## Verify
+
+Not yet planned.
+
+## Dependencies / blocks
+
+As declared in the frontmatter `blocks` and `blocked_by`; `ki-plan` confirms them.
+
+## Documentation impact
+
+### Decision Records
+
+Not yet assessed.
+
+### Specifications
+
+Not yet assessed.
+
+### Guides
+
+Not yet assessed.
+
+### Roadmap
+
+Adopted at Next on 12 October 2026; `ki-plan` assesses the rest before Ready.
 
 ## Discussion
 
 ### Placement
 
 The first two points are design rules and may suit the standard or a judgement criterion; the last two are tending triggers and may suit educate-mode guidance rather than an audit criterion. The receiving owner decides.
+
+### Adoption
+
+On 12 October 2026 Kris approved the triage review's proposal as written (state-of-play thread, Decision 147): KI-HARNESS-GOV-172 merged into this record, adopted as `deliver / Next` (guidance), with the lessons point reworded to follow Decision 142. Adoption grants no implementation, acceptance or remote authority.
