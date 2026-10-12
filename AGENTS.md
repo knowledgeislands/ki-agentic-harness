@@ -1,4 +1,4 @@
-# AGENTS.md — ki-agentic-harness
+# AGENTS.md — Knowledge Islands Agentic Harness
 
 **This is the common, runtime-neutral orientation** for any agent working in this repo — the [open agents.md standard](https://agents.md/), read directly by Codex and imported by `CLAUDE.md` for Claude Code. Put shared guidance here; keep only genuinely runtime-specific notes in per-runtime files.
 
