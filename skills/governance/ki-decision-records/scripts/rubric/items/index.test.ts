@@ -304,22 +304,22 @@ The decision remains readable.
       .find((candidate) => candidate.code === 'ROOT-3')
       ?.mechanical?.audit.run(context as NonNullable<typeof context>)
   }
-  const declared = '[skills.ki-repo]\nrepo_code = "KI-TOOL"\n'
+  const declared = '[skills.ki-repo]\nrepo_code = "KI-TOOL-KI"\n'
 
-  expect(audit(declared, ['GDR-KI-TOOL-001', 'ADR-KI-TOOL-CLI-001'])).toEqual([
-    { status: 'PASS', message: 'Every record scope is KI-TOOL or begins with KI-TOOL-.' }
+  expect(audit(declared, ['GDR-KI-TOOL-KI-001', 'ADR-KI-TOOL-KI-CLI-001'])).toEqual([
+    { status: 'PASS', message: 'Every record scope is KI-TOOL-KI or begins with KI-TOOL-KI-.' }
   ])
-  expect(audit(declared, ['GDR-KI-TOOL-001', 'GDR-KI-TOOLS-001', 'GDR-KI-FUNDAMENTALS-001'])).toEqual([
+  expect(audit(declared, ['GDR-KI-TOOL-KI-001', 'GDR-KI-TOOLS-001', 'GDR-KI-FUNDAMENTALS-001'])).toEqual([
     {
       status: 'VIOLATION',
       message:
-        'GDR-KI-FUNDAMENTALS-001 has scope KI-FUNDAMENTALS; the scope must be KI-TOOL or begin with KI-TOOL-, for example GDR-KI-TOOL-NNN.',
+        'GDR-KI-FUNDAMENTALS-001 has scope KI-FUNDAMENTALS; the scope must be KI-TOOL-KI or begin with KI-TOOL-KI-, for example GDR-KI-TOOL-KI-NNN.',
       subject: 'GDR-KI-FUNDAMENTALS-001-decision-3.md'
     },
     {
       status: 'VIOLATION',
       message:
-        'GDR-KI-TOOLS-001 has scope KI-TOOLS; the scope must be KI-TOOL or begin with KI-TOOL-, for example GDR-KI-TOOL-NNN.',
+        'GDR-KI-TOOLS-001 has scope KI-TOOLS; the scope must be KI-TOOL-KI or begin with KI-TOOL-KI-, for example GDR-KI-TOOL-KI-NNN.',
       subject: 'GDR-KI-TOOLS-001-decision-2.md'
     }
   ])

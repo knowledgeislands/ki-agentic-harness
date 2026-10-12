@@ -48,11 +48,11 @@ export const scenarios: Scenario[] = [
     skill: 'ki-work-roadmap',
     id: 'repo-roadmap-cancel-duplicate',
     prompt:
-      'This triage record duplicates KI-WEB-SEO-005. The human approved closing it. Should I delete it now or add delivery evidence first?',
+      'This triage record duplicates KI-WEBSITE-SEO-005. The human approved closing it. Should I delete it now or add delivery evidence first?',
     assertions: [
       { name: 'retained cancelled closure', re: /cancel|retain/i },
       { name: 'duplicate resolution', re: /resolution.*duplicate|duplicate/i },
-      { name: 'canonical resolution target', re: /KI-WEB-SEO-005/i },
+      { name: 'canonical resolution target', re: /KI-WEBSITE-SEO-005/i },
       { name: 'cancelled section', re: /##\s*Cancelled|Cancelled section/i },
       { name: 'no fabricated delivery', re: /not|do not|without.*(delivery|implementation)|no.*review/i },
       { name: 'later prune boundary', re: /later|prior commit|before.*prun|cancel.*prun/i }
@@ -64,11 +64,11 @@ export const scenarios: Scenario[] = [
     skill: 'ki-work-roadmap',
     id: 'repo-roadmap-blocks-graph',
     prompt:
-      "KI-WEB-SEO-005 cannot start until KI-WEB-CNT-004 is finished. I've added blocked_by: [KI-WEB-CNT-004] and would like to start it now in parallel. Anything wrong with that?",
+      "KI-WEBSITE-SEO-005 cannot start until KI-WEBSITE-CNT-004 is finished. I've added blocked_by: [KI-WEBSITE-CNT-004] and would like to start it now in parallel. Anything wrong with that?",
     assertions: [
       { name: 'blocked_by field', re: /blocked_by/i },
       { name: 'reverse blocks edge', re: /blocks/i },
-      { name: 'identifier blocker reference', re: /KI-WEB-CNT-004/i },
+      { name: 'identifier blocker reference', re: /KI-WEBSITE-CNT-004/i },
       { name: 'no in-progress before blockers done', re: /done|finish|complete|wait|before/i }
     ],
     rubric:

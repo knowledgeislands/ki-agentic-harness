@@ -410,13 +410,13 @@ describe('ki-repo-kb-streams session', () => {
 
     writeFileSync(
       join(root, 'Streams', 'Initiatives', 'techne.md'),
-      '# Techne\n\n## Projects\n\n- KI-TOOL-CLI-112 - Read the model\n- [[KI-ARCADIA-GOV-026-create-the-registry]]\n\n## Update\n\n**2026-10-07.** On track.\n'
+      '# Techne\n\n## Projects\n\n- KI-TOOL-KI-CLI-112 - Read the model\n- [[KI-ARCADIA-GOV-026-create-the-registry]]\n\n## Update\n\n**2026-10-07.** On track.\n'
     )
     expect(audit()).toEqual([
       {
         level: 'FAIL',
         message:
-          'Registry note lists work records (KI-TOOL-CLI-112; KI-ARCADIA-GOV-026); records name their Project or Initiative instead.',
+          'Registry note lists work records (KI-TOOL-KI-CLI-112; KI-ARCADIA-GOV-026); records name their Project or Initiative instead.',
         subject: 'Streams/Initiatives/techne.md'
       },
       {

@@ -38,7 +38,7 @@ Verified on 2026-10-10:
 - The [work-item format standard](../../skills/change-management/ki-work-roadmap/references/standards-work-item-format.md#cancellation-and-resolution) allows a `resolution_target` "in this or any other repository" and accepts a cross-repository target by shape; the [repository roadmaps standard](../../skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md)'s lifecycle table asks for "a qualified `resolution_target`" for a duplicate across repositories.
 - The [acceptance standard](../../skills/change-management/ki-accept/references/standards-acceptance.md) step 6 says a target "may belong to another repository" and asks `## Cancelled` to name the target's repository and path.
 - `roadmap-evidence.ts` checks the target's shape, and warns only when a same-repository target does not resolve; a target with another repository code passes unchecked.
-- The `ki-work-roadmap` eval scenario names `KI-WEB-SEO-005` as the retained record, with no repository context.
+- The `ki-work-roadmap` eval scenario names `KI-WEBSITE-SEO-005` as the retained record, with no repository context.
 
 ## Steps
 

@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · quarterly
 
-[The Diagrams standard](standards-diagrams.md) is Knowledge Islands house policy, derived from the `apps-observatory` pilot (`KI-OBS-APP-034` there) and the tooling research of 2026-10-03, adopted by `KI-HARNESS-GOV-131`. The research reported some facts it could not verify; they are marked.
+[The Diagrams standard](standards-diagrams.md) is Knowledge Islands house policy, derived from the `apps-observatory` pilot (`KI-OBSERVA-APP-034` there) and the tooling research of 2026-10-03, adopted by `KI-HARNESS-GOV-131`. The research reported some facts it could not verify; they are marked.
 
 | Source                                                                                                  | Bears on                                                       | last reviewed |
 | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |

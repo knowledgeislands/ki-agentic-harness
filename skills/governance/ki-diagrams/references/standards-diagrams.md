@@ -1,6 +1,6 @@
 # Diagrams standard
 
-This standard defines how a Knowledge Islands repository keeps living diagrams: diagrams that explain the system as built, traced from named source files, and kept current as the code changes. The hosted rubric enforces its mechanical criteria; the generated [rubric](rubric.md) publishes every criterion, and [exemplars](exemplars.md) point at a conforming set. It was established by the `apps-observatory` pilot (`KI-OBS-APP-034` there) and adopted as a harness standard by `KI-HARNESS-GOV-131`.
+This standard defines how a Knowledge Islands repository keeps living diagrams: diagrams that explain the system as built, traced from named source files, and kept current as the code changes. The hosted rubric enforces its mechanical criteria; the generated [rubric](rubric.md) publishes every criterion, and [exemplars](exemplars.md) point at a conforming set. It was established by the `apps-observatory` pilot (`KI-OBSERVA-APP-034` there) and adopted as a harness standard by `KI-HARNESS-GOV-131`.
 
 ## Contents
 

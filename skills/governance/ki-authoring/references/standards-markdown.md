@@ -92,7 +92,7 @@ Frontmatter is authored Markdown content. Use an unquoted scalar when it is a pl
 
 The mechanical normalizer removes paired single or double quotes only when the value is a bare-safe identifier-like token (`[A-Za-z_][A-Za-z0-9_-]*`) and is not YAML-significant (`true`, `false`, `null`, `y`, `n`, `yes`, `no`, `on`, `off`, `.nan`, or `.inf`, case-insensitively). It leaves dates, numeric-looking values, whitespace, punctuation, escaped values, and YAML-significant scalars unchanged.
 
-For example, write `id: DOTFILES-UE-001`, not `id: 'DOTFILES-UE-001'`; retain `title: "A value: with punctuation"` and `enabled: "true"` where those values must remain strings.
+For example, write `id: KB-DOTFILES-UE-001`, not `id: 'KB-DOTFILES-UE-001'`; retain `title: "A value: with punctuation"` and `enabled: "true"` where those values must remain strings.
 
 This is an authoring presentation rule. Domain skills own a document's required frontmatter fields and value semantics; `ki` accepts valid quoted scalar input so existing authored files remain readable.
 
