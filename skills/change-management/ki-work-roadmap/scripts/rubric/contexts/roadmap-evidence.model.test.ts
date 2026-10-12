@@ -246,7 +246,7 @@ test('fixed areas map codes to titles; a bare list fails in Arcadia territory an
   configure('', 'areas = ["CORE"]\n')
   expect(warnings(repository)).toContain(`outside Arcadia territory, ${legacyList}`)
   configure(
-    'repository = "https://github.com/knowledgeislands/ki-arcadia-principal"\ncapital = "https://github.com/knowledgeislands/ki-arcadia-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-arcadia-principal"]\n',
+    'repository = "https://github.com/knowledgeislands/ki-principal"\ncapital = "https://github.com/knowledgeislands/ki-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-principal"]\n',
     'areas = ["CORE"]\n'
   )
   expect(failures(repository)).toContainEqual(expect.objectContaining({ area: 'ROAD-6', msg: legacyList }))
@@ -286,7 +286,7 @@ test('fixed areas map codes to titles; a bare list fails in Arcadia territory an
 test('territorial enforcement uses the canonical Capital roster and warns for unresolved policy', () => {
   const capital = createCapital()
   const island = temporary('ki-island-')
-  const arcadia = 'https://github.com/knowledgeislands/ki-arcadia-principal'
+  const arcadia = 'https://github.com/knowledgeislands/ki-principal'
   writeFileSync(
     join(island, '.ki.toml'),
     `[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "${arcadia}"\n`
@@ -434,8 +434,8 @@ test('project membership warns on unknown slugs and fails only on a contradicted
 
 test('a qualified reference parses a territory handle or prefix-less Capital registry key', () => {
   expect(parseRegistryReference('agent-host')).toEqual({ slug: 'agent-host' })
-  expect(parseRegistryReference('ki-arcadia-principal/agent-host')).toEqual({
-    territory: 'ki-arcadia-principal',
+  expect(parseRegistryReference('ki-principal/agent-host')).toEqual({
+    territory: 'ki-principal',
     slug: 'agent-host'
   })
   expect(parseRegistryReference('kit-kris.me.uk/site')).toEqual({ territory: 'kit-kris.me.uk', slug: 'site' })

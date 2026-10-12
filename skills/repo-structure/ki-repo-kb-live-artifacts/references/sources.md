@@ -6,7 +6,7 @@ This skill's standard is canonical to the Knowledge Islands harness — the live
 
 | Source | What it governs | Last reviewed |
 | --- | --- | --- |
-| ki-arcadia-principal `Admin/Operations/Live Artifacts/` | Current collection placement evidence; no source/render lifecycle exemplar | 2026-08-12 |
+| ki-principal `Admin/Operations/Live Artifacts/` | Current collection placement evidence; no source/render lifecycle exemplar | 2026-08-12 |
 | `ki-repo-kb` SKILL.md | Admin/Operations/ zone that hosts live artifacts | 2026-08-12 |
 | `ki-authoring` SKILL.md | Markdown style for the .md source files | 2026-08-12 |
 
@@ -14,7 +14,7 @@ This skill's standard is canonical to the Knowledge Islands harness — the live
 
 REFRESH last run **2026-08-12** (internal-model skill — re-checked local source and current internal reality, no web research).
 
-- **ki-arcadia-principal `Admin/Operations/Live Artifacts/`** — _confirmed._ Directory and `Live Artifacts.md` index note still present. Still index-only: no `.md`/`.html` artifact pairs exist yet, so the pairing convention and sync threshold remain unexercised against real data.
+- **ki-principal `Admin/Operations/Live Artifacts/`** — _confirmed._ Directory and `Live Artifacts.md` index note still present. Still index-only: no `.md`/`.html` artifact pairs exist yet, so the pairing convention and sync threshold remain unexercised against real data.
 - **`ki-repo-kb` SKILL.md** — _confirmed._ `Admin/Operations/` zone still declared and still the host for live artifacts; parent delegation boundary accurate.
 - **`ki-authoring` SKILL.md** — _confirmed._ Still governs Markdown style for the `.md` source files; off-ramp accurate.
 

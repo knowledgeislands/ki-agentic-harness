@@ -5,7 +5,7 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or explaining the format to a new contributor. Each pattern is drawn from real DRs in the `ki-arcadia-principal` base — the primary reference implementation — and annotated to make the convention visible. The examples below are conformed to the current standard even when their historical source used an earlier path. The exemplars demonstrate shape, not topic: the subject matter of a DR is incidental; the structure is the point.
+Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or explaining the format to a new contributor. Each pattern is drawn from real DRs in the `ki-principal` base — the primary reference implementation — and annotated to make the convention visible. The examples below are conformed to the current standard even when their historical source used an earlier path. The exemplars demonstrate shape, not topic: the subject matter of a DR is incidental; the structure is the point.
 
 ## Collections
 
@@ -13,9 +13,9 @@ Curated illustrations of well-formed Decision Records. Use these when authoring 
 | --- | --- | --- |
 | [Nygard (original)][nygard] | The section format and rationale style | 2026-06-25 |
 | [ADR GitHub community resources][adr-gh] | Community patterns: Options, Pros/Cons, multi-type variants | 2026-06-25 |
-| `ki-arcadia-principal` `Admin/Governance/Decisions/` † | The canonical KI KB-repo implementation of the DR format | 2026-06-25 |
+| `ki-principal` `Admin/Governance/Decisions/` † | The canonical KI KB-repo implementation of the DR format | 2026-06-25 |
 
-† The `ki-arcadia-principal` base is not publicly hosted; the DRs are the primary exemplars for the KB-repo shape.
+† The `ki-principal` base is not publicly hosted; the DRs are the primary exemplars for the KB-repo shape.
 
 [nygard]: https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
 [adr-gh]: https://adr.github.io
@@ -24,20 +24,20 @@ Curated illustrations of well-formed Decision Records. Use these when authoring 
 
 ### Well-formed KB-repo GDR (Governance Decision Record)
 
-`GDR-KI-ARCADIA-001-adopting-decision-records.md` is the reference implementation of the KB-repo shape and the root of a newly created collection. Note: frontmatter `id` and title compose the H1; `decision_type` and `decision_type_url` match the `GDR-` prefix; `status` tracks maintenance state (freshness), not a decision lifecycle — DRs have none; `decision_depends_on` is a YAML list of full DR codes; the body sections appear in canonical order; voice is active present tense; the References section uses relative Markdown links only.
+`GDR-KI-PRINCIPAL-001-adopting-decision-records.md` is the reference implementation of the KB-repo shape and the root of a newly created collection. Note: frontmatter `id` and title compose the H1; `decision_type` and `decision_type_url` match the `GDR-` prefix; `status` tracks maintenance state (freshness), not a decision lifecycle — DRs have none; `decision_depends_on` is a YAML list of full DR codes; the body sections appear in canonical order; voice is active present tense; the References section uses relative Markdown links only.
 
 ```markdown
 ---
-id: GDR-KI-ARCADIA-001
+id: GDR-KI-PRINCIPAL-001
 title: 'Adopting Decision Records'
 date: 2026-06-25
 status: current
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/gdr
 decision_type: governance
-decision_depends_on: ['SDR-KI-ARCADIA-001']
+decision_depends_on: ['SDR-KI-PRINCIPAL-001']
 ---
 
-# GDR-KI-ARCADIA-001: Adopting Decision Records
+# GDR-KI-PRINCIPAL-001: Adopting Decision Records
 
 ## Context
 
@@ -62,11 +62,11 @@ Knowledge Islands adopts **Decision Records (DRs)** as the standard instrument f
 
 ### Well-formed KB-repo SDR (Strategy Decision Record)
 
-`SDR-KI-ARCADIA-001-knowledge-islands-the-strategy.md` shows the `strategy` type. The frontmatter has no `decision_depends_on` (it is a root decision, so the field is omitted rather than set to `[]`). The Context section is value-neutral — it states structural forces, not advocacy. The Decision section uses active voice and includes a table where a compact tabular form aids comprehension; such tables are permitted within body sections and must follow the standard table conventions (relative links in cells, skimmable rows). The Consequences section seeds the context for successor DRs.
+`SDR-KI-PRINCIPAL-001-knowledge-islands-the-strategy.md` shows the `strategy` type. The frontmatter has no `decision_depends_on` (it is a root decision, so the field is omitted rather than set to `[]`). The Context section is value-neutral — it states structural forces, not advocacy. The Decision section uses active voice and includes a table where a compact tabular form aids comprehension; such tables are permitted within body sections and must follow the standard table conventions (relative links in cells, skimmable rows). The Consequences section seeds the context for successor DRs.
 
 ```markdown
 ---
-id: SDR-KI-ARCADIA-001
+id: SDR-KI-PRINCIPAL-001
 title: 'Knowledge Islands — The Strategy'
 date: 2026-06-25
 status: current
@@ -74,7 +74,7 @@ decision_type_url: https://knowledgeislands.info/specifications/decision-records
 decision_type: strategy
 ---
 
-# SDR-KI-ARCADIA-001: Knowledge Islands — The Strategy
+# SDR-KI-PRINCIPAL-001: Knowledge Islands — The Strategy
 
 ## Context
 
@@ -103,8 +103,8 @@ Each island is introduced independently when its time comes.
 The index — `Decisions.md` in a KB, `README.md` in a code repo — is an **ordered list**, one item per DR, each linking the record by its ID and glossing what it decides, in **reveal order** (a from-scratch build narrative: roots first, then dependents, weaving the sub-scopes in). It is a list, not a table: an index is a single ordered sequence, not tabular or comparison data, so a list carries it with less markup. Per-record dates live in frontmatter, not the index; there is no decision lifecycle marker — records are living and present-state.
 
 ```markdown
-1. [GDR-KI-ARCADIA-001](GDR-KI-ARCADIA-001-adopting-decision-records.md) — adopting Decision Records (the format these records follow).
-2. [SDR-KI-ARCADIA-001](SDR-KI-ARCADIA-001-knowledge-islands-the-strategy.md) — Knowledge Islands, the strategy the model serves.
+1. [GDR-KI-PRINCIPAL-001](GDR-KI-PRINCIPAL-001-adopting-decision-records.md) — adopting Decision Records (the format these records follow).
+2. [SDR-KI-PRINCIPAL-001](SDR-KI-PRINCIPAL-001-knowledge-islands-the-strategy.md) — Knowledge Islands, the strategy the model serves.
 ```
 
 ### Code-repo ADR

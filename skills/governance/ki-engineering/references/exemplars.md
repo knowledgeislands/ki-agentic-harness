@@ -288,7 +288,7 @@ jobs:
 
 `apps-observatory`'s roadmap adapter carried a private YAML frontmatter reader. Its unquote step anchored on `^['"]`, but an inline YAML list separates its entries with `, `, so every entry after the first arrived with a leading space and kept its opening quote. The first caller hid the defect: the roadmap fields it reads are rarely multi-entry inline lists, so its output looked right and its tests passed.
 
-When a second adapter needed the same format, the reader was extracted into its own module rather than copied (`KI-OBS-VIS-004` in `apps-observatory`). The second caller read differently shaped frontmatter, and the defect surfaced at once: three false `blocking` signals against identifiers such as `'SDR-KI-ARCADIA-003`, a governance viewer reporting dependency breakage that did not exist. The fix and its regression test then covered both callers.
+When a second adapter needed the same format, the reader was extracted into its own module rather than copied (`KI-OBS-VIS-004` in `apps-observatory`). The second caller read differently shaped frontmatter, and the defect surfaced at once: three false `blocking` signals against identifiers such as `'SDR-KI-PRINCIPAL-003`, a governance viewer reporting dependency breakage that did not exist. The fix and its regression test then covered both callers.
 
 Had the reader been copied, the fix would have landed in one copy. The other would have kept producing plausible identifiers with a stray quote, and no gate would have said so: both copies type-check, both pass their own tests, and the defect is observable only against input the first caller never sees. Duplication that drifts can at least be detected; duplication that silently agrees while wrong cannot.
 

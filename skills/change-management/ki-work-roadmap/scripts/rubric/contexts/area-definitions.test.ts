@@ -78,7 +78,7 @@ test('a Knowledge Base bare areas list fails in Arcadia territory and warns outs
     }
   ])
   const capital = repository(
-    '[skills.ki-repo]\nrepo_type = "kb"\nrepo_code = "DEMO"\nrepository = "https://github.com/knowledgeislands/ki-arcadia-principal"\ncapital = "https://github.com/knowledgeislands/ki-arcadia-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-arcadia-principal"]\n\n[skills.ki-work-roadmap]\nareas = ["GOV"]\n',
+    '[skills.ki-repo]\nrepo_type = "kb"\nrepo_code = "DEMO"\nrepository = "https://github.com/knowledgeislands/ki-principal"\ncapital = "https://github.com/knowledgeislands/ki-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-principal"]\n\n[skills.ki-work-roadmap]\nareas = ["GOV"]\n',
     { path: AREA_INDEX_KB, text: '## Areas\n\n`GOV`\n' }
   )
   expect(inspectAreaDefinitions(capital)).toEqual([

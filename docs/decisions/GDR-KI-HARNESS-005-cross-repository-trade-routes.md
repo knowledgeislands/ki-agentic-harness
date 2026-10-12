@@ -52,4 +52,4 @@ The initial capability depends on mutually visible repositories in the local KI 
 
 ## References
 
-- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) — the repository authority and choreography model this decision preserves.
+- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-006-knowledge-islands-ecosystem-fundamentals.md) — the repository authority and choreography model this decision preserves.

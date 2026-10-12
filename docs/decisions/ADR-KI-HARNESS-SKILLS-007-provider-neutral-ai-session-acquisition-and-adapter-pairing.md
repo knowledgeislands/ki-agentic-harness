@@ -40,4 +40,4 @@ The shared adapter surface is additive and access-gated. It returns only fields 
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-concern-first-skill-taxonomy-and-implication-graph.md) — the taxonomy that places `ki-housekeeping-claude` in the Environment concern.
-- [Provider-neutral knowledge acquisition](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/ADR-KI-ARCADIA-001-provider-neutral-knowledge-acquisition.md) — the KI-wide architecture this record implements.
+- [Provider-neutral knowledge acquisition](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/ADR-KI-PRINCIPAL-001-provider-neutral-knowledge-acquisition.md) — the KI-wide architecture this record implements.

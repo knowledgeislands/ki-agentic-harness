@@ -5,15 +5,15 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from `ki-arcadia-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
+Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from `ki-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
 
 ## Collections
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| ki-arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note, frontmatter, link style † |
+| ki-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note, frontmatter, link style † |
 
-† Zone layout, folder-note structure, frontmatter, and internal link style across a live KB conforming to the standard. `ki-arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/ki-arcadia-principal/` on this machine; it is the reference base the skill tracks — see `sources.md` for conformance status.
+† Zone layout, folder-note structure, frontmatter, and internal link style across a live KB conforming to the standard. `ki-principal` is at `/Users/krisbrown/workspaces/knowledge-islands/ki-principal/` on this machine; it is the reference base the skill tracks — see `sources.md` for conformance status.
 
 ## Selected patterns
 
@@ -65,10 +65,10 @@ The index note's `## Contents` list uses full-path Obsidian wikilinks with reada
 
 ### Well-structured zone layout
 
-`ki-arcadia-principal` demonstrates the five canonical zones plus the two staging areas:
+`ki-principal` demonstrates the five canonical zones plus the two staging areas:
 
 ```text
-ki-arcadia-principal/
+ki-principal/
 ├── +/                   ← inbound staging (unsettled, not yet routed)
 ├── -/                   ← outbound staging (leaving the base)
 ├── Admin/               ← governance and operations (gated by Enactment Process)

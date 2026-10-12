@@ -186,7 +186,7 @@ export const loadTerritoryRegistry = (
 }
 
 /** Canonical Capital whose territory must use the existing strict area-map enforcement. */
-export const ENFORCING_CAPITAL = 'https://github.com/knowledgeislands/ki-arcadia-principal'
+export const ENFORCING_CAPITAL = 'https://github.com/knowledgeislands/ki-principal'
 
 /** Unresolvable Capitals warn; canonical territory_members, never handles or Agora rosters, determine enforcement. */
 export const isEnforcingTerritoryRepository = (

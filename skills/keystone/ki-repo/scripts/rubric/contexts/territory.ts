@@ -45,7 +45,7 @@ type Declaration = {
 }
 
 /** Canonical Capital whose territory keeps the existing strict layout enforcement. */
-export const ENFORCING_CAPITAL = 'https://github.com/knowledgeislands/ki-arcadia-principal'
+export const ENFORCING_CAPITAL = 'https://github.com/knowledgeislands/ki-principal'
 
 const declaration = (document: Record<string, unknown>): Declaration => {
   const skills = table(document.skills) ?? {}

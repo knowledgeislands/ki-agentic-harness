@@ -107,7 +107,7 @@ The action-first executor and read-only provider mechanics exist. The official a
 
 Safe deletion also depends on a provider-supported, identity-specific mutation surface. If ChatGPT exposes no safe deletion operation, the system must produce a verified manual-release manifest and stop. Browser automation is not an acceptable substitute for an auditable deletion contract.
 
-Related, non-blocking: `ki-arcadia-principal` is documenting the provider-neutral knowledge acquisition lifecycle this record's acquisition feeds, and already treats this harness work as a possible later source of Harbour-staged captures without waiting on it. Neither blocks the other. [KI-HARNESS-GOV-087](KI-HARNESS-GOV-087-evaluate-obscura-browser-runtime.md) evaluates the local browser runtime the incremental path may use; the three share a cluster but keep distinct owners.
+Related, non-blocking: `ki-principal` is documenting the provider-neutral knowledge acquisition lifecycle this record's acquisition feeds, and already treats this harness work as a possible later source of Harbour-staged captures without waiting on it. Neither blocks the other. [KI-HARNESS-GOV-087](KI-HARNESS-GOV-087-evaluate-obscura-browser-runtime.md) evaluates the local browser runtime the incremental path may use; the three share a cluster but keep distinct owners.
 
 The existing housekeeping skills must remain usable while acquisition-specific capabilities are introduced. Any MCP rename or repository split requires separately coordinated receiver work; this Harness record can define the intended capability boundary without silently renaming sibling repositories.
 

@@ -6,7 +6,7 @@ The [Activity standard](standards-activities.md) is canonical to the Knowledge I
 
 | Source | What it governs | Last reviewed |
 | --- | --- | --- |
-| ki-arcadia-principal `Admin/Operations/Activities/` | Live base sampled for current component fields and collection placement | 2026-08-12 |
+| ki-principal `Admin/Operations/Activities/` | Live base sampled for current component fields and collection placement | 2026-08-12 |
 | `ki-repo-kb` SKILL.md | Zone model and Admin/ subdivision that hosts activities | 2026-08-12 |
 | `ki-repo-harness` SKILL.md | Four-part harness layout; skills/ resolution path | 2026-08-12 |
 
@@ -14,7 +14,7 @@ The [Activity standard](standards-activities.md) is canonical to the Knowledge I
 
 **REFRESH last run 2026-08-12** (internal-model re-anchor — no web research).
 
-- **ki-arcadia-principal `Admin/Operations/Activities/`** — PARTIALLY CONFIRMED. The base now declares the component skill and its activity notes carry `status`, `realization`, and `author`; the activity index remains a broader timing model that defers the operational roster to the Charter. This is current collection evidence, not proof that the pending universal KB metadata contract is reconciled.
+- **ki-principal `Admin/Operations/Activities/`** — PARTIALLY CONFIRMED. The base now declares the component skill and its activity notes carry `status`, `realization`, and `author`; the activity index remains a broader timing model that defers the operational roster to the Charter. This is current collection evidence, not proof that the pending universal KB metadata contract is reconciled.
 - **`ki-repo-kb` SKILL.md** — CONFIRMED. Admin/Operations/ subdivision hosting activities is present and current; parent delegation boundary accurate.
 - **`ki-repo-harness` SKILL.md** — UPDATED. Four-part layout retains the `skills/<name>/SKILL.md` resolution path; MCP servers remain independent repositories.
 

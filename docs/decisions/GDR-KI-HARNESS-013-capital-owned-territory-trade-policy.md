@@ -38,5 +38,5 @@ The capability depends on the Capital and its members being visible in the local
 
 ## References
 
-- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) - the repository authority and choreography model this decision preserves.
+- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-006-knowledge-islands-ecosystem-fundamentals.md) - the repository authority and choreography model this decision preserves.
 - [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-territory-derived-working-sets.md) - territory-derived working sets, which select repositories but grant no route.

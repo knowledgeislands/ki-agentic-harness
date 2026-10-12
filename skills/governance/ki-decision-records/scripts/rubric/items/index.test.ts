@@ -254,10 +254,10 @@ test('a declared Decision Record scope is a finding, because the scope is always
   }
 
   expect(audit({})).toEqual([{ status: 'PASS', message: 'No retired Decision Record scope is declared.' }])
-  expect(audit({ scope: 'KI-ARCADIA' })).toEqual([
+  expect(audit({ scope: 'KI-PRINCIPAL' })).toEqual([
     {
       status: 'VIOLATION',
-      message: '[skills.ki-decision-records].scope = "KI-ARCADIA" is retired; the scope is always repo_code.',
+      message: '[skills.ki-decision-records].scope = "KI-PRINCIPAL" is retired; the scope is always repo_code.',
       subject: '.ki.toml'
     }
   ])

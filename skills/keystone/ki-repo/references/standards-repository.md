@@ -260,7 +260,7 @@ Website composition has its own narrower cardinality. A repository declaring `[s
 `gh` CLI, authenticated with the GitHub **Administration** permission required for each target repository. The commands below are a reference plan, not an unattended conformer: inspect the live state and exact target set, show the proposed diff, and obtain explicit confirmation before each mutation batch. (zsh: use an array, not a bare string — unquoted `$var` does not word-split.)
 
 ```zsh
-all=(ki-arcadia-principal ki-agentic-harness ki-repo-website mcp-housekeeping-claude mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-repo-kb-notion-mirror mcp-m365)
+all=(ki-principal ki-agentic-harness ki-repo-website mcp-housekeeping-claude mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-repo-kb-notion-mirror mcp-m365)
 public=(mcp-housekeeping-claude mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-repo-kb-notion-mirror mcp-m365)
 
 # Layer 1 — each repo declares its config in .ki.toml (committed via PR like any file).

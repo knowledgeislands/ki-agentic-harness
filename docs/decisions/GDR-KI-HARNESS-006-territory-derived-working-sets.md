@@ -26,5 +26,5 @@ Territory membership has one authoritative roster, so working sets cannot disagr
 
 ## References
 
-- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) - the ecosystem authority and choreography model this decision preserves.
-- [ADR-KI-ARCADIA-002](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/ADR-KI-ARCADIA-002-territory-derived-repository-selection.md) - territory-derived repository selection, which this decision applies to the harness.
+- [GDR-KI-ARCADIA-006](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-006-knowledge-islands-ecosystem-fundamentals.md) - the ecosystem authority and choreography model this decision preserves.
+- [ADR-KI-ARCADIA-002](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/ADR-KI-PRINCIPAL-002-territory-derived-repository-selection.md) - territory-derived repository selection, which this decision applies to the harness.

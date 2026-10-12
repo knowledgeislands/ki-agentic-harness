@@ -2,7 +2,7 @@
 
 This directory holds the Decision Records for the **ki-agentic-harness** and the Knowledge Islands governance skill set it houses — Architecture Decision Records (`ADR-`), Strategy Decision Records (`SDR-`), and Governance Decision Records (`GDR-`), per the prefix table in the `ki-decision-records` skill.
 
-The directory holds only Decision Records and this index; each record states its decision in its own words. The ecosystem fundamentals these records build on - routing responsibility, repository structures and boundaries, and ecosystem coordination - are Arcadia's [Knowledge Islands ecosystem fundamentals](https://github.com/knowledgeislands/ki-arcadia-principal/blob/main/Admin/Governance/Decisions/GDR-KI-ARCADIA-006-knowledge-islands-ecosystem-fundamentals.md) (GDR-KI-ARCADIA-006), cited by URL rather than copied.
+The directory holds only Decision Records and this index; each record states its decision in its own words. The ecosystem fundamentals these records build on - routing responsibility, repository structures and boundaries, and ecosystem coordination - are Arcadia's [Knowledge Islands ecosystem fundamentals](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-006-knowledge-islands-ecosystem-fundamentals.md) (GDR-KI-PRINCIPAL-006), cited by URL rather than copied.
 
 ## Naming convention
 
