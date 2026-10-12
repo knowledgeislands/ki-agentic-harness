@@ -6,13 +6,13 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: next
+horizon: future
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T21:50:21Z
-updated_at: 2026-10-10T16:38:12Z
+updated_at: 2026-10-12T05:28:00Z
 ---
 
 # KI-HARNESS-GOV-170: Keep Resolution Targets Local
@@ -83,6 +83,8 @@ None beyond the standards and skill text listed above.
 A plain-language handoff to `tools-ki` for its work-item model.
 
 ## Discussion
+
+Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Decision 107 of the state-of-play thread): the work-item standard still accepts a cross-repository `resolution_target` by shape, and no current work needs the change. Re-scope before it becomes actionable.
 
 - Once a target must be local, a cross-repository replacement cannot use `duplicate`, `merged` or `superseded` with a target. Options: allow those resolutions without a target when the replacement lives elsewhere, or record such a case as `obsolete` with the plain description in `## Cancelled`.
 - Adoption corrected the rubric path in Boundary to its location under `skills/change-management/ki-work-roadmap/`, and found the acceptance standard also needs the change; confirm both sit within the agreed scope at planning.

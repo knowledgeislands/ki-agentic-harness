@@ -6,13 +6,13 @@ kind: deliver
 purpose: adoption
 project: baseline-rollout
 component: governance
-horizon: next
+horizon: future
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-09T08:45:00Z
-updated_at: 2026-10-09T21:53:46Z
+updated_at: 2026-10-12T05:28:00Z
 ---
 
 # KI-HARNESS-GOV-168: Roll out pin receivers
@@ -110,6 +110,8 @@ Update Arcadia's Release Cascade rows for pin bumps and bot installation as repo
 None beyond this record; a `tools-ki` source-build choice may become its own record.
 
 ## Discussion
+
+Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Decision 107 of the state-of-play thread): only ki-agentic-harness and ki-principal carry `.github/ki-version` and `update-ki-pin.yml` today, and the current rollout does not need the rest. Re-scope before it becomes actionable.
 
 - `tools-ki` installs its own `ki` in CI; check whether a receiver there should track its own releases or whether its CI should build from source instead.
 - `homebrew-tap` registration of a repository before its App installation fails the tap's token mint for every consumer, as the tap's release App operations guide explains, so registration follows provisioning.
