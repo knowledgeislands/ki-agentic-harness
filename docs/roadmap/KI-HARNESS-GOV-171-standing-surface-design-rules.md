@@ -45,7 +45,7 @@ Confirm the layering against current Claude Code behaviour before relying on it.
 
 ## Boundary
 
-- In scope: deciding whether these points belong in the `ki-tokenomics` standard, its educate mode, or guidance, and wording them runtime-neutrally; and the Claude adapter note on context-layer reliability below, merged from the former KI-HARNESS-GOV-172, in `ki-tokenomics-claude` guidance after confirming current Claude Code layer behaviour.
+- In scope: deciding whether these points belong in the `ki-tokenomics` standard, its educate mode, or guidance, and wording them runtime-neutrally; and the Claude adapter note on context-layer reliability above, merged from the former KI-HARNESS-GOV-172, in `ki-tokenomics-claude` guidance after confirming current Claude Code layer behaviour.
 - Out of scope: changing the default budgets, any runtime adapter's evidence collection, and Arcadia's notes, which are already retired.
 - If the two parts must stay in separate skills' changes, plan them as separate Steps within this record.
 
