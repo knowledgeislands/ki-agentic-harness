@@ -16,6 +16,8 @@ Only `[skills.ki-tokenomics]` is read, validate-down. Recognised scalar keys are
 
 `fast` is for mechanical or bulk work, `standard` for well-scoped default work, `reasoning` for hard judgement, and `frontier` for long-horizon autonomous work. These are purposes, not provider names. A runtime's concrete effective or default model is evidence owned by its adapter and cannot revise the repository's declared purpose.
 
+Coordination is a purpose of its own. A coordinating thread, as defined in [the `ki-delegation` background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md#coordinator-responsiveness), dispatches, decides with the owner and reports, so it should run on `fast`, or `standard` where `fast` is too weak to follow the run contract reliably, at low reasoning effort. Reserve `reasoning` and `frontier` for the background agents that do the substantive reasoning, analysis and drafting. This is a recommendation for choosing a session's model; it adds no `preferred_model_type` value.
+
 ## Retrieval
 
 Prefer bounded snippets and targeted line-range reads before whole-file reads, widening only when the question requires more evidence. Exact identifiers use literal retrieval. Explicitly unavailable or insufficient search falls back to grep and targeted reads. Measure returned context with its actual unit: characters and UTF-8 bytes are not tokenizer counts; token estimates remain labelled `~` and never billing figures. Retrieval performance and quality need measured evidence rather than assumed savings. Route search-surface design to `ki-repo-mcp` and `ki-repo-kb`.
