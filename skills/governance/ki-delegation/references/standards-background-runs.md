@@ -16,6 +16,7 @@
   - [Owner report](#owner-report)
   - [Needs tags](#needs-tags)
   - [Coordinating threads](#coordinating-threads)
+- [Full summary](#full-summary)
 - [Project threads](#project-threads)
 - [Thread working rules](#thread-working-rules)
 - [Reference launcher](#reference-launcher)
@@ -197,7 +198,8 @@ The quotation keeps Kris's em dashes and is laid out as a blockquote; the standa
 - **What has been done:** completed outcomes, one line each, with material failures, corrections and limitations beside them rather than behind them. A background agent puts its commit identifiers and check results here, because the owner reads the report and not the log.
 - **What is in progress:** what is running and what is waiting, each with its owner or dependency. Then, under `Outstanding - no action requested now`, the matters that need nothing from the owner, grouped as agent work, receiver-owned work, verification limitations and retained material, kept apart from the decisions the owner must make. A handoff to another thread stays outstanding until the owner expressly says it is done.
 - **Outstanding queries:** one heading per actionable query, `<tag> - <plain-language title>`, linked to its record where one exists, carrying **Summary**, **Need from you** and **Recommendation** and nothing else. The tag is a [Needs tag](#needs-tags). A routine open matter is not a query; it belongs in the section above.
-- **Reply block:** the report ends with one fenced `text` block listing every query heading and its recommended instruction, in the same tags and order, carrying the references the instruction needs to be unambiguous. It is a suggested reply, not approval: nothing in it is acted on until the owner returns an instruction.
+- **Reply block:** the report ends with one fenced `text` block listing every query heading and its recommended instruction, in the same tags and order, carrying the references the instruction needs to be unambiguous. Where only the owner can supply a value, the instruction carries a placeholder in angle brackets that names the choice, such as `<a / b>`, `<date>` or `<amount>`, so the owner edits one token rather than composing a reply. It is a suggested reply, not approval: nothing in it is acted on until the owner returns an instruction.
+- **Headings:** the three sections are `##` headings and each query is a `###` heading, so a report nests the same way wherever it appears: under a coordinating thread's `#` [banner](#coordinating-threads), or under the `#` title of a background agent's report file. Sub-headings inside `What has been done`, where a long report groups outcomes by topic, are `###` too.
 - **Links:** every record, checkpoint, Project, Initiative, decision, receipt and evidence artefact under [Linking records](#linking-records).
 - **Levels:** the owner's personal instructions set a communication level, `quiet`, `standard` or `detailed`, and this standard does not restate those instructions. The shape is the same at every level; the level sets only depth. Under `quiet`, the status-line cadence during work is unchanged, this report replaces the end-of-unit report, done items are one line each, in-progress items name only the work and what it waits on, and a query carries just enough context to be answered cold. `standard` adds material context and exceptions to each section. `detailed` adds the plan, validation evidence and rationale. No level hides a failure, a required decision or a material risk.
 
@@ -210,11 +212,38 @@ Each outstanding query carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or
 A coordinating thread - the master thread or a project thread - also follows these practices with the owner:
 
 - **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch. The query keeps its tag either way.
-- **Banner:** every Summary and every [recap](#recap-since-the-mark) opens with one banner header, so either reads cold and several threads' updates read side by side. The banner names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The window is `since your last message` for a Summary and `since <mark>` for a recap.
-- **Summary:** after its banner, the thread gives one [owner report](#owner-report) covering the window since the owner's last message. It is the form of the proactive update when several background agents have finished or the owner returns after a gap, and is also given on request, such as "summary". A request for everything "since the mark" gets the full [recap](#recap-since-the-mark) instead.
+- **Banner:** every Summary, every [recap](#recap-since-the-mark) and every [full summary](#full-summary) opens with one `#` banner heading, so each reads cold and several threads' updates read side by side. The banner names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The window is `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary.
+- **Three forms:** a coordinating thread reports in three forms. Each is one [owner report](#owner-report) under the banner, and they differ only in window and in what the window makes each section hold:
+
+  | Form | Window | Given | Sections |
+  | --- | --- | --- | --- |
+  | Summary | since your last message | proactively when background agents finish or the owner returns after a gap; on request, "summary"; and at a resting point | the owner report for the window |
+  | [Recap](#recap-since-the-mark) | since the mark | on request, "recap"; "recap and mark" rolls up and then re-strikes | the owner report, with `What has been done` covering what was delivered, decided, started, stopped or blocked, and newly captured since the mark |
+  | [Full summary](#full-summary) | since the thread began | on request, "full summary", "summary in full" or the like | `## Decided` first, then the owner report, each section whole-thread and every open query in full |
+
+  A plain "summary" gets the Summary; "since the mark" gets the recap; "in full" or "full summary" gets the full summary. Only the recap interacts with the mark, and only when the owner says "mark".
+- **Heading levels:** in every form the banner is the `#` heading, the sections (`Decided`, `What has been done`, `What is in progress`, `Outstanding queries`) are `##` headings, and each query and each topic sub-heading is `###`. No other heading levels appear.
+- **Self-contained:** no Summary, recap or full summary says "unchanged, see earlier", "as before" or otherwise points back to an earlier report. What is still running and what is still open is restated in full each time, because the owner reads each one cold and the earlier message may be gone.
 - **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its banner states `resting` or `waiting on <what>` plainly, and the owner report beneath it lets the owner pick the thread up cold.
 - **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another thread, the thread gives it in a code block ready to copy.
 - **Decisions:** the thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises.
+
+### Full summary
+
+A **full summary** is the owner report for the whole thread: everything decided, done, running and open since the thread began, in one reply, so that the owner holds all the context without reading earlier messages. Kris asked for it on 2026-10-13 as "a summary of things that have been decided, ongoing work and outstanding queries ... in full so I have all the context in one reply", adopted as Decision 18 of the `ways-of-working` run. A coordinating thread gives one whenever the owner asks for a "full summary", a "summary in full", or anything else that asks for the whole thread in one reply. It never moves the mark.
+
+Its shape, in this order:
+
+- **Banner:** the `#` [banner](#coordinating-threads), window `since the thread began`.
+- **`## Decided`:** every owner decision since the thread began, as a numbered list or a two-column table, one line each in the order taken, each linked to its entry in the run's [decisions log](#decisions-log) by absolute path or to the record that now holds it. A decision that a later one superseded stays on its line and says so.
+- **`## What has been done`:** the whole thread's completed outcomes, grouped by topic under `###` sub-headings wherever more than a few lines would otherwise run together, with failures, corrections and limitations beside the outcomes they qualify.
+- **`## What is in progress`:** as the owner report, with `Outstanding - no action requested now` beneath it. A dated upcoming deadline or scheduled event belongs there with its date, so the owner sees what is coming without being asked anything.
+- **`## Outstanding queries`:** every open query, however long it has been open, restated in full under its own `### <tag> - <title>` heading with Summary, Need from you and Recommendation, written to be answered cold. Nothing is shortened because it was asked before.
+- **Reply block:** the closing fenced `text` block covers every open query, with placeholders where only the owner can supply the value.
+
+Low-stakes choices the thread has already made, where the owner's silence is consent, go in one query headed `DEFAULTS - defaults unless you say otherwise`: one line per choice, Need from you `nothing, unless you object`, Recommendation `keep the defaults`, and one reply-block line `DEFAULTS - keep the defaults`. A choice the owner objects to becomes its own tagged query. A decision that is not low-stakes never goes there, and no other query bundles more than one decision: a query the owner cannot answer with one instruction is two queries.
+
+Sources are the run's decisions log from Decision 1, every background-agent report in the run, the checkpoint's open Needs-tagged queries and parked tangents, `ki agent status`, and the Git history of the thread's scope since the checkpoint's `created_at`. Where a report has gone with its run folder, the full summary says what it could not read rather than reconstructing it from memory.
 
 ## Project threads
 
@@ -293,10 +322,10 @@ A recap is a plain-language roll-up for the owner of what has changed in the thr
 
 - **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`. The timestamp bounds Git history, work-record transitions and background-agent reports; the decision number bounds the decisions log exactly. Per-repository commit identifiers stay out.
 - **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike. Giving a recap does not move it, so a recap can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line.
-- **Shape:** a recap opens with the [banner](#reporting) shared with the Summary, its window `since <mark>`. It then covers what was delivered, decided, started, stopped or blocked, and newly captured; what is running now; and what is outstanding. It cites records by full identifier as links, with no tool output and no commit identifiers.
+- **Shape:** a recap opens with the `#` [banner](#coordinating-threads) shared with the Summary and the full summary, its window `since <mark>`. Beneath it is one [owner report](#owner-report) at the shared [heading levels](#coordinating-threads): `What has been done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `What is in progress` what is running now; `Outstanding queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary.
 - **Outstanding:** the checkpoint's open [Needs-tagged](#needs-tags) queries, open work records in the thread's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: it is everything still open, whenever it arose, and striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured. Striking or re-striking never drops, closes or hides an open item, and the thread keeps every open query, with its Needs tag, in its checkpoint when it re-strikes.
 - **Sources:** the run's decisions log after Decision N; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's open Needs-tagged queries and parked tangents.
-- **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#coordinating-threads) form, so they do not repeat everything since a distant mark.
+- **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#coordinating-threads) form, so they do not repeat everything since a distant mark; a request for the whole thread in one reply gets the [full summary](#full-summary).
 - **No mark yet:** the first recap covers the window since the checkpoint's last-recap time, if it notes one, or else its `created_at`, states that window in its banner, and strikes the first mark. A thread whose checkpoint still notes a last-recap time converts it into a mark when the [refresh rule](#refreshing-this-guidance) tells it this guidance changed.
 
 ### Parking tangents
