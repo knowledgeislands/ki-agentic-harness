@@ -50,8 +50,9 @@ The coordinating thread stays responsive to the owner, so the owner never has to
 - **Brief-writing:** the coordinator writes only a short brief citing the owner's decisions. If the brief itself needs research, a background agent researches and writes it.
 - **Self-check:** before each tool call, the coordinator asks whether it is a quick check or bookkeeping; if not, it delegates. When it notices it has drifted into doing work, it stops, delegates the rest and tells the owner in one line.
 - **Owner messages:** a new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work. Because it is never mid-way through long work, it answers an owner message promptly.
+- **Cadence:** the coordinator gives a timestamped one-line update when it launches work, when an agent finishes and while it waits, and reports in the [owner report](#owner-report) form. Between owner messages it has nothing else to say.
 
-A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` injects a one-line reminder of them on every owner message, and again after compaction, in a thread whose checkout holds `+/_CHECKPOINTS/`. It stays silent in agents `ki agent` launches. The hook is registered per machine by the user-environment manager.
+A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` injects a one-line reminder of them, naming the cadence and the owner-report form, on every owner message, and again after compaction, in a thread whose checkout holds `+/_CHECKPOINTS/`. It stays silent in agents `ki agent` launches. The hook is registered per machine by the user-environment manager.
 
 ## Run packet
 
@@ -108,6 +109,11 @@ Authority limits stay consistent with `ki-agent-coordination-paperclip`, which o
 
 Each owner approval for delegated work becomes one numbered, dated entry in the run's decisions log, quoted in the owner's own words where possible. Numbers never repeat. A prompt cites its authority by number ("Decision 18"), never by paraphrase alone.
 
+The owner's words are whole only on the turn they arrive: a context-compressing proxy, a compaction or a shell read of a transcript can rewrite every earlier turn without saying so. Two rules keep the log faithful, on any machine and whatever the proxy setting:
+
+- **Log in the turn it arrives:** the thread writes an owner decision into the log in the same turn as the message that carries it, while that turn is still uncompressed, before it does anything else with the message.
+- **Verify later quotations from the file:** any later quotation of the owner's words, in a log entry, a brief, a record or a report, is checked against the session transcript file read with the runtime's file-read tool, which the proxy protects, never from in-context recall or from shell output such as `cat` or `grep`, which it does not.
+
 The run directory, decisions log included, is non-durable, machine-local working material under the XDG state root: it is not backed up or synced, and it is not a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the run directory.
 
 Once a thread or run has closed and its in-force decisions are consolidated into their durable owners, archive or delete its `~/.local/state/ki/agents/<run>/` folder; `ki agent` writes the run there.
@@ -141,6 +147,8 @@ After an interrupt, check the agent processes before saying anything is running.
 ## Reporting
 
 The owner sees only status one-liners and each report. Tooling output, commit identifiers and step narration stay in the log and in the report, unless the owner asks.
+
+An owner report, in every form including the [full summary](#full-summary), is a complete deliverable: its sections, its queries and its reply block are never shortened by any output style, proxy shaping block or communication level, which govern prose around the report and not the report itself.
 
 ### Owner report
 
