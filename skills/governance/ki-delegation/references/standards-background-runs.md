@@ -50,6 +50,8 @@ The coordinating thread stays responsive to the owner, so the owner never has to
 - **Self-check:** before each tool call, the coordinator asks whether it is a quick check or bookkeeping; if not, it delegates. When it notices it has drifted into doing work, it stops, delegates the rest and tells the owner in one line.
 - **Owner messages:** a new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work. Because it is never mid-way through long work, it answers an owner message promptly.
 
+A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` injects a one-line reminder of them on every owner message, and again after compaction, in a thread whose checkout holds `+/_CHECKPOINTS/`. It stays silent in agents `ki agent` launches. The hook is registered per machine by the user-environment manager.
+
 ## Run packet
 
 A run is a named set of agents sharing one state directory. Each agent has five files:

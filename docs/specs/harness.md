@@ -123,3 +123,13 @@ _Conformance:_ conforming
 _Verify:_ `ki-repo-harness` capability-publication tests exercise valid publication and reject missing classification, invalid baseline membership, kind inconsistency, unknown detector targets, and registry-to-skill drift.
 
 _Evidence:_ `skills/README.md` is generated from the complete canonical skill collection and carries an applicability line for every entry.
+
+### HARN-012 — Coordinator reminder hook
+
+The harness MUST ship `hooks/coordinator-reminder.sh` as a `UserPromptSubmit` and `SessionStart(compact)` hook that injects one line restating the `ki-delegation` responsive-coordinator rules in a coordinating thread, meaning one whose working directory or Git top level holds `+/_CHECKPOINTS/`, and that stays silent in any agent `ki agent` launches. It MUST fail open. The same script MUST serve Claude Code and Codex CLI; a user-environment manager owns its registration on each runtime.
+
+_Conformance:_ conforming
+
+_Verify:_ `bun hooks/coordinator-reminder.test.ts` replays sample Claude Code and Codex payloads for a coordinating message, an ordinary repository, a marked or terminal-less background child, post-compaction `SessionStart`, and malformed input.
+
+_Evidence:_ `bun hooks/coordinator-reminder.test.ts` passes; headless `claude -p` and `codex exec` runs from a scratch checkout holding `+/_CHECKPOINTS/` quoted the injected line, and a child carrying `KI_AGENT_RUN` received nothing.
