@@ -4,13 +4,15 @@
 
 | Source | Last reviewed | Governs |
 | --- | --- | --- |
-| Knowledge Islands delegation practice | 2026-10-13 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log, coordination, worktree placement, run-folder retention, the coordinator role, monitoring, and owner-facing Summary and recap banners |
+| Knowledge Islands delegation practice | 2026-10-13 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log, coordination, worktree placement, run-folder retention, the coordinator role and its responsiveness rules, monitoring, and owner-facing Summary and recap banners |
 | `ki-tokenomics` | 2026-10-13 | Model-purpose and context-cost policy belong outside the packet, including the coordinating-thread model |
 | `ki-work-roadmap` | 2026-08-12 | Approved work-record lifecycle, plan ownership, and review boundary |
 | [OpenAI: Codex subagents][openai-subagents] | 2026-08-12 | Ordinary subagent task selection, permissions, and execution guidance |
 | [Anthropic: Claude Code sub-agents][anthropic-subagents] | 2026-08-12 | Ordinary subagent task fit, restricted capabilities, and isolation guidance |
 
 ## Last review
+
+A second 2026-10-13 review applied Kris's Decision 11, with Decisions 3 and 8, in the `ways-of-working` run. Coordinator responsiveness is now a set of hard, checkable rules: a turn budget, work that never happens in-thread, waiting only through a detached waiter or monitor, short briefs, a self-check before each tool call, and prompt answers to owner messages. Both openers now carry a coordinator-role line, and the bootstrap report states that role. RUN-3's description and review prompt now check those rules. The vendor guides were not re-reviewed.
 
 The 2026-10-13 review applied Kris's Decisions 2 and 3 in the `ways-of-working` run. A background run's worktrees now live under its run folder and are removed, with their merged branches, before the agent reports `DONE`; a closed run's folder is archived or deleted once its decisions are consolidated. A coordinating thread is now a coordinator that dispatches, decides and reports while background agents do the reasoning, and `ki-tokenomics` owns the matching model recommendation. RUN-3 already reviews coordinator behaviour, so the rubric is unchanged, and the vendor guides were not re-reviewed.
 

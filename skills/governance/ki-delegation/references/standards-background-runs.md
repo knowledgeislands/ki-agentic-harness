@@ -38,9 +38,14 @@ An in-session subagent runs under the turn that launched it and dies when that t
 
 A coordinating thread - the master thread or a project thread - is a coordinator. It dispatches work, decides with the owner and reports; it hands substantive reasoning, analysis and drafting to background agents rather than doing them in-thread. Because the reasoning happens in those agents, a coordinating thread runs on the lighter model purpose `ki-tokenomics` recommends for coordination, and heavier models are reserved for the background agents.
 
-The coordinating thread stays responsive to the owner. It does only quick one-step checks and short bookkeeping itself: status reads, queueing, recording decisions and relaying outcomes. It hands anything longer - set-up, prompt rewriting, multi-file or multi-step repository work - to a background agent. If a turn would block the owner for more than a moment, delegate it instead.
+The coordinating thread stays responsive to the owner, so the owner never has to remind it to delegate. These rules are hard and checkable from its transcript:
 
-A new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work.
+- **Turn budget:** a coordinator turn makes a handful of quick tool calls and returns to the owner. A step goes to a background agent if it reads more than one or two short files, writes or edits more than a checkpoint line or a decision, runs tests, audits or builds, or would take more than about a minute.
+- **Never in-thread:** analysis, design, drafting prose or prompts longer than a short brief, code or document edits, multi-repository investigation, and waiting in the foreground for an agent.
+- **Waiting:** always through a detached [waiter](#run-queue) or [monitor](#monitoring), never a foreground wait or sleep.
+- **Brief-writing:** the coordinator writes only a short brief citing the owner's decisions. If the brief itself needs research, a background agent researches and writes it.
+- **Self-check:** before each tool call, the coordinator asks whether it is a quick check or bookkeeping; if not, it delegates. When it notices it has drifted into doing work, it stops, delegates the rest and tells the owner in one line.
+- **Owner messages:** a new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work. Because it is never mid-way through long work, it answers an owner message promptly.
 
 ## Run packet
 
@@ -171,6 +176,7 @@ For a territory master thread:
 
 ```text
 Bootstrap as the state-of-play territory master thread for <territory> under ki-delegation.
+Role: coordinator only - dispatch, decide with me, report; delegate all substantive work and stay responsive.
 Label: Master: state-of-play. Checkpoint: +/_CHECKPOINTS/_state-of-play.md in <capital>.
 Project management only: priorities, the Project-thread queue (cap three or four), decisions and releases; route real work to Project threads.
 Background agents: run substantive work through `ki agent` in run `<territory>-state-of-play`; stay responsive.
@@ -182,6 +188,7 @@ For a Project thread:
 
 ```text
 Bootstrap as the <project> project thread under ki-delegation.
+Role: coordinator only - dispatch, decide with me, report; delegate all substantive work and stay responsive.
 Label: <Initiative title>: <project>. Checkpoint: +/_CHECKPOINTS/<initiative>.<project>.md in <capital>.
 Project: <project> (Initiative <initiative>); work only this Project's records.
 Background agents: run substantive work through `ki agent` in run `<run>`; stay responsive.
@@ -198,7 +205,7 @@ A one-line opener brings a new or already-running thread onto this contract, for
 1. reads this contract;
 2. checks `ki agent status` for its runs and any legacy runs, and reconciles what is actually running rather than assuming;
 3. resolves the Project name to the single `+/_CHECKPOINTS/*.<project>.md` checkpoint, or `_state-of-play.md` for the master thread, under `ki-checkpoint` RESUME, stopping to ask the owner if no file or more than one file matches; then creates or reconciles that checkpoint;
-4. reports in three lines where the Project stands, what is running, and what it needs from the owner.
+4. reports in three lines: its coordinator role and where the Project stands, what is running, and what it needs from the owner.
 
 ### Directions from the master thread
 

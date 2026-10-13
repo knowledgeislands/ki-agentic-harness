@@ -43,13 +43,13 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-3',
       title: 'coordinators stay responsive and project threads stay current',
       description:
-        'A coordinating thread does only quick one-step checks and short bookkeeping itself, hands longer work to background agents and treats a new owner message as steering rather than a stop; each territory Capital has one master thread at `_state-of-play.md` doing project management only, keeping the Project-thread queue within its cap and seeding each checkpoint and opener; a project thread works only its Project, follows the bootstrap, keeps its checkpoint current, records approvals before launching, and consolidates in-force decisions out of the run directory.',
+        'A coordinating thread keeps each turn to a handful of quick checks and bookkeeping calls, hands analysis, drafting, edits, tests, audits, builds and anything longer than about a minute to background agents, waits only through a detached waiter or monitor, answers owner messages promptly and treats a new owner message as steering rather than a stop; each territory Capital has one master thread at `_state-of-play.md` doing project management only, keeping the Project-thread queue within its cap and seeding each checkpoint and opener; a project thread works only its Project, follows the bootstrap, keeps its checkpoint current, records approvals before launching, and consolidates in-force decisions out of the run directory.',
       sources: ['standards-background-runs.md'],
       judgment: {
         scope:
           'Coordinating-thread transcripts, project checkpoints, decisions logs and recaps the owner selects for review.',
         prompt:
-          'Did the coordinator avoid blocking the owner and stop work only on an express, named instruction, does the territory master thread stay on project management with active Project threads within the cap and a prepared checkpoint and opener for each, does each project thread work through background agents from a current checkpoint, and does anything durable exist only in the run directory?',
+          'Did the coordinator keep within its turn budget, delegate rather than analyse, draft, edit, test or wait in the foreground, answer owner messages promptly and stop work only on an express, named instruction, does the territory master thread stay on project management with active Project threads within the cap and a prepared checkpoint and opener for each, does each project thread work through background agents from a current checkpoint, and does anything durable exist only in the run directory?',
         outcomes: ['conforming', 'delegate longer work', 'consolidate decisions', 'escalate to owner'],
         guidance:
           'Move longer coordinator work into background agents, and consolidate in-force decisions into a Decision Record, skill or checkpoint; escalate to the master thread when a direction touches more than one Project.'
