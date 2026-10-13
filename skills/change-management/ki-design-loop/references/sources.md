@@ -8,7 +8,7 @@ The loop is house practice, recorded from its first full run rather than importe
 
 | Source | Retained idea | Explicitly not adopted | Last reviewed |
 | --- | --- | --- | --- |
-| The roadmap-model design run of 7 October 2026, whose outcome Arcadia consolidated into one Decision Record | Five stages; a brief with a numbered reflection; three independent reviewers on different models, one also fact-checking the brief; a merged report settling disputes on evidence; the owner's numbered decisions with an authority grant; a pilot record before parallel waves | Its particular reviewer roster, keeping the artefacts in an untracked local folder, and later filing them as permanent supporting files in the decisions collection | 2026-10-07 |
+| The roadmap-model design run of 7 October 2026, whose outcome Knowledge Islands Principal consolidated into one Decision Record | Five stages; a brief with a numbered reflection; three independent reviewers on different models, one also fact-checking the brief; a merged report settling disputes on evidence; the owner's numbered decisions with an authority grant; a pilot record before parallel waves | Its particular reviewer roster, keeping the artefacts in an untracked local folder, and later filing them as permanent supporting files in the decisions collection | 2026-10-07 |
 
 ## Last review
 

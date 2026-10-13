@@ -223,7 +223,7 @@ test('classification values are validated and components come from configuration
   )
 })
 
-test('fixed areas map codes to titles; a bare list fails in Arcadia territory and warns outside it', () => {
+test('fixed areas map codes to titles; a bare list fails in the Knowledge Islands territory and warns outside it', () => {
   const repository = createRepository('kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null', '')
   const configure = (repo: string, roadmap: string) =>
     writeFileSync(
@@ -244,7 +244,7 @@ test('fixed areas map codes to titles; a bare list fails in Arcadia territory an
     expect.objectContaining({ area: 'ROAD-6', msg: 'ki-work-roadmap areas must map uppercase area codes to titles' })
   )
   configure('', 'areas = ["CORE"]\n')
-  expect(warnings(repository)).toContain(`outside Arcadia territory, ${legacyList}`)
+  expect(warnings(repository)).toContain(`outside the Knowledge Islands territory, ${legacyList}`)
   configure(
     'repository = "https://github.com/knowledgeislands/ki-principal"\ncapital = "https://github.com/knowledgeislands/ki-principal"\nterritory_members = ["https://github.com/knowledgeislands/ki-principal"]\n',
     'areas = ["CORE"]\n'
