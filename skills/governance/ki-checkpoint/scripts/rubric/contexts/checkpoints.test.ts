@@ -1,9 +1,10 @@
 import { afterEach, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricItem } from '../../shared/rubric.ts'
 import { BOUNDARY } from '../items/boundary.ts'
+import { CONFIG } from '../items/configuration.ts'
 import { LIFECYCLE } from '../items/lifecycle.ts'
 import { RECORD } from '../items/records.ts'
 import { STRUCTURE } from '../items/structure.ts'
@@ -86,15 +87,15 @@ const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, 
   return item.mechanical
 }
 
-test('absence is not applicable and audit never proposes authored writes', () => {
+test('a selected empty marker requires scaffold and audit never proposes writes', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-absent-'))
   temporaryDirectories.push(repository)
-  const session = createCheckpointsSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+  const session = createCheckpointsSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
 
   expect(
     mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(session.subjects[0]?.context() as never))[0]
       ?.status
-  ).toBe('NOT_APPLICABLE')
+  ).toBe('VIOLATION')
   expect(session.proposal()).toEqual({ writes: [] })
 })
 
@@ -106,7 +107,7 @@ test('a declared capability requires and can restore the retained scaffold', () 
     mode: 'conform',
     repository,
     userHome: tmpdir(),
-    configuration: { skills: { 'ki-checkpoint': {} } }
+    configuration: {}
   })
   const value = session.subjects[0]?.context()
   if (!value) throw new Error('ki-checkpoint session did not expose repository subject')
@@ -201,3 +202,73 @@ test('a missing label warns and an empty label fails the closed schema', () => {
     'VIOLATION'
   )
 })
+
+test('unknown selected capability keys warn without hiding scaffold requirements', () => {
+  const { repository } = fixture()
+  const session = createCheckpointsSession({
+    mode: 'audit',
+    repository,
+    userHome: tmpdir(),
+    configuration: { unexpected: true }
+  })
+  const value = session.subjects[0]?.context()
+  if (!value) throw new Error('checkpoint context missing')
+  expect(mechanical(CONFIG, 'CONFIG-1').audit.run(CONFIG.selectContext(value))).toEqual([
+    expect.objectContaining({
+      status: 'VIOLATION',
+      level: 'WARN',
+      message: 'unrecognised ki-checkpoint configuration key unexpected'
+    })
+  ])
+})
+
+test('malformed YAML records fail schema and CONFORM preserves authored bytes', () => {
+  const { repository, checkpointDirectory } = fixture()
+  const target = join(checkpointDirectory, 'release-audit.md')
+  const malformed = record().replace('type: ki-checkpoint', 'type: [')
+  writeFileSync(target, malformed)
+  const session = createCheckpointsSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+  const value = session.subjects[0]?.context()
+  if (!value) throw new Error('checkpoint context missing')
+  expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))).toEqual([
+    expect.objectContaining({ status: 'VIOLATION', message: 'checkpoint frontmatter must be a valid YAML mapping' })
+  ])
+  mechanical(STRUCTURE, 'STRUCTURE-1').conform?.run(STRUCTURE.selectContext(value))
+  expect(session.proposal()).toEqual({ writes: [] })
+  expect(readFileSync(target, 'utf8')).toBe(malformed)
+})
+
+for (const unsafe of [
+  'plus-symlink',
+  'checkpoint-symlink',
+  'readme-symlink',
+  'checkpoint-file',
+  'readme-directory'
+] as const) {
+  test(`CONFORM refuses unsafe target: ${unsafe}`, () => {
+    const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-unsafe-'))
+    temporaryDirectories.push(repository)
+    const outside = mkdtempSync(join(tmpdir(), 'ki-checkpoint-outside-'))
+    temporaryDirectories.push(outside)
+    const plus = join(repository, '+')
+    const directory = join(plus, '_CHECKPOINTS')
+    if (unsafe === 'plus-symlink') symlinkSync(outside, plus)
+    else {
+      mkdirSync(plus)
+      if (unsafe === 'checkpoint-symlink') symlinkSync(outside, directory)
+      else if (unsafe === 'checkpoint-file') writeFileSync(directory, 'sentinel')
+      else {
+        mkdirSync(directory)
+        if (unsafe === 'readme-symlink') {
+          writeFileSync(join(outside, 'sentinel.md'), 'sentinel')
+          symlinkSync(join(outside, 'sentinel.md'), join(directory, 'README.md'))
+        } else mkdirSync(join(directory, 'README.md'))
+      }
+    }
+    const session = createCheckpointsSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+    const value = session.subjects[0]?.context()
+    if (!value) throw new Error('checkpoint context missing')
+    expect(value.structure.ensureScaffold).toBeUndefined()
+    expect(session.proposal()).toEqual({ writes: [] })
+  })
+}

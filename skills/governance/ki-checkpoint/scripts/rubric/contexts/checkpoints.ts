@@ -8,7 +8,6 @@ import type {
   RubricSession
 } from '../../shared/rubric.ts'
 
-const CONFIG_TABLE = 'ki-checkpoint'
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
 const OPTIONAL_FIELDS = ['label'] as const
 const UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
@@ -303,7 +302,8 @@ export const createCheckpointsSession = ({
   const root = resolve(repository)
   const checkpointDirectory = join(root, '+', '_CHECKPOINTS')
   const readmePath = join(root, checkpointReadme.path)
-  const configured = table(table(configuration.skills)?.[CONFIG_TABLE])
+  // The host resolves declaration presence before passing this selected capability table.
+  const configured = configuration
   const checkpointExists = existsSync(checkpointDirectory)
   const checkpointSafe = physicalDirectory(checkpointDirectory)
   const undeclaredAbsent =

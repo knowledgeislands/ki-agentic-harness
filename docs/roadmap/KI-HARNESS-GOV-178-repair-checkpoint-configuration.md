@@ -6,12 +6,12 @@ kind: deliver
 purpose: corrective
 component: governance
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: dfc92f158848136a7f5143c8bc9a993d7f2b8118
 created_at: 2026-10-13T22:31:10Z
-updated_at: 2026-10-13T22:31:10Z
+updated_at: 2026-10-13T22:34:51Z
 ---
 
 # Repair checkpoint configuration
@@ -30,14 +30,14 @@ Functional changes are limited to skills/governance/ki-checkpoint/scripts/rubric
 
 ## Current state
 
-Owner-approved plan is Ready. Identifier reserved through a prior ledger-only commit. Local ki-work and ki-work-roadmap audits pass.
+The bounded repair is delivered locally and Awaiting review. The native route is safe to resume under Acquire’s existing authority, subject to its remaining receiver-owned activation gates. Nothing was accepted or published.
 
 ## Steps
 
-- [ ] Consume the selected capability table and replace the false undeclared-empty-table expectation.
-- [ ] Verify meaningful selected-table, malformed-record, unknown-key, exact scaffold and unsafe-target regression boundaries.
-- [ ] Exercise the public native CLI runner against an offline isolated fixture: undeclared refusal, declared-empty structure failure, dry-run, exact CONFORM and idempotence with preserved records.
-- [ ] Run required Harness gates and prepare the review packet with explicit-path local delivery.
+- [x] Consume the selected capability table and replace the false undeclared-empty-table expectation.
+- [x] Verify meaningful selected-table, malformed-record, unknown-key, exact scaffold and unsafe-target regression boundaries.
+- [x] Exercise the public native CLI runner against an offline isolated fixture: undeclared refusal, declared-empty structure failure, dry-run, exact CONFORM and idempotence with preserved records.
+- [x] Run required Harness gates and prepare the review packet with explicit-path local delivery.
 
 ## Files touched
 
@@ -56,12 +56,64 @@ Run meaningful targeted Bun regression tests, the offline public run(args, conte
 
 None. Existing local runner and discovery links resolve the canonical Harness source. Acquire resumption remains receiver-owned after this delivery; no Acquire mutation occurs here.
 
+## Documentation impact
+
+### Decision Records
+
+No new decision record is needed: Decision 14 already grants the exact repair, and this change restores the existing host contract.
+
+### Specifications
+
+No accepted behaviour changes. Selected-table consumption restores the canonical scaffold contract while preserving record and safety rules.
+
+### Guides
+
+No procedure changes are needed. Existing native checkpoint CONFORM remains the approved activation route.
+
+### Roadmap
+
+This record retains repair and review evidence. Acquire resumption belongs to its existing approved work; no new follow-on item is introduced.
+
 ## Delegation
 
 Execute locally in the primary checkout. The owner explicitly prohibits background subagents. Serialize index and HEAD mutations, stage only uncontested intended paths, inspect hook-backed commits, and leave delivery Awaiting review.
+
+## Review
+
+### Delivered
+
+Delivered the exact approved two-file checkpoint consumer repair against immutable baseline dfc92f158848136a7f5143c8bc9a993d7f2b8118. Approval was recorded in the Ready planning commit before execution. Ledger reservation committed separately as 38bff4fdaee607398a865e8f4574aaecafe310d3. All exclusions held; no Acquire or tools-ki source writes, remote calls, push, acceptance or pruning.
+
+### Change Summary
+
+The consumer reads the selected capability table supplied by the host, so an empty marker requires the scaffold. Tests replace the false undeclared-empty assumption and cover unknown selected keys, malformed records and five unsafe filesystem targets. An exact source predicate confirms canonical README definition bytes and all consumer code outside the selected-table correction are unchanged.
+
+### Verification
+
+- Targeted checkpoint regressions: 14 passed, zero failures, 31 assertions.
+- Public native run(args, context) offline fixture: 21 invocations passed with isolated HOME/XDG and refusing network/subprocess seams. Declared-empty audit fails STRUCTURE-1, dry-run proposes only canonical README and leaves bytes unchanged, native CONFORM writes exact bytes, repeat is idempotent, drift repair preserves a valid authored record, undeclared selection exits 2 before consumer execution, malformed-record CONFORM retains bytes and fails RECORD-2, unknown keys remain WARN, and five unsafe targets and their external sentinels remain unchanged.
+- bun run test: 1107 passed, zero failures, 4522 assertions across 162 files.
+- bunx tsc --noEmit: exit 0.
+- ki repo audit --skill ki-checkpoint: PASS, 8/8 mechanical criteria evaluated; judgment remains human review.
+- ki repo audit --skill ki-skills: exit 0, no failures; two existing LONG-3 refresh-cadence warnings recorded separately.
+- Local ki-work and ki-work-roadmap preflight audits: PASS. Final roadmap audit follows review-packet preparation.
+
+Runtime fixture, native transcripts and gate logs are retained in [repair verification evidence](/Users/krisbrown/.local/state/ki/agents/acquire-intake/repair-checkpoint.verification.json) beside the [repair report](/Users/krisbrown/.local/state/ki/agents/acquire-intake/repair-checkpoint.report.md).
+
+### Outstanding concerns
+
+Two source-review cadence warnings (source dates 2026-08-29 and 2026-06-21) are existing Harness skill-quality findings, outside the changed checkpoint consumer contract. No repair failure remains. Acquire’s activation is not performed or certified by this delivery; it can resume through the existing native route and must complete its own gates. Unrelated untracked +/diagrams/ remains untouched. Local commits remain unpushed on terra/main by explicit instruction.
+
+### Post-change review
+
+Fresh review confirms functional scope contains only the selected-table correction and its tests. Exact canonical scaffold, record processing, filesystem guards and host contract are preserved. The fixture proves the host’s undeclared-selection boundary and native application route. Delivery is ready for owner review, not accepted.
+
+### Mini recap
+
+The native activation mismatch is repaired and verified. Retained planning and local delivery are complete; receiver-owned Acquire activation and human acceptance remain outstanding. No new durable policy is needed.
 
 ## Discussion
 
 ### Approved authority
 
-Decision 14 (13 October 2026) and the current direct instruction grant this exact repair, local lifecycle records, offline verification and local commits. The diagnosis selects a single consumer correction rather than a host change. Keep unknown-key reporting and canonical bytes intact; undeclared selection is refused by the host before this consumer runs.
+[Decision 14](/Users/krisbrown/.local/state/ki/agents/acquire-intake/decisions.md#decision-14-2026-10-13) (13 October 2026) and the current direct instruction grant this exact repair, local lifecycle records, offline verification and local commits. The diagnosis selects a single consumer correction rather than a host change. Keep unknown-key reporting and canonical bytes intact; undeclared selection is refused by the host before this consumer runs.
