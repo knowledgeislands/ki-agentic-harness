@@ -21,4 +21,4 @@ The [Activity standard](standards-activities.md) is canonical to the Knowledge I
 ### Open watch-items
 
 - **Aggregate metadata gate.** Component fields in the living base do not decide the unresolved universal KB `type` and dependent-field contract; retain this source as a placement and component-shape observation only.
-- **Index-model gap.** Arcadia's collection index has a broader timing-model role and defers its roster to the Charter. Do not treat it as end-to-end evidence for the activity index contract until the base owner chooses whether its group-oriented model should migrate.
+- **Index-model gap.** Knowledge Islands Principal's collection index has a broader timing-model role and defers its roster to the Charter. Do not treat it as end-to-end evidence for the activity index contract until the base owner chooses whether its group-oriented model should migrate.

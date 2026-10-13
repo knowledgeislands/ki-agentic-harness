@@ -16,15 +16,15 @@ export const scenarios: Scenario[] = [
     skill: 'ki-decision-records',
     id: 'dr-prefix-serial',
     prompt:
-      'We just agreed to require two maintainers to approve any change to our release process. I want to write that up as a formal decision record in the ARCADIA repo. What should the file be named, and how do I pick its number given we already have an architecture decision numbered 001?',
+      'We just agreed to require two maintainers to approve any change to our release process. I want to write that up as a formal decision record in the KI-PRINCIPAL repo. What should the file be named, and how do I pick its number given we already have an architecture decision numbered 001?',
     assertions: [
       { name: 'governance prefix GDR-', re: /GDR-/ },
       { name: 'classified as governance', re: /governance/i },
-      { name: 'scope in the id', re: /ARCADIA/i },
+      { name: 'scope in the id', re: /KI-PRINCIPAL/i },
       { name: 'serial 001 valid per-prefix', re: /\b001\b/ }
     ],
     rubric:
-      'House fact: decision_type maps to a fixed prefix, and a process/authority decision is **governance → `GDR-`**, not `ADR-`. The name is `<PREFIX>-<SCOPE>-NNN` and serials increase **per prefix within the scope**, so `GDR-ARCADIA-001` legitimately co-exists with an existing `ADR-…-001`. A correct answer classifies it as governance, uses the `GDR-` prefix, and knows the new record can be serial `001` because numbering is per-prefix, not global.'
+      'House fact: decision_type maps to a fixed prefix, and a process/authority decision is **governance → `GDR-`**, not `ADR-`. The name is `<PREFIX>-<SCOPE>-NNN` and serials increase **per prefix within the scope**, so `GDR-KI-PRINCIPAL-001` legitimately co-exists with an existing `ADR-…-001`. A correct answer classifies it as governance, uses the `GDR-` prefix, and knows the new record can be serial `001` because numbering is per-prefix, not global.'
   },
   {
     skill: 'ki-decision-records',
@@ -44,7 +44,7 @@ export const scenarios: Scenario[] = [
     skill: 'ki-decision-records',
     id: 'dr-kb-placement',
     prompt:
-      "I'm adding our first decision record to the Arcadia knowledge base (a KB, not a code repo). Which folder does it go in, what must the index file be called, and what frontmatter is mandatory?",
+      "I'm adding our first decision record to the Knowledge Islands Principal knowledge base (a KB, not a code repo). Which folder does it go in, what must the index file be called, and what frontmatter is mandatory?",
     assertions: [
       { name: 'KB decisions folder', re: /Admin\/Governance\/Decisions/i },
       { name: 'index named Decisions.md', re: /Decisions\.md/ },

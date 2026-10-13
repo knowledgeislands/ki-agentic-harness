@@ -4,7 +4,7 @@
 
 This standard defines faithful, incremental acquisition of readable ChatGPT project conversations into Knowledge Islands repositories. It separates stable source identity from human-readable project names, source discovery from content reads, acquisition from receiver-local triage, and verified acquisition from any later source retirement.
 
-The provider-neutral lifecycle belongs to Arcadia. `tools-ki` owns executable acquisition and receiver writes. The `ki-housekeeping-chatgpt` skill and its MCP own opaque installed-store evidence; that evidence can support identity and change detection but cannot satisfy readable conversation fidelity.
+The provider-neutral lifecycle belongs to Knowledge Islands Principal. `tools-ki` owns executable acquisition and receiver writes. The `ki-housekeeping-chatgpt` skill and its MCP own opaque installed-store evidence; that evidence can support identity and change detection but cannot satisfy readable conversation fidelity.
 
 ## Contents
 

@@ -39,7 +39,7 @@ You may write new DRs and update the index in ki-principal:
 
 - **Confirm with the user before writing any file.**
 - Follow the ki-decision-records standard exactly: ID scheme, frontmatter keys, section order, status vocabulary.
-- The filename is the full DR ID in kebab-case (e.g. `sdr-ki-arcadia-008-short-title.md`).
+- The filename is the full DR ID in kebab-case (e.g. `sdr-ki-principal-008-short-title.md`).
 - Update `Admin/Governance/Decisions/Decisions.md` with a new row immediately after writing the DR.
 - Cross-reference related DRs in the References section; use `[[wikilinks]]` for same-island DRs.
 - Structured and direct; one decision per DR.

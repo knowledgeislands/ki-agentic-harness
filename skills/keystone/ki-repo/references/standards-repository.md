@@ -190,7 +190,7 @@ Dependabot is a security signal, not an update channel. Every repository, knowle
 
 ## Visibility
 
-Each repo **declares** its expected visibility in `.ki.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
+Each repo **declares** its expected visibility in `.ki.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice private repos are Knowledge Bases or internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
 `.ki.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki.toml` standard](standards-configuration.md). The native configuration operation establishes the canonical foundations only; native self-check resolves the verified installed collection rather than writing a repository-local executor. Then edit the values:
 
@@ -238,7 +238,7 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 
 - "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step out of it (e.g. `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to protect `main`.
 - The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that turns it on but lacks that job can't satisfy the check; add the CI job first.
-- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so the private `arcadia-*` repos need say nothing about them.
+- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so private repos need say nothing about them.
 - A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing. The auditor's `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
 - A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with a `note` advising it be dropped. The aim is that a `.ki.toml` carries only genuine divergences, and a conforming repo's `[…checks]` is empty or absent.
 - `coverage-<skill>` (for example `coverage-website-content = false` for a vendored Eleventy config) is also accepted here — it opts the repo out of **one** coverage signal of the cascade below. It does not disable `coverage-website-app` or `coverage-website-cloudflare`. A key naming no coverage skill WARNs, like any unknown check.

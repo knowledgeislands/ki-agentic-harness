@@ -14,7 +14,7 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands El
 | Eleventy docs | [11ty.dev docs][eleventy] | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` |
 | Tailwind CSS v4 docs | [tailwindcss.com docs][tailwind] | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI |
 | Lucide docs | [lucide.dev guide][lucide] | UMD passthrough delivery, client-side `createIcons()` initialisation |
-| KI Website (in-house) | [ki-repo-website repo][arcadia] | Reference implementation: monorepo layout, config, Tailwind, wrangler |
+| KI Website (in-house) | [ki-repo-website repo][ki-website] | Reference implementation: monorepo layout, config, Tailwind, wrangler |
 
 ## Selected patterns
 
@@ -184,4 +184,4 @@ The `base.njk` layout is the `<html>` shell for every page. It includes `seo-met
 [eleventy]: https://www.11ty.dev/docs/
 [tailwind]: https://tailwindcss.com/docs
 [lucide]: https://lucide.dev/guide/
-[arcadia]: https://github.com/knowledgeislands/ki-website
+[ki-website]: https://github.com/knowledgeislands/ki-website

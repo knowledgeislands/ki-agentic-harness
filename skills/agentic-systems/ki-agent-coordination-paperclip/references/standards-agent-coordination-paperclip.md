@@ -47,7 +47,7 @@ Every repository using this skill declares its owning Paperclip company code in 
 organisation_code = "KIS"
 ```
 
-`organisation_code` is required, non-empty, and uppercase letters or digits beginning with a letter; `ER` is valid. No other keys are recognised in this skill's table. The value identifies the company that owns this repository's Paperclip project, not the repository's `repo_code`, a territory handle, or necessarily Paperclip's current issue prefix. Territorial membership never silently assigns or changes it; Arcadia keeps `KIS` while using the territory handle `ki`. Reconcile a company rename or ownership transfer explicitly against existing project and task bindings before changing the declaration.
+`organisation_code` is required, non-empty, and uppercase letters or digits beginning with a letter; `ER` is valid. No other keys are recognised in this skill's table. The value identifies the company that owns this repository's Paperclip project, not the repository's `repo_code`, a territory handle, or necessarily Paperclip's current issue prefix. Territorial membership never silently assigns or changes it; Knowledge Islands Principal keeps `KIS` while using the territory handle `ki`. Reconcile a company rename or ownership transfer explicitly against existing project and task bindings before changing the declaration.
 
 ### Declaration scope
 

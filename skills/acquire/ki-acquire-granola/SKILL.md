@@ -28,7 +28,7 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 
 This skill governs how Knowledge Islands interprets Granola as a mutable communication source. It requires complete identity enumeration, faithful read-only source projections, explicit omissions, immutable acquired versions, visible receiver conflicts, repeatable checkpoints, and separation between acquisition and retirement.
 
-Granola's official remote MCP is the selected source adapter. It supplies authentication and source reads; it does not own KI package construction, repository routing, ledgers, harvesting, trades, or retirement authority. `tools-ki` owns `ki acquire import --adapter granola`, provider-neutral KEP construction, Harbour staging, and executable reconciliation. Arcadia owns the provider-neutral lifecycle.
+Granola's official remote MCP is the selected source adapter. It supplies authentication and source reads; it does not own KI package construction, repository routing, ledgers, harvesting, trades, or retirement authority. `tools-ki` owns `ki acquire import --adapter granola`, provider-neutral KEP construction, Harbour staging, and executable reconciliation. Knowledge Islands Principal owns the provider-neutral lifecycle.
 
 The `ki-acquire-*` frontmatter is the machine-readable adapter declaration consumed by `tools-ki`. It names the public actions, repository and invocation properties, source capabilities and omissions, read-only mutation boundary, checkpoint model, and reset scopes without requiring an executor to parse prose or infer behaviour from the skill name.
 
@@ -65,6 +65,6 @@ Run only against the canonical skill in `ki-agentic-harness`. When invoked from 
 ## Off-ramps
 
 - `tools-ki` owns the public command, provider-neutral KEP builder, repository selection, capture writes, and checkpoint persistence.
-- Arcadia owns the provider-neutral acquisition lifecycle and semantics shared with non-Granola sources.
+- Knowledge Islands Principal owns the provider-neutral acquisition lifecycle and semantics shared with non-Granola sources.
 - `ki-trades` owns movement of harvested knowledge or correction work between repositories.
 - Granola account administration and application-managed connector disablement remain outside this skill.

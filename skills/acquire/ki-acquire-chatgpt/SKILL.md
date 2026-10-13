@@ -54,5 +54,5 @@ Run only from the canonical `ki-agentic-harness` source. When invoked from an in
 
 - `ki-housekeeping-chatgpt` owns opaque installed-store discovery, hashes, and read-only checkpoint evidence.
 - `tools-ki` owns `ki acquire` execution, KEP construction, receiver writes, and persisted checkpoints.
-- Arcadia owns provider-neutral knowledge-acquisition lifecycle and receiver-local triage semantics.
+- Knowledge Islands Principal owns provider-neutral knowledge-acquisition lifecycle and receiver-local triage semantics.
 - ChatGPT account administration, project renaming, archiving, and deletion remain provider operations outside acquisition authority.

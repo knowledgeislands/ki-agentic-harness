@@ -286,26 +286,26 @@ test('fixed areas map codes to titles; a bare list fails in the Knowledge Island
 test('territorial enforcement uses the canonical Capital roster and warns for unresolved policy', () => {
   const capital = createCapital()
   const island = temporary('ki-island-')
-  const arcadia = 'https://github.com/knowledgeislands/ki-principal'
+  const principal = 'https://github.com/knowledgeislands/ki-principal'
   writeFileSync(
     join(island, '.ki.toml'),
-    `[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "${arcadia}"\n`
+    `[skills.ki-repo]\nrepository = "https://example.test/island"\ncapital = "${principal}"\n`
   )
   const state = temporary('ki-state-')
   writeFileSync(
     join(state, 'registry.toml'),
-    `[repositories."capital"]\nrepository = "${arcadia}"\npath = "${capital}"\n`
+    `[repositories."capital"]\nrepository = "${principal}"\npath = "${capital}"\n`
   )
   const environment = { KI_STATE_HOME: state }
   const config = join(capital, '.ki.toml')
-  const policy = `[skills.ki-repo]\nrepository = "${arcadia}"\ncapital = "${arcadia}"\nterritory_name = "Knowledge Islands"\n`
+  const policy = `[skills.ki-repo]\nrepository = "${principal}"\ncapital = "${principal}"\nterritory_name = "Knowledge Islands"\n`
   expect(isEnforcingTerritoryRepository(island, environment)).toBe(false)
-  writeFileSync(config, `${policy}territory_members = ["${arcadia}", "https://example.test/island"]\n`)
+  writeFileSync(config, `${policy}territory_members = ["${principal}", "https://example.test/island"]\n`)
   expect(isEnforcingTerritoryRepository(island, environment)).toBe(true)
   expect(isEnforcingTerritoryRepository(capital, environment)).toBe(true)
   writeFileSync(
     config,
-    `${policy}territory_members = ["${arcadia}"]\n\n[skills.ki-agora.kis]\nmembers = ["https://example.test/island"]\n`
+    `${policy}territory_members = ["${principal}"]\n\n[skills.ki-agora.kis]\nmembers = ["https://example.test/island"]\n`
   )
   expect(isEnforcingTerritoryRepository(island, environment)).toBe(false)
   expect(isEnforcingTerritoryRepository(island, {})).toBe(false)

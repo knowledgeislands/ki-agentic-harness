@@ -13,7 +13,7 @@ These examples are kept separate because they combine several governed artifacts
 | --- | --- | --- |
 | Workers Static Assets | [Static Assets docs][assets] | `assets` block: `directory`, `binding`, `html_handling`, `not_found_handling` |
 | wrangler configuration | [wrangler config docs][wrangler] | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` |
-| ki-repo-website (in-house) | [ki-repo-website repo][arcadia] | Reference implementation ‡ |
+| ki-repo-website (in-house) | [ki-repo-website repo][ki-website] | Reference implementation ‡ |
 
 ‡ `wrangler.jsonc`, monorepo script family, Workers Builds.
 
@@ -122,4 +122,4 @@ The `/assets/*` rule sets a long-lived immutable cache on built assets (CSS, JS,
 
 [assets]: https://developers.cloudflare.com/workers/static-assets/
 [wrangler]: https://developers.cloudflare.com/workers/wrangler/configuration/
-[arcadia]: https://github.com/knowledgeislands/ki-website
+[ki-website]: https://github.com/knowledgeislands/ki-website

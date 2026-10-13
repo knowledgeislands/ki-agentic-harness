@@ -351,7 +351,7 @@ describe('territorial enforcement', () => {
     `${capitalConfig([...members].sort(), '', ENFORCING_CAPITAL)}${prefix}`
   const member = repo(MEMBER, `capital = "${ENFORCING_CAPITAL}"\n`)
 
-  test('canonical Arcadia membership enforces the Capital and every listed member without an Agora table', () => {
+  test('canonical Knowledge Islands membership enforces the Capital and every listed member without an Agora table', () => {
     const capital = policy([ENFORCING_CAPITAL, MEMBER])
     register(checkout(capital))
     expect(territoryEvidence(member, '/x').enforcingTerritory).toBe(true)
@@ -372,7 +372,7 @@ describe('territorial enforcement', () => {
     expect(territoryEvidence(member, '/x').enforcingTerritory).toBe(true)
   })
 
-  test('unavailable or ambiguous Arcadia policy keeps the warn population', () => {
+  test('unavailable or ambiguous Knowledge Islands policy keeps the warn population', () => {
     expect(territoryEvidence(member, '/x').enforcingTerritory).toBeUndefined()
     const first = checkout(policy([ENFORCING_CAPITAL, MEMBER]))
     const second = checkout(policy([ENFORCING_CAPITAL, MEMBER]))

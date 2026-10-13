@@ -55,6 +55,6 @@ REFRESH writes only the canonical `ki-housekeeping-chatgpt` source in `ki-agenti
 
 ## Off-ramps
 
-- Durable knowledge promotion belongs to Arcadia's acquisition lifecycle.
+- Durable knowledge promotion belongs to Knowledge Islands Principal's acquisition lifecycle.
 - Repository staging belongs to `ki acquire import --adapter chatgpt` in `tools-ki`.
 - Archive or delete requires a later verified acquisition and harvest decision.
