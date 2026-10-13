@@ -4,13 +4,15 @@
 
 | Source | Last reviewed | Governs |
 | --- | --- | --- |
-| Knowledge Islands delegation practice | 2026-10-11 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log, coordination, monitoring, and owner-facing Summary and recap banners |
-| `ki-tokenomics` | 2026-08-12 | Model-purpose and context-cost policy belong outside the packet |
+| Knowledge Islands delegation practice | 2026-10-13 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log, coordination, worktree placement, run-folder retention, the coordinator role, monitoring, and owner-facing Summary and recap banners |
+| `ki-tokenomics` | 2026-10-13 | Model-purpose and context-cost policy belong outside the packet, including the coordinating-thread model |
 | `ki-work-roadmap` | 2026-08-12 | Approved work-record lifecycle, plan ownership, and review boundary |
 | [OpenAI: Codex subagents][openai-subagents] | 2026-08-12 | Ordinary subagent task selection, permissions, and execution guidance |
 | [Anthropic: Claude Code sub-agents][anthropic-subagents] | 2026-08-12 | Ordinary subagent task fit, restricted capabilities, and isolation guidance |
 
 ## Last review
+
+The 2026-10-13 review applied Kris's Decisions 2 and 3 in the `ways-of-working` run. A background run's worktrees now live under its run folder and are removed, with their merged branches, before the agent reports `DONE`; a closed run's folder is archived or deleted once its decisions are consolidated. A coordinating thread is now a coordinator that dispatches, decides and reports while background agents do the reasoning, and `ki-tokenomics` owns the matching model recommendation. RUN-3 already reviews coordinator behaviour, so the rubric is unchanged, and the vendor guides were not re-reviewed.
 
 The 2026-10-11 review gave the Summary the recap's header under Kris's Decision 43 in the `mac-studio-bootstrap` run. One shared banner now opens every Summary and recap, naming the thread, its Project and Initiative as links, the window and the thread's state, and a thread that is resting or waiting ends with a Summary that says so and lists done, running and outstanding work with its Needs tags. RUN-5 reviews both. The mark rules are unchanged, and the vendor guides were not re-reviewed.
 

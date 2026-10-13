@@ -36,6 +36,8 @@ An in-session subagent runs under the turn that launched it and dies when that t
 
 ## Coordinator responsiveness
 
+A coordinating thread - the master thread or a project thread - is a coordinator. It dispatches work, decides with the owner and reports; it hands substantive reasoning, analysis and drafting to background agents rather than doing them in-thread. Because the reasoning happens in those agents, a coordinating thread runs on the lighter model purpose `ki-tokenomics` recommends for coordination, and heavier models are reserved for the background agents.
+
 The coordinating thread stays responsive to the owner. It does only quick one-step checks and short bookkeeping itself: status reads, queueing, recording decisions and relaying outcomes. It hands anything longer - set-up, prompt rewriting, multi-file or multi-step repository work - to a background agent. If a turn would block the owner for more than a moment, delegate it instead.
 
 A new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work.
@@ -96,10 +98,12 @@ Each owner approval for delegated work becomes one numbered, dated entry in the 
 
 The run directory, decisions log included, is non-durable, machine-local working material under the XDG state root: it is not backed up or synced, and it is not a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the run directory.
 
+Once a thread or run has closed and its in-force decisions are consolidated into their durable owners, archive or delete its `~/.local/state/ki/agents/<run>/` folder; `ki agent` writes the run there.
+
 ## Coordination
 
 - **Ordering:** an agent that depends on another waits until that agent's status ends `DONE`, checking every two minutes.
-- **Isolation:** parallel agents in one repository each use their own Git worktree. A lone agent may use the primary checkout.
+- **Isolation:** parallel agents in one repository each use their own Git worktree. A lone agent may use the primary checkout. A background run's worktrees go under `~/.local/state/ki/agents/<run>/worktrees/<repo>`. Before it reports `DONE`, the agent removes each worktree it created with `git worktree remove` and deletes its branch once merged.
 - **Commits:** pull with `--ff-only` before committing, commit only explicit paths, and leave other uncommitted changes untouched, following `ki-git`.
 - **Pushing:** never push someone else's unpushed commits without asking the owner.
 - **Ambiguity:** stop and report rather than guess.
