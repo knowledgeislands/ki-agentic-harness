@@ -4,7 +4,7 @@
 
 ## Rules
 
-- Commits: Conventional Commits, local only, explicit paths only, ending with your runtime's co-author trailer. Never use `--no-verify` and never force-push. Never touch, stage or revert other uncommitted changes. Never accept work records.
+- Commits: Conventional Commits, local only, explicit paths only, ending with the co-author trailer that names the model making the commit, per the standard's [commit-trailer rule](../references/standards-background-runs.md#coordination). Never use `--no-verify` and never force-push. Never touch, stage or revert other uncommitted changes. Never accept work records.
 - Pushing is authorised by the decision this task cites: after the checks pass, run `git fetch` and push your own commits fast-forward only to `origin`. Never push commits you did not make without asking the owner.
 - Deleting work records is authorised only for `done` or `cancelled` records the cited decision approves, each in a prune-only commit after its terminal state is committed. Never delete anything else.
 - Release calls are authorised only as the task names them, one by one, and only for the release the cited decision approves: for example a named workflow dispatch, run watch, release view, or package-manager upgrade. A call the task does not name is not authorised. Never handle signing keys or tokens directly.

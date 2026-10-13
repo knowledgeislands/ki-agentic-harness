@@ -54,11 +54,12 @@ A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` in
 
 ## Run packet
 
-A run is a named set of agents sharing one state directory. Each agent has five files:
+A run is a named set of agents sharing one state directory. Each agent has six files:
 
 | File | Content |
 | --- | --- |
 | `<name>.prompt.md` | The prompt as launched, with its authority footer and progress protocol |
+| `<name>.launch.json` | The launch record: runtime, model and effort as launched |
 | `<name>.status` | One line, `HH:MM <TZ> - plain-language activity`, in the owner's local time |
 | `<name>.pid` | The detached process identifier |
 | `<name>.log` | The runtime's combined output |
@@ -115,6 +116,7 @@ Once a thread or run has closed and its in-force decisions are consolidated into
 - **Ordering:** an agent that depends on another waits until that agent's status ends `DONE`, checking every two minutes.
 - **Isolation:** parallel agents in one repository each use their own Git worktree. A lone agent may use the primary checkout. A background run's worktrees go under `~/.local/state/ki/agents/<run>/worktrees/<repo>`. Before it reports `DONE`, the agent removes each worktree it created with `git worktree remove` and deletes its branch once merged.
 - **Commits:** pull with `--ff-only` before committing, commit only explicit paths, and leave other uncommitted changes untouched, following `ki-git`.
+- **Commit trailer:** an agent's co-author trailer names the model that actually made the commit, read from its launch record or runtime, never the coordinator's model or one copied from the brief. This line owns the rule; footers and briefs point here.
 - **Pushing:** never push someone else's unpushed commits without asking the owner.
 - **Ambiguity:** stop and report rather than guess.
 
