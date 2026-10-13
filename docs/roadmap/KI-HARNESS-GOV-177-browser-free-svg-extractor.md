@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: investigate
 purpose: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 5ee71dc9bc012eab684c973b8957c519e691c9df
 created_at: 2026-10-13T21:50:00Z
-updated_at: 2026-10-13T22:05:00Z
+updated_at: 2026-10-13T23:15:00Z
 ---
 
 # Browser-Free SVG Extractor Compared with the Viewer Export
@@ -112,6 +111,10 @@ The finding is reproducible from the committed exporter, the untracked finalized
 ### Mini recap
 
 Built a browser-free port of the Archify viewer's SVG export and compared it with the viewer's own export for two diagrams. The diagram markup, cleaning, fonts, theme variables and XML serialisation match byte for byte; the copied viewer stylesheet does not, because the viewer takes it from the browser's CSS Object Model. By the decision's criterion option (b) applies. Learning route, not promoted: a pinned, browser-verified stylesheet block per Archify release would make the extractor byte-exact without a browser at export time; see Discussion.
+
+## Done
+
+Accepted 2026-10-13 by Kris Brown on the review packet above, in words that reached the `ways-of-working` thread with stop words stripped, quoted as received: "ACCEPT-177 - accept KI-HARNESS-GOV-177 through ki-accept." The Verify checks were re-run at acceptance and passed. The pinned-stylesheet follow-on is held with Kris as `EXPORT-ROUTE`, because Archify's own browser gate already drives system Chrome headless over CDP, so the exporter could reuse it without Playwright.
 
 ## Discussion
 
