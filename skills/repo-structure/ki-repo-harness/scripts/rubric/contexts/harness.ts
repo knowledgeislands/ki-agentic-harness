@@ -13,6 +13,7 @@ import {
   prepareCapabilityPublication
 } from './capability-publication.ts'
 import { prepareRootCapabilitySummary, type RootCapabilitySummaryDraft } from './root-capability-summary.ts'
+import { prepareSkillGraph, SKILL_GRAPH_PATH, type SkillGraphDraft } from './skill-graph.ts'
 
 export const HARNESS_PARTS = ['skills', 'subagents', 'evals', 'hooks'] as const
 export type HarnessPart = (typeof HARNESS_PARTS)[number]
@@ -72,6 +73,14 @@ export type HarnessRootCapabilitySummaryContext = {
   requestUpdate?: () => void
 }
 
+export type HarnessSkillGraphContext = {
+  repository: string
+  /** `not-applicable` when the repository does not declare `ki-diagrams`. */
+  state: SkillGraphDraft['state'] | 'not-applicable'
+  issues: readonly string[]
+  requestUpdate?: () => void
+}
+
 export type HarnessReviewContext = {
   repository: string
 }
@@ -85,6 +94,7 @@ export type HarnessRubricContext = {
   rubric: RubricPublicationContext
   capabilityPublication: HarnessCapabilityPublicationContext
   rootCapabilitySummary: HarnessRootCapabilitySummaryContext
+  skillGraph: HarnessSkillGraphContext
   layout: HarnessLayoutContext
   config: HarnessConfigContext
   skills: HarnessSkillsContext
@@ -170,6 +180,29 @@ const tableIdentity = (name: string): string => name
 const hasTomlTable = (toml: string, name: string): boolean =>
   new RegExp(`^\\[skills\\.${tableIdentity(name)}\\]`, 'm').test(toml)
 
+const repositoryUrl = (toml: string | null): string | undefined => {
+  if (toml === null) return undefined
+  try {
+    const parsed = Bun.TOML.parse(toml) as { skills?: Record<string, unknown> }
+    const identity = parsed.skills?.['ki-repo']
+    if (typeof identity !== 'object' || identity === null || Array.isArray(identity)) return undefined
+    const url = (identity as Record<string, unknown>).repository
+    return typeof url === 'string' && /^https:\/\/github\.com\//.test(url) ? url : undefined
+  } catch {
+    return undefined
+  }
+}
+
+const headRevision = (repository: string): string | undefined => {
+  try {
+    const result = Bun.spawnSync(['git', '-C', repository, 'rev-parse', 'HEAD'], { stdout: 'pipe', stderr: 'ignore' })
+    const output = result.stdout.toString().trim()
+    return result.exitCode === 0 && /^[0-9a-f]{40}$/.test(output) ? output : undefined
+  } catch {
+    return undefined
+  }
+}
+
 const harnessPrefix = (toml: string | null): string | null => {
   if (toml === null) return null
   try {
@@ -246,6 +279,27 @@ export const createHarnessSession = ({
     ? { state: 'unsafe', issues: [rootReadmeIssue] }
     : prepareRootCapabilitySummary(rootReadme, capabilityDraft.counts, capabilityIssues)
   let rootCapabilitySummaryRequested = false
+  const diagramsDeclared = configContent !== null && hasTomlTable(configContent, 'ki-diagrams')
+  const skillGraphPath = join(root, SKILL_GRAPH_PATH)
+  const skillGraphState = state === 'physical' ? pathState(skillGraphPath) : 'missing'
+  let skillGraphDraft: SkillGraphDraft | undefined
+  if (diagramsDeclared) {
+    if (skillGraphState === 'missing' || skillGraphState === 'file') {
+      let committed: string | undefined
+      try {
+        committed = skillGraphState === 'file' ? readFileSync(skillGraphPath, 'utf8') : undefined
+        skillGraphDraft = prepareSkillGraph(committed, capabilitySources, {
+          repositoryUrl: repositoryUrl(configContent),
+          revision: headRevision(root)
+        })
+      } catch {
+        skillGraphDraft = { state: 'unsafe', issues: [`${SKILL_GRAPH_PATH} could not be read`] }
+      }
+    } else skillGraphDraft = { state: 'unsafe', issues: [`${SKILL_GRAPH_PATH} is not a physical regular file`] }
+    if (skillGraphDraft.state !== 'unsafe' && capabilitySourceIssues.length > 0)
+      skillGraphDraft = { state: 'unsafe', issues: capabilitySourceIssues }
+  }
+  let skillGraphRequested = false
   const parts = HARNESS_PARTS.map((name) => {
     const partState = state === 'physical' ? pathState(join(root, name)) : 'missing'
     return {
@@ -280,6 +334,21 @@ export const createHarnessSession = ({
         ? {
             requestUpdate: () => {
               rootCapabilitySummaryRequested = true
+            }
+          }
+        : {})
+    },
+    skillGraph: {
+      repository: root,
+      state: skillGraphDraft?.state ?? 'not-applicable',
+      issues: skillGraphDraft?.issues ?? [],
+      ...(mode === 'conform' &&
+      skillGraphDraft !== undefined &&
+      skillGraphDraft.state !== 'unsafe' &&
+      skillGraphDraft.state !== 'in-sync'
+        ? {
+            requestUpdate: () => {
+              skillGraphRequested = true
             }
           }
         : {})
@@ -348,6 +417,12 @@ export const createHarnessSession = ({
         writes.push({ path: 'skills/README.md', content: capabilityDraft.merged })
       if (rootCapabilitySummaryRequested && rootCapabilitySummaryDraft.merged !== undefined)
         writes.push({ path: 'README.md', content: rootCapabilitySummaryDraft.merged })
+      if (skillGraphRequested && skillGraphDraft !== undefined && skillGraphDraft.state !== 'unsafe')
+        writes.push({
+          path: SKILL_GRAPH_PATH,
+          content: skillGraphDraft.expected,
+          create: skillGraphDraft.state === 'missing'
+        })
       return { writes }
     }
   }

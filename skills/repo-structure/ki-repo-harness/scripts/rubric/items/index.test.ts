@@ -104,6 +104,7 @@ test('the catalogue preserves the current compatible-harness criteria', () => {
     'CAP-1',
     'CAP-2',
     'CAP-3',
+    'CAP-4',
     'PAYLOAD-1',
     'LAY-1',
     'LAY-2',

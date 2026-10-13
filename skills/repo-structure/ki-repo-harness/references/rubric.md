@@ -33,6 +33,8 @@ Typed compatible-harness capability inventory and kind-specific boundaries.
   - _Remediation:_ automatic
 - **CAP-3 [M] — Authored capability counts are exact** — When root `README.md` carries the recognised numeric Agent Skills summary, its total, governance, and process counts match canonical skill frontmatter; a single complete stale claim is safely repairable without changing surrounding prose. (standards-compatible-harness.md#capability-publication)
   - _Remediation:_ automatic
+- **CAP-4 [M] — Generated skill graph is exact** — A harness that adopts `ki-diagrams` publishes `docs/diagrams/skill-graph.architecture.json`, the Archify architecture source derived deterministically from every skill’s `ki-depends-on` and `ki-optional-depends-on` frontmatter: one node per skill, solid composition edges, dashed optional edges, and one region at the foot for skills with no declared relationship. AUDIT compares the committed source with that rendering, ignoring only the traced revision; CONFORM rewrites it. The SVG beside it follows through the `ki-diagrams` refresh procedure. (standards-compatible-harness.md#capability-publication)
+  - _Remediation:_ automatic
 
 ## PAYLOAD — Payload and runtime evidence boundary
 
