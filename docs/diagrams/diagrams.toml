@@ -1,0 +1,11 @@
+# Living diagrams manifest: one table per diagram, keyed by its slug.
+# See the ki-diagrams standard for each field.
+
+[skill-graph]
+type = "architecture"
+question = "Which skills rely on which other skills, and is each reliance composition or optional augmentation?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a skill is added, renamed or removed, or a ki-depends-on or ki-optional-depends-on declaration changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
+last_checked = "a85d00624199316e26a7e6c66acee340e1b8eabc"

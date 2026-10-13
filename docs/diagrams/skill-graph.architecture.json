@@ -1,0 +1,1827 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Knowledge Islands skill graph",
+    "output": "+/diagrams/skill-graph/skill-graph.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "a85d00624199316e26a7e6c66acee340e1b8eabc"
+    },
+    "legend": {
+      "mode": "all",
+      "entries": {
+        "backend": {
+          "label": "Governance skill"
+        },
+        "frontend": {
+          "label": "Process skill"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "ki-implement",
+      "type": "frontend",
+      "label": "implement",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-implement/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        48
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-plan",
+      "type": "frontend",
+      "label": "plan",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-plan/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        48
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-design-loop",
+      "type": "frontend",
+      "label": "design-loop",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-design-loop/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        144
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-principal",
+      "type": "backend",
+      "label": "repo-kb-principal",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb",
+      "type": "backend",
+      "label": "repo-kb",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        336
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-activities",
+      "type": "backend",
+      "label": "repo-kb-activities",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        432
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-housekeeping",
+      "type": "backend",
+      "label": "work-housekeeping",
+      "sublabel": "change management · governance",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-housekeeping/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        528
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-live-artifacts",
+      "type": "backend",
+      "label": "repo-kb-live-artifacts",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-live-artifacts/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        624
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-streams",
+      "type": "backend",
+      "label": "repo-kb-streams",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-streams/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        720
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-harness",
+      "type": "backend",
+      "label": "repo-harness",
+      "sublabel": "repository structure · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        816
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-subagents-claude",
+      "type": "backend",
+      "label": "subagents-claude",
+      "sublabel": "agentic systems · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-subagents-claude/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        912
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-subagents-chatgpt",
+      "type": "backend",
+      "label": "subagents-chatgpt",
+      "sublabel": "agentic systems · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-subagents-chatgpt/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        1008
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-subagents",
+      "type": "backend",
+      "label": "subagents",
+      "sublabel": "agentic systems · governance",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-subagents/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        1104
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-diagrams",
+      "type": "backend",
+      "label": "diagrams",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-diagrams/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        1224
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-skills",
+      "type": "backend",
+      "label": "skills",
+      "sublabel": "keystone · governance",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-skills/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        1224
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-roadmap",
+      "type": "backend",
+      "label": "work-roadmap",
+      "sublabel": "change management · governance",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-roadmap/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        1320
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-decision-records",
+      "type": "backend",
+      "label": "decision-records",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-decision-records/SKILL.md"
+        }
+      ],
+      "pos": [
+        464,
+        1416
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-recap",
+      "type": "frontend",
+      "label": "recap",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-recap/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        1512
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-binding-chezmoi",
+      "type": "backend",
+      "label": "binding-chezmoi",
+      "sublabel": "environment · governance",
+      "sources": [
+        {
+          "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        1608
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-binding-claude",
+      "type": "backend",
+      "label": "binding-claude",
+      "sublabel": "environment · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/environment/ki-binding-claude/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        1704
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-binding-chatgpt",
+      "type": "backend",
+      "label": "binding-chatgpt",
+      "sublabel": "environment · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/environment/ki-binding-chatgpt/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        1800
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-binding",
+      "type": "backend",
+      "label": "binding",
+      "sublabel": "environment · governance",
+      "sources": [
+        {
+          "path": "skills/environment/ki-binding/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        1896
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi",
+      "type": "backend",
+      "label": "repo-dotfiles-chezmoi",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        1992
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo",
+      "type": "backend",
+      "label": "repo",
+      "sublabel": "keystone · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-repo/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        2088
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-agent-coordination-paperclip",
+      "type": "backend",
+      "label": "agent-coordination-paperclip",
+      "sublabel": "agentic systems · governance",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        2184
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-git",
+      "type": "backend",
+      "label": "git",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-git/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        2280
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-authoring",
+      "type": "backend",
+      "label": "authoring",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-authoring/SKILL.md"
+        }
+      ],
+      "pos": [
+        464,
+        2376
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-batch",
+      "type": "frontend",
+      "label": "batch",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-batch/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        2472
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-delegation",
+      "type": "backend",
+      "label": "delegation",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        2568
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-app",
+      "type": "backend",
+      "label": "repo-website-app",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        2664
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-cloudflare",
+      "type": "backend",
+      "label": "repo-website-cloudflare",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        2664
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-content",
+      "type": "backend",
+      "label": "repo-website-content",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
+        }
+      ],
+      "pos": [
+        464,
+        2664
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-tokenomics-chatgpt",
+      "type": "backend",
+      "label": "tokenomics-chatgpt",
+      "sublabel": "environment · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/environment/ki-tokenomics-chatgpt/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        2664
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-tokenomics-claude",
+      "type": "backend",
+      "label": "tokenomics-claude",
+      "sublabel": "environment · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/environment/ki-tokenomics-claude/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        2664
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-acquire-chatgpt",
+      "type": "backend",
+      "label": "acquire-chatgpt",
+      "sublabel": "acquire · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-acquire-chatgpt/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        2664
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website",
+      "type": "backend",
+      "label": "repo-website",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        2784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-tokenomics",
+      "type": "backend",
+      "label": "tokenomics",
+      "sublabel": "environment · governance",
+      "sources": [
+        {
+          "path": "skills/environment/ki-tokenomics/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        2784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-housekeeping-chatgpt",
+      "type": "backend",
+      "label": "housekeeping-chatgpt",
+      "sublabel": "environment · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        2784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-mcp",
+      "type": "backend",
+      "label": "repo-mcp",
+      "sublabel": "repository structure · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        2880
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-trade",
+      "type": "frontend",
+      "label": "trade",
+      "sublabel": "governance · process",
+      "sources": [
+        {
+          "path": "skills/governance/ki-trade/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        2880
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-engineering",
+      "type": "backend",
+      "label": "engineering",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-engineering/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        2976
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-trades",
+      "type": "backend",
+      "label": "trades",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-trades/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        2976
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-acquire-granola",
+      "type": "backend",
+      "label": "acquire-granola",
+      "sublabel": "acquire · governance",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-acquire-granola/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        3168
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-accept",
+      "type": "frontend",
+      "label": "accept",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-accept/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        3168
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-next",
+      "type": "frontend",
+      "label": "next",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-next/SKILL.md"
+        }
+      ],
+      "pos": [
+        464,
+        3168
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-pulse",
+      "type": "frontend",
+      "label": "pulse",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pulse/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        3168
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work",
+      "type": "backend",
+      "label": "work",
+      "sublabel": "change management · governance",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        3168
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-github-issues",
+      "type": "backend",
+      "label": "work-github-issues",
+      "sublabel": "change management · governance",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-github-issues/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        3168
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-linear",
+      "type": "backend",
+      "label": "work-linear",
+      "sublabel": "change management · governance",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-linear/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        3264
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-design-inspiration",
+      "type": "frontend",
+      "label": "design-inspiration",
+      "sublabel": "design · process",
+      "sources": [
+        {
+          "path": "skills/design/ki-design-inspiration/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        3264
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-design-system",
+      "type": "backend",
+      "label": "design-system",
+      "sublabel": "design · governance",
+      "sources": [
+        {
+          "path": "skills/design/ki-design-system/SKILL.md"
+        }
+      ],
+      "pos": [
+        464,
+        3264
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-housekeeping-claude",
+      "type": "backend",
+      "label": "housekeeping-claude",
+      "sublabel": "environment · governance",
+      "tag": "runtime-bound",
+      "sources": [
+        {
+          "path": "skills/environment/ki-housekeeping-claude/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        3264
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-agentic-radar",
+      "type": "backend",
+      "label": "agentic-radar",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-agentic-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        3264
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-checkpoint",
+      "type": "backend",
+      "label": "checkpoint",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-checkpoint/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        3264
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-guides",
+      "type": "backend",
+      "label": "guides",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-guides/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        3360
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-model-radar",
+      "type": "backend",
+      "label": "model-radar",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-model-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        3360
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-specs",
+      "type": "backend",
+      "label": "specs",
+      "sublabel": "governance · governance",
+      "sources": [
+        {
+          "path": "skills/governance/ki-specs/SKILL.md"
+        }
+      ],
+      "pos": [
+        464,
+        3360
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-bootstrap",
+      "type": "frontend",
+      "label": "bootstrap",
+      "sublabel": "keystone · process",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-bootstrap/SKILL.md"
+        }
+      ],
+      "pos": [
+        680,
+        3360
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-homebrew-tap",
+      "type": "backend",
+      "label": "repo-homebrew-tap",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
+        }
+      ],
+      "pos": [
+        896,
+        3360
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-project",
+      "type": "backend",
+      "label": "repo-project",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-project/SKILL.md"
+        }
+      ],
+      "pos": [
+        1112,
+        3360
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-specifications",
+      "type": "backend",
+      "label": "repo-specifications",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        3456
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-tools",
+      "type": "backend",
+      "label": "repo-tools",
+      "sublabel": "repository structure · governance",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
+        }
+      ],
+      "pos": [
+        248,
+        3456
+      ],
+      "size": [
+        196,
+        48
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "No declared dependencies",
+      "wraps": [
+        "ki-acquire-granola",
+        "ki-accept",
+        "ki-next",
+        "ki-pulse",
+        "ki-work",
+        "ki-work-github-issues",
+        "ki-work-linear",
+        "ki-design-inspiration",
+        "ki-design-system",
+        "ki-housekeeping-claude",
+        "ki-agentic-radar",
+        "ki-checkpoint",
+        "ki-guides",
+        "ki-model-radar",
+        "ki-specs",
+        "ki-bootstrap",
+        "ki-repo-homebrew-tap",
+        "ki-repo-project",
+        "ki-repo-specifications",
+        "ki-repo-tools"
+      ],
+      "pad": 24
+    }
+  ],
+  "connections": [
+    {
+      "id": "ki-acquire-chatgpt--ki-housekeeping-chatgpt",
+      "from": "ki-acquire-chatgpt",
+      "to": "ki-housekeeping-chatgpt",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-agent-coordination-paperclip--ki-git",
+      "from": "ki-agent-coordination-paperclip",
+      "to": "ki-git",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1210,
+          2256
+        ],
+        [
+          994,
+          2256
+        ]
+      ]
+    },
+    {
+      "id": "ki-batch--ki-delegation",
+      "from": "ki-batch",
+      "to": "ki-delegation",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          2544
+        ],
+        [
+          130,
+          2544
+        ]
+      ]
+    },
+    {
+      "id": "ki-binding-chatgpt--ki-binding",
+      "from": "ki-binding-chatgpt",
+      "to": "ki-binding",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1210,
+          1872
+        ],
+        [
+          994,
+          1872
+        ]
+      ]
+    },
+    {
+      "id": "ki-binding-chezmoi--ki-binding",
+      "from": "ki-binding-chezmoi",
+      "to": "ki-binding",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          1680
+        ],
+        [
+          994,
+          1680
+        ]
+      ]
+    },
+    {
+      "id": "ki-binding-chezmoi--ki-repo-dotfiles-chezmoi",
+      "from": "ki-binding-chezmoi",
+      "to": "ki-repo-dotfiles-chezmoi",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-binding-claude--ki-binding",
+      "from": "ki-binding-claude",
+      "to": "ki-binding",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1210,
+          1776
+        ],
+        [
+          994,
+          1776
+        ]
+      ]
+    },
+    {
+      "id": "ki-design-loop--ki-decision-records",
+      "from": "ki-design-loop",
+      "to": "ki-decision-records",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          216
+        ],
+        [
+          562,
+          216
+        ]
+      ]
+    },
+    {
+      "id": "ki-design-loop--ki-delegation",
+      "from": "ki-design-loop",
+      "to": "ki-delegation",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          1488
+        ],
+        [
+          130,
+          1488
+        ]
+      ]
+    },
+    {
+      "id": "ki-implement--ki-delegation",
+      "from": "ki-implement",
+      "to": "ki-delegation",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-plan--ki-delegation",
+      "from": "ki-plan",
+      "to": "ki-delegation",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          120
+        ],
+        [
+          130,
+          120
+        ]
+      ]
+    },
+    {
+      "id": "ki-recap--ki-authoring",
+      "from": "ki-recap",
+      "to": "ki-authoring",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          1584
+        ],
+        [
+          562,
+          1584
+        ]
+      ]
+    },
+    {
+      "id": "ki-recap--ki-batch",
+      "from": "ki-recap",
+      "to": "ki-batch",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-repo--ki-authoring",
+      "from": "ki-repo",
+      "to": "ki-authoring",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          2352
+        ],
+        [
+          562,
+          2352
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo--ki-git",
+      "from": "ki-repo",
+      "to": "ki-git",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          2160
+        ],
+        [
+          994,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi--ki-authoring",
+      "from": "ki-repo-dotfiles-chezmoi",
+      "to": "ki-authoring",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          2064
+        ],
+        [
+          562,
+          2064
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-harness--ki-decision-records",
+      "from": "ki-repo-harness",
+      "to": "ki-decision-records",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          1392
+        ],
+        [
+          562,
+          1392
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-harness--ki-diagrams",
+      "from": "ki-repo-harness",
+      "to": "ki-diagrams",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          1200
+        ],
+        [
+          994,
+          1200
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-harness--ki-skills",
+      "from": "ki-repo-harness",
+      "to": "ki-skills",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          1176
+        ],
+        [
+          1210,
+          1176
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-harness--ki-subagents",
+      "from": "ki-repo-harness",
+      "to": "ki-subagents",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          888
+        ],
+        [
+          994,
+          888
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-harness--ki-work-roadmap",
+      "from": "ki-repo-harness",
+      "to": "ki-work-roadmap",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          1296
+        ],
+        [
+          994,
+          1296
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-kb--ki-repo-kb-activities",
+      "from": "ki-repo-kb",
+      "to": "ki-repo-kb-activities",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          994,
+          408
+        ],
+        [
+          1210,
+          408
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-kb--ki-repo-kb-live-artifacts",
+      "from": "ki-repo-kb",
+      "to": "ki-repo-kb-live-artifacts",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          994,
+          600
+        ],
+        [
+          1210,
+          600
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-kb--ki-repo-kb-streams",
+      "from": "ki-repo-kb",
+      "to": "ki-repo-kb-streams",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-repo-kb-activities--ki-work-housekeeping",
+      "from": "ki-repo-kb-activities",
+      "to": "ki-work-housekeeping",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-repo-kb-principal--ki-decision-records",
+      "from": "ki-repo-kb-principal",
+      "to": "ki-decision-records",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          792
+        ],
+        [
+          562,
+          792
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-kb-principal--ki-repo-kb",
+      "from": "ki-repo-kb-principal",
+      "to": "ki-repo-kb",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          778,
+          312
+        ],
+        [
+          994,
+          312
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-mcp--ki-engineering",
+      "from": "ki-repo-mcp",
+      "to": "ki-engineering",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-repo-website-app--ki-repo-website",
+      "from": "ki-repo-website-app",
+      "to": "ki-repo-website",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-repo-website-cloudflare--ki-repo-website",
+      "from": "ki-repo-website-cloudflare",
+      "to": "ki-repo-website",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          2736
+        ],
+        [
+          130,
+          2736
+        ]
+      ]
+    },
+    {
+      "id": "ki-repo-website-content--ki-repo-website",
+      "from": "ki-repo-website-content",
+      "to": "ki-repo-website",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          562,
+          2760
+        ],
+        [
+          130,
+          2760
+        ]
+      ]
+    },
+    {
+      "id": "ki-subagents-chatgpt--ki-subagents",
+      "from": "ki-subagents-chatgpt",
+      "to": "ki-subagents",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1210,
+          1080
+        ],
+        [
+          994,
+          1080
+        ]
+      ]
+    },
+    {
+      "id": "ki-subagents-claude--ki-subagents",
+      "from": "ki-subagents-claude",
+      "to": "ki-subagents",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1210,
+          984
+        ],
+        [
+          994,
+          984
+        ]
+      ]
+    },
+    {
+      "id": "ki-tokenomics-chatgpt--ki-tokenomics",
+      "from": "ki-tokenomics-chatgpt",
+      "to": "ki-tokenomics",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    },
+    {
+      "id": "ki-tokenomics-claude--ki-tokenomics",
+      "from": "ki-tokenomics-claude",
+      "to": "ki-tokenomics",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          994,
+          2736
+        ],
+        [
+          778,
+          2736
+        ]
+      ]
+    },
+    {
+      "id": "ki-trade--ki-trades",
+      "from": "ki-trade",
+      "to": "ki-trades",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reading the graph",
+      "items": [
+        "An arrow runs downward from a skill to the skill it relies on; every skill sits above everything it relies on.",
+        "A solid arrow is composition declared in ki-depends-on: selecting the skill selects its prerequisite.",
+        "A dashed arrow is optional augmentation declared in ki-optional-depends-on: used only when both are active.",
+        "Every label drops the shared ki- prefix; the sublabel names the source concern under skills/ and the kind, and the region at the foot holds skills with no declared relationship either way."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Generated, not drawn",
+      "items": [
+        "62 skills, 28 composition edges, 8 optional edges, read from SKILL.md frontmatter.",
+        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic.",
+        "Shared-module packaging (ki-shared-dependencies) and coverage detection (ki-detects) are not relationships and are not drawn."
+      ]
+    }
+  ]
+}

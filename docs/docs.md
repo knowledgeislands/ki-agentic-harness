@@ -38,6 +38,10 @@ The harness retains the underlying `SKILL.md` files, generated capability catalo
 
 [`roadmap/`](roadmap) holds this non-KB repository's canonical flat work items. The root [`ROADMAP.md`](../ROADMAP.md) is their concise orientation; `ki-work-roadmap` governs both layers. Knowledge Bases use `ki-repo-kb-streams` instead of this repository-roadmap layout.
 
+### Diagrams — the _shape_
+
+[`diagrams/`](diagrams) holds this repository's living Archify diagrams with their manifest and index; `ki-diagrams` governs the layout and freshness rules. The skill graph there is generated from skill frontmatter by `ki-repo-harness`, so it is regenerated, never drawn.
+
 ## Temporary working documents
 
 A temporary working document may sit directly under `docs/` when a small design needs to converge through implementation before it can honestly become a decision, definition, guide, or plan.
