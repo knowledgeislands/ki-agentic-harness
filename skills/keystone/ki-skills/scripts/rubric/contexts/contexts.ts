@@ -1,4 +1,5 @@
 import type { RubricPublicationContext } from '../../shared/rubric.ts'
+import type { SkillDependencyNode, SkillMention } from './dependencies.ts'
 import type { ParsedFrontmatter } from './frontmatter.ts'
 import type { RefreshContext } from './longevity.ts'
 import { hintVerbs, isProcessSkill } from './modes.ts'
@@ -156,6 +157,12 @@ export type KiShapeSkillContext = {
   documentsMechanicalDelegation: boolean
   dependsOnPresent: boolean
   dependsOn: string
+  optionalDependsOnPresent: boolean
+  optionalDependsOn: string
+  /** Declared edges of every sibling skill in the same collection, when the session supplies them. */
+  dependencyGraph?: readonly SkillDependencyNode[]
+  /** Backticked `ki-*` skill names mentioned in the body, with reliance-cue classification. */
+  skillMentions: readonly SkillMention[]
   supportedRuntimesPresent: boolean
   supportedRuntimes: string
   runtimeBinding: boolean
@@ -246,6 +253,10 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
   documentsMechanicalDelegation: false,
   dependsOnPresent: false,
   dependsOn: '',
+  optionalDependsOnPresent: false,
+  optionalDependsOn: '',
+  dependencyGraph: undefined,
+  skillMentions: [],
   supportedRuntimesPresent: false,
   supportedRuntimes: '',
   runtimeBinding: false,

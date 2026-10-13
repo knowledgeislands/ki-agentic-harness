@@ -5,7 +5,7 @@ import { type ConformDocumentState, createConformDocumentState, createSkillConfo
 import { createKiShapeContext, type KiSkillsRubricContext } from './contexts.ts'
 import { parseFrontmatter } from './frontmatter.ts'
 import { createRefreshContext } from './longevity.ts'
-import { createSkillRubricContext, frontmatterList } from './skill.ts'
+import { createSkillRubricContext, frontmatterList, skillDependencyNode } from './skill.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './skill-files.ts'
 import { stripCode } from './text.ts'
 
@@ -143,12 +143,16 @@ export const createKiSkillsSession = ({
     return { subjects, proposal: () => ({ writes: [] }) }
   }
 
+  const dependencyGraph = skillDirectories.map((directory) =>
+    skillDependencyNode(parseFrontmatter(readFileSync(join(directory, 'SKILL.md'), 'utf8')))
+  )
+
   for (const skillDirectory of skillDirectories) {
     const conform =
       mode === 'conform' && isSafeSkillSource(reportTarget, skillDirectory)
         ? createSkillConformState(skillDirectory, reportTarget)
         : undefined
-    const skill = createSkillRubricContext(skillDirectory, conform?.capabilities, publication)
+    const skill = createSkillRubricContext(skillDirectory, conform?.capabilities, publication, dependencyGraph)
     const skillSubject = relative(reportTarget, skillDirectory) || '.'
     subjects.push(rubricSubject(skill.validFrontmatter ? 'skill' : 'invalidSkill', skill.context, skillSubject))
     if (conform) documents.push(conform.document)

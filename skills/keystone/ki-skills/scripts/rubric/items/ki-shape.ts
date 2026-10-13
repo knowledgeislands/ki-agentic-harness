@@ -1,6 +1,7 @@
 import type { AuditOutcome, RubricFamily, RubricItem, RubricOutcomes } from '../../shared/rubric.ts'
 import { AUTOMATIC_REMEDIATION, judgment } from '../../shared/rubric.ts'
 import { type KiShapeRubricContext, type KiSkillsRubricContext, selectKiSkillsContext } from '../contexts/contexts.ts'
+import { findDependencyCycle } from '../contexts/dependencies.ts'
 
 const UNIVERSAL_MODES = ['AUDIT', 'CONFORM', 'EDUCATE', 'REFRESH'] as const
 const REQUIRED_GOVERNANCE_VERBS = [...UNIVERSAL_MODES, 'HELP'] as const
@@ -665,6 +666,134 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
   }
 }
 
+const KI_SHAPE_20: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-20',
+  title: 'dependency declarations resolve and are acyclic',
+  description:
+    'Every name in `ki-depends-on:` and `ki-optional-depends-on:` is a sibling skill of the same collection, is not the skill itself, and appears in only one of the two lists; `ki-optional-depends-on:`, when present, is a single-line flow list. No skill lies on a cycle over the union of hard and optional edges, because the edges define a prerequisite partial order. The declared edge set is the source of the published skill graph, so a stale or dangling declaration misdraws the graph.',
+  sources: ['ADR-KI-HARNESS-SKILLS-006', 'standards-knowledge-islands.md §2'],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Correct the declaration to the sibling skill’s current name, move an optional augmentation out of ki-depends-on, or break the cycle by making one direction routing instead of composition.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ skill }) => {
+        if (!skill)
+          return [{ status: 'NOT_APPLICABLE', message: 'skill evidence is unavailable for dependency resolution' }]
+        const findings: AuditOutcome[] = []
+        if (skill.optionalDependsOnPresent && flowList(skill.optionalDependsOn) === null)
+          findings.push({
+            status: 'VIOLATION',
+            message: `\`ki-optional-depends-on:\` must be a single-line flow list (got \`${skill.optionalDependsOn}\`)`
+          })
+        const hard = flowList(skill.dependsOn) ?? []
+        const optional = flowList(skill.optionalDependsOn) ?? []
+        for (const name of [...hard, ...optional])
+          if (name === skill.name)
+            findings.push({ status: 'VIOLATION', message: `\`${name}\` declares itself as a dependency` })
+        for (const name of hard)
+          if (optional.includes(name))
+            findings.push({
+              status: 'VIOLATION',
+              message: `\`${name}\` appears in both ki-depends-on and ki-optional-depends-on — a dependency is either composition or optional augmentation`
+            })
+        if (findings.length > 0) return findings
+        if (skill.dependencyGraph === undefined)
+          return [
+            {
+              status: 'NOT_APPLICABLE',
+              message:
+                'sibling skill evidence is unavailable, so dependency names resolve only through the host dependency graph'
+            }
+          ]
+        const siblings = new Set(skill.dependencyGraph.map((node) => node.name))
+        for (const [field, names] of [
+          ['ki-depends-on', hard],
+          ['ki-optional-depends-on', optional]
+        ] as const)
+          for (const name of names)
+            if (!siblings.has(name))
+              findings.push({
+                status: 'VIOLATION',
+                message: `${field} names \`${name}\`, which is not a skill in this collection`
+              })
+        if (findings.length > 0) return findings
+        const cycle = findDependencyCycle(skill.dependencyGraph, skill.name)
+        if (cycle)
+          return [
+            {
+              status: 'VIOLATION',
+              message: `dependency declarations form a cycle: ${cycle.map((name) => `\`${name}\``).join(' → ')}`
+            }
+          ]
+        return [{ status: 'PASS', message: 'dependency declarations resolve to sibling skills and are acyclic' }]
+      }
+    }
+  }
+}
+
+const KI_SHAPE_21: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-21',
+  title: 'body references to sibling skills are declared or routed',
+  description:
+    'Every backticked `ki-*` skill name in the `SKILL.md` body resolves to a skill in the same collection, the skill itself, or the source harness, so a rename leaves no dangling reference. A mention preceded by a reliance cue — "composes", "follow", "per", "apply", "according to", "defined by", "as defined in", "consult" — expresses reliance on that skill’s standard and must be declared in `ki-depends-on:` or `ki-optional-depends-on:`. Other mentions are routing or off-ramps and need no declaration.',
+  sources: ['ADR-KI-HARNESS-SKILLS-006', 'standards-knowledge-islands.md §2'],
+  mechanical: {
+    level: 'WARN',
+    heuristic: true,
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Rename the reference to the sibling skill’s current name, declare the reliance in ki-depends-on or ki-optional-depends-on, or reword a routing mention so it no longer reads as reliance.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ skill }) => {
+        if (!skill)
+          return [{ status: 'NOT_APPLICABLE', message: 'skill evidence is unavailable for body reference inspection' }]
+        if (skill.dependencyGraph === undefined)
+          return [
+            { status: 'NOT_APPLICABLE', message: 'sibling skill evidence is unavailable for body reference inspection' }
+          ]
+        const siblings = new Set(skill.dependencyGraph.map((node) => node.name))
+        const declared = new Set([...(flowList(skill.dependsOn) ?? []), ...(flowList(skill.optionalDependsOn) ?? [])])
+        const findings: AuditOutcome[] = []
+        const reported = new Set<string>()
+        for (const mention of skill.skillMentions) {
+          if (mention.name === skill.name || mention.name === skill.sourceHarnessName) continue
+          if (!siblings.has(mention.name)) {
+            if (reported.has(`missing:${mention.name}`)) continue
+            reported.add(`missing:${mention.name}`)
+            findings.push({
+              status: 'VIOLATION',
+              message: `line ${mention.line} references \`${mention.name}\`, which is not a skill in this collection`
+            })
+            continue
+          }
+          if (mention.reliance && !declared.has(mention.name)) {
+            if (reported.has(`undeclared:${mention.name}`)) continue
+            reported.add(`undeclared:${mention.name}`)
+            findings.push({
+              status: 'VIOLATION',
+              message: `line ${mention.line} relies on \`${mention.name}\` without declaring it in ki-depends-on or ki-optional-depends-on`
+            })
+          }
+        }
+        return findings.length > 0
+          ? findings
+          : [{ status: 'PASS', message: 'body references to sibling skills resolve and reliance is declared' }]
+      }
+    }
+  },
+  judgment: judgment(
+    'Does each undeclared body mention of a sibling skill route the reader elsewhere, or does the skill actually apply that sibling’s standard and need a declaration?'
+  )
+}
+
 export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext> = {
   code: 'KI-SHAPE',
   title: 'Knowledge Islands skill shape',
@@ -689,6 +818,8 @@ export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext>
     KI_SHAPE_16,
     KI_SHAPE_17,
     KI_SHAPE_18,
-    KI_SHAPE_19
+    KI_SHAPE_19,
+    KI_SHAPE_20,
+    KI_SHAPE_21
   ]
 }

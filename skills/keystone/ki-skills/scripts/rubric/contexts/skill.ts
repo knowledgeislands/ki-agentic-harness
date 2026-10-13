@@ -8,6 +8,7 @@ import {
   type KiShapeSkillContext,
   type KiSkillsRubricContext
 } from './contexts.ts'
+import { type SkillDependencyNode, skillMentions } from './dependencies.ts'
 import { type ParsedFrontmatter, parseFrontmatter } from './frontmatter.ts'
 import { scriptHelpEvidence } from './scripts.ts'
 import { listMarkdownFiles } from './skill-files.ts'
@@ -23,6 +24,13 @@ export const frontmatterList = (value: string | undefined): string[] => {
     .map((entry) => entry.trim().replace(/^(?:"([\s\S]*)"|'([\s\S]*)')$/, '$1$2'))
     .filter(Boolean)
 }
+
+/** Read one skill's declared dependency edges from its frontmatter. */
+export const skillDependencyNode = (frontmatter: ParsedFrontmatter): SkillDependencyNode => ({
+  name: frontmatter.keys.get('name') ?? '',
+  dependsOn: frontmatterList(frontmatter.keys.get('ki-depends-on')),
+  optionalDependsOn: frontmatterList(frontmatter.keys.get('ki-optional-depends-on'))
+})
 
 export type SkillWritableCapabilities = {
   readContent?: () => string
@@ -245,7 +253,8 @@ const endorsesRetiredExtension = (markdown: string): boolean => {
 const createKiShapeEvidence = (
   skillDirectory: string,
   frontmatter: ParsedFrontmatter,
-  body: string
+  body: string,
+  dependencyGraph?: readonly SkillDependencyNode[]
 ): KiShapeSkillContext => {
   const localGovernanceSource = isLocalGovernanceSource(skillDirectory)
   const section = extractSection(body, 'Operating modes')
@@ -295,6 +304,10 @@ const createKiShapeEvidence = (
     documentsMechanicalDelegation: /lint:md|toolchain (?:already )?enforces/i.test(skillText),
     dependsOnPresent: frontmatter.present.has('ki-depends-on'),
     dependsOn: (frontmatter.keys.get('ki-depends-on') ?? '').trim(),
+    optionalDependsOnPresent: frontmatter.present.has('ki-optional-depends-on'),
+    optionalDependsOn: (frontmatter.keys.get('ki-optional-depends-on') ?? '').trim(),
+    ...(dependencyGraph ? { dependencyGraph } : {}),
+    skillMentions: skillMentions(body),
     supportedRuntimesPresent: frontmatter.present.has('ki-supported-runtimes'),
     supportedRuntimes: (frontmatter.keys.get('ki-supported-runtimes') ?? '').trim(),
     runtimeBinding: frontmatter.values['ki-runtime-binding'] === true,
@@ -309,7 +322,8 @@ const createKiShapeEvidence = (
 export const createSkillRubricContext = (
   directory: string,
   capabilities: SkillWritableCapabilities = {},
-  publication?: RubricPublication
+  publication?: RubricPublication,
+  dependencyGraph?: readonly SkillDependencyNode[]
 ): SkillRubricContext => {
   const readContent = capabilities.readContent ?? (() => readFileSync(join(directory, 'SKILL.md'), 'utf8'))
   const content = readContent()
@@ -393,7 +407,7 @@ export const createSkillRubricContext = (
       },
       ...(name === 'ki-skills' ? { rubric: { publication } } : {}),
       shape: createKiShapeContext({
-        skill: createKiShapeEvidence(directory, frontmatter, body),
+        skill: createKiShapeEvidence(directory, frontmatter, body, dependencyGraph),
         addArgumentHintVerbs: capabilities.addArgumentHintVerbs
       }),
       size: { bodyLines: body.split(/\r?\n/).length, bodyTokens: estimateTokens(body) }

@@ -3,6 +3,7 @@ name: ki-recap
 ki-kind: process
 ki-applicability: invocation-only
 ki-depends-on: [ki-authoring]
+ki-optional-depends-on: [ki-batch]
 description: >
   Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable
   learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work
