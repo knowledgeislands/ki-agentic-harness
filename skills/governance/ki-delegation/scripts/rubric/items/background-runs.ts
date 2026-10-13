@@ -73,18 +73,19 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
     },
     {
       code: 'RUN-5',
-      title: 'threads report answerably, recap since the mark and refresh their guidance',
+      title: 'reports take the owner-report shape, recap since the mark and refresh their guidance',
       description:
-        "A coordinating thread tags each needs item with a stable mnemonic, never a number, with plain context, a recommendation and links, asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, opens every Summary and recap with the shared banner naming the thread, its Project and Initiative, the window and its state, ends at a resting point with a Summary whose banner says it is resting or what it waits on, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark that carry every open item forward across marks, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
+        "Every agent report and thread Summary is an owner report with what has been done, what is in progress and outstanding queries in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block that is a suggestion and not approval; a coordinating thread asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, opens every Summary and recap with the shared banner naming the thread, its Project and Initiative, the window and its state, ends at a resting point with a Summary whose banner says it is resting or what it waits on, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark that carry every open item forward across marks, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
       sources: ['standards-background-runs.md'],
       judgment: {
         scope:
           'Coordinating-thread transcripts, reports, summaries, recaps, decisions logs and checkpoints the owner selects for review.',
         prompt:
-          "Could the owner answer each needs item cold by a tag that kept its meaning until resolved, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does every Summary and recap open with a banner giving thread, Project and Initiative links, window and state, does a resting or waiting thread's last message say so and list done, running and outstanding with Needs tags, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full whenever it arose, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
+          "Does each report carry the three owner-report sections in order with routine open matters kept out of the queries, could the owner answer each query cold by a tag that kept its meaning until resolved and send back the reply block as an instruction, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does every Summary and recap open with a banner giving thread, Project and Initiative links, window and state, does a resting or waiting thread's last message say so and list done, running and outstanding with Needs tags, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full whenever it arose, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
         outcomes: [
           'conforming',
-          'retag needs items',
+          'reshape the report',
+          'retag queries',
           'log decisions',
           'add the banner',
           'restore the mark',
@@ -92,7 +93,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
           'escalate to owner'
         ],
         guidance:
-          'Give each needs item a stable mnemonic tag, plain context, a recommendation and links; record missing decisions before further launches; open each Summary and recap with the banner and end a resting point with a Summary that states the wait; restore the mark line in Current state and recap from it; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
+          'Restore the three owner-report sections and the reply block, and give each query a stable mnemonic tag, a Summary, a Need from you, a Recommendation and links; record missing decisions before further launches; open each Summary and recap with the banner and end a resting point with a Summary that states the wait; restore the mark line in Current state and recap from it; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
       }
     }
   ]

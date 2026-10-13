@@ -13,6 +13,9 @@
 - [Run queue](#run-queue)
 - [Monitoring](#monitoring)
 - [Reporting](#reporting)
+  - [Owner report](#owner-report)
+  - [Needs tags](#needs-tags)
+  - [Coordinating threads](#coordinating-threads)
 - [Project threads](#project-threads)
 - [Thread working rules](#thread-working-rules)
 - [Reference launcher](#reference-launcher)
@@ -132,17 +135,80 @@ After an interrupt, check the agent processes before saying anything is running.
 
 ## Reporting
 
-The owner sees only status one-liners and each agent's final report. Tooling output, commit identifiers and step narration stay in the log and report, unless the owner asks.
+The owner sees only status one-liners and each report. Tooling output, commit identifiers and step narration stay in the log and in the report, unless the owner asks.
 
-The report has three parts: **Done** (one line per outcome), **Failed** (if any), and **Needs \<owner\>** (decisions or actions). Omit an empty part. Verbosity follows the owner's communication level in their instructions; this standard does not restate it.
+### Owner report
+
+Every report written for the owner takes one shape, the **owner report**: a background agent's final `<name>.report.md`, which the owner reads directly, and a coordinating thread's Summary, including the Summary at a resting point. It replaces the Done / Failed / Needs \<owner\> report wherever that shape was set. Kris set the format on 2026-10-13 as Decision 14 of the `ways-of-working` run, in these words:
+
+> Use three major sections, in this order:
+>
+> 1. What has been done
+>
+>    Report completed outcomes clearly and concisely. Include material failures, corrections and limitations where relevant; do not hide them behind a success summary.
+>
+> 2. What is in progress
+>
+>    State what is actually running and what is waiting, with the responsible owner or dependency. Say “Nothing is running” when that is true.
+>
+>    Place outstanding matters that require no action from the owner here, before the outstanding queries. Label them “Outstanding — no action requested now”. Distinguish agent work, receiver-owned work, verification limitations and retained material from decisions the owner needs to make.
+>
+> 3. Outstanding queries
+>
+>    Give each actionable query its own heading:
+>
+>    `<stable query tag> — <plain-language title>`
+>
+>    Under each heading, include:
+>
+>    - Summary: enough context to understand the issue without rereading the thread, including its significance and current state.
+>    - Need from you: the specific decision, instruction or missing information required.
+>    - Recommendation: the proposed next step and why it is recommended.
+>
+> Keep each query independently understandable and copyable. Split unrelated decisions into separate queries. Preserve query tags until resolved; never reuse a tag for a different issue.
+>
+> Do not add a “Your next step” field beneath individual queries.
+>
+> Finish the report with one fenced text block that offers a copy button. Include every actionable query’s heading and its recommended next step, written as an instruction the owner can adopt or edit and send back. Preserve the same tags and ordering as the query sections.
+>
+> The suggested reply is not approval. Act on it only when the owner returns an instruction.
+>
+> Linking requirement
+>
+> Every ID or named reference to an existing record must be linked to that record, including roadmap items, checkpoints, Projects, Initiatives, decisions, receipts and evidence artifacts. Use the full identifier as the link text where applicable, rather than an abbreviated ID.
+>
+> For example:
+>
+> `[HNR-PRINCIPAL-5GE-004](</Users/krisbrown/workspaces/humans-not-robots/hnr-principal/Streams/Roadmap/HNR-PRINCIPAL-5GE-004-complete-phase-2-ms3.md>)`
+>
+> Prefer verified absolute local file links when the checkout is available; otherwise use the verified canonical remote link. Link a query heading to its underlying record when one exists. Preserve necessary references in the copyable reply block so the returned instruction remains unambiguous.
+>
+> Never invent a link. If a target cannot be resolved, state that explicitly.
+>
+> Keep routine outcomes brief, but give outstanding queries enough context for a considered answer. Do not turn every unresolved observation into a request for owner action.
+
+The quotation keeps Kris's em dashes and is laid out as a blockquote; the standard's own text writes the label `Outstanding - no action requested now` and the query heading `<tag> - <title>` with a spaced hyphen. Applied:
+
+- **Sections:** the three headings, in that order, every time. An empty section still appears and says so in one line, `Nothing is running` or `No outstanding queries`, so the owner never wonders whether it was dropped.
+- **What has been done:** completed outcomes, one line each, with material failures, corrections and limitations beside them rather than behind them. A background agent puts its commit identifiers and check results here, because the owner reads the report and not the log.
+- **What is in progress:** what is running and what is waiting, each with its owner or dependency. Then, under `Outstanding - no action requested now`, the matters that need nothing from the owner, grouped as agent work, receiver-owned work, verification limitations and retained material, kept apart from the decisions the owner must make. A handoff to another thread stays outstanding until the owner expressly says it is done.
+- **Outstanding queries:** one heading per actionable query, `<tag> - <plain-language title>`, linked to its record where one exists, carrying **Summary**, **Need from you** and **Recommendation** and nothing else. The tag is a [Needs tag](#needs-tags). A routine open matter is not a query; it belongs in the section above.
+- **Reply block:** the report ends with one fenced `text` block listing every query heading and its recommended instruction, in the same tags and order, carrying the references the instruction needs to be unambiguous. It is a suggested reply, not approval: nothing in it is acted on until the owner returns an instruction.
+- **Links:** every record, checkpoint, Project, Initiative, decision, receipt and evidence artefact under [Linking records](#linking-records).
+- **Levels:** the owner's personal instructions set a communication level, `quiet`, `standard` or `detailed`, and this standard does not restate those instructions. The shape is the same at every level; the level sets only depth. Under `quiet`, the status-line cadence during work is unchanged, this report replaces the end-of-unit report, done items are one line each, in-progress items name only the work and what it waits on, and a query carries just enough context to be answered cold. `standard` adds material context and exceptions to each section. `detailed` adds the plan, validation evidence and rationale. No level hides a failure, a required decision or a material risk.
+
+### Needs tags
+
+Each outstanding query carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can reply "BOT-1 do it". The tag heads the query in an owner report, labels the same item in a checkpoint and a recap, and is the one vocabulary for open items wherever they appear. A tag is stable: it keeps its meaning across repeated reports until the item is resolved and is never reused for something else. Queries are never numbered.
+
+### Coordinating threads
 
 A coordinating thread - the master thread or a project thread - also follows these practices with the owner:
 
-- **Needs items:** each item under **Needs \<owner\>** carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can reply "BOT-1 do it". Each item gives enough plain context to be answered cold, a recommendation where the thread has one, and links under [Linking records](#linking-records). A tag is stable: it keeps its meaning across repeated Needs sections until the item is resolved and is never reused for something else. Needs items are never numbered.
-- **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch.
+- **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch. The query keeps its tag either way.
 - **Banner:** every Summary and every [recap](#recap-since-the-mark) opens with one banner header, so either reads cold and several threads' updates read side by side. The banner names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The window is `since your last message` for a Summary and `since <mark>` for a recap.
-- **Summary:** after its banner, the thread gives one consolidated list of what is done since the owner's last message, what is running now, and everything still outstanding. It is the form of the proactive update when several background agents have finished or the owner returns after a gap, and is also given on request, such as "summary". A request for everything "since the mark" gets the full [recap](#recap-since-the-mark) instead.
-- **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its banner states `resting` or `waiting on <what>` plainly. The Summary then lists what is done, what is running now or "nothing running", and everything outstanding with its Needs tags, so the owner can pick it up cold.
+- **Summary:** after its banner, the thread gives one [owner report](#owner-report) covering the window since the owner's last message. It is the form of the proactive update when several background agents have finished or the owner returns after a gap, and is also given on request, such as "summary". A request for everything "since the mark" gets the full [recap](#recap-since-the-mark) instead.
+- **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its banner states `resting` or `waiting on <what>` plainly, and the owner report beneath it lets the owner pick the thread up cold.
 - **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another thread, the thread gives it in a code block ready to copy.
 - **Decisions:** the thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises.
 
@@ -224,9 +290,9 @@ A recap is a plain-language roll-up for the owner of what has changed in the thr
 - **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`. The timestamp bounds Git history, work-record transitions and background-agent reports; the decision number bounds the decisions log exactly. Per-repository commit identifiers stay out.
 - **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike. Giving a recap does not move it, so a recap can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line.
 - **Shape:** a recap opens with the [banner](#reporting) shared with the Summary, its window `since <mark>`. It then covers what was delivered, decided, started, stopped or blocked, and newly captured; what is running now; and what is outstanding. It cites records by full identifier as links, with no tool output and no commit identifiers.
-- **Outstanding:** the checkpoint's Needs-you items, open work records in the thread's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: it is everything still open, whenever it arose, and striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured. Striking or re-striking never drops, closes or hides an open item, and the thread keeps every open Needs item in its checkpoint when it re-strikes.
-- **Sources:** the run's decisions log after Decision N; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's Needs-you items and parked tangents.
-- **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#reporting) form, so they do not repeat everything since a distant mark.
+- **Outstanding:** the checkpoint's open [Needs-tagged](#needs-tags) queries, open work records in the thread's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: it is everything still open, whenever it arose, and striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured. Striking or re-striking never drops, closes or hides an open item, and the thread keeps every open query, with its Needs tag, in its checkpoint when it re-strikes.
+- **Sources:** the run's decisions log after Decision N; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's open Needs-tagged queries and parked tangents.
+- **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#coordinating-threads) form, so they do not repeat everything since a distant mark.
 - **No mark yet:** the first recap covers the window since the checkpoint's last-recap time, if it notes one, or else its `created_at`, states that window in its banner, and strikes the first mark. A thread whose checkpoint still notes a last-recap time converts it into a mark when the [refresh rule](#refreshing-this-guidance) tells it this guidance changed.
 
 ### Parking tangents
@@ -239,9 +305,9 @@ On request, such as "what's parked?", the thread lists its parked items. When th
 
 ### Linking records
 
-Whenever a thread mentions a roadmap or work record, a checkpoint, an Initiative or a Project, it cites the full identifier, such as `KI-HARNESS-GOV-144` rather than `GOV-144`, because area codes repeat across repositories.
+Whenever a thread or a report mentions a roadmap or work record, a checkpoint, an Initiative, a Project, a decision, a receipt or an evidence artefact, it cites the full identifier, such as `KI-HARNESS-GOV-144` rather than `GOV-144`, because area codes repeat across repositories, and uses that full identifier as the link text.
 
-It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the remote URL only when there is no local copy. This applies to status lines, reports and recaps alike.
+It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the verified canonical remote URL only when there is no local copy. A query heading links to its underlying record when one exists, and the reply block keeps the references an instruction needs. A link is never invented: when a target cannot be resolved, the text says so. This applies to status lines, owner reports, recaps and checkpoints alike.
 
 ### Keeping primary checkouts current
 

@@ -4,13 +4,15 @@
 
 | Source | Last reviewed | Governs |
 | --- | --- | --- |
-| Knowledge Islands delegation practice | 2026-10-13 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log, coordination, worktree placement, run-folder retention, the coordinator role and its responsiveness rules, monitoring, and owner-facing Summary and recap banners |
+| Knowledge Islands delegation practice | 2026-10-13 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log, coordination, worktree placement, run-folder retention, the coordinator role and its responsiveness rules, monitoring, the owner report with its Needs tags and reply block, and owner-facing Summary and recap banners |
 | `ki-tokenomics` | 2026-10-13 | Model-purpose and context-cost policy belong outside the packet, including the coordinating-thread model |
 | `ki-work-roadmap` | 2026-08-12 | Approved work-record lifecycle, plan ownership, and review boundary |
 | [OpenAI: Codex subagents][openai-subagents] | 2026-08-12 | Ordinary subagent task selection, permissions, and execution guidance |
 | [Anthropic: Claude Code sub-agents][anthropic-subagents] | 2026-08-12 | Ordinary subagent task fit, restricted capabilities, and isolation guidance |
 
 ## Last review
+
+A third 2026-10-13 review applied Kris's Decision 14 in the `ways-of-working` run. Every owner-facing report, a background agent's final report and a coordinating thread's Summary alike, now takes the owner report: what has been done, what is in progress with routine open matters under `Outstanding - no action requested now`, and outstanding queries, each under a stable Needs tag with a Summary, a Need from you and a Recommendation, closing with one copyable reply block that is a suggestion and not approval. Kris's wording is quoted in the standard, the communication level sets only depth, the Done / Failed / Needs owner shape is withdrawn from the footers and the prompt skeleton, and the linking rule now forbids invented links. RUN-5 reviews the shape. The vendor guides were not re-reviewed.
 
 A second 2026-10-13 review applied Kris's Decision 11, with Decisions 3 and 8, in the `ways-of-working` run. Coordinator responsiveness is now a set of hard, checkable rules: a turn budget, work that never happens in-thread, waiting only through a detached waiter or monitor, short briefs, a self-check before each tool call, and prompt answers to owner messages. Both openers now carry a coordinator-role line, and the bootstrap report states that role. RUN-3's description and review prompt now check those rules. The vendor guides were not re-reviewed.
 
