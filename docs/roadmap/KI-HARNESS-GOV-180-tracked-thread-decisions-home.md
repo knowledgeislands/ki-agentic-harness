@@ -4,12 +4,15 @@ area: GOV
 title: Tracked thread decisions home
 project: ways-of-working
 component: governance
-status: triage
+purpose: governance
+kind: deliver
+status: draft
+horizon: next
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-13T23:05:00Z
-updated_at: 2026-10-13T23:05:00Z
+updated_at: 2026-10-14T06:52:07Z
 ---
 
 # Tracked Thread Home for the Decisions Log and Agent Reports
@@ -36,6 +39,44 @@ This record is captured from Kris's answers and is not adopted, planned or imple
 - Not the `ki agent` launcher's own change, which `tools-ki` owns, and not the sweep of committed records that already cite by number or of existing run folders, which Knowledge Islands Principal owns.
 - Not the design folder's retention, which Kris settled separately as `+/_DESIGN/<subject-slug>/`.
 
+## Current state
+
+Not yet grounded. `ki-plan` records the current source facts before Ready.
+
+## Steps
+
+- [ ] Plan this record under `ki-plan` before Ready, replacing these placeholder sections.
+
+## Files touched
+
+Not yet planned.
+
+## Verify
+
+Not yet planned.
+
+## Dependencies / blocks
+
+As declared in the frontmatter `blocks` and `blocked_by`; `ki-plan` confirms them.
+
+## Documentation impact
+
+### Decision Records
+
+Not yet assessed.
+
+### Specifications
+
+Not yet assessed.
+
+### Guides
+
+Not yet assessed.
+
+### Roadmap
+
+Not yet assessed.
+
 ## Discussion
 
 ### What moves and what stays
@@ -53,3 +94,7 @@ Kris's answer splits the run packet by what it is for. The decisions log and eac
 - Whether `+/_THREADS/<thread>/` is ignored or tracked by default in repositories whose `+/` is otherwise untracked working material, and what `ki-repo-kb`'s zone model says about a tracked folder under `+/`.
 - Whether a thread that spans repositories keeps one folder in its owning repository, with the other repositories' agents reporting into it, or one folder per repository.
 - How `ki-recap` and `ki-pmo` find the folder, and whether the thread's checkpoint names it.
+
+### Adoption
+
+On 14 October 2026 Kris approved the state-of-play thread's triage burn-down as written, under Kris's instruction to burn the roadmap down: adopted as `deliver / Next`. Kris asked for it in answering DECISION-HOME, and it fixes a durability defect, since losing the state folder loses the decisions log. It comes before the `tools-ki` launcher change and Knowledge Islands Principal's sweep. Adoption grants no planning, implementation or acceptance authority.

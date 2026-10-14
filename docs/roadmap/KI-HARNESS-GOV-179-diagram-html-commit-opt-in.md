@@ -4,12 +4,18 @@ area: GOV
 title: Diagram HTML commit opt-in
 project: ways-of-working
 component: governance
-status: triage
+kind: deliver
+status: draft
+horizon: hold
+hold:
+  reason: parked
+  condition: The roadmap burn-down leaves room for new capability; nothing depends on committing the HTML before then
+  review: 2026-11-16
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-13T22:55:00Z
-updated_at: 2026-10-13T22:55:00Z
+updated_at: 2026-10-14T06:52:07Z
 ---
 
 # Diagram HTML Commit Opt-In Through the Manifest
@@ -44,3 +50,7 @@ Today the standard decides by a property of the repository, "a repository that s
 - Whether the field is per diagram, in each slug's table, or once for the repository. The manifest "has one table per slug and no other content", so a per-diagram field such as `commit_html = true` fits the existing shape; a repository-level field would need the manifest's shape to change.
 - Whether the harness's skill-graph sync check, which regenerates the source and compares it, should also rebuild the HTML or only confirm that the committed HTML was finalized from the committed source.
 - The cost in Git history of an 800 KB file that changes with every regeneration, against the benefit Kris chose: an interactive view of the skill graph that is in the repository rather than rebuilt by each reader.
+
+### Adoption
+
+On 14 October 2026 Kris approved the state-of-play thread's triage burn-down as written, under Kris's instruction to burn the roadmap down: adopted as `deliver / Hold` until 2026-11-16. Nothing depends on the committed HTML, which can be rebuilt locally, and each regeneration adds about 800 KB to Git history; the burn-down comes first. Adoption grants no planning, implementation or acceptance authority.

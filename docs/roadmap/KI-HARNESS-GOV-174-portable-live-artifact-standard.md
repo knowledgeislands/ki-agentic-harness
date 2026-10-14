@@ -2,12 +2,14 @@
 id: KI-HARNESS-GOV-174
 area: GOV
 title: Portable live-artifact standard
-status: triage
+status: cancelled
+resolution: duplicate
+resolution_target: KI-SPEC-KIN-003
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-12T20:01:01Z
-updated_at: 2026-10-12T20:01:01Z
+updated_at: 2026-10-14T06:52:32Z
 ---
 
 ## Goal
@@ -25,6 +27,10 @@ The Observatory will open only a pair that declares a manifest, because the tool
 - In scope: manifest fields on the Markdown half (declared tools as server and tool, bridge version), the portable page surface (`callMcpTool` required; `askClaude` and `runScheduledTask` optional and feature-detected; no external script beyond named pinned libraries), and AUDIT and CONFORM checks for them.
 - Out of scope: the Observatory host, the bridge script, the ChatGPT publication server, and Cowork itself.
 - The normative contract may live in ki-specifications rather than in this skill, as the Observatory's plan recommends; if so, the skill cites it and keeps authoring and audit.
+
+## Cancelled
+
+Kris approved this closure on 14 October 2026, as written in the state-of-play thread's triage burn-down, under Kris's instruction to burn the roadmap down. Closed as a duplicate of KI-SPEC-KIN-003 in `ki-specifications` (`docs/roadmap/KI-SPEC-KIN-003-portable-live-artifact-contract.md`), which holds the same portable live-artifact contract: Kris placed the contract's home in that repository and paused it there until the v1 boundary review. The Observatory keeps its own working contract until then. It leaves no outstanding change in this repository; any skill-side manifest fields and audit checks follow once that contract exists.
 
 ## Discussion
 
