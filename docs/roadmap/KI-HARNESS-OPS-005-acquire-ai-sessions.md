@@ -215,7 +215,13 @@ The record stays `in-progress`.
 On 2026-10-14 Kris decided to move The Tower Game's 15 conversations to `personal`. The 15 packages carrying `g-p-69ff7f83be248191a5cae112d3ff706f` moved from `captures/_review/` to `captures/personal/chatgpt/account-export-2026-09-22/` with `git mv`. Package contents, source hashes and checksums are unchanged. The receiver checkpoint and converter bind the project to `personal`, and the checkpoint records the move. Each package's own record still carries its staging-time `territory_key: _review`, because that record is checksummed acquisition evidence.
 
 - **Staged counts:** `personal` now holds 100 and `_review` holds the 6 unprojected conversations. The total is still 334, and every package verifies against its checksums from a clean checkout.
-- **Still open:** the Spirituality binding, which stays under separate review, and the other items listed above.
+- **Still open:** the other items listed above.
+
+### Personal - Spirituality receiver move - 2026-10-14
+
+On 2026-10-14 Kris decided to move Personal - Spirituality's 18 conversations to `sacred-inquiry`. The 18 packages carrying `g-p-67fc427d557881918931a1408952701a` moved from `captures/personal/chatgpt/account-export-2026-09-22/` to `captures/sacred-inquiry/chatgpt/account-export-2026-09-22/` with `git mv`. Package contents, source hashes and checksums are unchanged. The receiver checkpoint and converter bind the project to `sacred-inquiry`, and the checkpoint records the move. Each package's own record carries `territory_key: personal` from staging time, as that record is checksummed acquisition evidence.
+
+- **Staged counts:** The move preserves the original 334 total: `personal` drops from 100 to 82, `sacred-inquiry` rises from 0 to 18, `_review` holds the 6 unprojected conversations, and other territories are unchanged. Every package verifies against its checksums from a clean checkout.
 
 ### Acquisition and housekeeping
 
@@ -252,7 +258,7 @@ Kris authorised these bindings on 2026-10-14 in the knowledge-acquisition run ('
 | `g-p-6849f00c6050819183d533e75218519e` | Personal - Side Hustle Ideas | Kit: Side Hussle Ideas; Side Hustle Ideas | `personal` | 7 |
 | `g-p-69465bf021a481918f0b7e3268539eb1` | Personal - Home Improvement | Kit: Home Improvement; Home Improvement | `personal` | 4 |
 | `g-p-694655e2709c8191bd816026d45c1eee` | Personal - Costa Rica | Kit: Costa Rica; Costa Rica | `personal` | 10 |
-| `g-p-67fc427d557881918931a1408952701a` | Personal - Spirituality | Kit: Spirituality; Spirituality | `personal` (provisional) | 18 |
+| `g-p-67fc427d557881918931a1408952701a` | Personal - Spirituality | Kit: Spirituality; Spirituality | `sacred-inquiry` | 18 |
 | `g-p-684ef0f4c274819185742d3bb3874196` | Personal - Productivity | Kit: Productivity; Productivity | `personal` | 7 |
 | `g-p-67fc4361628481919ae3eae3a04c226f` | Personal - Fitness and Wellbeing | Kit: Fitness and Wellbeing; Fitness and Wellbeing | `personal` | 11 |
 | `g-p-67fc41be62b481919afc54ce000fd518` | Personal - Relationships | Kit: Relationships; Relationships | `personal` | 7 |
@@ -263,9 +269,8 @@ Kris authorised these bindings on 2026-10-14 in the knowledge-acquisition run ('
 
 The 328 project conversations and the 6 outside any project total 334, matching the export. The 6 unprojected conversations route to `_review`.
 
-Two bindings are provisional:
+One binding is provisional:
 
-- **Spirituality** - it routes to `personal` by its current name, but the 2026-10-12 rename report offered `Sacred Inquiry - Spirituality` as an option.
 - **Equal Remedy** - the earlier proposal to rename it `Legal: Financial Remedy` and route it to Legal was not applied. Kris renamed it `Equal Remedy: General`, and its conversation titles concern the Equal Remedy organisation, so it binds to `equal-remedy`.
 
 The Tower Game first staged to `_review`, because its receiver was left unresolved above pending a creative or game repository. On 2026-10-14 Kris decided to move its 15 conversations to `personal`, so it is now bound there.
