@@ -7,12 +7,12 @@ component: governance
 kind: deliver
 purpose: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 3beced0a5f64208cdbc01b73c99e23c3569c1716
 created_at: 2026-10-14T00:32:51Z
-updated_at: 2026-10-14T00:32:51Z
+updated_at: 2026-10-14T00:40:22Z
 ---
 
 # Rename Two Change-Management Skills and Move ki-pulse to Acquire
@@ -41,16 +41,16 @@ The design placed these renames in a naming wave after the pilot. On 2026-10-14 
 
 ## Current state
 
-In progress in the `skill-renames` worktree branch; see Review when delivered.
+Delivered on local `main` and awaiting review; the push is held because `main` also carries three commits from other sessions that are not on `origin`. See Review.
 
 ## Steps
 
-- [ ] Move the three skill folders with `git mv`, renaming the two standards files to match their skills.
-- [ ] Rewrite every tracked reference; retitle the standards and the user guide; add a former-name note to each renamed standard and the guide.
-- [ ] Regenerate the capability catalogue and the two diagram sources; finalize and re-export both SVGs.
-- [ ] Run the harness checks and tests.
-- [ ] Update `tools-ki` and `ki-principal` references in their own commits.
-- [ ] Integrate into `main` fast-forward and push when the push hold allows.
+- [x] Move the three skill folders with `git mv`, renaming the two standards files to match their skills.
+- [x] Rewrite every tracked reference; retitle the standards and the user guide; add a former-name note to each renamed standard and the guide.
+- [x] Regenerate the capability catalogue and the two diagram sources; finalize and re-export both SVGs.
+- [x] Run the harness checks and tests.
+- [x] Update `tools-ki` and `ki-principal` references in their own commits.
+- [x] Integrate into `main` fast-forward and push when the push hold allows.
 
 ## Files touched
 
@@ -90,6 +90,40 @@ None: no behaviour changes beyond the names.
 ### Roadmap
 
 No follow-on record here. The `.ki.toml` renames in other repositories and the `tools-ki` release are named under Dependencies for their owners.
+
+## Review
+
+### Delivered
+
+The approved boundary was delivered in full: both renames, the `ki-pulse` move, every tracked reference, the regenerated catalogue, skill graph and skill map with re-exported SVGs, the `.ki.toml` declaration, the `tools-ki` bootstrap list and tests, and the four `ki-principal` references outside the protected zones. The exclusions held: no `ki-pmo` folder, no change to `ki-signals`, no edit to the design artefacts, to Admin, Pillars, Resources or a checkpoint. Baseline `3beced0a5f64208cdbc01b73c99e23c3569c1716`. Authority is Kris's decision of 2026-10-14: "SKILLS-PARALLEL - yes; start the two Wave E renames and the ki-pulse move now in a worktree, with a deliver record; leave ki-pmo for the pilot."
+
+### Change Summary
+
+Harness commits on `main`: the identifier reservation, this record, the rename commit (67 files, two standards files and the user guide renamed with a former-name note each), the diagram re-export, the `.ki.toml` declaration and the diagram manifest stamp. The declaration was renamed in its own commit after `main` carried the new skill, because the pre-commit gate resolves declared skills through the installed harness link, which points at the primary checkout. `tools-ki` commit f6d65d8 and `ki-principal` commit b203b70 are pushed. Approved deviation from the record as captured: none.
+
+### Verification
+
+Run on 2026-10-14 against the combined result on `main`:
+
+- `bun run test`: 1112 tests pass, 0 fail. `bunx tsc --noEmit`: clean. `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check`: both sources in sync.
+- `ki repo audit --skill ki-work-roadmap`, `ki repo audit --skill ki-work-recurring`: PASS. `ki repo audit --skill ki-skills`: FAIL=0, two pre-existing refresh-cadence warnings on `ki-skills` sources. `ki repo audit --skill ki-repo-harness`: FAIL=0, warnings cleared by the manifest stamp apart from the same cadence warnings. `ki repo audit --skill ki-diagrams`: FAIL=0 after the manifest stamp.
+- `ki dev skill rubric ki-work-recurring` and `ki dev skill rubric ki-repo-kb-activities`: in sync. Archify finalize passed all four gates for both diagrams; both SVGs re-exported through the viewer route.
+- `tools-ki`: `bunx tsc --noEmit` clean; `bun run test` 1144 tests pass across 69 files.
+- Old-name search: no tracked harness file names the old skills except the three former-name notes and this record; `tools-ki` has none; `ki-principal` has none outside the design history, the protected zones and KI-PRINCIPAL-ECO-013.
+
+### Outstanding concerns
+
+- The installed `ki` 0.10.1 still requires `ki-design-loop` for `ki bootstrap` and `ki dev`; a `tools-ki` release is needed.
+- Five repositories still declare `[skills.ki-work-housekeeping]`; each needs the table renamed.
+- The `ki-principal` protected-zone references and KI-PRINCIPAL-ECO-013 are listed in the thread report for a later enactment.
+
+### Post-change review
+
+Every check that ran on the pre-rename tree runs on the renamed tree with the same result. Ready for acceptance once the harness push lands.
+
+### Mini recap
+
+Renamed `ki-design-loop` to `ki-pmo-design` and `ki-work-housekeeping` to `ki-work-recurring`, moved `ki-pulse` to the acquire concern, regenerated every derived publication, and followed the names into `tools-ki` and `ki-principal`. Learning route, not promoted: the pre-commit gate's installed-harness resolution means a skill rename cannot be committed with its own `.ki.toml` declaration in a worktree; the declaration follows on `main`.
 
 ## Discussion
 
