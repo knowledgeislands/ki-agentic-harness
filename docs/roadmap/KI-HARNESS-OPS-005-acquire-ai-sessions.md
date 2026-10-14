@@ -7,17 +7,19 @@ project: knowledge-acquisition
 component: acquire
 area: OPS
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-10-14T13:45:43Z
+updated_at: 2026-10-14T13:47:50Z
 ---
 
 ## Goal
 
-Acquire complete conversations from configured AI projects into the repositories best served by their knowledge, preserve them faithfully for local review, and retire the source conversations only after the move is complete and independently verified.
+The harness publishes the AI-session acquisition adapters delivered so far: comparable read-only Claude, Codex and ChatGPT source operations for discovery, listing, faithful reading and checkpoints; the `ki-acquire-chatgpt` capability with its machine-readable adapter metadata, prepared-capture import path and settled project-selector contract; and the one-time conversion and staging of the official ChatGPT account export into its receiving territories, with every omission explicit and no source mutated. Complete project acquisition, incremental sources, receiver-local triage, the Claude and Codex acquisition split and source retirement are not this record's: they are carried by the knowledge-acquisition Project in Knowledge Islands Principal.
+
+Narrowed on 2026-10-14 under `ki-next` by Kris Brown's instruction in the state-of-play thread's roadmap census, 'RC-OPS-005: rescope now', from the original Goal: acquire complete conversations from configured AI projects into the repositories best served by their knowledge, preserve them faithfully for local review, and retire the source conversations only after the move is complete and independently verified. That wider aim is the Project's outcome, not this record's.
 
 ## Context
 
@@ -29,9 +31,9 @@ The source MCPs and Harness skills are still named `housekeeping`, even where th
 
 ## Boundary
 
-This item owns complete-session acquisition, project-to-repository routing, receiver-local staging, and the evidence required before source retirement. It does not selectively excerpt a source conversation during import, infer durable knowledge automatically, treat opaque ChatGPT application bytes as decoded conversations, silently route an unknown project, or delete any source conversation merely because an import command returned successfully.
-
-Deletion is a separate, destructive release operation. It requires a current exact manifest, a verified recoverable repository copy, and explicit human approval immediately before source mutation. Until that gate exists and passes, acquisition remains read-only.
+- In scope, as delivered: the read-only provider operations and the Claude, Codex and opaque ChatGPT source adapters; the `tools-ki` action-first acquisition command and adapter registry; the structured readable ChatGPT bundle that retains opaque source identity, byte count and hash without committing payload bytes; the ChatGPT project selectors and receiver mappings on immutable project identity; the published `ki-acquire-chatgpt` capability and its dependency boundary with `ki-housekeeping-chatgpt`; and the one-time bootstrap from the official account export, inspected, converted and staged with explicit omissions.
+- Out of scope, moved to the knowledge-acquisition Project on 2026-10-14: the hybrid incremental path and browser trial; a readable authorised source that enumerates projects and returns complete conversations; explicit handling of unmapped projects, overlapping mappings, missing, changed and failed reads; receiver-local triage; the Claude and Codex acquisition split from housekeeping; the housekeeping MCP naming question; the source-retirement manifest and provider-supported deletion path; and the verified complete project move and agent-session no-op before any deletion. The provisional Spirituality binding and the 77 unreferenced export files are open questions carried with them.
+- Unchanged: nothing here selectively excerpts a source conversation, infers durable knowledge automatically, treats opaque ChatGPT bytes as decoded conversations, silently routes an unknown project, or deletes a source conversation. Deletion stays a separate destructive release operation that needs a current exact manifest, a verified recoverable copy and explicit human approval immediately before source mutation; no such gate exists and acquisition remains read-only.
 
 ## Current state
 
@@ -41,7 +43,7 @@ The pilot initially appeared to show a literal-home-path binding defect. Fresh i
 
 The source-mechanics groundwork is real but the end-to-end move is incomplete. The Claude, Codex, and ChatGPT MCP repositories expose comparable read-only discovery, listing, reading, and checkpoint operations, and their tests and builds pass. The ChatGPT local-store adapter safely inventories opaque `*.data` records and returns exact bytes, but those bytes do not provide a readable conversation surface or reliable project-name routing.
 
-`tools-ki` commit `a49ff67` provides the action-first `ki acquire list|import|status|reconcile|reset` framework. Its adapter registry expects `ki-acquire-chatgpt`, `ki-acquire-claude`, and `ki-acquire-codex`; only `ki-acquire-granola` is currently published by the Harness. The executable ChatGPT path accepts a user-prepared local capture and produces a verified KEP, but it does not enumerate ChatGPT projects, acquire every conversation within a mapped project, stage those sessions into multiple receiving repositories, or delete verified source conversations.
+`tools-ki` commit `a49ff67` provides the action-first `ki acquire list|import|status|reconcile|reset` framework. Its adapter registry expects `ki-acquire-chatgpt`, `ki-acquire-claude`, and `ki-acquire-codex`; of these the Harness publishes `ki-acquire-chatgpt`. The executable ChatGPT path accepts a user-prepared local capture and produces a verified KEP, but it does not enumerate ChatGPT projects, acquire every conversation within a mapped project, stage those sessions into multiple receiving repositories, or delete verified source conversations.
 
 The former Awaiting review packet proved the read-only MCP mechanics, bindings, registry entries, Agora membership, and prepared-capture packaging. It did not prove project routing, complete readable conversation acquisition, or safe source retirement, so this record is In progress.
 
@@ -53,6 +55,8 @@ The canonical `ki-acquire-chatgpt` capability now publishes the current prepared
 
 On 2026-09-22, the user selected the official ChatGPT account export as the authorised bootstrap source for the first complete readable snapshot. At that point the request had reached ChatGPT's account re-authentication boundary and delivery was pending. The export remains sensitive external source material outside Git; after delivery it must be inspected for project membership, complete conversation content, write-ups, and assets before a bounded converter can produce the existing `ki-chatgpt-capture` input. This snapshot does not provide the intended incremental source contract, so the end-to-end source step remains open.
 
+On 2026-10-14 the record was narrowed to the delivered scope above and set `awaiting-review`; the Steps below keep only the delivered steps, and the eight unfinished steps of the original plan moved to the knowledge-acquisition Project in Knowledge Islands Principal (`Streams/Projects/knowledge-acquisition.md`), where they wait for a record of their own. The paragraphs above are the history of how the delivered scope was reached.
+
 On 2026-09-26, the user confirmed that the requested ChatGPT account export has been delivered. Its local path and archive hash have not yet been recorded, so no archive content or completeness claim has been inspected. The agreed source split is to use this export once as the authoritative bootstrap candidate, use the opaque local cache only to nominate changed identities, and evaluate browser acquisition for new or changed readable conversations. Browser-derived content remains provisional until it is reconciled against the bootstrap export and later periodic exports; rendered UI alone is not evidence of complete branches, write-ups, attachments, or project coverage.
 
 ## Steps
@@ -60,7 +64,6 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 - [x] Confirm that the official ChatGPT account export is available as the one-time bootstrap candidate.
 - [x] Record the export's external source-store location and archive hash, then inspect its schema, project membership, conversation identity, write-ups, and assets read-only without committing source payloads.
 - [x] Convert only verified export evidence into the canonical `ki-chatgpt-capture` form and retain explicit omissions for every unsupported field or asset class.
-- [ ] Evaluate the hybrid incremental path: local-cache change nomination, browser retrieval of new or changed readable sessions through the isolated Obscura trial merged from `KI-HARNESS-GOV-087` (see Discussion), and periodic full-export reconciliation before browser coverage is trusted.
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
 - [x] Implement the action-first acquisition command and machine-readable adapter registry in `tools-ki`.
@@ -68,38 +71,25 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 - [x] Define stable ChatGPT project selectors and receiver mappings using immutable project identity, reserved `<Domain>: <Topic>` prefixes for non-personal domains, a provisional unprefixed Personal / Kit migration default, and retained prior names as migration aliases.
 - [x] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
 - [x] Select the official ChatGPT account export as the authorised bootstrap source, keep its sensitive archive outside Git, and retain incremental acquisition as a separate gap.
-- [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
 - [x] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
-- [ ] Represent unmapped projects, overlapping receiver mappings, missing sessions, changed sessions, and failed reads explicitly without guessing or silently dropping content.
-- [ ] Add receiver-local triage after acquisition so complete sessions can be harvested, retained as source evidence, routed onward, or marked as containing no residual knowledge.
-- [ ] Separate Claude and Codex acquisition guidance from their housekeeping skills, using exception-based full-session import rather than routine bulk import.
-- [ ] Decide whether the existing `mcp-housekeeping-*` repositories remain shared read-only source adapters or need acquisition-specific names or projections.
-- [ ] Implement a separately invoked source-retirement manifest and provider-supported deletion path that fails closed on incomplete, changed, uncommitted, or unverifiable acquisitions.
-- [ ] Verify one complete ChatGPT project move and one completed agent-session no-op before enabling any source deletion.
 
 ## Files touched
 
 - `docs/decisions/ADR-KI-HARNESS-SKILLS-007-provider-neutral-ai-session-acquisition-and-adapter-pairing.md`
 - `skills/acquire/ki-acquire-chatgpt/`
-- prospective `skills/acquire/ki-acquire-claude/` and `skills/acquire/ki-acquire-codex/`
 - `skills/environment/ki-housekeeping-chatgpt/`
 - `skills/environment/ki-housekeeping-claude/`
 - sibling `mcp-housekeeping-claude`, the combined `mcp-housekeeping-chatgpt`, and `tools-ki` repositories where their owners adopt the revised contract
-- receiving repositories selected by the approved ChatGPT project map
+- receiving repositories selected by the approved ChatGPT project map, which committed their own staged captures
 
 ## Verify
 
-- `ki acquire list` reports declared `ki-acquire-*` capabilities from machine-readable Harness metadata and does not infer adapters from `ki-housekeeping-*` names.
-- A project inventory uses stable source identity, shows the current project name, and reports every conversation in the selected project before writing.
-- Each mapped project targets exactly one eligible receiver unless explicit intentional duplication is approved; unmapped or conflicting projects fail closed.
-- A complete acquisition preserves every readable conversation and associated write-up or asset from the selected project, with explicit omissions rather than fabricated content.
-- An unchanged repeat produces no payload change; a changed conversation produces a new verified version without losing the previously acquired form.
-- Receiver-local triage occurs after full acquisition and does not need source access to decide what knowledge to harvest.
-- A retirement preview names each exact source conversation, its acquired receiver path, hashes, verified Git revision, and any unresolved acquisition concern.
-- Deletion is unavailable until every manifest entry has a recoverable acquired copy, the source still matches the manifest, and the human approves that exact current manifest.
-- Opaque ChatGPT `*.data` bytes are never presented as decoded conversation content or committed to a receiving repository by default; source identity, byte count, and hash remain as provenance.
-- Claude and Codex default to no acquisition when the repository already contains the session's outcome; any exception imports the complete selected session.
-- Every affected repository passes its focused tests and KI audits, and no acquisition test or ordinary import path can mutate a provider.
+- `ki acquire list` reports the declared `ki-acquire-*` capabilities from machine-readable Harness metadata and does not infer adapters from `ki-housekeeping-*` names.
+- The bootstrap staging retains every readable conversation from the export with explicit omissions rather than fabricated content: all 334 packages verify against their checksums from a clean checkout of the receiver branch, and each omission is listed in its conversation record.
+- Each mapped project targets exactly one receiver; the 17 immutable project identifiers are bound in this record and no conversation was dropped or duplicated.
+- Opaque ChatGPT `*.data` bytes are never presented as decoded conversation content or committed to a receiving repository; source identity, byte count and hash remain as provenance.
+- No acquisition test or ordinary import path mutates a provider, and no ChatGPT source state changed during the delivered work.
+- This repository passes `ki repo audit --skill ki-work-roadmap` with the narrowed record in place.
 
 ## Dependencies / blocks
 
@@ -127,9 +117,39 @@ Document the ChatGPT project workflow first: inspect mappings, preview complete 
 
 ### Roadmap
 
-Keep this item open through acquisition-skill separation, one verified complete ChatGPT project move, and a deletion path that remains disabled until its safety gate passes. Receiver-owned executor or MCP changes remain independently planned and accepted in their repositories.
+The unfinished acquisition steps are carried by the knowledge-acquisition Project in Knowledge Islands Principal, which opens records for them in their owning repositories when they are next selected. Receiver-owned executor or MCP changes remain independently planned and accepted in their repositories.
+
+## Review
+
+### Delivered
+
+The narrowed boundary is fully delivered: the read-only provider operations and the three source adapters, the `tools-ki` acquisition command and registry (`a49ff67`), the structured readable ChatGPT bundle, the project selectors and receiver mappings, the published `ki-acquire-chatgpt` capability (harness `b9d07c25`) and the bootstrap conversion and staging of the official account export on 2026-10-14 (receiver commits `b5158e6` and `bc23689`, then The Tower Game's move to `personal`) against baseline `7373e7c496caa223f5e2dce988ab41bb700f31ad`. No source conversation was mutated and no export payload entered this repository.
+
+### Change Summary
+
+The record was narrowed on 2026-10-14 to what has been delivered since 22 August, on Kris's 'RC-OPS-005: rescope now'. The eight unfinished steps, with the provisional Spirituality binding and the unreferenced export files, moved to the knowledge-acquisition Project. The material decision is that complete project acquisition, incremental sources and source retirement are Project outcomes delivered through later records, not open steps on a record that has carried groundwork for eight weeks.
+
+### Verification
+
+Run on 2026-10-14 at the narrowing: `ki acquire list` reports `chatgpt` enabled with skill `ki-acquire-chatgpt`, resolved, configuration valid and executable available. The bootstrap staging evidence is recorded under the staging checkpoint in Discussion: 334 packages verified against their checksums from a clean checkout, no failed reads, no overlapping mappings, every omission listed. `ki repo audit --skill ki-work-roadmap` was run after the edit; its result is in the thread's burn-down report.
+
+### Outstanding concerns
+
+The Spirituality binding remains provisional and the 77 unreferenced export files are undecided; both are carried with the moved steps. The Tower Game binding was settled on 2026-10-14 by Kris's decision to move its 15 conversations to `personal`. Nothing delivered depends on the open two.
+
+### Post-change review
+
+The delivered adapters change no provider state and expose read-only operations only. Retirement remains unavailable by design, so narrowing the record removes no safety gate.
+
+### Mini recap
+
+Narrowed to the delivered read-only adapters, the published ChatGPT capability and the verified bootstrap staging; verified by `ki acquire list` and the staging checksums; the open questions travel with the unfinished steps to the knowledge-acquisition Project. Learning route: the Pillars lifecycle note planned under KI-PRINCIPAL-MOD-006 can draw on the staging checkpoint's omission and provenance pattern.
 
 ## Discussion
+
+### Rescoped - 2026-10-14
+
+Kris Brown chose to narrow this record on 14 October 2026 in the state-of-play thread's roadmap census, answering `RC-OPS-005` with 'rescope now'. The checkpoints below are kept as the history of the delivered scope; their lists of what is still open now describe the knowledge-acquisition Project's work, not this record's.
 
 ### Pickup checkpoint — 2026-09-27
 
