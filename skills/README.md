@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 62 skills: 51 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 63 skills: 52 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -145,6 +145,16 @@ Shape selected Now or Next draft work in the local roadmap or KB Streams adapter
 - **Applicability:** Invocation Only
 - **Arguments:** `plan <work>... | help`
 - **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-pmo`
+
+Govern the coordinating thread: the responsive coordinator and its turn budget, the territory master thread and project threads with their openers and bootstrap, the Summary, recap since the mark and full summary, and the thread working rules. Use in a master or project thread, or to give a summary, recap, full summary or strike the mark; `ki-delegation` owns the background runs the thread launches.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
+- **Dependencies:** `ki-delegation`, `ki-checkpoint`
 - **Runtime:** Portable
 
 #### `ki-pmo-design`
@@ -375,7 +385,7 @@ Create or audit typed KI Decision Records for durable rationale and authority. U
 
 #### `ki-delegation`
 
-Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring, project threads) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs.
+Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring, owner report) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and `ki-pmo` governs the coordinating thread that launches them.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
