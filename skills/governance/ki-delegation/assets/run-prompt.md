@@ -8,6 +8,6 @@
 2. <Step.>
 3. **Verify:** <the checks that prove the outcome.>
 
-**Report** to `<report path>` as an owner report: the file's `# <run name> · Summary at <local time>` line, the ki-pmo heading frame of the thread you report to in its own `text` block, the plain `Project · Initiative · since the run began · <state>` line, then `## Done`, `## In Progress`, `## Queries`, each query carrying **Context**, **Query** and lettered **Options** with `a) (recommended)` first, the reply block whose entries carry the option a) instruction in full, then the thread's block-letter footer banner with its list and the resume line.
+**Report** to `<report path>` as an owner report: the ki-pmo report heading of the thread you report to with `› <run name>` added, `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>) › <run name>`, the bold `**Run report at <local time> · last mark <local time>**` line and one `---`, then `## Done`, `## In Progress` and `## Queries`, each query carrying **Context**, **Query** and lettered **Options** with `a) (recommended)` first, the reply block whose entries carry the option a) instruction in full, then the thread's block-letter footer banner with its list and resume line.
 
 Do not use background subagents. Never end your session while waiting.
