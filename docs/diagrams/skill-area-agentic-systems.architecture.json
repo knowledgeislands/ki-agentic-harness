@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
     },
     "legend": {
       "mode": "auto",
@@ -49,6 +49,44 @@
       ]
     },
     {
+      "id": "ki-agent-coordination-paperclip",
+      "type": "database",
+      "label": "agent-coordination-paperclip",
+      "sublabel": "agentic systems · declared",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-subagents",
+      "type": "backend",
+      "label": "subagents",
+      "sublabel": "agentic systems · detected",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-subagents/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
       "id": "ki-subagents-chatgpt",
       "type": "backend",
       "label": "subagents-chatgpt",
@@ -59,8 +97,8 @@
         }
       ],
       "pos": [
-        32,
-        240
+        276,
+        352
       ],
       "size": [
         196,
@@ -80,44 +118,6 @@
       "pos": [
         276,
         240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-agent-coordination-paperclip",
-      "type": "database",
-      "label": "agent-coordination-paperclip",
-      "sublabel": "agentic systems · declared",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-subagents",
-      "type": "backend",
-      "label": "subagents",
-      "sublabel": "agentic systems · detected",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-subagents/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        352
       ],
       "size": [
         196,
@@ -206,7 +206,7 @@
       "items": [
         "The middle region holds every skill in agentic systems; the skill map shows where the other concerns sit.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
-        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
     {

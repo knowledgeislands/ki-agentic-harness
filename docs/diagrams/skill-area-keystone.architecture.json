@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
     },
     "legend": {
       "mode": "auto",
@@ -49,6 +49,44 @@
       ]
     },
     {
+      "id": "ki-bootstrap",
+      "type": "frontend",
+      "label": "bootstrap",
+      "sublabel": "keystone · process",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-bootstrap/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo",
+      "type": "security",
+      "label": "repo",
+      "sublabel": "keystone · baseline",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-repo/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
       "id": "ki-skills",
       "type": "backend",
       "label": "skills",
@@ -68,44 +106,6 @@
       ]
     },
     {
-      "id": "ki-bootstrap",
-      "type": "frontend",
-      "label": "bootstrap",
-      "sublabel": "keystone · process",
-      "sources": [
-        {
-          "path": "skills/keystone/ki-bootstrap/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo",
-      "type": "security",
-      "label": "repo",
-      "sublabel": "keystone · baseline",
-      "sources": [
-        {
-          "path": "skills/keystone/ki-repo/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
       "id": "ki-authoring",
       "type": "security",
       "label": "authoring",
@@ -117,7 +117,7 @@
       ],
       "pos": [
         32,
-        416
+        528
       ],
       "size": [
         196,
@@ -136,7 +136,7 @@
       ],
       "pos": [
         276,
-        416
+        528
       ],
       "size": [
         196,
@@ -200,7 +200,7 @@
       "items": [
         "The middle region holds every skill in keystone; the skill map shows where the other concerns sit.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
-        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
     {

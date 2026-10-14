@@ -3,7 +3,8 @@
  * `skills/`, derived from canonical `SKILL.md` frontmatter. The concern's skills sit in one region; the
  * outside skills they rely on are grouped by concern below it, and the outside skills that rely on them
  * are grouped by concern above it. Solid edges are `ki-depends-on` composition and dashed edges are
- * `ki-optional-depends-on` augmentation, each drawn downward from dependent to prerequisite.
+ * `ki-optional-depends-on` augmentation, each drawn from dependent to prerequisite: downward between regions,
+ * and inside the concern's region from what relies on a hub back to the hub it sits beside.
  */
 import {
   componentId,
@@ -49,37 +50,104 @@ const byShapeThenName = (left: SkillGraphNode, right: SkillGraphNode): number =>
   left.name.localeCompare(right.name)
 
 /**
- * Internal layers: a skill sits one layer below the lowest of the area's skills that rely on it, so an
- * internal edge always runs downward, as the outside edges do. Within a layer, skills that outside skills
- * rely on come first, nearest the tier above; skills that rely on outside skills come last, nearest the
- * tier below; then governance before processes, as on the skill map.
+ * The area's own block: a compact, near-square grid in which each skill's outside edges stay clear of the
+ * others. Each group of linked skills starts at its hub, the skill with the most links inside the area, and
+ * takes its neighbours outward, so a family stays together and what relies on the hub sits beside it; larger
+ * groups come first, and ties put a skill after the area's skills it relies on. The grid widens, up to the
+ * area's width, only so that each skill outside skills rely on can head a column and each skill that relies on
+ * outside skills can end one; a skill with both gets a column of its own at the right. Those skills take
+ * their cells first, left to right; the rest follow the order down the first column, up the next and so on,
+ * so each sits beside the one before. Returns each skill's column and row, and the block's row count.
  */
-const internalLayers = (members: readonly SkillGraphNode[], edges: readonly Edge[]): SkillGraphNode[][] => {
+const areaGrid = (
+  members: readonly SkillGraphNode[],
+  edges: readonly Edge[]
+): { cells: Map<string, Point>; rows: number } => {
   const names = new Set(members.map((member) => member.name))
   const internal = edges.filter((edge) => names.has(edge.from) && names.has(edge.to))
-  const layer = new Map<string, number>()
+  const step = new Map<string, number>()
   const depth = (name: string, trail: ReadonlySet<string>): number => {
-    const known = layer.get(name)
+    const known = step.get(name)
     if (known !== undefined) return known
-    const parents = internal.filter((edge) => edge.to === name && !trail.has(edge.from))
+    const prerequisites = internal.filter((edge) => edge.from === name && !trail.has(edge.to))
     const value =
-      parents.length === 0 ? 0 : 1 + Math.max(...parents.map((edge) => depth(edge.from, new Set([...trail, name]))))
-    layer.set(name, value)
+      prerequisites.length === 0
+        ? 0
+        : 1 + Math.max(...prerequisites.map((edge) => depth(edge.to, new Set([...trail, name]))))
+    step.set(name, value)
     return value
   }
-  const layers: SkillGraphNode[][] = []
-  for (const member of members) {
-    const index = depth(member.name, new Set())
-    layers[index] = [...(layers[index] ?? []), member]
+  const reliedOn = (name: string): boolean => edges.some((edge) => edge.to === name && !names.has(edge.from))
+  const relies = (name: string): boolean => edges.some((edge) => edge.from === name && !names.has(edge.to))
+  const band = (name: string): number => (reliedOn(name) ? 0 : relies(name) ? 2 : 1)
+  /* Each group of linked skills starts at its hub, the one with the most links inside the area, and then
+     takes its neighbours outward, so a family stays together; larger groups come first. */
+  const rank = (p: SkillGraphNode, q: SkillGraphNode): number =>
+    depth(p.name, new Set()) - depth(q.name, new Set()) || band(p.name) - band(q.name) || byShapeThenName(p, q)
+  const links = (name: string): SkillGraphNode[] =>
+    members
+      .filter((member) =>
+        internal.some(
+          (edge) => (edge.from === name && edge.to === member.name) || (edge.to === name && edge.from === member.name)
+        )
+      )
+      .sort(rank)
+  const groups: SkillGraphNode[][] = []
+  const seen = new Set<string>()
+  const byHub = [...members].sort((p, q) => links(q.name).length - links(p.name).length || rank(p, q))
+  for (const hub of byHub) {
+    if (seen.has(hub.name)) continue
+    const group = [hub]
+    seen.add(hub.name)
+    for (let index = 0; index < group.length; index += 1) {
+      for (const next of links((group[index] as SkillGraphNode).name)) {
+        if (seen.has(next.name)) continue
+        seen.add(next.name)
+        group.push(next)
+      }
+    }
+    groups.push(group)
   }
-  const band = (name: string): number => {
-    const reliedOn = edges.some((edge) => edge.to === name && !names.has(edge.from))
-    const relies = edges.some((edge) => edge.from === name && !names.has(edge.to))
-    return reliedOn && !relies ? 0 : relies && !reliedOn ? 2 : 1
+  const order = groups
+    .sort((p, q) => q.length - p.length || rank(p[0] as SkillGraphNode, q[0] as SkillGraphNode))
+    .flat()
+  /* A skill with outside links both above and below gets a column of its own at the block's right, so
+     neither edge passes another skill. */
+  const through = order.filter((node) => reliedOn(node.name) && relies(node.name)).slice(0, AREA_COLUMNS - 1)
+  const rest = order.filter((node) => !through.includes(node))
+  const heads = rest.filter((node) => reliedOn(node.name))
+  const ends = rest.filter((node) => relies(node.name))
+  const columns = Math.max(
+    1,
+    Math.min(AREA_COLUMNS - through.length, Math.max(Math.ceil(Math.sqrt(rest.length)), heads.length, ends.length))
+  )
+  const rows = Math.max(1, Math.ceil(rest.length / columns))
+  /* The cells in reading order, down the first column and up the next, as many as there are skills. */
+  const snake: Point[] = rest.map((_, index) => {
+    const column = Math.floor(index / rows)
+    const offset = index % rows
+    return [column, column % 2 === 0 ? offset : rows - 1 - offset]
+  })
+  const key = ([column, row]: Point): string => `${column},${row}`
+  const free = new Set(snake.map(key))
+  const cells = new Map<string, Point>()
+  const take = (node: SkillGraphNode, wanted: readonly Point[]): void => {
+    const chosen = [...wanted, ...snake].find((cell) => free.has(key(cell)))
+    if (!chosen) return
+    free.delete(key(chosen))
+    cells.set(node.name, chosen)
   }
-  return layers
-    .filter((group) => group !== undefined)
-    .map((group) => [...group].sort((p, q) => band(p.name) - band(q.name) || byShapeThenName(p, q)))
+  const used = (column: number): number[] => snake.filter(([each]) => each === column).map(([, row]) => row)
+  const columnsUsed = [...new Set(snake.map(([column]) => column))]
+  const headCells = columnsUsed.map((column): Point => [column, Math.min(...used(column))])
+  const endCells = columnsUsed.map((column): Point => [column, Math.max(...used(column))])
+  for (const node of heads) take(node, headCells)
+  for (const node of ends) take(node, endCells)
+  for (const node of rest) if (!cells.has(node.name)) take(node, [])
+  through.forEach((node, index) => {
+    cells.set(node.name, [(rest.length === 0 ? 0 : columns) + index, 0])
+  })
+  return { cells, rows }
 }
 
 /** Build the Archify architecture source for one concern's area diagram. */
@@ -116,13 +184,8 @@ export const buildSkillArea =
     const columnX = (left: number, index: number): number => left + index * (NODE_WIDTH + COLUMN_GAP)
     const regionLabel = (domain: string, size: number): string => `${concernTitle(domain)} · ${count(size, 'skill')}`
 
-    /* The area's own region, layer by layer; a layer wider than the region wraps onto further rows. */
-    const layers = internalLayers(members, shown)
-    const areaRows = layers.flatMap((layer) =>
-      Array.from({ length: Math.ceil(layer.length / AREA_COLUMNS) }, (_, row) =>
-        layer.slice(row * AREA_COLUMNS, (row + 1) * AREA_COLUMNS)
-      )
-    )
+    /* The area's own region, a compact block. */
+    const grid = areaGrid(members, shown)
 
     /* An outside tier: one region per concern, each a single row, regions wrapping under the row budget. */
     const tier = (names: readonly string[], top: number, side: 'above' | 'below'): number => {
@@ -179,17 +242,16 @@ export const buildSkillArea =
 
     /* The area is placed first, at its final columns, so each outside tier can order itself against it;
        its rows then move down below the dependents' tier, and the prerequisites' tier goes beneath. */
-    areaRows.forEach((row, rowIndex) => {
-      row.forEach((node, index) => {
-        place(node, [columnX(ORIGIN_X, index), rowIndex * (NODE_HEIGHT + ROW_GAP)])
-      })
-    })
+    for (const member of members) {
+      const [column, row] = grid.cells.get(member.name) as Point
+      place(member, [columnX(ORIGIN_X, column), row * (NODE_HEIGHT + ROW_GAP)])
+    }
     const area = components.splice(0) as { pos: Point }[]
     const dependentsBottom = tier(dependents, ORIGIN_Y, 'above')
     const above = components.splice(0)
     const areaTop = dependents.length === 0 ? ORIGIN_Y : dependentsBottom + TIER_GAP
     for (const component of area) component.pos[1] += areaTop
-    const areaBottom = areaTop + areaRows.length * (NODE_HEIGHT + ROW_GAP) - ROW_GAP
+    const areaBottom = areaTop + grid.rows * (NODE_HEIGHT + ROW_GAP) - ROW_GAP
     tier(prerequisites, areaBottom + TIER_GAP, 'below')
     components.unshift(...above, ...area)
     boundaries.push({
@@ -231,7 +293,7 @@ export const buildSkillArea =
           items: [
             `The middle region holds every skill in ${domainLabel(concern)}; the skill map shows where the other concerns sit.`,
             'Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.',
-            'An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation.'
+            'An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation.'
           ]
         },
         {

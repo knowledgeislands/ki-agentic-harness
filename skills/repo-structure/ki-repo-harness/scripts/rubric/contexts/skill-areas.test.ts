@@ -31,6 +31,17 @@ type Area = {
   connections: { id: string; from: string; to: string; variant: string }[]
 }
 
+/** The rows of a diagram, top to bottom, each listing its components left to right. */
+const grid = (diagram: Area): string[][] => {
+  const rows = [...new Set(diagram.components.map((c) => c.pos[1]))].sort((p, q) => p - q)
+  return rows.map((y) =>
+    diagram.components
+      .filter((c) => c.pos[1] === y)
+      .sort((p, q) => p.pos[0] - q.pos[0])
+      .map((c) => c.id)
+  )
+}
+
 const OPTIONS = { repositoryUrl: 'https://example.invalid/harness', revision: 'a'.repeat(40) }
 const nodes = readSkillGraphNodes(FIXTURE).nodes
 const area = buildSkillArea('governance')(nodes, OPTIONS) as Area
@@ -60,12 +71,14 @@ describe('buildSkillArea', () => {
     ])
   })
 
-  test('places dependents above the concern, prerequisites below it, and every edge downward', () => {
+  test('places dependents above the concern, prerequisites below it, and every outside edge downward', () => {
     const y = new Map(area.components.map((c) => [c.id, c.pos[1]]))
-    for (const edge of area.connections) expect(y.get(edge.from) ?? 0).toBeLessThan(y.get(edge.to) ?? 0)
-    const own = ['ki-alone', 'ki-base', 'ki-user', 'ki-wrapper'].map((id) => y.get(id) ?? 0)
-    expect(y.get('ki-flow') ?? 0).toBeLessThan(Math.min(...own))
-    expect(y.get('ki-key') ?? 0).toBeGreaterThan(Math.max(...own))
+    const own = ['ki-alone', 'ki-base', 'ki-user', 'ki-wrapper']
+    for (const edge of area.connections.filter((c) => !own.includes(c.from) || !own.includes(c.to)))
+      expect(y.get(edge.from) ?? 0).toBeLessThan(y.get(edge.to) ?? 0)
+    const ownY = own.map((id) => y.get(id) ?? 0)
+    expect(y.get('ki-flow') ?? 0).toBeLessThan(Math.min(...ownY))
+    expect(y.get('ki-key') ?? 0).toBeGreaterThan(Math.max(...ownY))
   })
 
   test('places every node exactly once without overlap', () => {
@@ -77,6 +90,43 @@ describe('buildSkillArea', () => {
   test('names its output under the local diagrams area and records the revision', () => {
     expect(area.meta.output).toBe('+/diagrams/skill-area-governance/skill-area-governance.html')
     expect(area.meta.repository?.revision).toBe('a'.repeat(40))
+  })
+
+  test('lays the agentic systems out as a compact block: hub first, its dependents beside it', () => {
+    const agentic = buildSkillArea('agentic-systems')(
+      readSkillGraphNodes([
+        skill('agentic-systems', 'ki-subagents'),
+        skill('agentic-systems', 'ki-subagents-claude', 'ki-depends-on: [ki-subagents]\n'),
+        skill('agentic-systems', 'ki-subagents-chatgpt', 'ki-depends-on: [ki-subagents]\n'),
+        skill('agentic-systems', 'ki-agent-coordination-paperclip', 'ki-depends-on: [ki-git]\n'),
+        skill('governance', 'ki-git'),
+        skill('repo-structure', 'ki-repo-harness', 'ki-depends-on: [ki-subagents]\n')
+      ]).nodes
+    ) as Area
+    expect(grid(agentic)).toEqual([
+      ['ki-repo-harness'],
+      ['ki-subagents', 'ki-subagents-claude'],
+      ['ki-agent-coordination-paperclip', 'ki-subagents-chatgpt'],
+      ['ki-git']
+    ])
+    const x = new Map(agentic.components.map((c) => [c.id, c.pos[0]]))
+    for (const id of ['ki-repo-harness', 'ki-agent-coordination-paperclip', 'ki-git'])
+      expect(x.get(id)).toBe(x.get('ki-subagents'))
+    expect(x.get('ki-subagents-chatgpt')).toBe(x.get('ki-subagents-claude'))
+  })
+
+  test('gives a skill with outside links above and below a column of its own', () => {
+    const through = buildSkillArea('governance')(
+      readSkillGraphNodes([
+        ...FIXTURE,
+        skill('governance', 'ki-bridge', 'ki-depends-on: [ki-key]\n'),
+        skill('environment', 'ki-top', 'ki-depends-on: [ki-bridge]\n')
+      ]).nodes
+    ) as Area
+    const pos = new Map(through.components.map((c) => [c.id, c.pos]))
+    const [bridgeX] = pos.get('ki-bridge') ?? [0, 0]
+    const own = through.boundaries.find((b) => b.label.startsWith('Governance'))?.wraps ?? []
+    expect(own.filter((id) => pos.get(id)?.[0] === bridgeX)).toEqual(['ki-bridge'])
   })
 
   test('draws a concern with no relationships as its region alone', () => {

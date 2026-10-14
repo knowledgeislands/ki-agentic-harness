@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
     },
     "legend": {
       "mode": "auto",
@@ -49,120 +49,6 @@
       ]
     },
     {
-      "id": "ki-repo-homebrew-tap",
-      "type": "backend",
-      "label": "repo-homebrew-tap",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-specifications",
-      "type": "backend",
-      "label": "repo-specifications",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-tools",
-      "type": "backend",
-      "label": "repo-tools",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website-app",
-      "type": "backend",
-      "label": "repo-website-app",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
-        }
-      ],
-      "pos": [
-        764,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website-cloudflare",
-      "type": "backend",
-      "label": "repo-website-cloudflare",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
-        }
-      ],
-      "pos": [
-        1008,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website-content",
-      "type": "backend",
-      "label": "repo-website-content",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
       "id": "ki-repo-dotfiles-chezmoi",
       "type": "database",
       "label": "repo-dotfiles-chezmoi",
@@ -173,46 +59,8 @@
         }
       ],
       "pos": [
-        276,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-project",
-      "type": "database",
-      "label": "repo-project",
-      "sublabel": "repository structure · declared",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-project/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-mcp",
-      "type": "backend",
-      "label": "repo-mcp",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
-        }
-      ],
-      "pos": [
-        764,
-        352
+        1008,
+        240
       ],
       "size": [
         196,
@@ -230,8 +78,8 @@
         }
       ],
       "pos": [
-        1008,
-        352
+        764,
+        576
       ],
       "size": [
         196,
@@ -239,18 +87,18 @@
       ]
     },
     {
-      "id": "ki-repo-kb-principal",
-      "type": "database",
-      "label": "repo-kb-principal",
-      "sublabel": "repository structure · declared",
+      "id": "ki-repo-homebrew-tap",
+      "type": "backend",
+      "label": "repo-homebrew-tap",
+      "sublabel": "repository structure · detected",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
+          "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
         }
       ],
       "pos": [
-        32,
-        464
+        520,
+        352
       ],
       "size": [
         196,
@@ -269,6 +117,25 @@
       ],
       "pos": [
         32,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-activities",
+      "type": "database",
+      "label": "repo-kb-activities",
+      "sublabel": "repository structure · declared",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
         576
       ],
       "size": [
@@ -277,13 +144,32 @@
       ]
     },
     {
-      "id": "ki-repo-website",
-      "type": "backend",
-      "label": "repo-website",
-      "sublabel": "repository structure · detected",
+      "id": "ki-repo-kb-live-artifacts",
+      "type": "database",
+      "label": "repo-kb-live-artifacts",
+      "sublabel": "repository structure · declared",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-website/SKILL.md"
+          "path": "skills/repo-structure/ki-repo-kb-live-artifacts/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-principal",
+      "type": "database",
+      "label": "repo-kb-principal",
+      "sublabel": "repository structure · declared",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
         }
       ],
       "pos": [
@@ -307,7 +193,7 @@
       ],
       "pos": [
         32,
-        688
+        352
       ],
       "size": [
         196,
@@ -315,37 +201,18 @@
       ]
     },
     {
-      "id": "ki-repo-kb-live-artifacts",
-      "type": "database",
-      "label": "repo-kb-live-artifacts",
-      "sublabel": "repository structure · declared",
+      "id": "ki-repo-mcp",
+      "type": "backend",
+      "label": "repo-mcp",
+      "sublabel": "repository structure · detected",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-live-artifacts/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        688
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-kb-activities",
-      "type": "database",
-      "label": "repo-kb-activities",
-      "sublabel": "repository structure · declared",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
+          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
         }
       ],
       "pos": [
         520,
-        688
+        576
       ],
       "size": [
         196,
@@ -353,75 +220,132 @@
       ]
     },
     {
-      "id": "ki-authoring",
-      "type": "security",
-      "label": "authoring",
-      "sublabel": "governance · baseline",
-      "sources": [
-        {
-          "path": "skills/governance/ki-authoring/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        864
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-decision-records",
-      "type": "backend",
-      "label": "decision-records",
-      "sublabel": "governance · detected",
-      "sources": [
-        {
-          "path": "skills/governance/ki-decision-records/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        864
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-engineering",
-      "type": "backend",
-      "label": "engineering",
-      "sublabel": "governance · detected",
-      "sources": [
-        {
-          "path": "skills/governance/ki-engineering/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        864
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-diagrams",
+      "id": "ki-repo-project",
       "type": "database",
-      "label": "diagrams",
-      "sublabel": "governance · declared",
+      "label": "repo-project",
+      "sublabel": "repository structure · declared",
       "sources": [
         {
-          "path": "skills/governance/ki-diagrams/SKILL.md"
+          "path": "skills/repo-structure/ki-repo-project/SKILL.md"
         }
       ],
       "pos": [
         764,
-        864
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-specifications",
+      "type": "backend",
+      "label": "repo-specifications",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-tools",
+      "type": "backend",
+      "label": "repo-tools",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website",
+      "type": "backend",
+      "label": "repo-website",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-app",
+      "type": "backend",
+      "label": "repo-website-app",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-cloudflare",
+      "type": "backend",
+      "label": "repo-website-cloudflare",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-content",
+      "type": "backend",
+      "label": "repo-website-content",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        240
       ],
       "size": [
         196,
@@ -440,7 +364,7 @@
       ],
       "pos": [
         32,
-        1024
+        752
       ],
       "size": [
         196,
@@ -459,7 +383,83 @@
       ],
       "pos": [
         276,
-        1024
+        752
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-decision-records",
+      "type": "backend",
+      "label": "decision-records",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-decision-records/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        912
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-engineering",
+      "type": "backend",
+      "label": "engineering",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-engineering/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        912
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-diagrams",
+      "type": "database",
+      "label": "diagrams",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-diagrams/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        912
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-authoring",
+      "type": "security",
+      "label": "authoring",
+      "sublabel": "governance · baseline",
+      "sources": [
+        {
+          "path": "skills/governance/ki-authoring/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        912
       ],
       "size": [
         196,
@@ -477,8 +477,8 @@
         }
       ],
       "pos": [
-        584,
-        1024
+        32,
+        1072
       ],
       "size": [
         196,
@@ -496,8 +496,8 @@
         }
       ],
       "pos": [
-        892,
-        1024
+        340,
+        1072
       ],
       "size": [
         196,
@@ -516,21 +516,21 @@
     },
     {
       "kind": "region",
-      "label": "Governance · 4 skills",
+      "label": "Change Management · 2 skills",
       "wraps": [
-        "ki-authoring",
-        "ki-decision-records",
-        "ki-engineering",
-        "ki-diagrams"
+        "ki-work-recurring",
+        "ki-work-roadmap"
       ],
       "pad": 32
     },
     {
       "kind": "region",
-      "label": "Change Management · 2 skills",
+      "label": "Governance · 4 skills",
       "wraps": [
-        "ki-work-recurring",
-        "ki-work-roadmap"
+        "ki-decision-records",
+        "ki-engineering",
+        "ki-diagrams",
+        "ki-authoring"
       ],
       "pad": 32
     },
@@ -685,7 +685,7 @@
       "items": [
         "The middle region holds every skill in repository structure; the skill map shows where the other concerns sit.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
-        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
     {

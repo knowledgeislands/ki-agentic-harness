@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
     },
     "legend": {
       "mode": "auto",
@@ -30,6 +30,25 @@
   },
   "components": [
     {
+      "id": "ki-repo",
+      "type": "security",
+      "label": "repo",
+      "sublabel": "keystone · baseline",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-repo/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
       "id": "ki-recap",
       "type": "frontend",
       "label": "recap",
@@ -41,7 +60,7 @@
       ],
       "pos": [
         32,
-        64
+        224
       ],
       "size": [
         196,
@@ -60,7 +79,7 @@
       ],
       "pos": [
         276,
-        64
+        224
       ],
       "size": [
         196,
@@ -79,7 +98,7 @@
       ],
       "pos": [
         520,
-        64
+        224
       ],
       "size": [
         196,
@@ -98,7 +117,7 @@
       ],
       "pos": [
         764,
-        64
+        224
       ],
       "size": [
         196,
@@ -117,7 +136,7 @@
       ],
       "pos": [
         1008,
-        64
+        224
       ],
       "size": [
         196,
@@ -136,7 +155,7 @@
       ],
       "pos": [
         32,
-        176
+        336
       ],
       "size": [
         196,
@@ -155,7 +174,7 @@
       ],
       "pos": [
         32,
-        336
+        496
       ],
       "size": [
         196,
@@ -174,7 +193,7 @@
       ],
       "pos": [
         276,
-        336
+        496
       ],
       "size": [
         196,
@@ -193,7 +212,7 @@
       ],
       "pos": [
         520,
-        336
+        496
       ],
       "size": [
         196,
@@ -212,25 +231,6 @@
       ],
       "pos": [
         764,
-        336
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo",
-      "type": "security",
-      "label": "repo",
-      "sublabel": "keystone · baseline",
-      "sources": [
-        {
-          "path": "skills/keystone/ki-repo/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
         496
       ],
       "size": [
@@ -249,8 +249,27 @@
         }
       ],
       "pos": [
-        340,
-        496
+        32,
+        656
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-agentic-radar",
+      "type": "database",
+      "label": "agentic-radar",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-agentic-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        1056
       ],
       "size": [
         196,
@@ -269,7 +288,7 @@
       ],
       "pos": [
         32,
-        672
+        832
       ],
       "size": [
         196,
@@ -288,7 +307,7 @@
       ],
       "pos": [
         276,
-        672
+        832
       ],
       "size": [
         196,
@@ -307,26 +326,7 @@
       ],
       "pos": [
         520,
-        672
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-engineering",
-      "type": "backend",
-      "label": "engineering",
-      "sublabel": "governance · detected",
-      "sources": [
-        {
-          "path": "skills/governance/ki-engineering/SKILL.md"
-        }
-      ],
-      "pos": [
-        764,
-        672
+        832
       ],
       "size": [
         196,
@@ -345,7 +345,7 @@
       ],
       "pos": [
         1008,
-        672
+        832
       ],
       "size": [
         196,
@@ -364,7 +364,26 @@
       ],
       "pos": [
         32,
-        784
+        944
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-engineering",
+      "type": "backend",
+      "label": "engineering",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-engineering/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        832
       ],
       "size": [
         196,
@@ -382,8 +401,8 @@
         }
       ],
       "pos": [
-        276,
-        784
+        32,
+        1056
       ],
       "size": [
         196,
@@ -402,45 +421,7 @@
       ],
       "pos": [
         520,
-        784
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-specs",
-      "type": "backend",
-      "label": "specs",
-      "sublabel": "governance · detected",
-      "sources": [
-        {
-          "path": "skills/governance/ki-specs/SKILL.md"
-        }
-      ],
-      "pos": [
-        764,
-        784
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-agentic-radar",
-      "type": "database",
-      "label": "agentic-radar",
-      "sublabel": "governance · declared",
-      "sources": [
-        {
-          "path": "skills/governance/ki-agentic-radar/SKILL.md"
-        }
-      ],
-      "pos": [
-        1008,
-        784
+        944
       ],
       "size": [
         196,
@@ -458,8 +439,27 @@
         }
       ],
       "pos": [
-        32,
-        896
+        764,
+        944
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-specs",
+      "type": "backend",
+      "label": "specs",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-specs/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        1056
       ],
       "size": [
         196,
@@ -478,7 +478,7 @@
       ],
       "pos": [
         276,
-        896
+        944
       ],
       "size": [
         196,
@@ -496,8 +496,8 @@
         }
       ],
       "pos": [
-        32,
-        1008
+        276,
+        1056
       ],
       "size": [
         196,
@@ -506,6 +506,14 @@
     }
   ],
   "boundaries": [
+    {
+      "kind": "region",
+      "label": "Keystone · 1 skill",
+      "wraps": [
+        "ki-repo"
+      ],
+      "pad": 32
+    },
     {
       "kind": "region",
       "label": "Change Management · 6 skills",
@@ -527,14 +535,6 @@
         "ki-repo-harness",
         "ki-repo-kb-principal",
         "ki-repo-mcp"
-      ],
-      "pad": 32
-    },
-    {
-      "kind": "region",
-      "label": "Keystone · 1 skill",
-      "wraps": [
-        "ki-repo"
       ],
       "pad": 32
     },
@@ -678,7 +678,7 @@
       "items": [
         "The middle region holds every skill in governance; the skill map shows where the other concerns sit.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
-        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
     {

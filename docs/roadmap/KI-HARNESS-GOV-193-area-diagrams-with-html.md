@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: b4e2c5cd3198c39c99e186a736f3d451efaaa779
 created_at: 2026-10-14T20:27:36Z
-updated_at: 2026-10-14T20:54:21Z
+updated_at: 2026-10-14T21:50:01Z
 ---
 
 # Area Diagrams With HTML
@@ -137,3 +137,5 @@ The skill map stays the index and now says each concern has an area diagram. Eve
 Eight area diagrams and a thread-model workflow replace the single skill graph; diagram HTML is committed through a `commit_html` opt-in and built by one command; all gates green on the delivered paths. Learning route: none beyond this record and the run report.
 
 ## Discussion
+
+Layout rule revised at Kris's request on 2026-10-14, after delivery; the record stays awaiting review. Each area's own skills now form a compact, near-square block instead of layers across the full width: every group of linked skills starts at its hub and takes its neighbours outward, the skills linked from above head a column and those linking below end one, a skill with both gets a column of its own, and the rest read down one column and up the next. Agentic Systems now reads `subagents` beside `subagents-claude`, then `agent-coordination-paperclip` beside `subagents-chatgpt`, under `repo-harness` and above `git`. Edges inside a region now run from a dependent back to the hub it sits beside rather than always downward; edges between regions still run downward. All eight area diagrams pass Archify's showcase gates.

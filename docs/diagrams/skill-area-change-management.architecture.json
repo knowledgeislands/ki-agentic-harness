@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
     },
     "legend": {
       "mode": "auto",
@@ -68,6 +68,215 @@
       ]
     },
     {
+      "id": "ki-accept",
+      "type": "frontend",
+      "label": "accept",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-accept/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-batch",
+      "type": "frontend",
+      "label": "batch",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-batch/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-implement",
+      "type": "frontend",
+      "label": "implement",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-implement/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-next",
+      "type": "frontend",
+      "label": "next",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-next/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-plan",
+      "type": "frontend",
+      "label": "plan",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-plan/SKILL.md"
+        }
+      ],
+      "pos": [
+        1008,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-pmo",
+      "type": "database",
+      "label": "pmo",
+      "sublabel": "change management · declared",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-pmo-design",
+      "type": "frontend",
+      "label": "pmo-design",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-recap",
+      "type": "frontend",
+      "label": "recap",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-recap/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work",
+      "type": "database",
+      "label": "work",
+      "sublabel": "change management · declared",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-github-issues",
+      "type": "database",
+      "label": "work-github-issues",
+      "sublabel": "change management · declared",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-github-issues/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        240
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-linear",
+      "type": "database",
+      "label": "work-linear",
+      "sublabel": "change management · declared",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-linear/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        352
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
       "id": "ki-work-recurring",
       "type": "database",
       "label": "work-recurring",
@@ -106,215 +315,6 @@
       ]
     },
     {
-      "id": "ki-work",
-      "type": "database",
-      "label": "work",
-      "sublabel": "change management · declared",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-work/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-work-github-issues",
-      "type": "database",
-      "label": "work-github-issues",
-      "sublabel": "change management · declared",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-work-github-issues/SKILL.md"
-        }
-      ],
-      "pos": [
-        764,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-work-linear",
-      "type": "database",
-      "label": "work-linear",
-      "sublabel": "change management · declared",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-work-linear/SKILL.md"
-        }
-      ],
-      "pos": [
-        1008,
-        240
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-accept",
-      "type": "frontend",
-      "label": "accept",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-accept/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-next",
-      "type": "frontend",
-      "label": "next",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-next/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-pmo",
-      "type": "database",
-      "label": "pmo",
-      "sublabel": "change management · declared",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-pmo/SKILL.md"
-        }
-      ],
-      "pos": [
-        520,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-implement",
-      "type": "frontend",
-      "label": "implement",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-implement/SKILL.md"
-        }
-      ],
-      "pos": [
-        764,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-plan",
-      "type": "frontend",
-      "label": "plan",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-plan/SKILL.md"
-        }
-      ],
-      "pos": [
-        1008,
-        352
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-pmo-design",
-      "type": "frontend",
-      "label": "pmo-design",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-pmo-design/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        464
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-recap",
-      "type": "frontend",
-      "label": "recap",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-recap/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        464
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-batch",
-      "type": "frontend",
-      "label": "batch",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-batch/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        576
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
       "id": "ki-decision-records",
       "type": "backend",
       "label": "decision-records",
@@ -326,7 +326,7 @@
       ],
       "pos": [
         32,
-        752
+        640
       ],
       "size": [
         196,
@@ -345,7 +345,7 @@
       ],
       "pos": [
         276,
-        752
+        640
       ],
       "size": [
         196,
@@ -364,7 +364,7 @@
       ],
       "pos": [
         520,
-        752
+        640
       ],
       "size": [
         196,
@@ -383,7 +383,7 @@
       ],
       "pos": [
         764,
-        752
+        640
       ],
       "size": [
         196,
@@ -508,7 +508,7 @@
       "items": [
         "The middle region holds every skill in change management; the skill map shows where the other concerns sit.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
-        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
     {
