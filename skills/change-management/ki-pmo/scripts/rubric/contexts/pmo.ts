@@ -14,7 +14,7 @@ import type {
   RubricSession
 } from '../../shared/rubric.ts'
 
-/** The master thread's cap on simultaneously active Project threads. */
+/** The state-of-play thread's cap on simultaneously active coordination threads. */
 export const ACTIVE_THREAD_CAP = 4
 const MASTER_THREAD = '_state-of-play'
 const CHECKPOINT_DIRECTORY = join('+', '_CHECKPOINTS')
@@ -116,7 +116,7 @@ const masterOutcomes = (root: string, records: readonly Checkpoint[] | undefined
     return [
       {
         status: 'VIOLATION',
-        message: 'a Capital holds the territory master thread checkpoint `_state-of-play.md`; none is present',
+        message: 'a Capital holds the state-of-play thread checkpoint `_state-of-play.md`; none is present',
         subject: join(CHECKPOINT_DIRECTORY, `${MASTER_THREAD}.md`)
       }
     ]
@@ -124,7 +124,8 @@ const masterOutcomes = (root: string, records: readonly Checkpoint[] | undefined
     return [
       {
         status: 'VIOLATION',
-        message: 'only a Capital holds a `_state-of-play.md` master checkpoint; this repository is not its own capital',
+        message:
+          'only a Capital holds a `_state-of-play.md` state-of-play checkpoint; this repository is not its own capital',
         subject: master.path
       }
     ]
@@ -132,7 +133,7 @@ const masterOutcomes = (root: string, records: readonly Checkpoint[] | undefined
     return [
       {
         status: 'VIOLATION',
-        message: 'the master thread checkpoint is labelled `Master: state-of-play`',
+        message: 'the state-of-play thread checkpoint is labelled `Master: state-of-play`',
         subject: master.path
       }
     ]
@@ -152,7 +153,7 @@ const labelOutcomes = (root: string, records: readonly Checkpoint[], capital: bo
     if (typeof label === 'string' && !label.endsWith(`: ${project}`))
       outcomes.push({
         status: 'VIOLATION',
-        message: `the label of a Project thread checkpoint ends in its Project name, \`: ${project}\``,
+        message: `the label of a coordination thread checkpoint ends in its Project name, \`: ${project}\``,
         subject: record.path
       })
     if (projects && !projects.has(project))
@@ -179,7 +180,7 @@ const capOutcomes = (records: readonly Checkpoint[]): AuditOutcome[] => {
   return [
     {
       status: 'VIOLATION',
-      message: `${active.length} Project threads are active; the master thread keeps at most ${ACTIVE_THREAD_CAP} active at once`,
+      message: `${active.length} coordination threads are active; the state-of-play thread keeps at most ${ACTIVE_THREAD_CAP} active at once`,
       subject: CHECKPOINT_DIRECTORY
     }
   ]
@@ -202,20 +203,20 @@ export const createPmoSession = ({
       outcomes: one(
         masterOutcomes(root, records, capital),
         capital
-          ? 'The Capital holds its `_state-of-play.md` master checkpoint.'
-          : 'No master checkpoint is present outside a Capital.',
+          ? 'The Capital holds its `_state-of-play.md` state-of-play checkpoint.'
+          : 'No state-of-play checkpoint is present outside a Capital.',
         !capital && !records ? absent : undefined
       )
     },
     labels: {
       outcomes: one(
         labelOutcomes(root, records ?? [], capital),
-        'Every Project thread checkpoint label ends in its Project name and resolves in the registry.',
+        'Every coordination thread checkpoint label ends in its Project name and resolves in the registry.',
         absent
       )
     },
     cap: {
-      outcomes: one(capOutcomes(records ?? []), 'The active Project threads are within the cap.', absent)
+      outcomes: one(capOutcomes(records ?? []), 'The active coordination threads are within the cap.', absent)
     },
     judgment: {
       outcomes: [

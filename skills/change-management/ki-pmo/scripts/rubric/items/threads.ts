@@ -5,16 +5,16 @@ const SOURCE = 'standards-pmo.md'
 
 const PMO_1: RubricItem<PmoRubricContext> = {
   code: 'PMO-1',
-  title: 'the master checkpoint belongs to the Capital',
+  title: 'the state-of-play checkpoint belongs to the Capital',
   description:
-    'A territory Capital, a repository whose declared `capital` is itself, holds the master thread checkpoint `+/_CHECKPOINTS/_state-of-play.md` labelled `Master: state-of-play`, and no other repository holds one.',
-  sources: [`${SOURCE}#territory-master-thread`],
+    'A territory Capital, a repository whose declared `capital` is itself, holds the state-of-play thread checkpoint `+/_CHECKPOINTS/_state-of-play.md` labelled `Master: state-of-play`, and no other repository holds one.',
+  sources: [`${SOURCE}#state-of-play-thread`],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Open the master thread in the Capital so it creates `_state-of-play.md` there, and remove a master checkpoint from any repository that is not its own capital through an explicit `ki-checkpoint` REMOVE.'
+        'Open the state-of-play thread in the Capital so it creates `_state-of-play.md` there, and remove a state-of-play checkpoint from any repository that is not its own capital through an explicit `ki-checkpoint` REMOVE.'
     },
     audit: { phase: 'INSPECT', run: ({ master }) => master.outcomes }
   }
@@ -22,10 +22,10 @@ const PMO_1: RubricItem<PmoRubricContext> = {
 
 const PMO_2: RubricItem<PmoRubricContext> = {
   code: 'PMO-2',
-  title: 'Project thread checkpoints resolve in the registry',
+  title: 'coordination thread checkpoints resolve in the registry',
   description:
     "Each `<initiative>.<project>.md` checkpoint's label ends in `: <project>`, and on a Capital its Project and Initiative resolve in the `Streams/Projects/` and `Streams/Initiatives/` registry.",
-  sources: [`${SOURCE}#project-threads`],
+  sources: [`${SOURCE}#coordination-threads`],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -39,15 +39,16 @@ const PMO_2: RubricItem<PmoRubricContext> = {
 
 const PMO_3: RubricItem<PmoRubricContext> = {
   code: 'PMO-3',
-  title: 'active Project threads are within the cap',
-  description: 'At most three or four Project thread checkpoints are active at once, plus the master thread.',
-  sources: [`${SOURCE}#territory-master-thread`],
+  title: 'active coordination threads are within the cap',
+  description:
+    'At most three or four coordination thread checkpoints are active at once, plus the state-of-play thread.',
+  sources: [`${SOURCE}#state-of-play-thread`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Have the master thread close or queue Project threads until the active list is within the cap, removing a closed checkpoint through an explicit `ki-checkpoint` REMOVE.'
+        'Have the state-of-play thread close or queue coordination threads until the active list is within the cap, removing a closed checkpoint through an explicit `ki-checkpoint` REMOVE.'
     },
     audit: { phase: 'INSPECT', run: ({ cap }) => cap.outcomes }
   }
@@ -57,16 +58,16 @@ const PMO_4: RubricItem<PmoRubricContext> = {
   code: 'PMO-4',
   title: 'coordinators stay responsive and threads stay current',
   description:
-    'A coordinating thread never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the checkpoint, `ki agent status`, one report and one short file and writes limited to the checkpoint, the decisions log and a brief, waits only through a detached waiter or monitor, answers owner messages within one short turn and reports drift in one line; each territory Capital has one master thread at `_state-of-play.md` doing project management only, keeping the Project-thread queue within its cap and seeding each checkpoint and opener; a project thread works only its Project, follows the bootstrap, keeps its checkpoint current and records approvals before launching.',
-  sources: [`${SOURCE}#coordinator-responsiveness`, `${SOURCE}#project-threads`],
+    'A coordinating thread never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the checkpoint, `ki agent status`, one report and one short file and writes limited to the checkpoint, the decisions log and a brief, waits only through a detached waiter or monitor, answers owner messages within one short turn and reports drift in one line; each territory Capital has one state-of-play thread at `_state-of-play.md` doing project management only, keeping the coordination-thread queue within its cap and seeding each checkpoint and opener; a coordination thread works only its Project, follows the bootstrap, keeps its checkpoint current and records approvals before launching.',
+  sources: [`${SOURCE}#coordinator-responsiveness`, `${SOURCE}#coordination-threads`],
   judgment: {
     scope:
       'Coordinating-thread transcripts, project checkpoints, decisions logs and recaps the owner selects for review.',
     prompt:
-      'Did the coordinator keep within five tool calls a turn, delegate rather than analyse, draft, edit, test or wait in the foreground, answer owner messages within one short turn and stop work only on an express, named instruction, does the territory master thread stay on project management with active Project threads within the cap and a prepared checkpoint and opener for each, and does each project thread work through background agents from a current checkpoint?',
+      'Did the coordinator keep within five tool calls a turn, delegate rather than analyse, draft, edit, test or wait in the foreground, answer owner messages within one short turn and stop work only on an express, named instruction, does the state-of-play thread stay on project management with active coordination threads within the cap and a prepared checkpoint and opener for each, and does each coordination thread work through background agents from a current checkpoint?',
     outcomes: ['conforming', 'delegate longer work', 'escalate to owner'],
     guidance:
-      'Move longer coordinator work into background agents and note the drift in the checkpoint; escalate to the master thread when a direction touches more than one Project.'
+      'Move longer coordinator work into background agents and note the drift in the checkpoint; escalate to the state-of-play thread when a direction touches more than one Project.'
   }
 }
 
@@ -115,7 +116,7 @@ export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
   code: 'PMO',
   title: 'Coordinating threads',
   description:
-    'The master and Project thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
+    'The state-of-play and coordination thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
   items: [PMO_1, PMO_2, PMO_3, PMO_4, PMO_5, PMO_6]

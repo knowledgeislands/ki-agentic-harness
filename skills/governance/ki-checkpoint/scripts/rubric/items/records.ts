@@ -52,7 +52,7 @@ const RECORD_3: RubricItem<RecordContext> = {
   code: 'RECORD-3',
   title: 'record carries a presentation label',
   description:
-    'Each active record carries a `label`: the exact thread name the human uses in their client, of the form `<Initiative title>: <project>`, or `Master: state-of-play` for the master thread. The label is presentation only and never used for resolution.',
+    'Each active record carries a `label`: the exact thread name the human uses in their client, of the form `<Initiative title>: <project>`, or `Master: state-of-play` for the state-of-play thread. The label is presentation only and never used for resolution.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',

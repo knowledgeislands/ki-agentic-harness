@@ -83,3 +83,5 @@ REFRESH last run **2026-10-06**. Cadence: monthly, alongside the other governanc
 [ts71]: https://github.com/microsoft/TypeScript/issues/63703
 [turbo-cache]: https://turborepo.com/docs/crafting-your-repository/caching
 [vite-cache]: https://vite.dev/config/shared-options#cachedir
+
+On 2026-10-14, under `KI-HARNESS-GOV-187`, the standard gained the connection-critical rollouts subsection beside clean-end-state cutovers, in Kris's words: "any change to a firewall or to the configuration of a service critical for connection (Headroom proxy, SSH, Tailscale, network, auth) must carry in its rollout plan a tested restore path that reconnects first, then evaluates why it failed", placed here because Kris asked for it where "Claude and Codex both load it (ki-delegation and the engineering standard)". No pin changed.

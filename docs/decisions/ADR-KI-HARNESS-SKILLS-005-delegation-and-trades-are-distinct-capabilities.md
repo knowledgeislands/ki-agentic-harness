@@ -15,7 +15,7 @@ Delegating work to an agent and transferring a proposal between repositories bot
 
 ## Decision
 
-The harness keeps these concerns separate. `ki-delegation` governs the run contract for delegating work to detached background agents and, when durable packet governance is useful, supplies the delegation packet as an optional capability. `ki-pmo` governs the coordinating thread that launches those runs: the project management layer above the run contract, holding coordinator responsiveness, the report forms, project threads and the territory master thread (refined in place on 2026-10-14 under KI-PRINCIPAL-ECO-013). `ki-trades` governs typed, receiver-controlled cross-repository submissions. Neither capability grants a sender or delegated worker authority over a repository's roadmap, priorities, implementation, or acceptance.
+The harness keeps these concerns separate. `ki-delegation` governs the run contract for delegating work to detached background agents and, when durable packet governance is useful, supplies the delegation packet as an optional capability. `ki-pmo` governs the coordinating thread that launches those runs: the project management layer above the run contract, holding coordinator responsiveness, the report forms, the three thread types, coordination threads and the state-of-play thread (refined in place on 2026-10-14 under KI-PRINCIPAL-ECO-013 and KI-HARNESS-GOV-187). `ki-trades` governs typed, receiver-controlled cross-repository submissions. Neither capability grants a sender or delegated worker authority over a repository's roadmap, priorities, implementation, or acceptance.
 
 ## Consequences
 

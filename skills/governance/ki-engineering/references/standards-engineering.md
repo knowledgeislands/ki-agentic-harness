@@ -14,6 +14,7 @@ This file is the **normative, quotable** standard. The checkable items and their
 - [0. Repo shapes — flat vs monorepo (core)](#0-repo-shapes--flat-vs-monorepo-core)
   - [Mechanical boundary evidence](#mechanical-boundary-evidence)
 - [1. package.json & toolchain pinning (core)](#1-packagejson--toolchain-pinning-core)
+  - [Connection-critical rollouts](#connection-critical-rollouts)
 - [2. The governed script surface (core)](#2-the-governed-script-surface-core)
 - [3. Bun vs Node (core)](#3-bun-vs-node-core)
 - [4. tsconfig.json (core + profiled)](#4-tsconfigjson-core--profiled)
@@ -159,6 +160,10 @@ Where the repo has CI (`.github/workflows/ci.yml`), it is a single `build` job o
 ### Clean-end-state cutovers
 
 A repository-footprint replacement prefers the correct clean end state over transitional operability. Replace the old contract directly, remove the superseded implementation in the same bounded change, and run the complete verification appropriate to the repository. Do not retain compatibility shims, dual paths, legacy aliases, or fallback runners merely to preserve an intermediate state. Git history is the recovery mechanism.
+
+### Connection-critical rollouts
+
+Git history recovers a repository, not a connection. Kris set the rule on 2026-10-14, after a Headroom proxy rollout removed the proxy's launchd service and every session lost its connection for forty minutes: "any change to a firewall or to the configuration of a service critical for connection (Headroom proxy, SSH, Tailscale, network, auth) must carry in its rollout plan a tested restore path that reconnects first, then evaluates why it failed". A connection-critical change is any change to a firewall or to the configuration of a service the working connection depends on: the Headroom proxy, SSH, Tailscale, the network or authentication. Its rollout plan, in the work record or the task brief, carries a restore path that reconnects first and only then evaluates why the change failed. "Tested" means the restore path has been run once, before the change, on the same machine, so that it is known to reconnect rather than assumed to. A clean-end-state cutover of such a service keeps the restore path until the new state has carried a session. `ki-delegation` carries the same rule for background agents, so a task without a tested restore path stops before it changes anything.
 
 ### Dependency freshness — leading edge (core)
 

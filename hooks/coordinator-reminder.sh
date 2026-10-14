@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # UserPromptSubmit and SessionStart(compact) hook: remind a coordinating thread
 # of the responsive-coordinator rules the ki-pmo coordinating-thread standard
-# sets; ki-pmo owns this hook and its line. Works unchanged under Claude Code
-# and Codex CLI, which share the hook input and
+# sets on every owner message, and point it at the standard's re-anchoring
+# steps after a compaction; ki-pmo owns this hook and both lines. Works under
+# Claude Code and Codex CLI, which share the hook input and
 # `hookSpecificOutput.additionalContext` output shape.
 
 # This hook is deliberately fail-open: every failure path exits 0 with no
@@ -13,7 +14,8 @@
 # or from the detachment that launch performs.
 set -u
 
-line='Coordinator: do not do the work directly; delegate every unit of work to a detached background agent and stay responsive. Answer this message within one short turn. It does not pre-empt work in flight: do not stop or disturb a running agent unless it names one. Give a timestamped one-line update when you launch, when an agent finishes and while you wait, and report in owner-report form. Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner: the REST or BUSY frame exactly as the standard prints it, the lines beneath, then the resume line in its own text block; each reply-block line carries the recommended instruction, never a menu of options.'
+line='Coordinator: do not do the work directly; delegate every unit of work to a detached background agent and stay responsive. Answer this message within one short turn. It does not pre-empt work in flight: do not stop or disturb a running agent unless it names one. Give a timestamped one-line update when you launch, when an agent finishes and while you wait, and report in owner-report form. Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner: the REST or BUSY frame exactly as the standard prints it with the issued time in its top border, then one line per running, queued or waiting item beneath, the housekeeping line, then the resume line in its own text block; each reply-block line carries the recommended instruction, never a menu of options. Commit and push the thread folder under +/_THREADS/ at every report and resting point.'
+pointer='Context was compacted. Before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard and your checkpoint in full, run ki agent status and read your inbox, then confirm in one line and answer in owner-report form with the banner. Re-anchoring moves no mark.'
 
 # `ki agent` marks each child with its run name; its Claude adapter has set the
 # print-mode ceiling since before the marker existed, so it serves as a second
@@ -24,6 +26,11 @@ line='Coordinator: do not do the work directly; delegate every unit of work to a
 # A detached agent runs in its own session with no controlling terminal, while
 # an interactive thread has one. Both runtimes start hook processes without the
 # terminal, so the check walks up the ancestry; unknown counts as detached.
+# Claude Code sets CLAUDECODE in every session, interactive or not, and an
+# interactive Claude Code session may have no terminal at all, as in an editor,
+# so under Claude Code the run marker and the ceiling are the only signals and
+# the terminal check is skipped. Codex keeps it until its launcher sets
+# KI_AGENT_RUN.
 has_terminal() {
   pid=$$
   depth=0
@@ -41,18 +48,22 @@ has_terminal() {
   done
   return 1
 }
-has_terminal || exit 0
+if [ -z "${CLAUDECODE:-}" ]; then
+  has_terminal || exit 0
+fi
 
 command -v jq >/dev/null 2>&1 || exit 0
 input=$(cat 2>/dev/null) || exit 0
 [ -n "$input" ] || exit 0
 
 event=$(printf '%s' "$input" | jq -r '.hook_event_name // empty' 2>/dev/null) || exit 0
+context=$line
 case "$event" in
   UserPromptSubmit) ;;
   SessionStart)
     source=$(printf '%s' "$input" | jq -r '.source // empty' 2>/dev/null) || exit 0
     [ "$source" = compact ] || exit 0
+    context=$pointer
     ;;
   *) exit 0 ;;
 esac
@@ -75,7 +86,7 @@ if ! coordinating "$cwd"; then
   coordinating "$top" || exit 0
 fi
 
-jq -cn --arg event "$event" --arg line "$line" \
+jq -cn --arg event "$event" --arg line "$context" \
   '{hookSpecificOutput: {hookEventName: $event, additionalContext: $line}}' 2>/dev/null || exit 0
 
 exit 0

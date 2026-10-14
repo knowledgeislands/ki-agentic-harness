@@ -171,7 +171,7 @@ test('closed schema refuses a checkpoint-selected marker', () => {
   expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))[0]?.status).toBe('VIOLATION')
 })
 
-test('dotted Project-thread and leading-underscore master names pass identity', () => {
+test('dotted coordination-thread and leading-underscore state-of-play names pass identity', () => {
   const { repository, checkpointDirectory } = fixture()
   writeFileSync(
     join(checkpointDirectory, 'techne.agent-host.md'),

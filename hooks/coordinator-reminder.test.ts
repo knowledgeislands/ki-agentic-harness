@@ -6,7 +6,9 @@ import { join, resolve } from 'node:path'
 
 const script = resolve(import.meta.dir, 'coordinator-reminder.sh')
 const line =
-  'Coordinator: do not do the work directly; delegate every unit of work to a detached background agent and stay responsive. Answer this message within one short turn. It does not pre-empt work in flight: do not stop or disturb a running agent unless it names one. Give a timestamped one-line update when you launch, when an agent finishes and while you wait, and report in owner-report form. Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner: the REST or BUSY frame exactly as the standard prints it, the lines beneath, then the resume line in its own text block; each reply-block line carries the recommended instruction, never a menu of options.'
+  'Coordinator: do not do the work directly; delegate every unit of work to a detached background agent and stay responsive. Answer this message within one short turn. It does not pre-empt work in flight: do not stop or disturb a running agent unless it names one. Give a timestamped one-line update when you launch, when an agent finishes and while you wait, and report in owner-report form. Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner: the REST or BUSY frame exactly as the standard prints it with the issued time in its top border, then one line per running, queued or waiting item beneath, the housekeeping line, then the resume line in its own text block; each reply-block line carries the recommended instruction, never a menu of options. Commit and push the thread folder under +/_THREADS/ at every report and resting point.'
+const pointer =
+  'Context was compacted. Before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard and your checkpoint in full, run ki agent status and read your inbox, then confirm in one line and answer in owner-report form with the banner. Re-anchoring moves no mark.'
 
 const root = mkdtempSync(join(tmpdir(), 'ki-coordinator-reminder-'))
 const coordinating = join(root, 'capital')
@@ -53,6 +55,8 @@ const run = (input: string, extraEnv: Record<string, string> = {}): Outcome => {
   const env: Record<string, string> = { ...(process.env as Record<string, string>), ...extraEnv }
   delete env.KI_AGENT_RUN
   delete env.CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS
+  // The suite may itself run inside Claude Code; the runtime split is driven per test.
+  delete env.CLAUDECODE
   Object.assign(env, extraEnv)
   env.PATH = `${wrappers}:${env.PATH ?? ''}`
   const result = spawnSync('bash', [script], { input, encoding: 'utf8', env, cwd: ordinary })
@@ -124,10 +128,12 @@ test('an ordinary interactive session gets nothing', () => {
   expect(outcome.stdout).toBe('')
 })
 
-test('a background child carrying the run marker gets nothing', () => {
-  const outcome = run(claudePrompt(coordinating), { KI_AGENT_RUN: 'ways-of-working' })
+test('a background child carrying the run marker gets nothing under either runtime', () => {
+  const outcome = run(claudePrompt(coordinating), { KI_AGENT_RUN: 'ways-of-working', CLAUDECODE: '1' })
   expect(outcome.status).toBe(0)
   expect(outcome.stdout).toBe('')
+  expect(run(codexPrompt(coordinating), { KI_AGENT_RUN: 'ways-of-working' })).toEqual({ status: 0, stdout: '' })
+  expect(run(sessionStart(coordinating, 'compact'), { KI_AGENT_RUN: 'ways-of-working', CLAUDECODE: '1' })).toEqual({ status: 0, stdout: '' })
 })
 
 test('a Claude child from an older launcher is recognised by its print-mode ceiling', () => {
@@ -136,7 +142,7 @@ test('a Claude child from an older launcher is recognised by its print-mode ceil
   expect(outcome.stdout).toBe('')
 })
 
-test('a detached process with no controlling terminal anywhere above it gets nothing', () => {
+test('a detached Codex process with no controlling terminal anywhere above it gets nothing', () => {
   for (const tty of ['??', '?', '']) {
     const outcome = run(codexPrompt(coordinating), { FAKE_TTY: tty })
     expect(outcome.status).toBe(0)
@@ -146,17 +152,26 @@ test('a detached process with no controlling terminal anywhere above it gets not
   expect(looping).toEqual({ status: 0, stdout: '' })
 })
 
+test('a Claude Code session with no terminal, as in an editor, still gets the line', () => {
+  const outcome = run(claudePrompt(coordinating), { FAKE_TTY: '??', CLAUDECODE: '1' })
+  expect(outcome.status).toBe(0)
+  expect(outcome.context).toBe(line)
+  expect(run(claudePrompt(coordinating), { FAKE_TTY: '??' })).toEqual({ status: 0, stdout: '' })
+})
+
 test('a hook process started without the terminal finds it on an ancestor', () => {
   const outcome = run(claudePrompt(coordinating), { FAKE_TTY: '??', FAKE_PPID: '4242', FAKE_TTY_PID: '4242', FAKE_TTY_AT_PID: 'ttys001' })
   expect(outcome.status).toBe(0)
   expect(outcome.context).toBe(line)
 })
 
-test('the post-compaction session start injects the line again', () => {
-  const outcome = run(sessionStart(coordinating, 'compact'))
+test('the post-compaction session start injects the re-anchoring pointer', () => {
+  const outcome = run(sessionStart(coordinating, 'compact'), { FAKE_TTY: '??', CLAUDECODE: '1' })
   expect(outcome.status).toBe(0)
   expect(outcome.event).toBe('SessionStart')
-  expect(outcome.context).toBe(line)
+  expect(outcome.context).toBe(pointer)
+  expect(run(sessionStart(coordinating, 'compact')).context).toBe(pointer)
+  expect(run(sessionStart(coordinating, 'compact'), { FAKE_TTY: '??' })).toEqual({ status: 0, stdout: '' })
 })
 
 test('other session starts and other events stay silent', () => {

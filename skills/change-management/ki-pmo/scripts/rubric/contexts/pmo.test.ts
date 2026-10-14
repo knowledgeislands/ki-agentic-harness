@@ -57,20 +57,20 @@ describe('repository identity', () => {
   })
 })
 
-describe('master checkpoint', () => {
+describe('state-of-play checkpoint', () => {
   test('a Capital without _state-of-play.md is a violation', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI Model: ways-of-working' })
     expect(statuses(context(root).master.outcomes)).toEqual(['VIOLATION'])
   })
 
-  test('a Capital with a labelled master checkpoint passes', () => {
+  test('a Capital with a labelled state-of-play checkpoint passes', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
     expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
   })
 
-  test('a master checkpoint outside a Capital is a violation', () => {
+  test('a state-of-play checkpoint outside a Capital is a violation', () => {
     const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
     const [outcome] = context(root).master.outcomes
@@ -87,7 +87,7 @@ describe('master checkpoint', () => {
   })
 })
 
-describe('project thread checkpoints', () => {
+describe('coordination thread checkpoints', () => {
   test('a label ending in the Project name that resolves in the registry passes', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
@@ -125,7 +125,7 @@ describe('project thread checkpoints', () => {
 })
 
 describe('active thread cap', () => {
-  test('four active Project threads are within the cap', () => {
+  test('four active coordination threads are within the cap', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
     for (const project of ['one', 'two', 'three', 'four'])
@@ -133,14 +133,14 @@ describe('active thread cap', () => {
     expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
   })
 
-  test('five active Project threads exceed the cap', () => {
+  test('five active coordination threads exceed the cap', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
     for (const project of ['one', 'two', 'three', 'four', 'five'])
       checkpoint(root, `initiative.${project}`, { label: `Initiative: ${project}` })
     const outcomes = context(root).cap.outcomes
     expect(statuses(outcomes)).toEqual(['VIOLATION'])
-    expect(outcomes[0]?.message).toContain('5 Project threads')
+    expect(outcomes[0]?.message).toContain('5 coordination threads')
   })
 
   test('a closed thread does not count', () => {

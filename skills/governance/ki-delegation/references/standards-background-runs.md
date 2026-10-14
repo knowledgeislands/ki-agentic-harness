@@ -10,6 +10,7 @@
 - [Authority tiers](#authority-tiers)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
+  - [Connection-critical changes](#connection-critical-changes)
 - [Run queue](#run-queue)
 - [Monitoring](#monitoring)
 - [Reporting](#reporting)
@@ -36,7 +37,7 @@ An in-session subagent runs under the turn that launched it and dies when that t
 
 ## Coordinating threads
 
-A coordinating thread - the territory master thread or a project thread - launches and steers background runs under this contract and is itself governed by [the coordinating-thread standard](../../../change-management/ki-pmo/references/standards-pmo.md) that `ki-pmo` owns: the responsive-coordinator principle in Kris's words, the counted turn budget and self-check, the Summary, recap and full summary, project threads, the territory master thread, the openers and bootstrap, directions from the master thread, the recap since the mark, parking tangents, linking records, keeping primary checkouts current and refreshing that guidance. A repository whose threads coordinate declares `ki-pmo` beside this skill; the `coordinator-reminder` hook and the `ki-coordinator` output style belong to it.
+A coordinating thread - a coordination thread or the state-of-play thread, two of the three thread types `ki-pmo` defines beside the conversational thread - launches and steers background runs under this contract and is itself governed by [the coordinating-thread standard](../../../change-management/ki-pmo/references/standards-pmo.md) that `ki-pmo` owns: the responsive-coordinator principle in Kris's words, the counted turn budget and self-check, the Summary, recap and full summary, the banner, re-anchoring after compaction, coordination threads, the state-of-play thread, the openers and bootstrap, directions from the state-of-play thread, the decision classes and Project close, the recap since the mark, parking tangents, linking records, committing the thread folder, keeping primary checkouts current and refreshing that guidance. A repository whose threads coordinate declares `ki-pmo` beside this skill; the `coordinator-reminder` hook and the `ki-coordinator` output style belong to it.
 
 What stays here is the run side of that relationship. A coordinating thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises, waits only through a detached [waiter](#run-queue) or [monitor](#monitoring), and reports in the [owner report](#owner-report) form below, which every Summary, recap and full summary adopts unchanged.
 
@@ -112,9 +113,9 @@ The owner's words are whole only on the turn they arrive: a context-compressing 
 - **Log in the turn it arrives:** the thread writes an owner decision into the log in the same turn as the message that carries it, while that turn is still uncompressed, before it does anything else with the message.
 - **Verify later quotations from the file:** any later quotation of the owner's words, in a log entry, a brief, a record or a report, is checked against the session transcript file read with the runtime's file-read tool, which the proxy protects, never from in-context recall or from shell output such as `cat` or `grep`, which it does not.
 
-The tracked `+/_THREADS/<run>/` folder is the thread's working record between consolidations, not a replacement for them. The thread commits the log and each report there at each mark, when a report lands and before the thread closes, so that the test Kris set on 2026-10-13 holds: "if the state folder is lost, you shouldn't lose any knowledge". The state folder under the XDG state root holds runtime only: it is not backed up or synced. Neither folder is a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the thread folder or the state folder.
+The tracked `+/_THREADS/<run>/` folder is the thread's working record between consolidations, not a replacement for them. The thread commits and pushes the log and each report there at every owner report and resting point, at each mark, when a report lands and before the thread closes, as Kris set on 2026-10-14, "threads need to know that they need to commit their work under +/_THREAD/", so that the test Kris set on 2026-10-13 holds: "if the state folder is lost, you shouldn't lose any knowledge". The log is the Project's one decisions list across every thread of that Project, and each entry is classified at the mark under `ki-pmo`'s [decision classes](../../../change-management/ki-pmo/references/standards-pmo.md#decision-classes): operational, rule, standalone or held, each with its home named in the log. The state folder under the XDG state root holds runtime only: it is not backed up or synced. Neither folder is a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the thread folder or the state folder.
 
-Once a thread has closed and its in-force decisions are consolidated into their durable owners, the thread deletes its `+/_THREADS/<run>/` folder in one commit, and its state folder `~/.local/state/ki/agents/<run>/` is archived or deleted, by `ki agent close` once `tools-ki` ships it and by hand until then.
+Once a thread has closed and its in-force decisions are consolidated into their durable owners, the thread deletes its `+/_THREADS/<run>/` folder in one commit, and `ki agent close <run>` archives or deletes its state folder `~/.local/state/ki/agents/<run>/`. The close gate is strict: it prints one line per check and must pass whole, and `--reconciled` is the owner's attestation that waives the decision gate, as Kris settled on 2026-10-14 with "keep the close gate strict with the reconciled waiver". A thread never passes `--reconciled` on its own account.
 
 ## Coordination
 
@@ -124,6 +125,10 @@ Once a thread has closed and its in-force decisions are consolidated into their 
 - **Commit trailer:** an agent's co-author trailer names the model that actually made the commit, read from its launch record or runtime, never the coordinator's model or one copied from the brief. This line owns the rule; footers and briefs point here.
 - **Pushing:** never push someone else's unpushed commits without asking the owner.
 - **Ambiguity:** stop and report rather than guess.
+
+### Connection-critical changes
+
+Kris set this rule on 2026-10-14, after a Headroom proxy rollout removed the proxy's launchd service and cut every session off for forty minutes: "any change to a firewall or to the configuration of a service critical for connection (Headroom proxy, SSH, Tailscale, network, auth) must carry in its rollout plan a tested restore path that reconnects first, then evaluates why it failed", placed where "Claude and Codex both load it (ki-delegation and the engineering standard)". So a task that changes any of those carries its restore path in the brief, tested as the `ki-engineering` standard's [connection-critical rollouts](../../../governance/ki-engineering/references/standards-engineering.md#connection-critical-rollouts) subsection defines, and an agent given such a task without one stops and reports before changing anything. Every authority footer carries the rule in one line.
 
 ## Run queue
 
