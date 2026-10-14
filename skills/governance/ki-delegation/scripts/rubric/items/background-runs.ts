@@ -43,15 +43,21 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-3',
       title: 'run records are tracked and consolidated',
       description:
-        "A run's decisions log and agent reports live in the owning repository's tracked `+/_THREADS/<run>/` folder and are committed as the thread goes, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or checkpoint rather than living only in the run directory, and a prompt or record describes a decision by the owner's words and date, never by its number.",
+        "A run's decisions log and agent reports live in the owning repository's tracked `+/_THREADS/<run>/` folder and are committed as the thread goes, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or checkpoint rather than living only in the run directory, at each mark the thread deletes by explicit path every report whose queries are all answered and whose outcome has a durable home, keeping `decisions.md` and the reports with open queries while Git history holds the rest, and a prompt or record describes a decision by the owner's words and date, never by its number.",
       sources: ['standards-background-runs.md'],
       judgment: {
         scope: 'Thread folders, decisions logs, run directories and run prompts the owner selects for review.',
         prompt:
-          'Is every decision logged in the tracked thread folder before its work launched, does anything durable exist only in the run directory, and does any prompt or record cite a decision by number alone?',
-        outcomes: ['conforming', 'consolidate decisions', 'log decisions', 'escalate to owner'],
+          'Is every decision logged in the tracked thread folder before its work launched, does anything durable exist only in the run directory, does the thread folder hold only `decisions.md` and the reports with open queries after each mark, with the answered and homed reports deleted by explicit path, and does any prompt or record cite a decision by number alone?',
+        outcomes: [
+          'conforming',
+          'consolidate decisions',
+          'log decisions',
+          'tidy the thread folder',
+          'escalate to owner'
+        ],
         guidance:
-          "Consolidate in-force decisions into their durable owner, record missing decisions before further launches, and replace a bare decision number with the owner's words and the date; escalate when the durable owner is unclear."
+          "Consolidate in-force decisions into their durable owner, record missing decisions before further launches, and replace a bare decision number with the owner's words and the date, and delete by explicit path each report whose queries are answered and whose outcome is homed, keeping one whose home is unclear; escalate when the durable owner is unclear."
       }
     },
     {
