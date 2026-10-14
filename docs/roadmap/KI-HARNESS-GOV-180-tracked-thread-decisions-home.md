@@ -6,13 +6,13 @@ project: ways-of-working
 component: governance
 purpose: governance
 kind: deliver
-status: draft
+status: ready
 horizon: next
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-13T23:05:00Z
-updated_at: 2026-10-14T09:20:04Z
+updated_at: 2026-10-14T09:38:22Z
 ---
 
 # Tracked Thread Home for the Decisions Log and Agent Reports
@@ -29,7 +29,7 @@ Kris raised the durability problem on 2026-10-13 in the `ways-of-working` thread
 
 Kris also queued the clean-up of existing run folders behind this decision: "STATE-CLEANUP - Yes. Queue it after DECISION-HOME is settled." That sweep is Knowledge Islands Principal's record, since the folders span repositories; the `ki agent` change that writes the log and reports to the new home is the `tools-ki` agent run close record.
 
-This record is captured from Kris's answers and is not adopted, planned or implemented by it.
+This record was captured from Kris's answers on 2026-10-13, adopted and planned on 2026-10-14, and approved for delivery the same day.
 
 On 2026-10-14 Kris read a numbered citation in a thread summary and answered, as relayed by the master thread: "has no meaning to me because I don't know what the decision was ... and I don't know where the list is. I thought we'd looked at changing the way that decisions were recorded like this so that they became durable knowledge." The master thread relayed the consequence: "bring KI-HARNESS-GOV-180 forward to plan and deliver straight after the banner; banner, mark and resume line describe or date decisions, never cite numbers; tools-ki launcher change and ki-principal run-folder sweep stay with their owners as handoffs named in the plan." Kris then placed the subject: "everything to do with the decisions log belongs to ways-of-working". This record is therefore planned by the `ways-of-working` thread and delivered straight after the thread banner and re-anchoring change in the same standard.
 
@@ -130,10 +130,16 @@ Settled at planning on 2026-10-14:
 - The thread's checkpoint names the folder in `Current state` as `Thread folder: +/_THREADS/<run>/`; `ki-recap` reads the checkpoint already, and `ki-pmo` inherits the line when the pilot creates it.
 - The coordinator-reminder hook keeps `+/_CHECKPOINTS/` as its only signal; `+/_THREADS/` adds nothing it needs.
 
-Still open, for Kris:
+Settled at approval on 2026-10-14, as the `ways-of-working` thread relayed Kris's settlement: "thread decisions logs and agent reports live tracked in the island under +/_THREADS/<thread>/; the state folder keeps runtime only; until the launcher writes there, the thread copies by hand". The thread therefore commits its own `+/_THREADS/<run>/` changes by hand until `ki agent` writes there, so no knowledge waits on `tools-ki`. Kris's addendum of the same day fixes the wording rule for committed text: a decision is described in words, never cited by number, because a number "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
 
-- Whether the thread commits its own `+/_THREADS/<run>/` changes by hand until `ki agent` writes there, or waits for the launcher and copies nothing in the meantime. The plan assumes copying by hand at each mark, so no knowledge waits on `tools-ki`.
+### Follow-on design
+
+Kris has separately raised a wider question: thread types, how a decision becomes durable knowledge, and where a Project's design folders live. Another agent is designing that now. This record keeps to its planned scope, the tracked home for the log and reports and the words-and-date rule; the promotion of decisions into durable knowledge is that follow-on design and is not changed here.
 
 ### Adoption
 
 On 14 October 2026 Kris approved the state-of-play thread's triage burn-down as written, under Kris's instruction to burn the roadmap down: adopted as `deliver / Next`. Kris asked for it in answering DECISION-HOME, and it fixes a durability defect, since losing the state folder loses the decisions log. It comes before the `tools-ki` launcher change and Knowledge Islands Principal's sweep. Adoption grants no planning, implementation or acceptance authority.
+
+### Approval
+
+On 2026-10-14 Kris approved the plan as it stands, in these words: "approve KI-HARNESS-GOV-180". The `ways-of-working` thread delivers it under `ki-implement` through one detached background agent, as Delegation says.
