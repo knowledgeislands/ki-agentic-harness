@@ -237,8 +237,12 @@ test('the hook line names the banner, the bracketed-state list, the thread folde
   expect(hook).toContain('widened equally when the top border needs more than 52')
   expect(hook).toContain('one Markdown list with a bracketed state per item')
   expect(hook).toContain('- [at rest] nothing running or queued')
-  expect(hook).toContain('stacks its tag on one line, a blank line, then the recommended instruction')
+  expect(hook).toContain(
+    'Context, a one-sentence Query and lettered Options with a) (recommended) first and no bullets'
+  )
+  expect(hook).toContain('stacks its tag on one line, a blank line, then the option a) instruction in full')
   expect(hook).toContain('never a menu of options')
+  expect(hook).toContain('a bare letter in reply being accepted')
   expect(hook).toContain('with --- between entries')
   expect(hook).toContain('Commit and push the thread folder under +/_THREADS/')
   expect(hook).toContain('Re-anchoring after compaction')
