@@ -152,7 +152,7 @@ Read-only inspection of the delivered official account export; no payload was co
 
 ### Bootstrap staging checkpoint - 2026-10-14
 
-Kris answered the export question above by approving the binding and staging (knowledge-acquisition Decision 1, 2026-10-14). The bindings are under [Immutable project bindings](#immutable-project-bindings---2026-10-14). No ChatGPT or OpenAI source state changed, and no export payload entered this repository.
+Kris answered the export question above on 2026-10-14 in the knowledge-acquisition run: 'BIND - launch the background agent: preserve the project list, bind the 17 IDs, then convert and stage the export.' The bindings are under [Immutable project bindings](#immutable-project-bindings---2026-10-14). No ChatGPT or OpenAI source state changed, and no export payload entered this repository.
 
 - **Source:** the export is unchanged since inspection: its aggregate SHA-256 still matches `63bbf709...3361`.
 - **Conversion:** a converter in the receiver, `.acquire/chatgpt/account-export-2026-09-22/convert.py` (SHA-256 `f3d4e103202df91f7fba250a1b4163d42b2dc1160f882408a84cc8cbe6333def`), turns each conversation into a `ki-chatgpt-capture` tree. The existing `ki acquire import --adapter chatgpt` then emits one KEP per conversation. No `tools-ki` change was needed.
@@ -212,7 +212,7 @@ The unprefixed names above are now migration aliases rather than current routing
 
 #### Immutable project bindings - 2026-10-14
 
-Kris authorised these bindings on 2026-10-14 (knowledge-acquisition Decision 1). The 17 identifiers are exactly those in the export's `conversation_template_id`. Prior names come from the cloud project list captured before the 2026-10-12 renames. That listing is preserved unchanged in the `sources-personal` store as `+/chatgpt-export-project-names-2026-10-12.tsv`, SHA-256 `eaeb39a71221ed78a668bf1b5afa09c48fdc266ac4cabddf5e315c06e195b268`. Current names follow `<Territory> - <Sub-area>` under state-of-play Decision 135 and supersede the `<Domain>: <Topic>` form above. The receiver for every territory is the private `acquire` inbox at `captures/<territory-key>/chatgpt/`; the earlier `kit-*` receivers are historical.
+Kris authorised these bindings on 2026-10-14 in the knowledge-acquisition run ('bind the 17 IDs'). The 17 identifiers are exactly those in the export's `conversation_template_id`. Prior names come from the cloud project list captured before the 2026-10-12 renames. That listing is preserved unchanged in the `sources-personal` store as `+/chatgpt-export-project-names-2026-10-12.tsv`, SHA-256 `eaeb39a71221ed78a668bf1b5afa09c48fdc266ac4cabddf5e315c06e195b268`. Current names follow `<Territory> - <Sub-area>`, the project naming convention Kris set on 2026-10-12 in the state-of-play run, and supersede the `<Domain>: <Topic>` form above. The receiver for every territory is the private `acquire` inbox at `captures/<territory-key>/chatgpt/`; the earlier `kit-*` receivers are historical.
 
 | Project ID | Current name | Migration aliases | Territory key | Conversations |
 | --- | --- | --- | --- | --- |

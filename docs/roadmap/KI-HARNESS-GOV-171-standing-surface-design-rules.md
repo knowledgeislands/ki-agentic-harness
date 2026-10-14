@@ -25,7 +25,7 @@ Arcadia Principal is retiring its Claude-specific knowledge-base notes, so that 
 The points, in runtime-neutral terms:
 
 - **One routing authority.** Keep a single routing authority for a repository: a skill defers to the root instructions instead of restating them, because every restatement is standing context paid for twice and a source of drift.
-- **Resolved lessons in repository guidance, not in path memory or a load-time note.** Carry resolved operational lessons into the repository's own guidance (root `AGENTS.md`, the owning skill, or the knowledge base), where every runtime finds them, rather than in a runtime's path memory or in a note that every session must load. Kris decided on 12 October 2026 to stop relying on path memory (state-of-play thread, Decision 142), which reverses the point as Arcadia first recorded it.
+- **Resolved lessons in repository guidance, not in path memory or a load-time note.** Carry resolved operational lessons into the repository's own guidance (root `AGENTS.md`, the owning skill, or the knowledge base), where every runtime finds them, rather than in a runtime's path memory or in a note that every session must load. Kris decided on 12 October 2026 in the state-of-play run to 'move path memory into KBs/projects/AGENTS.md, stop relying on path memory', which reverses the point as Arcadia first recorded it.
 - **Review the instructions file as it nears its budget.** Arcadia's former Claude note used about 10,000 bytes, roughly 2,500 tokens, which is the `instructions` default; growth past that point was the signal to prune or move material on demand.
 - **Ask before adding a permanent always-loaded section.** Before adding one, ask whether the material could be read only when it is needed, through a skill or an on-demand note.
 
@@ -95,4 +95,4 @@ The first two points are design rules and may suit the standard or a judgement c
 
 ### Adoption
 
-On 12 October 2026 Kris approved the triage review's proposal as written (state-of-play thread, Decision 147): KI-HARNESS-GOV-172 merged into this record, adopted as `deliver / Next` (guidance), with the lessons point reworded to follow Decision 142. Adoption grants no implementation, acceptance or remote authority.
+On 12 October 2026 Kris approved the triage review's proposal as written (state-of-play run, 'TRIAGE-APPROVE (all 13 proposals)'): KI-HARNESS-GOV-172 merged into this record, adopted as `deliver / Next` (guidance), with the lessons point reworded to follow Kris's instruction that day to stop relying on path memory. Adoption grants no implementation, acceptance or remote authority.

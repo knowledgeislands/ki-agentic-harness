@@ -84,7 +84,7 @@ A plain-language handoff to `tools-ki` for its work-item model.
 
 ## Discussion
 
-Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Decision 107 of the state-of-play thread): the work-item standard still accepts a cross-repository `resolution_target` by shape, and no current work needs the change. Re-scope before it becomes actionable.
+Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Kris's 2026-10-12 approval in the state-of-play run, 'ROADMAP-BATCHES 3 to 5 approved as recommended'): the work-item standard still accepts a cross-repository `resolution_target` by shape, and no current work needs the change. Re-scope before it becomes actionable.
 
 - Once a target must be local, a cross-repository replacement cannot use `duplicate`, `merged` or `superseded` with a target. Options: allow those resolutions without a target when the replacement lives elsewhere, or record such a case as `obsolete` with the plain description in `## Cancelled`.
 - Adoption corrected the rubric path in Boundary to its location under `skills/change-management/ki-work-roadmap/`, and found the acceptance standard also needs the change; confirm both sit within the agreed scope at planning.

@@ -111,12 +111,12 @@ None beyond this record; a `tools-ki` source-build choice may become its own rec
 
 ## Discussion
 
-Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Decision 107 of the state-of-play thread): only ki-agentic-harness and ki-principal carry `.github/ki-version` and `update-ki-pin.yml` today, and the current rollout does not need the rest. Re-scope before it becomes actionable.
+Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Kris's 2026-10-12 approval in the state-of-play run, 'ROADMAP-BATCHES 3 to 5 approved as recommended'): only ki-agentic-harness and ki-principal carry `.github/ki-version` and `update-ki-pin.yml` today, and the current rollout does not need the rest. Re-scope before it becomes actionable.
 
 - `tools-ki` installs its own `ki` in CI; check whether a receiver there should track its own releases or whether its CI should build from source instead.
 - `homebrew-tap` registration of a repository before its App installation fails the tap's token mint for every consumer, as the tap's release App operations guide explains, so registration follows provisioning.
 - The receiver accepts the tap's existing `tool-release-published` event unchanged and treats it only as a trigger, so the registry and its payload need no change; the receiver contract comes from KI-HARNESS-GOV-141.
-- Merged on 2026-10-09 with Kris's approval (state-of-play decisions log, Decision 21): this record absorbed the `homebrew-tap` work to register the `ki` pin receivers, which `homebrew-tap` cancelled as merged into it. The tap registration it covered is now the registration step above.
+- Merged on 2026-10-09 with Kris's approval in the state-of-play run ('BREW-013 into KI-HARNESS-GOV-168'): this record absorbed the `homebrew-tap` work to register the `ki` pin receivers, which `homebrew-tap` cancelled as merged into it. The tap registration it covered is now the registration step above.
 - Plan through `ki-plan`, batching repositories whose owner setup is complete.
 
 ### Adoption
