@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 0b3c05b5d0bf97cc4c2ea292f9c64d94d3fe42d2
 created_at: 2026-10-14T17:09:51Z
-updated_at: 2026-10-14T20:30:00Z
+updated_at: 2026-10-14T20:00:00Z
 ---
 
 # Open Every ki-pmo Report With a Rich-Text Initiative › Project Heading and Close It With the Block-Letter Footer
@@ -217,6 +216,10 @@ The shape is held mechanically by `scripts/banner.test.ts`: the heading example 
 ### Mini recap
 
 The box frame has been retired from the heading: a report opens with the linked Initiative › Project heading and its form line, and closes with the block-letter REST or BUSY footer and the bracketed-state list, on every surface. Before that, the framed label was the heading frame and the block-letter REST and BUSY frames were back as the footer, with the context line under the one and the bracketed-state list under the other. The banner's top border names the report form, the label is centred, a blank line follows the frame and the lines beneath are bracketed-state list items; the frame widens equally when the border needs it; every surface that states the banner says the same.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above, in Kris's words: "CLOSE-191 / accept KI-HARNESS-GOV-191 as delivered, extra housekeeping states included, and prune it", so the housekeeping item states `[committed]`, `[uncommitted]`, `[unpushed]`, `[parked]`, `[recovered]` and `[unlogged]` raised under Outstanding concerns stand as delivered, and the BUSY lettering stays as the standard prints it, as Kris settled the same day with "BUSY-Y-GLYPH / keep the standard's BUSY lettering unchanged". The Verify gates were re-run at acceptance under the `pmo-cadence` brief: `bun run test` 1152 pass, 0 fail; `bunx tsc --noEmit` clean; the skill-graph check in sync; the hook tests 21 pass; and `ki repo audit --skill` for `ki-pmo`, `ki-delegation` and `ki-work-roadmap` pass, with `ki-skills` passing on its two pre-existing refresh-cadence warnings.
 
 ## Discussion
 
