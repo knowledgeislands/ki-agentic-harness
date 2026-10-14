@@ -96,6 +96,37 @@ test('DIAG-1 fails for an unlisted source, a listed slug without an SVG, and an 
   ])
 })
 
+test('DIAG-1 accepts committed HTML only under commit_html, and then requires it and its README link', () => {
+  const unlisted = repository().root
+  writeFileSync(join(unlisted, 'docs/diagrams/architecture.html'), '<html></html>\n')
+  expect(run('DIAG-1', context(unlisted)).map((outcome) => outcome.subject)).toEqual([
+    'not in the manifest: docs/diagrams/architecture.html'
+  ])
+
+  const optedIn = repository().root
+  writeFileSync(
+    join(optedIn, 'docs/diagrams/diagrams.toml'),
+    `${entry('architecture', 'architecture', '0000000')}commit_html = true\n`
+  )
+  expect(run('DIAG-1', context(optedIn)).map((outcome) => outcome.subject)).toEqual([
+    'missing: docs/diagrams/architecture.html'
+  ])
+  writeFileSync(join(optedIn, 'docs/diagrams/architecture.html'), '<html></html>\n')
+  expect(run('DIAG-1', context(optedIn)).map((outcome) => outcome.subject)).toEqual([
+    'missing: docs/diagrams/README.md links no architecture.html'
+  ])
+  writeFileSync(join(optedIn, 'docs/diagrams/README.md'), `${README}\n[Interactive](architecture.html)\n`)
+  expect(statuses('DIAG-1', optedIn)).toEqual(['PASS'])
+
+  writeFileSync(join(optedIn, 'docs/diagrams/architecture.html'), '<a href="file:///tmp/x">x</a>\n')
+  expect(run('DIAG-2', context(optedIn)).map((outcome) => outcome.subject)).toEqual([
+    'docs/diagrams/architecture.html: file URL'
+  ])
+  expect(parseManifest(`${entry('architecture', 'architecture', '0000000')}commit_html = "yes"\n`).issues).toEqual([
+    'architecture: commit_html must be true or false'
+  ])
+})
+
 test('DIAG-1 fails without a manifest or diagrams directory and reports every schema problem', () => {
   const root = mkdtempSync(join(tmpdir(), 'ki-diagrams-'))
   expect(statuses('DIAG-1', root)).toEqual(['VIOLATION'])

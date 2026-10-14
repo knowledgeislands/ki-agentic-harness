@@ -11,6 +11,8 @@ const MANIFEST_FILE = 'diagrams.toml'
 const INDEX_FILE = 'README.md'
 export const DIAGRAM_TYPES = ['architecture', 'workflow', 'sequence', 'dataflow', 'lifecycle'] as const
 const FIELDS = ['type', 'question', 'audience', 'traced', 'stale_when', 'regenerate', 'last_checked'] as const
+/** Optional fields: `commit_html = true` opts a diagram into committing its interactive HTML. */
+const OPTIONAL_FIELDS = ['commit_html'] as const
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const REVISION = /^[0-9a-f]{7,40}$/
 
@@ -26,6 +28,7 @@ export type DiagramEntry = {
   readonly type: string
   readonly traced: readonly string[]
   readonly lastChecked: string
+  readonly commitHtml: boolean
 }
 
 export type DiagramsLayoutContext = {
@@ -36,7 +39,7 @@ export type DiagramsLayoutContext = {
   readonly indexExists: boolean
   /** Files under docs/diagrams the manifest does not account for. */
   readonly unlisted: readonly string[]
-  /** Committed forms a listed diagram lacks, including an SVG the README does not embed. */
+  /** Committed forms a listed diagram lacks, including an SVG the README does not embed or opted-in HTML it does not link. */
   readonly missing: readonly string[]
   readonly diagramCount: number
 }
@@ -96,7 +99,10 @@ export const parseManifest = (
     }
     for (const field of FIELDS) if (!(field in table)) issues.push(`${slug}: missing ${field}`)
     for (const field of Object.keys(table))
-      if (!(FIELDS as readonly string[]).includes(field)) issues.push(`${slug}: unknown field ${field}`)
+      if (!([...FIELDS, ...OPTIONAL_FIELDS] as readonly string[]).includes(field))
+        issues.push(`${slug}: unknown field ${field}`)
+    if ('commit_html' in table && typeof table.commit_html !== 'boolean')
+      issues.push(`${slug}: commit_html must be true or false`)
     const type = table.type
     if (typeof type !== 'string' || !(DIAGRAM_TYPES as readonly string[]).includes(type))
       issues.push(`${slug}: type must be one of ${DIAGRAM_TYPES.join(', ')}`)
@@ -118,13 +124,17 @@ export const parseManifest = (
         slug,
         type,
         traced: tracedValid ? (traced as string[]) : [],
-        lastChecked: typeof lastChecked === 'string' ? lastChecked : ''
+        lastChecked: typeof lastChecked === 'string' ? lastChecked : '',
+        commitHtml: table.commit_html === true
       })
   }
   return { entries, issues }
 }
 
-/** Files under docs/diagrams that no listed diagram accounts for, and the committed forms a listed diagram lacks. */
+/**
+ * Files under docs/diagrams that no listed diagram accounts for, and the committed forms a listed diagram lacks.
+ * A diagram's `<slug>.html` belongs to it only under `commit_html = true`, which also requires it.
+ */
 export const reconcile = (
   files: readonly string[],
   entries: readonly DiagramEntry[],
@@ -132,10 +142,17 @@ export const reconcile = (
 ): { readonly unlisted: readonly string[]; readonly missing: readonly string[] } => {
   const expected = new Set([MANIFEST_FILE, INDEX_FILE])
   const missing: string[] = []
-  for (const { slug, type } of entries) {
+  for (const { slug, type, commitHtml } of entries) {
     const source = `${slug}.${type}.json`
     const svg = `${slug}.svg`
-    expected.add(source).add(svg).add(`${slug}.html`)
+    const html = `${slug}.html`
+    expected.add(source).add(svg)
+    if (commitHtml) {
+      expected.add(html)
+      if (!files.includes(html)) missing.push(`${DIAGRAMS_DIRECTORY}/${html}`)
+      else if (index !== undefined && !index.includes(`(${html})`))
+        missing.push(`${DIAGRAMS_DIRECTORY}/${INDEX_FILE} links no ${html}`)
+    }
     if (!files.includes(source)) missing.push(`${DIAGRAMS_DIRECTORY}/${source}`)
     if (!files.includes(svg)) missing.push(`${DIAGRAMS_DIRECTORY}/${svg}`)
     else if (index !== undefined && !index.includes(`(${svg})`))
@@ -147,7 +164,7 @@ export const reconcile = (
   }
 }
 
-/** Each private-information pattern a committed source or SVG carries, named by file and kind. */
+/** Each private-information pattern a committed source, SVG or HTML carries, named by file and kind. */
 export const privateFindings = (file: string, text: string): string[] =>
   PRIVATE_PATTERNS.flatMap(([kind, pattern]) => (pattern.test(text) ? [`${file}: ${kind}`] : []))
 
@@ -198,8 +215,11 @@ export const createDiagramsSession = ({
 
   const sources = files.filter((file) => file.endsWith('.json'))
   const svgs = files.filter((file) => file.endsWith('.svg'))
+  const htmls = files.filter((file) => file.endsWith('.html'))
   const read = (file: string): string => readFileSync(join(directory, file), 'utf8')
-  const privacy = [...sources, ...svgs].flatMap((file) => privateFindings(`${DIAGRAMS_DIRECTORY}/${file}`, read(file)))
+  const privacy = [...sources, ...svgs, ...htmls].flatMap((file) =>
+    privateFindings(`${DIAGRAMS_DIRECTORY}/${file}`, read(file))
+  )
   const external = svgs.flatMap((file) => {
     const text = read(file)
     if (!text.includes('<svg')) return [`${DIAGRAMS_DIRECTORY}/${file}: not an SVG document`]
@@ -219,7 +239,7 @@ export const createDiagramsSession = ({
       missing,
       diagramCount: entries.length
     },
-    privacy: { findings: privacy, sourceCount: sources.length + svgs.length },
+    privacy: { findings: privacy, sourceCount: sources.length + svgs.length + htmls.length },
     svg: { findings: external, svgCount: svgs.length },
     freshness: {
       gitAvailable,

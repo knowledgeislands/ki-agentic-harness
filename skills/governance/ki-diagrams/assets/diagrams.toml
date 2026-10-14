@@ -1,5 +1,6 @@
 # Living diagrams manifest: one table per diagram, keyed by its slug.
 # See the ki-diagrams standard for each field. Delete this example table once a real one exists.
+# Add commit_html = true to a table to commit that diagram's interactive HTML beside its SVG.
 
 [architecture]
 type = "architecture"

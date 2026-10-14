@@ -12,5 +12,5 @@
 
 4. Copy `docs/diagrams/diagrams.toml` and `docs/diagrams/README.md` from the skill's [`assets/`](../assets/), and write one manifest table and one README section per chosen diagram before authoring it. Choose each type from its question as [the standard](standards-diagrams.md#choosing-a-diagram-type) maps it.
 5. Author each source with the Archify skill, tracing every node to a repository-relative file and line, then finalize, export and set `last_checked` exactly as [REFRESH](mode-refresh.md) does.
-6. Confirm a Google Chrome or Chromium is on the machine that will export SVGs (`bun <ki-diagrams>/scripts/export-svg.ts --help` names the `ARCHIFY_CHROME` override); nothing is installed into the repository for it. Keep `+/diagrams/` out of version control unless the repository serves its HTML.
+6. Confirm a Google Chrome or Chromium is on the machine that will export SVGs (`bun <ki-diagrams>/scripts/export-svg.ts --help` names the `ARCHIFY_CHROME` override); nothing is installed into the repository for it. Keep `+/diagrams/` out of version control; a diagram whose HTML is committed sets `commit_html = true`, and the build command copies it to `docs/diagrams/`.
 7. Run [AUDIT](mode-audit.md).

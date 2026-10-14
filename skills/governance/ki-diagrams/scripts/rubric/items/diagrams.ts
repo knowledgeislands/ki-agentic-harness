@@ -11,14 +11,14 @@ const DIAG_1: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-1',
   title: 'the manifest and the committed files agree both ways',
   description:
-    '`docs/diagrams/diagrams.toml` is valid and complete; every listed diagram has its source, its SVG and an embed in `docs/diagrams/README.md`; and every file under `docs/diagrams/` belongs to a listed diagram.',
+    '`docs/diagrams/diagrams.toml` is valid and complete; every listed diagram has its source, its SVG and an embed in `docs/diagrams/README.md`, and a diagram with `commit_html = true` also has its `<slug>.html`, linked from the README; and every file under `docs/diagrams/` belongs to a listed diagram, an HTML file only under that opt-in.',
   sources: [MANIFEST, COMMITTED],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'List each diagram in `diagrams.toml` with every field, commit its `<slug>.<type>.json` source and `<slug>.svg`, embed the SVG in `README.md`, and remove or list any stray file, then rerun the audit.'
+        'List each diagram in `diagrams.toml` with every field, commit its `<slug>.<type>.json` source and `<slug>.svg`, embed the SVG in `README.md`, commit and link `<slug>.html` only where `commit_html = true`, and remove or list any stray file, then rerun the audit.'
     },
     audit: {
       phase: 'INSPECT',
@@ -52,9 +52,9 @@ const DIAG_1: RubricItem<DiagramsRubricContext> = {
 
 const DIAG_2: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-2',
-  title: 'no committed source or SVG carries private information',
+  title: 'no committed diagram file carries private information',
   description:
-    'No committed diagram source or SVG contains a local absolute path, a `file://` URL or an email address, and none names a private repository or a person.',
+    'No committed diagram source, SVG or interactive HTML contains a local absolute path, a `file://` URL or an email address, and none names a private repository or a person.',
   sources: [PRIVACY],
   mechanical: {
     level: 'FAIL',
@@ -81,7 +81,7 @@ const DIAG_2: RubricItem<DiagramsRubricContext> = {
     }
   },
   judgment: {
-    scope: 'Every committed diagram source and SVG under docs/diagrams.',
+    scope: 'Every committed diagram source, SVG and HTML under docs/diagrams.',
     prompt:
       'Does any label, card, citation or repository URL name a private repository, a person, note content or a commit subject that a public reader of this repository should not see?',
     outcomes: ['conforming', 'gap', 'exclusion'],

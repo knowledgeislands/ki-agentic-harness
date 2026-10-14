@@ -53,7 +53,7 @@ Each diagram has up to three forms under `docs/diagrams/`:
 
 - **Source** - `<slug>.<type>.json`, the Archify input. It records the repository revision and cites the file and line each node was traced from. It is the thing to edit. Always committed.
 - **SVG** - `<slug>.svg`, the self-contained dual-theme export: dark by default, light under `prefers-color-scheme: light`, fonts inlined, and no reference outside the file other than a fragment or an inline `data:` URI. Always committed.
-- **Interactive HTML** - `<slug>.html`, the finalized viewer with search, focus, zoom and source links, roughly 800 KB per diagram. Committed only by a repository that serves it, such as a documentation site. Otherwise it is rebuilt locally under `+/diagrams/<slug>/` and never committed.
+- **Interactive HTML** - `<slug>.html`, the finalized viewer with search, focus, zoom and source links, roughly 800 KB per diagram. Committed only for a diagram whose manifest table sets `commit_html = true`, as a repository that serves its diagrams does, or one whose readers open the viewer from a checkout or a forge; the opt-in then requires it. Otherwise it is rebuilt locally under `+/diagrams/<slug>/` and never committed.
 
 `docs/diagrams/` holds nothing else apart from the manifest and its `README.md`.
 
@@ -63,7 +63,7 @@ The slug is lower-case kebab-case and names the question's subject, not the type
 
 ## The manifest
 
-`docs/diagrams/diagrams.toml` is the machine-readable authority: a reader such as the Observatory can list a repository's diagrams and flag stale ones without parsing prose. It has one table per slug and no other content:
+`docs/diagrams/diagrams.toml` is the machine-readable authority: a reader such as the Observatory can list a repository's diagrams and flag stale ones without parsing prose. It has one table per slug and no other content. Every field is required except `commit_html`:
 
 | Field          | Holds                                                                                                     |
 | -------------- | --------------------------------------------------------------------------------------------------------- |
@@ -74,21 +74,22 @@ The slug is lower-case kebab-case and names the question's subject, not the type
 | `stale_when`   | The changes to those paths that would make the diagram untrue                                              |
 | `regenerate`   | The prompt an agent with the Archify skill is given to rebuild the diagram from repository evidence        |
 | `last_checked` | The commit the diagram was last traced or confirmed against                                                |
+| `commit_html`  | Optional; `true` commits the diagram's `<slug>.html`, and absent or `false` keeps it local                 |
 
-`docs/diagrams/README.md` is the reader-facing index: a short introduction, one section per diagram stating its question in prose, and the SVG embedded with `![Title](<slug>.svg)`. It does not repeat the manifest's operational fields. Both templates ship in the skill's `assets/`.
+`docs/diagrams/README.md` is the reader-facing index: a short introduction, one section per diagram stating its question in prose, and the SVG embedded with `![Title](<slug>.svg)`; a diagram with `commit_html = true` also links its figure to `<slug>.html`, for example `[![Title](<slug>.svg)](<slug>.html)`. It does not repeat the manifest's operational fields. Both templates ship in the skill's `assets/`.
 
 ## Embedding
 
 A diagram is embedded as its SVG, never as a screenshot. The inline figure always links onward to the interactive view:
 
-- **A repository that serves its diagrams** commits the HTML and links the figure to it, for example as an **Interactive** control that opens the viewer in an overlay, or in a new tab on a modified click.
-- **A repository that does not** commits only the source and the SVG. A reader that can build the HTML locally, such as the Observatory, offers the interactive view once `finalize` has written it under `+/diagrams/<slug>/`, and otherwise says it is not built.
+- **A diagram that commits its HTML** under `commit_html = true` links the figure to it: in the README as a link around the image, and on a site that serves its diagrams, for example, as an **Interactive** control that opens the viewer in an overlay, or in a new tab on a modified click.
+- **A diagram that does not** commits only the source and the SVG. A reader that can build the HTML locally, such as the Observatory, offers the interactive view once `finalize` has written it under `+/diagrams/<slug>/`, and otherwise says it is not built.
 
 Any other Markdown document embeds a diagram with a relative path to its SVG. Where a guide may embed one is `ki-guides`' concern.
 
 ## Privacy
 
-No committed source or SVG may carry:
+No committed source, SVG or HTML may carry:
 
 - a local absolute path (`/Users/...`, `/home/...`, a temporary directory) or a `file://` URL;
 - an email address or other personal identity;
@@ -104,12 +105,18 @@ To refresh a stale diagram, or to confirm a warned one:
 
 1. Give an agent with the Archify skill the diagram's `regenerate` prompt and its current source. Ask it to re-trace from the repository and keep the existing layout wherever the facts have not changed.
 2. Rebuild and check it: `node <archify>/bin/archify.mjs finalize <type> docs/diagrams/<slug>.<type>.json +/diagrams/<slug>/<slug>.html --repo-root "$PWD" --quality showcase --json`. All four gates - validate, deliver, check, browser check - must pass.
-3. Re-export the SVG: `bun <ki-diagrams>/scripts/export-svg.ts +/diagrams/<slug>/<slug>.html docs/diagrams/<slug>.svg`. A repository that serves its HTML writes `<slug>.html` to `docs/diagrams/` instead.
+3. Re-export the SVG: `bun <ki-diagrams>/scripts/export-svg.ts +/diagrams/<slug>/<slug>.html docs/diagrams/<slug>.svg`. A diagram with `commit_html = true` also copies the finalized `<slug>.html` to `docs/diagrams/`.
 4. Set `last_checked` to the commit the diagram was traced against.
+
+[The build command](#the-build-command) runs steps 2 and 3 for every listed diagram at once.
 
 A change outside `stale_when` needs no rebuild: review it, then advance `last_checked`.
 
 To add a diagram, write its manifest table and README section first, then author the source, finalize, export, and set `last_checked`.
+
+### The build command
+
+`bun <ki-diagrams>/scripts/build-html.ts [--repo <dir>] [--svg] [slug...]` builds every diagram the manifest lists, or the named ones, in one local command. Each is finalized as step 2 runs it, with a fresh `--out-dir` at `+/diagrams/<slug>/build/`, and a diagram with `commit_html = true` has its HTML copied to `docs/diagrams/<slug>.html`; `--svg` also re-exports each SVG as step 3 does. A failing gate stops the build before that diagram's committed forms are touched. It finds Archify at `ARCHIFY_HOME` when set, otherwise as the Agent Skill the Rig install places in the runtime's skills directory, and never edits a source or the manifest. A repository may bind it to a repository-owned `self:` package script.
 
 ### The SVG exporter
 
