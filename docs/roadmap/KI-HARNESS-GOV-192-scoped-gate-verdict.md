@@ -7,12 +7,12 @@ component: governance
 purpose: capability
 kind: deliver
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 5dd415e7c53807b54d70306153481bfe7719c59e
 created_at: 2026-10-14T19:32:39Z
-updated_at: 2026-10-14T19:32:39Z
+updated_at: 2026-10-14T19:33:56Z
 ---
 
 # Scoped Gate Verdict
@@ -47,9 +47,9 @@ The commit-gate paragraph reads: "A Knowledge Base has no package toolchain to g
 
 ## Steps
 
-- [ ] Add the scoped-verdict sentence to the commit-gate paragraph of `standards-knowledge-base.md`, after the check-only sentence and before the not-applicable sentence.
-- [ ] Confirm the `GATE-1` rubric item and `skills/repo-structure/ki-repo-kb/references/rubric.md` need no change.
-- [ ] Run the gates below and set the record awaiting review.
+- [x] Add the scoped-verdict sentence to the commit-gate paragraph of `standards-knowledge-base.md`, after the check-only sentence and before the not-applicable sentence.
+- [x] Confirm the `GATE-1` rubric item and `skills/repo-structure/ki-repo-kb/references/rubric.md` need no change.
+- [x] Run the gates below and set the record awaiting review.
 
 ## Files touched
 
@@ -80,6 +80,39 @@ None. The sentence is the guidance; `ki-principal`'s Conformance note changes un
 ### Roadmap
 
 No follow-on record here. The hook switch is a bounded owner instruction in `ki-principal`, and the option is `tools-ki` work.
+
+## Review
+
+### Delivered
+
+The approved boundary: one sentence in the commit-gate paragraph of `standards-knowledge-base.md`, nothing else in the skill. Excluded as planned: the `GATE-1` checker, the rubric and its publication, the `tools-ki` option, the `ki-principal` hook and Conformance note, CI and scheduled audits. Baseline `5dd415e7c53807b54d70306153481bfe7719c59e`; the delivery is the commit that follows it.
+
+### Change Summary
+
+- `skills/repo-structure/ki-repo-kb/references/standards-knowledge-base.md`: after the check-only sentence, a sentence stating that a hook may pass `--staged` so the audit evaluates the whole tree but its verdict covers only the staged index, and that CI keeps the whole-tree verdict.
+- This record: Steps marked, baseline recorded, review packet added.
+- No deviation from the plan. `gate.ts` and `rubric.md` were inspected and confirmed unchanged: the checker fails rewriting flags only.
+
+### Verification
+
+- `bun run test`: 1152 pass, 0 fail across 166 files.
+- `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check`: both sources in sync.
+- `ki repo audit --skill ki-work-roadmap`: PASS, 15/15 criteria.
+- `ki repo audit --skill ki-skills`: PASS with 2 pre-existing warnings, 0 failures.
+- `ki repo audit --repo ki-principal --skill ki-repo-kb`: `GATE-1` passes; the one failure is the pre-existing `STREAM-9` finding on `Streams/Projects/mac-studio-bootstrap/mac-studio-bootstrap.md`, a fleet finding outside this contract already carried by the ways-of-working thread.
+- `git diff --check`: clean.
+
+### Outstanding concerns
+
+None in this contract. The released `ki` does not yet carry `--staged`; the sentence permits rather than requires it, so no hook changes until Kris switches `ki-principal` once the pin carries the option.
+
+### Post-change review
+
+The paragraph still names `--fix` and `--write` as failing, so the check-only rule is intact. The new sentence names the option, the whole-tree evaluation, the staged-index verdict and the CI verdict in one place. Ready for acceptance.
+
+### Mini recap
+
+One permissive sentence added to `GATE-1`'s standard text; checker, rubric and tests unchanged; all gates green; one pre-existing fleet finding on `ki-principal` noted. Learning route: none beyond this record and the gate-scope report.
 
 ## Discussion
 
