@@ -3,13 +3,13 @@ id: KI-HARNESS-GOV-171
 area: GOV
 title: Standing-surface design rules
 kind: deliver
-status: draft
-horizon: next
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-10T16:49:02Z
-updated_at: 2026-10-12T19:57:00Z
+updated_at: 2026-10-14T13:44:24Z
 ---
 
 # KI-HARNESS-GOV-171: Standing-Surface Design Rules
@@ -49,43 +49,9 @@ Confirm the layering against current Claude Code behaviour before relying on it.
 - Out of scope: changing the default budgets, any runtime adapter's evidence collection, and Arcadia's notes, which are already retired.
 - If the two parts must stay in separate skills' changes, plan them as separate Steps within this record.
 
-## Current state
+## Cancelled
 
-Not yet grounded. `ki-plan` records the current source facts before Ready.
-
-## Steps
-
-- [ ] Plan this record under `ki-plan` before Ready, replacing these placeholder sections.
-
-## Files touched
-
-Not yet planned.
-
-## Verify
-
-Not yet planned.
-
-## Dependencies / blocks
-
-As declared in the frontmatter `blocks` and `blocked_by`; `ki-plan` confirms them.
-
-## Documentation impact
-
-### Decision Records
-
-Not yet assessed.
-
-### Specifications
-
-Not yet assessed.
-
-### Guides
-
-Not yet assessed.
-
-### Roadmap
-
-Adopted at Next on 12 October 2026; `ki-plan` assesses the rest before Ready.
+Cancelled 2026-10-14 as rejected (parked): Kris Brown approved it on 14 October 2026 in the state-of-play thread's roadmap census ('RC-ALL: approve all; ways-of-working applies the harness part'). The record was a non-blocking handoff of design guidance not yet planned, and the relevance question it raises belongs to the skill-refresh Project's keep, merge or retire check. Its four runtime-neutral points, the Claude adapter note merged from KI-HARNESS-GOV-172 and Kris's 12 October 2026 instruction to 'move path memory into KBs/projects/AGENTS.md, stop relying on path memory' are kept as an idea in the skill-refresh Project (`ki-principal`, `Streams/Projects/skill-refresh.md`); Git history keeps the full record. It leaves no outstanding change.
 
 ## Discussion
 

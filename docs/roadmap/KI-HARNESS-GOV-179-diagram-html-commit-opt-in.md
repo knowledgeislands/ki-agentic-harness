@@ -5,17 +5,13 @@ title: Diagram HTML commit opt-in
 project: ways-of-working
 component: governance
 kind: deliver
-status: draft
-horizon: hold
-hold:
-  reason: parked
-  condition: The roadmap burn-down leaves room for new capability; nothing depends on committing the HTML before then
-  review: 2026-11-16
+status: cancelled
+resolution: rejected
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-13T22:55:00Z
-updated_at: 2026-10-14T06:52:07Z
+updated_at: 2026-10-14T13:44:24Z
 ---
 
 # Diagram HTML Commit Opt-In Through the Manifest
@@ -38,6 +34,10 @@ This record is captured from Kris's answer and is not adopted, planned or implem
 - Not the SVG exporter or the Playwright prerequisite, which the browser-free SVG extractor record investigated and closed on its finding, and whose pinned-stylesheet follow-on is held with Kris.
 - Not Knowledge Islands Principal's change-management diagram: each adopting repository makes its own declaration, and that diagram is design working material in any case.
 - Not a site that serves the HTML, and no change to how the Observatory or any reader discovers it.
+
+## Cancelled
+
+Cancelled 2026-10-14 as rejected (parked): Kris Brown approved it on 14 October 2026 in the state-of-play thread's roadmap census ('RC-ALL: approve all; ways-of-working applies the harness part'). The record was held until 2026-11-16 with nothing depending on committing the HTML, and the burn-down comes first. Its Goal, Boundary, Kris's `HTML-COMMIT` answer and the open questions are kept as an idea in the ways-of-working Project (`ki-principal`, `Streams/Projects/ways-of-working/ways-of-working.md`); Git history keeps the full record. It leaves no outstanding change.
 
 ## Discussion
 
