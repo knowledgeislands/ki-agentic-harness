@@ -8,7 +8,7 @@ audience = "Skill authors, reviewers and newcomers orienting themselves in the c
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill is added, moved between concerns, renamed or removed, or its ki-kind or ki-applicability changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
-last_checked = "e83d7b13fdf6b1aec5aae1f7baeb201b384aff44"
+last_checked = "561dadf41900a6ba9253f579ddf28976f8be8daf"
 
 [skill-graph]
 type = "architecture"
@@ -17,4 +17,4 @@ audience = "Skill authors and reviewers deciding where a new or changed skill si
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
-last_checked = "e83d7b13fdf6b1aec5aae1f7baeb201b384aff44"
+last_checked = "561dadf41900a6ba9253f579ddf28976f8be8daf"
