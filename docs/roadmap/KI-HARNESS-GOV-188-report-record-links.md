@@ -6,13 +6,13 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-horizon: next
-status: draft
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 28d1dc78084533dcb3f21b67e56a89f6acfd4ed3
 created_at: 2026-10-14T14:14:15Z
-updated_at: 2026-10-14T14:14:15Z
+updated_at: 2026-10-14T16:54:57Z
 ---
 
 # Check That Every Record Identifier in an Owner Report Is a Link
@@ -30,7 +30,7 @@ This record is captured from that lesson under the standing instruction of 2026-
 ## Boundary
 
 - In scope: one new mechanical criterion in `ki-pmo`'s rubric items, its context function and fixture tests, the regenerated `rubric.md`, and one sentence in the `ki-pmo` standard naming what the criterion checks and what a pruned record links to.
-- Out of scope: `ki-delegation`'s owner-report standard, which already states the rule; the coordinator reminder hook; the output style; any checkpoint; the format of the report itself beyond the link requirement.
+- Out of scope: `ki-delegation`'s owner-report standard, which already states the rule; any checkpoint; the format of the report itself beyond the link requirement. The coordinator reminder hook and the output style were added to scope by Kris's LINK-GUARD approval above, which pairs this record with the hook line.
 
 ## Requirements
 
@@ -40,19 +40,22 @@ This record is captured from that lesson under the standing instruction of 2026-
 
 ## Current state
 
-Draft at horizon Next. Captured on 2026-10-14 from the pilot lesson; not yet planned.
+Approved and delivered on 2026-10-14. Kris approved it in the ways-of-working thread, as received: "LINK-GUARD / approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi". The harness part is this record and the hook line; the link printer belongs to `tools-ki` under KI-TOOL-KI-CLI-127 and the output-style deployment to Rig through chezmoi. Delivered on harness `main` from baseline `28d1dc78` with every gate passing. Awaiting review.
 
 ## Steps
 
-- [ ] Decide which identifier grammars the criterion matches, importing `ki-work-roadmap:work-identifiers` rather than restating the pattern.
-- [ ] Add the rubric item, its context function and fixture tests covering a linked identifier, a bare identifier, a pruned record linked to its Project note or Git revision, and a quoted Needs tag.
-- [ ] Regenerate `rubric.md` and add the sentence to the standard.
+- [x] Decide which identifier grammars the criterion matches, importing `ki-work-roadmap:work-identifiers` rather than restating the pattern.
+- [x] Add the rubric item, its context function and fixture tests covering a linked identifier, a bare identifier, a pruned record linked to its Project note or Git revision, and a quoted Needs tag.
+- [x] Regenerate `rubric.md` and add the sentence to the standard.
 
 ## Files touched
 
 - `skills/change-management/ki-pmo/references/` (the standard, sources and rubric items)
 - `skills/change-management/ki-pmo/rubric.md` (generated)
-- `skills/change-management/ki-pmo/scripts/` (context function and tests)
+- `skills/change-management/ki-pmo/scripts/` (context function, vendored `work-identifiers.ts` and tests)
+- `skills/change-management/ki-pmo/SKILL.md` (shared dependency and Mode AUDIT sentence)
+- `hooks/coordinator-reminder.sh`, `hooks/coordinator-reminder.test.ts`, `hooks/README.md` and `output-styles/ki-coordinator.md` (the hook line and the output style, under the LINK-GUARD approval)
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts` (criterion counts)
 
 ## Verify
 
@@ -62,7 +65,7 @@ Draft at horizon Next. Captured on 2026-10-14 from the pilot lesson; not yet pla
 
 ## Dependencies / blocks
 
-Depends on KI-HARNESS-GOV-187, which makes the thread model normative in `ki-pmo` and is awaiting review; this record edits the same standard and should follow it. Blocks nothing recorded.
+Depended on KI-HARNESS-GOV-187, which made the thread model normative in `ki-pmo` and was accepted as done on 2026-10-14 before this record was delivered. Blocks nothing recorded.
 
 ## Documentation impact
 
@@ -81,6 +84,40 @@ One sentence in the `ki-pmo` standard naming the criterion.
 ### Roadmap
 
 No follow-on record.
+
+## Review
+
+### Delivered
+
+A mechanical `PMO-7` criterion in `ki-pmo`'s rubric reads every thread report `+/_THREADS/<run>/*.report.md` and flags, at WARN level, each full record identifier left outside a Markdown link and each record link whose absolute local target no longer exists, so that a pruned record is linked to the Project note that carries it or to its last Git revision rather than to a deleted file. The identifier grammar is composed from the vendored `ki-work-roadmap:work-identifiers` module, so a work record such as `KI-HARNESS-GOV-187` and a Decision Record such as `ADR-KI-HARNESS-010` are both caught, while a Needs tag such as `ACCEPT-181` or `GOV-187-REVIEW` and a short form such as `GOV-187` are not. Fenced blocks, including the reply block the owner pastes back, are skipped. The standard's Linking records rule, its coordinating-thread practices, the Mechanical boundary, the SKILL.md Mode AUDIT sentence, the sources review, the regenerated rubric, the coordinator reminder hook line and its tests and README, and the `ki-coordinator` output style all state the pruned-record rule.
+
+### Change Summary
+
+- `scripts/rubric/contexts/pmo.ts`: `threadReports`, `recordIdentifiers`, `reportLinkFindings` and `linkOutcomes` add a `links` outcome context; `scripts/shared/work-identifiers.ts` is the vendored copy and `SKILL.md` declares `ki-work-roadmap:work-identifiers`.
+- `scripts/rubric/items/threads.ts`: `PMO-7`, mechanical WARN, diagnostic remediation, sourced to `standards-pmo.md#linking-records`; `references/rubric.md` regenerated.
+- `scripts/rubric/contexts/pmo.test.ts`: fixtures for a linked identifier, a bare identifier beside a quoted Needs tag, a pruned record linked to its Project note and to a GitHub revision, a pruned record linked to its deleted file, a fenced reply block, and a thread folder with no reports.
+- `references/standards-pmo.md`: a **Links** practice, the pruned-record sentence and the PMO-7 description under Linking records, and the Mechanical boundary; `references/sources.md` records the review with Kris's words.
+- `hooks/coordinator-reminder.sh`, its test and `hooks/README.md`: the reminder line gains the linking sentence; `output-styles/ki-coordinator.md` says a pruned record links to the Project note or its last Git revision and that the rubric flags unlinked identifiers.
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`: the criterion counts advance by one.
+
+### Verification
+
+`bun run test` 1149 pass, 0 fail; `bunx tsc --noEmit` clean; `bun test hooks/coordinator-reminder.test.ts skills/change-management/ki-pmo/scripts/banner.test.ts` 19 pass; `ki repo audit --skill` for `ki-pmo`, `ki-delegation`, `ki-work-roadmap` and `ki-authoring` pass; `ki-skills` and `ki-repo-harness` pass with the pre-existing warnings only, two `ki-skills` sources past refresh cadence and two `ki-diagrams` DIAG-4 freshness warnings on the skill map and skill graph. `ki repo audit --skill ki-pmo --repo ki-principal` runs PMO-7 against the Capital: of the 67 reports under `+/_THREADS/ways-of-working/`, 46 carry a finding, 38 unlinked-identifier lines and 21 missing-target lines, the missing targets being records pruned since the report was written; the other thread folders show the same pattern and none was changed.
+
+### Outstanding concerns
+
+- A Needs tag shaped like a record identifier, such as `RC-OPS-005` in one ways-of-working report, is matched by the grammar and flagged; the standard asks threads not to shape tags that way, and no registry lookup of repository codes was added.
+- The criterion is WARN, not FAIL, because the Capital's existing reports predate the rule and a FAIL would turn every `ki-pmo` audit there red until each thread repairs its own reports; raising it to FAIL is one word in `threads.ts` once the reports are clean.
+- Reports in other threads' folders carry findings and were not fixed, as the task set.
+- The decisions log and checkpoints are not scanned: the log is in the owner's words and the checkpoint is `ki-checkpoint`'s.
+
+### Post-change review
+
+The check lives where the lesson said it should, in the rubric rather than in another sentence of prose, and every surface that states the linking rule now states the pruned-record case in the same words. The grammar is imported, not restated, so a change to `ki-work-roadmap:work-identifiers` flows through the shared-module drift check.
+
+### Mini recap
+
+PMO-7 flags unlinked record identifiers and dead record links in thread reports; the hook line, standard, output style and README say a pruned record links to its Project note or last Git revision; the Capital's existing reports show the slip the lesson described.
 
 ## Discussion
 

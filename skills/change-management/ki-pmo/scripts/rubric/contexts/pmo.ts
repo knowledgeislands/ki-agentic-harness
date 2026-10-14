@@ -1,9 +1,10 @@
 /**
  * Read-only discovery of a repository's coordinating threads for the thin `ki-pmo` rubric.
  *
- * Boundary: reads the repository's `.ki.toml` identity, its `+/_CHECKPOINTS/` records and, on a Capital,
- * the `Streams/Projects/` and `Streams/Initiatives/` registry. It never writes, and it never judges a
- * transcript: thread behaviour is reviewed by the judgment items from evidence the owner selects.
+ * Boundary: reads the repository's `.ki.toml` identity, its `+/_CHECKPOINTS/` records, the thread reports under
+ * `+/_THREADS/<run>/` and, on a Capital, the `Streams/Projects/` and `Streams/Initiatives/` registry. It never
+ * writes, and it never judges a transcript: thread behaviour is reviewed by the judgment items from evidence the
+ * owner selects.
  */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, extname, join, relative, resolve } from 'node:path'
@@ -13,6 +14,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { REPOSITORY_CODE, SCOPE_SEGMENT, SERIAL } from '../../shared/work-identifiers.ts'
 
 /** The state-of-play thread's cap on simultaneously active coordination threads. */
 export const ACTIVE_THREAD_CAP = 4
@@ -20,6 +22,17 @@ const MASTER_THREAD = '_state-of-play'
 const CHECKPOINT_DIRECTORY = join('+', '_CHECKPOINTS')
 const PROJECTS_DIRECTORY = join('Streams', 'Projects')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
+const THREADS_DIRECTORY = join('+', '_THREADS')
+const REPORT_SUFFIX = '.report.md'
+/**
+ * A full record identifier in prose: repository code, issuing area and serial, composed from the shared grammar, which
+ * also matches a Decision Record such as `ADR-KI-HARNESS-010`.
+ * A Needs tag such as `ACCEPT-181` or `GOV-187-REVIEW` has no issuing-area segment between a repository code and a
+ * serial and is not matched; neither is a short form such as `GOV-187`, which the judgment items review.
+ */
+const RECORD_IDENTIFIER = new RegExp(`(?<![A-Z0-9-])${REPOSITORY_CODE}-${SCOPE_SEGMENT}-${SERIAL}(?![A-Z0-9-])`, 'g')
+const FENCED_BLOCK = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
+const MARKDOWN_LINK = /\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
 const PROJECT_THREAD = /^(?<initiative>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<project>[a-z0-9]+(?:-[a-z0-9]+)*)$/
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
@@ -29,6 +42,7 @@ export type PmoRubricContext = {
   readonly master: OutcomeContext
   readonly labels: OutcomeContext
   readonly cap: OutcomeContext
+  readonly links: OutcomeContext
   readonly judgment: OutcomeContext
 }
 
@@ -186,6 +200,68 @@ const capOutcomes = (records: readonly Checkpoint[]): AuditOutcome[] => {
   ]
 }
 
+/** Thread reports: `+/_THREADS/<run>/*.report.md`, or undefined when no thread folder exists. */
+const threadReports = (root: string): readonly string[] | undefined => {
+  const directory = join(root, THREADS_DIRECTORY)
+  if (!physicalDirectory(directory)) return undefined
+  const reports: string[] = []
+  for (const run of readdirSync(directory, { withFileTypes: true })) {
+    if (!run.isDirectory() || run.isSymbolicLink()) continue
+    for (const entry of readdirSync(join(directory, run.name), { withFileTypes: true }))
+      if (entry.isFile() && !entry.isSymbolicLink() && entry.name.endsWith(REPORT_SUFFIX))
+        reports.push(join(directory, run.name, entry.name))
+  }
+  return reports.sort((left, right) => left.localeCompare(right))
+}
+
+/** The distinct full record identifiers a text names, in order of first appearance. */
+export const recordIdentifiers = (text: string): readonly string[] => [
+  ...new Set(Array.from(text.matchAll(RECORD_IDENTIFIER), (match) => match[0]))
+]
+
+/**
+ * Review one thread report for the linking rule: every full record identifier in its prose sits inside the text of a
+ * Markdown link, and a link whose text names a record and whose target is an absolute local path points at a file
+ * that exists, so a pruned record is linked to the Project note that carries it or to a Git revision rather than to
+ * its deleted file. Fenced blocks, such as the reply block the owner pastes back, are not prose and are skipped.
+ */
+export const reportLinkFindings = (
+  text: string
+): { readonly bare: readonly string[]; readonly missing: readonly string[] } => {
+  const prose = text.replace(FENCED_BLOCK, ' ')
+  const missing = new Set<string>()
+  const unlinked = prose.replace(MARKDOWN_LINK, (_whole, label: string, target: string) => {
+    const named = recordIdentifiers(label)
+    if (named.length > 0 && target.startsWith('/')) {
+      const file = target.split('#')[0] ?? target
+      if (!existsSync(file)) for (const identifier of named) missing.add(`${identifier} -> ${target}`)
+    }
+    return ' '
+  })
+  return { bare: recordIdentifiers(unlinked), missing: [...missing] }
+}
+
+const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] => {
+  const outcomes: AuditOutcome[] = []
+  for (const report of reports) {
+    const subject = relative(root, report)
+    const { bare, missing } = reportLinkFindings(readFileSync(report, 'utf8'))
+    if (bare.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `every record identifier in a thread report is a link to its local file; unlinked: ${bare.join(', ')}`,
+        subject
+      })
+    if (missing.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a record link points at a file that exists, or for a pruned record at the Project note that carries it or at its last Git revision; missing: ${missing.join(', ')}`,
+        subject
+      })
+  }
+  return outcomes
+}
+
 export const createPmoSession = ({
   repository,
   publication
@@ -194,6 +270,7 @@ export const createPmoSession = ({
   const identity = repositoryIdentity(root)
   const capital = isCapital(identity)
   const records = checkpoints(root)
+  const reports = threadReports(root)
   const absent = records
     ? undefined
     : 'No `+/_CHECKPOINTS/` subarea is present; no coordinating thread has opened here.'
@@ -217,6 +294,15 @@ export const createPmoSession = ({
     },
     cap: {
       outcomes: one(capOutcomes(records ?? []), 'The active coordination threads are within the cap.', absent)
+    },
+    links: {
+      outcomes: one(
+        linkOutcomes(root, reports ?? []),
+        reports && reports.length > 0
+          ? `Every record identifier in the ${reports.length} thread report(s) under \`+/_THREADS/\` is a link to an existing file.`
+          : 'No thread report is present under `+/_THREADS/`.',
+        reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
+      )
     },
     judgment: {
       outcomes: [

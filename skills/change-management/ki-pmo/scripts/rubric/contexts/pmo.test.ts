@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createPmoSession, isCapital, repositoryIdentity } from './pmo.ts'
+import { createPmoSession, isCapital, recordIdentifiers, reportLinkFindings, repositoryIdentity } from './pmo.ts'
 
 const roots: string[] = []
 
@@ -23,6 +23,11 @@ const checkpoint = (root: string, name: string, fields: Record<string, string>):
     .map(([key, value]) => `${key}: '${value}'`)
     .join('\n')
   writeFileSync(join(root, '+', '_CHECKPOINTS', `${name}.md`), `---\n${frontmatter}\n---\n\n# ${name}\n`)
+}
+
+const report = (root: string, run: string, name: string, body: string): void => {
+  mkdirSync(join(root, '+', '_THREADS', run), { recursive: true })
+  writeFileSync(join(root, '+', '_THREADS', run, `${name}.report.md`), body)
 }
 
 const register = (root: string, kind: 'Projects' | 'Initiatives', slug: string): void => {
@@ -84,6 +89,7 @@ describe('state-of-play checkpoint', () => {
     expect(statuses(ctx.master.outcomes)).toEqual(['NOT_APPLICABLE'])
     expect(statuses(ctx.labels.outcomes)).toEqual(['NOT_APPLICABLE'])
     expect(statuses(ctx.cap.outcomes)).toEqual(['NOT_APPLICABLE'])
+    expect(statuses(ctx.links.outcomes)).toEqual(['NOT_APPLICABLE'])
   })
 })
 
@@ -150,5 +156,87 @@ describe('active thread cap', () => {
       checkpoint(root, `initiative.${project}`, { label: `Initiative: ${project}` })
     checkpoint(root, 'initiative.five', { label: 'Initiative: five', state: 'closed' })
     expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
+  })
+})
+
+describe('record identifiers in prose', () => {
+  test('full identifiers are found once each and Needs tags and short forms are not', () => {
+    const text =
+      'Accepted KI-HARNESS-GOV-187 and KI-TOOL-KI-CLI-127; KI-HARNESS-GOV-187 again. Kris said "ACCEPT-181" and "GOV-187-REVIEW / accept"; GOV-187 is a short form and KI-HARNESS-HK-012 a run.'
+    expect(recordIdentifiers(text)).toEqual(['KI-HARNESS-GOV-187', 'KI-TOOL-KI-CLI-127', 'KI-HARNESS-HK-012'])
+  })
+
+  test('an identifier inside a link is linked and one outside is bare', () => {
+    const findings = reportLinkFindings(
+      '- Accepted [KI-HARNESS-GOV-187](/nowhere/KI-HARNESS-GOV-187.md) and KI-HARNESS-GOV-188; see [`KI-PRINCIPAL-ECO-013`](https://example.invalid/ECO-013).\n'
+    )
+    expect(findings.bare).toEqual(['KI-HARNESS-GOV-188'])
+    expect(findings.missing).toEqual(['KI-HARNESS-GOV-187 -> /nowhere/KI-HARNESS-GOV-187.md'])
+  })
+
+  test('a fenced reply block is not prose', () => {
+    const findings = reportLinkFindings('Prose.\n\n```text\nACCEPT-188\n\naccept KI-HARNESS-GOV-188\n```\n')
+    expect(findings).toEqual({ bare: [], missing: [] })
+  })
+})
+
+describe('thread report links', () => {
+  test('a report whose identifiers are all linked to existing files passes', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    mkdirSync(join(root, 'docs', 'roadmap'), { recursive: true })
+    const record = join(root, 'docs', 'roadmap', 'KI-HARNESS-GOV-187-thread-model-and-banner.md')
+    writeFileSync(record, '# record\n')
+    report(root, 'ways-of-working', 'links', `# Report\n\n- Accepted [KI-HARNESS-GOV-187](${record}) as done.\n`)
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['PASS'])
+    expect(outcomes[0]?.message).toContain('1 thread report')
+  })
+
+  test('a bare identifier in a report is a violation naming it', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    report(
+      root,
+      'ways-of-working',
+      'bare',
+      '# Report\n\n- Accepted KI-HARNESS-GOV-187 as done; Kris said "ACCEPT-187".\n'
+    )
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working', 'bare.report.md'))
+    expect(outcomes[0]?.message).toContain('unlinked: KI-HARNESS-GOV-187')
+    expect(outcomes[0]?.message).not.toContain('ACCEPT-187')
+  })
+
+  test('a pruned record linked to its Project note or Git revision passes, linked to its deleted file does not', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    mkdirSync(join(root, 'Streams', 'Projects', 'ways-of-working'), { recursive: true })
+    const note = join(root, 'Streams', 'Projects', 'ways-of-working', 'ways-of-working.md')
+    writeFileSync(note, '# ways-of-working\n')
+    report(
+      root,
+      'ways-of-working',
+      'pruned',
+      `# Report\n\n- Pruned [KI-HARNESS-GOV-181](${note}) and [KI-HARNESS-GOV-185](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-pmo-extraction.md).\n`
+    )
+    expect(statuses(context(root).links.outcomes)).toEqual(['PASS'])
+    report(
+      root,
+      'ways-of-working',
+      'deleted',
+      `# Report\n\n- Pruned [KI-HARNESS-GOV-181](${join(root, 'docs', 'roadmap', 'KI-HARNESS-GOV-181-gone.md')}).\n`
+    )
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working', 'deleted.report.md'))
+    expect(outcomes[0]?.message).toContain('missing: KI-HARNESS-GOV-181 ->')
+  })
+
+  test('a thread folder with no reports, and files that are not reports, pass', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    mkdirSync(join(root, '+', '_THREADS', 'ways-of-working'), { recursive: true })
+    writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'decisions.md'), '- accept KI-HARNESS-GOV-187\n')
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['PASS'])
+    expect(outcomes[0]?.message).toContain('No thread report')
   })
 })

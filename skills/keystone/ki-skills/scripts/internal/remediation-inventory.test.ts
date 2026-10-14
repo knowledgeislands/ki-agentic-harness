@@ -10,12 +10,12 @@ test('source-loaded remediation inventory covers every structured criterion exac
   expect(inventory.issues).toEqual([])
   expect(inventory.counts).toEqual({
     catalogues: 52,
-    criteria: 783,
-    mechanical: 530,
+    criteria: 784,
+    mechanical: 531,
     judgment: 304,
     hybrid: 51,
     automatic: 110,
-    diagnostic: 404,
+    diagnostic: 405,
     guarded: 16
   })
   expect(inventory.counts.mechanical).toBe(
@@ -36,7 +36,7 @@ test('source-loaded remediation inventory covers every structured criterion exac
   const reportOnly = inventory.entries.filter(
     ({ remediation }) => remediation === 'diagnostic' || remediation === 'guarded'
   )
-  expect(reportOnly).toHaveLength(420)
+  expect(reportOnly).toHaveLength(421)
   expect(reportOnly.filter((entry) => reportOnlyDisposition(entry) === 'candidate-deferred')).toHaveLength(0)
-  expect(reportOnly.filter((entry) => reportOnlyDisposition(entry) === 'justified-boundary')).toHaveLength(420)
+  expect(reportOnly.filter((entry) => reportOnlyDisposition(entry) === 'justified-boundary')).toHaveLength(421)
 })

@@ -3,7 +3,7 @@ name: ki-pmo
 ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: [ki-delegation, ki-checkpoint]
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 contributes: ['.ki.toml']
 description: >
   Govern the coordinating thread: the responsive coordinator and its turn budget, the three thread types with their
@@ -36,7 +36,7 @@ Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
 
 Run `ki repo audit --skill ki-pmo --repo <repo>`.
 
-The native rubric checks that a Capital, and only a Capital, holds the `_state-of-play.md` state-of-play checkpoint, that each coordinating checkpoint's label ends in the Project its filename names and that the Project and Initiative resolve in the registry, and that the active coordination threads are within the cap. It then reviews coordinator responsiveness, the report forms, the mark and the refresh rule from the transcripts, reports and checkpoints the owner selects.
+The native rubric checks that a Capital, and only a Capital, holds the `_state-of-play.md` state-of-play checkpoint, that each coordinating checkpoint's label ends in the Project its filename names and that the Project and Initiative resolve in the registry, that the active coordination threads are within the cap, and that every full record identifier in a thread report under `+/_THREADS/` is a link to an existing file, with a pruned record linked to the Project note that carries it or to its last Git revision. It then reviews coordinator responsiveness, the report forms, the mark and the refresh rule from the transcripts, reports and checkpoints the owner selects.
 
 ### Mode CONFORM
 

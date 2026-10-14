@@ -54,6 +54,23 @@ const PMO_3: RubricItem<PmoRubricContext> = {
   }
 }
 
+const PMO_7: RubricItem<PmoRubricContext> = {
+  code: 'PMO-7',
+  title: 'every record identifier in a thread report is a link',
+  description:
+    'In every thread report `+/_THREADS/<run>/*.report.md`, each full record identifier in the prose, a work record such as `KI-HARNESS-GOV-187` or a Decision Record such as `ADR-KI-HARNESS-010`, sits inside the text of a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; a pruned record links to the Project note that carries its substance or to its last Git revision. Fenced blocks, such as the reply block, and Needs tags such as `ACCEPT-181` are not checked.',
+  sources: [`${SOURCE}#linking-records`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Make each bare identifier the text of a link to its record by absolute path; where the record has been pruned, link to the Project note that carries it or to its last Git revision. Fix only the reports of the thread under review.'
+    },
+    audit: { phase: 'INSPECT', run: ({ links }) => links.outcomes }
+  }
+}
+
 const PMO_4: RubricItem<PmoRubricContext> = {
   code: 'PMO-4',
   title: 'coordinators stay responsive and threads stay current',
@@ -119,5 +136,5 @@ export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
     'The state-of-play and coordination thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PMO_1, PMO_2, PMO_3, PMO_4, PMO_5, PMO_6]
+  items: [PMO_1, PMO_2, PMO_3, PMO_7, PMO_4, PMO_5, PMO_6]
 }
