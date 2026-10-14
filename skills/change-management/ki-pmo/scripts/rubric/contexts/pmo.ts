@@ -2,7 +2,9 @@
  * Read-only discovery of a repository's coordinating threads for the thin `ki-pmo` rubric.
  *
  * Boundary: reads the repository's `.ki.toml` identity, its `+/_CHECKPOINTS/` records, the thread reports under
- * `+/_THREADS/<run>/` and, on a Capital, the `Streams/Projects/` and `Streams/Initiatives/` registry. It never
+ * `+/_THREADS/<run>/`, on a Capital the `Streams/Projects/` and `Streams/Initiatives/` registry, and the coordinator
+ * binding: the repository's and the user's Claude Code settings, of which it reads only the output style and the hook
+ * commands, and the deployed output style. It never
  * writes, and it never judges a transcript: thread behaviour is reviewed by the judgment items from evidence the
  * owner selects.
  */
@@ -33,6 +35,9 @@ const REPORT_SUFFIX = '.report.md'
 const RECORD_IDENTIFIER = new RegExp(`(?<![A-Z0-9-])${REPOSITORY_CODE}-${SCOPE_SEGMENT}-${SERIAL}(?![A-Z0-9-])`, 'g')
 const FENCED_BLOCK = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
 const MARKDOWN_LINK = /\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
+const OUTPUT_STYLE = 'ki-coordinator'
+const COORDINATOR_HOOK = 'coordinator-reminder.sh'
+const HOOK_EVENTS = ['UserPromptSubmit', 'SessionStart'] as const
 const PROJECT_THREAD = /^(?<initiative>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<project>[a-z0-9]+(?:-[a-z0-9]+)*)$/
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
@@ -43,6 +48,7 @@ export type PmoRubricContext = {
   readonly labels: OutcomeContext
   readonly cap: OutcomeContext
   readonly links: OutcomeContext
+  readonly binding: OutcomeContext
   readonly judgment: OutcomeContext
 }
 
@@ -263,8 +269,82 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
   return outcomes
 }
 
+const settings = (path: string): Readonly<Record<string, unknown>> | null | undefined => {
+  if (!existsSync(path)) return undefined
+  try {
+    return table(JSON.parse(readFileSync(path, 'utf8')))
+  } catch {
+    return null
+  }
+}
+
+/** Whether a Claude Code settings `hooks` table runs the coordinator hook at an event. */
+const runsHook = (hooks: Readonly<Record<string, unknown>> | null, event: string): boolean => {
+  const groups = hooks?.[event]
+  if (!Array.isArray(groups)) return false
+  return groups.some((group) => {
+    const handlers = table(group)?.hooks
+    return (
+      Array.isArray(handlers) &&
+      handlers.some((handler) => {
+        const command = table(handler)?.command
+        return typeof command === 'string' && command.includes(COORDINATOR_HOOK)
+      })
+    )
+  })
+}
+
+/**
+ * The coordinator binding where `ki-pmo` is declared: the repository's tracked settings select the output style, and
+ * the user's Claude Code settings register the hook with the style deployed beside them. The user half is reported as
+ * not checked when the user settings are absent, as on a machine with no Claude Code.
+ */
+export const bindingOutcomes = (root: string, userHome: string): AuditOutcome[] => {
+  const outcomes: AuditOutcome[] = []
+  const repositorySettings = join('.claude', 'settings.json')
+  const tracked = settings(join(root, repositorySettings))
+  outcomes.push(
+    tracked?.outputStyle === OUTPUT_STYLE
+      ? { status: 'PASS', message: `The repository selects the \`${OUTPUT_STYLE}\` output style.` }
+      : {
+          status: 'VIOLATION',
+          message: `a repository that declares \`ki-pmo\` selects \`"outputStyle": "${OUTPUT_STYLE}"\` in its tracked \`.claude/settings.json\``,
+          subject: repositorySettings
+        }
+  )
+  const user = settings(join(userHome, '.claude', 'settings.json'))
+  if (user === undefined) {
+    outcomes.push({
+      status: 'INFO',
+      message: 'No user Claude Code settings are present; the coordinator hook binding is not checked.'
+    })
+    return outcomes
+  }
+  const missing = HOOK_EVENTS.filter((event) => !runsHook(table(user?.hooks), event))
+  if (missing.length > 0)
+    outcomes.push({
+      status: 'VIOLATION',
+      message: `the user's Claude Code settings run \`hooks/${COORDINATOR_HOOK}\` at ${missing.map((event) => `\`${event}\``).join(' and ')}; the user-environment manager binds it`,
+      subject: join('~', '.claude', 'settings.json')
+    })
+  const deployed = join('.claude', 'output-styles', `${OUTPUT_STYLE}.md`)
+  if (!existsSync(join(userHome, deployed)))
+    outcomes.push({
+      status: 'VIOLATION',
+      message: `the \`${OUTPUT_STYLE}\` output style is deployed for the user; the user-environment manager binds it`,
+      subject: join('~', deployed)
+    })
+  if (missing.length === 0 && existsSync(join(userHome, deployed)))
+    outcomes.push({
+      status: 'PASS',
+      message: 'The user binds the coordinator hook and deploys the output style.'
+    })
+  return outcomes
+}
+
 export const createPmoSession = ({
   repository,
+  userHome,
   publication
 }: RubricContextOptions): RubricSession<PmoRubricContext> => {
   const root = resolve(repository)
@@ -305,6 +385,7 @@ export const createPmoSession = ({
         reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
       )
     },
+    binding: { outcomes: bindingOutcomes(root, userHome) },
     judgment: {
       outcomes: [
         {

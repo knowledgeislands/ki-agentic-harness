@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { generate } from './generate/index.ts'
 
 // The report heading and the footer banner are normative text: every
 // coordinating thread renders both byte-identical in shape, so the standard,
@@ -136,10 +137,14 @@ const beneath = (text: string, frameIndex: number): string[] => {
   return []
 }
 
+/** The standard less its Generated surfaces sources, whose text is checked through what they render. */
+const withoutSources = (text: string): string =>
+  text.replace(/<!-- ki-pmo:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
+
 /** Every fenced `markdown` block in a document whose first heading line is a `#` heading. */
 const headings = (text: string): string[][] => {
   const found: string[][] = []
-  for (const block of text.split('```markdown\n').slice(1)) {
+  for (const block of withoutSources(text).split('```markdown\n').slice(1)) {
     const lines =
       block
         .split('\n```')[0]
@@ -226,8 +231,9 @@ test('the standard carries the REST and BUSY footers and the DONE frame, in that
 })
 
 test('the report heading is three rules, the linked Initiative › Project heading, the bold form line and one rule, then the first section', () => {
-  const [summary, stateOfPlay, runReport] = headings(standard)
-  expect(headings(standard)).toHaveLength(3)
+  const [summary, stateOfPlay, runReport, ownerReport] = headings(standard)
+  expect(headings(standard)).toHaveLength(4)
+  expect(ownerReport?.slice(0, runReport?.length)).toEqual(runReport)
   expect(summary?.join('\n')).toBe(HEADING_EXAMPLE)
   expectReportHeading(summary, 3)
   expect(stateOfPlay?.[0]).toBe('# [<territory or Initiative>](<its local note>) › State of play')
@@ -348,4 +354,12 @@ test('the hook line names the report heading, the block-letter footer, the brack
   expect(hook).toContain('with --- between entries')
   expect(hook).toContain('Commit and push the thread folder under +/_THREADS/')
   expect(hook).toContain('Re-anchoring after compaction')
+})
+
+test('every generated surface matches what the standard renders, so none is edited by hand', () => {
+  for (const surface of generate(harnessRoot))
+    expect({ path: surface.path, content: readFileSync(resolve(harnessRoot, surface.path), 'utf8') }).toEqual({
+      path: surface.path,
+      content: surface.content
+    })
 })

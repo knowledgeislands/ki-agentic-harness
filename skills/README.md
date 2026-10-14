@@ -385,7 +385,7 @@ Create or audit typed KI Decision Records for durable rationale and authority. U
 
 #### `ki-delegation`
 
-Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring, owner report) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and `ki-pmo` governs the coordinating thread that launches them.
+Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and `ki-pmo` governs the coordinating thread that launches them.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

@@ -154,7 +154,7 @@ When every condition passes, render this five-line frame literally and without c
 
 Each framed line is exactly 52 terminal display columns. Measure terminal display width by Unicode code point width, not byte length. Keep the frame byte-identical so transcript archives can find completed sessions by searching for `█▄▄▀ █▄▄█ █  █ █▄▄▄`.
 
-In a coordinating thread this frame never renders, because the skill hands to `ki-pmo`'s report forms. Their closing [banner](../../ki-pmo/references/standards-pmo.md#banner) uses the same glyphs and 52-column frame for REST and BUSY and, once only at Project close, a DONE frame whose side lines read `project closed`, `decisions promoted` and `thread tidied away`, so the two DONE frames share their block word and are told apart by their side lines.
+This frame closes an ordinary session recap only; a coordinating thread reports in `ki-pmo`'s forms instead. Their closing [banner](../../ki-pmo/references/standards-pmo.md#banner) uses the same glyphs and 52-column frame for REST and BUSY and, once only at Project close, a DONE frame whose side lines read `project closed`, `decisions promoted` and `thread tidied away`, so the two DONE frames share their block word and are told apart by their side lines.
 
 Immediately below the frame, render the variable evidence line with three leading spaces:
 

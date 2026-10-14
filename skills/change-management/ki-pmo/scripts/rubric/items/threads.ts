@@ -71,6 +71,23 @@ const PMO_7: RubricItem<PmoRubricContext> = {
   }
 }
 
+const PMO_8: RubricItem<PmoRubricContext> = {
+  code: 'PMO-8',
+  title: 'the coordinator hook and output style are bound where ki-pmo is declared',
+  description:
+    'In the runtime-specific Claude Code binding, a repository that declares `[skills.ki-pmo]` selects `"outputStyle": "ki-coordinator"` in its tracked `.claude/settings.json`, and, where the user\'s Claude Code settings are present, they run the harness `hooks/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart` and the style is deployed as `~/.claude/output-styles/ki-coordinator.md`. The user-environment manager, chezmoi, stays the binder; the rubric only checks that the binding is present.',
+  sources: [`${SOURCE}#coordinator-responsiveness`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Select the output style in the repository's tracked `.claude/settings.json`; bind the hook and deploy the style through the user-environment manager, such as `chezmoi apply` after reviewing `chezmoi diff`, rather than by editing user settings by hand."
+    },
+    audit: { phase: 'INSPECT', run: ({ binding }) => binding.outcomes }
+  }
+}
+
 const PMO_4: RubricItem<PmoRubricContext> = {
   code: 'PMO-4',
   title: 'coordinators stay responsive and threads stay current',
@@ -137,5 +154,5 @@ export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
     'The state-of-play and coordination thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PMO_1, PMO_2, PMO_3, PMO_7, PMO_4, PMO_5, PMO_6]
+  items: [PMO_1, PMO_2, PMO_3, PMO_7, PMO_8, PMO_4, PMO_5, PMO_6]
 }

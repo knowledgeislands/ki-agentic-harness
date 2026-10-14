@@ -15,8 +15,6 @@ argument-hint: 'checkpoint <thread> | help | recap [--runtime detect|claude|code
 
 **Kind:** process. Recaps a **live** session — warm, in-context, run inside the session itself. Read [the session-recap standard](references/standards-session-recap.md) for the procedure and [the runtime sources](references/sources.md) when refreshing runtime claims.
 
-In a coordinating thread, meaning a session resumed from a `+/_CHECKPOINTS/` checkpoint in a repository that declares `ki-pmo`, a request for a summary, recap or full summary is `ki-pmo`'s: hand it to [the coordinating-thread standard's report forms](../ki-pmo/references/standards-pmo.md#report-forms), which recap since the owner's mark in the owner-report shape, and do not run the three legs below. Everywhere else this skill recaps as it does today.
-
 ## What this skill does
 
 Three legs, always in this order:

@@ -39,7 +39,7 @@ An in-session subagent runs under the turn that launched it and dies when that t
 
 A coordinating thread - a coordination thread or the state-of-play thread, two of the three thread types `ki-pmo` defines beside the conversational thread - launches and steers background runs under this contract and is itself governed by [the coordinating-thread standard](../../../change-management/ki-pmo/references/standards-pmo.md) that `ki-pmo` owns: the responsive-coordinator principle in Kris's words, the counted turn budget and self-check, the Summary, recap and full summary, the banner, re-anchoring after compaction, coordination threads, the state-of-play thread, the openers and bootstrap, directions from the state-of-play thread, the decision classes and Project close, the recap since the mark, parking tangents, linking records, committing the thread folder, keeping primary checkouts current and refreshing that guidance. A repository whose threads coordinate declares `ki-pmo` beside this skill; the `coordinator-reminder` hook and the `ki-coordinator` output style belong to it.
 
-What stays here is the run side of that relationship. A coordinating thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises, waits only through a detached [waiter](#run-queue) or [monitor](#monitoring), and reports in the [owner report](#owner-report) form below, which every Summary, recap and full summary adopts unchanged.
+What stays here is the run side of that relationship. A coordinating thread records each owner decision in the run's [decisions log](#decisions-log) before launching the work it authorises, waits only through a detached [waiter](#run-queue) or [monitor](#monitoring), and reports in the `ki-pmo` [owner report](../../../change-management/ki-pmo/references/standards-pmo.md#owner-report) form, which every agent report, Summary, recap and full summary takes unchanged.
 
 ## Run packet
 
@@ -157,124 +157,11 @@ An owner report, in every form including the [full summary](../../../change-mana
 
 ### Owner report
 
-Every report written for the owner takes one shape, the **owner report**: a background agent's final `<name>.report.md`, which the owner reads directly, and a coordinating thread's Summary, including the Summary at a resting point. It replaces the Done / Failed / Needs \<owner\> report wherever that shape was set. Kris set the format on 2026-10-13 in the `ways-of-working` thread, in these words:
-
-> Use three major sections, in this order:
->
-> 1. What has been done
->
->    Report completed outcomes clearly and concisely. Include material failures, corrections and limitations where relevant; do not hide them behind a success summary.
->
-> 2. What is in progress
->
->    State what is actually running and what is waiting, with the responsible owner or dependency. Say “Nothing is running” when that is true.
->
->    Place outstanding matters that require no action from the owner here, before the outstanding queries. Label them “Outstanding — no action requested now”. Distinguish agent work, receiver-owned work, verification limitations and retained material from decisions the owner needs to make.
->
-> 3. Outstanding queries
->
->    Give each actionable query its own heading:
->
->    `<stable query tag> — <plain-language title>`
->
->    Under each heading, include:
->
->    - Summary: enough context to understand the issue without rereading the thread, including its significance and current state.
->    - Need from you: the specific decision, instruction or missing information required.
->    - Recommendation: the proposed next step and why it is recommended.
->
-> Keep each query independently understandable and copyable. Split unrelated decisions into separate queries. Preserve query tags until resolved; never reuse a tag for a different issue.
->
-> Do not add a “Your next step” field beneath individual queries.
->
-> Finish the report with one fenced text block that offers a copy button. Include every actionable query’s heading and its recommended next step, written as an instruction the owner can adopt or edit and send back. Preserve the same tags and ordering as the query sections.
->
-> The suggested reply is not approval. Act on it only when the owner returns an instruction.
->
-> Linking requirement
->
-> Every ID or named reference to an existing record must be linked to that record, including roadmap items, checkpoints, Projects, Initiatives, decisions, receipts and evidence artifacts. Use the full identifier as the link text where applicable, rather than an abbreviated ID.
->
-> For example:
->
-> `[HNR-PRINCIPAL-5GE-004](</Users/krisbrown/workspaces/humans-not-robots/hnr-principal/Streams/Roadmap/HNR-PRINCIPAL-5GE-004-complete-phase-2-ms3.md>)`
->
-> Prefer verified absolute local file links when the checkout is available; otherwise use the verified canonical remote link. Link a query heading to its underlying record when one exists. Preserve necessary references in the copyable reply block so the returned instruction remains unambiguous.
->
-> Never invent a link. If a target cannot be resolved, state that explicitly.
->
-> Keep routine outcomes brief, but give outstanding queries enough context for a considered answer. Do not turn every unresolved observation into a request for owner action.
-
-Kris shortened the three section headings on 2026-10-14, in these words:
-
-> What has been done -> Done What is in progress -> In Progress Outstanding queries -> Queries
-
-The sections are therefore `## Done`, `## In Progress` and `## Queries`, spelled exactly so; nothing inside them changed. A report written before that day keeps the longer names, and anything that reads past reports accepts both.
-
-The quotation keeps Kris's em dashes and is laid out as a blockquote; the standard's own text writes the label `Outstanding - no action requested now` and the query heading `<tag> - <title>` with a spaced hyphen. Applied:
-
-- **Heading:** every owner report opens with the `ki-pmo` [report heading](../../../change-management/ki-pmo/references/standards-pmo.md#banner), rich text rather than a frame. Kris asked for it on 2026-10-14, as received: "maybe you can just come up with something which is just a better heading that is the actual just normal text, so it can be rich text rather than fixed width text. So maybe you do not need to say project or initiative in front of it, you use the ways of working and you render it with a sensible label, and the initiative is before that, so it says knowledge islands model, which is linked. The next line says ways of working and then you have your headings, done, in progress, queries, and then you have your banner at the end. ... after the initiative and project headings at the start you could have one line which says summary at, whatever, and last mark at.", agreed the mock with "Actually, that is really good." and amended it with "Maybe we use a tripple HR element Before the main heading." and "And maybe then even a single HR alignment after the summary and last mark part." It replaces the framed label he placed at 19:05 BST that day and the earlier `# <label> · <form> at <local time>` line with its plain `Project · Initiative · <window> · <state>` line. The heading is three `---` rules with blank lines between them, then `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>)`, the Initiative's and the Project's display names as their notes' `title` gives them, written as words and not slugs, each linked to its local note by absolute path; a Project with no Initiative gives the Project alone, and the state-of-play thread writes the territory or Initiative it covers, linked, then `› State of play`. A blank line follows, then the form line `**<Form> at <local time> · last mark <local time>**`, then a blank line, one `---`, a blank line and `## Done`. `<Form>` is `Summary`, `Recap`, `Full summary` or `Re-bootstrap`, and both times are local, written like `19:13 BST`. No window and no state are written: the form fixes the window, `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary, and the footer banner and its list carry the state. A background agent's run report uses the heading of the thread it reports to with `› <run name>` added at the end and the form `Run report`, the mark being that thread's; it closes with that thread's footer banner, list and, at rest, the resume line, the footer's top border reading `╭─ run report · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52 code points and one blank framed line standing inside each border, as Kris approved on 2026-10-14 with "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it."; a report issued before that approval keeps its `issued` border and unpadded frame. A saved report file omits the three rules before the heading, because a file that begins with `---` is read as front matter, and the `#` heading is its H1. A report written before 2026-10-14 keeps its earlier heading, and anything that reads past reports accepts the framed label, the one-line heading and this one. For example, a run report in its saved file:
-
-  ```markdown
-  # [Knowledge Islands model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Initiatives/knowledge-islands-model/knowledge-islands-model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working/ways-of-working.md) › heading-rich
-
-  **Run report at 20:40 BST · last mark 14:54 BST**
-
-  ---
-
-  ## Done
-  ```
-
-- **Sections:** the three headings `## Done`, `## In Progress` and `## Queries`, in that order, every time. An empty section still appears and says so in one line, `Nothing is running` or `No outstanding queries`, so the owner never wonders whether it was dropped.
-- **Done:** completed outcomes, one line each, with material failures, corrections and limitations beside them rather than behind them. A background agent puts its commit identifiers and check results here, because the owner reads the report and not the log.
-- **In Progress:** what is running and what is waiting, each with its owner or dependency. Then, under `Outstanding - no action requested now`, the matters that need nothing from the owner, grouped as agent work, receiver-owned work, verification limitations and retained material, kept apart from the decisions the owner must make. A handoff to another thread stays outstanding until the owner expressly says it is done.
-- **Queries:** one heading per actionable query, `<tag> - <plain-language title>`, linked to its record where one exists. The tag is a [Needs tag](#needs-tags). A routine open matter is not a query; it belongs in the section above. The body of a query is three bold labels and nothing else, in the shape Kris set on 2026-10-14: "on the queries... _Context:_ <This should cover enough information for you to be able to make an informed decision.> _Query:_ <The question succinctly?> _Options:_ <Possible: With the first one being recommended in the same way that you see others done, when you have the ask, you the question with (recommended) before or after its text.> - a) (recommended) blah blah - b) yah yah yah", amended the same day with "bold not italics for the "Context", "Query", "Options" please" and "if the options have a), b), then no bullet also". Applied:
-
-  ```markdown
-  ### <TAG> - <plain-language title>
-
-  **Context:** <enough for the owner to decide without reading anything else>
-  **Query:** <the question, in one sentence>
-  **Options:**
-  a) (recommended) <the recommended course>
-  b) <an alternative>
-  ```
-
-  **Context** gives enough for the owner to decide without reading anything else, including the matter's significance and current state. **Query** is the question in one sentence. **Options** is the lettered list, `a)`, `b)` and so on, with no bullet in front of a letter; option a) is always the recommendation and carries `(recommended)` before its text. Further options appear only when they are real alternatives: a query that needs only confirmation still gives a), plus b) for the obvious alternative, such as "leave it as it is". Before 2026-10-14 a query carried **Summary**, **Need from you** and **Recommendation**; a report written before that day keeps that shape, and anything that reads past reports accepts both.
-- **Reply block:** the report ends with one fenced `text` block holding one entry per open query, in the same tags and order, each prefilled with option a)'s instruction written out in full, carrying the references it needs to be unambiguous, so the owner sends the block back as it stands or edits an entry. An entry is stacked: the Needs tag alone on its own line, a blank line, then option a)'s instruction without a `<tag> -` prefix and without its letter or `(recommended)`; between entries a blank line, `---`, then a blank line, with no `---` after the last entry. Kris asked for the stacked form on 2026-10-14: "Can we see the way that the default copy block is? So it's easier to use it. There's often quite a lot of detail now on per line." A report with no queries keeps `No reply needed.` as the block's only line. To choose another option, the owner replaces the instruction with that option's letter, `b)` or `b`, or with its text; whoever reads the reply accepts a bare letter as an answer and resolves it against the query's lettered options. An entry never lists the options or restates the choice as a menu: the options live in the query body, and the entry carries the one the recommendation chose. Kris corrected the menu form on 2026-10-14: "the proposed copy block is including all the options, rather than the recommended option." Only where the owner alone can supply a value the thread cannot know, such as a date, an amount or a name, does the entry carry an angle-bracket placeholder naming it, such as `<date>` or `<amount>`, so the owner edits one token. It is a suggested reply, not approval: nothing in it is acted on until the owner returns an instruction. A query and its reply-block entry:
-
-  ```markdown
-  ### LINK-GUARD - where the link guard should live
-
-  **Context:** The hook line already names the linking rule, and KI-HARNESS-GOV-188 carries the harness half; the link printer is a `ki` change and the output style is chezmoi-managed, so each half has a different home.
-  **Query:** Should the link guard be split across the three homes, or held in the harness until the printer lands?
-  **Options:**
-  a) (recommended) split it: hook line and KI-HARNESS-GOV-188 in the harness, the printer in KI-TOOL-KI-CLI-127, the output style handed to Rig
-  b) hold the whole guard in the harness until the printer lands
-  ```
-
-  A reply block with two queries:
-
-  ```text
-  LINK-GUARD
-
-  approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi
-
-  ---
-
-  THREAD-FOLDER
-
-  confirmed as delivered
-  ```
-
-  The owner who prefers option b) of the first query sends `b` beneath `LINK-GUARD` instead.
-- **Headings:** the three sections are `##` headings and each query is a `###` heading, so a report nests the same way wherever it appears, under the one `#` report heading, whether a coordinating thread's or a background agent's. Sub-headings inside `Done`, where a long report groups outcomes by topic, are `###` too.
-- **Links:** every record, checkpoint, Project, Initiative, decision, receipt and evidence artefact under [Linking records](../../../change-management/ki-pmo/references/standards-pmo.md#linking-records); a pruned roadmap record, which has no local file any more, is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed, usually the parent of the prune commit.
-- **Levels:** the owner's personal instructions set a communication level, `quiet`, `standard` or `detailed`, and this standard does not restate those instructions. The shape is the same at every level; the level sets only depth. Under `quiet`, the status-line cadence during work is unchanged, this report replaces the end-of-unit report, done items are one line each, in-progress items name only the work and what it waits on, and a query carries just enough context to be answered cold. `standard` adds material context and exceptions to each section. `detailed` adds the plan, validation evidence and rationale. No level hides a failure, a required decision or a material risk.
+Every report written for the owner, a background agent's final `<name>.report.md` and a coordinating thread's Summary alike, is an **owner report** in the shape the `ki-pmo` standard's [owner report](../../../change-management/ki-pmo/references/standards-pmo.md#owner-report) sets. That standard is the shape's one source, as Kris decided on 2026-10-14: "REPORT-SOURCE - generate the hook line, output style and prompt skeleton from the ki-pmo standard with a ki dev command, make ki-delegation link to it, and have the existing test check the generated files". This standard does not restate it: the **Report** paragraph of [the run-prompt skeleton](../assets/run-prompt.md) and the report rule of each authority footer are rendered from that standard's [generated surfaces](../../../change-management/ki-pmo/references/standards-pmo.md#generated-surfaces), and a change to them is made there.
 
 ### Needs tags
 
-Each outstanding query carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can reply "BOT-1 do it". The tag heads the query in an owner report, labels the same item in a checkpoint and a recap, and is the one vocabulary for open items wherever they appear. A tag is stable: it keeps its meaning across repeated reports until the item is resolved and is never reused for something else. Queries are never numbered. In the reply block the tag opens its entry on a line of its own, with the recommended instruction beneath it, so a returned reply pairs each tag line with the instruction paragraph that follows it and carries the answer rather than the choice; a bare `BOT-1 do it` still names its query.
+Each outstanding query carries a stable mnemonic Needs tag, never a number, defined with the owner report under the `ki-pmo` standard's [Needs tags](../../../change-management/ki-pmo/references/standards-pmo.md#needs-tags).
 
 ## Reference launcher
 

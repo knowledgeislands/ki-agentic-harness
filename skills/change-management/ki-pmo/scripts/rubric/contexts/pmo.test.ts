@@ -2,7 +2,14 @@ import { afterEach, describe, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createPmoSession, isCapital, recordIdentifiers, reportLinkFindings, repositoryIdentity } from './pmo.ts'
+import {
+  bindingOutcomes,
+  createPmoSession,
+  isCapital,
+  recordIdentifiers,
+  reportLinkFindings,
+  repositoryIdentity
+} from './pmo.ts'
 
 const roots: string[] = []
 
@@ -235,5 +242,59 @@ describe('thread report links', () => {
     const outcomes = context(root).links.outcomes
     expect(statuses(outcomes)).toEqual(['PASS'])
     expect(outcomes[0]?.message).toContain('No thread report')
+  })
+})
+
+describe('coordinator binding', () => {
+  const claude = (root: string, file: string, content: string): void => {
+    mkdirSync(join(root, '.claude', 'output-styles'), { recursive: true })
+    writeFileSync(join(root, '.claude', file), content)
+  }
+  const hooked = (command: string) => ({ hooks: [{ type: 'command', command }] })
+  const userSettings = (events: readonly string[]): string =>
+    JSON.stringify({
+      hooks: Object.fromEntries(events.map((event) => [event, [hooked('$HOME/ki/hooks/coordinator-reminder.sh')]]))
+    })
+
+  test('a repository that does not select the output style is a violation', () => {
+    const root = fixture(null)
+    expect(statuses(context(root).binding.outcomes)).toEqual(['VIOLATION', 'INFO'])
+  })
+
+  test('the repository style is checked and the user half is not checked without user settings', () => {
+    const root = fixture(null)
+    claude(root, 'settings.json', JSON.stringify({ outputStyle: 'ki-coordinator' }))
+    const home = fixture(null)
+    expect(statuses(bindingOutcomes(root, home))).toEqual(['PASS', 'INFO'])
+  })
+
+  test('user settings that bind both events and a deployed style pass', () => {
+    const root = fixture(null)
+    claude(root, 'settings.json', JSON.stringify({ outputStyle: 'ki-coordinator' }))
+    const home = fixture(null)
+    claude(home, 'settings.json', userSettings(['UserPromptSubmit', 'SessionStart']))
+    claude(home, join('output-styles', 'ki-coordinator.md'), '---\nname: ki-coordinator\n---\n')
+    expect(statuses(bindingOutcomes(root, home))).toEqual(['PASS', 'PASS'])
+  })
+
+  test('a missing hook event and an undeployed style are each a violation', () => {
+    const root = fixture(null)
+    claude(root, 'settings.json', JSON.stringify({ outputStyle: 'ki-coordinator' }))
+    const home = fixture(null)
+    claude(home, 'settings.json', userSettings(['UserPromptSubmit']))
+    const outcomes = bindingOutcomes(root, home)
+    expect(statuses(outcomes)).toEqual(['PASS', 'VIOLATION', 'VIOLATION'])
+    expect(outcomes[1]?.message).toContain('`SessionStart`')
+    expect(outcomes[1]?.message).not.toContain('`UserPromptSubmit`')
+  })
+
+  test('unreadable user settings are a violation, never printed', () => {
+    const root = fixture(null)
+    const home = fixture(null)
+    claude(home, 'settings.json', '{ not json')
+    claude(home, join('output-styles', 'ki-coordinator.md'), '')
+    const outcomes = bindingOutcomes(root, home)
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
+    expect(outcomes.map((outcome) => outcome.message).join(' ')).not.toContain('not json')
   })
 })
