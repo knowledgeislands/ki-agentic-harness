@@ -7,9 +7,10 @@ ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
 description: >
   Govern the coordinating thread: the responsive coordinator and its turn budget, the territory master thread and
-  project threads with their openers and bootstrap, the Summary, recap since the mark and full summary, and the
-  thread working rules. Use in a master or project thread, or to give a summary, recap, full summary or strike the
-  mark; `ki-delegation` owns the background runs the thread launches.
+  project threads with their openers and bootstrap, the Summary, recap since the mark and full summary, the closing
+  banner with its REST, BUSY and DONE frames and resume line, and the thread working rules. Use in a master or
+  project thread, or to give a summary, recap, full summary, banner or strike the mark; `ki-delegation` owns the
+  background runs the thread launches.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary'
 ---
 
@@ -17,7 +18,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | full-summary | 
 
 `ki-pmo` is the project-management office of a territory: it owns how a coordinating thread, the territory master thread or a project thread, behaves with the owner, reports and keeps itself current. Read [the coordinating-thread standard](references/standards-pmo.md) before opening, bootstrapping or working in such a thread. It opens with the responsive coordinator in Kris's words and the three rules that follow from it: the thread never does substantive work itself, every unit of work goes to a detached background agent, and an owner message never pre-empts work in flight.
 
-The standard holds coordinator responsiveness with the counted turn budget and self-check, the coordinating-thread practices, the three report forms and the full summary, project threads, the territory master thread, opening a thread with both openers, bootstrap, directions from the master thread, and the thread working rules: recap since the mark, parking tangents, linking records, keeping primary checkouts current and refreshing this guidance. It adopts the owner report and its Needs tags from `ki-delegation`'s Reporting section by reference, and its five-word glossary gives session, thread, run, worker and agent one owner each.
+The standard holds coordinator responsiveness with the counted turn budget and self-check, the coordinating-thread practices with the closing banner, whose REST, BUSY and DONE frames and resume line every thread renders byte-identical, the three report forms and the full summary, project threads, the territory master thread, opening a thread with both openers, bootstrap, directions from the master thread, and the thread working rules: recap since the mark, parking tangents, linking records, keeping primary checkouts current and refreshing this guidance. It adopts the owner report and its Needs tags from `ki-delegation`'s Reporting section by reference, and its five-word glossary gives session, thread, run, worker and agent one owner each.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
 
@@ -49,11 +50,11 @@ Run `ki repo educate --skill ki-pmo --repo <repo>` to render the concern and rub
 
 ### Mode FULL-SUMMARY
 
-In a coordinating thread, `/ki-pmo full-summary` gives [the full summary](references/standards-pmo.md#full-summary): the banner with the window `since the thread began`, `## Decided` with every owner decision linked, then the whole-thread owner report with every open query in full. It never moves the mark.
+In a coordinating thread, `/ki-pmo full-summary` gives [the full summary](references/standards-pmo.md#full-summary): the banner heading with the window `since the thread began`, `## Decided` with every owner decision linked, then the whole-thread owner report with every open query in full, closing with the banner frame and the resume line. It never moves the mark.
 
 ### Mode HELP
 
-Explain the coordinating thread and its three rules, the master and project threads with their openers and bootstrap, the three report forms and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: background runs and the owner report in `ki-delegation`, checkpoints in `ki-checkpoint`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-tokenomics` and Project registry in `ki-work`.
+Explain the coordinating thread and its three rules, the master and project threads with their openers and bootstrap, the three report forms, the closing banner and resume line, and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: background runs and the owner report in `ki-delegation`, checkpoints in `ki-checkpoint`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-tokenomics` and Project registry in `ki-work`.
 
 ### Mode MARK
 
@@ -61,7 +62,7 @@ In a coordinating thread, `/ki-pmo mark` strikes [the mark](references/standards
 
 ### Mode RECAP
 
-In a coordinating thread, `/ki-pmo recap` gives [the recap since the mark](references/standards-pmo.md#recap-since-the-mark): the banner with the window `since <mark>`, then the owner report with what was delivered, decided, started, stopped or blocked, and newly captured since the mark, and every open item in full. It does not move the mark.
+In a coordinating thread, `/ki-pmo recap` gives [the recap since the mark](references/standards-pmo.md#recap-since-the-mark): the banner heading with the window `since <mark>`, then the owner report with what was delivered, decided, started, stopped or blocked, and newly captured since the mark, and every open item in full, closing with the banner frame and the resume line. It does not move the mark.
 
 ### Mode REFRESH
 
@@ -69,15 +70,16 @@ In a coordinating thread, `/ki-pmo recap` gives [the recap since the mark](refer
 
 When invoked from an installed copy, stop and redirect to the harness.
 
-Read [the sources](references/sources.md), compare coordinating-thread practice against the standard and the rubric, then update the source review in the same commit as any normative change. A change here also updates the hook line in `hooks/coordinator-reminder.sh` and the ki-coordinator output style where the three rules or the owner-report shape changed.
+Read [the sources](references/sources.md), compare coordinating-thread practice against the standard and the rubric, then update the source review in the same commit as any normative change. A change here also updates the hook line in `hooks/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the frames in the standard and the output style byte-identical.
 
 ### Mode SUMMARY
 
-In a coordinating thread, `/ki-pmo summary` gives [the Summary](references/standards-pmo.md#report-forms): the banner with the window `since your last message`, then the owner report for that window. A thread gives it unasked when background agents finish, when the owner returns after a gap and at a resting point.
+In a coordinating thread, `/ki-pmo summary` gives [the Summary](references/standards-pmo.md#report-forms): the banner heading with the window `since your last message`, then the owner report for that window, closing with the banner frame and the resume line. A thread gives it unasked when background agents finish, when the owner returns after a gap and at a resting point.
 
 ## Notes
 
-- The owner report and Needs tags are `ki-delegation`'s; this skill restates neither. Every Summary, recap and full summary is one owner report under the shared banner, and no output style, proxy shaping block or communication level shortens its sections, its queries or its reply block.
+- The owner report and Needs tags are `ki-delegation`'s; this skill restates neither. Every Summary, recap and full summary is one owner report under the shared banner heading, closing with the banner frame and the resume line, and no output style, proxy shaping block or communication level shortens its sections, its queries, its reply block or its banner.
+- The resume line reads `Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.` A re-bootstrap report closes with the same banner as a Summary.
 - The refresh rule compares `git log -1 --format=%h -- skills/change-management/ki-pmo` with the checkpoint's `ki-pmo read at <revision>` line; a checkpoint still carrying `ki-delegation read at` replaces it at its next update.
 - The openers read `under ki-pmo`; the older `under ki-delegation` form is accepted during the pilot that created this skill and dropped once every Capital declares it.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

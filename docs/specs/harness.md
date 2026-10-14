@@ -126,7 +126,7 @@ _Evidence:_ `skills/README.md` is generated from the complete canonical skill co
 
 ### HARN-012 — Coordinator reminder hook
 
-The harness MUST ship `hooks/coordinator-reminder.sh` as a `UserPromptSubmit` and `SessionStart(compact)` hook that injects one line restating the `ki-pmo` responsive-coordinator rules, including the coordinator's update cadence, and naming the owner-report form without restating it, in a coordinating thread, meaning one whose working directory or Git top level holds a `.ki.toml` declaring `[skills.ki-pmo]`, and that stays silent in any agent `ki agent` launches. `ki-pmo` owns the hook's line. It MUST fail open. The same script MUST serve Claude Code and Codex CLI; a user-environment manager owns its registration on each runtime.
+The harness MUST ship `hooks/coordinator-reminder.sh` as a `UserPromptSubmit` and `SessionStart(compact)` hook that injects one line restating the `ki-pmo` responsive-coordinator rules, including the coordinator's update cadence, naming the owner-report form without restating it, and naming the closing `ki-pmo` banner frame, resume line and prefilled reply block, in a coordinating thread, meaning one whose working directory or Git top level holds a `.ki.toml` declaring `[skills.ki-pmo]`, and that stays silent in any agent `ki agent` launches. `ki-pmo` owns the hook's line. It MUST fail open. The same script MUST serve Claude Code and Codex CLI; a user-environment manager owns its registration on each runtime.
 
 _Conformance:_ conforming
 
@@ -136,10 +136,10 @@ _Evidence:_ `bun test hooks/coordinator-reminder.test.ts` passes; headless `clau
 
 ### HARN-013 — Coordinator output style
 
-The harness MUST ship `output-styles/ki-coordinator.md`, a Claude Code output style whose text is the `ki-pmo` responsive-coordinator rules in Kris's words and the owner-report shape, so that the style a coordinating thread runs under and the coordinating-thread standard are one document. A repository that declares `ki-pmo` selects it with `outputStyle` in its tracked `.claude/settings.json`, and the harness does so itself. The style MUST NOT shorten any section, query or reply block of an owner report. Deploying the file into a user's `~/.claude/output-styles/` belongs to the user-environment manager, not the harness.
+The harness MUST ship `output-styles/ki-coordinator.md`, a Claude Code output style whose text is the `ki-pmo` responsive-coordinator rules in Kris's words, the owner-report shape with its prefilled reply block, and the closing banner with the REST and BUSY frames byte-identical to the `ki-pmo` standard and the resume line, so that the style a coordinating thread runs under and the coordinating-thread standard are one document. A repository that declares `ki-pmo` selects it with `outputStyle` in its tracked `.claude/settings.json`, and the harness does so itself. The style MUST NOT shorten any section, query or reply block of an owner report. Deploying the file into a user's `~/.claude/output-styles/` belongs to the user-environment manager, not the harness.
 
 _Conformance:_ conforming
 
-_Verify:_ `output-styles/ki-coordinator.md` exists with `name: ki-coordinator` frontmatter and carries the three rules and the owner-report shape; `.claude/settings.json` carries `"outputStyle": "ki-coordinator"`.
+_Verify:_ `output-styles/ki-coordinator.md` exists with `name: ki-coordinator` frontmatter and carries the three rules, the owner-report shape and the banner frames, which `bun test skills/change-management/ki-pmo/scripts/banner.test.ts` compares with the standard; `.claude/settings.json` carries `"outputStyle": "ki-coordinator"`.
 
 _Evidence:_ both files are tracked in this repository; the pilot's live acceptance in a coordinating thread is recorded by KI-PRINCIPAL-ECO-013 in Knowledge Islands Principal.

@@ -7,6 +7,7 @@
   - [Glossary](#glossary)
 - [Coordinator responsiveness](#coordinator-responsiveness)
 - [Coordinating-thread practices](#coordinating-thread-practices)
+  - [Banner](#banner)
 - [Report forms](#report-forms)
   - [Full summary](#full-summary)
 - [Project threads](#project-threads)
@@ -76,22 +77,84 @@ A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` in
 A coordinating thread also follows these practices with the owner. Every report it gives is an [owner report](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report), whose sections, queries and reply block are never shortened by any output style, proxy shaping block or communication level.
 
 - **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch. The query keeps its [Needs tag](../../../governance/ki-delegation/references/standards-background-runs.md#needs-tags) either way.
-- **Banner:** every Summary, every [recap](#recap-since-the-mark) and every [full summary](#full-summary) opens with one `#` banner heading, so each reads cold and several threads' updates read side by side. The banner names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The window is `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary.
+- **Banner:** every Summary, every [recap](#recap-since-the-mark) and every [full summary](#full-summary) opens with one `#` banner heading, so each reads cold and several threads' updates read side by side, and closes with the [banner](#banner) frame and the resume line. The heading names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The state agrees with the closing frame: `working` under BUSY, `resting` or `waiting on <what>` under REST. The window is `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary.
 - **Heading levels:** in every form the banner is the `#` heading, the sections (`Decided`, `What has been done`, `What is in progress`, `Outstanding queries`) are `##` headings, and each query and each topic sub-heading is `###`. No other heading levels appear.
 - **Self-contained:** no Summary, recap or full summary says "unchanged, see earlier", "as before" or otherwise points back to an earlier report. What is still running and what is still open is restated in full each time, because the owner reads each one cold and the earlier message may be gone.
-- **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its banner states `resting` or `waiting on <what>` plainly, and the owner report beneath it lets the owner pick the thread up cold.
+- **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its heading states `resting` or `waiting on <what>` plainly, its closing frame reads REST, and the owner report between them lets the owner pick the thread up cold.
 - **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another thread, the thread gives it in a code block ready to copy.
 - **Decisions:** the thread records each owner decision in the run's [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) before launching the work it authorises, in the turn the decision arrives, and verifies any later quotation from the transcript file, under the two rules that section sets.
 
+### Banner
+
+The banner closes every Summary, recap, full summary and [re-bootstrap](#bootstrap) report, after the reply block, so that the last thing the owner sees says whether the thread is at rest and gives them the one line that brings it back. Kris asked on 2026-10-14 that "every coordination-thread summary or owner report ends with a multi-line status banner modelled on the ki-recap banner. The banner states plainly whether the thread is AT REST (all work concluded, nothing in progress, no open queries) or not, and why. The banner carries one copyable resume line Kris can paste back into the thread later", settled the frame the same day with "(a). Yeah, that's great.", and, seeing threads render it differently after a re-bootstrap, said "when I'm asking threads to rebootstrap from PMO and Checkpoint and delegation, it's not doing the banner in the same way". So every thread renders it the same way, whether it has just bootstrapped, re-bootstrapped from this standard, `ki-checkpoint` and `ki-delegation`, or run for days: the frames below are the only frames, and a banner that differs from them is wrong.
+
+The frame is the `ki-recap` frame: 52 display columns per framed line, measured by code point, a four-letter block word in `ki-recap`'s glyphs and three fixed side lines, never padded, reworded, coloured or improvised, so that transcript archives find a state by searching for its block word. The states come from Kris on 2026-10-14: "a conversational thread can be considered done. That's the end of the conversation. But a coordination thread can either be busy or at rest. Whether or not it then ends up being done is more a situation about the project itself, and in effect, it's when we say that project's closed and pull out and tidy up all of the stuff that's been happening."
+
+- **REST:** nothing is running and nothing is queued. Open queries, held items, parked items, an uncommitted checkpoint and unlogged decisions do not change the word; they show on the lines beneath.
+- **BUSY:** anything is running or queued, or the thread is blocked or waiting on another thread. The lines beneath say which.
+- **DONE:** shown once only, at Project close, after the close-out tidy: every logged decision promoted to its durable home, the design folder resolved, the checkpoint retired, the run archived. No resume line follows it. It shares its glyphs with `ki-recap`'s single-session frame and carries its own side lines, so the two are told apart by their words; in a coordinating thread `ki-recap`'s frame never renders, because `ki-recap` hands to these forms.
+
+Beneath the frame, each line with three leading spaces: the label line, `<label> · mark <UTC>`; then `running:` with agent names, `queued:` with agent names and `waiting on you:` with the open Needs tags, in that order and only where they apply; then the housekeeping line with the checkpoint state, the banner time, held items and the parked count. Another reason for BUSY takes the running or queued slot in words, such as `waiting on: Master, HOOK-FIX` or `blocked: Headroom proxy down`, and the housekeeping line says `checkpoint uncommitted` or `decisions unlogged: 2` plainly. Nothing in the banner cites a decision number.
+
+REST:
+
+```text
+╭──────────────────────────────────────────────────╮
+│  █▀▀▄ █▀▀▀ █▀▀▀ ▀▀█▀   · thread at rest          │
+│  █▀▀▄ █▀▀  ▀▀▀█   █    · nothing running         │
+│  █  █ █▄▄▄ ▄▄▄█   █    · nothing queued          │
+╰──────────────────────────────────────────────────╯
+   KI Model: ways-of-working · mark 2026-10-13T04:03Z
+   waiting on you: KI-RELEASE, RESUME-COMPACT
+   checkpoint committed and pushed · banner 2026-10-14T09:04Z · held: PAPERCLIP-REQ until Wave F · parked: 1
+```
+
+BUSY:
+
+```text
+╭──────────────────────────────────────────────────╮
+│  █▀▀▄ █  █ █▀▀▀ █  █   · thread busy             │
+│  █▀▀▄ █  █ ▀▀▀█  ▀█▀   · running or queued work  │
+│  █▄▄▀ █▄▄█ ▄▄▄█   █    · lines below say which   │
+╰──────────────────────────────────────────────────╯
+   KI Model: ways-of-working · mark 2026-10-13T04:03Z
+   running: harness-push
+   queued: mark-tidy, apps-sweep, principal-enact
+   waiting on you: KI-RELEASE, RESUME-COMPACT
+   checkpoint committed, 1 commit unpushed · banner 2026-10-14T09:04Z · held: PAPERCLIP-REQ until Wave F · parked: 1
+```
+
+DONE, at Project close only:
+
+```text
+╭──────────────────────────────────────────────────╮
+│  █▀▀▄ █▀▀█ █▄ █ █▀▀▀   · project closed          │
+│  █  █ █  █ █ ██ █▀▀    · decisions promoted      │
+│  █▄▄▀ █▄▄█ █  █ █▄▄▄   · thread tidied away      │
+╰──────────────────────────────────────────────────╯
+   KI Model: ways-of-working · closed 2026-11-02T16:10Z
+   decisions: every entry logged since 13 October promoted, none held
+   design folder resolved · checkpoint retired · run archived
+   outcome: the Project note links the Decision Record on thread working and the ki-pmo standard
+```
+
+**Resume line.** After REST or BUSY, the last thing in the message is the resume line, in its own one-line fenced `text` block so it copies cleanly, with the thread's label and its [mark](#recap-since-the-mark) filled in:
+
+```text
+Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
+```
+
+Pasted back into the thread, it makes the thread do these in order: re-bootstrap under [Bootstrap](#bootstrap), re-reading this standard, `ki-delegation`'s Reporting and its own checkpoint; strike the mark at the resume time, commit the checkpoint and confirm in one line; give a fresh Summary covering only what follows the new mark plus every open point carried forward from before it, built from the checkpoint, the decisions log and the thread folder rather than from transcript memory; take stock since the banner time on the previous banner, from the decisions log, `ki agent status`, its inbox and the owner's messages; restart any work the owner authorised since that banner; and end with a fresh banner. The label on the line is a guard: a thread whose checkpoint label does not match it stops and asks before doing anything. Kris set the order on 2026-10-14: "The resume line is the equivalent of a compaction for the checkpoint and coordination thread, and may also trigger a real compaction", so it strikes the mark first and summarises second.
+
 ## Report forms
 
-A coordinating thread reports in three forms. Each is one [owner report](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report) under the banner, and they differ only in window and in what the window makes each section hold:
+A coordinating thread reports in three forms. Each is one [owner report](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report) under the `#` banner heading, closing with the [banner](#banner) frame and the resume line, and they differ only in window and in what the window makes each section hold:
 
 | Form | Window | Given | Sections |
 | --- | --- | --- | --- |
-| Summary | since your last message | proactively when background agents finish or the owner returns after a gap; on request, "summary"; and at a resting point | the owner report for the window |
-| [Recap](#recap-since-the-mark) | since the mark | on request, "recap"; "recap and mark" rolls up and then re-strikes | the owner report, with `What has been done` covering what was delivered, decided, started, stopped or blocked, and newly captured since the mark |
-| [Full summary](#full-summary) | since the thread began | on request, "full summary", "summary in full" or the like | `## Decided` first, then the owner report, each section whole-thread and every open query in full |
+| Summary | since your last message | proactively when background agents finish or the owner returns after a gap; on request, "summary"; and at a resting point | the owner report for the window; closes with the banner |
+| [Recap](#recap-since-the-mark) | since the mark | on request, "recap"; "recap and mark" rolls up and then re-strikes | the owner report, with `What has been done` covering what was delivered, decided, started, stopped or blocked, and newly captured since the mark; closes with the banner |
+| [Full summary](#full-summary) | since the thread began | on request, "full summary", "summary in full" or the like | `## Decided` first, then the owner report, each section whole-thread and every open query in full; closes with the banner |
 
 A plain "summary" gets the Summary; "since the mark" gets the recap; "in full" or "full summary" gets the full summary. Only the recap interacts with the mark, and only when the owner says "mark". The skill is also invocable directly as `/ki-pmo summary`, `/ki-pmo recap`, `/ki-pmo full-summary` and `/ki-pmo mark`, which give the same forms and strike the mark; the invocation adds no fourth form.
 
@@ -101,12 +164,13 @@ A **full summary** is the owner report for the whole thread: everything decided,
 
 Its shape, in this order:
 
-- **Banner:** the `#` [banner](#coordinating-thread-practices), window `since the thread began`.
+- **Banner heading:** the `#` [banner](#coordinating-thread-practices) heading, window `since the thread began`.
 - **`## Decided`:** every owner decision since the thread began, as a numbered list or a two-column table, one line each in the order taken, each linked to its entry in the thread's tracked [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) or to the record that now holds it. A decision that a later one superseded stays on its line and says so.
 - **`## What has been done`:** the whole thread's completed outcomes, grouped by topic under `###` sub-headings wherever more than a few lines would otherwise run together, with failures, corrections and limitations beside the outcomes they qualify.
 - **`## What is in progress`:** as the owner report, with `Outstanding - no action requested now` beneath it. A dated upcoming deadline or scheduled event belongs there with its date, so the owner sees what is coming without being asked anything.
 - **`## Outstanding queries`:** every open query, however long it has been open, restated in full under its own `### <tag> - <title>` heading with Summary, Need from you and Recommendation, written to be answered cold. Nothing is shortened because it was asked before.
-- **Reply block:** the closing fenced `text` block covers every open query, with placeholders where only the owner can supply the value.
+- **Reply block:** the fenced `text` block carries one line per open query, each prefilled with the recommended instruction under its tag so the owner can send the block back as it stands or edit a line, never a menu of the options, with a placeholder only where the owner alone can supply the value, under the `ki-delegation` [reply-block rule](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report). Kris corrected the menu form on 2026-10-14: "the proposed copy block is including all the options, rather than the recommended option."
+- **Banner:** the closing [frame](#banner) and the resume line, after the reply block.
 
 Low-stakes choices the thread has already made, where the owner's silence is consent, go in one query headed `DEFAULTS - defaults unless you say otherwise`: one line per choice, Need from you `nothing, unless you object`, Recommendation `keep the defaults`, and one reply-block line `DEFAULTS - keep the defaults`. A choice the owner objects to becomes its own tagged query. A decision that is not low-stakes never goes there, and no other query bundles more than one decision: a query the owner cannot answer with one instruction is two queries.
 
@@ -166,12 +230,12 @@ The one-line `Re-bootstrap as the <project> project thread under ki-pmo.` form u
 
 ### Bootstrap
 
-A one-line opener brings a new or already-running thread onto this contract, for example `Re-bootstrap as the <project> project thread under ki-pmo.` The opener uses the Project name alone, and the master thread's opener uses `state-of-play`. During the pilot the older `under ki-delegation` form of the same line is accepted and means the same thing; it is dropped once every Capital declares `ki-pmo`. A thread also re-bootstraps on request, after a compaction and after a model switch. The thread then:
+A one-line opener brings a new or already-running thread onto this contract, for example `Re-bootstrap as the <project> project thread under ki-pmo.` The opener uses the Project name alone, and the master thread's opener uses `state-of-play`. During the pilot the older `under ki-delegation` form of the same line is accepted and means the same thing; it is dropped once every Capital declares `ki-pmo`. A thread also re-bootstraps on request, after a compaction, after a model switch, and as the first step of the [resume line](#banner). The thread then:
 
 1. reads this standard;
 2. checks `ki agent status` for its runs and any legacy runs, and reconciles what is actually running rather than assuming;
 3. resolves the Project name to the single `+/_CHECKPOINTS/*.<project>.md` checkpoint, or `_state-of-play.md` for the master thread, under `ki-checkpoint` RESUME, stopping to ask the owner if no file or more than one file matches; then creates or reconciles that checkpoint;
-4. reports in three lines: its coordinator role and where the Project stands, what is running, and what it needs from the owner.
+4. reports in three lines: its coordinator role and where the Project stands, what is running, and what it needs from the owner; then closes with the [banner](#banner) frame and the resume line, rendered exactly as a Summary renders them, so a thread that has just re-bootstrapped shows the same banner as one that never left.
 
 ### Directions from the master thread
 
@@ -189,7 +253,7 @@ A recap is a plain-language roll-up for the owner of what has changed in the thr
 
 - **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>`. The timestamp bounds Git history, work-record transitions, background-agent reports and the decisions log, whose entries carry their own timestamps. Per-repository commit identifiers stay out. The banner, the mark and the resume line describe or date a decision and never cite a number, because a number, in Kris's words of 2026-10-14, "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
 - **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike. Giving a recap does not move it, so a recap can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line.
-- **Shape:** a recap opens with the `#` [banner](#coordinating-thread-practices) shared with the Summary and the full summary, its window `since <mark>`. Beneath it is one [owner report](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report) at the shared [heading levels](#coordinating-thread-practices): `What has been done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `What is in progress` what is running now; `Outstanding queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary.
+- **Shape:** a recap opens with the `#` [banner](#coordinating-thread-practices) shared with the Summary and the full summary, its window `since <mark>`. Beneath it is one [owner report](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report) at the shared [heading levels](#coordinating-thread-practices): `What has been done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `What is in progress` what is running now; `Outstanding queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary. It closes with the [banner](#banner) frame and the resume line.
 - **Outstanding:** the checkpoint's open [Needs-tagged](../../../governance/ki-delegation/references/standards-background-runs.md#needs-tags) queries, open work records in the thread's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: it is everything still open, whenever it arose, and striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured. Striking or re-striking never drops, closes or hides an open item, and the thread keeps every open query, with its Needs tag, in its checkpoint when it re-strikes.
 - **Sources:** the thread's decisions log entries after the mark; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's open Needs-tagged queries and parked tangents.
 - **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#report-forms) form, so they do not repeat everything since a distant mark; a request for the whole thread in one reply gets the [full summary](#full-summary).
@@ -227,4 +291,4 @@ To detect a change, it compares the latest commit touching `skills/change-manage
 
 ## Mechanical boundary
 
-The native rubric is thin and complementary to `ki-checkpoint`'s. It checks only what the repository shows: a Capital holds the `_state-of-play.md` master checkpoint and no other repository does; each coordinating checkpoint's label ends in the Project name its filename carries, and that Project and its Initiative resolve in the Capital's registry; and the active Project threads are within the cap. It cannot judge whether a coordinator kept its turn budget, whether a report took the owner-report shape under its banner, whether a recap covered the window since the mark, or whether the thread refreshed this guidance; the PMO judgment items review those from transcripts, reports and checkpoints the owner selects.
+The native rubric is thin and complementary to `ki-checkpoint`'s. It checks only what the repository shows: a Capital holds the `_state-of-play.md` master checkpoint and no other repository does; each coordinating checkpoint's label ends in the Project name its filename carries, and that Project and its Initiative resolve in the Capital's registry; and the active Project threads are within the cap. It cannot judge whether a coordinator kept its turn budget, whether a report took the owner-report shape under its banner heading and closed with the banner frame and the resume line, whether a recap covered the window since the mark, or whether the thread refreshed this guidance; the PMO judgment items review those from transcripts, reports and checkpoints the owner selects.

@@ -13,7 +13,7 @@
 # or from the detachment that launch performs.
 set -u
 
-line='Coordinator: do not do the work directly; delegate every unit of work to a detached background agent and stay responsive. Answer this message within one short turn. It does not pre-empt work in flight: do not stop or disturb a running agent unless it names one. Give a timestamped one-line update when you launch, when an agent finishes and while you wait, and report in owner-report form.'
+line='Coordinator: do not do the work directly; delegate every unit of work to a detached background agent and stay responsive. Answer this message within one short turn. It does not pre-empt work in flight: do not stop or disturb a running agent unless it names one. Give a timestamped one-line update when you launch, when an agent finishes and while you wait, and report in owner-report form. Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner: the REST or BUSY frame exactly as the standard prints it, the lines beneath, then the resume line in its own text block; each reply-block line carries the recommended instruction, never a menu of options.'
 
 # `ki agent` marks each child with its run name; its Claude adapter has set the
 # print-mode ceiling since before the marker existed, so it serves as a second
