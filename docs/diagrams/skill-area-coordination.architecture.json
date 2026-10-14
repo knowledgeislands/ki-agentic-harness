@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Knowledge Islands skills · Coordination",
+    "output": "+/diagrams/skill-area-coordination/skill-area-coordination.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "security": {
+          "label": "Governance · always on"
+        },
+        "backend": {
+          "label": "Governance · automatic"
+        },
+        "database": {
+          "label": "Governance · opt-in"
+        },
+        "frontend": {
+          "label": "Process · command"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "ki-batch",
+      "type": "frontend",
+      "label": "ki-batch",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-batch/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-implement",
+      "type": "frontend",
+      "label": "ki-implement",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-implement/SKILL.md"
+        }
+      ],
+      "pos": [
+        300,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-plan",
+      "type": "frontend",
+      "label": "ki-plan",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-plan/SKILL.md"
+        }
+      ],
+      "pos": [
+        556,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-checkpoint",
+      "type": "backend",
+      "label": "ki-checkpoint",
+      "sublabel": "governance · automatic",
+      "sources": [
+        {
+          "path": "skills/governance/ki-checkpoint/SKILL.md"
+        }
+      ],
+      "pos": [
+        300,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-delegation",
+      "type": "database",
+      "label": "ki-delegation",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-pmo",
+      "type": "database",
+      "label": "ki-pmo",
+      "sublabel": "change management · opt-in",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/SKILL.md"
+        }
+      ],
+      "pos": [
+        300,
+        376
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-pmo-design",
+      "type": "frontend",
+      "label": "ki-pmo-design",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        376
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-trade",
+      "type": "frontend",
+      "label": "ki-trade",
+      "sublabel": "governance · command",
+      "sources": [
+        {
+          "path": "skills/governance/ki-trade/SKILL.md"
+        }
+      ],
+      "pos": [
+        588,
+        376
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-trades",
+      "type": "database",
+      "label": "ki-trades",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-trades/SKILL.md"
+        }
+      ],
+      "pos": [
+        588,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-decision-records",
+      "type": "backend",
+      "label": "ki-decision-records",
+      "sublabel": "governance · automatic",
+      "sources": [
+        {
+          "path": "skills/governance/ki-decision-records/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        564
+      ],
+      "size": [
+        208,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Work and delivery · Delivery cycle",
+      "wraps": [
+        "ki-batch",
+        "ki-implement",
+        "ki-plan"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Records and code · Records",
+      "wraps": [
+        "ki-decision-records"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Delegation and programme",
+      "wraps": [
+        "ki-delegation",
+        "ki-checkpoint",
+        "ki-pmo",
+        "ki-pmo-design"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Trades",
+      "wraps": [
+        "ki-trades",
+        "ki-trade"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Coordination · 6 skills",
+      "wraps": [
+        "ki-delegation",
+        "ki-checkpoint",
+        "ki-pmo",
+        "ki-pmo-design",
+        "ki-trades",
+        "ki-trade"
+      ],
+      "pad": 44
+    }
+  ],
+  "connections": [
+    {
+      "id": "ki-batch--ki-delegation",
+      "from": "ki-batch",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-implement--ki-delegation",
+      "from": "ki-implement",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-plan--ki-delegation",
+      "from": "ki-plan",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-pmo--ki-checkpoint",
+      "from": "ki-pmo",
+      "to": "ki-checkpoint",
+      "variant": "default"
+    },
+    {
+      "id": "ki-pmo--ki-delegation",
+      "from": "ki-pmo",
+      "to": "ki-delegation",
+      "variant": "default"
+    },
+    {
+      "id": "ki-pmo-design--ki-decision-records",
+      "from": "ki-pmo-design",
+      "to": "ki-decision-records",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-pmo-design--ki-delegation",
+      "from": "ki-pmo-design",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-trade--ki-trades",
+      "from": "ki-trade",
+      "to": "ki-trades",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reading the diagram",
+      "items": [
+        "The middle region holds the skills that hand work between agents, threads and repositories, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Generated, not drawn",
+      "items": [
+        "6 skills, 1 outside prerequisite, 3 outside dependents, 3 composition and 5 optional edges, read from SKILL.md frontmatter.",
+        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+      ]
+    }
+  ]
+}

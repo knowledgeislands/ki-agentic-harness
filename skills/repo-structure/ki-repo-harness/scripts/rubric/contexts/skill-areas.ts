@@ -1,11 +1,20 @@
 /**
- * The harness area diagrams: one deterministic Archify `architecture` source per source concern under
- * `skills/`, derived from canonical `SKILL.md` frontmatter. The concern's skills sit in one region, its
- * capability groups nested inside it; the outside skills they rely on are grouped by concern and capability
- * group below it, and the outside skills that rely on them are grouped the same way above it. Solid edges are `ki-depends-on` composition and dashed edges are
- * `ki-optional-depends-on` augmentation, each drawn from dependent to prerequisite: downward between regions,
- * and inside the concern's region from what relies on a hub back to the hub it sits beside.
+ * The harness functional-area diagrams: one deterministic Archify `architecture` source per functional area,
+ * derived from canonical `SKILL.md` frontmatter and the functional-area table. The area's skills sit in one
+ * region, its capability groups nested inside it; the outside skills they rely on are grouped by their home area
+ * and group below it, and the outside skills that rely on them are grouped the same way above it. Solid edges are
+ * `ki-depends-on` composition and dashed edges are `ki-optional-depends-on` augmentation, each drawn from
+ * dependent to prerequisite: downward between regions, and inside the area's region from what relies on a hub
+ * back to the hub it sits beside.
  */
+import {
+  areaGroupTitle,
+  areaSkills,
+  FUNCTIONAL_AREAS,
+  type FunctionalArea,
+  groupsOf,
+  homeOf
+} from './skill-functions.ts'
 import {
   componentId,
   domainLabel,
@@ -14,23 +23,21 @@ import {
   type SkillGraphOptions,
   shapeLegend
 } from './skill-graph.ts'
-import { groupsOf } from './skill-groups.ts'
-import { CONCERN_ORDER, concernRank, concernTitle, groupTitle, SHAPE_ORDER } from './skill-map.ts'
+import { SHAPE_ORDER } from './skill-map.ts'
 
-export const skillAreaSlug = (concern: string): string => `skill-area-${concern}`
-export const skillAreaPath = (concern: string): string => `docs/diagrams/${skillAreaSlug(concern)}.architecture.json`
-const skillAreaOutput = (concern: string): string =>
-  `+/diagrams/${skillAreaSlug(concern)}/${skillAreaSlug(concern)}.html`
+export const skillAreaSlug = (area: string): string => `skill-area-${area}`
+export const skillAreaPath = (area: string): string => `docs/diagrams/${skillAreaSlug(area)}.architecture.json`
+const skillAreaOutput = (area: string): string => `+/diagrams/${skillAreaSlug(area)}/${skillAreaSlug(area)}.html`
 
-/** The concerns that each have an area diagram, in the skill map's order. */
-export const SKILL_AREAS: readonly string[] = CONCERN_ORDER
+/** The functional areas that each have a diagram, in drawing order. */
+export const SKILL_AREAS: readonly FunctionalArea[] = FUNCTIONAL_AREAS
 
 /**
  * Geometry, in SVG pixels, on a 16px grid. Columns sit far enough apart for a route to pass between two
  * nodes, and tiers far enough apart for the lanes their edges need.
  */
-const NODE_WIDTH = 196
-const NODE_HEIGHT = 48
+const NODE_WIDTH = 208
+const NODE_HEIGHT = 60
 const COLUMN_GAP = 48
 const ROW_GAP = 64
 const REGION_PAD = 32
@@ -44,6 +51,8 @@ const TIER_GAP = 128
 const AREA_COLUMNS = 5
 const ORIGIN_X = 32
 const ORIGIN_Y = 64
+/** The widest the area's own block may grow, so that the drawing stays inside Archify's showcase width. */
+const MAX_BLOCK_WIDTH = AREA_COLUMNS * (NODE_WIDTH + COLUMN_GAP) - COLUMN_GAP
 
 type Edge = { from: string; to: string; optional: boolean }
 type Point = [number, number]
@@ -160,9 +169,10 @@ const areaGrid = (
 /**
  * Arrange the area's capability groups: each a compact block of its own, side by side in bands, with each
  * band's columns shared between its groups. Every order of the groups, every cut of that order into bands
- * and every share of a band's columns is tried, and the arrangement kept is the one in which the fewest
- * skills have another of the area's skills between them and the tier their outside links run to; then the
- * shortest, the narrowest, the one with fewest bands, and the one keeping closest to the table's order.
+ * and every share of a band's columns is tried, and the arrangement kept is the one that fits the area's
+ * width and in which the fewest skills have another of the area's skills between them and the tier their
+ * outside links run to; then the shortest, the narrowest, the one with fewest bands, and the one keeping
+ * closest to the table's order.
  * Returns each skill's offset from the block's top-left corner and the block's height and width.
  */
 const arrangeGroups = (
@@ -225,7 +235,7 @@ const arrangeGroups = (
         (reliedOn(name) && placed.some(([other, [ox, oy]]) => other !== name && under(x, ox) && oy < y)) ||
         (relies(name) && placed.some(([other, [ox, oy]]) => other !== name && under(x, ox) && oy > y))
     ).length
-    return { offsets, height, width, score: [blocked, height, width, bands.length] }
+    return { offsets, height, width, score: [width > MAX_BLOCK_WIDTH ? 1 : 0, blocked, height, width, bands.length] }
   }
   const better = (q: readonly number[], p: readonly number[]): boolean => {
     const index = q.findIndex((value, at) => value !== p[at])
@@ -249,18 +259,27 @@ const arrangeGroups = (
   return best ?? { offsets: new Map(), height: 0, width: 0 }
 }
 
-/** Build the Archify architecture source for one concern's area diagram. */
+/** Build the Archify architecture source for one functional area's diagram. */
 export const buildSkillArea =
-  (concern: string) =>
+  (area: FunctionalArea) =>
   (nodes: readonly SkillGraphNode[], options: SkillGraphOptions = {}): unknown => {
+    const table = options.areas ?? FUNCTIONAL_AREAS
     const edges: Edge[] = nodes.flatMap((node) => [
       ...node.dependsOn.map((to) => ({ from: node.name, to, optional: false })),
       ...node.optionalDependsOn.map((to) => ({ from: node.name, to, optional: true }))
     ])
     const byName = new Map(nodes.map((node) => [node.name, node]))
-    const inArea = (name: string): boolean => byName.get(name)?.domain === concern
-    const members = nodes.filter((node) => node.domain === concern)
-    const shown = edges.filter((edge) => inArea(edge.from) || inArea(edge.to))
+    const own = new Set(areaSkills(area))
+    const inArea = (name: string): boolean => own.has(name)
+    const members = nodes.filter((node) => inArea(node.name))
+    /* A member whose home is another area keeps only its edges within this one; its home diagram draws the rest. */
+    const guest = (name: string): boolean => inArea(name) && homeOf(name, table)?.area.slug !== area.slug
+    const shown = edges.filter(
+      (edge) =>
+        (inArea(edge.from) || inArea(edge.to)) &&
+        !(guest(edge.from) && !inArea(edge.to)) &&
+        !(guest(edge.to) && !inArea(edge.from))
+    )
     const prerequisites = [...new Set(shown.filter((edge) => !inArea(edge.to)).map((edge) => edge.to))]
     const dependents = [...new Set(shown.filter((edge) => !inArea(edge.from)).map((edge) => edge.from))]
 
@@ -273,7 +292,7 @@ export const buildSkillArea =
       components.push({
         id: componentId(node.name),
         type: shape.type,
-        label: node.name.replace(/^ki-/, ''),
+        label: node.name,
         sublabel: `${domainLabel(node.domain)} · ${shape.word}`,
         sources: [{ path: node.path }],
         pos,
@@ -281,25 +300,21 @@ export const buildSkillArea =
       })
     }
     const columnX = (left: number, index: number): number => left + index * (NODE_WIDTH + COLUMN_GAP)
-    const regionLabel = (domain: string, size: number): string => `${concernTitle(domain)} · ${count(size, 'skill')}`
-    /* Each skill's capability group: the region an outside skill joins, and the block an area skill sits in. */
-    const groupOf = new Map<string, { key: string; label?: string }>()
-    for (const domain of new Set(nodes.map((node) => node.domain))) {
-      const split = groupsOf(
-        domain,
-        nodes.filter((node) => node.domain === domain),
-        options.groups
-      )
-      for (const group of split)
-        for (const node of group.members)
-          groupOf.set(node.name, {
-            key: `${domain}/${group.title ?? ''}`,
-            ...(split.length > 1 ? { label: groupTitle(domain, group.title ?? 'Other') } : {})
-          })
+    const regionLabel = (title: string, size: number): string => `${title} · ${count(size, 'skill')}`
+    /* Each outside skill's home: the region it joins, filed by its first area and the group it sits in there. */
+    const homeKey = (name: string): { key: string; rank: number; label?: string; title: string } => {
+      const home = homeOf(name, table)
+      if (!home) return { key: '', rank: table.length, title: 'Other' }
+      return {
+        key: `${home.area.slug}/${home.area.groups.indexOf(home.group)}`,
+        rank: table.indexOf(home.area),
+        title: home.area.title,
+        ...(groupsOf(home.area, nodes).length > 1 ? { label: areaGroupTitle(home.area, home.group) } : {})
+      }
     }
 
     /* The area's own region: its capability groups side by side, each a compact block of its own. */
-    const blocks = groupsOf(concern, members, options.groups)
+    const blocks = groupsOf(area, members)
     const arranged = arrangeGroups(
       blocks.map((block) => block.members),
       shown
@@ -307,7 +322,7 @@ export const buildSkillArea =
     /* A split area's outer region pads wider round its groups, so the whole drawing moves right to match. */
     const originX = ORIGIN_X + (blocks.length > 1 ? NESTED_PAD - REGION_PAD : 0)
 
-    /* An outside tier: one region per capability group, each a single row, regions wrapping under the row budget. */
+    /* An outside tier: one region per home group, each a single row, regions wrapping under the row budget. */
     const tier = (names: readonly string[], top: number, side: 'above' | 'below'): number => {
       if (names.length === 0) return top
       const neighbourX = (name: string): number => {
@@ -316,19 +331,17 @@ export const buildSkillArea =
           .map((edge) => position.get(side === 'above' ? edge.to : edge.from)?.[0] ?? 0)
         return linked.reduce((sum, x) => sum + x, 0) / Math.max(1, linked.length)
       }
-      const groups = [...new Set(names.map((name) => groupOf.get(name)?.key ?? ''))]
+      const groups = [...new Set(names.map((name) => homeKey(name).key))]
         .map((key) => {
           const members = names
             .map((name) => byName.get(name) as SkillGraphNode)
-            .filter((node) => groupOf.get(node.name)?.key === key)
+            .filter((node) => homeKey(node.name).key === key)
             .sort((p, q) => neighbourX(p.name) - neighbourX(q.name) || p.name.localeCompare(q.name))
-          const first = members[0] as SkillGraphNode
-          return { domain: first.domain, label: groupOf.get(first.name)?.label, members }
+          return { home: homeKey((members[0] as SkillGraphNode).name), members }
         })
         .sort(
           (p, q) =>
-            neighbourX(p.members[0]?.name ?? '') - neighbourX(q.members[0]?.name ?? '') ||
-            concernRank(p.domain) - concernRank(q.domain)
+            neighbourX(p.members[0]?.name ?? '') - neighbourX(q.members[0]?.name ?? '') || p.home.rank - q.home.rank
         )
       /* Regions sit side by side while they fit the area's width, then wrap into a further band. */
       const right = Math.max(columnX(originX, AREA_COLUMNS) - COLUMN_GAP, originX + arranged.width)
@@ -351,7 +364,7 @@ export const buildSkillArea =
         })
         boundaries.push({
           kind: 'region',
-          label: group.label ?? regionLabel(group.domain, group.members.length),
+          label: group.home.label ?? regionLabel(group.home.title, group.members.length),
           wraps: group.members.map((node) => componentId(node.name)),
           pad: REGION_PAD
         })
@@ -367,25 +380,27 @@ export const buildSkillArea =
       const [x, y] = arranged.offsets.get(member.name) as Point
       place(member, [originX + x, y])
     }
-    const area = components.splice(0) as { pos: Point }[]
+    const placed = components.splice(0) as { pos: Point }[]
     const dependentsBottom = tier(dependents, ORIGIN_Y, 'above')
     const above = components.splice(0)
     const areaTop = dependents.length === 0 ? ORIGIN_Y : dependentsBottom + TIER_GAP
-    for (const component of area) component.pos[1] += areaTop
+    for (const component of placed) component.pos[1] += areaTop
     const areaBottom = areaTop + arranged.height
     tier(prerequisites, areaBottom + TIER_GAP, 'below')
-    components.unshift(...above, ...area)
+    components.unshift(...above, ...placed)
+    /* A split area draws each titled group as a region of its own; an untitled group sits in the area's region. */
     if (blocks.length > 1)
       for (const block of blocks)
-        boundaries.push({
-          kind: 'region',
-          label: groupTitle(concern, block.title ?? 'Other'),
-          wraps: block.members.map((node) => componentId(node.name)),
-          pad: GROUP_PAD
-        })
+        if (block.title !== undefined)
+          boundaries.push({
+            kind: 'region',
+            label: block.title,
+            wraps: block.members.map((node) => componentId(node.name)),
+            pad: GROUP_PAD
+          })
     boundaries.push({
       kind: 'region',
-      label: regionLabel(concern, members.length),
+      label: regionLabel(area.title, members.length),
       wraps: blocks.flatMap((block) => block.members.map((node) => componentId(node.name))),
       pad: blocks.length > 1 ? NESTED_PAD : REGION_PAD
     })
@@ -399,13 +414,14 @@ export const buildSkillArea =
         variant: edge.optional ? 'dashed' : 'default'
       }))
 
+    const shared = members.filter((member) => guest(member.name)).map((member) => member.name)
     const hard = shown.filter((edge) => !edge.optional).length
     return {
       schema_version: 1,
       diagram_type: 'architecture',
       meta: {
-        title: `Knowledge Islands skills · ${concernTitle(concern)}`,
-        output: skillAreaOutput(concern),
+        title: `Knowledge Islands skills · ${area.title}`,
+        output: skillAreaOutput(area.slug),
         quality_profile: 'showcase',
         ...(options.repositoryUrl && options.revision
           ? { repository: { url: options.repositoryUrl, provider: 'github', revision: options.revision } }
@@ -420,8 +436,8 @@ export const buildSkillArea =
           dot: 'cyan',
           title: 'Reading the diagram',
           items: [
-            `The middle region holds every skill in ${domainLabel(concern)}, nested by the capability each brings where the concern is split; the skill map shows where the other concerns sit.`,
-            'Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by concern and capability group.',
+            `The middle region holds the skills that ${area.purpose}${blocks.length > 1 ? ', nested by the capability each brings' : ''}; each sublabel names the source concern the skill lives in.`,
+            'Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.',
             'An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation.'
           ]
         },
@@ -430,6 +446,11 @@ export const buildSkillArea =
           title: 'Generated, not drawn',
           items: [
             `${count(members.length, 'skill')}, ${count(prerequisites.length, 'outside prerequisite')}, ${count(dependents.length, 'outside dependent')}, ${hard} composition and ${shown.length - hard} optional edges, read from SKILL.md frontmatter.`,
+            ...(shared.length > 0
+              ? [
+                  `Home in another area: ${shared.join(', ')}; only edges within this area are drawn for them here, and their home area's diagram draws the rest.`
+                ]
+              : []),
             'Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic.'
           ]
         }

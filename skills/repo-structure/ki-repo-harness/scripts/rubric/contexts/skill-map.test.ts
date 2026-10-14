@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test'
+import type { FunctionalArea } from './skill-functions.ts'
 import { readSkillGraphNodes } from './skill-graph.ts'
 import { buildSkillMap } from './skill-map.ts'
 
@@ -57,19 +58,30 @@ describe('buildSkillMap', () => {
     expect(Object.keys(map.meta.legend.entries).sort()).toEqual(['backend', 'database', 'frontend', 'security'])
   })
 
-  test("nests a split concern's capability groups in its region", () => {
-    const groups = {
-      governance: [
-        { title: 'Core', skills: ['ki-root', 'ki-base'] },
+  test('overlays the functional areas: nested home regions and every served area in the sublabel', () => {
+    const area = (slug: string, title: string, groups: FunctionalArea['groups']): FunctionalArea => ({
+      slug,
+      title,
+      short: slug,
+      purpose: slug,
+      groups
+    })
+    const areas = [
+      area('core', 'Core', [
+        { title: 'Base', skills: ['ki-root', 'ki-base'] },
         { title: 'Flow', skills: ['ki-flow'] }
-      ]
-    }
-    const split = buildSkillMap(readSkillGraphNodes(FIXTURE).nodes, { groups }) as Map
+      ]),
+      area('look', 'Look', [{ skills: ['ki-look', 'ki-base'] }])
+    ]
+    const split = buildSkillMap(readSkillGraphNodes(FIXTURE).nodes, { areas }) as Map
     const labels = new Map(split.boundaries.map((b) => [b.label, b.wraps]))
-    expect(labels.get('Governance · Core')).toEqual(['ki-root', 'ki-base'])
-    expect(labels.get('Governance · Flow')).toEqual(['ki-flow'])
+    expect(labels.get('Core · Base')).toEqual(['ki-root', 'ki-base'])
+    expect(labels.get('Core · Flow')).toEqual(['ki-flow'])
     expect(labels.get('Governance · 3 skills')).toEqual(['ki-root', 'ki-base', 'ki-flow'])
     expect(split.boundaries.filter((b) => b.label.startsWith('Design'))).toHaveLength(1)
+    const byId = new Map(split.components.map((c) => [c.id, c]))
+    expect(byId.get('ki-base')?.sublabel).toBe('core + look · automatic')
+    expect(byId.get('ki-key')?.sublabel).toBe('keystone · automatic')
   })
 
   test('places every node exactly once without overlap', () => {

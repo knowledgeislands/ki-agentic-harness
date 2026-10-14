@@ -13,12 +13,12 @@ export type SkillDiagram = {
 }
 
 /**
- * The skill map answers what exists and where, and indexes the area diagrams; each area diagram answers
- * what one concern's skills rely on outside it and what relies on them.
+ * The skill map answers what exists and where, overlays the functional areas, and indexes their diagrams;
+ * each functional-area diagram answers what one area's skills rely on outside it and what relies on them.
  */
 export const SKILL_DIAGRAMS: readonly SkillDiagram[] = [
   { path: SKILL_MAP_PATH, build: buildSkillMap },
-  ...SKILL_AREAS.map((concern) => ({ path: skillAreaPath(concern), build: buildSkillArea(concern) }))
+  ...SKILL_AREAS.map((area) => ({ path: skillAreaPath(area.slug), build: buildSkillArea(area) }))
 ]
 
 export type SkillDiagramDraft =

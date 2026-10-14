@@ -1,0 +1,445 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Knowledge Islands skills · Fundamentals",
+    "output": "+/diagrams/skill-area-fundamentals/skill-area-fundamentals.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "security": {
+          "label": "Governance · always on"
+        },
+        "backend": {
+          "label": "Governance · automatic"
+        },
+        "database": {
+          "label": "Governance · opt-in"
+        },
+        "frontend": {
+          "label": "Process · command"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "ki-recap",
+      "type": "frontend",
+      "label": "ki-recap",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-recap/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi",
+      "type": "database",
+      "label": "ki-repo-dotfiles-chezmoi",
+      "sublabel": "repository structure · opt-in",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+        }
+      ],
+      "pos": [
+        364,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-agent-coordination-paperclip",
+      "type": "database",
+      "label": "ki-agent-coordination-paperclip",
+      "sublabel": "agentic systems · opt-in",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
+        }
+      ],
+      "pos": [
+        684,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-authoring",
+      "type": "security",
+      "label": "ki-authoring",
+      "sublabel": "governance · always on",
+      "sources": [
+        {
+          "path": "skills/governance/ki-authoring/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-bootstrap",
+      "type": "frontend",
+      "label": "ki-bootstrap",
+      "sublabel": "keystone · command",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-bootstrap/SKILL.md"
+        }
+      ],
+      "pos": [
+        876,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-diagrams",
+      "type": "database",
+      "label": "ki-diagrams",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-diagrams/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        376
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-git",
+      "type": "database",
+      "label": "ki-git",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-git/SKILL.md"
+        }
+      ],
+      "pos": [
+        300,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-repo",
+      "type": "security",
+      "label": "ki-repo",
+      "sublabel": "keystone · always on",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-repo/SKILL.md"
+        }
+      ],
+      "pos": [
+        300,
+        376
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-repo-harness",
+      "type": "database",
+      "label": "ki-repo-harness",
+      "sublabel": "repository structure · opt-in",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+        }
+      ],
+      "pos": [
+        588,
+        376
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-skills",
+      "type": "backend",
+      "label": "ki-skills",
+      "sublabel": "keystone · automatic",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-skills/SKILL.md"
+        }
+      ],
+      "pos": [
+        588,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-decision-records",
+      "type": "backend",
+      "label": "ki-decision-records",
+      "sublabel": "governance · automatic",
+      "sources": [
+        {
+          "path": "skills/governance/ki-decision-records/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        564
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-work-roadmap",
+      "type": "database",
+      "label": "ki-work-roadmap",
+      "sublabel": "change management · opt-in",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-roadmap/SKILL.md"
+        }
+      ],
+      "pos": [
+        364,
+        564
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-subagents",
+      "type": "backend",
+      "label": "ki-subagents",
+      "sublabel": "agentic systems · automatic",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-subagents/SKILL.md"
+        }
+      ],
+      "pos": [
+        684,
+        564
+      ],
+      "size": [
+        208,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Work and delivery · Delivery cycle",
+      "wraps": [
+        "ki-recap"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Repository types · Single-type repositories",
+      "wraps": [
+        "ki-repo-dotfiles-chezmoi"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Agentic systems · 1 skill",
+      "wraps": [
+        "ki-agent-coordination-paperclip"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Records and code · Records",
+      "wraps": [
+        "ki-decision-records"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Work and delivery · Work items",
+      "wraps": [
+        "ki-work-roadmap"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Agentic systems · 1 skill",
+      "wraps": [
+        "ki-subagents"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Repository and writing",
+      "wraps": [
+        "ki-repo",
+        "ki-authoring",
+        "ki-diagrams",
+        "ki-git"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Skills and harness",
+      "wraps": [
+        "ki-skills",
+        "ki-repo-harness"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Fundamentals · 7 skills",
+      "wraps": [
+        "ki-repo",
+        "ki-authoring",
+        "ki-diagrams",
+        "ki-git",
+        "ki-skills",
+        "ki-repo-harness",
+        "ki-bootstrap"
+      ],
+      "pad": 44
+    }
+  ],
+  "connections": [
+    {
+      "id": "ki-agent-coordination-paperclip--ki-git",
+      "from": "ki-agent-coordination-paperclip",
+      "to": "ki-git",
+      "variant": "default"
+    },
+    {
+      "id": "ki-recap--ki-authoring",
+      "from": "ki-recap",
+      "to": "ki-authoring",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo--ki-authoring",
+      "from": "ki-repo",
+      "to": "ki-authoring",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo--ki-git",
+      "from": "ki-repo",
+      "to": "ki-git",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi--ki-authoring",
+      "from": "ki-repo-dotfiles-chezmoi",
+      "to": "ki-authoring",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-harness--ki-decision-records",
+      "from": "ki-repo-harness",
+      "to": "ki-decision-records",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-harness--ki-diagrams",
+      "from": "ki-repo-harness",
+      "to": "ki-diagrams",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-repo-harness--ki-skills",
+      "from": "ki-repo-harness",
+      "to": "ki-skills",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-harness--ki-subagents",
+      "from": "ki-repo-harness",
+      "to": "ki-subagents",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-harness--ki-work-roadmap",
+      "from": "ki-repo-harness",
+      "to": "ki-work-roadmap",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reading the diagram",
+      "items": [
+        "The middle region holds the skills that every repository and every skill builds on, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Generated, not drawn",
+      "items": [
+        "7 skills, 3 outside prerequisites, 3 outside dependents, 9 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+      ]
+    }
+  ]
+}

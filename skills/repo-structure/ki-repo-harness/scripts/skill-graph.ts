@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 /**
- * Purpose: Regenerate or check the harness skill map and area diagrams, the Archify architecture sources derived from
- * skill frontmatter and the concern layout.
+ * Purpose: Regenerate or check the harness skill map and functional-area diagrams, the Archify architecture sources
+ * derived from skill frontmatter, the concern layout and the functional-area table.
  * Run: bun scripts/skill-graph.ts --help
  * Boundary: Reads every `skills/<concern>/<skill>/SKILL.md` and the `.ki.toml` repository identity of one harness
- * checkout; writes only `docs/diagrams/skill-map.architecture.json` and the `docs/diagrams/skill-area-<concern>.architecture.json`
+ * checkout; writes only `docs/diagrams/skill-map.architecture.json` and the `docs/diagrams/skill-area-<area>.architecture.json`
  * sources, never an SVG or HTML, and runs neither Archify nor Git beyond a read-only `rev-parse HEAD`.
  *
  * Usage: bun scripts/skill-graph.ts [--check | --write] [--repository <path>]

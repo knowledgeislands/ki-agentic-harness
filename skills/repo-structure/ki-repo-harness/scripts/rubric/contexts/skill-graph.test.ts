@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { SKILL_AREAS } from './skill-areas.ts'
+import { SKILL_AREAS, skillAreaPath } from './skill-areas.ts'
 import { prepareSkillDiagram, SKILL_DIAGRAMS } from './skill-diagrams.ts'
 import { readSkillGraphNodes } from './skill-graph.ts'
 
@@ -56,9 +56,17 @@ describe('the committed harness skill diagrams', () => {
     })
     .map((path) => ({ path, content: readFileSync(join(root, path), 'utf8') }))
 
-  test('every source concern has an area diagram', () => {
-    const concerns = [...new Set(sources.map((source) => source.path.split('/')[1]))].sort()
-    expect([...SKILL_AREAS].sort()).toEqual(concerns)
+  test('draws every skill in at least one functional-area diagram', () => {
+    const names = readSkillGraphNodes(sources).nodes.map((node) => node.name)
+    const drawn = new Set(
+      SKILL_AREAS.flatMap((area) => {
+        const diagram = JSON.parse(readFileSync(join(root, skillAreaPath(area.slug)), 'utf8')) as {
+          boundaries: { label: string; wraps: string[] }[]
+        }
+        return diagram.boundaries.find((b) => b.label.startsWith(`${area.title} · `))?.wraps ?? []
+      })
+    )
+    expect(names.filter((name) => !drawn.has(name))).toEqual([])
   })
 
   for (const diagram of SKILL_DIAGRAMS)

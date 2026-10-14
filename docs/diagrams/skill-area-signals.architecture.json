@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Knowledge Islands skills · Signals",
+    "output": "+/diagrams/skill-area-signals/skill-area-signals.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "security": {
+          "label": "Governance · always on"
+        },
+        "backend": {
+          "label": "Governance · automatic"
+        },
+        "database": {
+          "label": "Governance · opt-in"
+        },
+        "frontend": {
+          "label": "Process · command"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "ki-agentic-radar",
+      "type": "database",
+      "label": "ki-agentic-radar",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-agentic-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-model-radar",
+      "type": "database",
+      "label": "ki-model-radar",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-model-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        188
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-pulse",
+      "type": "frontend",
+      "label": "ki-pulse",
+      "sublabel": "acquire · command",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-pulse/SKILL.md"
+        }
+      ],
+      "pos": [
+        288,
+        188
+      ],
+      "size": [
+        208,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Signals · 3 skills",
+      "wraps": [
+        "ki-pulse",
+        "ki-agentic-radar",
+        "ki-model-radar"
+      ],
+      "pad": 32
+    }
+  ],
+  "connections": [],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reading the diagram",
+      "items": [
+        "The middle region holds the skills that watch the field and keep its radars current; each sublabel names the source concern the skill lives in.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Generated, not drawn",
+      "items": [
+        "3 skills, 0 outside prerequisites, 0 outside dependents, 0 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+      ]
+    }
+  ]
+}

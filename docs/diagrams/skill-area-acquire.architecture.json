@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "a830b6eda6ad27a044da637e79792e3c99e3f07e"
+      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
     },
     "legend": {
       "mode": "auto",
@@ -32,7 +32,7 @@
     {
       "id": "ki-acquire-chatgpt",
       "type": "database",
-      "label": "acquire-chatgpt",
+      "label": "ki-acquire-chatgpt",
       "sublabel": "acquire · opt-in",
       "sources": [
         {
@@ -41,17 +41,17 @@
       ],
       "pos": [
         32,
-        176
+        64
       ],
       "size": [
-        196,
-        48
+        208,
+        60
       ]
     },
     {
       "id": "ki-acquire-granola",
       "type": "database",
-      "label": "acquire-granola",
+      "label": "ki-acquire-granola",
       "sublabel": "acquire · opt-in",
       "sources": [
         {
@@ -59,37 +59,18 @@
         }
       ],
       "pos": [
-        32,
+        288,
         64
       ],
       "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-pulse",
-      "type": "frontend",
-      "label": "pulse",
-      "sublabel": "acquire · command",
-      "sources": [
-        {
-          "path": "skills/acquire/ki-pulse/SKILL.md"
-        }
-      ],
-      "pos": [
-        276,
-        176
-      ],
-      "size": [
-        196,
-        48
+        208,
+        60
       ]
     },
     {
       "id": "ki-housekeeping-chatgpt",
       "type": "database",
-      "label": "housekeeping-chatgpt",
+      "label": "ki-housekeeping-chatgpt",
       "sublabel": "environment · opt-in",
       "sources": [
         {
@@ -98,11 +79,11 @@
       ],
       "pos": [
         32,
-        352
+        252
       ],
       "size": [
-        196,
-        48
+        208,
+        60
       ]
     }
   ],
@@ -117,11 +98,10 @@
     },
     {
       "kind": "region",
-      "label": "Acquire · 3 skills",
+      "label": "Acquire · 2 skills",
       "wraps": [
         "ki-acquire-chatgpt",
-        "ki-acquire-granola",
-        "ki-pulse"
+        "ki-acquire-granola"
       ],
       "pad": 32
     }
@@ -139,8 +119,8 @@
       "dot": "cyan",
       "title": "Reading the diagram",
       "items": [
-        "The middle region holds every skill in acquire, nested by the capability each brings where the concern is split; the skill map shows where the other concerns sit.",
-        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by concern and capability group.",
+        "The middle region holds the skills that bring outside sources into a knowledge base; each sublabel names the source concern the skill lives in.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
@@ -148,7 +128,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "3 skills, 1 outside prerequisite, 0 outside dependents, 1 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "2 skills, 1 outside prerequisite, 0 outside dependents, 1 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

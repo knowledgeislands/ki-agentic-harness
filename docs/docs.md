@@ -40,7 +40,7 @@ The harness retains the underlying `SKILL.md` files, generated capability catalo
 
 ### Diagrams — the _shape_
 
-[`diagrams/`](diagrams) holds this repository's living Archify diagrams with their manifest and index; `ki-diagrams` governs the layout and freshness rules. The skill map and the area diagram for each skill concern there are generated from skill frontmatter by `ki-repo-harness`, so they are regenerated, never drawn; the thread model is traced by hand from the `ki-pmo` and `ki-delegation` standards. Every diagram commits its interactive HTML, and `bun run self:diagrams:html` rebuilds it.
+[`diagrams/`](diagrams) holds this repository's living Archify diagrams with their manifest and index; `ki-diagrams` governs the layout and freshness rules. The skill map and the diagram for each functional area of skills there are generated from skill frontmatter by `ki-repo-harness`, so they are regenerated, never drawn; the thread model is traced by hand from the `ki-pmo` and `ki-delegation` standards. Every diagram commits its interactive HTML, and `bun run self:diagrams:html` rebuilds it.
 
 ## Temporary working documents
 

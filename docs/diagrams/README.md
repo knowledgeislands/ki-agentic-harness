@@ -4,33 +4,37 @@ This repository explains itself in a maintained set of Archify diagrams. Each an
 
 ## Skill map
 
-What skills does the harness hold, in which source concern does each live, and what shape is each? The map is generated from the `skills/<concern>/<skill>/` layout and every `SKILL.md`'s `ki-kind` and `ki-applicability` frontmatter by `ki-repo-harness`. Each outer region is one concern, and the regions nested in a larger concern group its skills by the capability they bring. Colour and sublabel say when a skill applies: governance that is always on in every repository, automatic where its structure is found, or opt-in once `.ki.toml` declares it, and a process that is a command you run by name. The map is the index to the area diagrams below, one per concern.
+What skills does the harness hold, in which source concern does each live, which functional areas does each serve, and what shape is each? The map is generated from the `skills/<concern>/<skill>/` layout, every `SKILL.md`'s `ki-kind` and `ki-applicability` frontmatter and the functional-area table by `ki-repo-harness`. Each outer region is one source concern, the folder a skill lives in. The functional areas are overlaid on it: where a concern's skills have different home areas, nested regions name each skill's home area and group, and every sublabel names each area the skill serves before the word saying when it applies. Colour says the same: governance that is always on in every repository, automatic where its structure is found, or opt-in once `.ki.toml` declares it, and a process that is a command you run by name. The map is the index to the functional-area diagrams below.
 
 [![Knowledge Islands skill map](skill-map.svg)](skill-map.html)
 
-## Skill areas
+## Functional areas
 
-Each area diagram answers, for one concern: which outside skills do its skills rely on, which outside skills rely on them, and how do they rely on each other? They are generated from every `SKILL.md`'s `ki-depends-on` and `ki-optional-depends-on` frontmatter by `ki-repo-harness`, so they cannot drift from the declarations. The concern's skills sit in the middle region, nested by capability group where the concern is split; the outside skills they rely on are grouped by concern and capability group below it, and the outside skills that rely on them are grouped the same way above it. A solid arrow is composition, a dashed arrow is optional augmentation, and every arrow runs downward from a skill to the skill it relies on. Nodes share the skill map's colours and name their concern.
+Each functional-area diagram answers, for one area: which outside skills do its skills rely on, which outside skills rely on them, and how do they rely on each other? An area gathers the skills that serve one function, read from what each skill does and the declared edges between them, wherever its folder is; every skill is in at least one area, and a few serve two. They are generated from every `SKILL.md`'s `ki-depends-on` and `ki-optional-depends-on` frontmatter by `ki-repo-harness`, so they cannot drift from the declarations. The area's skills sit in the middle region, nested by capability group where the area is split; the outside skills they rely on are grouped by home area and group below it, and the outside skills that rely on them are grouped the same way above it. A skill drawn in an area that is not its home shows only its edges within that area; its home area's diagram draws the rest. A solid arrow is composition, a dashed arrow is optional augmentation, and every arrow runs downward from a skill to the skill it relies on. Nodes share the skill map's colours and name their source concern.
 
-### Keystone
+### Fundamentals
 
-[![Knowledge Islands skills · Keystone](skill-area-keystone.svg)](skill-area-keystone.html)
+[![Knowledge Islands skills · Fundamentals](skill-area-fundamentals.svg)](skill-area-fundamentals.html)
 
-### Governance
+### Records and code
 
-[![Knowledge Islands skills · Governance](skill-area-governance.svg)](skill-area-governance.html)
+[![Knowledge Islands skills · Records and code](skill-area-records-and-code.svg)](skill-area-records-and-code.html)
 
-### Change Management
+### Coordination
 
-[![Knowledge Islands skills · Change Management](skill-area-change-management.svg)](skill-area-change-management.html)
+[![Knowledge Islands skills · Coordination](skill-area-coordination.svg)](skill-area-coordination.html)
 
-### Repo Structure
+### Work and delivery
 
-[![Knowledge Islands skills · Repo Structure](skill-area-repo-structure.svg)](skill-area-repo-structure.html)
+[![Knowledge Islands skills · Work and delivery](skill-area-work-and-delivery.svg)](skill-area-work-and-delivery.html)
 
-### Agentic Systems
+### Repository types
 
-[![Knowledge Islands skills · Agentic Systems](skill-area-agentic-systems.svg)](skill-area-agentic-systems.html)
+[![Knowledge Islands skills · Repository types](skill-area-repository-types.svg)](skill-area-repository-types.html)
+
+### Agentic systems
+
+[![Knowledge Islands skills · Agentic systems](skill-area-agentic-systems.svg)](skill-area-agentic-systems.html)
 
 ### Environment
 
@@ -39,6 +43,10 @@ Each area diagram answers, for one concern: which outside skills do its skills r
 ### Acquire
 
 [![Knowledge Islands skills · Acquire](skill-area-acquire.svg)](skill-area-acquire.html)
+
+### Signals
+
+[![Knowledge Islands skills · Signals](skill-area-signals.svg)](skill-area-signals.html)
 
 ### Design
 

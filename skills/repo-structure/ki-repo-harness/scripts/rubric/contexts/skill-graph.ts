@@ -4,7 +4,7 @@
  * map and the area diagrams both use. Shared-module packaging and coverage detection are not drawn.
  */
 import { type CapabilityApplicability, type CapabilitySource, parseCapabilitySource } from './capability-publication.ts'
-import type { SkillGroup } from './skill-groups.ts'
+import type { FunctionalArea } from './skill-functions.ts'
 
 export type SkillGraphNode = {
   path: string
@@ -21,8 +21,8 @@ export type SkillGraphOptions = {
   repositoryUrl?: string
   /** The 40-character commit the graph was traced at; omitted when unknown. */
   revision?: string
-  /** The capability groups to nest in each concern; the harness's own table when omitted. */
-  groups?: Readonly<Record<string, readonly SkillGroup[]>>
+  /** The functional areas to draw and overlay; the harness's own table when omitted. */
+  areas?: readonly FunctionalArea[]
 }
 
 export const DOMAIN_LABELS: Readonly<Record<string, string>> = {
