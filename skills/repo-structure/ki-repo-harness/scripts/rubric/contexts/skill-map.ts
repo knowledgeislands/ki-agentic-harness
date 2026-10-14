@@ -2,7 +2,7 @@
  * The harness skill map: a deterministic Archify `architecture` source derived from the
  * `skills/<concern>/<skill>/` layout and canonical `SKILL.md` frontmatter. Each source concern is
  * one region, and each skill is drawn in the shape its applicability declares. Relationships
- * belong to the skill graph, so the map draws no edges.
+ * belong to the area diagrams the map indexes, so the map draws no edges.
  */
 
 import type { CapabilityApplicability } from './capability-publication.ts'
@@ -12,7 +12,7 @@ export const SKILL_MAP_PATH = 'docs/diagrams/skill-map.architecture.json'
 export const SKILL_MAP_OUTPUT = '+/diagrams/skill-map/skill-map.html'
 
 /** Foundations first, then the lifecycle, the repository shapes, and the specialised concerns. */
-const CONCERN_ORDER = [
+export const CONCERN_ORDER = [
   'keystone',
   'governance',
   'change-management',
@@ -24,7 +24,12 @@ const CONCERN_ORDER = [
 ] as const
 
 /** Within a concern, governance that always applies comes first and invocation-only processes last. */
-const SHAPE_ORDER: readonly CapabilityApplicability[] = ['baseline', 'detected', 'declaration-only', 'invocation-only']
+export const SHAPE_ORDER: readonly CapabilityApplicability[] = [
+  'baseline',
+  'detected',
+  'declaration-only',
+  'invocation-only'
+]
 
 /**
  * Geometry, in SVG pixels. Two stacks of three-column regions keep the canvas inside Archify's
@@ -41,10 +46,10 @@ const REGION_GAP_Y = 112
 const ORIGIN_X = 32
 const ORIGIN_Y = 64
 
-const concernTitle = (domain: string): string =>
+export const concernTitle = (domain: string): string =>
   domain.replace(/(^|-)([a-z])/g, (_, gap, letter) => `${gap ? ' ' : ''}${letter.toUpperCase()}`)
 
-const concernRank = (domain: string): number => {
+export const concernRank = (domain: string): number => {
   const index = (CONCERN_ORDER as readonly string[]).indexOf(domain)
   return index === -1 ? CONCERN_ORDER.length : index
 }
@@ -120,7 +125,7 @@ export const buildSkillMap = (
         items: [
           'Each region is one source concern under skills/, and every skill in the harness sits in exactly one.',
           'Colour and sublabel give the shape: governance standards that are baseline, detected or declared, and processes invoked by name like a command.',
-          'Within a region, governance comes first and processes last; the skill graph shows which skills rely on which.'
+          'Within a region, governance comes first and processes last; each concern has an area diagram showing what its skills rely on and what relies on them.'
         ]
       },
       {

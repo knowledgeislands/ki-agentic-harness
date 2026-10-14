@@ -7,14 +7,96 @@ question = "What skills does the harness hold, in which source concern does each
 audience = "Skill authors, reviewers and newcomers orienting themselves in the collection"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill is added, moved between concerns, renamed or removed, or its ki-kind or ki-applicability changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
-last_checked = "daa6322456e021809fe42d997b9edf8c2aa94b6e"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-map` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
 
-[skill-graph]
+[skill-area-keystone]
 type = "architecture"
-question = "Which skills rely on which other skills, and is each reliance composition or optional augmentation?"
+question = "Which outside skills do the Keystone skills rely on, which outside skills rely on them, and how do they rely on each other?"
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
-stale_when = "a skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
-last_checked = "daa6322456e021809fe42d997b9edf8c2aa94b6e"
+stale_when = "a keystone skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a keystone skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-keystone` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-governance]
+type = "architecture"
+question = "Which outside skills do the Governance skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a governance skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a governance skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-governance` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-change-management]
+type = "architecture"
+question = "Which outside skills do the Change Management skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a change-management skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a change-management skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-change-management` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-repo-structure]
+type = "architecture"
+question = "Which outside skills do the Repo Structure skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a repo-structure skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a repo-structure skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-repo-structure` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-agentic-systems]
+type = "architecture"
+question = "Which outside skills do the Agentic Systems skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a agentic-systems skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a agentic-systems skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-agentic-systems` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-environment]
+type = "architecture"
+question = "Which outside skills do the Environment skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a environment skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a environment skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-environment` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-acquire]
+type = "architecture"
+question = "Which outside skills do the Acquire skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a acquire skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a acquire skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-acquire` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[skill-area-design]
+type = "architecture"
+question = "Which outside skills do the Design skills rely on, which outside skills rely on them, and how do they rely on each other?"
+audience = "Skill authors and reviewers deciding where a new or changed skill sits"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a design skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from a design skill changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-area-design` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true
+
+[thread-model]
+type = "workflow"
+question = "What steps does a piece of owner-directed work take, from the owner's message through a coordinating thread and a detached agent to the report, the mark and Project close?"
+audience = "The owner, coordinating threads and agents learning how threads and background runs fit together"
+traced = ["skills/change-management/ki-pmo/references/standards-pmo.md", "skills/governance/ki-delegation/references/standards-background-runs.md"]
+stale_when = "a step of the coordinating-thread loop, the run packet, the report-and-DONE hand-off, the mark or Project close changes in either standard, or a cited heading moves"
+regenerate = "Re-trace the thread loop from the ki-pmo and ki-delegation standards at HEAD, keeping the five lanes and the layout where the facts hold, cite each node's source heading by line at the pinned revision, then run `bun run self:diagrams:html --svg thread-model` to finalize it at showcase quality, commit its HTML and re-export the SVG."
+last_checked = "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+commit_html = true

@@ -1,10 +1,9 @@
 import { describe, expect, test } from 'bun:test'
 import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { SKILL_AREAS } from './skill-areas.ts'
 import { prepareSkillDiagram, SKILL_DIAGRAMS } from './skill-diagrams.ts'
-import { buildSkillGraph, readSkillGraphNodes, renderSkillGraph, SKILL_GRAPH_PATH } from './skill-graph.ts'
-
-const GRAPH = SKILL_DIAGRAMS.find((diagram) => diagram.path === SKILL_GRAPH_PATH) as (typeof SKILL_DIAGRAMS)[number]
+import { readSkillGraphNodes } from './skill-graph.ts'
 
 const source = (path: string, frontmatter: string) => ({ path, content: `---\n${frontmatter}\n---\n\n# body\n` })
 
@@ -38,61 +37,6 @@ describe('readSkillGraphNodes', () => {
   })
 })
 
-describe('buildSkillGraph', () => {
-  const graph = buildSkillGraph(readSkillGraphNodes(FIXTURE).nodes, {
-    repositoryUrl: 'https://example.invalid/harness',
-    revision: 'a'.repeat(40)
-  }) as {
-    meta: { repository?: { revision: string } }
-    components: { id: string; type: string; tag?: string; pos: [number, number] }[]
-    connections: { id: string; from: string; to: string; variant: string }[]
-  }
-
-  test('maps shapes to node types and declarations to edge variants', () => {
-    expect(graph.components.map((c) => [c.id, c.type, c.tag])).toEqual([
-      ['ki-flow', 'frontend', undefined],
-      ['ki-leaf', 'database', undefined],
-      ['ki-base', 'backend', undefined]
-    ])
-    expect(graph.connections.map((c) => [c.id, c.variant])).toEqual([
-      ['ki-flow--ki-base', 'dashed'],
-      ['ki-leaf--ki-base', 'default']
-    ])
-    expect(graph.meta.repository?.revision).toBe('a'.repeat(40))
-  })
-
-  test('leaves skills without any relationship to the skill map', () => {
-    const withIsolated = buildSkillGraph(
-      readSkillGraphNodes([
-        ...FIXTURE,
-        source(
-          'skills/design/ki-alone/SKILL.md',
-          'name: ki-alone\nki-kind: process\nki-applicability: invocation-only\nki-depends-on: []\ndescription: Alone.'
-        )
-      ]).nodes
-    ) as { components: { id: string }[]; boundaries?: unknown }
-    expect(withIsolated.components.map((c) => c.id)).not.toContain('ki-alone')
-    expect(withIsolated.boundaries).toBeUndefined()
-  })
-
-  test('places every dependent above its prerequisite', () => {
-    const y = new Map(graph.components.map((c) => [c.id, c.pos[1]]))
-    for (const edge of graph.connections) expect(y.get(edge.from)).toBeLessThan(y.get(edge.to) ?? 0)
-  })
-
-  test('is deterministic and ignores only the revision when compared', () => {
-    const rendered = renderSkillGraph(graph)
-    expect(
-      prepareSkillDiagram(GRAPH, rendered, FIXTURE, {
-        repositoryUrl: 'https://example.invalid/harness',
-        revision: 'b'.repeat(40)
-      }).state
-    ).toBe('in-sync')
-    expect(prepareSkillDiagram(GRAPH, undefined, FIXTURE).state).toBe('missing')
-    expect(prepareSkillDiagram(GRAPH, rendered.replace('"dashed"', '"default"'), FIXTURE).state).toBe('stale')
-  })
-})
-
 describe('the committed harness skill diagrams', () => {
   const root = resolve(import.meta.dir, '../../../../../..')
   const sources = readdirSync(join(root, 'skills'), { withFileTypes: true })
@@ -111,6 +55,11 @@ describe('the committed harness skill diagrams', () => {
       }
     })
     .map((path) => ({ path, content: readFileSync(join(root, path), 'utf8') }))
+
+  test('every source concern has an area diagram', () => {
+    const concerns = [...new Set(sources.map((source) => source.path.split('/')[1]))].sort()
+    expect([...SKILL_AREAS].sort()).toEqual(concerns)
+  })
 
   for (const diagram of SKILL_DIAGRAMS)
     test(`${diagram.path} is in sync with canonical frontmatter`, () => {

@@ -1,15 +1,51 @@
 # Diagrams
 
-This repository explains itself in a maintained set of Archify diagrams. Each answers one question, is traced from named source files, and is listed with its staleness trigger and regeneration prompt in [`diagrams.toml`](diagrams.toml).
+This repository explains itself in a maintained set of Archify diagrams. Each answers one question, is traced from named source files, and is listed with its staleness trigger and regeneration prompt in [`diagrams.toml`](diagrams.toml). Each figure links to its interactive viewer, with search, focus, zoom and source links; `bun run self:diagrams:html` rebuilds every viewer locally.
 
 ## Skill map
 
-What skills does the harness hold, in which source concern does each live, and what shape is each? The map is generated from the `skills/<concern>/<skill>/` layout and every `SKILL.md`'s `ki-kind` and `ki-applicability` frontmatter by `ki-repo-harness`. Each region is one concern; colour and sublabel give the shape, from governance that is baseline in every repository, through governance that applies where its evidence is detected or where `.ki.toml` declares it, to processes invoked by name like a command.
+What skills does the harness hold, in which source concern does each live, and what shape is each? The map is generated from the `skills/<concern>/<skill>/` layout and every `SKILL.md`'s `ki-kind` and `ki-applicability` frontmatter by `ki-repo-harness`. Each region is one concern; colour and sublabel give the shape, from governance that is baseline in every repository, through governance that applies where its evidence is detected or where `.ki.toml` declares it, to processes invoked by name like a command. The map is the index to the area diagrams below, one per concern.
 
-![Knowledge Islands skill map](skill-map.svg)
+[![Knowledge Islands skill map](skill-map.svg)](skill-map.html)
 
-## Skill graph
+## Skill areas
 
-Which skills rely on which other skills, and is each reliance composition or optional augmentation? The graph is generated from every `SKILL.md`'s `ki-depends-on` and `ki-optional-depends-on` frontmatter by `ki-repo-harness`, so it cannot drift from the declarations: a solid arrow is composition, a dashed arrow is optional augmentation, and every skill sits above everything it relies on. Nodes share the skill map's colours and name their concern; skills with no declared relationship appear only on the map.
+Each area diagram answers, for one concern: which outside skills do its skills rely on, which outside skills rely on them, and how do they rely on each other? They are generated from every `SKILL.md`'s `ki-depends-on` and `ki-optional-depends-on` frontmatter by `ki-repo-harness`, so they cannot drift from the declarations. The concern's skills sit in the middle region, the outside skills they rely on are grouped by concern below it, and the outside skills that rely on them are grouped by concern above it. A solid arrow is composition, a dashed arrow is optional augmentation, and every arrow runs downward from a skill to the skill it relies on. Nodes share the skill map's colours and name their concern.
 
-![Knowledge Islands skill graph](skill-graph.svg)
+### Keystone
+
+[![Knowledge Islands skills · Keystone](skill-area-keystone.svg)](skill-area-keystone.html)
+
+### Governance
+
+[![Knowledge Islands skills · Governance](skill-area-governance.svg)](skill-area-governance.html)
+
+### Change Management
+
+[![Knowledge Islands skills · Change Management](skill-area-change-management.svg)](skill-area-change-management.html)
+
+### Repo Structure
+
+[![Knowledge Islands skills · Repo Structure](skill-area-repo-structure.svg)](skill-area-repo-structure.html)
+
+### Agentic Systems
+
+[![Knowledge Islands skills · Agentic Systems](skill-area-agentic-systems.svg)](skill-area-agentic-systems.html)
+
+### Environment
+
+[![Knowledge Islands skills · Environment](skill-area-environment.svg)](skill-area-environment.html)
+
+### Acquire
+
+[![Knowledge Islands skills · Acquire](skill-area-acquire.svg)](skill-area-acquire.html)
+
+### Design
+
+[![Knowledge Islands skills · Design](skill-area-design.svg)](skill-area-design.html)
+
+## Thread model
+
+What steps does a piece of owner-directed work take? A coordinating thread under `ki-pmo` logs the owner's decision in their words, updates its checkpoint and writes a brief under `ki-delegation`; `ki agent` launches a detached agent, which does the work under `ki-git`, moves its work record, and ends with an owner report and `DONE`. The thread answers with a Summary and a reply block, and at each mark classifies its decisions into durable homes and tidies its folder until Project close. The diagram is traced from the two standards and cites the heading each step comes from.
+
+[![Knowledge Islands thread model](thread-model.svg)](thread-model.html)

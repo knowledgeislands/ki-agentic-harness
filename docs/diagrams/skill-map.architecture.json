@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "daa6322456e021809fe42d997b9edf8c2aa94b6e"
+      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
     },
     "legend": {
       "mode": "auto",
@@ -1356,7 +1356,7 @@
       "items": [
         "Each region is one source concern under skills/, and every skill in the harness sits in exactly one.",
         "Colour and sublabel give the shape: governance standards that are baseline, detected or declared, and processes invoked by name like a command.",
-        "Within a region, governance comes first and processes last; the skill graph shows which skills rely on which."
+        "Within a region, governance comes first and processes last; each concern has an area diagram showing what its skills rely on and what relies on them."
       ]
     },
     {

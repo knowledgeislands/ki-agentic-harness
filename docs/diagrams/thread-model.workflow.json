@@ -1,0 +1,474 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Knowledge Islands thread model",
+    "output": "+/diagrams/thread-model/thread-model.html",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+    },
+    "viewBox": [
+      1232,
+      786
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "external": {
+          "label": "Owner step"
+        },
+        "database": {
+          "label": "Log, checkpoint or record"
+        },
+        "security": {
+          "label": "Thread rule step"
+        },
+        "cloud": {
+          "label": "Launcher step"
+        },
+        "backend": {
+          "label": "Agent work"
+        },
+        "messagebus": {
+          "label": "Agent report"
+        },
+        "frontend": {
+          "label": "Owner report"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "owner",
+      "label": "Owner"
+    },
+    {
+      "id": "thread",
+      "label": "Coordinating thread · ki-pmo"
+    },
+    {
+      "id": "launcher",
+      "label": "Launcher · ki agent"
+    },
+    {
+      "id": "agent",
+      "label": "Detached agent · ki-delegation"
+    },
+    {
+      "id": "homes",
+      "label": "Durable records"
+    }
+  ],
+  "phases": [
+    {
+      "id": "decide",
+      "label": "Decide",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "dispatch",
+      "label": "Dispatch",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "report_phase",
+      "label": "Report",
+      "fromCol": 4,
+      "toCol": 4
+    },
+    {
+      "id": "consolidate",
+      "label": "Answer + consolidate",
+      "fromCol": 5,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "message",
+    "log",
+    "checkpoint",
+    "brief",
+    "launch",
+    "work",
+    "report",
+    "wait",
+    "summary",
+    "answer"
+  ],
+  "nodes": [
+    {
+      "id": "message",
+      "lane": "owner",
+      "col": 0,
+      "type": "external",
+      "label": "Message",
+      "sublabel": "instruction or answer",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 86,
+          "label": "coordinator responsiveness"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "log",
+      "lane": "thread",
+      "col": 0,
+      "type": "database",
+      "label": "Log decision",
+      "sublabel": "decisions.md",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 107,
+          "label": "decisions log"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "checkpoint",
+      "lane": "thread",
+      "col": 1,
+      "type": "database",
+      "label": "Update checkpoint",
+      "sublabel": "ki-checkpoint",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 437,
+          "label": "mark in Current state"
+        },
+        {
+          "path": "skills/governance/ki-checkpoint/SKILL.md",
+          "line": 1
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "brief",
+      "lane": "thread",
+      "col": 2,
+      "type": "security",
+      "label": "Write the brief",
+      "sublabel": "prompt + footer",
+      "tag": "ki-delegation",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 73,
+          "label": "prompt shape"
+        },
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 92,
+          "label": "authority tiers"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "launch",
+      "lane": "launcher",
+      "col": 2,
+      "type": "cloud",
+      "label": "Launch or queue",
+      "sublabel": "detached, own session",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 32,
+          "label": "detachment"
+        },
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 135,
+          "label": "run queue"
+        },
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 279,
+          "label": "reference launcher"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "work",
+      "lane": "agent",
+      "col": 3,
+      "type": "backend",
+      "label": "Do the work",
+      "sublabel": "worktree or checkout",
+      "tag": "ki-git",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 122,
+          "label": "coordination"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "record",
+      "lane": "homes",
+      "col": 3,
+      "type": "database",
+      "label": "Work record",
+      "sublabel": "next → plan → accept",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-roadmap/SKILL.md",
+          "line": 1
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "report",
+      "lane": "agent",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Report + DONE",
+      "sublabel": "+/_THREADS/<run>/",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 152,
+          "label": "reporting"
+        },
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 158,
+          "label": "owner report"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "wait",
+      "lane": "launcher",
+      "col": 4,
+      "type": "cloud",
+      "label": "Wait or watch",
+      "sublabel": "non-blocking monitor",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 144,
+          "label": "monitoring"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "summary",
+      "lane": "thread",
+      "col": 4,
+      "type": "frontend",
+      "label": "Summary",
+      "sublabel": "Done · Progress · Queries",
+      "tag": "ki-pmo",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 104,
+          "label": "thread practices"
+        },
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 158,
+          "label": "owner report"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "answer",
+      "lane": "owner",
+      "col": 5,
+      "type": "external",
+      "label": "Reply block",
+      "sublabel": "option a), or a letter",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 158,
+          "label": "owner report"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "mark",
+      "lane": "thread",
+      "col": 5,
+      "type": "security",
+      "label": "Mark",
+      "sublabel": "classify, tidy folder",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 393,
+          "label": "decision classes"
+        },
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 463,
+          "label": "tidying the folder"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "homes",
+      "lane": "homes",
+      "col": 5,
+      "type": "database",
+      "label": "Durable homes",
+      "sublabel": "record, skill, checkpoint",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 393,
+          "label": "decision classes"
+        }
+      ],
+      "width": 160
+    },
+    {
+      "id": "close",
+      "lane": "launcher",
+      "col": 5,
+      "type": "cloud",
+      "label": "Project close",
+      "sublabel": "REMOVE, ki agent close",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
+          "line": 418,
+          "label": "project close"
+        }
+      ],
+      "width": 160
+    }
+  ],
+  "edges": [
+    {
+      "from": "message",
+      "to": "log",
+      "label": "decision"
+    },
+    {
+      "from": "log",
+      "to": "checkpoint"
+    },
+    {
+      "from": "checkpoint",
+      "to": "brief"
+    },
+    {
+      "from": "brief",
+      "to": "launch",
+      "label": "ki agent"
+    },
+    {
+      "from": "launch",
+      "to": "work"
+    },
+    {
+      "from": "work",
+      "to": "record",
+      "label": "moves",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "from": "work",
+      "to": "report"
+    },
+    {
+      "from": "report",
+      "to": "wait",
+      "label": "DONE"
+    },
+    {
+      "from": "wait",
+      "to": "summary",
+      "label": "read report"
+    },
+    {
+      "from": "summary",
+      "to": "answer",
+      "label": "owner report"
+    },
+    {
+      "from": "answer",
+      "to": "message",
+      "label": "next instruction",
+      "variant": "dashed",
+      "role": "return"
+    },
+    {
+      "from": "summary",
+      "to": "mark",
+      "label": "at a mark",
+      "role": "branch"
+    },
+    {
+      "from": "mark",
+      "to": "homes",
+      "label": "promote",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "from": "mark",
+      "to": "close",
+      "label": "at close",
+      "variant": "dashed",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "One loop",
+      "items": [
+        "An owner message is logged in the owner's words before any work it authorises launches.",
+        "The thread writes only the checkpoint, the decisions log and a brief; a detached agent does the work.",
+        "The agent ends with an owner report and DONE; the thread answers with a Summary and a reply block."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Who owns each step",
+      "items": [
+        "ki-pmo: how the coordinating thread behaves, its Summary, marks and Project close.",
+        "ki-delegation: the run packet, prompt shape, authority footers, decisions log and owner report.",
+        "ki-git and the ki-work family: the agent's commits and the work record's lifecycle."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Marks and close",
+      "items": [
+        "At a mark the thread classifies each logged decision into its durable home and tidies its folder.",
+        "At Project close it promotes what remains, removes its checkpoint, deletes the folder and closes the run."
+      ]
+    }
+  ]
+}

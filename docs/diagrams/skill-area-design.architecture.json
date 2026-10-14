@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Knowledge Islands skills · Design",
+    "output": "+/diagrams/skill-area-design/skill-area-design.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "security": {
+          "label": "Governance · baseline"
+        },
+        "backend": {
+          "label": "Governance · detected"
+        },
+        "database": {
+          "label": "Governance · declared"
+        },
+        "frontend": {
+          "label": "Process · by name"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "ki-design-system",
+      "type": "database",
+      "label": "design-system",
+      "sublabel": "design · declared",
+      "sources": [
+        {
+          "path": "skills/design/ki-design-system/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-design-inspiration",
+      "type": "frontend",
+      "label": "design-inspiration",
+      "sublabel": "design · process",
+      "sources": [
+        {
+          "path": "skills/design/ki-design-inspiration/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Design · 2 skills",
+      "wraps": [
+        "ki-design-inspiration",
+        "ki-design-system"
+      ],
+      "pad": 32
+    }
+  ],
+  "connections": [],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reading the diagram",
+      "items": [
+        "The middle region holds every skill in design; the skill map shows where the other concerns sit.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
+        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Generated, not drawn",
+      "items": [
+        "2 skills, 0 outside prerequisites, 0 outside dependents, 0 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+      ]
+    }
+  ]
+}

@@ -1,16 +1,16 @@
 #!/usr/bin/env bun
 /**
- * Purpose: Regenerate or check the harness skill map and skill graph, the Archify architecture sources derived from
+ * Purpose: Regenerate or check the harness skill map and area diagrams, the Archify architecture sources derived from
  * skill frontmatter and the concern layout.
  * Run: bun scripts/skill-graph.ts --help
  * Boundary: Reads every `skills/<concern>/<skill>/SKILL.md` and the `.ki.toml` repository identity of one harness
- * checkout; writes only `docs/diagrams/skill-map.architecture.json` and `docs/diagrams/skill-graph.architecture.json`,
- * never an SVG, and runs neither Archify nor Git beyond a read-only `rev-parse HEAD`.
+ * checkout; writes only `docs/diagrams/skill-map.architecture.json` and the `docs/diagrams/skill-area-<concern>.architecture.json`
+ * sources, never an SVG or HTML, and runs neither Archify nor Git beyond a read-only `rev-parse HEAD`.
  *
  * Usage: bun scripts/skill-graph.ts [--check | --write] [--repository <path>]
  *
- * `--check` (default) exits 1 when either committed source is missing or differs from the frontmatter-derived rendering,
- * ignoring only the traced revision. `--write` replaces both. `ki repo conform --skill ki-repo-harness` performs the same
+ * `--check` (default) exits 1 when any committed source is missing or differs from the frontmatter-derived rendering,
+ * ignoring only the traced revision. `--write` replaces each. `ki repo conform --skill ki-repo-harness` performs the same
  * write under CAP-4; this script is the direct form the diagrams manifest cites. After a write, finalize and re-export
  * each SVG as the ki-diagrams standard describes.
  */
@@ -70,7 +70,7 @@ const main = (): number => {
   const parsed = parseArguments(process.argv.slice(2))
   if (parsed === 'help') {
     console.log(
-      `${USAGE}\n\nRegenerate (--write) or verify (--check, default) ${SKILL_DIAGRAMS.map((d) => d.path).join(' and ')} from skill frontmatter.`
+      `${USAGE}\n\nRegenerate (--write) or verify (--check, default) the generated skill diagram sources from skill frontmatter:\n${SKILL_DIAGRAMS.map((d) => `  ${d.path}`).join('\n')}`
     )
     return 0
   }

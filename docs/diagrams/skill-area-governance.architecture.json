@@ -1,0 +1,693 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Knowledge Islands skills · Governance",
+    "output": "+/diagrams/skill-area-governance/skill-area-governance.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "provider": "github",
+      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "security": {
+          "label": "Governance · baseline"
+        },
+        "backend": {
+          "label": "Governance · detected"
+        },
+        "database": {
+          "label": "Governance · declared"
+        },
+        "frontend": {
+          "label": "Process · by name"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "ki-recap",
+      "type": "frontend",
+      "label": "recap",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-recap/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-pmo",
+      "type": "database",
+      "label": "pmo",
+      "sublabel": "change management · declared",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-pmo-design",
+      "type": "frontend",
+      "label": "pmo-design",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-batch",
+      "type": "frontend",
+      "label": "batch",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-batch/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-implement",
+      "type": "frontend",
+      "label": "implement",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-implement/SKILL.md"
+        }
+      ],
+      "pos": [
+        1008,
+        64
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-plan",
+      "type": "frontend",
+      "label": "plan",
+      "sublabel": "change management · process",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-plan/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        176
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi",
+      "type": "database",
+      "label": "repo-dotfiles-chezmoi",
+      "sublabel": "repository structure · declared",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        336
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-harness",
+      "type": "database",
+      "label": "repo-harness",
+      "sublabel": "repository structure · declared",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        336
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-kb-principal",
+      "type": "database",
+      "label": "repo-kb-principal",
+      "sublabel": "repository structure · declared",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        336
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-mcp",
+      "type": "backend",
+      "label": "repo-mcp",
+      "sublabel": "repository structure · detected",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        336
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo",
+      "type": "security",
+      "label": "repo",
+      "sublabel": "keystone · baseline",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-repo/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        496
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-agent-coordination-paperclip",
+      "type": "database",
+      "label": "agent-coordination-paperclip",
+      "sublabel": "agentic systems · declared",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
+        }
+      ],
+      "pos": [
+        340,
+        496
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-authoring",
+      "type": "security",
+      "label": "authoring",
+      "sublabel": "governance · baseline",
+      "sources": [
+        {
+          "path": "skills/governance/ki-authoring/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        672
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-checkpoint",
+      "type": "backend",
+      "label": "checkpoint",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-checkpoint/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        672
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-decision-records",
+      "type": "backend",
+      "label": "decision-records",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-decision-records/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        672
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-engineering",
+      "type": "backend",
+      "label": "engineering",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-engineering/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        672
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-delegation",
+      "type": "database",
+      "label": "delegation",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/SKILL.md"
+        }
+      ],
+      "pos": [
+        1008,
+        672
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-diagrams",
+      "type": "database",
+      "label": "diagrams",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-diagrams/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-git",
+      "type": "database",
+      "label": "git",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-git/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-guides",
+      "type": "backend",
+      "label": "guides",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-guides/SKILL.md"
+        }
+      ],
+      "pos": [
+        520,
+        784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-specs",
+      "type": "backend",
+      "label": "specs",
+      "sublabel": "governance · detected",
+      "sources": [
+        {
+          "path": "skills/governance/ki-specs/SKILL.md"
+        }
+      ],
+      "pos": [
+        764,
+        784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-agentic-radar",
+      "type": "database",
+      "label": "agentic-radar",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-agentic-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        1008,
+        784
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-model-radar",
+      "type": "database",
+      "label": "model-radar",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-model-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        896
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-trade",
+      "type": "frontend",
+      "label": "trade",
+      "sublabel": "governance · process",
+      "sources": [
+        {
+          "path": "skills/governance/ki-trade/SKILL.md"
+        }
+      ],
+      "pos": [
+        276,
+        896
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-trades",
+      "type": "database",
+      "label": "trades",
+      "sublabel": "governance · declared",
+      "sources": [
+        {
+          "path": "skills/governance/ki-trades/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        1008
+      ],
+      "size": [
+        196,
+        48
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Change Management · 6 skills",
+      "wraps": [
+        "ki-recap",
+        "ki-pmo",
+        "ki-pmo-design",
+        "ki-batch",
+        "ki-implement",
+        "ki-plan"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Repo Structure · 4 skills",
+      "wraps": [
+        "ki-repo-dotfiles-chezmoi",
+        "ki-repo-harness",
+        "ki-repo-kb-principal",
+        "ki-repo-mcp"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Keystone · 1 skill",
+      "wraps": [
+        "ki-repo"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Agentic Systems · 1 skill",
+      "wraps": [
+        "ki-agent-coordination-paperclip"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Governance · 13 skills",
+      "wraps": [
+        "ki-agentic-radar",
+        "ki-authoring",
+        "ki-checkpoint",
+        "ki-decision-records",
+        "ki-delegation",
+        "ki-diagrams",
+        "ki-engineering",
+        "ki-git",
+        "ki-guides",
+        "ki-model-radar",
+        "ki-specs",
+        "ki-trade",
+        "ki-trades"
+      ],
+      "pad": 32
+    }
+  ],
+  "connections": [
+    {
+      "id": "ki-agent-coordination-paperclip--ki-git",
+      "from": "ki-agent-coordination-paperclip",
+      "to": "ki-git",
+      "variant": "default"
+    },
+    {
+      "id": "ki-batch--ki-delegation",
+      "from": "ki-batch",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-implement--ki-delegation",
+      "from": "ki-implement",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-plan--ki-delegation",
+      "from": "ki-plan",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-pmo--ki-checkpoint",
+      "from": "ki-pmo",
+      "to": "ki-checkpoint",
+      "variant": "default"
+    },
+    {
+      "id": "ki-pmo--ki-delegation",
+      "from": "ki-pmo",
+      "to": "ki-delegation",
+      "variant": "default"
+    },
+    {
+      "id": "ki-pmo-design--ki-decision-records",
+      "from": "ki-pmo-design",
+      "to": "ki-decision-records",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-pmo-design--ki-delegation",
+      "from": "ki-pmo-design",
+      "to": "ki-delegation",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-recap--ki-authoring",
+      "from": "ki-recap",
+      "to": "ki-authoring",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo--ki-authoring",
+      "from": "ki-repo",
+      "to": "ki-authoring",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo--ki-git",
+      "from": "ki-repo",
+      "to": "ki-git",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi--ki-authoring",
+      "from": "ki-repo-dotfiles-chezmoi",
+      "to": "ki-authoring",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-harness--ki-decision-records",
+      "from": "ki-repo-harness",
+      "to": "ki-decision-records",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-harness--ki-diagrams",
+      "from": "ki-repo-harness",
+      "to": "ki-diagrams",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-repo-kb-principal--ki-decision-records",
+      "from": "ki-repo-kb-principal",
+      "to": "ki-decision-records",
+      "variant": "default"
+    },
+    {
+      "id": "ki-repo-mcp--ki-engineering",
+      "from": "ki-repo-mcp",
+      "to": "ki-engineering",
+      "variant": "default"
+    },
+    {
+      "id": "ki-trade--ki-trades",
+      "from": "ki-trade",
+      "to": "ki-trades",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reading the diagram",
+      "items": [
+        "The middle region holds every skill in governance; the skill map shows where the other concerns sit.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
+        "An arrow runs downward from a skill to the skill it relies on: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Generated, not drawn",
+      "items": [
+        "13 skills, 0 outside prerequisites, 12 outside dependents, 11 composition and 6 optional edges, read from SKILL.md frontmatter.",
+        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+      ]
+    }
+  ]
+}

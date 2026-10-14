@@ -3,14 +3,8 @@
  * that keeps each committed source exact against canonical `SKILL.md` frontmatter.
  */
 import type { CapabilitySource } from './capability-publication.ts'
-import {
-  buildSkillGraph,
-  readSkillGraphNodes,
-  renderSkillGraph,
-  SKILL_GRAPH_PATH,
-  type SkillGraphNode,
-  type SkillGraphOptions
-} from './skill-graph.ts'
+import { buildSkillArea, SKILL_AREAS, skillAreaPath } from './skill-areas.ts'
+import { readSkillGraphNodes, renderSkillGraph, type SkillGraphNode, type SkillGraphOptions } from './skill-graph.ts'
 import { buildSkillMap, SKILL_MAP_PATH } from './skill-map.ts'
 
 export type SkillDiagram = {
@@ -18,10 +12,13 @@ export type SkillDiagram = {
   build: (nodes: readonly SkillGraphNode[], options: SkillGraphOptions) => unknown
 }
 
-/** The skill map answers what exists and where; the skill graph answers what relies on what. */
+/**
+ * The skill map answers what exists and where, and indexes the area diagrams; each area diagram answers
+ * what one concern's skills rely on outside it and what relies on them.
+ */
 export const SKILL_DIAGRAMS: readonly SkillDiagram[] = [
   { path: SKILL_MAP_PATH, build: buildSkillMap },
-  { path: SKILL_GRAPH_PATH, build: buildSkillGraph }
+  ...SKILL_AREAS.map((concern) => ({ path: skillAreaPath(concern), build: buildSkillArea(concern) }))
 ]
 
 export type SkillDiagramDraft =

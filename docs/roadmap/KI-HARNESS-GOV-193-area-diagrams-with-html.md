@@ -7,12 +7,12 @@ component: governance
 purpose: capability
 kind: deliver
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: b4e2c5cd3198c39c99e186a736f3d451efaaa779
 created_at: 2026-10-14T20:27:36Z
-updated_at: 2026-10-14T20:27:36Z
+updated_at: 2026-10-14T20:48:01Z
 ---
 
 # Area Diagrams With HTML
@@ -56,14 +56,14 @@ RUNTIME-TAG, on whether a box should mark a runtime-bound skill: "Leave it out."
 
 ## Steps
 
-- [ ] Add the area-diagram builder beside `skill-map.ts`, register the eight areas in `SKILL_DIAGRAMS` and drop the skill graph from it; cover it with tests.
-- [ ] Update `CAP-4`'s rubric text, the harness standard, `SKILL.md` and the CLI header for the new set; republish the rubric.
-- [ ] Add `commit_html` to the `ki-diagrams` manifest, standard, templates and audit, with tests.
-- [ ] Add the build command for every diagram's HTML.
-- [ ] Generate the area sources; finalize every diagram at showcase and export SVGs; remove the skill-graph files.
-- [ ] Author, finalize and export `thread-model`.
-- [ ] Update `docs/diagrams/README.md` and `diagrams.toml` for the full set.
-- [ ] Run the gates and set the record awaiting review.
+- [x] Add the area-diagram builder beside `skill-map.ts`, register the eight areas in `SKILL_DIAGRAMS` and drop the skill graph from it; cover it with tests.
+- [x] Update `CAP-4`'s rubric text, the harness standard, `SKILL.md` and the CLI header for the new set; republish the rubric.
+- [x] Add `commit_html` to the `ki-diagrams` manifest, standard, templates and audit, with tests.
+- [x] Add the build command for every diagram's HTML.
+- [x] Generate the area sources; finalize every diagram at showcase and export SVGs; remove the skill-graph files.
+- [x] Author, finalize and export `thread-model`.
+- [x] Update `docs/diagrams/README.md` and `diagrams.toml` for the full set.
+- [x] Run the gates and set the record awaiting review.
 
 ## Files touched
 
@@ -94,5 +94,45 @@ None; `docs/diagrams/README.md` is the reader-facing index.
 ### Roadmap
 
 None beyond this record.
+
+## Review
+
+### Delivered
+
+The approved boundary, delivered on the baseline `b4e2c5cd3198c39c99e186a736f3d451efaaa779` in the commits that follow this record's opening at `b7d3b53e`: eight generated area diagrams beside the skill map under `CAP-4`, the skill graph retired, the hand-traced `thread-model` workflow diagram, the `commit_html` manifest opt-in in `ki-diagrams`, one build command for every diagram's HTML, and the manifest and README for the ten diagrams. Excluded as planned: Knowledge Islands Principal's links, Archify, the exporter's browser route, a served site and runtime-bound markers.
+
+### Change Summary
+
+- `ki-repo-harness`: `skill-areas.ts` builds one architecture source per concern, the concern's skills in one region, the outside skills they rely on grouped by concern below and their outside dependents grouped by concern above, every edge running downward. `SKILL_DIAGRAMS` lists the map then the eight areas; `skill-graph.ts` keeps only the shared node reader and legend. `CAP-4`'s text, the harness standard, `SKILL.md` and the CLI help name the new set; the rubric is republished.
+- `ki-diagrams`: an optional `commit_html = true` manifest field. `DIAG-1` accepts `<slug>.html` only under it and then requires the file and a README link to it; `DIAG-2` applies the privacy checks to committed HTML. `scripts/build-html.ts` finalizes every listed diagram at showcase quality with `--repo-root` and a fresh `--out-dir` under `+/diagrams/<slug>/build/`, copies opted-in HTML into `docs/diagrams/`, and with `--svg` re-exports each SVG. The standard, `SKILL.md`, Mode EDUCATE and REFRESH, the templates and the rubric say so.
+- `package.json`: the repository-owned `self:diagrams:html` script runs the build command; no dependency was added.
+- `docs/diagrams/`: the skill-graph source and SVG removed; eight `skill-area-<concern>` sources, `thread-model.workflow.json`, and an SVG and committed HTML for each of the ten diagrams; `diagrams.toml` opts every diagram in; each README figure links to its HTML.
+- Deviations: none of scope. The area counts are keystone 3 skills, governance 13, change-management 13, repo-structure 16, agentic-systems 4, environment 9, acquire 3 and design 2; design has no declared relationship, so its diagram shows its two skills alone. `thread-model` cites the `ki-pmo` and `ki-delegation` headings at the pinned revision `b7d3b53e`, because Archify checks line evidence against the committed file and both standards carry another thread's uncommitted edits.
+
+### Verification
+
+- `bun run test`: 1176 pass, 0 fail across 168 files.
+- `bunx tsc --noEmit`: clean.
+- `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check`: all nine generated sources in sync.
+- `ki dev skill rubric ki-repo-harness` and `ki dev skill rubric ki-diagrams`: in sync.
+- `ki repo audit --skill ki-diagrams`: PASS, 5/5 criteria. `--skill ki-work-roadmap`: PASS, 15/15.
+- `ki repo audit --skill ki-skills` and `--skill ki-repo-harness` on the working tree: the only failure is `CAP-2` on `skills/README.md`, caused by another thread's uncommitted `ki-delegation` description change, plus the two pre-existing `LONG-3` warnings; re-run on the committed result is recorded in the run report.
+- `bun run self:diagrams:html --svg`: all ten diagrams pass Archify's four finalize gates at `--quality showcase` with `--repo-root`; each SVG was inspected by eye.
+- `git diff --check` and `rumdl check` on the touched Markdown: clean.
+
+### Outstanding concerns
+
+- Crossings remain advisory on the denser areas (governance, repo-structure, environment, change-management); they passed the hard gates and read acceptably, but a later layout pass could reduce them.
+- The label `agent-coordination-paperclip` slightly overflows its node in the areas that show it.
+- Knowledge Islands Principal's Engineering Practice Pillar and the `ways-of-working` Project note may link `docs/diagrams/skill-graph.svg`, which no longer exists; that repository retargets its own links.
+- `+/diagrams/` holds local build output and is untracked; it is not ignored in `.gitignore`.
+
+### Post-change review
+
+The skill map stays the index and now says each concern has an area diagram. Every generated source is regenerated by `CAP-4` CONFORM and checked by AUDIT; every diagram's HTML is rebuilt by one command and committed under the opt-in the audit enforces. Ready for Kris's acceptance, as AREA-ACCEPT set.
+
+### Mini recap
+
+Eight area diagrams and a thread-model workflow replace the single skill graph; diagram HTML is committed through a `commit_html` opt-in and built by one command; all gates green on the delivered paths. Learning route: none beyond this record and the run report.
 
 ## Discussion

@@ -125,7 +125,7 @@ const CAP_4: RubricItem<CapabilitiesContext> = {
   code: 'CAP-4',
   title: 'Generated skill diagrams are exact',
   description:
-    'A harness that adopts `ki-diagrams` publishes two Archify architecture sources derived deterministically from `SKILL.md` frontmatter and the `skills/<concern>/<skill>/` layout. `docs/diagrams/skill-map.architecture.json` draws one region per source concern with each skill in the shape its `ki-applicability` declares; `docs/diagrams/skill-graph.architecture.json` draws the skills that have a declared relationship, with solid `ki-depends-on` composition edges and dashed `ki-optional-depends-on` edges. AUDIT compares each committed source with its rendering, ignoring only the traced revision; CONFORM rewrites it. The SVG beside each follows through the `ki-diagrams` refresh procedure.',
+    'A harness that adopts `ki-diagrams` publishes Archify architecture sources derived deterministically from `SKILL.md` frontmatter and the `skills/<concern>/<skill>/` layout. `docs/diagrams/skill-map.architecture.json` draws one region per source concern with each skill in the shape its `ki-applicability` declares; one `docs/diagrams/skill-area-<concern>.architecture.json` per source concern draws the skills of that concern in one region, the outside skills they rely on grouped by concern below it and the outside skills that rely on them grouped by concern above it, with solid `ki-depends-on` composition edges and dashed `ki-optional-depends-on` edges. AUDIT compares each committed source with its rendering, ignoring only the traced revision; CONFORM rewrites it. The SVG beside each follows through the `ki-diagrams` refresh procedure.',
   sources: STANDARD,
   mechanical: {
     level: 'FAIL',
