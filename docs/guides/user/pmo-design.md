@@ -1,6 +1,6 @@
 # Run a design loop
 
-Use the `ki-design-loop` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's standard, `references/standards-design-loop.md`, owns the stage contracts; this guide explains when and how to start it.
+Use the `ki-pmo-design` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's standard, `references/standards-pmo-design.md`, owns the stage contracts; this guide explains when and how to start it.
 
 ## When to use it
 
@@ -17,10 +17,10 @@ Skip it when the work already has a clear goal. Capture that with `ki-next` and 
 Invoke the skill by name with the subject's slug:
 
 ```text
-/ki-design-loop start techne
+/ki-pmo-design start techne
 ```
 
-The agent asks for anything missing - the owning repository and your proposal - and then writes and commits the brief. To pick up a design in a later session, run `/ki-design-loop resume techne`; it reads the committed artefacts and continues at the first missing stage. `/ki-design-loop help` explains the loop without writing anything.
+The agent asks for anything missing - the owning repository and your proposal - and then writes and commits the brief. To pick up a design in a later session, run `/ki-pmo-design resume techne`; it reads the committed artefacts and continues at the first missing stage. `/ki-pmo-design help` explains the loop without writing anything.
 
 ## What happens
 

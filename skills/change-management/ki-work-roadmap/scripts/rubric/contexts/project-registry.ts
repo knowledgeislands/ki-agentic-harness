@@ -118,7 +118,7 @@ const isDirectory = (path: string): boolean => existsSync(path) && lstatSync(pat
 
 /**
  * Registry notes inside a registry folder, by name and text: each regular Markdown note directly inside it, and the
- * folder note `<slug>/<slug>.md` of a registry note that holds a `ki-design-loop` design folder.
+ * folder note `<slug>/<slug>.md` of a registry note that holds a `ki-pmo-design` design folder.
  */
 const notes = (directory: string | undefined): [string, string][] =>
   directory === undefined

@@ -17,7 +17,7 @@ Admin/
       Weekly Knowledge Review.md
 ```
 
-`Streams/Roadmap/` is flat. Horizon and lifecycle are frontmatter in each record, not folders. The illustrated Activity location is the default; use the base's configured `activities_dir` when different. Weekly Knowledge Review is one authoritative Activity with a `ki-work-housekeeping` profile; its due run becomes a linked roadmap record, not a duplicate recurring definition.
+`Streams/Roadmap/` is flat. Horizon and lifecycle are frontmatter in each record, not folders. The illustrated Activity location is the default; use the base's configured `activities_dir` when different. Weekly Knowledge Review is one authoritative Activity with a `ki-work-recurring` profile; its due run becomes a linked roadmap record, not a duplicate recurring definition.
 
 ## Legacy migration decision
 

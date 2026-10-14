@@ -107,7 +107,7 @@ Prepare and run one bounded authority envelope over an exact set of Ready work r
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-design-loop`
+#### `ki-pmo-design`
 
 Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
 
@@ -187,7 +187,7 @@ Define GitHub Issues configuration, lifecycle mapping, hierarchy, dependencies, 
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-work-housekeeping`
+#### `ki-work-recurring`
 
 Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and `ki-housekeeping-*` skills own runtime cleanup.
 
@@ -231,7 +231,7 @@ Find website design inspiration in curated galleries and turn selected examples 
 
 #### `ki-design-system`
 
-Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for design-system method; use `ki-design-inspiration` for visual references and `ki-design-loop` for project shape.
+Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for design-system method; use `ki-design-inspiration` for visual references and `ki-pmo-design` for project shape.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -540,7 +540,7 @@ Create, query, update, distil, or audit a KI knowledge base using Calendar, Pill
 
 #### `ki-repo-kb-activities`
 
-Create, audit, and maintain Activity notes recording automation, scheduling, and agentic work adopted by a KI knowledge base. Use for activity identity, frontmatter, realisation type, index, or linked skill and scheduled-task evidence; `ki-work-housekeeping` owns recurring-work lifecycle and `ki-repo-kb` owns zones.
+Create, audit, and maintain Activity notes recording automation, scheduling, and agentic work adopted by a KI knowledge base. Use for activity identity, frontmatter, realisation type, index, or linked skill and scheduled-task evidence; `ki-work-recurring` owns recurring-work lifecycle and `ki-repo-kb` owns zones.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

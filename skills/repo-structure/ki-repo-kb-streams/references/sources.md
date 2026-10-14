@@ -19,4 +19,4 @@ Receiver Knowledge Bases are evidence of migration needs, not sources of the tar
 
 ## Last review
 
-**2026-09-28** — reconciled recurring obligations with canonical Activity notes under the base's configured collection. Streams requires only `Roadmap/`; existing `Housekeeping/` definitions are reported for owner-approved reconciliation, never automatically moved or deleted. The Activity and `ki-work-housekeeping` contracts own standing definitions and shared run lifecycle. No receiving base is claimed as migrated by this source change.
+**2026-09-28** — reconciled recurring obligations with canonical Activity notes under the base's configured collection. Streams requires only `Roadmap/`; existing `Housekeeping/` definitions are reported for owner-approved reconciliation, never automatically moved or deleted. The Activity and `ki-work-recurring` contracts own standing definitions and shared run lifecycle. No receiving base is claimed as migrated by this source change.

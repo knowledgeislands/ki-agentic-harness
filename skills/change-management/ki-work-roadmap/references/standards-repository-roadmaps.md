@@ -115,7 +115,7 @@ The root orientation holds no horizon headings or item list.
 
 Terminal work is removed only through the lifecycle and pruning commit boundary below.
 
-Continuous practices belong in a standard or orientation file, not among finite work items. Recurring obligations stay as `ki-work-housekeeping` templates or KB Activities whose runs are ordinary records.
+Continuous practices belong in a standard or orientation file, not among finite work items. Recurring obligations stay as `ki-work-recurring` templates or KB Activities whose runs are ordinary records.
 
 ### Triage
 
@@ -221,7 +221,7 @@ Its start transition records the immutable full `HEAD` commit in `baseline_ref`;
 
 An optional `hold.trades: [TRD-…]` list identifies the exact trade records whose observable progress forms a hold condition. It is valid only at `horizon: hold`, contains unique canonical trade identities, and never replaces or extends `blocks` or `blocked_by`. The item body states the exact condition being observed: receipt, a terminal receiver decision, or completion of receiver-local work linked from an adopted trade.
 
-An explicit later prune path or glob removes only the resolved `done` or `cancelled` items; the selection itself is the deletion authority and does not need a second confirmation. `ki-work-housekeeping` templates may spawn linked ordinary work records; their cadence does not create a second delivery lifecycle.
+An explicit later prune path or glob removes only the resolved `done` or `cancelled` items; the selection itself is the deletion authority and does not need a second confirmation. `ki-work-recurring` templates may spawn linked ordinary work records; their cadence does not create a second delivery lifecycle.
 
 A done work item linked from an adopted completion-observation trade remains retained until sender release is observable. Roadmap review and pruning report that external reference as a guard and refuse to remove the linked work record while it is unresolved.
 

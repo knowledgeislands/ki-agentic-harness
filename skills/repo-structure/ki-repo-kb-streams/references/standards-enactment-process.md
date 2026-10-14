@@ -7,7 +7,7 @@ This standard records how a Knowledge Base uses shared change-management capabil
 | Need | KB location | Owner |
 | --- | --- | --- |
 | Finite forward work | `Streams/Roadmap/` | `ki-work-roadmap` plus `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept` |
-| Recurring obligation | Configured Activity collection † | `ki-repo-kb-activities` and `ki-work-housekeeping` |
+| Recurring obligation | Configured Activity collection † | `ki-repo-kb-activities` and `ki-work-recurring` |
 | Cross-repository trade | Generic `+` / `-` working areas until a KB trade placement is adopted | `ki-trades` |
 
 † Default `Admin/Operations/Activities/`; the base may bind a different `activities_dir` through `ki-repo-kb-activities`.

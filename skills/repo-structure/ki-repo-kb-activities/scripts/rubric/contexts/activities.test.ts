@@ -73,7 +73,7 @@ test('recurring-work lifecycle is required only for opted-in Activities', () => 
     readFileSync(path, 'utf8').replace('status: active', 'status: active\nhousekeeping:\n  cadence: P1W')
   )
   expect(audit()[0]?.status).toBe('VIOLATION')
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-work-housekeeping]\n')
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-work-recurring]\n')
   expect(audit()[0]?.status).toBe('PASS')
 })
 

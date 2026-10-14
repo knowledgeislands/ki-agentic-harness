@@ -83,7 +83,7 @@ const housekeepingDeclared = (root: string): boolean => {
   if (!isFile(path)) return false
   try {
     const parsed = Bun.TOML.parse(readFileSync(path, 'utf8')) as { skills?: Record<string, unknown> }
-    return Boolean(parsed.skills && Object.hasOwn(parsed.skills, 'ki-work-housekeeping'))
+    return Boolean(parsed.skills && Object.hasOwn(parsed.skills, 'ki-work-recurring'))
   } catch {
     return false
   }

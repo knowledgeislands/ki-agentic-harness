@@ -11,7 +11,7 @@ afterEach(() => {
 })
 
 const temporaryDirectory = (): string => {
-  const directory = mkdtempSync(join(tmpdir(), 'ki-work-housekeeping-'))
+  const directory = mkdtempSync(join(tmpdir(), 'ki-work-recurring-'))
   temporaryDirectories.push(directory)
   return directory
 }
@@ -21,7 +21,7 @@ const options = (repository: string) => ({ mode: 'audit' as const, repository, u
 const outcomes = (repository: string) => {
   const session = createHousekeepingSession(options(repository))
   const subject = session.subjects.find((candidate) => candidate.families.includes('HOUSE'))
-  if (!subject) throw new Error('ki-work-housekeeping session did not expose the housekeeping subject')
+  if (!subject) throw new Error('ki-work-recurring session did not expose the housekeeping subject')
   return subject.context().templates.outcomes
 }
 
@@ -162,7 +162,7 @@ const kbRepository = (location = 'Admin/Operations/Activities') => {
   mkdirSync(root, { recursive: true })
   writeFileSync(
     join(repository, '.ki.toml'),
-    `[skills.ki-repo]\nrepo_type = "kb"\n[skills.ki-repo-kb-activities]\nactivities_dir = "${location}"\n[skills.ki-work-housekeeping]\n`
+    `[skills.ki-repo]\nrepo_type = "kb"\n[skills.ki-repo-kb-activities]\nactivities_dir = "${location}"\n[skills.ki-work-recurring]\n`
   )
   writeFileSync(join(root, 'Activities.md'), '# Activities\n')
   return { repository, root }

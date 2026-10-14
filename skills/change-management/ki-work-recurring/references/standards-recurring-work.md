@@ -81,7 +81,7 @@ AUDIT accepts only safe regular Markdown files below the selected root, without 
 
 ## KB recurring-work profile
 
-An Activity opts into this lifecycle by declaring a `housekeeping` mapping. Declare and activate `ki-work-housekeeping` alongside `ki-repo-kb-activities`; the latter owns Activity identity, indexing, realization, and the location binding, while this skill owns the recurring profile. An ordinary Activity without the mapping is not a housekeeping template, even if it has a scheduled realization.
+An Activity opts into this lifecycle by declaring a `housekeeping` mapping. Declare and activate `ki-work-recurring` alongside `ki-repo-kb-activities`; the latter owns Activity identity, indexing, realization, and the location binding, while this skill owns the recurring profile. An ordinary Activity without the mapping is not a housekeeping template, even if it has a scheduled realization.
 
 Keep `id`, `title`, and `status` at the Activity's top level. Use snake_case inside the mapping: required `cadence`, `last_run`, `grace`, `spawn_policy`, `spawn_horizon`, and `active_run`; optional `commit_threshold`, `last_run_ref`, `initiative`, `component`, `purpose`, and `kind`. These map one-to-one to the Project template's hyphenated fields. There is one status, not a second nested lifecycle. All schedule and acceptance rules below apply to those mapped fields.
 

@@ -48,7 +48,7 @@ A `scheduled-task` activity declares `schedule_name` and may declare a free-text
 
 ## Recurring-work profile
 
-An Activity may opt into the recurring-work lifecycle with a nested `housekeeping` mapping. Declare and activate `ki-work-housekeeping` when using it; that skill owns the exact profile fields, schedule eligibility, stable housekeeping ID, single active run, and approved successful-run reconciliation. The Activity retains its normal metadata, realization, index entry, and narrative. Its `id`, `title`, and `status` are top-level; scheduling fields inside `housekeeping` use snake_case. There is no second status or copied definition in `Streams/Housekeeping/`.
+An Activity may opt into the recurring-work lifecycle with a nested `housekeeping` mapping. Declare and activate `ki-work-recurring` when using it; that skill owns the exact profile fields, schedule eligibility, stable housekeeping ID, single active run, and approved successful-run reconciliation. The Activity retains its normal metadata, realization, index entry, and narrative. Its `id`, `title`, and `status` are top-level; scheduling fields inside `housekeeping` use snake_case. There is no second status or copied definition in `Streams/Housekeeping/`.
 
 An Activity without this mapping remains an ordinary Activity, even when externally scheduled. Do not force every conversational habit, automation, or report into a roadmap lifecycle. Recurring work that needs governed finite runs uses the profile; each run lives in `Streams/Roadmap/` and links back to the Activity's stable ID. A retired recurring Activity retains rationale and evidence but must have no active-run reservation; explicit disposition precedes retirement.
 

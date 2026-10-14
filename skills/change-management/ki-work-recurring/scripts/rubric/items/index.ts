@@ -4,7 +4,7 @@ import { HOUSE } from './housekeeping.ts'
 
 export default {
   contract: 1,
-  name: 'ki-work-housekeeping',
+  name: 'ki-work-recurring',
   concern: 'recurring housekeeping templates',
   createSession: createHousekeepingSession,
   families: [HOUSE]

@@ -292,7 +292,7 @@ const REGISTRY_AREAS = ['Projects', 'Initiatives'] as const
 const WORK_RECORD_REFERENCE = /(?<![\w-])(?!(?:[SPADXOGRK]DR)-)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3}(?!\d)/g
 const UPDATE_SECTION = /^##\s+Update\b/m
 
-// A `ki-design-loop` design folder beside a registry note holds temporary artefacts, not registry notes.
+// A `ki-pmo-design` design folder beside a registry note holds temporary artefacts, not registry notes.
 const DESIGN_FOLDER = /(?:^|[\\/])design[\\/]/
 
 const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidence[] => {

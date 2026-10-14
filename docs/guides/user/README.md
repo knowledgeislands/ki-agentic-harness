@@ -2,4 +2,4 @@
 
 Guides for people who invoke the harness's skills to get work done.
 
-- [Run a design loop](design-loop.md) — shape a Project, Initiative or cross-cutting model with `/ki-design-loop start <subject>` before any work record exists.
+- [Run a design loop](pmo-design.md) — shape a Project, Initiative or cross-cutting model with `/ki-pmo-design start <subject>` before any work record exists.

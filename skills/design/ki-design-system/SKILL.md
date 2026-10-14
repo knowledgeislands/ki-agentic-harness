@@ -8,7 +8,7 @@ contributes: ['.ki.toml']
 description: >
   Create, audit or refresh how a repository keeps its user-interface design: the token source, the design
   guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for
-  design-system method; use `ki-design-inspiration` for visual references and `ki-design-loop` for project shape.
+  design-system method; use `ki-design-inspiration` for visual references and `ki-pmo-design` for project shape.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | refresh'
 ---
 

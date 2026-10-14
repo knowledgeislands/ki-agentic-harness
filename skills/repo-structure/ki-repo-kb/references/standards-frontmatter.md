@@ -50,7 +50,7 @@ The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefi
 | `admin/operations/activity`   | `Admin/Operations/Activities/**/*`                        | `ki-repo-kb-activities`    |
 | `admin/operations/skill`      | `Admin/Operations/Skills/**/*`                            | TBD                   |
 
-`Admin/Operations/Activities/` (or its configured collection) is governed by `ki-repo-kb-activities`: Activity notes retain `note_type: admin/operations/activity`, with an optional nested `housekeeping` profile governed by `ki-work-housekeeping`. They are canonical notes, not delegated Streams record types. `Admin/Operations/Live Artifacts/` is governed by `ki-repo-kb-live-artifacts`; reconciliation of its component-specific and universal metadata remains separate. The remaining `TBD` rows have no governing skill yet.
+`Admin/Operations/Activities/` (or its configured collection) is governed by `ki-repo-kb-activities`: Activity notes retain `note_type: admin/operations/activity`, with an optional nested `housekeeping` profile governed by `ki-work-recurring`. They are canonical notes, not delegated Streams record types. `Admin/Operations/Live Artifacts/` is governed by `ki-repo-kb-live-artifacts`; reconciliation of its component-specific and universal metadata remains separate. The remaining `TBD` rows have no governing skill yet.
 
 ### Outbound staging (`-/`)
 

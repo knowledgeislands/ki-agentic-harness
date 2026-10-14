@@ -14,7 +14,7 @@ const DEPENDENCY = 'ki-work-roadmap:work-identifiers'
 const RESTATING = [
   'change-management/ki-work-roadmap',
   'keystone/ki-repo',
-  'change-management/ki-work-housekeeping',
+  'change-management/ki-work-recurring',
   'governance/ki-decision-records',
   'governance/ki-specs',
   'change-management/ki-accept',

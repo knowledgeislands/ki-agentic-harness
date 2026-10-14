@@ -24,7 +24,7 @@ Streams/
   Trades/          # only when a future KB trade placement is adopted
 ```
 
-`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project with a `Projects.md` index, and one note per Initiative with an `Initiatives.md` index. They hold no work records, and their notes link upwards only: a note names no work record and carries no dated `## Update` section, because each record names its Project or Initiative and `ki` views list the records. AUDIT fails a Project or Initiative note, or either index note, that names a work-record identifier or carries an `## Update` section. Decision Record identifiers are not work records. A registry note that holds a `ki-design-loop` design folder is the folder note `<slug>/<slug>.md`, and AUDIT checks it the same way; the temporary artefacts in its `design/` folder are not registry notes and are not checked. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
+`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project with a `Projects.md` index, and one note per Initiative with an `Initiatives.md` index. They hold no work records, and their notes link upwards only: a note names no work record and carries no dated `## Update` section, because each record names its Project or Initiative and `ki` views list the records. AUDIT fails a Project or Initiative note, or either index note, that names a work-record identifier or carries an `## Update` section. Decision Record identifiers are not work records. A registry note that holds a `ki-pmo-design` design folder is the folder note `<slug>/<slug>.md`, and AUDIT checks it the same way; the temporary artefacts in its `design/` folder are not registry notes and are not checked. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
 
 The container does not prescribe a topical-folder or `groups` vocabulary. Where an owning adapter supports topical metadata, the receiving base chooses its vocabulary. That metadata never replaces an operational area or changes an identifier.
 
@@ -50,7 +50,7 @@ Explicit human approval is required before a captured record leaves triage or is
 
 ## Recurring Activities
 
-Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). Each active Activity names the Initiative that is its home. An Activity with the `housekeeping` profile uses `ki-work-housekeeping` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
+Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). Each active Activity names the Initiative that is its home. An Activity with the `housekeeping` profile uses `ki-work-recurring` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
 
 A due run is a linked ordinary roadmap record in `Streams/Roadmap/`. Its horizon and lifecycle remain record metadata; it is not moved into a Streams state folder.
 
@@ -65,7 +65,7 @@ A due run is a linked ordinary roadmap record in `Streams/Roadmap/`. Its horizon
 For each retained legacy record, the receiving base decides deliberately whether it is:
 
 1. finite forward work → a flat `Streams/Roadmap/` record;
-2. a recurring obligation → one Activity note in the configured Activity collection, using the `ki-work-housekeeping` profile when its recurring-work lifecycle applies;
+2. a recurring obligation → one Activity note in the configured Activity collection, using the `ki-work-recurring` profile when its recurring-work lifecycle applies;
 3. durable knowledge → a canonical `Admin/`, `Pillars/`, or `Resources/` note; or
 4. obsolete working material → retained or pruned through explicit owner approval.
 

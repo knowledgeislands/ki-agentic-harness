@@ -10,7 +10,7 @@ The [work-item format](../../ki-work-roadmap/references/standards-work-item-form
 
 The [roadmap lifecycle and trade-retention rule](../../ki-work-roadmap/references/standards-repository-roadmaps.md#work-item-discipline) is normative for closure, selected pruning, and completion-observation retention.
 
-The [housekeeping template state machine](../../ki-work-housekeeping/references/standards-housekeeping.md#due-run-procedure) is normative for template shape and the division between spawning and successful completion.
+The [housekeeping template state machine](../../ki-work-recurring/references/standards-recurring-work.md#due-run-procedure) is normative for template shape and the division between spawning and successful completion.
 
 ## Last review
 

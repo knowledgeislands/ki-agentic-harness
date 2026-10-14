@@ -17,11 +17,11 @@ purpose: upkeep
 
 ## Goal
 
-Assess whether this repository remains coherent, useful and directed towards its purpose, using the master `ki-repo` REVIEW checklist. Weekly and ad-hoc invocations share this definition; `ki-work-housekeeping` owns admission and successful-run reconciliation.
+Assess whether this repository remains coherent, useful and directed towards its purpose, using the master `ki-repo` REVIEW checklist. Weekly and ad-hoc invocations share this definition; `ki-work-recurring` owns admission and successful-run reconciliation.
 
 ## Procedure
 
-1. Before adoption, apply `ki-work-housekeeping`'s stock-review adoption rules: reconcile equivalent reviews, replace the example identity, agree scope, budget and evidence destination, and retain the pause until explicitly enabled. No external scheduler is required.
+1. Before adoption, apply `ki-work-recurring`'s stock-review adoption rules: reconcile equivalent reviews, replace the example identity, agree scope, budget and evidence destination, and retain the pause until explicitly enabled. No external scheduler is required.
 2. Before each run, check the shared active-run reservation. Reuse or report an unfinished run rather than duplicating it. Admit an ad-hoc run through the same guarded lifecycle with explicit authority; do not bypass a pause or falsify the due date.
 3. Complete the `ki-repo` REVIEW invocation with the admitted revision, purpose, applicable checklist sections, depth/budget and last-reviewed baseline. State any missing baseline and evidence gaps. Bound weekly scope around material change and unresolved findings; use a separately agreed deeper scope when needed.
 4. Perform the read-only REVIEW assessment. Cover purpose, consolidation, drift, learning and possible repositioning, redirection or retirement through the relevant master-checklist sections. Include the `ki-decision-records` CONSOLIDATE assessment on every run, so its record-by-record disposition reaches the owner each cadence. Reconcile existing work and deeper reviews before proposing new findings or work. Do not substitute audit/conform output for judgement.

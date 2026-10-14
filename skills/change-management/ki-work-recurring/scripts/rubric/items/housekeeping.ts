@@ -5,7 +5,7 @@ export const HOUSE: RubricFamily<HousekeepingRubricContext, HousekeepingRubricCo
   code: 'HOUSE',
   title: 'housekeeping templates',
   description: 'Template placement, identity, lifecycle, calendar and change-volume scheduling, and spawn fields.',
-  standard: 'standards-housekeeping.md',
+  standard: 'standards-recurring-work.md',
   selectContext: (context) => context.templates,
   items: [
     {
@@ -13,7 +13,7 @@ export const HOUSE: RubricFamily<HousekeepingRubricContext, HousekeepingRubricCo
       title: 'template contract',
       description:
         'Each recurring definition is a Project template or an opted-in KB Activity with a safe location, unique identity, controlled lifecycle, calendar cadence, optional commit threshold and reviewed revision, and spawn fields; no duplicate Streams template is scheduled.',
-      sources: ['standards-housekeeping.md'],
+      sources: ['standards-recurring-work.md'],
       mechanical: {
         level: 'FAIL',
         remediation: {
@@ -29,7 +29,7 @@ export const HOUSE: RubricFamily<HousekeepingRubricContext, HousekeepingRubricCo
       title: 'schedule evidence',
       description:
         'Report calendar and first-parent change-volume eligibility without creating work. Missing or unverifiable reviewed-history evidence remains unknown, never a clean zero.',
-      sources: ['standards-housekeeping.md#due-run-procedure'],
+      sources: ['standards-recurring-work.md#due-run-procedure'],
       mechanical: {
         level: 'WARN',
         remediation: {

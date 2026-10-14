@@ -15,7 +15,7 @@ argument-hint: 'audit | conform | help | educate | iterate | propose | ready | r
 
 You are operating the **`Streams` zone** of a Knowledge Islands base. `Streams/` contains finite change-management work, not a second hierarchy of attention or lifecycle folders. `Streams/Roadmap/` holds flat forward-work records. Recurring obligations are Activity notes under the collection configured by `ki-repo-kb-activities`, not a separate Streams area. A future `Streams/Trades/` area may be added when the trade model needs KB-specific placement.
 
-The governing change-management skills own the records and lifecycle inside those areas: `ki-work-roadmap` owns roadmap work and `ki-trades` owns trade records. `ki-repo-kb-activities` owns recurring Activity notes; `ki-work-housekeeping` supplies their opted-in recurring-work lifecycle. This skill owns the KB container and its routing only. **Nothing reaches a canonical zone (`Admin/` — the base's own operating model — `Pillars/`, or `Resources/`) except through approved forward work** under the applicable adapter.
+The governing change-management skills own the records and lifecycle inside those areas: `ki-work-roadmap` owns roadmap work and `ki-trades` owns trade records. `ki-repo-kb-activities` owns recurring Activity notes; `ki-work-recurring` supplies their opted-in recurring-work lifecycle. This skill owns the KB container and its routing only. **Nothing reaches a canonical zone (`Admin/` — the base's own operating model — `Pillars/`, or `Resources/`) except through approved forward work** under the applicable adapter.
 
 The companion `ki-repo-kb` skill owns the five-zone model and note CRUD / routing, and **delegates the inside of `Streams/` here**; load it for anything outside this zone. This skill carries the structure and process as fixed knowledge; only a couple of store-level **bindings** come from the host base.
 
@@ -53,7 +53,7 @@ Order: `draft` → `ready` → `in-progress` → `awaiting-review` → `done`.
 
 ## Record ownership
 
-Each adapter owns its record shape. A roadmap item is a flat working record in `Streams/Roadmap/`; its ID, lifecycle, horizon, dependencies, and durable `_ISSUES.md` allocation ledger follow the roadmap standard. Its durable outputs belong in a canonical zone. A recurring Activity is the canonical definition of an adopted obligation; its due runs become separate linked roadmap records through `ki-work-housekeeping`. Never create a second definition in `Streams/Housekeeping/`.
+Each adapter owns its record shape. A roadmap item is a flat working record in `Streams/Roadmap/`; its ID, lifecycle, horizon, dependencies, and durable `_ISSUES.md` allocation ledger follow the roadmap standard. Its durable outputs belong in a canonical zone. A recurring Activity is the canonical definition of an adopted obligation; its due runs become separate linked roadmap records through `ki-work-recurring`. Never create a second definition in `Streams/Housekeeping/`.
 
 Use the owning adapter's standard rather than retaining a generic Streams record shape.
 
@@ -68,7 +68,7 @@ Almost everything is fixed above. Only these come from the host base — take de
 ## Step 1 — Load context
 
 1. Resolve the bindings: read the base's `.ki.toml` `[skills.ki-repo-kb-streams]` table and `CLAUDE.md`. Load the base's bound **process note** if it has one, for local authority and routing.
-2. For roadmap work, load the relevant flat work item and `Streams/Roadmap/_ISSUES.md` **fresh**; for recurring obligations, hand off to `ki-repo-kb-activities` and `ki-work-housekeeping`, loading the configured Activity note. Never act on a cached record.
+2. For roadmap work, load the relevant flat work item and `Streams/Roadmap/_ISSUES.md` **fresh**; for recurring obligations, hand off to `ki-repo-kb-activities` and `ki-work-recurring`, loading the configured Activity note. Never act on a cached record.
 
 ## Operating modes
 
