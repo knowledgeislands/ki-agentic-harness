@@ -1,10 +1,11 @@
 /**
  * The harness skill graph: a deterministic Archify `architecture` source derived from canonical
- * `SKILL.md` frontmatter. Nodes are skills grouped into one region per source concern; solid
+ * `SKILL.md` frontmatter. Nodes are the skills with at least one declared relationship; solid
  * edges are `ki-depends-on` composition and dashed edges are `ki-optional-depends-on`
- * augmentation. Shared-module packaging and coverage detection are not drawn.
+ * augmentation. Shared-module packaging and coverage detection are not drawn, and skills with no
+ * relationship appear only on the skill map.
  */
-import { type CapabilitySource, parseCapabilitySource } from './capability-publication.ts'
+import { type CapabilityApplicability, type CapabilitySource, parseCapabilitySource } from './capability-publication.ts'
 
 export const SKILL_GRAPH_PATH = 'docs/diagrams/skill-graph.architecture.json'
 export const SKILL_GRAPH_OUTPUT = '+/diagrams/skill-graph/skill-graph.html'
@@ -14,8 +15,7 @@ export type SkillGraphNode = {
   domain: string
   name: string
   kind: 'governance' | 'process'
-  applicability: string
-  runtimeBinding: boolean
+  applicability: CapabilityApplicability
   dependsOn: readonly string[]
   optionalDependsOn: readonly string[]
 }
@@ -27,11 +27,7 @@ export type SkillGraphOptions = {
   revision?: string
 }
 
-export type SkillGraphDraft =
-  | { state: 'in-sync' | 'missing' | 'stale'; issues: readonly string[]; expected: string }
-  | { state: 'unsafe'; issues: readonly string[]; expected?: undefined }
-
-const DOMAIN_LABELS: Readonly<Record<string, string>> = {
+export const DOMAIN_LABELS: Readonly<Record<string, string>> = {
   acquire: 'acquire',
   environment: 'environment',
   'repo-structure': 'repository structure',
@@ -53,11 +49,33 @@ const LANE = 24
 const MIN_GAP = 48
 const ORIGIN_X = 32
 const ORIGIN_Y = 48
-const ISOLATED_GAP = 144
-const ISOLATED_COLUMNS = 6
-const REGION_PAD = 24
 
-const domainLabel = (domain: string): string => DOMAIN_LABELS[domain] ?? domain.replace(/-/g, ' ')
+export const domainLabel = (domain: string): string => DOMAIN_LABELS[domain] ?? domain.replace(/-/g, ' ')
+
+/**
+ * A skill's shape is its applicability, which also fixes its kind: every process skill is
+ * invocation-only and no governance skill is. Both diagrams draw each shape as one Archify node
+ * type, so the legend reads the same on both, and name it in text so meaning never rests on
+ * colour alone.
+ */
+export const SKILL_SHAPES: Readonly<
+  Record<
+    CapabilityApplicability,
+    { type: 'security' | 'backend' | 'database' | 'frontend'; word: string; legend: string }
+  >
+> = {
+  baseline: { type: 'security', word: 'baseline', legend: 'Governance · baseline' },
+  detected: { type: 'backend', word: 'detected', legend: 'Governance · detected' },
+  'declaration-only': {
+    type: 'database',
+    word: 'declared',
+    legend: 'Governance · declared'
+  },
+  'invocation-only': { type: 'frontend', word: 'process', legend: 'Process · by name' }
+}
+
+export const shapeLegend = (): Record<string, { label: string }> =>
+  Object.fromEntries(Object.values(SKILL_SHAPES).map((shape) => [shape.type, { label: shape.legend }]))
 
 const optionalList = (content: string): readonly string[] | null => {
   const document = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1]
@@ -97,7 +115,6 @@ export const readSkillGraphNodes = (
       name: entry.name,
       kind: entry.kind,
       applicability: entry.applicability,
-      runtimeBinding: entry.runtimeBinding,
       dependsOn: entry.dependencies,
       optionalDependsOn: optional
     })
@@ -112,7 +129,7 @@ export const readSkillGraphNodes = (
 
 type Edge = { from: string; to: string; optional: boolean }
 
-const componentId = (name: string): string => name.replace(/[^a-zA-Z0-9_-]/g, '-')
+export const componentId = (name: string): string => name.replace(/[^a-zA-Z0-9_-]/g, '-')
 
 /**
  * A rooted view of one connected component. Every component of the skill graph is a tree, so each
@@ -349,10 +366,9 @@ export const buildSkillGraph = (nodes: readonly SkillGraphNode[], options: Skill
 
   const component = (node: SkillGraphNode, pos: Point): unknown => ({
     id: componentId(node.name),
-    type: node.kind === 'governance' ? 'backend' : 'frontend',
+    type: SKILL_SHAPES[node.applicability].type,
     label: node.name.replace(/^ki-/, ''),
-    sublabel: `${domainLabel(node.domain)} · ${node.kind}`,
-    ...(node.runtimeBinding ? { tag: 'runtime-bound' } : {}),
+    sublabel: `${domainLabel(node.domain)} · ${SKILL_SHAPES[node.applicability].word}`,
     sources: [{ path: node.path }],
     pos,
     size: [NODE_WIDTH, NODE_HEIGHT]
@@ -362,30 +378,7 @@ export const buildSkillGraph = (nodes: readonly SkillGraphNode[], options: Skill
     const node = byName.get(tree.name)
     if (node) components.push(component(node, [columnX(tree.col), rowY[tree.row] ?? 0]))
   }
-
-  const isolated = nodes
-    .filter((node) => !connected.has(node.name))
-    .sort((a, b) => a.domain.localeCompare(b.domain) || a.name.localeCompare(b.name))
-  const isolatedTop = (rowY[rowCount - 1] ?? ORIGIN_Y - NODE_HEIGHT) + NODE_HEIGHT + ISOLATED_GAP
-  isolated.forEach((node, index) => {
-    components.push(
-      component(node, [
-        columnX(index % ISOLATED_COLUMNS),
-        isolatedTop + Math.floor(index / ISOLATED_COLUMNS) * (NODE_HEIGHT + MIN_GAP)
-      ])
-    )
-  })
-  const boundaries =
-    isolated.length > 0
-      ? [
-          {
-            kind: 'region',
-            label: 'No declared dependencies',
-            wraps: isolated.map((node) => componentId(node.name)),
-            pad: REGION_PAD
-          }
-        ]
-      : []
+  const isolated = nodes.filter((node) => !connected.has(node.name)).length
 
   const connections = [...edges]
     .sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to))
@@ -429,10 +422,9 @@ export const buildSkillGraph = (nodes: readonly SkillGraphNode[], options: Skill
       ...(options.repositoryUrl && options.revision
         ? { repository: { url: options.repositoryUrl, provider: 'github', revision: options.revision } }
         : {}),
-      legend: { mode: 'all', entries: { backend: { label: 'Governance skill' }, frontend: { label: 'Process skill' } } }
+      legend: { mode: 'auto', entries: shapeLegend() }
     },
     components,
-    boundaries,
     connections,
     cards: [
       {
@@ -442,14 +434,14 @@ export const buildSkillGraph = (nodes: readonly SkillGraphNode[], options: Skill
           'An arrow runs downward from a skill to the skill it relies on; every skill sits above everything it relies on.',
           'A solid arrow is composition declared in ki-depends-on: selecting the skill selects its prerequisite.',
           'A dashed arrow is optional augmentation declared in ki-optional-depends-on: used only when both are active.',
-          'Every label drops the shared ki- prefix; the sublabel names the source concern under skills/ and the kind, and the region at the foot holds skills with no declared relationship either way.'
+          'Every label drops the shared ki- prefix; the sublabel names the source concern under skills/ and the shape the colour shows.'
         ]
       },
       {
         dot: 'slate',
         title: 'Generated, not drawn',
         items: [
-          `${nodes.length} skills, ${hard} composition edges, ${optional} optional edges, read from SKILL.md frontmatter.`,
+          `${nodes.length - isolated} of ${nodes.length} skills, ${hard} composition edges, ${optional} optional edges, read from SKILL.md frontmatter; the ${isolated} skills with no declared relationship appear only on the skill map.`,
           'Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic.',
           'Shared-module packaging (ki-shared-dependencies) and coverage detection (ki-detects) are not relationships and are not drawn.'
         ]
@@ -458,27 +450,5 @@ export const buildSkillGraph = (nodes: readonly SkillGraphNode[], options: Skill
   }
 }
 
-/** The committed text form of the graph. */
+/** The committed text form of a generated diagram. */
 export const renderSkillGraph = (graph: unknown): string => `${JSON.stringify(graph, null, 2)}\n`
-
-const withoutRevision = (text: string): string => text.replace(/"revision": "[0-9a-f]{40}"/, '"revision": "<revision>"')
-
-/**
- * Compare the committed graph with the expected rendering. The traced revision changes on every
- * commit without changing the graph, so it is ignored; everything else must match byte for byte.
- */
-export const prepareSkillGraph = (
-  committed: string | undefined,
-  sources: readonly CapabilitySource[],
-  options: SkillGraphOptions = {}
-): SkillGraphDraft => {
-  const { nodes, issues } = readSkillGraphNodes(sources)
-  if (issues.length > 0) return { state: 'unsafe', issues }
-  const expected = renderSkillGraph(buildSkillGraph(nodes, options))
-  if (committed === undefined) return { state: 'missing', issues: [], expected }
-  return {
-    state: withoutRevision(committed) === withoutRevision(expected) ? 'in-sync' : 'stale',
-    issues: [],
-    expected
-  }
-}

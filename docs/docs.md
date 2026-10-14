@@ -40,7 +40,7 @@ The harness retains the underlying `SKILL.md` files, generated capability catalo
 
 ### Diagrams — the _shape_
 
-[`diagrams/`](diagrams) holds this repository's living Archify diagrams with their manifest and index; `ki-diagrams` governs the layout and freshness rules. The skill graph there is generated from skill frontmatter by `ki-repo-harness`, so it is regenerated, never drawn.
+[`diagrams/`](diagrams) holds this repository's living Archify diagrams with their manifest and index; `ki-diagrams` governs the layout and freshness rules. The skill map and skill graph there are generated from skill frontmatter by `ki-repo-harness`, so they are regenerated, never drawn.
 
 ## Temporary working documents
 

@@ -1,11 +1,20 @@
 # Living diagrams manifest: one table per diagram, keyed by its slug.
 # See the ki-diagrams standard for each field.
 
+[skill-map]
+type = "architecture"
+question = "What skills does the harness hold, in which source concern does each live, and what shape is each?"
+audience = "Skill authors, reviewers and newcomers orienting themselves in the collection"
+traced = ["skills/*/*/SKILL.md"]
+stale_when = "a skill is added, moved between concerns, renamed or removed, or its ki-kind or ki-applicability changes"
+regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
+last_checked = "e83d7b13fdf6b1aec5aae1f7baeb201b384aff44"
+
 [skill-graph]
 type = "architecture"
 question = "Which skills rely on which other skills, and is each reliance composition or optional augmentation?"
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
-stale_when = "a skill is added, renamed or removed, or a ki-depends-on or ki-optional-depends-on declaration changes"
+stale_when = "a skill is added, moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from SKILL.md frontmatter, then finalize at showcase quality with --repo-root and re-export the SVG. Do not hand-draw it."
-last_checked = "a85d00624199316e26a7e6c66acee340e1b8eabc"
+last_checked = "e83d7b13fdf6b1aec5aae1f7baeb201b384aff44"

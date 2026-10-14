@@ -1,22 +1,23 @@
 #!/usr/bin/env bun
 /**
- * Purpose: Regenerate or check the harness skill graph, the Archify architecture source derived from skill frontmatter.
+ * Purpose: Regenerate or check the harness skill map and skill graph, the Archify architecture sources derived from
+ * skill frontmatter and the concern layout.
  * Run: bun scripts/skill-graph.ts --help
  * Boundary: Reads every `skills/<concern>/<skill>/SKILL.md` and the `.ki.toml` repository identity of one harness
- * checkout; writes only `docs/diagrams/skill-graph.architecture.json`, never the SVG, and runs neither Archify nor Git
- * beyond a read-only `rev-parse HEAD`.
+ * checkout; writes only `docs/diagrams/skill-map.architecture.json` and `docs/diagrams/skill-graph.architecture.json`,
+ * never an SVG, and runs neither Archify nor Git beyond a read-only `rev-parse HEAD`.
  *
  * Usage: bun scripts/skill-graph.ts [--check | --write] [--repository <path>]
  *
- * `--check` (default) exits 1 when the committed graph is missing or differs from the frontmatter-derived rendering,
- * ignoring only the traced revision. `--write` replaces it. `ki repo conform --skill ki-repo-harness` performs the same
+ * `--check` (default) exits 1 when either committed source is missing or differs from the frontmatter-derived rendering,
+ * ignoring only the traced revision. `--write` replaces both. `ki repo conform --skill ki-repo-harness` performs the same
  * write under CAP-4; this script is the direct form the diagrams manifest cites. After a write, finalize and re-export
- * the SVG as the ki-diagrams standard describes.
+ * each SVG as the ki-diagrams standard describes.
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
-import { prepareSkillGraph, SKILL_GRAPH_PATH } from './rubric/contexts/skill-graph.ts'
+import { prepareSkillDiagram, SKILL_DIAGRAMS } from './rubric/contexts/skill-diagrams.ts'
 
 const USAGE = 'usage: bun scripts/skill-graph.ts [--check | --write] [--repository <path>]'
 
@@ -69,37 +70,37 @@ const main = (): number => {
   const parsed = parseArguments(process.argv.slice(2))
   if (parsed === 'help') {
     console.log(
-      `${USAGE}\n\nRegenerate (--write) or verify (--check, default) ${SKILL_GRAPH_PATH} from skill frontmatter.`
+      `${USAGE}\n\nRegenerate (--write) or verify (--check, default) ${SKILL_DIAGRAMS.map((d) => d.path).join(' and ')} from skill frontmatter.`
     )
     return 0
   }
   const { mode, repository } = parsed
-  const target = join(repository, SKILL_GRAPH_PATH)
-  const committed = existsSync(target) ? readFileSync(target, 'utf8') : undefined
-  const draft = prepareSkillGraph(committed, skillSources(repository), {
-    repositoryUrl: repositoryUrl(repository),
-    revision: revision(repository)
-  })
-  if (draft.state === 'unsafe') {
-    for (const issue of draft.issues) console.error(`skill-graph: ${issue}`)
-    return 1
+  const sources = skillSources(repository)
+  const options = { repositoryUrl: repositoryUrl(repository), revision: revision(repository) }
+  let status = 0
+  for (const diagram of SKILL_DIAGRAMS) {
+    const target = join(repository, diagram.path)
+    const committed = existsSync(target) ? readFileSync(target, 'utf8') : undefined
+    const draft = prepareSkillDiagram(diagram, committed, sources, options)
+    if (draft.state === 'unsafe') {
+      for (const issue of draft.issues) console.error(`skill-graph: ${issue}`)
+      return 1
+    }
+    if (mode === 'write') {
+      mkdirSync(dirname(target), { recursive: true })
+      writeFileSync(target, draft.expected)
+      console.log(
+        `skill-graph: wrote ${diagram.path} (${draft.state === 'in-sync' ? 'unchanged apart from revision' : draft.state})`
+      )
+    } else if (draft.state === 'in-sync') console.log(`skill-graph: ${diagram.path} is in sync with skill frontmatter`)
+    else {
+      console.error(
+        `skill-graph: ${diagram.path} is ${draft.state}; run with --write, then finalize and re-export the SVG`
+      )
+      status = 1
+    }
   }
-  if (mode === 'write') {
-    mkdirSync(dirname(target), { recursive: true })
-    writeFileSync(target, draft.expected)
-    console.log(
-      `skill-graph: wrote ${SKILL_GRAPH_PATH} (${draft.state === 'in-sync' ? 'unchanged apart from revision' : draft.state})`
-    )
-    return 0
-  }
-  if (draft.state === 'in-sync') {
-    console.log(`skill-graph: ${SKILL_GRAPH_PATH} is in sync with skill frontmatter`)
-    return 0
-  }
-  console.error(
-    `skill-graph: ${SKILL_GRAPH_PATH} is ${draft.state}; run with --write, then finalize and re-export the SVG`
-  )
-  return 1
+  return status
 }
 
 if (import.meta.main) {

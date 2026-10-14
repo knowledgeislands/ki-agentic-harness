@@ -13,7 +13,7 @@ import {
   prepareCapabilityPublication
 } from './capability-publication.ts'
 import { prepareRootCapabilitySummary, type RootCapabilitySummaryDraft } from './root-capability-summary.ts'
-import { prepareSkillGraph, SKILL_GRAPH_PATH, type SkillGraphDraft } from './skill-graph.ts'
+import { prepareSkillDiagram, SKILL_DIAGRAMS, type SkillDiagramDraft } from './skill-diagrams.ts'
 
 export const HARNESS_PARTS = ['skills', 'subagents', 'evals', 'hooks'] as const
 export type HarnessPart = (typeof HARNESS_PARTS)[number]
@@ -73,10 +73,11 @@ export type HarnessRootCapabilitySummaryContext = {
   requestUpdate?: () => void
 }
 
-export type HarnessSkillGraphContext = {
+export type HarnessSkillDiagramContext = {
   repository: string
+  path: string
   /** `not-applicable` when the repository does not declare `ki-diagrams`. */
-  state: SkillGraphDraft['state'] | 'not-applicable'
+  state: SkillDiagramDraft['state'] | 'not-applicable'
   issues: readonly string[]
   requestUpdate?: () => void
 }
@@ -94,7 +95,7 @@ export type HarnessRubricContext = {
   rubric: RubricPublicationContext
   capabilityPublication: HarnessCapabilityPublicationContext
   rootCapabilitySummary: HarnessRootCapabilitySummaryContext
-  skillGraph: HarnessSkillGraphContext
+  skillDiagrams: readonly HarnessSkillDiagramContext[]
   layout: HarnessLayoutContext
   config: HarnessConfigContext
   skills: HarnessSkillsContext
@@ -280,26 +281,27 @@ export const createHarnessSession = ({
     : prepareRootCapabilitySummary(rootReadme, capabilityDraft.counts, capabilityIssues)
   let rootCapabilitySummaryRequested = false
   const diagramsDeclared = configContent !== null && hasTomlTable(configContent, 'ki-diagrams')
-  const skillGraphPath = join(root, SKILL_GRAPH_PATH)
-  const skillGraphState = state === 'physical' ? pathState(skillGraphPath) : 'missing'
-  let skillGraphDraft: SkillGraphDraft | undefined
-  if (diagramsDeclared) {
-    if (skillGraphState === 'missing' || skillGraphState === 'file') {
-      let committed: string | undefined
+  const diagramOptions = diagramsDeclared
+    ? { repositoryUrl: repositoryUrl(configContent), revision: headRevision(root) }
+    : {}
+  const skillDiagramDrafts = SKILL_DIAGRAMS.map((diagram): SkillDiagramDraft | undefined => {
+    if (!diagramsDeclared) return undefined
+    const diagramPath = join(root, diagram.path)
+    const diagramState = state === 'physical' ? pathState(diagramPath) : 'missing'
+    let draft: SkillDiagramDraft
+    if (diagramState === 'missing' || diagramState === 'file') {
       try {
-        committed = skillGraphState === 'file' ? readFileSync(skillGraphPath, 'utf8') : undefined
-        skillGraphDraft = prepareSkillGraph(committed, capabilitySources, {
-          repositoryUrl: repositoryUrl(configContent),
-          revision: headRevision(root)
-        })
+        const committed = diagramState === 'file' ? readFileSync(diagramPath, 'utf8') : undefined
+        draft = prepareSkillDiagram(diagram, committed, capabilitySources, diagramOptions)
       } catch {
-        skillGraphDraft = { state: 'unsafe', issues: [`${SKILL_GRAPH_PATH} could not be read`] }
+        draft = { state: 'unsafe', issues: [`${diagram.path} could not be read`] }
       }
-    } else skillGraphDraft = { state: 'unsafe', issues: [`${SKILL_GRAPH_PATH} is not a physical regular file`] }
-    if (skillGraphDraft.state !== 'unsafe' && capabilitySourceIssues.length > 0)
-      skillGraphDraft = { state: 'unsafe', issues: capabilitySourceIssues }
-  }
-  let skillGraphRequested = false
+    } else draft = { state: 'unsafe', issues: [`${diagram.path} is not a physical regular file`] }
+    return draft.state !== 'unsafe' && capabilitySourceIssues.length > 0
+      ? { state: 'unsafe', issues: capabilitySourceIssues }
+      : draft
+  })
+  const skillDiagramsRequested = new Set<string>()
   const parts = HARNESS_PARTS.map((name) => {
     const partState = state === 'physical' ? pathState(join(root, name)) : 'missing'
     return {
@@ -338,21 +340,22 @@ export const createHarnessSession = ({
           }
         : {})
     },
-    skillGraph: {
-      repository: root,
-      state: skillGraphDraft?.state ?? 'not-applicable',
-      issues: skillGraphDraft?.issues ?? [],
-      ...(mode === 'conform' &&
-      skillGraphDraft !== undefined &&
-      skillGraphDraft.state !== 'unsafe' &&
-      skillGraphDraft.state !== 'in-sync'
-        ? {
-            requestUpdate: () => {
-              skillGraphRequested = true
+    skillDiagrams: SKILL_DIAGRAMS.map((diagram, index) => {
+      const draft = skillDiagramDrafts[index]
+      return {
+        repository: root,
+        path: diagram.path,
+        state: draft?.state ?? 'not-applicable',
+        issues: draft?.issues ?? [],
+        ...(mode === 'conform' && draft !== undefined && draft.state !== 'unsafe' && draft.state !== 'in-sync'
+          ? {
+              requestUpdate: () => {
+                skillDiagramsRequested.add(diagram.path)
+              }
             }
-          }
-        : {})
-    },
+          : {})
+      }
+    }),
     layout: {
       repository: root,
       repositoryState: state,
@@ -417,12 +420,11 @@ export const createHarnessSession = ({
         writes.push({ path: 'skills/README.md', content: capabilityDraft.merged })
       if (rootCapabilitySummaryRequested && rootCapabilitySummaryDraft.merged !== undefined)
         writes.push({ path: 'README.md', content: rootCapabilitySummaryDraft.merged })
-      if (skillGraphRequested && skillGraphDraft !== undefined && skillGraphDraft.state !== 'unsafe')
-        writes.push({
-          path: SKILL_GRAPH_PATH,
-          content: skillGraphDraft.expected,
-          create: skillGraphDraft.state === 'missing'
-        })
+      SKILL_DIAGRAMS.forEach((diagram, index) => {
+        const draft = skillDiagramDrafts[index]
+        if (skillDiagramsRequested.has(diagram.path) && draft !== undefined && draft.state !== 'unsafe')
+          writes.push({ path: diagram.path, content: draft.expected, create: draft.state === 'missing' })
+      })
       return { writes }
     }
   }

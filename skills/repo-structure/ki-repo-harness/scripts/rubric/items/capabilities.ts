@@ -1,19 +1,18 @@
-import { AUTOMATIC_REMEDIATION, type RubricFamily, type RubricItem } from '../../shared/rubric.ts'
+import { AUTOMATIC_REMEDIATION, type AuditOutcome, type RubricFamily, type RubricItem } from '../../shared/rubric.ts'
 import type {
   HarnessCapabilityPublicationContext,
   HarnessReviewContext,
   HarnessRootCapabilitySummaryContext,
   HarnessRubricContext,
-  HarnessSkillGraphContext
+  HarnessSkillDiagramContext
 } from '../contexts/harness.ts'
-import { SKILL_GRAPH_PATH } from '../contexts/skill-graph.ts'
 
 const STANDARD = ['standards-compatible-harness.md#capability-publication'] as const
 
 type CapabilitiesContext = HarnessReviewContext & {
   publication: HarnessCapabilityPublicationContext
   rootSummary: HarnessRootCapabilitySummaryContext
-  skillGraph: HarnessSkillGraphContext
+  skillDiagrams: readonly HarnessSkillDiagramContext[]
 }
 
 const CAP_1: RubricItem<CapabilitiesContext> = {
@@ -124,45 +123,48 @@ const CAP_3: RubricItem<CapabilitiesContext> = {
 
 const CAP_4: RubricItem<CapabilitiesContext> = {
   code: 'CAP-4',
-  title: 'Generated skill graph is exact',
+  title: 'Generated skill diagrams are exact',
   description:
-    'A harness that adopts `ki-diagrams` publishes `docs/diagrams/skill-graph.architecture.json`, the Archify architecture source derived deterministically from every skill’s `ki-depends-on` and `ki-optional-depends-on` frontmatter: one node per skill, solid composition edges, dashed optional edges, and one region at the foot for skills with no declared relationship. AUDIT compares the committed source with that rendering, ignoring only the traced revision; CONFORM rewrites it. The SVG beside it follows through the `ki-diagrams` refresh procedure.',
+    'A harness that adopts `ki-diagrams` publishes two Archify architecture sources derived deterministically from `SKILL.md` frontmatter and the `skills/<concern>/<skill>/` layout. `docs/diagrams/skill-map.architecture.json` draws one region per source concern with each skill in the shape its `ki-applicability` declares; `docs/diagrams/skill-graph.architecture.json` draws the skills that have a declared relationship, with solid `ki-depends-on` composition edges and dashed `ki-optional-depends-on` edges. AUDIT compares each committed source with its rendering, ignoring only the traced revision; CONFORM rewrites it. The SVG beside each follows through the `ki-diagrams` refresh procedure.',
   sources: STANDARD,
   mechanical: {
     level: 'FAIL',
     remediation: AUTOMATIC_REMEDIATION,
     audit: {
       phase: 'DERIVED',
-      run: ({ skillGraph }) => {
-        const subject = SKILL_GRAPH_PATH
-        if (skillGraph.state === 'not-applicable')
+      run: ({ skillDiagrams }) => {
+        if (skillDiagrams.every((diagram) => diagram.state === 'not-applicable'))
           return [
             {
               status: 'NOT_APPLICABLE',
-              message: 'The repository does not declare ki-diagrams, so no skill graph is published.',
+              message: 'The repository does not declare ki-diagrams, so no skill diagrams are published.',
+              subject: 'docs/diagrams/'
+            }
+          ]
+        return skillDiagrams.flatMap((diagram): AuditOutcome[] => {
+          const subject = diagram.path
+          if (diagram.state === 'in-sync')
+            return [{ status: 'PASS', message: 'The generated diagram is exact.', subject }]
+          if (diagram.state === 'unsafe' || diagram.state === 'not-applicable')
+            return diagram.issues.map((message) => ({ status: 'VIOLATION', message, subject }))
+          return [
+            {
+              status: 'VIOLATION',
+              message:
+                diagram.state === 'missing'
+                  ? 'The generated diagram is missing.'
+                  : 'The generated diagram differs from canonical SKILL.md frontmatter; regenerate it, then finalize and re-export the SVG.',
               subject
             }
           ]
-        if (skillGraph.state === 'in-sync')
-          return [{ status: 'PASS', message: 'The generated skill graph is exact.', subject }]
-        if (skillGraph.state === 'unsafe')
-          return skillGraph.issues.map((message) => ({ status: 'VIOLATION', message, subject }))
-        return [
-          {
-            status: 'VIOLATION',
-            message:
-              skillGraph.state === 'missing'
-                ? 'The generated skill graph is missing.'
-                : 'The generated skill graph differs from canonical SKILL.md dependency frontmatter; regenerate it, then finalize and re-export the SVG.',
-            subject
-          }
-        ]
+        })
       }
     },
     conform: {
       phase: 'DERIVED',
-      run: ({ skillGraph }) => {
-        if (skillGraph.state === 'missing' || skillGraph.state === 'stale') skillGraph.requestUpdate?.()
+      run: ({ skillDiagrams }) => {
+        for (const diagram of skillDiagrams)
+          if (diagram.state === 'missing' || diagram.state === 'stale') diagram.requestUpdate?.()
       }
     }
   }
@@ -177,7 +179,7 @@ export const CAP: RubricFamily<HarnessRubricContext, CapabilitiesContext> = {
     ...context.review,
     publication: context.capabilityPublication,
     rootSummary: context.rootCapabilitySummary,
-    skillGraph: context.skillGraph
+    skillDiagrams: context.skillDiagrams
   }),
   items: [CAP_1, CAP_2, CAP_3, CAP_4]
 }
