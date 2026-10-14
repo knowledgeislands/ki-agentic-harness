@@ -41,3 +41,6 @@ yarn-error.log*
 
 # Repository-specific log directory
 logs
+
+# Local diagram builds, rebuilt by `bun run self:diagrams:html` under the ki-diagrams standard
++/diagrams/
