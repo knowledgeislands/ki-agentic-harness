@@ -1,9 +1,9 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { OutcomeContext, PmoRubricContext } from '../contexts/pmo.ts'
+import type { PmoRubricContext } from '../contexts/pmo.ts'
 
 const SOURCE = 'standards-pmo.md'
 
-const PMO_1: RubricItem<OutcomeContext> = {
+const PMO_1: RubricItem<PmoRubricContext> = {
   code: 'PMO-1',
   title: 'the master checkpoint belongs to the Capital',
   description:
@@ -16,11 +16,11 @@ const PMO_1: RubricItem<OutcomeContext> = {
       guidance:
         'Open the master thread in the Capital so it creates `_state-of-play.md` there, and remove a master checkpoint from any repository that is not its own capital through an explicit `ki-checkpoint` REMOVE.'
     },
-    audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
+    audit: { phase: 'INSPECT', run: ({ master }) => master.outcomes }
   }
 }
 
-const PMO_2: RubricItem<OutcomeContext> = {
+const PMO_2: RubricItem<PmoRubricContext> = {
   code: 'PMO-2',
   title: 'Project thread checkpoints resolve in the registry',
   description:
@@ -33,11 +33,11 @@ const PMO_2: RubricItem<OutcomeContext> = {
       guidance:
         'Rename the checkpoint or correct its label through an explicit `ki-checkpoint` UPDATE, or register the Project or Initiative under the `ki-work` registry standard.'
     },
-    audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
+    audit: { phase: 'INSPECT', run: ({ labels }) => labels.outcomes }
   }
 }
 
-const PMO_3: RubricItem<OutcomeContext> = {
+const PMO_3: RubricItem<PmoRubricContext> = {
   code: 'PMO-3',
   title: 'active Project threads are within the cap',
   description: 'At most three or four Project thread checkpoints are active at once, plus the master thread.',
@@ -49,11 +49,11 @@ const PMO_3: RubricItem<OutcomeContext> = {
       guidance:
         'Have the master thread close or queue Project threads until the active list is within the cap, removing a closed checkpoint through an explicit `ki-checkpoint` REMOVE.'
     },
-    audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
+    audit: { phase: 'INSPECT', run: ({ cap }) => cap.outcomes }
   }
 }
 
-const PMO_4: RubricItem<OutcomeContext> = {
+const PMO_4: RubricItem<PmoRubricContext> = {
   code: 'PMO-4',
   title: 'coordinators stay responsive and threads stay current',
   description:
@@ -70,7 +70,7 @@ const PMO_4: RubricItem<OutcomeContext> = {
   }
 }
 
-const PMO_5: RubricItem<OutcomeContext> = {
+const PMO_5: RubricItem<PmoRubricContext> = {
   code: 'PMO-5',
   title: 'threads park tangents, link records and keep checkouts current',
   description:
@@ -87,7 +87,7 @@ const PMO_5: RubricItem<OutcomeContext> = {
   }
 }
 
-const PMO_6: RubricItem<OutcomeContext> = {
+const PMO_6: RubricItem<PmoRubricContext> = {
   code: 'PMO-6',
   title: 'threads report in the three forms, recap since the mark and refresh their guidance',
   description:
@@ -111,14 +111,12 @@ const PMO_6: RubricItem<OutcomeContext> = {
   }
 }
 
-export const PMO: RubricFamily<PmoRubricContext, OutcomeContext> = {
+export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
   code: 'PMO',
   title: 'Coordinating threads',
   description:
     'The master and Project thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
   standard: SOURCE,
-  selectContext: (context) => ({
-    outcomes: [...context.master.outcomes, ...context.labels.outcomes, ...context.cap.outcomes]
-  }),
+  selectContext: (context) => context,
   items: [PMO_1, PMO_2, PMO_3, PMO_4, PMO_5, PMO_6]
 }
