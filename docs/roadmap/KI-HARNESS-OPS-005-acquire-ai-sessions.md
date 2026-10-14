@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-10-14T07:18:50Z
+updated_at: 2026-10-14T13:45:43Z
 ---
 
 ## Goal
@@ -190,6 +190,13 @@ Still open:
 
 The record stays `in-progress`.
 
+### Tower Game receiver move - 2026-10-14
+
+On 2026-10-14 Kris decided to move The Tower Game's 15 conversations to `personal`. The 15 packages carrying `g-p-69ff7f83be248191a5cae112d3ff706f` moved from `captures/_review/` to `captures/personal/chatgpt/account-export-2026-09-22/` with `git mv`. Package contents, source hashes and checksums are unchanged. The receiver checkpoint and converter bind the project to `personal`, and the checkpoint records the move. Each package's own record still carries its staging-time `territory_key: _review`, because that record is checksummed acquisition evidence.
+
+- **Staged counts:** `personal` now holds 100 and `_review` holds the 6 unprojected conversations. The total is still 334, and every package verifies against its checksums from a clean checkout.
+- **Still open:** the Spirituality binding, which stays under separate review, and the other items listed above.
+
 ### Acquisition and housekeeping
 
 Acquisition moves a complete selected source into a receiving repository with enough fidelity to support later decisions without returning to the provider. Housekeeping decides what can be retained, archived, or removed after that verified move. The same read-only MCP may support both processes, but one skill name and one lifecycle must not collapse their different intent or authority.
@@ -232,15 +239,16 @@ Kris authorised these bindings on 2026-10-14 in the knowledge-acquisition run ('
 | `g-p-6a520a14adc88191bd2da11f31b8b70e` | Personal - Travel Ideas | Kit: Travel Ideas; Travel Ideas | `personal` | 1 |
 | `g-p-6a9e4443e6988191bf124428cabfd330` | Personal - Festivals | Kit: Festivals; Festivals | `personal` | 6 |
 | `g-p-67fc42f7b8d08191af805b83daeb3ef7` | Personal - Tattoos | Kit: Tattoos; Tattoos | `personal` | 13 |
-| `g-p-69ff7f83be248191a5cae112d3ff706f` | Personal - The Tower Game | Kit: The Tower Game; The Tower Game | `_review` (unresolved) | 15 |
+| `g-p-69ff7f83be248191a5cae112d3ff706f` | Personal - The Tower Game | Kit: The Tower Game; The Tower Game | `personal` | 15 |
 
 The 328 project conversations and the 6 outside any project total 334, matching the export. The 6 unprojected conversations route to `_review`.
 
-Three bindings are provisional:
+Two bindings are provisional:
 
-- **The Tower Game** - its receiver was left unresolved above, pending a creative or game repository. The mechanical `Kit:` to `Personal -` rename does not settle it, so it stages to `_review` until Kris chooses.
 - **Spirituality** - it routes to `personal` by its current name, but the 2026-10-12 rename report offered `Sacred Inquiry - Spirituality` as an option.
 - **Equal Remedy** - the earlier proposal to rename it `Legal: Financial Remedy` and route it to Legal was not applied. Kris renamed it `Equal Remedy: General`, and its conversation titles concern the Equal Remedy organisation, so it binds to `equal-remedy`.
+
+The Tower Game first staged to `_review`, because its receiver was left unresolved above pending a creative or game repository. On 2026-10-14 Kris decided to move its 15 conversations to `personal`, so it is now bound there.
 
 `Engineering` and its proposed `Knowledge Islands: Engineering` name match none of the 17 identifiers, so no export conversation carries them.
 
