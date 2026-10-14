@@ -213,7 +213,7 @@ const extractSection = (body: string, heading: string): string | null => {
 const extractBodyModes = (section: string | null): Set<string> => {
   const modes = new Set<string>()
   if (!section) return modes
-  for (const match of section.matchAll(/^###\s+Mode\s+(\w+)/gim)) modes.add((match[1] as string).toUpperCase())
+  for (const match of section.matchAll(/^###\s+Mode\s+([\w-]+)/gim)) modes.add((match[1] as string).toUpperCase())
   let headerSeen = false
   for (const rawLine of section.split(/\r?\n/)) {
     const line = rawLine.trim()
@@ -284,7 +284,7 @@ const createKiShapeEvidence = (
     operatingModesSection: section,
     bodyModes: extractBodyModes(section),
     operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',
-    flatModeHeadings: [...stripCode(body).matchAll(/^##\s+Mode\s+(\w+)/gim)].map((match) => match[1] as string),
+    flatModeHeadings: [...stripCode(body).matchAll(/^##\s+Mode\s+([\w-]+)/gim)].map((match) => match[1] as string),
     bareModeHeadings: section
       ? [...stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim)].map((match) => (match[1] as string).trim())
       : [],

@@ -442,3 +442,21 @@ describe('structured rubric requirement', () => {
     expect(required('')).toBe(false)
   })
 })
+
+describe('mode headings', () => {
+  test('a hyphenated mode name is read whole, as the argument-hint parser reads its verb', () => {
+    const directory = createSkill('skills/ki-example')
+    writeFileSync(
+      join(directory, 'SKILL.md'),
+      validLocalSkill
+        .replace(
+          "argument-hint: 'audit | conform | educate | refresh | help'",
+          "argument-hint: 'audit | conform | educate | full-summary | refresh | help'"
+        )
+        .replace('### Mode HELP', '### Mode FULL-SUMMARY\n\nGive the whole-thread report.\n\n### Mode HELP')
+    )
+    const context = selectKiSkillsContext(createSkillRubricContext(directory).context, 'shape')
+    expect(context.skill?.bodyModes.has('FULL-SUMMARY')).toBe(true)
+    expect(context.skill?.hintVerbs).toContain('FULL-SUMMARY')
+  })
+})
