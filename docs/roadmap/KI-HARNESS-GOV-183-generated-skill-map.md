@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e83d7b13fdf6b1aec5aae1f7baeb201b384aff44
 created_at: 2026-10-14T07:11:13Z
-updated_at: 2026-10-14T07:11:13Z
+updated_at: 2026-10-14T13:43:23Z
 ---
 
 # A Generated Skill Map Beside the Skill Graph
@@ -110,6 +109,10 @@ The change is deterministic, tested and regenerated through CONFORM; it changes 
 ### Mini recap
 
 Added a generated Archify skill map grouped by concern and shape and aligned the skill graph to it, verified by the sync check, tests and three audits; open follow-ons are the single-page layout and the HTML view.
+
+## Done
+
+Accepted as done on 14 October 2026 under `ki-accept`, approved by Kris Brown in the state-of-play thread's roadmap census ('RC-ALL: approve all; ways-of-working applies the harness part'). The review packet above stands as delivered: on re-check the same day, `scripts/skill-graph.ts --check` reported both sources in sync and `ki repo audit --skill ki-diagrams` passed. The page-length concern is a follow-on, not a defect, and no single-page record is opened by this closure.
 
 ## Discussion
 
