@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: capability
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 221cc5de7d1c8ff5d8166cec763850e2de56410a
 created_at: 2026-10-14T00:05:43Z
-updated_at: 2026-10-14T13:55:00Z
+updated_at: 2026-10-14T14:11:31Z
 ---
 
 # SVG Export Through Archify's Own Chrome Route
@@ -40,7 +39,7 @@ This record was captured from Kris's answer. Kris adopted it on 2026-10-14 at ho
 
 ## Current state
 
-Delivered and awaiting review. `export-svg.ts` finds the system Google Chrome or Chromium the way Archify's gate does, launches it headless over the DevTools pipe through the harness's own `scripts/internal/chrome.ts`, opens the viewer, runs Export > SVG and keeps the download. Playwright is gone from the exporter, its tests and the `ki-diagrams` prose. Three committed SVGs re-exported byte-identical through the new route. Kris opened delivery on 2026-10-14 with "NEXT-181 - start now".
+Done. Accepted on its review packet after the Verify gates were re-run. `export-svg.ts` finds the system Google Chrome or Chromium the way Archify's gate does, launches it headless over the DevTools pipe through the harness's own `scripts/internal/chrome.ts`, opens the viewer, runs Export > SVG and keeps the download. Playwright is gone from the exporter, its tests and the `ki-diagrams` prose. Three committed SVGs re-exported byte-identical through the new route. Kris opened delivery on 2026-10-14 with "NEXT-181 - start now".
 
 ## Steps
 
@@ -135,6 +134,10 @@ Goal met: a repository that regenerates a diagram needs no package install and n
 ### Mini recap
 
 Delivered the Chrome-route exporter and its tests, reworded the `ki-diagrams` prerequisite everywhere it appeared, and verified three byte-identical exports plus the full test, type and audit gates. No concern is open. Learning routes, proposed and not promoted: the diagrams manifest's `regenerate` prompts and `skill-graph.ts`'s "finalize and re-export" hint already name no tool and need no change; `ki-diagrams` REFRESH in this repository could note that Archify's `bin/visual-check.mjs` shape is now a thing to re-check against the port at each Archify release.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above, in Kris's words: "ACCEPT-181 - accept KI-HARNESS-GOV-181 as done on its review packet". The Verify gates were re-run at acceptance: `bun run test` 1142 pass, `bunx tsc --noEmit` clean, `ki repo audit --skill ki-diagrams` 5/5 criteria with no failure (two DIAG-4 freshness warnings on the skill map and skill graph, raised by later `ki-pmo` changes to traced skills, not by this record), and `docs/diagrams/skill-graph.svg` re-exported byte-identical through the Chrome route.
 
 ## Discussion
 
