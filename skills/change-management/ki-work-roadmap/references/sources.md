@@ -10,6 +10,8 @@
 
 ## Last review
 
+2026-10-14: aligned the graduation test with the `ki-pmo` record threshold Kris set that day, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard". Under a coordinating thread the threshold decides whether a record is due; the graduation test then governs its capture.
+
 2026-09-22: clarified that proposed identifiers are not reservations; the allocating writer re-reads the applicable ledger immediately before publication and advances it with the new record.
 
 The repo-roadmap boundary uses one clean non-KB shape: flat durable work items, classified by `kind`, `purpose`, `project` or `initiative`, and `component`, and oriented from the root roadmap. A work item is enriched in place when it needs execution detail; no parallel plan record or grouping tree survives. The 2026-10-07 roadmap model, approved by Kris Brown, replaced the theme field with that classification, made triage a status, added cancellation with a resolution, and folded Waiting for and Parked into one Hold horizon. KB Streams is the native placement container and reuses this adapter's concrete record model. The source record retains directly inspectable canonical material only. Refresh on a normative change or when real repositories expose friction the current item model cannot represent cleanly.

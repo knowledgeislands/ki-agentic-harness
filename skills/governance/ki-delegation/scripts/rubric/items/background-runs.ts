@@ -58,15 +58,15 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-4',
       title: 'reports take the owner-report shape',
       description:
-        'Every agent report and thread Summary is an owner report with the sections `## Done`, `## In Progress` and `## Queries` in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block whose entries are each stacked, the tag alone on its line, a blank line, then the recommended instruction rather than a menu of the options, separated by a blank line, `---` and a blank line, with a placeholder only where the owner alone can supply the value, that is a suggestion and not approval, and no output style, proxy shaping block or communication level shortens it.',
+        'Every agent report and thread Summary is an owner report opening with the heading `# <label> · <form> at <local time>` and the plain `Project · Initiative · <window> · <state>` line beneath it, a report written before 2026-10-14 keeping its earlier heading, with the sections `## Done`, `## In Progress` and `## Queries` in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block whose entries are each stacked, the tag alone on its line, a blank line, then the recommended instruction rather than a menu of the options, separated by a blank line, `---` and a blank line, with a placeholder only where the owner alone can supply the value, that is a suggestion and not approval, and no output style, proxy shaping block or communication level shortens it.',
       sources: ['standards-background-runs.md'],
       judgment: {
         scope: 'Background-agent reports and coordinating-thread Summaries the owner selects for review.',
         prompt:
-          'Does each report carry the three owner-report sections in order with routine open matters kept out of the queries, could the owner answer each query cold by a tag that kept its meaning until resolved and send back the reply block as it stands because each entry stacks its tag over the recommended instruction and not the options, and was any section, query or reply block shortened by a style or level?',
+          'Does each report open with the `<label> · <form> at <local time>` heading and its Project, Initiative, window and state line, or an earlier heading if written before 2026-10-14, and carry the three owner-report sections in order with routine open matters kept out of the queries, could the owner answer each query cold by a tag that kept its meaning until resolved and send back the reply block as it stands because each entry stacks its tag over the recommended instruction and not the options, and was any section, query or reply block shortened by a style or level?',
         outcomes: ['conforming', 'reshape the report', 'retag queries', 'escalate to owner'],
         guidance:
-          'Restore the three owner-report sections and the reply block in full, stack each reply-block entry as its tag, a blank line and the recommended instruction in place of a one-line menu, and give each query a stable mnemonic tag, a Summary, a Need from you, a Recommendation and links.'
+          'Restore the report heading with its Project, Initiative, window and state line, the three owner-report sections and the reply block in full, stack each reply-block entry as its tag, a blank line and the recommended instruction in place of a one-line menu, and give each query a stable mnemonic tag, a Summary, a Need from you, a Recommendation and links.'
       }
     }
   ]

@@ -173,7 +173,7 @@ Goal, Context, and Boundary alone are not enough to make a record. After checkin
 - (b) it is a **decision** with an owner and a needed-by date, adopted as `kind: decide`; or
 - (c) it must **survive the session**: it is deferred, delegated, multi-step, or reviewed by someone else.
 
-Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate in its Project note's Notes section when the Project is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold.
+Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate in its Project note's Notes section when the Project is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where a coordinating thread runs under `ki-pmo`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the thread's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard".
 
 ## Migration tolerance
 

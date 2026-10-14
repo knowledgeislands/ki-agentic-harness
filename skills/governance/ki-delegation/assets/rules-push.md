@@ -8,6 +8,6 @@
 - Pushing is authorised by the decision this task cites: after the checks pass, run `git fetch` and push your own commits fast-forward only to `origin`. Never push commits you did not make without asking the owner.
 - No other remote call of any kind: no GitHub API, cloud, network or messaging call. Make no environment, scheduler or credential change. Do not read or print secrets.
 - Repository conventions (AGENTS.md, CLAUDE.md and the skills they name) govern; read them first.
-- Write the report as the owner report the background-run standard sets: `## Done`, with commit identifiers and check results; `## In Progress`; `## Queries`, ending with the copyable reply block.
+- Write the report as the owner report the background-run standard sets: the heading `# <run name> · Summary at <local time>` with the plain `Project · Initiative · since the run began · <state>` line beneath it; `## Done`, with commit identifiers and check results; `## In Progress`; `## Queries`, ending with the copyable reply block.
 - A connection-critical change - a firewall, or the configuration of a service critical for connection such as the Headroom proxy, SSH, Tailscale, the network or auth - needs a tested restore path in the task, under the standard's [connection-critical rule](../references/standards-background-runs.md#connection-critical-changes); without one, stop and report.
 - If something is ambiguous or blocked, stop and report rather than guess.

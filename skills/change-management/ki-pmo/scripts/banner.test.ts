@@ -227,6 +227,9 @@ test('the resume line is one sentence shared by the standard and the output styl
 })
 
 test('the hook line names the banner, the bracketed-state list, the thread folder and the prefilled reply block', () => {
+  expect(hook).toContain(
+    'opening with the heading # <label> · <form> at <local time> and the plain Project · Initiative · <window> · <state> line beneath it'
+  )
   expect(hook).toContain('Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner')
   expect(hook).toContain(
     'the thread type, the report form and the issued time in its top border, the label centred in its body and the mark in its bottom border'

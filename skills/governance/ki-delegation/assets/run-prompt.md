@@ -8,6 +8,6 @@
 2. <Step.>
 3. **Verify:** <the checks that prove the outcome.>
 
-**Report** to `<report path>` as an owner report: `## Done`, `## In Progress`, `## Queries` with the reply block.
+**Report** to `<report path>` as an owner report: the heading `# <run name> · Summary at <local time>`, the plain `Project · Initiative · since the run began · <state>` line, then `## Done`, `## In Progress`, `## Queries` with the reply block.
 
 Do not use background subagents. Never end your session while waiting.

@@ -50,7 +50,7 @@ Run `ki repo educate --skill ki-pmo --repo <repo>` to render the concern and rub
 
 ### Mode FULL-SUMMARY
 
-In a coordinating thread, `/ki-pmo full-summary` gives [the full summary](references/standards-pmo.md#full-summary): the banner heading with the window `since the thread began`, `## Decided` with every owner decision linked, then the whole-thread owner report with every open query in full, closing with the banner frame and the resume line. It never moves the mark.
+In a coordinating thread, `/ki-pmo full-summary` gives [the full summary](references/standards-pmo.md#full-summary): the report heading `# <label> · Full summary at <local time>` with its Project, Initiative, window and state line, window `since the thread began`, `## Decided` with every owner decision linked, then the whole-thread owner report with every open query in full, closing with the banner frame and the resume line. It never moves the mark.
 
 ### Mode HELP
 
@@ -62,7 +62,7 @@ In a coordinating thread, `/ki-pmo mark` strikes [the mark](references/standards
 
 ### Mode RECAP
 
-In a coordinating thread, `/ki-pmo recap` gives [the recap since the mark](references/standards-pmo.md#recap-since-the-mark): the banner heading with the window `since <mark>`, then the owner report with what was delivered, decided, started, stopped or blocked, and newly captured since the mark, and every open item in full, closing with the banner frame and the resume line. It does not move the mark.
+In a coordinating thread, `/ki-pmo recap` gives [the recap since the mark](references/standards-pmo.md#recap-since-the-mark): the report heading `# <label> · Recap at <local time>` with its Project, Initiative, window and state line, window `since <mark>`, then the owner report with what was delivered, decided, started, stopped or blocked, and newly captured since the mark, and every open item in full, closing with the banner frame and the resume line. It does not move the mark.
 
 ### Mode REFRESH
 
@@ -74,11 +74,11 @@ Read [the sources](references/sources.md), compare coordinating-thread practice 
 
 ### Mode SUMMARY
 
-In a coordinating thread, `/ki-pmo summary` gives [the Summary](references/standards-pmo.md#report-forms): the banner heading with the window `since your last message`, then the owner report for that window, closing with the banner frame and the resume line. A thread gives it unasked when background agents finish, when the owner returns after a gap and at a resting point.
+In a coordinating thread, `/ki-pmo summary` gives [the Summary](references/standards-pmo.md#report-forms): the report heading `# <label> · Summary at <local time>` with its Project, Initiative, window and state line, window `since your last message`, then the owner report for that window, closing with the banner frame and the resume line. A thread gives it unasked when background agents finish, when the owner returns after a gap and at a resting point.
 
 ## Notes
 
-- The owner report and Needs tags are `ki-delegation`'s; this skill restates neither. Every Summary, recap and full summary is one owner report under the shared banner heading, closing with the banner frame and the resume line, and no output style, proxy shaping block or communication level shortens its sections, its queries, its reply block or its banner.
+- The owner report and Needs tags are `ki-delegation`'s; this skill restates neither. Every Summary, recap and full summary is one owner report under the shared report heading, closing with the banner frame and the resume line, and no output style, proxy shaping block or communication level shortens its sections, its queries, its reply block or its banner.
 - The resume line reads `Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.` A re-bootstrap report closes with the same banner as a Summary.
 - The refresh rule compares `git log -1 --format=%h -- skills/change-management/ki-pmo` with the checkpoint's `ki-pmo read at <revision>` line; a checkpoint still carrying `ki-delegation read at` replaces it at its next update.
 - The openers read `under ki-pmo` and name the `state-of-play thread` or the `<project> coordination thread`; the older `under ki-delegation`, `project thread` and `territory master thread` forms are accepted and mean the same thing until every checkpoint has re-bootstrapped under the new names.
