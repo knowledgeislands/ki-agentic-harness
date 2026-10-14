@@ -61,7 +61,7 @@ const PMO_7: RubricItem<PmoRubricContext> = {
     'In every thread report `+/_THREADS/<run>/*.report.md`, each full record identifier in the prose, a work record such as `KI-HARNESS-GOV-187` or a Decision Record such as `ADR-KI-HARNESS-010`, sits inside the text of a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision. Fenced blocks, such as the reply block, and Needs tags such as `ACCEPT-181` are not checked.',
   sources: [`${SOURCE}#linking-records`],
   mechanical: {
-    level: 'WARN',
+    level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
