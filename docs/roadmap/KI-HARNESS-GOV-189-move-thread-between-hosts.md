@@ -8,7 +8,7 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/mac-studio-bootstrap/mac-studio-bootstrap.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-14T16:45:00Z
+updated_at: 2026-10-14T15:22:00Z
 ---
 
 # Move a Coordinating Thread to Another Host
