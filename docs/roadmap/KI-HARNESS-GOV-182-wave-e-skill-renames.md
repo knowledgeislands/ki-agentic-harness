@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 3beced0a5f64208cdbc01b73c99e23c3569c1716
 created_at: 2026-10-14T00:32:51Z
-updated_at: 2026-10-14T00:40:22Z
+updated_at: 2026-10-14T09:06:00Z
 ---
 
 # Rename Two Change-Management Skills and Move ki-pulse to Acquire
@@ -41,7 +40,7 @@ The design placed these renames in a naming wave after the pilot. On 2026-10-14 
 
 ## Current state
 
-Delivered on local `main` and awaiting review; the push is held because `main` also carries three commits from other sessions that are not on `origin`. See Review.
+Delivered, pushed to `origin/main` on 2026-10-14 and accepted by Kris Brown the same day. See Review and Done.
 
 ## Steps
 
@@ -124,6 +123,14 @@ Every check that ran on the pre-rename tree runs on the renamed tree with the sa
 ### Mini recap
 
 Renamed `ki-design-loop` to `ki-pmo-design` and `ki-work-housekeeping` to `ki-work-recurring`, moved `ki-pulse` to the acquire concern, regenerated every derived publication, and followed the names into `tools-ki` and `ki-principal`. Learning route, not promoted: the pre-commit gate's installed-harness resolution means a skill rename cannot be committed with its own `.ki.toml` declaration in a worktree; the declaration follows on `main`.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above.
+
+### Owner acceptance
+
+Kris's instruction to the ways-of-working background run of 2026-10-14, in these words: "After the push, mark KI-HARNESS-GOV-182 (docs/roadmap/KI-HARNESS-GOV-182-wave-e-skill-renames.md) done if its acceptance is met, commit and push." The push landed on 2026-10-14 as origin/main `e10ff14c`, after a rebase onto `b99a0883` that rewrote the thread's commit hashes; the reviewed delivery is now `ec390acf` through `d8a263d3` against baseline `3beced0a5f64208cdbc01b73c99e23c3569c1716`. Every Verify command was re-run on the pushed tree before this closure: `bun run test` 1112 pass, `bunx tsc --noEmit` clean, skill-graph check in sync, `ki repo audit` for `ki-skills`, `ki-repo-harness`, `ki-work-roadmap`, `ki-work-recurring` and `ki-diagrams` with no failures, and `tools-ki` `bun run test` 1144 pass. This records only this item's Done transition, removes its horizon and advances `updated_at`; the three Outstanding concerns above remain their owners' work and nothing here authorises pruning or any other acceptance.
 
 ## Discussion
 
