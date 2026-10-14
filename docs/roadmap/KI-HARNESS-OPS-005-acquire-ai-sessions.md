@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-10-09T21:53:46Z
+updated_at: 2026-10-14T07:18:50Z
 ---
 
 ## Goal
@@ -59,7 +59,7 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 
 - [x] Confirm that the official ChatGPT account export is available as the one-time bootstrap candidate.
 - [x] Record the export's external source-store location and archive hash, then inspect its schema, project membership, conversation identity, write-ups, and assets read-only without committing source payloads.
-- [ ] Convert only verified export evidence into the canonical `ki-chatgpt-capture` form and retain explicit omissions for every unsupported field or asset class.
+- [x] Convert only verified export evidence into the canonical `ki-chatgpt-capture` form and retain explicit omissions for every unsupported field or asset class.
 - [ ] Evaluate the hybrid incremental path: local-cache change nomination, browser retrieval of new or changed readable sessions through the isolated Obscura trial merged from `KI-HARNESS-GOV-087` (see Discussion), and periodic full-export reconciliation before browser coverage is trusted.
 - [x] Define comparable read-only provider operations for discovery, listing, faithful reading, and checkpoints.
 - [x] Implement and verify Claude, Codex, and opaque ChatGPT source adapters without source mutation.
@@ -69,7 +69,7 @@ On 2026-09-26, the user confirmed that the requested ChatGPT account export has 
 - [x] Publish `ki-acquire-chatgpt` with machine-readable adapter metadata and a clear dependency boundary with `ki-housekeeping-chatgpt`.
 - [x] Select the official ChatGPT account export as the authorised bootstrap source, keep its sensitive archive outside Git, and retain incremental acquisition as a separate gap.
 - [ ] Connect ChatGPT acquisition to a readable, authorised source that can enumerate projects and return complete conversations with their write-ups and assets.
-- [ ] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
+- [x] Stage every conversation from each selected project into its mapped repository, retaining source identity, project evidence, timestamps, content, assets, omissions, hashes, and acquisition checkpoint.
 - [ ] Represent unmapped projects, overlapping receiver mappings, missing sessions, changed sessions, and failed reads explicitly without guessing or silently dropping content.
 - [ ] Add receiver-local triage after acquisition so complete sessions can be harvested, retained as source evidence, routed onward, or marked as containing no residual knowledge.
 - [ ] Separate Claude and Codex acquisition guidance from their housekeeping skills, using exception-based full-session import rather than routine bulk import.
@@ -150,6 +150,46 @@ Read-only inspection of the delivered official account export; no payload was co
 
 **Question for Kris:** the 17 `g-p-` project identifiers need binding to project names (for example from a read-only capture of the ChatGPT project list) before routing can fail closed on immutable identity. Will you supply that inventory, or authorise a one-off read-only capture of it? Until then the conversion and staging steps stay open and this record remains `in-progress`.
 
+### Bootstrap staging checkpoint - 2026-10-14
+
+Kris answered the export question above by approving the binding and staging (knowledge-acquisition Decision 1, 2026-10-14). The bindings are under [Immutable project bindings](#immutable-project-bindings---2026-10-14). No ChatGPT or OpenAI source state changed, and no export payload entered this repository.
+
+- **Source:** the export is unchanged since inspection: its aggregate SHA-256 still matches `63bbf709...3361`.
+- **Conversion:** a converter in the receiver, `.acquire/chatgpt/account-export-2026-09-22/convert.py` (SHA-256 `f3d4e103202df91f7fba250a1b4163d42b2dc1160f882408a84cc8cbe6333def`), turns each conversation into a `ki-chatgpt-capture` tree. The existing `ki acquire import --adapter chatgpt` then emits one KEP per conversation. No `tools-ki` change was needed.
+- **Package contents:** each KEP holds:
+  - the conversation object, re-serialised, with a canonical content hash;
+  - a rendered record of the current branch and any other branches;
+  - the project-conversation relationship;
+  - available assets;
+  - front matter with source file, index and hashes;
+  - explicit omissions.
+- **Staging:** `krisb/acquire` commits `b5158e6` and `bc23689` stage all 334 conversations under `captures/<territory-key>/chatgpt/account-export-2026-09-22/`:
+
+  | Territory | Conversations |
+  | --- | --- |
+  | `personal` | 85 |
+  | `legal` | 102 |
+  | `knowledge-islands` | 55 |
+  | `humans-not-robots` | 66 |
+  | `equal-remedy` | 5 |
+  | `_review` | 21 |
+
+  The `_review` count is The Tower Game's 15 plus the 6 unprojected conversations. There were no failed reads and no overlapping mappings. All 334 packages verify against their checksums from a clean checkout. A scoped `.gitattributes` stops line-ending normalisation.
+- **Assets:** 69 referenced assets are included. 1,669 referenced asset identifiers are omitted, most of them voice-mode audio. Each omission is listed in its conversation record. One is a 174.6 MB legal PDF that exceeds the GitHub file limit, so it stays only in the source store.
+- **Unreferenced exports:** 77 export files, about 106 MB, are referenced by no conversation. They are listed with hashes in the receiver checkpoint `.acquire/chatgpt/account-export-2026-09-22/checkpoint.json` and not staged.
+
+Still open:
+
+- confirming the provisional Tower Game and Spirituality bindings;
+- deciding what happens to the 77 unreferenced export files;
+- the incremental source and project enumeration;
+- changed-session handling;
+- receiver-local triage;
+- one verified complete project move;
+- the retirement gate.
+
+The record stays `in-progress`.
+
 ### Acquisition and housekeeping
 
 Acquisition moves a complete selected source into a receiving repository with enough fidelity to support later decisions without returning to the provider. Housekeeping decides what can be retained, archived, or removed after that verified move. The same read-only MCP may support both processes, but one skill name and one lifecycle must not collapse their different intent or authority.
@@ -169,6 +209,40 @@ Add or correct only the non-personal prefixes already worth distinguishing befor
 `New project` is an interface action rather than a source project and is excluded from the inventory.
 
 The unprefixed names above are now migration aliases rather than current routing inputs. Freeze the prefixed names and immutable identities until the first complete acquisition checkpoint and any later deletion manifest are complete; read their current prefixes from the authorised inventory rather than guessing them from prior names.
+
+#### Immutable project bindings - 2026-10-14
+
+Kris authorised these bindings on 2026-10-14 (knowledge-acquisition Decision 1). The 17 identifiers are exactly those in the export's `conversation_template_id`. Prior names come from the cloud project list captured before the 2026-10-12 renames. That listing is preserved unchanged in the `sources-personal` store as `+/chatgpt-export-project-names-2026-10-12.tsv`, SHA-256 `eaeb39a71221ed78a668bf1b5afa09c48fdc266ac4cabddf5e315c06e195b268`. Current names follow `<Territory> - <Sub-area>` under state-of-play Decision 135 and supersede the `<Domain>: <Topic>` form above. The receiver for every territory is the private `acquire` inbox at `captures/<territory-key>/chatgpt/`; the earlier `kit-*` receivers are historical.
+
+| Project ID | Current name | Migration aliases | Territory key | Conversations |
+| --- | --- | --- | --- | --- |
+| `g-p-69eb35d7e7fc81918ed37bc20f0c8be1` | Knowledge Islands - General | Knowledge Islands: General | `knowledge-islands` | 55 |
+| `g-p-67fc441d39e88191bb2efc630e1504af` | Legal - General | Legal: General | `legal` | 102 |
+| `g-p-6a3c8cc4b44c8191a58f3c6b7c66ae3b` | Equal Remedy - General | Equal Remedy: General; Equal Remedy | `equal-remedy` | 5 |
+| `g-p-685ea6f7a5e8819180d8ea191bbbe23a` | Humans Not Robots - 5G Emerge | HNR: 5G Emerge | `humans-not-robots` | 25 |
+| `g-p-67fc3ce56ebc819192ecfb9583004c90` | Humans Not Robots - Product | HNR: Product | `humans-not-robots` | 41 |
+| `g-p-6a16102ecaac8191b483bd286979e6dc` | Personal - Van Build | Kit: Van Build; Van Build | `personal` | 1 |
+| `g-p-6849f00c6050819183d533e75218519e` | Personal - Side Hustle Ideas | Kit: Side Hussle Ideas; Side Hustle Ideas | `personal` | 7 |
+| `g-p-69465bf021a481918f0b7e3268539eb1` | Personal - Home Improvement | Kit: Home Improvement; Home Improvement | `personal` | 4 |
+| `g-p-694655e2709c8191bd816026d45c1eee` | Personal - Costa Rica | Kit: Costa Rica; Costa Rica | `personal` | 10 |
+| `g-p-67fc427d557881918931a1408952701a` | Personal - Spirituality | Kit: Spirituality; Spirituality | `personal` (provisional) | 18 |
+| `g-p-684ef0f4c274819185742d3bb3874196` | Personal - Productivity | Kit: Productivity; Productivity | `personal` | 7 |
+| `g-p-67fc4361628481919ae3eae3a04c226f` | Personal - Fitness and Wellbeing | Kit: Fitness and Wellbeing; Fitness and Wellbeing | `personal` | 11 |
+| `g-p-67fc41be62b481919afc54ce000fd518` | Personal - Relationships | Kit: Relationships; Relationships | `personal` | 7 |
+| `g-p-6a520a14adc88191bd2da11f31b8b70e` | Personal - Travel Ideas | Kit: Travel Ideas; Travel Ideas | `personal` | 1 |
+| `g-p-6a9e4443e6988191bf124428cabfd330` | Personal - Festivals | Kit: Festivals; Festivals | `personal` | 6 |
+| `g-p-67fc42f7b8d08191af805b83daeb3ef7` | Personal - Tattoos | Kit: Tattoos; Tattoos | `personal` | 13 |
+| `g-p-69ff7f83be248191a5cae112d3ff706f` | Personal - The Tower Game | Kit: The Tower Game; The Tower Game | `_review` (unresolved) | 15 |
+
+The 328 project conversations and the 6 outside any project total 334, matching the export. The 6 unprojected conversations route to `_review`.
+
+Three bindings are provisional:
+
+- **The Tower Game** - its receiver was left unresolved above, pending a creative or game repository. The mechanical `Kit:` to `Personal -` rename does not settle it, so it stages to `_review` until Kris chooses.
+- **Spirituality** - it routes to `personal` by its current name, but the 2026-10-12 rename report offered `Sacred Inquiry - Spirituality` as an option.
+- **Equal Remedy** - the earlier proposal to rename it `Legal: Financial Remedy` and route it to Legal was not applied. Kris renamed it `Equal Remedy: General`, and its conversation titles concern the Equal Remedy organisation, so it binds to `equal-remedy`.
+
+`Engineering` and its proposed `Knowledge Islands: Engineering` name match none of the 17 identifiers, so no export conversation carries them.
 
 ### Complete acquisition before triage
 
