@@ -71,6 +71,6 @@ Explain the two contracts and when a packet is added to a run, the project-threa
 ## Notes
 
 - A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
-- A run's state directory is non-durable, machine-local runtime state, not a `ki-checkpoint` checkpoint or a Decision Record; in-force decisions are consolidated into their durable owner.
+- A run's decisions log and agent reports live tracked in the owning repository's `+/_THREADS/<run>/` folder, committed as the thread goes; the state directory holds machine-local runtime files only. Neither is a `ki-checkpoint` checkpoint or a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
 - The recap since the mark is a coordinating thread's roll-up since the owner's mark, and the full summary its whole-thread owner report, for the master thread and each project thread; `ki-recap` stays the single-session summary.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

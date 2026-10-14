@@ -127,6 +127,7 @@ A declared capability with a stable specialist working-area subarea owns an exac
 - `ki-work` owns `+/_BATCHES/README.md`; `ki-batch` owns temporary batch records.
 - `ki-checkpoint` owns `+/_CHECKPOINTS/README.md` and active checkpoint records.
 - `ki-trades` owns `+/_TRADES/README.md`, `-/_TRADES/README.md`, and cross-repository trade records.
+- `ki-delegation` owns `+/_THREADS/<run>/` thread folders: a coordinating thread's decisions log and its background agents' reports.
 - `ki-repo-kb` owns `-/_DIGESTS/README.md` and session digests in a Knowledge Base.
 
 ## Commit gate

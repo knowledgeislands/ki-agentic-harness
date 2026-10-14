@@ -57,7 +57,9 @@ A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` in
 
 ## Run packet
 
-A run is a named set of agents sharing one state directory. Each agent has six files:
+A run is a named set of agents sharing one state directory for runtime files and one tracked thread folder for knowledge files. The split follows what each file is for. A runtime file describes one process on one machine and can be lost without losing knowledge. A knowledge file records what the owner approved and what was done under it, and a later thread or another machine needs it. Kris settled the split on 2026-10-14, in these words: "tracked +/_THREADS/<thread>/ for the decisions log and agent reports; state folder keeps runtime only."
+
+Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 
 | File | Content |
 | --- | --- |
@@ -66,7 +68,17 @@ A run is a named set of agents sharing one state directory. Each agent has six f
 | `<name>.status` | One line, `HH:MM <TZ> - plain-language activity`, in the owner's local time |
 | `<name>.pid` | The detached process identifier |
 | `<name>.log` | The runtime's combined output |
-| `<name>.report.md` | The final report |
+| `queue.jsonl`, `seen`, `dispatch.*` | The run queue, the waiter's seen list and the dispatcher's own files |
+| `worktrees/` | The run's Git worktrees, placed under [Coordination](#coordination) |
+
+Knowledge files live in the owning repository's tracked `+/_THREADS/<run>/` folder, committed as the thread goes:
+
+| File | Content |
+| --- | --- |
+| `decisions.md` | The run's [decisions log](#decisions-log) |
+| `<name>.report.md` | Each agent's final report |
+
+The owning repository is the one that holds the thread's checkpoint, and the folder takes the run's name, so a thread that spans repositories commits its log in one place and agents working in other repositories report into it, as they report into one state folder today. `ki agent` writes the knowledge files there once `tools-ki` ships that change. Until then the thread copies the log and each report into the folder by hand, at each mark and when a report lands, and commits them.
 
 The agent overwrites its status at each change of activity and at least every two minutes, writes its report, then writes `DONE` as the last line of its status. `DONE` is the only completion signal.
 
@@ -76,7 +88,7 @@ The semantics are portable; the file names are the reference layout the launcher
 
 A run prompt is cold-agent ready. It contains, in order:
 
-1. the task, citing the numbered owner decision that authorises it;
+1. the task, quoting the owner decision that authorises it, in the owner's words and dated;
 2. numbered steps;
 3. a verification step;
 4. the report path;
@@ -108,16 +120,16 @@ Authority limits stay consistent with `ki-agent-coordination-paperclip`, which o
 
 ## Decisions log
 
-Each owner approval for delegated work becomes one numbered, dated entry in the run's decisions log, quoted in the owner's own words where possible. Numbers never repeat. A prompt cites its authority by number ("Decision 18"), never by paraphrase alone.
+Each owner approval for delegated work becomes one numbered, timestamped entry in the run's decisions log, quoted in the owner's own words where possible. Numbers never repeat; they are the launcher's own handles within the log, and nothing outside the log relies on them. A prompt, brief, record, report, checkpoint or banner describes the decision it acts under in the owner's words and with its date, and never by its number: Kris said on 2026-10-13 that "it should be written about what the decision was or is", and on 2026-10-14 that a numbered citation "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
 
 The owner's words are whole only on the turn they arrive: a context-compressing proxy, a compaction or a shell read of a transcript can rewrite every earlier turn without saying so. Two rules keep the log faithful, on any machine and whatever the proxy setting:
 
 - **Log in the turn it arrives:** the thread writes an owner decision into the log in the same turn as the message that carries it, while that turn is still uncompressed, before it does anything else with the message.
 - **Verify later quotations from the file:** any later quotation of the owner's words, in a log entry, a brief, a record or a report, is checked against the session transcript file read with the runtime's file-read tool, which the proxy protects, never from in-context recall or from shell output such as `cat` or `grep`, which it does not.
 
-The run directory, decisions log included, is non-durable, machine-local working material under the XDG state root: it is not backed up or synced, and it is not a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the run directory.
+The tracked `+/_THREADS/<run>/` folder is the thread's working record between consolidations, not a replacement for them. The thread commits the log and each report there at each mark, when a report lands and before the thread closes, so that the test Kris set on 2026-10-13 holds: "if the state folder is lost, you shouldn't lose any knowledge". The state folder under the XDG state root holds runtime only: it is not backed up or synced. Neither folder is a Decision Record. At each checkpoint update, and before a run or thread closes, consolidate every in-force decision into its durable owner - a Decision Record through `ki-decision-records`, a skill, or the thread's checkpoint. Nothing durable may exist only in the thread folder or the state folder.
 
-Once a thread or run has closed and its in-force decisions are consolidated into their durable owners, archive or delete its `~/.local/state/ki/agents/<run>/` folder; `ki agent` writes the run there.
+Once a thread has closed and its in-force decisions are consolidated into their durable owners, the thread deletes its `+/_THREADS/<run>/` folder in one commit, and its state folder `~/.local/state/ki/agents/<run>/` is archived or deleted, by `ki agent close` once `tools-ki` ships it and by hand until then.
 
 ## Coordination
 
@@ -153,7 +165,7 @@ An owner report, in every form including the [full summary](#full-summary), is a
 
 ### Owner report
 
-Every report written for the owner takes one shape, the **owner report**: a background agent's final `<name>.report.md`, which the owner reads directly, and a coordinating thread's Summary, including the Summary at a resting point. It replaces the Done / Failed / Needs \<owner\> report wherever that shape was set. Kris set the format on 2026-10-13 as Decision 14 of the `ways-of-working` run, in these words:
+Every report written for the owner takes one shape, the **owner report**: a background agent's final `<name>.report.md`, which the owner reads directly, and a coordinating thread's Summary, including the Summary at a resting point. It replaces the Done / Failed / Needs \<owner\> report wherever that shape was set. Kris set the format on 2026-10-13 in the `ways-of-working` thread, in these words:
 
 > Use three major sections, in this order:
 >
@@ -239,12 +251,12 @@ A coordinating thread - the master thread or a project thread - also follows the
 
 ### Full summary
 
-A **full summary** is the owner report for the whole thread: everything decided, done, running and open since the thread began, in one reply, so that the owner holds all the context without reading earlier messages. Kris asked for it on 2026-10-13 as "a summary of things that have been decided, ongoing work and outstanding queries ... in full so I have all the context in one reply", adopted as Decision 18 of the `ways-of-working` run. A coordinating thread gives one whenever the owner asks for a "full summary", a "summary in full", or anything else that asks for the whole thread in one reply. It never moves the mark.
+A **full summary** is the owner report for the whole thread: everything decided, done, running and open since the thread began, in one reply, so that the owner holds all the context without reading earlier messages. Kris asked for it on 2026-10-13 as "a summary of things that have been decided, ongoing work and outstanding queries ... in full so I have all the context in one reply", and adopted the proposed shape the same day in the `ways-of-working` thread. A coordinating thread gives one whenever the owner asks for a "full summary", a "summary in full", or anything else that asks for the whole thread in one reply. It never moves the mark.
 
 Its shape, in this order:
 
 - **Banner:** the `#` [banner](#coordinating-threads), window `since the thread began`.
-- **`## Decided`:** every owner decision since the thread began, as a numbered list or a two-column table, one line each in the order taken, each linked to its entry in the run's [decisions log](#decisions-log) by absolute path or to the record that now holds it. A decision that a later one superseded stays on its line and says so.
+- **`## Decided`:** every owner decision since the thread began, as a numbered list or a two-column table, one line each in the order taken, each linked to its entry in the thread's tracked [decisions log](#decisions-log) or to the record that now holds it. A decision that a later one superseded stays on its line and says so.
 - **`## What has been done`:** the whole thread's completed outcomes, grouped by topic under `###` sub-headings wherever more than a few lines would otherwise run together, with failures, corrections and limitations beside the outcomes they qualify.
 - **`## What is in progress`:** as the owner report, with `Outstanding - no action requested now` beneath it. A dated upcoming deadline or scheduled event belongs there with its date, so the owner sees what is coming without being asked anything.
 - **`## Outstanding queries`:** every open query, however long it has been open, restated in full under its own `### <tag> - <title>` heading with Summary, Need from you and Recommendation, written to be answered cold. Nothing is shortened because it was asked before.
@@ -252,7 +264,7 @@ Its shape, in this order:
 
 Low-stakes choices the thread has already made, where the owner's silence is consent, go in one query headed `DEFAULTS - defaults unless you say otherwise`: one line per choice, Need from you `nothing, unless you object`, Recommendation `keep the defaults`, and one reply-block line `DEFAULTS - keep the defaults`. A choice the owner objects to becomes its own tagged query. A decision that is not low-stakes never goes there, and no other query bundles more than one decision: a query the owner cannot answer with one instruction is two queries.
 
-Sources are the run's decisions log from Decision 1, every background-agent report in the run, the checkpoint's open Needs-tagged queries and parked tangents, `ki agent status`, and the Git history of the thread's scope since the checkpoint's `created_at`. Where a report has gone with its run folder, the full summary says what it could not read rather than reconstructing it from memory.
+Sources are the thread's decisions log from the thread's start, every background-agent report in the thread folder, the checkpoint's open Needs-tagged queries and parked tangents, `ki agent status`, and the Git history of the thread's scope since the checkpoint's `created_at`. Where a report is missing from the thread folder, the full summary says what it could not read rather than reconstructing it from memory.
 
 ## Project threads
 
@@ -278,7 +290,7 @@ Each territory Capital has one territory master thread. Its checkpoint is `+/_CH
 
 ### Opening a thread
 
-The owner opens a thread in the Capital's checkout, names it with the checkpoint's `label` where the runtime can name a session, and pastes one opener. The master thread prepares the checkpoint first, so every thread opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the thread and leaves state to the checkpoint.
+The owner opens a thread in the Capital's checkout, names it with the checkpoint's `label` where the runtime can name a session, and pastes one opener. The master thread prepares the checkpoint first, so every thread opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the thread and leaves state to the checkpoint. The checkpoint's `Current state` names the thread's tracked folder as `Thread folder: +/_THREADS/<run>/`, written when the checkpoint is prepared or at bootstrap, so that `ki-recap` and, later, `ki-pmo` find the decisions log and the reports.
 
 For a territory master thread:
 
@@ -329,11 +341,11 @@ These rules apply to every coordinating thread: the territory master thread and 
 
 A recap is a plain-language roll-up for the owner of what has changed in the thread's scope since its mark. Every coordinating thread gives one. A project thread's scope is its Project; the master thread's scope is only what the master thread itself deals with, the records and decisions it raised or owns, not every Project's records. A recap is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
 
-- **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>, decisions log at Decision <N>`. The timestamp bounds Git history, work-record transitions and background-agent reports; the decision number bounds the decisions log exactly. Per-repository commit identifiers stay out.
+- **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>`. The timestamp bounds Git history, work-record transitions, background-agent reports and the decisions log, whose entries carry their own timestamps. Per-repository commit identifiers stay out. The banner, the mark and the resume line describe or date a decision and never cite a number, because a number, in Kris's words of 2026-10-14, "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
 - **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike. Giving a recap does not move it, so a recap can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line.
 - **Shape:** a recap opens with the `#` [banner](#coordinating-threads) shared with the Summary and the full summary, its window `since <mark>`. Beneath it is one [owner report](#owner-report) at the shared [heading levels](#coordinating-threads): `What has been done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `What is in progress` what is running now; `Outstanding queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary.
 - **Outstanding:** the checkpoint's open [Needs-tagged](#needs-tags) queries, open work records in the thread's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: it is everything still open, whenever it arose, and striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured. Striking or re-striking never drops, closes or hides an open item, and the thread keeps every open query, with its Needs tag, in its checkpoint when it re-strikes.
-- **Sources:** the run's decisions log after Decision N; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's open Needs-tagged queries and parked tangents.
+- **Sources:** the thread's decisions log entries after the mark; background-agent reports finished since the timestamp; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's open Needs-tagged queries and parked tangents.
 - **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#coordinating-threads) form, so they do not repeat everything since a distant mark; a request for the whole thread in one reply gets the [full summary](#full-summary).
 - **No mark yet:** the first recap covers the window since the checkpoint's last-recap time, if it notes one, or else its `created_at`, states that window in its banner, and strikes the first mark. A thread whose checkpoint still notes a last-recap time converts it into a mark when the [refresh rule](#refreshing-this-guidance) tells it this guidance changed.
 
@@ -369,7 +381,7 @@ To detect a change, it compares the latest commit touching `skills/governance/ki
 
 ## Reference launcher
 
-`ki agent` in `tools-ki` is the reference launcher. It writes the run packet under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, and provides `status` and `watch`, plus `queue`, `dispatch` and `wait --next` for the run queue. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md).
+`ki agent` in `tools-ki` is the reference launcher. It writes the run packet's runtime files under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, which it writes to the tracked thread folder once that change ships, and provides `status` and `watch`, plus `queue`, `dispatch` and `wait --next` for the run queue. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md).
 
 Runtime mechanics belong in the launcher, not in this skill or in personal setup.
 

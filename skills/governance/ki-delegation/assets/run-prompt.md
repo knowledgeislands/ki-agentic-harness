@@ -1,6 +1,6 @@
 # Task: <one-line outcome>
 
-<Owner> approved this; see Decision <N> in `<decisions log path>`.
+<Owner> approved this on <date>, in these words: "<the owner's words>". The entry is in `+/_THREADS/<run>/decisions.md`.
 
 <Context the agent needs that it cannot discover: paths, records by full identifier, prior reports.>
 
