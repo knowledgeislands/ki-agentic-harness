@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 28d1dc78084533dcb3f21b67e56a89f6acfd4ed3
 created_at: 2026-10-14T14:14:15Z
-updated_at: 2026-10-14T16:54:57Z
+updated_at: 2026-10-14T17:56:46Z
 ---
 
 # Check That Every Record Identifier in an Owner Report Is a Link
@@ -40,7 +39,7 @@ This record is captured from that lesson under the standing instruction of 2026-
 
 ## Current state
 
-Approved and delivered on 2026-10-14. Kris approved it in the ways-of-working thread, as received: "LINK-GUARD / approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi". The harness part is this record and the hook line; the link printer belongs to `tools-ki` under KI-TOOL-KI-CLI-127 and the output-style deployment to Rig through chezmoi. Delivered on harness `main` from baseline `28d1dc78` with every gate passing. Awaiting review. On the same day Kris settled the pruned-record form, as received: "LINK-FORM / clickable GitHub link to the file at its last revision; KI-HARNESS-GOV-188's check accepts it. Perhaps the link text can be `KI-HARNESS-GOV-188 (pruned)`"; the standard, the hook line, the output style, the rubric item and the fixtures now state that one form and the Project-note alternative is dropped.
+Accepted as done on 2026-10-14; see Done. Approved and delivered on 2026-10-14. Kris approved it in the ways-of-working thread, as received: "LINK-GUARD / approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi". The harness part is this record and the hook line; the link printer belongs to `tools-ki` under KI-TOOL-KI-CLI-127 and the output-style deployment to Rig through chezmoi. Delivered on harness `main` from baseline `28d1dc78` with every gate passing. Awaiting review. On the same day Kris settled the pruned-record form, as received: "LINK-FORM / clickable GitHub link to the file at its last revision; KI-HARNESS-GOV-188's check accepts it. Perhaps the link text can be `KI-HARNESS-GOV-188 (pruned)`"; the standard, the hook line, the output style, the rubric item and the fixtures now state that one form and the Project-note alternative is dropped.
 
 ## Steps
 
@@ -119,8 +118,16 @@ The check lives where the lesson said it should, in the rubric rather than in an
 
 PMO-7 flags unlinked record identifiers and dead record links in thread reports; the hook line, standard, output style and README say a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision; the Capital's existing reports show the slip the lesson described.
 
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above, in Kris's words: "GOV-188-REVIEW / accept KI-HARNESS-GOV-188 as done on its review packet". The link check's level was settled by Kris the same day, as received: "LINK-LEVEL / keep the link check at warning; raise it to failure once this thread's reports are repaired", so PMO-7 stays WARN at acceptance. The Verify gates were re-run at acceptance: `bun run test` 1151 pass, 0 fail; `bunx tsc --noEmit` clean; `ki repo audit --skill` for `ki-pmo`, `ki-work-roadmap` and `ki-authoring` pass in this repository; and `ki repo audit --skill ki-pmo --repo` Knowledge Islands Principal reports `ki-pmo` at WARN with no failure, PMO-7 flagging the unlinked identifiers and dead record links in the `ways-of-working` thread reports as the criterion intends. The same Capital run shows five `ki-checkpoint` failures on other threads' checkpoints, a fleet finding outside this record's scope and untouched here.
+
 ## Discussion
 
 ### Why a rubric criterion and not more prose
 
 The owner-report standard already says it, and the thread still missed it under load. A mechanical criterion gives the thread's own audit a place to catch the slip before Kris does, and gives Wave F a measure of whether the coordinating threads keep to it.
+
+### Raising PMO-7 to FAIL
+
+PMO-7 is WARN because the Capital's existing reports predate the rule. Kris set the sequence on 2026-10-14, as received: "LINK-LEVEL / keep the link check at warning; raise it to failure once this thread's reports are repaired". Once the `ways-of-working` thread's reports are repaired, a later run changes the one word in `threads.ts` to FAIL and regenerates the rubric; that change is not part of this record.
