@@ -27,35 +27,47 @@ The report then gives one fenced `text` block with one stacked entry per query, 
 
 ## Banner
 
-Every Summary, recap, full summary and re-bootstrap report closes, after the reply block, with the `ki-pmo` banner: one of the two frames below, 52 code points per framed line, never padded, reworded, coloured or improvised, whose top border carries the time the banner was issued as `╭─ issued <YYYY-MM-DDTHH:MM:SSZ> ─` padded with `─` to the same width, and whose other four lines are byte-identical to the standard; then the lines beneath, each with three leading spaces; then the resume line in its own one-line fenced `text` block as the last thing in the message. A thread that has just bootstrapped or re-bootstrapped renders it exactly as one that never left.
+Every Summary, recap, full summary and re-bootstrap report closes, after the reply block, with the `ki-pmo` banner: the one frame below, 52 code points per framed line, never padded beyond that, reworded, coloured or improvised. Its top border reads `╭─ <thread type>`, a space, `─` fill, a space, then `<issued UTC> ─╮`, the thread type `coordination` or `state-of-play` and the time `YYYY-MM-DDTHH:MM:SSZ`, twelve `─` of fill for `coordination` and eleven for `state-of-play`. Its body is a blank line, the thread's label after one space with ` - ` as its separator, then a blank line, each padded with spaces to the frame. Its bottom border reads `╰`, twenty-two `─`, a space, then `mark <mark UTC> ─╯`. Then come the lines beneath, each with three leading spaces; then the resume line in its own one-line fenced `text` block as the last thing in the message. A thread that has just bootstrapped or re-bootstrapped renders it exactly as one that never left.
 
-REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the word:
-
-```text
-╭─ issued 2026-10-14T09:04:00Z ────────────────────╮
-│  █▀▀▄ █▀▀▀ █▀▀▀ ▀▀█▀   · thread at rest          │
-│  █▀▀▄ █▀▀  ▀▀▀█   █    · nothing running         │
-│  █  █ █▄▄▄ ▄▄▄█   █    · nothing queued          │
-╰──────────────────────────────────────────────────╯
-```
-
-BUSY when anything is running or queued, or the thread is blocked or waiting on another thread:
+REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the state. The first line beneath reads `at rest: nothing running or queued`:
 
 ```text
-╭─ issued 2026-10-14T09:04:00Z ────────────────────╮
-│  █▀▀▄ █  █ █▀▀▀ █  █   · thread busy             │
-│  █▀▀▄ █  █ ▀▀▀█  ▀█▀   · running or queued work  │
-│  █▄▄▀ █▄▄█ ▄▄▄█   █    · lines below say which   │
-╰──────────────────────────────────────────────────╯
+╭─ coordination ──────────── 2026-10-14T16:54:52Z ─╮
+│                                                  │
+│ KI Model - ways-of-working                       │
+│                                                  │
+╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
+   at rest: nothing running or queued
+   waiting on you: KI-RELEASE - approve the tools-ki release
+   waiting on you: RESUME-COMPACT - run the Zed compact test
+   checkpoint committed and pushed · thread folder committed and pushed · held: PAPERCLIP-REQ until Wave F · parked: 1
 ```
 
-The lines beneath, in order and only where they apply: `<label> · mark <UTC>`; then one line per item, `running: <agent> - <what>` for each running agent, `queued: <agent> - <what>` for each queued agent and `waiting on you: <TAG> - <what>` for each open Needs tag; then the housekeeping line with the checkpoint state, the thread folder state, held items and the parked count. The issued time lives in the top border and nowhere else. Another reason for BUSY takes a running or queued line in words. Nothing in the banner cites a decision number. The resume line, with the thread's label and mark filled in:
+BUSY when anything is running or queued, or the thread is blocked or waiting on another thread; the lines beneath say which and no `at rest:` line appears:
+
+```text
+╭─ coordination ──────────── 2026-10-14T16:54:52Z ─╮
+│                                                  │
+│ KI Model - ways-of-working                       │
+│                                                  │
+╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
+   running: commit-gate - why ki-principal's commit gate fails
+   running: harness-links - accept GOV-187, deliver GOV-188
+   queued: link-form - after harness-links
+   queued: re-bootstrap - after GOV-187 accepted
+   waiting on you: HEADING-FORM - settle the owner-report headings
+   waiting on you: RUN-WAIVER - waive the run gate for commit-gate
+   waiting on you: RECORD-THRESHOLD - set the record-capture threshold
+   thread folder commit blocked by the gate, commit-gate fixing · held: PAPERCLIP-REQ until Wave F
+```
+
+The lines beneath, in order and only where they apply: `at rest: nothing running or queued` when the thread is at rest; then one line per item, `running: <agent> - <what>` for each running agent, `queued: <agent> - <what>` for each queued agent and `waiting on you: <TAG> - <what>` for each open Needs tag; then the housekeeping line with the checkpoint state, the thread folder state, held items and the parked count. The issued time lives in the top border and the mark in the bottom border, and neither appears anywhere else. Another reason for BUSY takes a running or queued line in words. Nothing in the banner cites a decision number. The resume line, with the thread's label and mark filled in:
 
 ```text
 Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
 ```
 
-The DONE frame appears once only, at Project close after the close-out tidy, under the `ki-pmo` standard, and no resume line follows it.
+The DONE frame, which keeps its block-letter glyphs, appears once only, at Project close after the close-out tidy, under the `ki-pmo` standard, and no resume line follows it.
 
 After a compaction, before replying, follow the `ki-pmo` standard's re-anchoring: re-read the standard and your checkpoint in full, run `ki agent status` and read your inbox, confirm in one line, then answer in owner-report form with the banner; the owner may paste an optional `/compact` line before the resume line. At every owner report and resting point, commit and push the thread folder under `+/_THREADS/<run>/` by explicit path.
 
