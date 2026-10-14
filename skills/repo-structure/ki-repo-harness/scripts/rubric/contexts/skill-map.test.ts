@@ -51,10 +51,25 @@ describe('buildSkillMap', () => {
       'database',
       'frontend'
     ])
-    expect(byId.get('ki-flow')?.sublabel).toBe('governance · process')
-    expect(byId.get('ki-look')?.sublabel).toBe('design · declared')
+    expect(byId.get('ki-flow')?.sublabel).toBe('governance · command')
+    expect(byId.get('ki-look')?.sublabel).toBe('design · opt-in')
     expect(byId.get('ki-look')?.tag).toBeUndefined()
     expect(Object.keys(map.meta.legend.entries).sort()).toEqual(['backend', 'database', 'frontend', 'security'])
+  })
+
+  test("nests a split concern's capability groups in its region", () => {
+    const groups = {
+      governance: [
+        { title: 'Core', skills: ['ki-root', 'ki-base'] },
+        { title: 'Flow', skills: ['ki-flow'] }
+      ]
+    }
+    const split = buildSkillMap(readSkillGraphNodes(FIXTURE).nodes, { groups }) as Map
+    const labels = new Map(split.boundaries.map((b) => [b.label, b.wraps]))
+    expect(labels.get('Governance · Core')).toEqual(['ki-root', 'ki-base'])
+    expect(labels.get('Governance · Flow')).toEqual(['ki-flow'])
+    expect(labels.get('Governance · 3 skills')).toEqual(['ki-root', 'ki-base', 'ki-flow'])
+    expect(split.boundaries.filter((b) => b.label.startsWith('Design'))).toHaveLength(1)
   })
 
   test('places every node exactly once without overlap', () => {

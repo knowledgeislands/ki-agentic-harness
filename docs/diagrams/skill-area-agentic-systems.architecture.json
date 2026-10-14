@@ -8,22 +8,22 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
+      "revision": "a830b6eda6ad27a044da637e79792e3c99e3f07e"
     },
     "legend": {
       "mode": "auto",
       "entries": {
         "security": {
-          "label": "Governance · baseline"
+          "label": "Governance · always on"
         },
         "backend": {
-          "label": "Governance · detected"
+          "label": "Governance · automatic"
         },
         "database": {
-          "label": "Governance · declared"
+          "label": "Governance · opt-in"
         },
         "frontend": {
-          "label": "Process · by name"
+          "label": "Process · command"
         }
       }
     }
@@ -33,7 +33,7 @@
       "id": "ki-repo-harness",
       "type": "database",
       "label": "repo-harness",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
@@ -52,7 +52,7 @@
       "id": "ki-agent-coordination-paperclip",
       "type": "database",
       "label": "agent-coordination-paperclip",
-      "sublabel": "agentic systems · declared",
+      "sublabel": "agentic systems · opt-in",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
@@ -71,7 +71,7 @@
       "id": "ki-subagents",
       "type": "backend",
       "label": "subagents",
-      "sublabel": "agentic systems · detected",
+      "sublabel": "agentic systems · automatic",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-subagents/SKILL.md"
@@ -90,7 +90,7 @@
       "id": "ki-subagents-chatgpt",
       "type": "backend",
       "label": "subagents-chatgpt",
-      "sublabel": "agentic systems · detected",
+      "sublabel": "agentic systems · automatic",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-subagents-chatgpt/SKILL.md"
@@ -109,7 +109,7 @@
       "id": "ki-subagents-claude",
       "type": "backend",
       "label": "subagents-claude",
-      "sublabel": "agentic systems · detected",
+      "sublabel": "agentic systems · automatic",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-subagents-claude/SKILL.md"
@@ -128,7 +128,7 @@
       "id": "ki-git",
       "type": "database",
       "label": "git",
-      "sublabel": "governance · declared",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
           "path": "skills/governance/ki-git/SKILL.md"
@@ -147,7 +147,7 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Repo Structure · 1 skill",
+      "label": "Repo Structure · Projects and tools",
       "wraps": [
         "ki-repo-harness"
       ],
@@ -155,7 +155,7 @@
     },
     {
       "kind": "region",
-      "label": "Governance · 1 skill",
+      "label": "Governance · Code and Git",
       "wraps": [
         "ki-git"
       ],
@@ -204,8 +204,8 @@
       "dot": "cyan",
       "title": "Reading the diagram",
       "items": [
-        "The middle region holds every skill in agentic systems; the skill map shows where the other concerns sit.",
-        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
+        "The middle region holds every skill in agentic systems, nested by the capability each brings where the concern is split; the skill map shows where the other concerns sit.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by concern and capability group.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

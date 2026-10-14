@@ -433,9 +433,9 @@ rect.c-bg-rect { fill: var(--bg); }
         <rect width="100%" height="100%" fill="url(#grid)"/>
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Repo Structure · 1 skill" x="0" y="32" width="260" height="100" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Repo Structure · Projects and tools" x="0" y="32" width="260" height="100" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Governance · 1 skill" x="0" y="496" width="260" height="100" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Governance · Code and Git" x="0" y="496" width="260" height="100" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Agentic Systems · 4 skills" x="0" y="208" width="504" height="212" rx="12" class="c-region" stroke-width="1"/>
 
@@ -458,8 +458,8 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Components -->
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="repo-harness" tabindex="0" role="button" aria-label="Focus repo-harness, repository structure · declared, Repo Structure · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · declared" data-node-context="Repo Structure · 1 skill">
-          <title>repo-harness · repository structure · declared · Repo Structure · 1 skill</title>
+        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="repo-harness" tabindex="0" role="button" aria-label="Focus repo-harness, repository structure · opt-in, Repo Structure · Projects and tools" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-context="Repo Structure · Projects and tools">
+          <title>repo-harness · repository structure · opt-in · Repo Structure · Projects and tools</title>
           <rect x="32" y="64" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="64" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 70) scale(0.6875)">
@@ -467,11 +467,11 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="130" y="86" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">repo-harness</text>
-        <text x="130" y="102" class="t-muted" font-size="9" text-anchor="middle">repository structure · declared</text>
+        <text x="130" y="102" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
         </g>
 
-        <g id="node-ki-agent-coordination-paperclip" data-node-id="ki-agent-coordination-paperclip" data-node-label="agent-coordination-paperclip" tabindex="0" role="button" aria-label="Focus agent-coordination-paperclip, agentic systems · declared, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · declared" data-node-context="Agentic Systems · 4 skills">
-          <title>agent-coordination-paperclip · agentic systems · declared · Agentic Systems · 4 skills</title>
+        <g id="node-ki-agent-coordination-paperclip" data-node-id="ki-agent-coordination-paperclip" data-node-label="agent-coordination-paperclip" tabindex="0" role="button" aria-label="Focus agent-coordination-paperclip, agentic systems · opt-in, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-context="Agentic Systems · 4 skills">
+          <title>agent-coordination-paperclip · agentic systems · opt-in · Agentic Systems · 4 skills</title>
           <rect x="32" y="352" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="352" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 358) scale(0.6875)">
@@ -479,44 +479,44 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="130" y="374" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">agent-coordination-paperclip</text>
-        <text x="130" y="390" class="t-muted" font-size="9" text-anchor="middle">agentic systems · declared</text>
+        <text x="130" y="390" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
         </g>
 
-        <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="subagents" tabindex="0" role="button" aria-label="Focus subagents, agentic systems · detected, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · detected" data-node-context="Agentic Systems · 4 skills">
-          <title>subagents · agentic systems · detected · Agentic Systems · 4 skills</title>
+        <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="subagents" tabindex="0" role="button" aria-label="Focus subagents, agentic systems · automatic, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-context="Agentic Systems · 4 skills">
+          <title>subagents · agentic systems · automatic · Agentic Systems · 4 skills</title>
           <rect x="32" y="240" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="240" width="196" height="48" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(38 246) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="130" y="262" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">subagents</text>
-        <text x="130" y="278" class="t-muted" font-size="9" text-anchor="middle">agentic systems · detected</text>
+        <text x="130" y="278" class="t-muted" font-size="9" text-anchor="middle">agentic systems · automatic</text>
         </g>
 
-        <g id="node-ki-subagents-chatgpt" data-node-id="ki-subagents-chatgpt" data-node-label="subagents-chatgpt" tabindex="0" role="button" aria-label="Focus subagents-chatgpt, agentic systems · detected, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · detected" data-node-context="Agentic Systems · 4 skills">
-          <title>subagents-chatgpt · agentic systems · detected · Agentic Systems · 4 skills</title>
+        <g id="node-ki-subagents-chatgpt" data-node-id="ki-subagents-chatgpt" data-node-label="subagents-chatgpt" tabindex="0" role="button" aria-label="Focus subagents-chatgpt, agentic systems · automatic, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-context="Agentic Systems · 4 skills">
+          <title>subagents-chatgpt · agentic systems · automatic · Agentic Systems · 4 skills</title>
           <rect x="276" y="352" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="276" y="352" width="196" height="48" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(282 358) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="374" y="374" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">subagents-chatgpt</text>
-        <text x="374" y="390" class="t-muted" font-size="9" text-anchor="middle">agentic systems · detected</text>
+        <text x="374" y="390" class="t-muted" font-size="9" text-anchor="middle">agentic systems · automatic</text>
         </g>
 
-        <g id="node-ki-subagents-claude" data-node-id="ki-subagents-claude" data-node-label="subagents-claude" tabindex="0" role="button" aria-label="Focus subagents-claude, agentic systems · detected, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · detected" data-node-context="Agentic Systems · 4 skills">
-          <title>subagents-claude · agentic systems · detected · Agentic Systems · 4 skills</title>
+        <g id="node-ki-subagents-claude" data-node-id="ki-subagents-claude" data-node-label="subagents-claude" tabindex="0" role="button" aria-label="Focus subagents-claude, agentic systems · automatic, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-context="Agentic Systems · 4 skills">
+          <title>subagents-claude · agentic systems · automatic · Agentic Systems · 4 skills</title>
           <rect x="276" y="240" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="276" y="240" width="196" height="48" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(282 246) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="374" y="262" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">subagents-claude</text>
-        <text x="374" y="278" class="t-muted" font-size="9" text-anchor="middle">agentic systems · detected</text>
+        <text x="374" y="278" class="t-muted" font-size="9" text-anchor="middle">agentic systems · automatic</text>
         </g>
 
-        <g id="node-ki-git" data-node-id="ki-git" data-node-label="git" tabindex="0" role="button" aria-label="Focus git, governance · declared, Governance · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · declared" data-node-context="Governance · 1 skill">
-          <title>git · governance · declared · Governance · 1 skill</title>
+        <g id="node-ki-git" data-node-id="ki-git" data-node-label="git" tabindex="0" role="button" aria-label="Focus git, governance · opt-in, Governance · Code and Git" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-context="Governance · Code and Git">
+          <title>git · governance · opt-in · Governance · Code and Git</title>
           <rect x="32" y="528" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="528" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 534) scale(0.6875)">
@@ -524,7 +524,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="130" y="550" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">git</text>
-        <text x="130" y="566" class="t-muted" font-size="9" text-anchor="middle">governance · declared</text>
+        <text x="130" y="566" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
         </g>
 
         <!-- Connection labels -->
@@ -534,14 +534,14 @@ rect.c-bg-rect { fill: var(--bg); }
 
 
         <!-- Boundary labels (foreground masks keep routes out of titles) -->
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Repo Structure · 1 skill">
-          <rect data-graph-role="structural-frame-label-mask" x="4" y="44" width="139.6" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="8" y="57" class="t-cloud" font-size="9" font-weight="600">Repo Structure · 1 skill</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Repo Structure · Projects and tools">
+          <rect data-graph-role="structural-frame-label-mask" x="4" y="44" width="199" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="8" y="57" class="t-cloud" font-size="9" font-weight="600">Repo Structure · Projects and tools</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Governance · 1 skill">
-          <rect data-graph-role="structural-frame-label-mask" x="4" y="508" width="118" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="8" y="521" class="t-cloud" font-size="9" font-weight="600">Governance · 1 skill</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Governance · Code and Git">
+          <rect data-graph-role="structural-frame-label-mask" x="4" y="508" width="145" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="8" y="521" class="t-cloud" font-size="9" font-weight="600">Governance · Code and Git</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="2" data-composition-frame-kind="region" data-composition-frame-label="Agentic Systems · 4 skills">
@@ -552,13 +552,13 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Legend -->
         <g data-legend="">
           <text x="40" y="628" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="backend" data-legend-x="40" data-legend-baseline="648" data-legend-width="148">
+          <g data-legend-semantic-kind="backend" data-legend-x="40" data-legend-baseline="648" data-legend-width="153">
             <rect x="40" y="639" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
-            <text x="62" y="648" class="t-muted" font-size="10" font-weight="500">Governance · detected</text>
+            <text x="62" y="648" class="t-muted" font-size="10" font-weight="500">Governance · automatic</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-x="210" data-legend-baseline="648" data-legend-width="148">
-            <rect x="210" y="639" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
-            <text x="232" y="648" class="t-muted" font-size="10" font-weight="500">Governance · declared</text>
+          <g data-legend-semantic-kind="database" data-legend-x="215" data-legend-baseline="648" data-legend-width="138">
+            <rect x="215" y="639" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
+            <text x="237" y="648" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
           </g>
         </g>
       </svg>

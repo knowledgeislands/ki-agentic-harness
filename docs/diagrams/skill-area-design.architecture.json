@@ -8,22 +8,22 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
+      "revision": "a830b6eda6ad27a044da637e79792e3c99e3f07e"
     },
     "legend": {
       "mode": "auto",
       "entries": {
         "security": {
-          "label": "Governance · baseline"
+          "label": "Governance · always on"
         },
         "backend": {
-          "label": "Governance · detected"
+          "label": "Governance · automatic"
         },
         "database": {
-          "label": "Governance · declared"
+          "label": "Governance · opt-in"
         },
         "frontend": {
-          "label": "Process · by name"
+          "label": "Process · command"
         }
       }
     }
@@ -33,7 +33,7 @@
       "id": "ki-design-inspiration",
       "type": "frontend",
       "label": "design-inspiration",
-      "sublabel": "design · process",
+      "sublabel": "design · command",
       "sources": [
         {
           "path": "skills/design/ki-design-inspiration/SKILL.md"
@@ -52,7 +52,7 @@
       "id": "ki-design-system",
       "type": "database",
       "label": "design-system",
-      "sublabel": "design · declared",
+      "sublabel": "design · opt-in",
       "sources": [
         {
           "path": "skills/design/ki-design-system/SKILL.md"
@@ -85,8 +85,8 @@
       "dot": "cyan",
       "title": "Reading the diagram",
       "items": [
-        "The middle region holds every skill in design; the skill map shows where the other concerns sit.",
-        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
+        "The middle region holds every skill in design, nested by the capability each brings where the concern is split; the skill map shows where the other concerns sit.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by concern and capability group.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

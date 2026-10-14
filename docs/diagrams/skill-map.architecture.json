@@ -8,22 +8,22 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "a830b6eda6ad27a044da637e79792e3c99e3f07e"
     },
     "legend": {
       "mode": "auto",
       "entries": {
         "security": {
-          "label": "Governance · baseline"
+          "label": "Governance · always on"
         },
         "backend": {
-          "label": "Governance · detected"
+          "label": "Governance · automatic"
         },
         "database": {
-          "label": "Governance · declared"
+          "label": "Governance · opt-in"
         },
         "frontend": {
-          "label": "Process · by name"
+          "label": "Process · command"
         }
       }
     }
@@ -33,7 +33,7 @@
       "id": "ki-repo",
       "type": "security",
       "label": "repo",
-      "sublabel": "keystone · baseline",
+      "sublabel": "keystone · always on",
       "sources": [
         {
           "path": "skills/keystone/ki-repo/SKILL.md"
@@ -52,7 +52,7 @@
       "id": "ki-skills",
       "type": "backend",
       "label": "skills",
-      "sublabel": "keystone · detected",
+      "sublabel": "keystone · automatic",
       "sources": [
         {
           "path": "skills/keystone/ki-skills/SKILL.md"
@@ -71,7 +71,7 @@
       "id": "ki-bootstrap",
       "type": "frontend",
       "label": "bootstrap",
-      "sublabel": "keystone · process",
+      "sublabel": "keystone · command",
       "sources": [
         {
           "path": "skills/keystone/ki-bootstrap/SKILL.md"
@@ -90,33 +90,14 @@
       "id": "ki-authoring",
       "type": "security",
       "label": "authoring",
-      "sublabel": "governance · baseline",
+      "sublabel": "governance · always on",
       "sources": [
         {
           "path": "skills/governance/ki-authoring/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        64
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-checkpoint",
-      "type": "backend",
-      "label": "checkpoint",
-      "sublabel": "governance · detected",
-      "sources": [
-        {
-          "path": "skills/governance/ki-checkpoint/SKILL.md"
-        }
-      ],
-      "pos": [
-        916,
+        716,
         64
       ],
       "size": [
@@ -128,34 +109,15 @@
       "id": "ki-decision-records",
       "type": "backend",
       "label": "decision-records",
-      "sublabel": "governance · detected",
+      "sublabel": "governance · automatic",
       "sources": [
         {
           "path": "skills/governance/ki-decision-records/SKILL.md"
         }
       ],
       "pos": [
-        1124,
+        924,
         64
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-engineering",
-      "type": "backend",
-      "label": "engineering",
-      "sublabel": "governance · detected",
-      "sources": [
-        {
-          "path": "skills/governance/ki-engineering/SKILL.md"
-        }
-      ],
-      "pos": [
-        708,
-        136
       ],
       "size": [
         196,
@@ -166,15 +128,15 @@
       "id": "ki-guides",
       "type": "backend",
       "label": "guides",
-      "sublabel": "governance · detected",
+      "sublabel": "governance · automatic",
       "sources": [
         {
           "path": "skills/governance/ki-guides/SKILL.md"
         }
       ],
       "pos": [
-        916,
-        136
+        1132,
+        64
       ],
       "size": [
         196,
@@ -185,53 +147,15 @@
       "id": "ki-specs",
       "type": "backend",
       "label": "specs",
-      "sublabel": "governance · detected",
+      "sublabel": "governance · automatic",
       "sources": [
         {
           "path": "skills/governance/ki-specs/SKILL.md"
         }
       ],
       "pos": [
-        1124,
+        716,
         136
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-agentic-radar",
-      "type": "database",
-      "label": "agentic-radar",
-      "sublabel": "governance · declared",
-      "sources": [
-        {
-          "path": "skills/governance/ki-agentic-radar/SKILL.md"
-        }
-      ],
-      "pos": [
-        708,
-        208
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-delegation",
-      "type": "database",
-      "label": "delegation",
-      "sublabel": "governance · declared",
-      "sources": [
-        {
-          "path": "skills/governance/ki-delegation/SKILL.md"
-        }
-      ],
-      "pos": [
-        916,
-        208
       ],
       "size": [
         196,
@@ -242,15 +166,15 @@
       "id": "ki-diagrams",
       "type": "database",
       "label": "diagrams",
-      "sublabel": "governance · declared",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
           "path": "skills/governance/ki-diagrams/SKILL.md"
         }
       ],
       "pos": [
-        1124,
-        208
+        924,
+        136
       ],
       "size": [
         196,
@@ -258,18 +182,18 @@
       ]
     },
     {
-      "id": "ki-git",
-      "type": "database",
-      "label": "git",
-      "sublabel": "governance · declared",
+      "id": "ki-checkpoint",
+      "type": "backend",
+      "label": "checkpoint",
+      "sublabel": "governance · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-git/SKILL.md"
+          "path": "skills/governance/ki-checkpoint/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        280
+        716,
+        264
       ],
       "size": [
         196,
@@ -277,18 +201,18 @@
       ]
     },
     {
-      "id": "ki-model-radar",
+      "id": "ki-delegation",
       "type": "database",
-      "label": "model-radar",
-      "sublabel": "governance · declared",
+      "label": "delegation",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
-          "path": "skills/governance/ki-model-radar/SKILL.md"
+          "path": "skills/governance/ki-delegation/SKILL.md"
         }
       ],
       "pos": [
-        916,
-        280
+        924,
+        264
       ],
       "size": [
         196,
@@ -299,15 +223,15 @@
       "id": "ki-trades",
       "type": "database",
       "label": "trades",
-      "sublabel": "governance · declared",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
           "path": "skills/governance/ki-trades/SKILL.md"
         }
       ],
       "pos": [
-        1124,
-        280
+        1132,
+        264
       ],
       "size": [
         196,
@@ -318,15 +242,15 @@
       "id": "ki-trade",
       "type": "frontend",
       "label": "trade",
-      "sublabel": "governance · process",
+      "sublabel": "governance · command",
       "sources": [
         {
           "path": "skills/governance/ki-trade/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        352
+        716,
+        336
       ],
       "size": [
         196,
@@ -334,18 +258,75 @@
       ]
     },
     {
-      "id": "ki-pmo",
-      "type": "database",
-      "label": "pmo",
-      "sublabel": "change management · declared",
+      "id": "ki-engineering",
+      "type": "backend",
+      "label": "engineering",
+      "sublabel": "governance · automatic",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/SKILL.md"
+          "path": "skills/governance/ki-engineering/SKILL.md"
         }
       ],
       "pos": [
-        32,
-        224
+        716,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-git",
+      "type": "database",
+      "label": "git",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-git/SKILL.md"
+        }
+      ],
+      "pos": [
+        924,
+        464
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-agentic-radar",
+      "type": "database",
+      "label": "agentic-radar",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-agentic-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        716,
+        592
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-model-radar",
+      "type": "database",
+      "label": "model-radar",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-model-radar/SKILL.md"
+        }
+      ],
+      "pos": [
+        924,
+        592
       ],
       "size": [
         196,
@@ -356,14 +337,14 @@
       "id": "ki-work",
       "type": "database",
       "label": "work",
-      "sublabel": "change management · declared",
+      "sublabel": "change management · opt-in",
       "sources": [
         {
           "path": "skills/change-management/ki-work/SKILL.md"
         }
       ],
       "pos": [
-        240,
+        32,
         224
       ],
       "size": [
@@ -375,10 +356,29 @@
       "id": "ki-work-github-issues",
       "type": "database",
       "label": "work-github-issues",
-      "sublabel": "change management · declared",
+      "sublabel": "change management · opt-in",
       "sources": [
         {
           "path": "skills/change-management/ki-work-github-issues/SKILL.md"
+        }
+      ],
+      "pos": [
+        240,
+        224
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-work-linear",
+      "type": "database",
+      "label": "work-linear",
+      "sublabel": "change management · opt-in",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-linear/SKILL.md"
         }
       ],
       "pos": [
@@ -391,36 +391,17 @@
       ]
     },
     {
-      "id": "ki-work-linear",
-      "type": "database",
-      "label": "work-linear",
-      "sublabel": "change management · declared",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-work-linear/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        296
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
       "id": "ki-work-recurring",
       "type": "database",
       "label": "work-recurring",
-      "sublabel": "change management · declared",
+      "sublabel": "change management · opt-in",
       "sources": [
         {
           "path": "skills/change-management/ki-work-recurring/SKILL.md"
         }
       ],
       "pos": [
-        240,
+        32,
         296
       ],
       "size": [
@@ -432,14 +413,14 @@
       "id": "ki-work-roadmap",
       "type": "database",
       "label": "work-roadmap",
-      "sublabel": "change management · declared",
+      "sublabel": "change management · opt-in",
       "sources": [
         {
           "path": "skills/change-management/ki-work-roadmap/SKILL.md"
         }
       ],
       "pos": [
-        448,
+        240,
         296
       ],
       "size": [
@@ -451,7 +432,7 @@
       "id": "ki-accept",
       "type": "frontend",
       "label": "accept",
-      "sublabel": "change management · process",
+      "sublabel": "change management · command",
       "sources": [
         {
           "path": "skills/change-management/ki-accept/SKILL.md"
@@ -459,7 +440,7 @@
       ],
       "pos": [
         32,
-        368
+        424
       ],
       "size": [
         196,
@@ -470,7 +451,7 @@
       "id": "ki-batch",
       "type": "frontend",
       "label": "batch",
-      "sublabel": "change management · process",
+      "sublabel": "change management · command",
       "sources": [
         {
           "path": "skills/change-management/ki-batch/SKILL.md"
@@ -478,7 +459,7 @@
       ],
       "pos": [
         240,
-        368
+        424
       ],
       "size": [
         196,
@@ -489,7 +470,7 @@
       "id": "ki-implement",
       "type": "frontend",
       "label": "implement",
-      "sublabel": "change management · process",
+      "sublabel": "change management · command",
       "sources": [
         {
           "path": "skills/change-management/ki-implement/SKILL.md"
@@ -497,7 +478,7 @@
       ],
       "pos": [
         448,
-        368
+        424
       ],
       "size": [
         196,
@@ -508,7 +489,7 @@
       "id": "ki-next",
       "type": "frontend",
       "label": "next",
-      "sublabel": "change management · process",
+      "sublabel": "change management · command",
       "sources": [
         {
           "path": "skills/change-management/ki-next/SKILL.md"
@@ -516,7 +497,7 @@
       ],
       "pos": [
         32,
-        440
+        496
       ],
       "size": [
         196,
@@ -527,7 +508,7 @@
       "id": "ki-plan",
       "type": "frontend",
       "label": "plan",
-      "sublabel": "change management · process",
+      "sublabel": "change management · command",
       "sources": [
         {
           "path": "skills/change-management/ki-plan/SKILL.md"
@@ -535,26 +516,7 @@
       ],
       "pos": [
         240,
-        440
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-pmo-design",
-      "type": "frontend",
-      "label": "pmo-design",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-pmo-design/SKILL.md"
-        }
-      ],
-      "pos": [
-        448,
-        440
+        496
       ],
       "size": [
         196,
@@ -565,15 +527,15 @@
       "id": "ki-recap",
       "type": "frontend",
       "label": "recap",
-      "sublabel": "change management · process",
+      "sublabel": "change management · command",
       "sources": [
         {
           "path": "skills/change-management/ki-recap/SKILL.md"
         }
       ],
       "pos": [
-        32,
-        512
+        448,
+        496
       ],
       "size": [
         196,
@@ -581,18 +543,37 @@
       ]
     },
     {
-      "id": "ki-repo-homebrew-tap",
-      "type": "backend",
-      "label": "repo-homebrew-tap",
-      "sublabel": "repository structure · detected",
+      "id": "ki-pmo",
+      "type": "database",
+      "label": "pmo",
+      "sublabel": "change management · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
+          "path": "skills/change-management/ki-pmo/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        512
+        32,
+        624
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-pmo-design",
+      "type": "frontend",
+      "label": "pmo-design",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+        }
+      ],
+      "pos": [
+        240,
+        624
       ],
       "size": [
         196,
@@ -603,15 +584,15 @@
       "id": "ki-repo-kb",
       "type": "backend",
       "label": "repo-kb",
-      "sublabel": "repository structure · detected",
+      "sublabel": "repository structure · automatic",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-kb/SKILL.md"
         }
       ],
       "pos": [
-        916,
-        512
+        716,
+        752
       ],
       "size": [
         196,
@@ -622,186 +603,15 @@
       "id": "ki-repo-kb-streams",
       "type": "backend",
       "label": "repo-kb-streams",
-      "sublabel": "repository structure · detected",
+      "sublabel": "repository structure · automatic",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-kb-streams/SKILL.md"
         }
       ],
       "pos": [
-        1124,
-        512
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-mcp",
-      "type": "backend",
-      "label": "repo-mcp",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
-        }
-      ],
-      "pos": [
-        708,
-        584
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-specifications",
-      "type": "backend",
-      "label": "repo-specifications",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
-        }
-      ],
-      "pos": [
-        916,
-        584
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-tools",
-      "type": "backend",
-      "label": "repo-tools",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
-        }
-      ],
-      "pos": [
-        1124,
-        584
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website",
-      "type": "backend",
-      "label": "repo-website",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website/SKILL.md"
-        }
-      ],
-      "pos": [
-        708,
-        656
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website-app",
-      "type": "backend",
-      "label": "repo-website-app",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
-        }
-      ],
-      "pos": [
-        916,
-        656
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website-cloudflare",
-      "type": "backend",
-      "label": "repo-website-cloudflare",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
-        }
-      ],
-      "pos": [
-        1124,
-        656
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-website-content",
-      "type": "backend",
-      "label": "repo-website-content",
-      "sublabel": "repository structure · detected",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
-        }
-      ],
-      "pos": [
-        708,
-        728
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-dotfiles-chezmoi",
-      "type": "database",
-      "label": "repo-dotfiles-chezmoi",
-      "sublabel": "repository structure · declared",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
-        }
-      ],
-      "pos": [
-        916,
-        728
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-repo-harness",
-      "type": "database",
-      "label": "repo-harness",
-      "sublabel": "repository structure · declared",
-      "sources": [
-        {
-          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
-        }
-      ],
-      "pos": [
-        1124,
-        728
+        924,
+        752
       ],
       "size": [
         196,
@@ -812,15 +622,15 @@
       "id": "ki-repo-kb-activities",
       "type": "database",
       "label": "repo-kb-activities",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        800
+        1132,
+        752
       ],
       "size": [
         196,
@@ -831,15 +641,15 @@
       "id": "ki-repo-kb-live-artifacts",
       "type": "database",
       "label": "repo-kb-live-artifacts",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-kb-live-artifacts/SKILL.md"
         }
       ],
       "pos": [
-        916,
-        800
+        716,
+        824
       ],
       "size": [
         196,
@@ -850,15 +660,205 @@
       "id": "ki-repo-kb-principal",
       "type": "database",
       "label": "repo-kb-principal",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
         }
       ],
       "pos": [
-        1124,
-        800
+        924,
+        824
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website",
+      "type": "backend",
+      "label": "repo-website",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website/SKILL.md"
+        }
+      ],
+      "pos": [
+        716,
+        952
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-app",
+      "type": "backend",
+      "label": "repo-website-app",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
+        }
+      ],
+      "pos": [
+        924,
+        952
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-cloudflare",
+      "type": "backend",
+      "label": "repo-website-cloudflare",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
+        }
+      ],
+      "pos": [
+        1132,
+        952
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-website-content",
+      "type": "backend",
+      "label": "repo-website-content",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
+        }
+      ],
+      "pos": [
+        716,
+        1024
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-homebrew-tap",
+      "type": "backend",
+      "label": "repo-homebrew-tap",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
+        }
+      ],
+      "pos": [
+        716,
+        1152
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-mcp",
+      "type": "backend",
+      "label": "repo-mcp",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
+        }
+      ],
+      "pos": [
+        924,
+        1152
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-specifications",
+      "type": "backend",
+      "label": "repo-specifications",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
+        }
+      ],
+      "pos": [
+        1132,
+        1152
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-tools",
+      "type": "backend",
+      "label": "repo-tools",
+      "sublabel": "repository structure · automatic",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
+        }
+      ],
+      "pos": [
+        716,
+        1224
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-dotfiles-chezmoi",
+      "type": "database",
+      "label": "repo-dotfiles-chezmoi",
+      "sublabel": "repository structure · opt-in",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+        }
+      ],
+      "pos": [
+        924,
+        1224
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-repo-harness",
+      "type": "database",
+      "label": "repo-harness",
+      "sublabel": "repository structure · opt-in",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+        }
+      ],
+      "pos": [
+        1132,
+        1224
       ],
       "size": [
         196,
@@ -869,15 +869,15 @@
       "id": "ki-repo-project",
       "type": "database",
       "label": "repo-project",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-project/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        872
+        716,
+        1296
       ],
       "size": [
         196,
@@ -888,7 +888,7 @@
       "id": "ki-subagents",
       "type": "backend",
       "label": "subagents",
-      "sublabel": "agentic systems · detected",
+      "sublabel": "agentic systems · automatic",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-subagents/SKILL.md"
@@ -896,7 +896,7 @@
       ],
       "pos": [
         32,
-        672
+        784
       ],
       "size": [
         196,
@@ -907,7 +907,7 @@
       "id": "ki-subagents-chatgpt",
       "type": "backend",
       "label": "subagents-chatgpt",
-      "sublabel": "agentic systems · detected",
+      "sublabel": "agentic systems · automatic",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-subagents-chatgpt/SKILL.md"
@@ -915,7 +915,7 @@
       ],
       "pos": [
         240,
-        672
+        784
       ],
       "size": [
         196,
@@ -926,7 +926,7 @@
       "id": "ki-subagents-claude",
       "type": "backend",
       "label": "subagents-claude",
-      "sublabel": "agentic systems · detected",
+      "sublabel": "agentic systems · automatic",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-subagents-claude/SKILL.md"
@@ -934,7 +934,7 @@
       ],
       "pos": [
         448,
-        672
+        784
       ],
       "size": [
         196,
@@ -945,7 +945,7 @@
       "id": "ki-agent-coordination-paperclip",
       "type": "database",
       "label": "agent-coordination-paperclip",
-      "sublabel": "agentic systems · declared",
+      "sublabel": "agentic systems · opt-in",
       "sources": [
         {
           "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
@@ -953,7 +953,7 @@
       ],
       "pos": [
         32,
-        744
+        856
       ],
       "size": [
         196,
@@ -964,7 +964,7 @@
       "id": "ki-binding",
       "type": "database",
       "label": "binding",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding/SKILL.md"
@@ -972,7 +972,7 @@
       ],
       "pos": [
         32,
-        904
+        1016
       ],
       "size": [
         196,
@@ -983,7 +983,7 @@
       "id": "ki-binding-chatgpt",
       "type": "database",
       "label": "binding-chatgpt",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding-chatgpt/SKILL.md"
@@ -991,7 +991,7 @@
       ],
       "pos": [
         240,
-        904
+        1016
       ],
       "size": [
         196,
@@ -1002,7 +1002,7 @@
       "id": "ki-binding-chezmoi",
       "type": "database",
       "label": "binding-chezmoi",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
@@ -1010,7 +1010,7 @@
       ],
       "pos": [
         448,
-        904
+        1016
       ],
       "size": [
         196,
@@ -1021,7 +1021,7 @@
       "id": "ki-binding-claude",
       "type": "database",
       "label": "binding-claude",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding-claude/SKILL.md"
@@ -1029,45 +1029,7 @@
       ],
       "pos": [
         32,
-        976
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-housekeeping-chatgpt",
-      "type": "database",
-      "label": "housekeeping-chatgpt",
-      "sublabel": "environment · declared",
-      "sources": [
-        {
-          "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
-        }
-      ],
-      "pos": [
-        240,
-        976
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
-      "id": "ki-housekeeping-claude",
-      "type": "database",
-      "label": "housekeeping-claude",
-      "sublabel": "environment · declared",
-      "sources": [
-        {
-          "path": "skills/environment/ki-housekeeping-claude/SKILL.md"
-        }
-      ],
-      "pos": [
-        448,
-        976
+        1088
       ],
       "size": [
         196,
@@ -1078,7 +1040,7 @@
       "id": "ki-tokenomics",
       "type": "database",
       "label": "tokenomics",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-tokenomics/SKILL.md"
@@ -1086,7 +1048,7 @@
       ],
       "pos": [
         32,
-        1048
+        1216
       ],
       "size": [
         196,
@@ -1097,7 +1059,7 @@
       "id": "ki-tokenomics-chatgpt",
       "type": "database",
       "label": "tokenomics-chatgpt",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-tokenomics-chatgpt/SKILL.md"
@@ -1105,7 +1067,7 @@
       ],
       "pos": [
         240,
-        1048
+        1216
       ],
       "size": [
         196,
@@ -1116,7 +1078,7 @@
       "id": "ki-tokenomics-claude",
       "type": "database",
       "label": "tokenomics-claude",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-tokenomics-claude/SKILL.md"
@@ -1124,7 +1086,45 @@
       ],
       "pos": [
         448,
-        1048
+        1216
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-housekeeping-chatgpt",
+      "type": "database",
+      "label": "housekeeping-chatgpt",
+      "sublabel": "environment · opt-in",
+      "sources": [
+        {
+          "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        1344
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
+      "id": "ki-housekeeping-claude",
+      "type": "database",
+      "label": "housekeeping-claude",
+      "sublabel": "environment · opt-in",
+      "sources": [
+        {
+          "path": "skills/environment/ki-housekeeping-claude/SKILL.md"
+        }
+      ],
+      "pos": [
+        240,
+        1344
       ],
       "size": [
         196,
@@ -1135,15 +1135,15 @@
       "id": "ki-acquire-chatgpt",
       "type": "database",
       "label": "acquire-chatgpt",
-      "sublabel": "acquire · declared",
+      "sublabel": "acquire · opt-in",
       "sources": [
         {
           "path": "skills/acquire/ki-acquire-chatgpt/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        1032
+        716,
+        1456
       ],
       "size": [
         196,
@@ -1154,15 +1154,15 @@
       "id": "ki-acquire-granola",
       "type": "database",
       "label": "acquire-granola",
-      "sublabel": "acquire · declared",
+      "sublabel": "acquire · opt-in",
       "sources": [
         {
           "path": "skills/acquire/ki-acquire-granola/SKILL.md"
         }
       ],
       "pos": [
-        916,
-        1032
+        924,
+        1456
       ],
       "size": [
         196,
@@ -1173,15 +1173,15 @@
       "id": "ki-pulse",
       "type": "frontend",
       "label": "pulse",
-      "sublabel": "acquire · process",
+      "sublabel": "acquire · command",
       "sources": [
         {
           "path": "skills/acquire/ki-pulse/SKILL.md"
         }
       ],
       "pos": [
-        1124,
-        1032
+        1132,
+        1456
       ],
       "size": [
         196,
@@ -1192,15 +1192,15 @@
       "id": "ki-design-system",
       "type": "database",
       "label": "design-system",
-      "sublabel": "design · declared",
+      "sublabel": "design · opt-in",
       "sources": [
         {
           "path": "skills/design/ki-design-system/SKILL.md"
         }
       ],
       "pos": [
-        708,
-        1192
+        32,
+        1504
       ],
       "size": [
         196,
@@ -1211,15 +1211,15 @@
       "id": "ki-design-inspiration",
       "type": "frontend",
       "label": "design-inspiration",
-      "sublabel": "design · process",
+      "sublabel": "design · command",
       "sources": [
         {
           "path": "skills/design/ki-design-inspiration/SKILL.md"
         }
       ],
       "pos": [
-        916,
-        1192
+        240,
+        1504
       ],
       "size": [
         196,
@@ -1236,33 +1236,107 @@
         "ki-skills",
         "ki-bootstrap"
       ],
-      "pad": 16
+      "pad": 24
+    },
+    {
+      "kind": "region",
+      "label": "Governance · Writing and records",
+      "wraps": [
+        "ki-authoring",
+        "ki-decision-records",
+        "ki-guides",
+        "ki-specs",
+        "ki-diagrams"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Governance · Coordination",
+      "wraps": [
+        "ki-checkpoint",
+        "ki-delegation",
+        "ki-trades",
+        "ki-trade"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Governance · Code and Git",
+      "wraps": [
+        "ki-engineering",
+        "ki-git"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Governance · Radars",
+      "wraps": [
+        "ki-agentic-radar",
+        "ki-model-radar"
+      ],
+      "pad": 10
     },
     {
       "kind": "region",
       "label": "Governance · 13 skills",
       "wraps": [
         "ki-authoring",
-        "ki-checkpoint",
         "ki-decision-records",
-        "ki-engineering",
         "ki-guides",
         "ki-specs",
-        "ki-agentic-radar",
-        "ki-delegation",
         "ki-diagrams",
-        "ki-git",
-        "ki-model-radar",
+        "ki-checkpoint",
+        "ki-delegation",
         "ki-trades",
-        "ki-trade"
+        "ki-trade",
+        "ki-engineering",
+        "ki-git",
+        "ki-agentic-radar",
+        "ki-model-radar"
       ],
-      "pad": 16
+      "pad": 24
+    },
+    {
+      "kind": "region",
+      "label": "Change Management · Work items",
+      "wraps": [
+        "ki-work",
+        "ki-work-github-issues",
+        "ki-work-linear",
+        "ki-work-recurring",
+        "ki-work-roadmap"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Change Management · Delivery cycle",
+      "wraps": [
+        "ki-accept",
+        "ki-batch",
+        "ki-implement",
+        "ki-next",
+        "ki-plan",
+        "ki-recap"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Change Management · Programme",
+      "wraps": [
+        "ki-pmo",
+        "ki-pmo-design"
+      ],
+      "pad": 10
     },
     {
       "kind": "region",
       "label": "Change Management · 13 skills",
       "wraps": [
-        "ki-pmo",
         "ki-work",
         "ki-work-github-issues",
         "ki-work-linear",
@@ -1273,33 +1347,71 @@
         "ki-implement",
         "ki-next",
         "ki-plan",
-        "ki-pmo-design",
-        "ki-recap"
+        "ki-recap",
+        "ki-pmo",
+        "ki-pmo-design"
       ],
-      "pad": 16
+      "pad": 24
+    },
+    {
+      "kind": "region",
+      "label": "Repo Structure · Knowledge bases",
+      "wraps": [
+        "ki-repo-kb",
+        "ki-repo-kb-streams",
+        "ki-repo-kb-activities",
+        "ki-repo-kb-live-artifacts",
+        "ki-repo-kb-principal"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Repo Structure · Websites",
+      "wraps": [
+        "ki-repo-website",
+        "ki-repo-website-app",
+        "ki-repo-website-cloudflare",
+        "ki-repo-website-content"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Repo Structure · Projects and tools",
+      "wraps": [
+        "ki-repo-homebrew-tap",
+        "ki-repo-mcp",
+        "ki-repo-specifications",
+        "ki-repo-tools",
+        "ki-repo-dotfiles-chezmoi",
+        "ki-repo-harness",
+        "ki-repo-project"
+      ],
+      "pad": 10
     },
     {
       "kind": "region",
       "label": "Repo Structure · 16 skills",
       "wraps": [
-        "ki-repo-homebrew-tap",
         "ki-repo-kb",
         "ki-repo-kb-streams",
-        "ki-repo-mcp",
-        "ki-repo-specifications",
-        "ki-repo-tools",
+        "ki-repo-kb-activities",
+        "ki-repo-kb-live-artifacts",
+        "ki-repo-kb-principal",
         "ki-repo-website",
         "ki-repo-website-app",
         "ki-repo-website-cloudflare",
         "ki-repo-website-content",
+        "ki-repo-homebrew-tap",
+        "ki-repo-mcp",
+        "ki-repo-specifications",
+        "ki-repo-tools",
         "ki-repo-dotfiles-chezmoi",
         "ki-repo-harness",
-        "ki-repo-kb-activities",
-        "ki-repo-kb-live-artifacts",
-        "ki-repo-kb-principal",
         "ki-repo-project"
       ],
-      "pad": 16
+      "pad": 24
     },
     {
       "kind": "region",
@@ -1310,7 +1422,37 @@
         "ki-subagents-claude",
         "ki-agent-coordination-paperclip"
       ],
-      "pad": 16
+      "pad": 24
+    },
+    {
+      "kind": "region",
+      "label": "Environment · MCP binding",
+      "wraps": [
+        "ki-binding",
+        "ki-binding-chatgpt",
+        "ki-binding-chezmoi",
+        "ki-binding-claude"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Environment · Tokenomics",
+      "wraps": [
+        "ki-tokenomics",
+        "ki-tokenomics-chatgpt",
+        "ki-tokenomics-claude"
+      ],
+      "pad": 10
+    },
+    {
+      "kind": "region",
+      "label": "Environment · Housekeeping",
+      "wraps": [
+        "ki-housekeeping-chatgpt",
+        "ki-housekeeping-claude"
+      ],
+      "pad": 10
     },
     {
       "kind": "region",
@@ -1320,13 +1462,13 @@
         "ki-binding-chatgpt",
         "ki-binding-chezmoi",
         "ki-binding-claude",
-        "ki-housekeeping-chatgpt",
-        "ki-housekeeping-claude",
         "ki-tokenomics",
         "ki-tokenomics-chatgpt",
-        "ki-tokenomics-claude"
+        "ki-tokenomics-claude",
+        "ki-housekeeping-chatgpt",
+        "ki-housekeeping-claude"
       ],
-      "pad": 16
+      "pad": 24
     },
     {
       "kind": "region",
@@ -1336,7 +1478,7 @@
         "ki-acquire-granola",
         "ki-pulse"
       ],
-      "pad": 16
+      "pad": 24
     },
     {
       "kind": "region",
@@ -1345,7 +1487,7 @@
         "ki-design-system",
         "ki-design-inspiration"
       ],
-      "pad": 16
+      "pad": 24
     }
   ],
   "connections": [],
@@ -1354,16 +1496,16 @@
       "dot": "cyan",
       "title": "Reading the map",
       "items": [
-        "Each region is one source concern under skills/, and every skill in the harness sits in exactly one.",
-        "Colour and sublabel give the shape: governance standards that are baseline, detected or declared, and processes invoked by name like a command.",
-        "Within a region, governance comes first and processes last; each concern has an area diagram showing what its skills rely on and what relies on them."
+        "Each outer region is one source concern under skills/; the regions nested in it group its skills by the capability they bring.",
+        "Colour and sublabel say when a skill applies: always on in every repository, automatic where its structure is found, opt-in once a repository declares it, or a command you run by name.",
+        "The first three are governance standards and a command is a process; each concern has an area diagram showing what its skills rely on and what relies on them."
       ]
     },
     {
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "63 skills in 8 concerns: 2 baseline, 19 detected, 31 declared, 11 processes.",
+        "63 skills in 8 concerns: 2 always on, 19 automatic, 31 opt-in, 11 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

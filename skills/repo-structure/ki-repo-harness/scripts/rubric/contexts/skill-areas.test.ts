@@ -62,6 +62,22 @@ describe('buildSkillArea', () => {
     ])
   })
 
+  test("nests a split concern's capability groups and titles outside regions by group", () => {
+    const groups = {
+      governance: [
+        { title: 'Core', skills: ['ki-base', 'ki-wrapper'] },
+        { title: 'Edge', skills: ['ki-alone', 'ki-user'] }
+      ]
+    }
+    const split = buildSkillArea('governance')(nodes, { ...OPTIONS, groups }) as Area
+    const labels = new Map(split.boundaries.map((b) => [b.label, [...b.wraps].sort()]))
+    expect(labels.get('Governance · Core')).toEqual(['ki-base', 'ki-wrapper'])
+    expect(labels.get('Governance · Edge')).toEqual(['ki-alone', 'ki-user'])
+    expect(labels.get('Governance · 4 skills')).toEqual(['ki-alone', 'ki-base', 'ki-user', 'ki-wrapper'])
+    const flow = buildSkillArea('change-management')(nodes, { ...OPTIONS, groups }) as Area
+    expect(flow.boundaries.map((b) => b.label).sort()).toEqual(['Change Management · 1 skill', 'Governance · Core'])
+  })
+
   test('draws only edges that touch the concern, solid or dashed by declaration', () => {
     expect(area.connections.map((c) => [c.id, c.variant])).toEqual([
       ['ki-flow--ki-wrapper', 'dashed'],

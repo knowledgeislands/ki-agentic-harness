@@ -8,22 +8,22 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
+      "revision": "a830b6eda6ad27a044da637e79792e3c99e3f07e"
     },
     "legend": {
       "mode": "auto",
       "entries": {
         "security": {
-          "label": "Governance · baseline"
+          "label": "Governance · always on"
         },
         "backend": {
-          "label": "Governance · detected"
+          "label": "Governance · automatic"
         },
         "database": {
-          "label": "Governance · declared"
+          "label": "Governance · opt-in"
         },
         "frontend": {
-          "label": "Process · by name"
+          "label": "Process · command"
         }
       }
     }
@@ -33,7 +33,7 @@
       "id": "ki-repo-harness",
       "type": "database",
       "label": "repo-harness",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
@@ -52,7 +52,7 @@
       "id": "ki-bootstrap",
       "type": "frontend",
       "label": "bootstrap",
-      "sublabel": "keystone · process",
+      "sublabel": "keystone · command",
       "sources": [
         {
           "path": "skills/keystone/ki-bootstrap/SKILL.md"
@@ -71,7 +71,7 @@
       "id": "ki-repo",
       "type": "security",
       "label": "repo",
-      "sublabel": "keystone · baseline",
+      "sublabel": "keystone · always on",
       "sources": [
         {
           "path": "skills/keystone/ki-repo/SKILL.md"
@@ -90,7 +90,7 @@
       "id": "ki-skills",
       "type": "backend",
       "label": "skills",
-      "sublabel": "keystone · detected",
+      "sublabel": "keystone · automatic",
       "sources": [
         {
           "path": "skills/keystone/ki-skills/SKILL.md"
@@ -109,7 +109,7 @@
       "id": "ki-authoring",
       "type": "security",
       "label": "authoring",
-      "sublabel": "governance · baseline",
+      "sublabel": "governance · always on",
       "sources": [
         {
           "path": "skills/governance/ki-authoring/SKILL.md"
@@ -128,14 +128,14 @@
       "id": "ki-git",
       "type": "database",
       "label": "git",
-      "sublabel": "governance · declared",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
           "path": "skills/governance/ki-git/SKILL.md"
         }
       ],
       "pos": [
-        276,
+        340,
         528
       ],
       "size": [
@@ -147,7 +147,7 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Repo Structure · 1 skill",
+      "label": "Repo Structure · Projects and tools",
       "wraps": [
         "ki-repo-harness"
       ],
@@ -155,9 +155,16 @@
     },
     {
       "kind": "region",
-      "label": "Governance · 2 skills",
+      "label": "Governance · Writing and records",
       "wraps": [
-        "ki-authoring",
+        "ki-authoring"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Governance · Code and Git",
+      "wraps": [
         "ki-git"
       ],
       "pad": 32
@@ -198,8 +205,8 @@
       "dot": "cyan",
       "title": "Reading the diagram",
       "items": [
-        "The middle region holds every skill in keystone; the skill map shows where the other concerns sit.",
-        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
+        "The middle region holds every skill in keystone, nested by the capability each brings where the concern is split; the skill map shows where the other concerns sit.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by concern and capability group.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

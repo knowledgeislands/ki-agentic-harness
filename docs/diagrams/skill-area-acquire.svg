@@ -433,7 +433,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <rect width="100%" height="100%" fill="url(#grid)"/>
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Environment · 1 skill" x="0" y="320" width="260" height="100" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Environment · Housekeeping" x="0" y="320" width="260" height="100" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Acquire · 3 skills" x="0" y="32" width="504" height="212" rx="12" class="c-region" stroke-width="1"/>
 
@@ -444,8 +444,8 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Components -->
-        <g id="node-ki-acquire-chatgpt" data-node-id="ki-acquire-chatgpt" data-node-label="acquire-chatgpt" tabindex="0" role="button" aria-label="Focus acquire-chatgpt, acquire · declared, Acquire · 3 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · declared" data-node-context="Acquire · 3 skills">
-          <title>acquire-chatgpt · acquire · declared · Acquire · 3 skills</title>
+        <g id="node-ki-acquire-chatgpt" data-node-id="ki-acquire-chatgpt" data-node-label="acquire-chatgpt" tabindex="0" role="button" aria-label="Focus acquire-chatgpt, acquire · opt-in, Acquire · 3 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 3 skills">
+          <title>acquire-chatgpt · acquire · opt-in · Acquire · 3 skills</title>
           <rect x="32" y="176" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="176" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 182) scale(0.6875)">
@@ -453,11 +453,11 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="130" y="198" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">acquire-chatgpt</text>
-        <text x="130" y="214" class="t-muted" font-size="9" text-anchor="middle">acquire · declared</text>
+        <text x="130" y="214" class="t-muted" font-size="9" text-anchor="middle">acquire · opt-in</text>
         </g>
 
-        <g id="node-ki-acquire-granola" data-node-id="ki-acquire-granola" data-node-label="acquire-granola" tabindex="0" role="button" aria-label="Focus acquire-granola, acquire · declared, Acquire · 3 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · declared" data-node-context="Acquire · 3 skills">
-          <title>acquire-granola · acquire · declared · Acquire · 3 skills</title>
+        <g id="node-ki-acquire-granola" data-node-id="ki-acquire-granola" data-node-label="acquire-granola" tabindex="0" role="button" aria-label="Focus acquire-granola, acquire · opt-in, Acquire · 3 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 3 skills">
+          <title>acquire-granola · acquire · opt-in · Acquire · 3 skills</title>
           <rect x="32" y="64" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="64" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 70) scale(0.6875)">
@@ -465,11 +465,11 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="130" y="86" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">acquire-granola</text>
-        <text x="130" y="102" class="t-muted" font-size="9" text-anchor="middle">acquire · declared</text>
+        <text x="130" y="102" class="t-muted" font-size="9" text-anchor="middle">acquire · opt-in</text>
         </g>
 
-        <g id="node-ki-pulse" data-node-id="ki-pulse" data-node-label="pulse" tabindex="0" role="button" aria-label="Focus pulse, acquire · process, Acquire · 3 skills" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="acquire · process" data-node-context="Acquire · 3 skills">
-          <title>pulse · acquire · process · Acquire · 3 skills</title>
+        <g id="node-ki-pulse" data-node-id="ki-pulse" data-node-label="pulse" tabindex="0" role="button" aria-label="Focus pulse, acquire · command, Acquire · 3 skills" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="acquire · command" data-node-context="Acquire · 3 skills">
+          <title>pulse · acquire · command · Acquire · 3 skills</title>
           <rect x="276" y="176" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="276" y="176" width="196" height="48" rx="6" class="c-frontend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(282 182) scale(0.6875)">
@@ -479,11 +479,11 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="374" y="198" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">pulse</text>
-        <text x="374" y="214" class="t-muted" font-size="9" text-anchor="middle">acquire · process</text>
+        <text x="374" y="214" class="t-muted" font-size="9" text-anchor="middle">acquire · command</text>
         </g>
 
-        <g id="node-ki-housekeeping-chatgpt" data-node-id="ki-housekeeping-chatgpt" data-node-label="housekeeping-chatgpt" tabindex="0" role="button" aria-label="Focus housekeeping-chatgpt, environment · declared, Environment · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · declared" data-node-context="Environment · 1 skill">
-          <title>housekeeping-chatgpt · environment · declared · Environment · 1 skill</title>
+        <g id="node-ki-housekeeping-chatgpt" data-node-id="ki-housekeeping-chatgpt" data-node-label="housekeeping-chatgpt" tabindex="0" role="button" aria-label="Focus housekeeping-chatgpt, environment · opt-in, Environment · Housekeeping" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-context="Environment · Housekeeping">
+          <title>housekeeping-chatgpt · environment · opt-in · Environment · Housekeeping</title>
           <rect x="32" y="352" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="32" y="352" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 358) scale(0.6875)">
@@ -491,16 +491,16 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="130" y="374" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">housekeeping-chatgpt</text>
-        <text x="130" y="390" class="t-muted" font-size="9" text-anchor="middle">environment · declared</text>
+        <text x="130" y="390" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         </g>
 
         <!-- Connection labels -->
 
 
         <!-- Boundary labels (foreground masks keep routes out of titles) -->
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Environment · 1 skill">
-          <rect data-graph-role="structural-frame-label-mask" x="4" y="332" width="123.39999999999999" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="8" y="345" class="t-cloud" font-size="9" font-weight="600">Environment · 1 skill</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Environment · Housekeeping">
+          <rect data-graph-role="structural-frame-label-mask" x="4" y="332" width="150.4" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="8" y="345" class="t-cloud" font-size="9" font-weight="600">Environment · Housekeeping</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Acquire · 3 skills">
@@ -513,11 +513,11 @@ rect.c-bg-rect { fill: var(--bg); }
           <text x="40" y="452" class="t-primary" font-size="12" font-weight="650">Legend</text>
           <g data-legend-semantic-kind="frontend" data-legend-x="40" data-legend-baseline="472" data-legend-width="128">
             <rect x="40" y="463" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
-            <text x="62" y="472" class="t-muted" font-size="10" font-weight="500">Process · by name</text>
+            <text x="62" y="472" class="t-muted" font-size="10" font-weight="500">Process · command</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-x="190" data-legend-baseline="472" data-legend-width="148">
+          <g data-legend-semantic-kind="database" data-legend-x="190" data-legend-baseline="472" data-legend-width="138">
             <rect x="190" y="463" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
-            <text x="212" y="472" class="t-muted" font-size="10" font-weight="500">Governance · declared</text>
+            <text x="212" y="472" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
           </g>
         </g>
       </svg>

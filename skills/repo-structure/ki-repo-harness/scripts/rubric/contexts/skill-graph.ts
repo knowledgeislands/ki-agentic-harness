@@ -4,6 +4,7 @@
  * map and the area diagrams both use. Shared-module packaging and coverage detection are not drawn.
  */
 import { type CapabilityApplicability, type CapabilitySource, parseCapabilitySource } from './capability-publication.ts'
+import type { SkillGroup } from './skill-groups.ts'
 
 export type SkillGraphNode = {
   path: string
@@ -20,6 +21,8 @@ export type SkillGraphOptions = {
   repositoryUrl?: string
   /** The 40-character commit the graph was traced at; omitted when unknown. */
   revision?: string
+  /** The capability groups to nest in each concern; the harness's own table when omitted. */
+  groups?: Readonly<Record<string, readonly SkillGroup[]>>
 }
 
 export const DOMAIN_LABELS: Readonly<Record<string, string>> = {
@@ -38,8 +41,10 @@ export const domainLabel = (domain: string): string => DOMAIN_LABELS[domain] ?? 
 /**
  * A skill's shape is its applicability, which also fixes its kind: every process skill is
  * invocation-only and no governance skill is. Every diagram draws each shape as one Archify node
- * type, so the legend reads the same on both, and name it in text so meaning never rests on
- * colour alone.
+ * type, so the legend reads the same on both, and names it in a plain word so meaning never rests
+ * on colour alone: governance that is always on (`baseline`), automatic where its structure is
+ * detected (`detected`), or opt-in by declaration (`declaration-only`), and processes run as a
+ * command (`invocation-only`).
  */
 export const SKILL_SHAPES: Readonly<
   Record<
@@ -47,14 +52,10 @@ export const SKILL_SHAPES: Readonly<
     { type: 'security' | 'backend' | 'database' | 'frontend'; word: string; legend: string }
   >
 > = {
-  baseline: { type: 'security', word: 'baseline', legend: 'Governance · baseline' },
-  detected: { type: 'backend', word: 'detected', legend: 'Governance · detected' },
-  'declaration-only': {
-    type: 'database',
-    word: 'declared',
-    legend: 'Governance · declared'
-  },
-  'invocation-only': { type: 'frontend', word: 'process', legend: 'Process · by name' }
+  baseline: { type: 'security', word: 'always on', legend: 'Governance · always on' },
+  detected: { type: 'backend', word: 'automatic', legend: 'Governance · automatic' },
+  'declaration-only': { type: 'database', word: 'opt-in', legend: 'Governance · opt-in' },
+  'invocation-only': { type: 'frontend', word: 'command', legend: 'Process · command' }
 }
 
 export const shapeLegend = (): Record<string, { label: string }> =>

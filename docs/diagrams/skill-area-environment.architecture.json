@@ -8,22 +8,22 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "fcad8a1e1008fb94bd38ec0184aec097b510d785"
+      "revision": "a830b6eda6ad27a044da637e79792e3c99e3f07e"
     },
     "legend": {
       "mode": "auto",
       "entries": {
         "security": {
-          "label": "Governance · baseline"
+          "label": "Governance · always on"
         },
         "backend": {
-          "label": "Governance · detected"
+          "label": "Governance · automatic"
         },
         "database": {
-          "label": "Governance · declared"
+          "label": "Governance · opt-in"
         },
         "frontend": {
-          "label": "Process · by name"
+          "label": "Process · command"
         }
       }
     }
@@ -33,14 +33,14 @@
       "id": "ki-acquire-chatgpt",
       "type": "database",
       "label": "acquire-chatgpt",
-      "sublabel": "acquire · declared",
+      "sublabel": "acquire · opt-in",
       "sources": [
         {
           "path": "skills/acquire/ki-acquire-chatgpt/SKILL.md"
         }
       ],
       "pos": [
-        32,
+        44,
         64
       ],
       "size": [
@@ -52,15 +52,15 @@
       "id": "ki-binding",
       "type": "database",
       "label": "binding",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding/SKILL.md"
         }
       ],
       "pos": [
-        32,
-        352
+        44,
+        240
       ],
       "size": [
         196,
@@ -71,15 +71,15 @@
       "id": "ki-binding-chatgpt",
       "type": "database",
       "label": "binding-chatgpt",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding-chatgpt/SKILL.md"
         }
       ],
       "pos": [
-        276,
-        464
+        288,
+        352
       ],
       "size": [
         196,
@@ -90,15 +90,15 @@
       "id": "ki-binding-chezmoi",
       "type": "database",
       "label": "binding-chezmoi",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
         }
       ],
       "pos": [
-        32,
-        464
+        44,
+        352
       ],
       "size": [
         196,
@@ -109,15 +109,15 @@
       "id": "ki-binding-claude",
       "type": "database",
       "label": "binding-claude",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-binding-claude/SKILL.md"
         }
       ],
       "pos": [
-        276,
-        352
+        288,
+        240
       ],
       "size": [
         196,
@@ -128,14 +128,14 @@
       "id": "ki-housekeeping-chatgpt",
       "type": "database",
       "label": "housekeeping-chatgpt",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
         }
       ],
       "pos": [
-        32,
+        1084,
         240
       ],
       "size": [
@@ -147,15 +147,15 @@
       "id": "ki-housekeeping-claude",
       "type": "database",
       "label": "housekeeping-claude",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-housekeeping-claude/SKILL.md"
         }
       ],
       "pos": [
-        520,
-        464
+        1084,
+        352
       ],
       "size": [
         196,
@@ -166,14 +166,14 @@
       "id": "ki-tokenomics",
       "type": "database",
       "label": "tokenomics",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-tokenomics/SKILL.md"
         }
       ],
       "pos": [
-        276,
+        564,
         240
       ],
       "size": [
@@ -185,15 +185,15 @@
       "id": "ki-tokenomics-chatgpt",
       "type": "database",
       "label": "tokenomics-chatgpt",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-tokenomics-chatgpt/SKILL.md"
         }
       ],
       "pos": [
-        520,
-        240
+        564,
+        352
       ],
       "size": [
         196,
@@ -204,14 +204,14 @@
       "id": "ki-tokenomics-claude",
       "type": "database",
       "label": "tokenomics-claude",
-      "sublabel": "environment · declared",
+      "sublabel": "environment · opt-in",
       "sources": [
         {
           "path": "skills/environment/ki-tokenomics-claude/SKILL.md"
         }
       ],
       "pos": [
-        520,
+        808,
         352
       ],
       "size": [
@@ -223,15 +223,15 @@
       "id": "ki-repo-dotfiles-chezmoi",
       "type": "database",
       "label": "repo-dotfiles-chezmoi",
-      "sublabel": "repository structure · declared",
+      "sublabel": "repository structure · opt-in",
       "sources": [
         {
           "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
       "pos": [
-        32,
-        640
+        44,
+        528
       ],
       "size": [
         196,
@@ -250,11 +250,41 @@
     },
     {
       "kind": "region",
-      "label": "Repo Structure · 1 skill",
+      "label": "Repo Structure · Projects and tools",
       "wraps": [
         "ki-repo-dotfiles-chezmoi"
       ],
       "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Environment · MCP binding",
+      "wraps": [
+        "ki-binding",
+        "ki-binding-chatgpt",
+        "ki-binding-chezmoi",
+        "ki-binding-claude"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Environment · Tokenomics",
+      "wraps": [
+        "ki-tokenomics",
+        "ki-tokenomics-chatgpt",
+        "ki-tokenomics-claude"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Environment · Housekeeping",
+      "wraps": [
+        "ki-housekeeping-chatgpt",
+        "ki-housekeeping-claude"
+      ],
+      "pad": 28
     },
     {
       "kind": "region",
@@ -264,13 +294,13 @@
         "ki-binding-chatgpt",
         "ki-binding-chezmoi",
         "ki-binding-claude",
-        "ki-housekeeping-chatgpt",
-        "ki-housekeeping-claude",
         "ki-tokenomics",
         "ki-tokenomics-chatgpt",
-        "ki-tokenomics-claude"
+        "ki-tokenomics-claude",
+        "ki-housekeeping-chatgpt",
+        "ki-housekeeping-claude"
       ],
-      "pad": 32
+      "pad": 44
     }
   ],
   "connections": [
@@ -322,8 +352,8 @@
       "dot": "cyan",
       "title": "Reading the diagram",
       "items": [
-        "The middle region holds every skill in environment; the skill map shows where the other concerns sit.",
-        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these.",
+        "The middle region holds every skill in environment, nested by the capability each brings where the concern is split; the skill map shows where the other concerns sit.",
+        "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by concern and capability group.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },
