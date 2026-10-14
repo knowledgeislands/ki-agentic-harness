@@ -64,7 +64,7 @@ Knowledge files live in the owning repository's tracked `+/_THREADS/<run>/` fold
 | `decisions.md` | The run's [decisions log](#decisions-log) |
 | `<name>.report.md` | Each agent's final report, kept until a mark finds its queries all answered and its outcome homed, when the thread deletes it under `ki-pmo`'s [tidying rule](../../../change-management/ki-pmo/references/standards-pmo.md#tidying-the-thread-folder) and Git history holds it |
 
-The owning repository is the one that holds the thread's checkpoint, and the folder takes the run's name, so a thread that spans repositories commits its log in one place and agents working in other repositories report into it, as they report into one state folder today. `ki agent` writes the knowledge files there once `tools-ki` ships that change. Until then the thread copies the log and each report into the folder by hand, at each mark and when a report lands, and commits them.
+The owning repository is the one that holds the thread's checkpoint, and the folder takes the run's name, so a thread that spans repositories commits its log in one place and agents working in other repositories report into it. `ki agent` is the only writer of the knowledge files there, as Kris decided on 2026-10-14: "make the launcher the only writer of the thread folder's log and report files". The thread commits them.
 
 The agent overwrites its status at each change of activity and at least every two minutes, writes its report, then writes `DONE` as the last line of its status. `DONE` is the only completion signal.
 
