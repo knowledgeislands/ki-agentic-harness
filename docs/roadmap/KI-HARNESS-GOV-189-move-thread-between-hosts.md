@@ -8,7 +8,7 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/mac-studio-bootstrap/mac-studio-bootstrap.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-14T14:17:58Z
+updated_at: 2026-10-14T16:45:00Z
 ---
 
 # Move a Coordinating Thread to Another Host
@@ -46,6 +46,14 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 
 - How `ki agent` exports a queue and re-imports it on another host: whether the checkpoint carries the briefs themselves or only references to tracked brief files, and how a re-queue avoids a duplicate run if the old queue was not cleared.
 - Agents that must run on a specific host, for example work against a machine-local resource or a host-bound service: whether they stay queued on the old host, are held in the checkpoint with a host constraint, or block the move.
+
+### Decisions-log transfer, observed 2026-10-14
+
+The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, and Kris approved recording what that took (Kris, 2026-10-14: "I want to capture any differences and also make an onboarding guide for a rig"). The run's decisions log, `~/.local/state/ki/agents/mac-studio-bootstrap/decisions.md`, is machine-local and not in Git, so nothing carried it: an approved agent copied it to the same path on `sol` with the run reports, and the checkpoint recorded that the live copy was now on `sol` and the laptop's copy frozen. Until rule 3 lands, a move depends on that manual copy, and a thread that resumes without it has its checkpoint but none of the owner decisions in the owner's words. The procedure should say:
+
+- which files in the run folder travel (the decisions log, reports and briefs) and which stay behind (process ids, launch records, logs and status files);
+- that the checkpoint names the host holding the live decisions log, and the old host's copy is frozen from the move mark;
+- how a re-bootstrap on the new host proves it has the latest log, for example by the last entry's time and words matching the checkpoint's last recorded decision.
 
 ### Relation to existing records
 
