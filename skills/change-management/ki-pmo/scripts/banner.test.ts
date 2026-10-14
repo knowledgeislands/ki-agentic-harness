@@ -19,20 +19,28 @@ const recapStandard = readFileSync(
 const hook = readFileSync(resolve(harnessRoot, 'hooks', 'coordinator-reminder.sh'), 'utf8')
 
 const FRAME_COLUMNS = 52
+const MIN_FILL = 4
 const UTC = String.raw`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z`
-/** The live top border: `╭─ <thread type> `, `─` fill, then ` <issued UTC> ─╮`. */
-const TOP_BORDER = new RegExp(`^╭─ (coordination|state-of-play) ─+ ${UTC} ─╮$`)
+/** The live top border: `╭─ <thread type> `, `─` fill, ` <form> <issued UTC> ─╮`. */
+const TOP_BORDER = new RegExp(
+  `^╭─ (coordination|state-of-play) (─+) (summary|recap|full summary|re-bootstrap) ${UTC} ─╮$`
+)
 /** The live bottom border: `╰`, `─` fill, then ` mark <mark UTC> ─╯`. */
 const BOTTOM_BORDER = new RegExp(`^╰─+ mark ${UTC} ─╯$`)
-/** A blank body line: the bar, 50 spaces, the bar. */
-const BLANK_BODY = /^│ {50}│$/
-/** The label line: the bar, one space, the label with ` - ` as its separator, padding, the bar. */
-const LABEL_BODY = /^│ \S.* - \S.*[^ ] +│$/
+/** A blank body line: the bar, spaces, the bar. */
+const BLANK_BODY = /^│ +│$/
+/** The label line: the bar, padding, the label with ` - ` as its separator, padding, the bar. */
+const LABEL_BODY = /^│( +)(\S.* - .*\S)( +)│$/
 /** The DONE top border, which keeps the earlier block-letter frame: `╭─ issued <UTC> ─` padded with `─`. */
 const DONE_TOP_BORDER = new RegExp(`^╭─ issued ${UTC} ─+╮$`)
-/** A line beneath the frame carrying exactly one item: a prefix, one name without a comma, ` - ` and what it is. */
-const ITEM_LINE = /^ {3}(running|queued|waiting on you): [^,]+ - .+$/
-const REST_LINE = '   at rest: nothing running or queued'
+/** An item in the list beneath: `- [<state>] <what>`. */
+const ITEM =
+  /^- \[(at rest|running|queued|waiting|committed|uncommitted|unpushed|blocked|held|parked|recovered|unlogged)\] .+$/
+/** A running or queued item names one agent, without a comma, then ` - ` and what it does. */
+const AGENT_ITEM = /^- \[(running|queued)\] [^,]+ - .+$/
+/** A waiting item carries the Needs tag alone. */
+const WAITING_ITEM = /^- \[waiting\] [A-Z][A-Z0-9-]*$/
+const REST_ITEM = '- [at rest] nothing running or queued'
 const RESUME_LINE =
   'Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
 
@@ -73,23 +81,66 @@ const beneath = (text: string, frameIndex: number): string[] => {
   return []
 }
 
+/** The width a live frame takes: 52, or more when the top border needs more than the minimum fill at 52. */
+const widthFor = (threadType: string, form: string): number =>
+  Math.max(FRAME_COLUMNS, 29 + MIN_FILL + threadType.length + form.length)
+
 const expectLiveFrame = (frame: string[] | undefined): void => {
   expect(frame).toBeDefined()
   if (!frame) return
-  for (const line of frame) expect(codePoints(line)).toBe(FRAME_COLUMNS)
-  expect(frame[0]).toMatch(TOP_BORDER)
+  const top = frame[0]?.match(TOP_BORDER)
+  expect(top).not.toBeNull()
+  if (!top) return
+  const [, threadType, fill, form] = top
+  const width = widthFor(threadType ?? '', form ?? '')
+  expect(fill?.length).toBeGreaterThanOrEqual(MIN_FILL)
+  for (const line of frame) expect(codePoints(line)).toBe(width)
   expect(frame[1]).toMatch(BLANK_BODY)
-  expect(frame[2]).toMatch(LABEL_BODY)
   expect(frame[3]).toMatch(BLANK_BODY)
+  const label = frame[2]?.match(LABEL_BODY)
+  expect(label).not.toBeNull()
+  if (!label) return
+  const [, left, , right] = label
+  // The label is centred; where the space is odd, the extra space goes on the right.
+  expect((right?.length ?? 0) - (left?.length ?? 0)).toBeGreaterThanOrEqual(0)
+  expect((right?.length ?? 0) - (left?.length ?? 0)).toBeLessThanOrEqual(1)
   expect(frame[4]).toMatch(BOTTOM_BORDER)
 }
 
-test('the standard carries the REST and BUSY examples in the one live frame and the DONE frame, all at 52 code points', () => {
+/** The list beneath a live frame: a blank line, then bracketed-state items in the standard's order, nothing else. */
+const expectList = (lines: string[]): void => {
+  expect(lines[0]).toBe('')
+  const items = lines.slice(1)
+  expect(items.length).toBeGreaterThan(0)
+  for (const item of items) expect(item).toMatch(ITEM)
+  const order = [
+    'at rest',
+    'running',
+    'queued',
+    'waiting',
+    'committed',
+    'uncommitted',
+    'unpushed',
+    'blocked',
+    'held',
+    'parked',
+    'recovered',
+    'unlogged'
+  ]
+  const ranks = items.map((item) => order.indexOf(item.slice(3, item.indexOf(']'))))
+  for (let index = 1; index < ranks.length; index += 1)
+    expect(ranks[index]).toBeGreaterThanOrEqual(ranks[index - 1] ?? 0)
+  for (const item of items.filter((line) => /^- \[(running|queued)\]/.test(line))) expect(item).toMatch(AGENT_ITEM)
+  for (const item of items.filter((line) => line.startsWith('- [waiting]'))) expect(item).toMatch(WAITING_ITEM)
+}
+
+test('the standard carries the REST, BUSY and widened examples in the one live frame and the DONE frame', () => {
   const found = frames(standard)
-  expect(found).toHaveLength(3)
+  expect(found).toHaveLength(4)
   expectLiveFrame(found[0])
   expectLiveFrame(found[1])
-  const done = found[2]
+  expectLiveFrame(found[2])
+  const done = found[3]
   expect(done).toBeDefined()
   if (!done) return
   for (const line of done) expect(codePoints(line)).toBe(FRAME_COLUMNS)
@@ -97,20 +148,35 @@ test('the standard carries the REST and BUSY examples in the one live frame and 
   expect(done[1]).toContain('· project closed')
 })
 
-test('the live frame carries the thread type and issued time above, the label within and the mark below, nowhere else', () => {
-  const [rest, busy] = frames(standard)
+test('the live frame carries the thread type, form and issued time above, the centred label within and the mark below, nowhere else', () => {
+  const [rest, busy, wide] = frames(standard)
   for (const frame of [rest, busy]) {
-    expect(frame?.[0]).toContain('╭─ coordination ')
-    expect(frame?.[2]).toContain('│ KI Model - ways-of-working')
-    expect(frame?.[4]).toContain(' mark ')
+    expect(frame?.[0]).toBe('╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮')
+    expect(frame?.[2]).toBe('│            KI Model - ways-of-working            │')
+    expect(frame?.[4]).toBe('╰────────────────────── mark 2026-10-14T13:54:34Z ─╯')
   }
-  for (const line of [...beneath(standard, 0), ...beneath(standard, 1)]) {
-    expect(line).not.toContain('· mark ')
+  expect(wide?.[0]).toBe('╭─ state-of-play ──── full summary 2026-10-14T17:03:02Z ─╮')
+  expect(wide?.[2]).toBe('│               KI Capital - state of play               │')
+  expect(wide?.[4]).toBe('╰──────────────────────────── mark 2026-10-14T13:54:34Z ─╯')
+  for (const line of wide ?? []) expect(codePoints(line)).toBe(58)
+  for (const line of [...beneath(standard, 0), ...beneath(standard, 1), ...beneath(standard, 2)]) {
+    expect(line).not.toContain('mark ')
     expect(line).not.toContain('issued ')
-    expect(line).not.toContain('· banner ')
+    expect(line).not.toContain('summary')
   }
-  expect(standard).toContain('╭─ state-of-play ─────────── 2026-10-14T16:54:52Z ─╮')
-  expect(codePoints('╭─ state-of-play ─────────── 2026-10-14T16:54:52Z ─╮')).toBe(FRAME_COLUMNS)
+})
+
+test('the frame stays 52 wide while four fill fit and widens equally otherwise, for every thread type and form', () => {
+  expect(widthFor('coordination', 'summary')).toBe(52)
+  expect(widthFor('coordination', 'recap')).toBe(52)
+  expect(widthFor('coordination', 'full summary')).toBe(57)
+  expect(widthFor('coordination', 're-bootstrap')).toBe(57)
+  expect(widthFor('state-of-play', 'summary')).toBe(53)
+  expect(widthFor('state-of-play', 'recap')).toBe(52)
+  expect(widthFor('state-of-play', 'full summary')).toBe(58)
+  expect(widthFor('state-of-play', 're-bootstrap')).toBe(58)
+  expect(codePoints('╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮')).toBe(52)
+  expect(codePoints('╭─ coordination ────── recap 2026-10-14T17:03:02Z ─╮')).toBe(52)
 })
 
 test('the output style carries the REST and BUSY examples byte-identical to the standard', () => {
@@ -124,23 +190,27 @@ test('the output style carries the REST and BUSY examples byte-identical to the 
   for (const frame of styled) expectLiveFrame(frame)
 })
 
-test('a thread at rest says so on the first line beneath and a busy thread lists each item on its own line', () => {
+test('a blank line follows the frame, a thread at rest says so first and every item carries a bracketed state', () => {
   const rest = beneath(standard, 0)
   const busy = beneath(standard, 1)
-  expect(rest[0]).toBe(REST_LINE)
-  expect(busy).not.toContain(REST_LINE)
-  const items = [...rest, ...busy].filter((line) => /^ {3}(running|queued|waiting on you):/.test(line))
-  expect(items.length).toBeGreaterThanOrEqual(5)
-  for (const line of items) expect(line).toMatch(ITEM_LINE)
-  expect(busy.filter((line) => line.startsWith('   running:'))).toHaveLength(2)
-  expect(busy.filter((line) => line.startsWith('   queued:'))).toHaveLength(2)
-  expect(busy.filter((line) => line.startsWith('   waiting on you:'))).toHaveLength(3)
-  expect(rest.filter((line) => line.startsWith('   waiting on you:'))).toHaveLength(2)
-  expect(standard).toContain('thread folder committed and pushed')
+  const wide = beneath(standard, 2)
+  for (const list of [rest, busy, wide]) expectList(list)
+  expect(rest[1]).toBe(REST_ITEM)
+  expect(wide[1]).toBe(REST_ITEM)
+  expect(busy).not.toContain(REST_ITEM)
+  expect(busy.filter((line) => line.startsWith('- [running]'))).toHaveLength(2)
+  expect(busy.filter((line) => line.startsWith('- [queued]'))).toHaveLength(2)
+  expect(busy.filter((line) => line.startsWith('- [waiting]'))).toHaveLength(3)
+  expect(busy).toContain('- [blocked] thread folder commit by the gate, commit-gate fixing')
+  expect(rest.filter((line) => line.startsWith('- [waiting]'))).toHaveLength(2)
+  expect(rest).toContain('- [committed] checkpoint and thread folder, pushed')
+  expect(rest).toContain('- [held] PAPERCLIP-REQ until Wave F')
+  expect(rest).toContain('- [parked] 1')
+  for (const line of [...rest, ...busy, ...wide]) expect(line.startsWith('   ')).toBe(false)
 })
 
 test("the DONE frame shares its block word with ki-recap's frame and differs in its side lines", () => {
-  const done = frames(standard)[2]
+  const done = frames(standard)[3]
   const recap = frames(recapStandard)
   expect(recap).toHaveLength(1)
   const recapDone = recap[0]
@@ -156,13 +226,14 @@ test('the resume line is one sentence shared by the standard and the output styl
   expect(outputStyle).toContain(`\`\`\`text\n${RESUME_LINE}\n\`\`\``)
 })
 
-test('the hook line names the banner, the per-item lines, the thread folder and the prefilled reply block', () => {
+test('the hook line names the banner, the bracketed-state list, the thread folder and the prefilled reply block', () => {
   expect(hook).toContain('Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo banner')
   expect(hook).toContain(
-    'the thread type and issued time in its top border, the label in its body and the mark in its bottom border'
+    'the thread type, the report form and the issued time in its top border, the label centred in its body and the mark in its bottom border'
   )
-  expect(hook).toContain('one line per running, queued or waiting item')
-  expect(hook).toContain('at rest: nothing running or queued')
+  expect(hook).toContain('widened equally when the top border needs more than 52')
+  expect(hook).toContain('one Markdown list with a bracketed state per item')
+  expect(hook).toContain('- [at rest] nothing running or queued')
   expect(hook).toContain('stacks its tag on one line, a blank line, then the recommended instruction')
   expect(hook).toContain('never a menu of options')
   expect(hook).toContain('with --- between entries')

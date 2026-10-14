@@ -77,7 +77,7 @@ Every thread is one of three types, which Kris adopted on 2026-10-14 with "adopt
 | Identity | None required; an optional generic checkpoint | `+/_CHECKPOINTS/<initiative>.<project>.md`, label `<Initiative title>: <project>` | `+/_CHECKPOINTS/_state-of-play.md` in the Capital, label `Master: state-of-play` |
 | Run and thread folder | None | Run `<project>`, folder `+/_THREADS/<project>/` | Run `<territory>-state-of-play`, folder `+/_THREADS/<territory>-state-of-play/` |
 | Decisions | In the work it drives | The Project's [one list](#one-list) in the thread folder | Its own list in its thread folder |
-| Banner | None; ends DONE through `ki-recap` | The `coordination` frame, REST or BUSY; DONE once at [Project close](#project-close) | The `state-of-play` frame, REST or BUSY; DONE only at territory close |
+| Banner | None; ends DONE through `ki-recap` | The `coordination` frame with the report form, REST or BUSY; DONE once at [Project close](#project-close) | The `state-of-play` frame with the report form, REST or BUSY; DONE only at territory close |
 | Governed by | `ki-recap` and the skills the work declares | This standard | This standard |
 
 The conversational thread is the default and is named for what it is, a conversation, rather than "ad hoc". The coordination thread and the state-of-play thread are the coordinating threads this standard governs; where this standard says "coordinating thread" it means both.
@@ -104,7 +104,7 @@ A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` in
 A coordinating thread also follows these practices with the owner. Every report it gives is an [owner report](../../../governance/ki-delegation/references/standards-background-runs.md#owner-report), whose sections, queries and reply block are never shortened by any output style, proxy shaping block or communication level.
 
 - **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch. The query keeps its [Needs tag](../../../governance/ki-delegation/references/standards-background-runs.md#needs-tags) either way.
-- **Banner:** every Summary, every [recap](#recap-since-the-mark) and every [full summary](#full-summary) opens with one `#` banner heading, so each reads cold and several threads' updates read side by side, and closes with the [banner](#banner) frame and the resume line. The heading names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The state agrees with the lines beneath the closing frame: `working` when the thread is BUSY, `resting` or `waiting on <what>` when it is at rest. The window is `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary.
+- **Banner:** every Summary, every [recap](#recap-since-the-mark) and every [full summary](#full-summary) opens with one `#` banner heading, so each reads cold and several threads' updates read side by side, and closes with the [banner](#banner) frame and the resume line. The heading names the thread, its Project and Initiative as links where it has them, the window covered, and the thread's state: `working`, `resting`, or `waiting on <what>`. The state agrees with the list beneath the closing frame: `working` when the thread is BUSY, `resting` or `waiting on <what>` when it is at rest. The window is `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary.
 - **Heading levels:** in every form the banner is the `#` heading, the sections (`Decided`, `Done`, `In Progress`, `Queries`) are `##` headings, and each query and each topic sub-heading is `###`. No other heading levels appear.
 - **Self-contained:** no Summary, recap or full summary says "unchanged, see earlier", "as before" or otherwise points back to an earlier report. What is still running and what is still open is restated in full each time, because the owner reads each one cold and the earlier message may be gone.
 - **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its heading states `resting` or `waiting on <what>` plainly, its closing frame reads REST, and the owner report between them lets the owner pick the thread up cold. Before it rests it [commits and pushes its thread folder](#committing-the-thread-folder).
@@ -117,50 +117,68 @@ A coordinating thread also follows these practices with the owner. Every report 
 
 The banner closes every Summary, recap, full summary and [re-bootstrap](#bootstrap) report, after the reply block, so that the last thing the owner sees says whether the thread is at rest and gives them the one line that brings it back. Kris asked on 2026-10-14 that "every coordination-thread summary or owner report ends with a multi-line status banner modelled on the ki-recap banner. The banner states plainly whether the thread is AT REST (all work concluded, nothing in progress, no open queries) or not, and why. The banner carries one copyable resume line Kris can paste back into the thread later", settled the frame the same day with "(a). Yeah, that's great.", and, seeing threads render it differently after a re-bootstrap, said "when I'm asking threads to rebootstrap from PMO and Checkpoint and delegation, it's not doing the banner in the same way". So every thread renders it the same way, whether it has just bootstrapped, re-bootstrapped from this standard, `ki-checkpoint` and `ki-delegation`, or run for days: the frames below are the only frames, and a banner that differs from them is wrong.
 
-The frame is one shape for every live banner, drawn by Kris on 2026-10-14 and built from his second drawing: 52 code points per framed line, the thread type and the issued time on the top border, the thread's label in the body and the mark on the bottom border, never padded beyond that width, reworded, coloured or improvised. The earlier block-letter REST and BUSY words and the label-and-mark line beneath are gone; what the thread is doing is said by the lines beneath. The issued time stays prominent because Kris said on 2026-10-14 "Banner is great, but it needs the date it was issued to be more prominent than the mark" and then "Use ISO-8601 UTC for the issued too and fix the border". The states come from Kris on 2026-10-14: "a conversational thread can be considered done. That's the end of the conversation. But a coordination thread can either be busy or at rest. Whether or not it then ends up being done is more a situation about the project itself, and in effect, it's when we say that project's closed and pull out and tidy up all of the stuff that's been happening."
+The frame is one shape for every live banner, drawn by Kris on 2026-10-14 and refined by him at 18:08 BST the same day: the thread type, the report form and the issued time on the top border, the thread's label centred in the body and the mark on the bottom border, 52 code points per framed line until the top border needs more, never padded beyond its width, reworded, coloured or improvised. The earlier block-letter REST and BUSY words and the label-and-mark line beneath are gone; what the thread is doing is said by the list beneath. The issued time stays prominent because Kris said on 2026-10-14 "Banner is great, but it needs the date it was issued to be more prominent than the mark" and then "Use ISO-8601 UTC for the issued too and fix the border". The report form sits beside it and the label is centred because Kris redrew the top border as `╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮` and then said "`KI Model - ways-of-working` could be centralised too". The states come from Kris on 2026-10-14: "a conversational thread can be considered done. That's the end of the conversation. But a coordination thread can either be busy or at rest. Whether or not it then ends up being done is more a situation about the project itself, and in effect, it's when we say that project's closed and pull out and tidy up all of the stuff that's been happening."
 
-- **Top border:** `╭─ <thread type>`, a space, `─` fill, a space, then `<issued UTC> ─╮`, the thread type being `coordination` or `state-of-play`, whichever the thread is, and the issued time `YYYY-MM-DDTHH:MM:SSZ`. The fill brings the line to 52 code points: twelve `─` for `coordination`, eleven for `state-of-play`.
-- **Body:** a blank line, the thread's label on its own line after one space, then a blank line, each padded with spaces to the frame. The label separator is ` - `, for example `KI Model - ways-of-working`.
-- **Bottom border:** `╰`, twenty-two `─`, a space, then `mark <mark UTC> ─╯`, the [mark](#recap-since-the-mark) in the same form.
-- **REST:** nothing is running and nothing is queued, and only that. Open queries waiting on the owner, held items, parked items, an uncommitted checkpoint and unlogged decisions do not change the state, as Kris confirmed with "open queries do not make a thread BUSY"; they show on the lines beneath, where every open query has its own `waiting on you:` line. The first line beneath reads `at rest: nothing running or queued`.
-- **BUSY:** anything is running or queued, or the thread is blocked or waiting on another thread. The lines beneath say which, and no `at rest:` line appears.
+- **Top border:** `╭─ <thread type>`, a space, `─` fill, a space, `<form>`, a space, then `<issued UTC> ─╮`, the thread type being `coordination` or `state-of-play`, whichever the thread is, the form being `summary`, `recap`, `full summary` or `re-bootstrap`, whichever report the banner closes, and the issued time `YYYY-MM-DDTHH:MM:SSZ`.
+- **Width:** 52 code points on every framed line while the top border fits at that width with at least four `─` of fill; `coordination` with `summary` fits with four, `coordination` with `recap` with six. When the thread type and the form together need more, as `state-of-play` with `summary`, `coordination` with `full summary` or `re-bootstrap`, or `state-of-play` with `full summary` do, the top border keeps four `─` of fill and every line of the frame widens equally to match it. Nothing is abbreviated to stay at 52.
+- **Body:** a blank line, the thread's label centred on its own line, then a blank line, each padded with spaces to the frame. The label separator is ` - `, for example `KI Model - ways-of-working`. Where the space around the label is odd, the extra space goes on the right.
+- **Bottom border:** `╰`, `─` fill, a space, then `mark <mark UTC> ─╯`, the [mark](#recap-since-the-mark) in the same form; twenty-two `─` at 52 code points, more when the frame has widened.
+- **Gap:** one blank line follows the frame, so that the list beneath renders as a list.
+- **REST:** nothing is running and nothing is queued, and only that. Open queries waiting on the owner, held items, parked items, an uncommitted checkpoint and unlogged decisions do not change the state, as Kris confirmed with "open queries do not make a thread BUSY"; they show in the list beneath, where every open query has its own `[waiting]` item. The first item reads `- [at rest] nothing running or queued`.
+- **BUSY:** anything is running or queued, or the thread is blocked or waiting on another thread. The list beneath says which, and no `[at rest]` item appears.
 - **DONE:** shown once only, at [Project close](#project-close), after the close-out tidy. No resume line follows it. It keeps the block-letter frame it shares with `ki-recap`'s single-session frame and carries its own side lines, so the two are told apart by their words; in a coordinating thread `ki-recap`'s frame never renders, because `ki-recap` hands to these forms.
 
-Beneath the frame, each line with three leading spaces, in this order and only where it applies: `at rest: nothing running or queued` when the thread is at rest; then one line per item, because Kris said on 2026-10-14 "the running should each be a line with the running: prefix": each running agent on its own `running: <agent> - <what>` line, each queued agent on its own `queued: <agent> - <what>` line and each open Needs tag on its own `waiting on you: <TAG> - <what>` line; then the housekeeping line with the checkpoint state, the thread folder state, held items and the parked count. The issued time lives in the top border and the mark in the bottom border, and neither appears anywhere else. Another reason for BUSY takes a running or queued line in words, such as `waiting on: Master - HOOK-FIX` or `blocked: Headroom proxy down`, and the housekeeping line says `checkpoint uncommitted`, `thread folder unpushed` or `decisions unlogged: 2` plainly; a thread that has just recovered from a red x adds `recovered <UTC>` there for that one report. Nothing in the banner cites a decision number.
+Beneath the frame and its blank line comes one Markdown list, each item `- [<state>] <what>` with the state in square brackets, in this order and only where it applies: `- [at rest] nothing running or queued` when the thread is at rest; then one item per thing, because Kris said on 2026-10-14 "the running should each be a line with the running: prefix" and then drew each as a list item: each running agent as `- [running] <agent> - <what>`, each queued agent as `- [queued] <agent> - <what>` and each open Needs tag as `- [waiting] <TAG>`; then the housekeeping items of the same kind, the checkpoint and thread folder state as `- [committed] checkpoint and thread folder, pushed`, or `- [uncommitted] checkpoint`, `- [unpushed] thread folder` or `- [blocked] <what>` when that is the truth, then `- [held] <what> until <when>` for each held item, `- [parked] <count>` when any tangent is parked, `- [recovered] <UTC>` for the one report after a red x, and `- [unlogged] decisions: <count>` when any decision awaits its log entry. The issued time lives in the top border and the mark in the bottom border, and neither appears anywhere else. Another reason for BUSY takes an item in words, such as `- [waiting] Master - HOOK-FIX` or `- [blocked] Headroom proxy down`. Nothing in the banner cites a decision number.
 
-REST:
-
-```text
-╭─ coordination ──────────── 2026-10-14T16:54:52Z ─╮
-│                                                  │
-│ KI Model - ways-of-working                       │
-│                                                  │
-╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
-   at rest: nothing running or queued
-   waiting on you: KI-RELEASE - approve the tools-ki release
-   waiting on you: RESUME-COMPACT - run the Zed compact test
-   checkpoint committed and pushed · thread folder committed and pushed · held: PAPERCLIP-REQ until Wave F · parked: 1
-```
-
-BUSY:
+REST, closing a Summary:
 
 ```text
-╭─ coordination ──────────── 2026-10-14T16:54:52Z ─╮
+╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮
 │                                                  │
-│ KI Model - ways-of-working                       │
+│            KI Model - ways-of-working            │
 │                                                  │
 ╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
-   running: commit-gate - why ki-principal's commit gate fails
-   running: harness-links - accept GOV-187, deliver GOV-188
-   queued: link-form - after harness-links
-   queued: re-bootstrap - after GOV-187 accepted
-   waiting on you: HEADING-FORM - settle the owner-report headings
-   waiting on you: RUN-WAIVER - waive the run gate for commit-gate
-   waiting on you: RECORD-THRESHOLD - set the record-capture threshold
-   thread folder commit blocked by the gate, commit-gate fixing · held: PAPERCLIP-REQ until Wave F
+
+- [at rest] nothing running or queued
+- [waiting] KI-RELEASE
+- [waiting] RESUME-COMPACT
+- [committed] checkpoint and thread folder, pushed
+- [held] PAPERCLIP-REQ until Wave F
+- [parked] 1
 ```
 
-The state-of-play thread's top border reads `╭─ state-of-play ─────────── 2026-10-14T16:54:52Z ─╮`, and its body carries the territory's label.
+BUSY, closing a Summary:
+
+```text
+╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮
+│                                                  │
+│            KI Model - ways-of-working            │
+│                                                  │
+╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
+
+- [running] commit-gate - why ki-principal's commit gate fails
+- [running] harness-links - accept GOV-187, deliver GOV-188
+- [queued] report-headings - section names, starting now
+- [queued] banner-frame - after report-headings
+- [waiting] HEADING-FORM
+- [waiting] RUN-WAIVER
+- [waiting] RECORD-THRESHOLD
+- [blocked] thread folder commit by the gate, commit-gate fixing
+- [held] PAPERCLIP-REQ until Wave F
+```
+
+Widened, the state-of-play thread closing a full summary at 58 code points, every line of the frame grown by the same six:
+
+```text
+╭─ state-of-play ──── full summary 2026-10-14T17:03:02Z ─╮
+│                                                        │
+│               KI Capital - state of play               │
+│                                                        │
+╰──────────────────────────── mark 2026-10-14T13:54:34Z ─╯
+
+- [at rest] nothing running or queued
+- [committed] checkpoint and thread folder, pushed
+```
 
 DONE, at Project close only:
 
@@ -184,7 +202,7 @@ Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap
 
 Pasted back into the thread, it makes the thread do these in order: re-bootstrap under [Bootstrap](#bootstrap), re-reading this standard, `ki-delegation`'s Reporting and its own checkpoint; strike the mark at the resume time, commit the checkpoint and confirm in one line; give a fresh Summary covering only what follows the new mark plus every open point carried forward from before it, built from the checkpoint, the decisions log and the thread folder rather than from transcript memory; take stock since the issued time on the previous banner, from the decisions log, `ki agent status`, its inbox and the owner's messages; restart any work the owner authorised since that banner; and end with a fresh banner. The label on the line is a guard: a thread whose checkpoint label does not match it stops and asks before doing anything. Kris set the order on 2026-10-14: "The resume line is the equivalent of a compaction for the checkpoint and coordination thread, and may also trigger a real compaction", so it strikes the mark first and summarises second.
 
-**In an agent's report.** A background agent that renders a frame in its report puts the frame inside a fenced `text` block, as the examples above do, because a frame outside one is not rendered byte-identical.
+**In an agent's report.** A background agent that renders a frame in its report puts the frame and the list beneath inside one fenced `text` block, as the examples above do, because a frame outside one is not rendered byte-identical.
 
 ### Re-anchoring after compaction
 
@@ -227,7 +245,7 @@ A red x in the editor's thread list means the backend turn errored, not that the
 
 1. Do not open a new thread first. Paste that thread's [resume line](#banner) into the same thread. If the thread replies, it re-anchors, strikes the mark, gives a fresh summary since the mark and takes stock, and the inbox gives it every message the outage swallowed.
 2. If the editor will not send into the thread, open a new thread in the same project folder and paste the resume line. The label on the line and the checkpoint label match, so the guard passes; the old transcript becomes history.
-3. The recovered thread reports, under take stock, what it missed and what it did about it, and its banner says `recovered <UTC>` on the housekeeping line for that one report.
+3. The recovered thread reports, under take stock, what it missed and what it did about it, and its banner carries `- [recovered] <UTC>` in its list for that one report.
 
 Messages sent during an outage need no re-send: the inbox is the channel, the nudge is lost, and the resume line's take stock reads the inbox.
 
@@ -399,7 +417,7 @@ It links each one to the local file by absolute path, so that it opens in the ow
 
 ### Committing the thread folder
 
-The thread folder `+/_THREADS/<run>/` is tracked, and the knowledge in it - the decisions log, the agent reports, the inbox once it moves there - is safe only once it is in Git on a remote. Kris set the rule on 2026-10-14: "threads need to know that they need to commit their work under +/_THREAD/". So a coordinating thread commits and pushes its thread folder at every owner report and at every resting point, by explicit path and never with another session's uncommitted changes, and the banner's housekeeping line says `thread folder committed and pushed`, or `thread folder unpushed` or `thread folder uncommitted` plainly when it is not. Where pushing is not authorised the line says so and the owner report names the pending handoff.
+The thread folder `+/_THREADS/<run>/` is tracked, and the knowledge in it - the decisions log, the agent reports, the inbox once it moves there - is safe only once it is in Git on a remote. Kris set the rule on 2026-10-14: "threads need to know that they need to commit their work under +/_THREAD/". So a coordinating thread commits and pushes its thread folder at every owner report and at every resting point, by explicit path and never with another session's uncommitted changes, and the banner's list says `- [committed] checkpoint and thread folder, pushed`, or `- [unpushed] thread folder` or `- [uncommitted] thread folder` plainly when it is not. Where pushing is not authorised the item says so and the owner report names the pending handoff.
 
 ### Keeping primary checkouts current
 

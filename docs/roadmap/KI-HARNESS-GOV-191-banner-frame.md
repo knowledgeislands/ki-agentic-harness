@@ -6,12 +6,13 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-status: done
+status: awaiting-review
+horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: 2208da994c2aff20aef749b242365de6a0e14a21
+baseline_ref: 0b3c05b5d0bf97cc4c2ea292f9c64d94d3fe42d2
 created_at: 2026-10-14T17:09:51Z
-updated_at: 2026-10-14T17:40:00Z
+updated_at: 2026-10-14T17:55:00Z
 ---
 
 # Redraw the ki-pmo Banner as a Framed Label With the Thread Type, Issued Time and Mark on Its Borders
@@ -41,7 +42,24 @@ Every coordinating thread closes its owner reports with one 52-column frame whos
    thread folder commit blocked by the gate, commit-gate fixing · held: PAPERCLIP-REQ until Wave F
 ```
 
-Kris drew the top border's fill with ASCII hyphens by hand; the frame uses `─` so it matches the bottom border. This record was opened at Kris's request under the `banner-frame` brief of 2026-10-14, after `report-headings` landed on harness `main`.
+Kris drew the top border's fill with ASCII hyphens by hand; the frame uses `─` so it matches the bottom border.
+
+At 18:08 BST, after that drawing had landed, Kris refined it, as received:
+
+```text
+╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮
+│                                                  │
+│ KI Model - ways-of-working                       │
+│                                                  │
+╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
+
+- [queued] report-headings - section names, starting now
+- [queued] banner-frame - after report-headings
+- [waiting] GATE-FIX
+...
+```
+
+and added "`KI Model - ways-of-working` could be centralised too". The record was reopened under the `banner-refine` brief of the same day, which said "Use the record it opened, or reopen it if it is closed or pruned. Do not open a new record." This record was opened at Kris's request under the `banner-frame` brief of 2026-10-14, after `report-headings` landed on harness `main`.
 
 ## Boundary
 
@@ -50,16 +68,16 @@ Kris drew the top border's fill with ASCII hyphens by hand; the frame uses `─`
 
 ## Requirements
 
-- The frame is 52 code points wide on every framed line.
-- The top border reads `╭─ <thread type> `, then `─` fill, then `<issued UTC, seconds> ─╮`, the thread type being `coordination` or `state-of-play`.
-- The body is a blank line, the thread label after one space, then a blank line, each padded with spaces to the frame; the label separator is ` - `.
+- The frame is 52 code points wide on every framed line while the top border fits at that width with at least four `─` of fill; when the thread type and the form need more, every line of the frame widens equally and nothing is abbreviated.
+- The top border reads `╭─ <thread type> `, then `─` fill, then `<form> <issued UTC, seconds> ─╮`, the thread type being `coordination` or `state-of-play` and the form `summary`, `recap`, `full summary` or `re-bootstrap`.
+- The body is a blank line, the thread label centred with any odd space on the right, then a blank line, each padded with spaces to the frame; the label separator is ` - `.
 - The bottom border reads `╰`, then `─` fill, then `mark <mark UTC, seconds> ─╯`.
-- Beneath the frame, each line with three leading spaces: one line per running, queued or waiting item with its prefix, then the housekeeping line. When nothing is running or queued the first line reads `at rest: nothing running or queued`, followed by any waiting lines.
+- A blank line follows the frame. Beneath it is one Markdown list of `- [<state>] <what>` items: `- [at rest] nothing running or queued` first when nothing is running or queued, then `- [running] <agent> - <what>`, `- [queued] <agent> - <what>` and `- [waiting] <TAG>`, then the housekeeping items of the same kind, such as `- [committed] checkpoint and thread folder, pushed`, `- [blocked] <what>`, `- [held] <what> until <when>` and `- [parked] <count>`.
 - The block-letter REST and BUSY bodies and the label-and-mark line go. The resume line stays in its own text block after the banner.
 
 ## Current state
 
-Delivered and closed on 2026-10-14 from baseline `2208da99`, under Kris's brief of the same day, as received: "Open a Kris-requested deliver record at horizon now under `ki-work-roadmap`. Quote the drawing above in it, deliver it, and close it if it verifies." The standard, the output style, the test, the hook line with its tests and README, the PMO-6 item and regenerated rubric, and the harness specification carry the new frame; `tools-ki` prints no banner, so no handoff was needed.
+Reopened on 2026-10-14 from baseline `0b3c05b5`, the first delivery, under Kris's `banner-refine` brief of the same day, to apply his 18:08 BST refinement on every surface the first delivery changed. The first delivery was closed the same day under the `banner-frame` brief, as received: "Open a Kris-requested deliver record at horizon now under `ki-work-roadmap`. Quote the drawing above in it, deliver it, and close it if it verifies."
 
 ## Steps
 
@@ -68,6 +86,7 @@ Delivered and closed on 2026-10-14 from baseline `2208da99`, under Kris's brief 
 - [x] Rewrite `scripts/banner.test.ts` to assert the width, both borders, the body and the rest line.
 - [x] Update the hook line, its tests, the hook README and the harness specification.
 - [x] Update the PMO-6 rubric item and regenerate the rubric.
+- [x] Refinement: put the report form in the top border, centre the label, add the blank line, turn the lines beneath into bracketed-state list items and set the widening rule, in the standard, the output style, the test, the hook with its tests and README, the PMO-6 item and regenerated rubric, the harness specification and the sources review.
 
 ## Files touched
 
@@ -79,7 +98,7 @@ Delivered and closed on 2026-10-14 from baseline `2208da99`, under Kris's brief 
 
 ## Verify
 
-`bun run test` 1150 pass, 0 fail; `bunx tsc --noEmit` clean; `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check` in sync; `bun test skills/change-management/ki-pmo/scripts/banner.test.ts hooks/coordinator-reminder.test.ts` 20 pass; `ki repo audit --skill` for `ki-pmo`, `ki-delegation` and `ki-work-roadmap` pass, and `ki-skills` passes with its two pre-existing refresh-cadence warnings only.
+After the refinement: `bun run test` 1151 pass, 0 fail; `bunx tsc --noEmit` clean; `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check` in sync; `bun test skills/change-management/ki-pmo/scripts/banner.test.ts hooks/coordinator-reminder.test.ts` 21 pass; `ki dev skill rubric ki-pmo` in sync; `ki repo audit --skill` for `ki-pmo`, `ki-delegation` and `ki-work-roadmap` pass, and `ki-skills` passes with its two pre-existing refresh-cadence warnings only.
 
 ## Dependencies / blocks
 
@@ -107,40 +126,43 @@ No follow-on record. The DONE frame question is raised in the owner report, not 
 
 ### Delivered
 
-The live `ki-pmo` banner is now one 52-column frame: `╭─ <thread type>`, a space, `─` fill, a space and `<issued UTC> ─╮` above; a blank line, the label after one space with ` - ` as its separator, and a blank line within; `╰`, `─` fill, a space and `mark <mark UTC> ─╯` below. Beneath it, a thread at rest says `at rest: nothing running or queued` first, then any waiting lines; a busy thread lists each running, queued and waiting item on its own line; the housekeeping line closes, and the resume line keeps its own text block. The block-letter REST and BUSY bodies and the label-and-mark line are gone; the DONE frame keeps its glyphs.
+The live `ki-pmo` banner is one frame whose top border reads `╭─ <thread type>`, `─` fill, the report form, the issued time and `─╮`; whose body centres the label with any odd space on the right; and whose bottom border carries the mark. The frame is 52 code points wide while the top border fits with four `─` of fill and widens equally, never abbreviating, when the thread type and form need more. A blank line follows it, then one Markdown list of `- [<state>] <what>` items: `[at rest]` first when nothing runs or queues, then `[running]`, `[queued]` and `[waiting] <TAG>`, then the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[blocked]`, `[held]`, `[parked]`, `[recovered]` and `[unlogged]`. The resume line keeps its own text block. The DONE frame keeps its glyphs.
 
 ### Change Summary
 
-- `references/standards-pmo.md`: the Banner section rewritten with the border, body and rest-line rules, the REST and BUSY examples redrawn from Kris's drawing, a state-of-play top border shown, the thread-type table row and the heading-state sentence updated; `references/sources.md` records the review; `SKILL.md` names the frame and what the test asserts.
-- `scripts/banner.test.ts`: asserts 52 code points, the top border with thread type and issued time, the blank and label body lines, the bottom border with the mark, the rest line first beneath REST and absent beneath BUSY, the per-item lines, byte-identical examples in the output style, the DONE glyphs shared with `ki-recap`, the resume line and the hook wording.
-- `scripts/rubric/items/threads.ts`: PMO-6 describes the frame's borders, body and rest line; `references/rubric.md` regenerated.
-- `output-styles/ki-coordinator.md`: the Banner section redrawn with the same two examples.
-- `hooks/coordinator-reminder.sh`, its test and `hooks/README.md`: the reminder line names the borders, the body, the per-item lines and the rest line.
+- `references/standards-pmo.md`: the Banner section carries the form, width, centred body, gap and list rules with Kris's refinement quoted; the REST and BUSY examples are redrawn from his 18:08 drawing with the label centred; a widened `state-of-play` full-summary example is added; the thread-type table, the heading-state sentence, the red-x recovery item and the thread-folder item say list and item rather than line. `references/sources.md` records the eighth review; `SKILL.md` names the form, the centred label and the list.
+- `scripts/banner.test.ts`: asserts the top border with its form and at least four fill, the width for every thread type and form pair, equal widening, the centred label with odd space right, the blank line after the frame, every item's bracketed state and order, the agent and tag item shapes, byte-identical examples in the output style, the DONE glyphs and the hook wording.
+- `scripts/rubric/items/threads.ts`: PMO-6 describes the form, the centred label, the blank line and the bracketed-state list; `references/rubric.md` regenerated.
+- `output-styles/ki-coordinator.md`: the Banner section rewritten with the same two examples and the list rule.
+- `hooks/coordinator-reminder.sh`, its test and `hooks/README.md`: the reminder line names the form, the centred label, the widening, the blank line and the bracketed-state items.
 - `docs/specs/harness.md`: HARN-012 and HARN-013 wording.
 
 ### Verification
 
-`bun run test` 1150 pass, 0 fail; `bunx tsc --noEmit` clean; the skill-graph check in sync; `bun test skills/change-management/ki-pmo/scripts/banner.test.ts hooks/coordinator-reminder.test.ts` 20 pass; `ki repo audit --skill` for `ki-pmo`, `ki-delegation` and `ki-work-roadmap` pass, and `ki-skills` passes with its two pre-existing refresh-cadence warnings only.
+As in Verify above: `bun run test` 1151 pass; `bunx tsc --noEmit` clean; the skill-graph check in sync; the banner and hook tests 21 pass; the rubric in sync; the `ki-pmo`, `ki-delegation` and `ki-work-roadmap` audits pass and `ki-skills` passes with its two pre-existing warnings.
 
 ### Outstanding concerns
 
-- The DONE frame at Project close and `ki-recap`'s single-session frame keep their block-letter glyphs; Kris's drawing did not cover them.
-- A label longer than 48 code points cannot fit the body line; every current label is far shorter.
+- The housekeeping item states beyond Kris's `[blocked]` and `[held]` examples, namely `[committed]`, `[uncommitted]`, `[unpushed]`, `[parked]`, `[recovered]` and `[unlogged]`, are this delivery's choice, kept to a state word in the bracket; Kris may rename them.
+- `- [waiting] <TAG>` carries the tag alone, as the refinement draws it, so the query title now lives only in the report's Queries section.
+- The DONE frame at Project close and `ki-recap`'s single-session frame keep their block-letter glyphs; the refinement did not cover them.
 - Checkpoints still carry labels with a colon as the separator; the banner renders them with ` - ` and no checkpoint was edited.
 
 ### Post-change review
 
-The shape is held mechanically by `scripts/banner.test.ts` rather than by prose, so a thread that drifts after a re-bootstrap fails the harness test rather than Kris's eye. No skill frontmatter changed, so the catalogue and diagram stamps are untouched.
+The shape is held mechanically by `scripts/banner.test.ts`, including the width for every thread type and form pair, so a thread that widens unevenly or abbreviates fails the harness test. No skill frontmatter changed, so the catalogue and diagram stamps are untouched.
 
 ### Mini recap
 
-The banner is one framed label with the thread type and issued time above and the mark below; the rest line replaced the block words; every surface that states the banner says the same.
+The banner's top border names the report form, the label is centred, a blank line follows the frame and the lines beneath are bracketed-state list items; the frame widens equally when the border needs it; every surface that states the banner says the same.
 
-## Done
+## Discussion
+
+### First delivery and acceptance
 
 Closed 2026-10-14 under the `banner-frame` brief, in which Kris said "deliver it, and close it if it verifies". Verified at close: `bun run test` 1150 pass, `bunx tsc --noEmit` clean, the skill-graph check in sync, the hook and banner tests 20 pass, and the `ki-pmo`, `ki-delegation`, `ki-skills` and `ki-work-roadmap` audits pass.
 
-## Discussion
+Reopened the same day under the `banner-refine` brief for Kris's 18:08 BST refinement; the review packet above covers the refined result.
 
 ### Why the DONE frame keeps its glyphs
 

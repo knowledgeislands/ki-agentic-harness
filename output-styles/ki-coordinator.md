@@ -27,41 +27,46 @@ The report then gives one fenced `text` block with one stacked entry per query, 
 
 ## Banner
 
-Every Summary, recap, full summary and re-bootstrap report closes, after the reply block, with the `ki-pmo` banner: the one frame below, 52 code points per framed line, never padded beyond that, reworded, coloured or improvised. Its top border reads `╭─ <thread type>`, a space, `─` fill, a space, then `<issued UTC> ─╮`, the thread type `coordination` or `state-of-play` and the time `YYYY-MM-DDTHH:MM:SSZ`, twelve `─` of fill for `coordination` and eleven for `state-of-play`. Its body is a blank line, the thread's label after one space with ` - ` as its separator, then a blank line, each padded with spaces to the frame. Its bottom border reads `╰`, twenty-two `─`, a space, then `mark <mark UTC> ─╯`. Then come the lines beneath, each with three leading spaces; then the resume line in its own one-line fenced `text` block as the last thing in the message. A thread that has just bootstrapped or re-bootstrapped renders it exactly as one that never left.
+Every Summary, recap, full summary and re-bootstrap report closes, after the reply block, with the `ki-pmo` banner: the one frame below, 52 code points per framed line, never padded beyond its width, reworded, coloured or improvised. Its top border reads `╭─ <thread type>`, a space, `─` fill, a space, `<form>`, a space, then `<issued UTC> ─╮`, the thread type `coordination` or `state-of-play`, the form `summary`, `recap`, `full summary` or `re-bootstrap`, and the time `YYYY-MM-DDTHH:MM:SSZ`. The frame stays 52 wide while the top border fits with at least four `─` of fill, as `coordination` with `summary` does; when the thread type and the form need more, as `state-of-play` with `summary` or `coordination` with `full summary` do, the top border keeps four `─` and every line of the frame widens equally, with nothing abbreviated. Its body is a blank line, the thread's label centred with ` - ` as its separator and any odd space on the right, then a blank line, each padded with spaces to the frame. Its bottom border reads `╰`, `─` fill, a space, then `mark <mark UTC> ─╯`, twenty-two `─` at 52. A blank line follows the frame; then comes one Markdown list of `- [<state>] <what>` items; then the resume line in its own one-line fenced `text` block as the last thing in the message. A thread that has just bootstrapped or re-bootstrapped renders it exactly as one that never left.
 
-REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the state. The first line beneath reads `at rest: nothing running or queued`:
-
-```text
-╭─ coordination ──────────── 2026-10-14T16:54:52Z ─╮
-│                                                  │
-│ KI Model - ways-of-working                       │
-│                                                  │
-╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
-   at rest: nothing running or queued
-   waiting on you: KI-RELEASE - approve the tools-ki release
-   waiting on you: RESUME-COMPACT - run the Zed compact test
-   checkpoint committed and pushed · thread folder committed and pushed · held: PAPERCLIP-REQ until Wave F · parked: 1
-```
-
-BUSY when anything is running or queued, or the thread is blocked or waiting on another thread; the lines beneath say which and no `at rest:` line appears:
+REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the state. The first item reads `- [at rest] nothing running or queued`:
 
 ```text
-╭─ coordination ──────────── 2026-10-14T16:54:52Z ─╮
+╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮
 │                                                  │
-│ KI Model - ways-of-working                       │
+│            KI Model - ways-of-working            │
 │                                                  │
 ╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
-   running: commit-gate - why ki-principal's commit gate fails
-   running: harness-links - accept GOV-187, deliver GOV-188
-   queued: link-form - after harness-links
-   queued: re-bootstrap - after GOV-187 accepted
-   waiting on you: HEADING-FORM - settle the owner-report headings
-   waiting on you: RUN-WAIVER - waive the run gate for commit-gate
-   waiting on you: RECORD-THRESHOLD - set the record-capture threshold
-   thread folder commit blocked by the gate, commit-gate fixing · held: PAPERCLIP-REQ until Wave F
+
+- [at rest] nothing running or queued
+- [waiting] KI-RELEASE
+- [waiting] RESUME-COMPACT
+- [committed] checkpoint and thread folder, pushed
+- [held] PAPERCLIP-REQ until Wave F
+- [parked] 1
 ```
 
-The lines beneath, in order and only where they apply: `at rest: nothing running or queued` when the thread is at rest; then one line per item, `running: <agent> - <what>` for each running agent, `queued: <agent> - <what>` for each queued agent and `waiting on you: <TAG> - <what>` for each open Needs tag; then the housekeeping line with the checkpoint state, the thread folder state, held items and the parked count. The issued time lives in the top border and the mark in the bottom border, and neither appears anywhere else. Another reason for BUSY takes a running or queued line in words. Nothing in the banner cites a decision number. The resume line, with the thread's label and mark filled in:
+BUSY when anything is running or queued, or the thread is blocked or waiting on another thread; the list says which and no `[at rest]` item appears:
+
+```text
+╭─ coordination ──── summary 2026-10-14T17:03:02Z ─╮
+│                                                  │
+│            KI Model - ways-of-working            │
+│                                                  │
+╰────────────────────── mark 2026-10-14T13:54:34Z ─╯
+
+- [running] commit-gate - why ki-principal's commit gate fails
+- [running] harness-links - accept GOV-187, deliver GOV-188
+- [queued] report-headings - section names, starting now
+- [queued] banner-frame - after report-headings
+- [waiting] HEADING-FORM
+- [waiting] RUN-WAIVER
+- [waiting] RECORD-THRESHOLD
+- [blocked] thread folder commit by the gate, commit-gate fixing
+- [held] PAPERCLIP-REQ until Wave F
+```
+
+The list, in order and only where it applies: `- [at rest] nothing running or queued` when the thread is at rest; then one item per thing, `- [running] <agent> - <what>` for each running agent, `- [queued] <agent> - <what>` for each queued agent and `- [waiting] <TAG>` for each open Needs tag; then the housekeeping items, `- [committed] checkpoint and thread folder, pushed` or the `[uncommitted]`, `[unpushed]` or `[blocked]` truth, `- [held] <what> until <when>` for each held item, `- [parked] <count>`, `- [recovered] <UTC>` for the one report after a red x and `- [unlogged] decisions: <count>`. The issued time lives in the top border and the mark in the bottom border, and neither appears anywhere else. Another reason for BUSY takes an item in words. Nothing in the banner cites a decision number. The resume line, with the thread's label and mark filled in:
 
 ```text
 Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
