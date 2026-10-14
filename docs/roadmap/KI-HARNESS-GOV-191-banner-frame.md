@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 0b3c05b5d0bf97cc4c2ea292f9c64d94d3fe42d2
 created_at: 2026-10-14T17:09:51Z
-updated_at: 2026-10-14T19:45:00Z
+updated_at: 2026-10-14T20:30:00Z
 ---
 
 # Open Every ki-pmo Report With a Rich-Text Initiative › Project Heading and Close It With the Block-Letter Footer
@@ -86,14 +86,15 @@ At 19:13 BST on 2026-10-14 Kris asked for a plain heading instead, as received: 
 
 - The report heading is rich Markdown, not a frame: three `---` rules with blank lines between them, then one `#` heading, the Initiative's display name linked to its local note, ` › `, and the Project's display name linked to its local note, the names as the notes' `title` gives them and not slugs; a Project with no Initiative gives the Project alone; the state-of-play thread writes the territory or Initiative it covers, linked, then `› State of play`.
 - Beneath the heading, after a blank line, one bold line `**<Form> at <local time> · last mark <local time>**`, the form being `Summary`, `Recap`, `Full summary` or `Re-bootstrap`, both times local, written like `19:13 BST`; then a blank line, one `---`, and the sections, `## Decided` first in a full summary.
-- A background agent's run report adds `› <run name>` to the heading and uses the form `Run report`.
+- A background agent's run report adds `› <run name>` to the heading and uses the form `Run report`, and its footer's top border reads `run report`.
+- The footer's top border reads `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52 code points, the form being the report's form word in lower case, `summary`, `recap`, `full summary`, `re-bootstrap` or `run report`, replacing `issued`; one blank framed line, `│`, 50 spaces and `│`, stands directly under the top border and directly above the bottom border in the REST, BUSY and DONE frames. Reports issued earlier keep their `issued` border and unpadded frame, and checks accept both.
 - No box frame opens a report, no `Project · Initiative · <window> · <state>` line follows the heading, and the `# <label> · <form> at <local time>` heading of HEADING-FORM is replaced; a saved report file omits the three rules before the heading so it is not read as front matter. Checks accept the earlier heading forms in past reports.
 - A blank line follows the frame. Beneath it is one Markdown list of `- [<state>] <what>` items: `- [at rest] nothing running or queued` first when nothing is running or queued, then `- [running] <agent> - <what>`, `- [queued] <agent> - <what>` and `- [waiting] <TAG>`, then the housekeeping items of the same kind, such as `- [committed] checkpoint and thread folder, pushed`, `- [blocked] <what>`, `- [held] <what> until <when>` and `- [parked] <count>`.
 - The footer banner is the block-letter REST or BUSY frame exactly as revision `e60b4e45` carried it, `╭─ issued <UTC> ─…╮` above three fixed rows and the fixed bottom border; the `- [<state>] <what>` list follows its blank line; the label-and-mark line is not restored; the resume line stays in its own text block after the list. The DONE frame and `ki-recap`'s frame keep their block letters.
 
 ## Current state
 
-Delivered a fourth time on 2026-10-14 under Kris's `heading-rich` brief, replacing the framed label at the top of the report with the rich-text heading on every surface `frame-move` touched, after his 19:13 BST request and 19:15 BST agreement. Reopened a second time the same day under his `frame-move` brief, to move the frame to the heading and restore the block-letter footer on every surface the earlier deliveries changed, after his 19:05 BST placing. First reopened the same day from baseline `0b3c05b5`, the first delivery, under his `banner-refine` brief, to apply his 18:08 BST refinement on every surface the first delivery changed. The first delivery was closed the same day under the `banner-frame` brief, as received: "Open a Kris-requested deliver record at horizon now under `ki-work-roadmap`. Quote the drawing above in it, deliver it, and close it if it verifies."
+Delivered a fifth time on 2026-10-14 under Kris's `footer-pad` brief, applying the two footer amendments he approved that day, "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it.", which `heading-rich` had left out: the form word on the footer's top border and one blank framed line inside each border. Delivered a fourth time on 2026-10-14 under Kris's `heading-rich` brief, replacing the framed label at the top of the report with the rich-text heading on every surface `frame-move` touched, after his 19:13 BST request and 19:15 BST agreement. Reopened a second time the same day under his `frame-move` brief, to move the frame to the heading and restore the block-letter footer on every surface the earlier deliveries changed, after his 19:05 BST placing. First reopened the same day from baseline `0b3c05b5`, the first delivery, under his `banner-refine` brief, to apply his 18:08 BST refinement on every surface the first delivery changed. The first delivery was closed the same day under the `banner-frame` brief, as received: "Open a Kris-requested deliver record at horizon now under `ki-work-roadmap`. Quote the drawing above in it, deliver it, and close it if it verifies."
 
 ## Steps
 
@@ -147,6 +148,8 @@ No follow-on record. The DONE frame question is raised in the owner report, not 
 
 ### Delivered
 
+After the footer padding: the footer's top border reads `╭─ <form> · <UTC> ─` filled to 52, `summary`, `recap`, `full summary`, `re-bootstrap` or `run report` in place of `issued`, and one blank framed line stands inside each border of the REST, BUSY and DONE frames; the three word rows are unchanged; earlier reports keep their `issued` border and unpadded frame. Before that:
+
 After the rich heading: every Summary, recap, full summary and re-bootstrap report opens with three `---` rules, the `#` heading `[<Initiative>](<note>) › [<Project>](<note>)`, the bold `<Form> at <local time> · last mark <local time>` line and one `---`; a run report adds `› <run name>` with the form `Run report`; the box frame and the `Project · Initiative · <window> · <state>` line are retired from the top of the report; the footer stays exactly as the frame move left it. Before that:
 
 After the frame move: the framed label opens every Summary, recap, full summary and re-bootstrap report in its own `text` block with the context line beneath it, and the footer is the block-letter REST or BUSY frame of revision `e60b4e45` with the bracketed-state list beneath and no label-and-mark line, on every surface the earlier deliveries changed and in `ki-delegation`'s owner report, whose background-agent reports take the thread's two frames. Before the move:
@@ -154,6 +157,14 @@ After the frame move: the framed label opens every Summary, recap, full summary 
 The live `ki-pmo` banner is one frame whose top border reads `╭─ <thread type>`, `─` fill, the report form, the issued time and `─╮`; whose body centres the label with any odd space on the right; and whose bottom border carries the mark. The frame is 52 code points wide while the top border fits with four `─` of fill and widens equally, never abbreviating, when the thread type and form need more. A blank line follows it, then one Markdown list of `- [<state>] <what>` items: `[at rest]` first when nothing runs or queues, then `[running]`, `[queued]` and `[waiting] <TAG>`, then the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[blocked]`, `[held]`, `[parked]`, `[recovered]` and `[unlogged]`. The resume line keeps its own text block. The DONE frame keeps its glyphs.
 
 ### Change Summary
+
+Footer padding:
+
+- `references/standards-pmo.md`: the Banner section's footer rule gives the form-word top border, the fill counts, the two blank framed lines and Kris's two approvals; the REST, BUSY and DONE examples and the agent's-report paragraph are redrawn; the DONE bullet names the closing report's form word.
+- `scripts/banner.test.ts`: frames are read to their bottom border, the top border is matched as `╭─ <form> · <UTC> ─…╮`, the two blank framed lines are asserted, the fill is checked as 17 for `summary` and 19 for `recap`, and the word rows stay those of revision `e60b4e45`.
+- `scripts/rubric/items/threads.ts` and `ki-delegation`'s `background-runs.ts`: PMO-6 and RUN-4 name the form word and padding and the earlier-report exception; both rubrics regenerated.
+- `output-styles/ki-coordinator.md`, `hooks/coordinator-reminder.sh`, its test, `hooks/README.md`, `docs/specs/harness.md`: the footer rule reads the same.
+- `ki-delegation`: the Reporting section, the four authority footers and the run-prompt skeleton say the footer's top border reads `run report`, with the padding.
 
 Rich heading:
 
@@ -181,6 +192,8 @@ Before the move:
 - `docs/specs/harness.md`: HARN-012 and HARN-013 wording.
 
 ### Verification
+
+After the footer padding: `bun run test` 1152 pass, 0 fail; `bunx tsc --noEmit` clean; the skill-graph check in sync; the banner and hook tests 22 pass; both rubrics in sync; the `ki-pmo`, `ki-delegation` and `ki-work-roadmap` audits pass and `ki-skills` passes with its two standing refresh-cadence warnings.
 
 After the rich heading: `bun run test` 1152 pass, 0 fail; `bunx tsc --noEmit` clean; the skill-graph check in sync; `bun test skills/change-management/ki-pmo/scripts/banner.test.ts hooks/coordinator-reminder.test.ts` 22 pass; both rubrics in sync; the `ki-pmo`, `ki-delegation` and `ki-work-roadmap` audits pass and `ki-skills` passes with its two standing refresh-cadence warnings.
 
@@ -216,6 +229,10 @@ Reopened the same day under the `banner-refine` brief for Kris's 18:08 BST refin
 ### Frame move
 
 Reopened a second time on 2026-10-14 under the `frame-move` brief after Kris placed the frame at 19:05 BST: "This is for the heading, not the footer banner. The footer banner needs to be like it was before, with the large ascii text." The split is recorded in the Context, Requirements and Review above; the record stays at `awaiting-review` for Kris to accept the combined result.
+
+### Footer padding
+
+Delivered a fifth time on 2026-10-14 under the `footer-pad` brief. Kris asked "What about with some spaces around it, so that it's got a bit more impact?" and approved the padded frame, with the report's form word on its top border in place of `issued`, with "Okay, I'm really happy with that. Yeah, let's go with it." The `heading-rich` delivery had left the footer as `frame-move` had it; this delivery applies the two amendments on every surface it touched. The BUSY word rows in the brief's drawing differ from the standard's fixed rows in the `Y` glyph by one column; the standard's rows, those of revision `e60b4e45`, are kept and the difference is raised in the owner report. The record stays at `awaiting-review` for Kris to accept the combined result.
 
 ### Rich heading
 

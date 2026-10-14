@@ -70,7 +70,7 @@ In a coordinating thread, `/ki-pmo recap` gives [the recap since the mark](refer
 
 When invoked from an installed copy, stop and redirect to the harness.
 
-Read [the sources](references/sources.md), compare coordinating-thread practice against the standard and the rubric, then update the source review in the same commit as any normative change. A change here also updates the hook line in `hooks/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the REST and BUSY examples in the standard and the output style byte-identical, holds the report heading example in both byte-identical, and asserts the footer's borders, the blank line and the bracketed-state list beneath.
+Read [the sources](references/sources.md), compare coordinating-thread practice against the standard and the rubric, then update the source review in the same commit as any normative change. A change here also updates the hook line in `hooks/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the REST and BUSY examples in the standard and the output style byte-identical, holds the report heading example in both byte-identical, and asserts the footer's form-word top border, its two blank framed lines, its bottom border, the blank line and the bracketed-state list beneath.
 
 ### Mode SUMMARY
 

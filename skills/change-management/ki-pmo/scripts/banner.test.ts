@@ -12,7 +12,11 @@ import { resolve } from 'node:path'
 // the summary and last mark part"; it replaced the framed label of the same
 // day. The footer is the block-letter REST or BUSY frame he restored with "The
 // footer banner needs to be like it was before, with the large ascii text",
-// held here exactly as harness revision e60b4e45 carried it. This test is the
+// its word rows held here exactly as harness revision e60b4e45 carried them,
+// padded with one blank framed line inside each border and carrying the
+// report's form word on its top border since Kris asked "What about with some
+// spaces around it, so that it's got a bit more impact?" and approved with
+// "Okay, I'm really happy with that. Yeah, let's go with it." This test is the
 // mechanical check the PMO rubric cannot run against a repository, because the
 // transcripts the frames appear in are not tracked.
 
@@ -55,8 +59,12 @@ const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
 /** The form line: the form, the local issued time and the last mark, bold. */
 const FORM_LINE =
   /^\*\*(Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark \d{2}:\d{2} [A-Z]{3,4}\*\*$/
-/** The footer banner's top border, shared with DONE: `╭─ issued <UTC> ─` padded with `─`. */
-const ISSUED_TOP_BORDER = new RegExp(`^╭─ issued ${UTC} ─+╮$`)
+/** The footer banner's top border, shared with DONE: `╭─ <form> · <UTC> ─` filled with `─`. */
+const FORM_TOP_BORDER = new RegExp(`^╭─ (summary|recap|full summary|re-bootstrap|run report) · ${UTC} ─+╮$`)
+/** The blank framed line directly inside the top and bottom borders. */
+const PADDING_LINE = `│${' '.repeat(50)}│`
+/** The run of `─` after `╭─ <form> · <UTC> ` that brings the top border to 52 code points. */
+const fill = (form: string): number => FRAME_COLUMNS - Array.from(`╭─ ${form} · 2026-10-14T18:24:06Z ╮`).length
 /** The footer banner's fixed bottom border. */
 const FOOTER_BOTTOM_BORDER = '╰──────────────────────────────────────────────────╯'
 /** The REST footer's three rows, as harness revision e60b4e45 carried them. */
@@ -82,23 +90,28 @@ const REST_ITEM = '- [at rest] nothing running or queued'
 const RESUME_LINE =
   'Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
 
-/** Every fenced frame in a document: the five framed lines, from `╭` to `╰`. */
+/** The index of the bottom border closing the frame that opens at `start`. */
+const bottomOf = (lines: string[], start: number): number =>
+  lines.findIndex((line, cursor) => cursor > start && line.startsWith('╰'))
+
+/** Every fenced frame in a document: the framed lines from `╭` to `╰` inclusive. */
 const frames = (text: string): string[][] => {
   const lines = text.split('\n')
   const found: string[][] = []
   for (let index = 0; index < lines.length; index += 1) {
-    if (lines[index]?.startsWith('╭')) {
-      const frame = lines.slice(index, index + 5)
-      expect(frame[4]?.startsWith('╰')).toBe(true)
-      found.push(frame)
-    }
+    if (!lines[index]?.startsWith('╭')) continue
+    const end = bottomOf(lines, index)
+    expect(end).toBeGreaterThan(index)
+    found.push(lines.slice(index, end + 1))
   }
   return found
 }
 
+/** The block-letter rows of a frame: the framed lines that are neither borders nor padding. */
+const rows = (frame: string[]): string[] => frame.slice(1, -1).filter((line) => line !== PADDING_LINE)
+
 const word = (frame: string[]): string =>
-  frame
-    .slice(1, 4)
+  rows(frame)
     .map((line) => line.slice(1, 24))
     .join('\n')
 const codePoints = (line: string): number => Array.from(line).length
@@ -112,7 +125,11 @@ const beneath = (text: string, frameIndex: number): string[] => {
     seen += 1
     if (seen !== frameIndex) continue
     const found: string[] = []
-    for (let cursor = index + 5; cursor < lines.length && !lines[cursor]?.startsWith('```'); cursor += 1)
+    for (
+      let cursor = bottomOf(lines, index) + 1;
+      cursor < lines.length && !lines[cursor]?.startsWith('```');
+      cursor += 1
+    )
       found.push(lines[cursor] ?? '')
     return found
   }
@@ -151,14 +168,17 @@ const expectReportHeading = (lines: string[] | undefined, rulesBefore: number): 
   expect(lines.slice(start + 7).filter((line) => line !== '')).toEqual([])
 }
 
-/** A footer banner: the issued top border, the three fixed block-letter rows and the fixed bottom border, 52 wide. */
-const expectFooterFrame = (frame: string[] | undefined, rows: string[]): void => {
+/** A footer banner: the form-word top border, a padding line, the three fixed block-letter rows, a padding line and the fixed bottom border, 52 wide. */
+const expectFooterFrame = (frame: string[] | undefined, wordRows: string[]): void => {
   expect(frame).toBeDefined()
   if (!frame) return
+  expect(frame).toHaveLength(7)
   for (const line of frame) expect(codePoints(line)).toBe(FRAME_COLUMNS)
-  expect(frame[0]).toMatch(ISSUED_TOP_BORDER)
-  expect(frame.slice(1, 4)).toEqual(rows)
-  expect(frame[4]).toBe(FOOTER_BOTTOM_BORDER)
+  expect(frame[0]).toMatch(FORM_TOP_BORDER)
+  expect(frame[1]).toBe(PADDING_LINE)
+  expect(rows(frame)).toEqual(wordRows)
+  expect(frame[5]).toBe(PADDING_LINE)
+  expect(frame[6]).toBe(FOOTER_BOTTOM_BORDER)
 }
 
 /** The list beneath a live frame: a blank line, then bracketed-state items in the standard's order, nothing else. */
@@ -196,9 +216,13 @@ test('the standard carries the REST and BUSY footers and the DONE frame, in that
   const done = found[2]
   expect(done).toBeDefined()
   if (!done) return
+  expect(done).toHaveLength(7)
   for (const line of done) expect(codePoints(line)).toBe(FRAME_COLUMNS)
-  expect(done[0]).toMatch(ISSUED_TOP_BORDER)
-  expect(done[1]).toContain('· project closed')
+  expect(done[0]).toMatch(FORM_TOP_BORDER)
+  expect(done[1]).toBe(PADDING_LINE)
+  expect(done[2]).toContain('· project closed')
+  expect(done[5]).toBe(PADDING_LINE)
+  expect(done[6]).toBe(FOOTER_BOTTOM_BORDER)
 })
 
 test('the report heading is three rules, the linked Initiative › Project heading, the bold form line and one rule, then the first section', () => {
@@ -227,12 +251,20 @@ test('the form line names only the form, the local issued time and the last mark
   expect('# [KI Capital](/a/b.md) › State of play').toMatch(STATE_OF_PLAY_LINE)
 })
 
-test('the footer banner is the block-letter frame as revision e60b4e45 carried it, with the issued time its only variable and no label-and-mark line beneath', () => {
+test('the footer banner keeps the word rows of revision e60b4e45, carries the form word and the issued time on its top border, is padded inside each border and has no label-and-mark line beneath', () => {
   const [rest, busy] = frames(standard)
-  expect(rest?.[0]).toBe('╭─ issued 2026-10-14T17:03:02Z ────────────────────╮')
-  expect(busy?.[0]).toBe('╭─ issued 2026-10-14T17:03:02Z ────────────────────╮')
-  expect(rest?.[1]).toContain('· thread at rest')
-  expect(busy?.[1]).toContain('· thread busy')
+  expect(rest?.[0]).toBe('╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮')
+  expect(busy?.[0]).toBe('╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮')
+  expect(fill('summary')).toBe(17)
+  expect(fill('recap')).toBe(19)
+  for (const form of ['summary', 'recap', 'full summary', 're-bootstrap', 'run report']) {
+    const border = `╭─ ${form} · 2026-10-14T18:24:06Z ${'─'.repeat(fill(form))}╮`
+    expect(codePoints(border)).toBe(FRAME_COLUMNS)
+    expect(border).toMatch(FORM_TOP_BORDER)
+  }
+  expect('╭─ issued 2026-10-14T17:03:02Z ────────────────────╮').not.toMatch(FORM_TOP_BORDER)
+  expect(rest?.[2]).toContain('· thread at rest')
+  expect(busy?.[2]).toContain('· thread busy')
   for (const line of [...beneath(standard, 0), ...beneath(standard, 1)]) {
     expect(line).not.toContain('mark ')
     expect(line).not.toContain('issued ')
@@ -302,7 +334,7 @@ test('the hook line names the report heading, the block-letter footer, the brack
     'Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo footer banner'
   )
   expect(hook).toContain(
-    'the block-letter REST or BUSY frame exactly as the standard prints it, issued time in its top border'
+    'the block-letter REST or BUSY frame exactly as the standard prints it, the lower-case form word and issued time in its top border and one blank framed line inside each border'
   )
   expect(hook).toContain('with no label-and-mark line')
   expect(hook).toContain('one Markdown list with a bracketed state per item')

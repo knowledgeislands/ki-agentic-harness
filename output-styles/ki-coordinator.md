@@ -27,7 +27,7 @@ The report then gives one fenced `text` block with one stacked entry per query, 
 
 ## Banner
 
-Every Summary, recap, full summary and re-bootstrap report opens with the `ki-pmo` report heading and closes, after the reply block, with the `ki-pmo` footer banner. The heading is rich Markdown, drawn below; the footer is a frame, 52 code points per framed line, never padded beyond its width, reworded, coloured or improvised, and a thread that has just bootstrapped or re-bootstrapped renders both exactly as one that never left.
+Every Summary, recap, full summary and re-bootstrap report opens with the `ki-pmo` report heading and closes, after the reply block, with the `ki-pmo` footer banner. The heading is rich Markdown, drawn below; the footer is a frame, 52 code points per framed line, never widened beyond its width, reworded, coloured or improvised, and a thread that has just bootstrapped or re-bootstrapped renders both exactly as one that never left.
 
 The report heading, opening a Summary:
 
@@ -47,17 +47,19 @@ The report heading, opening a Summary:
 ## Done
 ```
 
-A background agent's run report adds `› <run name>` to the heading and uses the form `Run report`.
+A background agent's run report adds `› <run name>` to the heading, uses the form `Run report` and writes `run report` on its footer's top border.
 
-The footer banner is the block-letter frame as it stood before the framed label of 2026-10-14, which Kris restored with "The footer banner needs to be like it was before, with the large ascii text.": the top border `╭─ issued <YYYY-MM-DDTHH:MM:SSZ> ─` padded with `─` to 52, the three block-letter rows with their three captions, and the bottom border, exactly as drawn below and in no other way. The issued time is the only part that varies. A blank line follows the frame; then comes one Markdown list of `- [<state>] <what>` items, with no label-and-mark line, because the footer's top border carries the issued time and the report heading's form line the mark; then the resume line in its own one-line fenced `text` block as the last thing in the message.
+The footer banner is the block-letter frame as it stood before the framed label of 2026-10-14, which Kris restored with "The footer banner needs to be like it was before, with the large ascii text.": the top border `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52, the form being the report's form word in lower case, `summary`, `recap`, `full summary` or `re-bootstrap`, one blank framed line, the three block-letter rows with their three captions, one blank framed line, and the bottom border, exactly as drawn below and in no other way, the padding and the form word being what Kris approved on 2026-10-14 with "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it." The form word and the issued time are the only parts that vary. A blank line follows the frame; then comes one Markdown list of `- [<state>] <what>` items, with no label-and-mark line, because the footer's top border carries the issued time and the report heading's form line the mark; then the resume line in its own one-line fenced `text` block as the last thing in the message.
 
 REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the state. The first item reads `- [at rest] nothing running or queued`:
 
 ```text
-╭─ issued 2026-10-14T17:03:02Z ────────────────────╮
+╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮
+│                                                  │
 │  █▀▀▄ █▀▀▀ █▀▀▀ ▀▀█▀   · thread at rest          │
 │  █▀▀▄ █▀▀  ▀▀▀█   █    · nothing running         │
 │  █  █ █▄▄▄ ▄▄▄█   █    · nothing queued          │
+│                                                  │
 ╰──────────────────────────────────────────────────╯
 
 - [at rest] nothing running or queued
@@ -71,10 +73,12 @@ REST when nothing is running and nothing is queued, and only that; open queries,
 BUSY when anything is running or queued, or the thread is blocked or waiting on another thread; the list says which and no `[at rest]` item appears:
 
 ```text
-╭─ issued 2026-10-14T17:03:02Z ────────────────────╮
+╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮
+│                                                  │
 │  █▀▀▄ █  █ █▀▀▀ █  █   · thread busy             │
 │  █▀▀▄ █  █ ▀▀▀█  ▀█▀   · running or queued work  │
 │  █▄▄▀ █▄▄█ ▄▄▄█   █    · lines below say which   │
+│                                                  │
 ╰──────────────────────────────────────────────────╯
 
 - [running] commit-gate - why ki-principal's commit gate fails
