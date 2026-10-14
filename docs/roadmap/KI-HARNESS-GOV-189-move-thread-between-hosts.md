@@ -8,7 +8,7 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/mac-studio-bootstrap/mac-studio-bootstrap.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-14T15:22:00Z
+updated_at: 2026-10-14T17:00:00Z
 ---
 
 # Move a Coordinating Thread to Another Host
@@ -39,6 +39,7 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 3. **Move the run's state into the tracked thread folder.** The run's decisions log and reports move from `~/.local/state/ki/agents/<run>/` into the tracked `+/_THREADS/<run>/` folder, which is committed and pushed.
 4. **Start on the new host.** The new host pulls every affected repository level, opens the Capital, re-queues from the checkpoint and pastes the thread's resume line.
 5. **Retire the old host's session.** The old session ends once the move is pushed and the new session has re-bootstrapped.
+6. **Close the old instance with DONE.** Once the handover has pushed, the thread instance left on the old host closes with a DONE frame that has no resume line and points to the host that took over.
 
 ## Discussion
 
@@ -54,6 +55,10 @@ The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, an
 - which files in the run folder travel (the decisions log, reports and briefs) and which stay behind (process ids, launch records, logs and status files);
 - that the checkpoint names the host holding the live decisions log, and the old host's copy is frozen from the move mark;
 - how a re-bootstrap on the new host proves it has the latest log, for example by the last entry's time and words matching the checkpoint's last recorded decision.
+
+### DONE on handover, decided 2026-10-14
+
+Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). Its closing banner uses the DONE frame, issued only after the handover has pushed, carries no resume line, because that instance must not be resumed, and names the host that took over the thread. `ki-pmo`'s DONE frame today appears only at [Project close](../../skills/change-management/ki-pmo/references/standards-pmo.md#project-close); this requirement extends it to a thread instance retired by a host move, while the thread itself continues on the new host.
 
 ### Relation to existing records
 
