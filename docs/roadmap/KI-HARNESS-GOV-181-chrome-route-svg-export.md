@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-14T00:05:43Z
-updated_at: 2026-10-14T01:00:40Z
+updated_at: 2026-10-14T09:05:00Z
 ---
 
 # SVG Export Through Archify's Own Chrome Route
@@ -37,6 +37,54 @@ This record was captured from Kris's answer. Kris adopted it on 2026-10-14 at ho
 - `export-svg.test.ts`: the existing boundary tests, plus whatever the chosen route needs for the no-Chrome refusal and the version check.
 - `ki-diagrams`: the SKILL.md prerequisite line, the standard's exporter and "Without Archify or Playwright" sections and the EDUCATE step that adds Playwright, reworded for the new prerequisite, which is a system Chrome or Chromium and, on the import option, the Archify skill itself.
 - Not Archify, not the viewer, not the raster exports, not the diagram manifest and not any diagram source. Not `KI-HARNESS-GOV-177`, which is done on its finding.
+
+## Current state
+
+`export-svg.ts` launches Chromium through Playwright, opens the Archify viewer, triggers Export > SVG and saves the download. Playwright and its cached Chromium are therefore a prerequisite of any repository that regenerates a diagram. Archify 3.0.1 already carries a Playwright-free headless Chrome route (`findChrome`, `ChromeVisualBrowser`) that this record has not yet reused. The record is adopted at Next as a deliver record and is not yet planned to Ready.
+
+## Steps
+
+- [ ] Choose between importing Archify's `findChrome` and `ChromeVisualBrowser` from the installed skill and porting a minimal DevTools-Protocol pipe client, and record the choice in Discussion.
+- [ ] Replace the Playwright slice of `export-svg.ts` (launch, page, download event) with the chosen Chrome route, keeping `parseArguments`, `acceptExport`, `externalReference`, the receipt check and the fail-closed refusals unchanged.
+- [ ] Extend `export-svg.test.ts` with the no-Chrome refusal and the Archify version check.
+- [ ] Re-export one committed diagram and confirm the SVG matches the previous Playwright export byte for byte.
+- [ ] Reword the `ki-diagrams` SKILL.md prerequisite line, the standard's exporter and "Without Archify or Playwright" sections and the EDUCATE step for the new prerequisite.
+
+## Files touched
+
+- `skills/governance/ki-diagrams/scripts/export-svg.ts`
+- `skills/governance/ki-diagrams/scripts/export-svg.test.ts`
+- `skills/governance/ki-diagrams/SKILL.md`
+- `skills/governance/ki-diagrams/references/` (the diagrams standard's exporter sections)
+
+## Verify
+
+- `bun run test` passes, including the extended `export-svg.test.ts`.
+- `bunx tsc --noEmit` passes.
+- `ki repo audit --skill ki-diagrams` passes.
+- A re-exported committed SVG is byte-identical to its Playwright-era export.
+
+## Dependencies / blocks
+
+Depends on the finding of [KI-HARNESS-GOV-177](KI-HARNESS-GOV-177-browser-free-svg-extractor.md), which is done. Requires a system Google Chrome or Chromium on the delivering machine. Blocks nothing recorded.
+
+## Documentation impact
+
+### Decision Records
+
+None. The route choice is Kris's `EXPORT-ROUTE` answer, recorded in Context; it changes a tool prerequisite, not a durable policy.
+
+### Specifications
+
+None. The exporter's accepted behaviour (the viewer's own download, byte for byte, failing closed) is unchanged.
+
+### Guides
+
+The `ki-diagrams` SKILL.md prerequisite line and the diagrams standard's exporter sections change from Playwright to a system Chrome or Chromium.
+
+### Roadmap
+
+No follow-on record. `KI-HARNESS-GOV-177` stays done on its finding; `EXTRACT-PIN` is dropped and opens nothing.
 
 ## Discussion
 
