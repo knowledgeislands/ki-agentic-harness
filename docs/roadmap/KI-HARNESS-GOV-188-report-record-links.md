@@ -19,7 +19,7 @@ updated_at: 2026-10-14T16:54:57Z
 
 ## Goal
 
-A `ki-pmo` rubric criterion checks that every roadmap, checkpoint, Project, Initiative and decision identifier an owner report cites is a Markdown link to its local file, or, for a pruned record, to the Project note that carries its substance or to its last Git revision, so that the linking rule a coordinating thread already carries stops slipping under load.
+A `ki-pmo` rubric criterion checks that every roadmap, checkpoint, Project, Initiative and decision identifier an owner report cites is a Markdown link to its local file, or, for a pruned record, as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, so that the linking rule a coordinating thread already carries stops slipping under load.
 
 ## Context
 
@@ -35,17 +35,17 @@ This record is captured from that lesson under the standing instruction of 2026-
 ## Requirements
 
 - The criterion reads the owner reports a thread has committed under its `+/_THREADS/<run>/` folder and the thread's checkpoint, finds every work-record, checkpoint, Project, Initiative and decision identifier, and fails when one appears outside a Markdown link.
-- A link to a pruned record is accepted when it points at the Project note that carries the record's substance or at a Git-revision locator of the record's last committed state; a bare identifier for a pruned record is still a failure.
+- A link to a pruned record is accepted in the form `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed, usually the parent of the prune commit; a pruned record left as a bare identifier or linked to its missing local file is still a failure. Kris set the form on 2026-10-14, as received: "LINK-FORM / clickable GitHub link to the file at its last revision; KI-HARNESS-GOV-188's check accepts it. Perhaps the link text can be `KI-HARNESS-GOV-188 (pruned)`". The earlier alternative of pointing at the Project note that carries the record is dropped.
 - A quoted owner instruction that names a Needs tag, such as `ACCEPT-181`, is not a record identifier and does not trigger the check.
 
 ## Current state
 
-Approved and delivered on 2026-10-14. Kris approved it in the ways-of-working thread, as received: "LINK-GUARD / approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi". The harness part is this record and the hook line; the link printer belongs to `tools-ki` under KI-TOOL-KI-CLI-127 and the output-style deployment to Rig through chezmoi. Delivered on harness `main` from baseline `28d1dc78` with every gate passing. Awaiting review.
+Approved and delivered on 2026-10-14. Kris approved it in the ways-of-working thread, as received: "LINK-GUARD / approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi". The harness part is this record and the hook line; the link printer belongs to `tools-ki` under KI-TOOL-KI-CLI-127 and the output-style deployment to Rig through chezmoi. Delivered on harness `main` from baseline `28d1dc78` with every gate passing. Awaiting review. On the same day Kris settled the pruned-record form, as received: "LINK-FORM / clickable GitHub link to the file at its last revision; KI-HARNESS-GOV-188's check accepts it. Perhaps the link text can be `KI-HARNESS-GOV-188 (pruned)`"; the standard, the hook line, the output style, the rubric item and the fixtures now state that one form and the Project-note alternative is dropped.
 
 ## Steps
 
 - [x] Decide which identifier grammars the criterion matches, importing `ki-work-roadmap:work-identifiers` rather than restating the pattern.
-- [x] Add the rubric item, its context function and fixture tests covering a linked identifier, a bare identifier, a pruned record linked to its Project note or Git revision, and a quoted Needs tag.
+- [x] Add the rubric item, its context function and fixture tests covering a linked identifier, a bare identifier, a pruned record linked as `<FULL-ID> (pruned)` to its last GitHub revision, and a quoted Needs tag.
 - [x] Regenerate `rubric.md` and add the sentence to the standard.
 
 ## Files touched
@@ -89,15 +89,15 @@ No follow-on record.
 
 ### Delivered
 
-A mechanical `PMO-7` criterion in `ki-pmo`'s rubric reads every thread report `+/_THREADS/<run>/*.report.md` and flags, at WARN level, each full record identifier left outside a Markdown link and each record link whose absolute local target no longer exists, so that a pruned record is linked to the Project note that carries it or to its last Git revision rather than to a deleted file. The identifier grammar is composed from the vendored `ki-work-roadmap:work-identifiers` module, so a work record such as `KI-HARNESS-GOV-187` and a Decision Record such as `ADR-KI-HARNESS-010` are both caught, while a Needs tag such as `ACCEPT-181` or `GOV-187-REVIEW` and a short form such as `GOV-187` are not. Fenced blocks, including the reply block the owner pastes back, are skipped. The standard's Linking records rule, its coordinating-thread practices, the Mechanical boundary, the SKILL.md Mode AUDIT sentence, the sources review, the regenerated rubric, the coordinator reminder hook line and its tests and README, and the `ki-coordinator` output style all state the pruned-record rule.
+A mechanical `PMO-7` criterion in `ki-pmo`'s rubric reads every thread report `+/_THREADS/<run>/*.report.md` and flags, at WARN level, each full record identifier left outside a Markdown link and each record link whose absolute local target no longer exists, so that a pruned record is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)` rather than to a deleted file. The identifier grammar is composed from the vendored `ki-work-roadmap:work-identifiers` module, so a work record such as `KI-HARNESS-GOV-187` and a Decision Record such as `ADR-KI-HARNESS-010` are both caught, while a Needs tag such as `ACCEPT-181` or `GOV-187-REVIEW` and a short form such as `GOV-187` are not. Fenced blocks, including the reply block the owner pastes back, are skipped. The standard's Linking records rule, its coordinating-thread practices, the Mechanical boundary, the SKILL.md Mode AUDIT sentence, the sources review, the regenerated rubric, the coordinator reminder hook line and its tests and README, and the `ki-coordinator` output style all state the pruned-record rule.
 
 ### Change Summary
 
 - `scripts/rubric/contexts/pmo.ts`: `threadReports`, `recordIdentifiers`, `reportLinkFindings` and `linkOutcomes` add a `links` outcome context; `scripts/shared/work-identifiers.ts` is the vendored copy and `SKILL.md` declares `ki-work-roadmap:work-identifiers`.
 - `scripts/rubric/items/threads.ts`: `PMO-7`, mechanical WARN, diagnostic remediation, sourced to `standards-pmo.md#linking-records`; `references/rubric.md` regenerated.
-- `scripts/rubric/contexts/pmo.test.ts`: fixtures for a linked identifier, a bare identifier beside a quoted Needs tag, a pruned record linked to its Project note and to a GitHub revision, a pruned record linked to its deleted file, a fenced reply block, and a thread folder with no reports.
+- `scripts/rubric/contexts/pmo.test.ts`: fixtures for a linked identifier, a bare identifier beside a quoted Needs tag, a pruned record linked as `<FULL-ID> (pruned)` to its last GitHub revision, a pruned record linked to its deleted file, a fenced reply block, and a thread folder with no reports.
 - `references/standards-pmo.md`: a **Links** practice, the pruned-record sentence and the PMO-7 description under Linking records, and the Mechanical boundary; `references/sources.md` records the review with Kris's words.
-- `hooks/coordinator-reminder.sh`, its test and `hooks/README.md`: the reminder line gains the linking sentence; `output-styles/ki-coordinator.md` says a pruned record links to the Project note or its last Git revision and that the rubric flags unlinked identifiers.
+- `hooks/coordinator-reminder.sh`, its test and `hooks/README.md`: the reminder line gains the linking sentence; `output-styles/ki-coordinator.md` says a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision and that the rubric flags unlinked identifiers.
 - `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`: the criterion counts advance by one.
 
 ### Verification
@@ -117,7 +117,7 @@ The check lives where the lesson said it should, in the rubric rather than in an
 
 ### Mini recap
 
-PMO-7 flags unlinked record identifiers and dead record links in thread reports; the hook line, standard, output style and README say a pruned record links to its Project note or last Git revision; the Capital's existing reports show the slip the lesson described.
+PMO-7 flags unlinked record identifiers and dead record links in thread reports; the hook line, standard, output style and README say a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision; the Capital's existing reports show the slip the lesson described.
 
 ## Discussion
 

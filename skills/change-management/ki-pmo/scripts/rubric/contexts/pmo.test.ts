@@ -207,16 +207,13 @@ describe('thread report links', () => {
     expect(outcomes[0]?.message).not.toContain('ACCEPT-187')
   })
 
-  test('a pruned record linked to its Project note or Git revision passes, linked to its deleted file does not', () => {
+  test('a pruned record linked as `<FULL-ID> (pruned)` to its last GitHub revision passes, linked to its deleted file does not', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
-    mkdirSync(join(root, 'Streams', 'Projects', 'ways-of-working'), { recursive: true })
-    const note = join(root, 'Streams', 'Projects', 'ways-of-working', 'ways-of-working.md')
-    writeFileSync(note, '# ways-of-working\n')
     report(
       root,
       'ways-of-working',
       'pruned',
-      `# Report\n\n- Pruned [KI-HARNESS-GOV-181](${note}) and [KI-HARNESS-GOV-185](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-pmo-extraction.md).\n`
+      '# Report\n\n- Pruned [KI-HARNESS-GOV-181 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-181-link-rule.md) and [KI-HARNESS-GOV-185 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-pmo-extraction.md).\n'
     )
     expect(statuses(context(root).links.outcomes)).toEqual(['PASS'])
     report(

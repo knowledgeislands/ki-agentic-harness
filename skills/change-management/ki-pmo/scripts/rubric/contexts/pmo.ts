@@ -222,8 +222,9 @@ export const recordIdentifiers = (text: string): readonly string[] => [
 /**
  * Review one thread report for the linking rule: every full record identifier in its prose sits inside the text of a
  * Markdown link, and a link whose text names a record and whose target is an absolute local path points at a file
- * that exists, so a pruned record is linked to the Project note that carries it or to a Git revision rather than to
- * its deleted file. Fenced blocks, such as the reply block the owner pastes back, are not prose and are skipped.
+ * that exists, so a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last
+ * revision rather than to its deleted file. Fenced blocks, such as the reply block the owner pastes back, are not prose
+ * and are skipped.
  */
 export const reportLinkFindings = (
   text: string
@@ -255,7 +256,7 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
     if (missing.length > 0)
       outcomes.push({
         status: 'VIOLATION',
-        message: `a record link points at a file that exists, or for a pruned record at the Project note that carries it or at its last Git revision; missing: ${missing.join(', ')}`,
+        message: `a record link points at a file that exists, or for a pruned record at the GitHub link to the file at its last revision; missing: ${missing.join(', ')}`,
         subject
       })
   }
