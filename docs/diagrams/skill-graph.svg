@@ -443,10 +443,10 @@ rect.c-bg-rect { fill: var(--bg); }
         <path data-edge-from="ki-binding-chezmoi" data-edge-to="ki-binding" data-edge-key="4" data-edge-id="ki-binding-chezmoi--ki-binding" data-composition-points="778,1656;778,1680;994,1680;994,1896" d="M 778 1656 L 778 1672 Q 778 1680 786 1680 L 986 1680 Q 994 1680 994 1688 L 994 1896" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-binding-chezmoi" data-edge-to="ki-repo-dotfiles-chezmoi" data-edge-key="5" data-edge-id="ki-binding-chezmoi--ki-repo-dotfiles-chezmoi" data-composition-points="778,1656;778,1992" d="M 778 1656 L 778 1992" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-binding-claude" data-edge-to="ki-binding" data-edge-key="6" data-edge-id="ki-binding-claude--ki-binding" data-composition-points="1210,1752;1210,1776;994,1776;994,1896" d="M 1210 1752 L 1210 1768 Q 1210 1776 1202 1776 L 1002 1776 Q 994 1776 994 1784 L 994 1896" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="ki-design-loop" data-edge-to="ki-decision-records" data-edge-key="7" data-edge-id="ki-design-loop--ki-decision-records" data-composition-points="346,192;346,216;562,216;562,1416" d="M 346 192 L 346 208 Q 346 216 354 216 L 554 216 Q 562 216 562 224 L 562 1416" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="ki-design-loop" data-edge-to="ki-delegation" data-edge-key="8" data-edge-id="ki-design-loop--ki-delegation" data-composition-points="346,192;346,1488;130,1488;130,2568" d="M 346 192 L 346 1480 Q 346 1488 338 1488 L 138 1488 Q 130 1488 130 1496 L 130 2568" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="ki-implement" data-edge-to="ki-delegation" data-edge-key="9" data-edge-id="ki-implement--ki-delegation" data-composition-points="130,96;130,2568" d="M 130 96 L 130 2568" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="ki-plan" data-edge-to="ki-delegation" data-edge-key="10" data-edge-id="ki-plan--ki-delegation" data-composition-points="346,96;346,120;130,120;130,2568" d="M 346 96 L 346 112 Q 346 120 338 120 L 138 120 Q 130 120 130 128 L 130 2568" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ki-implement" data-edge-to="ki-delegation" data-edge-key="7" data-edge-id="ki-implement--ki-delegation" data-composition-points="130,96;130,2568" d="M 130 96 L 130 2568" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ki-plan" data-edge-to="ki-delegation" data-edge-key="8" data-edge-id="ki-plan--ki-delegation" data-composition-points="346,96;346,120;130,120;130,2568" d="M 346 96 L 346 112 Q 346 120 338 120 L 138 120 Q 130 120 130 128 L 130 2568" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ki-pmo-design" data-edge-to="ki-decision-records" data-edge-key="9" data-edge-id="ki-pmo-design--ki-decision-records" data-composition-points="346,192;346,216;562,216;562,1416" d="M 346 192 L 346 208 Q 346 216 354 216 L 554 216 Q 562 216 562 224 L 562 1416" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ki-pmo-design" data-edge-to="ki-delegation" data-edge-key="10" data-edge-id="ki-pmo-design--ki-delegation" data-composition-points="346,192;346,1488;130,1488;130,2568" d="M 346 192 L 346 1480 Q 346 1488 338 1488 L 138 1488 Q 130 1488 130 1496 L 130 2568" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         <path data-edge-from="ki-recap" data-edge-to="ki-authoring" data-edge-key="11" data-edge-id="ki-recap--ki-authoring" data-composition-points="346,1560;346,1584;562,1584;562,2376" d="M 346 1560 L 346 1576 Q 346 1584 354 1584 L 554 1584 Q 562 1584 562 1592 L 562 2376" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-recap" data-edge-to="ki-batch" data-edge-key="12" data-edge-id="ki-recap--ki-batch" data-composition-points="346,1560;346,2472" d="M 346 1560 L 346 2472" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         <path data-edge-from="ki-repo" data-edge-to="ki-authoring" data-edge-key="13" data-edge-id="ki-repo--ki-authoring" data-composition-points="778,2136;778,2352;562,2352;562,2376" d="M 778 2136 L 778 2344 Q 778 2352 770 2352 L 570 2352 Q 562 2352 562 2360 L 562 2376" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
@@ -460,7 +460,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <path data-edge-from="ki-repo-kb" data-edge-to="ki-repo-kb-activities" data-edge-key="21" data-edge-id="ki-repo-kb--ki-repo-kb-activities" data-composition-points="994,384;994,408;1210,408;1210,432" d="M 994 384 L 994 400 Q 994 408 1002 408 L 1202 408 Q 1210 408 1210 416 L 1210 432" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-repo-kb" data-edge-to="ki-repo-kb-live-artifacts" data-edge-key="22" data-edge-id="ki-repo-kb--ki-repo-kb-live-artifacts" data-composition-points="994,384;994,600;1210,600;1210,624" d="M 994 384 L 994 592 Q 994 600 1002 600 L 1202 600 Q 1210 600 1210 608 L 1210 624" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-repo-kb" data-edge-to="ki-repo-kb-streams" data-edge-key="23" data-edge-id="ki-repo-kb--ki-repo-kb-streams" data-composition-points="994,384;994,720" d="M 994 384 L 994 720" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="ki-repo-kb-activities" data-edge-to="ki-work-housekeeping" data-edge-key="24" data-edge-id="ki-repo-kb-activities--ki-work-housekeeping" data-composition-points="1210,480;1210,528" d="M 1210 480 L 1210 528" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ki-repo-kb-activities" data-edge-to="ki-work-recurring" data-edge-key="24" data-edge-id="ki-repo-kb-activities--ki-work-recurring" data-composition-points="1210,480;1210,528" d="M 1210 480 L 1210 528" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         <path data-edge-from="ki-repo-kb-principal" data-edge-to="ki-decision-records" data-edge-key="25" data-edge-id="ki-repo-kb-principal--ki-decision-records" data-composition-points="778,288;778,792;562,792;562,1416" d="M 778 288 L 778 784 Q 778 792 770 792 L 570 792 Q 562 792 562 800 L 562 1416" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-repo-kb-principal" data-edge-to="ki-repo-kb" data-edge-key="26" data-edge-id="ki-repo-kb-principal--ki-repo-kb" data-composition-points="778,288;778,312;994,312;994,336" d="M 778 288 L 778 304 Q 778 312 786 312 L 986 312 Q 994 312 994 320 L 994 336" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ki-repo-mcp" data-edge-to="ki-engineering" data-edge-key="27" data-edge-id="ki-repo-mcp--ki-engineering" data-composition-points="130,2928;130,2976" d="M 130 2928 L 130 2976" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
@@ -502,8 +502,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="346" y="86" class="t-muted" font-size="9" text-anchor="middle">change management · process</text>
         </g>
 
-        <g id="node-ki-design-loop" data-node-id="ki-design-loop" data-node-label="design-loop" tabindex="0" role="button" aria-label="Focus design-loop, change management · process, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · process" data-node-context="Architecture component">
-          <title>design-loop · change management · process · Architecture component</title>
+        <g id="node-ki-pmo-design" data-node-id="ki-pmo-design" data-node-label="pmo-design" tabindex="0" role="button" aria-label="Focus pmo-design, change management · process, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · process" data-node-context="Architecture component">
+          <title>pmo-design · change management · process · Architecture component</title>
           <rect x="248" y="144" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="248" y="144" width="196" height="48" rx="6" class="c-frontend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(254 150) scale(0.6875)">
@@ -512,7 +512,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" x="346" y="166" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">design-loop</text>
+          <text data-node-label="" x="346" y="166" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">pmo-design</text>
         <text x="346" y="182" class="t-muted" font-size="9" text-anchor="middle">change management · process</text>
         </g>
 
@@ -551,15 +551,15 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1210" y="470" class="t-muted" font-size="9" text-anchor="middle">repository structure · declared</text>
         </g>
 
-        <g id="node-ki-work-housekeeping" data-node-id="ki-work-housekeeping" data-node-label="work-housekeeping" tabindex="0" role="button" aria-label="Focus work-housekeeping, change management · declared, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="change management · declared" data-node-context="Architecture component">
-          <title>work-housekeeping · change management · declared · Architecture component</title>
+        <g id="node-ki-work-recurring" data-node-id="ki-work-recurring" data-node-label="work-recurring" tabindex="0" role="button" aria-label="Focus work-recurring, change management · declared, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="change management · declared" data-node-context="Architecture component">
+          <title>work-recurring · change management · declared · Architecture component</title>
           <rect x="1112" y="528" width="196" height="48" rx="6" class="c-mask"/>
           <rect x="1112" y="528" width="196" height="48" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1118 534) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="1210" y="550" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">work-housekeeping</text>
+          <text data-node-label="" x="1210" y="550" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">work-recurring</text>
         <text x="1210" y="566" class="t-muted" font-size="9" text-anchor="middle">change management · declared</text>
         </g>
 
