@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e205e81ff7c9980e34bedc2ad16b21b3eb09db0b
 created_at: 2026-10-14T13:53:54Z
-updated_at: 2026-10-14T14:05:21Z
+updated_at: 2026-10-14T16:46:05Z
 ---
 
 # Make the Thread Model and the Banner Changes Normative
@@ -46,7 +45,7 @@ The designs are `Streams/Projects/ways-of-working/design/thread-types-and-durabl
 
 ## Current state
 
-Delivered on harness `main` from baseline `e205e81f` as one commit after the ledger advance, with every gate passing. Awaiting review.
+Delivered on harness `main` from baseline `e205e81f` as one commit after the ledger advance, with every gate passing. Accepted as done on 2026-10-14; see `## Done`.
 
 ## Steps
 
@@ -127,6 +126,10 @@ The three sources files quote Kris's words for every rule they carry, and no rec
 ### Mini recap
 
 The thread model Kris adopted on 2026-10-14 is now what the harness says, in `ki-pmo` for threads, `ki-delegation` and `ki-engineering` for the restore path, and the hook, style and tests for the banner; the follow-ons are `tools-ki` handoffs and other Capitals' scaffold refreshes.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above, in Kris's words: "GOV-187-REVIEW / accept KI-HARNESS-GOV-187". Kris also confirmed the thread-folder rule as delivered, in these words: "THREAD-FOLDER / confirmed as delivered". The Verify gates were re-run at acceptance: `bun run test` 1142 pass, `bunx tsc --noEmit` clean, and `ki repo audit --skill` for `ki-skills`, `ki-delegation`, `ki-checkpoint`, `ki-pmo`, `ki-engineering`, `ki-repo-harness`, `ki-work-roadmap` and `ki-authoring` with no failure. The only warnings are the two pre-existing `ki-skills` refresh-cadence warnings and the two `ki-diagrams` DIAG-4 freshness warnings on the skill map and skill graph, both named under Outstanding concerns and outside this record's scope.
 
 ## Discussion
 
