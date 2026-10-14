@@ -10,11 +10,17 @@ const line =
 
 const root = mkdtempSync(join(tmpdir(), 'ki-coordinator-reminder-'))
 const coordinating = join(root, 'capital')
+const undeclared = join(root, 'undeclared')
 const ordinary = join(root, 'ordinary')
 mkdirSync(join(coordinating, '+', '_CHECKPOINTS'), { recursive: true })
 mkdirSync(join(coordinating, 'Streams', 'Projects'), { recursive: true })
-mkdirSync(ordinary, { recursive: true })
+writeFileSync(join(coordinating, '.ki.toml'), '[skills.ki-repo]\nrepository = "capital"\n\n[skills.ki-delegation]\n\n[skills.ki-pmo]\n\n[skills.ki-checkpoint]\n')
 spawnSync('git', ['init', '--quiet'], { cwd: coordinating })
+// Checkpoints without the declaration: the signal is the `[skills.ki-pmo]` table, not `+/_CHECKPOINTS/`.
+mkdirSync(join(undeclared, '+', '_CHECKPOINTS'), { recursive: true })
+writeFileSync(join(undeclared, '.ki.toml'), '[skills.ki-repo]\nrepository = "undeclared"\n\n[skills.ki-checkpoint]\n')
+spawnSync('git', ['init', '--quiet'], { cwd: undeclared })
+mkdirSync(ordinary, { recursive: true })
 
 // `ps -o tty=` up the ancestry is the detachment signal; the wrapper fixes it so
 // the suite does not depend on whether the test runner itself has a terminal.
@@ -103,6 +109,13 @@ test('a subdirectory of a coordinating checkout still counts', () => {
   const outcome = run(claudePrompt(join(coordinating, 'Streams', 'Projects')))
   expect(outcome.status).toBe(0)
   expect(outcome.context).toBe(line)
+})
+
+test('a checkout holding checkpoints but not declaring ki-pmo gets nothing', () => {
+  const outcome = run(claudePrompt(undeclared))
+  expect(outcome.status).toBe(0)
+  expect(outcome.stdout).toBe('')
+  expect(run(claudePrompt(join(undeclared, '+', '_CHECKPOINTS'))).stdout).toBe('')
 })
 
 test('an ordinary interactive session gets nothing', () => {

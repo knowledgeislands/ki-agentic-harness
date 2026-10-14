@@ -6,8 +6,9 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers,
-  decisions log, coordination, run queue, monitoring, project threads) and durable packets for approved high-risk
-  handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs.
+  decisions log, coordination, run queue, monitoring, owner report) and durable packets for approved high-risk
+  handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and
+  `ki-pmo` governs the coordinating thread that launches them.
 argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | refresh'
 ---
 
@@ -15,7 +16,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | ref
 
 `ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-- **Background runs** - routine delegation to background agents: detachment, coordinator responsiveness, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, the owner report that every agent report and thread Summary takes with its Needs tags, the territory master thread, project threads with their openers and bootstrap, and the thread working rules for the Summary banner and resting point, the recap since the mark, the full summary of the whole thread, parking tangents, linking records, keeping primary checkouts current and refreshing this guidance. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent.
+- **Background runs** - routine delegation to background agents: detachment, the run packet, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue, monitoring, and the owner report that every agent report and thread Summary takes with its Needs tags. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent. The coordinating thread that launches runs - the territory master thread or a project thread, its responsiveness, report forms, openers, bootstrap and working rules - is governed by [`ki-pmo`](../../change-management/ki-pmo/references/standards-pmo.md), which depends on this skill.
 - **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
@@ -66,11 +67,11 @@ Read [the sources](references/sources.md), compare delegation practice and its s
 
 ### Mode HELP
 
-Explain the two contracts and when a packet is added to a run, the project-thread bootstrap, the `ki agent` launcher, thread checkpoints in `ki-checkpoint`, Paperclip delegation in `ki-agent-coordination-paperclip`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, coordinating threads and their bootstrap in `ki-pmo`, thread checkpoints in `ki-checkpoint`, Paperclip delegation in `ki-agent-coordination-paperclip`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
 
 ## Notes
 
 - A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
 - A run's decisions log and agent reports live tracked in the owning repository's `+/_THREADS/<run>/` folder, committed as the thread goes; the state directory holds machine-local runtime files only. Neither is a `ki-checkpoint` checkpoint or a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
-- The recap since the mark is a coordinating thread's roll-up since the owner's mark, and the full summary its whole-thread owner report, for the master thread and each project thread; `ki-recap` stays the single-session summary.
+- A coordinating thread's Summary, recap since the mark and full summary are `ki-pmo`'s forms; each is an owner report in this skill's shape, and `ki-recap` stays the single-session summary.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

@@ -31,11 +31,11 @@ An active checkpoint is one regular Markdown file at `+/_CHECKPOINTS/<thread>.md
 
 ### Project-thread naming
 
-Where the repository keeps a Project registry ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)), a checkpoint for a Project's thread is named `<initiative>.<project>`, using the `initiative` key from the Project note and the Project's own key, for example `techne.agent-host` or `rig.mac-studio-bootstrap`. Related checkpoints then sort together. A territory Capital's [territory master thread](../../ki-delegation/references/standards-background-runs.md#territory-master-thread) is named `_state-of-play`, so that it sorts first; there is one per Capital and no other repository has one. A checkpoint with no Project keeps a plain human-selected name, prefixed with an Initiative key only when one obviously fits.
+Where the repository keeps a Project registry ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)), a checkpoint for a Project's thread is named `<initiative>.<project>`, using the `initiative` key from the Project note and the Project's own key, for example `techne.agent-host` or `rig.mac-studio-bootstrap`. Related checkpoints then sort together. A territory Capital's [territory master thread](../../../change-management/ki-pmo/references/standards-pmo.md#territory-master-thread) is named `_state-of-play`, so that it sorts first; there is one per Capital and no other repository has one. A checkpoint with no Project keeps a plain human-selected name, prefixed with an Initiative key only when one obviously fits.
 
 The full name appears in the filename stem, `thread` field, and H1. When a Project moves to another Initiative, rename its checkpoint, `thread` field, H1, and every reference in the same change.
 
-A human opener names only the Project, for example `Re-bootstrap as the agent-host project thread under ki-delegation.`; [RESUME](#resume-lifecycle) resolves it to the full name.
+A human opener names only the Project, for example `Re-bootstrap as the agent-host project thread under ki-pmo.`; [RESUME](#resume-lifecycle) resolves it to the full name.
 
 ## Thread label
 
@@ -82,9 +82,9 @@ After frontmatter, the record uses exactly this heading sequence, with substanti
 
 The H1 repeats the thread name exactly. `Decisions made`, `Files touched`, and `Open questions` may say `None` when that is the truthful current state; an empty section is not a useful reconstruction snapshot.
 
-A coordinating thread under `ki-delegation` keeps its parked side topics in `Open questions` as dated one-line items, under [its parking rule](../../ki-delegation/references/standards-background-runs.md#parking-tangents); they never form an additional H2.
+A coordinating thread under `ki-pmo` keeps its parked side topics in `Open questions` as dated one-line items, under [its parking rule](../../../change-management/ki-pmo/references/standards-pmo.md#parking-tangents); they never form an additional H2.
 
-It also notes in `Current state` the `ki-delegation` revision it last read, under [its refresh rule](../../ki-delegation/references/standards-background-runs.md#refreshing-this-guidance). It keeps its mark there too, as one line under [its mark rule](../../ki-delegation/references/standards-background-runs.md#recap-since-the-mark); striking a new mark replaces it.
+It also notes in `Current state` the `ki-pmo` revision it last read, under [its refresh rule](../../../change-management/ki-pmo/references/standards-pmo.md#refreshing-this-guidance). It keeps its mark there too, as one line under [its mark rule](../../../change-management/ki-pmo/references/standards-pmo.md#recap-since-the-mark); striking a new mark replaces it.
 
 ## Optional runtime reminder consumers
 

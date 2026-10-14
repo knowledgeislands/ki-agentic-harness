@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # UserPromptSubmit and SessionStart(compact) hook: remind a coordinating thread
-# of the responsive-coordinator rule the ki-delegation background-run standard
-# sets. Works unchanged under Claude Code and Codex CLI, which share the hook
-# input and `hookSpecificOutput.additionalContext` output shape.
+# of the responsive-coordinator rules the ki-pmo coordinating-thread standard
+# sets; ki-pmo owns this hook and its line. Works unchanged under Claude Code
+# and Codex CLI, which share the hook input and
+# `hookSpecificOutput.additionalContext` output shape.
 
 # This hook is deliberately fail-open: every failure path exits 0 with no
 # output, so it can never block a prompt. It is silent unless the thread is a
-# coordinating thread, which it decides from the working directory, and it is
+# coordinating thread, which it decides from the ki-pmo declaration in the
+# working directory's checkout, and it is
 # silent in any agent `ki agent` launched, which it decides from the run marker
 # or from the detachment that launch performs.
 set -u
@@ -55,14 +57,16 @@ case "$event" in
   *) exit 0 ;;
 esac
 
-# A coordinating thread sits in a checkout that holds checkpoints: a Capital or
-# the harness. The working directory may be a subdirectory of that checkout.
+# A coordinating thread sits in a checkout whose top-level .ki.toml declares
+# [skills.ki-pmo]. A repository that does not delegate never declares it and so
+# never gets the hook; removing ki-pmo disables it. The working directory may be
+# a subdirectory of that checkout.
 cwd=$(printf '%s' "$input" | jq -r '.cwd // empty' 2>/dev/null) || exit 0
 [ -n "$cwd" ] || cwd=$PWD
 [ -d "$cwd" ] || exit 0
 
 coordinating() {
-  [ -d "$1/+/_CHECKPOINTS" ]
+  [ -f "$1/.ki.toml" ] && grep -Eq '^\[skills\.ki-pmo\]' "$1/.ki.toml" 2>/dev/null
 }
 
 if ! coordinating "$cwd"; then

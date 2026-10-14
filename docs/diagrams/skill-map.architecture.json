@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "0b6349c8ae9695c8b6bc94a23bfe24321bc86b89"
+      "revision": "6d3e2f342464a96ef3d6d9e039a57260d4f9e2cd"
     },
     "legend": {
       "mode": "auto",
@@ -334,6 +334,25 @@
       ]
     },
     {
+      "id": "ki-pmo",
+      "type": "database",
+      "label": "pmo",
+      "sublabel": "change management · declared",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-pmo/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        224
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
       "id": "ki-work",
       "type": "database",
       "label": "work",
@@ -344,7 +363,7 @@
         }
       ],
       "pos": [
-        32,
+        240,
         224
       ],
       "size": [
@@ -363,7 +382,7 @@
         }
       ],
       "pos": [
-        240,
+        448,
         224
       ],
       "size": [
@@ -382,8 +401,8 @@
         }
       ],
       "pos": [
-        448,
-        224
+        32,
+        296
       ],
       "size": [
         196,
@@ -401,7 +420,7 @@
         }
       ],
       "pos": [
-        32,
+        240,
         296
       ],
       "size": [
@@ -420,7 +439,7 @@
         }
       ],
       "pos": [
-        240,
+        448,
         296
       ],
       "size": [
@@ -439,8 +458,8 @@
         }
       ],
       "pos": [
-        448,
-        296
+        32,
+        368
       ],
       "size": [
         196,
@@ -458,7 +477,7 @@
         }
       ],
       "pos": [
-        32,
+        240,
         368
       ],
       "size": [
@@ -477,7 +496,7 @@
         }
       ],
       "pos": [
-        240,
+        448,
         368
       ],
       "size": [
@@ -496,8 +515,8 @@
         }
       ],
       "pos": [
-        448,
-        368
+        32,
+        440
       ],
       "size": [
         196,
@@ -515,7 +534,7 @@
         }
       ],
       "pos": [
-        32,
+        240,
         440
       ],
       "size": [
@@ -534,7 +553,7 @@
         }
       ],
       "pos": [
-        240,
+        448,
         440
       ],
       "size": [
@@ -553,8 +572,8 @@
         }
       ],
       "pos": [
-        448,
-        440
+        32,
+        512
       ],
       "size": [
         196,
@@ -877,7 +896,7 @@
       ],
       "pos": [
         32,
-        600
+        672
       ],
       "size": [
         196,
@@ -896,7 +915,7 @@
       ],
       "pos": [
         240,
-        600
+        672
       ],
       "size": [
         196,
@@ -915,7 +934,7 @@
       ],
       "pos": [
         448,
-        600
+        672
       ],
       "size": [
         196,
@@ -934,7 +953,7 @@
       ],
       "pos": [
         32,
-        672
+        744
       ],
       "size": [
         196,
@@ -953,7 +972,7 @@
       ],
       "pos": [
         32,
-        832
+        904
       ],
       "size": [
         196,
@@ -972,7 +991,7 @@
       ],
       "pos": [
         240,
-        832
+        904
       ],
       "size": [
         196,
@@ -991,7 +1010,7 @@
       ],
       "pos": [
         448,
-        832
+        904
       ],
       "size": [
         196,
@@ -1010,7 +1029,7 @@
       ],
       "pos": [
         32,
-        904
+        976
       ],
       "size": [
         196,
@@ -1029,7 +1048,7 @@
       ],
       "pos": [
         240,
-        904
+        976
       ],
       "size": [
         196,
@@ -1048,7 +1067,7 @@
       ],
       "pos": [
         448,
-        904
+        976
       ],
       "size": [
         196,
@@ -1067,7 +1086,7 @@
       ],
       "pos": [
         32,
-        976
+        1048
       ],
       "size": [
         196,
@@ -1086,7 +1105,7 @@
       ],
       "pos": [
         240,
-        976
+        1048
       ],
       "size": [
         196,
@@ -1105,7 +1124,7 @@
       ],
       "pos": [
         448,
-        976
+        1048
       ],
       "size": [
         196,
@@ -1180,8 +1199,8 @@
         }
       ],
       "pos": [
-        32,
-        1136
+        708,
+        1192
       ],
       "size": [
         196,
@@ -1199,8 +1218,8 @@
         }
       ],
       "pos": [
-        240,
-        1136
+        916,
+        1192
       ],
       "size": [
         196,
@@ -1241,8 +1260,9 @@
     },
     {
       "kind": "region",
-      "label": "Change Management · 12 skills",
+      "label": "Change Management · 13 skills",
       "wraps": [
+        "ki-pmo",
         "ki-work",
         "ki-work-github-issues",
         "ki-work-linear",
@@ -1343,7 +1363,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "62 skills in 8 concerns: 2 baseline, 19 detected, 30 declared, 11 processes.",
+        "63 skills in 8 concerns: 2 baseline, 19 detected, 31 declared, 11 processes.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

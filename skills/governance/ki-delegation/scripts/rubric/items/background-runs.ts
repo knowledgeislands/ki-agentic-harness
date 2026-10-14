@@ -4,7 +4,7 @@ import type { DelegationRubricContext } from '../types.ts'
 export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext['footers']> = {
   code: 'RUN',
   title: 'background runs',
-  description: 'Shipped authority footers and the quality of background-run prompts.',
+  description: 'Shipped authority footers and the quality of background-run prompts and reports.',
   standard: 'standards-background-runs.md',
   selectContext: (context) => context.footers,
   items: [
@@ -28,12 +28,12 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-2',
       title: 'run prompts are cold-agent ready and authority-bounded',
       description:
-        'A background-run prompt cites the numbered owner decision that authorises it, has numbered steps, a verification step and a report path, forbids background subagents and ending while waiting, and ends with the lowest sufficient authority footer.',
+        "A background-run prompt cites the owner decision that authorises it in the owner's words and date, has numbered steps, a verification step and a report path, forbids background subagents and ending while waiting, and ends with the lowest sufficient authority footer.",
       sources: ['standards-background-runs.md'],
       judgment: {
         scope: 'Background-run prompts, decisions logs and run reports the delegating owner selects for review.',
         prompt:
-          'Does each prompt cite a real numbered decision, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report?',
+          'Does each prompt cite a real owner decision by its words and date, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report?',
         outcomes: ['conforming', 'revise prompt', 'escalate to owner'],
         guidance:
           'Revise a prompt only within the authority its cited decision grants; escalate to the owner when the work needs a higher tier or a decision that does not exist yet.'
@@ -41,59 +41,32 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
     },
     {
       code: 'RUN-3',
-      title: 'coordinators stay responsive and project threads stay current',
+      title: 'run records are tracked and consolidated',
       description:
-        'A coordinating thread keeps each turn to a handful of quick checks and bookkeeping calls, hands analysis, drafting, edits, tests, audits, builds and anything longer than about a minute to background agents, waits only through a detached waiter or monitor, answers owner messages promptly and treats a new owner message as steering rather than a stop; each territory Capital has one master thread at `_state-of-play.md` doing project management only, keeping the Project-thread queue within its cap and seeding each checkpoint and opener; a project thread works only its Project, follows the bootstrap, keeps its checkpoint current, records approvals before launching, and consolidates in-force decisions out of the run directory.',
+        "A run's decisions log and agent reports live in the owning repository's tracked `+/_THREADS/<run>/` folder and are committed as the thread goes, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or checkpoint rather than living only in the run directory, and a prompt or record describes a decision by the owner's words and date, never by its number.",
       sources: ['standards-background-runs.md'],
       judgment: {
-        scope:
-          'Coordinating-thread transcripts, project checkpoints, decisions logs and recaps the owner selects for review.',
+        scope: 'Thread folders, decisions logs, run directories and run prompts the owner selects for review.',
         prompt:
-          'Did the coordinator keep within its turn budget, delegate rather than analyse, draft, edit, test or wait in the foreground, answer owner messages promptly and stop work only on an express, named instruction, does the territory master thread stay on project management with active Project threads within the cap and a prepared checkpoint and opener for each, does each project thread work through background agents from a current checkpoint, and does anything durable exist only in the run directory?',
-        outcomes: ['conforming', 'delegate longer work', 'consolidate decisions', 'escalate to owner'],
+          'Is every decision logged in the tracked thread folder before its work launched, does anything durable exist only in the run directory, and does any prompt or record cite a decision by number alone?',
+        outcomes: ['conforming', 'consolidate decisions', 'log decisions', 'escalate to owner'],
         guidance:
-          'Move longer coordinator work into background agents, and consolidate in-force decisions into a Decision Record, skill or checkpoint; escalate to the master thread when a direction touches more than one Project.'
+          "Consolidate in-force decisions into their durable owner, record missing decisions before further launches, and replace a bare decision number with the owner's words and the date; escalate when the durable owner is unclear."
       }
     },
     {
       code: 'RUN-4',
-      title: 'threads park tangents, link records and keep checkouts current',
+      title: 'reports take the owner-report shape',
       description:
-        'A coordinating thread parks passing side topics as dated one-line items under its checkpoint Open questions, cites and links every record, checkpoint, Initiative and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.',
+        'Every agent report and thread Summary is an owner report with what has been done, what is in progress and outstanding queries in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block that is a suggestion and not approval, and no output style, proxy shaping block or communication level shortens it.',
       sources: ['standards-background-runs.md'],
       judgment: {
-        scope:
-          'Coordinating-thread transcripts, status lines, reports, recaps and checkpoints the owner selects for review.',
+        scope: 'Background-agent reports and coordinating-thread Summaries the owner selects for review.',
         prompt:
-          "Were side topics parked without derailing the work and later homed or dropped, does every mention of a record, checkpoint, Initiative or Project carry its full identifier and a local link, and are the owner's primary checkouts current, with dirty or diverged ones reported rather than altered?",
-        outcomes: ['conforming', 'park or home tangents', 'fix references', 'refresh checkouts', 'escalate to owner'],
+          'Does each report carry the three owner-report sections in order with routine open matters kept out of the queries, could the owner answer each query cold by a tag that kept its meaning until resolved and send back the reply block as an instruction, and was any section, query or reply block shortened by a style or level?',
+        outcomes: ['conforming', 'reshape the report', 'retag queries', 'escalate to owner'],
         guidance:
-          'Move tangents into checkpoint Open questions or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it.'
-      }
-    },
-    {
-      code: 'RUN-5',
-      title: 'reports take the owner-report shape, recap since the mark and refresh their guidance',
-      description:
-        "Every agent report and thread Summary is an owner report with what has been done, what is in progress and outstanding queries in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block that is a suggestion and not approval; a coordinating thread asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, opens every Summary, recap and full summary with the shared H1 banner naming the thread, its Project and Initiative, the window and its state, keeps the sections at H2 and each query at H3, never points an owner-facing report back to an earlier one, gives a full summary of the whole thread on request with every owner decision linked under Decided and every open query in full, ends at a resting point with a Summary whose banner says it is resting or what it waits on, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark that carry every open item forward across marks, and re-reads this skill's thread guidance at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read in its checkpoint.",
-      sources: ['standards-background-runs.md'],
-      judgment: {
-        scope:
-          'Coordinating-thread transcripts, reports, summaries, recaps, decisions logs and checkpoints the owner selects for review.',
-        prompt:
-          "Does each report carry the three owner-report sections in order with routine open matters kept out of the queries, could the owner answer each query cold by a tag that kept its meaning until resolved and send back the reply block as an instruction, were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does every Summary, recap and full summary open with an H1 banner giving thread, Project and Initiative links, window and state, with sections at H2 and queries at H3 and no pointer back to an earlier report, does a full summary list every owner decision since the thread began with a link to each and restate every open query in full, does a resting or waiting thread's last message say so and list done, running and outstanding with Needs tags, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full whenever it arose, and does the checkpoint's noted ki-delegation revision match the skill's latest change?",
-        outcomes: [
-          'conforming',
-          'reshape the report',
-          'retag queries',
-          'log decisions',
-          'add the banner',
-          'restore the mark',
-          'refresh guidance',
-          'escalate to owner'
-        ],
-        guidance:
-          'Restore the three owner-report sections and the reply block, and give each query a stable mnemonic tag, a Summary, a Need from you, a Recommendation and links; record missing decisions before further launches; open each Summary, recap and full summary with the H1 banner at the shared heading levels, restate anything that said see earlier, add the linked Decided list and the missing open queries to a full summary, and end a resting point with a Summary that states the wait; restore the mark line in Current state and recap from it; and re-read the thread guidance, update the noted revision and tell the owner what changed.'
+          'Restore the three owner-report sections and the reply block in full, and give each query a stable mnemonic tag, a Summary, a Need from you, a Recommendation and links.'
       }
     }
   ]
