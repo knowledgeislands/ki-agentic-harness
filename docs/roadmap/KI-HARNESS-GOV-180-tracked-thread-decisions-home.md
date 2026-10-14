@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 purpose: governance
 kind: deliver
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 77e463731122267bf8f6e1878d1b28a530252341
 created_at: 2026-10-13T23:05:00Z
-updated_at: 2026-10-14T09:44:29Z
+updated_at: 2026-10-14T09:45:13Z
 ---
 
 # Tracked Thread Home for the Decisions Log and Agent Reports
@@ -43,7 +42,7 @@ On 2026-10-14 Kris read a numbered citation in a thread summary and answered, as
 
 ## Current state
 
-Delivered on the `gov180-deliver` branch from baseline `77e46373` and awaiting review; see Review. The grounding below is as planned.
+Delivered from baseline `77e46373`, verified and accepted by Kris Brown on 2026-10-14. See Review and Done. The grounding below is as planned.
 
 Grounded on 2026-10-14 at harness `86744bfd`, tools-ki `7e3c05f` (installed `ki` 0.10.1) and Knowledge Islands Principal `024625d`:
 
@@ -142,6 +141,14 @@ Goal met: the standard now places the decisions log and reports in a tracked fol
 ### Mini recap
 
 Delivered the tracked thread-folder home and the words-and-date rule across the background-run standard, the skill note, the prompt skeleton, the sources file and the `ki-repo` repository standard, verified by the planned grep, tests, TypeScript and the three focused audits. Learning route, not promoted: a delivery worktree under the run folder has no `node_modules`, so the pre-commit gate cannot run there until the primary checkout's `node_modules` is linked in; this agent linked it rather than install packages, which the brief forbids.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above.
+
+### Owner acceptance
+
+Kris's instruction to the `ways-of-working` thread on 2026-10-14, in these words: "approve KI-HARNESS-GOV-180", relayed to this delivery with the instruction to deliver the record "exactly as planned" and to "close the record when verified". Every Verify command ran on the delivered tree and passed as the Review records: the citation grep prints nothing, `bun run test` 1112 pass, `bunx tsc --noEmit` clean, the `ki-delegation`, `ki-repo` and `ki-skills` audits with no failure attributable to this change, the pre-commit staged audit without `--no-verify`, and `git check-ignore` exiting non-zero in all three repositories. This records only this item's Done transition, removes its horizon and advances `updated_at`; the two Outstanding concerns above remain their owners' work, and nothing here authorises pruning or any other acceptance.
 
 ## Discussion
 
