@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 6d3e2f342464a96ef3d6d9e039a57260d4f9e2cd
 created_at: 2026-10-14T10:11:16Z
-updated_at: 2026-10-14T10:50:03Z
+updated_at: 2026-10-14T13:41:35Z
 ---
 
 # Extract the Coordinating-Thread Standard into ki-pmo
@@ -122,6 +121,10 @@ The one full `bun run test` invocation in the primary checkout ran for twenty mi
 ### Mini recap
 
 Moved the coordinating-thread standard out of `ki-delegation` into `ki-pmo`, put the coordinator hook on the declaration signal, shipped the `ki-coordinator` output style and regenerated the derived publications. Learning route, not promoted: a rubric family that merges its context buckets must still route each mechanical item to its own bucket, and a live declaring repository catches that where the harness's own audit cannot.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above, in Kris's words: "GOV185-ACCEPT - accept".
 
 ## Discussion
 
