@@ -1,6 +1,16 @@
 import { expect, test } from 'bun:test'
-import { resolve } from 'node:path'
-import { acceptExport, externalReference, parseArguments, Refusal, wantsHelp } from './export-svg.ts'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+import {
+  acceptExport,
+  externalReference,
+  locateChrome,
+  parseArguments,
+  Refusal,
+  VERIFIED_ARCHIFY,
+  wantsHelp
+} from './export-svg.ts'
 
 const CANONICAL = { format: 'svg', canonical: 'true' } as const
 
@@ -33,11 +43,34 @@ test('a download is written only when the viewer calls it canonical and it is se
   )
 })
 
-test('help is asked for with -h or --help and prints without Playwright', () => {
+test('without a Chrome or Chromium the export refuses with Archify’s message and names the override', () => {
+  // ARCHIFY_CHROME pointing at nothing is the one no-browser case every machine can reproduce.
+  expect(() => locateChrome({ ARCHIFY_CHROME: '/nonexistent/chrome' })).toThrow(Refusal)
+  expect(() => locateChrome({ ARCHIFY_CHROME: '/nonexistent/chrome' })).toThrow(
+    'Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.'
+  )
+  const dir = mkdtempSync(join(tmpdir(), 'ki-diagrams-export-test-'))
+  try {
+    writeFileSync(join(dir, 'a.html'), '<!doctype html><title>a</title>')
+    const result = Bun.spawnSync(['bun', `${import.meta.dir}/export-svg.ts`, join(dir, 'a.html'), join(dir, 'a.svg')], {
+      env: { ...process.env, ARCHIFY_CHROME: '/nonexistent/chrome' }
+    })
+    expect(result.exitCode).toBe(1)
+    expect(result.stderr.toString()).toContain('export-svg: Chrome or Chromium is unavailable. Set ARCHIFY_CHROME')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('help is asked for with -h or --help, prints without a browser, and names the verified Archify release', () => {
   expect(wantsHelp(['--help'])).toBe(true)
   expect(wantsHelp(['a.html', '-h'])).toBe(true)
   expect(wantsHelp(['a.html', 'a.svg'])).toBe(false)
-  const result = Bun.spawnSync(['bun', `${import.meta.dir}/export-svg.ts`, '--help'])
+  expect(VERIFIED_ARCHIFY).toMatch(/^\d+\.\d+\.\d+$/)
+  const result = Bun.spawnSync(['bun', `${import.meta.dir}/export-svg.ts`, '--help'], {
+    env: { ...process.env, ARCHIFY_CHROME: '/nonexistent/chrome' }
+  })
   expect(result.exitCode).toBe(0)
   expect(result.stdout.toString()).toContain('usage: bun scripts/export-svg.ts <input.html> <output.svg>')
+  expect(result.stdout.toString()).toContain(`Verified against Archify ${VERIFIED_ARCHIFY}`)
 })

@@ -9,8 +9,8 @@ description: >
   manifest, privacy, type choice and freshness. Use to keep diagrams that explain a system; use
   `ki-authoring` for prose and `ki-guides` for where a guide embeds a figure.
 compatibility: >
-  Optional: the Archify Agent Skill (installed through Rig) to author or regenerate a diagram, and
-  Playwright with Chromium to export its SVG. AUDIT needs neither.
+  Optional: the Archify Agent Skill (installed through Rig) to author or regenerate a diagram, and a
+  system Google Chrome or Chromium (or `ARCHIFY_CHROME`) to export its SVG. AUDIT needs neither.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | refresh'
 ---
 
@@ -23,8 +23,8 @@ You are applying the **Knowledge Islands Diagrams standard** - one consistent wa
 1. **The diagram standard** - Archify as the tool, the committed forms under `docs/diagrams/`, the `diagrams.toml` manifest and its reader-facing `README.md`, naming, and the privacy rules.
 2. **The choice of diagram type** - which of Archify's five types answers a given question.
 3. **Regeneration and freshness** - how a diagram is rebuilt from its source and re-exported, and when it is stale.
-4. **The SVG exporter** - [`scripts/export-svg.ts`](scripts/export-svg.ts) drives the Archify viewer's own Export > SVG action in headless Chromium and refuses a non-canonical or non-self-contained export.
-5. **The mechanical checker** - `ki repo audit --skill ki-diagrams` checks that the manifest and files agree, that no committed file carries a local path or address, that each SVG is self-contained, and, from read-only Git history, whether a traced path changed since a diagram was last checked. It runs on committed files alone, without Archify or Playwright.
+4. **The SVG exporter** - [`scripts/export-svg.ts`](scripts/export-svg.ts) drives the Archify viewer's own Export > SVG action in the system Chrome, headless, over the same route Archify's browser gate uses, and refuses a non-canonical or non-self-contained export.
+5. **The mechanical checker** - `ki repo audit --skill ki-diagrams` checks that the manifest and files agree, that no committed file carries a local path or address, that each SVG is self-contained, and, from read-only Git history, whether a traced path changed since a diagram was last checked. It runs on committed files alone, without Archify or a browser.
 
 Archify itself, its schemas and its viewer stay upstream. Prose style stays with `ki-authoring`, and where a guide may embed a diagram stays with `ki-guides`.
 

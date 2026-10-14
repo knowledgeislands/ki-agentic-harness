@@ -6,13 +6,13 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: capability
-horizon: next
-status: draft
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 221cc5de7d1c8ff5d8166cec763850e2de56410a
 created_at: 2026-10-14T00:05:43Z
-updated_at: 2026-10-14T09:05:00Z
+updated_at: 2026-10-14T13:55:00Z
 ---
 
 # SVG Export Through Archify's Own Chrome Route
@@ -40,22 +40,24 @@ This record was captured from Kris's answer. Kris adopted it on 2026-10-14 at ho
 
 ## Current state
 
-`export-svg.ts` launches Chromium through Playwright, opens the Archify viewer, triggers Export > SVG and saves the download. Playwright and its cached Chromium are therefore a prerequisite of any repository that regenerates a diagram. Archify 3.0.1 already carries a Playwright-free headless Chrome route (`findChrome`, `ChromeVisualBrowser`) that this record has not yet reused. The record is adopted at Next as a deliver record and is not yet planned to Ready.
+Delivered and awaiting review. `export-svg.ts` finds the system Google Chrome or Chromium the way Archify's gate does, launches it headless over the DevTools pipe through the harness's own `scripts/internal/chrome.ts`, opens the viewer, runs Export > SVG and keeps the download. Playwright is gone from the exporter, its tests and the `ki-diagrams` prose. Three committed SVGs re-exported byte-identical through the new route. Kris opened delivery on 2026-10-14 with "NEXT-181 - start now".
 
 ## Steps
 
-- [ ] Choose between importing Archify's `findChrome` and `ChromeVisualBrowser` from the installed skill and porting a minimal DevTools-Protocol pipe client, and record the choice in Discussion.
-- [ ] Replace the Playwright slice of `export-svg.ts` (launch, page, download event) with the chosen Chrome route, keeping `parseArguments`, `acceptExport`, `externalReference`, the receipt check and the fail-closed refusals unchanged.
-- [ ] Extend `export-svg.test.ts` with the no-Chrome refusal and the Archify version check.
-- [ ] Re-export one committed diagram and confirm the SVG matches the previous Playwright export byte for byte.
-- [ ] Reword the `ki-diagrams` SKILL.md prerequisite line, the standard's exporter and "Without Archify or Playwright" sections and the EDUCATE step for the new prerequisite.
+- [x] Choose between importing Archify's `findChrome` and `ChromeVisualBrowser` from the installed skill and porting a minimal DevTools-Protocol pipe client, and record the choice in Discussion.
+- [x] Replace the Playwright slice of `export-svg.ts` (launch, page, download event) with the chosen Chrome route, keeping `parseArguments`, `acceptExport`, `externalReference`, the receipt check and the fail-closed refusals unchanged.
+- [x] Extend `export-svg.test.ts` with the no-Chrome refusal and the Archify version check.
+- [x] Re-export one committed diagram and confirm the SVG matches the previous Playwright export byte for byte.
+- [x] Reword the `ki-diagrams` SKILL.md prerequisite line, the standard's exporter and "Without Archify or Playwright" sections and the EDUCATE step for the new prerequisite.
 
 ## Files touched
 
 - `skills/governance/ki-diagrams/scripts/export-svg.ts`
 - `skills/governance/ki-diagrams/scripts/export-svg.test.ts`
+- `skills/governance/ki-diagrams/scripts/internal/chrome.ts` (new: the ported Chrome route)
+- `skills/governance/ki-diagrams/scripts/internal/chrome.test.ts` (new)
 - `skills/governance/ki-diagrams/SKILL.md`
-- `skills/governance/ki-diagrams/references/` (the diagrams standard's exporter sections)
+- `skills/governance/ki-diagrams/references/` (`standards-diagrams.md`, `mode-educate.md`, `mode-audit.md`, `sources.md`)
 
 ## Verify
 
@@ -85,6 +87,54 @@ The `ki-diagrams` SKILL.md prerequisite line and the diagrams standard's exporte
 ### Roadmap
 
 No follow-on record. `KI-HARNESS-GOV-177` stays done on its finding; `EXTRACT-PIN` is dropped and opens nothing.
+
+## Review
+
+### Delivered
+
+The approved boundary: the exporter's Playwright slice replaced by Archify's headless Chrome route, the exporter tests extended, and the `ki-diagrams` prose moved from Playwright to a system Chrome or Chromium. Excluded, as the Boundary says: Archify, the viewer, the raster exports, the diagram manifest, every diagram source and `KI-HARNESS-GOV-177`. Immutable baseline `221cc5de7d1c8ff5d8166cec763850e2de56410a`. Resulting evidence: `bun run test` 1140 pass, `bunx tsc --noEmit` clean, `ki repo audit --skill ki-diagrams` PASS, three committed SVGs byte-identical through the new route (table in Verification). Delivery was opened by Kris on 2026-10-14 in the words "NEXT-181 - start now", taken as approval of the plan as this record carried it; the record went from `draft` to `awaiting-review` in one coherent change, as the work-item format allows when planning, approval and delivery land together.
+
+### Change Summary
+
+- `scripts/internal/chrome.ts` (new): `findChrome`, `launchArguments`, `frame`, `parseFrames`, `PipeProtocol` and `Chrome`, a port of Archify 3.0.1's `findChrome`, `chromeVisualBrowserArgs`, `PipeCdp` and `ChromeVisualBrowser` from `bin/visual-check.mjs`. Discovery order, `ARCHIFY_CHROME`, `ARCHIFY_CHROME_NO_SANDBOX` and the launch flags copied as they are; the header names the source and version. It sits under `scripts/internal/` because the `ki-skills` rubric (SCRIPT-8) reserves top-level `scripts/` for public commands.
+- `scripts/export-svg.ts`: the Playwright slice (dynamic import, `chromium.launch`, `newPage`, `waitForEvent('download')`) replaced by `Chrome` plus `Browser.setDownloadBehavior` (`allowAndName`, events on), `Page.navigate`, a polled wait for `Archify.exportMenu.run`, `document.fonts.ready`, `Browser.downloadWillBegin` and the `completed` `Browser.downloadProgress`. `parseArguments`, `acceptExport`, `externalReference`, the receipt check and the fail-closed refusals are unchanged. New `locateChrome` refuses with Archify's own message; new `VERIFIED_ARCHIFY` constant (`3.0.1`) named in `--help`.
+- `scripts/export-svg.test.ts`: the four existing boundary tests kept; the no-Chrome refusal added at both the function and the process boundary (`ARCHIFY_CHROME` pointing at nothing), and the help test now asserts the verified Archify release.
+- `scripts/internal/chrome.test.ts` (new): `ARCHIFY_CHROME` precedence, discovery order on darwin and linux through an injected resolver, the null result, the launch flags and the `--no-sandbox` conditions, pipe framing including a partial chunk and a corrupt record. No test launches a browser.
+- `SKILL.md`: `compatibility` and items 4 and 5 of "What this skill owns" reworded. `references/standards-diagrams.md`: "The SVG exporter" gains a paragraph on the route; "Without Archify or Playwright" becomes "Without Archify or a browser" with Archify's message. `references/mode-educate.md` step 6 confirms a Chrome instead of adding Playwright. `references/mode-audit.md` says "a browser". `references/sources.md` dates Archify 2026-10-14 and logs this delivery.
+- Material decisions: the port, not the import, as the record's Discussion recommended, so the exporter depends on no undocumented Archify export and stays installable without the Archify skill; downloads named by GUID (`allowAndName`) after the first live run showed `allow` writes the suggested filename instead; `ARCHIFY_CHROME_NO_SANDBOX` honoured for parity with Archify.
+- Deviation, within the record's own terms: the Step "the Archify version check" is met on the port route as the record's Discussion defined it for that route, a recorded and tested verified version rather than a refusal, because the port drives whatever viewer the HTML carries and pins nothing in Archify's code.
+
+### Verification
+
+| Gate | Outcome |
+| --- | --- |
+| `bun run test` | 1140 pass, 0 fail, 166 files (includes 6 new `chrome.test.ts` and 5 `export-svg.test.ts` tests) |
+| `bunx tsc --noEmit` | clean |
+| `ki repo audit --skill ki-diagrams` | PASS, 5/5 criteria |
+| `ki repo audit --skill ki-skills` | PASS=0 WARN=1 FAIL=0; the two warnings are `ki-skills`' own LONG-3 refresh cadence, unrelated to this change |
+| Biome and rumdl on touched files | clean |
+
+Byte-for-byte re-export through the new route, Google Chrome 155.0.8059.40, Bun 1.4.2, no Playwright installed:
+
+| Diagram | Committed SVG | Bytes | Identical |
+| --- | --- | --- | --- |
+| `skill-graph` | `docs/diagrams/skill-graph.svg` | 199705 | yes |
+| `skill-map` | `docs/diagrams/skill-map.svg` | 217137 | yes |
+| Knowledge Islands Principal `change-management-skills` | `Streams/Projects/ways-of-working/design/change-management-skills.svg` | 218873 | yes |
+
+Each export took about one second end to end. The no-Chrome path verified live: `ARCHIFY_CHROME=/nonexistent` exits 1 with `export-svg: Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.` and leaves no profile or download directory behind.
+
+### Outstanding concerns
+
+None failing or unchecked. Two notes for the reviewer, neither needing a record: the exporter now spawns the browser itself, so a machine with neither Chrome nor Chromium cannot export, exactly as it could not before without Playwright's Chromium; and Chrome is still unpinned on either route, so a Chrome release can change a committed SVG, which the byte comparison at REFRESH is how one notices, unchanged from the Playwright route.
+
+### Post-change review
+
+Goal met: a repository that regenerates a diagram needs no package install and no cached browser, only the Chrome Archify's own gate already needs. Scope held to the Boundary; nothing in Archify, the viewer, the manifest or any source changed. Regression risk is low: the output is the viewer's own download, proven identical on three diagrams of two repositories, the refusals are unchanged and tested, and the only new runtime code is a pipe client of under three hundred lines with its framing and discovery under test. The one behavioural risk is the DevTools download events, which are Chrome's documented browser-session events and were exercised live. Ready for acceptance.
+
+### Mini recap
+
+Delivered the Chrome-route exporter and its tests, reworded the `ki-diagrams` prerequisite everywhere it appeared, and verified three byte-identical exports plus the full test, type and audit gates. No concern is open. Learning routes, proposed and not promoted: the diagrams manifest's `regenerate` prompts and `skill-graph.ts`'s "finalize and re-export" hint already name no tool and need no change; `ki-diagrams` REFRESH in this repository could note that Archify's `bin/visual-check.mjs` shape is now a thing to re-check against the port at each Archify release.
 
 ## Discussion
 
@@ -122,7 +172,13 @@ Chrome itself is not pinned on either option, and that is unchanged from today: 
 
 Acceptance is the test [KI-HARNESS-GOV-177](KI-HARNESS-GOV-177-browser-free-svg-extractor.md) used: the new route's export of `+/diagrams/skill-graph/skill-graph.html` equals the committed `docs/diagrams/skill-graph.svg` byte for byte, and the same for Knowledge Islands Principal's `change-management-skills` diagram against its committed SVG. The trial above already passes the first on this machine. The repository test for the exporter stays at the boundary (argument parsing, refusals, receipt acceptance) and does not launch a browser; the byte comparison is a verification step in the record, run once at delivery and again at acceptance, because a browser in the test suite is what this record removes.
 
-### Open questions
+### Route chosen at delivery
 
-- Whether the skill-graph regeneration script, which today tells the author to run `export-svg.ts`, should call the new route itself once no Playwright is needed.
-- Whether `ki-diagrams` EDUCATE should detect Chrome and say so, rather than instruct a Playwright install that is no longer wanted.
+The port. `scripts/internal/chrome.ts` copies Archify 3.0.1's discovery order, overrides and launch flags and carries its own pipe client, for the reasons the recommendation above gave: the exporter's rationale already refuses to depend on Archify internals beyond the viewer's public `exportMenu`, `ChromeVisualBrowser` is exported but documented nowhere as public, and a self-contained module keeps `ki-diagrams` installable in a repository that holds the committed HTML but not the Archify skill. The cost accepted is a second copy of Chrome discovery that can drift from Archify's; the module header names the source file and version so REFRESH can re-compare. `ARCHIFY_CHROME_NO_SANDBOX` is honoured as Archify honours it, so a root user gets the same behaviour from both tools.
+
+One detail the trial did not surface: with `Browser.setDownloadBehavior` set to `allow`, Chrome writes the download under its suggested filename, not its GUID; `allowAndName` writes it as the GUID the `downloadWillBegin` event reports, which is what the exporter reads.
+
+### Open questions, resolved at delivery
+
+- The skill-graph regeneration script says only "finalize and re-export the SVG" and names no tool, so it needed no change; it does not call the exporter itself, because finalize is still an Archify step the author runs, and chaining the two is a separate choice nobody has asked for.
+- `ki-diagrams` EDUCATE now tells the author to confirm a Chrome or Chromium on the exporting machine and points at `--help` for the override, instead of adding Playwright.

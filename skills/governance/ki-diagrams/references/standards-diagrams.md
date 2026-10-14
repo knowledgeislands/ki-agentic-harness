@@ -113,8 +113,10 @@ To add a diagram, write its manifest table and README section first, then author
 
 ### The SVG exporter
 
-Archify's SVG export lives only in its viewer's Export menu. The exporter opens the finalized HTML in headless Chromium, calls the function that menu item calls, and keeps the downloaded file byte for byte, so the committed SVG is exactly what a reader's click would produce and cannot drift from Archify's own serialiser. It fails closed: an export the viewer does not mark canonical, or one carrying an external reference, is refused rather than written.
+Archify's SVG export lives only in its viewer's Export menu. The exporter opens the finalized HTML in the system Google Chrome or Chromium, headless, calls the function that menu item calls, and keeps the downloaded file byte for byte, so the committed SVG is exactly what a reader's click would produce and cannot drift from Archify's own serialiser. It fails closed: an export the viewer does not mark canonical, or one carrying an external reference, is refused rather than written.
 
-### Without Archify or Playwright
+The browser is found and launched the way Archify's own browser gate finds and launches it: `ARCHIFY_CHROME` names the executable when set, otherwise the platform's fixed install paths are tried before the commands on `PATH`, and the browser runs headless with a throwaway profile, speaking the DevTools Protocol over its remote-debugging pipe. The exporter carries its own small port of that route, verified against Archify 3.0.1, so it depends on no Archify internals and needs no package install: a repository that can finalize a diagram can export it.
 
-Both are optional prerequisites. AUDIT reads committed files and Git history only and runs without either. EDUCATE, REFRESH and authoring stop without Archify and give the Rig install instruction. The exporter stops without Playwright and gives `bun add --dev playwright && bunx playwright install chromium`; Playwright is the adopting repository's development dependency, not the harness's.
+### Without Archify or a browser
+
+Both are optional prerequisites. AUDIT reads committed files and Git history only and runs without either. EDUCATE, REFRESH and authoring stop without Archify and give the Rig install instruction. The exporter stops without a Google Chrome or Chromium and gives Archify's own message, `Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.`; the browser is the machine's, not a development dependency of the adopting repository or of the harness.
