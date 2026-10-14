@@ -1,18 +1,17 @@
 ---
 id: KI-HARNESS-GOV-186
 area: GOV
-title: thread banner and prefilled reply block
+title: banner and prefilled reply
 project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-status: in-progress
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 418df4a07e9f1be9861f5b433642ed373298500f
 created_at: 2026-10-14T11:05:47Z
-updated_at: 2026-10-14T11:05:47Z
+updated_at: 2026-10-14T11:17:11Z
 ---
 
 # Make the Block-Letter Banner Normative and Prefill the Reply Block
@@ -40,16 +39,16 @@ Kris asked for this on 2026-10-14 in the `ways-of-working` thread, with a screen
 
 ## Current state
 
-In progress in a background run from baseline `418df4a0`.
+Delivered on harness `main` from baseline `418df4a0` as four commits: the ledger advance, the banner and reply-block change with this record, the regenerated rubrics, and this closing commit with the regenerated catalogue and diagram stamps. Verified and closed on Kris's advance instruction.
 
 ## Steps
 
-- [ ] Write this record after the ledger advance.
-- [ ] Add the Banner subsection, the closing rule in every form and the resume line to the `ki-pmo` standard; update SKILL.md, sources, PMO-6 and the frame test; regenerate the rubric.
-- [ ] Prefill the reply block in `ki-delegation`'s owner report and Needs tags; update RUN-4; regenerate the rubric.
-- [ ] Reconcile `ki-recap`'s DONE frame note.
-- [ ] Extend the hook line, its test, README and HARN-012; add the banner and reply-block rule to the output style and HARN-013.
-- [ ] Run the gates and audits; commit by explicit path; pull with rebase; push fast-forward.
+- [x] Write this record after the ledger advance.
+- [x] Add the Banner subsection, the closing rule in every form and the resume line to the `ki-pmo` standard; update SKILL.md, sources, PMO-6 and the frame test; regenerate the rubric.
+- [x] Prefill the reply block in `ki-delegation`'s owner report and Needs tags; update RUN-4; regenerate the rubric.
+- [x] Reconcile `ki-recap`'s DONE frame note.
+- [x] Extend the hook line, its test, README and HARN-012; add the banner and reply-block rule to the output style and HARN-013.
+- [x] Run the gates and audits; commit by explicit path; pull with rebase; push fast-forward.
 
 ## Files touched
 
@@ -57,6 +56,7 @@ In progress in a background run from baseline `418df4a0`.
 - `skills/governance/ki-delegation/references/standards-background-runs.md`, `references/rubric.md`, `scripts/rubric/items/background-runs.ts`.
 - `skills/change-management/ki-recap/references/standards-session-recap.md`.
 - `hooks/coordinator-reminder.sh`, `hooks/coordinator-reminder.test.ts`, `hooks/README.md`, `docs/specs/harness.md`, `output-styles/ki-coordinator.md`.
+- `skills/README.md`, `docs/diagrams/diagrams.toml`.
 - `docs/roadmap/_ISSUES.md`, this record.
 
 ## Verify
@@ -86,3 +86,55 @@ None.
 ### Roadmap
 
 No follow-on record here.
+
+## Review
+
+### Delivered
+
+The requested boundary was delivered in full: the `ki-pmo` standard carries the REST, BUSY and DONE frames from the `ways-of-working` design, the lines beneath, the resume line in its own text block and the five steps it runs; every Summary, recap, full summary and re-bootstrap report keeps its `#` heading and closes with the frame and the resume line; the `ki-delegation` reply block is prefilled with the recommended instruction, one line per query, never a menu, with a placeholder only where the owner alone can supply the value, and the Needs-tags rule and the full-summary text say the same; `ki-recap`'s standard names the shared DONE glyphs and their differing side lines; the hook line, its test, README and HARN-012 and HARN-013 carry the banner and the prefilled reply block; the `ki-coordinator` output style carries both frames byte-identical and the resume line; PMO-6 and RUN-4 review them; and a frame test holds the standard, the output style and `ki-recap`'s glyphs together. Nothing from the design beyond section 1 was built. Authority is Kris's request of 2026-10-14 quoted under Context.
+
+### Change Summary
+
+Four commits on `main` from baseline `418df4a0`: the ledger advance; the banner and reply-block change with this record and the frame test; the regenerated `ki-pmo` and `ki-delegation` rubrics, published from the primary checkout because `ki dev skill rubric --write` publishes only into the tree the dev-linked harness resolves to; and this closing commit with the regenerated capability catalogue for the changed `ki-pmo` description, the diagram manifest stamps and this record's review. One correction during delivery: the record's title was shortened to four words and `## Discussion` added after the roadmap audit failed it.
+
+### Verification
+
+Run on 2026-10-14 against the combined result in the primary checkout:
+
+- `bun run test`: 1133 pass, 0 fail across 165 files. `bunx tsc --noEmit`: clean. `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check`: both diagram sources in sync.
+- `ki repo audit --skill ki-pmo`: PASS. `ki repo audit --skill ki-delegation`: PASS. `ki repo audit --skill ki-skills`: no failures, the two pre-existing refresh-cadence warnings on other skills' sources. `ki repo audit --skill ki-work-roadmap`: PASS. `ki repo audit --skill ki-repo-harness`: PASS after the catalogue regeneration.
+- `ki repo audit --skill ki-recap` cannot run here: `ki-recap` is a global process skill with no declaration table, so `--skill` refuses it; its two test files ran in the suite and the `ki-skills` fleet audit covers its SKILL.md.
+- `ki dev skill rubric ki-pmo` and `ki dev skill rubric ki-delegation`: in sync.
+
+### Outstanding concerns
+
+- The `ki-recap` focused audit is not runnable for an undeclared skill; this is a property of the audit, not a gap in the change.
+- The SVG exports under `docs/diagrams/` were not re-exported; the diagram sources were unchanged and only the manifest stamps moved.
+- Deploying the changed `output-styles/ki-coordinator.md` to `~/.claude/output-styles/` belongs to the user-environment manager, so a live thread renders the new banner only once that copy is refreshed or the hook line reaches it.
+- The design's other units, re-anchoring after compaction, the thread status line, the inbox, red-x recovery and the `/compact` option, remain with the `ways-of-working` Project.
+
+### Post-change review
+
+The frames were measured at 52 code points per framed line in the standard, the output style and `ki-recap`'s standard, and the frame test fails if any of the three drifts. The hook test asserts the new line for Claude Code and Codex payloads. The record was shaped and closed in the primary checkout after the worktree commits were fast-forwarded into it.
+
+### Mini recap
+
+Made the block-letter banner normative in `ki-pmo` with the resume line, prefilled the `ki-delegation` reply block with the recommended answer, and carried both into the hook line and the output style so a re-bootstrapped thread renders them the same way. Learning route, not promoted: a rubric regeneration from a worktree has to go through the primary checkout, so a delivery that changes rubric items plans a fast-forward step.
+
+## Done
+
+Accepted 2026-10-14 by Kris Brown on the review packet above.
+
+## Discussion
+
+### Why the banner lives in ki-pmo and not in the owner report
+
+The owner report is shared by background agents and coordinating threads, and a background agent has no mark, no queue and no resume. The frame reads thread state, so it belongs to the coordinating-thread standard, which every Summary, recap, full summary and re-bootstrap report already follows; `ki-delegation` keeps the report shape and the reply block, which both kinds of report share.
+
+### Why the rubrics were regenerated in the primary checkout
+
+`ki dev skill rubric --write` publishes only into the working tree the dev-linked harness resolves to, which is the primary checkout, so the worktree commits carried the rubric items and the primary checkout, fast-forwarded to them, carried the regenerated publications in their own commit. KI-HARNESS-GOV-185 met the same constraint for the declaration.
+
+### Owner acceptance
+
+Kris's brief for this run on 2026-10-14 said "Close the record if verified." Every gate and audit named under Verification passed on the combined result, so this record records its Done transition in the same closing commit, removes its horizon and advances `updated_at` while preserving `created_at` and `baseline_ref`. The closure authorises no other acceptance, pruning or publication.
