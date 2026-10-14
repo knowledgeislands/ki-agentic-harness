@@ -7,12 +7,12 @@ component: governance
 purpose: capability
 kind: deliver
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 5dd415e7c53807b54d70306153481bfe7719c59e
 created_at: 2026-10-14T19:32:39Z
-updated_at: 2026-10-14T19:33:56Z
+updated_at: 2026-10-14T20:57:52Z
 ---
 
 # Scoped Gate Verdict
@@ -113,6 +113,10 @@ The paragraph still names `--fix` and `--write` as failing, so the check-only ru
 ### Mini recap
 
 One permissive sentence added to `GATE-1`'s standard text; checker, rubric and tests unchanged; all gates green; one pre-existing fleet finding on `ki-principal` noted. Learning route: none beyond this record and the gate-scope report.
+
+### Acceptance
+
+Accepted as done on 2026-10-14 under Kris's decision, as received: "GOV-192 / accept KI-HARNESS-GOV-192 as delivered, since v0.10.4 pins it and ki-principal's hook uses it, and prune it". Verify re-run at acceptance: `bun run test` 1176 pass, 0 fail; `skill-graph.ts --check` in sync; `ki repo audit --skill ki-work-roadmap` PASS 15/15; `ki repo audit --repo ../ki-principal --skill ki-repo-kb` passes `GATE-1`, with two fleet findings outside this contract (`STREAM-9` on `mac-studio-bootstrap.md`, `NOTE-1a` on another thread's report); `git diff --check` clean; the commit-gate paragraph contains `--staged` and still names `--fix` and `--write` as failing.
 
 ## Discussion
 
