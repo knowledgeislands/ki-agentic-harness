@@ -6,13 +6,12 @@ project: ways-of-working
 component: governance
 purpose: capability
 kind: deliver
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b4e2c5cd3198c39c99e186a736f3d451efaaa779
 created_at: 2026-10-14T20:27:36Z
-updated_at: 2026-10-14T21:50:01Z
+updated_at: 2026-10-14T22:28:30Z
 ---
 
 # Area Diagrams With HTML
@@ -135,6 +134,10 @@ The skill map stays the index and now says each concern has an area diagram. Eve
 ### Mini recap
 
 Eight area diagrams and a thread-model workflow replace the single skill graph; diagram HTML is committed through a `commit_html` opt-in and built by one command; all gates green on the delivered paths. Learning route: none beyond this record and the run report.
+
+## Done
+
+Accepted as done on 14 October 2026 under `ki-accept`, approved by Kris Brown in the `ways-of-working` thread as AREA-ACCEPT: "accept KI-HARNESS-GOV-193 as delivered and prune it. I am making small refinements working with a session directly in the agentic harness. Its more about fixing the visual representation so GOV-193 is done still, do not hold it back because I am treaking the layouts". The review packet above stands as delivered. The layout refinements Kris is making in his own session are visual follow-ons, not defects, and no follow-on record is opened by this closure.
 
 ## Discussion
 
