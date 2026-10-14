@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: b4e2c5cd3198c39c99e186a736f3d451efaaa779
 created_at: 2026-10-14T20:27:36Z
-updated_at: 2026-10-14T20:48:01Z
+updated_at: 2026-10-14T20:54:21Z
 ---
 
 # Area Diagrams With HTML
@@ -115,8 +115,9 @@ The approved boundary, delivered on the baseline `b4e2c5cd3198c39c99e186a736f3d4
 - `bunx tsc --noEmit`: clean.
 - `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check`: all nine generated sources in sync.
 - `ki dev skill rubric ki-repo-harness` and `ki dev skill rubric ki-diagrams`: in sync.
-- `ki repo audit --skill ki-diagrams`: PASS, 5/5 criteria. `--skill ki-work-roadmap`: PASS, 15/15.
-- `ki repo audit --skill ki-skills` and `--skill ki-repo-harness` on the working tree: the only failure is `CAP-2` on `skills/README.md`, caused by another thread's uncommitted `ki-delegation` description change, plus the two pre-existing `LONG-3` warnings; re-run on the committed result is recorded in the run report.
+- `ki repo audit --skill ki-work-roadmap`: PASS, 15/15.
+- `ki repo audit --skill ki-skills`: no failure, the two pre-existing `LONG-3` warnings. `--skill ki-repo-harness` on a clean checkout of the committed result: the only failure is `CAP-2` on `skills/README.md`, already present on `origin/main` because `cf601d66` changed the `ki-pmo` description without regenerating the catalogue; this record's commits touch neither file, and the primary checkout's `skills/README.md` carries another thread's uncommitted edits, so it is left to that thread.
+- `ki repo audit --skill ki-diagrams` on the clean checkout: no failure once the nine generated diagrams' `last_checked` names `6aa00567`, the commit whose `SKILL.md` frontmatter they were generated from.
 - `bun run self:diagrams:html --svg`: all ten diagrams pass Archify's four finalize gates at `--quality showcase` with `--repo-root`; each SVG was inspected by eye.
 - `git diff --check` and `rumdl check` on the touched Markdown: clean.
 
