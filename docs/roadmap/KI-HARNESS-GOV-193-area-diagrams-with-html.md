@@ -1,0 +1,98 @@
+---
+id: KI-HARNESS-GOV-193
+area: GOV
+title: Area diagrams with HTML
+project: ways-of-working
+component: governance
+purpose: capability
+kind: deliver
+horizon: now
+status: in-progress
+blocks: []
+blocked_by: []
+baseline_ref: b4e2c5cd3198c39c99e186a736f3d451efaaa779
+created_at: 2026-10-14T20:27:36Z
+updated_at: 2026-10-14T20:27:36Z
+---
+
+# Area Diagrams With HTML
+
+## Goal
+
+The harness explains its skills through the right set of diagrams rather than one large graph: one generated dependency diagram per source concern under `skills/`, the skill map kept as their index, and a hand-traced workflow diagram of the coordinating-thread model. Every diagram's interactive HTML is committed beside its source and SVG through a declared manifest opt-in, and one local command builds all of it.
+
+## Context
+
+Kris set the record's home on 2026-10-14 in the `ways-of-working` thread: "open one new ki-agentic-harness roadmap item at Now, on my direct instruction, covering the eight area diagrams and the committed HTML with its build command, and the roadmap item sits in this initiative/project". The Project is `ways-of-working`, whose Initiative is `knowledge-islands-model`.
+
+The diagram set comes from three decisions of the same day, quoted as recorded in the thread's decisions log:
+
+- SUBGRAPHS: "Build eight area dependency diagrams ..., each showing the area's skills, what they rely on outside, and what relies on them; retire the big skill graph and keep the area map as the index."
+- HTML: "Add one local build command for all diagram HTML." On committing the HTML, the substance of the cancelled `KI-HARNESS-GOV-179`: "I definitely want to get that done sooner rather than later. There's no reason for it to be on hold. So we can remove that hold and we can move it into now." The opt-in shape was answered on 2026-10-13 as HTML-COMMIT: "(a) manifest opt-in to commit the HTML; harness opts in."
+- THREAD-DIAGRAM: "build thread-model as an Archify workflow diagram under docs/diagrams/, traced from ki-pmo and ki-delegation with the skills-map text diagram as its brief, in the same run as the area diagrams".
+
+RUNTIME-TAG, on whether a box should mark a runtime-bound skill: "Leave it out." AREA-ACCEPT: Kris accepts after the area diagrams are delivered.
+
+`KI-HARNESS-GOV-183` delivered the skill map and skill graph as generated sources under `ki-repo-harness` `CAP-4`. `KI-HARNESS-GOV-179` proposed the HTML opt-in and was cancelled as parked on 2026-10-14 before the HTML decision brought it back.
+
+## Boundary
+
+- In scope: a generated area diagram per source concern, derived from `SKILL.md` frontmatter beside the skill map in `ki-repo-harness`, covered by `CAP-4` and by `skill-graph.ts --check|--write`; retiring the skill graph from the generated set and from `docs/diagrams/`; the hand-authored `thread-model` workflow diagram; a per-diagram `commit_html` manifest field in `ki-diagrams`, its standard, audit and templates; one local build command for every diagram's HTML; `docs/diagrams/README.md` and `diagrams.toml` for the full set; this record.
+- Out of scope: Knowledge Islands Principal's links to `docs/diagrams/`, which its own thread retargets if needed; Archify itself and the SVG exporter's browser route; any served documentation site; runtime-bound markers on boxes.
+
+## Requirements
+
+- Each area diagram puts the area's skills in one region, the outside skills they rely on grouped by area below, and the outside skills that rely on them grouped by area above, with solid `ki-depends-on` and dashed `ki-optional-depends-on` edges.
+- The sources are deterministic: `CAP-4` AUDIT compares each committed source with its rendering, ignoring only the traced revision, and CONFORM rewrites a missing or stale one; `skill-graph.ts --check|--write` covers the same set.
+- The skill-graph source, SVG and manifest entry are removed, and `CAP-4` no longer expects them.
+- `thread-model` is an Archify `workflow` diagram whose steps cite the `ki-pmo` and `ki-delegation` sources they were traced from.
+- A diagram whose manifest table sets `commit_html = true` commits `docs/diagrams/<slug>.html`; the `ki-diagrams` audit accepts that file only under the opt-in and applies the privacy checks to it; the README figure links to it.
+- One command builds every diagram's HTML from the manifest, finalizing at showcase quality and copying opted-in HTML into `docs/diagrams/`.
+- Every diagram passes Archify's four finalize gates at `--quality showcase` with `--repo-root`.
+
+## Current state
+
+`docs/diagrams/` holds the skill map and skill graph sources and SVGs, refreshed at `f847248b`. `CAP-4` generates both from `SKILL_DIAGRAMS` in `skill-diagrams.ts`. The `ki-diagrams` standard keeps HTML out of Git unless a repository serves it, and `DIAG-1` rejects any unlisted file under `docs/diagrams/`. The thread model exists only as the text diagram in the `skills-map` report.
+
+## Steps
+
+- [ ] Add the area-diagram builder beside `skill-map.ts`, register the eight areas in `SKILL_DIAGRAMS` and drop the skill graph from it; cover it with tests.
+- [ ] Update `CAP-4`'s rubric text, the harness standard, `SKILL.md` and the CLI header for the new set; republish the rubric.
+- [ ] Add `commit_html` to the `ki-diagrams` manifest, standard, templates and audit, with tests.
+- [ ] Add the build command for every diagram's HTML.
+- [ ] Generate the area sources; finalize every diagram at showcase and export SVGs; remove the skill-graph files.
+- [ ] Author, finalize and export `thread-model`.
+- [ ] Update `docs/diagrams/README.md` and `diagrams.toml` for the full set.
+- [ ] Run the gates and set the record awaiting review.
+
+## Files touched
+
+`skills/repo-structure/ki-repo-harness/` (contexts, rubric items, rubric, standard, `SKILL.md`, CLI), `skills/governance/ki-diagrams/` (standard, rubric, audit, assets, build script), `docs/diagrams/`, `package.json` and this record.
+
+## Verify
+
+`bun run test`; `bunx tsc --noEmit`; `ki repo audit --skill ki-repo-harness`, `--skill ki-skills`, `--skill ki-diagrams` and `--skill ki-work-roadmap`; `ki dev skill rubric ki-repo-harness`; `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --check`; Archify finalize gates for every diagram.
+
+## Dependencies / blocks
+
+None. Archify, a system Chrome and Playwright are installed locally and are not package dependencies.
+
+## Documentation impact
+
+### Decision Records
+
+None expected: the opt-in is a standard field Kris decided, recorded here and in the standard.
+
+### Specifications
+
+None.
+
+### Guides
+
+None; `docs/diagrams/README.md` is the reader-facing index.
+
+### Roadmap
+
+None beyond this record.
+
+## Discussion
