@@ -4,12 +4,15 @@ area: GOV
 title: Chrome-route SVG export
 project: ways-of-working
 component: governance
-status: triage
+kind: deliver
+purpose: capability
+horizon: next
+status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-14T00:05:43Z
-updated_at: 2026-10-14T00:05:43Z
+updated_at: 2026-10-14T01:00:40Z
 ---
 
 # SVG Export Through Archify's Own Chrome Route
@@ -26,7 +29,7 @@ Kris decided on 2026-10-14, in these words: "EXPORT-ROUTE - (a) reuse Archify's 
 
 The evidence the decision rests on: Archify 3.0.1's `bin/visual-check.mjs` exports `findChrome`, which finds Google Chrome or Chromium at the platform's fixed paths or on `PATH` and lets `ARCHIFY_CHROME` override it, and `ChromeVisualBrowser`, which launches that executable with `--headless=new --remote-debugging-pipe` and a throwaway profile, speaks the DevTools Protocol over the pipe through its small `PipeCdp` class, and exposes `send` and `waitFor` for `Page.navigate`, `Runtime.evaluate` and any other method. Archify needs no Playwright and no cached browser. The viewer's `Archify.exportMenu.run('svg')` and the `data-last-export-format` and `data-last-export-canonical` receipt attributes are the same on either route.
 
-This record is captured from Kris's answer and is not adopted, planned or implemented by it.
+This record was captured from Kris's answer. Kris adopted it on 2026-10-14 at horizon Next as a deliver record, in the words "ADOPT-181 - adopt at next, kind deliver."; adoption does not plan or implement it.
 
 ## Boundary
 
