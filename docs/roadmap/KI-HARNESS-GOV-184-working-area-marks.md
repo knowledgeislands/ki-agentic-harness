@@ -6,13 +6,14 @@ project: ways-of-working
 component: governance
 kind: deliver
 purpose: governance
-horizon: next
-status: draft
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-175
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-14T09:12:30Z
-updated_at: 2026-10-14T09:12:30Z
+updated_at: 2026-10-14T13:43:59Z
 ---
 
 # Every Working-Area File Carries a Mark Naming Its Writer
@@ -38,56 +39,9 @@ In the same answer set Kris chose how to tidy the scratch that prompted the rule
 - The two skills' SKILL.md summaries are reworded only where they list what the standards cover.
 - Not the `+/README.md` text in adopting repositories, which `ki-repo` owns and which stays a general description of the working area; not Git tracking of `+/`, which stays as each repository has it; not a tidy-up tool that acts on marks, which is a later record if wanted; not any checkpoint, decisions log or Project note.
 
-## Current state
+## Cancelled
 
-No working-area file carries a mark by rule. The only marks that exist are the two `mark.toml` sidecars the `mark-tidy` run wrote beside the rebuilt `skill-graph` and `skill-map` HTML on 2026-10-14, by hand and ahead of the rule. Neither `ki-delegation` nor `ki-diagrams` mentions marks on working files. The record is captured at Next as a deliver record and is not yet planned to Ready.
-
-## Steps
-
-- [ ] Settle the sidecar's name and field names and the front-matter field names, and record them in Discussion, checking the two hand-written `mark.toml` files against the choice.
-- [ ] Add the mark rule to the `ki-delegation` background-run standard and its rubric catalogue, and regenerate `rubric.md`.
-- [ ] Add the working-folder sidecar and the receipt fields to the `ki-diagrams` diagrams standard and its rubric catalogue, and regenerate `rubric.md`.
-- [ ] Make the exporter or the finalize wrapper write the fields into the delivery receipt, with a boundary test.
-- [ ] Reword the two SKILL.md summaries where they list what the standards cover.
-
-## Files touched
-
-- `skills/governance/ki-delegation/references/standards-background-runs.md`
-- `skills/governance/ki-delegation/references/rubric.md` (regenerated)
-- `skills/governance/ki-delegation/SKILL.md`
-- `skills/governance/ki-diagrams/references/standards-diagrams.md`
-- `skills/governance/ki-diagrams/references/rubric.md` (regenerated)
-- `skills/governance/ki-diagrams/SKILL.md`
-- `skills/governance/ki-diagrams/scripts/export-svg.ts` and `export-svg.test.ts`, if the receipt fields are written there
-
-## Verify
-
-- `bun run test` and `bunx tsc --noEmit` pass.
-- `ki repo audit --skill ki-delegation` and `ki repo audit --skill ki-diagrams` report no failure.
-- `ki dev skill rubric ki-delegation` and `ki dev skill rubric ki-diagrams` report rubric publication current.
-- A diagram rebuilt by the documented route leaves a sidecar and a receipt that both name the thread, the run and agent or session, and the time.
-
-## Dependencies / blocks
-
-Depends on nothing recorded. The thread-working rules this rule joins are already in the `ki-delegation` background-run standard. Blocks nothing recorded; a later tidy-up tool that reads marks would depend on this record.
-
-## Documentation impact
-
-### Decision Records
-
-None. The rule is Kris's `MARK-RULE` answer, recorded in Context; it is a working-area convention carried by two standards, not a durable policy needing its own record.
-
-### Specifications
-
-None. No accepted behaviour is defined for working-area files.
-
-### Guides
-
-The `ki-delegation` background-run standard and the `ki-diagrams` diagrams standard each gain the rule in their own terms; the two SKILL.md summaries follow.
-
-### Roadmap
-
-No follow-on record is opened by capture. A tidy-up tool acting on marks, if wanted, would be a separate record.
+Kris approved this closure on 14 October 2026 in the state-of-play thread's roadmap census ('RC-ALL: approve all; ways-of-working applies the harness part'). Merged into KI-HARNESS-GOV-175, which carries this record's Goal, owner decisions, Boundary, Steps and open questions in its Discussion and adds the mark rule to its Steps; the two records edit the same `ki-delegation` standard and one plan serves them. No change is outstanding here.
 
 ## Discussion
 

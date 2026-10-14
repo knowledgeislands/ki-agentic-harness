@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-13T13:53:25Z
-updated_at: 2026-10-13T21:14:24Z
+updated_at: 2026-10-14T13:43:59Z
 ---
 
 # Delegation Run Events
@@ -31,6 +31,7 @@ The run that produced the strategy also showed why the vocabulary matters now: t
 ## Boundary
 
 - In scope: the five event kinds and the run-level close, each with its derivation rule; the milestone line form in the progress protocol and in the run-prompt skeleton; what the waiter and the monitor return; the coordinator reading events at its next turn and never waiting or relaying in the foreground; the privacy rule for anything derived from a packet, stated once so later phases inherit it; the skill's sources note.
+- Merged from KI-HARNESS-GOV-184 on 2026-10-14: the working-area mark rule, with its Goal, Boundary, Steps and open questions carried into Discussion below. The `ki-delegation` part lands in the same standard edit as the event vocabulary; the `ki-diagrams` part is a second Step of this record.
 - Out of scope: the notifier, channels, receipts, quiet hours, Telegram, Slack and the Observatory, which are phases 2 to 4 of the strategy; the owner-facing side of the vocabulary, which moves to `ki-pmo` once the PMO extraction pilot creates that skill; any change to the owner report shape Kris set on 2026-10-13: "standardise owner reports through the ways-of-working process. Three sections in order: 1 What has been done (outcomes, material failures, corrections, limitations); 2 What is in progress ...; 3 Outstanding queries, each headed '<stable tag> - <plain title>'".
 
 ## Requirements
@@ -48,6 +49,7 @@ Adopted to `next` as a draft and not yet planned. The `ki-delegation` background
 ## Steps
 
 - [ ] Shape this record through `ki-plan` against requirements 1 to 5, once the `tools-ki` mechanics are planned; no delivery step is planned yet.
+- [ ] Plan the working-area mark rule merged from KI-HARNESS-GOV-184 as its own Steps in the same plan: settle the sidecar and front-matter field names, add the rule to the `ki-delegation` and `ki-diagrams` standards and rubrics, write the receipt fields in the `ki-diagrams` exporter, and reword the two SKILL.md summaries.
 
 ## Files touched
 
@@ -90,6 +92,27 @@ The Run packet table gains the events log beside the status, pid, log and report
 ### Detecting failure and outstanding queries
 
 The strategy named "the report's Failed part" and "each Needs tag", from the report shape the owner report replaced. The owner report gives each outstanding query a heading `<tag> - <title>`, so `needs-owner` derives from those headings; material failures sit inside "What has been done" with no fixed marker, so `failed` needs a signal the standard can name, most simply the agent's final status line. Settle the rule here so the launcher implements one definition.
+
+### Merged from KI-HARNESS-GOV-184 on 2026-10-14
+
+Kris approved merging KI-HARNESS-GOV-184 into this record on 14 October 2026 in the state-of-play thread's roadmap census ('RC-ALL: approve all; ways-of-working applies the harness part'), because both records edit the `ki-delegation` background-run standard under the ways-of-working Project and one plan serves them. Its scope and decisions, carried as written:
+
+**Goal.** Every file an agent or a session writes into a repository's `+/` working area says who wrote it and when: the thread it belongs to, the background run and agent or the interactive session that wrote it, and the time. A later reader, agent or owner, can tell at a glance whether a working file is current, whose it is, and which run to ask before moving or deleting it.
+
+**Owner decisions.** Kris confirmed the rule on 2026-10-14, in these words: "MARK-RULE - yes, that reading; capture as a harness deliver record at next." In the same answer set Kris chose how to tidy the scratch that prompted it: "DIAGRAMS-TIDY - (b) delete scratch and rebuild the stale HTML after the push; keep +/diagrams/ visible." The rebuilt `skill-graph` and `skill-map` folders under this repository's `+/diagrams/` carry a `mark.toml` sidecar written by the `mark-tidy` run as a hand-made early application of the rule.
+
+**Boundary.**
+
+- `ki-delegation`: the background-run standard gains the mark rule as a rule on what a run writes into a working area, naming the fields (thread, run and agent or session, time), the Markdown front-matter form and the sidecar form for a folder, and saying that a coordinating thread or an interactive session marks its own working files the same way. The rubric gains the matching criterion and `rubric.md` is regenerated.
+- `ki-diagrams`: the diagrams standard's working-folder rule under `+/diagrams/<slug>/` names the sidecar and its fields, and the delivery receipt the exporter or the finalize step writes beside the HTML gains the same fields. The rubric gains the matching criterion and `rubric.md` is regenerated.
+- The two skills' SKILL.md summaries are reworded only where they list what the standards cover.
+- Not the `+/README.md` text in adopting repositories, which `ki-repo` owns; not Git tracking of `+/`; not a tidy-up tool that acts on marks, which is a later record if wanted; not any checkpoint, decisions log or Project note.
+
+**Steps carried.** Settle the sidecar's name and field names and the front-matter field names, checking the two hand-written `mark.toml` files against the choice; add the rule to the `ki-delegation` standard and rubric; add the sidecar and receipt fields to the `ki-diagrams` standard and rubric; make the exporter or finalize wrapper write the fields into the delivery receipt, with a boundary test; reword the two SKILL.md summaries. Files: `skills/governance/ki-delegation/references/standards-background-runs.md`, `rubric.md` and `SKILL.md`; `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md`, and `scripts/export-svg.ts` with its test if the receipt fields are written there. Verify: `ki repo audit --skill ki-diagrams` and `ki dev skill rubric ki-diagrams` join this record's gates, and a diagram rebuilt by the documented route leaves a sidecar and a receipt naming the thread, the run and agent or session, and the time.
+
+**Forms.** Markdown carries the mark in front matter; a folder of non-Markdown output carries one small sidecar at its root (the hand-written example is `mark.toml` with `thread`, `run`, `agent`, `written_at` and `rebuilt_from`); the `ki-diagrams` receipt carries the same fields. A mark is not provenance for committed work, which Git carries, and says nothing about retention.
+
+**Open questions carried.** Whether a coordinating thread working interactively writes `session` where a background run writes `run` and `agent`, or one `writer` field covers both; and whether the sidecar is TOML or a front-matter-only Markdown file.
 
 ### Open questions
 
