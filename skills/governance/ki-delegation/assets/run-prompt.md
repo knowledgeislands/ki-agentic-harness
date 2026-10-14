@@ -8,6 +8,6 @@
 2. <Step.>
 3. **Verify:** <the checks that prove the outcome.>
 
-**Report** to `<report path>` as an owner report: what has been done, what is in progress, outstanding queries with the reply block.
+**Report** to `<report path>` as an owner report: `## Done`, `## In Progress`, `## Queries` with the reply block.
 
 Do not use background subagents. Never end your session while waiting.

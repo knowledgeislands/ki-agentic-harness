@@ -58,7 +58,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-4',
       title: 'reports take the owner-report shape',
       description:
-        'Every agent report and thread Summary is an owner report with what has been done, what is in progress and outstanding queries in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block whose entries are each stacked, the tag alone on its line, a blank line, then the recommended instruction rather than a menu of the options, separated by a blank line, `---` and a blank line, with a placeholder only where the owner alone can supply the value, that is a suggestion and not approval, and no output style, proxy shaping block or communication level shortens it.',
+        'Every agent report and thread Summary is an owner report with the sections `## Done`, `## In Progress` and `## Queries` in that order, each query under a stable Needs tag, never a number, with Summary, Need from you and Recommendation, ending in one copyable reply block whose entries are each stacked, the tag alone on its line, a blank line, then the recommended instruction rather than a menu of the options, separated by a blank line, `---` and a blank line, with a placeholder only where the owner alone can supply the value, that is a suggestion and not approval, and no output style, proxy shaping block or communication level shortens it.',
       sources: ['standards-background-runs.md'],
       judgment: {
         scope: 'Background-agent reports and coordinating-thread Summaries the owner selects for review.',
