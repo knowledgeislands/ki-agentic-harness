@@ -1,4 +1,4 @@
-# Housekeeping template standard
+# Recurring-work template standard
 
 ## Contents
 
@@ -13,6 +13,8 @@
 - [Retention](#retention)
 
 ## Scope
+
+This standard was published under the skill name `ki-work-housekeeping` until 14 October 2026, when the skill became `ki-work-recurring` under Kris's naming decision for the change-management design ("names change: (c) ki-pmo, ki-work-recurring, ..."), because "housekeeping" reads as cleanup while the skill governs recurring work. Repositories declaring `[skills.ki-work-housekeeping]` in `.ki.toml` rename the table to `[skills.ki-work-recurring]`.
 
 This standard defines durable recurring-work templates. A template is not a roadmap item: it is the source from which `ki-next` may spawn one due run. The run uses the common forward-work lifecycle and carries the template identifier plus its scheduled date. Partition templates by independently runnable purpose and cost, not by every artifact type.
 

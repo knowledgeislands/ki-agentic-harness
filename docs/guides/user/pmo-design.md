@@ -1,6 +1,8 @@
-# Run a design loop
+# Run a PMO design loop
 
 Use the `ki-pmo-design` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's standard, `references/standards-pmo-design.md`, owns the stage contracts; this guide explains when and how to start it.
+
+The skill was called `ki-design-loop` until 14 October 2026; `/ki-pmo-design` is the current command.
 
 ## When to use it
 

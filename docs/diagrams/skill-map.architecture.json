@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "e83d7b13fdf6b1aec5aae1f7baeb201b384aff44"
+      "revision": "3beced0a5f64208cdbc01b73c99e23c3569c1716"
     },
     "legend": {
       "mode": "auto",
@@ -372,13 +372,13 @@
       ]
     },
     {
-      "id": "ki-work-housekeeping",
+      "id": "ki-work-linear",
       "type": "database",
-      "label": "work-housekeeping",
+      "label": "work-linear",
       "sublabel": "change management · declared",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-housekeeping/SKILL.md"
+          "path": "skills/change-management/ki-work-linear/SKILL.md"
         }
       ],
       "pos": [
@@ -391,13 +391,13 @@
       ]
     },
     {
-      "id": "ki-work-linear",
+      "id": "ki-work-recurring",
       "type": "database",
-      "label": "work-linear",
+      "label": "work-recurring",
       "sublabel": "change management · declared",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-linear/SKILL.md"
+          "path": "skills/change-management/ki-work-recurring/SKILL.md"
         }
       ],
       "pos": [
@@ -467,25 +467,6 @@
       ]
     },
     {
-      "id": "ki-design-loop",
-      "type": "frontend",
-      "label": "design-loop",
-      "sublabel": "change management · process",
-      "sources": [
-        {
-          "path": "skills/change-management/ki-design-loop/SKILL.md"
-        }
-      ],
-      "pos": [
-        240,
-        368
-      ],
-      "size": [
-        196,
-        48
-      ]
-    },
-    {
       "id": "ki-implement",
       "type": "frontend",
       "label": "implement",
@@ -496,7 +477,7 @@
         }
       ],
       "pos": [
-        448,
+        240,
         368
       ],
       "size": [
@@ -515,8 +496,8 @@
         }
       ],
       "pos": [
-        32,
-        440
+        448,
+        368
       ],
       "size": [
         196,
@@ -534,7 +515,7 @@
         }
       ],
       "pos": [
-        240,
+        32,
         440
       ],
       "size": [
@@ -543,17 +524,17 @@
       ]
     },
     {
-      "id": "ki-pulse",
+      "id": "ki-pmo-design",
       "type": "frontend",
-      "label": "pulse",
+      "label": "pmo-design",
       "sublabel": "change management · process",
       "sources": [
         {
-          "path": "skills/change-management/ki-pulse/SKILL.md"
+          "path": "skills/change-management/ki-pmo-design/SKILL.md"
         }
       ],
       "pos": [
-        448,
+        240,
         440
       ],
       "size": [
@@ -572,8 +553,8 @@
         }
       ],
       "pos": [
-        32,
-        512
+        448,
+        440
       ],
       "size": [
         196,
@@ -896,7 +877,7 @@
       ],
       "pos": [
         32,
-        672
+        600
       ],
       "size": [
         196,
@@ -915,7 +896,7 @@
       ],
       "pos": [
         240,
-        672
+        600
       ],
       "size": [
         196,
@@ -934,7 +915,7 @@
       ],
       "pos": [
         448,
-        672
+        600
       ],
       "size": [
         196,
@@ -953,7 +934,7 @@
       ],
       "pos": [
         32,
-        744
+        672
       ],
       "size": [
         196,
@@ -972,7 +953,7 @@
       ],
       "pos": [
         32,
-        904
+        832
       ],
       "size": [
         196,
@@ -991,7 +972,7 @@
       ],
       "pos": [
         240,
-        904
+        832
       ],
       "size": [
         196,
@@ -1010,7 +991,7 @@
       ],
       "pos": [
         448,
-        904
+        832
       ],
       "size": [
         196,
@@ -1029,7 +1010,7 @@
       ],
       "pos": [
         32,
-        976
+        904
       ],
       "size": [
         196,
@@ -1048,7 +1029,7 @@
       ],
       "pos": [
         240,
-        976
+        904
       ],
       "size": [
         196,
@@ -1067,7 +1048,7 @@
       ],
       "pos": [
         448,
-        976
+        904
       ],
       "size": [
         196,
@@ -1086,7 +1067,7 @@
       ],
       "pos": [
         32,
-        1048
+        976
       ],
       "size": [
         196,
@@ -1105,7 +1086,7 @@
       ],
       "pos": [
         240,
-        1048
+        976
       ],
       "size": [
         196,
@@ -1124,7 +1105,7 @@
       ],
       "pos": [
         448,
-        1048
+        976
       ],
       "size": [
         196,
@@ -1170,6 +1151,25 @@
       ]
     },
     {
+      "id": "ki-pulse",
+      "type": "frontend",
+      "label": "pulse",
+      "sublabel": "acquire · process",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-pulse/SKILL.md"
+        }
+      ],
+      "pos": [
+        1124,
+        1032
+      ],
+      "size": [
+        196,
+        48
+      ]
+    },
+    {
       "id": "ki-design-system",
       "type": "database",
       "label": "design-system",
@@ -1180,8 +1180,8 @@
         }
       ],
       "pos": [
-        708,
-        1192
+        32,
+        1136
       ],
       "size": [
         196,
@@ -1199,8 +1199,8 @@
         }
       ],
       "pos": [
-        916,
-        1192
+        240,
+        1136
       ],
       "size": [
         196,
@@ -1241,20 +1241,19 @@
     },
     {
       "kind": "region",
-      "label": "Change Management · 13 skills",
+      "label": "Change Management · 12 skills",
       "wraps": [
         "ki-work",
         "ki-work-github-issues",
-        "ki-work-housekeeping",
         "ki-work-linear",
+        "ki-work-recurring",
         "ki-work-roadmap",
         "ki-accept",
         "ki-batch",
-        "ki-design-loop",
         "ki-implement",
         "ki-next",
         "ki-plan",
-        "ki-pulse",
+        "ki-pmo-design",
         "ki-recap"
       ],
       "pad": 16
@@ -1311,10 +1310,11 @@
     },
     {
       "kind": "region",
-      "label": "Acquire · 2 skills",
+      "label": "Acquire · 3 skills",
       "wraps": [
         "ki-acquire-chatgpt",
-        "ki-acquire-granola"
+        "ki-acquire-granola",
+        "ki-pulse"
       ],
       "pad": 16
     },

@@ -12,7 +12,7 @@ description: >
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
-# Knowledge Islands housekeeping standard
+# Knowledge Islands recurring-work standard
 
 **Kind:** governance. `ki-work-recurring` owns recurring-work templates, not the delivery of a particular run. The shared forward-work lifecycle is owned by `ki-work-roadmap`; `ki-repo-kb-streams` places KB records under `Streams/Roadmap/`. Read [the housekeeping template standard](references/standards-recurring-work.md) before creating or changing a template, [the generated rubric](references/rubric.md) for checkable criteria, and [the sources](references/sources.md) when refreshing this standard.
 

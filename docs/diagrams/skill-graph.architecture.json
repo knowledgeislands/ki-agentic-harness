@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "e83d7b13fdf6b1aec5aae1f7baeb201b384aff44"
+      "revision": "3beced0a5f64208cdbc01b73c99e23c3569c1716"
     },
     "legend": {
       "mode": "auto",
@@ -68,13 +68,13 @@
       ]
     },
     {
-      "id": "ki-design-loop",
+      "id": "ki-pmo-design",
       "type": "frontend",
-      "label": "design-loop",
+      "label": "pmo-design",
       "sublabel": "change management · process",
       "sources": [
         {
-          "path": "skills/change-management/ki-design-loop/SKILL.md"
+          "path": "skills/change-management/ki-pmo-design/SKILL.md"
         }
       ],
       "pos": [
@@ -144,13 +144,13 @@
       ]
     },
     {
-      "id": "ki-work-housekeeping",
+      "id": "ki-work-recurring",
       "type": "database",
-      "label": "work-housekeeping",
+      "label": "work-recurring",
       "sublabel": "change management · declared",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-housekeeping/SKILL.md"
+          "path": "skills/change-management/ki-work-recurring/SKILL.md"
         }
       ],
       "pos": [
@@ -938,42 +938,6 @@
       ]
     },
     {
-      "id": "ki-design-loop--ki-decision-records",
-      "from": "ki-design-loop",
-      "to": "ki-decision-records",
-      "variant": "dashed",
-      "fromSide": "bottom",
-      "toSide": "top",
-      "via": [
-        [
-          346,
-          216
-        ],
-        [
-          562,
-          216
-        ]
-      ]
-    },
-    {
-      "id": "ki-design-loop--ki-delegation",
-      "from": "ki-design-loop",
-      "to": "ki-delegation",
-      "variant": "dashed",
-      "fromSide": "bottom",
-      "toSide": "top",
-      "via": [
-        [
-          346,
-          1488
-        ],
-        [
-          130,
-          1488
-        ]
-      ]
-    },
-    {
       "id": "ki-implement--ki-delegation",
       "from": "ki-implement",
       "to": "ki-delegation",
@@ -997,6 +961,42 @@
         [
           130,
           120
+        ]
+      ]
+    },
+    {
+      "id": "ki-pmo-design--ki-decision-records",
+      "from": "ki-pmo-design",
+      "to": "ki-decision-records",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          216
+        ],
+        [
+          562,
+          216
+        ]
+      ]
+    },
+    {
+      "id": "ki-pmo-design--ki-delegation",
+      "from": "ki-pmo-design",
+      "to": "ki-delegation",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          346,
+          1488
+        ],
+        [
+          130,
+          1488
         ]
       ]
     },
@@ -1217,9 +1217,9 @@
       "route": "straight"
     },
     {
-      "id": "ki-repo-kb-activities--ki-work-housekeeping",
+      "id": "ki-repo-kb-activities--ki-work-recurring",
       "from": "ki-repo-kb-activities",
-      "to": "ki-work-housekeeping",
+      "to": "ki-work-recurring",
       "variant": "dashed",
       "fromSide": "bottom",
       "toSide": "top",

@@ -43,6 +43,16 @@ Acquire and reconcile Granola meetings through read-only MCP evidence, including
 - **Dependencies:** None
 - **Runtime:** Portable
 
+#### `ki-pulse`
+
+Capture a submitted link or scan bounded public sources, then triage current signals into read or learn, watch, act, or discard. Use for link intake or what changed; `ki-agentic-radar` and `ki-model-radar` own durable landscape posture, while `ki-next` owns follow-on work.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `capture <url-or-source> [reason] | help | scan <interest-or-query> [sources] | triage [current-signals]`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 ### Agentic Systems
 
 #### `ki-agent-coordination-paperclip`
@@ -107,16 +117,6 @@ Prepare and run one bounded authority envelope over an exact set of Ready work r
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-pmo-design`
-
-Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `start <subject> | resume <subject> | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-implement`
 
 Deliver one approved Ready local work record from immutable baseline through verification and Awaiting review. Use to implement planned work; it never selects, replans, self-accepts, prunes, pushes, releases, or expands authority.
@@ -147,13 +147,13 @@ Shape selected Now or Next draft work in the local roadmap or KB Streams adapter
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-pulse`
+#### `ki-pmo-design`
 
-Capture a submitted link or scan bounded public sources, then triage current signals into read or learn, watch, act, or discard. Use for link intake or what changed; `ki-agentic-radar` and `ki-model-radar` own durable landscape posture, while `ki-next` owns follow-on work.
+Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
-- **Arguments:** `capture <url-or-source> [reason] | help | scan <interest-or-query> [sources] | triage [current-signals]`
+- **Arguments:** `start <subject> | resume <subject> | help`
 - **Dependencies:** None
 - **Runtime:** Portable
 
@@ -187,9 +187,9 @@ Define GitHub Issues configuration, lifecycle mapping, hierarchy, dependencies, 
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-work-recurring`
+#### `ki-work-linear`
 
-Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and `ki-housekeeping-*` skills own runtime cleanup.
+Define Linear configuration, lifecycle mapping, hierarchy, dependencies, review, closure, and remote-write safety as a KI work adapter. Use when Linear is selected; remote execution is unavailable, while local files use `ki-work-roadmap` and GitHub Issues uses `ki-work-github-issues`.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -197,9 +197,9 @@ Govern recurring-work identity, cadence, due-run reservation, and successful-run
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-work-linear`
+#### `ki-work-recurring`
 
-Define Linear configuration, lifecycle mapping, hierarchy, dependencies, review, closure, and remote-write safety as a KI work adapter. Use when Linear is selected; remote execution is unavailable, while local files use `ki-work-roadmap` and GitHub Issues uses `ki-work-github-issues`.
+Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and `ki-housekeeping-*` skills own runtime cleanup.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
