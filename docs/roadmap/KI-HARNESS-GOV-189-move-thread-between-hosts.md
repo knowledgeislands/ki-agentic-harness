@@ -6,7 +6,7 @@ status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
-transferred_from: ki-principal/Streams/Projects/mac-studio-bootstrap/mac-studio-bootstrap.md
+transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
 updated_at: 2026-10-14T17:00:00Z
 ---
@@ -21,7 +21,7 @@ A coordinating thread can move from one machine to another without waiting for i
 
 `ki-pmo` governs coordinating threads and `ki-delegation` the detached background agents they launch through `ki agent`. Both assume a thread stays on the host where it started: running and queued agents, the run's decisions log and its reports live in machine-local state under `~/.local/state/ki/agents/<run>/`. A thread that has to move today must either wait until every queued agent has run, or abandon its queue.
 
-This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studio bootstrap Project](../../../ki-principal/Streams/Projects/mac-studio-bootstrap/mac-studio-bootstrap.md), which is bringing a second machine back into service so that threads can resume there. Kris decided on 2026-10-14, recorded in that run's machine-local decisions log on the laptop, in these words:
+This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studio bootstrap Project](../../../ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md), which is bringing a second machine back into service so that threads can resume there. Kris decided on 2026-10-14, recorded in that run's machine-local decisions log on the laptop, in these words:
 
 > if there is a wish to somehow move a thread over to another machine, because of the way that we're doing the delegation, we need to drain it down. But obviously, there can be quite a lot of stuff that can be queued up potentially. So we should almost decide that stuff that's queued up gets pushed back into the checkpoint, and so when the next machine starts up, it will re-queue it on its machine from that checkpoint, and that will allow us to move things over and only wait for things that are actually already running to be completed.
 
