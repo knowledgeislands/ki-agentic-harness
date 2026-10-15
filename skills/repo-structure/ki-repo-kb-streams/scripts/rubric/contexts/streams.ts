@@ -9,7 +9,7 @@ import type {
   ViolationLevel
 } from '../../shared/rubric.ts'
 import { SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
-import { closeOutEvidence } from './closeout.ts'
+import { closeOutEvidence, ideaStageEvidence } from './closeout.ts'
 
 const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Initiatives'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
@@ -41,6 +41,8 @@ export type StreamRubricContext = {
   issueLedger: readonly StreamsEvidence[]
   registryNotes: readonly StreamsEvidence[]
   projectCloseOut: readonly StreamsEvidence[]
+  ideaStage: readonly StreamsEvidence[]
+  roadmapFields: readonly StreamsEvidence[]
 }
 
 export type GateRubricContext = {
@@ -152,8 +154,37 @@ const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', '_IDEAS.md', 'Roadmap.md'])
 // Mirrors the roadmap adapter's filename identifier grammar without its slug grammar.
 const FILENAME_IDENTIFIER = new RegExp(`^(${workIdentifierSource()})-.`)
 const WORK_ITEM_IDENTIFIER = workIdentifier()
+// Mirrors the roadmap adapter's current work-item fields (`RECORD_FIELDS` in ki-work-roadmap, without the retired
+// ones its own checker fails); streams.test.ts holds the two lists level. Any other field is unknown here.
+export const RECORD_FIELDS: ReadonlySet<string> = new Set([
+  'id',
+  'area',
+  'title',
+  'kind',
+  'purpose',
+  'project',
+  'initiative',
+  'component',
+  'horizon',
+  'hold',
+  'status',
+  'resolution',
+  'resolution_target',
+  'blocks',
+  'blocked_by',
+  'task_links',
+  'baseline_ref',
+  'created_at',
+  'updated_at',
+  'transferred_from',
+  'housekeeping_template',
+  'scheduled_for'
+])
 
-type RoadmapRecord = { path: string; id?: string; defect?: string }
+// A KB record is also a KB note, so it may carry ki-repo-kb's universal note fields beside the work-item fields.
+const KB_NOTE_FIELDS: ReadonlySet<string> = new Set(['note_type', 'updated', 'reviewed', 'created', 'tags', 'author'])
+
+type RoadmapRecord = { path: string; id?: string; defect?: string; unknown?: readonly string[] }
 
 const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord => {
   const display = relative(root, path)
@@ -168,21 +199,25 @@ const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord 
   if (!values || typeof values !== 'object' || Array.isArray(values))
     return { path: display, defect: 'has frontmatter that is not a YAML mapping' }
   const raw = (values as Record<string, unknown>).id
+  const unknownFields = Object.keys(values).filter((key) => !RECORD_FIELDS.has(key) && !KB_NOTE_FIELDS.has(key))
+  const unknown = unknownFields.length ? { unknown: unknownFields } : {}
   const id = typeof raw === 'string' ? raw.trim() : ''
-  if (!id) return { path: display, defect: 'has no frontmatter id' }
+  if (!id) return { path: display, defect: 'has no frontmatter id', ...unknown }
   // A slug may begin with digits, so the identifier grammar alone cannot split every filename;
   // a record conforms when its filename begins with its own well-formed id.
-  if (WORK_ITEM_IDENTIFIER.test(id) && name.startsWith(`${id}-`) && name !== `${id}-.md`) return { path: display, id }
+  if (WORK_ITEM_IDENTIFIER.test(id) && name.startsWith(`${id}-`) && name !== `${id}-.md`)
+    return { path: display, id, ...unknown }
   const fileId = FILENAME_IDENTIFIER.exec(name)?.[1]
   if (fileId !== id)
     return {
       path: display,
       id,
+      ...unknown,
       defect: fileId
         ? `has id ${id}, which does not match its filename identifier ${fileId}`
         : `has id ${id}, but its filename is not of the form ${id}-<slug>.md`
     }
-  return { path: display, id }
+  return { path: display, id, ...unknown }
 }
 
 const roadmapRecords = (root: string, roadmapPath: string): RoadmapRecord[] =>
@@ -231,6 +266,30 @@ const roadmapFrontmatterEvidence = (
   return defective.map((record) => ({
     level: 'FAIL' as const,
     message: `Roadmap record ${record.path} ${record.defect}.`,
+    subject: record.path
+  }))
+}
+
+// The KB adapter otherwise skips frontmatter it does not read, so an undefined field such as `priority` would pass
+// silently; it warns instead, and horizon stays the only priority signal.
+const roadmapFieldEvidence = (
+  root: string,
+  roadmapPath: string,
+  records: readonly RoadmapRecord[]
+): StreamsEvidence[] => {
+  if (records.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No roadmap records are present.' }]
+  const unknown = records.filter((record) => record.unknown?.length)
+  if (unknown.length === 0)
+    return [
+      {
+        level: 'PASS',
+        message: 'Every roadmap record carries only work-item fields the roadmap adapter defines.',
+        subject: relative(root, roadmapPath)
+      }
+    ]
+  return unknown.map((record) => ({
+    level: 'WARN' as const,
+    message: `Roadmap record ${record.path} has unknown field(s): ${record.unknown?.join(', ')}.`,
     subject: record.path
   }))
 }
@@ -357,7 +416,9 @@ const unavailableContext = (
       roadmapFrontmatter: notApplicable,
       issueLedger: notApplicable,
       registryNotes: notApplicable,
-      projectCloseOut: notApplicable
+      projectCloseOut: notApplicable,
+      ideaStage: notApplicable,
+      roadmapFields: notApplicable
     },
     gate: { anchor: notApplicable },
     config: { parseable: notApplicable, knownKeys: notApplicable, processNote: notApplicable }
@@ -494,7 +555,9 @@ export const createStreamsSession = ({
       roadmapFrontmatter: roadmapFrontmatterEvidence(root, roadmapPath, records),
       issueLedger: issueLedgerEvidence(root, roadmapPath),
       registryNotes: registryNoteEvidence(root, streamsPath),
-      projectCloseOut: closeOutEvidence(root, streamsPath)
+      projectCloseOut: closeOutEvidence(root, streamsPath),
+      ideaStage: ideaStageEvidence(root, streamsPath),
+      roadmapFields: roadmapFieldEvidence(root, roadmapPath, records)
     },
     gate: { anchor },
     config: { parseable, knownKeys, processNote: processNoteEvidence }

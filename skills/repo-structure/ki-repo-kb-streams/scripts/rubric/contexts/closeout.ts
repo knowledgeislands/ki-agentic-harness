@@ -1,7 +1,8 @@
 /**
- * Close-out evidence for the Capital's Project registry: a Project whose records have all finished is due for a
- * close-out assessment before its lead may close it. Open records are counted read-only across every locally
- * registered checkout, so a Project served from another repository is not mistaken for a finished one.
+ * Close-out and idea-stage evidence for the Capital's Project registry: a Project whose records have all finished is
+ * due for a close-out assessment before its lead may close it, and an idea-stage Project holds no records and stays
+ * within its caps. Open records are counted read-only across every locally registered checkout, so a Project served
+ * from another repository is not mistaken for a finished one.
  */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -14,8 +15,21 @@ const CLOSED_LIFECYCLES = new Set(['completed', 'cancelled'])
 const ROADMAP_DIRECTORIES = [join('docs', 'roadmap'), join('Streams', 'Roadmap')] as const
 const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', '_IDEAS.md', 'Roadmap.md'])
 const CLOSE_OUT_HEADING = /^###\s+Close-out assessment\s*$/m
+// The Project registry standard's idea-stage caps: one per Initiative and three across the territory.
+const IDEA_STAGE_PER_INITIATIVE = 1
+const IDEA_STAGE_PER_TERRITORY = 3
 
-type ProjectNote = { slug: string; lifecycle: string; assessed: boolean; subject: string }
+type ProjectNote = {
+  slug: string
+  lifecycle: string
+  initiative: string
+  lead: string
+  outcome: string
+  assessed: boolean
+  subject: string
+}
+
+const trimmed = (value: unknown): string => (typeof value === 'string' ? value.trim() : '')
 
 const table = (value: unknown): Record<string, unknown> | undefined =>
   typeof value === 'object' && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined
@@ -83,7 +97,10 @@ const projectNotes = (root: string, projectsPath: string): ProjectNote[] =>
       return [
         {
           slug: values.slug,
-          lifecycle: typeof values.lifecycle === 'string' ? values.lifecycle : '',
+          lifecycle: trimmed(values.lifecycle),
+          initiative: trimmed(values.initiative),
+          lead: trimmed(values.lead),
+          outcome: trimmed(values.outcome),
           assessed: CLOSE_OUT_HEADING.test(notes),
           subject: relative(root, path)
         }
@@ -116,11 +133,14 @@ const openRecords = (checkouts: Iterable<string>, capital: string, handles: read
   return counts
 }
 
-export const closeOutEvidence = (
+type RegistryScan = { projects: ProjectNote[]; counts: Map<string, number>; registered: boolean }
+
+/** The Capital's Project notes and open-record counts, or the evidence saying why the registry is not assessed. */
+const registryScan = (
   root: string,
   streamsPath: string,
-  environment: NodeJS.ProcessEnv = process.env
-): StreamsEvidence[] => {
+  environment: NodeJS.ProcessEnv
+): RegistryScan | StreamsEvidence[] => {
   const projectsPath = join(streamsPath, 'Projects')
   if (!directory(projectsPath)) return [{ level: 'NOT_APPLICABLE', message: 'No Project registry is present.' }]
   const own = repoTable(root)
@@ -135,6 +155,27 @@ export const closeOutEvidence = (
   const ownKey = [...(registered ?? [])].find(([, path]) => path === resolve(root))?.[0]
   const handles = [own?.territory_prefix, ownKey].filter((handle): handle is string => typeof handle === 'string')
   const counts = openRecords([resolve(root), ...(registered?.values() ?? [])], capital, handles)
+  return { projects, counts, registered: registered !== undefined }
+}
+
+/**
+ * An idea-stage Project is `planned` and its `outcome` is a decision its lead takes: it opens with the lead's name,
+ * or their first name, followed by "decides".
+ */
+export const isIdeaStage = (project: Pick<ProjectNote, 'lifecycle' | 'lead' | 'outcome'>): boolean => {
+  if (project.lifecycle !== 'planned' || !project.lead) return false
+  const names = new Set([project.lead, project.lead.split(/\s+/)[0] ?? ''])
+  return [...names].some((name) => name && project.outcome.startsWith(`${name} decides `))
+}
+
+export const closeOutEvidence = (
+  root: string,
+  streamsPath: string,
+  environment: NodeJS.ProcessEnv = process.env
+): StreamsEvidence[] => {
+  const scan = registryScan(root, streamsPath, environment)
+  if (Array.isArray(scan)) return scan
+  const { projects, counts, registered } = scan
   // Without the registry, records outside the Capital are invisible, so a finished-looking Project is only noted.
   const due = registered ? ('WARN' as const) : ('INFO' as const)
   const findings = projects.flatMap((project): StreamsEvidence[] => {
@@ -178,4 +219,59 @@ export const closeOutEvidence = (
       ? []
       : [{ level: 'PASS' as const, message: 'Every open Project has open records or a close-out assessment.' }])
   ]
+}
+
+/** Idea-stage Projects hold no open record and stay within one per Initiative and three across the territory. */
+export const ideaStageEvidence = (
+  root: string,
+  streamsPath: string,
+  environment: NodeJS.ProcessEnv = process.env
+): StreamsEvidence[] => {
+  const scan = registryScan(root, streamsPath, environment)
+  if (Array.isArray(scan)) return scan
+  const ideas = scan.projects.filter(isIdeaStage)
+  if (ideas.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No idea-stage Projects are present.' }]
+  const withRecords = ideas.flatMap((project): StreamsEvidence[] => {
+    const open = scan.counts.get(project.slug) ?? 0
+    return open
+      ? [
+          {
+            level: 'WARN',
+            message: `Idea-stage Project '${project.slug}' is named by ${open} open record(s): graduate it to active with a delivery Outcome before records name it.`,
+            subject: project.subject
+          }
+        ]
+      : []
+  })
+  const byInitiative = Map.groupBy(ideas, (project) => project.initiative || '(none)')
+  const perInitiative = [...byInitiative].flatMap(([initiative, members]): StreamsEvidence[] =>
+    members.length > IDEA_STAGE_PER_INITIATIVE
+      ? [
+          {
+            level: 'WARN',
+            message: `Initiative '${initiative}' has ${members.length} idea-stage Projects (${members.map((project) => project.slug).join(', ')}); the cap is ${IDEA_STAGE_PER_INITIATIVE}.`,
+            subject: join(relative(root, streamsPath), 'Projects')
+          }
+        ]
+      : []
+  )
+  const territory: StreamsEvidence[] =
+    ideas.length > IDEA_STAGE_PER_TERRITORY
+      ? [
+          {
+            level: 'WARN',
+            message: `The territory has ${ideas.length} idea-stage Projects; the cap is ${IDEA_STAGE_PER_TERRITORY}.`,
+            subject: join(relative(root, streamsPath), 'Projects')
+          }
+        ]
+      : []
+  const findings = [...withRecords, ...perInitiative, ...territory]
+  return findings.length
+    ? findings
+    : [
+        {
+          level: 'PASS',
+          message: `${ideas.length} idea-stage Project(s) hold no open record and are within the caps: ${ideas.map((project) => project.slug).join(', ')}.`
+        }
+      ]
 }

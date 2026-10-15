@@ -6,6 +6,7 @@ This standard defines `Streams/` as the operational container of a Knowledge Isl
 
 - [Operational container](#operational-container)
 - [Project close-out](#project-close-out)
+- [Idea-stage Projects](#idea-stage-projects)
 - [Roadmap](#roadmap)
 - [Recurring Activities](#recurring-activities)
 - [Future trades](#future-trades)
@@ -32,13 +33,17 @@ The container does not prescribe a topical-folder or `groups` vocabulary. Where 
 
 A Project does not close when its records finish: it first gets the [close-out assessment](../../../change-management/ki-work/references/standards-project-registry.md#close-out-assessment), a `### Close-out assessment` heading inside its note's `## Notes`. In a Capital, AUDIT counts each Project's open records, those not `done` or `cancelled`, across the Capital and every checkout in the local ki registry: a bare `project` slug counts from the Capital's members, and a `<territory>/<slug>` value counts from anywhere, whether it names the Capital's territory prefix or its registry key. It warns on an `active` or `paused` Project with no open record and no assessment, and on a `completed` or `cancelled` Project with no assessment. An assessed Project with no open record is reported as awaiting its lead's close decision. Without a readable registry, records outside the Capital are invisible, so a Project with no open record is reported only for information. A `planned` Project is not assessed.
 
+## Idea-stage Projects
+
+In a Capital, AUDIT recognises an [idea-stage Project](../../../change-management/ki-work/references/standards-project-registry.md#idea-stage-project) as a `planned` Project whose `outcome` opens with its lead's name, or their first name, followed by "decides". Counting open records as for close-out, it warns on each idea-stage Project an open record names, because the Project graduates to `active` before records name it. It warns when an Initiative has more than one idea-stage Project, and when the territory has more than three. The state-of-play review of each idea-stage Project at its marks stays with [`ki-pmo`](../../../change-management/ki-pmo/SKILL.md).
+
 ## Roadmap
 
 `Streams/Roadmap/` is the KB placement equivalent of a project repository’s `docs/roadmap/`. It contains flat finite work records, its `_ISSUES.md` allocation ledger, and an optional `_IDEAS.md` list of ungraduated ideas. The [repository roadmap standard](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md) owns the record format, lifecycle, identifier grammar, and horizon metadata.
 
 Every record's `id` is unique within the base. AUDIT fails each record whose identifier another record shares, because a collision makes links, trades and closure ambiguous; resolve it by keeping the canonical holder and reallocating the other from `_ISSUES.md`. A pruned record's serial is never reused, but that reuse cannot be seen from the current tree alone.
 
-AUDIT also applies the roadmap standard's [structural-validity invariant](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md): every direct child other than `_ISSUES.md`, `_IDEAS.md`, and a `Roadmap.md` index note must begin with parseable frontmatter whose `id` matches its filename identifier, so no record escapes the identity check by lacking one. It checks only that floor; body sections, other fields and retired fields remain the roadmap adapter's format.
+AUDIT also applies the roadmap standard's [structural-validity invariant](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md): every direct child other than `_ISSUES.md`, `_IDEAS.md`, and a `Roadmap.md` index note must begin with parseable frontmatter whose `id` matches its filename identifier, so no record escapes the identity check by lacking one. It checks only that floor; body sections, other fields and retired fields remain the roadmap adapter's format. Because the KB adapter otherwise reads only the fields it needs, AUDIT also warns on any record frontmatter field that neither the [work-item format](../../../change-management/ki-work-roadmap/references/standards-work-item-format.md) nor the [`ki-repo-kb` universal note fields](../../ki-repo-kb/references/standards-frontmatter.md#universal-fields) define, such as an undefined `priority`; `horizon` is the only priority signal.
 
 `_ISSUES.md` holds counts only. It uses the roadmap standard's canonical ledger form, its header and its `last_id` or area counters, and AUDIT fails any other content, such as migration history or prose about the records. That history belongs in Git or a Decision Record.
 

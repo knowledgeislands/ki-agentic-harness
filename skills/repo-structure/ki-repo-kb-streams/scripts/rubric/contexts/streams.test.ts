@@ -6,7 +6,7 @@ import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { GATE } from '../items/gate.ts'
 import definition from '../items/index.ts'
 import { STREAM } from '../items/stream.ts'
-import { createStreamsSession } from './streams.ts'
+import { createStreamsSession, RECORD_FIELDS } from './streams.ts'
 
 const roots: string[] = []
 
@@ -303,6 +303,48 @@ describe('ki-repo-kb-streams session', () => {
     ])
       rmSync(join(roadmap, name))
     expect(evaluate().roadmapFrontmatter.map((evidence) => evidence.level)).toEqual(['PASS'])
+  })
+
+  test('warns on each Streams roadmap record carrying a field the roadmap adapter does not define', () => {
+    const root = targetFixture()
+    const roadmap = join(root, 'Streams', 'Roadmap')
+    writeFileSync(
+      join(roadmap, 'KB-OPS-001-known.md'),
+      '---\nnote_type: stream-roadmap\nid: KB-OPS-001\ntitle: Known\nhorizon: next\ntags:\n  - topic/ops\n---\n'
+    )
+    const item = STREAM.items.find((candidate) => candidate.code === 'STREAM-12')
+    const evaluate = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+
+    expect(evaluate().roadmapFields.map((evidence) => evidence.level)).toEqual(['PASS'])
+
+    writeFileSync(
+      join(roadmap, 'KB-OPS-002-priority.md'),
+      '---\nid: KB-OPS-002\ntitle: Priority\npriority: medium\nowner: Kris\n---\n'
+    )
+    const unknown = evaluate()
+    const subject = join('Streams', 'Roadmap', 'KB-OPS-002-priority.md')
+
+    expect(unknown.roadmapFields).toEqual([
+      { level: 'WARN', message: `Roadmap record ${subject} has unknown field(s): priority, owner.`, subject }
+    ])
+    expect(item?.mechanical?.level).toBe('WARN')
+    expect(item?.mechanical?.audit.run(unknown).map((outcome) => outcome.status)).toEqual(['VIOLATION'])
+  })
+
+  test("mirrors the roadmap adapter's current record fields", () => {
+    const source = readFileSync(
+      join(
+        import.meta.dir,
+        '../../../../../change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts'
+      ),
+      'utf8'
+    )
+    const block = /const RECORD_FIELDS = new Set\(\[([\s\S]*?)\]\)/.exec(source)?.[1] ?? ''
+    const current = block.split('// Retired fields')[0] ?? ''
+    const adapter = [...current.matchAll(/'([a-z_]+)'/g)].map((match) => match[1])
+
+    expect(adapter.length).toBeGreaterThan(0)
+    expect([...RECORD_FIELDS]).toEqual(adapter)
   })
 
   test('reports a record skipped by the identity check under STREAM-7 and a shared id under STREAM-6', () => {

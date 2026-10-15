@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { closeOutEvidence } from './closeout.ts'
+import { closeOutEvidence, ideaStageEvidence, isIdeaStage } from './closeout.ts'
 
 const roots: string[] = []
 
@@ -90,4 +90,53 @@ test('a base that is not a Capital is not assessed', () => {
   const { member } = territory()
   mkdirSync(join(member, 'Streams', 'Projects'), { recursive: true })
   expect(closeOutEvidence(member, join(member, 'Streams'), {})[0]?.level).toBe('NOT_APPLICABLE')
+})
+
+const idea = (
+  capital: string,
+  slug: string,
+  initiative: string,
+  outcome = 'Kris decides whether to adopt it.'
+): void => {
+  writeFileSync(
+    join(capital, 'Streams', 'Projects', `${slug}.md`),
+    `---\nnote_type: streams/project\nslug: ${slug}\noutcome: ${outcome}\ninitiative: ${initiative}\nlifecycle: planned\nlead: Kris Brown\n---\n\n# ${slug}\n\n## Outcome\n\nA decision.\n\n## Notes\n`
+  )
+}
+
+test('an idea-stage Project is planned with a decision its lead takes as its outcome', () => {
+  const planned = { lifecycle: 'planned', lead: 'Kris Brown' }
+  expect(isIdeaStage({ ...planned, outcome: 'Kris decides how hosts are named.' })).toBe(true)
+  expect(isIdeaStage({ ...planned, outcome: 'Kris Brown decides how hosts are named.' })).toBe(true)
+  expect(isIdeaStage({ ...planned, outcome: 'The territory records work under the model.' })).toBe(false)
+  expect(isIdeaStage({ ...planned, outcome: 'Kristen decides it.' })).toBe(false)
+  expect(isIdeaStage({ ...planned, lifecycle: 'paused', outcome: 'Kris decides it.' })).toBe(false)
+})
+
+test('an idea-stage Project named by an open record, or past a cap, is warned', () => {
+  const { capital, member, environment } = territory()
+  const projects = join('Streams', 'Projects')
+  idea(capital, 'host-network', 'rig')
+  idea(capital, 'second-rig', 'rig')
+  idea(capital, 'observability', 'platform')
+  idea(capital, 'delta', 'techne')
+  project(capital, 'not-started', 'planned')
+  record(member, join('docs', 'roadmap'), 'EX-MEM-001-a.md', 'delta', 'draft')
+  const evidence = ideaStageEvidence(capital, join(capital, 'Streams'), environment)
+  expect(evidence.map((item) => [item.level, item.subject])).toEqual([
+    ['WARN', join(projects, 'delta.md')],
+    ['WARN', projects],
+    ['WARN', projects]
+  ])
+  expect(evidence[1]?.message).toContain("Initiative 'rig' has 2 idea-stage Projects (host-network, second-rig)")
+  expect(evidence[2]?.message).toBe('The territory has 4 idea-stage Projects; the cap is 3.')
+})
+
+test('idea-stage Projects within the caps and without records pass', () => {
+  const { capital, environment } = territory()
+  idea(capital, 'host-network', 'rig')
+  project(capital, 'not-started', 'planned')
+  expect(ideaStageEvidence(capital, join(capital, 'Streams'), environment).map((item) => item.level)).toEqual(['PASS'])
+  rmSync(join(capital, 'Streams', 'Projects', 'host-network.md'))
+  expect(ideaStageEvidence(capital, join(capital, 'Streams'), environment)[0]?.level).toBe('NOT_APPLICABLE')
 })

@@ -160,12 +160,16 @@ Every confirmed move is re-evaluated at its destination.
 
 ## Ideas and graduation
 
-An idea has no identifier, horizon, or status, and never owns state. It waits outside the record queue:
+An idea has no identifier, horizon, or status, and never owns state. The Project registry's [rooting rule](../../ki-work/references/standards-project-registry.md#rooting) first settles its territory and whether it is a concept or work; a concept waits in its owning Capital's Emerging Concepts note, and work waits outside the record queue:
 
-- in its Project note's `## Notes` section when a Project is known, under the [Project registry](../../ki-work/references/standards-project-registry.md); or
+- as an `Idea:` bullet in its Project note's `## Notes` section when a Project is known, under the [Project registry](../../ki-work/references/standards-project-registry.md);
+- in an [idea-stage Project](../../ki-work/references/standards-project-registry.md#idea-stage-project) when a decision must be taken before any delivery, the Project's `## Notes` holding the ideas;
+- in its Initiative note's `## Notes` when the Initiative is known and no Project fits; or
 - otherwise as a plain bullet in the repository's `docs/roadmap/_IDEAS.md`, or `Streams/Roadmap/_IDEAS.md` in a Knowledge Base, beside `_ISSUES.md`.
 
-`_IDEAS.md` is not a record. It carries no identity, the structural-validity invariant skips it, and CONFORM never creates or rewrites it. Graduation links the new record from the idea's place and removes the bullet, keeping useful research in the record.
+`_IDEAS.md` is not a record. It carries no identity, the structural-validity invariant skips it, and CONFORM never creates or rewrites it. When a whole idea graduates, its bullet is removed and useful research moves into the record; `_IDEAS.md` may link the new record, but a Project or Initiative note never names a record identifier, because [links point upwards](../../ki-work/references/standards-project-registry.md#links-point-upwards). No record names an idea-stage Project: the Project graduates to `active` first.
+
+An idea often settles in part while ideation carries on behind it. That part graduates **by quotation**: the settled slice is quoted into its new home, a record, a standard, a Decision Record or a delivering Project, and the idea's place gains one line, "built as" or "settled in", naming that home and otherwise stays as it was. In a registry note the line names the durable home, never a record identifier. Kris asked on 2026-10-14 for a home for ideas "where we've got aspects of them that get built out because we know there's a certain amount of them, which are already valuable and kind of more fixed, but there's a lot more ideation to go on behind it."
 
 Goal, Context, and Boundary alone are not enough to make a record. After checking for an existing owner, an idea graduates to a `status: triage` record only when:
 

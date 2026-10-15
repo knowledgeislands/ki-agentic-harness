@@ -151,11 +151,57 @@ const STREAM_10: RubricItem<StreamRubricContext> = {
   }
 }
 
+const STREAM_11: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-11',
+  title: 'idea-stage Projects',
+  description:
+    "A Capital's idea-stage Project, planned with a decision as its outcome, is named by no open record, and there is at most one per Initiative and three across the territory.",
+  sources: [`${SOURCE}#idea-stage-projects`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Graduate an idea-stage Project to active with a delivery Outcome before records name it; over a cap, graduate or fold an idea-stage Project, or have its lead lift the cap.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.ideaStage, 'WARN') }
+  }
+}
+
+const STREAM_12: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-12',
+  title: 'known record fields',
+  description:
+    "Every Streams/Roadmap record's frontmatter carries only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define.",
+  sources: [`${SOURCE}#roadmap`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Remove the unknown field, or move its content into the record body; horizon is the only priority signal. A field the work-item format should carry is a change to the roadmap adapter's standard."
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.roadmapFields, 'WARN') }
+  }
+}
+
 export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
   code: 'STREAM',
   title: 'Streams structure',
   description: 'Operational-area layout, legacy migration, and adapter routing.',
   standard: SOURCE,
   selectContext: (context) => context.stream,
-  items: [STREAM_1, STREAM_2, STREAM_4, STREAM_5, STREAM_6, STREAM_7, STREAM_8, STREAM_9, STREAM_10]
+  items: [
+    STREAM_1,
+    STREAM_2,
+    STREAM_4,
+    STREAM_5,
+    STREAM_6,
+    STREAM_7,
+    STREAM_8,
+    STREAM_9,
+    STREAM_10,
+    STREAM_11,
+    STREAM_12
+  ]
 }
