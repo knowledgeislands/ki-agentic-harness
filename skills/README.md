@@ -149,7 +149,7 @@ Shape selected Now or Next draft work in the local roadmap or KB Streams adapter
 
 #### `ki-pmo`
 
-Govern the coordinating thread: the responsive coordinator and its turn budget, the three thread types with their openers and bootstrap, the Summary, recap since the mark and full summary, the report heading, the closing block-letter banner with its REST, BUSY and DONE frames and resume line, re-anchoring after compaction, decision classes, design notes, Project close and the thread working rules. Use in a state-of-play or coordination thread, or to give a summary, recap, full summary, banner or strike the mark; `ki-delegation` owns the background runs the thread launches.
+Govern the coordinating thread: the responsive coordinator and its turn budget, the three thread types with their openers and bootstrap, the Summary, recap since the mark and full summary, the report heading, the closing block-letter banner with its REST, BUSY, DRAINED and DONE frames and resume line, the drain, re-anchoring after compaction, decision classes, design notes, Project close and the thread working rules. Use in a state-of-play or coordination thread, or to give a summary, recap, full summary, banner or strike the mark; `ki-delegation` owns the background runs the thread launches.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

@@ -49,7 +49,7 @@ The report heading, opening a Summary:
 
 A background agent's run report adds `› <run name>` to the heading, uses the form `Run report` and writes `run report` on its footer's top border.
 
-The footer banner is the block-letter frame as it stood before the framed label of 2026-10-14, which Kris restored with "The footer banner needs to be like it was before, with the large ascii text.": the top border `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52, the form being the report's form word in lower case, `summary`, `recap`, `full summary` or `re-bootstrap`, one blank framed line, the three block-letter rows with their three captions, one blank framed line, and the bottom border, exactly as drawn below and in no other way, the padding and the form word being what Kris approved on 2026-10-14 with "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it." The form word and the issued time are the only parts that vary. A blank line follows the frame; then comes one Markdown list of `- [<state>] <what>` items, with no label-and-mark line, because the footer's top border carries the issued time and the report heading's form line the mark; then, only when the footer reads REST, the resume line in its own one-line fenced `text` block as the last thing in the message; a BUSY footer ends with its list, because Kris set on 2026-10-14 that the resume line is "shown only at rest". A Summary may leave an unchanged query unrepeated, but its reply block still carries an entry for every open query.
+The footer banner is the block-letter frame as it stood before the framed label of 2026-10-14, which Kris restored with "The footer banner needs to be like it was before, with the large ascii text.": the top border `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52, the form being the report's form word in lower case, `summary`, `recap`, `full summary`, `re-bootstrap` or `drain report`, one blank framed line, the three block-letter rows with their three captions, one blank framed line, and the bottom border, exactly as drawn below and in no other way, the padding and the form word being what Kris approved on 2026-10-14 with "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it." The form word and the issued time are the only parts that vary. A blank line follows the frame; then comes one Markdown list of `- [<state>] <what>` items, with no label-and-mark line, because the footer's top border carries the issued time and the report heading's form line the mark; then, only when the footer reads REST, the resume line in its own one-line fenced `text` block as the last thing in the message; a BUSY footer ends with its list, because Kris set on 2026-10-14 that the resume line is "shown only at rest". A Summary may leave an unchanged query unrepeated, but its reply block still carries an entry for every open query.
 
 REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the state. The first item reads `- [at rest] nothing running or queued`:
 
@@ -97,6 +97,28 @@ The list, in order and only where it applies: `- [at rest] nothing running or qu
 ```text
 Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
 ```
+
+DRAINED when the owner has asked the thread to drain and it has: a drain is a mark plus stopping all work, so that the thread can be archived on one host and resumed on another from the repository alone, as Kris set on 2026-10-15: "A mark is a point in time. A drain is a mark plus stopping all work, so that the thread can be archived on terra and resumed on sol from the repository alone." Follow the `ki-pmo` standard's Draining a thread: wrap up, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped and how to restart it recorded; commit your own work by explicit path in every repository you or your agents touched, pull with rebase and push fast-forward only, never with `--no-verify` or a force-push, naming any other session's commit or uncommitted file without touching it; strike a mark and park every open query, with its tag, one line of context and its recommended option, every held, parked and waiting-on item and the next step in the checkpoint, with `Running: nothing` and `State: drained` in its `Current state`, copy into the thread folder what resuming needs from the run's state folder, and commit and push the checkpoint and thread folder; make no baseline or empty commit. Then give a drain report and nothing else: the report heading with the form line `**Drain report at <local time> · mark <local time>**`, `## Done` with one line per repository, `## Parked` with the tags parked in the checkpoint, one line each, and `## Left over`, or `Nothing`, with no reply block and no Context, Query or Options, because, in Kris's words, "the queries live in the checkpoint"; then the DRAINED frame exactly as drawn, with the UTC time in its top border, then its list, then the drain resume line:
+
+```text
+╭─ drain report · 2026-10-15T14:00:00Z ────────────╮
+│                                                  │
+│  █▀▀▄ █▀▀▄ ▄▀▀▄ ▀█▀ █▄ █   · thread drained      │
+│  █  █ █▀▀▄ █▄▄█  █  █ ▀█   · queries parked      │
+│  █▄▄▀ █  █ █  █ ▄█▄ █  █   · ready to archive    │
+│                                                  │
+╰──────────────────────────────────────────────────╯
+
+- [drained] nothing running or queued; committed and pushed
+- [parked] <count> queries in the checkpoint
+- [left over] <what>, only if any
+```
+
+```text
+Resume <label> on sol from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the parked queries, take stock, restart authorised work, then banner.
+```
+
+If the thread cannot drain, because work is unpushable or a run must not be stopped, it uses the BUSY frame instead and says in one line what is blocking.
 
 The DONE frame, in the same block letters, appears once only, at Project close after the close-out tidy, under the `ki-pmo` standard, and no resume line follows it.
 
