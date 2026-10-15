@@ -6,13 +6,13 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: keystone
-horizon: next
-status: ready
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: ea8ad578a5c2ae7f07f35515b16b508a8526b75c
 created_at: 2026-10-15T01:21:10Z
-updated_at: 2026-10-15T01:21:10Z
+updated_at: 2026-10-15T01:23:19Z
 ---
 
 # KI-HARNESS-GOV-194: Preflight verification effects
@@ -37,8 +37,8 @@ The four existing carriers were re-grounded and deduplicated; none owns this Goa
 
 ## Steps
 
-- [ ] Record immutable Ready baseline and begin bounded implementation.
-- [ ] Add the two agreed checklist items without changing existing content.
+- [x] Record immutable Ready baseline and begin bounded implementation.
+- [x] Add the two agreed checklist items without changing existing content.
 - [ ] Inspect transitive verification effects and run authorised required checks sequentially.
 - [ ] Prepare the canonical six-part review packet, commit explicit owned paths and return Awaiting review if all required checks pass.
 
@@ -77,6 +77,40 @@ Only the canonical review checklist changes; no new guide.
 ### Roadmap
 
 This carrier retains planning, delivery and review evidence; the preceding ledger commit reserves its identity.
+
+## Review
+
+### Delivered
+
+The exact two-item canonical patch is preserved for review against immutable Ready baseline `ea8ad578a5c2ae7f07f35515b16b508a8526b75c`. Delivery is blocked, not Awaiting review: the required skill audit returned two retained LONG-3 warnings. No acceptance or waiver is claimed.
+
+### Change Summary
+
+Only this carrier and the two new Automated verification checklist items change after Ready. Every original checklist byte is preserved. The ledger reservation and Ready plan are separate earlier commits. Ways of working retains review, acceptance and peer-history publication reconciliation.
+
+### Verification
+
+Before implementation, `bun run test` passed 1188 tests across 169 files with zero failures; `bunx --no-install tsc --noEmit` exited zero using installed TypeScript. `ki repo audit --skill ki-work`, `ki-work-roadmap` and `ki-trades` passed without warnings. The Ready roadmap check initially found two newly authored carrier-shape errors; both were fixed and the recheck passed before its commit.
+
+The required baseline `ki repo audit --skill ki-skills` exited zero but reported FAIL=0 and WARN=2: LONG-3 for source review dates 2026-08-29 and 2026-06-21. These correspond to ki-authoring and ki-repo-mcp source lists, outside this change. The approved plan says required warnings stop delivery. The checklist edit was applied before its successful shell exit was reconciled with the WARN findings; this sequencing error is recorded rather than treating exit zero as a clean gate. No further delivery checks were run after discovering that stop.
+
+After the patch, exact byte assertions passed: exactly two approved items in Automated verification before the existing full-task item; removing their exact bytes restores the Ready-baseline file byte for byte. Local `node_modules/.bin/rumdl check --fix` passed on the completed checklist. Post-change full tests, TypeScript, focused skill audit, hosted authoring audit and final roadmap audit remain unrun; baseline checks do not establish post-change gate success. Normal commit hooks remain required and are not a waiver of the blocked delivery condition.
+
+Effects preflight inspected the local ki runner, CLI selection and audit host, selected queue/skill collectors, package scripts, tests and hook subprocesses. The handoff explicitly selected --log, so it appended only the local inbox rather than migrating thread state or changing the checkpoint. MCP inventory adoption reads local configuration and sets only the child process environment; no persistent environment/configuration mutation is claimed. Queue/skill audits inspect local files; trade proof uses local Git reads. Test fixtures exercise local temporary repositories and injected engineering evidence, not the registry-backed engineering audit. Installed tool resolution was checked before runners; TypeScript additionally used --no-install. No registry, dependency update, provider operation, remote CI or broad network audit was authorised or executed.
+
+The incident is assessed without replay: tracing the engineering collector reaches its registry fetch before execution, which the first item stops under no-remote authority; the second preserves narrower offline evidence, wider failures/warnings and absent live proof separately. Historical Acquire dependency/design failures and CI warning are not reclassified or rerun. No live proof is claimed.
+
+### Outstanding concerns
+
+Required LONG-3 warnings block delivery under the agreed plan; repairing sources would widen this task and may need network access, so no repair is attempted. Coordinator deposit is not ACK. Eight peer ancestors block this worker's own-only push. Preserve all peer files/history and both unchecked steps; do not mark Awaiting review or accept this record until required verification has a legitimate passing route.
+
+### Post-change review
+
+The intended prose-only patch matches the approved wording and keeps all original gates/contracts. Its functional risk is limited to reviewer guidance, but its required delivery gate is not clean and post-change broader verification is incomplete. This is a reviewable blocked patch, not an acceptance-ready delivery.
+
+### Mini recap
+
+Reserved identity, committed the approved Ready plan and preserved the exact two checklist additions with the immutable baseline. Stopped on required fleet warnings without waiving or fixing unrelated skill sources. Return the blocker and patch to Ways of working; no learning promotion, acceptance, pruning or peer publication occurs here.
 
 ## Discussion
 

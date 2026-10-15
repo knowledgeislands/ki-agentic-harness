@@ -371,6 +371,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 ### Automated verification
 
 - [ ] Every script or task named by the repository orientation's documented verification gate exists and resolves through the declared runner.
+- [ ] Before executing a verification or measurement command, inspect its entry point and transitive subprocesses, including package-manager fallback, network and registry access and state changes, against the review invocation's authority. A command labelled test, audit or read-only does not establish its effects. If those effects are unknown or exceed authority, do not run it; report the exact limitation and any narrower authorised check.
+- [ ] Report offline functional verification, broader verification gates and live proof separately, with the command, result and evidence limits for each. A passing narrower check does not establish a broader gate or live proof; an unrun or blocked gate remains unverified, with any retained failures and warnings stated explicitly.
 - [ ] The full verification task exits zero.
 - [ ] `ki repo repair` completes without unresolved KI-managed projection repairs.
 - [ ] `ki repo diag` reports every declared repository skill and its local projection healthy.
