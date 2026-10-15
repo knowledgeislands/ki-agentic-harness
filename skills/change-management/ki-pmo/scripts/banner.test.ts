@@ -19,9 +19,10 @@ import { generate } from './generate/index.ts'
 // spaces around it, so that it's got a bit more impact?" and approved with
 // "Okay, I'm really happy with that. Yeah, let's go with it." This test is the
 // mechanical check the PMO rubric cannot run against a repository, because the
-// transcripts the frames appear in are not tracked. The DRAINED frame, its
-// list and the drain resume line are Kris's of 2026-10-15, "add the DRAINED
-// footer frame below beside REST, BUSY and DONE", held here exactly as drawn.
+// transcripts the frames appear in are not tracked. The HOLD frame, its list,
+// closing line and resume line are the restart-model design note's of
+// 2026-10-15, which Kris's HOLD-BANNER set: "the drain report becomes **hold
+// report**", the frame replacing DRAINED, held here exactly as drawn.
 
 const skillRoot = resolve(import.meta.dir, '..')
 const harnessRoot = resolve(skillRoot, '..', '..', '..')
@@ -59,13 +60,11 @@ const HEADING_EXAMPLE = [
 const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a-z0-9-]+)?$/
 /** The state-of-play thread's heading: a linked territory or Initiative, then ` › State of play`. */
 const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
-/** The form line: the form, the local issued time and the last mark, bold; a drain report names the drain's mark. */
+/** The form line: the form, the local issued time and the last mark, bold; a hold report names the hold's mark. */
 const FORM_LINE =
-  /^\*\*((Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Drain report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$/
+  /^\*\*((Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$/
 /** The footer banner's top border, shared with DONE: `╭─ <form> · <UTC> ─` filled with `─`. */
-const FORM_TOP_BORDER = new RegExp(
-  `^╭─ (summary|recap|full summary|re-bootstrap|drain report|run report) · ${UTC} ─+╮$`
-)
+const FORM_TOP_BORDER = new RegExp(`^╭─ (summary|recap|full summary|re-bootstrap|hold report|run report) · ${UTC} ─+╮$`)
 /** The blank framed line directly inside the top and bottom borders. */
 const PADDING_LINE = `│${' '.repeat(50)}│`
 /** The run of `─` after `╭─ <form> · <UTC> ` that brings the top border to 52 code points. */
@@ -84,16 +83,16 @@ const BUSY_ROWS = [
   '│  █▀▀▄ █  █ ▀▀▀█  ▀█▀   · running or queued work  │',
   '│  █▄▄▀ █▄▄█ ▄▄▄█   █    · lines below say which   │'
 ]
-/** The DRAINED footer's three rows, as Kris drew them on 2026-10-15. */
-const DRAINED_ROWS = [
-  '│  █▀▀▄ █▀▀▄ ▄▀▀▄ ▀█▀ █▄ █   · thread drained      │',
-  '│  █  █ █▀▀▄ █▄▄█  █  █ ▀█   · queries parked      │',
-  '│  █▄▄▀ █  █ █  █ ▄█▄ █  █   · ready to archive    │'
+/** The HOLD footer's three rows, as rule 5 of the restart-model design note draws them. */
+const HOLD_ROWS = [
+  '│  █  █ ▄▀▀▄ █    █▀▀▄   · threads drained         │',
+  '│  █▀▀█ █  █ █    █  █   · queries parked          │',
+  '│  █  █ ▀▄▄▀ █▄▄▄ █▄▄▀   · fully archived          │'
 ]
-/** The DRAINED list, as Kris drew it. */
-const DRAINED_LIST = [
+/** The HOLD list, as the design note draws it. */
+const HOLD_LIST = [
   '',
-  '- [drained] nothing running or queued; committed and pushed',
+  '- [hold] nothing running or queued; committed and pushed',
   '- [parked] <count> queries in the checkpoint',
   '- [left over] <what>, only if any'
 ]
@@ -105,8 +104,10 @@ const AGENT_ITEM = /^- \[(running|queued)\] [^,]+ - .+$/
 /** A waiting item carries the Needs tag alone. */
 const WAITING_ITEM = /^- \[waiting\] [A-Z][A-Z0-9-]*$/
 const REST_ITEM = '- [at rest] nothing running or queued'
-const DRAIN_RESUME_LINE =
-  'Resume <label> on sol from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the parked queries, take stock, restart authorised work, then banner.'
+/** A coordination thread's hold resume line, naming no host. */
+const HOLD_RESUME_LINE =
+  'Resume <label> from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, take stock, put the parked queries back, restart authorised work, then banner.'
+const HOLD_CLOSING_LINE = 'To bring this thread back and continue the work, paste this:'
 const RESUME_LINE =
   'Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
 
@@ -232,12 +233,12 @@ const expectList = (lines: string[]): void => {
   for (const item of items.filter((line) => line.startsWith('- [waiting]'))) expect(item).toMatch(WAITING_ITEM)
 }
 
-test('the standard carries the REST, BUSY and DRAINED footers and the DONE frame, in that order, and no heading frame', () => {
+test('the standard carries the REST, BUSY and HOLD footers and the DONE frame, in that order, and no heading frame', () => {
   const found = frames(standard)
   expect(found).toHaveLength(4)
   expectFooterFrame(found[0], REST_ROWS)
   expectFooterFrame(found[1], BUSY_ROWS)
-  expectFooterFrame(found[2], DRAINED_ROWS)
+  expectFooterFrame(found[2], HOLD_ROWS)
   const done = found[3]
   expect(done).toBeDefined()
   if (!done) return
@@ -271,8 +272,8 @@ test('the form line names only the form, the local issued time and the last mark
   expect('**Summary at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
   expect('**Recap at 09:05 GMT · last mark 14:54 BST**').toMatch(FORM_LINE)
   expect('**Re-bootstrap at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**Drain report at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
-  expect('**Drain report at 15:02 BST · last mark 14:58 BST**').not.toMatch(FORM_LINE)
+  expect('**Hold report at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
+  expect('**Hold report at 15:02 BST · last mark 14:58 BST**').not.toMatch(FORM_LINE)
   expect('**Summary at 2026-10-14T17:03:02Z · last mark 14:54 BST**').not.toMatch(FORM_LINE)
   expect('**Summary at 19:13 BST · since your last message · working**').not.toMatch(FORM_LINE)
   expect('# [Ways of working](/a/b.md)').not.toMatch(HEADING_LINE)
@@ -285,8 +286,8 @@ test('the footer banner keeps the word rows of revision e60b4e45, carries the fo
   expect(busy?.[0]).toBe('╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮')
   expect(fill('summary')).toBe(17)
   expect(fill('recap')).toBe(19)
-  expect(fill('drain report')).toBe(12)
-  for (const form of ['summary', 'recap', 'full summary', 're-bootstrap', 'drain report', 'run report']) {
+  expect(fill('hold report')).toBe(13)
+  for (const form of ['summary', 'recap', 'full summary', 're-bootstrap', 'hold report', 'run report']) {
     const border = `╭─ ${form} · 2026-10-14T18:24:06Z ${'─'.repeat(fill(form))}╮`
     expect(codePoints(border)).toBe(FRAME_COLUMNS)
     expect(border).toMatch(FORM_TOP_BORDER)
@@ -301,16 +302,16 @@ test('the footer banner keeps the word rows of revision e60b4e45, carries the fo
   }
 })
 
-test('the output style carries the report heading and the REST, BUSY and DRAINED footers byte-identical to the standard', () => {
-  const [rest, busy, drained] = frames(standard)
+test('the output style carries the report heading and the REST, BUSY and HOLD footers byte-identical to the standard', () => {
+  const [rest, busy, hold] = frames(standard)
   const styled = frames(outputStyle)
   expect(styled).toHaveLength(3)
   expect(styled[0]).toEqual(rest)
   expect(styled[1]).toEqual(busy)
-  expect(styled[2]).toEqual(drained)
+  expect(styled[2]).toEqual(hold)
   expectFooterFrame(styled[0], REST_ROWS)
   expectFooterFrame(styled[1], BUSY_ROWS)
-  expectFooterFrame(styled[2], DRAINED_ROWS)
+  expectFooterFrame(styled[2], HOLD_ROWS)
   for (const index of [0, 1, 2]) expect(beneath(outputStyle, index)).toEqual(beneath(standard, index))
   const styledHeadings = headings(outputStyle)
   expect(styledHeadings).toHaveLength(1)
@@ -346,19 +347,22 @@ test("the DONE frame shares its block word with ki-recap's frame and differs in 
   expect(done).not.toEqual(recapDone)
 })
 
-test("the DRAINED frame closes a drain report with its drain-report border, Kris's list and the drain resume line", () => {
-  const drained = frames(standard)[2]
-  expect(drained?.[0]).toBe('╭─ drain report · 2026-10-15T14:00:00Z ────────────╮')
-  // Kris drew the border with the 22-character placeholder; a real 20-character time grows the fill by two.
-  expect(codePoints('╭─ drain report · <YYYY-MM-DDTHH:MM:SSZ> ────────────╮')).toBe(FRAME_COLUMNS + 2)
-  expect(beneath(standard, 2)).toEqual(DRAINED_LIST)
+test('the HOLD frame closes a hold report with its hold-report border, its list, the closing line and a resume line naming no host', () => {
+  const hold = frames(standard)[2]
+  expect(hold?.[0]).toBe('╭─ hold report · 2026-10-15T14:00:00Z ─────────────╮')
+  expect(beneath(standard, 2)).toEqual(HOLD_LIST)
   for (const text of [standard, outputStyle]) {
-    expect(text).toContain(`\`\`\`text\n${DRAIN_RESUME_LINE}\n\`\`\``)
-    expect(text).toContain('**Drain report at <local time> · mark <local time>**')
+    expect(text).toContain(`${HOLD_CLOSING_LINE}\n\n`)
+    expect(text).toContain(`\`\`\`text\n${HOLD_RESUME_LINE}\n\`\`\``)
+    expect(text).toContain('**Hold report at <local time> · mark <local time>**')
     expect(text).toContain('the queries live in the checkpoint')
+    expect(text).not.toContain('· thread drained')
+    expect(text).not.toMatch(/Resume <label> on [a-z]+ /)
   }
   expect(standard).toContain('use the BUSY frame instead and say in one line what is blocking')
   expect(standard).toContain('### Draining a thread')
+  expect(standard).toContain('### Picking up a thread')
+  expect(standard).toContain('### Pushing beneath other sessions')
 })
 
 test('the resume line is one sentence shared by the standard and the output style', () => {
@@ -393,16 +397,25 @@ test('the hook line names the report heading, the block-letter footer, the brack
   expect(hook).toContain('with --- between entries')
   expect(hook).toContain('Commit and push the thread folder under +/_THREADS/')
   expect(hook).toContain('Re-anchoring after compaction')
-  expect(hook).toContain('When the owner asks for a drain, follow Draining a thread in ki-pmo')
+  expect(hook).toContain('When the owner asks for a hold, follow Draining a thread in ki-pmo')
   expect(hook).toContain(
-    'a bold Drain report at <local time> · mark <local time> line, then ## Done, ## Parked and ## Left over'
+    'a bold Hold report at <local time> · mark <local time> line, then ## Done, ## Parked and ## Left over'
   )
-  expect(hook).toContain('the DRAINED frame exactly as the standard prints it, its list and the drain resume line')
+  expect(hook).toContain(
+    'the HOLD frame exactly as the standard prints it, its list, the line To bring this thread back'
+  )
+  expect(hook).toContain('Every REST, BUSY, HOLD or DONE banner first rewrites the pick-up block')
+  expect(hook).toContain('Act on each line of the Messages from Master block')
+  expect(hook).toContain('push only when your own commits alone are stacked')
+  expect(hook).not.toContain('DRAINED')
 })
 
 test('every generated surface matches what the standard renders, so none is edited by hand', () => {
   for (const surface of generate(harnessRoot))
-    expect({ path: surface.path, content: readFileSync(resolve(harnessRoot, surface.path), 'utf8') }).toEqual({
+    expect({
+      path: surface.path,
+      content: readFileSync(resolve(harnessRoot, surface.path), 'utf8')
+    }).toEqual({
       path: surface.path,
       content: surface.content
     })

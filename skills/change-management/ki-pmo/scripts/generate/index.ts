@@ -29,8 +29,8 @@ const BANNER_BLOCKS = [
   'heading-example',
   'rest-footer',
   'busy-footer',
-  'drained-footer',
-  'drain-resume-line',
+  'hold-footer',
+  'hold-resume-line',
   'resume-line'
 ] as const
 
