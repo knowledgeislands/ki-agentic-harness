@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-13T13:53:25Z
-updated_at: 2026-10-14T13:43:59Z
+updated_at: 2026-10-15T22:55:39Z
 ---
 
 # Delegation Run Events
@@ -32,6 +32,7 @@ The run that produced the strategy also showed why the vocabulary matters now: t
 
 - In scope: the five event kinds and the run-level close, each with its derivation rule; the milestone line form in the progress protocol and in the run-prompt skeleton; what the waiter and the monitor return; the coordinator reading events at its next turn and never waiting or relaying in the foreground; the privacy rule for anything derived from a packet, stated once so later phases inherit it; the skill's sources note.
 - Merged from KI-HARNESS-GOV-184 on 2026-10-14: the working-area mark rule, with its Goal, Boundary, Steps and open questions carried into Discussion below. The `ki-delegation` part lands in the same standard edit as the event vocabulary; the `ki-diagrams` part is a second Step of this record.
+- Widened on 2026-10-15 (HEADING-LASTING): a mechanical `ki-pmo` rubric check that a saved report's first non-blank line is the report's `#` heading, or, for a report saved as a record with front matter, that the front matter comes first and the `#` heading is the first non-blank line after it; and one `ki-delegation` `assets/run-prompt.md` footer line saying so. Kris widened the record in these words: "Widen KI-HARNESS-GOV-175 to add a mechanical ki-pmo rubric check that a saved report's first non-blank line is the # heading (or that record's front matter, then the heading) and one ki-delegation run-prompt.md footer line saying so; no new record."
 - Out of scope: the notifier, channels, receipts, quiet hours, Telegram, Slack and the Observatory, which are phases 2 to 4 of the strategy; the owner-facing side of the vocabulary, which moves to `ki-pmo` once the PMO extraction pilot creates that skill; any change to the owner report shape Kris set on 2026-10-13: "standardise owner reports through the ways-of-working process. Three sections in order: 1 What has been done (outcomes, material failures, corrections, limitations); 2 What is in progress ...; 3 Outstanding queries, each headed '<stable tag> - <plain title>'".
 
 ## Requirements
@@ -41,6 +42,7 @@ The run that produced the strategy also showed why the vocabulary matters now: t
 3. Waiter and monitor: `wait --next` returns the next unseen event in the order it happened and marks that event seen; `watch` shows events as they appear and still ends `ALL FINISHED`. The Run queue and Monitoring sections say so in place of the finish-only wording.
 4. Coordinator out of the path: a coordinator reads events at its next turn and re-arms the waiter; it never waits, polls or relays in the foreground. This restates Coordinator responsiveness rather than adding a rule.
 5. Privacy: anything derived from a packet carries summaries, identifiers and paths, never file contents, secrets or the owner's addresses.
+6. Report heading: a `ki-pmo` rubric item, provisionally PMO-10, reads every `*.report.md` in each `+/_THREADS/<run>/` folder and fails one whose first non-blank line is not a `#` heading, skipping a leading front-matter block first; the regenerated `rubric.md` lists it. `assets/run-prompt.md` gains one footer line: the report's first non-blank line is its `#` heading, after front matter if the report has any.
 
 ## Current state
 
@@ -50,14 +52,15 @@ Adopted to `next` as a draft and not yet planned. The `ki-delegation` background
 
 - [ ] Shape this record through `ki-plan` against requirements 1 to 5, once the `tools-ki` mechanics are planned; no delivery step is planned yet.
 - [ ] Plan the working-area mark rule merged from KI-HARNESS-GOV-184 as its own Steps in the same plan: settle the sidecar and front-matter field names, add the rule to the `ki-delegation` and `ki-diagrams` standards and rubrics, write the receipt fields in the `ki-diagrams` exporter, and reword the two SKILL.md summaries.
+- [ ] Plan the HEADING-LASTING widening as its own Steps: the PMO-10 rubric item with boundary tests, `rubric.md` regenerated through `ki dev skill rubric ki-pmo`, and the `run-prompt.md` footer line.
 
 ## Files touched
 
-Not yet determined. The plan is expected to name `skills/governance/ki-delegation/references/standards-background-runs.md`, the skill's `SKILL.md` and `references/sources.md`, and the run-prompt skeleton.
+Not yet determined. The plan is expected to name `skills/governance/ki-delegation/references/standards-background-runs.md`, the skill's `SKILL.md` and `references/sources.md`, and the run-prompt skeleton. The HEADING-LASTING widening adds `skills/change-management/ki-pmo/scripts/rubric/items/threads.ts`, its context and test, `skills/change-management/ki-pmo/references/rubric.md`, and `skills/governance/ki-delegation/assets/run-prompt.md`.
 
 ## Verify
 
-Not yet set. The plan names the exact gates; at minimum the `ki-skills` and `ki-authoring` audits on the skill and the repository test suite.
+Not yet set. The plan names the exact gates; at minimum the `ki-skills` and `ki-authoring` audits on the skill and the repository test suite. `ki repo audit --skill ki-pmo` and `ki dev skill rubric ki-pmo` join this record's gates, with a fixture report that opens with a frame failing and one that opens with front matter then the heading passing.
 
 ## Dependencies / blocks
 

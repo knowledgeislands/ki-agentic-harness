@@ -54,10 +54,11 @@ Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 | `<name>.status` | One line, `HH:MM <TZ> - plain-language activity`, in the owner's local time |
 | `<name>.pid` | The detached process identifier |
 | `<name>.log` | The runtime's combined output |
+| `<name>.work/` | Machine-only scratch with no repository home, removed with the state folder |
 | `queue.jsonl`, `seen`, `dispatch.*` | The run queue, the waiter's seen list and the dispatcher's own files |
 | `worktrees/` | The run's Git worktrees, placed under [Coordination](#coordination) |
 
-Knowledge files live in the owning repository's tracked `+/_THREADS/<run>/` folder, committed as the thread goes:
+Knowledge files live in the owning repository's tracked `+/_THREADS/<run>/` folder, committed as the thread goes. The list is closed: the folder holds the two kinds of file below and nothing else, as Kris set on 2026-10-15: "A thread folder holds a closed list, decisions.md and <name>.report.md only; briefs live in the state folder, work products in their owning home, temporary output in the temporary location."
 
 | File | Content |
 | --- | --- |
@@ -65,6 +66,8 @@ Knowledge files live in the owning repository's tracked `+/_THREADS/<run>/` fold
 | `<name>.report.md` | Each agent's final report, kept until a mark finds its queries all answered and its outcome homed, when the thread deletes it under `ki-pmo`'s [tidying rule](../../../change-management/ki-pmo/references/standards-pmo.md#tidying-the-thread-folder) and Git history holds it |
 
 The owning repository is the one that holds the thread's checkpoint, and the folder takes the run's name, so a thread that spans repositories commits its log in one place and agents working in other repositories report into it. `ki agent` is the only writer of the knowledge files there, as Kris decided on 2026-10-14: "make the launcher the only writer of the thread folder's log and report files". The thread commits them.
+
+Everything else a run produces has a home outside the thread folder. A brief, the prompt a run is launched from, lives in the state folder beside the packet. A work product, such as a record, a standard, a diagram or a patch, lives in its owning home in the repository that owns it and is committed there. Temporary output lives in `<primary checkout>/tmp/<run>/<name>/` in the repository the agent works in, which that repository ignores; the agent deletes it once it is superfluous, and it goes when the run closes. Machine-only scratch that belongs to no repository may stay in the state folder as `<name>.work/`. Kris set the temporary home on 2026-10-15: "Temporary output goes in <primary checkout>/tmp/<run>/<name>/ in the repository the agent works in, ignored and deleted when the run closes or they are superflous to requirements; machine-only scratch may stay in the state folder as <name>.work/."
 
 The agent overwrites its status at each change of activity and at least every two minutes, writes its report, then writes `DONE` as the last line of its status. `DONE` is the only completion signal.
 
