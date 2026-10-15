@@ -82,6 +82,18 @@ describe('state-of-play checkpoint', () => {
     expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
   })
 
+  test('a state-of-play checkpoint labelled `<Space> > SoP` passes', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    checkpoint(root, '_state-of-play', { label: 'KI > SoP' })
+    expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
+  })
+
+  test('a state-of-play checkpoint with another label is a violation', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    checkpoint(root, '_state-of-play', { label: 'KI state of play' })
+    expect(statuses(context(root).master.outcomes)).toEqual(['VIOLATION'])
+  })
+
   test('a state-of-play checkpoint outside a Capital is a violation', () => {
     const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
@@ -105,6 +117,15 @@ describe('coordination thread checkpoints', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI Model: ways-of-working' })
+    register(root, 'Projects', 'ways-of-working')
+    register(root, 'Initiatives', 'knowledge-islands-model')
+    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+  })
+
+  test('a `<Space> > <Initiative> > <project in words>` label passes', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    checkpoint(root, '_state-of-play', { label: 'KI > SoP' })
+    checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI > Model > ways of working' })
     register(root, 'Projects', 'ways-of-working')
     register(root, 'Initiatives', 'knowledge-islands-model')
     expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])

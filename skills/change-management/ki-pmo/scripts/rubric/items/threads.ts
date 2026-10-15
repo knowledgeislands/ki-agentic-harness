@@ -7,7 +7,7 @@ const PMO_1: RubricItem<PmoRubricContext> = {
   code: 'PMO-1',
   title: 'the state-of-play checkpoint belongs to the Capital',
   description:
-    'A territory Capital, a repository whose declared `capital` is itself, holds the state-of-play thread checkpoint `+/_CHECKPOINTS/_state-of-play.md` labelled `Master: state-of-play`, and no other repository holds one.',
+    'A territory Capital, a repository whose declared `capital` is itself, holds the state-of-play thread checkpoint `+/_CHECKPOINTS/_state-of-play.md` labelled `<Space> > SoP`, or `Master: state-of-play` until its change is approved, and no other repository holds one.',
   sources: [`${SOURCE}#state-of-play-thread`],
   mechanical: {
     level: 'FAIL',
@@ -24,7 +24,7 @@ const PMO_2: RubricItem<PmoRubricContext> = {
   code: 'PMO-2',
   title: 'coordination thread checkpoints resolve in the registry',
   description:
-    "Each `<initiative>.<project>.md` checkpoint's label ends in `: <project>`, and on a Capital its Project and Initiative resolve in the `Streams/Projects/` and `Streams/Initiatives/` registry.",
+    "Each `<initiative>.<project>.md` checkpoint's label ends in its Project in words, as in `KI > Model > ways of working`, or in the earlier form `: <project>`, and on a Capital its Project and Initiative resolve in the `Streams/Projects/` and `Streams/Initiatives/` registry.",
   sources: [`${SOURCE}#coordination-threads`],
   mechanical: {
     level: 'WARN',

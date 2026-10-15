@@ -60,7 +60,7 @@ Closed metadata and document shape make one snapshot portable and deterministica
   - _Review prompt:_ Can the schema correction be made without inventing or discarding user-owned reconstruction state?
   - _Outcomes:_ conforming; explicit update required; escalate to user
   - _Conforming guidance:_ Ask the user to update uncertain authored content; the checker must not infer missing checkpoint state.
-- **RECORD-3 [M + J] — record carries a presentation label** — Each active record carries a `label`: the exact thread name the human uses in their client, of the form `<Initiative title>: <project>`, or `Master: state-of-play` for the state-of-play thread. The label is presentation only and never used for resolution. (standards-checkpoints.md)
+- **RECORD-3 [M + J] — record carries a presentation label** — Each active record carries a `label`: the exact thread name the human uses in their client, of the form `<Space> > <Initiative> > <project in words>`, `<Space> > SoP` for the state-of-play thread or `<Space> > <topic>`, with a `(<host>)` suffix only for a thread limited to that machine; a label in the earlier `<Initiative title>: <project>` or `Master: state-of-play` form stays valid until the owner approves its change. The label is presentation only and never used for resolution. (standards-checkpoints.md)
   - _Remediation:_ guarded — Add the label through an explicit checkpoint update; resolution still goes by thread and Project name.
   - _Evidence scope:_ Every checkpoint label.
   - _Review prompt:_ Does each label match the name the human uses for the thread in their client?

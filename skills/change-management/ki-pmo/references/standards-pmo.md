@@ -85,7 +85,7 @@ Every thread is one of three types, which Kris adopted on 2026-10-14 with "adopt
 | --- | --- | --- | --- |
 | Purpose | Does one bounded piece of work with the owner directly | Coordinates one Project through background agents | The coordination thread of coordination threads: dispatches the territory's work into its coordination threads; project management only |
 | Delegates | May, but need not | Always, under the three rules | Always, under the three rules |
-| Identity | None required; an optional generic checkpoint | `+/_CHECKPOINTS/<initiative>.<project>.md`, label `<Initiative title>: <project>` | `+/_CHECKPOINTS/_state-of-play.md` in the Capital, label `Master: state-of-play` |
+| Identity | None required; an optional generic checkpoint | `+/_CHECKPOINTS/<initiative>.<project>.md`, label `<Space> > <Initiative> > <project in words>` | `+/_CHECKPOINTS/_state-of-play.md` in the Capital, label `<Space> > SoP` |
 | Run and thread folder | None | Run `<project>`, folder `+/_THREADS/<project>/` | Run `<territory>-state-of-play`, folder `+/_THREADS/<territory>-state-of-play/` |
 | Decisions | In the work it drives | The Project's [one list](#one-list) in the thread folder | Its own list in its thread folder |
 | Banner | None; ends DONE through `ki-recap`, or reaches a hold where it has a checkpoint | The report heading, Initiative › Project, with the form line; the block-letter REST or BUSY footer; HOLD when it [drains](#draining-a-thread); DONE once at [Project close](#project-close) | The report heading, territory or Initiative › State of play, with the form line; the block-letter REST or BUSY footer; HOLD when it drains, last in a territory hold; DONE only at territory close |
@@ -616,14 +616,14 @@ A coordination thread coordinates exactly one Project for the owner. It is alway
 - **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current. The checkpoint is named `<initiative>.<project>.md` and the state-of-play thread's `_state-of-play.md`, under [the checkpoint naming rule](../../../governance/ki-checkpoint/references/standards-checkpoints.md#coordination-thread-naming); a Project that changes Initiative has its checkpoint renamed in the same change. The checkpoint also holds the thread's [mark](#recap-since-the-mark).
 - **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises, in the Project's [one list](#one-list).
 - **State-of-play thread:** the [state-of-play thread](#state-of-play-thread) owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A coordination thread raises those there.
-- **Naming:** where the runtime can name a session, the thread takes the checkpoint's `label`, such as `Techne: agent-host`, so the state-of-play thread can find it. The label is presentation only; [the checkpoint label rule](../../../governance/ki-checkpoint/references/standards-checkpoints.md#thread-label) owns its form.
+- **Naming:** where the runtime can name a session, the thread takes the checkpoint's `label`, such as `KI > Model > ways of working`, so the state-of-play thread can find it. The label is presentation only; [the checkpoint label rule](../../../governance/ki-checkpoint/references/standards-checkpoints.md#thread-label) owns its form, `<Space> > <Initiative> > <project in words>`, which Kris adopted on 2026-10-15 from a thread list running `KI > SoP`, `KI > Model > ways of working`, `KI > mics / webcams` and `Acquire > intake (sol)`: "this is a better way I think". A `(<host>)` suffix appears only for a thread limited to that machine, in Kris's words "the machine is only added if its limited to that machine", so a thread that resumes anywhere names no host. A label in the earlier `<Initiative title>: <project>` form stays until the owner approves its change.
 - **Opening:** open a coordination thread only where there is active work to drive, within the state-of-play thread's [cap](#state-of-play-thread). A dormant Project needs no thread.
 - **Scope:** it works only its own Project's records. Work that belongs to another Project goes to that Project's thread or checkpoint through the state-of-play thread.
 - **Close:** it ends with DONE only at [Project close](#project-close), after the tidy; until then it alternates REST and BUSY, and a thread [drained](#draining-a-thread) to a hold ends its session HOLD, to resume from its checkpoint's [pick-up block](#picking-up-a-thread).
 
 ### State-of-play thread
 
-Each territory Capital has one state-of-play thread: the coordination thread of the territory's coordination threads. Its checkpoint is `+/_CHECKPOINTS/_state-of-play.md` in that Capital, labelled `Master: state-of-play`, and it does project management only: it runs no delivery itself and routes all real work to coordination threads. No repository other than a Capital holds a `_state-of-play.md` checkpoint. It shows DONE only when the territory closes.
+Each territory Capital has one state-of-play thread: the coordination thread of the territory's coordination threads. Its checkpoint is `+/_CHECKPOINTS/_state-of-play.md` in that Capital, labelled `<Space> > SoP`, such as `KI > SoP`, or `Master: state-of-play` until the owner approves the change, and it does project management only: it runs no delivery itself and routes all real work to coordination threads. No repository other than a Capital holds a `_state-of-play.md` checkpoint. It shows DONE only when the territory closes.
 
 - **Registry:** the Initiatives and Projects it manages are defined in the Capital's `Streams/` registry under the `ki-work` Project registry standard, and their work records live in the roadmaps of the territory's repositories.
 - **Owns:** cross-Project priorities, releases, decisions touching more than one Project, [directions](#directions-from-the-state-of-play-thread) to coordination threads, written directly into their checkpoints and Project notes, the coordination-thread queue, and a territory [hold](#draining-a-thread) with the list of threads to restart from it.
@@ -641,7 +641,7 @@ For the state-of-play thread:
 ```text
 Bootstrap as the state-of-play thread for <territory> under ki-pmo.
 Role: coordinator only. The thread never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
-Label: Master: state-of-play. Checkpoint: +/_CHECKPOINTS/_state-of-play.md in <capital>.
+Label: <Space> > SoP. Checkpoint: +/_CHECKPOINTS/_state-of-play.md in <capital>.
 Project management only: priorities, the coordination-thread queue (cap three or four), decisions and releases; route real work to coordination threads.
 Background agents: run substantive work through `ki agent` in run `<territory>-state-of-play`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
@@ -653,7 +653,7 @@ For a coordination thread:
 ```text
 Bootstrap as the <project> coordination thread under ki-pmo.
 Role: coordinator only. The thread never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
-Label: <Initiative title>: <project>. Checkpoint: +/_CHECKPOINTS/<initiative>.<project>.md in <capital>.
+Label: <Space> > <Initiative> > <project in words>. Checkpoint: +/_CHECKPOINTS/<initiative>.<project>.md in <capital>.
 Project: <project> (Initiative <initiative>); work only this Project's records.
 Background agents: run substantive work through `ki agent` in run `<run>`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
@@ -817,10 +817,10 @@ The checkpoint alone says how a thread is picked up. Kris set it on 2026-10-15, 
 | Banner | Thread type | Status | Resume line in the pick-up block | First on resume |
 | --- | --- | --- | --- | --- |
 | REST | Coordination | `rest` | `Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.` | Re-bootstrap, act on the messages block, mark, Summary with the open queries carried forward |
-| REST | State-of-play | `rest` | As coordination, label `Master: state-of-play` | As coordination, then check each coordination thread's pick-up block |
+| REST | State-of-play | `rest` | As coordination, label `<Space> > SoP` | As coordination, then check each coordination thread's pick-up block |
 | BUSY | Coordination or state-of-play | `busy` | `Resume <label> from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, reconcile running agents with ki agent status, take stock, restart only what stopped, then banner.` | Recovery, not a planned restart: reconcile each `[running]` and `[queued]` agent against `ki agent status`; one not found counts as stopped and restarts from its brief |
 | HOLD | Coordination | `hold` | `Resume <label> from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, take stock, put the parked queries back, restart authorised work, then banner.` | Only when the state-of-play pick-up block names it for restart, or the owner does: continue from its next steps, raise the parked queries as open queries |
-| HOLD | State-of-play | `hold` | `Resume Master: state-of-play from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, fold or discard held branches, take stock, reinstate the threads it names, put the parked queries back, then banner.` | Resumes first; hands its resume line to each thread its next steps name for restart, and every other thread stays held |
+| HOLD | State-of-play | `hold` | `Resume <Space> > SoP from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, fold or discard held branches, take stock, reinstate the threads it names, put the parked queries back, then banner.` | Resumes first; hands its resume line to each thread its next steps name for restart, and every other thread stays held |
 | HOLD | Conversational with a checkpoint | `hold` | `Resume <label> from its checkpoint since <mark>: read the pick-up block and take the next step with me.` | Continue the next step with the owner under `ki-recap` |
 | DONE | Coordination | `done` | None | Nothing resumes. Reopening is a new opener from the state-of-play thread |
 | DONE | State-of-play | `done` | None | Territory closed. Nothing resumes |

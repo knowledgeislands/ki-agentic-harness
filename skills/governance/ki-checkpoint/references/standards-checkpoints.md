@@ -39,7 +39,16 @@ A human opener names only the Project, for example `Re-bootstrap as the agent-ho
 
 ## Thread label
 
-An active record carries an optional `label`: the exact name the human gives the thread in their editor or agent client, so that it can be copied straight in. Its form is `<Initiative title>: <project>`, for example `Techne: agent-host`, `Rig: mac-studio-bootstrap`, or `Platform Foundations: chezmoi`; the state-of-play thread's label is `Master: state-of-play`. A checkpoint with no Project uses a short descriptive label of the same shape.
+An active record carries an optional `label`: the exact name the human gives the thread in their editor or agent client, so that it can be copied straight in. Its form is a path of segments joined by ` > `, which Kris adopted on 2026-10-15 from the thread list `KI > SoP`, `KI > Model > ways of working`, `KI > Model > knowledge acquisition`, `KI > Rig > mac studio setup`, `KI > mics / webcams`, `Acquire > intake (sol)` and `Chezmoi > misc (sol)`: "this is a better way I think".
+
+- **State-of-play thread:** `<Space> > SoP`, for example `KI > SoP`.
+- **Coordination thread:** `<Space> > <Initiative> > <project in words>`, for example `KI > Model > ways of working` or `KI > Rig > mac studio setup`, the Initiative written as its short display name and the Project's key written as words.
+- **Conversational thread, or a checkpoint with no Project:** `<Space> > <topic>`, for example `KI > mics / webcams`.
+- **Host:** a `(<host>)` suffix only when the thread is limited to that machine, as in `Acquire > intake (sol)`; a thread that resumes from its checkpoint anywhere names no host, consistent with `ki-pmo`'s rule that no thread state or resume line names a host. Kris set the suffix in these words: "no, the machine is only added if its limited to that machine, so intake and chezmoi misc are machine specific".
+
+`<Space>` is the short display name of the group heading the editor shows the thread under, which is the repository: `ki-principal` shows as `KI`, `acquire` as `Acquire` and `chezmoi` as `Chezmoi`. It is the short name, not the heading verbatim.
+
+Labels written before 2026-10-15 take the earlier form `<Initiative title>: <project>`, such as `KI Model: ways-of-working`, and the state-of-play thread's `Master: state-of-play`. They stay valid until the owner approves each change; a label is never rewritten without that approval. The mapping is mechanical: `KI Model: ways-of-working` becomes `KI > Model > ways of working`, `Master: state-of-play` in the Knowledge Islands Capital becomes `KI > SoP`; the Initiative title loses its Space and the Project key its hyphens.
 
 A label is presentation only. Resolution and identity always go by the thread name and Project name, never the label, and a label may change without renaming the record. A missing label is a recommendation (WARN), not a failure.
 
@@ -51,14 +60,14 @@ An active record has exactly these frontmatter fields, with `label` recommended 
 ---
 type: ki-checkpoint
 thread: ki.portable-checkpoints
-label: 'Knowledge Islands: portable-checkpoints'
+label: 'KI > Knowledge Islands > portable checkpoints'
 state: active
 created_at: 2026-08-06T12:00:00Z
 updated_at: 2026-08-06T14:30:00Z
 ---
 ```
 
-When present, `label` is a non-empty single-line string; quote it in YAML because it contains a colon.
+When present, `label` is a non-empty single-line string; quote it in YAML because it contains `>` or, in the earlier form, a colon.
 
 Timestamps use UTC RFC 3339 second precision. `created_at` is no later than `updated_at`.
 

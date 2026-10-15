@@ -130,6 +130,15 @@ const registrySlugs = (directory: string): ReadonlySet<string> | undefined => {
   return slugs
 }
 
+const LEGACY_MASTER_LABEL = 'Master: state-of-play'
+const MASTER_LABEL = /^\S.* > SoP$/
+
+const masterLabel = (label: unknown): boolean =>
+  typeof label === 'string' && (label === LEGACY_MASTER_LABEL || MASTER_LABEL.test(label))
+
+const projectLabel = (label: string, project: string): boolean =>
+  label.endsWith(`: ${project}`) || label.toLowerCase().endsWith(` > ${project.replaceAll('-', ' ')}`)
+
 const masterOutcomes = (root: string, records: readonly Checkpoint[] | undefined, capital: boolean): AuditOutcome[] => {
   const master = records?.find((record) => record.thread === MASTER_THREAD)
   if (capital && !master)
@@ -149,11 +158,12 @@ const masterOutcomes = (root: string, records: readonly Checkpoint[] | undefined
         subject: master.path
       }
     ]
-  if (master && master.fields?.label !== 'Master: state-of-play')
+  if (master && !masterLabel(master.fields?.label))
     return [
       {
         status: 'VIOLATION',
-        message: 'the state-of-play thread checkpoint is labelled `Master: state-of-play`',
+        message:
+          'the state-of-play thread checkpoint is labelled `<Space> > SoP`, or `Master: state-of-play` until its change is approved',
         subject: master.path
       }
     ]
@@ -170,10 +180,10 @@ const labelOutcomes = (root: string, records: readonly Checkpoint[], capital: bo
     if (!match?.groups) continue
     const { initiative, project } = match.groups as { initiative: string; project: string }
     const label = record.fields?.label
-    if (typeof label === 'string' && !label.endsWith(`: ${project}`))
+    if (typeof label === 'string' && !projectLabel(label, project))
       outcomes.push({
         status: 'VIOLATION',
-        message: `the label of a coordination thread checkpoint ends in its Project name, \`: ${project}\``,
+        message: `the label of a coordination thread checkpoint ends in its Project name, \` > ${project.replaceAll('-', ' ')}\` or \`: ${project}\``,
         subject: record.path
       })
     if (projects && !projects.has(project))
