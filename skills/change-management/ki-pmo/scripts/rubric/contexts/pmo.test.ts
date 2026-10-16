@@ -8,6 +8,7 @@ import {
   isCapital,
   recordIdentifiers,
   reportLinkFindings,
+  reportQueryTags,
   repositoryIdentity
 } from './pmo.ts'
 
@@ -263,6 +264,55 @@ describe('thread report links', () => {
     const outcomes = context(root).links.outcomes
     expect(statuses(outcomes)).toEqual(['PASS'])
     expect(outcomes[0]?.message).toContain('No thread report')
+  })
+})
+
+describe('thread folder tidy', () => {
+  const queries = (...tags: string[]): string =>
+    `# Run\n\n## Done\n\nWork.\n\n## Queries\n\n${tags.map((tag) => `### ${tag} - a question\n\n**Query:** Which?\n\n`).join('')}\`\`\`text\n### FENCED - not a query\n\`\`\`\n`
+  const log = (root: string, body: string): void => {
+    mkdirSync(join(root, '+', '_THREADS', 'ways-of-working'), { recursive: true })
+    writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'decisions.md'), body)
+  }
+
+  test('query tags are read from the Queries headings, linked or not, and never from a fenced block', () => {
+    expect(reportQueryTags(queries('PMO-CI', '[THREADS-TRIM](/x.md)'))).toEqual(['PMO-CI', 'THREADS-TRIM'])
+    expect(reportQueryTags('# Run\n\n## Queries\n\nNo outstanding queries\n')).toEqual([])
+  })
+
+  test('a folder of the closed list whose reports carry open queries passes', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    log(root, '- ROUTINE - "Take option a) for PMO-CI"\n')
+    report(root, 'ways-of-working', 'open', queries('PMO-CI', 'THREADS-TRIM'))
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
+  })
+
+  test('a report whose every query the log names, or with none, is listed for the tidy', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    log(root, '- ROUTINE - "Take option a) for PMO-CI and THREADS-TRIM"\n')
+    report(root, 'ways-of-working', 'answered', queries('PMO-CI', 'THREADS-TRIM'))
+    report(root, 'ways-of-working', 'quiet', '# Run\n\n## Queries\n\nNo outstanding queries\n')
+    report(root, 'ways-of-working', 'partial', queries('PMO-CI', 'PMO-CIX'))
+    const outcomes = context(root).tidy.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working'))
+    expect(outcomes[0]?.message).toEndWith(': answered.report.md, quiet.report.md')
+  })
+
+  test('a file or folder outside the closed list is a violation naming it', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    log(root, '')
+    report(root, 'ways-of-working', 'open', queries('PMO-CI'))
+    writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'brief.md'), 'brief\n')
+    mkdirSync(join(root, '+', '_THREADS', 'ways-of-working', 'shots'))
+    const outcomes = context(root).tidy.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.message).toEndWith('outside the closed list: brief.md, shots/')
+  })
+
+  test('no thread folder is not applicable', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['NOT_APPLICABLE'])
   })
 })
 

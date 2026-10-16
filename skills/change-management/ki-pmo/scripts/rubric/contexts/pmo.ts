@@ -2,7 +2,7 @@
  * Read-only discovery of a repository's coordinating threads for the thin `ki-pmo` rubric.
  *
  * Boundary: reads the repository's `.ki.toml` identity, its `+/_CHECKPOINTS/` records, the thread reports under
- * `+/_THREADS/<run>/`, on a Capital the `Streams/Projects/` and `Streams/Initiatives/` registry, and the coordinator
+ * `+/_THREADS/<run>/` with their decisions logs, on a Capital the `Streams/Projects/` and `Streams/Initiatives/` registry, and the coordinator
  * binding: the repository's and the user's Claude Code settings, of which it reads only the output style and the hook
  * commands, and the deployed output style. It never
  * writes, and it never judges a transcript: thread behaviour is reviewed by the judgment items from evidence the
@@ -26,6 +26,10 @@ const PROJECTS_DIRECTORY = join('Streams', 'Projects')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
 const THREADS_DIRECTORY = join('+', '_THREADS')
 const REPORT_SUFFIX = '.report.md'
+const DECISIONS_LOG = 'decisions.md'
+/** A query heading, `### <TAG> - <title>` or `### [<TAG>](<record>) - <title>`, capturing the Needs tag. */
+const NEEDS_TAG = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*'
+const QUERY_HEADING = new RegExp(`^### (?:\\[(${NEEDS_TAG})\\]\\([^)\\s]*\\)|(${NEEDS_TAG})) - `, 'gm')
 /**
  * A full record identifier in prose: repository code, issuing area and serial, composed from the shared grammar, which
  * also matches a Decision Record such as `ADR-KI-HARNESS-010`.
@@ -48,6 +52,7 @@ export type PmoRubricContext = {
   readonly labels: OutcomeContext
   readonly cap: OutcomeContext
   readonly links: OutcomeContext
+  readonly tidy: OutcomeContext
   readonly binding: OutcomeContext
   readonly judgment: OutcomeContext
 }
@@ -279,6 +284,71 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
   return outcomes
 }
 
+/** Thread folders: `+/_THREADS/<run>/`, or undefined when no thread folder exists. */
+const threadFolders = (root: string): readonly string[] | undefined => {
+  const directory = join(root, THREADS_DIRECTORY)
+  if (!physicalDirectory(directory)) return undefined
+  return readdirSync(directory, { withFileTypes: true })
+    .filter((run) => run.isDirectory() && !run.isSymbolicLink())
+    .map((run) => join(directory, run.name))
+    .sort((left, right) => left.localeCompare(right))
+}
+
+/**
+ * The Needs tags of a report's open queries: the `###` headings under its `## Queries` section, each
+ * `<TAG> - <title>`, the tag optionally linked to its record. A report with no Queries section, or one that says it has
+ * no outstanding queries, names none.
+ */
+export const reportQueryTags = (text: string): readonly string[] => {
+  const prose = text.replace(FENCED_BLOCK, ' ')
+  const section = /^## Queries[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(prose)?.[1] ?? ''
+  return Array.from(section.matchAll(QUERY_HEADING), (match) => match[1] ?? match[2] ?? '').filter(Boolean)
+}
+
+/**
+ * Review one thread folder for the tidy: files outside the closed list, `decisions.md` and `<name>.report.md`, and the
+ * reports whose queries the decisions log names, so all are answered. Whether each such report's outcome has a durable
+ * home is judged by the thread; the listing names candidates and is never permission to delete.
+ */
+export const threadFolderFindings = (
+  folder: string
+): { readonly stray: readonly string[]; readonly answered: readonly string[] } => {
+  const entries = readdirSync(folder, { withFileTypes: true }).sort((left, right) =>
+    left.name.localeCompare(right.name)
+  )
+  const stray = entries
+    .filter((entry) => !(entry.isFile() && (entry.name === DECISIONS_LOG || entry.name.endsWith(REPORT_SUFFIX))))
+    .map((entry) => (entry.isDirectory() ? `${entry.name}/` : entry.name))
+  const log = existsSync(join(folder, DECISIONS_LOG)) ? readFileSync(join(folder, DECISIONS_LOG), 'utf8') : ''
+  const named = (tag: string): boolean => new RegExp(`(?<![A-Z0-9-])${tag}(?![A-Z0-9-])`).test(log)
+  const answered = entries
+    .filter((entry) => entry.isFile() && !entry.isSymbolicLink() && entry.name.endsWith(REPORT_SUFFIX))
+    .filter((entry) => reportQueryTags(readFileSync(join(folder, entry.name), 'utf8')).every(named))
+    .map((entry) => entry.name)
+  return { stray, answered }
+}
+
+const tidyOutcomes = (root: string, folders: readonly string[]): AuditOutcome[] => {
+  const outcomes: AuditOutcome[] = []
+  for (const folder of folders) {
+    const subject = relative(root, folder)
+    const { stray, answered } = threadFolderFindings(folder)
+    if (stray.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a thread folder holds only \`${DECISIONS_LOG}\` and \`<name>${REPORT_SUFFIX}\`; outside the closed list: ${stray.join(', ')}`,
+        subject
+      })
+    if (answered.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a thread folder keeps only reports with open queries; every query of these is answered in the decisions log, so each whose outcome has a durable home is due for the tidy: ${answered.join(', ')}`,
+        subject
+      })
+  }
+  return outcomes
+}
+
 const settings = (path: string): Readonly<Record<string, unknown>> | null | undefined => {
   if (!existsSync(path)) return undefined
   try {
@@ -362,6 +432,7 @@ export const createPmoSession = ({
   const capital = isCapital(identity)
   const records = checkpoints(root)
   const reports = threadReports(root)
+  const folders = threadFolders(root)
   const absent = records
     ? undefined
     : 'No `+/_CHECKPOINTS/` subarea is present; no coordinating thread has opened here.'
@@ -393,6 +464,15 @@ export const createPmoSession = ({
           ? `Every record identifier in the ${reports.length} thread report(s) under \`+/_THREADS/\` is a link to an existing file.`
           : 'No thread report is present under `+/_THREADS/`.',
         reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
+      )
+    },
+    tidy: {
+      outcomes: one(
+        tidyOutcomes(root, folders ?? []),
+        folders && folders.length > 0
+          ? `The ${folders.length} thread folder(s) under \`+/_THREADS/\` hold only the closed list and reports with open queries.`
+          : 'No thread folder is present under `+/_THREADS/`.',
+        folders ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
       )
     },
     binding: { outcomes: bindingOutcomes(root, userHome) },
