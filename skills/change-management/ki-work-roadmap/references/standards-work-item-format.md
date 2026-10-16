@@ -208,6 +208,8 @@ Use structured sections where the material has a stable shape and retain explora
 
 The roadmap item is the durable handoff record until its work is planned; external links alone are insufficient.
 
+When delivery uses a pull request, record its link in the work-item body, under Context or the relevant Review evidence. Identify the repository and pull-request number unambiguously, for example `[owner/repository#123](https://github.com/owner/repository/pull/123)`. This is a body reference, not a new required frontmatter field or a substitute for the work record's lifecycle: a pull request opening, merging, or closing does not itself change the item's status. Keep local roadmap reading and listing available offline; refresh live pull-request state during an authorised connected review rather than requiring network access for every listing.
+
 ## Detail by stage
 
 ### Triage, or Future / draft

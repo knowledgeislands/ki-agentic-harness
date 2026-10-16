@@ -202,6 +202,11 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] No skill remains declared after the capability it governs has left the repository.
 - [ ] A substantive change to a canonical zone went through the enactment process.
 - [ ] The work record exists and its status matches reality.
+- [ ] Where connected review is authorised and available, each open pull request is reconciled with its canonical work record or has an explicit disposition when no work record governs it.
+- [ ] Review evidence states whether live pull-request coverage was checked or unavailable; an offline roadmap listing is not evidence that no pull requests remain.
+- [ ] Each Ready plan references current criterion identifiers wherever it names governed criteria.
+- [ ] Each Ready plan's Steps and Verify sections cover the same intended outcomes.
+- [ ] Each Ready plan's activation instructions agree with its Steps and Verify sections, including any apply or rollout approval boundary.
 - [ ] Commit messages follow the conventional format and describe the change, not the session.
 - [ ] Staged paths are exactly the paths this work touched.
 - [ ] No other writer's uncommitted work was reverted, stashed, or discarded.
