@@ -12,7 +12,7 @@ export const RETIRE = {
       code: 'RETIRE-1',
       title: 'retirement separately authorised',
       description:
-        'Acquisition remains read-only and retirement requires every evidence gate, a current exact manifest, and immediate human approval.',
+        'Reads and confirmed additive markers remain separate from retirement, which requires every evidence gate, a current exact manifest, and immediate human approval.',
       sources: ['standards-granola-retirement.md#retirement-evidence-gate'],
       judgment: judgment(
         'Does the proposed retirement refuse every missing or stale gate and fall back to a manual manifest when no safe API exists?'

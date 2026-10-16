@@ -5,17 +5,17 @@ ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 ki-acquire-adapter: granola
-ki-acquire-actions: [import, status, reconcile, reset]
-ki-acquire-repository-properties: [folder_ids, duplicate_folder_ids, unfoldered, residual, capture_root, folder_territories]
-ki-acquire-invocation-properties: [refresh-transcripts]
-ki-acquire-capabilities: [account, folders, meetings, details, transcripts]
-ki-acquire-omissions: [source-url, source-timestamps, tags, attachments, media, source-version, deletion-tombstone]
-ki-acquire-mutation-boundary: read-only
+ki-acquire-actions: [import, status, reconcile, reset, mark]
+ki-acquire-repository-properties: [folder_ids, duplicate_folder_ids, unfoldered, residual, capture_root, folder_territories, acquired_folder_id]
+ki-acquire-invocation-properties: [refresh-transcripts, refresh-acquired]
+ki-acquire-capabilities: [account, folders, meetings, details, transcripts, attachments]
+ki-acquire-omissions: [source-url, source-timestamps, tags, media, source-version, deletion-tombstone]
+ki-acquire-mutation-boundary: explicit-marker
 ki-acquire-checkpoint: detail-transcript
 ki-acquire-reset-scopes: [adapter, source, component, rebuild]
 description: >
-  Acquire and reconcile Granola meetings through read-only MCP evidence, including complete date windows,
-  folder routing, faithful reads, checkpoints, and amendment detection. Use for Granola meeting import or
+  Acquire and reconcile Granola meetings through MCP reads, including screenshots, complete date windows,
+  folder routing, verified Acquired markers, checkpoints, and amendment detection. Use for Granola import or
   audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
@@ -30,15 +30,15 @@ This skill governs how Knowledge Islands interprets Granola as a mutable communi
 
 Granola's official remote MCP is the selected source adapter. It supplies authentication and source reads; it does not own KI package construction, repository routing, ledgers, harvesting, trades, or retirement authority. `tools-ki` owns `ki acquire import --adapter granola`, provider-neutral KEP construction, Harbour staging, and executable reconciliation. Knowledge Islands Principal owns the provider-neutral lifecycle.
 
-The `ki-acquire-*` frontmatter is the machine-readable adapter declaration consumed by `tools-ki`. It names the public actions, repository and invocation properties, source capabilities and omissions, read-only mutation boundary, checkpoint model, and reset scopes without requiring an executor to parse prose or infer behaviour from the skill name.
+The `ki-acquire-*` frontmatter is the machine-readable adapter declaration consumed by `tools-ki`. It names the public actions, repository and invocation properties, source capabilities and omissions, explicit-marker mutation boundary, checkpoint model, and reset scopes without requiring an executor to parse prose or infer behaviour from the skill name.
 
 ## Verified provider boundary
 
-The official MCP currently exposes account information, folders, date-window meeting lists, meeting details, transcripts, and natural-language query through read-only tools. Acquisition uses structured listing, detail, and transcript operations; it does not use natural-language query as faithful source evidence. Any unexpected mutation-capable tool, missing stable UUID, saturated unsplittable date window, or unhashable source projection fails closed.
+The refreshed MCP supplies account, paged folders, owned-note date-window lists, meeting details, paged transcripts, and screenshot attachments. Natural-language query remains exploratory. Acquisition allowlists reads and ignores unrelated advertised tools; account, workspace, folder administration, removal, and deletion tools are never invoked. Live schema evidence, not a documentation release date, establishes optional capabilities.
 
-The MCP exposes no native pagination, completeness indicator, update version, source URL, media, or deletion tombstone in the verified surface. The standard therefore requires caller-managed date-window splitting, query-context folder evidence, inferred unfoldered membership, and explicit content revalidation rather than pretending those capabilities exist.
+MCP screenshots are decoded and retained as exact returned bytes, with attachment UUIDs, metadata, true image formats, counts, and checksum manifests. This proves the returned MCP representation; it does not establish byte equivalence with desktop originals. The manual `ki acquire images` path remains available for separately exported originals.
 
-Granola's shared-screen snapshots are source images attached to notes. The current MCP does not enumerate or return them. For an eligible receiver, use Granola desktop's image stack to observe the count and download each original image, then run `ki acquire images --adapter granola --repo <repo> --source <meeting-uuid> --directory <exports> --expected <count>`. The CLI verifies UUID-named exports and stores original bytes with a checksum manifest beside the acquired meeting Markdown. The observed count remains manual source evidence; recheck it before preparing any cleanout. See the acquisition and retirement standards.
+An owner-configured `acquired_folder_id` identifies a private progress folder, independently of territory routing. Routine import skips a marked note only after validating its committed local preservation receipt. `--refresh-acquired --refresh-transcripts` deliberately revalidates it. `ki acquire mark --adapter granola` previews eligible notes; `--confirm` separately authorises additive membership in that exact folder after committed capture, transcript, image, account, and source-version checks. Every original membership must survive readback. A marker is neither reconciliation nor deletion permission; retained checkpoints remain evidence.
 
 ## Operating modes
 
@@ -48,7 +48,7 @@ Explain the skill's purpose, invocation, modes, source boundary, and off-ramps, 
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-acquire-granola --repo <repo>` and apply the judgment criteria in the generated rubric. Review separately supplied runtime evidence for complete date-window enumeration, UUID reconciliation, source-projection hashes, receiver selection, explicit omissions, and absence of source mutation. Do not contact Granola merely to make an audit look complete; unavailable runtime evidence remains a named gap.
+Run `ki repo audit --skill ki-acquire-granola --repo <repo>` and apply the judgment criteria in the generated rubric. Review separately supplied runtime evidence for complete date-window enumeration, UUID reconciliation, source-projection hashes, receiver selection, explicit omissions, and absence of unapproved source mutation. Do not contact Granola merely to make an audit look complete; unavailable runtime evidence remains a named gap.
 
 ### Mode CONFORM
 

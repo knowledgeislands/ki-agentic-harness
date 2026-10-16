@@ -4,16 +4,14 @@
 
 | Source | Governs | Last reviewed |
 | --- | --- | --- |
-| [Granola MCP documentation][granola-mcp] | Official endpoint, OAuth, scopes, current tool descriptions | 2026-10-01 |
+| [Granola MCP documentation][granola-mcp] | Official endpoint, OAuth, scopes, current tool descriptions | 2026-10-16 |
 | [Shared-screen snapshots][granola-snapshots] | Source image capture and Images stack | 2026-10-01 |
 | [Historical export][granola-export] | CSV export contents and limits | 2026-10-01 |
 | [mcporter configuration][mcporter-config] | HTTP transport, OAuth credential boundary, schema and CLI access | 2026-08-27 |
 
 ## Last review
 
-On 2026-10-01, the live MCP still exposed six read-only tools for account, folder, meeting, detail, transcript, and query reads. Granola documents experimental shared-screen snapshots attached to notes in an Images stack. Neither the MCP tool surface nor the documented historical CSV export provides a snapshot inventory or image bytes. The acquisition and retirement standards therefore treat snapshot presence as unverified until a supported source read or per-note inspection establishes it.
-
-Refresh must inspect only schemas and privacy-minimised structural evidence. Never retain account identifiers, meeting identifiers, notes, summaries, transcripts, credentials, or media in this skill.
+On 2026-10-16, official documentation confirmed owned/shared scopes, screenshot reads, and account tools. Separately authorised live schema inspection exposed thirteen tools, including additive/removal membership and folder administration. Structural reads verified owned-note filtering, paged folders and transcripts, listing screenshot counts, detail attachment UUIDs, and image-plus-metadata responses. A bounded authorised additive-marker spike preserved existing memberships. No documented release date establishes when these capabilities arrived. Acquisition allowlists reads; the separate confirmed marker permits only additive membership in an owner-controlled private folder. Screenshot evidence establishes exact returned MCP bytes, not byte equivalence with desktop originals. Retirement retains the independent export gate. Refresh must inspect only schemas and privacy-minimised structural evidence. Never retain account identifiers, meeting identifiers, notes, summaries, transcripts, credentials, or media in this skill.
 
 [granola-mcp]: https://docs.granola.ai/help-center/sharing/integrations/mcp
 [granola-snapshots]: https://docs.granola.ai/help-center/taking-notes/capture-shared-screens

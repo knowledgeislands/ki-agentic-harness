@@ -2,7 +2,7 @@
 
 ## Scope
 
-This standard defines the provider-specific contract for faithfully acquiring Granola meetings into one or more Knowledge Islands repositories. It governs the read-only source adapter and the evidence an executable `ki acquire import --adapter granola` implementation must preserve. Knowledge Islands Principal remains the authority for the provider-neutral lifecycle; `tools-ki` owns executable KEP construction and repository staging.
+This standard defines the provider-specific contract for faithfully acquiring Granola meetings into one or more Knowledge Islands repositories. It governs the read-only acquisition adapter and separately authorised additive progress marker and the evidence an executable `ki acquire import --adapter granola` implementation must preserve. Knowledge Islands Principal remains the authority for the provider-neutral lifecycle; `tools-ki` owns executable KEP construction and repository staging.
 
 ## Contents
 
@@ -31,12 +31,13 @@ Granola's official remote MCP is the selected source adapter. The verified surfa
 - folder listing;
 - global or folder-scoped meeting listing over a named date range;
 - meeting details for at most ten UUIDs per request;
-- one transcript per meeting UUID;
+- paged transcripts per meeting UUID;
+- screenshot count and attachment UUID enumeration, with image reads in batches of at most five;
 - natural-language notes query.
 
-Natural-language query is exploratory and MUST NOT be treated as a faithful acquisition record. Acquisition uses listing, detail, and transcript projections. An implementation MUST allowlist the read-only tools it expects and MUST stop if a mutation-capable operation appears or a required read changes shape incompatibly.
+Natural-language query is exploratory and MUST NOT be treated as a faithful acquisition record. Acquisition uses listing, detail, and transcript projections. An implementation MUST allowlist the read-only tools it invokes and MUST stop when a required read changes shape incompatibly. Unrelated advertised mutation tools do not grant authority and MUST NOT be invoked by acquisition.
 
-The adapter MUST NOT change a folder, tag, note, meeting, workspace, archive state, or deletion state. OAuth and provider credentials remain in the client credential store and MUST NOT enter a KEP, repository configuration, fixture, log, or trade.
+The import adapter MUST NOT change provider state. A separate confirmed marker operation MAY add a verified note to the configured private progress folder under the checks below; it MUST NOT remove any membership or change notes, folder administration, workspace, archive, or deletion state. OAuth and provider credentials remain in the client credential store and MUST NOT enter a KEP, repository configuration, fixture, log, or trade.
 
 ## Transport recovery
 
@@ -59,11 +60,11 @@ Discovery MUST NOT retain meeting notes, summaries, transcripts, participants, o
 
 ### List
 
-`list` enumerates meeting identities through global and folder-scoped custom ISO-date windows. It preserves UUID, title, returned meeting date, participant or involvement evidence, query scope, query window, response hash, and saturation status. Folder membership is evidence from the folder-scoped query context because the verified meeting projection does not carry folder identity.
+`list` enumerates meeting identities through global and folder-scoped custom ISO-date windows. It preserves UUID, title, returned meeting date, participant or involvement evidence, query scope, query window, response hash, and saturation status. Every request MUST filter `involvement.captured_by_me` to true. Rich listing memberships and screenshot counts are retained alongside complete folder-query evidence; disagreement fails closed.
 
 ### Read
 
-`read` retrieves the structured meeting-detail projection and, when entitled, the transcript projection for one stable UUID. A caller MAY batch detail reads up to the provider's verified maximum but treats every meeting as an independent acquisition identity. Acquisition hashes the exact returned projections, then renders their metadata, notes, participants, and transcript into one human-readable Markdown file for that meeting.
+`read` retrieves the structured meeting-detail projection and, when entitled, the transcript projection for one stable UUID. A caller MAY batch detail reads up to the provider's verified maximum but treats every meeting as an independent acquisition identity. Acquisition hashes the exact returned projections, then renders their metadata, notes, participants, and transcript into one human-readable Markdown file for that meeting. Folder and transcript pagination MUST advance without duplicate identities or inconsistent ranges; every transcript page remains hashed source evidence.
 
 ### Checkpoint
 
@@ -136,9 +137,21 @@ Each acquired meeting document preserves everything the official MCP faithfully 
 - acquisition timestamps, window evidence, and checkpoint identity;
 - explicit omissions.
 
-The exact returned MCP projections are hashed as source evidence rather than published as separate machine-oriented payload files. The readable Markdown rendering is the acquired working document and MUST NOT be represented as Granola's undocumented internal record. Verified current omissions include source URL, creation timestamp, update timestamp, tags, native folder membership on a meeting result, transcript timestamps, attachments, audio, recording references or bytes, content version, and deletion tombstone. Later provider fields are acquired only after the schema is refreshed and their fidelity is verified.
+The exact returned MCP projections are hashed as source evidence rather than published as separate machine-oriented payload files. The readable Markdown rendering is the acquired working document and MUST NOT be represented as Granola's undocumented internal record. Verified current omissions include source URL, creation timestamp, update timestamp, tags, audio, recording references or bytes, content version, and deletion tombstone. Later provider fields are acquired only after the schema is refreshed and their fidelity is verified.
 
-Shared-screen snapshots are attachments in the source note's Images stack. They may inform generated text, but the current MCP does not expose their count, identity, image bytes, or deletion state. A text projection MUST NOT stand in for a snapshot. For eligible receivers, the desktop Images stack supplies a manually observed count and a supported Download action. Export each image into an otherwise empty directory, preserving the app-generated `attachment-<uuid>` filename. `ki acquire images --adapter granola --repo <repo> --source <meeting-uuid> --directory <exports> --expected <count>` verifies the staged meeting identity, export count, attachment UUIDs, true image formats, exact bytes, and destination conflicts. It places images and a checksum manifest beside the meeting Markdown; `ki acquire reconcile` rechecks their bytes. This local handoff does not turn the MCP into an attachment inventory. Re-export the current source stack before release and compare its count, attachment UUIDs, and bytes with the committed manifest; retain the note when that cannot be established.
+Shared-screen snapshots are attachments. When MCP attachment access is advertised, acquisition MUST reconcile the listing screenshot count with distinct detail attachment UUIDs, fetch batches of at most five, bind each returned image to its following meeting/attachment metadata, validate canonical base64 and true image format against MIME, and retain exact returned bytes. The checksum manifest records provider, detail-version hash, expected count (including verified zero), attachment UUIDs, metadata, filenames, byte counts, and SHA-256. Assets and manifest MUST verify before the note's acquisition receipt advances. Retain prior manifests and immutable assets; conflicting bytes for an existing attachment UUID fail closed. Recovery MUST recheck image evidence before reusing a completed component.
+
+MCP-byte preservation does not prove equality with desktop originals. The manual `ki acquire images` export path remains available and retirement retains its independent original-export gate. Older MCP schemas without attachment access retain explicit attachment omissions and cannot qualify for automatic progress marking.
+
+### Acquired progress marker
+
+The optional `acquired_folder_id` MUST be distinct from territory selectors and identify an owner-controlled folder with private visibility and audience `only you`. It is progress metadata, never a territory or fallback receiver. Preserve all other memberships. Every live folder still participates in completeness enumeration.
+
+Routine import MAY skip a note in that folder only when its ledger entry matches committed Git evidence and its local document, current MCP image manifest, expected screenshot count, and asset bytes verify against committed files. A retained handled receipt may establish already-preserved status without recreating removed captures. An unproved marker is flagged without reading content; it MUST NOT be treated as successful acquisition. `--refresh-acquired` bypasses the skip for deliberate amendment checks; `--refresh-transcripts` additionally refreshes transcripts. A skip makes no claim that mutable source content is unchanged.
+
+`ki acquire mark --adapter granola` previews an exact date window and optional UUID set. Only `--confirm` invokes `add_note_to_folder`, never a general provider mutation dispatcher. Immediately before adding, require the same account, no recovery journal, a complete committed local capture and available transcript, matching fresh detail/transcript hashes, matching screenshot UUIDs and bytes, and unchanged original memberships. Revalidate the marker's privacy; read back the union of original memberships plus the marker. Failed notes remain visible exceptions without blocking independent successes. Already-marked notes are idempotent after local receipt verification. No import run marks implicitly.
+
+The marker is a source-side processing queue. It does not replace preservation ledgers, authorise source retirement, prove receiver reconciliation, or migrate technical state.
 
 ## Staging and harvesting boundary
 

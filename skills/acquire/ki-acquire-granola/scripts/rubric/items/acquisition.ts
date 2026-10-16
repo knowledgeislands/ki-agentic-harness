@@ -22,17 +22,17 @@ export const ACQUIRE = {
       code: 'ACQUIRE-2',
       title: 'faithful read and checkpoint',
       description:
-        'Exact meeting-detail and transcript projections are hashed separately from identity evidence, retained immutably, and accompanied by explicit omissions.',
+        'Detail, complete transcripts, and MCP screenshot bytes retain identities, hashes, immutable versions, and explicit omissions.',
       sources: ['standards-granola-acquisition.md#acquisition-fidelity', 'standards-granola-acquisition.md#checkpoint'],
       judgment: judgment(
-        'Does runtime evidence preserve exact returned projections, content hashes, immutable versions, provenance, and explicit omissions?'
+        'Does evidence reconcile attachment counts and UUIDs, validate complete transcript pages and image bytes, and preserve hashes, versions, provenance, and omissions?'
       )
     },
     {
       code: 'ACQUIRE-3',
       title: 'amendment revalidation honest',
       description:
-        'Routine and exhaustive content revalidation are distinguished because identity listing cannot prove existing notes or transcripts unchanged.',
+        'Verified Acquired skips remain distinct from explicit exhaustive refresh because identity listing and progress markers cannot prove content unchanged.',
       sources: ['standards-granola-acquisition.md#incremental-acquisition-and-amendments'],
       judgment: judgment(
         'Does the checkpoint evidence name its revalidation coverage and avoid claiming unchanged content from identity listing alone?'

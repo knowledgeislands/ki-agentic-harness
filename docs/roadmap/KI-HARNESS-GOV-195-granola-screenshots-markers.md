@@ -7,12 +7,12 @@ purpose: capability
 project: knowledge-acquisition
 component: acquire
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 2851ef5cc382a9e4a0bda58ec69b101096b28a05
 created_at: 2026-10-16T00:36:09Z
-updated_at: 2026-10-16T00:36:09Z
+updated_at: 2026-10-16T01:04:35Z
 ---
 
 # KI-HARNESS-GOV-195: Granola screenshots and markers
@@ -31,16 +31,16 @@ The owner's approval covers this receiving slice of the reviewed Acquire plan, n
 
 ## Current state
 
-Ready under the owner's explicit approval of the concrete KB-ACQUIRE-004 plan. No implementation edits have begun. Use direct interactive delivery under the current user instruction and repository rules; do not reactivate a historical worker or infer an employee role. Record the current immutable baseline when entering implementation.
+Delivered under the owner-approved cross-repository scope and awaiting human review. The immutable implementation baseline remains recorded above. Live provider rollout belongs to Acquire KB-ACQUIRE-004. This direct interactive session assumes no Paperclip employee role and changes no coordination service.
 
 ## Steps
 
-- [ ] Refresh the source review from the already verified official documentation and live schemas, retaining no account identity, meeting content, screenshots or credentials in the Harness.
-- [ ] Declare the Acquired selector, explicit refresh, attachment capability and separate marker action. Keep source-read operations read-only and allow only explicitly requested addition to the verified private marker folder.
-- [ ] Specify complete owned-note filtering and pagination, exact MCP-returned attachment byte preservation, inventory/hash evidence, original folder retention and valid skip/recovery behaviour.
-- [ ] Keep acquired status, receiver reconciliation and source deletion distinct. State the limits of MCP image fidelity and require fresh independent deletion-readiness evidence rather than treating a folder tag as deletion approval.
-- [ ] Update only the existing rubric/publication affected by the contract and run focused skill/native audits, source tests, TypeScript and authored-document checks.
-- [ ] Record post-change review and exact local commits, return Awaiting review, and use the supported managed Harness refresh only after its required review/admission. This direct human session does not assume a Paperclip employee role or alter its control plane.
+- [x] Refresh the source review from the already verified official documentation and live schemas, retaining no account identity, meeting content, screenshots or credentials in the Harness.
+- [x] Declare the Acquired selector, explicit refresh, attachment capability and separate marker action. Keep source-read operations read-only and allow only explicitly requested addition to the verified private marker folder.
+- [x] Specify complete owned-note filtering and pagination, exact MCP-returned attachment byte preservation, inventory/hash evidence, original folder retention and valid skip/recovery behaviour.
+- [x] Keep acquired status, receiver reconciliation and source deletion distinct. State the limits of MCP image fidelity and require fresh independent deletion-readiness evidence rather than treating a folder tag as deletion approval.
+- [x] Update only the existing rubric/publication affected by the contract and run focused skill/native audits, source tests, TypeScript and authored-document checks.
+- [x] Record post-change review and exact local commits, return Awaiting review, and use the supported managed Harness refresh only after its required review/admission. This direct human session does not assume a Paperclip employee role or alter its control plane.
 
 ## Files touched
 
@@ -71,6 +71,32 @@ Update the existing Granola operating guidance, authority boundaries, skip/refre
 ### Roadmap
 
 Maintain this record and its exact delivery review packet. Leave unrelated retained work unchanged and stop Awaiting review.
+
+## Review
+
+### Delivered
+
+The canonical Granola contract now covers complete owned-note reads, MCP screenshot preservation, private Acquired markers, verified skip/refresh, and separate retirement authority.
+
+### Change Summary
+
+Updated the machine-readable actions, selector, invocation properties and capabilities; acquisition and retirement standards; dated structural source review; and matching rubric definitions/publication. No meeting payload, account identifier, screenshot or credential was retained in the Harness.
+
+### Verification
+
+All 1,194 Harness tests pass, together with TypeScript, ki-skills and work/roadmap audits, generated Granola rubric verification, scoped Biome and authored-Markdown checks. The paired CLI suite passes 1,252 tests with 100% coverage. The managed local development projection uses the native ki dev local route, not a hand-edited installed copy.
+
+### Outstanding concerns
+
+The owning Acquire record still performs live rollout and owner acceptance. The source review establishes observed capabilities, not a dated provider release. Retained acquisition ledgers and independent original-export retirement evidence remain required.
+
+### Post-change review
+
+An independent runtime reviewer found missing screenshot-proof validation during journal recovery and marker membership affecting unfoldered routing. Both were corrected with regressions, including unavailable-detail recovery, acquired-only notes and cross-receiver marker conflicts. Final source readback reported no remaining concrete findings. Exact candidate commit readback is retained with the delivery handoff; this is independent technical review, not impersonation of a registered employee or owner acceptance.
+
+### Mini recap
+
+Read import remains source-read-only. Explicit marking adds one private membership after committed preservation checks, retains every original membership and verifies the result. No deletion, reset, migration, publication or push was performed. Owner acceptance remains pending.
 
 ## Discussion
 

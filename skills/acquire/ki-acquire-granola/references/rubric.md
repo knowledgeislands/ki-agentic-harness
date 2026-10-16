@@ -24,12 +24,12 @@ Complete enumeration, faithful source projections, immutable checkpoints.
   - _Review prompt:_ Does the evidence prove every global and folder window complete, unsaturated, deduplicated, and resumable?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **ACQUIRE-2 [J] — faithful read and checkpoint** — Exact meeting-detail and transcript projections are hashed separately from identity evidence, retained immutably, and accompanied by explicit omissions. (standards-granola-acquisition.md#acquisition-fidelity, standards-granola-acquisition.md#checkpoint)
+- **ACQUIRE-2 [J] — faithful read and checkpoint** — Detail, complete transcripts, and MCP screenshot bytes retain identities, hashes, immutable versions, and explicit omissions. (standards-granola-acquisition.md#acquisition-fidelity, standards-granola-acquisition.md#checkpoint)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does runtime evidence preserve exact returned projections, content hashes, immutable versions, provenance, and explicit omissions?
+  - _Review prompt:_ Does evidence reconcile attachment counts and UUIDs, validate complete transcript pages and image bytes, and preserve hashes, versions, provenance, and omissions?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **ACQUIRE-3 [J] — amendment revalidation honest** — Routine and exhaustive content revalidation are distinguished because identity listing cannot prove existing notes or transcripts unchanged. (standards-granola-acquisition.md#incremental-acquisition-and-amendments)
+- **ACQUIRE-3 [J] — amendment revalidation honest** — Verified Acquired skips remain distinct from explicit exhaustive refresh because identity listing and progress markers cannot prove content unchanged. (standards-granola-acquisition.md#incremental-acquisition-and-amendments)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does the checkpoint evidence name its revalidation coverage and avoid claiming unchanged content from identity listing alone?
   - _Outcomes:_ conforming; gap; exclusion
@@ -73,7 +73,7 @@ Folder evidence, explicit flag policies, central packages, visible receiver conf
 
 Separate release authority, complete evidence gate, manual fallback.
 
-- **RETIRE-1 [J] — retirement separately authorised** — Acquisition remains read-only and retirement requires every evidence gate, a current exact manifest, and immediate human approval. (standards-granola-retirement.md#retirement-evidence-gate)
+- **RETIRE-1 [J] — retirement separately authorised** — Reads and confirmed additive markers remain separate from retirement, which requires every evidence gate, a current exact manifest, and immediate human approval. (standards-granola-retirement.md#retirement-evidence-gate)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does the proposed retirement refuse every missing or stale gate and fall back to a manual manifest when no safe API exists?
   - _Outcomes:_ conforming; gap; exclusion
