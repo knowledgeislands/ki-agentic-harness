@@ -1,0 +1,54 @@
+---
+id: KI-HARNESS-GOV-199
+area: GOV
+title: Thread identity, role and native sessions
+project: ways-of-working
+component: governance
+status: triage
+blocks: []
+blocked_by: []
+baseline_ref: null
+created_at: 2026-10-16T21:28:02Z
+updated_at: 2026-10-16T21:28:02Z
+---
+
+# KI-HARNESS-GOV-199: Thread Identity, Role and Native Sessions
+
+## Goal
+
+Every agent and tool can tell which logical thread a native client session belongs to and which role that thread plays, conversational, coordination or state-of-play, from one portable declaration in the thread's checkpoint, so that coordinator forms reach only coordinating threads and a conversational thread such as Acquire's intake keeps its plain replies on every client and host.
+
+## Context
+
+Kris asked on 16 October 2026, in the `ways-of-working` thread, to "take ownership of native session metadata and logical thread identity under Ways of working", recognising each session's "human name, logical thread, conversational or coordination role, repository, optional checkpoint and lifecycle state". The `session-identity` run researched the clients and drafted the plan in [its report](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/session-identity.report.md). Kris agreed it under SESSION-IDENTITY in the [decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/decisions.md):
+
+> Take the recommended option a) for PLAN-AGREE, THREAD-KEY, BINDING-HOME, SUPPLY-CHANNEL, NAME-AUTHORITY, RECORD-OWNERS, ROLE-FIELD and ROLE-STYLE (mechanism only); capture the three records and start Phase 1 after REPLY-FORMS lands.
+
+The agreed design: the stable key is `<repository name>/<checkpoint stem>`; the checkpoint `label` is authoritative and the native name derives from it; native session identifiers live only in a machine-local binding at `~/.local/state/ki/threads/<repository>/<stem>.json`, never committed and never moved; identity reaches a session through the launcher's environment and name, the `SessionStart` hook on startup, resume and compact, and the pasted resume line where no hook runs; drift is reported, never repaired. The role is an optional checkpoint field `role: conversational | coordination | state-of-play`, absent meaning conversational, with coordinating values valid only where `[skills.ki-pmo]` is declared.
+
+The reply forms, agreed under REPLY-FORMS and delivered as Phase 1a in [KI-HARNESS-GOV-198](KI-HARNESS-GOV-198-reply-forms.md), narrow the plan as the [reporting-forms report](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/reporting-forms.report.md) sets out, and this record carries the narrowed text:
+
+- ROLE-REPORT is withdrawn; the owner-report rule is not scoped by role, and Phase 3 carries no chezmoi owner-report edit.
+- ROLE-STYLE decides the mechanism only: the repository keeps its `outputStyle` selection, whose scope paragraph landed with the reply forms, and `ki agent launch` starts background agents with a non-coordinator style.
+- In the role-gated response table, a conversational "recap" gives the `ki-recap` session recap in its own form, not "plain text"; the conversational "hold" cell is superseded by CONV-CHECKPOINT, so a conversational thread pauses through a plain checkpoint update in `Current state` and `Next step`; and a conversational thread that ends a unit of work gives the completed-work report with no heading or banner. The "summary", "full summary", "status", "resume" and "mark" cells stand.
+- Phase 1 no longer allows a messages block on a conversational checkpoint: under CONV-CHECKPOINT it carries none, and intake removes its block at its own next update.
+- Phase 3 removes the hook-line scope sentence when the hook's role gate lands, with the pointer's conversational clause; the output style's scope paragraph stays, because Claude cannot unload a style.
+
+This record owns the harness phases. [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) owns the `ki thread` tooling and the background-agent style, and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md) the hook registration. [KI-TOOL-KI-CLI-127](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-127-agent-status-live-threads.md) lists live runs and might later show bound threads; [KI-HARNESS-GOV-189](KI-HARNESS-GOV-189-move-thread-between-hosts.md) owns moving a thread between hosts, which this work leaves to it, since bindings are rebuilt on each host.
+
+## Boundary
+
+- **Phase 1, standard.** In `ki-checkpoint`: the optional `role` field, its three values, the conversational default and the rule that coordinating values need `[skills.ki-pmo]`, with its rubric checks; a "thread identity and native sessions" section giving the key, the label as authority, the binding as a local runtime file outside every checkpoint, the three supply channels and drift as report-only, with pointers from the `ki-pmo` Glossary and `ki-delegation`. In `ki-pmo`: Thread types reads the role; Report forms and the SKILL description gate the coordinator forms to coordinating roles with the narrowed role-gated table; Bootstrap binds the session and checks the declared role against the opener; Re-anchoring is limited to coordinating roles; the scope sentences in the hook line and output style read "whose checkpoint declares role coordination or state-of-play" once the territory's coordinating checkpoints carry the field; the rubric item that every coordinating checkpoint carries `role`; and regeneration through `ki dev skill generate ki-pmo --write`. The migration adds `role` to every existing coordinating checkpoint through each thread's own next update or the state-of-play messages block, never by another thread editing it.
+- **Phase 3, hook script.** The shared `SessionStart` script gains `startup` and `resume` handling that emits the identity line ending `role <role>`; `UserPromptSubmit` emits the coordinator line, and `compact` the re-anchoring pointer, only when the resolved role is coordinating; an unbound session in a `ki-pmo` checkout gets nothing; silent under `KI_AGENT_RUN`. The hook-line scope sentence and the pointer's conversational clause go.
+- **Phases 4, 4b and 5.** The pilot result on intake and on the ways-of-working coordination thread is recorded here before acceptance. The intake pilot waits for PILOT-LABEL.
+- **Out:** writing to native sessions beyond the owner's own hand rename; arbitrary vendor metadata; a role in any native name or vendor field; ChatGPT chat binding beyond paste; Claude Desktop and web; moving bindings between hosts; changes to `ki agent` runs beyond the background-agent style; intake's acquisition contract; any coordinator ceremony for conversational threads; NAME-ROOT, NAME-HOST and FOOTER-PROJECTS.
+
+## Dependencies / blocks
+
+- Phase 1 depended on REPLY-FORMS landing, done in [KI-HARNESS-GOV-198](KI-HARNESS-GOV-198-reply-forms.md).
+- Phase 3 needs [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) for the binding file and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md) for the matchers.
+- The intake pilot waits for PILOT-LABEL, which waits for NAMING.
+
+## Discussion
+
+Open for planning: whether the identity section lands with the role field or with the hook in Phase 3, since nothing reads the binding until the tooling exists; and how the rubric tells a coordinating checkpoint from a conversational one named after a Project, given that the file name is never authority for the role.
