@@ -30,7 +30,7 @@ const RECORD_2: RubricItem<RecordContext> = {
   code: 'RECORD-2',
   title: 'frontmatter and headings use the closed schema',
   description:
-    'Active records declare type, thread, state, created_at, and updated_at, plus at most the optional label, which is a non-empty single-line string when present. Every record uses the exact H1 and ordered Objective, Current state, Decisions made, Files touched, Open questions, and Next step H2 sections, each with substantive content.',
+    'Active records declare type, thread, state, created_at, and updated_at, plus at most the optional label, which is a non-empty single-line string when present, and the optional role, which is `conversational`, `coordination` or `state-of-play` when present. Every record uses the exact H1 and ordered Objective, Current state, Decisions made, Files touched, Open questions, and Next step H2 sections, each with substantive content.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -70,11 +70,34 @@ const RECORD_3: RubricItem<RecordContext> = {
   }
 }
 
+const RECORD_4: RubricItem<RecordContext> = {
+  code: 'RECORD-4',
+  title: 'a coordinating role is declared only where ki-pmo is',
+  description:
+    'A record whose `role` is `coordination` or `state-of-play` lives in a repository whose `.ki.toml` declares `[skills.ki-pmo]`; an absent role means `conversational`. The role field is the one authority for the thread type; the repository declaration is only the capability gate.',
+  sources: [`${SOURCE}#thread-role`],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'guarded',
+      guidance:
+        'Declare `[skills.ki-pmo]` where the repository coordinates, or correct the role through an explicit checkpoint update.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => context.role }
+  },
+  judgment: {
+    scope: 'Every checkpoint role.',
+    prompt: 'Does each declared role match how the owner runs the thread?',
+    outcomes: ['conforming', 'explicit update required', 'escalate to user'],
+    guidance: 'Take the role from the owner; never infer it from the label, file name or repository declaration.'
+  }
+}
+
 export const RECORD: RubricFamily<CheckpointsRubricContext, RecordContext> = {
   code: 'RECORD',
   title: 'Checkpoint record',
   description: 'Closed metadata and document shape make one snapshot portable and deterministically readable.',
   standard: SOURCE,
   selectContext: (context) => context.records,
-  items: [RECORD_1, RECORD_2, RECORD_3]
+  items: [RECORD_1, RECORD_2, RECORD_3, RECORD_4]
 }

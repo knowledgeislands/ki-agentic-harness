@@ -54,7 +54,7 @@ Closed metadata and document shape make one snapshot portable and deterministica
   - _Review prompt:_ Is each thread name a stable human-selected lookup key rather than a vendor or runtime identifier?
   - _Outcomes:_ conforming; explicit rename required; escalate to user
   - _Conforming guidance:_ Keep the user-selected thread as the lookup key; do not derive or replace it from runtime metadata.
-- **RECORD-2 [M + J] — frontmatter and headings use the closed schema** — Active records declare type, thread, state, created_at, and updated_at, plus at most the optional label, which is a non-empty single-line string when present. Every record uses the exact H1 and ordered Objective, Current state, Decisions made, Files touched, Open questions, and Next step H2 sections, each with substantive content. (standards-checkpoints.md)
+- **RECORD-2 [M + J] — frontmatter and headings use the closed schema** — Active records declare type, thread, state, created_at, and updated_at, plus at most the optional label, which is a non-empty single-line string when present, and the optional role, which is `conversational`, `coordination` or `state-of-play` when present. Every record uses the exact H1 and ordered Objective, Current state, Decisions made, Files touched, Open questions, and Next step H2 sections, each with substantive content. (standards-checkpoints.md)
   - _Remediation:_ guarded — Correct authored record schema only through an explicit checkpoint update.
   - _Evidence scope:_ The authored frontmatter, headings, and reconstruction sections of every record.
   - _Review prompt:_ Can the schema correction be made without inventing or discarding user-owned reconstruction state?
@@ -66,6 +66,12 @@ Closed metadata and document shape make one snapshot portable and deterministica
   - _Review prompt:_ Does each label match the name the human uses for the thread in their client?
   - _Outcomes:_ conforming; explicit update required; escalate to user
   - _Conforming guidance:_ Take the label from the human; never derive identity or resolution from it.
+- **RECORD-4 [M + J] — a coordinating role is declared only where ki-pmo is** — A record whose `role` is `coordination` or `state-of-play` lives in a repository whose `.ki.toml` declares `[skills.ki-pmo]`; an absent role means `conversational`. The role field is the one authority for the thread type; the repository declaration is only the capability gate. (standards-checkpoints.md#thread-role)
+  - _Remediation:_ guarded — Declare `[skills.ki-pmo]` where the repository coordinates, or correct the role through an explicit checkpoint update.
+  - _Evidence scope:_ Every checkpoint role.
+  - _Review prompt:_ Does each declared role match how the owner runs the thread?
+  - _Outcomes:_ conforming; explicit update required; escalate to user
+  - _Conforming guidance:_ Take the role from the owner; never infer it from the label, file name or repository declaration.
 
 ## LIFECYCLE — Checkpoint lifecycle
 

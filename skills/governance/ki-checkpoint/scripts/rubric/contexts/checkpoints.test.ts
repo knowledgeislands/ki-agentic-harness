@@ -28,11 +28,13 @@ const fixture = (): { repository: string; checkpointDirectory: string } => {
 const record = ({
   thread = 'release-audit',
   label = 'Release: release-audit',
+  role,
   state = 'active',
   body = ''
 }: {
   thread?: string
   label?: string | null
+  role?: string
   state?: string
   body?: string
 } = {}) =>
@@ -41,6 +43,7 @@ const record = ({
     'type: ki-checkpoint',
     `thread: ${thread}`,
     ...(label === null ? [] : [`label: '${label}'`]),
+    ...(role === undefined ? [] : [`role: ${role}`]),
     `state: ${state}`,
     'created_at: 2026-08-12T10:00:00Z',
     'updated_at: 2026-08-12T11:00:00Z',
@@ -183,7 +186,7 @@ test('dotted coordination-thread and leading-underscore state-of-play names pass
   )
   const value = context(repository)
 
-  for (const code of ['RECORD-1', 'RECORD-2', 'RECORD-3'])
+  for (const code of ['RECORD-1', 'RECORD-2', 'RECORD-3', 'RECORD-4'])
     expect(mechanical(RECORD, code).audit.run(RECORD.selectContext(value))[0]?.status).toBe('PASS')
 })
 
@@ -201,6 +204,28 @@ test('a missing label warns and an empty label fails the closed schema', () => {
   expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(context(repository)))[0]?.status).toBe(
     'VIOLATION'
   )
+})
+
+test('a role is one of three values and a coordinating role needs a ki-pmo declaration', () => {
+  const { repository, checkpointDirectory } = fixture()
+  const roleItem = mechanical(RECORD, 'RECORD-4')
+  const schema = () => mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(context(repository)))[0]?.status
+  const role = () => roleItem.audit.run(RECORD.selectContext(context(repository)))[0]?.status
+
+  expect(roleItem.level).toBe('FAIL')
+  writeFileSync(join(checkpointDirectory, 'release-audit.md'), record({ role: 'conversational' }))
+  expect(schema()).toBe('PASS')
+  expect(role()).toBe('PASS')
+
+  writeFileSync(join(checkpointDirectory, 'release-audit.md'), record({ role: 'ad-hoc' }))
+  expect(schema()).toBe('VIOLATION')
+
+  writeFileSync(join(checkpointDirectory, 'release-audit.md'), record({ role: 'coordination' }))
+  expect(schema()).toBe('PASS')
+  expect(role()).toBe('VIOLATION')
+
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-pmo]\n')
+  expect(role()).toBe('PASS')
 })
 
 test('unknown selected capability keys warn without hiding scaffold requirements', () => {

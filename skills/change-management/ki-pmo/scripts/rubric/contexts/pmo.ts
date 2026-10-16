@@ -50,6 +50,7 @@ export type PmoRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly master: OutcomeContext
   readonly labels: OutcomeContext
+  readonly roles: OutcomeContext
   readonly cap: OutcomeContext
   readonly links: OutcomeContext
   readonly tidy: OutcomeContext
@@ -201,6 +202,39 @@ const labelOutcomes = (root: string, records: readonly Checkpoint[], capital: bo
       outcomes.push({
         status: 'VIOLATION',
         message: `the Initiative \`${initiative}\` is not in the Capital's \`Streams/Initiatives/\` registry`,
+        subject: record.path
+      })
+  }
+  return outcomes
+}
+
+/**
+ * Coordinating checkpoints declare their type in `role`: `_state-of-play` as `state-of-play`, an
+ * `<initiative>.<project>` checkpoint as `coordination`, unless the owner has declared it `conversational`, since the
+ * file name is never authority for the role. Only `_state-of-play` carries `state-of-play`.
+ */
+const roleOutcomes = (records: readonly Checkpoint[]): AuditOutcome[] => {
+  const outcomes: AuditOutcome[] = []
+  for (const record of records) {
+    const role = record.fields?.role
+    const master = record.thread === MASTER_THREAD
+    if (master && role !== 'state-of-play')
+      outcomes.push({
+        status: 'VIOLATION',
+        message: 'the state-of-play thread checkpoint declares `role: state-of-play`',
+        subject: record.path
+      })
+    else if (!master && role === 'state-of-play')
+      outcomes.push({
+        status: 'VIOLATION',
+        message: 'only the `_state-of-play` checkpoint declares `role: state-of-play`',
+        subject: record.path
+      })
+    else if (!master && PROJECT_THREAD.test(record.thread) && role === undefined)
+      outcomes.push({
+        status: 'VIOLATION',
+        message:
+          'a coordination thread checkpoint declares `role: coordination`, or `role: conversational` where the owner runs it as a conversation',
         subject: record.path
       })
   }
@@ -453,6 +487,9 @@ export const createPmoSession = ({
         'Every coordination thread checkpoint label ends in its Project name and resolves in the registry.',
         absent
       )
+    },
+    roles: {
+      outcomes: one(roleOutcomes(records ?? []), 'Every coordinating thread checkpoint declares its role.', absent)
     },
     cap: {
       outcomes: one(capOutcomes(records ?? []), 'The active coordination threads are within the cap.', absent)

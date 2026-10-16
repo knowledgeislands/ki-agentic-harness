@@ -8,6 +8,7 @@ A checkpoint is a concise repository-owned reconstruction snapshot for one activ
 - [Record location and identity](#record-location-and-identity)
   - [Coordination-thread naming](#coordination-thread-naming)
 - [Thread label](#thread-label)
+- [Thread role](#thread-role)
 - [Exact record form](#exact-record-form)
 - [Optional runtime reminder consumers](#optional-runtime-reminder-consumers)
 - [Update lifecycle](#update-lifecycle)
@@ -52,9 +53,18 @@ Labels written before 2026-10-15 take the earlier form `<Initiative title>: <pro
 
 A label is presentation only. Resolution and identity always go by the thread name and Project name, never the label, and a label may change without renaming the record. A missing label is a recommendation (WARN), not a failure.
 
+## Thread role
+
+An active record may carry an optional `role`, the one authoritative declaration of the thread's type: `conversational`, `coordination` or `state-of-play`. An absent field, or no checkpoint at all, means `conversational`, the default `ki-pmo` already gives a thread with no stated type. Kris chose the field on 2026-10-16 under ROLE-FIELD: "An optional checkpoint front-matter field `role: conversational | coordination | state-of-play`, absent meaning conversational, coordinating values valid only where `[skills.ki-pmo]` is declared, with existing coordinating checkpoints migrated through their own updates."
+
+- `coordination` and `state-of-play` are valid only in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. The declaration stays the capability gate and is never the role: it covers every session in the checkout.
+- This standard owns the field and its validation; [`ki-pmo`](../../../change-management/ki-pmo/references/standards-pmo.md#thread-types) owns what each value means.
+- Nothing else is authority for the role: not the label, a native session name, the file name or path, the presence of a checkpoint, the repository declaration, an output style, a hook line or a cached copy. An explicit current-thread owner instruction overrides the field for that session only, and an agent offers to write the field rather than writing it unasked.
+- An existing coordinating checkpoint gains its `role` through its own thread's next update, or through the state-of-play thread's messages block; another thread never edits it directly to add one.
+
 ## Exact record form
 
-An active record has exactly these frontmatter fields, with `label` recommended and every other field required:
+An active record has exactly these frontmatter fields, with `label` recommended, `role` optional under [Thread role](#thread-role), and every other field required:
 
 ```yaml
 ---
@@ -67,7 +77,7 @@ updated_at: 2026-08-06T14:30:00Z
 ---
 ```
 
-When present, `label` is a non-empty single-line string; quote it in YAML because it contains `>` or, in the earlier form, a colon.
+When present, `label` is a non-empty single-line string; quote it in YAML because it contains `>` or, in the earlier form, a colon. When present, `role` is one of `conversational`, `coordination` or `state-of-play`, placed after `label`, as in `role: coordination`.
 
 Timestamps use UTC RFC 3339 second precision. `created_at` is no later than `updated_at`.
 

@@ -1,18 +1,21 @@
 ---
 id: KI-HARNESS-GOV-199
 area: GOV
-title: Thread identity, role and native sessions
+title: Thread identity and role
+kind: deliver
+purpose: governance
 project: ways-of-working
 component: governance
-status: triage
+horizon: now
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 72ad16866f1f3b4fbae2cac0f7c1ce09395465d2
 created_at: 2026-10-16T21:28:02Z
-updated_at: 2026-10-16T21:28:02Z
+updated_at: 2026-10-16T21:32:06Z
 ---
 
-# KI-HARNESS-GOV-199: Thread Identity, Role and Native Sessions
+# KI-HARNESS-GOV-199: Thread Identity and Role
 
 ## Goal
 
@@ -43,12 +46,58 @@ This record owns the harness phases. [KI-TOOL-KI-CLI-145](/Users/krisbrown/works
 - **Phases 4, 4b and 5.** The pilot result on intake and on the ways-of-working coordination thread is recorded here before acceptance. The intake pilot waits for PILOT-LABEL.
 - **Out:** writing to native sessions beyond the owner's own hand rename; arbitrary vendor metadata; a role in any native name or vendor field; ChatGPT chat binding beyond paste; Claude Desktop and web; moving bindings between hosts; changes to `ki agent` runs beyond the background-agent style; intake's acquisition contract; any coordinator ceremony for conversational threads; NAME-ROOT, NAME-HOST and FOOTER-PROJECTS.
 
+## Current state
+
+Phase 1's role field has landed: the `ki-checkpoint` Thread role section with the optional `role` field, its three values, the conversational default and the `[skills.ki-pmo]` rule, checked by RECORD-2 and the new RECORD-4; one paragraph in the `ki-pmo` Thread types section; and the new PMO-10 rubric item, at WARN while existing coordinating checkpoints migrate through their own updates. The rest of Phase 1, the identity section and the `ki-pmo` Bootstrap and Re-anchoring role edits, the scope-sentence rewording, Phase 3 and the pilots remain.
+
+## Steps
+
+- [x] Add the `role` field, its three values, the conversational default and the `[skills.ki-pmo]` rule to the `ki-checkpoint` standard, with RECORD-2 accepting the field and RECORD-4 gating coordinating values.
+- [x] Have `ki-pmo` Thread types read the role, and add PMO-10 checking that every coordinating checkpoint declares it.
+- [x] Regenerate both rubrics and the `ki-pmo` surfaces.
+- [ ] Add the thread identity and native sessions section to `ki-checkpoint`, with pointers from the `ki-pmo` Glossary and `ki-delegation`.
+- [ ] Gate Report forms by role with the narrowed role-gated table; have Bootstrap check the declared role against the opener; limit Re-anchoring to coordinating roles.
+- [ ] Once the territory's coordinating checkpoints carry `role`, reword the hook-line and output-style scope sentences to "whose checkpoint declares role coordination or state-of-play" and regenerate.
+- [ ] Phase 3: the hook script's identity line and role gate, removing the hook-line scope sentence and the pointer's conversational clause.
+- [ ] Record the pilot results from Phases 4 and 4b.
+
+## Files touched
+
+- `skills/governance/ki-checkpoint/references/standards-checkpoints.md`, `references/rubric.md`, `scripts/rubric/contexts/checkpoints.ts`, `checkpoints.test.ts`, `scripts/rubric/items/records.ts`
+- `skills/change-management/ki-pmo/references/standards-pmo.md`, `references/rubric.md`, `scripts/rubric/contexts/pmo.ts`, `pmo.test.ts`, `scripts/rubric/items/threads.ts`
+- Later: `hooks/coordinator-reminder.sh` and its test, `output-styles/ki-coordinator.md`, `skills/governance/ki-delegation/references/standards-background-runs.md`
+- `docs/roadmap/_ISSUES.md`, this record
+
+## Verify
+
+`bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-checkpoint`, `--skill ki-pmo`, `--skill ki-skills` and `--skill ki-work-roadmap`, run sequentially; then the pilot steps in the session-identity report.
+
 ## Dependencies / blocks
 
 - Phase 1 depended on REPLY-FORMS landing, done in [KI-HARNESS-GOV-198](KI-HARNESS-GOV-198-reply-forms.md).
 - Phase 3 needs [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) for the binding file and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md) for the matchers.
 - The intake pilot waits for PILOT-LABEL, which waits for NAMING.
 
+## Documentation impact
+
+### Decision Records
+
+None: the decisions are Kris's SESSION-IDENTITY and REPLY-FORMS answers, quoted in the standards and the decisions log.
+
+### Specifications
+
+None: the `ki-checkpoint` and `ki-pmo` standards are the contracts and change in place.
+
+### Guides
+
+None yet; the website skills guide describes skills by outcome. Revisit when `ki thread` ships in [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md), which will need a how-to.
+
+### Roadmap
+
+The tooling and registration follow in [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md).
+
 ## Discussion
 
-Open for planning: whether the identity section lands with the role field or with the hook in Phase 3, since nothing reads the binding until the tooling exists; and how the rubric tells a coordinating checkpoint from a conversational one named after a Project, given that the file name is never authority for the role.
+Open for planning: whether the identity section lands with the role field or with the hook in Phase 3, since nothing reads the binding until the tooling exists.
+
+PMO-10 uses the file name only to choose which checkpoints to ask, never to decide the role: an `<initiative>.<project>` checkpoint passes with `role: coordination` or `role: conversational`, so the owner's declaration always wins. It sits at WARN rather than FAIL so that ki-principal's gate keeps passing while each coordinating thread adds its field at its own next update.

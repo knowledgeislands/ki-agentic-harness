@@ -9,7 +9,9 @@ import type {
 } from '../../shared/rubric.ts'
 
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
-const OPTIONAL_FIELDS = ['label'] as const
+const OPTIONAL_FIELDS = ['label', 'role'] as const
+const ROLES = ['conversational', 'coordination', 'state-of-play'] as const
+const COORDINATING_ROLES: readonly unknown[] = ['coordination', 'state-of-play']
 const UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const OPAQUE_SESSION_NAME = /^(?:sess(?:ion)?|conversation)[_-][a-z0-9]{12,}$/i
@@ -41,6 +43,7 @@ export type RecordContext = {
   readonly identity: readonly AuditOutcome[]
   readonly schema: readonly AuditOutcome[]
   readonly label: readonly AuditOutcome[]
+  readonly role: readonly AuditOutcome[]
 }
 export type LifecycleContext = { readonly mechanical: readonly AuditOutcome[] }
 
@@ -112,23 +115,37 @@ const inspectDirectory = (
 const validTimestamp = (value: unknown): value is string =>
   typeof value === 'string' && UTC_TIMESTAMP.test(value) && !Number.isNaN(Date.parse(value))
 
+/** Whether the repository's `.ki.toml` declares `[skills.ki-pmo]`, the gate for a coordinating role. */
+const declaresPmo = (root: string): boolean => {
+  const config = join(root, '.ki.toml')
+  if (!physicalFile(config)) return false
+  try {
+    return table(table(table(Bun.TOML.parse(readFileSync(config, 'utf8')))?.skills)?.['ki-pmo']) !== null
+  } catch {
+    return false
+  }
+}
+
 const recordEvidence = (
   records: readonly ParsedCheckpoint[],
+  pmoDeclared: boolean,
   absent?: string
 ): {
   identity: readonly AuditOutcome[]
   schema: readonly AuditOutcome[]
   label: readonly AuditOutcome[]
+  role: readonly AuditOutcome[]
   lifecycle: readonly AuditOutcome[]
   boundary: readonly AuditOutcome[]
 } => {
   if (absent) {
     const outcome = [{ status: 'NOT_APPLICABLE' as const, message: absent }]
-    return { identity: outcome, schema: outcome, label: outcome, lifecycle: outcome, boundary: outcome }
+    return { identity: outcome, schema: outcome, label: outcome, role: outcome, lifecycle: outcome, boundary: outcome }
   }
   const identity: AuditOutcome[] = []
   const schema: AuditOutcome[] = []
   const label: AuditOutcome[] = []
+  const role: AuditOutcome[] = []
   const lifecycle: AuditOutcome[] = []
   const boundary: AuditOutcome[] = []
   const activeThreads = new Set<string>()
@@ -220,6 +237,20 @@ const recordEvidence = (
         message: 'checkpoint has no label naming the thread for the human client',
         subject: record.path
       })
+    if ('role' in fields) {
+      if (!(ROLES as readonly unknown[]).includes(fields.role))
+        schema.push({
+          status: 'VIOLATION',
+          message: `role must be one of ${ROLES.join(', ')}`,
+          subject: record.path
+        })
+      else if (COORDINATING_ROLES.includes(fields.role) && !pmoDeclared)
+        role.push({
+          status: 'VIOLATION',
+          message: `role ${String(fields.role)} is valid only where .ki.toml declares [skills.ki-pmo]`,
+          subject: record.path
+        })
+    }
     if (fields.type !== 'ki-checkpoint')
       schema.push({ status: 'VIOLATION', message: 'type must be ki-checkpoint', subject: record.path })
     if (fields.state !== 'active')
@@ -282,6 +313,7 @@ const recordEvidence = (
     identity: one(identity, 'Every checkpoint has one consistent human-selected thread identity.'),
     schema: one(schema, 'Every checkpoint uses the closed metadata and heading schema.'),
     label: one(label, 'Every checkpoint carries a presentation label.'),
+    role: one(role, 'Every coordinating role is declared where ki-pmo is declared.'),
     lifecycle: one(lifecycle, 'Checkpoint states, uniqueness, and timestamps are coherent.'),
     boundary: one(boundary, 'No mechanically recognisable transcript or session-continuity dependency is present.')
   }
@@ -351,6 +383,7 @@ export const createCheckpointsSession = ({
     : []
   const evidence = recordEvidence(
     records,
+    declaresPmo(root),
     undeclaredAbsent ??
       (checkpointExists && !checkpointSafe
         ? 'Checkpoint records are unavailable until the subarea is safe.'
@@ -380,7 +413,7 @@ export const createCheckpointsSession = ({
       ),
       ...(mode === 'conform' && canConformScaffold ? { ensureScaffold: () => (scaffoldRequested = true) } : {})
     },
-    records: { identity: evidence.identity, schema: evidence.schema, label: evidence.label },
+    records: { identity: evidence.identity, schema: evidence.schema, label: evidence.label, role: evidence.role },
     lifecycle: { mechanical: evidence.lifecycle },
     boundary: { outcomes: evidence.boundary }
   }

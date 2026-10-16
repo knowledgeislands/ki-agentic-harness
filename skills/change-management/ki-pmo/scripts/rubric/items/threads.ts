@@ -37,6 +37,23 @@ const PMO_2: RubricItem<PmoRubricContext> = {
   }
 }
 
+const PMO_10: RubricItem<PmoRubricContext> = {
+  code: 'PMO-10',
+  title: 'coordinating thread checkpoints declare their role',
+  description:
+    "The `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint carries `role: coordination`, or `role: conversational` where the owner runs it as a conversation; no other checkpoint declares `state-of-play`. An existing checkpoint gains the field through its own thread's next update.",
+  sources: [`${SOURCE}#thread-types`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Have the thread add its `role` at its next `ki-checkpoint` UPDATE, or ask through the state-of-play thread's messages block; never edit another thread's checkpoint to add it."
+    },
+    audit: { phase: 'INSPECT', run: ({ roles }) => roles.outcomes }
+  }
+}
+
 const PMO_3: RubricItem<PmoRubricContext> = {
   code: 'PMO-3',
   title: 'active coordination threads are within the cap',
@@ -180,5 +197,5 @@ export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
     'The state-of-play and coordination thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PMO_1, PMO_2, PMO_3, PMO_7, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
+  items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
 }

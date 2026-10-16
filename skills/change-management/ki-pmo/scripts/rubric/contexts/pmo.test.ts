@@ -159,6 +159,36 @@ describe('coordination thread checkpoints', () => {
   })
 })
 
+describe('coordinating thread roles', () => {
+  test('coordinating checkpoints that declare their role pass', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    checkpoint(root, '_state-of-play', { label: 'KI > SoP', role: 'state-of-play' })
+    checkpoint(root, 'knowledge-islands-model.ways-of-working', {
+      label: 'KI > Model > ways of working',
+      role: 'coordination'
+    })
+    checkpoint(root, 'knowledge-islands-model.mics', { label: 'KI > mics', role: 'conversational' })
+    checkpoint(root, 'mics-webcams', { label: 'KI > mics / webcams' })
+    expect(statuses(context(root).roles.outcomes)).toEqual(['PASS'])
+  })
+
+  test('a coordinating checkpoint without a role is a violation', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    checkpoint(root, '_state-of-play', { label: 'KI > SoP' })
+    checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI > Model > ways of working' })
+    const outcomes = context(root).roles.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
+    expect(outcomes[1]?.message).toContain('role: coordination')
+  })
+
+  test('only the state-of-play checkpoint declares state-of-play', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    checkpoint(root, '_state-of-play', { label: 'KI > SoP', role: 'coordination' })
+    checkpoint(root, 'mics-webcams', { label: 'KI > mics / webcams', role: 'state-of-play' })
+    expect(statuses(context(root).roles.outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
+  })
+})
+
 describe('active thread cap', () => {
   test('four active coordination threads are within the cap', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
