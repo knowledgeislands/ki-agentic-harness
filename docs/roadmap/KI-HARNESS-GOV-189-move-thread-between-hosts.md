@@ -25,7 +25,7 @@ This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studi
 
 > if there is a wish to somehow move a thread over to another machine, because of the way that we're doing the delegation, we need to drain it down. But obviously, there can be quite a lot of stuff that can be queued up potentially. So we should almost decide that stuff that's queued up gets pushed back into the checkpoint, and so when the next machine starts up, it will re-queue it on its machine from that checkpoint, and that will allow us to move things over and only wait for things that are actually already running to be completed.
 
-The receiving repository keeps priority, planning and acceptance; capturing this record adopts nothing. It is not blocking the Mac Studio bootstrap Project.
+The receiving repository keeps priority, planning and acceptance; capturing this record adopts nothing. It is not blocking the Mac Studio Setup Project.
 
 ## Boundary
 
