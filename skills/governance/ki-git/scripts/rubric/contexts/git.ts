@@ -17,7 +17,7 @@ export const createGitSession = ({
     subjects: [
       { families: ['RUBRIC'], context: () => context },
       {
-        families: ['COMMIT', 'BRANCH', 'HYGIENE', 'LOCK'],
+        families: ['COMMIT', 'BRANCH', 'HYGIENE', 'CLEAN', 'LOCK'],
         subject: context.repository,
         context: () => context
       }

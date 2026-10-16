@@ -12,6 +12,7 @@ Line-by-line criteria for auditing ki-git. Classifications are derived from item
 - [COMMIT — commit shape](#commit--commit-shape)
 - [BRANCH — working approach](#branch--working-approach)
 - [HYGIENE — Git working hygiene](#hygiene--git-working-hygiene)
+- [CLEAN — clean-down state](#clean--clean-down-state)
 - [LOCK — stale-lock semantics](#lock--stale-lock-semantics)
 
 ## RUBRIC — Generated rubric publication
@@ -73,6 +74,48 @@ Git operations preserve shared worktree state and recoverability.
   - _Review prompt:_ After recording the pre-edit state and expected `HEAD`, assess whether the thread tracked every path it may have changed, withheld pre-existing or overlapping paths for coordination, staged only enumerated uncontested paths, preserved unrelated staged and unstaged work, serialised the commit window that advances shared `HEAD`, and inspected actual committed paths after hooks.
   - _Outcomes:_ conforming; state inspection required; staging correction required; operation coordination required
   - _Conforming guidance:_ Maintain a thread-local touched-path set, re-check status, `HEAD`, touched diffs, and staged paths before committing, and use `git add -- <path>...` only for enumerated uncontested paths. Inspect the actual commit after hooks and coordinate recovery of unrelated captured changes before rebuilding a commit this session has not pushed. Never use `git add -A`, `git add .`, `git add -u`, `git commit -a`, `git commit -am`, or broad wildcard pathspecs in a shared tree. Leave contested and unrelated work untouched, and serialize only the shared-index and commit window.
+
+## CLEAN — clean-down state
+
+→ [standard](standards-git.md)
+
+A repository at rest carries no Git leftovers, each criterion decided by a named read-only command and a fixed rule.
+
+- **CLEAN-1 [J] — open pull requests are known and owned** — Every open pull request is listed with its branch, author, draft state, and age, so none lingers unowned. (standards-git.md#clean-down-state)
+  - _Evidence scope:_ The provider’s open pull-request list, such as `gh pr list --state open`, with each pull request’s branch, author, draft state, and creation date.
+  - _Review prompt:_ Is there any open pull request? Each one is a finding, reported with its branch, author, draft state, and age, for its owner to merge, update, or close.
+  - _Outcomes:_ conforming; open pull request; provider evidence unavailable
+  - _Conforming guidance:_ Report each open pull request for its owner to merge, update, or close. Never delete a remote branch, close a pull request, drop a stash, remove a worktree, or delete an untracked file without the owner’s explicit approval naming that item; report a finding in a working tree or branch another thread is using and leave it untouched.
+- **CLEAN-2 [J] — merged branches are retired** — No local or remote branch other than the default and the current branch, automation branches included, carries work already in the default branch. (standards-git.md#clean-down-state)
+  - _Evidence scope:_ `git branch --merged <default>`, `git branch -r --merged origin/<default>`, and `git cherry <default> <branch>` for patch-equivalent squash merges, over local and remote-tracking refs including `automation/*`, `dependabot/*`, and `renovate/*`, with the age of the last fetch.
+  - _Review prompt:_ Does any local or remote branch, other than the default and the current branch, have its tip reachable from the default branch, or show no remaining patch under `git cherry`? Each is a finding.
+  - _Outcomes:_ conforming; merged local branch; merged remote branch; remote evidence stale
+  - _Conforming guidance:_ Propose `git branch -d` for a proven-merged local branch, never `-D`. Never delete a remote branch, close a pull request, drop a stash, remove a worktree, or delete an untracked file without the owner’s explicit approval naming that item; report a finding in a working tree or branch another thread is using and leave it untouched.
+- **CLEAN-3 [J] — unmerged branches are not stale** — No unmerged local or remote branch, automation branches included, has a tip older than the 30-day stale threshold. (standards-git.md#clean-down-state)
+  - _Evidence scope:_ `git for-each-ref --format='%(refname) %(committerdate:unix)' refs/heads refs/remotes`, the merged set from CLEAN-2, and the age of the last fetch.
+  - _Review prompt:_ Does any unmerged local or remote branch have a tip whose committer date is more than 30 days old? Each is a finding, reported with its age and any open pull request that uses it.
+  - _Outcomes:_ conforming; stale local branch; stale remote branch; remote evidence stale
+  - _Conforming guidance:_ Report each stale branch for its owner to resume, merge, or abandon; an unmerged branch is never deleted on age alone. Never delete a remote branch, close a pull request, drop a stash, remove a worktree, or delete an untracked file without the owner’s explicit approval naming that item; report a finding in a working tree or branch another thread is using and leave it untouched.
+- **CLEAN-4 [J] — local branches are level with upstream** — No local branch is ahead of or behind its upstream, tracks a gone upstream, or holds commits on no remote without an upstream. (standards-git.md#clean-down-state)
+  - _Evidence scope:_ `git for-each-ref --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads`, `git log --branches --not --remotes` for commits on no remote, and the age of the last fetch.
+  - _Review prompt:_ Is any local branch ahead of or behind its upstream, tracking an upstream that is gone, or holding commits on no remote without an upstream? Each is a finding, with its ahead and behind counts.
+  - _Outcomes:_ conforming; ahead of upstream; behind upstream; upstream gone; unpublished branch; remote evidence stale
+  - _Conforming guidance:_ Report each finding for its owner to push, pull, or retire under the repository’s publication authority; levelling never force-pushes, rebases another actor’s commits, or resets shared `main`.
+- **CLEAN-5 [J] — no stash entries remain** — The repository holds no stash entries. (standards-git.md#clean-down-state)
+  - _Evidence scope:_ `git stash list --format='%gd %ct %gs'`.
+  - _Review prompt:_ Does the repository hold any stash entry? Each is a finding, reported with its age and message.
+  - _Outcomes:_ conforming; stash entry
+  - _Conforming guidance:_ Report each stash for its owner to apply, commit, or drop. Never delete a remote branch, close a pull request, drop a stash, remove a worktree, or delete an untracked file without the owner’s explicit approval naming that item; report a finding in a working tree or branch another thread is using and leave it untouched.
+- **CLEAN-6 [J] — linked worktrees show no retirement signal** — No linked worktree is prunable, detached, locked without a reason, or on a branch already merged into the default branch. (standards-git.md#clean-down-state, standards-git.md#finished-worktree-retirement)
+  - _Evidence scope:_ `git worktree list --porcelain` and the merged set from CLEAN-2.
+  - _Review prompt:_ Is any linked worktree prunable, detached, locked without a reason, or on a branch already merged into the default branch? Each is a finding for the BRANCH-2 retirement judgment.
+  - _Outcomes:_ conforming; prunable worktree; detached worktree; unexplained lock; merged worktree branch
+  - _Conforming guidance:_ Route each finding to the BRANCH-2 integrate-or-dispose decision. Never delete a remote branch, close a pull request, drop a stash, remove a worktree, or delete an untracked file without the owner’s explicit approval naming that item; report a finding in a working tree or branch another thread is using and leave it untouched.
+- **CLEAN-7 [J] — no untracked or staged leftovers at rest** — A working tree no thread is using holds no untracked path that is not ignored and no staged entry. (standards-git.md#clean-down-state)
+  - _Evidence scope:_ `git status --porcelain=v1 --untracked-files=all` for a working tree no thread is actively using, with the threads known to be using it.
+  - _Review prompt:_ Does a working tree no thread is using hold any untracked path that is not ignored, or any staged entry? Each is a finding.
+  - _Outcomes:_ conforming; untracked leftover; staged leftover; working tree in use
+  - _Conforming guidance:_ Report each leftover for its owner to commit, ignore, or remove. Never delete a remote branch, close a pull request, drop a stash, remove a worktree, or delete an untracked file without the owner’s explicit approval naming that item; report a finding in a working tree or branch another thread is using and leave it untouched.
 
 ## LOCK — stale-lock semantics
 

@@ -6,12 +6,34 @@ test('the Git catalogue exposes the complete judgment-only session contract', ()
   expect(catalogue.contract).toBe(1)
   expect(catalogue.name).toBe('ki-git')
   expect(catalogue.createSession).toBeFunction()
-  expect(catalogue.families.map((family) => family.code)).toEqual(['RUBRIC', 'COMMIT', 'BRANCH', 'HYGIENE', 'LOCK'])
+  expect(catalogue.families.map((family) => family.code)).toEqual([
+    'RUBRIC',
+    'COMMIT',
+    'BRANCH',
+    'HYGIENE',
+    'CLEAN',
+    'LOCK'
+  ])
   expect(
     catalogue.families
       .filter((family) => family.code !== 'RUBRIC')
       .flatMap((family) => family.items.map((item) => item.code))
-  ).toEqual(['COMMIT-1', 'COMMIT-2', 'BRANCH-1', 'BRANCH-2', 'BRANCH-3', 'HYGIENE-1', 'LOCK-1'])
+  ).toEqual([
+    'COMMIT-1',
+    'COMMIT-2',
+    'BRANCH-1',
+    'BRANCH-2',
+    'BRANCH-3',
+    'HYGIENE-1',
+    'CLEAN-1',
+    'CLEAN-2',
+    'CLEAN-3',
+    'CLEAN-4',
+    'CLEAN-5',
+    'CLEAN-6',
+    'CLEAN-7',
+    'LOCK-1'
+  ])
   const semanticItems = (
     catalogue.families.filter((family) => family.code !== 'RUBRIC') as unknown as readonly {
       items: readonly { mechanical?: unknown }[]
@@ -29,7 +51,7 @@ test('judgment criteria expose complete v1 review metadata', () => {
     }[]
   ).flatMap((family) => family.items.map((item) => item.judgment))
 
-  expect(judgmentItems).toHaveLength(7)
+  expect(judgmentItems).toHaveLength(14)
   for (const judgment of judgmentItems) {
     expect(judgment?.scope).not.toBeEmpty()
     expect(judgment?.prompt).not.toBeEmpty()
@@ -62,6 +84,29 @@ test('hygiene guidance retains the shared-working-tree safety boundary', () => {
   expect(guidance).toContain('git add -A')
   expect(guidance).toContain('git commit -a')
   expect(guidance).toContain('serialize only the shared-index and commit window')
+})
+
+test('clean-down criteria name their deciding command and keep the approval boundary', () => {
+  const clean = catalogue.families.find((family) => family.code === 'CLEAN')?.items ?? []
+  const scopes = clean.map((item) => item.judgment?.scope ?? '').join('\n')
+
+  for (const command of [
+    'gh pr list --state open',
+    'git branch --merged <default>',
+    'git cherry <default> <branch>',
+    'refs/heads refs/remotes',
+    '%(upstream:track)',
+    'git stash list',
+    'git worktree list --porcelain',
+    'git status --porcelain=v1 --untracked-files=all'
+  ])
+    expect(scopes).toContain(command)
+  for (const prefix of ['automation/*', 'dependabot/*', 'renovate/*']) expect(scopes).toContain(prefix)
+  for (const code of ['CLEAN-1', 'CLEAN-2', 'CLEAN-3', 'CLEAN-5', 'CLEAN-6', 'CLEAN-7']) {
+    const guidance = clean.find((item) => item.code === code)?.judgment?.guidance ?? ''
+    expect(guidance).toContain('Never delete a remote branch, close a pull request')
+  }
+  expect(clean.find((item) => item.code === 'CLEAN-2')?.judgment?.guidance).toContain('never `-D`')
 })
 
 test('family modules expose only one complete family', async () => {

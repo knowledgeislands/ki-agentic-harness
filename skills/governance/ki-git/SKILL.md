@@ -21,7 +21,7 @@ It names four working approaches so branch choice and working-copy topology are 
 
 Read [the Git standard](references/standards-git.md) before preparing a commit, choosing a branch boundary, or assessing a stale lock.
 
-The hosted native rubric records the portable review prompts below. Its four policy families are **judgment-only**: an AUDIT renders them as unassessed review work, not as a clean Git result. Before recording a judgment, gather the named read-only evidence (for example `git status --short`, `git branch --show-current`, and the proposed commit diff/message) and retain its outcome with the review. It deliberately has no mechanical policy checks or private Git executor yet.
+The hosted native rubric records the portable review prompts below. Its five policy families are **judgment-only**: an AUDIT renders them as unassessed review work, not as a clean Git result. Before recording a judgment, gather the named read-only evidence (for example `git status --short`, `git branch --show-current`, and the proposed commit diff/message) and retain its outcome with the review. It deliberately has no mechanical policy checks or private Git executor yet. The CLEAN family names, for each clean-down criterion, the read-only command and fixed rule that decide it, so that `ki repo audit` can run them mechanically across the estate; deleting a remote branch or closing a pull request always needs the owner's approval.
 
 Package-backed repositories mechanically bind this skill's message vocabulary through the `ki-engineering` Husky and Commitlint contract. This skill does not install hooks, write runtime settings, or own the package toolchain; its native rubric retains the judgment that a proposed message accurately describes one completed unit.
 

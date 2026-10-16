@@ -12,7 +12,7 @@ test('the Git session exposes a dedicated publication subject and immutable revi
 
   expect(session.subjects).toHaveLength(2)
   expect(session.subjects[0]?.families).toEqual(['RUBRIC'])
-  expect(session.subjects[1]?.families).toEqual(['COMMIT', 'BRANCH', 'HYGIENE', 'LOCK'])
+  expect(session.subjects[1]?.families).toEqual(['COMMIT', 'BRANCH', 'HYGIENE', 'CLEAN', 'LOCK'])
   expect(session.subjects[1]?.subject).toBe(resolve('.'))
   expect(session.subjects[1]?.context()).toEqual({
     rubric: { publication: undefined },

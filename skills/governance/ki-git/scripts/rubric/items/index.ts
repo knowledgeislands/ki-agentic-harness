@@ -1,6 +1,7 @@
 import type { SkillRubricDefinition } from '../../shared/rubric.ts'
 import { createGitSession, type GitRubricContext } from '../contexts/git.ts'
 import { BRANCH } from './branch.ts'
+import { CLEAN } from './clean.ts'
 import { COMMIT } from './commit.ts'
 import { HYGIENE } from './hygiene.ts'
 import { LOCK } from './lock.ts'
@@ -11,5 +12,5 @@ export default {
   name: 'ki-git',
   concern: 'Knowledge Islands Git conventions',
   createSession: createGitSession,
-  families: [RUBRIC, COMMIT, BRANCH, HYGIENE, LOCK]
+  families: [RUBRIC, COMMIT, BRANCH, HYGIENE, CLEAN, LOCK]
 } satisfies SkillRubricDefinition<GitRubricContext>

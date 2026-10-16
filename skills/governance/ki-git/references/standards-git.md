@@ -7,6 +7,7 @@
 - [Commit, publication, and integration authority](#commit-publication-and-integration-authority)
 - [Working-copy and review approaches](#working-copy-and-review-approaches)
 - [Safe Git hygiene](#safe-git-hygiene)
+- [Clean-down state](#clean-down-state)
 - [Stale-lock guard](#stale-lock-guard)
 - [Runtime binding and enforcement](#runtime-binding-and-enforcement)
 
@@ -14,7 +15,7 @@
 
 `ki-git` is the sole owner of portable Knowledge Islands Git and commit policy.
 
-It governs commit messages, branch-selection guidance, safe working hygiene, and the stale-lock guard's semantic contract.
+It governs commit messages, branch-selection guidance, safe working hygiene, the clean-down criteria, and the stale-lock guard's semantic contract.
 
 `ki-repo` owns each repository's GitHub configuration and branch-protection choice.
 
@@ -128,6 +129,24 @@ Separate pathspecs with `--` whenever a path begins with `-`, because Git parses
 
 This affects every KI-conformant repository, not an unusual corner case: the repo standard scaffolds a top-level `-/` working area (`ki-repo` WORK-1), so any `add`, `restore`, `checkout`, `diff`, `log`, or `rm` naming a path inside it needs the separator.
 
+## Clean-down state
+
+A repository at rest carries no Git leftovers that someone must later reconstruct. Each criterion below is decided by a named read-only command and a fixed rule, so an executor can report it without judgment; deciding what to do about a finding stays with the repository's owner. The rubric's CLEAN family states the same criteria; the executor that runs them belongs to `ki` under `ki repo audit` and `conform`, not to this skill.
+
+The default branch is the remote's `HEAD` as `git symbolic-ref refs/remotes/origin/HEAD` records it, or the repository's declared primary branch. Remote facts come from the remote-tracking refs as of the last fetch; an executor that holds fetch authority may refresh them first with `git fetch --prune`, and otherwise reports the age of the last fetch beside every remote finding. Automation branches, `automation/*`, `dependabot/*` and `renovate/*`, are judged by the same rules as any other branch. A branch is stale when it is not merged and its tip's committer date is more than 30 days old.
+
+| Criterion | Deciding evidence | A finding is |
+| --- | --- | --- |
+| Open pull requests | The provider's open pull-request list, such as `gh pr list --state open` | each open pull request, with its branch, author, draft state and age |
+| Merged branches | `git branch --merged <default>` and `git branch -r --merged origin/<default>`, with `git cherry <default> <branch>` for patch-equivalent squash merges | each local or remote branch other than the default and the current branch whose work is already in the default branch |
+| Stale branches | `git for-each-ref --format='%(refname) %(committerdate:unix)' refs/heads refs/remotes` | each unmerged local or remote branch whose tip is older than the stale threshold |
+| Ahead and behind | `git for-each-ref --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads` | each local branch ahead of or behind its upstream, whose upstream is gone, or that has no upstream while holding commits not on any remote |
+| Stashes | `git stash list --format='%gd %ct %gs'` | each stash entry, with its age |
+| Linked worktrees | `git worktree list --porcelain` | each linked worktree that is prunable, detached, locked without a reason, or on a branch already merged into the default branch, beside the BRANCH-2 retirement judgment |
+| Untracked and staging-area leftovers | `git status --porcelain=v1 --untracked-files=all` | each untracked path not ignored, and each staged entry, in a working tree no thread is actively using |
+
+Clean-down never destroys work on inference. Deleting a local branch is proposable only once its tip is reachable from the default branch or `git cherry` shows no remaining patch, and uses `git branch -d`, never `-D`. Deleting a remote branch, closing a pull request, dropping a stash, removing a worktree, and deleting an untracked file each require the owner's explicit approval naming that item, and the approval covers only the items it names. A finding in a working tree another thread is using, or on a branch an open pull request uses, is reported and left untouched.
+
 ## Stale-lock guard
 
 `hooks/git-lock-check.sh` is a best-effort recovery guard for a trusted user account, not a general cleanup command.
@@ -146,6 +165,6 @@ The harness publishes hook payload sources; `ki-repo-dotfiles-chezmoi` may regis
 
 `ki-git` neither installs hooks nor writes runtime settings.
 
-The native rubric exposes these four policy families as **judgment-only** review prompts. A rendered audit therefore leaves them unassessed until a reviewer records an outcome; it must never be interpreted as a Git-state pass. Gather the criterion's focused read-only evidence first: current and pre-edit status, expected `HEAD`, the thread's touched-path set, touched and staged diffs, and any contested paths for hygiene; current branch, worktree, protection, concurrency, and review evidence for the working approach; proposed diff and message for commit shape; and physical-worktree/process/file-type evidence for a lock candidate. The rubric does not execute Git commands or a private wrapper on the reviewer's behalf.
+The native rubric exposes these five policy families as **judgment-only** review prompts. A rendered audit therefore leaves them unassessed until a reviewer records an outcome; it must never be interpreted as a Git-state pass. Gather the criterion's focused read-only evidence first: current and pre-edit status, expected `HEAD`, the thread's touched-path set, touched and staged diffs, and any contested paths for hygiene; current branch, worktree, protection, concurrency, and review evidence for the working approach; proposed diff and message for commit shape; physical-worktree/process/file-type evidence for a lock candidate; and the deciding command each clean-down criterion names. The rubric does not execute Git commands or a private wrapper on the reviewer's behalf.
 
 Package-backed repositories have deterministic local commit-message enforcement through `ki-engineering`; non-package repositories retain the judgment-only contract. Any broader enforcement must remain limited to deterministic rules explicitly added to this standard rather than moving message judgment into a private Git executor.

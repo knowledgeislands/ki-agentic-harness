@@ -35,4 +35,6 @@ Conventional Commits confirms the `type(scope): summary` shape; the Knowledge Is
 
 Git and workflow documentation remain supporting source context, while the harness keeps the concrete safety limits for the local hook. The native rubric remains judgment-only: its source-backed prompts name the minimum read-only evidence but do not claim a mechanical Git-state audit.
 
+On 2026-10-16 the CLEAN family added the clean-down criteria from Kris Brown's REPO-GIT-HYGIENE decision, as judgment items that each name a read-only Git or provider command and a fixed rule, so that `ki repo audit` can later run them mechanically; no external source was re-fetched for it.
+
 Refresh quarterly, or earlier when Git behaviour, the commit vocabulary, the hook contract, or a runtime-binding boundary changes.
