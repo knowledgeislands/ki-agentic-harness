@@ -1,7 +1,7 @@
 ---
 id: KI-HARNESS-GOV-201
 area: GOV
-title: Delegation fetch and machine grants
+title: Fetch and machine grants
 project: ways-of-working
 component: governance
 status: triage
@@ -12,7 +12,7 @@ created_at: 2026-10-16T21:51:55Z
 updated_at: 2026-10-16T21:51:55Z
 ---
 
-# KI-HARNESS-GOV-201: Delegation Fetch and Machine Grants
+# KI-HARNESS-GOV-201: Fetch and Machine Grants
 
 ## Goal
 
