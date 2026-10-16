@@ -95,6 +95,8 @@ A coordinating thread under `ki-pmo` keeps its parked side topics in `Open quest
 
 It also notes in `Current state` the `ki-pmo` revision it last read, under [its refresh rule](../../../change-management/ki-pmo/references/standards-pmo.md#refreshing-this-guidance). It keeps its mark there too, as one line under [its mark rule](../../../change-management/ki-pmo/references/standards-pmo.md#recap-since-the-mark); striking a new mark replaces it.
 
+A conversational thread's checkpoint is this record and nothing more: no pick-up block, mark, resume line or messages block, which `ki-pmo` keeps for coordinating threads under [Coordinator-only machinery](../../../change-management/ki-pmo/references/standards-pmo.md#coordinator-only-machinery). It notes a pause in `Current state` and how to carry on in `Next step`.
+
 ## Optional runtime reminder consumers
 
 A runtime-specific reminder consumer is separately opt-in. It may act only when its native event contract is independently evidenced and all of the following are true:

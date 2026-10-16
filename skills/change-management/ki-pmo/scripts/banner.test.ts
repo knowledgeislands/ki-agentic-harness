@@ -410,6 +410,14 @@ test('the hook line names the report heading, the block-letter footer, the brack
   expect(hook).not.toContain('DRAINED')
 })
 
+test('the hook line, the pointer and the output style confine the coordinator forms to coordinating threads', () => {
+  expect(hook).toContain("line='In a coordinating thread only,")
+  expect(hook).toContain('in a conversational thread ignore this line and reply in the ki-pmo Reply forms')
+  expect(hook).toContain('In a conversational thread, re-read your checkpoint if you have one')
+  expect(outputStyle).toContain('This style applies only in a coordinating thread')
+  expect(standard).toContain('## Reply forms')
+})
+
 test('every generated surface matches what the standard renders, so none is edited by hand', () => {
   for (const surface of generate(harnessRoot))
     expect({
