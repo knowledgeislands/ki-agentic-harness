@@ -1,4 +1,4 @@
-bunx lint-staged || exit 1
+bunx lint-staged --quiet || exit 1
 bunx syncpack format --check || exit 1
 
 # Validate the staged snapshot through the direct KI surface. Split renames into
@@ -6,6 +6,13 @@ bunx syncpack format --check || exit 1
 staged() { git diff --cached --name-only --no-renames --diff-filter=ACMDT; }
 staged_paths="$(staged)" || exit 1
 matches_staged() { printf '%s\n' "$staged_paths" | grep -Eq "$1"; }
+
+# Stay quiet on a pass; on a failure, audit again in full so the evidence prints.
+quiet_audit() {
+  ki repo audit --concise --progress never --reporter-levels FAIL "$@" && return 0
+  ki repo audit "$@"
+  return 1
+}
 
 audit_staged_skills() {
   snapshot="$(mktemp -d)" || return 1
@@ -34,9 +41,9 @@ audit_staged_skills() {
   cp "$snapshot/.ki.toml" "$focus/.agents/.ki.toml" || return 1
   fi
 
-  ki repo audit --repo "$focus" --skill ki-skills || return 1
+  quiet_audit --repo "$focus" --skill ki-skills || return 1
   if [ -d "$focus/.agents/skills/ki-self" ]; then
-    ki repo audit --repo "$focus/.agents" --skill ki-skills || return 1
+    quiet_audit --repo "$focus/.agents" --skill ki-skills || return 1
   fi
   result=$?
   trap - EXIT HUP INT TERM

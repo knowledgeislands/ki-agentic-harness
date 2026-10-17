@@ -52,7 +52,8 @@ test('the staged skill audit includes unchanged siblings, providers, and the loc
     repository,
     'test-bin/ki',
     `#!/bin/sh
-focus="$4"
+while [ "$#" -gt 0 ] && [ "$1" != --repo ]; do shift; done
+focus="$2"
 case "$focus" in
   */.agents)
     test -f "$focus/.ki.toml" || exit 21
@@ -98,7 +99,49 @@ esac
   expect(readFileSync(setCapture, 'utf8').trim()).not.toBe('')
   expect(readFileSync(localCapture, 'utf8').trim()).not.toBe('')
   expect(readFileSync(bunxCapture, 'utf8').trim().split('\n').slice(0, 2)).toEqual([
-    'lint-staged',
+    'lint-staged --quiet',
     'syncpack format --check'
+  ])
+})
+
+test('a failing concise skill audit is run again in full so its findings print', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-pre-commit-'))
+  temporaryDirectories.push(repository)
+  const binaries = join(repository, 'test-bin')
+  const auditCapture = join(repository, 'audit-calls')
+
+  write(repository, '.ki.toml', '["knowledgeislands/ki-agentic-harness:ki-skills"]\n')
+  write(repository, 'skills/governance/ki-sibling/SKILL.md', skill('ki-sibling'))
+  write(repository, 'test-bin/bunx', '#!/bin/sh\nexit 0\n')
+  write(
+    repository,
+    'test-bin/ki',
+    `#!/bin/sh
+printf '%s\\n' "$*" | sed 's|--repo [^ ]*|--repo FOCUS|' >> "$KI_HOOK_AUDIT_CAPTURE"
+exit 1
+`
+  )
+  chmodSync(join(binaries, 'bunx'), 0o755)
+  chmodSync(join(binaries, 'ki'), 0o755)
+
+  execFileSync('git', ['init', '-q'], { cwd: repository })
+  execFileSync('git', ['config', 'user.name', 'Hook Test'], { cwd: repository })
+  execFileSync('git', ['config', 'user.email', 'hook@example.test'], { cwd: repository })
+  execFileSync('git', ['add', '.'], { cwd: repository })
+  execFileSync('git', ['commit', '-qm', 'fixture'], { cwd: repository })
+
+  write(repository, 'skills/governance/ki-sibling/SKILL.md', `${skill('ki-sibling')}\nUpdated.\n`)
+  execFileSync('git', ['add', 'skills/governance/ki-sibling/SKILL.md'], { cwd: repository })
+
+  expect(() =>
+    execFileSync('/bin/sh', [hook], {
+      cwd: repository,
+      stdio: 'pipe',
+      env: { ...process.env, PATH: `${binaries}:${process.env.PATH ?? ''}`, KI_HOOK_AUDIT_CAPTURE: auditCapture }
+    })
+  ).toThrow()
+  expect(readFileSync(auditCapture, 'utf8').trim().split('\n')).toEqual([
+    'repo audit --concise --progress never --reporter-levels FAIL --repo FOCUS --skill ki-skills',
+    'repo audit --repo FOCUS --skill ki-skills'
   ])
 })
