@@ -60,16 +60,16 @@ const ZONE_3: RubricItem<KbZoneContext> = {
 
 const ZONE_4 = mechanical(
   'ZONE-4',
-  'staging areas are not zones',
-  '+/ and -/ are reported as staging only and are exempt from the zone-index rule.',
+  'working areas are not zones',
+  '+/ and -/ are reported as working areas only and are exempt from the zone-index rule.',
   'WARN',
-  (context) => context.stagingAreas
+  (context) => context.workingAreas
 )
 
 const ZONE_5 = mechanical(
   'ZONE-5',
-  'produced outputs use outbound staging',
-  'Notes with note_type session-digest reside under the resolved -/ staging area; cross-repository handoffs belong to ki-trades.',
+  'produced outputs use the outbound working area',
+  'Notes with note_type session-digest reside under the resolved -/ working area; cross-repository handoffs belong to ki-trades.',
   'FAIL',
   (context) => context.outboundPlacement
 )
@@ -91,7 +91,7 @@ const ZONE_6: RubricItem<KbZoneContext> = {
 export const ZONE: RubricFamily<KbRubricContext, KbZoneContext> = {
   code: 'ZONE',
   title: 'zone layout',
-  description: 'Required zones, indexes, staging, output placement, and retained digest scaffold.',
+  description: 'Required zones, indexes, working areas, output placement, and retained digest scaffold.',
   standard: SOURCE,
   selectContext: (context) => context.zones,
   items: [ZONE_1, ZONE_2, ZONE_3, ZONE_4, ZONE_5, ZONE_6]

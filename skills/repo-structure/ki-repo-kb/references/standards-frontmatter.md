@@ -7,7 +7,7 @@ The authoritative definition of frontmatter fields for all notes in a Knowledge 
 ## Contents
 
 - [Universal fields](#universal-fields)
-- [Note-type taxonomy](#note-type-taxonomy) — Admin · Outbound staging · Calendar · Resources · Streams · Pillars
+- [Note-type taxonomy](#note-type-taxonomy) — Admin · Outbound working area · Calendar · Resources · Streams · Pillars
 - [Dependent fields](#dependent-fields)
 
 ## Universal fields
@@ -22,7 +22,7 @@ The authoritative definition of frontmatter fields for all notes in a Knowledge 
 | `tags` | Optional | Topical / temporal / source labels (`topic/*`, `date/*`, `source/*`) — retained, but never the **kind** classifier |
 | `author` | Recommended | `AI-assisted` / `Manual` / `Mixed` |
 
-† NOTE-1c delegates metadata classification for `Streams/Roadmap/**`, direct batch records under `+/_BATCHES/`, active `+/_CHECKPOINTS/<thread>.md` checkpoints, canonical acquisition records under `+/_ACQUIRE/<adapter>/*.md`, and peer-qualified `TRD-*.md` protocol records under either staging area to their owning skills. These records still undergo YAML, key-shape, and declared required-field checks. Nested checkpoint or acquisition paths, including `_RETIRED`, are not delegated. Local session digests under `-/_DIGESTS/` remain governed here.
+† NOTE-1c delegates metadata classification for `Streams/Roadmap/**`, direct batch records under `+/_BATCHES/`, active `+/_CHECKPOINTS/<thread>.md` checkpoints, canonical acquisition records under `+/_ACQUIRE/<adapter>/*.md`, and peer-qualified `TRD-*.md` protocol records under either working area to their owning skills. These records still undergo YAML, key-shape, and declared required-field checks. Nested checkpoint or acquisition paths, including `_RETIRED`, are not delegated. Local session digests under `-/_DIGESTS/` remain governed here.
 
 ‡ Component-specific status values remain under their component owners while KB-wide metadata reconciliation is pending.
 
@@ -52,7 +52,7 @@ The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefi
 
 `Admin/Operations/Activities/` (or its configured collection) is governed by `ki-repo-kb-activities`: Activity notes retain `note_type: admin/operations/activity`, with an optional nested `housekeeping` profile governed by `ki-work-recurring`. They are canonical notes, not delegated Streams record types. `Admin/Operations/Live Artifacts/` is governed by `ki-repo-kb-live-artifacts`; reconciliation of its component-specific and universal metadata remains separate. The remaining `TBD` rows have no governing skill yet.
 
-### Outbound staging (`-/`)
+### Outbound working area (`-/`)
 
 Session digests are only valid under `-/`. Files carrying `note_type: session-digest` elsewhere are a ZONE-5 FAIL (see the audit rubric). The former `note_type: handoff` is rejected by NOTE-1c everywhere, including trade paths; cross-repository records use the schema and lifecycle owned by `ki-trades`.
 

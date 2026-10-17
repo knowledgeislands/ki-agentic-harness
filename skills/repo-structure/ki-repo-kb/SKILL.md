@@ -21,16 +21,16 @@ Optional bounded retrieval is governed by the [derived search contract](referenc
 
 ## The Knowledge Islands structure
 
-A Knowledge Islands base is one markdown store with a fixed set of five zones, flanked by an inbound and an outbound staging area. The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are staging areas, not zones, and carry no such index.
+A Knowledge Islands base is one markdown store with a fixed set of five zones, flanked by an inbound and an outbound working area. The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are working areas, not zones, and carry no such index.
 
 | Folder       | Holds                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------- |
-| `+/`         | Inbound staging - inputs to further local work.† Exempt from most conventions. Not a zone. |
+| `+/`         | Inbound working area - inputs to further local work.† Exempt from most conventions. Not a zone. |
 | `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
 | `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
 | `Resources/` | External reference material that exists independently of this base.                             |
 | `Streams/`   | Work in motion — finite adapter-owned work records. ※ |
-| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs).‡ Not a zone.         |
+| `-/`         | Outbound working area - produced artefacts (session digests, compiled outputs).‡ Not a zone.   |
 | `Admin/`     | Base-agnostic governance and operations.                                                        |
 
 † Any zone may be held under a different local folder name — a base mid-migration, or one that simply names a zone differently. That is declared as a **zone alias** in the base's config, not treated as a different zone - see [Project bindings](#project-bindings).
@@ -107,7 +107,7 @@ Almost everything is fixed by the structure above. Only these come from the host
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store is declared, following the [source mirror contract](references/standards-source-mirrors.md). _Default:_ none.
 - **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
-- **Zone names** — the canonical folder per zone, overridable per base. A `[skills.ki-repo-kb.zones]` sub-table maps any canonical zone or staging area to this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`, plus the `+` / `-` staging areas).
+- **Zone names** — the canonical folder per zone, overridable per base. A `[skills.ki-repo-kb.zones]` sub-table maps any canonical zone or working area to this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`, plus the `+` / `-` working areas).
 - **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]` under `[skills.ki-repo-kb]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md`.
 - **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
 - **Domain pre-flight** — any extra reads before drafting (profiles, domain context). Declare them as `preflight = ["<path-or-glob>", …]` under `[skills.ki-repo-kb]` — a list of note paths/globs to read before drafting, which the checker validates _down_. _Default:_ none beyond the memory cascade.

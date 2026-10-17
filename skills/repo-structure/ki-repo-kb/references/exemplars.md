@@ -65,12 +65,12 @@ The index note's `## Contents` list uses full-path Obsidian wikilinks with reada
 
 ### Well-structured zone layout
 
-`ki-principal` demonstrates the five canonical zones plus the two staging areas:
+`ki-principal` demonstrates the five canonical zones plus the two working areas:
 
 ```text
 ki-principal/
-├── +/                   ← inbound staging (unsettled, not yet routed)
-├── -/                   ← outbound staging (leaving the base)
+├── +/                   ← inbound working area (unsettled, not yet routed)
+├── -/                   ← outbound working area (leaving the base)
 ├── Admin/               ← governance and operations (gated by Enactment Process)
 │   ├── Admin.md         ← zone root index
 │   ├── Governance/
@@ -88,7 +88,7 @@ ki-principal/
     └── Roadmap/
 ```
 
-The staging areas (`+/`, `-/`) have no zone index note; only the five canonical zones carry one. Pillar folders inside `Pillars/` match the island's topic arms — they are not fixed by the standard; what is fixed is that each carries a same-name index note at its root.
+The working areas (`+/`, `-/`) have no zone index note; only the five canonical zones carry one. Pillar folders inside `Pillars/` match the island's topic arms — they are not fixed by the standard; what is fixed is that each carries a same-name index note at its root.
 
 ### Internal vs external link style
 

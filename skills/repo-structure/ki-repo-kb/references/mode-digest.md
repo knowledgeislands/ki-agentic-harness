@@ -4,7 +4,7 @@ _On-demand procedure for kb's DIGEST mode. The shared model — the five-zone st
 
 ## Why `-/`, not Calendar or Streams
 
-A digest is a **produced artefact** that documents a session — it has left the active knowledge cycle. This places it in outbound staging (`-/`), not in the base's living structure:
+A digest is a **produced artefact** that documents a session — it has left the active knowledge cycle. This places it in the outbound working area (`-/`), not in the base's living structure:
 
 - **Not Calendar** — Calendar notes are time-stamped records you keep. A digest is an output you can discard once its useful content is extracted into canonical notes or routed through `ki-trades`.
 - **Not Streams** — Streams notes are _work in motion_, driving further action inside the base. A digest captures work that is settled (at least temporarily) and carries no pending action of its own.

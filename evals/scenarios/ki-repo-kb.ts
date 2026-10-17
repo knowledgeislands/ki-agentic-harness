@@ -23,7 +23,7 @@ export const scenarios: Scenario[] = [
     skill: 'ki-repo-kb',
     id: 'kb-zone-set',
     prompt:
-      'What are the top-level folders of a Knowledge Islands base, and which of them are zones vs. staging areas?',
+      'What are the top-level folders of a Knowledge Islands base, and which of them are zones vs. working areas?',
     assertions: [
       {
         name: 'names the five zones',
@@ -31,12 +31,12 @@ export const scenarios: Scenario[] = [
       },
       { name: 'Admin is a zone', re: /\bAdmin\b/ },
       {
-        name: '+ / - are staging, not zones',
-        re: /(`?\+`?|`?-`?)[^.\n]{0,40}(staging|inbound|outbound|not (a )?zone)/i
+        name: '+ / - are working areas, not zones',
+        re: /(`?\+`?|`?-`?)[^.\n]{0,40}(working area|staging|inbound|outbound|not (a )?zone)/i
       }
     ],
     rubric:
-      'House structure: FIVE zones — Calendar, Pillars, Resources, Streams, Admin — each with a same-name index note; flanked by `+` (inbound) and `-` (outbound) STAGING areas, which are not zones and carry no same-name index. A correct answer lists the five zones and identifies + / - as staging rather than zones.'
+      'House structure: FIVE zones — Calendar, Pillars, Resources, Streams, Admin — each with a same-name index note; flanked by `+` (inbound) and `-` (outbound) WORKING areas, which are not zones and carry no same-name index. A correct answer lists the five zones and identifies + / - as working areas rather than zones.'
   },
   {
     skill: 'ki-repo-kb',

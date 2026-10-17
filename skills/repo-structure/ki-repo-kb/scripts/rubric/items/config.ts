@@ -50,7 +50,7 @@ const CONFIG_2 = mechanical(
 const CONFIG_3 = mechanical(
   'CONFIG-3',
   'canonical zone alias keys',
-  'Every [skills.ki-repo-kb.zones] key names a canonical zone or staging area.',
+  'Every [skills.ki-repo-kb.zones] key names a canonical zone or working area.',
   (context) => context.canonicalAliasKeys
 )
 const CONFIG_4 = mechanical(

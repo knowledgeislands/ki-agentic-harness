@@ -12,7 +12,7 @@ import type {
 import { parseStrictYaml } from './strict-yaml.ts'
 
 export const ZONES = ['Calendar', 'Pillars', 'Resources', 'Streams', 'Admin'] as const
-export const STAGING = ['+', '-'] as const
+export const WORKING_AREAS = ['+', '-'] as const
 const CONFIG = '.ki.toml'
 const CONFIG_TABLE = 'ki-repo-kb'
 const SNAKE_CASE = /^[a-z][a-z0-9_]*$/
@@ -231,7 +231,7 @@ export type KbZoneContext = {
   readonly requiredLayout: KbCheck
   readonly zoneIndexes: KbCheck
   readonly memoryIndex: KbCheck
-  readonly stagingAreas: KbCheck
+  readonly workingAreas: KbCheck
   readonly outboundPlacement: KbCheck
   readonly digestScaffold: KbCheck
   readonly scaffoldZoneIndexes?: () => void
@@ -331,10 +331,10 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       add('WARN', 'CONFIG-1', `Unrecognised scalar [skills.ki-repo-kb] key: ${key}.`, CONFIG)
     if (Object.keys(config.keys).length === 0)
       add('PASS', 'CONFIG-1', 'No unrecognised scalar [skills.ki-repo-kb] keys.', CONFIG)
-    const aliasable = new Set<string>([...ZONES, ...STAGING])
+    const aliasable = new Set<string>([...ZONES, ...WORKING_AREAS])
     for (const [zone, folder] of Object.entries(config.zones)) {
       if (!aliasable.has(zone))
-        add('WARN', 'CONFIG-3', `Zone alias ${zone} is not a canonical zone or staging area.`, CONFIG)
+        add('WARN', 'CONFIG-3', `Zone alias ${zone} is not a canonical zone or working area.`, CONFIG)
       else if (zone === folder)
         add('INFO', 'CONFIG-2', `Zone alias ${zone} restates its canonical folder name.`, CONFIG)
       else add('PASS', 'CONFIG-4', `Zone alias resolves ${zone} to ${folder}/.`, CONFIG)
@@ -407,12 +407,12 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       )
     }
   } else add('NOT_APPLICABLE', 'ZONE-3', 'Admin zone is absent.')
-  for (const staging of STAGING) {
-    const folder = zoneOf(staging)
+  for (const area of WORKING_AREAS) {
+    const folder = zoneOf(area)
     add(
       'INFO',
       'ZONE-4',
-      `${folder}/ is ${isDirectory(join(root, folder)) ? 'present' : 'absent'} staging, not a zone.`,
+      `${folder}/ is ${isDirectory(join(root, folder)) ? 'present' : 'absent'} working area, not a zone.`,
       `${folder}/`
     )
   }
@@ -563,24 +563,24 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
           .join('; ')}.`
       : 'Frontmatter uses note_type and does not use the legacy type field.'
   )
-  const staging = STAGING.map((zone) => `${zoneOf(zone)}/`)
+  const workingAreas = WORKING_AREAS.map((zone) => `${zoneOf(zone)}/`)
   const linked = notes
     .map((path) => path.slice(root.length + 1))
-    .filter((path) => !staging.some((folder) => path.startsWith(folder)))
+    .filter((path) => !workingAreas.some((folder) => path.startsWith(folder)))
   const ambiguous = ambiguousWikilinks(root, linked)
   add(
     ambiguous.length ? 'FAIL' : 'PASS',
     'LINK-1',
     ambiguous.length
       ? `Wikilinks resolve to more than one note; qualify each with a unique path: ${sample(ambiguous)}.`
-      : `Every wikilink outside ${staging.join(' and ')} resolves to at most one note.`
+      : `Every wikilink outside ${workingAreas.join(' and ')} resolves to at most one note.`
   )
   add(
     misplacedOutputs.length ? 'FAIL' : 'PASS',
     'ZONE-5',
     misplacedOutputs.length
       ? `Produced outputs outside ${outbound}: ${sample(misplacedOutputs)}.`
-      : 'Produced outputs are routed to outbound staging.'
+      : 'Produced outputs are routed to the outbound working area.'
   )
   return findings
 }
@@ -683,7 +683,7 @@ export const createKbSession = ({
       requiredLayout: check('ZONE-1'),
       zoneIndexes: check('ZONE-2'),
       memoryIndex: check('ZONE-3'),
-      stagingAreas: check('ZONE-4'),
+      workingAreas: check('ZONE-4'),
       outboundPlacement: check('ZONE-5'),
       digestScaffold: check('ZONE-6'),
       ...(draft

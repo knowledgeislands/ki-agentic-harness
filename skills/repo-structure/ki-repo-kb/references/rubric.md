@@ -31,7 +31,7 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 → [standard](standards-knowledge-base.md)
 
-Required zones, indexes, staging, output placement, and retained digest scaffold.
+Required zones, indexes, working areas, output placement, and retained digest scaffold.
 
 - **ZONE-1 [M] — required zone layout** — Calendar/, Pillars/, Resources/, Streams/, and Admin/ resolve through any declared zone alias to readable directories, including directory symlinks. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the required zone layout or placement, then rerun the audit.
@@ -39,9 +39,9 @@ Required zones, indexes, staging, output placement, and retained digest scaffold
   - _Remediation:_ automatic
 - **ZONE-3 [M] — root memory index** — The resolved Admin zone carries MEMORY.md. (standards-knowledge-base.md)
   - _Remediation:_ automatic
-- **ZONE-4 [M] — staging areas are not zones** — +/ and -/ are reported as staging only and are exempt from the zone-index rule. (standards-knowledge-base.md)
+- **ZONE-4 [M] — working areas are not zones** — +/ and -/ are reported as working areas only and are exempt from the zone-index rule. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the required zone layout or placement, then rerun the audit.
-- **ZONE-5 [M] — produced outputs use outbound staging** — Notes with note_type session-digest reside under the resolved -/ staging area; cross-repository handoffs belong to ki-trades. (standards-knowledge-base.md)
+- **ZONE-5 [M] — produced outputs use the outbound working area** — Notes with note_type session-digest reside under the resolved -/ working area; cross-repository handoffs belong to ki-trades. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the required zone layout or placement, then rerun the audit.
 - **ZONE-6 [M] — session-digest scaffold is canonical** — A declared ki-repo-kb capability retains the exact -/_DIGESTS/README.md scaffold after digest records are removed. (standards-knowledge-base.md)
   - _Remediation:_ automatic
@@ -58,7 +58,7 @@ Validate-down `[skills.ki-repo-kb]` configuration and zone aliases.
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
 - **CONFIG-2 [M] — non-redundant zone aliases** — A zone alias does not restate its canonical folder name. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
-- **CONFIG-3 [M] — canonical zone alias keys** — Every [skills.ki-repo-kb.zones] key names a canonical zone or staging area. (standards-knowledge-base.md)
+- **CONFIG-3 [M] — canonical zone alias keys** — Every [skills.ki-repo-kb.zones] key names a canonical zone or working area. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
 - **CONFIG-4 [M] — KB configuration boundary** — The checker validates only the ki-repo-kb table; shared ki-repo store_roles metadata selects mirror applicability without validating sibling tables. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.

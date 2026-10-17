@@ -13,7 +13,7 @@ Unlike `ki-repo-mcp` and `ki-skills`, this skill follows **no moving external sp
 | [Knowledge Islands knowledge-base standard][kb-standard] | † The zone model, conventions, routing, and per-base configuration | 2026-08-12 |
 | [Knowledge Islands frontmatter standard][frontmatter] | Universal note metadata, note-type taxonomy, location constraints, and dependent fields | 2026-08-16 |
 
-† The authoritative structure: five zones (Calendar / Pillars / Resources / Streams / Admin) flanked by the inbound `+` and outbound `-` staging areas. This in-house Reference is the canonical definition — the skill follows no external spec.
+† The authoritative structure: five zones (Calendar / Pillars / Resources / Streams / Admin) flanked by the inbound `+` and outbound `-` working areas. This in-house Reference is the canonical definition — the skill follows no external spec.
 
 ## Living (how the model is actually used)
 
@@ -34,7 +34,7 @@ REFRESH last run **2026-08-12** (prior: 2026-07-04). Internal-model re-anchor �
 
 Per-source outcome:
 
-- **Knowledge Islands knowledge-base standard** — confirmed for the five-zone model, staging, Pillar unit, wikilink convention, and declared-not-forked rule. The former Focus/proposal metadata rows were retired: current Streams structure is flat adapter-owned Roadmap and Housekeeping areas. Universal metadata reconciliation remains open.
+- **Knowledge Islands knowledge-base standard** — confirmed for the five-zone model, working areas, Pillar unit, wikilink convention, and declared-not-forked rule. The former Focus/proposal metadata rows were retired: current Streams structure is flat adapter-owned Roadmap and Housekeeping areas. Universal metadata reconciliation remains open.
 - **`ki-principal`** — confirmed for current configuration and layout: `repo_type = "kb"`, `ki-work.adapter = "kb-streams"`, and `Streams/Roadmap/` plus `Streams/Housekeeping/` are present. This local source check does not claim a full remote or hosted audit outcome.
 - **`kit-legal`** — confirmed. Full canonical structure on canonical zone names; no kb config table (no aliases); config now on the `[ki-*]` prefix. Hosted audit: 0 fail · 3 warn (Charter/Conformance absent, one non-snake_case key). Zone-alias binding still has no live exemplar.
 - **Per-base `.ki.toml` declarations** — confirmed. No recurring base-specific declaration has emerged to promote into the standard this cycle.
