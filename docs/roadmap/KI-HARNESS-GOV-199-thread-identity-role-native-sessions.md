@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 72ad16866f1f3b4fbae2cac0f7c1ce09395465d2
 created_at: 2026-10-16T21:28:02Z
-updated_at: 2026-10-16T21:32:06Z
+updated_at: 2026-10-17T00:39:29Z
 ---
 
 # KI-HARNESS-GOV-199: Thread Identity and Role
@@ -42,19 +42,22 @@ This record owns the harness phases. [KI-TOOL-KI-CLI-145](/Users/krisbrown/works
 ## Boundary
 
 - **Phase 1, standard.** In `ki-checkpoint`: the optional `role` field, its three values, the conversational default and the rule that coordinating values need `[skills.ki-pmo]`, with its rubric checks; a "thread identity and native sessions" section giving the key, the label as authority, the binding as a local runtime file outside every checkpoint, the three supply channels and drift as report-only, with pointers from the `ki-pmo` Glossary and `ki-delegation`. In `ki-pmo`: Thread types reads the role; Report forms and the SKILL description gate the coordinator forms to coordinating roles with the narrowed role-gated table; Bootstrap binds the session and checks the declared role against the opener; Re-anchoring is limited to coordinating roles; the scope sentences in the hook line and output style read "whose checkpoint declares role coordination or state-of-play" once the territory's coordinating checkpoints carry the field; the rubric item that every coordinating checkpoint carries `role`; and regeneration through `ki dev skill generate ki-pmo --write`. The migration adds `role` to every existing coordinating checkpoint through each thread's own next update or the state-of-play messages block, never by another thread editing it.
+- **Thread naming.** Kris set the thread id, slug and title model on 17 October under THREAD-IDS and THREAD-IDS-DOC in the [decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/decisions.md): "I'd like to think of threads as having an id, slug, and title", then "so document the naming approach". One canonical Thread naming section in the `ki-pmo` standard defines the id (`<territory>.sop`, `<territory>.<initiative>.<project>`, `<territory>.<slug>`) as authoritative, the slug derived from it for every file and folder name, and the title and label from display names, superseding NAMING's label rule; `ki-checkpoint` and `ki-delegation` point to it. The `id` and `title` front-matter fields, checker support and renaming existing checkpoints, folders, runs and labels wait on the owner's migration answer, IDS-MIGRATE, in the [thread-ids report](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/thread-ids.report.md).
 - **Phase 3, hook script.** The shared `SessionStart` script gains `startup` and `resume` handling that emits the identity line ending `role <role>`; `UserPromptSubmit` emits the coordinator line, and `compact` the re-anchoring pointer, only when the resolved role is coordinating; an unbound session in a `ki-pmo` checkout gets nothing; silent under `KI_AGENT_RUN`. The hook-line scope sentence and the pointer's conversational clause go.
 - **Phases 4, 4b and 5.** The pilot result on intake and on the ways-of-working coordination thread is recorded here before acceptance. The intake pilot waits for PILOT-LABEL.
-- **Out:** writing to native sessions beyond the owner's own hand rename; arbitrary vendor metadata; a role in any native name or vendor field; ChatGPT chat binding beyond paste; Claude Desktop and web; moving bindings between hosts; changes to `ki agent` runs beyond the background-agent style; intake's acquisition contract; any coordinator ceremony for conversational threads; NAME-ROOT, NAME-HOST and FOOTER-PROJECTS.
+- **Out:** writing to native sessions beyond the owner's own hand rename; arbitrary vendor metadata; a role in any native name or vendor field; ChatGPT chat binding beyond paste; Claude Desktop and web; moving bindings between hosts; changes to `ki agent` runs beyond the background-agent style; intake's acquisition contract; any coordinator ceremony for conversational threads; FOOTER-PROJECTS. The thread-naming model answers NAME-ROOT and carries NAME-HOST's suffix rule, pending THREAD-IDS-AGREE.
 
 ## Current state
 
-Phase 1's role field has landed: the `ki-checkpoint` Thread role section with the optional `role` field, its three values, the conversational default and the `[skills.ki-pmo]` rule, checked by RECORD-2 and the new RECORD-4; one paragraph in the `ki-pmo` Thread types section; and the new PMO-10 rubric item, at WARN while existing coordinating checkpoints migrate through their own updates. The rest of Phase 1, the identity section and the `ki-pmo` Bootstrap and Re-anchoring role edits, the scope-sentence rewording, Phase 3 and the pilots remain.
+The Thread naming section has landed in the `ki-pmo` standard, with pointers from `ki-checkpoint` and `ki-delegation`, documenting the model only. Phase 1's role field has landed: the `ki-checkpoint` Thread role section with the optional `role` field, its three values, the conversational default and the `[skills.ki-pmo]` rule, checked by RECORD-2 and the new RECORD-4; one paragraph in the `ki-pmo` Thread types section; and the new PMO-10 rubric item, at WARN while existing coordinating checkpoints migrate through their own updates. The rest of Phase 1, the identity section and the `ki-pmo` Bootstrap and Re-anchoring role edits, the naming migration, the scope-sentence rewording, Phase 3 and the pilots remain.
 
 ## Steps
 
 - [x] Add the `role` field, its three values, the conversational default and the `[skills.ki-pmo]` rule to the `ki-checkpoint` standard, with RECORD-2 accepting the field and RECORD-4 gating coordinating values.
 - [x] Have `ki-pmo` Thread types read the role, and add PMO-10 checking that every coordinating checkpoint declares it.
 - [x] Regenerate both rubrics and the `ki-pmo` surfaces.
+- [x] Document the thread id, slug and title model in one `ki-pmo` Thread naming section, pointed to from `ki-checkpoint` and `ki-delegation`.
+- [ ] Once the owner answers IDS-MIGRATE, accept `id` and `title` in the `ki-checkpoint` checker and carry out the approved renames in their order.
 - [ ] Add the thread identity and native sessions section to `ki-checkpoint`, with pointers from the `ki-pmo` Glossary and `ki-delegation`.
 - [ ] Gate Report forms by role with the narrowed role-gated table; have Bootstrap check the declared role against the opener; limit Re-anchoring to coordinating roles.
 - [ ] Once the territory's coordinating checkpoints carry `role`, reword the hook-line and output-style scope sentences to "whose checkpoint declares role coordination or state-of-play" and regenerate.
@@ -65,7 +68,8 @@ Phase 1's role field has landed: the `ki-checkpoint` Thread role section with th
 
 - `skills/governance/ki-checkpoint/references/standards-checkpoints.md`, `references/rubric.md`, `scripts/rubric/contexts/checkpoints.ts`, `checkpoints.test.ts`, `scripts/rubric/items/records.ts`
 - `skills/change-management/ki-pmo/references/standards-pmo.md`, `references/rubric.md`, `scripts/rubric/contexts/pmo.ts`, `pmo.test.ts`, `scripts/rubric/items/threads.ts`
-- Later: `hooks/coordinator-reminder.sh` and its test, `output-styles/ki-coordinator.md`, `skills/governance/ki-delegation/references/standards-background-runs.md`
+- `skills/governance/ki-delegation/references/standards-background-runs.md`
+- Later: `hooks/coordinator-reminder.sh` and its test, `output-styles/ki-coordinator.md`
 - `docs/roadmap/_ISSUES.md`, this record
 
 ## Verify
@@ -76,7 +80,7 @@ Phase 1's role field has landed: the `ki-checkpoint` Thread role section with th
 
 - Phase 1 depended on REPLY-FORMS landing, done in [KI-HARNESS-GOV-198](KI-HARNESS-GOV-198-reply-forms.md).
 - Phase 3 needs [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) for the binding file and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md) for the matchers.
-- The intake pilot waits for PILOT-LABEL, which waits for NAMING.
+- The intake pilot waits for PILOT-LABEL, which now waits for THREAD-IDS-AGREE and IDS-MIGRATE.
 
 ## Documentation impact
 

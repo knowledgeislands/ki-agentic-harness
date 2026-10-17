@@ -38,6 +38,8 @@ The full name appears in the filename stem, `thread` field, and H1. When a Proje
 
 A human opener names only the Project, for example `Re-bootstrap as the agent-host coordination thread under ki-pmo.`; [RESUME](#resume-lifecycle) resolves it to the full name.
 
+The `ki-pmo` [Thread naming](../../../change-management/ki-pmo/references/standards-pmo.md#thread-naming) model gives every thread an authoritative id with a slug and title derived from it, and owns their form. These names, the label rule below and the `id` and `title` front-matter fields move to it only through the migration the owner approves; until then this section and [Thread label](#thread-label) govern.
+
 ## Thread label
 
 An active record carries an optional `label`: the exact name the human gives the thread in their editor or agent client, so that it can be copied straight in. Its form is a path of segments joined by ` > `, which Kris adopted on 2026-10-15 from the thread list `KI > SoP`, `KI > Model > ways of working`, `KI > Model > knowledge acquisition`, `KI > Rig > mac studio setup`, `KI > mics / webcams`, `Acquire > intake (sol)` and `Chezmoi > misc (sol)`: "this is a better way I think".
