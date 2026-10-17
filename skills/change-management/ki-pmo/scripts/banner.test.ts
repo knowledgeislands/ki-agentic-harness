@@ -383,7 +383,7 @@ test('the hook line points at the standard and carries only its five hard rules'
     '4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and closing with the footer banner'
   )
   expect(line).toContain(
-    '5) commit your own work by explicit path, and act on each line of the Messages from Master block'
+    '5) commit your own work by explicit path, and act on each line of the Messages block at the top of the checkpoint, FIRST-STEP first'
   )
   expect(line).not.toContain('6)')
   // The shape itself lives in the standard and the output style; the line no longer restates it.

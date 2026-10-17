@@ -62,7 +62,7 @@ An active record may carry an optional `role`, the one authoritative declaration
 - `coordination` and `state-of-play` are valid only in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. The declaration stays the capability gate and is never the role: it covers every session in the checkout.
 - This standard owns the field and its validation; [`ki-pmo`](../../../change-management/ki-pmo/references/standards-pmo.md#thread-types) owns what each value means.
 - Nothing else is authority for the role: not the label, a native session name, the file name or path, the presence of a checkpoint, the repository declaration, an output style, a hook line or a cached copy. An explicit current-thread owner instruction overrides the field for that session only, and an agent offers to write the field rather than writing it unasked.
-- An existing coordinating checkpoint gains its `role` through its own thread's next update, or through the state-of-play thread's messages block; another thread never edits it directly to add one.
+- An existing coordinating checkpoint gains its `role` through its own thread's next update, at the latest on the `FIRST-STEP` line of its messages block at restart; another thread never edits it directly to add one.
 
 ## Exact record form
 
@@ -125,6 +125,8 @@ The only first-delivery action is a compact reminder that the already-selected r
 Create or update a checkpoint only on explicit user request or a documented repository-local trigger, such as before context compaction, after a substantive decision, after a repository commit, or before a known pause. A generic Stop event is not authority to create or choose a checkpoint.
 
 An update replaces the active snapshot in place, preserves `created_at`, and advances `updated_at`. It never appends timestamped copies or transcript history. Git is the history mechanism.
+
+Another coordinating thread may add one line to a coordination checkpoint's messages block under `ki-pmo` and commit that path alone; that is not an update and does not advance `updated_at`. The owning thread's next update removes each line it has acted on.
 
 Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a checkpoint. The checkpoint may name those canonical artifacts; it must not become their only copy.
 
