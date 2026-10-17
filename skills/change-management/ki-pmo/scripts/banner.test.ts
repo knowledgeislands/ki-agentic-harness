@@ -9,9 +9,10 @@ import { generate } from './generate/index.ts'
 // the rich-text heading Kris asked for on 2026-10-14, "a better heading that is
 // the actual just normal text, so it can be rich text rather than fixed width
 // text", agreed with "Actually, that is really good." and amended with "a
-// tripple HR element Before the main heading" and "a single HR alignment after
-// the summary and last mark part"; it replaced the framed label of the same
-// day. The footer is the block-letter REST or BUSY frame he restored with "The
+// single HR alignment after the summary and last mark part"; it replaced the
+// framed label of the same day. The three rules that stood before it went on
+// 2026-10-17, "we can just go single horizontal rule", so no saved report
+// opens with `---`. The footer is the block-letter REST or BUSY frame he restored with "The
 // footer banner needs to be like it was before, with the large ascii text",
 // its word rows held here exactly as harness revision e60b4e45 carried them,
 // padded with one blank framed line inside each border and carrying the
@@ -42,12 +43,6 @@ const PROJECT_NOTE =
   '/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working/ways-of-working.md'
 /** The report heading opening a Summary, as the standard and the output style draw it. */
 const HEADING_EXAMPLE = [
-  '---',
-  '',
-  '---',
-  '',
-  '---',
-  '',
   `# [Knowledge Islands model](${INITIATIVE_NOTE}) › [Ways of working](${PROJECT_NOTE})`,
   '',
   '**Summary at 19:13 BST · last mark 14:54 BST**',
@@ -251,12 +246,12 @@ test('the standard carries the REST, BUSY and HOLD footers and the DONE frame, i
   expect(done[6]).toBe(FOOTER_BOTTOM_BORDER)
 })
 
-test('the report heading is three rules, the linked Initiative › Project heading, the bold form line and one rule, then the first section', () => {
+test('the report heading is the linked Initiative › Project heading, the bold form line and one rule, then the first section', () => {
   const [summary, stateOfPlay, runReport, ownerReport] = headings(standard)
   expect(headings(standard)).toHaveLength(4)
   expect(ownerReport?.slice(0, runReport?.length)).toEqual(runReport)
   expect(summary?.join('\n')).toBe(HEADING_EXAMPLE)
-  expectReportHeading(summary, 3)
+  expectReportHeading(summary, 0)
   expect(stateOfPlay?.[0]).toBe('# [<territory or Initiative>](<its local note>) › State of play')
   expect(stateOfPlay?.[2]).toBe('**Full summary at 19:13 BST · last mark 14:54 BST**')
   expectReportHeading(stateOfPlay, 0)
@@ -371,13 +366,14 @@ test('the resume line is one sentence shared by the standard and the output styl
 })
 
 test('the hook line names the report heading, the block-letter footer, the bracketed-state list, the thread folder and the prefilled reply block', () => {
-  expect(hook).toContain('opening with the ki-pmo report heading: three --- rules')
+  expect(hook).toContain('opening with the ki-pmo report heading: no rule before it, one # heading')
   expect(hook).toContain(
     'one # heading of the Initiative linked to its local note, then ›, then the Project linked to its local note, both as display names'
   )
   expect(hook).toContain('a bold <Form> at <local time> · last mark <local time> line, then one --- rule')
   expect(hook).toContain('no frame, thread type, window or state line')
   expect(hook).not.toContain('heading frame')
+  expect(hook).not.toContain('three --- rules')
   expect(hook).not.toContain('Project · Initiative')
   expect(hook).toContain(
     'Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo footer banner'
