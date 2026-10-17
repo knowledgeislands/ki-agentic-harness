@@ -2,13 +2,16 @@
 id: KI-HARNESS-GOV-208
 area: GOV
 title: Branch previews behind Access
+kind: deliver
+purpose: learning
 component: repo-structure
-status: triage
+horizon: next
+status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T23:40:14Z
-updated_at: 2026-10-17T23:40:14Z
+updated_at: 2026-10-17T23:53:00Z
 ---
 
 # KI-HARNESS-GOV-208: Branch Previews Behind Access
@@ -33,6 +36,10 @@ The current standard names the optional `upload` script in section 4 and the `ma
 ## Discussion
 
 Captured from the Phase 3 run's refined skill-learning draft. Adopting this record and approving the section's content are Kris's, under `ki-next` and `ki-plan`.
+
+### Adoption
+
+Kris Brown approved adoption on 18 October 2026 in the 5G Emerge Phase 3 coordination thread, answering ADOPT-208 with option a): "adopt KI-HARNESS-GOV-208 as draft, horizon next, kind deliver, purpose learning, and launch a ki-agentic-harness run to plan it to Ready under ki-plan". Approving the section's content and the plan remains Kris's, at the Ready decision.
 
 ### Proposed section content
 
