@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: aa5d0b039202cbd1f5d28841411bf1d07096c10f
 created_at: 2026-10-17T23:32:09Z
-updated_at: 2026-10-17T23:32:09Z
+updated_at: 2026-10-17T23:40:09Z
 ---
 
 # KI-HARNESS-GOV-207: Recommendation Confidence
@@ -103,6 +102,10 @@ The change meets the Goal in text on every surface that draws the query shape. R
 ### Mini recap
 
 Confidence lands on the recommended option across the standard, generated surfaces and rubrics.
+
+## Done
+
+Accepted as delivered on 2026-10-18 at 00:40 BST by Kris Brown, recorded in the product-management decisions log: "ACCEPT-207 / Accept KI-HARNESS-GOV-207 under ki-accept." The six-part Review packet above stands as the closure evidence. Acceptance re-ran the checks on `b7ab7eff8`: `bun run test` 1210 pass, 0 fail; `bunx tsc --noEmit` clean; `ki repo audit --skill ki-delegation`, `--skill ki-work-roadmap` and `--skill ki-authoring` pass; `--skill ki-pmo` reports the same four PMO-7 failures and one PMO-9 warning as the Review, all in the untouched `+/_THREADS/skill-reviews/` folder, fleet findings rather than failures of this change.
 
 ## Discussion
 
