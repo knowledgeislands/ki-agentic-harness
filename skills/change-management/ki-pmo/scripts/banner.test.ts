@@ -365,45 +365,39 @@ test('the resume line is one sentence shared by the standard and the output styl
   expect(outputStyle).toContain(`\`\`\`text\n${RESUME_LINE}\n\`\`\``)
 })
 
-test('the hook line names the report heading, the block-letter footer, the bracketed-state list, the thread folder and the prefilled reply block', () => {
-  expect(hook).toContain('opening with the ki-pmo report heading: no rule before it, one # heading')
-  expect(hook).toContain(
-    'one # heading of the Initiative linked to its local note, then ›, then the Project linked to its local note, both as display names'
+test('the hook line points at the standard and carries only its five hard rules', () => {
+  const line = /^line='(.*)'$/m.exec(hook)?.[1] ?? ''
+  expect(line).toContain(
+    'follow the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md)'
   )
-  expect(hook).toContain('a bold <Form> at <local time> · last mark <local time> line, then one --- rule')
-  expect(hook).toContain('no frame, thread type, window or state line')
-  expect(hook).not.toContain('heading frame')
-  expect(hook).not.toContain('three --- rules')
-  expect(hook).not.toContain('Project · Initiative')
-  expect(hook).toContain(
-    'Close every Summary, recap, full summary and re-bootstrap report with the ki-pmo footer banner'
+  expect(line).toContain(
+    'whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive'
   )
-  expect(hook).toContain(
-    'the block-letter REST or BUSY frame exactly as the standard prints it, the lower-case form word and issued time in its top border and one blank framed line inside each border'
+  expect(line).toContain(
+    '2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop'
   )
-  expect(hook).toContain('with no label-and-mark line')
-  expect(hook).toContain('one Markdown list with a bracketed state per item')
-  expect(hook).toContain('- [at rest] nothing running or queued')
-  expect(hook).toContain(
-    'Context, a one-sentence Query and lettered Options with a) (recommended) first and no bullets'
+  expect(line).toContain(
+    '3) while dispatched work runs, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes'
   )
-  expect(hook).toContain('stacks its tag on one line, a blank line, then the option a) instruction in full')
-  expect(hook).toContain('never a menu of options')
-  expect(hook).toContain('a bare letter in reply being accepted')
-  expect(hook).toContain('with --- between entries')
-  expect(hook).toContain('Commit and push the thread folder under +/_THREADS/')
-  expect(hook).toContain('Re-anchoring after compaction')
-  expect(hook).toContain('When the owner asks for a hold, follow Draining a thread in ki-pmo')
-  expect(hook).toContain(
-    'a bold Hold report at <local time> · mark <local time> line, then ## Done, ## Parked and ## Left over'
+  expect(line).toContain(
+    '4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and closing with the footer banner'
   )
-  expect(hook).toContain(
-    'the HOLD frame exactly as the standard prints it, its list, the line To bring this thread back'
+  expect(line).toContain(
+    '5) commit your own work by explicit path, and act on each line of the Messages from Master block'
   )
-  expect(hook).toContain('Every REST, BUSY, HOLD or DONE banner first rewrites the pick-up block')
-  expect(hook).toContain('Act on each line of the Messages from Master block')
-  expect(hook).toContain('push only when your own commits alone are stacked')
-  expect(hook).not.toContain('DRAINED')
+  expect(line).not.toContain('6)')
+  // The shape itself lives in the standard and the output style; the line no longer restates it.
+  expect(line).not.toContain('- [at rest]')
+  expect(line).not.toContain('Hold report at')
+  expect(line).not.toContain('DRAINED')
+  expect(line.length).toBeLessThan(1200)
+})
+
+test('the run-report and footer-report sources carry the quiet-tools rule', () => {
+  expect(standard).toContain('### Quiet tools')
+  const quiet = 'run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.'
+  for (const surface of generate(harnessRoot).filter(({ path }) => path.includes('ki-delegation/assets/')))
+    expect(surface.content).toContain(quiet)
 })
 
 test('the hook line, the pointer and the output style confine the coordinator forms to coordinating threads', () => {
