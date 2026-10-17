@@ -6,13 +6,12 @@ purpose: capability
 project: knowledge-acquisition
 component: acquire
 area: OPS
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 7373e7c496caa223f5e2dce988ab41bb700f31ad
 created_at: 2026-08-22T22:13:22Z
-updated_at: 2026-10-14T13:47:50Z
+updated_at: 2026-10-17T21:41:32Z
 ---
 
 ## Goal
@@ -144,6 +143,10 @@ The delivered adapters change no provider state and expose read-only operations 
 ### Mini recap
 
 Narrowed to the delivered read-only adapters, the published ChatGPT capability and the verified bootstrap staging; verified by `ki acquire list` and the staging checksums; the open questions travel with the unfinished steps to the knowledge-acquisition Project. Learning route: the Pillars lifecycle note planned under KI-PRINCIPAL-MOD-006 can draw on the staging checkpoint's omission and provenance pattern.
+
+## Done
+
+Accepted as delivered on 2026-10-17 at 22:50 BST by Kris Brown, in the knowledge-acquisition thread's reply 'SUCCESSOR-RECORD: accept KI-HARNESS-OPS-005 as delivered'. The six-part Review packet above stands as the closure evidence: the narrowed boundary is fully delivered, the two open questions travel with the moved steps, and the unfinished acquisition steps continue in the follow-up record captured the same day.
 
 ## Discussion
 
