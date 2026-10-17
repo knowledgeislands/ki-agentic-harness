@@ -10,6 +10,8 @@
 
 ## Last review
 
+2026-10-17: made a new idea start as an `Idea:` bullet in its owning Project or Initiative note, with `_IDEAS.md` only for an idea neither owns, on Kris's IDEAS-ROOTING answer, as received: "Ideas start as Idea: bullets in the owning Project or Initiative note; a ki-principal run adds GIT-SURFACE to the ways-of-working Project note first."
+
 2026-10-14: aligned the graduation test with the `ki-pmo` record threshold Kris set that day, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard". Under a coordinating thread the threshold decides whether a record is due; the graduation test then governs its capture.
 
 2026-09-22: clarified that proposed identifiers are not reservations; the allocating writer re-reads the applicable ledger immediately before publication and advances it with the new record.

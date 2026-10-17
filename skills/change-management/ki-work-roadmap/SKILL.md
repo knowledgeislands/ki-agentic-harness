@@ -19,7 +19,7 @@ This governance skill owns the shared flat forward-work model. A project reposit
 
 Read [the repository-roadmap standard](references/standards-repository-roadmaps.md) before changing a roadmap shape or lifecycle. Read [the generated rubric](references/rubric.md) for the mechanical and judgment criteria. Work-item details live in [the work-item-format standard](references/standards-work-item-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
 
-A `status: triage` record captures substantive prospective work without adopting it; ideas that do not yet pass the graduation test wait in a Project note or `_IDEAS.md`. The `ki-next` process skill owns capture, human-approved adoption, and later selection transitions.
+A `status: triage` record captures substantive prospective work without adopting it; ideas that do not yet pass the graduation test start as `Idea:` bullets in the owning Project or Initiative note, or wait in `_IDEAS.md` when neither owns them. The `ki-next` process skill owns capture, human-approved adoption, and later selection transitions.
 
 ## Shared model
 

@@ -164,8 +164,10 @@ An idea has no identifier, horizon, or status, and never owns state. The Project
 
 - as an `Idea:` bullet in its Project note's `## Notes` section when a Project is known, under the [Project registry](../../ki-work/references/standards-project-registry.md);
 - in an [idea-stage Project](../../ki-work/references/standards-project-registry.md#idea-stage-project) when a decision must be taken before any delivery, the Project's `## Notes` holding the ideas;
-- in its Initiative note's `## Notes` when the Initiative is known and no Project fits; or
+- as an `Idea:` bullet in its Initiative note's `## Notes` when the Initiative is known and no Project fits; or
 - otherwise as a plain bullet in the repository's `docs/roadmap/_IDEAS.md`, or `Streams/Roadmap/_IDEAS.md` in a Knowledge Base, beside `_ISSUES.md`.
+
+A new idea therefore starts as an `Idea:` bullet in its owning Project or Initiative note; `_IDEAS.md` holds only an idea that no Project or Initiative owns yet. Kris set this on 2026-10-17, as received: "Ideas start as Idea: bullets in the owning Project or Initiative note".
 
 `_IDEAS.md` is not a record. It carries no identity, the structural-validity invariant skips it, and CONFORM never creates or rewrites it. When a whole idea graduates, its bullet is removed and useful research moves into the record; `_IDEAS.md` may link the new record, but a Project or Initiative note never names a record identifier, because [links point upwards](../../ki-work/references/standards-project-registry.md#links-point-upwards). No record names an idea-stage Project: the Project graduates to `active` first.
 
@@ -177,7 +179,7 @@ Goal, Context, and Boundary alone are not enough to make a record. After checkin
 - (b) it is a **decision** with an owner and a needed-by date, adopted as `kind: decide`; or
 - (c) it must **survive the session**: it is deferred, delegated, multi-step, or reviewed by someone else.
 
-Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate in its Project note's Notes section when the Project is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where a coordinating thread runs under `ki-pmo`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the thread's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard".
+Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate as an `Idea:` bullet in its Project or Initiative note's Notes section when either is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where a coordinating thread runs under `ki-pmo`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the thread's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard".
 
 ## Migration tolerance
 
