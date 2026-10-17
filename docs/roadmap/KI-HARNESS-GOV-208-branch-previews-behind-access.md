@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T23:40:14Z
-updated_at: 2026-10-17T23:53:00Z
+updated_at: 2026-10-17T23:53:51Z
 ---
 
 # KI-HARNESS-GOV-208: Branch Previews Behind Access
@@ -32,6 +32,65 @@ The current standard names the optional `upload` script in section 4 and the `ma
 
 - In: a new section of `references/standards-cloudflare-hosting.md`, with matching rubric items and their published rubric, a worked exemplar in `references/exemplars.md`, the dashboard rows the section adds to the section 6 guide contract, and refreshed `references/sources.md` entries for the Builds, Access and preview-URL facts it relies on.
 - Out: the `cloudflare` and `wrangler` skills' general Wrangler and Access mechanics; companion Workers; any change to a hosted repository, whose owner adopts the section on their own audit; Workers Builds build variables, still an open question in the Phase 3 thread.
+
+## Current state
+
+Draft at `next`, adopted on 18 October 2026 and shaped here for Kris's Ready decision. The [Cloudflare hosting standard](../../skills/repo-structure/ki-repo-website-cloudflare/references/standards-cloudflare-hosting.md) names the optional `upload` script in section 4 and the `main` build-and-deploy pair in section 5, and says nothing about non-production branch builds, preview URLs, Access in front of them, or a restore path for the dashboard state they change. Rubric item WCF-25 treats the upload script as optional in every case, WCF-26 checks the guide for builds, domains, redirects and `workers.dev` but not previews, and the rubric context does not read `preview_urls` from `wrangler.jsonc`. The [source list](../../skills/repo-structure/ki-repo-website-cloudflare/references/sources.md) was last refreshed on 4 October 2026 and carries a watch note that Workers Builds now names a non-production **Preview command** on its build settings; the Phase 3 run instead built previews through a second trigger. The worked example is the `5g-emerge-phase3` repository's Cloudflare developer guide at commits `80395f5` and `05e1d44`.
+
+## Steps
+
+- [ ] Refresh the BUILDS, DEV and WRANGLER sources and add Access and preview-URL sources in `references/sources.md` through the skill's REFRESH mode, and reconcile the Preview command watch note with the second-trigger pattern before writing the section; if current documentation makes the second trigger unnecessary, write the section on the documented setting and record the change under Discussion.
+- [ ] Add a new section 6, "Branch previews behind Access", to `references/standards-cloudflare-hosting.md` carrying the six points under Proposed section content, renumber the guide and boundaries sections to 7 and 8, and update the contents list and every in-skill anchor that cites them.
+- [ ] State in the new section that turning on `preview_urls` makes the house `upload` script and its `ki:site:upload` alias required, and amend section 4's optional wording to match.
+- [ ] Add the preview rows to the guide contract in the renumbered section 7: the non-production trigger's branch filters, build and deploy commands, the preview Access application and its policy, and the `previews_enabled` flag.
+- [ ] Teach the rubric context to read `preview_urls` from the site `wrangler.jsonc`, with context tests.
+- [ ] Extend WCF-25 so the upload script and alias are required, not optional, when `preview_urls` is true, with fixture tests for both branches.
+- [ ] Add WCF-27, "preview Access pairing", `[M-heuristic + J]`: when `preview_urls` is true, the Cloudflare guide must declare a preview Access application covering `*-<name>.<account-subdomain>.workers.dev`; judgment confirms it matches the live dashboard. Register it in the item index with its tests.
+- [ ] Update WCF-26's review prompt to include the preview rows, and move rubric source anchors to the renumbered sections.
+- [ ] Add a "Branch previews behind Access" exemplar to `references/exemplars.md`, adapted from the Phase 3 guide with account identifiers, hostnames and policy members replaced by placeholders.
+- [ ] Regenerate `references/rubric.md` with `ki dev skill rubric ki-repo-website-cloudflare`.
+- [ ] Run the checks under Verify.
+
+## Files touched
+
+- `skills/repo-structure/ki-repo-website-cloudflare/references/standards-cloudflare-hosting.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/exemplars.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/sources.md`
+- `skills/repo-structure/ki-repo-website-cloudflare/references/rubric.md` (generated)
+- `skills/repo-structure/ki-repo-website-cloudflare/scripts/rubric/contexts/website-cloudflare.ts` and its test
+- `skills/repo-structure/ki-repo-website-cloudflare/scripts/rubric/items/wcf.ts`, `index.ts` and `index.test.ts`
+- `skills/repo-structure/ki-repo-website-cloudflare/SKILL.md`, only if its section summary names the sections being renumbered
+
+## Verify
+
+- `bun run test` passes, including new context and item tests: `preview_urls: true` without an upload script fails WCF-25; `preview_urls: true` with a guide lacking a preview Access application fails WCF-27; a guide declaring one passes; `preview_urls` absent or false leaves both not applicable.
+- `bunx tsc --noEmit` passes.
+- `ki dev skill rubric ki-repo-website-cloudflare` leaves `references/rubric.md` unchanged after regeneration, and it lists WCF-27.
+- `ki repo audit --skill ki-skills --repo .` reports no new finding for `ki-repo-website-cloudflare`, and `ki repo audit --skill ki-work-roadmap --repo .` passes.
+- Assertion: no in-skill link targets the old section 6 or 7 anchors (`grep` for `#6-the-cloudflare-guide` and `#7-boundaries` finds nothing).
+- Assertion: no account identifier, token, email address or real policy member appears in the new section or exemplar.
+
+## Dependencies / blocks
+
+No local blocker. The Phase 3 run that confirmed the pattern has landed in the `5g-emerge-phase3` repository, whose Cloudflare developer guide is the worked example. The source refresh step reads Cloudflare's public documentation, so the delivery run needs read-only web access; it makes no Cloudflare API call and changes no hosted repository. Workers Builds build variables stay out, pending the Phase 3 thread's open BUILD-VARS question.
+
+## Documentation impact
+
+### Decision Records
+
+None. The section records an operating pattern under an existing hosting standard; the authority for it is Kris's 18 October 2026 direction quoted under Context, and the planning answers below are approved with the plan.
+
+### Specifications
+
+None. The skill standard and its rubric are the contract; no repository Specification governs Cloudflare hosting.
+
+### Guides
+
+The hosting standard's guide contract gains preview rows. Hosted repositories adopt them through their own audit; this item edits no hosted guide.
+
+### Roadmap
+
+None expected. If the source refresh shows the Workers Builds Preview command replaces the second trigger, the section follows the documentation and no follow-on is needed; a shared Cloudflare restore procedure is captured only when a second Cloudflare change needs one.
 
 ## Discussion
 
@@ -55,3 +114,11 @@ Kris Brown approved adoption on 18 October 2026 in the 5G Emerge Phase 3 coordin
 - Whether the rubric should check `preview_urls: true` against a declared preview Access application in the guide, or leave the pairing to judgment.
 - Whether the restore-path capture belongs in this skill or in a shared connection-critical procedure that other Cloudflare changes would also cite.
 - Whether the house `upload` script, now optional, becomes required for a repository that turns on branch previews.
+
+### Planning answers
+
+Proposed by the planning run on 18 October 2026 for Kris's approval with the plan:
+
+- **Rubric pairing.** Check it. A preview URL without Access is a public copy of unreleased work, and the mechanical half is cheap: WCF-27 reads `preview_urls` and looks for a preview Access application in the guide, while judgment confirms the dashboard matches, as WCF-26 already does for the other dashboard rows.
+- **Restore-path home.** Keep the capture in this skill's section. It is the only consumer today, and Access for preview hostnames does not cut an operator's connection, so it falls outside the `ki-engineering` connection-critical rule rather than under it. Extract a shared Cloudflare restore procedure only when a second Cloudflare change needs one.
+- **Upload script.** Make it required when `preview_urls` is true. The non-production trigger's deploy command is `ki:site:upload`, so a site with previews on and no upload script has failing preview builds.
