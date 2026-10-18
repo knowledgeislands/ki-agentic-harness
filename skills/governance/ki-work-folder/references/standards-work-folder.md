@@ -189,6 +189,8 @@ For the tolerance window that phase 5 of the migration closes, an old checkpoint
 
 An old checkpoint's id is read from its stem under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming). A work file and the old checkpoint it replaces are never both active: the move that writes the work file deletes the checkpoint.
 
+Once a repository holds `+/_WORK/`, its territory has migrated and the retired subareas, `+/_THREADS/` and `+/_CHECKPOINTS/`, never reappear beside it, tracked or not: the audit fails on either, and its contents move into the work folder of the work they belong to. Kris named a run report written into `+/_THREADS/` after the move THREADS-REGRESSION on 18 October 2026, and `ki agent` refuses a run home outside `+/_WORK/` under [KI-TOOL-KI-CLI-150](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-150-work-folder-entry-points.md).
+
 ## Work identity and native sessions
 
 A native client session, such as a Claude Code or Codex session or a Zed tab, belongs to at most one piece of work, and the work file says which work it is and whether it coordinates. Kris agreed the design under SESSION-IDENTITY on 16 October 2026, "take the recommended option a) for PLAN-AGREE, THREAD-KEY, BINDING-HOME, SUPPLY-CHANNEL, NAME-AUTHORITY, RECORD-OWNERS, ROLE-FIELD and ROLE-STYLE (mechanism only)", and the work model reads it with work file for checkpoint and level for role.

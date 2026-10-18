@@ -7,7 +7,7 @@ const STRUCTURE_1: RubricItem<ScaffoldContext> = {
   code: 'STRUCTURE-1',
   title: 'the work area holds only work folders',
   description:
-    '`+/_WORK/` is a physical directory holding only physical work folders, each with its regular `work.md` work file. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid.',
+    '`+/_WORK/` is a physical directory holding only physical work folders, each with its regular `work.md` work file. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it; once `+/_WORK/` exists, neither retired `+/_THREADS/` nor `+/_CHECKPOINTS/` exists beside it, tracked or not. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

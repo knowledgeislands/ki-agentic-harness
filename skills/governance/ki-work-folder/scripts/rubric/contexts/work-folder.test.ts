@@ -471,6 +471,26 @@ test('an old checkpoint beside the work file that replaces it fails the lifecycl
   ])
 })
 
+test('a retired thread or checkpoint folder beside the work area fails the structure', () => {
+  const repository = workFixture()
+  writeWork(repository, 'ki.ways-of-working', workFile())
+  const item = mechanical(STRUCTURE, 'STRUCTURE-1')
+  expect(item.audit.run(STRUCTURE.selectContext(context(repository)))[0]?.status).toBe('PASS')
+
+  mkdirSync(join(repository, '+', '_THREADS', 'chezmoi'), { recursive: true })
+  writeFileSync(join(repository, '+', '_THREADS', 'chezmoi', 'host-locals-sol.report.md'), '# Report\n')
+  mkdirSync(join(repository, '+', '_CHECKPOINTS'))
+  writeFileSync(join(repository, checkpointReadme.path), checkpointReadme.content)
+
+  expect(item.level).toBe('FAIL')
+  expect(
+    item.audit
+      .run(STRUCTURE.selectContext(context(repository)))
+      .filter((outcome) => outcome.message.includes('is retired beside +/_WORK/'))
+      .map((outcome) => outcome.subject)
+  ).toEqual(['+/_THREADS', '+/_CHECKPOINTS'])
+})
+
 test('a work file carries no session field or locator', () => {
   const repository = workFixture()
   writeWork(repository, 'ki.ways-of-working', workFile({ fields: { session_id: 'hidden' } }))

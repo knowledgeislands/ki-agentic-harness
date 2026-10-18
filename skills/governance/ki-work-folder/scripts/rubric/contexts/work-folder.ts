@@ -505,6 +505,9 @@ const supersededBy = (stem: string, works: readonly ParsedRecord[]): string | un
   })
 }
 
+/** The thread-model subareas the work folder retired, which never sit beside `+/_WORK/`. */
+const RETIRED_AREAS = ['_THREADS', '_CHECKPOINTS'] as const
+
 export const checkpointReadme = {
   path: '+/_CHECKPOINTS/README.md',
   content:
@@ -547,6 +550,16 @@ export const createWorkFolderSession = ({
     works.push(...found.works)
     structureViolations.push(...found.violations)
   }
+  // Kris named a run report written into a retired folder THREADS-REGRESSION on 2026-10-18: once the
+  // repository holds +/_WORK/, neither retired subarea exists beside it, tracked or not.
+  if (workExists)
+    for (const area of RETIRED_AREAS)
+      if (existsSync(join(root, '+', area)))
+        structureViolations.push({
+          status: 'VIOLATION',
+          message: `+/${area}/ is retired beside +/_WORK/; move each file into its work folder +/_WORK/<id>/ and remove the folder`,
+          subject: `+/${area}`
+        })
   if (checkpointExists && !checkpointSafe)
     structureViolations.push({
       status: 'VIOLATION',

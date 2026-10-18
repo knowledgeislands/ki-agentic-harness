@@ -39,7 +39,7 @@ The repository opts into one portable contract without embedding runtime or rete
 
 One flat folder per piece of work holds its work file, and old checkpoints stay readable; Git supplies history.
 
-- **STRUCTURE-1 [M] — the work area holds only work folders** — `+/_WORK/` is a physical directory holding only physical work folders, each with its regular `work.md` work file. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid. (standards-work-folder.md)
+- **STRUCTURE-1 [M] — the work area holds only work folders** — `+/_WORK/` is a physical directory holding only physical work folders, each with its regular `work.md` work file. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it; once `+/_WORK/` exists, neither retired `+/_THREADS/` nor `+/_CHECKPOINTS/` exists beside it, tracked or not. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid. (standards-work-folder.md)
   - _Remediation:_ automatic
 - **STRUCTURE-2 [M + J] — old checkpoints are read for the tolerance window** — Each old checkpoint under `+/_CHECKPOINTS/` is still read and checked under its old form, with a warning naming its new home, `+/_WORK/<id>/work.md`, until its territory's migration moves it; phase 5 of the migration closes the window. (standards-work-folder.md#old-checkpoints)
   - _Remediation:_ guarded — Move the work to its work file at the territory's migration, deleting the checkpoint in the same commit.
