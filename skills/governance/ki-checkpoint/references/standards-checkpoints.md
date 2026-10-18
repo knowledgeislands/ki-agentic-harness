@@ -1,15 +1,17 @@
-# Portable checkpoint standard
+# Work-file standard
 
-A checkpoint is a concise repository-owned reconstruction snapshot for one active human-named thread. It lets a fresh agent continue useful work without relying on a transcript, private runtime state, or a vendor session.
+A work file is the minimal current state of one piece of work: `+/_WORK/<id>/work.md`. Its front matter says where the work lies, and its body holds the next steps, the Messages sent down to it and the tags of parked queries. It lets a fresh agent pick the work up without relying on a transcript, private runtime state or a vendor session. Git is its logbook: each move is a commit, so the file keeps no moves list and no history.
+
+The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md); this standard owns the record form and its validation, and `ki-pmo` owns the levels, states, moves and coordination. The skill keeps the name `ki-checkpoint`, as Kris answered SKILL-NAMES on 18 October, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
 
 ## Contents
 
 - [Activation and ownership](#activation-and-ownership)
-- [Record location and identity](#record-location-and-identity)
-  - [Coordination-thread naming](#coordination-thread-naming)
-- [Thread label](#thread-label)
-- [Thread role](#thread-role)
+- [Location and identity](#location-and-identity)
 - [Exact record form](#exact-record-form)
+  - [Front matter](#front-matter)
+  - [Body](#body)
+- [Old checkpoints](#old-checkpoints)
 - [Optional runtime reminder consumers](#optional-runtime-reminder-consumers)
 - [Update lifecycle](#update-lifecycle)
   - [Recap-supplied hand-off evidence](#recap-supplied-hand-off-evidence)
@@ -20,94 +22,92 @@ A checkpoint is a concise repository-owned reconstruction snapshot for one activ
 
 ## Activation and ownership
 
-The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; declaration requires the owned physical `+/_CHECKPOINTS/` subarea and exact `README.md` scaffold, retained even when no checkpoint records exist. `ki-repo` owns the generic `+/` scaffold and detects an undeclared specialist subarea, while `ki-checkpoint` alone interprets checkpoint records.
+The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. `ki-repo` owns the generic `+/` scaffold, `ki-pmo` owns the work folder's [closed list](../../../change-management/ki-pmo/references/standards-pmo.md#pruning-the-work-folder), and `ki-checkpoint` alone interprets the work file.
 
-The repository owns its active checkpoint content. Explicit removal deletes a record after durable information has been routed; Git supplies any recovery history.
+The repository owns its work files. Removal deletes a work file after its durable information has been routed; Git supplies any recovery history.
 
-## Record location and identity
+## Location and identity
 
-An active checkpoint is one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`. There is no retired-record state or `_RETIRED` directory.
+A work file is one regular Markdown file at `+/_WORK/<id>/work.md`, one per piece of work above a work item; a work item has no folder, because its record is its home. `<id>` is the work's dotted id under `ki-pmo`'s [Work naming](../../../change-management/ki-pmo/references/standards-pmo.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field and the H1 agree exactly.
 
-`<thread>` is a non-empty, human-selected single path component. It cannot be `.` or `..`, contain a path separator, or encode an opaque runtime-session identifier. The filename stem, `thread` field, and H1 must agree exactly. There is at most one active record for a thread; nested, timestamped, symlinked, archived, and alternate layouts are invalid.
-
-### Coordination-thread naming
-
-Where the repository keeps a Project registry ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)), a checkpoint for a Project's coordination thread is named `<initiative>.<project>`, using the `initiative` key from the Project note and the Project's own key, for example `techne.agent-host` or `rig.mac-studio-bootstrap`. Related checkpoints then sort together. A territory Capital's [state-of-play thread](../../../change-management/ki-pmo/references/standards-pmo.md#state-of-play-thread) is named `_state-of-play`, so that it sorts first; there is one per Capital and no other repository has one. A checkpoint with no Project keeps a plain human-selected name, prefixed with an Initiative key only when one obviously fits.
-
-The full name appears in the filename stem, `thread` field, and H1. When a Project moves to another Initiative, rename its checkpoint, `thread` field, H1, and every reference in the same change.
-
-A human opener names only the Project, for example `Re-bootstrap as the agent-host coordination thread under ki-pmo.`; [RESUME](#resume-lifecycle) resolves it to the full name.
-
-The `ki-pmo` [Thread naming](../../../change-management/ki-pmo/references/standards-pmo.md#thread-naming) model gives every thread an authoritative id with a slug and title derived from it, and owns their form. These names, the label rule below and the `id` and `title` front-matter fields move to it only through the migration the owner approves; until then this section and [Thread label](#thread-label) govern.
-
-## Thread label
-
-An active record carries an optional `label`: the exact name the human gives the thread in their editor or agent client, so that it can be copied straight in. Its form is a path of segments joined by ` > `, which Kris adopted on 2026-10-15 from the thread list `KI > SoP`, `KI > Model > ways of working`, `KI > Model > knowledge acquisition`, `KI > Rig > mac studio setup`, `KI > mics / webcams`, `Acquire > intake (sol)` and `Chezmoi > misc (sol)`: "this is a better way I think".
-
-- **State-of-play thread:** `<Space> > SoP`, for example `KI > SoP`.
-- **Coordination thread:** `<Space> > <Initiative> > <project in words>`, for example `KI > Model > ways of working` or `KI > Rig > mac studio setup`, the Initiative written as its short display name and the Project's key written as words.
-- **Conversational thread, or a checkpoint with no Project:** `<Space> > <topic>`, for example `KI > mics / webcams`.
-- **Host:** a `(<host>)` suffix only when the thread is limited to that machine, as in `Acquire > intake (sol)`; a thread that resumes from its checkpoint anywhere names no host, consistent with `ki-pmo`'s rule that no thread state or resume line names a host. Kris set the suffix in these words: "no, the machine is only added if its limited to that machine, so intake and chezmoi misc are machine specific".
-
-`<Space>` is the short display name of the group heading the editor shows the thread under, which is the repository: `ki-principal` shows as `KI`, `acquire` as `Acquire` and `chezmoi` as `Chezmoi`. It is the short name, not the heading verbatim.
-
-Labels written before 2026-10-15 take the earlier form `<Initiative title>: <project>`, such as `KI Model: ways-of-working`, and the state-of-play thread's `Master: state-of-play`. They stay valid until the owner approves each change; a label is never rewritten without that approval. The mapping is mechanical: `KI Model: ways-of-working` becomes `KI > Model > ways of working`, `Master: state-of-play` in the Knowledge Islands Capital becomes `KI > SoP`; the Initiative title loses its Space and the Project key its hyphens.
-
-A label is presentation only. Resolution and identity always go by the thread name and Project name, never the label, and a label may change without renaming the record. A missing label is a recommendation (WARN), not a failure.
-
-## Thread role
-
-An active record may carry an optional `role`, the one authoritative declaration of the thread's type: `conversational`, `coordination` or `state-of-play`. An absent field, or no checkpoint at all, means `conversational`, the default `ki-pmo` already gives a thread with no stated type. Kris chose the field on 2026-10-16 under ROLE-FIELD: "An optional checkpoint front-matter field `role: conversational | coordination | state-of-play`, absent meaning conversational, coordinating values valid only where `[skills.ki-pmo]` is declared, with existing coordinating checkpoints migrated through their own updates."
-
-- `coordination` and `state-of-play` are valid only in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. The declaration stays the capability gate and is never the role: it covers every session in the checkout.
-- This standard owns the field and its validation; [`ki-pmo`](../../../change-management/ki-pmo/references/standards-pmo.md#thread-types) owns what each value means.
-- Nothing else is authority for the role: not the label, a native session name, the file name or path, the presence of a checkpoint, the repository declaration, an output style, a hook line or a cached copy. An explicit current-thread owner instruction overrides the field for that session only, and an agent offers to write the field rather than writing it unasked.
-- An existing coordinating checkpoint gains its `role` through its own thread's next update, at the latest on the `FIRST-STEP` line of its messages block at restart; another thread never edits it directly to add one.
+`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under `ki-pmo`'s [Work awaiting review](../../../change-management/ki-pmo/references/standards-pmo.md#work-awaiting-review); its work files are checked only when the folder leaves review.
 
 ## Exact record form
 
-An active record has exactly these frontmatter fields, with `label` recommended, `role` optional under [Thread role](#thread-role), and every other field required:
+### Front matter
 
 ```yaml
 ---
-type: ki-checkpoint
-thread: ki.portable-checkpoints
-label: 'KI > Knowledge Islands > portable checkpoints'
-state: active
-created_at: 2026-08-06T12:00:00Z
-updated_at: 2026-08-06T14:30:00Z
+id: ki.ways-of-working
+level: project
+title: 'KI > Model > Ways of working'
+project: ways-of-working
+theme: knowledge-islands-model
+worker: agent
+supervisor: owner
+state: handoff-to-supervisor
+blocking: false
+since: 2026-10-18T01:49:05Z
+received: null
+beat: null
+mark: 2026-10-17T21:34:00Z
+created_at: 2026-10-17T20:00:00Z
 ---
 ```
 
-When present, `label` is a non-empty single-line string; quote it in YAML because it contains `>` or, in the earlier form, a colon. When present, `role` is one of `conversational`, `coordination` or `state-of-play`, placed after `label`, as in `role: coordination`.
+The field set is closed:
 
-Timestamps use UTC RFC 3339 second precision. `created_at` is no later than `updated_at`.
+| Field | Presence | Value |
+| --- | --- | --- |
+| `id` | required | the work's dotted id, agreeing with its folder |
+| `level` | required | `territory`, `regular` or `project` |
+| `title` | required | the work's title under Work naming, a non-empty single-line string |
+| `label` | optional | the title with a `(<host>)` suffix, only for work limited to that machine |
+| `project` | required at `project` level, else absent | the Project note's slug, the id's second segment |
+| `theme` | optional | a theme page's slug, or `null` |
+| `worker`, `supervisor` | required | each a holder |
+| `state` | required | `with-worker`, `handoff-to-supervisor`, `with-supervisor`, `handoff-to-worker`, `handoff`, `on-hold` or `finished` |
+| `target` | required in `handoff`, else absent | the holder the work is in transit to |
+| `hold` | required in `on-hold`, else absent | a mapping of `reason`, `paused` or `more-expected`, and `release`, the condition in words |
+| `blocking` | optional | `true` only in `handoff-to-supervisor`, when the worker sent back with a blocking query |
+| `since` | required | UTC time of the last move |
+| `received` | optional | UTC time of the supervisor's receive, or `null` |
+| `beat` | optional | UTC time of the last heartbeat while with a worker, or `null` |
+| `mark` | optional | UTC time of the last mark |
+| `created_at` | optional | UTC time the work folder was created, no later than `since` |
 
-After frontmatter, the record uses exactly this heading sequence, with substantive content beneath every H2:
+A holder is `owner`, `agent`, `run/<name>`, `work/<id>`, `person/<handle>` or `repo/<name>`. The holder the work lies with now and its role are derived from `state`, `worker`, `supervisor` and `target`, never stored. Timestamps use UTC RFC 3339 second precision; quote `title` and `label` in YAML because they contain `>`. These are the fields the Work Process note's Observatory fields read through `ki work status`.
+
+Coordinating work, at `territory` or `project` level, is valid only in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. Regular and ad hoc work is valid anywhere the capability is declared. The level is the one authority for the kind of work: not the title, a native session name, the folder name, the repository declaration, an output style, a hook line or a cached copy.
+
+### Body
+
+After the front matter, the work file uses exactly this heading sequence:
 
 ```markdown
-# ki.portable-checkpoints
+# ki.ways-of-working
 
-## Objective
+## Next steps
 
-## Current state
+## Messages
 
-## Decisions made
-
-## Files touched
-
-## Open questions
-
-## Next step
+## Parked
 ```
 
-The H1 repeats the thread name exactly. `Decisions made`, `Files touched`, and `Open questions` may say `None` when that is the truthful current state; an empty section is not a useful reconstruction snapshot.
+The H1 repeats the id. `Next steps` holds substantive content: what the worker does when the work is next in its hands, with a coordinator's `ki-pmo read at <revision>` line under [its refresh rule](../../../change-management/ki-pmo/references/standards-pmo.md#refreshing-this-guidance). `Messages` holds one list item per direction sent down to the work, under [Messages between work](../../../change-management/ki-pmo/references/standards-pmo.md#messages-between-work), `FIRST-STEP` lines first. `Parked` holds one list item per parked query, its tag, one line of context and its recommended option, linked to the report that holds it, under [Parking tangents](../../../change-management/ki-pmo/references/standards-pmo.md#parking-tangents). Either may say `None`.
 
-A coordinating thread under `ki-pmo` keeps its parked side topics in `Open questions` as dated one-line items, under [its parking rule](../../../change-management/ki-pmo/references/standards-pmo.md#parking-tangents); they never form an additional H2.
+Nothing else belongs in the file: no moves list, decisions log, report, brief or design paper, each of which has its own home in the work folder, and no copy of a durable fact that has an owner elsewhere.
 
-It also notes in `Current state` the `ki-pmo` revision it last read, under [its refresh rule](../../../change-management/ki-pmo/references/standards-pmo.md#refreshing-this-guidance). It keeps its mark there too, as one line under [its mark rule](../../../change-management/ki-pmo/references/standards-pmo.md#recap-since-the-mark); striking a new mark replaces it.
+## Old checkpoints
 
-A conversational thread's checkpoint is this record and nothing more: no pick-up block, mark, resume line or messages block, which `ki-pmo` keeps for coordinating threads under [Coordinator-only machinery](../../../change-management/ki-pmo/references/standards-pmo.md#coordinator-only-machinery). It notes a pause in `Current state` and how to carry on in `Next step`.
+For the tolerance window that phase 5 of the migration closes, an old checkpoint, `+/_CHECKPOINTS/<thread>.md`, stays readable and its audit warns on each record, naming its new home. It keeps its old form until its territory's migration moves it:
+
+- **Front matter:** `type: ki-checkpoint`, `thread`, `state: active`, `created_at` and `updated_at`, with an optional quoted `label` and an optional `role` of `conversational`, `coordination` or `state-of-play`, a coordinating role valid only where `[skills.ki-pmo]` is declared.
+- **Identity:** the filename stem, `thread` field and H1 agree; `<initiative>.<project>` names a Project's coordination thread, `_state-of-play` the territory's, and any other stem a conversational thread.
+- **Body:** the H1 and the six H2 sections `Objective`, `Current state`, `Decisions made`, `Files touched`, `Open questions` and `Next step`, each with substantive content.
+- **Scaffold:** while `+/_CHECKPOINTS/` exists it keeps its exact `README.md` scaffold, and CONFORM may restore it.
+
+An old checkpoint's id is read from its stem under `ki-pmo`'s [Work naming](../../../change-management/ki-pmo/references/standards-pmo.md#work-naming). A work file and the old checkpoint it replaces are never both active: the move that writes the work file deletes the checkpoint.
 
 ## Optional runtime reminder consumers
 
@@ -115,54 +115,52 @@ A runtime-specific reminder consumer is separately opt-in. It may act only when 
 
 1. The repository declares `ki-checkpoint` and resolves to one physical repository root.
 2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-checkpoint` declaration remains an empty capability marker.
-3. The adapter receives one exact, human-selected thread name from that explicit runtime configuration. It resolves only `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
-4. The resolved record is a regular active checkpoint that satisfies this standard's identity and closed-schema requirements.
+3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `+/_WORK/<id>/work.md`, or, for the tolerance window, `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
+4. The resolved record is a regular work file, or old checkpoint, that satisfies this standard's identity and closed-schema requirements.
 
-The only first-delivery action is a compact reminder that the already-selected record may need an explicit update. The consumer does not create, update, remove, select, or reword a checkpoint; infer work status or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
+The only first-delivery action is a compact reminder that the already-selected record may need an explicit update. The consumer does not create, update, remove, select, or reword a work file; infer work state or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
 
 ## Update lifecycle
 
-Create or update a checkpoint only on explicit user request or a documented repository-local trigger, such as before context compaction, after a substantive decision, after a repository commit, or before a known pause. A generic Stop event is not authority to create or choose a checkpoint.
+Every send, receive, mark and hold rewrites the work file's front matter and next steps, under `ki-pmo`'s [Picking work up](../../../change-management/ki-pmo/references/standards-pmo.md#picking-work-up), and otherwise it changes only on explicit user request or a documented repository-local trigger, such as before context compaction or a known pause. A generic Stop event is not authority to create or choose a work file.
 
-An update replaces the active snapshot in place, preserves `created_at`, and advances `updated_at`. It never appends timestamped copies or transcript history. Git is the history mechanism.
+An update replaces the current state in place. It never appends a moves list, timestamped copies or transcript history. Only sends and the supervisor's receives commit, each subject carrying the move, as in `docs(work): ki.ways-of-working send to owner`; `git log -- +/_WORK/<id>/` is the logbook.
 
-Another coordinating thread may add one line to a coordination checkpoint's messages block under `ki-pmo` and commit that path alone; that is not an update and does not advance `updated_at`. The owning thread's next update removes each line it has acted on.
+Other work may add one item to a work file's `Messages` section under `ki-pmo` and commit that path alone; that is a send to the work, not an update of its state. The work's own next update removes each item it has acted on.
 
-Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a checkpoint. The checkpoint may name those canonical artifacts; it must not become their only copy.
+Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a work file. The work file may name those canonical artifacts; it must not become their only copy.
 
 ### Recap-supplied hand-off evidence
 
-An explicit `ki-recap checkpoint <thread>` invocation may supply grounded evidence to this update lifecycle. The composition does not grant write authority or weaken validation: the repository must declare a valid `ki-checkpoint` capability, the user must select exactly one human-named thread and explicitly authorise its update, and the checkpoint procedure must refuse any repository mismatch, stale baseline, ambiguous thread, interrupted update, or incomplete work state.
+An explicit `ki-recap checkpoint <id>` invocation may supply grounded evidence to this update lifecycle. The composition does not grant write authority or weaken validation: the repository must declare a valid `ki-checkpoint` capability, the user must select exactly one piece of work and explicitly authorise its update, and the update procedure must refuse any repository mismatch, stale baseline, ambiguous work, interrupted update, or incomplete work state.
 
-The supplied hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available to the caller but is never required evidence and cannot replace those portable inputs. The checkpoint records concise reconstruction state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
+The supplied hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available to the caller but is never required evidence and cannot replace those portable inputs. The work file records concise current state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
 
 ## Resume lifecycle
 
 The manual portable flow is deliberately small:
 
-1. Require the user-selected thread name or, from an opener, the Project name.
-2. Resolve to one exact active path: `+/_CHECKPOINTS/<thread>.md` when that file exists; otherwise the single `+/_CHECKPOINTS/*.<project>.md` record whose final dot-separated component is the Project name; and `_state-of-play.md` for the state-of-play thread (`state-of-play`). If no file or more than one file matches, stop and ask the human which record is meant.
-3. Read the whole record and validate its identity and `state: active`.
-4. Reconstruct the work from the six sections and continue from `Next step`.
+1. Require the user-selected work id or, from an opener, the Project slug.
+2. Resolve to one exact path: `+/_WORK/<id>/work.md`; for the tolerance window, when no work file exists, the single old checkpoint whose stem maps to that id. If no file or more than one file matches, stop and ask the human which record is meant.
+3. Read the whole record and validate its identity and schema.
+4. Act on its state as `ki-pmo`'s Picking work up sets it, the `Messages` section first, and continue from its next steps.
 
-The label never takes part in resolution.
-
-Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that produced the checkpoint.
+The title and label never take part in resolution. Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that last held the work.
 
 ## Removal lifecycle
 
-Removal requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners. Then delete the exact active file. Retain the exact `+/_CHECKPOINTS/README.md` scaffold while `ki-checkpoint` remains declared.
+Finished work keeps its work file with `state: finished` until the mark that closes it, when the work folder is deleted with Git keeping it, under `ki-pmo`'s [Pruning the work folder](../../../change-management/ki-pmo/references/standards-pmo.md#pruning-the-work-folder). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners, then delete the exact work folder or old checkpoint.
 
-No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested checkpoint layouts are invalid.
+No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested layouts are invalid.
 
 ## Prohibited payloads and claims
 
-A checkpoint contains reconstruction state, not a transcript. It has no vendor-session field, conversation URL, runtime identifier, message log, or role-by-role dialogue. Its prose must not claim that a future agent can access or reopen the originating session.
+A work file contains current state, not a transcript. It has no vendor-session field, conversation URL, runtime identifier, message log, or role-by-role dialogue, and no host. Its prose must not claim that a future agent can access or reopen the session that last held the work.
 
-It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. Project and Initiative notes ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)) supplement it as the durable home of status. `ki-recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#optional-runtime-reminder-consumers). It does not grant write authority, choose a thread, invoke recap, read session material, or turn a portable procedure into a native host operation.
+It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. Project notes and theme pages ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)) are the durable home of status, and the work file names its Project while the Project note does not link down. `ki-recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#optional-runtime-reminder-consumers). It does not grant write authority, choose work, invoke recap, read session material, or turn a portable procedure into a native host operation.
 
 ## Audit and conform boundary
 
-AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT requires the declared repository's physical checkpoint subarea and exact retained README scaffold. It reports absent scope as not applicable only when `ki-checkpoint` is undeclared, and rejects symlinks, unsupported nesting, and any retired-record layout.
+AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT reads every work file under `+/_WORK/` and validates its identity, closed front matter, body and boundary; it warns on each old checkpoint and validates it under its old form; it reports absent scope as not applicable when `ki-checkpoint` is undeclared and nothing is present, and rejects symlinks, unsupported nesting and any retired-record layout.
 
-CONFORM never authors checkpoint-record content or lifecycle transitions. It may create or restore the retained README scaffold and publish the generated rubric, but it cannot create, update, or remove a checkpoint record because those actions need a human-selected thread and explicit write authority.
+CONFORM never authors a work file or old checkpoint, or moves work between states. It may restore an existing `+/_CHECKPOINTS/` directory's README scaffold and publish the generated rubric, but it cannot create, update, or remove a record, because those actions need human-selected work and explicit write authority.

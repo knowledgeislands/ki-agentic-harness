@@ -391,6 +391,8 @@ test('adapter and protocol records delegate note-type metadata to their owning s
     'Streams/Roadmap/ITEM.md',
     '+/_BATCHES/KI-EXAMPLE-BATCH-001.md',
     '+/_CHECKPOINTS/active-thread.md',
+    '+/_WORK/ki.ways-of-working/work.md',
+    '+/_WORK_REVIEW/ki.unsure/work.md',
     '+/_ACQUIRE/granola/2026-07-28--example.md',
     '+/_TRADES/sender/repository/TRD-01234567.md',
     '-/_TRADES/receiver/repository/TRD-89abcdef.md'

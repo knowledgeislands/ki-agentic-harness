@@ -7,28 +7,31 @@ ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
 owns: ['+/_CHECKPOINTS/README.md']
 description: >
-  Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active
-  thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions,
-  roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners.
-argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <thread> | resume <thread> | update <thread>'
+  Create, update, resume, audit, or remove the work file of one piece of work, `+/_WORK/<id>/work.md`: its front
+  matter of id, level, title, worker, supervisor, state and times, its next steps, Messages and parked query tags. Use
+  for picking work up without a transcript or vendor session; Git is the logbook, while decisions, roadmap state,
+  durable knowledge, recaps, and runtime continuity stay with their owners, and old `+/_CHECKPOINTS/` records stay
+  readable for the tolerance window.
+argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>'
 ---
 
-# Knowledge Islands portable checkpoints
+# Knowledge Islands work files
 
-This governance skill owns the portable checkpoint contract: one concise repository record lets a fresh agent reconstruct an active human-named thread without claiming access to the original conversation. Read [the checkpoint standard](references/standards-checkpoints.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance.
+This governance skill owns the work-file contract: one concise repository record, `+/_WORK/<id>/work.md`, says where a piece of work lies and lets a fresh agent pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-file standard](references/standards-checkpoints.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance. The skill keeps its name, and a checkpoint stays the word for writing a work file before a pause.
 
 ## Shared model
 
-- **Active record** — one regular Markdown file at `+/_CHECKPOINTS/<thread>.md`, where `<thread>` is the user-selected portable name. A Project's coordination thread is named `<initiative>.<project>` and a territory Capital's state-of-play thread `_state-of-play`; an optional `label` carries the human's client-side thread name for presentation only ([naming and label](references/standards-checkpoints.md#coordination-thread-naming)). Updating replaces this snapshot in place; Git supplies history.
-- **Removal** — explicit removal deletes the active record after durable information has reached its proper owners. There is no retired-record state or `_RETIRED` directory; Git supplies recovery history.
-- **Reconstruction, not continuity** — a checkpoint carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, completion signal, roadmap, decision log, or memory system.
-- **Explicit write authority** — create or update only at the user's request or a documented repository-local trigger. Remove only on explicit user direction after durable facts have reached their canonical owners. When the selected thread or content is uncertain, do not write.
+- **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-pmo`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-checkpoints.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
+- **Old checkpoints** - `+/_CHECKPOINTS/<thread>.md` records keep their old form and stay readable, each with a warning, until the territory's migration moves them ([old checkpoints](references/standards-checkpoints.md#old-checkpoints)).
+- **Removal** - finished work's folder is deleted at the mark that closes it, and any other removal follows explicit user direction after durable information has reached its proper owners. There is no retired-record state; Git supplies recovery history.
+- **Current state, not continuity** - a work file carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, host, completion signal, roadmap, decision log, or memory system.
+- **Explicit write authority** - write at a move, at the user's request or at a documented repository-local trigger. When the selected work or content is uncertain, do not write.
 
-Project and Initiative notes are not a home for status: a checkpoint reconstructs a thread, a registry note carries only its standing outcome or direction, `lifecycle` and notes, and the work records and `ki` views carry status.
+Project notes and theme pages are not a home for status: a work file says where work lies, a registry note carries only its standing outcome or direction, `lifecycle` and notes, and the work records and `ki` views carry status.
 
-`ki-checkpoint` remains the portable reconstruction record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid checkpoint under `ki-checkpoint`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
+`ki-checkpoint` remains the portable work-state record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid work file under `ki-checkpoint`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
 
-The optional `ki-recap checkpoint <thread>` composition is a caller of the existing UPDATE procedure, never a second checkpoint implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact thread, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-checkpoint` still validates the record and owns every write or refusal.
+The optional `ki-recap checkpoint <id>` composition is a caller of the existing UPDATE procedure, never a second implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact work, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-checkpoint` still validates the record and owns every write or refusal.
 
 ## Operating modes
 
@@ -36,40 +39,40 @@ The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-checkpoint --repo <repo>`. A declared capability requires the retained canonical `+/_CHECKPOINTS/README.md` scaffold; the structured catalogue also checks the flat active layout, filenames, closed metadata, timestamp chronology, exact heading set, non-empty sections, single-record lifecycle, and mechanically recognisable transcript or session dependencies.
+Run `ki repo audit --skill ki-checkpoint --repo <repo>`. The structured catalogue checks that `+/_WORK/` holds only work folders with their work files, each work file's identity, closed front matter with its state-dependent fields, timestamp chronology and exact heading set, that coordinating work lives only where `ki-pmo` is declared, and mechanically recognisable transcript or session dependencies. It warns on each old checkpoint and checks it under its old form, with the retained `+/_CHECKPOINTS/README.md` scaffold while that directory exists.
 
-Review the judgment aspects: whether each snapshot is concise and current, the thread name is human-selected rather than runtime-derived, durable facts already live with their proper owners, and the record can reconstruct the work for a fresh agent.
+Review the judgment aspects: whether each work file is concise and agrees with the work's last move, its id is chosen under Work naming rather than runtime-derived, durable facts already live with their proper owners, and the record lets a fresh agent pick the work up.
 
 ### Mode CONFORM
 
-Run AUDIT first, then `ki repo conform --skill ki-checkpoint --repo <repo> --dry-run`. CONFORM may safely create or restore the exact retained scaffold, but never chooses a thread, edits authored checkpoint content, removes a record, infers completion, or writes a runtime-session identifier.
+Run AUDIT first, then `ki repo conform --skill ki-checkpoint --repo <repo> --dry-run`. CONFORM may safely restore an existing `+/_CHECKPOINTS/` directory's exact README scaffold, but never chooses work, edits an authored work file or checkpoint, moves work between states, removes a record, infers completion, or writes a runtime-session identifier.
 
 Correct authored records only through an explicit UPDATE or REMOVE request, then re-run AUDIT.
 
 ### Mode EDUCATE
 
-Run `ki repo educate --skill ki-checkpoint --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the checkpoint standard](references/standards-checkpoints.md); do not create a declaration, directory, or checkpoint merely to demonstrate it.
+Run `ki repo educate --skill ki-checkpoint --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the work-file standard](references/standards-checkpoints.md); do not create a declaration, work folder, or work file merely to demonstrate it.
 
 ### Mode HELP
 
-Explain the active-only layout, manual resume flow, explicit write boundary, removal-and-Git-history lifecycle, and off-ramps to `ki-recap`, roadmap or knowledge owners, and optional runtime adapters, then stop without reading or changing repository state.
+Explain the work-file layout and form, the old checkpoints read for the tolerance window, the manual resume flow, explicit write boundary, removal-and-Git-history lifecycle, and off-ramps to `ki-pmo` for the levels, states and moves, `ki-recap`, roadmap or knowledge owners, and optional runtime adapters, then stop without reading or changing repository state.
 
 ### Mode REFRESH
 
-REFRESH writes only in `ki-agentic-harness`. When invoked from an installed copy, stop and name the Harness as the place to run it. Read [the sources](references/sources.md), re-check the portable reconstruction boundary and current runtime capabilities, propose any standard change, then update the source review evidence only after the review occurs.
+REFRESH writes only in `ki-agentic-harness`. When invoked from an installed copy, stop and name the Harness as the place to run it. Read [the sources](references/sources.md), re-check the portable work-state boundary and current runtime capabilities, propose any standard change, then update the source review evidence only after the review occurs.
 
 ### Mode REMOVE
 
-REMOVE is an agent procedure, not a current `ki repo` host command. Require explicit user direction for one valid active `<thread>` record. Confirm durable decisions, work status, and knowledge have reached their canonical owners; then delete that exact active record. Retain `+/_CHECKPOINTS/README.md` as the declared capability boundary even after the final record is removed. Stop on uncertainty. Removal does not infer completion; Git remains the recovery history.
+REMOVE is an agent procedure, not a current `ki repo` host command. Require explicit user direction, or the mark that closes finished work, for one valid `<id>`. Confirm durable decisions, work status, and knowledge have reached their canonical owners; then delete that exact work folder, or the exact old checkpoint, retaining an existing `+/_CHECKPOINTS/README.md` scaffold. Stop on uncertainty. Removal does not infer completion; Git remains the recovery history.
 
 ### Mode RESUME
 
-RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<thread>` or, from an opener, the Project name. Resolve `+/_CHECKPOINTS/<thread>.md` when it exists, otherwise the single `*.<project>.md` record, or `_state-of-play.md` for the state-of-play thread; if no file or more than one file matches, stop and ask. Never resolve by `label`. Read the record in full and verify the filename, `thread`, H1, and `state: active` agree before using `Next step` to continue in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named active record is absent or invalid, stop and report the exact problem.
+RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<id>` or, from an opener, the Project slug. Resolve `+/_WORK/<id>/work.md`; for the tolerance window, when it is absent, the single old checkpoint whose stem maps to that id under Work naming; if no file or more than one file matches, stop and ask. Never resolve by title or label. Read the record in full and verify its folder, `id` and H1 agree, then act on its state as `ki-pmo`'s Picking work up sets it, its `Messages` first, and continue from its next steps in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named record is absent or invalid, stop and report the exact problem.
 
 ### Mode UPDATE
 
-UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<thread>` plus an explicit request or documented local trigger. Write the exact active record structure from [the checkpoint standard](references/standards-checkpoints.md), preserving `created_at` on an existing record and advancing `updated_at`; replace the snapshot in place rather than appending history. Record only current reconstruction state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier, or create a checkpoint from an unqualified Stop event.
+UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<id>` plus a move, an explicit request or a documented local trigger. Write the exact work-file structure from [the work-file standard](references/standards-checkpoints.md), setting `since` at each move and preserving `created_at`; replace the current state in place rather than appending a moves list or history. Record only current state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier or host, or create a work file from an unqualified Stop event. An old checkpoint is updated in its old form only until its move, which writes the work file and deletes the checkpoint in one commit.
 
 ## Verification boundary
 
-The checker is read-only over checkpoint content. A runtime adapter may discover a user-selected active record, but it remains a consumer: it cannot weaken the state, selection, write-authority, or no-session-continuity contract.
+The checker is read-only over work files and old checkpoints. A runtime adapter may discover a user-selected record, but it remains a consumer: it cannot weaken the state, selection, write-authority, or no-session-continuity contract.

@@ -46,6 +46,13 @@ const delegatedNoteTypeRecord = (
     return true
   if (
     segments[0] === zones.inbound &&
+    (segments[1] === '_WORK' || segments[1] === '_WORK_REVIEW') &&
+    segments.length === 4 &&
+    segments[3] === 'work.md'
+  )
+    return true
+  if (
+    segments[0] === zones.inbound &&
     segments[1] === '_ACQUIRE' &&
     segments[2] &&
     segments.length === 4 &&

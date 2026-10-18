@@ -90,22 +90,21 @@ const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, 
   return item.mechanical
 }
 
-test('a selected empty marker requires scaffold and audit never proposes writes', () => {
+test('a selected empty marker needs no subarea and audit never proposes writes', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-absent-'))
   temporaryDirectories.push(repository)
   const session = createCheckpointsSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+  const value = session.subjects[0]?.context() as CheckpointsRubricContext
 
-  expect(
-    mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(session.subjects[0]?.context() as never))[0]
-      ?.status
-  ).toBe('VIOLATION')
+  expect(mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('PASS')
+  expect(mechanical(STRUCTURE, 'STRUCTURE-2').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('PASS')
   expect(session.proposal()).toEqual({ writes: [] })
 })
 
-test('a declared capability requires and can restore the retained scaffold', () => {
+test('an existing legacy checkpoint directory requires and can restore its scaffold', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-declared-'))
   temporaryDirectories.push(repository)
-  mkdirSync(join(repository, '+'), { recursive: true })
+  mkdirSync(join(repository, '+', '_CHECKPOINTS'), { recursive: true })
   const session = createCheckpointsSession({
     mode: 'conform',
     repository,
@@ -121,6 +120,21 @@ test('a declared capability requires and can restore the retained scaffold', () 
   expect(session.proposal()).toEqual({
     writes: [{ path: checkpointReadme.path, content: checkpointReadme.content, create: true }]
   })
+})
+
+test('each old checkpoint is read with a tolerance warning', () => {
+  const { repository, checkpointDirectory } = fixture()
+  writeFileSync(join(checkpointDirectory, 'release-audit.md'), record())
+  const item = mechanical(STRUCTURE, 'STRUCTURE-2')
+
+  expect(item.level).toBe('WARN')
+  expect(item.audit.run(STRUCTURE.selectContext(context(repository)))).toEqual([
+    expect.objectContaining({
+      status: 'VIOLATION',
+      message: expect.stringContaining('legacy: an old checkpoint'),
+      subject: '+/_CHECKPOINTS/release-audit.md'
+    })
+  ])
 })
 
 test('rejects retired storage, lifecycle collisions, and session locators', () => {
@@ -297,3 +311,169 @@ for (const unsafe of [
     expect(session.proposal()).toEqual({ writes: [] })
   })
 }
+
+const workFile = ({
+  id = 'ki.ways-of-working',
+  fields = {},
+  omit = [],
+  body
+}: {
+  id?: string
+  fields?: Record<string, string>
+  omit?: readonly string[]
+  body?: string
+} = {}): string =>
+  [
+    '---',
+    ...Object.entries({
+      id,
+      level: 'project',
+      title: "'KI > Model > Ways of working'",
+      project: 'ways-of-working',
+      theme: 'knowledge-islands-model',
+      worker: 'agent',
+      supervisor: 'owner',
+      state: 'handoff-to-supervisor',
+      blocking: 'false',
+      since: '2026-10-18T01:49:05Z',
+      received: 'null',
+      mark: '2026-10-17T21:34:00Z',
+      created_at: '2026-10-17T20:00:00Z',
+      ...fields
+    })
+      .filter(([key]) => !omit.includes(key))
+      .map(([key, value]) => `${key}: ${value}`),
+    '---',
+    '',
+    body ??
+      [
+        `# ${id}`,
+        '',
+        '## Next steps',
+        '',
+        'Take the answers to WORK-HOME and restart the migration.',
+        '',
+        '## Messages',
+        '',
+        'None',
+        '',
+        '## Parked',
+        '',
+        '- WORK-HOME: where work files live; a) the work folder.',
+        ''
+      ].join('\n')
+  ].join('\n')
+
+const workFixture = (pmo = true): string => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-file-'))
+  temporaryDirectories.push(repository)
+  mkdirSync(join(repository, '+', '_WORK'), { recursive: true })
+  if (pmo) writeFileSync(join(repository, '.ki.toml'), '[skills.ki-pmo]\n')
+  return repository
+}
+
+const writeWork = (repository: string, folder: string, content: string): void => {
+  mkdirSync(join(repository, '+', '_WORK', folder), { recursive: true })
+  writeFileSync(join(repository, '+', '_WORK', folder, 'work.md'), content)
+}
+
+const statuses = (value: CheckpointsRubricContext): Record<string, string | undefined> => ({
+  'STRUCTURE-1': mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status,
+  'RECORD-1': mechanical(RECORD, 'RECORD-1').audit.run(RECORD.selectContext(value))[0]?.status,
+  'RECORD-2': mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))[0]?.status,
+  'RECORD-4': mechanical(RECORD, 'RECORD-4').audit.run(RECORD.selectContext(value))[0]?.status,
+  'LIFECYCLE-1': mechanical(LIFECYCLE, 'LIFECYCLE-1').audit.run(LIFECYCLE.selectContext(value))[0]?.status,
+  'BOUNDARY-1': mechanical(BOUNDARY, 'BOUNDARY-1').audit.run(BOUNDARY.selectContext(value))[0]?.status
+})
+
+test('a well-formed work file passes every record check', () => {
+  const repository = workFixture()
+  writeWork(repository, 'ki.ways-of-working', workFile())
+  writeWork(
+    repository,
+    'ki.regular',
+    workFile({
+      id: 'ki.regular',
+      fields: {
+        level: 'regular',
+        title: "'KI > Regular work'",
+        state: 'on-hold',
+        hold: '{ reason: more-expected, release: new work arriving }'
+      },
+      omit: ['project', 'blocking']
+    })
+  )
+  mkdirSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure'), { recursive: true })
+  writeFileSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure', 'work.md'), 'not yet checked')
+
+  expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
+})
+
+test('coordinating work needs a ki-pmo declaration', () => {
+  const repository = workFixture(false)
+  writeWork(repository, 'ki.ways-of-working', workFile())
+
+  expect(statuses(context(repository))['RECORD-4']).toBe('VIOLATION')
+})
+
+test('the id agrees with its folder and the body keeps its three sections', () => {
+  const repository = workFixture()
+  writeWork(repository, 'ki.other', workFile())
+  writeWork(repository, 'ki.ways-of-working', workFile({ body: '# ki.ways-of-working\n\n## Next step\n\nGo on.\n' }))
+  const value = statuses(context(repository))
+
+  expect(value['RECORD-1']).toBe('VIOLATION')
+  expect(value['RECORD-2']).toBe('VIOLATION')
+})
+
+for (const [name, change] of [
+  ['an unknown field', { fields: { updated_at: '2026-10-18T01:49:05Z' } }],
+  ['an unknown state', { fields: { state: 'resting' } }],
+  ['a missing project at project level', { omit: ['project'] }],
+  ['a hold outside on-hold', { fields: { hold: '{ reason: paused, release: later }' } }],
+  ['on-hold without its hold', { fields: { state: 'on-hold' } }],
+  ['handoff without its target', { fields: { state: 'handoff' } }],
+  ['blocking outside a handoff to the supervisor', { fields: { state: 'with-worker', blocking: 'true' } }],
+  ['a worker that is not a holder', { fields: { worker: 'sol' } }],
+  ['a local since', { fields: { since: "'2026-10-18 02:49 BST'" } }]
+] as const)
+  test(`the closed work-file schema refuses ${name}`, () => {
+    const repository = workFixture()
+    writeWork(repository, 'ki.ways-of-working', workFile(change))
+
+    expect(statuses(context(repository))['RECORD-2']).toBe('VIOLATION')
+  })
+
+test('the work area holds only work folders with their work files', () => {
+  const repository = workFixture()
+  writeFileSync(join(repository, '+', '_WORK', 'stray.md'), '# stray\n')
+  mkdirSync(join(repository, '+', '_WORK', 'ki.empty'))
+
+  expect(
+    mechanical(STRUCTURE, 'STRUCTURE-1')
+      .audit.run(STRUCTURE.selectContext(context(repository)))
+      .map((outcome) => outcome.subject)
+  ).toEqual(['+/_WORK/ki.empty', '+/_WORK/stray.md'])
+})
+
+test('an old checkpoint beside the work file that replaces it fails the lifecycle', () => {
+  const repository = workFixture()
+  writeWork(repository, 'ki.ways-of-working', workFile())
+  mkdirSync(join(repository, '+', '_CHECKPOINTS'))
+  writeFileSync(join(repository, checkpointReadme.path), checkpointReadme.content)
+  writeFileSync(
+    join(repository, '+', '_CHECKPOINTS', 'knowledge-islands-model.ways-of-working.md'),
+    record({ thread: 'knowledge-islands-model.ways-of-working', label: 'KI > Model > ways of working' })
+  )
+
+  expect(mechanical(LIFECYCLE, 'LIFECYCLE-1').audit.run(LIFECYCLE.selectContext(context(repository)))).toEqual([
+    expect.objectContaining({ message: expect.stringContaining('ki.ways-of-working are both active') })
+  ])
+})
+
+test('a work file carries no session field or locator', () => {
+  const repository = workFixture()
+  writeWork(repository, 'ki.ways-of-working', workFile({ fields: { session_id: 'hidden' } }))
+
+  expect(statuses(context(repository))['BOUNDARY-1']).toBe('VIOLATION')
+})

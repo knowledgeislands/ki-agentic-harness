@@ -9,6 +9,39 @@ import type {
 } from '../../shared/rubric.ts'
 
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
+const WORK_FILE = 'work.md'
+const WORK_REQUIRED = ['id', 'level', 'title', 'worker', 'supervisor', 'state', 'since'] as const
+const WORK_FIELDS: ReadonlySet<string> = new Set([
+  ...WORK_REQUIRED,
+  'label',
+  'project',
+  'theme',
+  'target',
+  'hold',
+  'blocking',
+  'received',
+  'beat',
+  'mark',
+  'created_at'
+])
+const WORK_LEVELS: readonly unknown[] = ['territory', 'regular', 'project']
+const COORDINATING_LEVELS: readonly unknown[] = ['territory', 'project']
+const WORK_STATES: readonly unknown[] = [
+  'with-worker',
+  'handoff-to-supervisor',
+  'with-supervisor',
+  'handoff-to-worker',
+  'handoff',
+  'on-hold',
+  'finished'
+]
+const HOLD_REASONS: readonly unknown[] = ['paused', 'more-expected']
+const OPTIONAL_TIMES = ['received', 'beat', 'mark', 'created_at'] as const
+const KEBAB = '[a-z0-9]+(?:-[a-z0-9]+)*'
+const WORK_ID = new RegExp(`^${KEBAB}(?:\\.${KEBAB})*$`)
+const SLUG = new RegExp(`^${KEBAB}$`)
+const HOLDER = new RegExp(`^(?:owner|agent|(?:run|person|repo)/[A-Za-z0-9_.-]+|work/${KEBAB}(?:\\.${KEBAB})*)$`)
+const WORK_HEADINGS = ['Next steps', 'Messages', 'Parked'] as const
 const OPTIONAL_FIELDS = ['label', 'role'] as const
 const ROLES = ['conversational', 'coordination', 'state-of-play'] as const
 const COORDINATING_ROLES: readonly unknown[] = ['coordination', 'state-of-play']
@@ -30,7 +63,7 @@ const HEADINGS = [
   'Next step'
 ] as const
 
-type ParsedCheckpoint = {
+type ParsedRecord = {
   readonly path: string
   readonly stem: string
   readonly fields: Readonly<Record<string, unknown>> | null
@@ -38,7 +71,10 @@ type ParsedCheckpoint = {
 }
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
-export type ScaffoldContext = OutcomeContext & { readonly ensureScaffold?: () => void }
+export type ScaffoldContext = OutcomeContext & {
+  readonly legacy: readonly AuditOutcome[]
+  readonly ensureScaffold?: () => void
+}
 export type RecordContext = {
   readonly identity: readonly AuditOutcome[]
   readonly schema: readonly AuditOutcome[]
@@ -69,7 +105,7 @@ const one = (outcomes: readonly AuditOutcome[], pass: string, absent?: string): 
   return outcomes.length > 0 ? outcomes : [{ status: 'PASS', message: pass }]
 }
 
-const parseCheckpoint = (path: string, root: string): ParsedCheckpoint => {
+const parseCheckpoint = (path: string, root: string): ParsedRecord => {
   const text = readFileSync(path, 'utf8')
   const lines = text.split(/\r?\n/)
   let fields: Readonly<Record<string, unknown>> | null = null
@@ -88,11 +124,8 @@ const parseCheckpoint = (path: string, root: string): ParsedCheckpoint => {
   return { path: relative(root, path), stem: basename(path, '.md'), fields, body }
 }
 
-const inspectDirectory = (
-  directory: string,
-  root: string
-): { records: ParsedCheckpoint[]; violations: AuditOutcome[] } => {
-  const records: ParsedCheckpoint[] = []
+const inspectDirectory = (directory: string, root: string): { records: ParsedRecord[]; violations: AuditOutcome[] } => {
+  const records: ParsedRecord[] = []
   const violations: AuditOutcome[] = []
   for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) =>
     left.name.localeCompare(right.name)
@@ -126,8 +159,39 @@ const declaresPmo = (root: string): boolean => {
   }
 }
 
+/** Session-continuity material a work file or checkpoint must not carry. */
+const boundaryOutcomes = (record: ParsedRecord, fields: Readonly<Record<string, unknown>>): AuditOutcome[] => {
+  const outcomes: AuditOutcome[] = []
+  const forbiddenFields = Object.keys(fields).filter((key) => FORBIDDEN_KEY.test(key))
+  if (forbiddenFields.length > 0)
+    outcomes.push({
+      status: 'VIOLATION',
+      message: `record carries forbidden session or transcript field(s): ${forbiddenFields.join(', ')}`,
+      subject: record.path
+    })
+  if (TRANSCRIPT_LINE.test(record.body))
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'record body appears to contain role-by-role transcript content',
+      subject: record.path
+    })
+  if (SESSION_CONTINUITY.test(record.body))
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'record body appears to claim continuity with the originating session',
+      subject: record.path
+    })
+  if (SESSION_LOCATOR.test(record.body))
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'record body appears to carry a session or conversation locator',
+      subject: record.path
+    })
+  return outcomes
+}
+
 const recordEvidence = (
-  records: readonly ParsedCheckpoint[],
+  records: readonly ParsedRecord[],
   pmoDeclared: boolean,
   absent?: string
 ): {
@@ -282,31 +346,7 @@ const recordEvidence = (
       activeThreads.add(thread)
     }
 
-    const forbiddenFields = Object.keys(fields).filter((key) => FORBIDDEN_KEY.test(key))
-    if (forbiddenFields.length > 0)
-      boundary.push({
-        status: 'VIOLATION',
-        message: `checkpoint carries forbidden session or transcript field(s): ${forbiddenFields.join(', ')}`,
-        subject: record.path
-      })
-    if (TRANSCRIPT_LINE.test(record.body))
-      boundary.push({
-        status: 'VIOLATION',
-        message: 'checkpoint body appears to contain role-by-role transcript content',
-        subject: record.path
-      })
-    if (SESSION_CONTINUITY.test(record.body))
-      boundary.push({
-        status: 'VIOLATION',
-        message: 'checkpoint body appears to claim continuity with the originating session',
-        subject: record.path
-      })
-    if (SESSION_LOCATOR.test(record.body))
-      boundary.push({
-        status: 'VIOLATION',
-        message: 'checkpoint body appears to carry a session or conversation locator',
-        subject: record.path
-      })
+    boundary.push(...boundaryOutcomes(record, fields))
   }
 
   return {
@@ -317,6 +357,148 @@ const recordEvidence = (
     lifecycle: one(lifecycle, 'Checkpoint states, uniqueness, and timestamps are coherent.'),
     boundary: one(boundary, 'No mechanically recognisable transcript or session-continuity dependency is present.')
   }
+}
+
+type Evidence = {
+  identity: AuditOutcome[]
+  schema: AuditOutcome[]
+  role: AuditOutcome[]
+  lifecycle: AuditOutcome[]
+  boundary: AuditOutcome[]
+}
+
+/** The work folders under `+/_WORK/`, each a physical directory holding its work file. */
+const inspectWork = (directory: string, root: string): { works: ParsedRecord[]; violations: AuditOutcome[] } => {
+  const works: ParsedRecord[] = []
+  const violations: AuditOutcome[] = []
+  for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) =>
+    left.name.localeCompare(right.name)
+  )) {
+    const folder = join(directory, entry.name)
+    if (!entry.isDirectory() || entry.isSymbolicLink()) {
+      violations.push({
+        status: 'VIOLATION',
+        message: '+/_WORK/ holds only physical work folders',
+        subject: relative(root, folder)
+      })
+      continue
+    }
+    const path = join(folder, WORK_FILE)
+    if (!physicalFile(path)) {
+      violations.push({
+        status: 'VIOLATION',
+        message: 'a work folder holds its work file, work.md, as a regular file',
+        subject: relative(root, folder)
+      })
+      continue
+    }
+    works.push({ ...parseCheckpoint(path, root), stem: entry.name })
+  }
+  return { works, violations }
+}
+
+const singleLine = (value: unknown): boolean =>
+  typeof value === 'string' && value.trim().length > 0 && !/[\r\n]/.test(value)
+
+/** Section content between one `## <heading>` and the next, or undefined when the heading is absent. */
+const section = (body: string, heading: string, next: string | undefined): string | undefined => {
+  const start = `## ${heading}`
+  const sectionStart = body.indexOf(start)
+  if (sectionStart < 0) return undefined
+  const sectionEnd = next ? body.indexOf(`## ${next}`, sectionStart + start.length) : body.length
+  return sectionEnd < 0 ? undefined : body.slice(sectionStart + start.length, sectionEnd)
+}
+
+/** Validates each work file `+/_WORK/<id>/work.md` against the closed work-file form. */
+const workEvidence = (works: readonly ParsedRecord[], pmoDeclared: boolean): Evidence => {
+  const evidence: Evidence = { identity: [], schema: [], role: [], lifecycle: [], boundary: [] }
+  const fail = (list: AuditOutcome[], record: ParsedRecord, message: string): void => {
+    list.push({ status: 'VIOLATION', message, subject: record.path })
+  }
+  for (const work of works) {
+    const fields = work.fields
+    if (!fields) {
+      fail(evidence.schema, work, 'work file front matter must be a valid YAML mapping')
+      continue
+    }
+    if (!WORK_ID.test(work.stem) || UUID.test(work.stem) || OPAQUE_SESSION_NAME.test(work.stem))
+      fail(evidence.identity, work, 'a work folder is named by a dotted id of lower-case kebab segments')
+    if (fields.id !== work.stem) fail(evidence.identity, work, 'id must exactly match the work folder name')
+
+    const headings = [...work.body.matchAll(/^(#{1,2})\s+(.+?)\s*$/gm)].map((match) => ({
+      level: match[1]?.length ?? 0,
+      title: match[2] ?? ''
+    }))
+    const expected = [{ level: 1, title: work.stem }, ...WORK_HEADINGS.map((title) => ({ level: 2, title }))]
+    if (JSON.stringify(headings) !== JSON.stringify(expected))
+      fail(evidence.schema, work, 'work file headings must be the id H1 and Next steps, Messages and Parked')
+    for (const [index, heading] of WORK_HEADINGS.entries())
+      if ((section(work.body, heading, WORK_HEADINGS[index + 1])?.trim().length ?? 0) === 0)
+        fail(evidence.schema, work, `${heading} must say something, if only None`)
+
+    const keys = Object.keys(fields)
+    if (WORK_REQUIRED.some((field) => !keys.includes(field)) || keys.some((field) => !WORK_FIELDS.has(field)))
+      fail(evidence.schema, work, 'work file front matter must use only its closed field set')
+    if (!WORK_LEVELS.includes(fields.level)) fail(evidence.schema, work, 'level must be territory, regular or project')
+    if (!singleLine(fields.title)) fail(evidence.schema, work, 'title must be a non-empty single-line string')
+    if ('label' in fields && !singleLine(fields.label))
+      fail(evidence.schema, work, 'label must be a non-empty single-line string')
+    if (fields.level === 'project' ? !SLUG.test(String(fields.project ?? '')) : 'project' in fields)
+      fail(evidence.schema, work, 'project names the Project slug at project level and is absent otherwise')
+    if (fields.theme !== undefined && fields.theme !== null && !SLUG.test(String(fields.theme)))
+      fail(evidence.schema, work, 'theme must be a theme slug or null')
+    for (const field of ['worker', 'supervisor'] as const)
+      if (!HOLDER.test(String(fields[field] ?? '')))
+        fail(evidence.schema, work, `${field} must be a holder: owner, agent, run/, work/, person/ or repo/`)
+    if (!WORK_STATES.includes(fields.state))
+      fail(evidence.schema, work, `state must be one of ${WORK_STATES.join(', ')}`)
+    if (fields.state === 'handoff' ? !HOLDER.test(String(fields.target ?? '')) : 'target' in fields)
+      fail(evidence.schema, work, 'target names a holder in handoff and is absent otherwise')
+    const hold = table(fields.hold)
+    if (
+      fields.state === 'on-hold'
+        ? !hold ||
+          Object.keys(hold).some((key) => key !== 'reason' && key !== 'release') ||
+          !HOLD_REASONS.includes(hold.reason) ||
+          !singleLine(hold.release)
+        : 'hold' in fields
+    )
+      fail(evidence.schema, work, 'hold carries reason, paused or more-expected, and release when on hold, else absent')
+    if (
+      'blocking' in fields &&
+      (typeof fields.blocking !== 'boolean' || (fields.blocking && fields.state !== 'handoff-to-supervisor'))
+    )
+      fail(evidence.schema, work, 'blocking is a boolean, true only in handoff-to-supervisor')
+
+    if (!validTimestamp(fields.since)) fail(evidence.schema, work, 'since must be a UTC RFC 3339 timestamp')
+    for (const field of OPTIONAL_TIMES)
+      if (field in fields && fields[field] !== null && !validTimestamp(fields[field]))
+        fail(evidence.schema, work, `${field} must be a UTC RFC 3339 timestamp or null`)
+    if (
+      validTimestamp(fields.created_at) &&
+      validTimestamp(fields.since) &&
+      Date.parse(fields.created_at) > Date.parse(fields.since)
+    )
+      fail(evidence.lifecycle, work, 'created_at must not be later than since')
+
+    if (COORDINATING_LEVELS.includes(fields.level) && !pmoDeclared)
+      fail(evidence.role, work, `${String(fields.level)} work is valid only where .ki.toml declares [skills.ki-pmo]`)
+    evidence.boundary.push(...boundaryOutcomes(work, fields))
+  }
+  return evidence
+}
+
+/** Whether an old checkpoint's stem maps to a work id that already has a work file, under ki-pmo's Work naming. */
+const supersededBy = (stem: string, works: readonly ParsedRecord[]): string | undefined => {
+  const ids = works.map((work) => work.stem)
+  if (stem === '_state-of-play') return ids.find((id) => !id.includes('.'))
+  const project = stem.includes('.') ? stem.split('.').at(-1) : undefined
+  return ids.find((id) => {
+    const segments = id.split('.')
+    return project
+      ? segments.length === 2 && segments[1] === project
+      : segments.length === 3 && segments[1] === 'regular' && segments[2] === stem
+  })
 }
 
 export const checkpointReadme = {
@@ -332,23 +514,35 @@ export const createCheckpointsSession = ({
   publication
 }: RubricContextOptions): RubricSession<CheckpointsRubricContext> => {
   const root = resolve(repository)
+  const workDirectory = join(root, '+', '_WORK')
   const checkpointDirectory = join(root, '+', '_CHECKPOINTS')
   const readmePath = join(root, checkpointReadme.path)
   // The host resolves declaration presence before passing this selected capability table.
   const configured = configuration
+  const workExists = existsSync(workDirectory)
+  const workSafe = physicalDirectory(workDirectory)
   const checkpointExists = existsSync(checkpointDirectory)
   const checkpointSafe = physicalDirectory(checkpointDirectory)
   const undeclaredAbsent =
-    !configured && !checkpointExists ? 'The undeclared +/_CHECKPOINTS/ subarea is absent.' : undefined
+    !configured && !workExists && !checkpointExists
+      ? 'The undeclared +/_WORK/ and +/_CHECKPOINTS/ subareas are absent.'
+      : undefined
   const structureViolations: AuditOutcome[] = []
-  const records: ParsedCheckpoint[] = []
+  const legacy: AuditOutcome[] = []
+  const works: ParsedRecord[] = []
+  const records: ParsedRecord[] = []
 
-  if (configured && !checkpointExists)
+  if (workExists && !workSafe)
     structureViolations.push({
       status: 'VIOLATION',
-      message: '+/_CHECKPOINTS/ is required while ki-checkpoint is declared',
-      subject: checkpointReadme.path
+      message: '+/_WORK/ must be a physical directory',
+      subject: relative(root, workDirectory)
     })
+  if (workSafe) {
+    const found = inspectWork(workDirectory, root)
+    works.push(...found.works)
+    structureViolations.push(...found.violations)
+  }
   if (checkpointExists && !checkpointSafe)
     structureViolations.push({
       status: 'VIOLATION',
@@ -359,7 +553,7 @@ export const createCheckpointsSession = ({
     if (!physicalFile(readmePath))
       structureViolations.push({
         status: 'VIOLATION',
-        message: '+/_CHECKPOINTS/README.md is absent or unsafe',
+        message: '+/_CHECKPOINTS/README.md is absent or unsafe while the legacy directory exists',
         subject: checkpointReadme.path
       })
     else if (readFileSync(readmePath, 'utf8') !== checkpointReadme.content)
@@ -372,6 +566,13 @@ export const createCheckpointsSession = ({
     records.push(...active.records)
     structureViolations.push(...active.violations)
   }
+  for (const record of records) {
+    legacy.push({
+      status: 'VIOLATION',
+      message: `legacy: an old checkpoint, read for the tolerance window; its work moves to +/_WORK/<id>/${WORK_FILE} at the territory's migration`,
+      subject: record.path
+    })
+  }
 
   const configOutcomes: AuditOutcome[] = configured
     ? Object.keys(configured).map((key) => ({
@@ -381,19 +582,33 @@ export const createCheckpointsSession = ({
         subject: '.ki.toml'
       }))
     : []
-  const evidence = recordEvidence(
-    records,
-    declaresPmo(root),
-    undeclaredAbsent ??
-      (checkpointExists && !checkpointSafe
-        ? 'Checkpoint records are unavailable until the subarea is safe.'
-        : undefined)
-  )
+  const pmoDeclared = declaresPmo(root)
+  const unsafe =
+    (workExists && !workSafe) || (checkpointExists && !checkpointSafe)
+      ? 'Records are unavailable until every subarea is safe.'
+      : undefined
+  const old = recordEvidence(records, pmoDeclared, undeclaredAbsent ?? unsafe)
+  const current = workEvidence(works, pmoDeclared)
+  for (const record of records) {
+    const id = supersededBy(record.stem, works)
+    if (id)
+      current.lifecycle.push({
+        status: 'VIOLATION',
+        message: `the old checkpoint and the work file of ${id} are both active; the move deletes the checkpoint`,
+        subject: record.path
+      })
+  }
+  const merged = (
+    oldOutcomes: readonly AuditOutcome[],
+    currentOutcomes: readonly AuditOutcome[],
+    pass: string
+  ): readonly AuditOutcome[] => {
+    if (undeclaredAbsent ?? unsafe) return oldOutcomes
+    const violations = [...oldOutcomes.filter((outcome) => outcome.status !== 'PASS'), ...currentOutcomes]
+    return one(violations, pass)
+  }
   const canConformScaffold =
-    Boolean(configured) &&
-    physicalDirectory(join(root, '+')) &&
-    (!checkpointExists || checkpointSafe) &&
-    (!existsSync(readmePath) || physicalFile(readmePath))
+    Boolean(configured) && checkpointSafe && (!existsSync(readmePath) || physicalFile(readmePath))
   let scaffoldRequested = false
   const context: CheckpointsRubricContext = {
     rubric: { publication },
@@ -408,20 +623,38 @@ export const createCheckpointsSession = ({
     structure: {
       outcomes: one(
         structureViolations,
-        'The retained checkpoint scaffold and active location are canonical.',
+        'The work area holds only work folders with their work files, and any legacy scaffold is canonical.',
         undeclaredAbsent
       ),
+      legacy: one(legacy, 'No old checkpoint remains to be moved.', undeclaredAbsent),
       ...(mode === 'conform' && canConformScaffold ? { ensureScaffold: () => (scaffoldRequested = true) } : {})
     },
-    records: { identity: evidence.identity, schema: evidence.schema, label: evidence.label, role: evidence.role },
-    lifecycle: { mechanical: evidence.lifecycle },
-    boundary: { outcomes: evidence.boundary }
+    records: {
+      identity: merged(
+        old.identity,
+        current.identity,
+        'Every work file and old checkpoint has one consistent identity.'
+      ),
+      schema: merged(old.schema, current.schema, 'Every work file and old checkpoint uses its closed schema.'),
+      label: old.label,
+      role: merged(old.role, current.role, 'Coordinating work lives only where ki-pmo is declared.')
+    },
+    lifecycle: {
+      mechanical: merged(old.lifecycle, current.lifecycle, 'Record states, uniqueness, and timestamps are coherent.')
+    },
+    boundary: {
+      outcomes: merged(
+        old.boundary,
+        current.boundary,
+        'No mechanically recognisable transcript or session-continuity dependency is present.'
+      )
+    }
   }
 
   return {
     subjects: [
       {
-        subject: relative(root, checkpointDirectory),
+        subject: relative(root, workDirectory),
         families: ['RUBRIC', 'CONFIG', 'STRUCTURE', 'RECORD', 'LIFECYCLE', 'BOUNDARY'],
         context: () => context
       }

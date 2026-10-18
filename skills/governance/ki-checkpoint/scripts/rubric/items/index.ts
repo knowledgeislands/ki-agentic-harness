@@ -10,7 +10,7 @@ import { STRUCTURE } from './structure.ts'
 export default {
   contract: 1,
   name: 'ki-checkpoint',
-  concern: 'portable repository checkpoints',
+  concern: 'portable work files',
   createSession: createCheckpointsSession,
   families: [RUBRIC, CONFIG, STRUCTURE, RECORD, LIFECYCLE, BOUNDARY]
 } satisfies SkillRubricDefinition<CheckpointsRubricContext>
