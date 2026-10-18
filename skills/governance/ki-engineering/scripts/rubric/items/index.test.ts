@@ -742,6 +742,18 @@ test('the common hook contract detects missing and ordered baselines', () => {
   expect(hasCommitMessageBaseline(normaliseCommitMessage(''))).toBe(true)
 })
 
+test('the pre-commit baseline accepts lint-staged run quietly, and conform keeps that choice', () => {
+  const quiet = 'bunx lint-staged --quiet || exit 1\nbunx syncpack format --check || exit 1\n'
+  expect(hasPreCommitBaseline(quiet)).toBe(true)
+  expect(hasPreCommitBaseline('bunx lint-staged --verbose || exit 1\nbunx syncpack format --check || exit 1\n')).toBe(
+    false
+  )
+  expect(normalisePreCommit('bunx syncpack format --check\nbunx lint-staged --quiet\ncustom-check\n')).toBe(
+    `${quiet}\ncustom-check\n`
+  )
+  expect(normalisePreCommit('bunx lint-staged\n')).toBe(normalisePreCommit(''))
+})
+
 test('SCR-11 conform repairs common prefixes while preserving repository checks', async () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
   temporaryDirectories.push(repository)

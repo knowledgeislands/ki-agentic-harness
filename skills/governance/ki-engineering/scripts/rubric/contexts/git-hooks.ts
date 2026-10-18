@@ -2,6 +2,9 @@ import { BOUNDARY_INSTALL } from './boundaries.ts'
 
 export const PRE_COMMIT_COMMANDS = ['bunx lint-staged || exit 1', 'bunx syncpack format --check || exit 1'] as const
 
+/** The quiet lint-staged form a repository may choose, silent on success under the quiet-tools rule. */
+const QUIET_PRE_COMMIT_COMMANDS = ['bunx lint-staged --quiet || exit 1', PRE_COMMIT_COMMANDS[1]] as const
+
 export const COMMIT_MSG_COMMAND = 'bunx commitlint --edit "$1" || exit 1'
 
 export const COMMITLINT_CONFIGURATION = `export default {
@@ -27,12 +30,16 @@ const normalise = (source: string, required: readonly string[]): string => {
   return `${required.join('\n')}${retained ? `\n\n${retained}` : ''}\n`
 }
 
-export const normalisePreCommit = (source: string): string => normalise(source, PRE_COMMIT_COMMANDS)
+const quietLintStaged = (source: string): boolean => /^\s*bunx\s+lint-staged\s+--quiet\b/m.test(source)
+
+/** Repairs the pre-commit prefix, keeping lint-staged quiet where the repository already chose `--quiet`. */
+export const normalisePreCommit = (source: string): string =>
+  normalise(source, quietLintStaged(source) ? QUIET_PRE_COMMIT_COMMANDS : PRE_COMMIT_COMMANDS)
 
 export const normaliseCommitMessage = (source: string): string => normalise(source, [COMMIT_MSG_COMMAND])
 
 export const hasPreCommitBaseline = (source: string): boolean =>
-  source.startsWith(`${PRE_COMMIT_COMMANDS.join('\n')}\n`)
+  [PRE_COMMIT_COMMANDS, QUIET_PRE_COMMIT_COMMANDS].some((commands) => source.startsWith(`${commands.join('\n')}\n`))
 
 export const hasCommitMessageBaseline = (source: string): boolean => source.startsWith(`${COMMIT_MSG_COMMAND}\n`)
 
