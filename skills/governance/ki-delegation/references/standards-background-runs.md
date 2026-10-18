@@ -59,7 +59,7 @@ Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 | `<name>.log` | The runtime's combined output |
 | `<name>.report.md` | Each agent's final report, as written |
 | `<name>.work/` | Machine-only scratch with no repository home, removed with the state folder |
-| `thread.json`, `thread.status`, `inbox.md` | The coordinating session's runtime: its session binding, status line and inbox |
+| `thread.json`, `thread.status`, `inbox.md` | The coordinating session's runtime: the run's recorded home, its status line and its inbox. The native-session binding is a separate machine-local file under the work-file standard's [Work identity and native sessions](../../ki-checkpoint/references/standards-checkpoints.md#work-identity-and-native-sessions) |
 | `events.jsonl`, `events.state.json`, `_archive/` | The event log, its read position and retained files |
 | `queue.jsonl`, `seen`, `dispatch.*` | The run queue, the waiter's seen list and the dispatcher's own files |
 | `worktrees/` | The run's Git worktrees, placed under [Coordination](#coordination) |

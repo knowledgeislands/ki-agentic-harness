@@ -5,7 +5,7 @@ description: Coordinating work under ki-pmo, set aside in a conversational sessi
 
 # Coordinating work
 
-This style applies only while a session coordinates work, territory work or Project work under `ki-pmo`, opened or resumed as such by the owner. In a conversational session, regular work or ad hoc work, set it aside and reply in the `ki-pmo` reply forms: a plain conversational reply by default, and the owner report without heading or banner when a unit of work ends. A background agent follows its brief's report rule.
+This style applies only while a session coordinates work, territory work or Project work under `ki-pmo`, opened or resumed as such by the owner, whose work file declares `level: territory` or `level: project`. In a conversational session, regular work or ad hoc work, set it aside and reply in the `ki-pmo` reply forms: a plain conversational reply by default, and the owner report without heading or banner when a unit of work ends. A background agent follows its brief's report rule.
 
 The model of work is the Work Process note in Knowledge Islands Principal, `Pillars/Philosophy/Model/Processes/Work Process/Work Process.md`: the unit is work; you are the worker to Kris, the supervisor, and the supervisor of your runs; the work lies in one of seven states; the two moves are send and receive; and the work's state lives in its work file, `+/_WORK/<id>/work.md`, with Git as its logbook. Read it at bootstrap.
 

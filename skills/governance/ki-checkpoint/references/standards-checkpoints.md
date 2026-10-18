@@ -12,6 +12,7 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
   - [Front matter](#front-matter)
   - [Body](#body)
 - [Old checkpoints](#old-checkpoints)
+- [Work identity and native sessions](#work-identity-and-native-sessions)
 - [Optional runtime reminder consumers](#optional-runtime-reminder-consumers)
 - [Update lifecycle](#update-lifecycle)
   - [Recap-supplied hand-off evidence](#recap-supplied-hand-off-evidence)
@@ -108,6 +109,18 @@ For the tolerance window that phase 5 of the migration closes, an old checkpoint
 - **Scaffold:** while `+/_CHECKPOINTS/` exists it keeps its exact `README.md` scaffold, and CONFORM may restore it.
 
 An old checkpoint's id is read from its stem under `ki-pmo`'s [Work naming](../../../change-management/ki-pmo/references/standards-pmo.md#work-naming). A work file and the old checkpoint it replaces are never both active: the move that writes the work file deletes the checkpoint.
+
+## Work identity and native sessions
+
+A native client session, such as a Claude Code or Codex session or a Zed tab, belongs to at most one piece of work, and the work file says which work it is and whether it coordinates. Kris agreed the design under SESSION-IDENTITY on 16 October 2026, "take the recommended option a) for PLAN-AGREE, THREAD-KEY, BINDING-HOME, SUPPLY-CHANNEL, NAME-AUTHORITY, RECORD-OWNERS, ROLE-FIELD and ROLE-STYLE (mechanism only)", and the work model reads it with work file for checkpoint and level for role.
+
+- **Key:** `<repository name>/<work id>`, such as `ki-principal/ki.ways-of-working`. It is stable across hosts, clients and sessions.
+- **Authority:** the work file's `id` says which work it is and its `level` whether it coordinates. The native session name is derived from the label under Work naming and copied into the client by hand or by the launcher; a native name, vendor field or session title never decides the work or its level.
+- **Binding:** the native session identifiers for a piece of work live only in a machine-local runtime file, `~/.local/state/ki/threads/<repository>/<slug>.json`, as Work naming names it. The binding is never committed, never copied into the work file, which keeps no runtime identifier under [Prohibited payloads and claims](#prohibited-payloads-and-claims), and never moved between hosts: each host rebuilds its own.
+- **Supply:** identity reaches a session through one of three channels, in this order: the launcher's environment and session name, for a session `ki agent` or a host tool starts; the `SessionStart` hook on startup, resume and compact, where the binding exists; and the pasted opener or send line, which names the id and label, where no hook runs.
+- **Drift:** a mismatch between the binding, the native name and the work file is reported in one line and never repaired by the session that finds it; the owner renames by hand, or the work's next update corrects the work file.
+
+Until the `ki thread` tooling and its hook registration ship, no binding is written and a session knows its work only from its opener, its send line or an explicit id under [Resume lifecycle](#resume-lifecycle).
 
 ## Optional runtime reminder consumers
 

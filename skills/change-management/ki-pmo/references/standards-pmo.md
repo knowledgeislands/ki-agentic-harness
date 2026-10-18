@@ -105,6 +105,7 @@ The Work Process note's Words table owns the words of the model: work, work item
 | run | A named set of agents sharing one state folder for runtime files; its reports and briefs live in the work folder of the work it serves | `ki-delegation` |
 | agent | A process `ki agent` launches detached under the background-run contract; an in-session subagent is not one | `ki-delegation` |
 | send line | The one line the owner pastes to send work in handoff to them back to its worker in any session, under [Banner](#banner); it replaced the resume line | `ki-pmo` |
+| binding | The machine-local runtime file that ties native client sessions to one piece of work, keyed `<repository name>/<work id>`, never committed and never moved between hosts, under the work-file standard's [Work identity and native sessions](../../../governance/ki-checkpoint/references/standards-checkpoints.md#work-identity-and-native-sessions) | `ki-checkpoint` |
 
 ### Levels and forms
 
@@ -543,7 +544,7 @@ Edit the text here and never in a rendered file. A hook source holds no single q
 <!-- ki-pmo:source hook-line -->
 
 ```text
-In coordinating work only, a session opened or resumed as ki-pmo territory work or Project work; in any other session ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.
+In coordinating work only, a session opened or resumed as ki-pmo territory work or Project work, whose work file declares level territory or project; in any other session ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.
 ```
 
 <!-- ki-pmo:source hook-pointer -->
@@ -574,7 +575,7 @@ description: Coordinating work under ki-pmo, set aside in a conversational sessi
 
 # Coordinating work
 
-This style applies only while a session coordinates work, territory work or Project work under `ki-pmo`, opened or resumed as such by the owner. In a conversational session, regular work or ad hoc work, set it aside and reply in the `ki-pmo` reply forms: a plain conversational reply by default, and the owner report without heading or banner when a unit of work ends. A background agent follows its brief's report rule.
+This style applies only while a session coordinates work, territory work or Project work under `ki-pmo`, opened or resumed as such by the owner, whose work file declares `level: territory` or `level: project`. In a conversational session, regular work or ad hoc work, set it aside and reply in the `ki-pmo` reply forms: a plain conversational reply by default, and the owner report without heading or banner when a unit of work ends. A background agent follows its brief's report rule.
 
 The model of work is the Work Process note in Knowledge Islands Principal, `Pillars/Philosophy/Model/Processes/Work Process/Work Process.md`: the unit is work; you are the worker to Kris, the supervisor, and the supervisor of your runs; the work lies in one of seven states; the two moves are send and receive; and the work's state lives in its work file, `+/_WORK/<id>/work.md`, with Git as its logbook. Read it at bootstrap.
 
@@ -732,7 +733,7 @@ A one-line opener brings a new or already-running session onto this contract, fo
 
 1. reads this standard and the Work Process note;
 2. checks `ki agent status` for its runs, and reconciles what is actually running rather than assuming;
-3. resolves the id to its work file, `+/_WORK/<id>/work.md`, or, for old-shape work in the tolerance window, to its single `+/_CHECKPOINTS/` checkpoint, stopping to ask the owner if no file or more than one file matches; then creates or reconciles it under the work-file standard;
+3. resolves the id to its work file, `+/_WORK/<id>/work.md`, or, for old-shape work in the tolerance window, to its single `+/_CHECKPOINTS/` checkpoint, stopping to ask the owner if no file or more than one file matches; then creates or reconciles it under the work-file standard, and checks its `level` against the opener, `territory` for a territory opener and `project` for a Project opener, or for an old checkpoint its `role`; on `regular` or a mismatch it says so in one line and answers in the [Reply forms](#reply-forms) rather than as a coordinator;
 4. reads the work file's [Messages section](#messages-between-work) and acts on each line, `FIRST-STEP` first, before launching any work;
 5. reports under the [report heading](#banner), its form line reading `**<glyph state> · Re-bootstrap at <local time> · last mark <local time>**`, in three lines: its coordinator role and where the work stands, what is running, and what it needs from the owner; then closes with the [glyph banner](#banner) and, in handoff to the owner, the send line, rendered exactly as a Summary renders them.
 
