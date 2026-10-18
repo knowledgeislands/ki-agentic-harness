@@ -33,6 +33,10 @@ Advisory sources inform local judgment conventions but are not specifications, m
 [toml]: https://toml.io/en/v1.1.0
 [sr]: https://github.com/RichardLitt/standard-readme
 
+## Internally owned judgment
+
+[Industry white-paper authoring](standards-whitepapers.md) is an owner-directed synthesis of editorial practice: reader-led argument, calibrated claims, practical implications and substantive review. It is an internal authoring convention, not an external specification or a prescribed chapter model. Private production evidence and the promotion receipt remain with the originating repository; this public standard carries only the generalised rules.
+
 ## Last review
 
 REFRESH last run **2026-10-06**. Every source was re-fetched: CommonMark, rumdl rules, global settings, CLI and releases, GitHub alerts, TOML, and Standard Readme. The previous run was 2026-08-12, with Standard Readme added 2026-08-29.

@@ -420,7 +420,7 @@ export const createAuthoringSession = (
   return {
     subjects: [
       { families: ['RUBRIC'], context: () => context },
-      { families: ['MD', 'OWN', 'TOML', 'SYNC'], context: () => context }
+      { families: ['MD', 'OWN', 'TOML', 'WP', 'SYNC'], context: () => context }
     ],
     proposal: () => ({
       writes: ownedDrafts

@@ -18,6 +18,7 @@ import * as markdownModule from './markdown.ts'
 import * as ownedModule from './owned.ts'
 import * as synchronisationModule from './sync.ts'
 import * as tomlModule from './toml.ts'
+import * as whitepapersModule from './whitepapers.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -36,8 +37,9 @@ test('the default export is the sole catalogue entrypoint and families are compl
   expect(Object.keys(markdownModule)).toEqual(['MARKDOWN'])
   expect(Object.keys(ownedModule)).toEqual(['OWNED'])
   expect(Object.keys(tomlModule)).toEqual(['TOML'])
+  expect(Object.keys(whitepapersModule)).toEqual(['WHITEPAPERS'])
   expect(Object.keys(synchronisationModule)).toEqual(['SYNCHRONISATION'])
-  expect(catalogue.families.map((family) => family.code)).toEqual(['RUBRIC', 'MD', 'OWN', 'TOML', 'SYNC'])
+  expect(catalogue.families.map((family) => family.code)).toEqual(['RUBRIC', 'MD', 'OWN', 'TOML', 'WP', 'SYNC'])
   expect(
     catalogue.families
       .filter((family) => family.code !== 'RUBRIC')
@@ -55,6 +57,9 @@ test('the default export is the sole catalogue entrypoint and families are compl
     'TOML-values',
     'TOML-structure',
     'TOML-comments',
+    'WP-argument',
+    'WP-evidence',
+    'WP-review',
     'SYNC-1'
   ])
 })
