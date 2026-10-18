@@ -1,46 +1,50 @@
-# Coordinating-thread standard
+# Coordinating-work standard
 
 ## Contents
 
 - [Scope](#scope)
+  - [The work model](#the-work-model)
   - [The responsive coordinator](#the-responsive-coordinator)
   - [Glossary](#glossary)
-  - [Thread types](#thread-types)
-  - [Thread naming](#thread-naming)
+  - [Levels and forms](#levels-and-forms)
+  - [Work naming](#work-naming)
 - [Coordinator responsiveness](#coordinator-responsiveness)
-- [Coordinating-thread practices](#coordinating-thread-practices)
+- [Coordinating practices](#coordinating-practices)
+  - [States and moves](#states-and-moves)
   - [Banner](#banner)
   - [Re-anchoring after compaction](#re-anchoring-after-compaction)
   - [Surfaces](#surfaces)
-  - [Recovering a thread showing a red x](#recovering-a-thread-showing-a-red-x)
+  - [Recovering a session showing a red x](#recovering-a-session-showing-a-red-x)
 - [Reply forms](#reply-forms)
   - [Units of work](#units-of-work)
   - [Conversational bounded work](#conversational-bounded-work)
   - [Coordinator-only machinery](#coordinator-only-machinery)
 - [Owner report](#owner-report)
+  - [Answers](#answers)
   - [Quiet tools](#quiet-tools)
   - [Needs tags](#needs-tags)
   - [Generated surfaces](#generated-surfaces)
 - [Report forms](#report-forms)
   - [Full summary](#full-summary)
-- [Coordination threads](#coordination-threads)
-  - [State-of-play thread](#state-of-play-thread)
-  - [Opening a thread](#opening-a-thread)
+- [Coordinating work](#coordinating-work)
+  - [Territory work](#territory-work)
+  - [Opening work](#opening-work)
   - [Bootstrap](#bootstrap)
-  - [Messages between threads](#messages-between-threads)
+  - [Messages between work](#messages-between-work)
 - [Decisions and design](#decisions-and-design)
   - [Decision classes](#decision-classes)
-  - [One list](#one-list)
+  - [Decisions life cycle](#decisions-life-cycle)
   - [Design notes](#design-notes)
-  - [Project close](#project-close)
-- [Thread working rules](#thread-working-rules)
+  - [Finishing Project work](#finishing-project-work)
+- [Working rules](#working-rules)
   - [Recap since the mark](#recap-since-the-mark)
   - [Parking tangents](#parking-tangents)
   - [Linking records](#linking-records)
-  - [Committing the thread folder](#committing-the-thread-folder)
-  - [Tidying the thread folder](#tidying-the-thread-folder)
-  - [Draining a thread](#draining-a-thread)
-  - [Picking up a thread](#picking-up-a-thread)
+  - [Committing the work folder](#committing-the-work-folder)
+  - [Pruning the work folder](#pruning-the-work-folder)
+  - [Putting work on hold](#putting-work-on-hold)
+  - [Picking work up](#picking-work-up)
+  - [Work awaiting review](#work-awaiting-review)
   - [Pushing beneath other sessions](#pushing-beneath-other-sessions)
   - [Keeping primary checkouts current](#keeping-primary-checkouts-current)
   - [Refreshing this guidance](#refreshing-this-guidance)
@@ -48,292 +52,294 @@
 
 ## Scope
 
-A coordinating thread - a coordination thread or the state-of-play thread - is the owner's project-management office for Knowledge Islands work: it dispatches work, decides with the owner and reports. This standard owns how such a thread behaves, reports and keeps itself current, and it defines the three [thread types](#thread-types) every Knowledge Islands thread is one of. It is the thread half of the practice that the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md) governs on the run side: detachment, the run packet, prompt shape, authority tiers, the decisions log, coordination, the run queue, monitoring, while this standard owns the [owner report](#owner-report) with its [Needs tags](#needs-tags), which every report a background agent or a coordinating thread gives takes, and the [generated surfaces](#generated-surfaces) that carry it. The thread's checkpoint is a `ki-checkpoint` record under [the checkpoint standard](../../../governance/ki-checkpoint/references/standards-checkpoints.md).
+Coordinating work - territory work and Project work - is the owner's project-management office for Knowledge Islands work: the session working it dispatches work, decides with the owner and reports. This standard owns how a session behaves while it coordinates work, how it reports and how it keeps itself current. It is the coordinator half of the practice that the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md) governs on the run side: detachment, the run packet, prompt shape, authority tiers, the decisions log, coordination, the run queue, monitoring, while this standard owns the [owner report](#owner-report) with its [Needs tags](#needs-tags), which every report a background agent or a coordinator gives takes, and the [generated surfaces](#generated-surfaces) that carry it. The work's state is its work file, `+/_WORK/<id>/work.md`, under the `ki-checkpoint` [work-file standard](../../../governance/ki-checkpoint/references/standards-checkpoints.md).
 
-A repository that runs coordinating threads declares `[skills.ki-pmo]` in its `.ki.toml`. The declaration is the signal the runtime hook and the output style key on, so a repository that does not delegate never gets them.
+A repository that runs coordinating work declares `[skills.ki-pmo]` in its `.ki.toml`. The declaration is the signal the runtime hook and the output style key on, so a repository that does not delegate never gets them.
+
+### The work model
+
+The model of work is decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) and described once, canonically, by the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note in Knowledge Islands Principal: the unit is work; its levels and forms; worker, supervisor and the derived holder; send and receive; the seven states with On hold's two reasons; the receive words; the heartbeat and stuck; the work folder and work file; Git as the logbook; the decisions life cycle; the banner and its answers; and the observatory fields. This standard cites the note and restates none of it. It sets what the note leaves to the harness: how a coordinating session keeps to the model, the shape of every report, the generated surfaces, and the checks.
+
+The model replaced the thread model of 13 to 17 October. Kris agreed it on 18 October and launched its migration the same day; the harness half is [KI-HARNESS-GOV-210](../../../../docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md). The old words map to the new:
+
+| Thread model | Work model |
+| --- | --- |
+| state-of-play thread, `_state-of-play.md`, id `<territory>.sop` | territory work, `+/_WORK/<territory>/work.md`, id `<territory>` |
+| coordination thread, `<initiative>.<project>.md`, id `<territory>.<initiative>.<project>` | Project work, `+/_WORK/<territory>.<project>/work.md`, id `<territory>.<project>` |
+| conversational thread with a checkpoint | ad hoc work, `+/_WORK/<territory>.regular.<slug>/`, under regular work |
+| recurring work homed in an Initiative | regular work, `<territory>.regular`, self-coordinating |
+| Initiative, `Streams/Initiatives/`, `initiative:` | theme, `Streams/Themes/<theme>.md`, an optional `theme:` |
+| thread folder `+/_THREADS/<run>/` | the work folder `+/_WORK/<id>/` |
+| checkpoint, pick-up block, moves | the work file's front matter and body; Git as the logbook |
+| REST, BUSY, HOLD and DONE frames; resume line | the glyph banner; the send line |
+| the copyable stacked reply block | none; the owner answers in speech |
+| hold | On hold, paused or more expected |
+| `+/_DESIGN/<subject>/`, `Streams/**/design/` | `+/_WORK/<id>/design/` |
+
+**The tolerance window.** Until every territory has moved, which phase 5 of the migration closes, the checkers and every reader accept both shapes: a `+/_CHECKPOINTS/` checkpoint, a `+/_THREADS/<run>/` folder, `Streams/Initiatives/` and an `initiative:` key are read as before, each with a warning that names its new home, and the new shape passes without one. A session working old-shape work keeps to this standard through the mapping above; it moves its own files only when its territory's migration moves them. A report written before 18 October keeps its block-letter frame and reply block, and anything that reads past reports accepts both.
 
 ### The responsive coordinator
 
-Every rule in this standard serves one principle, which Kris set for threads on 2026-10-13 in these words:
+Every rule in this standard serves one principle, which Kris set for coordinators on 2026-10-13 in these words:
 
 > It's imperative that you do not do the work directly and that you delegate that work to subagents so that you remain responsive. And if I send you a message, it doesn't preempt any work that you are already doing. This is a fundamental requirement of the delegation capability.
 
 Three rules follow from it, and they are hard:
 
-1. **The thread never does substantive work itself.** A coordinating thread dispatches, decides with the owner and reports. Nothing else.
-2. **Every unit of work goes to a detached background agent.** Through `ki agent`, in its own session, surviving anything that happens to the thread. An in-session subagent is not a background agent.
-3. **An owner message never pre-empts work in flight.** It steers: the thread folds it into running and queued work and answers within one short turn. A background agent stops only when the owner names it and says stop.
+1. **The coordinator never does substantive work itself.** A coordinating session dispatches, decides with the owner and reports. Nothing else.
+2. **Every unit of work goes to a detached background agent.** Through `ki agent`, in its own session, surviving anything that happens to the coordinator. An in-session subagent is not a background agent.
+3. **An owner message never pre-empts work in flight.** It steers: the coordinator folds it into running and queued work and answers within one short turn. A background agent stops only when the owner names it and says stop.
 
-Four layers enforce them in a coordinating thread: the opener's role line carries the three rules in Kris's words, and the thread re-bootstraps on request, after a compaction and after a model switch; a runtime hook restates them on every owner message and points the thread at [re-anchoring](#re-anchoring-after-compaction) after compaction; the counted turn budget and self-check under [Coordinator responsiveness](#coordinator-responsiveness) bound each turn; and the acceptance tests the pilot record sets are run and scored from the session transcript. The harness also ships the `ki-coordinator` output style, whose text is these three rules and the owner-report shape, so that the style a coordinating thread runs under and this contract are one document; a declaring repository selects it with `outputStyle` in its tracked `.claude/settings.json`.
+Four layers enforce them: the opener's role line carries the three rules in Kris's words, and the coordinator re-bootstraps on request, after a compaction and after a model switch; a runtime hook restates them on every owner message and points the coordinator at [re-anchoring](#re-anchoring-after-compaction) after compaction; the counted turn budget and self-check under [Coordinator responsiveness](#coordinator-responsiveness) bound each turn; and the acceptance tests the pilot record sets are run and scored from the session transcript. The harness also ships the `ki-coordinator` output style, whose text is these three rules and the owner-report shape, so that the style a coordinator runs under and this contract are one document; a declaring repository selects it with `outputStyle` in its tracked `.claude/settings.json`.
 
 ### Glossary
 
-These words carry this practice, each with one owner. Kris adopted the first three on 2026-10-14 with "adopt thread, session and chat terms":
+The Work Process note's Words table owns the words of the model: work, work item, theme, work file, logbook, decisions, worker, supervisor, holder, handoff, send, receive, On hold, paused, more expected, release, drain, Finished, the five views, the receive words, the working area and the mark. These words carry the practice around it, each with one owner:
 
 | Term | Meaning | Owner |
 | --- | --- | --- |
-| thread | One named line of work between the owner and an agent that outlives any runtime instance; its identity is its `ki-checkpoint` record where it has one, and its type is one of the three [thread types](#thread-types) | identity `ki-checkpoint`, behaviour `ki-pmo` |
-| session | One runtime instance carrying a thread's turns: a Claude Code or Codex process, a Zed tab, a `claude -p` run. A thread spans sessions across compaction, red-x recovery or a new day; a session carries at most one thread | the runtime, `ki-recap` |
+| coordinating session | A session working territory work or Project work as its worker, under this standard; the hook, the output style and past records call it a coordinating thread | `ki-pmo` |
+| session | One runtime instance carrying a party's turns on a piece of work: a Claude Code or Codex process, a Zed tab, a `claude -p` run. The work outlives every session; a session works at most one piece of coordinating work | the runtime, `ki-recap` |
+| thread | The thread model's word for a session's line of work; read as the work it carries. Kris adopted thread, session and chat on 2026-10-14 with "adopt thread, session and chat terms", and the work model made work the unit | `ki-pmo` |
 | chat | Not a Knowledge Islands term. The vendor's word for a session's transcript in Claude Desktop, ChatGPT and the like, used only when naming a vendor artefact that is imported or cleaned up | `ki-housekeeping-claude` and its siblings |
-| run | A named set of agents sharing one state folder for runtime files and one tracked thread folder for knowledge files | `ki-delegation` |
-| worker | The role an agent plays in a run: it delivers one unit of work and reports in owner-report form | `ki-delegation` |
+| run | A named set of agents sharing one state folder for runtime files; its reports and briefs live in the work folder of the work it serves | `ki-delegation` |
 | agent | A process `ki agent` launches detached under the background-run contract; an in-session subagent is not one | `ki-delegation` |
-| hold | The state of a thread brought to a full stop: a [mark](#recap-since-the-mark) plus stopping all work, so that the thread can be archived and later picked up from the repository alone, for a move between hosts or to close it for a period; issuable across a whole territory, and never naming a host | `ki-pmo` |
-| drain | The activity that brings a thread to a hold, under [Draining a thread](#draining-a-thread) | `ki-pmo` |
-| resume | The activity that brings a thread out of a hold, or back after an interruption, from its [pick-up block](#picking-up-a-thread) | `ki-pmo` |
-| pick-up block | The first thing in a coordinating thread's checkpoint: its status, its resume line and its next steps, rewritten by every banner, under [Picking up a thread](#picking-up-a-thread) | `ki-pmo` |
+| send line | The one line the owner pastes to send work in handoff to them back to its worker in any session, under [Banner](#banner); it replaced the resume line | `ki-pmo` |
 
-### Thread types
+### Levels and forms
 
-Every thread is one of three types, which Kris adopted on 2026-10-14 with "adopt the three thread types conversational, coordination and state-of-play, replacing the old names". The names "project thread" and "territory master thread" are retired; an opener or checkpoint that still uses them means the coordination thread and the state-of-play thread respectively, until it is re-bootstrapped. A thread with no stated type is conversational.
+The note's Levels and forms of work table sets the three levels, the two forms and the cascade rule. Under this standard:
 
-| | Conversational | Coordination | State-of-play |
+| | Territory work | Project work | Regular work and ad hoc work |
 | --- | --- | --- | --- |
-| Purpose | Does one bounded piece of work with the owner directly | Coordinates one Project through background agents | The coordination thread of coordination threads: dispatches the territory's work into its coordination threads; project management only |
-| Delegates | May, but need not | Always, under the three rules | Always, under the three rules |
-| Identity | None required; an optional generic checkpoint | `+/_CHECKPOINTS/<initiative>.<project>.md`, label `<Space> > <Initiative> > <project in words>` | `+/_CHECKPOINTS/_state-of-play.md` in the Capital, label `<Space> > SoP` |
-| Run and thread folder | None | Run `<project>`, folder `+/_THREADS/<project>/` | Run `<territory>-state-of-play`, folder `+/_THREADS/<territory>-state-of-play/` |
-| Decisions | In the work it drives | The Project's [one list](#one-list) in the thread folder | Its own list in its thread folder |
-| Banner | None: conversational replies and completed-work reports under [Reply forms](#reply-forms), with no report heading, footer banner, mark, pick-up block or resume line | The report heading, Initiative › Project, with the form line; the block-letter REST or BUSY footer; HOLD when it [drains](#draining-a-thread); DONE once at [Project close](#project-close) | The report heading, territory or Initiative › State of play, with the form line; the block-letter REST or BUSY footer; HOLD when it drains, last in a territory hold; DONE only at territory close |
-| Governed by | `ki-recap` and the skills the work declares | This standard | This standard |
+| Id | `<territory>`, such as `ki` | `<territory>.<project>`, such as `ki.ways-of-working` | `<territory>.regular`; ad hoc `<territory>.regular.<slug>` |
+| Work file | `+/_WORK/<territory>/work.md` in the Capital | `+/_WORK/<territory>.<project>/work.md` in the Capital | `+/_WORK/<territory>.regular/work.md`, and one folder per ad hoc piece |
+| Coordinates | Project work and regular work: priorities, the queue, decisions touching more than one Project; executes nothing | One Project's work items and runs | Itself: self-coordinating, with no coordinator session |
+| Governed by | This standard | This standard | The Capital's Activity notes, `ki-work-recurring` and the skills the work declares |
+| Report forms | The coordinator forms, the report heading reading `› State of play` | The coordinator forms, under the Project's heading | The completed-work report under [Reply forms](#reply-forms), with no heading or banner |
 
-The conversational thread is the default and is named for what it is, a conversation, rather than "ad hoc". The coordination thread and the state-of-play thread are the coordinating threads this standard governs; where this standard says "coordinating thread" it means both.
+The coordinating forms are territory work and Project work; where this standard says "coordinating work" it means both, and "coordinator" means the session working it. Regular work needs no coordinator, in Kris's words "because it is sort of self-coordinating, but there's no reason why the state of play thread can't sort of talk about it": territory work may discuss it but does not necessarily dispatch it. A session that works with the owner on one bounded matter, with or without an ad hoc work folder, is a conversational session under [Conversational bounded work](#conversational-bounded-work).
 
-A thread declares its type in its checkpoint's optional `role` field, under the `ki-checkpoint` [Thread role](../../../governance/ki-checkpoint/references/standards-checkpoints.md#thread-role) rule: `role: coordination` for a coordination thread, `role: state-of-play` for the state-of-play thread, and `conversational` or no field for a conversational thread. Only the `_state-of-play` checkpoint carries `role: state-of-play`. A coordinating thread adds the field at its own next checkpoint update, or when the state-of-play thread's messages block asks; until then its opener names its type, and the rubric warns that the field is missing.
+The work file declares its level in its `level` field under the work-file standard: `territory`, `regular` or `project`, ad hoc work taking `regular`. The level follows from the id: one segment is territory work, a second segment `regular` is regular or ad hoc work, and any other second segment is Project work. A checkpoint in the old shape declares its type in `role` until it moves: `state-of-play` for territory work, `coordination` for Project work, and `conversational` or no field otherwise.
 
-Kris set the state-of-play thread's role on 2026-10-14 as "the coordination thread of coordination threads", in these words: "As the state of play thread, I think you are very much in a position where you can write directly into the projects and the checkpoints of the other coordination threads. And you're responsible for fundamentally dispatching that work around. So rather than building up more and more of your own context, the key thing is to understand mostly where that work goes first and foremost and get it dispatched out of this thread and then if I ask a similar question or an extension to something or even repeat myself you're the one who can understand all of this and then deal with that." So the state-of-play thread may write directly into the Project notes and checkpoints of its territory's coordination threads to dispatch work, through the [messages block](#messages-between-threads) at the top of a receiving checkpoint, and its first concern with any new matter is where the work goes, not holding it in its own context. A coordination thread may message another through the same block and edits nothing else in its checkpoint; the state-of-play thread routes the owner's dumps and anything with no owning thread.
+Kris set territory work's role on 2026-10-14 as "the coordination thread of coordination threads", in these words: "As the state of play thread, I think you are very much in a position where you can write directly into the projects and the checkpoints of the other coordination threads. And you're responsible for fundamentally dispatching that work around. So rather than building up more and more of your own context, the key thing is to understand mostly where that work goes first and foremost and get it dispatched out of this thread and then if I ask a similar question or an extension to something or even repeat myself you're the one who can understand all of this and then deal with that." So territory work sends direction down into Project work through the [Messages section](#messages-between-work) of each receiving work file, and its first concern with any new matter is where the work goes, not holding it in its own context.
 
-### Thread naming
+### Work naming
 
-Kris set the model on 2026-10-17, as received: "I'd like to think of threads as having an id, slug, and title based around this: state-of-play: `$territory.sop` / coordination: `$territory.$initiatiave.$project` / conversation: `$territory.$slug` / Variations of that are then used for the title or label etc", and then "so document the naming approach". So every thread with a checkpoint has three names. The **id** is authoritative; the **slug** and the **title** derive from it, and the **label** is the title with a host suffix where one applies. This section is the one place they are defined; `ki-checkpoint` and `ki-delegation` point here.
+Kris set the naming model on 2026-10-17, "I'd like to think of threads as having an id, slug, and title ... Variations of that are then used for the title or label etc", and the work model gave it two-part ids with no theme segment. Every piece of work above a work item has an **id**, a **slug** and a **title**; the id is authoritative and the other two derive from it. This section is the one place they are defined; `ki-checkpoint` and `ki-delegation` point here.
 
-| Thread type | Id | Slug | Title |
+| Work | Id | Slug | Title |
 | --- | --- | --- | --- |
-| State-of-play | `<territory>.sop` | `<territory>-sop` | `<Territory> > SoP` |
-| Coordination | `<territory>.<initiative>.<project>` | `<territory>-<initiative>-<project>` | `<Territory> > <Initiative title> > <Project title>` |
-| Conversational | `<territory>.<slug>` | `<territory>-<slug>` | `<Territory> > <topic>` |
+| Territory work | `<territory>` | `<territory>` | `<Territory> > SoP` |
+| Project work | `<territory>.<project>` | `<territory>-<project>` | `<Territory> > <Theme title> > <Project title>`, or `<Territory> > <Project title>` with no theme |
+| Regular work | `<territory>.regular` | `<territory>-regular` | `<Territory> > Regular work` |
+| Ad hoc work | `<territory>.regular.<slug>` | `<territory>-regular-<slug>` | `<Territory> > <topic>` |
 
 **Id.**
 
 - **Segments:** joined by `.`, each a lower-case kebab name, `[a-z0-9]+(-[a-z0-9]+)*`, so a segment never holds a dot, an underscore, a host or a runtime session identifier.
-- **Territory:** the alias of the territory whose repository holds the checkpoint, as the estate's territory list in the principal Knowledge Base gives it: `ki`, `hnr`, `er`, `tmx`, `va`, `lgl`, `kb` or `si`.
-- **Initiative and Project:** the `slug` fields of the Project note and its Initiative under the `ki-work` [Project registry standard](../../ki-work/references/standards-project-registry.md), whatever they are at the time, such as `platform-foundations` and `tools-burndown` today.
-- **Conversational slug:** chosen when the thread first takes a checkpoint, by the owner or proposed by the agent and confirmed: a short kebab name for the subject, led by the system it works on where the subject alone would be ambiguous, as in `acquire-intake` rather than `intake`. It is never `sop`, never an Initiative or Project slug of the territory, and never carries a date or host. A conversational thread with no checkpoint has no id.
-- **Unique:** no two threads of a territory share an id, and no two share the slug derived from it; an id whose slug would collide is not chosen.
-- **Stable:** set once, when the checkpoint is created, and unchanged by any change of title, label, host, client or display name. It changes only through a rename the owner approves, when a Project moves to another Initiative or a registry slug is renamed, and then every derived name changes in the same commit, as the `ki-checkpoint` [naming rule](../../../governance/ki-checkpoint/references/standards-checkpoints.md#coordination-thread-naming) already requires.
+- **Territory:** the alias of the territory whose Capital holds the work file, as the estate's territory list in the principal Knowledge Base gives it: `ki`, `hnr`, `er`, `tmx`, `va`, `lgl`, `kb` or `si`.
+- **Project:** the `slug` of the Project note under the `ki-work` [Project registry standard](../../ki-work/references/standards-project-registry.md), such as `tools-burndown`. No id carries a theme, so relabelling a Project's theme never renames anything.
+- **Ad hoc slug:** chosen when the work first takes a folder, by the owner or proposed by the agent and confirmed: a short kebab name for the subject, led by the system it works on where the subject alone would be ambiguous, as in `acquire-intake` rather than `intake`. It is never `regular`, never a Project slug of the territory, and never carries a date or host.
+- **Unique and stable:** no two pieces of work in a territory share an id or a slug. The id is set once, when the work folder is created, and changes only through a rename the owner approves, when a Project's slug is renamed; then every derived name changes in the same commit.
 
-**Slug.** The id with each `.` written as `-`, such as `ki-platform-foundations-tools-burndown`: one path component in the run-name alphabet `ki agent` accepts, `[A-Za-z0-9_-]`, which has no dot. It names every file and folder the thread owns: its checkpoint, `+/_CHECKPOINTS/<slug>.md`, whose stem, `thread` field and H1 it is; its run and thread folder, `+/_THREADS/<slug>/`; its state folder, `~/.local/state/ki/agents/<slug>/`; and its native-session binding, `~/.local/state/ki/threads/<repository>/<slug>.json`. Because it leads with the territory, the machine-wide run namespace needs no territory prefix as an exception. The slug is never parsed back into an id; the id is read from the checkpoint. The stable key `<repository>/<checkpoint stem>` agreed under SESSION-IDENTITY stays the locator, `<repository>/<slug>`, derived from the id and the repository holding the checkpoint; where key and id disagree, the id wins and the key is corrected.
+**Slug.** The id with each `.` written as `-`: one path component in the run-name alphabet `ki agent` accepts, `[A-Za-z0-9_-]`, which has no dot. It names the work's state folder, `~/.local/state/ki/agents/<slug>/`, its native-session binding, `~/.local/state/ki/threads/<repository>/<slug>.json`, and its coordinator run. The work folder itself is named by the dotted id, as the note sets. Runs keep their own hyphenated slugs. The slug is never parsed back into an id; the id is read from the work file.
 
-**Title and label.** The title is the human name, built from display names and joined by ` > `:
+**Title and label.** The title is the human name, built from display names and joined by ` > `, and it keeps the theme as display text while the id carries none, as Kris took under TITLE-THEME on 18 October, "the title theme, I go with your recommendation":
 
 - **Territory:** the territory's name where it is one word, `Personal`, `Legal` or `Techmedix`, and otherwise its alias in capitals, `KI`, `HNR`, `ER`, `VA` or `SI`.
-- **Initiative and Project:** their registry `title` fields as they stand, such as `Platform foundations` and `Tools burndown`; a title follows a registry title change at the thread's next checkpoint update, while the id does not.
-- **State-of-play:** `SoP` in the title and label, and `State of play` written in full in the report heading.
-- **Topic:** a conversational thread's slug in words, in sentence case, unless the owner names it otherwise, such as `Acquire intake`.
-- **Label:** the title, plus a `(<host>)` suffix, after a space, only when the thread is limited to that machine, in Kris's words "the machine is only added if its limited to that machine". The id, slug and title never carry a host.
+- **Theme and Project:** the `title` fields of the theme page and the Project note as they stand, such as `Model` and `Ways of working`; a title follows a registry change at the work file's next update, while the id does not.
+- **Territory work:** `SoP` in the title, and `State of play` in full in the report heading.
+- **Topic:** ad hoc work's slug in words, in sentence case, unless the owner names it otherwise.
+- **Label:** the title, plus a `(<host>)` suffix, after a space, only when the work is limited to that machine, in Kris's words "the machine is only added if its limited to that machine". The id, slug and title never carry a host.
 
-The label is copied exactly into the native session name, the opener's `Label:` line and the [resume line](#banner), `Resume <label> ...`, so a machine-bound thread's resume line keeps its suffix: the suffix says where the thread can run, not where it last ran, and no other thread state names a host. The [report heading](#banner) uses the same display names, linked to their notes and joined by ` › `, without the territory: `# [<Initiative title>](...) › [<Project title>](...)`, or `# [<territory or Initiative>](...) › State of play`.
+The label is copied exactly into the native session name, the opener's `Label:` line and the [send line](#banner), which guards on it. The [report heading](#banner) uses the same display names, linked to their notes and joined by ` › `, without the territory.
 
-**Where they live.** The checkpoint front matter carries `id` and `title` beside `label` and `role`; `label` is written only where it differs from the title by a host suffix, and otherwise defaults to it. The id is authoritative: the slug is derived mechanically, the title from the registry, and a disagreement is corrected towards the id. The `id` and `title` fields become valid in `ki-checkpoint` with the migration the owner approves; until then every existing checkpoint name, folder, run and label stands, and an agent reads a thread's id from its current stem: `_state-of-play` gives `<territory>.sop`, `<initiative>.<project>` gives `<territory>.<initiative>.<project>`, and any other stem gives `<territory>.<stem>`.
+| Work | Id | Title | Old shape |
+| --- | --- | --- | --- |
+| Knowledge Islands territory work | `ki` | `KI > SoP` | `_state-of-play.md`, `ki.sop` |
+| Ways of working | `ki.ways-of-working` | `KI > Model > Ways of working` | `knowledge-islands-model.ways-of-working.md` |
+| Tools burndown | `ki.tools-burndown` | `KI > Foundations > Tools burndown` | `platform-foundations.tools-burndown.md` |
+| Knowledge Islands regular work | `ki.regular` | `KI > Regular work` | recurring work in Initiative notes |
+| Registry removal | `ki.regular.registry-removal` | `KI > Registry removal` | a conversational thread |
 
-| Thread | Type | Id | Slug | Title | Label | Today |
-| --- | --- | --- | --- | --- | --- | --- |
-| Knowledge Islands state of play | State-of-play | `ki.sop` | `ki-sop` | `KI > SoP` | as title | `_state-of-play.md`, `Master: state-of-play` |
-| Ways of working | Coordination | `ki.knowledge-islands-model.ways-of-working` | `ki-knowledge-islands-model-ways-of-working` | `KI > Knowledge Islands model > Ways of working` | as title | `knowledge-islands-model.ways-of-working.md`, `KI > Model > ways of working` |
-| Tools burndown | Coordination | `ki.platform-foundations.tools-burndown` | `ki-platform-foundations-tools-burndown` | `KI > Platform foundations > Tools burndown` | as title | `platform-foundations.tools-burndown.md`, `Fnd: tools-burndown` |
-| Chezmoi | Coordination | `ki.rig.chezmoi` | `ki-rig-chezmoi` | `KI > Rig > chezmoi` | as title | `rig.chezmoi.md`, `Rig: chezmoi` |
-| Acquire intake | Conversational | `kb.acquire-intake` | `kb-acquire-intake` | `Personal > Acquire intake` | `Personal > Acquire intake (sol)` | `acquire-intake.md` in `acquire`, `Acquire: acquire-intake` |
+An old-shape checkpoint's id is read from its stem until it moves: `_state-of-play` gives `<territory>`, `<initiative>.<project>` gives `<territory>.<project>`, and any other stem gives `<territory>.regular.<stem>`.
 
 ## Coordinator responsiveness
 
-A coordinating thread is a coordinator. It dispatches work, decides with the owner and reports; it hands substantive reasoning, analysis and drafting to background agents rather than doing them in-thread. Because the reasoning happens in those agents, a coordinating thread runs on the lighter model purpose `ki-tokenomics` recommends for coordination, and heavier models are reserved for the background agents.
+A coordinating session is a coordinator. It dispatches work, decides with the owner and reports; it hands substantive reasoning, analysis and drafting to background agents rather than doing them in-session. Because the reasoning happens in those agents, a coordinator runs on the lighter model purpose `ki-tokenomics` recommends for coordination, and heavier models are reserved for the background agents.
 
-The coordinating thread stays responsive to the owner, so the owner never has to remind it to delegate. These rules are hard and checkable from its transcript:
+The coordinator stays responsive to the owner, so the owner never has to remind it to delegate. These rules are hard and checkable from its transcript:
 
-- **Turn budget:** a coordinator turn makes at most five tool calls and returns to the owner. Its reads are limited to the checkpoint, `ki agent status`, one report and one short file; its writes are limited to the checkpoint, the decisions log and a brief. Anything beyond is a launch. A step goes to a background agent if it reads more than one or two short files, writes or edits more than a checkpoint line or a decision, runs tests, audits or builds, or would take more than about a minute.
-- **Never in-thread:** analysis, design, drafting prose or prompts longer than a short brief, code or document edits, multi-repository investigation, and waiting in the foreground for an agent.
+- **Turn budget:** a coordinator turn makes at most five tool calls and returns to the owner. Its reads are limited to the work file, `ki agent status`, one report and one short file; its writes are limited to the work file, the decisions log and a brief. Anything beyond is a launch. A step goes to a background agent if it reads more than one or two short files, writes or edits more than a work-file line or a decision, runs tests, audits or builds, or would take more than about a minute.
+- **Never in-session:** analysis, design, drafting prose or prompts longer than a short brief, code or document edits, multi-repository investigation, and waiting in the foreground for an agent.
 - **Waiting:** always through a detached waiter or monitor under the `ki-delegation` [run queue](../../../governance/ki-delegation/references/standards-background-runs.md#run-queue) and [monitoring](../../../governance/ki-delegation/references/standards-background-runs.md#monitoring) rules, never a foreground wait or sleep.
-- **Brief-writing:** the coordinator writes only a short brief citing the owner's decisions. If the brief itself needs research, a background agent researches and writes it.
-- **Self-check:** before each tool call, the coordinator asks whether it is a quick check or bookkeeping; if not, it delegates. When it notices it has drifted into doing work, it stops, delegates the rest, tells the owner in one line and notes the drift in its checkpoint.
+- **Brief-writing:** the coordinator writes only a short brief citing the owner's decisions, into the work folder's `briefs/<run>.md`. If the brief itself needs research, a background agent researches and writes it.
+- **Self-check:** before each tool call, the coordinator asks whether it is a quick check or bookkeeping; if not, it delegates. When it notices it has drifted into doing work, it stops, delegates the rest, tells the owner in one line and notes the drift in its work file.
 - **Tool calls:** every coordinator tool call is short. It never pastes a prompt, brief or other long text inline in a command: prompt files are written out of sight, with `ki agent new` or a one-line copy of a prepared file. A lookup that needs more than one or two short reads is delegated. Replies carry no raw tool output; the coordinator says in plain language what the result means, under [Quiet tools](#quiet-tools).
-- **Owner messages:** a new owner message is a steering request, not a stop. The thread folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work. Because it is never mid-way through long work, it answers an owner message promptly.
-- **Cadence:** Kris set the update cadence on 2026-10-14, as received: "UPDATE-CADENCE / yes: add to ki-pmo - full Summary only when all dispatched work has finished or on request; otherwise timed one-to-two-line updates; a blocking query raised in a single line; the resume line shown only at rest; a report that does not repeat unchanged queries still carries the full stacked reply block for every open query". So while dispatched work is running or queued the coordinator gives timed updates of one or two lines, timestamped, when it launches work, when an agent finishes and while it waits; it raises a blocking query the moment it arises, in a single line, rather than holding it for the next report; it gives the full Summary in the [owner report](#owner-report) form only when all dispatched work has finished, or when the owner asks for one; and the resume line appears only at rest. A Summary may leave an unchanged query unrepeated, but it still carries the full stacked reply block with an entry for every open query. Between owner messages it has nothing else to say.
-- **Heartbeat:** Kris added a heartbeat to the cadence on 2026-10-14, as received: "HEARTBEAT / while work runs, the thread's background check also wakes it every 5 minutes for a one-to-two-line timed update with each agent's current step; add it to the ki-pmo update cadence and the hook line, and apply it in this thread now". So while dispatched work is running the thread keeps one background check armed, a detached loop under the `ki-delegation` [monitoring](../../../governance/ki-delegation/references/standards-background-runs.md#monitoring) rules that exits as soon as any agent finishes or after 5 minutes, whichever comes first. Each time it exits, the thread wakes, reads `ki agent status` and gives a one-to-two-line timed update naming each running agent and its current step, or handles the finished agent, and then re-arms the check. The thread is therefore woken at least every 5 minutes while work runs, and sooner when an agent finishes. At rest, with nothing running or queued, no check is armed and there is no heartbeat.
-- **Concurrency:** Kris set the current practice on 2026-10-14, as received: "CONCURRENCY / add the current practice to ki-pmo: chain agents that touch the same files, run different repositories in parallel, about three running per thread, the rest queued". So agents that touch the same files are chained, each launched with its wait on the one before it under [Coordination](../../../governance/ki-delegation/references/standards-background-runs.md#coordination), so that no two edit a file at once; agents working in different repositories run in parallel; and about three agents run per thread at once, the rest waiting in the [run queue](../../../governance/ki-delegation/references/standards-background-runs.md#run-queue) in priority order.
+- **Owner messages:** a new owner message is a steering request, not a stop, and moves nothing: a message mid-run is a steer. The coordinator folds it into running and queued work - redirecting, re-queuing or recording a decision as needed - and keeps going. It stops or aborts a background agent or piece of work only when the owner expressly says to stop or abort it, naming the work. Because it is never mid-way through long work, it answers an owner message promptly.
+- **Cadence:** Kris set the update cadence on 2026-10-14, as received: "UPDATE-CADENCE / yes: add to ki-pmo - full Summary only when all dispatched work has finished or on request; otherwise timed one-to-two-line updates; a blocking query raised in a single line; the resume line shown only at rest; a report that does not repeat unchanged queries still carries the full stacked reply block for every open query". Under the work model the resume line is the send line and the reply block is gone, so: while work lies with a worker the coordinator gives timed updates of one or two lines, timestamped, when it launches work, when an agent finishes and while it waits; it raises a blocking query the moment it arises, in a single line, rather than holding it for the next report; it gives the full Summary in the [owner report](#owner-report) form only when all dispatched work has finished, or when the owner asks for one; and the send line appears only when the work is in handoff to the owner. Between owner messages it has nothing else to say.
+- **Heartbeat:** the heartbeat runs only while work lies with a worker, as the note's Stuck and the heartbeat sets: an update on change, at least every 5 minutes and always by 10. Kris added it on 2026-10-14, as received: "HEARTBEAT / while work runs, the thread's background check also wakes it every 5 minutes for a one-to-two-line timed update with each agent's current step; add it to the ki-pmo update cadence and the hook line, and apply it in this thread now". So while any of its items lies with a run, the coordinator keeps one background check armed, a detached loop under the `ki-delegation` [monitoring](../../../governance/ki-delegation/references/standards-background-runs.md#monitoring) rules that exits as soon as any agent finishes or after 5 minutes, whichever comes first. Each time it exits, the coordinator wakes, reads `ki agent status` and gives a one-to-two-line timed update naming each running agent and its current step, or handles the finished agent, and then re-arms the check. With the supervisor, in handoff or On hold, no check is armed and there is no heartbeat.
+- **Concurrency:** Kris set the current practice on 2026-10-14, as received: "CONCURRENCY / add the current practice to ki-pmo: chain agents that touch the same files, run different repositories in parallel, about three running per thread, the rest queued". So agents that touch the same files are chained, each launched with its wait on the one before it under [Coordination](../../../governance/ki-delegation/references/standards-background-runs.md#coordination), so that no two edit a file at once; agents working in different repositories run in parallel; and about three agents run per piece of coordinating work at once, the rest waiting in the [run queue](../../../governance/ki-delegation/references/standards-background-runs.md#run-queue) in priority order.
 
-A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` injects one line on every owner message: a pointer to this standard and its five hard rules, which are to delegate every unit of work and stay responsive, that an owner message never pre-empts work in flight, the timed updates with the 5-minute background check while work runs, the owner-report shape with its report heading and footer banner, and committing the thread's own work by explicit path and acting on each line of the messages block. Kris cut it to that on 2026-10-17, as received: "Yes: a harness agent adds a quiet-tools rule to the ki-pmo standard and its run-report and brief sources (run git with -q, never paste gate, audit or git output, report each outcome in one line), cuts the coordinator hook line to a pointer plus the five hard rules, regenerates with ki dev skill generate ki-pmo --write and commits, before the RESTART-AGREE run." It is injected in a thread whose checkout declares `[skills.ki-pmo]` in the top-level `.ki.toml` of the hook's working directory or its Git top level. After a compaction it injects instead a pointer to [Re-anchoring after compaction](#re-anchoring-after-compaction). A repository that does not declare `ki-pmo` never gets the line, and removing the declaration disables it, as Kris settled on 2026-10-14: "HOOK-OWNER - (a). A repository that doesn't delegate then never gets the hook, and removing ki-pmo disables it." The hook stays silent in agents `ki agent` launches. It tells the runtimes apart as Kris approved the same day, "approve the hook runtime split": under Claude Code, where `CLAUDECODE` is set, it skips the terminal check, because Claude Code is interactive whether or not a terminal is attached, as in Zed; under Codex it keeps the terminal check until `KI_AGENT_RUN` reaches the Codex launcher. It is registered per machine by the user-environment manager.
+A runtime hook backs these rules: the harness `hooks/coordinator-reminder.sh` injects one line on every owner message: a pointer to this standard and its five hard rules, which are to delegate every unit of work and stay responsive, that an owner message never pre-empts work in flight, the timed updates with the 5-minute background check while work lies with a worker, the owner-report shape with its report heading and glyph banner and no reply block, and committing the coordinator's own work by explicit path at every send and acting on each line of the work file's Messages section. Kris cut it to a pointer and the hard rules on 2026-10-17, as received: "Yes: a harness agent adds a quiet-tools rule to the ki-pmo standard and its run-report and brief sources (run git with -q, never paste gate, audit or git output, report each outcome in one line), cuts the coordinator hook line to a pointer plus the five hard rules, regenerates with ki dev skill generate ki-pmo --write and commits, before the RESTART-AGREE run." It is injected in a session whose checkout declares `[skills.ki-pmo]` in the top-level `.ki.toml` of the hook's working directory or its Git top level. After a compaction it injects instead a pointer to [Re-anchoring after compaction](#re-anchoring-after-compaction). A repository that does not declare `ki-pmo` never gets the line, and removing the declaration disables it, as Kris settled on 2026-10-14: "HOOK-OWNER - (a). A repository that doesn't delegate then never gets the hook, and removing ki-pmo disables it." The hook stays silent in agents `ki agent` launches. It tells the runtimes apart as Kris approved the same day, "approve the hook runtime split": under Claude Code, where `CLAUDECODE` is set, it skips the terminal check, because Claude Code is interactive whether or not a terminal is attached, as in Zed; under Codex it keeps the terminal check until `KI_AGENT_RUN` reaches the Codex launcher. It is registered per machine by the user-environment manager.
 
-Where `[skills.ki-pmo]` is declared, the hook and the output style are bound, a runtime-specific binding under Claude Code: the repository's tracked `.claude/settings.json` selects `"outputStyle": "ki-coordinator"`, and the user's Claude Code settings register `hooks/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart`, with the style deployed as `~/.claude/output-styles/ki-coordinator.md`. The `ki-pmo` rubric checks that the binding is present and the user-environment manager, chezmoi, stays its binder, as Kris decided on 2026-10-14: "HOOK-BINDING - add a mechanical rubric item that the binding is present where ki-pmo is declared, and leave chezmoi as the binder for now".
+Where `[skills.ki-pmo]` is declared, the hook and the output style are bound, a runtime-specific binding under Claude Code: the repository's tracked `.claude/settings.json` selects `"outputStyle": "ki-coordinator"`, and the user's Claude Code settings register `hooks/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart`, with the style deployed as `~/.claude/output-styles/ki-coordinator.md`. The style and the hook line are harness-owned and generated from this standard; the user-environment manager, chezmoi, only links the style to the primary checkout and registers the hook. The `ki-pmo` rubric checks that the binding is present, as Kris decided on 2026-10-14: "HOOK-BINDING - add a mechanical rubric item that the binding is present where ki-pmo is declared, and leave chezmoi as the binder for now".
 
-## Coordinating-thread practices
+## Coordinating practices
 
-A coordinating thread also follows these practices with the owner. Every report it gives is an [owner report](#owner-report), whose sections, queries and reply block are never shortened by any output style, proxy shaping block or communication level.
+A coordinator also follows these practices with the owner. Every report it gives is an [owner report](#owner-report), whose sections, queries and banner are never shortened by any output style, proxy shaping block or communication level.
 
 - **Questions:** a decision with clear options goes through the runtime's structured-question tool where one is available, recommended option first, a few questions per batch. The query keeps its [Needs tag](#needs-tags) either way.
-- **Heading and banner:** every Summary, every [recap](#recap-since-the-mark), every [full summary](#full-summary) and every [re-bootstrap](#bootstrap) report opens with the report heading the [owner report](#owner-report) sets, so each reads cold and several threads' updates read side by side, and closes with the [footer banner](#banner) and, at rest, the resume line. The report heading is the [rich-text heading](#banner): one `#` heading, the Initiative's display name linked to its local note, then ` › `, then the Project's display name linked to its local note, with one bold line beneath it, `**<Form> at <local time> · last mark <local time>**`. Kris asked for it on 2026-10-14, as received: "maybe you can just come up with something which is just a better heading that is the actual just normal text, so it can be rich text rather than fixed width text. So maybe you do not need to say project or initiative in front of it, you use the ways of working and you render it with a sensible label, and the initiative is before that, so it says knowledge islands model, which is linked. The next line says ways of working and then you have your headings, done, in progress, queries, and then you have your banner at the end. ... after the initiative and project headings at the start you could have one line which says summary at, whatever, and last mark at.", agreed the mock at 19:15 BST with "Actually, that is really good.", and amended it with "Maybe we use a tripple HR element Before the main heading." and "And maybe then even a single HR alignment after the summary and last mark part." It replaces the framed label he had placed at 19:05 BST and the `# <label> · <form> at <local time>` heading line with the plain `Project · Initiative · <window> · <state>` line beneath it that HEADING-FORM had set, so no frame opens a report, and the window and the state are no longer written: the form fixes the window, `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary, and the footer banner and its list carry the state. The form is `Summary`, `Recap`, `Full summary` or `Re-bootstrap`, and both times are local, written like `19:13 BST`. A report written before that day keeps its earlier heading, the framed label or the one-line heading, and anything that reads past reports accepts all three.
-- **Heading levels:** in every form the report heading is the one `#` heading, in the message and in a saved file alike; the sections (`Decided`, `Done`, `In Progress`, `Queries`) are `##` headings, and each query and each topic sub-heading is `###`. No other heading levels appear.
-- **Self-contained:** no Summary, recap or full summary says "unchanged, see earlier", "as before" or otherwise points back to an earlier report. What is still running and what is still open is restated each time, because the owner reads each one cold and the earlier message may be gone. Under the cadence Kris set on 2026-10-14, "a report that does not repeat unchanged queries still carries the full stacked reply block for every open query": a Summary may leave the body of an unchanged query unrepeated, naming it under `Queries` by its tag and title alone, but its reply block still carries one stacked entry for every open query; a [full summary](#full-summary) restates every open query in full.
-- **Resting point:** when the thread's work is largely complete, or it is waiting on the owner, another thread, a scheduled test or an external fix, it ends with a Summary, because that is the last message the owner sees until they return. Its closing frame reads REST, its list names what it waits on, and the owner report between the heading and the footer lets the owner pick the thread up cold. Before it rests it [commits and pushes its thread folder](#committing-the-thread-folder). The resume line is given only here: Kris set on 2026-10-14 that it is "shown only at rest", so a report whose footer reads BUSY ends with its list and carries no resume line.
-- **Hold:** when the owner asks the thread to drain, or puts the territory on hold, it drains to a hold under [Draining a thread](#draining-a-thread) and gives a hold report and nothing else: the report heading with the form `Hold report`, `## Done`, `## Parked` and `## Left over`, no reply block and no **Context**, **Query** or **Options**, because the queries live in the checkpoint, then the HOLD frame, its list, the closing line "To bring this thread back and continue the work, paste this:" and the resume line its [pick-up block](#picking-up-a-thread) carries.
-- **Pick-up block:** every REST, BUSY, HOLD or DONE banner the thread gives also rewrites the pick-up block at the top of its checkpoint, under [Picking up a thread](#picking-up-a-thread), so that the checkpoint alone says how the thread is picked up.
-- **Links:** every roadmap record a report names is linked by its full identifier to its local file, under [Linking records](#linking-records), and a pruned record is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`. The rubric flags any record identifier a thread report leaves unlinked.
-- **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another thread, the thread gives it in a code block ready to copy.
-- **Decisions:** the thread records each owner decision in the run's [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) before launching the work it authorises, in the turn the decision arrives, and verifies any later quotation from the transcript file, under the two rules that section sets. It classifies each entry under [Decision classes](#decision-classes) at the mark.
-- **Messages:** a message from another thread reaches this one through its run's inbox, and a backend nudge is not visible progress; the [surfaces rule](#surfaces) says where the owner sees it.
+- **Heading and banner:** every Summary, every [recap](#recap-since-the-mark), every [full summary](#full-summary) and every [re-bootstrap](#bootstrap) report opens with the [report heading](#banner) and its state form line, so each reads cold and several pieces of work read side by side, and closes with the [glyph banner](#banner) and, in handoff to the owner, the send line.
+- **Heading levels:** in every form the report heading is the one `#` heading, in the message and in a saved file alike; the sections (`Decided`, `Done`, `In Progress`, `Queries`) are `##` headings, and each query, each topic sub-heading and the banner heading is `###`. No other heading levels appear.
+- **Self-contained:** no Summary, recap or full summary says "unchanged, see earlier", "as before" or otherwise points back to an earlier report. What is still running and what is still open is restated each time, because the owner reads each one cold and the earlier message may be gone. A Summary may leave the body of an unchanged query unrepeated, naming it under `Queries` by its tag and title alone; a [full summary](#full-summary) restates every open query in full.
+- **Sending:** when the work's items are done for now, or it waits on the owner, another piece of work, a scheduled test or an external fix, the coordinator sends: it commits and pushes the work folder, gives a Summary whose banner names the handoff, and, in handoff to the owner, ends with the send line. That Summary is the last message the owner sees until they return.
+- **Hold:** when the owner says `pause` or `done for now`, the coordinator drains under [Putting work on hold](#putting-work-on-hold) and gives a hold report and nothing else.
+- **Work file:** every send, receive, mark and hold rewrites the work file's front matter, under [Picking work up](#picking-work-up), so that the work file alone says how the work is picked up.
+- **Links:** every roadmap record a report names is linked by its full identifier to its local file, under [Linking records](#linking-records), and a pruned record is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`. The rubric flags any record identifier a report leaves unlinked.
+- **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another session, the coordinator gives it in a code block ready to copy.
+- **Decisions:** the coordinator records each owner decision in the work's [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log), `+/_WORK/<id>/decisions.md`, before launching the work it authorises, in the turn the decision arrives, and verifies any later quotation from the transcript file, under the two rules that section sets. It strikes, points or keeps each entry at the mark under the [decisions life cycle](#decisions-life-cycle).
+- **Messages:** a message from other work reaches this work through its work file's [Messages section](#messages-between-work), or a run's inbox; a backend nudge is not visible progress, and the [surfaces rule](#surfaces) says where the owner sees it.
+
+### States and moves
+
+The note's The seven states and Roles sections own the states, the two moves and who may make each. A coordinator keeps to them this way:
+
+- **Its state:** territory work and Project work are With worker while any of their items lies with a run or the coordinator is mid-turn; Handoff to supervisor once the coordinator has sent to the owner; With supervisor once the owner has received; Handoff to worker once the owner has replied and no session has yet received it; Handoff to `<target>` while it waits on other work, a run or a person; On hold once agreed and drained; Finished once closed. Only the owner's receive and the hold are set; the coordinator derives every other state from where its items lie.
+- **Receiving:** the owner receives with `with me`, `ack`, `got it` or `seen`, and agrees a hold with `pause` or `done for now`; `resume` and `finish` move work off hold and to Finished. `hold` is not a receive word. A coordinator's own receive is committed with whatever it next sends.
+- **Sending:** a send is a commit of the work folder whose subject carries the move, such as `docs(work): ki.ways-of-working send to owner`, `docs(work): ki.ways-of-working receive by owner` or `docs(work): ki.ways-of-working hold, paused`, under the note's Git is the logbook. Only sends and the owner's receives commit.
+- **A stuck worker** comes back to its supervisor with a blocking query: its send reads `🤖 → 🧑 Handoff to supervisor · blocked`. A worker item that has neither moved nor beaten for 10 minutes is stuck; nobody sets stuck.
+- **Old shape:** an old-shape checkpoint's REST reads as Handoff to supervisor or With supervisor, BUSY as With worker, HOLD as On hold, paused, and DONE as Finished.
 
 ### Banner
 
-A report heading opens every Summary, recap, [full summary](#full-summary) and [re-bootstrap](#bootstrap) report, and the footer banner closes it after the reply block, so that the first thing the owner sees names the Initiative, the Project, the form and the time, and the last thing says whether the thread is at rest and gives them the one line that brings it back. Kris asked on 2026-10-14 that "every coordination-thread summary or owner report ends with a multi-line status banner modelled on the ki-recap banner. The banner states plainly whether the thread is AT REST (all work concluded, nothing in progress, no open queries) or not, and why. The banner carries one copyable resume line Kris can paste back into the thread later", settled the block-letter frame the same day with "(a). Yeah, that's great.", and, seeing threads render it differently after a re-bootstrap, said "when I'm asking threads to rebootstrap from PMO and Checkpoint and delegation, it's not doing the banner in the same way". He then drew a framed label at about 18:00 BST, refined it at 18:08 BST, at 19:05 BST placed it as the heading with "This is for the heading, not the footer banner. The footer banner needs to be like it was before, with the large ascii text.", and at 19:13 BST retired the frame from the heading too: "maybe you can just come up with something which is just a better heading that is the actual just normal text, so it can be rich text rather than fixed width text. So maybe you do not need to say project or initiative in front of it, you use the ways of working and you render it with a sensible label, and the initiative is before that, so it says knowledge islands model, which is linked. The next line says ways of working and then you have your headings, done, in progress, queries, and then you have your banner at the end. ... after the initiative and project headings at the start you could have one line which says summary at, whatever, and last mark at." He agreed the mock with "Actually, that is really good." and amended it twice: "Maybe we use a tripple HR element Before the main heading." and "And maybe then even a single HR alignment after the summary and last mark part." Of the footer he then asked "What about with some spaces around it, so that it's got a bit more impact?", and approved the padded frame with the form word on its top border with "Okay, I'm really happy with that. Yeah, let's go with it." So the heading is rich text, the footer banner is the block-letter REST and BUSY frame as it stood before, and every thread renders both the same way, whether it has just bootstrapped, re-bootstrapped from this standard, `ki-checkpoint` and `ki-delegation`, or run for days: the frames below are the only frames, and a frame that differs from them is wrong.
+A report shows its state in rich text, under the note's Banner section, which Kris set with BANNER-GLYPH and REPLY-BLOCK on 18 October and TARGET-GLYPH the same day: the glyphs come first and the last glyph is whose move it is, a settled state shows its holder's glyph alone, an arrow appears only in a handoff state, and `→ 👤 Handoff to <target>` serves every target, the target's name saying whether it is other work, a run or a person. The block-letter frames retired with the model; a report written before 18 October keeps its frame, and anything that reads past reports accepts both. Every coordinator renders the heading and the banner the same way, whether it has just bootstrapped, re-bootstrapped or run for days: the examples below are the shapes, and a banner that differs from them is wrong.
 
-**Report heading.** The report opens with one `#` heading, one bold form line and one horizontal rule, then `## Done`, or `## Decided` in a full summary. It is plain Markdown, not a fenced block, so the heading carries the links a code block could not hold.
+| State | Glyph heading |
+| --- | --- |
+| With worker | `🤖 With worker` |
+| Handoff to supervisor | `🤖 → 🧑 Handoff to supervisor`, or `🤖 → 🧑 Handoff to supervisor · blocked` |
+| With supervisor | `🧑 With supervisor` |
+| Handoff to worker | `🧑 → 🤖 Handoff to worker` |
+| Handoff to `<target>` | `→ 👤 Handoff to <target>` |
+| On hold | `⏸️ On hold · paused until <release>` or `⏸️ On hold · more expected` |
+| Finished | `🏁 Finished` |
 
-- **No rule before:** the report starts at its `#` heading, in the chat and in a saved file alike, so no report file ever opens with `---` and none is read as an unterminated front-matter fence. The three rules that once stood before the heading were dropped on 2026-10-17, when Kris said in the `tools-burndown` thread, as received, "Is this due triple separator? can get rid using different approach separator. If could get noise level down, wouldn't even need it." and "If we got rid that, we can just go single horizontal rule so don't cause problem and fix other part."; a report written before that day keeps its rules, and anything that reads past reports accepts both.
-- **Heading:** `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>)`: the Initiative's display name, the `title` its note gives, written as words, `Knowledge Islands model`, linked to the note by absolute path; then ` › `; then the Project's display name, `Ways of working`, not its slug, linked to its note the same way. A Project with no Initiative gives the Project alone. The state-of-play thread writes the territory or Initiative it covers, linked to its local note, then `› State of play`.
-- **Form line:** a blank line, then `**<Form> at <local time> · last mark <local time>**`, the form being `Summary`, `Recap`, `Full summary` or `Re-bootstrap`, whichever report it opens, the first time the time the report is issued and the second the [mark](#recap-since-the-mark), both local and written like `19:13 BST`. A [hold report](#draining-a-thread) writes the form line `**Hold report at <local time> · mark <local time>**`, the mark being the one struck for the hold; it was the drain report's `**Drain report at <local time> · mark <local time>**` line Kris drew on 2026-10-15, renamed when the drain report became the hold report.
-- **Rule after:** a blank line, one `---`, then a blank line and the first `##` section, because Kris amended "And maybe then even a single HR alignment after the summary and last mark part."
-- **Nothing else:** no thread type, no window and no state. The form fixes the window and the [footer banner](#banner) and its list carry the state.
+**Report heading.** The report opens with one `#` heading, one bold form line and one horizontal rule, then `## Done`, or `## Decided` in a full summary. It is plain Markdown, not a fenced block, so the heading carries the links a code block could not hold. Kris asked for the rich-text heading on 2026-10-14, "maybe you can just come up with something which is just a better heading that is the actual just normal text, so it can be rich text rather than fixed width text", agreed the mock with "Actually, that is really good.", and dropped the rules before it on 2026-10-17, "If we got rid that, we can just go single horizontal rule so don't cause problem and fix other part."
+
+- **Heading:** `# [<Theme>](<local theme page>) › [<Project>](<local Project note>)`: the theme's display name, the `title` its page gives, linked to the page by absolute path; then ` › `; then the Project's display name, written as words, not its slug, linked to its note the same way. Project work with no theme gives the Project alone. Territory work writes the territory or theme it covers, linked to its local note, then `› State of play`. No rule stands before the heading, so it is the first line and H1 of every saved report.
+- **Form line:** a blank line, then `**<glyph state> · <Form> at <local time> · last mark <local time>**`: the glyph heading of the work's state as the report is sent, then the form, `Summary`, `Recap`, `Full summary`, `Re-bootstrap` or `Hold report`, and the times, both local and written like `19:13 BST`. A hold report writes `· mark <local time>`, the mark struck for the hold.
+- **Rule after:** a blank line, one `---`, then a blank line and the first `##` section.
+- **Nothing else:** no window and no level. The form fixes the window and the banner carries the state.
 
 Opening a Summary:
 
 <!-- ki-pmo:block heading-example -->
 
 ```markdown
-# [Knowledge Islands model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Initiatives/knowledge-islands-model/knowledge-islands-model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working/ways-of-working.md)
+# [Model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Themes/model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md)
 
-**Summary at 19:13 BST · last mark 14:54 BST**
+**🤖 → 🧑 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**
 
 ---
 
 ## Done
 ```
 
-The state-of-play thread opening a full summary:
+Territory work opening a full summary:
 
 ```markdown
-# [<territory or Initiative>](<its local note>) › State of play
+# [<territory or theme>](<its local note>) › State of play
 
-**Full summary at 19:13 BST · last mark 14:54 BST**
+**🧑 With supervisor · Full summary at 19:13 BST · last mark 14:54 BST**
 
 ---
 
 ## Decided
 ```
 
-**Footer banner.** The footer is the `ki-recap` frame as it stood before the framed label: 52 display columns per framed line, measured by code point, a four-letter block word in `ki-recap`'s glyphs and three fixed side lines, never widened, reworded, coloured or improvised, so that transcript archives find a state by searching for its block word. Its top border reads `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─` followed by enough `─` to reach the same 52 code points, then `╮`, the form being the report's form word in lower case, `summary`, `recap`, `full summary`, `re-bootstrap` or `hold report`, and `run report` in a background agent's report, so the run of `─` after the time is 17 for `summary`, 19 for `recap` and 13 for `hold report`; the form word replaced `issued` on 2026-10-14 when Kris approved the padded frame below. Directly under the top border and directly above the bottom border stands one blank framed line, `│`, 50 spaces and `│`, in the REST, BUSY, HOLD and DONE frames alike, because Kris asked "What about with some spaces around it, so that it's got a bit more impact?" and, seeing the padded frame, said "Okay, I'm really happy with that. Yeah, let's go with it." The form word and the issued time are the only parts of the frame that vary; the two blank framed lines, the three word lines and the bottom border are fixed. A report issued before that approval keeps its `issued` border and its unpadded frame, and anything that reads past reports accepts both. The states come from Kris on 2026-10-14: "a conversational thread can be considered done. That's the end of the conversation. But a coordination thread can either be busy or at rest. Whether or not it then ends up being done is more a situation about the project itself, and in effect, it's when we say that project's closed and pull out and tidy up all of the stuff that's been happening."
+**Glyph banner.** The report closes, after `## Queries`, with the banner: one `###` heading, the glyph state and `· since <local time>`, the time of the last move; a blank line; one line of counts, each a glyph, a number and a view, joined by ` · `, such as `🤖 2 running · 🧑 1 with you · ⛔ 1 blocked`; a blank line; and one Markdown list, each item `- [<state>] <what> · <holder> · since <time>`. The counts and the list say "with you", because they are views by holder; the heading gives the state in role words. List items come in this order and only where they apply: `[running]` and `[queued]` for each agent, the holder `run/<name>`; `[with you]` for each open Needs tag, the holder `owner`, oldest first; `[stuck]` and `[blocked]` with their holder; `[handoff]` for each item with other work, a run or a person; `[parked]` for parked queries or tangents; `[release]` on hold; then the housekeeping items, which name no holder: `- [committed] work folder, pushed`, or the `[uncommitted]`, `[unpushed]` or `[blocked]` truth, `- [recovered] <UTC>` for the one report after a red x and `- [unlogged] decisions: <count>`. Nothing in the banner cites a decision number.
 
-- **REST:** nothing is running and nothing is queued, and only that. Open queries waiting on the owner, held items, parked items, an uncommitted checkpoint and unlogged decisions do not change the word, as Kris confirmed with "open queries do not make a thread BUSY"; they show in the list beneath, where every open query has its own `[waiting]` item. The first item reads `- [at rest] nothing running or queued`.
-- **BUSY:** anything is running or queued, or the thread is blocked or waiting on another thread. The list beneath says which, and no `[at rest]` item appears.
-- **HOLD:** the thread has [drained](#draining-a-thread) to a hold: nothing is running or queued, its own work is committed and pushed, and every open query, held item, parked item, waiting-on item and the next step is parked in the checkpoint, with its [pick-up block](#picking-up-a-thread) at status `hold`, so the thread can be archived and later picked up from the repository alone. It closes only a hold report, its top border carrying `hold report`, with the block word HOLD and the captions threads drained, queries parked and fully archived, as Kris set on 2026-10-15 and the state-of-play checkpoint records it: "the drain report becomes a **hold report**: block letters HOLD, top border `hold report`, captions threads drained / queries parked / fully archived, closing with "To bring this thread back and continue the work, paste this:" and the resume line." Its list, in this order and only where it applies: `- [hold] nothing running or queued; committed and pushed`, `- [parked] <count> queries in the checkpoint`, and `- [left over] <what>` only if anything is left over. Then the line "To bring this thread back and continue the work, paste this:" and the resume line for the thread's type from its pick-up block. A thread that cannot drain, because work is unpushable or a run must not be stopped, closes with the BUSY frame instead and says in one line what is blocking. The HOLD frame retires the DRAINED frame and its `[drained]` item of the same day; a past report closing with DRAINED is read as a hold report.
-- **DONE:** shown once only, at [Project close](#project-close), after the close-out tidy, its top border carrying the form word of the closing report, `full summary` in the example below. No resume line follows it. It shares its glyphs with `ki-recap`'s single-session frame and carries its own side lines, so the two are told apart by their words; in a coordinating thread `ki-recap`'s frame never renders, because every recap there is one of this standard's forms.
-- **Gap:** one blank line follows the frame, so that the list beneath renders as a list.
+With worker, closing a Summary while runs are out:
 
-Beneath the frame and its blank line comes one Markdown list, each item `- [<state>] <what>` with the state in square brackets, in this order and only where it applies: `- [at rest] nothing running or queued` when the thread is at rest; then one item per thing, because Kris said on 2026-10-14 "the running should each be a line with the running: prefix" and then drew each as a list item: each running agent as `- [running] <agent> - <what>`, each queued agent as `- [queued] <agent> - <what>` and each open Needs tag as `- [waiting] <TAG>`; then the housekeeping items of the same kind, the checkpoint and thread folder state as `- [committed] checkpoint and thread folder, pushed`, or `- [uncommitted] checkpoint`, `- [unpushed] thread folder` or `- [blocked] <what>` when that is the truth, then `- [held] <what> until <when>` for each held item, `- [parked] <count>` when any tangent is parked, `- [recovered] <UTC>` for the one report after a red x, and `- [unlogged] decisions: <count>` when any decision awaits its log entry. The label-and-mark line that stood beneath the block letters before is not restored: the issued time lives in the footer's top border, the mark in the report heading's form line, and neither appears in the list. Another reason for BUSY takes an item in words, such as `- [waiting] Master - HOOK-FIX` or `- [blocked] Headroom proxy down`. Nothing in the banner cites a decision number.
-
-REST, closing a Summary:
-
-<!-- ki-pmo:block rest-footer -->
-
-```text
-╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮
-│                                                  │
-│  █▀▀▄ █▀▀▀ █▀▀▀ ▀▀█▀   · thread at rest          │
-│  █▀▀▄ █▀▀  ▀▀▀█   █    · nothing running         │
-│  █  █ █▄▄▄ ▄▄▄█   █    · nothing queued          │
-│                                                  │
-╰──────────────────────────────────────────────────╯
-
-- [at rest] nothing running or queued
-- [waiting] KI-RELEASE
-- [waiting] RESUME-COMPACT
-- [committed] checkpoint and thread folder, pushed
-- [held] PAPERCLIP-REQ until Wave F
-- [parked] 1
-```
-
-BUSY, closing a Summary:
-
-<!-- ki-pmo:block busy-footer -->
-
-```text
-╭─ summary · 2026-10-14T17:03:02Z ─────────────────╮
-│                                                  │
-│  █▀▀▄ █  █ █▀▀▀ █  █   · thread busy             │
-│  █▀▀▄ █  █ ▀▀▀█  ▀█▀   · running or queued work  │
-│  █▄▄▀ █▄▄█ ▄▄▄█   █    · lines below say which   │
-│                                                  │
-╰──────────────────────────────────────────────────╯
-
-- [running] commit-gate - why ki-principal's commit gate fails
-- [running] harness-links - accept GOV-187, deliver GOV-188
-- [queued] report-headings - section names, starting now
-- [queued] banner-frame - after report-headings
-- [waiting] HEADING-FORM
-- [waiting] RUN-WAIVER
-- [waiting] RECORD-THRESHOLD
-- [blocked] thread folder commit by the gate, commit-gate fixing
-- [held] PAPERCLIP-REQ until Wave F
-```
-
-HOLD, closing a hold report, as drawn at 52 code points in rule 5 of the restart-model design note with a real issued time on its top border:
-
-<!-- ki-pmo:block hold-footer -->
-
-```text
-╭─ hold report · 2026-10-15T14:00:00Z ─────────────╮
-│                                                  │
-│  █  █ ▄▀▀▄ █    █▀▀▄   · threads drained         │
-│  █▀▀█ █  █ █    █  █   · queries parked          │
-│  █  █ ▀▄▄▀ █▄▄▄ █▄▄▀   · fully archived          │
-│                                                  │
-╰──────────────────────────────────────────────────╯
-
-- [hold] nothing running or queued; committed and pushed
-- [parked] <count> queries in the checkpoint
-- [left over] <what>, only if any
-```
-
-Then the closing line and the resume line, in its own one-line fenced `text` block, here a coordination thread's, with its label and the hold's mark filled in:
-
-To bring this thread back and continue the work, paste this:
-
-<!-- ki-pmo:block hold-resume-line -->
-
-```text
-Resume <label> from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, take stock, put the parked queries back, restart authorised work, then banner.
-```
-
-DONE, at Project close only:
-
-```text
-╭─ full summary · 2026-11-02T16:10:00Z ────────────╮
-│                                                  │
-│  █▀▀▄ █▀▀█ █▄ █ █▀▀▀   · project closed          │
-│  █  █ █  █ █ ██ █▀▀    · decisions promoted      │
-│  █▄▄▀ █▄▄█ █  █ █▄▄▄   · thread tidied away      │
-│                                                  │
-╰──────────────────────────────────────────────────╯
-   KI Model - ways-of-working · closed 2026-11-02T16:10:00Z
-   decisions: every entry logged since 13 October promoted, none held
-   design folder resolved · checkpoint retired · thread folder deleted · run archived
-   outcome: the Project note links the Decision Record on thread working and the ki-pmo standard
-```
-
-**Resume line.** After REST, and only after REST among the Summary forms, the last thing in the message is the resume line below; after HOLD it is the hold resume line above, or the one the [pick-up table](#picking-up-a-thread) gives for the thread's type, and no other resume line follows a hold report. No resume line names a host. The resume line stands in its own one-line fenced `text` block so it copies cleanly, with the thread's label and its [mark](#recap-since-the-mark) filled in. Kris set on 2026-10-14 that the resume line is "shown only at rest", so a BUSY footer ends with its list and no resume line follows it; the owner brings a busy thread back by its next Summary, which comes when all dispatched work has finished.
-
-<!-- ki-pmo:block resume-line -->
-
-```text
-Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
-```
-
-Pasted back into the thread, it makes the thread do these in order: re-bootstrap under [Bootstrap](#bootstrap), re-reading this standard, its [owner report](#owner-report) included, `ki-delegation`'s Reporting and its own checkpoint; strike the mark at the resume time, commit the checkpoint and confirm in one line; give a fresh Summary covering only what follows the new mark plus every open point carried forward from before it, built from the checkpoint, the decisions log and the thread folder rather than from transcript memory; take stock since the issued time on the previous banner, from the decisions log, `ki agent status`, its inbox and the owner's messages; restart any work the owner authorised since that banner; and end with a fresh banner. The label on the line is a guard: a thread whose checkpoint label does not match it stops and asks before doing anything. Kris set the order on 2026-10-14: "The resume line is the equivalent of a compaction for the checkpoint and coordination thread, and may also trigger a real compaction", so it strikes the mark first and summarises second.
-
-**In an agent's report.** A background agent's report takes the same heading and footer, under the [owner report](#owner-report): the report heading of the thread it reports to with `› <run name>` added at its end and the form `Run report`, so its form line reads `**Run report at <local time> · last mark <local time>**`, the mark being that thread's; the thread's footer banner, list and, at rest, the resume line below. Its footer's top border carries the form word `run report`, `╭─ run report · <YYYY-MM-DDTHH:MM:SSZ> ─` filled to 52, and its two blank framed lines. It puts the footer frame and the list beneath it inside one fenced `text` block, as the examples above do, because a frame outside one is not rendered byte-identical. Opening a run report:
+<!-- ki-pmo:block with-worker-banner -->
 
 ```markdown
-# [Knowledge Islands model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Initiatives/knowledge-islands-model/knowledge-islands-model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working/ways-of-working.md) › heading-rich
+### 🤖 With worker · since 23:41 BST
 
-**Run report at 20:40 BST · last mark 14:54 BST**
+🤖 2 running · 🧑 1 with you · ⛔ 1 blocked
+
+- [running] work-model · run/work-model · since 23:20
+- [running] tools-burndown fix · work/ki.tools-burndown · since 23:05
+- [with you] WORK-HOME · owner · since 22:58
+- [blocked] work folder commit · repo/ki-principal · since 22:40
+- [uncommitted] work folder
+```
+
+Handoff to supervisor, closing a Summary that sends the work to the owner:
+
+<!-- ki-pmo:block handoff-banner -->
+
+```markdown
+### 🤖 → 🧑 Handoff to supervisor · since 23:52 BST
+
+🧑 2 with you · 🅿️ 1 parked
+
+- [with you] WORK-MODEL · owner · since 23:52
+- [with you] WORK-HOME · owner · since 22:58
+- [parked] 1
+- [committed] work folder, pushed
+```
+
+**Send line.** In handoff to the owner, and only then, the last thing in the message is the send line, in its own one-line fenced `text` block so it copies cleanly, with the work's label and its [mark](#recap-since-the-mark) filled in. It replaced the resume line, which Kris had set on 2026-10-14 as "shown only at rest". The owner usually answers in speech in the same session; the send line is for sending the work back to its worker from any session, after a red x, a compaction or a move between hosts.
+
+<!-- ki-pmo:block send-line -->
+
+```text
+Send <label> back to its worker under current ki-pmo and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
+```
+
+Pasted into any session, it makes the coordinator do these in order: re-bootstrap under [Bootstrap](#bootstrap), re-reading this standard, `ki-delegation`'s Reporting, its work file and its decisions log; strike the mark at the send time, commit the work file and confirm in one line; give a fresh Summary covering only what follows the new mark plus every open point carried forward from before it, built from the work file, the decisions log and the work folder rather than from transcript memory; take stock since the last move, from the decisions log, `ki agent status`, its Messages section and the owner's messages; restart any work the owner authorised since; and end with a fresh banner. The label on the line is a guard: a coordinator whose work file title or label does not match it stops and asks before doing anything.
+
+On hold, closing a hold report:
+
+<!-- ki-pmo:block hold-banner -->
+
+```markdown
+### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST
+
+⏸️ drained · 🧑 0 with you · 🅿️ 9 queries parked
+
+- [on hold] committed and pushed in ki-principal and ki-agentic-harness · since 00:10
+- [parked] 9 queries in the work file
+- [release] after the harness migration lands, or `resume`
+```
+
+Then the closing line and the send line that lifts the hold, in its own one-line fenced `text` block, with the label and the hold's mark filled in:
+
+To bring this work back and continue it, paste this:
+
+<!-- ki-pmo:block hold-send-line -->
+
+```text
+Resume <label> from its work file under current ki-pmo and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.
+```
+
+Finished, closing the last report at [Finishing Project work](#finishing-project-work), with no send line:
+
+```markdown
+### 🏁 Finished · Ways of working closed at 18:00 BST
+
+- [finished] 14 work items accepted, decisions homed, work folder pruned
+```
+
+**In an agent's report.** A background agent's run report takes the same heading and banner, under the [owner report](#owner-report): the report heading of the work it reports to with `› <run name>` added at its end and the form `Run report`, so its form line reads `**🤖 → 🧑 Handoff to supervisor · Run report at <local time> · last mark <local time>**`, the mark being that work's, and `· blocked` added where it sends back with a blocking query; then its own banner, the run's state and its items, with no send line, because a run's supervisor is the coordinator. Opening a run report:
+
+```markdown
+# [Model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Themes/model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md) › migrate-phase1
+
+**🤖 → 🧑 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**
 
 ---
 
@@ -342,48 +348,47 @@ Pasted back into the thread, it makes the thread do these in order: re-bootstrap
 
 ### Re-anchoring after compaction
 
-A compaction keeps a coordinating thread's session but replaces its transcript with a summary, so the thread re-anchors from durable state before it replies; a conversational thread re-reads its checkpoint, if it has one, and carries on with a conversational reply. Kris chose on 2026-10-14 to "resume line with an optional compact paste first", so the owner may bring a long thread back with two pastes, the first optional:
+A compaction keeps a coordinator's session but replaces its transcript with a summary, so the coordinator re-anchors from durable state before it replies; a conversational session re-reads its work file, if it has one, and carries on with a conversational reply. Kris chose on 2026-10-14 to "resume line with an optional compact paste first", so the owner may bring a long session back with two pastes, the first optional:
 
 ```text
-/compact Keep verbatim: thread id, Thread working rules block, mark, open Needs tags, running and queued agents, messages read to entry.
+/compact Keep verbatim: work id, Working rules block, mark, open Needs tags, running and queued agents, Messages acted on.
 ```
 
 ```text
-Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
+Send <label> back to its worker under current ki-pmo and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
 ```
 
-The first line, where the runtime accepts `/compact <instructions>`, compacts the transcript keeping the named facts verbatim and ends the turn; the second is the [resume line](#banner) as it stands. The two cannot be one line because `/compact` ends the turn, and a compaction that is not needed throws away transcript detail for nothing, so the resume line alone is the default and the compact paste is the owner's call when the thread is long or has just recovered from an error.
+The first line, where the runtime accepts `/compact <instructions>`, compacts the transcript keeping the named facts verbatim and ends the turn; the second is the [send line](#banner) as it stands. A compaction that is not needed throws away transcript detail for nothing, so the send line alone is the default and the compact paste is the owner's call when the session is long or has just recovered from an error.
 
-Whether the compaction came from the owner or from the runtime, the thread then, before answering anything else:
+Whether the compaction came from the owner or from the runtime, the coordinator then, before answering anything else:
 
-1. re-reads this standard and its own checkpoint in full, including the `Thread working rules` block and the mark;
-2. runs `ki agent status` and reads its inbox, so it knows what is running, queued and unread rather than assuming;
+1. re-reads this standard, its own work file in full and its decisions log;
+2. runs `ki agent status` and reads its Messages section and any run inbox, so it knows what is running, queued and unread rather than assuming;
 3. confirms in one line that it has re-anchored, then answers in owner-report form with the banner.
 
-Re-anchoring moves no mark. The harness hook injects a one-line pointer to this subsection on a compact session start in Claude Code; a Codex thread re-anchors on the owner's next message, where the hook's ordinary line reaches it.
+Re-anchoring moves no mark. The harness hook injects a one-line pointer to this subsection on a compact session start in Claude Code; a Codex session re-anchors on the owner's next message, where the hook's ordinary line reaches it.
 
 ### Surfaces
 
-A coordinating thread may receive a message from another thread through its run's inbox, `~/.local/state/ki/agents/<run>/inbox.md`, written with `ki agent decide <run> --log <inbox>` so that it is numbered and dated, and where the runtime can message another live session on the same machine, as Claude Code can and Codex cannot, the sender may also nudge a live session with one runtime message naming the entry. The rule, which Kris approved on 2026-10-14 with "approve the surfaces rule and the ki agent status follow-on", is that **a backend reply is not visible progress**: a reply to a nudge, or an inbox acknowledgement, counts as progress only once it is on a surface the owner looks at. The receiving thread writes what it did into its next owner-facing turn and its checkpoint; the sending thread keeps the item under its Needs tag, saying "acked by backend, not yet visible", until that happens. Neither thread tells the owner an item is done on the strength of a backend reply.
+A coordinator may receive a message from other work through its work file's Messages section, which travels through Git, or from a run through the run's inbox, `~/.local/state/ki/agents/<run>/inbox.md`, written with `ki agent decide <run> --log <inbox>` so that it is numbered and dated; where the runtime can message another live session on the same machine, as Claude Code can and Codex cannot, the sender may also nudge a live session with one runtime message naming the entry. The rule, which Kris approved on 2026-10-14 with "approve the surfaces rule and the ki agent status follow-on", is that **a backend reply is not visible progress**: a reply to a nudge, or an inbox acknowledgement, counts as progress only once it is on a surface the owner looks at. The receiving coordinator writes what it did into its next owner-facing turn and its work file; the sender keeps the item under its Needs tag, saying "acked by backend, not yet visible", until that happens.
 
 | Surface | Carries | Who writes it | When |
 | --- | --- | --- | --- |
-| Transcript | Owner turns and the thread's own replies; nothing injected | The thread, in its owner report | Every owner-facing turn names messages received and acknowledged since the last one, under a `Messages` line in the Summary |
-| Checkpoint | `Current state` line `Messages: read to entry <n> at <UTC>`; open Needs tags from messages | The thread, under `ki-checkpoint` | At each checkpoint update and at the mark |
-| Thread status line | `~/.local/state/ki/agents/<run>/thread.status`: one line, `HH:MM <zone> - <state word> - <what it is doing or waiting on>` | The thread, at each owner report and each banner | Listing threads beside runs in `ki agent status` is a `tools-ki` follow-on |
-| Notification | Message received, acknowledgement sent, thread recovered, thread errored | Not this standard | The notification record in Knowledge Islands Principal owns the channel |
+| Transcript | Owner turns and the coordinator's own replies; nothing injected | The coordinator, in its owner report | Every owner-facing turn names messages received and acted on since the last one |
+| Work file | The front matter the observatory reads; Messages; parked tags | The coordinator, under the work-file standard | At every send, receive, mark and hold |
+| Work status | `ki work status --format json`, schema `ki/work-status/v1`, and the five views | `ki`, reading every work file | On demand; the Observatory reads only this |
+| Status line | `~/.local/state/ki/agents/<run>/thread.status`: one line, `HH:MM <zone> - <state> - <what it is doing or waiting on>` | The coordinator, at each owner report | Until `ki work status` reads the work file directly |
+| Notification | Message received, acknowledgement sent, session recovered, session errored | Not this standard | The notification record in Knowledge Islands Principal owns the channel |
 
-Until a notification channel exists, the checkpoint and the thread status line are the surfaces that survive a thread being idle, and the transcript is the one the owner reads first. A sender that only nudged without writing the inbox entry has not sent the message. The inbox is machine-local; a message that must reach a thread on another host, or one on hold, goes into the [messages block](#messages-between-threads) at the top of its checkpoint, which travels through Git.
+A sender that only nudged without writing the Messages line or inbox entry has not sent the message. The inbox is machine-local; a message that must reach work on another host, or on hold, goes into its work file's Messages section.
 
-### Recovering a thread showing a red x
+### Recovering a session showing a red x
 
-A red x in the editor's thread list means the backend turn errored, not that the thread is lost: the checkpoint, decisions log and inbox hold everything it needs. Kris approved the recovery on 2026-10-14 with "approve red-x recovery":
+A red x in the editor's session list means the backend turn errored, not that the work is lost: the work file, decisions log and Messages hold everything it needs. Kris approved the recovery on 2026-10-14 with "approve red-x recovery":
 
-1. Do not open a new thread first. Paste that thread's [resume line](#banner) into the same thread. If the thread replies, it re-anchors, strikes the mark, gives a fresh summary since the mark and takes stock, and the inbox gives it every message the outage swallowed.
-2. If the editor will not send into the thread, open a new thread in the same project folder and paste the resume line. The label on the line and the checkpoint label match, so the guard passes; the old transcript becomes history.
-3. The recovered thread reports, under take stock, what it missed and what it did about it, and its banner carries `- [recovered] <UTC>` in its list for that one report.
-
-Messages sent during an outage need no re-send: the inbox is the channel, the nudge is lost, and the resume line's take stock reads the inbox.
+1. Do not open a new session first. Paste the work's [send line](#banner) into the same session. If it replies, it re-anchors, strikes the mark, gives a fresh summary since the mark and takes stock.
+2. If the editor will not send into the session, open a new one in the same project folder and paste the send line. The label on the line and the work file's title match, so the guard passes; the old transcript becomes history.
+3. The recovered coordinator reports, under take stock, what it missed and what it did about it, and its banner carries `- [recovered] <UTC>` for that one report.
 
 ## Reply forms
 
@@ -391,19 +396,19 @@ Every reply to the owner takes one of three forms, which Kris set apart on 2026-
 
 | Form | When | Shape |
 | --- | --- | --- |
-| Conversational reply | The default in every thread, for anything that does not end a [unit of work](#units-of-work): answers, acknowledgements, clarifying questions, plans proposed for agreement and timed progress updates | Plain prose. No heading, section, Needs tag, reply block, `No reply needed.` or banner. A question for the owner is one line |
-| Completed-work report | When a unit of work ends, in any thread, and as every background agent's final report | The [owner report](#owner-report): `## Done`, `## In Progress`, `## Queries` and the reply block. In a conversational thread it has no report heading, form line or footer banner, and opens at `## Done` |
-| Coordinator summary | Only in a coordinating thread | The [report forms](#report-forms): Summary, recap, full summary, re-bootstrap and hold report, each an owner report under the report heading and form line, closing with the footer banner and, at rest, the resume line, with the pick-up block, mark and messages block that go with them |
+| Conversational reply | The default in every session, for anything that does not end a [unit of work](#units-of-work): answers, acknowledgements, clarifying questions, plans proposed for agreement and timed progress updates | Plain prose. No heading, section, Needs tag or banner. A question for the owner is one line |
+| Completed-work report | When a unit of work ends, in any session, and as every background agent's final report | The [owner report](#owner-report): `## Done`, `## In Progress` and `## Queries`. In a conversational session, regular work or ad hoc work it has no report heading, form line or banner, and opens at `## Done` |
+| Coordinator summary | Only while coordinating territory work or Project work | The [report forms](#report-forms): Summary, recap, full summary, re-bootstrap and hold report, each an owner report under the report heading and form line, closing with the banner and, in handoff to the owner, the send line, with the work file and mark that go with them |
 
-In a coordinating thread the completed-work report is its Summary. In a conversational thread a request for a "summary", "full summary" or "status" gets a conversational reply, and a request for a "recap" gets the ordinary `ki-recap` session recap in its own form; neither borrows a coordinator form.
+While coordinating, the completed-work report is the Summary. In a conversational session a request for a "summary", "full summary" or "status" gets a conversational reply, and a request for a "recap" gets the ordinary `ki-recap` session recap in its own form; neither borrows a coordinator form.
 
 ### Units of work
 
 A unit of work ends, and a completed-work report is owed, when at least one of these holds for the work since the last such report:
 
 1. **Changed:** a change to a repository, configuration or external system was committed, or was deliberately left uncommitted with the reason stated.
-2. **Handed off:** work passed to another thread, repository, record or person, such as a captured record, a trade, an inbox message or a handoff item.
-3. **Run finished:** a background run the thread launched has finished; for a background agent, its own run is ending.
+2. **Sent:** work passed to other work, a repository, a record or a person, such as a captured record, a trade, a Messages line or a handoff item.
+3. **Run finished:** a background run the session launched has finished; for a background agent, its own run is ending.
 4. **Deliverable:** a deliverable the owner asked for, such as a document, report, draft or analysis written to a file, has been produced.
 5. **Stopped for the owner:** the work stopped before completion with something the owner must decide, supply or do, such as a failure, a block or a decision.
 
@@ -413,17 +418,17 @@ A change the owner asked for and that was made in the same turn, in one file or 
 
 ### Conversational bounded work
 
-A conversational thread does bounded work directly, without delegating, opening a run or becoming coordinating. The work is bounded when it serves the matter the owner raised in the thread, stays within the authority the owner gave there and each repository's own rules, and can finish with the owner in the thread. The thread may delegate when it chooses. It becomes coordinating only when the owner opens or re-bootstraps it with a coordinating [opener](#opening-a-thread), never on its own. When the work outgrows the bound, because it needs a Project's [one list](#one-list), more than one run at once, or would keep the owner waiting across sessions, the thread says so in one line and proposes the Project's coordination thread, or a new one through the state-of-play thread.
+A conversational session does bounded work directly, without delegating, opening a run or becoming a coordinator. The work is bounded when it serves the matter the owner raised in the session, stays within the authority the owner gave there and each repository's own rules, and can finish with the owner in the session. The session may delegate when it chooses. It becomes a coordinator only when the owner opens or re-bootstraps it with a coordinating [opener](#opening-work), never on its own. When the work outgrows the bound, because it needs a Project's decisions, more than one run at once, or would keep the owner waiting across sessions, the session says so in one line and proposes the Project's work, or new Project work through territory work.
 
-A conversational thread that delegates may take a run and a thread folder named for its checkpoint, under the thread folder's closed list and the [commit rule](#committing-the-thread-folder), as Kris answered CONVERSATIONAL-RUN on 2026-10-16 by taking CONVRUN-NARROW's option a). It pauses through a checkpoint update, with no hold report or banner, and its agents head their reports `# <thread label> › <run name>` with `**Run report at <local time>**` and no footer banner.
+Work that must outlive the session takes an ad hoc work folder, `+/_WORK/<territory>.regular.<slug>/`, under the work-file standard, as Kris answered CONVERSATIONAL-RUN on 2026-10-16 by taking CONVRUN-NARROW's option a) for the run and folder it may take. It pauses by putting the work On hold through a work-file update, with no hold report or banner, and its agents head their reports `# <work title> › <run name>` with `**Run report at <local time>**` and no banner.
 
 ### Coordinator-only machinery
 
-The report heading and form line, the footer banner, the resume line, the mark, the pick-up block, the messages block, re-anchoring after compaction, the turn budget and the heartbeat belong to coordinating threads only. A conversational thread's optional checkpoint is the plain `ki-checkpoint` record: it notes a pause in `Current state` and how to carry on in `Next step`, is resumed by `ki-checkpoint` RESUME when the owner asks, and is removed by REMOVE when the work ends.
+The report heading and form line, the banner, the send line, the mark, the Messages section's acting rule, re-anchoring after compaction, the turn budget and the heartbeat belong to coordinators only. A conversational session's optional work file is the plain work-file record: it notes a pause in its front matter and how to carry on in its next steps, and is finished and pruned when the work ends.
 
 ## Owner report
 
-Every completed-work report under [Reply forms](#reply-forms) takes one shape, the **owner report**: a background agent's final `<name>.report.md`, which the owner reads directly, a coordinating thread's Summary, including the Summary at a resting point, and the report a conversational thread gives when a unit of work ends. It replaces the Done / Failed / Needs \<owner\> report wherever that shape was set. This standard is its one source, as Kris decided on 2026-10-14: "REPORT-SOURCE - generate the hook line, output style and prompt skeleton from the ki-pmo standard with a ki dev command, make ki-delegation link to it, and have the existing test check the generated files"; `ki-delegation` links here, and the runtime surfaces are rendered from [Generated surfaces](#generated-surfaces). Kris set the format on 2026-10-13 in the `ways-of-working` thread, in these words:
+Every completed-work report under [Reply forms](#reply-forms) takes one shape, the **owner report**: a background agent's final `<name>.report.md`, which the owner reads directly, a coordinator's Summary, including the Summary it sends with, and the report a conversational session gives when a unit of work ends. It replaces the Done / Failed / Needs \<owner\> report wherever that shape was set. This standard is its one source, as Kris decided on 2026-10-14: "REPORT-SOURCE - generate the hook line, output style and prompt skeleton from the ki-pmo standard with a ki dev command, make ki-delegation link to it, and have the existing test check the generated files"; `ki-delegation` links here, and the runtime surfaces are rendered from [Generated surfaces](#generated-surfaces). Kris set the format on 2026-10-13 in the `ways-of-working` thread, in these words:
 
 > Use three major sections, in this order:
 >
@@ -471,29 +476,12 @@ Every completed-work report under [Reply forms](#reply-forms) takes one shape, t
 >
 > Keep routine outcomes brief, but give outstanding queries enough context for a considered answer. Do not turn every unresolved observation into a request for owner action.
 
-Kris shortened the three section headings on 2026-10-14, in these words:
+Kris shortened the three section headings on 2026-10-14, "What has been done -> Done What is in progress -> In Progress Outstanding queries -> Queries", and on 18 October, under REPLY-BLOCK, dropped the copyable reply block the quotation's closing paragraphs set: the owner answers in speech, under [Answers](#answers). The quotation keeps Kris's em dashes and is laid out as a blockquote; the standard's own text writes the label `Outstanding - no action requested now` and the query heading `<tag> - <title>` with a spaced hyphen. Applied:
 
-> What has been done -> Done What is in progress -> In Progress Outstanding queries -> Queries
-
-The sections are therefore `## Done`, `## In Progress` and `## Queries`, spelled exactly so; nothing inside them changed. A report written before that day keeps the longer names, and anything that reads past reports accepts both.
-
-The quotation keeps Kris's em dashes and is laid out as a blockquote; the standard's own text writes the label `Outstanding - no action requested now` and the query heading `<tag> - <title>` with a spaced hyphen. Applied:
-
-- **Heading:** every owner report opens with the `ki-pmo` [report heading](#banner), rich text rather than a frame. Kris asked for it on 2026-10-14, as received: "maybe you can just come up with something which is just a better heading that is the actual just normal text, so it can be rich text rather than fixed width text. So maybe you do not need to say project or initiative in front of it, you use the ways of working and you render it with a sensible label, and the initiative is before that, so it says knowledge islands model, which is linked. The next line says ways of working and then you have your headings, done, in progress, queries, and then you have your banner at the end. ... after the initiative and project headings at the start you could have one line which says summary at, whatever, and last mark at.", agreed the mock with "Actually, that is really good." and amended it with "Maybe we use a tripple HR element Before the main heading." and "And maybe then even a single HR alignment after the summary and last mark part." It replaces the framed label he placed at 19:05 BST that day and the earlier `# <label> · <form> at <local time>` line with its plain `Project · Initiative · <window> · <state>` line. The heading is `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>)`, the Initiative's and the Project's display names as their notes' `title` gives them, written as words and not slugs, each linked to its local note by absolute path; a Project with no Initiative gives the Project alone, and the state-of-play thread writes the territory or Initiative it covers, linked, then `› State of play`. A blank line follows, then the form line `**<Form> at <local time> · last mark <local time>**`, then a blank line, one `---`, a blank line and `## Done`. `<Form>` is `Summary`, `Recap`, `Full summary` or `Re-bootstrap`, and both times are local, written like `19:13 BST`. No window and no state are written: the form fixes the window, `since your last message` for a Summary, `since <mark>` for a recap and `since the thread began` for a full summary, and the footer banner and its list carry the state. A background agent's run report uses the heading of the thread it reports to with `› <run name>` added at the end and the form `Run report`, the mark being that thread's; it closes with that thread's footer banner, list and, at rest, the resume line, the footer's top border reading `╭─ run report · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52 code points and one blank framed line standing inside each border, as Kris approved on 2026-10-14 with "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it."; a report issued before that approval keeps its `issued` border and unpadded frame. No rule stands before the heading, in the chat or in a saved file, so the `#` heading is the first line and H1 of every saved report; Kris dropped the three rules that stood there on 2026-10-17, as received, "Is this due triple separator? can get rid using different approach separator. If could get noise level down, wouldn't even need it." and "If we got rid that, we can just go single horizontal rule so don't cause problem and fix other part.". A report written before 2026-10-14 keeps its earlier heading, and anything that reads past reports accepts the framed label, the one-line heading and this one. A conversational thread's completed-work report has no report heading, form line or footer banner: it opens at `## Done` and ends with its reply block. A background agent reporting to a conversational thread heads its saved file `# <thread label> › <run name>`, with the form line `**Run report at <local time>**`, and closes with no footer banner. For example, a run report in its saved file:
-
-  ```markdown
-  # [Knowledge Islands model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Initiatives/knowledge-islands-model/knowledge-islands-model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working/ways-of-working.md) › heading-rich
-
-  **Run report at 20:40 BST · last mark 14:54 BST**
-
-  ---
-
-  ## Done
-  ```
-
-- **Sections:** the three headings `## Done`, `## In Progress` and `## Queries`, in that order, every time. An empty section still appears and says so in one line, `Nothing is running` or `No outstanding queries`, so the owner never wonders whether it was dropped. A [hold report](#draining-a-thread), the drain report renamed, is the one exception, in the shape Kris set on 2026-10-15: "A drain report has no reply block and no Context/Query/Options; the queries live in the checkpoint." Its sections are `## Done`, `## Parked` and `## Left over`, and it ends with the HOLD frame, its list, the closing line and the resume line from the pick-up block.
+- **Heading:** every coordinator's owner report opens with the [report heading](#banner) and its state form line. A background agent's run report uses the heading of the work it reports to with `› <run name>` added and the form `Run report`. A conversational session's completed-work report has no report heading, form line or banner: it opens at `## Done`. A background agent reporting to a conversational session or to ad hoc work heads its saved file `# <work title> › <run name>`, with the form line `**Run report at <local time>**`, and closes with no banner. A report written before 2026-10-14 keeps its earlier heading, and anything that reads past reports accepts it.
+- **Sections:** the three headings `## Done`, `## In Progress` and `## Queries`, in that order, every time. An empty section still appears and says so in one line, `Nothing is running` or `No outstanding queries`, so the owner never wonders whether it was dropped. A [hold report](#putting-work-on-hold) is the one exception: its sections are `## Done`, `## Parked` and `## Left over`, with no Context, Query or Options, because, in Kris's words of 2026-10-15, "the queries live in the checkpoint", now the work file.
 - **Done:** completed outcomes, one line each, with material failures, corrections and limitations beside them rather than behind them. A background agent puts its commit identifiers and check results here, because the owner reads the report and not the log.
-- **In Progress:** what is running and what is waiting, each with its owner or dependency. Then, under `Outstanding - no action requested now`, the matters that need nothing from the owner, grouped as agent work, receiver-owned work, verification limitations and retained material, kept apart from the decisions the owner must make. A handoff to another thread stays outstanding until the owner expressly says it is done.
+- **In Progress:** what is running and what is waiting, each with its owner or dependency. Then, under `Outstanding - no action requested now`, the matters that need nothing from the owner, grouped as agent work, receiver-owned work, verification limitations and retained material, kept apart from the decisions the owner must make. A handoff to other work stays outstanding until the owner expressly says it is done.
 - **Queries:** one heading per actionable query, `<tag> - <plain-language title>`, linked to its record where one exists. The tag is a [Needs tag](#needs-tags). A routine open matter is not a query; it belongs in the section above. The body of a query is three bold labels and nothing else, in the shape Kris set on 2026-10-14: "on the queries... _Context:_ <This should cover enough information for you to be able to make an informed decision.> _Query:_ <The question succinctly?> _Options:_ <Possible: With the first one being recommended in the same way that you see others done, when you have the ask, you the question with (recommended) before or after its text.> - a) (recommended) blah blah - b) yah yah yah", amended the same day with "bold not italics for the "Context", "Query", "Options" please" and "if the options have a), b), then no bullet also". Applied:
 
   ```markdown
@@ -506,41 +494,29 @@ The quotation keeps Kris's em dashes and is laid out as a blockquote; the standa
   b) <an alternative>
   ```
 
-  **Context** gives enough for the owner to decide without reading anything else, including the matter's significance and current state. **Query** is the question in one sentence. **Options** is the lettered list, `a)`, `b)` and so on, with no bullet in front of a letter; option a) is always the recommendation and carries `(recommended, confidence <level> - <reason>)` before its text, the level `high`, `medium` or `low` and the reason one line, such as `a) (recommended, confidence high - the patch is already on main) push it`. Kris asked for it on 2026-10-18 in the `product-management` thread, "When you're giving me the recommended course of action, can you tell me how high your confidence is on that?", and approved it as a standard under CONFIDENCE-STANDARD the same day. Confidence reflects how reversible the course is and how much of what it rests on the thread verified directly rather than took from another agent's report: a course that destroys, deletes or publishes and rests on claims not verified directly is never `high`. Only option a) carries a confidence. The rubric's PMO-11 warns on any line of a thread report's Queries section that begins `<letter>) (recommended` without `, confidence high|medium|low - <reason>)`, in reports whose footer banner was issued on or after 2026-10-18, as Kris agreed under CONFIDENCE-CHECK the same day: "yes, I agree with the confidence check, we can get on with that as well and accept it with the small change". Further options appear only when they are real alternatives: a query that needs only confirmation still gives a), plus b) for the obvious alternative, such as "leave it as it is". Before 2026-10-14 a query carried **Summary**, **Need from you** and **Recommendation**; a report written before that day keeps that shape, and anything that reads past reports accepts both.
-- **Reply block:** the report ends with one fenced `text` block holding one entry per open query, in the same tags and order, each prefilled with option a)'s instruction written out in full, carrying the references it needs to be unambiguous, so the owner sends the block back as it stands or edits an entry. An entry is stacked: the Needs tag alone on its own line, a blank line, then option a)'s instruction without a `<tag> -` prefix and without its letter or its `(recommended, confidence ...)` marker; between entries a blank line, `---`, then a blank line, with no `---` after the last entry. Kris asked for the stacked form on 2026-10-14: "Can we see the way that the default copy block is? So it's easier to use it. There's often quite a lot of detail now on per line." A completed-work report with no queries keeps `No reply needed.` as the block's only line; a conversational reply carries neither the block nor that line. To choose another option, the owner replaces the instruction with that option's letter, `b)` or `b`, or with its text; whoever reads the reply accepts a bare letter as an answer and resolves it against the query's lettered options. An entry never lists the options or restates the choice as a menu: the options live in the query body, and the entry carries the one the recommendation chose. Kris corrected the menu form on 2026-10-14: "the proposed copy block is including all the options, rather than the recommended option." Only where the owner alone can supply a value the thread cannot know, such as a date, an amount or a name, does the entry carry an angle-bracket placeholder naming it, such as `<date>` or `<amount>`, so the owner edits one token. It is a suggested reply, not approval: nothing in it is acted on until the owner returns an instruction. A query and its reply-block entry:
+  **Context** gives enough for the owner to decide without reading anything else, including the matter's significance and current state. **Query** is the question in one sentence. **Options** is the lettered list, `a)`, `b)` and so on, with no bullet in front of a letter; option a) is always the recommendation and carries `(recommended, confidence <level> - <reason>)` before its text, the level `high`, `medium` or `low` and the reason one line, such as `a) (recommended, confidence high - the patch is already on main) push it`. Kris asked for it on 2026-10-18 in the `product-management` thread, "When you're giving me the recommended course of action, can you tell me how high your confidence is on that?", and approved it as a standard under CONFIDENCE-STANDARD the same day. Confidence reflects how reversible the course is and how much of what it rests on the session verified directly rather than took from another agent's report: a course that destroys, deletes or publishes and rests on claims not verified directly is never `high`. Only option a) carries a confidence. The rubric's PMO-11 warns on any line of a report's Queries section that begins `<letter>) (recommended` without `, confidence high|medium|low - <reason>)`, in reports issued on or after 2026-10-18, as Kris agreed under CONFIDENCE-CHECK the same day: "yes, I agree with the confidence check, we can get on with that as well and accept it with the small change". Further options appear only when they are real alternatives: a query that needs only confirmation still gives a), plus b) for the obvious alternative, such as "leave it as it is". Before 2026-10-14 a query carried **Summary**, **Need from you** and **Recommendation**; a report written before that day keeps that shape, and anything that reads past reports accepts both. A query and its options:
 
   ```markdown
   ### LINK-GUARD - where the link guard should live
 
-  **Context:** The hook line already names the linking rule, and KI-HARNESS-GOV-188 carries the harness half; the link printer is a `ki` change and the output style is chezmoi-managed, so each half has a different home.
-  **Query:** Should the link guard be split across the three homes, or held in the harness until the printer lands?
+  **Context:** The hook line already names the linking rule, and KI-HARNESS-GOV-188 carries the harness half; the link printer is a `ki` change, so each half has a different home.
+  **Query:** Should the link guard be split across its homes, or held in the harness until the printer lands?
   **Options:**
-  a) (recommended, confidence high - each half's home is already settled) split it: hook line and KI-HARNESS-GOV-188 in the harness, the printer in KI-TOOL-KI-CLI-127, the output style handed to Rig
+  a) (recommended, confidence high - each half's home is already settled) split it: hook line and KI-HARNESS-GOV-188 in the harness, the printer in KI-TOOL-KI-CLI-127
   b) hold the whole guard in the harness until the printer lands
   ```
 
-  A reply block with two queries:
-
-  ```text
-  LINK-GUARD
-
-  approve: hook line plus KI-HARNESS-GOV-188 in the harness, link printer in KI-TOOL-KI-CLI-127, output style handed to Rig: chezmoi
-
-  ---
-
-  THREAD-FOLDER
-
-  confirmed as delivered
-  ```
-
-  The owner who prefers option b) of the first query sends `b` beneath `LINK-GUARD` instead.
-- **Headings:** the three sections are `##` headings and each query is a `###` heading, so a report nests the same way wherever it appears, under the one `#` report heading, whether a coordinating thread's or a background agent's. Sub-headings inside `Done`, where a long report groups outcomes by topic, are `###` too.
-- **Links:** every record, checkpoint, Project, Initiative, decision, receipt and evidence artefact under [Linking records](#linking-records); a pruned roadmap record, which has no local file any more, is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed, usually the parent of the prune commit.
+- **Headings:** the three sections are `##` headings and each query is a `###` heading, so a report nests the same way wherever it appears, under the one `#` report heading. Sub-headings inside `Done`, where a long report groups outcomes by topic, are `###` too, and so is the banner heading.
+- **Links:** every record, work file, Project, theme, decision, receipt and evidence artefact under [Linking records](#linking-records); a pruned roadmap record, which has no local file any more, is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed, usually the parent of the prune commit.
 - **Levels:** the owner's personal instructions set a communication level, `quiet`, `standard` or `detailed`, and this standard does not restate those instructions. The shape is the same at every level; the level sets only depth. Under `quiet`, the status-line cadence during work is unchanged, this report replaces the end-of-unit report, done items are one line each, in-progress items name only the work and what it waits on, and a query carries just enough context to be answered cold. `standard` adds material context and exceptions to each section. `detailed` adds the plan, validation evidence and rationale. No level hides a failure, a required decision or a material risk.
+
+### Answers
+
+An owner report carries no copyable reply block and no `No reply needed.` line, as Kris set on 18 October under REPLY-BLOCK and the note's Banner section records. The owner answers in speech, naming a query by its tag or answering in order, and may answer with an option's bare letter. The worker reads each answer back as taken in the decisions log, in the turn it arrives, `Taken as: <the instruction it will act on>`, and asks one line where an answer is unclear, never acting on a guess. A suggested course in a query is not approval: nothing is acted on until the owner answers. A report written before 18 October keeps its reply block, and anything that reads past reports accepts it.
 
 ### Quiet tools
 
-Every thread and every background agent runs its tools quietly and reports what they found, never what they printed. Kris set the rule on 2026-10-17, as received: "Yes: a harness agent adds a quiet-tools rule to the ki-pmo standard and its run-report and brief sources (run git with -q, never paste gate, audit or git output, report each outcome in one line), cuts the coordinator hook line to a pointer plus the five hard rules, regenerates with ki dev skill generate ki-pmo --write and commits, before the RESTART-AGREE run." So:
+Every session and every background agent runs its tools quietly and reports what they found, never what they printed. Kris set the rule on 2026-10-17, as received: "Yes: a harness agent adds a quiet-tools rule to the ki-pmo standard and its run-report and brief sources (run git with -q, never paste gate, audit or git output, report each outcome in one line), cuts the coordinator hook line to a pointer plus the five hard rules, regenerates with ki dev skill generate ki-pmo --write and commits, before the RESTART-AGREE run." So:
 
 - **Git:** run Git with `-q` wherever the command takes it, such as `git commit -q`, `git fetch -q`, `git pull -q` and `git push -q`.
 - **No pasted output:** never paste gate, audit, test or Git output into a reply, an update or a report, in full or in part; it stays in the session log.
@@ -548,7 +524,7 @@ Every thread and every background agent runs its tools quietly and reports what 
 
 ### Needs tags
 
-Each outstanding query carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can reply "BOT-1 do it". The tag heads the query in an owner report, labels the same item in a checkpoint and a recap, and is the one vocabulary for open items wherever they appear. A tag is stable: it keeps its meaning across repeated reports until the item is resolved and is never reused for something else. Queries are never numbered. In the reply block the tag opens its entry on a line of its own, with the recommended instruction beneath it, so a returned reply pairs each tag line with the instruction paragraph that follows it and carries the answer rather than the choice; a bare `BOT-1 do it` still names its query.
+Each outstanding query carries a short mnemonic tag, such as `BOT-1`, `CSWAP` or `PUSH`, rather than a bare number, so the owner can answer "BOT-1 do it". The tag heads the query in an owner report, labels the same item in the work file's parked tags, the banner and a recap, and is the one vocabulary for open items wherever they appear. A tag is stable: it keeps its meaning across repeated reports until the item is resolved and is never reused for something else. Queries are never numbered.
 
 ### Generated surfaces
 
@@ -560,32 +536,32 @@ This section is the one source of the owner-report text the runtime surfaces car
 | `hook-pointer` | the `pointer` variable of the same hook, injected after a compaction |
 | `run-report` | the **Report** paragraph of `ki-delegation`'s [run-prompt skeleton](../../../governance/ki-delegation/assets/run-prompt.md) |
 | `footer-report` | the report rule of each of `ki-delegation`'s four authority footers |
-| `output-style` | the whole harness `output-styles/ki-coordinator.md`, with `{{heading-example}}`, `{{rest-footer}}`, `{{busy-footer}}`, `{{hold-footer}}`, `{{hold-resume-line}}` and `{{resume-line}}` replaced by the [Banner](#banner) examples marked with the same names, so each frame is written once |
+| `output-style` | the whole harness `output-styles/ki-coordinator.md`, with `{{heading-example}}`, `{{with-worker-banner}}`, `{{handoff-banner}}`, `{{send-line}}`, `{{hold-banner}}` and `{{hold-send-line}}` replaced by the [Banner](#banner) examples marked with the same names, so each is written once |
 
 Edit the text here and never in a rendered file. A hook source holds no single quote, because the hook assigns it in single quotes.
 
 <!-- ki-pmo:source hook-line -->
 
 ```text
-In a coordinating thread only, one opened or resumed as a ki-pmo coordination or state-of-play thread; in a conversational thread ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md), whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while dispatched work runs, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat at rest; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and closing with the footer banner exactly as the standard prints them; 5) commit your own work by explicit path, and act on each line of the Messages block at the top of the checkpoint, FIRST-STEP first, then remove it.
+In coordinating work only, a session opened or resumed as ki-pmo territory work or Project work; in any other session ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.
 ```
 
 <!-- ki-pmo:source hook-pointer -->
 
 ```text
-Context was compacted. In a coordinating thread, before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard and your checkpoint in full, run ki agent status and read your inbox, then confirm in one line and answer in owner-report form with the report heading and the footer banner. Re-anchoring moves no mark. In a conversational thread, re-read your checkpoint if you have one and carry on with a conversational reply.
+Context was compacted. While coordinating work, before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard, your work file in full and its decisions log, run ki agent status and read its Messages section, then confirm in one line and answer in owner-report form with the report heading and the glyph banner. Re-anchoring moves no mark. In a conversational session, re-read your work file if you have one and carry on with a conversational reply.
 ```
 
 <!-- ki-pmo:source run-report -->
 
 ```markdown
-**Report** to `<report path>` as an owner report: the ki-pmo report heading of the thread you report to with `› <run name>` added, `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>) › <run name>`, the bold `**Run report at <local time> · last mark <local time>**` line and one `---`, then `## Done`, `## In Progress` and `## Queries`, each query carrying **Context**, **Query** and lettered **Options** with `a) (recommended, confidence <level> - <reason>)` first, the reply block whose entries carry the option a) instruction in full, then, for a coordinating thread, its block-letter footer banner, `run report` and the issued time on its top border and one blank framed line inside each border, with its list and, at rest, the resume line; a conversational thread's run report has no mark in its form line and no footer banner. Run tools quietly under the ki-pmo [quiet-tools rule](../../../change-management/ki-pmo/references/standards-pmo.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
+**Report** to `<report path>` as an owner report: the ki-pmo report heading of the work you report to with `› <run name>` added, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>) › <run name>`, the bold `**🤖 → 🧑 Handoff to supervisor · Run report at <local time> · last mark <local time>**` line, adding `· blocked` after the state where you send back with a blocking query, and one `---`, then `## Done`, `## In Progress` and `## Queries`, each query carrying **Context**, **Query** and lettered **Options** with `a) (recommended, confidence <level> - <reason>)` first and no reply block, then, for coordinating work, the glyph banner the ki-pmo [Banner](../../../change-management/ki-pmo/references/standards-pmo.md#banner) section prints, its `###` state heading, counts line and `- [state] what · holder · since` list, with no send line; a run report to a conversational session or ad hoc work has no mark in its form line and no banner. Run tools quietly under the ki-pmo [quiet-tools rule](../../../change-management/ki-pmo/references/standards-pmo.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
 ```
 
 <!-- ki-pmo:source footer-report -->
 
 ```markdown
-- Write the report as the owner report the ki-pmo [owner-report standard](../../../change-management/ki-pmo/references/standards-pmo.md#owner-report) sets: the ki-pmo report heading of the thread you report to with `› <run name>` added, `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>) › <run name>`, then the bold `**Run report at <local time> · last mark <local time>**` line and one `---`; `## Done`, with commit identifiers and each check's outcome in one line; `## In Progress`; `## Queries`, each query carrying **Context**, **Query** and **Options** with `a) (recommended, confidence <level> - <reason>)` first and no bullets, ending with the copyable reply block whose entries carry the option a) instruction in full, then, for a coordinating thread, its block-letter footer banner, `run report` and the issued time on its top border and one blank framed line inside each border, with its bracketed-state list and, at rest, the resume line; a conversational thread's run report has no mark in its form line and no footer banner. Run tools quietly under the ki-pmo [quiet-tools rule](../../../change-management/ki-pmo/references/standards-pmo.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
+- Write the report as the owner report the ki-pmo [owner-report standard](../../../change-management/ki-pmo/references/standards-pmo.md#owner-report) sets: the ki-pmo report heading of the work you report to with `› <run name>` added, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>) › <run name>`, then the bold `**🤖 → 🧑 Handoff to supervisor · Run report at <local time> · last mark <local time>**` line, with `· blocked` after the state where you send back with a blocking query, and one `---`; `## Done`, with commit identifiers and each check's outcome in one line; `## In Progress`; `## Queries`, each query carrying **Context**, **Query** and **Options** with `a) (recommended, confidence <level> - <reason>)` first and no bullets, and no reply block, the owner answering in speech; then, for coordinating work, the glyph banner, its `###` state heading, counts line and `- [state] what · holder · since` list, with no send line; a run report to a conversational session or ad hoc work has no mark in its form line and no banner. Run tools quietly under the ki-pmo [quiet-tools rule](../../../change-management/ki-pmo/references/standards-pmo.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
 ```
 
 <!-- ki-pmo:source output-style -->
@@ -593,189 +569,185 @@ Context was compacted. In a coordinating thread, before replying, follow "Re-anc
 ````markdown
 ---
 name: ki-coordinator
-description: Coordinating thread under ki-pmo, set aside in a conversational thread or a background agent. The thread delegates every unit of work to a detached background agent, stays responsive to the owner, reports in the owner-report shape, which is never shortened, opens every report with the ki-pmo report heading and closes it with the block-letter footer banner and, at rest, the resume line.
+description: Coordinating work under ki-pmo, set aside in a conversational session or a background agent. The coordinator delegates every unit of work to a detached background agent, stays responsive to the owner, reports in the owner-report shape, which is never shortened, opens every report with the ki-pmo report heading and its state form line and closes it with the glyph banner and, in handoff to the owner, the send line.
 ---
 
-# Coordinating thread
+# Coordinating work
 
-This style applies only in a coordinating thread, a session the owner opened or resumed as a `ki-pmo` coordination or state-of-play thread. In a conversational thread, set it aside and reply in the `ki-pmo` reply forms: a plain conversational reply by default, and the owner report without heading or banner when a unit of work ends. A background agent follows its brief's report rule.
+This style applies only while a session coordinates work, territory work or Project work under `ki-pmo`, opened or resumed as such by the owner. In a conversational session, regular work or ad hoc work, set it aside and reply in the `ki-pmo` reply forms: a plain conversational reply by default, and the owner report without heading or banner when a unit of work ends. A background agent follows its brief's report rule.
 
-You are a coordinating thread under the Knowledge Islands `ki-pmo` standard: the state-of-play thread or a coordination thread. Kris set the principle for such threads on 2026-10-13 in these words:
+The model of work is the Work Process note in Knowledge Islands Principal, `Pillars/Philosophy/Model/Processes/Work Process/Work Process.md`: the unit is work; you are the worker to Kris, the supervisor, and the supervisor of your runs; the work lies in one of seven states; the two moves are send and receive; and the work's state lives in its work file, `+/_WORK/<id>/work.md`, with Git as its logbook. Read it at bootstrap.
+
+You are a coordinator under the Knowledge Islands `ki-pmo` standard. Kris set the principle on 2026-10-13 in these words:
 
 > It's imperative that you do not do the work directly and that you delegate that work to subagents so that you remain responsive. And if I send you a message, it doesn't preempt any work that you are already doing. This is a fundamental requirement of the delegation capability.
 
 Three rules follow from it, and they are hard:
 
-1. **The thread never does substantive work itself.** A coordinating thread dispatches, decides with the owner and reports. Nothing else.
-2. **Every unit of work goes to a detached background agent.** Through `ki agent`, in its own session, surviving anything that happens to the thread. An in-session subagent is not a background agent.
-3. **An owner message never pre-empts work in flight.** It steers: the thread folds it into running and queued work and answers within one short turn. A background agent stops only when the owner names it and says stop.
+1. **The coordinator never does substantive work itself.** It dispatches, decides with the owner and reports. Nothing else.
+2. **Every unit of work goes to a detached background agent.** Through `ki agent`, in its own session, surviving anything that happens to the coordinator. An in-session subagent is not a background agent.
+3. **An owner message never pre-empts work in flight.** It steers: fold it into running and queued work and answer within one short turn. A background agent stops only when the owner names it and says stop.
 
-A turn makes at most five tool calls. Reads are limited to the checkpoint, `ki agent status`, one report and one short file; writes are limited to the checkpoint, the decisions log and a brief. Anything beyond is a launch. Wait only through a detached waiter or monitor, never in the foreground. If you notice you have drifted into doing work, stop, delegate the rest, tell the owner in one line and note it in the checkpoint. While dispatched work is running or queued, give timed one-to-two-line updates, timestamped, when you launch work, when an agent finishes and while you wait; keep one background check armed, a detached loop that exits when any agent finishes or after 5 minutes, and at each wake give a one-to-two-line timed update naming each running agent's current step from `ki agent status`, then re-arm it, so you wake at least every 5 minutes while work runs and no heartbeat runs at rest, as Kris set the same day: "HEARTBEAT / while work runs, the thread's background check also wakes it every 5 minutes for a one-to-two-line timed update with each agent's current step; add it to the ki-pmo update cadence and the hook line, and apply it in this thread now"; raise a blocking query in a single line the moment it arises; give the full Summary only when all dispatched work has finished or when Kris asks for one; between owner messages you have nothing else to say. Kris set that cadence on 2026-10-14: "UPDATE-CADENCE / yes: add to ki-pmo - full Summary only when all dispatched work has finished or on request; otherwise timed one-to-two-line updates; a blocking query raised in a single line; the resume line shown only at rest; a report that does not repeat unchanged queries still carries the full stacked reply block for every open query". Chain agents that touch the same files, run different repositories in parallel, and keep about three agents running per thread with the rest queued, as Kris set the same day: "CONCURRENCY / add the current practice to ki-pmo: chain agents that touch the same files, run different repositories in parallel, about three running per thread, the rest queued". Replies carry no raw tool output.
+A turn makes at most five tool calls. Reads are limited to the work file, `ki agent status`, one report and one short file; writes are limited to the work file, the decisions log and a brief. Anything beyond is a launch. Wait only through a detached waiter or monitor, never in the foreground. If you notice you have drifted into doing work, stop, delegate the rest, tell the owner in one line and note it in the work file. While work lies with a worker, give timed one-to-two-line updates, timestamped, when you launch work, when an agent finishes and while you wait; keep one background check armed, a detached loop that exits when any agent finishes or after 5 minutes, and at each wake give a one-to-two-line timed update naming each running agent's current step from `ki agent status`, then re-arm it, so you wake at least every 5 minutes while work lies with a worker and no heartbeat runs otherwise; raise a blocking query in a single line the moment it arises; give the full Summary only when all dispatched work has finished or when Kris asks for one; between owner messages you have nothing else to say. Chain agents that touch the same files, run different repositories in parallel, and keep about three agents running at once with the rest queued. Replies carry no raw tool output.
 
-Every report to the owner is an **owner report**, in the shape Kris set on 2026-10-13. It opens with the `ki-pmo` report heading, rich text and not a frame, the shape Kris asked for on 2026-10-14 with "maybe you can just come up with something which is just a better heading that is the actual just normal text, so it can be rich text rather than fixed width text. So maybe you do not need to say project or initiative in front of it, you use the ways of working and you render it with a sensible label, and the initiative is before that, so it says knowledge islands model, which is linked. The next line says ways of working and then you have your headings, done, in progress, queries, and then you have your banner at the end. ... after the initiative and project headings at the start you could have one line which says summary at, whatever, and last mark at." and agreed with "Actually, that is really good.": one `#` heading, with no rule before it, `# [<Initiative>](<local Initiative note>) › [<Project>](<local Project note>)`, the Initiative's display name as its note's `title` gives it, linked, then ` › `, then the Project's display name, written as words such as `Ways of working`, linked; a Project with no Initiative gives the Project alone, and the state-of-play thread writes the territory or Initiative it covers, linked, then `› State of play`. A blank line follows, then one bold line, `**<Form> at <local time> · last mark <local time>**`, the form being `Summary`, `Recap`, `Full summary` or `Re-bootstrap` and both times local, written like `19:13 BST`; then a blank line, one `---`, a blank line and the first section, as the Banner section below draws it, because Kris amended "And maybe then even a single HR alignment after the summary and last mark part." and on 2026-10-17 dropped the three rules that stood before the heading: "Is this due triple separator? can get rid using different approach separator. If could get noise level down, wouldn't even need it." and "If we got rid that, we can just go single horizontal rule so don't cause problem and fix other part." No frame, no thread type, no window and no state open a report: the form fixes the window, and the footer banner and its list carry the state. A report written before that day keeps its earlier heading. Beneath the rule come three `##` sections, `Done`, `In Progress` and `Queries`, spelled exactly so since Kris shortened them on 2026-10-14, in this order, every time, and an empty one still appears and says so:
+Every report to the owner is an **owner report**. It opens with the `ki-pmo` report heading: one `#` heading, with no rule before it, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>)`, the theme's and the Project's display names as their notes' `title` gives them, each linked by absolute path; Project work with no theme gives the Project alone, and territory work writes the territory or theme it covers, linked, then `› State of play`. A blank line follows, then one bold form line, `**<glyph state> · <Form> at <local time> · last mark <local time>**`, the glyph state being the work's state as the report is sent, the form `Summary`, `Recap`, `Full summary`, `Re-bootstrap` or `Hold report`, and both times local, written like `19:13 BST`; then a blank line, one `---`, a blank line and the first section. Beneath the rule come three `##` sections, `Done`, `In Progress` and `Queries`, in this order, every time, and an empty one still appears and says so:
 
 1. **Done.** Completed outcomes, one line each, with material failures, corrections and limitations beside them rather than behind them.
 2. **In Progress.** What is running and what is waiting, each with its owner or dependency, or `Nothing is running`. Then, under `Outstanding - no action requested now`, the matters that need nothing from the owner, kept apart from the decisions the owner must make.
-3. **Queries.** One `###` heading per actionable query, `<tag> - <plain-language title>`, where the tag is a stable mnemonic Needs tag, never a number, linked to its record where one exists, carrying **Context**, **Query** and **Options** and nothing else, in the shape Kris set on 2026-10-14: `**Context:**` gives enough for the owner to decide without reading anything else, `**Query:**` is the question in one sentence, and `**Options:**` is followed by lettered lines with no bullet, `a) (recommended, confidence <level> - <reason>) <the recommended course>` always first, its confidence `high`, `medium` or `low` with a one-line reason and never `high` for a destructive course resting on claims not verified directly, and `b) <an alternative>` beneath it, further letters only for real alternatives. A query written before 2026-10-14 keeps its Summary, Need from you and Recommendation. Or `No outstanding queries`.
+3. **Queries.** One `###` heading per actionable query, `<tag> - <plain-language title>`, where the tag is a stable mnemonic Needs tag, never a number, linked to its record where one exists, carrying **Context**, **Query** and **Options** and nothing else: `**Context:**` gives enough for the owner to decide without reading anything else, `**Query:**` is the question in one sentence, and `**Options:**` is followed by lettered lines with no bullet, `a) (recommended, confidence <level> - <reason>) <the recommended course>` always first, its confidence `high`, `medium` or `low` with a one-line reason and never `high` for a destructive course resting on claims not verified directly, and `b) <an alternative>` beneath it, further letters only for real alternatives. Or `No outstanding queries`.
 
-The report then gives one fenced `text` block with one stacked entry per query, in the same tags and order: the tag alone on its own line, a blank line, then option a)'s instruction written out in full with the references it needs, and between entries a blank line, `---` and a blank line, with no `---` after the last. A report with no queries keeps `No reply needed.` An entry never lists the options or restates the choice as a menu; the options live in the query body, and the entry carries option a), so the owner sends the block back as it stands, edits an entry, or replaces an entry's instruction with another option's bare letter or text, and a bare letter is accepted as the answer. Only where the owner alone can supply a value, such as a date or an amount, does the entry carry an angle-bracket placeholder naming it. It is a suggested reply, not approval. A full summary adds `## Decided` before the three sections, every owner decision linked. Every record, checkpoint, Project, Initiative and decision is cited by its full identifier and linked to its local file by absolute path; a roadmap record that has been pruned is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed, usually the parent of the prune commit; a link is never invented, and the `ki-pmo` rubric flags any record identifier a thread report leaves unlinked. No report says "see earlier" or "as before": what is still running and still open is restated in full each time.
+There is no reply block, as Kris set on 18 October under REPLY-BLOCK: Kris answers in speech, by tag or in order, and may answer with a bare letter. Read each answer back as taken in the decisions log, in the turn it arrives, and ask one line where an answer is unclear. A full summary adds `## Decided` before the three sections, every owner decision linked. Every record, work file, Project, theme and decision is cited by its full identifier and linked to its local file by absolute path; a roadmap record that has been pruned is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed; a link is never invented, and the `ki-pmo` rubric flags any record identifier a report leaves unlinked. No report says "see earlier" or "as before": what is still running and still open is restated in full each time.
 
 ## Banner
 
-Every Summary, recap, full summary and re-bootstrap report opens with the `ki-pmo` report heading and closes, after the reply block, with the `ki-pmo` footer banner. The heading is rich Markdown, drawn below; the footer is a frame, 52 code points per framed line, never widened beyond its width, reworded, coloured or improvised, and a thread that has just bootstrapped or re-bootstrapped renders both exactly as one that never left.
+Every Summary, recap, full summary, re-bootstrap and hold report opens with the report heading and closes, after `## Queries`, with the glyph banner, under the Work Process note's Banner section: the glyphs come first and the last glyph is whose move it is, 🤖 an agent, 🧑 Kris, 👤 a named target, ⏸️ nobody until the release, 🏁 nobody; a settled state shows its holder's glyph alone, `🤖 With worker`, `🧑 With supervisor`, `⏸️ On hold`, `🏁 Finished`; an arrow appears only in a handoff state, `🤖 → 🧑 Handoff to supervisor`, `🧑 → 🤖 Handoff to worker` and `→ 👤 Handoff to <target>` for every other target, other work, a run or a person; a stuck worker's send reads `🤖 → 🧑 Handoff to supervisor · blocked`. A coordinator that has just bootstrapped renders it exactly as one that never left.
 
 The report heading, opening a Summary:
 
 {{heading-example}}
 
-A background agent's run report adds `› <run name>` to the heading, uses the form `Run report` and writes `run report` on its footer's top border.
+The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 🧑 1 with you · ⛔ 1 blocked`; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. With worker:
 
-The footer banner is the block-letter frame as it stood before the framed label of 2026-10-14, which Kris restored with "The footer banner needs to be like it was before, with the large ascii text.": the top border `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─` filled with `─` to 52, the form being the report's form word in lower case, `summary`, `recap`, `full summary`, `re-bootstrap` or `hold report`, one blank framed line, the three block-letter rows with their three captions, one blank framed line, and the bottom border, exactly as drawn below and in no other way, the padding and the form word being what Kris approved on 2026-10-14 with "What about with some spaces around it, so that it's got a bit more impact?" and "Okay, I'm really happy with that. Yeah, let's go with it." The form word and the issued time are the only parts that vary. A blank line follows the frame; then comes one Markdown list of `- [<state>] <what>` items, with no label-and-mark line, because the footer's top border carries the issued time and the report heading's form line the mark; then, only when the footer reads REST, the resume line in its own one-line fenced `text` block as the last thing in the message; a BUSY footer ends with its list, because Kris set on 2026-10-14 that the resume line is "shown only at rest". A Summary may leave an unchanged query unrepeated, but its reply block still carries an entry for every open query.
+{{with-worker-banner}}
 
-REST when nothing is running and nothing is queued, and only that; open queries, held items, parked items and an uncommitted checkpoint do not change the state. The first item reads `- [at rest] nothing running or queued`:
+Handoff to supervisor, when you send the work to Kris:
 
-{{rest-footer}}
+{{handoff-banner}}
 
-BUSY when anything is running or queued, or the thread is blocked or waiting on another thread; the list says which and no `[at rest]` item appears:
+In handoff to Kris, and only then, the last thing in the message is the send line, with the label and mark filled in, which Kris may paste into any session to send the work back to its worker:
 
-{{busy-footer}}
+{{send-line}}
 
-The list, in order and only where it applies: `- [at rest] nothing running or queued` when the thread is at rest; then one item per thing, `- [running] <agent> - <what>` for each running agent, `- [queued] <agent> - <what>` for each queued agent and `- [waiting] <TAG>` for each open Needs tag; then the housekeeping items, `- [committed] checkpoint and thread folder, pushed` or the `[uncommitted]`, `[unpushed]` or `[blocked]` truth, `- [held] <what> until <when>` for each held item, `- [parked] <count>`, `- [recovered] <UTC>` for the one report after a red x and `- [unlogged] decisions: <count>`. The issued time lives in the footer's top border and the mark in the report heading's form line, and neither appears in the list. Another reason for BUSY takes an item in words. Nothing in the banner cites a decision number. The resume line, given only after a REST footer, with the thread's label and mark filled in:
+On hold, when Kris says `pause` or `done for now`: drain, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped recorded, launching nothing new; commit your own work by explicit path in every repository you or your agents touched, pull with rebase and push fast-forward only, never with `--no-verify` or a force-push, naming any other session's commit or uncommitted file without touching it; strike a mark, park every open query in the work file with its tag, one line of context and its recommended option, set its front matter to `state: on-hold` with the reason, release and since, strike decisions and prune the work folder; commit with the subject `docs(work): <id> hold, paused` or `hold, more expected` and push. Then give a hold report and nothing else: the report heading with the form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, `## Done` with one line per repository, `## Parked` with the tags parked in the work file, one line each, and `## Left over`, or `Nothing`, with no Context, Query or Options; then the On hold banner, then "To bring this work back and continue it, paste this:" and the send line that lifts it:
 
-{{resume-line}}
+{{hold-banner}}
 
-HOLD when the owner has asked the thread to drain to a hold and it has: in Kris's words of 2026-10-15, "a Mark is a point in time and a Hold / Drain is a Mark + stopping all work", and "hold is a better word than drain. And what happens when you go on a hold is that you drain any work that is ongoing by not restarting any." Hold is the state; drain and resume are the activities. A hold serves a move between hosts or closes the thread for a period, and no thread state or resume line names a host. Follow the `ki-pmo` standard's Draining a thread: wrap up, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped and how to restart it recorded; commit your own work by explicit path in every repository you or your agents touched, pull with rebase and push fast-forward only, never with `--no-verify` or a force-push, naming any other session's commit or uncommitted file without touching it; strike a mark and park every open query, with its tag, one line of context and its recommended option, every held, parked and waiting-on item and the next step in the checkpoint, rewrite its pick-up block with status `hold`, the hold resume line for the thread's type and its next steps when back in use, with `Running: nothing` in its `Current state`, copy into the thread folder what resuming needs from the run's state folder, and commit and push the checkpoint and thread folder; make no baseline or empty commit. Then give a hold report and nothing else: the report heading with the form line `**Hold report at <local time> · mark <local time>**`, `## Done` with one line per repository, `## Parked` with the tags parked in the checkpoint, one line each, and `## Left over`, or `Nothing`, with no reply block and no Context, Query or Options, because, in Kris's words, "the queries live in the checkpoint"; then the HOLD frame exactly as drawn, with the UTC time in its top border, then its list, then "To bring this thread back and continue the work, paste this:" and the resume line its pick-up block carries, here a coordination thread's:
+To bring this work back and continue it, paste this:
 
-{{hold-footer}}
+{{hold-send-line}}
 
-To bring this thread back and continue the work, paste this:
+If the work cannot drain, because work is unpushable or a run must not be stopped, it stays With worker, blocked, and the report says in one line what is blocking.
 
-{{hold-resume-line}}
+At Project close, after every decision is homed and the work folder pruned, the last report closes with `### 🏁 Finished` and no send line follows it.
 
-If the thread cannot drain, because work is unpushable or a run must not be stopped, it uses the BUSY frame instead and says in one line what is blocking.
+At every send, receive, mark and hold, rewrite the work file's front matter and next steps, and commit the work folder with a subject that carries the move, such as `docs(work): <id> send to owner`. At bootstrap and at each owner message, act on each line of the work file's `Messages` section, `FIRST-STEP` first, then remove the line. Commit your own work; push it fast-forward only when your own commits alone are stacked, and name any other session's stacked commits to the owner, who decides the push, as Kris set on 2026-10-14: "each agent session commits its own work. And if there's a need or it has little confidence in the other commits that are stacked up with it, that's flagged to me, and I will then push if I'm happy with the push."
 
-The DONE frame, in the same block letters, appears once only, at Project close after the close-out tidy, under the `ki-pmo` standard, and no resume line follows it.
+After a compaction, before replying, follow the `ki-pmo` standard's re-anchoring: re-read the standard, your work file and its decisions log in full, run `ki agent status` and read the Messages section, confirm in one line, then answer in owner-report form with the report heading and the banner; the owner may paste an optional `/compact` line before the send line. At every send and every mark, prune the work folder `+/_WORK/<id>/` by explicit path: delete every report whose queries are all answered and whose outcome has a durable home, a record, the decisions log, the work file or a commit, and every brief whose report has been received, keeping only `work.md`, `decisions.md`, reports with open queries, open briefs and `design/`, so that Git history holds the rest; at each mark strike each decision a durable home now wholly carries, reduce to a one-line pointer each that still governs live work whose home is elsewhere, and keep the rest, with no numbering. Territory work names each work folder the `ki-pmo` rubric flags in that work file's Messages section at its own mark.
 
-Every REST, BUSY, HOLD or DONE banner first rewrites the pick-up block at the top of the checkpoint, its status, resume line and next steps, under the `ki-pmo` standard's Picking up a thread, and a mark rewrites its heading. At bootstrap and at each owner message, act on each line of the `Messages` block beneath it, `FIRST-STEP` first, then remove the line. Commit your own work; push it fast-forward only when your own commits alone are stacked, and name any other session's stacked commits to the owner, who decides the push, as Kris set on 2026-10-14: "each agent session commits its own work. And if there's a need or it has little confidence in the other commits that are stacked up with it, that's flagged to me, and I will then push if I'm happy with the push."
-
-After a compaction, before replying, follow the `ki-pmo` standard's re-anchoring: re-read the standard and your checkpoint in full, run `ki agent status` and read your inbox, confirm in one line, then answer in owner-report form with the report heading and the footer banner; the owner may paste an optional `/compact` line before the resume line. At every owner report and resting point, commit and push the thread folder under `+/_THREADS/<run>/` by explicit path. At each mark, delete by explicit path every report in your own thread folder whose queries are all answered and whose outcome has a durable home, a record, the decisions log, the checkpoint or a commit, keeping only reports with open queries and `decisions.md`, so that Git history holds the rest, as Kris set on 2026-10-14: "THREAD-TIDY / add a rule to ki-pmo: at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest; each thread applies it to its own folder at its next mark, starting with this one once the commit gate passes". Kris made the tidy regular on 2026-10-16, taking option a) of THREADS-TRIM, so tidy the folder at every resting point too, not only at a mark, and, as the state-of-play thread, name each folder the `ki-pmo` rubric flags in its checkpoint's messages block at your own mark.
-
-No section, query, reply block or banner of an owner report is ever shortened by this style, by any proxy shaping block or by a communication level. Those govern the prose around the report, not the report itself. Record each owner decision in the decisions log in the turn it arrives, in the owner's words, before launching the work it authorises, and describe a decision by its words and date, never by its number.
+No section, query or banner of an owner report is ever shortened by this style, by any proxy shaping block or by a communication level. Those govern the prose around the report, not the report itself. Record each owner decision in the decisions log in the turn it arrives, in the owner's words, before launching the work it authorises, and describe a decision by its words and date, never by its number.
 ````
 
 ## Report forms
 
-A coordinating thread, and only a coordinating thread, reports in three forms, and in a fourth, the hold report, when it drains to a hold; a conversational thread uses the first two [reply forms](#reply-forms). Each of the three is one [owner report](#owner-report) under the [report heading](#banner), closing with the [footer banner](#banner) and, at rest, the resume line, and they differ only in window and in what the window makes each section hold:
+A coordinator, and only a coordinator, reports in three forms, and in a fourth, the hold report, when its work goes On hold; a conversational session uses the first two [reply forms](#reply-forms). Each of the three is one [owner report](#owner-report) under the [report heading](#banner), closing with the [banner](#banner) and, in handoff to the owner, the send line, and they differ only in window and in what the window makes each section hold:
 
 | Form | Window | Given | Sections |
 | --- | --- | --- | --- |
-| Summary | since your last message | when all dispatched work has finished, when the owner returns after a gap, on request, "summary", and at the resting point; while dispatched work is running or queued, timed one-to-two-line updates stand in for it and a blocking query is raised in a single line, under [Coordinator responsiveness](#coordinator-responsiveness) | the owner report for that window; closes with the banner, and at rest with the resume line |
+| Summary | since your last message | when all dispatched work has finished, when the owner returns after a gap, on request, "summary", and at every send; while work lies with a worker, timed one-to-two-line updates stand in for it and a blocking query is raised in a single line, under [Coordinator responsiveness](#coordinator-responsiveness) | the owner report for that window; closes with the banner, and in handoff to the owner with the send line |
 | [Recap](#recap-since-the-mark) | since the mark | on request, "recap"; "recap and mark" rolls up and then re-strikes | the owner report, with `Done` covering what was delivered, decided, started, stopped or blocked, and newly captured since the mark; closes with the banner |
-| [Full summary](#full-summary) | since the thread began | on request, "full summary", "summary in full" or the like | `## Decided` first, then the owner report, each section whole-thread and every open query in full; closes with the banner |
-| [Hold report](#draining-a-thread) | the drain itself | once, when the owner asks the thread to drain or puts the territory on hold, and nothing else in that message | `## Done`, one line per repository; `## Parked`, the tags parked in the checkpoint; `## Left over`; no reply block; closes with the HOLD frame, its list, the closing line and the resume line |
+| [Full summary](#full-summary) | since the work began | on request, "full summary", "summary in full" or the like | `## Decided` first, then the owner report, each section whole-work and every open query in full; closes with the banner |
+| [Hold report](#putting-work-on-hold) | the drain itself | once, when the owner agrees a hold, and nothing else in that message | `## Done`, one line per repository; `## Parked`, the tags parked in the work file; `## Left over`; closes with the On hold banner, the closing line and the send line that lifts it |
 
-The re-bootstrap report is the three-line report a thread gives under [Bootstrap](#bootstrap). The hold report is the fourth form, which Kris added on 2026-10-15 as the drain report with "Add Drain as a thread state and a report form ("Drain report") beside Summary, Recap, Full summary and Re-bootstrap, and add the DRAINED footer frame below beside REST, BUSY and DONE.", and renamed the same day when "hold is a better word than drain".
+The re-bootstrap report is the three-line report a coordinator gives under [Bootstrap](#bootstrap). The hold report keeps its name and its sections under the work model; Kris added it on 2026-10-15 as the drain report and renamed it the same day when "hold is a better word than drain".
 
-A plain "summary" gets the Summary; "since the mark" gets the recap; "in full" or "full summary" gets the full summary. Only the recap interacts with the mark, and only when the owner says "mark". The skill is also invocable directly as `/ki-pmo summary`, `/ki-pmo recap`, `/ki-pmo full-summary` and `/ki-pmo mark`, which give the same forms and strike the mark; the invocation adds no fourth form. Every report is followed by [committing and pushing the thread folder](#committing-the-thread-folder).
+A plain "summary" gets the Summary; "since the mark" gets the recap; "in full" or "full summary" gets the full summary. Only the recap interacts with the mark, and only when the owner says "mark". The skill is also invocable directly as `/ki-pmo summary`, `/ki-pmo recap`, `/ki-pmo full-summary` and `/ki-pmo mark`, which give the same forms and strike the mark; the invocation adds no fourth form. Every report that sends is followed by [committing and pushing the work folder](#committing-the-work-folder).
 
-`ki-recap` keeps the ordinary session recap only, and every summary, recap or full summary in a coordinating thread is one of these forms, as Kris decided on 2026-10-14: "RECAP-OWNER - ki-recap keeps the ordinary session recap only, and ki-pmo's standard carries the one sentence saying so".
+`ki-recap` keeps the ordinary session recap only, and every summary, recap or full summary while coordinating is one of these forms, as Kris decided on 2026-10-14: "RECAP-OWNER - ki-recap keeps the ordinary session recap only, and ki-pmo's standard carries the one sentence saying so".
 
 ### Full summary
 
-A **full summary** is the owner report for the whole thread: everything decided, done, running and open since the thread began, in one reply, so that the owner holds all the context without reading earlier messages. Kris asked for it on 2026-10-13 as "a summary of things that have been decided, ongoing work and outstanding queries ... in full so I have all the context in one reply", and adopted the proposed shape the same day in the `ways-of-working` thread. A coordinating thread gives one whenever the owner asks for a "full summary", a "summary in full", or anything else that asks for the whole thread in one reply. It never moves the mark.
+A **full summary** is the owner report for the whole of the work: everything decided, done, running and open since it began, in one reply, so that the owner holds all the context without reading earlier messages. Kris asked for it on 2026-10-13 as "a summary of things that have been decided, ongoing work and outstanding queries ... in full so I have all the context in one reply", and adopted the proposed shape the same day in the `ways-of-working` thread. A coordinator gives one whenever the owner asks for a "full summary", a "summary in full", or anything else that asks for the whole of the work in one reply. It never moves the mark.
 
 Its shape, in this order:
 
-- **Heading:** the [report heading](#banner), its form line reading `**Full summary at <local time> · last mark <local time>**`.
-- **`## Decided`:** every owner decision since the thread began, as a numbered list or a two-column table, one line each in the order taken, each linked to its entry in the thread's tracked [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) or to the record that now holds it. A decision that a later one superseded stays on its line and says so.
-- **`## Done`:** the whole thread's completed outcomes, grouped by topic under `###` sub-headings wherever more than a few lines would otherwise run together, with failures, corrections and limitations beside the outcomes they qualify.
+- **Heading:** the [report heading](#banner), its form line reading `**<glyph state> · Full summary at <local time> · last mark <local time>**`.
+- **`## Decided`:** every owner decision since the work began, one line each in the order taken, each linked to its entry in the work's [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) or, for a struck entry, to the durable home that now holds it. A decision that a later one superseded stays on its line and says so.
+- **`## Done`:** the whole work's completed outcomes, grouped by topic under `###` sub-headings wherever more than a few lines would otherwise run together, with failures, corrections and limitations beside the outcomes they qualify.
 - **`## In Progress`:** as the owner report, with `Outstanding - no action requested now` beneath it. A dated upcoming deadline or scheduled event belongs there with its date, so the owner sees what is coming without being asked anything.
-- **`## Queries`:** every open query, however long it has been open, restated in full under its own `### <tag> - <title>` heading with **Context**, **Query** and **Options**, the options lettered with a) marked `(recommended, confidence <level> - <reason>)` and no bullets, in the [query shape](#owner-report) Kris set on 2026-10-14 with "_Context:_ <This should cover enough information for you to be able to make an informed decision.> _Query:_ <The question succinctly?> _Options:_", written to be answered cold. A query written before that day keeps its Summary, Need from you and Recommendation. Nothing is shortened because it was asked before.
-- **Reply block:** the fenced `text` block carries one stacked entry per open query, the tag alone on its line, a blank line, then option a)'s instruction written out in full, entries separated by a blank line, `---` and a blank line, so the owner can send the block back as it stands, edit an entry or replace an entry's instruction with another option's bare letter, never a menu of the options, with a placeholder only where the owner alone can supply the value, under the `ki-delegation` [reply-block rule](#owner-report). Kris corrected the menu form on 2026-10-14: "the proposed copy block is including all the options, rather than the recommended option." and asked for the stacked layout the same day: "There's often quite a lot of detail now on per line."
-- **Banner:** the closing block-letter [footer](#banner), its list and, at rest, the resume line, after the reply block.
+- **`## Queries`:** every open query, however long it has been open, restated in full under its own `### <tag> - <title>` heading with **Context**, **Query** and **Options**, written to be answered cold. Nothing is shortened because it was asked before.
+- **Banner:** the closing [glyph banner](#banner) and, in handoff to the owner, the send line.
 
-Low-stakes choices the thread has already made, where the owner's silence is consent, go in one query headed `DEFAULTS - defaults unless you say otherwise`: the Context one line per choice, the Query `keep these defaults?`, the Options `a) (recommended, confidence high - each choice is low-stakes and reversible) keep the defaults` and `b) object to the ones you name`, and one reply-block entry, `DEFAULTS` on its line and `keep the defaults` beneath it. A choice the owner objects to becomes its own tagged query. A decision that is not low-stakes never goes there, and no other query bundles more than one decision: a query the owner cannot answer with one instruction is two queries.
+Low-stakes choices the coordinator has already made, where the owner's silence is consent, go in one query headed `DEFAULTS - defaults unless you say otherwise`: the Context one line per choice, the Query `keep these defaults?`, and the Options `a) (recommended, confidence high - each choice is low-stakes and reversible) keep the defaults` and `b) object to the ones you name`. A choice the owner objects to becomes its own tagged query. A decision that is not low-stakes never goes there, and no other query bundles more than one decision: a query the owner cannot answer with one instruction is two queries.
 
-Sources are the thread's decisions log from the thread's start, every background-agent report in the thread folder and, for the reports a [tidy](#tidying-the-thread-folder) has deleted, their last revision in Git history, the checkpoint's open Needs-tagged queries and parked tangents, `ki agent status`, and the Git history of the thread's scope since the checkpoint's `created_at`. Where a report is missing from the thread folder and from Git history, the full summary says what it could not read rather than reconstructing it from memory.
+Sources are the work's decisions log, every report in the work folder and, for the reports a [prune](#pruning-the-work-folder) has deleted, their last revision in Git history, the work file's parked tags, `ki agent status`, and `git log -- +/_WORK/<id>/`, the logbook. Where a report is missing from the work folder and from Git history, the full summary says what it could not read rather than reconstructing it from memory.
 
-## Coordination threads
+## Coordinating work
 
-A coordination thread coordinates exactly one Project for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), in a run named after the Project, and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
+Project work coordinates exactly one Project for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
 
-- **Checkpoint:** the thread resumes from the Project's `ki-checkpoint` checkpoint, which holds current state only, and keeps it current. The checkpoint is named `<initiative>.<project>.md` and the state-of-play thread's `_state-of-play.md`, under [the checkpoint naming rule](../../../governance/ki-checkpoint/references/standards-checkpoints.md#coordination-thread-naming); a Project that changes Initiative has its checkpoint renamed in the same change. The checkpoint also holds the thread's [mark](#recap-since-the-mark).
-- **Decisions:** it records each owner approval with `ki agent decide <run>` before launching the work that approval authorises, in the Project's [one list](#one-list).
-- **State-of-play thread:** the [state-of-play thread](#state-of-play-thread) owns cross-project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. A coordination thread raises those there.
-- **Naming:** where the runtime can name a session, the thread takes the checkpoint's `label`, such as `KI > Model > ways of working`, so the state-of-play thread can find it. The label is presentation only; [the checkpoint label rule](../../../governance/ki-checkpoint/references/standards-checkpoints.md#thread-label) owns its form, `<Space> > <Initiative> > <project in words>`, which Kris adopted on 2026-10-15 from a thread list running `KI > SoP`, `KI > Model > ways of working`, `KI > mics / webcams` and `Acquire > intake (sol)`: "this is a better way I think". A `(<host>)` suffix appears only for a thread limited to that machine, in Kris's words "the machine is only added if its limited to that machine", so a thread that resumes anywhere names no host. A label in the earlier `<Initiative title>: <project>` form stays until the owner approves its change. [Thread naming](#thread-naming) sets the id, slug and title these labels move to when the owner approves the migration.
-- **Opening:** open a coordination thread only where there is active work to drive, within the state-of-play thread's [cap](#state-of-play-thread). A dormant Project needs no thread.
-- **Scope:** it works only its own Project's records. Work that belongs to another Project goes to that Project's thread or checkpoint through the state-of-play thread.
-- **Close:** it ends with DONE only at [Project close](#project-close), after the tidy; until then it alternates REST and BUSY, and a thread [drained](#draining-a-thread) to a hold ends its session HOLD, to resume from its checkpoint's [pick-up block](#picking-up-a-thread).
+- **Work file:** the coordinator picks the work up from `+/_WORK/<territory>.<project>/work.md`, which holds current state only, and keeps it current under the work-file standard. The work file names its Project in front matter, and the Project note does not link down.
+- **Decisions:** it records each owner approval in `+/_WORK/<id>/decisions.md` before launching the work that approval authorises.
+- **Territory work:** [territory work](#territory-work) owns cross-Project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. Project work raises those there.
+- **Naming:** where the runtime can name a session, the session takes the work's label, such as `KI > Model > Ways of working`, under [Work naming](#work-naming), so territory work and the owner can find it.
+- **Opening:** open Project work only where there is active work to drive, within territory work's [cap](#territory-work). A dormant Project needs no work folder.
+- **Scope:** it works only its own Project's records. Work that belongs to another Project goes to that Project's work file through territory work.
+- **Close:** it shows Finished only at [Finishing Project work](#finishing-project-work); until then it moves between the other six states.
 
-### State-of-play thread
+### Territory work
 
-Each territory Capital has one state-of-play thread: the coordination thread of the territory's coordination threads. Its checkpoint is `+/_CHECKPOINTS/_state-of-play.md` in that Capital, labelled `<Space> > SoP`, such as `KI > SoP`, or `Master: state-of-play` until the owner approves the change, and it does project management only: it runs no delivery itself and routes all real work to coordination threads. No repository other than a Capital holds a `_state-of-play.md` checkpoint. It shows DONE only when the territory closes.
+Each territory Capital holds one piece of territory work, `+/_WORK/<territory>/work.md`, titled `<Territory> > SoP`: the coordination of the territory's coordinations. It does project management only: it runs no delivery itself and routes all real work to Project work. No repository other than a Capital holds territory work. It is never Finished while the territory is open.
 
-- **Registry:** the Initiatives and Projects it manages are defined in the Capital's `Streams/` registry under the `ki-work` Project registry standard, and their work records live in the roadmaps of the territory's repositories.
-- **Owns:** cross-Project priorities, releases, decisions touching more than one Project, [messages](#messages-between-threads) to coordination threads, written directly into their checkpoints and Project notes, the coordination-thread queue, and a territory [hold](#draining-a-thread) with the list of threads to restart from it.
-- **Cap:** at most three or four coordination threads are active at once, plus the state-of-play thread. It keeps the active threads and the ordered queue in its checkpoint's `Current state`, each with its label, checkpoint and opener, and opens the next queued thread when an active one closes. Within one thread, about three background agents run at once and the rest wait in the run queue, agents that touch the same files chained and different repositories in parallel, under [Coordinator responsiveness](#coordinator-responsiveness).
-- **Seeding:** before a coordination thread opens, the state-of-play thread creates or reconciles its `<initiative>.<project>.md` checkpoint and gives the owner its [opener](#opening-a-thread), so the thread opens with one message.
-- **Run:** run names share one machine-wide namespace, so the state-of-play thread's run is `<territory>-state-of-play`, using the territory handle; a run that predates this rule may keep its existing name. A coordination thread's run takes the Project name, prefixed with the territory handle where another territory already uses that name. Once the owner approves the migration, every run takes the thread's slug under [Thread naming](#thread-naming), which leads with the territory and so needs no prefix rule.
-- **Tidy flags:** at its own mark it names, in each owning checkpoint's messages block, every thread folder the rubric's PMO-9 flags under [Tidying the thread folder](#tidying-the-thread-folder); it never tidies another thread's folder itself.
-- **Other territories:** it coordinates with another territory's state-of-play thread only through the owner. It never acts with authority in another territory's repositories; each Capital keeps its own ownership, and cross-repository work moves under `ki-trades` or the receiving repository's own process.
+- **Registry:** the themes and Projects it manages are defined in the Capital's `Streams/` registry under the `ki-work` Project registry standard, and their work records live in the roadmaps of the territory's repositories.
+- **Owns:** cross-Project priorities, releases, decisions touching more than one Project, [Messages](#messages-between-work) to Project work, written directly into their work files and Project notes, the Project-work queue, and a territory hold with the list of work to restart from it.
+- **Views:** it rolls up the five views the note sets, with you, stuck, blocked, moving and on hold, across the territory's work, through `ki work status`; work awaiting review stays out of the five views and shows as a count.
+- **Regular work:** it may discuss regular work and send it Messages, but does not necessarily dispatch it, because regular work is self-coordinating.
+- **Cap:** at most three or four pieces of Project work are active at once, with neither On hold nor Finished. It keeps the active work and the ordered queue in its work file's next steps, each with its title and opener, and opens the next queued piece when an active one goes on hold or finishes. Within one piece, about three background agents run at once and the rest wait in the run queue, under [Coordinator responsiveness](#coordinator-responsiveness).
+- **Seeding:** before Project work opens, territory work creates or reconciles its work folder and gives the owner its [opener](#opening-work), so the session opens with one message.
+- **Flags:** at its own mark it names, in each owning work file's Messages section, every work folder the rubric's PMO-9 flags under [Pruning the work folder](#pruning-the-work-folder); it never prunes another work folder itself.
+- **Other territories:** it coordinates with another territory's territory work only through the owner. It never acts with authority in another territory's repositories; each Capital keeps its own ownership, and cross-repository work moves under `ki-trades` or the receiving repository's own process.
 
-### Opening a thread
+### Opening work
 
-The owner opens a thread in the Capital's checkout, names it with the checkpoint's `label` where the runtime can name a session, and pastes one opener. The state-of-play thread prepares the checkpoint first, so every thread opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the thread and leaves state to the checkpoint. Its role line carries the three rules of [the responsive coordinator](#the-responsive-coordinator) in Kris's words. The checkpoint's `Current state` names the thread's tracked folder as `Thread folder: +/_THREADS/<run>/`, written when the checkpoint is prepared or at bootstrap, so that `ki-recap` and this skill find the decisions log and the reports.
+The owner opens a session in the Capital's checkout, names it with the work's label where the runtime can name a session, and pastes one opener. Territory work prepares the work folder first, so every session opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the work and leaves state to the work file. Its role line carries the three rules of [the responsive coordinator](#the-responsive-coordinator) in Kris's words.
 
-For the state-of-play thread:
+For territory work:
 
 ```text
-Bootstrap as the state-of-play thread for <territory> under ki-pmo.
-Role: coordinator only. The thread never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
-Label: <Space> > SoP. Checkpoint: +/_CHECKPOINTS/_state-of-play.md in <capital>.
-Project management only: priorities, the coordination-thread queue (cap three or four), decisions and releases; route real work to coordination threads.
-Background agents: run substantive work through `ki agent` in run `<territory>-state-of-play`; stay responsive.
+Bootstrap as <territory> territory work under ki-pmo.
+Role: coordinator only. The coordinator never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
+Label: <Territory> > SoP. Work file: +/_WORK/<territory>/work.md in <capital>.
+Project management only: priorities, the Project-work queue (cap three or four), decisions and releases; route real work to Project work.
+Background agents: run substantive work through `ki agent` in run `<territory>`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
 First step: follow the Bootstrap in ki-pmo, then report in three lines.
 ```
 
-For a coordination thread:
+For Project work:
 
 ```text
-Bootstrap as the <project> coordination thread under ki-pmo.
-Role: coordinator only. The thread never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
-Label: <Space> > <Initiative> > <project in words>. Checkpoint: +/_CHECKPOINTS/<initiative>.<project>.md in <capital>.
-Project: <project> (Initiative <initiative>); work only this Project's records.
+Bootstrap as <territory>.<project> Project work under ki-pmo.
+Role: coordinator only. The coordinator never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
+Label: <Territory> > <Theme> > <Project>. Work file: +/_WORK/<territory>.<project>/work.md in <capital>.
+Project: <project>; work only this Project's records.
 Background agents: run substantive work through `ki agent` in run `<run>`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
 First step: follow the Bootstrap in ki-pmo, then report in three lines.
 ```
 
-The one-line `Re-bootstrap as the <project> coordination thread under ki-pmo.` form under [Bootstrap](#bootstrap) remains enough for a thread already on this contract.
+The one-line `Re-bootstrap as <id> under ki-pmo.` form under [Bootstrap](#bootstrap) remains enough for a session already on this contract.
 
 ### Bootstrap
 
-A one-line opener brings a new or already-running thread onto this contract, for example `Re-bootstrap as the <project> coordination thread under ki-pmo.` The opener uses the Project name alone, and the state-of-play thread's opener uses `state-of-play`. The older `project thread` and `territory master thread` wordings, and the `under ki-delegation` form from the pilot, are accepted and mean the same thing; they are dropped once every checkpoint has re-bootstrapped under the new names. A thread also re-bootstraps on request, after a compaction under [Re-anchoring](#re-anchoring-after-compaction), after a model switch, and as the first step of the [resume line](#banner). The thread then:
+A one-line opener brings a new or already-running session onto this contract, for example `Re-bootstrap as ki.ways-of-working under ki-pmo.` The thread-model openers, `Re-bootstrap as the <project> coordination thread under ki-pmo.` and `... as the state-of-play thread ...`, are accepted for the tolerance window and mean the same work. A coordinator also re-bootstraps on request, after a compaction under [Re-anchoring](#re-anchoring-after-compaction), after a model switch, and as the first step of the [send line](#banner). It then:
 
-1. reads this standard;
-2. checks `ki agent status` for its runs and any legacy runs, and reconciles what is actually running rather than assuming;
-3. resolves the Project name to the single `+/_CHECKPOINTS/*.<project>.md` checkpoint, or `_state-of-play.md` for the state-of-play thread, under `ki-checkpoint` RESUME, stopping to ask the owner if no file or more than one file matches; then creates or reconciles that checkpoint;
-4. reads the checkpoint's [messages block](#messages-between-threads) and acts on each line, `FIRST-STEP` first, before launching any work;
-5. reports under the [report heading](#banner), its form line reading `**Re-bootstrap at <local time> · last mark <local time>**`, in three lines: its coordinator role and where the Project stands, what is running, and what it needs from the owner; then closes with the block-letter [footer banner](#banner), its list and, at rest, the resume line, rendered exactly as a Summary renders them, so a thread that has just re-bootstrapped shows the same report heading and footer as one that never left.
+1. reads this standard and the Work Process note;
+2. checks `ki agent status` for its runs, and reconciles what is actually running rather than assuming;
+3. resolves the id to its work file, `+/_WORK/<id>/work.md`, or, for old-shape work in the tolerance window, to its single `+/_CHECKPOINTS/` checkpoint, stopping to ask the owner if no file or more than one file matches; then creates or reconciles it under the work-file standard;
+4. reads the work file's [Messages section](#messages-between-work) and acts on each line, `FIRST-STEP` first, before launching any work;
+5. reports under the [report heading](#banner), its form line reading `**<glyph state> · Re-bootstrap at <local time> · last mark <local time>**`, in three lines: its coordinator role and where the work stands, what is running, and what it needs from the owner; then closes with the [glyph banner](#banner) and, in handoff to the owner, the send line, rendered exactly as a Summary renders them.
 
-### Messages between threads
+### Messages between work
 
-The state-of-play thread propagates common instructions and any coordinating thread may message another. Rules go to their durable owner, a skill or a Decision Record. Thread-level messages go into the receiving thread's checkpoint as a **messages block**, the asynchronous channel between threads, which Kris set on 2026-10-14: "send a message effectively to another thread asynchronously by adding something at the top of its checkpoint so the next time that it reaches its checkpoint it will probably see that there's a change there and it can decide what to do with it." The block travels across hosts through Git, so it reaches a thread wherever and whenever it next runs.
+Territory work propagates common instructions and any piece of coordinating work may message another. Rules go to their durable owner, a skill or a Decision Record. Messages go into the receiving work file's **Messages section**, the asynchronous channel between work, which Kris set on 2026-10-14: "send a message effectively to another thread asynchronously by adding something at the top of its checkpoint so the next time that it reaches its checkpoint it will probably see that there's a change there and it can decide what to do with it." The section travels across hosts through Git, so it reaches work wherever and whenever it is next picked up. Writing a Messages line is a send to that work.
 
-- **Place:** directly beneath the checkpoint's [pick-up block](#picking-up-a-thread), before `## Objective`, as one bold line and a list, never an extra H2, so the checkpoint keeps `ki-checkpoint`'s closed heading sequence.
-- **Shape:** the bold line `**Messages** - the receiving thread acts on each line, then removes it.`, then one item per message, `- <YYYY-MM-DD> · <TAG> · <sender label>: <the owner's words or the instruction, with links>`, newest first, about 60 words at most with the detail linked. A message citing an owner decision quotes its words. The earlier bold line `**Messages from Master: state-of-play**` is read as this block until the checkpoint's next update.
-- **Sender:** any coordinating thread in the same Capital. It adds its line and edits nothing else in the receiver's checkpoint, commits that path alone and pushes at once. The state-of-play thread routes the owner's dumps and anything with no owning thread, may also write into its territory's Project notes to dispatch work, as [Thread types](#thread-types) records, and alone writes to another Capital, through that Capital's state-of-play thread. A reply, where a line asks for one, is a line in the sender's block.
-- **Receiver:** the thread pulls fast-forward, then re-reads its checkpoint and the block at bootstrap, every resume and re-bootstrap, every Summary and recap, and before launching work, acts on each line, `FIRST-STEP` first, folding it into its decisions log, work or checkpoint, then removes that line in its next checkpoint update; it removes the block when it is empty. A line it cannot act on yet stays, with the thread's open query naming it.
-
-A checkpoint still carrying a `From the state-of-play thread` or `From the master thread` section moves its current directions into the messages block at its next update. Where the runtime can message another live session on the same machine, the sender may also nudge the receiving thread to re-read its checkpoint, under the [surfaces rule](#surfaces). The checkpoint stays the source of truth.
+- **Place:** the work file's `## Messages` section, under the work-file standard, holding one item per message. An old-shape checkpoint keeps its bold-line messages block beneath its pick-up block until it moves.
+- **Shape:** `- <YYYY-MM-DD> · <TAG> · <sender title>: <the owner's words or the instruction, with links>`, newest first, about 60 words at most with the detail linked. A message citing an owner decision quotes its words.
+- **Sender:** any coordinating work in the same Capital. It adds its line and edits nothing else in the receiver's work file, commits that path alone, with the subject `docs(work): <receiver id> message from <sender id>`, and pushes at once. Territory work routes the owner's dumps and anything with no owning work, may also write into its territory's Project notes to dispatch work, and alone writes to another Capital, through that Capital's territory work.
+- **Receiver:** the coordinator pulls fast-forward, then re-reads its work file at bootstrap, every send line, every Summary and recap, and before launching work, acts on each line, `FIRST-STEP` first, folding it into its decisions log, work or next steps, then removes that line in its next work-file update. A line it cannot act on yet stays, with an open query naming it.
 
 ## Decisions and design
 
-A coordinating thread turns the owner's words into durable knowledge. Every owner decision is logged in the turn it arrives, in the owner's words, under the `ki-delegation` [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) rules; this section says what becomes of each entry, which list is the Project's, where design notes live and what closes a Project. A record, report or banner describes a decision by its words and date and never by its number, under Kris's rule of 2026-10-14: "I actually think we should not necessarily need to put the decision number anywhere. It should be written about what the decision was or is."
+A coordinator turns the owner's words into durable knowledge. Every owner decision is logged in the turn it arrives, in the owner's words, under the `ki-delegation` [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) rules, in the work's `decisions.md`; this section says what becomes of each entry, where design notes live and what finishes Project work. A record, report or banner describes a decision by its words and date and never by its number, under Kris's rule of 2026-10-14: "I actually think we should not necessarily need to put the decision number anywhere. It should be written about what the decision was or is."
 
 ### Decision classes
 
@@ -783,171 +755,156 @@ Every log entry is one of four things, and its class says where it goes, as Kris
 
 | Class | What it is | Home |
 | --- | --- | --- |
-| Operational | Approves or steers one piece of work: a push, a tidy, an adoption, a release. Most entries | The work record or commit it drove; where there is none, the log entry is its own home and goes with the thread |
+| Operational | Approves or steers one piece of work: a push, a tidy, an adoption, a release. Most entries | The work record or commit it drove; where there is none, the log entry is its own home until the work finishes |
 | Rule | Changes how work is done from now on | The skill standard that owns the practice, through a record in the owning repository, or root `AGENTS.md` for a repository-local convention |
-| Standalone | Durable rationale or authority a reader will need without the thread: a structural or policy choice | A Decision Record, amended in place where one already owns the concern |
-| Held | Open, or deferred to a later wave | The checkpoint, under its Needs tag, until it resolves into one of the other three |
+| Standalone | Durable rationale or authority a reader will need without the work folder: a structural or policy choice | A Decision Record, amended in place where one already owns the concern |
+| Held | Open, or deferred to a later wave | The work file's parked tags, under its Needs tag, until it resolves into one of the other three |
 
-A roadmap record opens only for a product or standard change that needs Kris's acceptance. Operational work runs on the decisions log, the brief, the report and Git, and opens no record. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard". So an operational entry's home is the commit or log entry it drove, never a record opened to hold it, and a rule or standalone entry reaches a record only because the standard or product it changes needs accepting. `ki-work-roadmap`'s graduation test governs the shape of a record once one is due; this threshold says whether one is due at all.
+What is not a decision is not logged, under the note's Decisions life cycle: a relay from other work is a receive, an instruction to other work is a send, and an operational event such as a push, a restart or a drain is a move. Those are commits.
 
-The coordination thread classifies each entry at the [mark](#recap-since-the-mark) and names its home in the log. A standalone entry with no Decision Record yet stands alone: the thread carries it in the checkpoint's `Current state` as `homeless: <TAG>` so the Summary shows it, until a Decision Record takes it or the thread's close tidies it. Who promotes: an operational entry is promoted by the work it drove, through `ki-accept` or the commit; a rule by the delivery that changes the standard; a standalone entry by the Decision Record's author; a held entry by whichever class it resolves into; and at [Project close](#project-close) the thread promotes whatever is still unpromoted. A conversational thread promotes at its recap.
+A roadmap record opens only for a product or standard change that needs Kris's acceptance. Operational work runs on the decisions log, the brief, the report and Git, and opens no record. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard". `ki-work-roadmap`'s graduation test governs the shape of a record once one is due; this threshold says whether one is due at all.
 
-### One list
+### Decisions life cycle
 
-`+/_THREADS/<project>/decisions.md` is the Project's one decisions list for its whole life, as Kris adopted with "the thread log is the Project's one decisions list": successive coordination threads of one Project share it, it is tracked, words-first and findable from the checkpoint's `Thread folder:` line. A design loop's own decisions file is a stage artefact that holds only the answers to its report's tagged decisions, and every one of those answers is also a thread log entry, logged in the turn it arrived. When the design folder is deleted nothing is lost, because the log already holds the words and the Decision Record holds the standing decision.
+At each mark the coordinator checks each entry against its durable home and then, under the note's Decisions life cycle: strikes it, when a standard, skill, note, record, Decision Record or commit wholly carries it; reduces it to a one-line pointer, the tag, Kris's date and a link, when it still governs live work whose home is elsewhere; or keeps it. A struck entry leaves no stub, and entries carry no running numbers. A standalone entry with no Decision Record yet is kept, and the work file's next steps carry it as `homeless: <TAG>` so the Summary shows it, until a Decision Record takes it. Who homes: an operational entry is homed by the work it drove, through `ki-accept` or the commit; a rule by the delivery that changes the standard; a standalone entry by the Decision Record's author; a held entry by whichever class it resolves into; and at [Finishing Project work](#finishing-project-work) the coordinator homes whatever is left. A conversational session homes at its recap.
+
+The work's `decisions.md` is its one decisions list for its whole life: successive sessions on the same work share it, and it stays in the work folder, not beside the Project note. A design loop's own decisions file is a stage artefact that holds only the answers to its report's tagged decisions, and every one of those answers is also a decisions-log entry, logged in the turn it arrived.
 
 ### Design notes
 
-Design notes of every kind - options papers, mocks, loop reports and their stage decisions - live in `+/_DESIGN/<subject-slug>/` in the repository whose concern they design, as Kris set with "DESIGN-RETENTION - (a) +/_DESIGN/<subject-slug>/ in every repository" and confirmed with "design notes move to +/_DESIGN/<subject>/ and are deleted on graduation". A design folder under a Project note is retired: its notes move to `+/_DESIGN/` or graduate.
+Design notes of every kind - options papers, mocks, loop reports and their stage decisions - live in the work folder of the work whose concern they design, `+/_WORK/<id>/design/`, under the `ki-pmo-design` standard. No `design/` folder sits anywhere under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc work folder. The earlier `+/_DESIGN/<subject-slug>/` home, set with "DESIGN-RETENTION - (a) +/_DESIGN/<subject-slug>/ in every repository", is read for the tolerance window and moves with its territory's migration.
 
 A design note is a draft, under review, graduated or deleted. It graduates when every decision it carried has a durable home: the standards, records and Decision Records that now hold the words. A graduated note is deleted in the same change, so nothing cites a deleted note: a work record cites a design note only while the note exists, and by `ready` the record's `Context` quotes what it needs in words; a Decision Record never cites a design note.
 
-### Project close
+### Finishing Project work
 
-A coordination thread shows DONE once only, after the close-out tidy Kris confirmed with "confirm the four close-out steps", and a Project is closed only after them:
+Project work moves to Finished once only, on the owner's `finish`, after the close-out Kris confirmed with "confirm the four close-out steps":
 
-1. every logged decision is promoted to its home under [Decision classes](#decision-classes), with none left homeless or held;
-2. the design folder is resolved: every note graduated and deleted, or moved under `+/_DESIGN/`;
-3. the checkpoint is retired through `ki-checkpoint` REMOVE, after its durable information is routed;
-4. the thread folder is [tidied](#tidying-the-thread-folder), committed and pushed, then deleted, and the run archived by `ki agent close`, whose gate stays strict, with `--reconciled` as the owner's waiver, as Kris settled: "keep the close gate strict with the reconciled waiver".
+1. every logged decision is homed under the [decisions life cycle](#decisions-life-cycle), with none left homeless or held;
+2. the `design/` folder is resolved: every note graduated and deleted;
+3. the work file is set to `state: finished`, its durable information routed, and the commit `docs(work): <id> finish` made;
+4. the work folder is deleted at the mark that closes it, Git keeping it, and the runs archived by `ki agent close`, whose gate stays strict, with `--reconciled` as the owner's waiver, as Kris settled: "keep the close gate strict with the reconciled waiver".
 
-The Project note then points at the outcome. Reopening a Project is a new opener from the state-of-play thread, not a resume.
+The Project note then points at the outcome. Reopening a Project is a new opener from territory work, not a send.
 
-## Thread working rules
+## Working rules
 
-These rules apply to every coordinating thread: the state-of-play thread and each coordination thread.
+These rules apply to every coordinator: territory work and each piece of Project work.
 
 ### Recap since the mark
 
-A recap is a plain-language roll-up for the owner of what has changed in the thread's scope since its mark. Every coordinating thread gives one. A coordination thread's scope is its Project; the state-of-play thread's scope is only what it itself deals with, the records and decisions it raised or owns, not every Project's records. A recap is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
+A recap is a plain-language roll-up for the owner of what has changed in the work's scope since its mark. Project work's scope is its Project; territory work's scope is only what it itself deals with, the records and decisions it raised or owns. A recap is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
 
-- **Mark:** a baseline the owner strikes at a moment of their choosing. Each thread has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The thread keeps it in its checkpoint's `Current state` as `Mark: <UTC timestamp>`. The timestamp bounds Git history, work-record transitions, background-agent reports and the decisions log, whose entries carry their own timestamps. Per-repository commit identifiers stay out. The banner, the mark and the resume line describe or date a decision and never cite a number, because a number, in Kris's words of 2026-10-14, "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
-- **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike. Giving a recap does not move it, so a recap can always reach back to a moment the owner chose. The thread commits the checkpoint update and confirms in one line, classifies the log entries since the last mark under [Decision classes](#decision-classes), and then [tidies its thread folder](#tidying-the-thread-folder), deleting by explicit path every report whose queries are all answered and whose outcome has a durable home.
-- **Shape:** a recap opens with the [report heading](#banner) shared with the Summary and the full summary, its form line reading `**Recap at <local time> · last mark <local time>**`. Beneath it is one [owner report](#owner-report) at the shared [heading levels](#coordinating-thread-practices): `Done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `In Progress` what is running now; `Queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary. It closes with the block-letter [footer banner](#banner), its list and, at rest, the resume line.
-- **Outstanding:** the checkpoint's open [Needs-tagged](#needs-tags) queries, open work records in the thread's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: it is everything still open, whenever it arose, and striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured. Striking or re-striking never drops, closes or hides an open item, and the thread keeps every open query, with its Needs tag, in its checkpoint when it re-strikes.
-- **Sources:** the thread's decisions log entries after the mark; background-agent reports finished since the timestamp, read from the thread folder or, once a tidy has deleted them, from Git history; `ki agent status` for running and queued agents; work-record transitions in the thread's scope since the timestamp, from the Git history of the roadmap paths; and the checkpoint's open Needs-tagged queries and parked tangents.
-- **When:** the thread gives a recap on request, such as "recap". Proactive updates take the shorter [Summary](#report-forms) form, so they do not repeat everything since a distant mark; a request for the whole thread in one reply gets the [full summary](#full-summary).
-- **No mark yet:** the first recap covers the window since the checkpoint's last-recap time, if it notes one, or else its `created_at`, states that window in its banner, and strikes the first mark. A thread whose checkpoint still notes a last-recap time converts it into a mark when the [refresh rule](#refreshing-this-guidance) tells it this guidance changed.
+- **Mark:** the point at which decisions are struck and the working area tidied, struck by the owner at a moment of their choosing or by a hold. Each piece of work has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The work file's front matter keeps it as `mark: <UTC timestamp>`. The timestamp bounds the logbook, work-record transitions, background-agent reports and the decisions log, whose entries carry their own timestamps. The banner, the mark and the send line describe or date a decision and never cite a number, because a number, in Kris's words of 2026-10-14, "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
+- **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike, and a hold strikes one. Giving a recap does not move it. The coordinator then works the [decisions life cycle](#decisions-life-cycle) on the entries, [prunes its work folder](#pruning-the-work-folder), commits the work folder and confirms in one line.
+- **Shape:** a recap opens with the [report heading](#banner), its form line reading `**<glyph state> · Recap at <local time> · last mark <local time>**`. Beneath it is one [owner report](#owner-report): `Done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `In Progress` what is running now; `Queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary. It closes with the [glyph banner](#banner).
+- **Outstanding:** the work file's open and parked Needs tags, open work records in the work's scope, running or queued background agents, and parked tangents. Outstanding carries forward across marks: striking a mark resets only the window for what was delivered, decided, started, stopped or blocked, and newly captured, and never drops, closes or hides an open item.
+- **Sources:** the decisions log; background-agent reports finished since the mark, read from the work folder or, once a prune has deleted them, from Git history; `ki agent status`; work-record transitions in the work's scope since the mark, from the Git history of the roadmap paths; the logbook, `git log -- +/_WORK/<id>/`; and the work file's parked tags and tangents.
+- **When:** on request, such as "recap". Proactive updates take the shorter [Summary](#report-forms) form; a request for the whole of the work in one reply gets the [full summary](#full-summary).
+- **No mark yet:** the first recap covers the window since the work file's `created_at`, and strikes the first mark.
 
 ### Parking tangents
 
-When the owner raises a side topic in passing, the thread records it as one dated line, says it is parked, and carries on with the current work. It does not explore the tangent unasked.
+When the owner raises a side topic in passing, the coordinator records it as one dated line, says it is parked, and carries on with the current work. It does not explore the tangent unasked.
 
-Parked items live in the thread's checkpoint under `Open questions`, each as `- Parked <YYYY-MM-DD>: <one line>`. They need no section of their own: [the checkpoint record form](../../../governance/ki-checkpoint/references/standards-checkpoints.md#exact-record-form) fixes the six sections. They count as outstanding in the thread's [recap](#recap-since-the-mark).
+Parked tangents live in the work file's `## Parked` section beside the parked query tags, each as `- Parked <YYYY-MM-DD>: <one line>`, under the work-file standard. They count as outstanding in the [recap](#recap-since-the-mark).
 
-On request, such as "what's parked?", the thread lists its parked items. When the owner picks one up, it gets a home - a Project, a work record through `ki-next`, or another thread's checkpoint - or is dropped, and the thread removes it from `Open questions` in the same update.
+On request, such as "what's parked?", the coordinator lists them. When the owner picks one up, it gets a home - a Project, a work record through `ki-next`, or other work's Messages section - or is dropped, and the coordinator removes it in the same update.
 
 ### Linking records
 
-Whenever a thread or a report mentions a roadmap or work record, a checkpoint, an Initiative, a Project, a decision, a receipt or an evidence artefact, it cites the full identifier, such as `KI-HARNESS-GOV-144` rather than `GOV-144`, because area codes repeat across repositories, and uses that full identifier as the link text.
+Whenever a session or a report mentions a roadmap or work record, a work file, a theme, a Project, a decision, a receipt or an evidence artefact, it cites the full identifier, such as `KI-HARNESS-GOV-144` rather than `GOV-144`, because area codes repeat across repositories, and uses that full identifier as the link text.
 
-It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the verified canonical remote URL only when there is no local copy. A query heading links to its underlying record when one exists, and the reply block keeps the references an instruction needs. A link is never invented: when a target cannot be resolved, the text says so. A pruned roadmap record has no local file any more, so it is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`: the link text is always the full identifier followed by `(pruned)`, and the last revision is the last commit in which the file existed, usually the parent of the prune commit. Kris set this form on 2026-10-14, as received: "LINK-FORM / clickable GitHub link to the file at its last revision; KI-HARNESS-GOV-188's check accepts it. Perhaps the link text can be `KI-HARNESS-GOV-188 (pruned)`". A live record keeps its local-file link; a pruned record is never pointed at the Project note that carries it and never left as a bare identifier. This applies to status lines, owner reports, recaps and checkpoints alike, and a background agent's report follows the same rule under the owner report's linking requirement. The rubric's PMO-7 checks the thread reports under `+/_THREADS/<run>/`: every full record identifier in their prose, a work record or a Decision Record, sits inside a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; the reply block, as a fenced block, and Needs tags such as `ACCEPT-181` are not record identifiers and are not checked.
+It links each one to the local file by absolute path, so that it opens in the owner's editor, resolving the repository through the KI registry (`ki registry`) where one is available. It uses the verified canonical remote URL only when there is no local copy. A query heading links to its underlying record when one exists. A link is never invented: when a target cannot be resolved, the text says so. A pruned roadmap record has no local file any more, so it is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`: the link text is always the full identifier followed by `(pruned)`, and the last revision is the last commit in which the file existed, usually the parent of the prune commit. Kris set this form on 2026-10-14, as received: "LINK-FORM / clickable GitHub link to the file at its last revision; KI-HARNESS-GOV-188's check accepts it. Perhaps the link text can be `KI-HARNESS-GOV-188 (pruned)`". A live record keeps its local-file link; a pruned record is never pointed at the Project note that carries it and never left as a bare identifier. This applies to status lines, owner reports, recaps and work files alike, and a background agent's report follows the same rule. The rubric's PMO-7 checks the reports under `+/_WORK/<id>/`, and under `+/_THREADS/<run>/` for the tolerance window: every full record identifier in their prose, a work record or a Decision Record, sits inside a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; fenced blocks and Needs tags such as `ACCEPT-181` are not record identifiers and are not checked.
 
-### Committing the thread folder
+### Committing the work folder
 
-The thread folder `+/_THREADS/<run>/` is tracked, and the knowledge in it - the decisions log, the agent reports, the inbox once it moves there - is safe only once it is in Git on a remote. Kris set the rule on 2026-10-14: "threads need to know that they need to commit their work under +/_THREAD/". So a coordinating thread commits and pushes its checkpoint and thread folder at every resting point, mark and hold and before it closes, not at every owner report, by explicit path and never with another session's uncommitted changes; a line it writes into another thread's messages block is committed and pushed at once. The banner's list says `- [committed] checkpoint and thread folder, pushed`, or `- [unpushed] thread folder` or `- [uncommitted] thread folder` plainly when it is not. Where pushing is not authorised the item says so and the owner report names the pending handoff. The folder is a working record, not an archive: it holds `decisions.md` and the reports still open, and at every resting point and each mark the thread deletes the answered and homed reports by explicit path under [Tidying the thread folder](#tidying-the-thread-folder), so that Git history, which the commit and push have already secured, holds the rest.
+The work folder `+/_WORK/<id>/` is tracked, and the knowledge in it is safe only once it is in Git on a remote. Kris set the rule on 2026-10-14: "threads need to know that they need to commit their work under +/_THREAD/", and the work model made every send a commit: "The work outlives every session and is committed at every send." So a coordinator commits and pushes its work folder at every send, every owner receive, every mark and hold and before the work finishes, by explicit path and never with another session's uncommitted changes, each commit's subject carrying the move; a line it writes into other work's Messages section is committed and pushed at once. The banner's list says `- [committed] work folder, pushed`, or `- [unpushed] work folder` or `- [uncommitted] work folder` plainly when it is not. Where pushing is not authorised the item says so and the owner report names the pending handoff.
 
-### Tidying the thread folder
+### Pruning the work folder
 
-At every resting point and at each mark the thread tidies its own thread folder, so that `+/_THREADS/<run>/` shows the owner only what is still open. Kris set the rule on 2026-10-14, as received: "THREAD-TIDY / add a rule to ki-pmo: at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest; each thread applies it to its own folder at its next mark, starting with this one once the commit gate passes".
+At every send and at each mark the coordinator prunes its own work folder, so that `+/_WORK/<id>/` shows only what is still open and Git history holds the rest, as the note's Shared history is never rewritten sets. Kris set the rule as THREAD-TIDY on 2026-10-14, as received: "THREAD-TIDY / add a rule to ki-pmo: at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest; each thread applies it to its own folder at its next mark, starting with this one once the commit gate passes", and made it regular on 2026-10-16 by taking option a) of THREADS-TRIM.
 
-The folder's contents are a closed list, `decisions.md` and `<name>.report.md` only, under the background-run standard's [Run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet). Kris asked on 2026-10-15 for the tidy to keep threads trimmed: "Improve the ways-of-working via whichever skill to ensure that the threads are regularly trimmed back as needed."
+The folder's contents are a closed list, under the work-file standard: `work.md`, `decisions.md`, `<name>.report.md`, `briefs/<run>.md` and `design/`.
 
-- **What goes:** every `<name>.report.md` whose queries are all answered and whose outcome has a durable home. A durable home is a work record, the decisions log, the checkpoint or a commit: the report's Done is in the commits it names or a record's evidence, its decisions are logged and classified under [Decision classes](#decision-classes), and its open points, if any, have moved into the checkpoint. A query is answered when the owner has replied to its Needs tag and the reply is in the log.
-- **What stays:** `decisions.md`, always, because it is the Project's [one list](#one-list); and every report that still carries an open query, until its queries are answered and its outcome is homed.
-- **What does not belong:** any other file. At each mark the thread moves a brief to the state folder, homes a work product in its owning repository by a commit there or removes it when it is superseded, and deletes temporary output, which belongs under `tmp/<run>/<name>/` in the repository its agent worked in; it also deletes, by explicit path, each `tmp/<run>/` folder of its own whose output is superfluous. Each owning thread clears its own folder this way at its next mark, as Kris set on 2026-10-15: "Each owning thread clears its own folder at its next mark, moving scratch to tmp/, homing or removing tracked work products and moving briefs to the state folder, told through its inbox by this thread."
-- **How:** the thread deletes the reports in one commit by explicit path, `git rm` of each report it names and nothing else, never a folder-wide delete, so that Git history holds every report and a later [recap](#recap-since-the-mark) or [full summary](#full-summary) reads a deleted one from its last revision. The deletion is operational work under the [record threshold](#decision-classes) and opens no record.
-- **Who:** each thread tidies only its own folder. The state-of-play thread never tidies a coordination thread's folder, a background agent never deletes a report, and a report whose outcome has no durable home yet is kept, not homed in haste.
-- **When:** at every resting point, in the same commit that secures the thread folder, so that the folder never waits for a mark the owner may not strike for days; at each mark, after the thread has classified the log entries since the last mark; and once more at [Project close](#project-close) as part of the close-out tidy. Kris chose the resting-point trigger, with a rubric item that flags untidy folders and a state-of-play flag at its own mark, as option a) of the THREADS-TRIM query, on 2026-10-16 in these words: "Take the recommended option a) for OTHER-PUSH, REPIN, GATE-PRINCIPAL, PMO-CI, CI-FINDINGS, MSG-LANDED, MSG-ORPHANS, THREADS-TRIM and TMP-CLOSE, including pushing other sessions' commits that sit beneath this thread's in ki-agentic-harness and ki-principal." A thread applies the rule to its own folder at its next mark after this rule reached it, and the thread that set it applies it first once its commit gate passes. A thread whose folder holds anything outside the closed list at a resting point or a mark trims it in the same commit as the report deletions.
-- **Flagging:** the rubric's PMO-9 lists every thread folder holding a file outside the closed list, and every report whose Needs tags the decisions log all names, as candidates for the tidy; whether each candidate's outcome has a durable home stays the owning thread's judgement, and the listing is never permission to delete. At its own mark the state-of-play thread names each flagged folder in the messages block of that folder's checkpoint, and the owning thread tidies it at its next resting point.
+- **What goes:** every `<name>.report.md` whose queries are all answered and whose outcome has a durable home, a work record, the decisions log, the work file or a commit; and every `briefs/<run>.md` once its run's report has been received, under the `ki-delegation` [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet). A query is answered when the owner has answered its Needs tag and the answer is read back in the log.
+- **What stays:** `work.md` and `decisions.md`, always; every report that still carries an open query; every brief whose handoff is open; and `design/` until its notes graduate.
+- **What does not belong:** any other file. Temporary output belongs under `tmp/<run>/<name>/` in the repository its agent worked in, and the coordinator deletes, by explicit path, each `tmp/<run>/` folder of its own whose output is superfluous.
+- **How:** in one commit by explicit path, `git rm` of each file it names and nothing else, never a folder-wide delete, so that Git history holds every report and a later [recap](#recap-since-the-mark) or [full summary](#full-summary) reads a deleted one from its last revision. The deletion is operational work under the [record threshold](#decision-classes) and opens no record.
+- **Who:** each coordinator prunes only its own folder. Territory work never prunes another work folder, a background agent never deletes a report, and a report whose outcome has no durable home yet is kept, not homed in haste.
+- **Flagging:** the rubric's PMO-9 lists every work folder holding a file outside the closed list, and every report whose Needs tags the decisions log all names, as candidates for the prune; whether each candidate's outcome has a durable home stays the owning coordinator's judgement, and the listing is never permission to delete. At its own mark territory work names each flagged folder in that work file's Messages section, and the owning coordinator prunes it at its next send. A `+/_THREADS/<run>/` folder is checked against its old closed list, `decisions.md` and `<name>.report.md`, for the tolerance window.
 
-### Draining a thread
+### Putting work on hold
 
-A drain brings a thread to a full stop, a **hold**, so that it can be archived and picked up later from the repository alone. Kris named the parts on 2026-10-15: "I am guessing a Mark is a point in time and a Hold / Drain is a Mark + stopping all work", and then renamed the state, in these words: "we should be able to issue a drain across a territory, and a drain could be used not only because it is moving somewhere else, but ... when I bring it to a close for a period of time ... hold is a better word than drain. And what happens when you go on a hold is that you drain any work that is ongoing by not restarting any." The state-of-play checkpoint records the verbs he set the same day: "drain and resume are the activities and hold is the state: a thread drains to reach a hold and resumes to leave it." So hold is a thread state beside at rest, busy and done; drain is the activity that reaches it and resume the activity that leaves it. A hold serves a move between hosts or closes a thread for a period, and never says which host the work comes back up on. A thread drains only when the owner asks, or when the owner puts the territory on hold, and every thread that drains takes this form. Only a coordinating thread drains; a conversational thread with a checkpoint pauses through a `ki-checkpoint` UPDATE of `Current state` and `Next step`. Kris set the procedure on 2026-10-15, when it was still called the drain, in these words:
+On hold is the state the note's On hold paragraph sets, with its two reasons, paused and more expected, and drain is the activity into it, never a state. Kris named the parts on 2026-10-15: "a Mark is a point in time and a Hold / Drain is a Mark + stopping all work", and "hold is a better word than drain. And what happens when you go on a hold is that you drain any work that is ongoing by not restarting any." A hold is agreed only from With supervisor: the owner says `pause` or `done for now`, and a coordinator may propose one in its send. A hold serves a move between hosts, closes work for a period, or rests work between waves, and never says which host the work comes back up on. A conversational session's ad hoc work goes On hold through a work-file update, with no hold report. Kris set the drain on 2026-10-15, in these words:
 
 > 1. Check you are wrapped up. Nothing is running or queued: let any agent that will finish within about 15 minutes finish; otherwise stop it at a safe point and record where it stopped and how to restart it. Do what you still can to finish small open items yourself, through a run if needed. Do not start new work.
 > 2. Commit and push. In every repository you or your agents touched, commit your own work by explicit path under its gate, pull with rebase, and push fast-forward only. Never use --no-verify or force-push. Name any other session's commit or uncommitted file; don't touch it.
 > 3. Park everything in the checkpoint. Strike a mark. Move every open query (tag, one-line context, recommended option), held item, parked item, waiting-on item and the next step into the checkpoint, set running to nothing and state to drained, and copy into the thread folder anything from ~/.local/state/ki/agents/<run>/ needed to resume. Remove re-copied retired reports by explicit path. Commit and push the checkpoint and thread folder.
 > 4. Do not make a baseline or empty commit; Kris does that afterwards.
-> 5. Give a short drain report, and nothing else:
->    - the usual report heading, with the form line "**Drain report at <local time> · mark <local time>**";
->    - ## Done: one line per repository, "pushed" or what is left and why;
->    - ## Parked: the tags of the queries parked in the checkpoint, one line each, with no options and no reply block;
->    - ## Left over: anything that needs Kris or belongs to another session, or "Nothing";
->    - then the DRAINED frame exactly as drawn, with the UTC time in its top border, then the list, then the resume line.
+> 5. Give a short drain report, and nothing else: [...]
 >
 > If you cannot drain (unpushable work or a run that must not be stopped), use the BUSY frame instead and say in one line what is blocking.
 
-Applied, with the drain report now the hold report and `state to drained` now the pick-up block's status `hold`:
+Applied under the work model, the checkpoint being the work file and the thread folder the work folder:
 
-- **Wrapping up:** an agent stopped at a safe point has where it stopped and how to restart it recorded in the checkpoint beside the next step, and no new work starts once the drain begins.
+- **Wrapping up:** an agent stopped at a safe point has where it stopped and how to restart it recorded in the work file's next steps, with its brief kept open in `briefs/<run>.md`, and no new work starts once the drain begins.
 - **Committing:** each repository's own gate runs as usual under `ki-git`, and pushing follows [Pushing beneath other sessions](#pushing-beneath-other-sessions). Another session's commit or uncommitted file is named in `## Left over` and left alone.
-- **Parking:** the mark is struck under [Recap since the mark](#recap-since-the-mark). The thread rewrites its [pick-up block](#picking-up-a-thread) with status `hold`, the hold resume line for its type and its next steps when back in use, writes `Running: nothing` in `Current state` beside `Mark:`, and moves every open query below the pick-up block with its Needs tag, one line of context and its recommended option, so that the thread answers from the checkpoint alone when it resumes. The frontmatter `state` stays `active`, because `ki-checkpoint` RESUME validates it and the thread resumes from the record. The copy from the run's state folder takes only what resuming needs: open queries, and every queued or stopped agent's brief, into the checkpoint. Then the thread sweeps for leftovers - unpushed commits, stale branches, stray untracked files, spent runtime files and `tmp/` coverage - and fixes each or names it under the hold report's `## Left over`.
-- **No baseline:** the thread makes no baseline or empty commit; the owner makes it after the drain.
-- **Report:** the hold report is the thread's last message before the hold. It opens with the [report heading](#banner), its form line reading `**Hold report at <local time> · mark <local time>**`, then `## Done`, `## Parked` and `## Left over`, and nothing else: no `## In Progress`, no `## Queries`, no **Context**, **Query** or **Options** and no reply block, because "the queries live in the checkpoint". It closes with the HOLD frame drawn under [Banner](#banner), the UTC issued time in its top border, then its list, then "To bring this thread back and continue the work, paste this:" and the resume line its pick-up block carries, the only resume line it gives.
-- **Cannot drain:** a thread with unpushable work or a run that must not be stopped closes the same report with the BUSY frame and its list, and says in one line what is blocking; it gives no hold resume line until it has drained.
-- **Territory hold:** the owner issues it through the state-of-play thread, as Kris did on 2026-10-15: "you're the only thread that's left running in the Knowledge Islands area. So now you're going to do the orderly drain down to the hold position for the state of play, which effectively puts the entire territory into a state of hold." Every coordination thread drains first and the state-of-play thread drains last. Its pick-up block's next steps name the threads that restart when the hold lifts and those that stay held, because, in Kris's words, "in your drain and reinstatement you just say which threads you think, because you are a state-of-play thread ... which are the ones that you think should be restarted."
-- **Resuming:** the resume line, pasted into the thread on whichever host, re-bootstraps it under [Bootstrap](#bootstrap) from its checkpoint and does what the [pick-up table](#picking-up-a-thread) sets for its banner and type; the thread rewrites its pick-up block and clears `Running: nothing` at its first checkpoint update. A held coordination thread resumes only when the state-of-play pick-up block names it for restart, or the owner does.
+- **Parking:** the mark is struck under [Recap since the mark](#recap-since-the-mark), decisions are struck under the [decisions life cycle](#decisions-life-cycle) and the folder pruned. The coordinator moves every open query into the work file's `## Parked` section with its Needs tag, one line of context and its recommended option, writes its next steps for when the work is back in use, and sets its front matter to `state: on-hold` with `hold.reason` (`paused` or `more-expected`), `hold.release` in words and `since`. Then it commits with the subject `docs(work): <id> hold, paused` or `docs(work): <id> hold, more expected`, and pushes. It makes no baseline or empty commit.
+- **Report:** the hold report is the send that announces the hold. It opens with the [report heading](#banner), its form line reading `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, then `## Done`, `## Parked` and `## Left over`, and nothing else: no `## In Progress`, no `## Queries` and no **Context**, **Query** or **Options**. It closes with the On hold banner, then "To bring this work back and continue it, paste this:" and the send line that lifts the hold.
+- **Cannot drain:** work with unpushable changes or a run that must not be stopped stays With worker, blocked; its report says in one line what is blocking and gives no hold send line.
+- **Territory hold:** the owner issues it through territory work, as Kris did on 2026-10-15: "you're the only thread that's left running in the Knowledge Islands area. So now you're going to do the orderly drain down to the hold position for the state of play, which effectively puts the entire territory into a state of hold." Every piece of Project work goes on hold first and territory work last. Territory work's next steps name the work that restarts when the hold lifts and the work that stays on hold.
+- **Release:** `resume`, the release condition being met, or, for more expected, new work arriving, moves the work to Handoff to worker; the coordinator re-reads the work file, puts the parked queries back as open queries and starts from its next steps. `finish` moves it to Finished. A paused hold older than 31 days is flagged in the views.
 
-### Picking up a thread
+### Picking work up
 
-The checkpoint alone says how a thread is picked up. Kris set it on 2026-10-15, in these words: "based on any of the banner types, it should also update the initial or the start point in the checkpoint. So the first thing in a checkpoint should be about how a checkpoint is picked up from. ... if a hold is put into place, its status becomes hold as well, and it says what is necessary to then effectively start up again. And for something like a coordination thread, it is obviously the continuation of the work that it was doing, questions it needs to ask. It does not have to state the questions there ... but it should be clear about what its next steps are when it becomes back into use. If something has got a mark, it can be updated with the mark heading". The state-of-play checkpoint records how the pieces combine: "the pick-up state is the combination of the banner type and the thread type (conversational, coordination, or state-of-play as the coordination of coordinations), each with its own instructions". The restart-model design note in Knowledge Islands Principal's ways-of-working Project worked the combinations out, and this section adopts it.
+The work file alone says how work is picked up. Kris set the principle on 2026-10-15, "the first thing in a checkpoint should be about how a checkpoint is picked up from", and the work model replaced the pick-up block with the work file's front matter: its state, holder, since, hold and mark say where the work lies, and its next steps say what the worker does when it is back in use. Every send, receive, mark and hold rewrites the front matter to agree with the banner the report closes with. Neither the work file nor any send line names a host; where a territory is seated is host data, not work state.
 
-- **Pick-up block:** the first thing under the checkpoint's H1, with the [messages block](#messages-between-threads) directly beneath it and `## Objective` after both. Its heading is one bold line, not an H2, so that the checkpoint keeps `ki-checkpoint`'s closed heading sequence, as Kris set on 2026-10-15: "Keep the bold-line pick-up heading, so every checkpoint passes ki-checkpoint unchanged." Open and parked queries stay below it, not in it.
-- **Every banner writes it:** a REST, BUSY, HOLD or DONE banner rewrites the status, resume line and next steps to agree with the banner, and a [mark](#recap-since-the-mark) also rewrites the mark in its heading. DONE writes it as the last change before `ki-checkpoint` REMOVE, so Git history holds the final state.
-- **No host:** neither the pick-up block nor any resume line names a host. Where a territory is seated is host data, not thread state.
-- **Status lives in the block:** the checkpoint frontmatter keeps `state: active`, because `ki-checkpoint` RESUME validates it, and the block's status line replaces the `State:` line in `Current state`.
+| State | First on pick-up |
+| --- | --- |
+| With worker | Recovery, not a planned restart: reconcile each running and queued agent against `ki agent status`; one not found counts as stopped and restarts from its open brief |
+| Handoff to supervisor, With supervisor | Re-read the work file and decisions, take the owner's answers, mark, Summary with the open queries carried forward |
+| Handoff to worker | Receive: re-read the work file and decisions, read back the owner's answers, restart authorised work |
+| Handoff to `<target>` | Check the target's state; stay in handoff until it receives or replies |
+| On hold | Only on `resume`, the release, or territory work's next steps naming it: put the parked queries back and continue from the next steps |
+| Finished | Nothing resumes. Reopening is a new opener from territory work |
 
-```markdown
-**Pick-up - mark <YYYY-MM-DDTHH:MM:SSZ> (<local time>)**
+A restart prompt is the send line, verbatim; no session is given a bespoke prompt. Whatever must be done first on pick-up is a `FIRST-STEP` line in the Messages section. Work that others wait on writes `READY` into territory work's Messages section, and territory work then gives the owner each waiting piece's send line in its own order.
 
-- **Status:** rest | busy | hold | done, with one line on why.
-- **Resume:** `<resume line from the table>`
-- **Next steps, in order:** what the thread does when back in use.
-```
+An old-shape checkpoint keeps its pick-up block, read as the table above through the mapping in [The work model](#the-work-model), until its territory's migration moves it.
 
-| Banner | Thread type | Status | Resume line in the pick-up block | First on resume |
-| --- | --- | --- | --- | --- |
-| REST | Coordination | `rest` | `Resume <label> under current ki-pmo and ki-delegation since <mark>: re-bootstrap, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.` | Re-bootstrap, act on the messages block, mark, Summary with the open queries carried forward |
-| REST | State-of-play | `rest` | As coordination, label `<Space> > SoP` | As coordination, then check each coordination thread's pick-up block |
-| BUSY | Coordination or state-of-play | `busy` | `Resume <label> from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, reconcile running agents with ki agent status, take stock, restart only what stopped, then banner.` | Recovery, not a planned restart: reconcile each `[running]` and `[queued]` agent against `ki agent status`; one not found counts as stopped and restarts from its brief |
-| HOLD | Coordination | `hold` | `Resume <label> from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, take stock, put the parked queries back, restart authorised work, then banner.` | Only when the state-of-play pick-up block names it for restart, or the owner does: continue from its next steps, raise the parked queries as open queries |
-| HOLD | State-of-play | `hold` | `Resume <Space> > SoP from its checkpoint under current ki-pmo and ki-delegation since <mark>: re-bootstrap, read the pick-up block, fold or discard held branches, take stock, reinstate the threads it names, put the parked queries back, then banner.` | Resumes first; hands its resume line to each thread its next steps name for restart, and every other thread stays held |
-| DONE | Coordination | `done` | None | Nothing resumes. Reopening is a new opener from the state-of-play thread |
-| DONE | State-of-play | `done` | None | Territory closed. Nothing resumes |
+### Work awaiting review
 
-The BUSY resume line lives only in the pick-up block: a report whose footer reads BUSY still carries no resume line, because the resume line is "shown only at rest". These combinations cannot occur:
+`+/_WORK_REVIEW/<id>/` is the holding area for migrated work a territory's migration was not confident is live, as Kris set under MIGRATION-REVIEW on 18 October: "put everything which you're confident in into the work folder and then put everything else into a underscore work review folder ... you're not waiting on me to answer those, and then we can pick up on the review ones later". Its folders keep the work-folder shape, and its index note, `+/_WORK_REVIEW/README.md`, gives one line per folder saying why it is there.
 
-- **Any banner or pick-up block on a conversational thread.** Its checkpoint, if it has one, is the plain `ki-checkpoint` record under [Coordinator-only machinery](#coordinator-only-machinery).
-- **DONE on the state-of-play thread** except at territory close.
-- **DRAINED as its own state.** DRAINED was the interim name for HOLD: a DRAINED frame or a `State: drained` line is picked up as HOLD of the same thread type.
-
-A restart prompt is the pick-up block's resume line, verbatim; no thread is given a bespoke prompt. Whatever a thread must do first on restart is a `FIRST-STEP` line in its messages block. A thread that others wait on writes `READY` into the state-of-play thread's block, and that thread then gives the owner each waiting thread's resume line in its own pick-up order.
+- **Not live:** work awaiting review is neither picked up, dispatched nor counted against the cap; `ki work status` keeps it out of the five views and shows it as a count.
+- **Leaving review:** the owner, or the work itself at its next mark, moves a folder to `+/_WORK/<id>/` by `git mv` when it is live, or deletes it when it is not, removing its index line in the same commit.
+- **Checks:** the rubric accepts the holding area and reports its count; it applies no closed-list or link check to it until the folder leaves review.
 
 ### Pushing beneath other sessions
 
 Several sessions commit into one checkout, so a session's commits can sit on top of another's that are not yet pushed. Kris set the rule on 2026-10-14, in these words: "The most important thing is that each agent session commits its own work. And if there's a need or it has little confidence in the other commits that are stacked up with it, that's flagged to me, and I will then push if I'm happy with the push. If it's only their commits, then them committing and pushing is absolutely fine though."
 
-- **Commit:** every session, a coordinating thread or a background agent, commits its own work by explicit path, under the `ki-delegation` [coordination](../../../governance/ki-delegation/references/standards-background-runs.md#coordination) rules.
+- **Commit:** every session, a coordinator or a background agent, commits its own work by explicit path, under the `ki-delegation` [coordination](../../../governance/ki-delegation/references/standards-background-runs.md#coordination) rules.
 - **Push:** before pushing it fetches and reads what lies between the remote branch and its own commits. When only its own commits are stacked there, it pushes fast-forward under its authority. When another session's commits are stacked with its own, it does not push them on its own account: it names each one, by repository, commit and subject, to the owner, who decides the push.
-- **Report:** the thread shows the wait as `- [unpushed] <what>` in its footer list and, where the owner must decide, as a query; a background agent names the stacked commits in its report's `## In Progress`.
+- **Report:** the coordinator shows the wait as `- [unpushed] <what>` in its banner list and, where the owner must decide, as a query; a background agent names the stacked commits in its report's `## In Progress`.
 
 ### Keeping primary checkouts current
 
-Background agents work in worktrees and push their own commits, so the owner's primary checkouts fall behind. The coordinating thread fast-forward pulls each affected primary checkout periodically: after a background agent that pushed finishes, and before a recap.
+Background agents work in worktrees and push their own commits, so the owner's primary checkouts fall behind. The coordinator fast-forward pulls each affected primary checkout periodically: after a background agent that pushed finishes, and before a recap.
 
 It pulls only with `--ff-only` into a clean checkout. A checkout with uncommitted changes, or one that has diverged from its upstream, is skipped and reported to the owner rather than stashed, rebased or reset. The pull is a quick one-step check under [Coordinator responsiveness](#coordinator-responsiveness); anything needing repair goes to a background agent or the owner.
 
 ### Refreshing this guidance
 
-A coordinating thread re-reads this standard on its own, without the owner asking:
+A coordinator re-reads this standard on its own, without the owner asking:
 
 - at bootstrap or re-bootstrap;
-- before each checkpoint update;
+- before each work-file update;
 - whenever the skill has changed since its last read.
 
-To detect a change, it compares the latest commit touching `skills/change-management/ki-pmo` in the `ki-agentic-harness` checkout, from `git log -1 --format=%h -- skills/change-management/ki-pmo`, with the revision it last read. It notes that revision in its checkpoint's `Current state` as `ki-pmo read at <revision>`. A checkpoint that still carries the older `ki-delegation read at <revision>` line replaces it with the `ki-pmo` line at its next update. It then follows the current text and, when anything changed, tells the owner in one line what changed.
+To detect a change, it compares the latest commit touching `skills/change-management/ki-pmo` in the `ki-agentic-harness` checkout, from `git log -1 --format=%h -- skills/change-management/ki-pmo`, with the revision it last read, which it notes in its work file's next steps as `ki-pmo read at <revision>`. It then follows the current text and, when anything changed, tells the owner in one line what changed.
 
 ## Mechanical boundary
 
-The native rubric is thin and complementary to `ki-checkpoint`'s. It checks only what the repository shows: a Capital holds the `_state-of-play.md` checkpoint and no other repository does; each coordination checkpoint's label ends in the Project name its filename carries, and that Project and its Initiative resolve in the Capital's registry; the active coordination threads are within the cap; and every full record identifier in a thread report under `+/_THREADS/` is a link to an existing file, as [Linking records](#linking-records) describes. It cannot judge whether a coordinator kept its turn budget, whether a report took the owner-report shape under its report heading and closed with the banner frame and, at rest, the resume line, whether a recap covered the window since the mark, whether decisions were classified and promoted, or whether the thread refreshed this guidance; the PMO judgment items review those from transcripts, reports and checkpoints the owner selects.
+The native rubric is thin and complementary to `ki-checkpoint`'s. It checks only what the repository shows: a Capital holds its territory work and no other repository does; each piece of Project work names a Project that resolves in the Capital's registry, its title ends in the Project's title, and any theme resolves too; the level each work file declares agrees with its id; the active Project work is within the cap; every full record identifier in a report under `+/_WORK/` is a link to an existing file, as [Linking records](#linking-records) describes; recommended options carry their confidence; and each work folder holds only its closed list and reports with open queries. For the tolerance window it reads `+/_CHECKPOINTS/` and `+/_THREADS/` as before and warns on each, naming its new home, and it accepts `+/_WORK_REVIEW/` as a holding area. It cannot judge whether a coordinator kept its turn budget, whether a report took the owner-report shape under its report heading and closed with the glyph banner, whether a spoken answer was read back, whether a recap covered the window since the mark, whether decisions were struck, pointed or kept, or whether the coordinator refreshed this guidance; the PMO judgment items review those from transcripts, reports and work files the owner selects.

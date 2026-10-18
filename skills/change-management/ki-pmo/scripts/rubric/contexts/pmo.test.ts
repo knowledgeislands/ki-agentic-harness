@@ -8,10 +8,13 @@ import {
   isCapital,
   recordIdentifiers,
   reportConfidenceFindings,
+  reportHasGlyphForm,
   reportIssuedDay,
   reportLinkFindings,
   reportQueryTags,
-  repositoryIdentity
+  repositoryIdentity,
+  workFolderFindings,
+  workLevel
 } from './pmo.ts'
 
 const roots: string[] = []
@@ -40,6 +43,22 @@ const report = (root: string, run: string, name: string, body: string): void => 
   writeFileSync(join(root, '+', '_THREADS', run, `${name}.report.md`), body)
 }
 
+const work = (root: string, id: string, fields: Record<string, string>): string => {
+  const folder = join(root, '+', '_WORK', id)
+  mkdirSync(folder, { recursive: true })
+  const frontmatter = Object.entries(fields)
+    .map(([key, value]) => `${key}: '${value}'`)
+    .join('\n')
+  writeFileSync(join(folder, 'work.md'), `---\n${frontmatter}\n---\n\n# ${id}\n`)
+  return folder
+}
+
+/** A flat registry page, `Streams/<kind>/<slug>.md`, the work-model shape. */
+const page = (root: string, kind: 'Projects' | 'Themes', slug: string): void => {
+  mkdirSync(join(root, 'Streams', kind), { recursive: true })
+  writeFileSync(join(root, 'Streams', kind, `${slug}.md`), `# ${slug}\n`)
+}
+
 const register = (root: string, kind: 'Projects' | 'Initiatives', slug: string): void => {
   mkdirSync(join(root, 'Streams', kind, slug), { recursive: true })
   writeFileSync(join(root, 'Streams', kind, slug, `${slug}.md`), `# ${slug}\n`)
@@ -50,7 +69,9 @@ const context = (root: string) => {
   return session.subjects[0]!.context()
 }
 
-const statuses = (outcomes: readonly { status: string }[]) => outcomes.map((outcome) => outcome.status)
+/** Each outcome's status, a tolerance-window warning reading `WARN`. */
+const statuses = (outcomes: readonly { status: string; level?: string }[]) =>
+  outcomes.map((outcome) => (outcome.level === 'WARN' ? 'WARN' : outcome.status))
 
 afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })
@@ -79,22 +100,22 @@ describe('state-of-play checkpoint', () => {
     expect(statuses(context(root).master.outcomes)).toEqual(['VIOLATION'])
   })
 
-  test('a Capital with a labelled state-of-play checkpoint passes', () => {
+  test('a Capital with a labelled state-of-play checkpoint passes with the tolerance warning', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
-    expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).master.outcomes)).toEqual(['WARN'])
   })
 
-  test('a state-of-play checkpoint labelled `<Space> > SoP` passes', () => {
+  test('a state-of-play checkpoint labelled `<Space> > SoP` passes with the tolerance warning', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'KI > SoP' })
-    expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).master.outcomes)).toEqual(['WARN'])
   })
 
   test('a state-of-play checkpoint with another label is a violation', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'KI state of play' })
-    expect(statuses(context(root).master.outcomes)).toEqual(['VIOLATION'])
+    expect(statuses(context(root).master.outcomes)).toEqual(['VIOLATION', 'WARN'])
   })
 
   test('a state-of-play checkpoint outside a Capital is a violation', () => {
@@ -122,7 +143,7 @@ describe('coordination thread checkpoints', () => {
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI Model: ways-of-working' })
     register(root, 'Projects', 'ways-of-working')
     register(root, 'Initiatives', 'knowledge-islands-model')
-    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).labels.outcomes)).toEqual(['WARN'])
   })
 
   test('a `<Space> > <Initiative> > <project in words>` label passes', () => {
@@ -131,7 +152,7 @@ describe('coordination thread checkpoints', () => {
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI > Model > ways of working' })
     register(root, 'Projects', 'ways-of-working')
     register(root, 'Initiatives', 'knowledge-islands-model')
-    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).labels.outcomes)).toEqual(['WARN'])
   })
 
   test('a label not ending in the Project name is a violation', () => {
@@ -141,7 +162,7 @@ describe('coordination thread checkpoints', () => {
     register(root, 'Projects', 'ways-of-working')
     register(root, 'Initiatives', 'knowledge-islands-model')
     const outcomes = context(root).labels.outcomes
-    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'WARN'])
     expect(outcomes[0]?.message).toContain('ends in its Project name')
   })
 
@@ -151,13 +172,13 @@ describe('coordination thread checkpoints', () => {
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI Model: ways-of-working' })
     mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })
     mkdirSync(join(root, 'Streams', 'Initiatives'), { recursive: true })
-    expect(statuses(context(root).labels.outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
+    expect(statuses(context(root).labels.outcomes)).toEqual(['VIOLATION', 'VIOLATION', 'WARN'])
   })
 
   test('the registry is not consulted outside a Capital', () => {
     const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI Model: ways-of-working' })
-    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).labels.outcomes)).toEqual(['WARN'])
   })
 })
 
@@ -207,7 +228,7 @@ describe('active thread cap', () => {
       checkpoint(root, `initiative.${project}`, { label: `Initiative: ${project}` })
     const outcomes = context(root).cap.outcomes
     expect(statuses(outcomes)).toEqual(['VIOLATION'])
-    expect(outcomes[0]?.message).toContain('5 coordination threads')
+    expect(outcomes[0]?.message).toContain('5 pieces of Project work')
   })
 
   test('a closed thread does not count', () => {
@@ -250,7 +271,7 @@ describe('thread report links', () => {
     report(root, 'ways-of-working', 'links', `# Report\n\n- Accepted [KI-HARNESS-GOV-187](${record}) as done.\n`)
     const outcomes = context(root).links.outcomes
     expect(statuses(outcomes)).toEqual(['PASS'])
-    expect(outcomes[0]?.message).toContain('1 thread report')
+    expect(outcomes[0]?.message).toContain('1 work report')
   })
 
   test('a bare identifier in a report is a violation naming it', () => {
@@ -295,7 +316,7 @@ describe('thread report links', () => {
     writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'decisions.md'), '- accept KI-HARNESS-GOV-187\n')
     const outcomes = context(root).links.outcomes
     expect(statuses(outcomes)).toEqual(['PASS'])
-    expect(outcomes[0]?.message).toContain('No thread report')
+    expect(outcomes[0]?.message).toContain('No work report')
   })
 })
 
@@ -363,11 +384,11 @@ describe('thread folder tidy', () => {
     expect(reportQueryTags('# Run\n\n## Queries\n\nNo outstanding queries\n')).toEqual([])
   })
 
-  test('a folder of the closed list whose reports carry open queries passes', () => {
+  test('a thread folder of the closed list whose reports carry open queries passes with the tolerance warning', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     log(root, '- ROUTINE - "Take option a) for PMO-CI"\n')
     report(root, 'ways-of-working', 'open', queries('PMO-CI', 'THREADS-TRIM'))
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
   })
 
   test('a report whose every query the log names, or with none, is listed for the tidy', () => {
@@ -377,7 +398,7 @@ describe('thread folder tidy', () => {
     report(root, 'ways-of-working', 'quiet', '# Run\n\n## Queries\n\nNo outstanding queries\n')
     report(root, 'ways-of-working', 'partial', queries('PMO-CI', 'PMO-CIX'))
     const outcomes = context(root).tidy.outcomes
-    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'WARN'])
     expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working'))
     expect(outcomes[0]?.message).toEndWith(': answered.report.md, quiet.report.md')
   })
@@ -389,13 +410,136 @@ describe('thread folder tidy', () => {
     writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'brief.md'), 'brief\n')
     mkdirSync(join(root, '+', '_THREADS', 'ways-of-working', 'shots'))
     const outcomes = context(root).tidy.outcomes
-    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'WARN'])
     expect(outcomes[0]?.message).toEndWith('outside the closed list: brief.md, shots/')
   })
 
   test('no thread folder is not applicable', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
     expect(statuses(context(root).tidy.outcomes)).toEqual(['NOT_APPLICABLE'])
+  })
+})
+
+describe('work files', () => {
+  const capital = { repository: 'ki-principal', capital: 'ki-principal' }
+  const project = (state = 'with-worker') => ({
+    id: 'ki.ways-of-working',
+    level: 'project',
+    project: 'ways-of-working',
+    theme: 'model',
+    title: 'KI > Model > Ways of working',
+    state
+  })
+
+  test('levels follow the id: one segment territory, `regular` regular, any other Project', () => {
+    expect(workLevel('ki')).toBe('territory')
+    expect(workLevel('ki.regular')).toBe('regular')
+    expect(workLevel('ki.regular.tidy')).toBe('regular')
+    expect(workLevel('ki.ways-of-working')).toBe('project')
+  })
+
+  test('a Capital holding titled territory work passes with no warning', () => {
+    const root = fixture(capital)
+    work(root, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
+    expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
+  })
+
+  test('territory work with another title, or outside a Capital, is a violation', () => {
+    const titled = fixture(capital)
+    work(titled, 'ki', { id: 'ki', level: 'territory', title: 'KI state of play' })
+    expect(statuses(context(titled).master.outcomes)).toEqual(['VIOLATION'])
+    const outside = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    work(outside, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
+    expect(statuses(context(outside).master.outcomes)).toEqual(['VIOLATION'])
+  })
+
+  test('Project work naming a registered Project and theme in flat pages passes', () => {
+    const root = fixture(capital)
+    work(root, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
+    work(root, 'ki.ways-of-working', project())
+    page(root, 'Projects', 'ways-of-working')
+    page(root, 'Themes', 'model')
+    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).roles.outcomes)).toEqual(['PASS'])
+  })
+
+  test('a theme found only in the legacy Initiatives registry warns', () => {
+    const root = fixture(capital)
+    work(root, 'ki.ways-of-working', project())
+    page(root, 'Projects', 'ways-of-working')
+    register(root, 'Initiatives', 'model')
+    const outcomes = context(root).labels.outcomes
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toContain('Streams/Themes/model.md')
+  })
+
+  test('a mismatched project, title, unregistered Project and unknown theme are each a violation', () => {
+    const root = fixture(capital)
+    work(root, 'ki.ways-of-working', { ...project(), project: 'other', title: 'KI > Model > Other', theme: 'nowhere' })
+    page(root, 'Themes', 'model')
+    page(root, 'Projects', 'other')
+    expect(statuses(context(root).labels.outcomes)).toEqual(['VIOLATION', 'VIOLATION', 'VIOLATION', 'VIOLATION'])
+  })
+
+  test('a level or id that disagrees with the folder is a violation', () => {
+    const root = fixture(capital)
+    work(root, 'ki.ways-of-working', { ...project(), id: 'ki.other', level: 'regular' })
+    work(root, 'Bad_Id', { level: 'project' })
+    expect(statuses(context(root).roles.outcomes)).toEqual(['VIOLATION', 'VIOLATION', 'VIOLATION'])
+  })
+
+  test('active Project work counts toward the cap and on-hold or finished work does not', () => {
+    const root = fixture(capital)
+    for (const slug of ['a', 'b', 'c', 'd', 'e']) work(root, `ki.${slug}`, { level: 'project', state: 'with-worker' })
+    expect(context(root).cap.outcomes[0]?.message).toContain('5 pieces of Project work')
+    work(root, 'ki.e', { level: 'project', state: 'on-hold' })
+    work(root, 'ki.f', { level: 'project', state: 'finished' })
+    work(root, 'ki.regular', { level: 'regular', state: 'with-worker' })
+    expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
+  })
+
+  test('work awaiting review is counted, not checked', () => {
+    const root = fixture(capital)
+    mkdirSync(join(root, '+', '_WORK_REVIEW', 'ki.old-thread'), { recursive: true })
+    const outcomes = context(root).cap.outcomes
+    expect(outcomes.map((outcome) => outcome.status)).toContain('INFO')
+    expect(outcomes.find((outcome) => outcome.status === 'INFO')?.message).toContain('1 work folder(s) await review')
+  })
+
+  test('a report in a work folder has its links checked', () => {
+    const root = fixture(capital)
+    const folder = work(root, 'ki.ways-of-working', project())
+    writeFileSync(join(folder, 'run.report.md'), '# Run\n\nDelivered KI-HARNESS-GOV-210.\n')
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.message).toContain('KI-HARNESS-GOV-210')
+  })
+
+  test('a report with a glyph form line has its confidence checked whatever its date', () => {
+    expect(
+      reportHasGlyphForm('**🤖 → 🧑 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**')
+    ).toBe(true)
+    expect(reportHasGlyphForm('**Summary at 19:13 BST · last mark 14:54 BST**')).toBe(false)
+    const root = fixture(capital)
+    const folder = work(root, 'ki.ways-of-working', project())
+    writeFileSync(
+      join(folder, 'run.report.md'),
+      '# Run\n\n**🤖 → 🧑 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**\n\n## Queries\n\n### TAG - a question\n\n**Options:**\n\na) (recommended) Do it.\n'
+    )
+    expect(statuses(context(root).confidence.outcomes)).toEqual(['VIOLATION'])
+  })
+
+  test('a work folder keeps its closed list, briefs/ and design/ included', () => {
+    const root = fixture(capital)
+    const folder = work(root, 'ki.ways-of-working', project())
+    mkdirSync(join(folder, 'briefs'))
+    mkdirSync(join(folder, 'design'))
+    writeFileSync(join(folder, 'decisions.md'), '# Decisions\n')
+    expect(workFolderFindings(folder).stray).toEqual([])
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
+    writeFileSync(join(folder, 'notes.md'), '# Notes\n')
+    expect(workFolderFindings(folder).stray).toEqual(['notes.md'])
+    expect(context(root).tidy.outcomes[0]?.message).toStartWith('a work folder holds only')
   })
 })
 

@@ -5,16 +5,16 @@ const SOURCE = 'standards-pmo.md'
 
 const PMO_1: RubricItem<PmoRubricContext> = {
   code: 'PMO-1',
-  title: 'the state-of-play checkpoint belongs to the Capital',
+  title: 'territory work belongs to the Capital',
   description:
-    'A territory Capital, a repository whose declared `capital` is itself, holds the state-of-play thread checkpoint `+/_CHECKPOINTS/_state-of-play.md` labelled `<Space> > SoP`, or `Master: state-of-play` until its change is approved, and no other repository holds one.',
-  sources: [`${SOURCE}#state-of-play-thread`],
+    'A territory Capital, a repository whose declared `capital` is itself, holds its territory work, `+/_WORK/<territory>/work.md` with an id of one segment, titled `<Territory> > SoP`, and no other repository holds territory work. For the tolerance window a Capital whose territory work is still the state-of-play checkpoint `+/_CHECKPOINTS/_state-of-play.md` passes with a warning naming its new home.',
+  sources: [`${SOURCE}#territory-work`, `${SOURCE}#the-work-model`],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Open the state-of-play thread in the Capital so it creates `_state-of-play.md` there, and remove a state-of-play checkpoint from any repository that is not its own capital through an explicit `ki-checkpoint` REMOVE.'
+        "Create the territory work file in the Capital under the `ki-checkpoint` work-file standard, or move the state-of-play checkpoint there at the territory's migration, and remove territory work from any repository that is not its own capital."
     },
     audit: { phase: 'INSPECT', run: ({ master }) => master.outcomes }
   }
@@ -22,16 +22,16 @@ const PMO_1: RubricItem<PmoRubricContext> = {
 
 const PMO_2: RubricItem<PmoRubricContext> = {
   code: 'PMO-2',
-  title: 'coordination thread checkpoints resolve in the registry',
+  title: 'Project work resolves in the registry',
   description:
-    "Each `<initiative>.<project>.md` checkpoint's label ends in its Project in words, as in `KI > Model > ways of working`, or in the earlier form `: <project>`, and on a Capital its Project and Initiative resolve in the `Streams/Projects/` and `Streams/Initiatives/` registry.",
-  sources: [`${SOURCE}#coordination-threads`],
+    "Each Project work file `+/_WORK/<territory>.<project>/work.md` names its `project`, its title ends in that Project's title, as in `KI > Model > Ways of working`, and on a Capital its Project resolves in `Streams/Projects/` and any `theme` in `Streams/Themes/`. For the tolerance window an `<initiative>.<project>.md` checkpoint is checked as before, its label ending in its Project in words and its Initiative resolving in `Streams/Initiatives/`, with a warning naming its new home.",
+  sources: [`${SOURCE}#work-naming`, `${SOURCE}#coordinating-work`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Rename the checkpoint or correct its label through an explicit `ki-checkpoint` UPDATE, or register the Project or Initiative under the `ki-work` registry standard.'
+        "Correct the work file's `project`, `theme` or title at its next update, or register the Project or theme under the `ki-work` registry standard."
     },
     audit: { phase: 'INSPECT', run: ({ labels }) => labels.outcomes }
   }
@@ -39,16 +39,16 @@ const PMO_2: RubricItem<PmoRubricContext> = {
 
 const PMO_10: RubricItem<PmoRubricContext> = {
   code: 'PMO-10',
-  title: 'coordinating thread checkpoints declare their role',
+  title: 'work files declare a level that agrees with their id',
   description:
-    "The `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint carries `role: coordination`, or `role: conversational` where the owner runs it as a conversation; no other checkpoint declares `state-of-play`. An existing checkpoint gains the field through its own thread's next update.",
-  sources: [`${SOURCE}#thread-types`],
+    'Each work file declares its `level`, which agrees with its id: one segment is `territory`, a second segment `regular` is `regular`, and any other second segment is `project`. For the tolerance window the `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint `role: coordination`, or `role: conversational`, and no other checkpoint declares `state-of-play`.',
+  sources: [`${SOURCE}#levels-and-forms`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Have the thread add its `role` at its next `ki-checkpoint` UPDATE, or ask through the state-of-play thread's messages block; never edit another thread's checkpoint to add it."
+        "Have the work correct its `level`, or an old-shape checkpoint its `role`, at its next update, or ask through its Messages section; never edit another piece of work's front matter to change it."
     },
     audit: { phase: 'INSPECT', run: ({ roles }) => roles.outcomes }
   }
@@ -56,16 +56,15 @@ const PMO_10: RubricItem<PmoRubricContext> = {
 
 const PMO_3: RubricItem<PmoRubricContext> = {
   code: 'PMO-3',
-  title: 'active coordination threads are within the cap',
+  title: 'active Project work is within the cap',
   description:
-    'At most three or four coordination thread checkpoints are active at once, plus the state-of-play thread.',
-  sources: [`${SOURCE}#state-of-play-thread`],
+    'At most three or four pieces of Project work are active at once, neither On hold nor Finished, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted.',
+  sources: [`${SOURCE}#territory-work`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance:
-        'Have the state-of-play thread close or queue coordination threads until the active list is within the cap, removing a closed checkpoint through an explicit `ki-checkpoint` REMOVE.'
+      guidance: 'Have territory work put Project work on hold or queue it until the active list is within the cap.'
     },
     audit: { phase: 'INSPECT', run: ({ cap }) => cap.outcomes }
   }
@@ -73,16 +72,16 @@ const PMO_3: RubricItem<PmoRubricContext> = {
 
 const PMO_7: RubricItem<PmoRubricContext> = {
   code: 'PMO-7',
-  title: 'every record identifier in a thread report is a link',
+  title: 'every record identifier in a work report is a link',
   description:
-    'In every thread report `+/_THREADS/<run>/*.report.md`, each full record identifier in the prose, a work record such as `KI-HARNESS-GOV-187` or a Decision Record such as `ADR-KI-HARNESS-010`, sits inside the text of a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision. Fenced blocks, such as the reply block, and Needs tags such as `ACCEPT-181` are not checked.',
+    'In every report in a work folder, `+/_WORK/<id>/*.report.md`, and for the tolerance window in every thread report `+/_THREADS/<run>/*.report.md`, each full record identifier in the prose, a work record such as `KI-HARNESS-GOV-187` or a Decision Record such as `ADR-KI-HARNESS-010`, sits inside the text of a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision. Fenced blocks, such as a past reply block, and Needs tags such as `ACCEPT-181` are not checked; work awaiting review is not checked.',
   sources: [`${SOURCE}#linking-records`],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Make each bare identifier the text of a link to its record by absolute path; where the record has been pruned, link it as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`. Fix only the reports of the thread under review.'
+        'Make each bare identifier the text of a link to its record by absolute path; where the record has been pruned, link it as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`. Fix only the reports of the work under review.'
     },
     audit: { phase: 'INSPECT', run: ({ links }) => links.outcomes }
   }
@@ -90,16 +89,16 @@ const PMO_7: RubricItem<PmoRubricContext> = {
 
 const PMO_11: RubricItem<PmoRubricContext> = {
   code: 'PMO-11',
-  title: 'every recommended option in a thread report carries its confidence',
+  title: 'every recommended option in a work report carries its confidence',
   description:
-    'In every thread report `+/_THREADS/<run>/*.report.md` whose footer banner was issued on or after 2026-10-18, each line of its Queries section that marks a lettered option recommended, `<letter>) (recommended`, reads `<letter>) (recommended, confidence high|medium|low - <reason>)`. A report issued earlier, or with no footer banner to date it, and fenced blocks, such as the reply block, are not checked.',
+    'In every report under `+/_WORK/<id>/` or `+/_THREADS/<run>/` whose form line leads with a glyph state, or whose block-letter footer was issued on or after 2026-10-18, each line of its Queries section that marks a lettered option recommended, `<letter>) (recommended`, reads `<letter>) (recommended, confidence high|medium|low - <reason>)`. A report issued earlier, or with neither to date it, and fenced blocks are not checked.',
   sources: [`${SOURCE}#owner-report`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Give each flagged option its confidence and a one-line reason, never `high` for a destructive course resting on claims not verified directly. Fix only the reports of the thread under review.'
+        'Give each flagged option its confidence and a one-line reason, never `high` for a destructive course resting on claims not verified directly. Fix only the reports of the work under review.'
     },
     audit: { phase: 'INSPECT', run: ({ confidence }) => confidence.outcomes }
   }
@@ -107,27 +106,27 @@ const PMO_11: RubricItem<PmoRubricContext> = {
 
 const PMO_9: RubricItem<PmoRubricContext> = {
   code: 'PMO-9',
-  title: 'every thread folder is trimmed to what is still open',
+  title: 'every work folder is pruned to what is still open',
   description:
-    "Each thread folder `+/_THREADS/<run>/` holds only the closed list, `decisions.md` and `<name>.report.md`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The thread tidies its own folder at every resting point as well as at each mark, and the state-of-play thread names the flagged folders at its own mark.",
-  sources: [`${SOURCE}#tidying-the-thread-folder`],
+    "Each work folder `+/_WORK/<id>/` holds only the closed list, `work.md`, `decisions.md`, `<name>.report.md`, `briefs/` and `design/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
+  sources: [`${SOURCE}#pruning-the-work-folder`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "At the owning thread's next resting point, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear. The listing is never permission to delete another thread's files."
+        "At the owning coordinator's next send, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear. The listing is never permission to delete another piece of work's files."
     },
     heuristic: true,
     audit: { phase: 'INSPECT', run: ({ tidy }) => tidy.outcomes }
   },
   judgment: {
-    scope: 'The flagged thread folders, their decisions logs and the checkpoints and records the reports name.',
+    scope: 'The flagged work folders, their decisions logs and the work files and records the reports name.',
     prompt:
-      "Does each flagged report's outcome have a durable home, a work record, the decisions log, the checkpoint or a commit, and is every query it raised answered in the log, so that the owning thread may delete it, and did the state-of-play thread name the flagged folders at its mark?",
-    outcomes: ['conforming', 'tidy the thread folder', 'home the outcome first', 'escalate to owner'],
+      "Does each flagged report's outcome have a durable home, a work record, the decisions log, the work file or a commit, and is every query it raised answered in the log, so that the owning coordinator may delete it, and did territory work name the flagged folders at its mark?",
+    outcomes: ['conforming', 'prune the work folder', 'home the outcome first', 'escalate to owner'],
     guidance:
-      "Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another thread's folder to that thread, told through its messages block."
+      'Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another work folder to its own coordinator, told through its Messages section.'
   }
 }
 
@@ -150,68 +149,65 @@ const PMO_8: RubricItem<PmoRubricContext> = {
 
 const PMO_4: RubricItem<PmoRubricContext> = {
   code: 'PMO-4',
-  title: 'coordinators stay responsive and threads stay current',
+  title: 'coordinators stay responsive and work stays current',
   description:
-    'A coordinating thread never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the checkpoint, `ki agent status`, one report and one short file and writes limited to the checkpoint, the decisions log and a brief, waits only through a detached waiter or monitor, keeps a background check armed while work runs that wakes it at least every 5 minutes, or sooner when an agent finishes, for a one-to-two-line timed update naming the current step of each running agent, with no heartbeat at rest, answers owner messages within one short turn and reports drift in one line; each territory Capital has one state-of-play thread at `_state-of-play.md` doing project management only, keeping the coordination-thread queue within its cap and seeding each checkpoint and opener; a coordination thread works only its Project, follows the bootstrap, keeps its checkpoint current and records approvals before launching.',
-  sources: [`${SOURCE}#coordinator-responsiveness`, `${SOURCE}#coordination-threads`],
+    'A coordinator never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the work file, `ki agent status`, one report and one short file and writes limited to the work file, the decisions log and a brief, waits only through a detached waiter or monitor, keeps a background check armed while work lies with a worker that wakes it at least every 5 minutes, or sooner when an agent finishes, for a one-to-two-line timed update naming the current step of each running agent, with no heartbeat otherwise, answers owner messages within one short turn and reports drift in one line; each territory Capital has one piece of territory work doing project management only, keeping the Project-work queue within its cap and seeding each work folder and opener; Project work works only its Project, follows the bootstrap, keeps its work file current and records approvals before launching.',
+  sources: [`${SOURCE}#coordinator-responsiveness`, `${SOURCE}#coordinating-work`],
   judgment: {
-    scope:
-      'Coordinating-thread transcripts, project checkpoints, decisions logs and recaps the owner selects for review.',
+    scope: 'Coordinator transcripts, work files, decisions logs and recaps the owner selects for review.',
     prompt:
-      'Did the coordinator keep within five tool calls a turn, delegate rather than analyse, draft, edit, test or wait in the foreground, give a timed heartbeat update naming the current step of each running agent at least every 5 minutes while work ran and none at rest, answer owner messages within one short turn and stop work only on an express, named instruction, does the state-of-play thread stay on project management with active coordination threads within the cap and a prepared checkpoint and opener for each, and does each coordination thread work through background agents from a current checkpoint?',
+      'Did the coordinator keep within five tool calls a turn, delegate rather than analyse, draft, edit, test or wait in the foreground, give a timed heartbeat update naming the current step of each running agent at least every 5 minutes while work lay with a worker and none otherwise, answer owner messages within one short turn and stop work only on an express, named instruction, does territory work stay on project management with active Project work within the cap and a prepared work folder and opener for each, and does each piece of Project work run through background agents from a current work file?',
     outcomes: ['conforming', 'delegate longer work', 'escalate to owner'],
     guidance:
-      'Move longer coordinator work into background agents and note the drift in the checkpoint; escalate to the state-of-play thread when a direction touches more than one Project.'
+      'Move longer coordinator work into background agents and note the drift in the work file; escalate to territory work when a direction touches more than one Project.'
   }
 }
 
 const PMO_5: RubricItem<PmoRubricContext> = {
   code: 'PMO-5',
-  title: 'threads park tangents, link records and keep checkouts current',
+  title: 'coordinators park tangents, link records and keep checkouts current',
   description:
-    'A coordinating thread parks passing side topics as dated one-line items under its checkpoint Open questions, cites and links every record, checkpoint, Initiative and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.',
-  sources: [`${SOURCE}#thread-working-rules`],
+    "A coordinator parks passing side topics as dated one-line items in its work file's Parked section, cites and links every record, work file, theme and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.",
+  sources: [`${SOURCE}#working-rules`],
   judgment: {
-    scope:
-      'Coordinating-thread transcripts, status lines, reports, recaps and checkpoints the owner selects for review.',
+    scope: 'Coordinator transcripts, status lines, reports, recaps and work files the owner selects for review.',
     prompt:
-      "Were side topics parked without derailing the work and later homed or dropped, does every mention of a record, checkpoint, Initiative or Project carry its full identifier and a local link, and are the owner's primary checkouts current, with dirty or diverged ones reported rather than altered?",
+      "Were side topics parked without derailing the work and later homed or dropped, does every mention of a record, work file, theme or Project carry its full identifier and a local link, and are the owner's primary checkouts current, with dirty or diverged ones reported rather than altered?",
     outcomes: ['conforming', 'park or home tangents', 'fix references', 'refresh checkouts', 'escalate to owner'],
     guidance:
-      'Move tangents into checkpoint Open questions or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it.'
+      "Move tangents into the work file's Parked section or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it."
   }
 }
 
 const PMO_6: RubricItem<PmoRubricContext> = {
   code: 'PMO-6',
-  title: 'threads report in the three forms, recap since the mark and refresh their guidance',
+  title: 'coordinators report in the owner forms, recap since the mark and refresh their guidance',
   description:
-    "A coordinating thread asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work, opens every Summary, recap, full summary and re-bootstrap report with the report heading, with no rule before it, one `#` heading of the Initiative linked to its local note, ` › ` and the Project linked to its local note, both as display names, a bold line giving the form, the local time and the last mark, and one rule, a report written before 2026-10-14 keeping its earlier heading, keeps the sections at H2 and each query at H3 under the `ki-delegation` owner report, each query carrying Context, Query and lettered Options with a) marked recommended with a high, medium or low confidence and a one-line reason and no bullets, or Summary, Need from you and Recommendation if written before 2026-10-14, closes every Summary, recap, full summary and re-bootstrap report with the block-letter REST or BUSY footer banner exactly as the standard prints it, the lower-case form word and the issued time in its top border, one blank framed line inside each border, a report issued before 2026-10-14 keeping its `issued` border and unpadded frame, with a blank line and then the bracketed-state list beneath and no label-and-mark line, `- [at rest] nothing running or queued` first when nothing is running or queued, and, at rest, the resume line in its own text block, and DONE once only at Project close, rewrites its checkpoint's pick-up block at every REST, BUSY, HOLD or DONE banner, naming no host, gives a hold report only when the owner asks it to drain to a hold, after parking every open query, held, parked and waiting-on item and the next step in the checkpoint with nothing running and the pick-up block's status `hold`, its sections `Done`, `Parked` and `Left over` under the form line `Hold report at <local time> · mark <local time>`, with no reply block and no Context, Query or Options, closing with the HOLD frame exactly as the standard prints it, its list, the line \"To bring this thread back and continue the work, paste this:\" and the resume line from the pick-up block, a report written before 2026-10-15 keeping its drain report and DRAINED frame, or with BUSY and one line on what blocks it, never points an owner-facing report back to an earlier one, gives a full summary of the whole thread on request with every owner decision linked under Decided and every open query in full, ends at a resting point with a Summary whose banner says it is resting or what it waits on, keeps its one owner-struck mark in its checkpoint Current state and gives recaps since that mark that carry every open item forward across marks, at every resting point and each mark deletes by explicit path every report in its own thread folder whose queries are all answered and whose outcome has a durable home, keeping `decisions.md` and the reports with open queries while Git history holds the rest, and re-reads this standard at bootstrap, before each checkpoint update and whenever the skill has changed, noting the revision read as `ki-pmo read at <revision>`.",
-  sources: [`${SOURCE}#coordinating-thread-practices`, `${SOURCE}#report-forms`, `${SOURCE}#thread-working-rules`],
+    "A coordinator asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work and reads each spoken answer back as taken in the decisions log, opens every Summary, recap, full summary, re-bootstrap and hold report with the report heading, with no rule before it, one `#` heading of the theme linked to its local page, ` › ` and the Project linked to its local note, both as display names, a bold form line leading with the work's glyph state and giving the form, the local time and the last mark, and one rule, keeps the sections at H2 and each query at H3 under the owner report, each query carrying Context, Query and lettered Options with a) marked recommended with a high, medium or low confidence and a one-line reason and no bullets, with no reply block, closes every such report with the glyph banner exactly as the standard prints it, a `###` heading of the glyph state and since, a settled state showing its holder's glyph alone and an arrow only in a handoff state, a counts line and a `- [state] what · holder · since` list, and, in handoff to the owner only, the send line in its own text block, and Finished once only at Project close, rewrites its work file's front matter at every send, receive, mark and hold, naming no host, gives a hold report only when the owner agrees a hold with `pause` or `done for now`, after draining and parking every open query in the work file with its front matter `state: on-hold`, its sections `Done`, `Parked` and `Left over` under the form line `⏸️ On hold · Hold report at <local time> · mark <local time>`, with no Context, Query or Options, closing with the On hold banner, the line \"To bring this work back and continue it, paste this:\" and the hold send line, or stays With worker, blocked, with one line on what blocks it, never points an owner-facing report back to an earlier one, gives a full summary of the whole work on request with every owner decision linked under Decided and every open query in full, keeps its one mark in its work file's front matter and gives recaps since that mark that carry every open item forward across marks, at each mark strikes, points or keeps each decision with no numbering and prunes its own work folder by explicit path, and re-reads this standard at bootstrap, before each work-file update and whenever the skill has changed, noting the revision read as `ki-pmo read at <revision>`. A report written before 2026-10-18 keeps its block-letter frame, resume line and reply block, and one written before 2026-10-14 its earlier heading and query shape.",
+  sources: [`${SOURCE}#coordinating-practices`, `${SOURCE}#report-forms`, `${SOURCE}#working-rules`],
   judgment: {
-    scope:
-      'Coordinating-thread transcripts, summaries, recaps, decisions logs and checkpoints the owner selects for review.',
+    scope: 'Coordinator transcripts, summaries, recaps, decisions logs and work files the owner selects for review.',
     prompt:
-      "Were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched, does every Summary, recap, full summary and re-bootstrap report open with the report heading as the standard draws it, with no rule before it, the Initiative and the Project linked as display names in one `#` heading, the bold form line with the local time and the last mark, and one rule, or an earlier heading if written before 2026-10-14, with the owner report's sections at H2 and queries at H3, each query giving Context, a one-sentence Query and lettered Options with a) marked recommended with a confidence and one-line reason, never high for a destructive course resting on unverified claims, or the earlier Summary, Need from you and Recommendation if written before 2026-10-14, and no pointer back to an earlier report, does every Summary, recap, full summary and re-bootstrap report close with the block-letter REST or BUSY footer exactly as the standard prints it, the lower-case form word and the issued time in its top border, one blank framed line inside each border, a report issued before 2026-10-14 keeping its `issued` border and unpadded frame, a blank line and then the bracketed-state list beneath with `- [at rest]` first when nothing is running or queued and no label-and-mark line, and, at rest, the resume line in its own text block, with no decision number anywhere in the banner, does every banner leave the checkpoint's pick-up block agreeing with it and naming no host, does a hold report carry only Done, Parked and Left over with no reply block, every open query parked in the checkpoint, then the HOLD frame, its list, the closing line and the resume line from the pick-up block, or BUSY and what blocks the drain, does a full summary list every owner decision since the thread began with a link to each and restate every open query in full, does a resting or waiting thread's last message say so, does the checkpoint hold one mark in the standard form that only the owner moved, does each recap cover the window since that mark with outstanding work in full whenever it arose, after each resting point and mark does the thread folder hold only `decisions.md` and the reports with open queries, the answered and homed reports deleted by explicit path and recoverable from Git history, and does the checkpoint's noted ki-pmo revision match the skill's latest change?",
+      "Were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched and every spoken answer read back, does every Summary, recap, full summary, re-bootstrap and hold report open with the report heading as the standard draws it, the theme and the Project linked as display names in one `#` heading, the bold glyph form line and one rule, with the owner report's sections at H2 and queries at H3, each query giving Context, a one-sentence Query and lettered Options with a) marked recommended with a confidence and one-line reason, never high for a destructive course resting on unverified claims, no reply block and no pointer back to an earlier report, does every such report close with the glyph banner as the standard prints it, the holder's glyph alone in a settled state and an arrow only in a handoff state, the counts line and the holder list, with no decision number anywhere in it, and the send line only in handoff to the owner, does every send leave the work file's front matter agreeing with the banner and naming no host, does a hold report carry only Done, Parked and Left over, every open query parked in the work file, then the On hold banner, the closing line and the hold send line, or stay With worker and say what blocks the drain, does a full summary list every owner decision since the work began with a link to each and restate every open query in full, does the work file hold one mark, does each recap cover the window since that mark with outstanding work in full, at each mark were decisions struck, pointed or kept and the work folder pruned to its closed list by explicit path, and does the work file's noted ki-pmo revision match the skill's latest change?",
     outcomes: [
       'conforming',
       'log decisions',
       'add the banner',
       'restore the mark',
-      'tidy the thread folder',
+      'prune the work folder',
       'refresh guidance',
       'escalate to owner'
     ],
     guidance:
-      'Record missing decisions before further launches; open each Summary, recap, full summary and re-bootstrap report with the report heading, the Initiative and the Project linked, and its form line, at the shared heading levels, give each query its Context, Query and lettered Options with a) recommended with its confidence and reason, and close each, and each re-bootstrap report, with the block-letter footer, its list and, at rest, the resume line the standard prints, restate anything that said see earlier, add the linked Decided list and the missing open queries to a full summary, and end a resting point with a Summary that states the wait; restore the mark line in Current state and recap from it; delete by explicit path each report whose queries are answered and whose outcome is homed, keeping any whose home is unclear; and re-read this standard, update the noted revision and tell the owner what changed.'
+      'Record missing decisions and read-backs before further launches; open each report with the report heading, the theme and the Project linked, and its glyph form line, at the shared heading levels, give each query its Context, Query and lettered Options with a) recommended with its confidence and reason, and close each with the glyph banner and, in handoff to the owner, the send line the standard prints, restate anything that said see earlier, add the linked Decided list and the missing open queries to a full summary; restore the mark in the work file and recap from it; strike, point or keep each decision and delete by explicit path each report whose queries are answered and whose outcome is homed, keeping any whose home is unclear; and re-read this standard, update the noted revision and tell the owner what changed.'
   }
 }
 
 export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
   code: 'PMO',
-  title: 'Coordinating threads',
+  title: 'Coordinating work',
   description:
-    'The state-of-play and coordination thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
+    'The territory work and Project work a repository shows in its work files, with old-shape checkpoints for the tolerance window, and the responsiveness, reporting and currency of the coordinators behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
   items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_11, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]

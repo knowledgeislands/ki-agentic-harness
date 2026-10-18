@@ -6,9 +6,9 @@ import { join, resolve } from 'node:path'
 
 const script = resolve(import.meta.dir, 'coordinator-reminder.sh')
 const line =
-  'In a coordinating thread only, one opened or resumed as a ki-pmo coordination or state-of-play thread; in a conversational thread ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md), whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while dispatched work runs, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat at rest; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and closing with the footer banner exactly as the standard prints them; 5) commit your own work by explicit path, and act on each line of the Messages block at the top of the checkpoint, FIRST-STEP first, then remove it.'
+  'In coordinating work only, a session opened or resumed as ki-pmo territory work or Project work; in any other session ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.'
 const pointer =
-  'Context was compacted. In a coordinating thread, before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-thread standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard and your checkpoint in full, run ki agent status and read your inbox, then confirm in one line and answer in owner-report form with the report heading and the footer banner. Re-anchoring moves no mark. In a conversational thread, re-read your checkpoint if you have one and carry on with a conversational reply.'
+  'Context was compacted. While coordinating work, before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard, your work file in full and its decisions log, run ki agent status and read its Messages section, then confirm in one line and answer in owner-report form with the report heading and the glyph banner. Re-anchoring moves no mark. In a conversational session, re-read your work file if you have one and carry on with a conversational reply.'
 
 const root = mkdtempSync(join(tmpdir(), 'ki-coordinator-reminder-'))
 const coordinating = join(root, 'capital')
@@ -95,14 +95,14 @@ const codexPrompt = (cwd: string): string =>
 const sessionStart = (cwd: string, source: string): string =>
   JSON.stringify({ session_id: 'abc123', transcript_path: join(root, 't.jsonl'), cwd, hook_event_name: 'SessionStart', source })
 
-test('a Claude Code owner message in a coordinating thread gets the one line', () => {
+test('a Claude Code owner message in coordinating work gets the one line', () => {
   const outcome = run(claudePrompt(coordinating))
   expect(outcome.status).toBe(0)
   expect(outcome.event).toBe('UserPromptSubmit')
   expect(outcome.context).toBe(line)
 })
 
-test('a Codex owner message in a coordinating thread gets the same line', () => {
+test('a Codex owner message in coordinating work gets the same line', () => {
   const outcome = run(codexPrompt(coordinating))
   expect(outcome.status).toBe(0)
   expect(outcome.event).toBe('UserPromptSubmit')

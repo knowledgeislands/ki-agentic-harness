@@ -1,14 +1,16 @@
 /**
- * Read-only discovery of a repository's coordinating threads for the thin `ki-pmo` rubric.
+ * Read-only discovery of a repository's coordinating work for the thin `ki-pmo` rubric.
  *
- * Boundary: reads the repository's `.ki.toml` identity, its `+/_CHECKPOINTS/` records, the thread reports under
- * `+/_THREADS/<run>/` with their decisions logs, on a Capital the `Streams/Projects/` and `Streams/Initiatives/` registry, and the coordinator
- * binding: the repository's and the user's Claude Code settings, of which it reads only the output style and the hook
+ * Boundary: reads the repository's `.ki.toml` identity, its work files `+/_WORK/<id>/work.md` and the reports and
+ * decisions logs beside them, the holding area `+/_WORK_REVIEW/`, which it only counts, and for the tolerance window
+ * its `+/_CHECKPOINTS/` records and the thread reports under `+/_THREADS/<run>/`, each old shape passing with a
+ * warning; on a Capital the `Streams/Projects/`, `Streams/Themes/` and legacy `Streams/Initiatives/` registry; and the
+ * coordinator binding: the repository's and the user's Claude Code settings, of which it reads only the output style and the hook
  * commands, and the deployed output style. It never
- * writes, and it never judges a transcript: thread behaviour is reviewed by the judgment items from evidence the
+ * writes, and it never judges a transcript: coordinator behaviour is reviewed by the judgment items from evidence the
  * owner selects.
  */
-import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
+import { type Dirent, existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, extname, join, relative, resolve } from 'node:path'
 import type {
   AuditOutcome,
@@ -18,15 +20,26 @@ import type {
 } from '../../shared/rubric.ts'
 import { REPOSITORY_CODE, SCOPE_SEGMENT, SERIAL } from '../../shared/work-identifiers.ts'
 
-/** The state-of-play thread's cap on simultaneously active coordination threads. */
+/** Territory work's cap on simultaneously active Project work. */
 export const ACTIVE_THREAD_CAP = 4
 const MASTER_THREAD = '_state-of-play'
 const CHECKPOINT_DIRECTORY = join('+', '_CHECKPOINTS')
+const WORK_DIRECTORY = join('+', '_WORK')
+const WORK_REVIEW_DIRECTORY = join('+', '_WORK_REVIEW')
 const PROJECTS_DIRECTORY = join('Streams', 'Projects')
+const THEMES_DIRECTORY = join('Streams', 'Themes')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
 const THREADS_DIRECTORY = join('+', '_THREADS')
 const REPORT_SUFFIX = '.report.md'
 const DECISIONS_LOG = 'decisions.md'
+const WORK_FILE = 'work.md'
+/** The folders a work folder may hold beside its files: open briefs and design notes. */
+const WORK_SUBFOLDERS: ReadonlySet<string> = new Set(['briefs', 'design'])
+const WORK_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*'
+/** A work id: the territory, then a Project slug or `regular`, then for ad hoc work its slug. */
+const WORK_ID = new RegExp(`^${WORK_SEGMENT}(?:\\.${WORK_SEGMENT}){0,2}$`)
+/** The work states a work file's `state` takes, as the Work Process note's observatory fields name them. */
+const SETTLED_STATES: ReadonlySet<string> = new Set(['on-hold', 'finished'])
 /** A query heading, `### <TAG> - <title>` or `### [<TAG>](<record>) - <title>`, capturing the Needs tag. */
 const NEEDS_TAG = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*'
 const QUERY_HEADING = new RegExp(`^### (?:\\[(${NEEDS_TAG})\\]\\([^)\\s]*\\)|(${NEEDS_TAG})) - `, 'gm')
@@ -43,6 +56,9 @@ const OUTPUT_STYLE = 'ki-coordinator'
 const COORDINATOR_HOOK = 'coordinator-reminder.sh'
 const HOOK_EVENTS = ['UserPromptSubmit', 'SessionStart'] as const
 const PROJECT_THREAD = /^(?<initiative>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<project>[a-z0-9]+(?:-[a-z0-9]+)*)$/
+/** A report whose form line leads with a glyph state was written under the work model, so on or after 2026-10-18. */
+const GLYPH_FORM_LINE =
+  /^\*\*(?:🤖|🧑|⏸️|🏁|→ 👤)[^\n]* · (?:Summary|Recap|Full summary|Re-bootstrap|Run report|Hold report) at /mu
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
 
@@ -64,6 +80,16 @@ type Checkpoint = {
   readonly thread: string
   readonly fields: Readonly<Record<string, unknown>> | null
 }
+
+/** One work file: its id from its folder name, its folder and its front matter. */
+type Work = {
+  readonly path: string
+  readonly id: string
+  readonly folder: string
+  readonly fields: Readonly<Record<string, unknown>> | null
+}
+
+export type WorkLevel = 'territory' | 'regular' | 'project'
 
 type Identity = { readonly repository?: string; readonly capital?: string }
 
@@ -96,7 +122,14 @@ export const repositoryIdentity = (root: string): Identity => {
 export const isCapital = (identity: Identity): boolean =>
   Boolean(identity.repository) && identity.repository === identity.capital
 
-const parseCheckpoint = (path: string, root: string): Checkpoint => {
+/** The level a work id implies: one segment is territory work, a second segment `regular` regular work, any other Project work. */
+export const workLevel = (id: string): WorkLevel => {
+  const segments = id.split('.')
+  if (segments.length === 1) return 'territory'
+  return segments[1] === 'regular' ? 'regular' : 'project'
+}
+
+const frontMatter = (path: string): Readonly<Record<string, unknown>> | null => {
   const lines = readFileSync(path, 'utf8').split(/\r?\n/)
   let fields: Readonly<Record<string, unknown>> | null = null
   if (lines[0]?.trim() === '---') {
@@ -109,7 +142,36 @@ const parseCheckpoint = (path: string, root: string): Checkpoint => {
       }
     }
   }
-  return { path: relative(root, path), thread: basename(path, '.md'), fields }
+  return fields
+}
+
+const parseCheckpoint = (path: string, root: string): Checkpoint => ({
+  path: relative(root, path),
+  thread: basename(path, '.md'),
+  fields: frontMatter(path)
+})
+
+/** The folders directly under a directory, sorted, or undefined when the directory is absent. */
+const folders = (directory: string): readonly string[] | undefined => {
+  if (!physicalDirectory(directory)) return undefined
+  return readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !entry.isSymbolicLink())
+    .map((entry) => join(directory, entry.name))
+    .sort((left, right) => left.localeCompare(right))
+}
+
+/** The work files `+/_WORK/<id>/work.md`, or undefined when no `+/_WORK/` subarea exists. */
+const workFiles = (root: string): readonly Work[] | undefined => {
+  const found = folders(join(root, WORK_DIRECTORY))
+  if (!found) return undefined
+  return found
+    .filter((folder) => existsSync(join(folder, WORK_FILE)))
+    .map((folder) => ({
+      path: relative(root, join(folder, WORK_FILE)),
+      id: basename(folder),
+      folder,
+      fields: frontMatter(join(folder, WORK_FILE))
+    }))
 }
 
 const checkpoints = (root: string): readonly Checkpoint[] | undefined => {
@@ -129,7 +191,7 @@ const registrySlugs = (directory: string): ReadonlySet<string> | undefined => {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     if (entry.isFile() && extname(entry.name) === '.md') {
       const slug = basename(entry.name, '.md')
-      if (slug !== 'Projects' && slug !== 'Initiatives') slugs.add(slug)
+      if (slug !== 'Projects' && slug !== 'Initiatives' && slug !== 'Themes' && slug !== 'README') slugs.add(slug)
     } else if (entry.isDirectory() && existsSync(join(directory, entry.name, `${entry.name}.md`))) {
       slugs.add(entry.name)
     }
@@ -146,42 +208,124 @@ const masterLabel = (label: unknown): boolean =>
 const projectLabel = (label: string, project: string): boolean =>
   label.endsWith(`: ${project}`) || label.toLowerCase().endsWith(` > ${project.replaceAll('-', ' ')}`)
 
-const masterOutcomes = (root: string, records: readonly Checkpoint[] | undefined, capital: boolean): AuditOutcome[] => {
+/** A tolerance-window warning: the old shape passes, naming its new home. */
+const legacy = (message: string, subject: string): AuditOutcome => ({
+  status: 'VIOLATION',
+  level: 'WARN',
+  message,
+  subject
+})
+
+const masterOutcomes = (
+  records: readonly Checkpoint[] | undefined,
+  works: readonly Work[] | undefined,
+  capital: boolean
+): AuditOutcome[] => {
+  const territory = works?.find((work) => workLevel(work.id) === 'territory')
   const master = records?.find((record) => record.thread === MASTER_THREAD)
-  if (capital && !master)
+  if (capital && !territory && !master)
     return [
       {
         status: 'VIOLATION',
-        message: 'a Capital holds the state-of-play thread checkpoint `_state-of-play.md`; none is present',
-        subject: join(CHECKPOINT_DIRECTORY, `${MASTER_THREAD}.md`)
+        message: 'a Capital holds its territory work `+/_WORK/<territory>/work.md`; none is present',
+        subject: WORK_DIRECTORY
       }
     ]
-  if (!capital && master)
+  if (!capital && (territory || master))
     return [
       {
         status: 'VIOLATION',
-        message:
-          'only a Capital holds a `_state-of-play.md` state-of-play checkpoint; this repository is not its own capital',
-        subject: master.path
+        message: 'only a Capital holds territory work; this repository is not its own capital',
+        subject: territory?.path ?? master?.path ?? WORK_DIRECTORY
       }
     ]
+  const outcomes: AuditOutcome[] = []
+  if (territory && !MASTER_LABEL.test(String(territory.fields?.title ?? '')))
+    outcomes.push({
+      status: 'VIOLATION',
+      message: 'territory work is titled `<Territory> > SoP`',
+      subject: territory.path
+    })
   if (master && !masterLabel(master.fields?.label))
-    return [
-      {
-        status: 'VIOLATION',
-        message:
-          'the state-of-play thread checkpoint is labelled `<Space> > SoP`, or `Master: state-of-play` until its change is approved',
-        subject: master.path
-      }
-    ]
-  void root
-  return []
+    outcomes.push({
+      status: 'VIOLATION',
+      message:
+        'the state-of-play thread checkpoint is labelled `<Space> > SoP`, or `Master: state-of-play` until its change is approved',
+      subject: master.path
+    })
+  if (master)
+    outcomes.push(
+      legacy(
+        "the state-of-play checkpoint is the thread-model shape; territory work moves to `+/_WORK/<territory>/work.md` at the territory's migration",
+        master.path
+      )
+    )
+  return outcomes
 }
 
-const labelOutcomes = (root: string, records: readonly Checkpoint[], capital: boolean): AuditOutcome[] => {
+/** The theme a work file names, resolved in `Streams/Themes/`, or with a warning in the legacy `Streams/Initiatives/`. */
+const themeOutcomes = (
+  work: Work,
+  themes: ReadonlySet<string> | undefined,
+  initiatives: ReadonlySet<string> | undefined
+): AuditOutcome[] => {
+  const theme = work.fields?.theme
+  if (theme === undefined || theme === null) return []
+  if (typeof theme !== 'string')
+    return [{ status: 'VIOLATION', message: "a work file's `theme` is a theme slug", subject: work.path }]
+  if (themes?.has(theme)) return []
+  if (initiatives?.has(theme))
+    return [
+      legacy(
+        `the theme \`${theme}\` resolves only in the legacy \`Streams/Initiatives/\` registry; its page moves to \`Streams/Themes/${theme}.md\``,
+        work.path
+      )
+    ]
+  if (!themes && !initiatives) return []
+  return [
+    {
+      status: 'VIOLATION',
+      message: `the theme \`${theme}\` is not in the Capital's \`Streams/Themes/\` registry`,
+      subject: work.path
+    }
+  ]
+}
+
+const labelOutcomes = (
+  root: string,
+  records: readonly Checkpoint[],
+  works: readonly Work[],
+  capital: boolean
+): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
   const projects = capital ? registrySlugs(join(root, PROJECTS_DIRECTORY)) : undefined
+  const themes = capital ? registrySlugs(join(root, THEMES_DIRECTORY)) : undefined
   const initiatives = capital ? registrySlugs(join(root, INITIATIVES_DIRECTORY)) : undefined
+  for (const work of works) {
+    if (workLevel(work.id) !== 'project') continue
+    const slug = work.id.split('.')[1] ?? ''
+    const project = work.fields?.project
+    const title = work.fields?.title
+    if (project !== slug)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `Project work names its Project in \`project: ${slug}\`, the second segment of its id`,
+        subject: work.path
+      })
+    if (typeof title !== 'string' || !projectLabel(title, slug))
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `the title of Project work ends in its Project's title, \` > ${slug.replaceAll('-', ' ')}\``,
+        subject: work.path
+      })
+    if (projects && !projects.has(slug))
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `the Project \`${slug}\` is not in the Capital's \`Streams/Projects/\` registry`,
+        subject: work.path
+      })
+    if (capital) outcomes.push(...themeOutcomes(work, themes, initiatives))
+  }
   for (const record of records) {
     const match = PROJECT_THREAD.exec(record.thread)
     if (!match?.groups) continue
@@ -205,17 +349,48 @@ const labelOutcomes = (root: string, records: readonly Checkpoint[], capital: bo
         message: `the Initiative \`${initiative}\` is not in the Capital's \`Streams/Initiatives/\` registry`,
         subject: record.path
       })
+    outcomes.push(
+      legacy(
+        `the coordination thread checkpoint is the thread-model shape; its work moves to \`+/_WORK/<territory>.${project}/work.md\` at the territory's migration`,
+        record.path
+      )
+    )
   }
   return outcomes
 }
 
 /**
- * Coordinating checkpoints declare their type in `role`: `_state-of-play` as `state-of-play`, an
+ * Each work file declares a `level` that agrees with its id, and its `id`, where given, is its folder name. For the
+ * tolerance window, coordinating checkpoints declare their type in `role`: `_state-of-play` as `state-of-play`, an
  * `<initiative>.<project>` checkpoint as `coordination`, unless the owner has declared it `conversational`, since the
  * file name is never authority for the role. Only `_state-of-play` carries `state-of-play`.
  */
-const roleOutcomes = (records: readonly Checkpoint[]): AuditOutcome[] => {
+const roleOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
+  for (const work of works) {
+    if (!WORK_ID.test(work.id)) {
+      outcomes.push({
+        status: 'VIOLATION',
+        message: 'a work folder is named by its id: lower-case kebab segments joined by `.`, at most three',
+        subject: work.path
+      })
+      continue
+    }
+    const id = work.fields?.id
+    if (id !== undefined && id !== work.id)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a work file's \`id\` is its folder name, \`${work.id}\``,
+        subject: work.path
+      })
+    const level = workLevel(work.id)
+    if (work.fields?.level !== level)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a work file declares the level its id implies, \`level: ${level}\``,
+        subject: work.path
+      })
+  }
   for (const record of records) {
     const role = record.fields?.role
     const master = record.thread === MASTER_THREAD
@@ -242,31 +417,50 @@ const roleOutcomes = (records: readonly Checkpoint[]): AuditOutcome[] => {
   return outcomes
 }
 
-const capOutcomes = (records: readonly Checkpoint[]): AuditOutcome[] => {
-  const active = records.filter(
+const capOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): AuditOutcome[] => {
+  const activeWork = works.filter(
+    (work) => workLevel(work.id) === 'project' && !SETTLED_STATES.has(String(work.fields?.state ?? ''))
+  )
+  const activeThreads = records.filter(
     (record) => PROJECT_THREAD.test(record.thread) && (record.fields?.state ?? 'active') === 'active'
   )
-  if (active.length <= ACTIVE_THREAD_CAP) return []
+  const active = activeWork.length + activeThreads.length
+  if (active <= ACTIVE_THREAD_CAP) return []
   return [
     {
       status: 'VIOLATION',
-      message: `${active.length} coordination threads are active; the state-of-play thread keeps at most ${ACTIVE_THREAD_CAP} active at once`,
-      subject: CHECKPOINT_DIRECTORY
+      message: `${active} pieces of Project work are active; territory work keeps at most ${ACTIVE_THREAD_CAP} active at once`,
+      subject: activeWork.length > 0 ? WORK_DIRECTORY : CHECKPOINT_DIRECTORY
     }
   ]
 }
 
-/** Thread reports: `+/_THREADS/<run>/*.report.md`, or undefined when no thread folder exists. */
-const threadReports = (root: string): readonly string[] | undefined => {
-  const directory = join(root, THREADS_DIRECTORY)
-  if (!physicalDirectory(directory)) return undefined
+/** The work folders awaiting review under `+/_WORK_REVIEW/`, which are counted and otherwise not checked. */
+const reviewOutcomes = (root: string): AuditOutcome[] => {
+  const review = folders(join(root, WORK_REVIEW_DIRECTORY))
+  if (!review || review.length === 0) return []
+  return [
+    {
+      status: 'INFO',
+      message: `${review.length} work folder(s) await review under \`+/_WORK_REVIEW/\`; they are not live and not counted`,
+      subject: WORK_REVIEW_DIRECTORY
+    }
+  ]
+}
+
+/**
+ * Reports in work folders, `+/_WORK/<id>/*.report.md`, and for the tolerance window in thread folders,
+ * `+/_THREADS/<run>/*.report.md`; undefined when neither subarea exists. Work awaiting review is not read.
+ */
+const workReports = (root: string): readonly string[] | undefined => {
+  const work = folders(join(root, WORK_DIRECTORY))
+  const threads = folders(join(root, THREADS_DIRECTORY))
+  if (!work && !threads) return undefined
   const reports: string[] = []
-  for (const run of readdirSync(directory, { withFileTypes: true })) {
-    if (!run.isDirectory() || run.isSymbolicLink()) continue
-    for (const entry of readdirSync(join(directory, run.name), { withFileTypes: true }))
+  for (const folder of [...(work ?? []), ...(threads ?? [])])
+    for (const entry of readdirSync(folder, { withFileTypes: true }))
       if (entry.isFile() && !entry.isSymbolicLink() && entry.name.endsWith(REPORT_SUFFIX))
-        reports.push(join(directory, run.name, entry.name))
-  }
+        reports.push(join(folder, entry.name))
   return reports.sort((left, right) => left.localeCompare(right))
 }
 
@@ -276,7 +470,7 @@ export const recordIdentifiers = (text: string): readonly string[] => [
 ]
 
 /**
- * Review one thread report for the linking rule: every full record identifier in its prose sits inside the text of a
+ * Review one report for the linking rule: every full record identifier in its prose sits inside the text of a
  * Markdown link, and a link whose text names a record and whose target is an absolute local path points at a file
  * that exists, so a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last
  * revision rather than to its deleted file. Fenced blocks, such as the reply block the owner pastes back, are not prose
@@ -306,7 +500,7 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
     if (bare.length > 0)
       outcomes.push({
         status: 'VIOLATION',
-        message: `every record identifier in a thread report is a link to its local file; unlinked: ${bare.join(', ')}`,
+        message: `every record identifier in a work report is a link to its local file; unlinked: ${bare.join(', ')}`,
         subject
       })
     if (missing.length > 0)
@@ -349,16 +543,20 @@ export const reportConfidenceFindings = (text: string): readonly string[] => {
     .map((line) => line.trim())
 }
 
+/** Whether a report's form line leads with a glyph state, so it was written under the work model. */
+export const reportHasGlyphForm = (text: string): boolean => GLYPH_FORM_LINE.test(text)
+
 /**
- * A report is held to the confidence form only when a footer banner dates it on or after {@link CONFIDENCE_SINCE};
- * an earlier report, or one with no footer to date it, is not checked.
+ * A report is held to the confidence form when its form line leads with a glyph state, which the work model brought
+ * in on {@link CONFIDENCE_SINCE}, or when a block-letter footer dates it on or after that day; an earlier report, or
+ * one with neither to date it, is not checked.
  */
 const confidenceOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
   for (const report of reports) {
     const text = readFileSync(report, 'utf8')
     const issued = reportIssuedDay(text)
-    if (!issued || issued < CONFIDENCE_SINCE) continue
+    if (!reportHasGlyphForm(text) && (!issued || issued < CONFIDENCE_SINCE)) continue
     const lines = reportConfidenceFindings(text)
     if (lines.length > 0)
       outcomes.push({
@@ -368,16 +566,6 @@ const confidenceOutcomes = (root: string, reports: readonly string[]): AuditOutc
       })
   }
   return outcomes
-}
-
-/** Thread folders: `+/_THREADS/<run>/`, or undefined when no thread folder exists. */
-const threadFolders = (root: string): readonly string[] | undefined => {
-  const directory = join(root, THREADS_DIRECTORY)
-  if (!physicalDirectory(directory)) return undefined
-  return readdirSync(directory, { withFileTypes: true })
-    .filter((run) => run.isDirectory() && !run.isSymbolicLink())
-    .map((run) => join(directory, run.name))
-    .sort((left, right) => left.localeCompare(right))
 }
 
 /**
@@ -390,19 +578,14 @@ export const reportQueryTags = (text: string): readonly string[] => {
   return Array.from(section.matchAll(QUERY_HEADING), (match) => match[1] ?? match[2] ?? '').filter(Boolean)
 }
 
-/**
- * Review one thread folder for the tidy: files outside the closed list, `decisions.md` and `<name>.report.md`, and the
- * reports whose queries the decisions log names, so all are answered. Whether each such report's outcome has a durable
- * home is judged by the thread; the listing names candidates and is never permission to delete.
- */
-export const threadFolderFindings = (
-  folder: string
-): { readonly stray: readonly string[]; readonly answered: readonly string[] } => {
+type FolderFindings = { readonly stray: readonly string[]; readonly answered: readonly string[] }
+
+const folderFindings = (folder: string, belongs: (entry: Dirent) => boolean): FolderFindings => {
   const entries = readdirSync(folder, { withFileTypes: true }).sort((left, right) =>
     left.name.localeCompare(right.name)
   )
   const stray = entries
-    .filter((entry) => !(entry.isFile() && (entry.name === DECISIONS_LOG || entry.name.endsWith(REPORT_SUFFIX))))
+    .filter((entry) => !belongs(entry))
     .map((entry) => (entry.isDirectory() ? `${entry.name}/` : entry.name))
   const log = existsSync(join(folder, DECISIONS_LOG)) ? readFileSync(join(folder, DECISIONS_LOG), 'utf8') : ''
   const named = (tag: string): boolean => new RegExp(`(?<![A-Z0-9-])${tag}(?![A-Z0-9-])`).test(log)
@@ -413,24 +596,66 @@ export const threadFolderFindings = (
   return { stray, answered }
 }
 
-const tidyOutcomes = (root: string, folders: readonly string[]): AuditOutcome[] => {
+const report = (entry: Dirent): boolean =>
+  entry.isFile() && (entry.name === DECISIONS_LOG || entry.name.endsWith(REPORT_SUFFIX))
+
+/**
+ * Review one thread folder for the tidy: files outside its closed list, `decisions.md` and `<name>.report.md`, and the
+ * reports whose queries the decisions log names, so all are answered. Whether each such report's outcome has a durable
+ * home is judged by its coordinator; the listing names candidates and is never permission to delete.
+ */
+export const threadFolderFindings = (folder: string): FolderFindings => folderFindings(folder, report)
+
+/**
+ * Review one work folder for the prune: entries outside its closed list, `work.md`, `decisions.md`,
+ * `<name>.report.md`, `briefs/` and `design/`, and the reports whose queries the decisions log names.
+ */
+export const workFolderFindings = (folder: string): FolderFindings =>
+  folderFindings(
+    folder,
+    (entry) =>
+      report(entry) ||
+      (entry.isFile() && entry.name === WORK_FILE) ||
+      (entry.isDirectory() && !entry.isSymbolicLink() && WORK_SUBFOLDERS.has(entry.name))
+  )
+
+const tidyOutcomes = (
+  root: string,
+  work: readonly string[],
+  threads: readonly string[] | undefined
+): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
-  for (const folder of folders) {
+  const review = (folder: string, findings: FolderFindings, closed: string, kind: string): void => {
     const subject = relative(root, folder)
-    const { stray, answered } = threadFolderFindings(folder)
-    if (stray.length > 0)
+    if (findings.stray.length > 0)
       outcomes.push({
         status: 'VIOLATION',
-        message: `a thread folder holds only \`${DECISIONS_LOG}\` and \`<name>${REPORT_SUFFIX}\`; outside the closed list: ${stray.join(', ')}`,
+        message: `a ${kind} folder holds only ${closed}; outside the closed list: ${findings.stray.join(', ')}`,
         subject
       })
-    if (answered.length > 0)
+    if (findings.answered.length > 0)
       outcomes.push({
         status: 'VIOLATION',
-        message: `a thread folder keeps only reports with open queries; every query of these is answered in the decisions log, so each whose outcome has a durable home is due for the tidy: ${answered.join(', ')}`,
+        message: `a ${kind} folder keeps only reports with open queries; every query of these is answered in the decisions log, so each whose outcome has a durable home is due for the prune: ${findings.answered.join(', ')}`,
         subject
       })
   }
+  for (const folder of work)
+    review(
+      folder,
+      workFolderFindings(folder),
+      `\`${WORK_FILE}\`, \`${DECISIONS_LOG}\`, \`<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\``,
+      'work'
+    )
+  for (const folder of threads ?? [])
+    review(folder, threadFolderFindings(folder), `\`${DECISIONS_LOG}\` and \`<name>${REPORT_SUFFIX}\``, 'thread')
+  if (threads && threads.length > 0)
+    outcomes.push(
+      legacy(
+        `${threads.length} thread folder(s) under \`+/_THREADS/\` are the thread-model shape; each moves into its work folder \`+/_WORK/<id>/\` at the territory's migration`,
+        THREADS_DIRECTORY
+      )
+    )
   return outcomes
 }
 
@@ -516,60 +741,73 @@ export const createPmoSession = ({
   const identity = repositoryIdentity(root)
   const capital = isCapital(identity)
   const records = checkpoints(root)
-  const reports = threadReports(root)
-  const folders = threadFolders(root)
-  const absent = records
+  const works = workFiles(root)
+  const reports = workReports(root)
+  const workFolders = folders(join(root, WORK_DIRECTORY))
+  const threads = folders(join(root, THREADS_DIRECTORY))
+  const absent =
+    records || works
+      ? undefined
+      : 'No `+/_WORK/` or `+/_CHECKPOINTS/` subarea is present; no coordinating work has opened here.'
+  const unreported = reports
     ? undefined
-    : 'No `+/_CHECKPOINTS/` subarea is present; no coordinating thread has opened here.'
+    : 'No `+/_WORK/` or `+/_THREADS/` folder is present; no coordinating work has reported here.'
   const context: PmoRubricContext = {
     rubric: { publication },
     master: {
       outcomes: one(
-        masterOutcomes(root, records, capital),
-        capital
-          ? 'The Capital holds its `_state-of-play.md` state-of-play checkpoint.'
-          : 'No state-of-play checkpoint is present outside a Capital.',
-        !capital && !records ? absent : undefined
+        masterOutcomes(records, works, capital),
+        capital ? 'The Capital holds its territory work.' : 'No territory work is present outside a Capital.',
+        !capital && absent ? absent : undefined
       )
     },
     labels: {
       outcomes: one(
-        labelOutcomes(root, records ?? [], capital),
-        'Every coordination thread checkpoint label ends in its Project name and resolves in the registry.',
+        labelOutcomes(root, records ?? [], works ?? [], capital),
+        'Every piece of Project work names its Project, its title ends in it and it resolves in the registry.',
         absent
       )
     },
     roles: {
-      outcomes: one(roleOutcomes(records ?? []), 'Every coordinating thread checkpoint declares its role.', absent)
+      outcomes: one(
+        roleOutcomes(records ?? [], works ?? []),
+        'Every work file declares the level its id implies.',
+        absent
+      )
     },
     cap: {
-      outcomes: one(capOutcomes(records ?? []), 'The active coordination threads are within the cap.', absent)
+      outcomes: [
+        ...one(capOutcomes(records ?? [], works ?? []), 'The active Project work is within the cap.', absent),
+        ...reviewOutcomes(root)
+      ]
     },
     links: {
       outcomes: one(
         linkOutcomes(root, reports ?? []),
         reports && reports.length > 0
-          ? `Every record identifier in the ${reports.length} thread report(s) under \`+/_THREADS/\` is a link to an existing file.`
-          : 'No thread report is present under `+/_THREADS/`.',
-        reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
+          ? `Every record identifier in the ${reports.length} work report(s) is a link to an existing file.`
+          : 'No work report is present under `+/_WORK/` or `+/_THREADS/`.',
+        unreported
       )
     },
     confidence: {
       outcomes: one(
         confidenceOutcomes(root, reports ?? []),
         reports && reports.length > 0
-          ? `Every recommended option in the thread reports issued on or after ${CONFIDENCE_SINCE} carries its confidence.`
-          : 'No thread report is present under `+/_THREADS/`.',
-        reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
+          ? `Every recommended option in the work reports written on or after ${CONFIDENCE_SINCE} carries its confidence.`
+          : 'No work report is present under `+/_WORK/` or `+/_THREADS/`.',
+        unreported
       )
     },
     tidy: {
       outcomes: one(
-        tidyOutcomes(root, folders ?? []),
-        folders && folders.length > 0
-          ? `The ${folders.length} thread folder(s) under \`+/_THREADS/\` hold only the closed list and reports with open queries.`
-          : 'No thread folder is present under `+/_THREADS/`.',
-        folders ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
+        tidyOutcomes(root, workFolders ?? [], threads),
+        workFolders || threads
+          ? `The ${(workFolders?.length ?? 0) + (threads?.length ?? 0)} work folder(s) hold only the closed list and reports with open queries.`
+          : 'No work folder is present.',
+        workFolders || threads
+          ? undefined
+          : 'No `+/_WORK/` or `+/_THREADS/` folder is present; no coordinating work has reported here.'
       )
     },
     binding: { outcomes: bindingOutcomes(root, userHome) },
@@ -578,7 +816,7 @@ export const createPmoSession = ({
         {
           status: 'INFO',
           message:
-            'Coordinator responsiveness, the report forms, the mark and the refresh rule are reviewed from the transcripts, reports and checkpoints the owner selects.'
+            'Coordinator responsiveness, the report forms, the mark and the refresh rule are reviewed from the transcripts, reports and work files the owner selects.'
         }
       ]
     }

@@ -27,11 +27,11 @@ const FOOTERS = ['none', 'push', 'prune', 'release'].map((tier) => `${DELEGATION
 /** The Banner examples the output style source names by token, each written once in the standard. */
 const BANNER_BLOCKS = [
   'heading-example',
-  'rest-footer',
-  'busy-footer',
-  'hold-footer',
-  'hold-resume-line',
-  'resume-line'
+  'with-worker-banner',
+  'handoff-banner',
+  'send-line',
+  'hold-banner',
+  'hold-send-line'
 ] as const
 
 type Marked = { readonly block: string; readonly body: string }
