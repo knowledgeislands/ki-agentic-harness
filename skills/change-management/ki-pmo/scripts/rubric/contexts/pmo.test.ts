@@ -261,6 +261,23 @@ describe('record identifiers in prose', () => {
     const findings = reportLinkFindings('Prose.\n\n```text\nACCEPT-188\n\naccept KI-HARNESS-GOV-188\n```\n')
     expect(findings).toEqual({ bare: [], missing: [] })
   })
+
+  test('an inline code span is not prose, but an identifier beside one is', () => {
+    const findings = reportLinkFindings(
+      'Committed `docs(roadmap): close KI-HARNESS-GOV-206` and ``a `quoted` KI-HARNESS-GOV-207``, spanning `a\nKI-HARNESS-GOV-208`; KI-HARNESS-GOV-209 is bare.\n'
+    )
+    expect(findings).toEqual({ bare: ['KI-HARNESS-GOV-209'], missing: [] })
+  })
+
+  test('an unclosed backtick or a span across a blank line does not hide an identifier', () => {
+    expect(reportLinkFindings('A stray ` before KI-HARNESS-GOV-210.\n').bare).toEqual(['KI-HARNESS-GOV-210'])
+    expect(reportLinkFindings('Opens `here\n\nKI-HARNESS-GOV-211 then` closes.\n').bare).toEqual(['KI-HARNESS-GOV-211'])
+  })
+
+  test('a link whose text is a code span still has its target checked', () => {
+    const findings = reportLinkFindings('See [`KI-HARNESS-GOV-212`](/nowhere/KI-HARNESS-GOV-212.md).\n')
+    expect(findings).toEqual({ bare: [], missing: ['KI-HARNESS-GOV-212 -> /nowhere/KI-HARNESS-GOV-212.md'] })
+  })
 })
 
 describe('thread report links', () => {

@@ -52,6 +52,8 @@ const QUERY_HEADING = new RegExp(`^### (?:\\[(${NEEDS_TAG})\\]\\([^)\\s]*\\)|(${
 const RECORD_IDENTIFIER = new RegExp(`(?<![A-Z0-9-])${REPOSITORY_CODE}-${SCOPE_SEGMENT}-${SERIAL}(?![A-Z0-9-])`, 'g')
 const FENCED_BLOCK = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
 const MARKDOWN_LINK = /\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
+/** An inline code span: a run of backticks closed by a run of the same length, within one paragraph. */
+const CODE_SPAN = /(?<!`)(`+)(?!`)(?:[^\n]|\n(?![ \t]*\n))*?(?<!`)\1(?!`)/g
 const OUTPUT_STYLE = 'ki-coordinator'
 const COORDINATOR_HOOK = 'coordinator-reminder.sh'
 const HOOK_EVENTS = ['UserPromptSubmit', 'SessionStart'] as const
@@ -475,7 +477,8 @@ export const recordIdentifiers = (text: string): readonly string[] => [
  * Markdown link, and a link whose text names a record and whose target is an absolute local path points at a file
  * that exists, so a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last
  * revision rather than to its deleted file. Fenced blocks, such as the reply block the owner pastes back, are not prose
- * and are skipped.
+ * and are skipped; so are inline code spans, which quote literal text such as a commit subject and cannot hold a link.
+ * Links are read first, so a link whose text is a code span still has its target checked.
  */
 export const reportLinkFindings = (
   text: string
@@ -490,7 +493,7 @@ export const reportLinkFindings = (
     }
     return ' '
   })
-  return { bare: recordIdentifiers(unlinked), missing: [...missing] }
+  return { bare: recordIdentifiers(unlinked.replace(CODE_SPAN, ' ')), missing: [...missing] }
 }
 
 const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] => {

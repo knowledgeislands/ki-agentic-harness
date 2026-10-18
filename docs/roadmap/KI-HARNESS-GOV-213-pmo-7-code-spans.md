@@ -7,12 +7,12 @@ purpose: governance
 project: ways-of-working
 component: change-management
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 5527b917c708f30276067cc5a84dc1da5d34e37a
 created_at: 2026-10-18T08:55:29Z
-updated_at: 2026-10-18T08:55:29Z
+updated_at: 2026-10-18T09:01:54Z
 ---
 
 # KI-HARNESS-GOV-213: PMO-7 Code Spans
@@ -38,10 +38,10 @@ The check-pass run in that work linked the bare record identifiers in eight of i
 
 ## Steps
 
-- [ ] `pmo.ts`: after the links are taken out, blank every inline code span, a run of backticks closed by a run of the same length within one paragraph, before collecting the bare identifiers; an unclosed backtick leaves the text checked.
-- [ ] `pmo.test.ts`: an identifier in a single- and a double-backtick span is not reported; one beside a span still is; an unclosed backtick does not hide it; a link whose label is a code span naming a missing record is still reported missing.
-- [ ] `threads.ts` PMO-7 description and the `standards-pmo.md` Linking records sentence name inline code spans beside fenced blocks.
-- [ ] Regenerate `rubric.md` through `ki dev skill rubric ki-pmo --write` and run Verify.
+- [x] `pmo.ts`: after the links are taken out, blank every inline code span, a run of backticks closed by a run of the same length within one paragraph, before collecting the bare identifiers; an unclosed backtick leaves the text checked.
+- [x] `pmo.test.ts`: an identifier in a single- and a double-backtick span is not reported; one beside a span still is; an unclosed backtick does not hide it; a link whose label is a code span naming a missing record is still reported missing.
+- [x] `threads.ts` PMO-7 description and the `standards-pmo.md` Linking records sentence name inline code spans beside fenced blocks.
+- [x] Regenerate `rubric.md` through `ki dev skill rubric ki-pmo --write` and run Verify.
 
 ## Files touched
 
@@ -78,6 +78,38 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+The approved boundary from baseline `5527b917c708f30276067cc5a84dc1da5d34e37a`: PMO-7 blanks inline code spans after reading links and before collecting bare record identifiers, so a quoted commit subject is not reported; a link whose label is a code span still has its target checked, and an unclosed backtick or a span broken by a blank line hides nothing. Nothing is released.
+
+### Change Summary
+
+- `scripts/rubric/contexts/pmo.ts`: a `CODE_SPAN` pattern, a backtick run closed by a run of the same length within one paragraph, is blanked from the unlinked text in `reportLinkFindings`; its doc comment names code spans beside fenced blocks.
+- `scripts/rubric/contexts/pmo.test.ts`: three cases, single-, double-backtick and multi-line spans skipped with a bare identifier beside them still reported, an unclosed backtick and a span across a blank line not hiding an identifier, and a code-span link label still reported missing.
+- `scripts/rubric/items/threads.ts` and `references/standards-pmo.md`: the PMO-7 description and the Linking records sentence name inline code spans; `references/rubric.md` regenerated.
+
+### Verification
+
+- `bun run test`: pass, 1253 tests.
+- `bunx tsc --noEmit`: pass.
+- `ki dev skill rubric ki-pmo --write` regenerated `rubric.md`; `ki dev skill generate ki-pmo`: in sync.
+- `ki repo audit --skill ki-pmo`, `--skill ki-authoring` and `--skill ki-work-roadmap`: pass. `--skill ki-skills`: no failure; WARN=3, the existing LONG-3 refresh-cadence findings in other skills' `sources.md`, outside this change.
+- `ki repo audit --repo <ki-principal> --skill ki-pmo`: `settle-model.report.md`, whose only finding was the identifier quoted in a commit subject, is no longer reported. `check-pass.report.md` is still reported for the same identifier written bare in its prose, a true finding. The other PMO-7 findings are bare identifiers in other work folders' reports, outside this change.
+
+### Outstanding concerns
+
+- The check reaches other repositories only when `ki` loads the harness's updated catalogue.
+
+### Post-change review
+
+Reviewer: pending; this record awaits an independent review before acceptance.
+
+### Mini recap
+
+PMO-7 now treats an inline code span like a fenced block: literal quoted text is not asked to hold a link.
 
 ## Discussion
 
