@@ -8,7 +8,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-16T21:51:55Z
-updated_at: 2026-10-16T21:51:55Z
+updated_at: 2026-10-18T03:42:23Z
 ---
 
 # KI-HARNESS-GOV-202: Skill-Area Stable Stats Badge
@@ -19,7 +19,7 @@ The ten skill-area diagrams in `docs/diagrams/skill-area-*.html` show stable sta
 
 ## Context
 
-Kris Brown asked for this in the skill-reviews thread on 14 October 2026, recorded as SRC-BADGE in that thread's [decisions log](../../+/_THREADS/skill-reviews/decisions.md) (`b868812e`): "there might be a better thing to use as that box rather than SRC1 ... the amount of code that's in them, or the rubric rule sizes ... or some stats about the thing", resolved there as "stable stats (rubric rule count, code size bucket, reference count), exact figures in HTML detail if supported". On 16 October 2026 at 01:10 BST Kris approved capturing it as one unadopted record, priority left to the record. The SRC badge is still in all ten files on `main`, and no record carried it.
+Kris Brown asked for this in the skill-reviews thread on 14 October 2026, recorded as SRC-BADGE in that thread's [decisions log](../../+/_WORK_REVIEW/ki.regular.skill-reviews/decisions.md) (`b868812e`): "there might be a better thing to use as that box rather than SRC1 ... the amount of code that's in them, or the rubric rule sizes ... or some stats about the thing", resolved there as "stable stats (rubric rule count, code size bucket, reference count), exact figures in HTML detail if supported". On 16 October 2026 at 01:10 BST Kris approved capturing it as one unadopted record, priority left to the record. The SRC badge is still in all ten files on `main`, and no record carried it.
 
 ## Boundary
 
