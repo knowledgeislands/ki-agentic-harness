@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:30Z
-updated_at: 2026-10-18T08:55:30Z
+updated_at: 2026-10-18T17:11:34Z
 ---
 
 # KI-HARNESS-GOV-214: Working-Area Marks
@@ -22,7 +22,7 @@ Every file an agent or a session writes into a repository's `+/` working area sa
 
 The rule began as [KI-HARNESS-GOV-184 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/731580841ce5be89687784284a432e84a187646f/docs/roadmap/KI-HARNESS-GOV-184-working-area-marks.md). Kris Brown confirmed it on 14 October 2026: "MARK-RULE - yes, that reading; capture as a harness deliver record at next." In the same answer set Kris chose how to tidy the scratch that prompted it: "DIAGRAMS-TIDY - (b) delete scratch and rebuild the stale HTML after the push; keep +/diagrams/ visible." The rebuilt `skill-graph` and `skill-map` folders under this repository's `+/diagrams/` carry a `mark.toml` sidecar written by the `mark-tidy` run as a hand-made early application of the rule.
 
-Kris then merged it into [KI-HARNESS-GOV-175](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-175-delegation-run-events.md) on 14 October ("RC-ALL: approve all; ways-of-working applies the harness part"), because both edited the `ki-delegation` background-run standard. On 18 October, with that record's run-events work landed and only this rule unbuilt, Kris split it back out, in the ways-of-working decisions log, "owner answers, batches 6 and 7": "MARK-RULE-SPLIT a) - split the mark rule into its own harness record; KI-HARNESS-GOV-175 to Awaiting review." It is captured here as triage, carrying its open field-name question, so that the finished run-events work can go to review.
+Kris then merged it into [KI-HARNESS-GOV-175](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-175-delegation-run-events.md) on 14 October ("RC-ALL: approve all; ways-of-working applies the harness part"), because both edited the `ki-delegation` background-run standard. On 18 October, with that record's run-events work landed and only this rule unbuilt, Kris split it back out, in the ways-of-working decisions log, "owner answers, batches 6 and 7": "MARK-RULE-SPLIT a) - split the mark rule into its own harness record; KI-HARNESS-GOV-175 to Awaiting review." It is captured here as triage, its field names since settled for now, so that the finished run-events work can go to review.
 
 ## Boundary
 
@@ -39,12 +39,8 @@ Markdown carries the mark in front matter; a folder of non-Markdown output carri
 
 ### Steps carried for planning
 
-Settle the sidecar's name and field names and the front-matter field names, checking the two hand-written `mark.toml` files against the choice; add the rule to the `ki-delegation` standard and rubric; add the sidecar and receipt fields to the `ki-diagrams` standard and rubric; make the exporter or finalize wrapper write the fields into the delivery receipt, with a boundary test; reword the two SKILL.md summaries. Files: `skills/governance/ki-delegation/references/standards-background-runs.md`, `rubric.md` and `SKILL.md`; `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md`, and `scripts/export-svg.ts` with its test if the receipt fields are written there. Verify: `ki repo audit --skill ki-diagrams` and `ki dev skill rubric ki-diagrams` join the gates, and a diagram rebuilt by the documented route leaves a sidecar and a receipt naming the work, the run and agent or session, and the time.
+Check the two hand-written `mark.toml` files against the settled names below; add the rule to the `ki-delegation` standard and rubric; add the sidecar and receipt fields to the `ki-diagrams` standard and rubric; make the exporter or finalize wrapper write the fields into the delivery receipt, with a boundary test; reword the two SKILL.md summaries. Files: `skills/governance/ki-delegation/references/standards-background-runs.md`, `rubric.md` and `SKILL.md`; `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md`, and `scripts/export-svg.ts` with its test if the receipt fields are written there. Verify: `ki repo audit --skill ki-diagrams` and `ki dev skill rubric ki-diagrams` join the gates, and a diagram rebuilt by the documented route leaves a sidecar and a receipt naming the work, the run and agent or session, and the time.
 
-### Open question for Kris: the field names
+### Field names, settled for now
 
-The field names are the owner's call, and planning cannot start until they are settled:
-
-- whether coordinating work in an interactive session writes `session` where a background run writes `run` and `agent`, or one `writer` field covers both;
-- whether the first field is `work`, the work id the work model now uses, in place of the hand-written `thread`;
-- whether the sidecar is TOML, `mark.toml`, or a front-matter-only Markdown file.
+Kris settled the names on 18 October 2026 in the ways-of-working decisions log, 17:59 BST owner answers: "Mark feels, let's go with it for now" (MARK-FIELDS a), "for now"). The first field is `work`, the work id the work model uses, in place of the hand-written `thread`; a background run writes `run` and `agent`, and an interactive session writes `session` instead; a folder's sidecar stays TOML, `mark.toml`. The two hand-written `mark.toml` files under `+/diagrams/` move from `thread` to `work` when the rule lands. The time field's name and whether `rebuilt_from` stays are left to planning. Because the answer is "for now", the standard should state the names in one place so a later change touches one rule.
