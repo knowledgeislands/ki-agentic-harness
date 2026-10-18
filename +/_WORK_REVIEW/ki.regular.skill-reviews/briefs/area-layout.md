@@ -19,8 +19,7 @@ The diagrams are generated and checked byte-for-byte against frontmatter, so do 
 - members that depend on the hub sit beside/after it;
 - a member linking to a concern below sits nearest that concern;
 - the concern's region is compact (fewer columns, e.g. a near-square block) rather than spread across the full width;
-- fewer edge crossings and shorter edges.
-Keep Archify showcase gates passing (no crossings, width ≤1395px).
+- fewer edge crossings and shorter edges. Keep Archify showcase gates passing (no crossings, width ≤1395px).
 
 ## Steps
 
