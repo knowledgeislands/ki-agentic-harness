@@ -46,6 +46,7 @@ REFRESH last ran in full on **2026-10-04**; all eight pages were reachable. Curr
 - An interactive app adds `assets.not_found_handling = "single-page-application"` without adding a `main` Worker entry.
 - Watch: Wrangler remains on major version 4, and Cloudflare now defaults `observability.enabled` to true for new Workers; the explicit declaration stays required.
 - Watch the Pages-to-Workers direction and dashboard information architecture during each monthly refresh.
+- Carried from [KI-HARNESS-GOV-208](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-208-branch-previews-behind-access.md): at each monthly refresh, check whether the Builds API reference now documents the trigger `DELETE` call the restore path relies on, and whether Worker Previews have matured enough for the house to decide on adopting them in place of Version URLs; raise that decision with Kris when they have.
 
 [assets]: https://developers.cloudflare.com/workers/static-assets/
 [best]: https://developers.cloudflare.com/workers/best-practices/workers-best-practices/

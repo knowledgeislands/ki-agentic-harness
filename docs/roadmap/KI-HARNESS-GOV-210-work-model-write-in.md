@@ -7,11 +7,11 @@ purpose: governance
 project: ways-of-working
 component: governance
 status: done
-blocks: [KI-HARNESS-GOV-206]
+blocks: []
 blocked_by: []
 baseline_ref: be65ccad13720226c85626093538d744fae8f024
 created_at: 2026-10-18T01:49:05Z
-updated_at: 2026-10-18T17:40:00Z
+updated_at: 2026-10-18T18:14:17Z
 ---
 
 # KI-HARNESS-GOV-210: Work Model Write-In
@@ -113,14 +113,6 @@ Every step: the `ki-pmo`, `ki-delegation`, `ki-checkpoint`, Project registry, St
 
 Reviewer: the `accept-harness` run of the ways-of-working Project work, independent of the `migrate-phase1` run that delivered it, on 2026-10-18 against `0f166c31`. Every Step is delivered as written and the standards cite the Work Process note rather than restate it. The overnight review's one finding, the broken `#project-close` anchor in [KI-HARNESS-GOV-189](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-189-move-thread-between-hosts.md), was repointed to `#finishing-project-work` beforehand; this review reworded that record's DONE-on-handover sentence and this record's Context and Discussion in work-model terms. `bun run test` 1247 pass, 0 fail; `bunx tsc --noEmit` clean; `ki dev skill generate ki-pmo` finds all 7 surfaces in sync; `ki repo audit` passes for `ki-authoring`, including MD-mech, `ki-work-roadmap`, `ki-pmo`, `ki-checkpoint`, `ki-delegation`, `ki-work` and `ki-work-recurring`, and `ki-skills` shows only three LONG-3 refresh-cadence warnings. `ki-pmo-design`, `ki-repo-kb-streams` and `ki-repo-kb-activities` are not declared in this repository; against Knowledge Islands Principal, `ki-repo-kb-streams` warns only on four STREAM-10 Project close-out assessments and `ki-repo-kb-activities` and `ki-checkpoint` pass. `ki-pmo` there reports 43 PMO-7 unlinked or missing record links and PMO-9, PMO-11 and PMO-12 warnings in existing work reports, fleet findings rather than failures of the contract under change. No skill is renamed. Regression risk is low.
 
-### Amendment: GLYPH-OWNER and RESUME-PWD
-
-Kris Brown answered GLYPH-OWNER a) on 18 October 2026: "As recommended", taken as Kris appearing as 👤 everywhere in place of 🧑, and every other handoff target, other work, a run or a person, as 🎯 in place of 👤. The same evening, under RESUME-PWD, Kris asked that "resume prompts should also say in which `pwd` they are grounded"; the send and resume lines now name the checkout their session must be grounded in. No earlier decision on a profile glyph exists: the Git history of Knowledge Islands Principal and this repository shows 👤 first as "another person" in the 17 October work-cascade design, then as "a named target" under BANNER-GLYPH and TARGET-GLYPH on 18 October (`13808df`, Knowledge Islands Principal), with 🧑 for Kris throughout.
-
-- Delivered here: the `ki-coordination` standard, SKILL.md, output style, rubric and banner tests, and `ki-delegation`'s run-prompt and authority footers print 👤 for Kris and 🎯 for any other target, and the send and resume lines read `in <checkout>`; the rubric's work-model detector also accepts the 🧑 and `→ 👤` forms of reports written before GLYPH-OWNER.
-- Delivered elsewhere under this amendment: the [Work Process](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note and [GDR-KI-PRINCIPAL-009](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) in Knowledge Islands Principal, Kris's answer standing in for the Enactment record; the `with you` view glyph of `ki work status` in tools-ki.
-- Verification: `ki dev skill generate ki-coordination` reports 7 surfaces in sync; `bun test` over `ki-coordination`, `ki-delegation` and hooks passes 110 of 110; `bunx tsc --noEmit` passes; `ki repo audit --skill ki-coordination` and `--skill ki-delegation` pass; tools-ki's work-status tests pass 6 of 6 and its type check passes.
-
 ### Mini recap
 
 The harness now speaks the work model and reads the thread model with warnings until phase 5 closes the window; tools-ki's phase 2 can build on it.
@@ -132,3 +124,11 @@ Accepted as delivered on 2026-10-18 at 09:25 BST under Kris Brown's standing gra
 ## Discussion
 
 Captured by the `migrate-phase1` run of the ways-of-working Project work on 18 October 2026, under the migration brief's phase 1 and Kris's MIGRATION-LAUNCH.
+
+### Amendment: GLYPH-OWNER and RESUME-PWD
+
+Kris Brown answered GLYPH-OWNER a) on 18 October 2026: "As recommended", taken as Kris appearing as 👤 everywhere in place of 🧑, and every other handoff target, other work, a run or a person, as 🎯 in place of 👤. The same evening, under RESUME-PWD, Kris asked that "resume prompts should also say in which `pwd` they are grounded"; the send and resume lines now name the checkout their session must be grounded in. No earlier decision on a profile glyph exists: the Git history of Knowledge Islands Principal and this repository shows 👤 first as "another person" in the 17 October work-cascade design, then as "a named target" under BANNER-GLYPH and TARGET-GLYPH on 18 October (`13808df`, Knowledge Islands Principal), with 🧑 for Kris throughout.
+
+- Delivered here: the `ki-coordination` standard, SKILL.md, output style, rubric and banner tests, and `ki-delegation`'s run-prompt and authority footers print 👤 for Kris and 🎯 for any other target, and the send and resume lines read `in <checkout>`; the rubric's work-model detector also accepts the 🧑 and `→ 👤` forms of reports written before GLYPH-OWNER.
+- Delivered elsewhere under this amendment: the [Work Process](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note and [GDR-KI-PRINCIPAL-009](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) in Knowledge Islands Principal, Kris's answer standing in for the Enactment record; the `with you` view glyph of `ki work status` in tools-ki.
+- Verification: `ki dev skill generate ki-coordination` reports 7 surfaces in sync; `bun test` over `ki-coordination`, `ki-delegation` and hooks passes 110 of 110; `bunx tsc --noEmit` passes; `ki repo audit --skill ki-coordination` and `--skill ki-delegation` pass; tools-ki's work-status tests pass 6 of 6 and its type check passes.

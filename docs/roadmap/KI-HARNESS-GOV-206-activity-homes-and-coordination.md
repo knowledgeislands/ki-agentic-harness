@@ -8,7 +8,7 @@ status: cancelled
 resolution: merged
 resolution_target: KI-HARNESS-GOV-210
 blocks: []
-blocked_by: [KI-HARNESS-GOV-210]
+blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
 updated_at: 2026-10-18T08:27:00Z

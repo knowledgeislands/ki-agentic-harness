@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-17T22:06:58Z
+updated_at: 2026-10-18T18:14:17Z
 ---
 
 # KI-HARNESS-GOV-205: Static Light Diagram Export
@@ -24,9 +24,12 @@ Kris Brown answered DIAGRAMS-EXPORT on 17 October 2026 at 22:50 BST in the ways-
 
 The [diagram-fix run report](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki/diagram-fix.report.md) found the cause. The exporter writes Archify's dual-theme SVG, dark by default, whose fills, strokes and text colours come from CSS custom properties, `color-mix()` and `:is()` rules in an embedded stylesheet with inlined web fonts. A previewer that does not run that CSS, such as Zed's renderer or `rsvg-convert`, falls back to black, so text and boxes vanish. The run fixed four diagrams by flattening each under Archify's light theme in headless Chrome into a static SVG with plain hex colour attributes, a light background, real `<text>` in a system monospace stack, and no stylesheet, variables or embedded fonts. It used a one-off script outside any repository, so a re-export from source brings the dark dual-theme SVG back.
 
+This record also carries the open concern of [KI-HARNESS-GOV-217](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-217-coordination-and-work-design-renames.md), folded here on 18 October 2026 under Kris's PRUNE-HELD a) answer: the harness `thread-model` diagram stays pinned at `b7d3b53e`, where its cited `ki-pmo` paths exist, and renaming its node label and sources means re-tracing it at HEAD under its `regenerate` instruction in `docs/diagrams/diagrams.toml`.
+
 ## Boundary
 
 - In: a light, static, flattened export option in `export-svg.ts`, built on the existing Chrome driver, with its tests and usage; the `ki-diagrams` rule on when to use it and how the manifest records it; the `ki-work-design` rule that design reports use inline text diagrams or exported static SVGs beside the Project note; regenerated skill surfaces.
+- In: re-tracing the `thread-model` diagram at HEAD under its `regenerate` instruction, and re-exporting it.
 - Out: changing the dual-theme default for living diagrams elsewhere; changing Archify; re-exporting existing diagrams in other repositories, which their owners do.
 
 ## Discussion
