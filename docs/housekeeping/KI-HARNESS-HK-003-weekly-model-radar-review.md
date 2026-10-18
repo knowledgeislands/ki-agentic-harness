@@ -8,7 +8,7 @@ grace: P2D
 spawn-policy: when-due
 spawn-horizon: now
 active-run: null
-initiative: platform-foundations
+theme: foundations
 component: governance
 purpose: upkeep
 ---
