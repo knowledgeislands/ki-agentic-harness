@@ -12,14 +12,14 @@ blocks: []
 blocked_by: []
 baseline_ref: 72ad16866f1f3b4fbae2cac0f7c1ce09395465d2
 created_at: 2026-10-16T21:28:02Z
-updated_at: 2026-10-17T00:39:29Z
+updated_at: 2026-10-18T02:22:09Z
 ---
 
 # KI-HARNESS-GOV-199: Thread Identity and Role
 
 ## Goal
 
-Every agent and tool can tell which logical thread a native client session belongs to and which role that thread plays, conversational, coordination or state-of-play, from one portable declaration in the thread's checkpoint, so that coordinator forms reach only coordinating threads and a conversational thread such as Acquire's intake keeps its plain replies on every client and host.
+Every agent and tool can tell which piece of work a native client session belongs to and whether that work coordinates, from one portable declaration in its work file `+/_WORK/<id>/work.md`, so that coordinator forms reach only coordinating work and conversational work such as Acquire's intake keeps its plain replies on every client and host.
 
 ## Context
 
@@ -37,6 +37,8 @@ The reply forms, agreed under REPLY-FORMS and delivered as Phase 1a in [KI-HARNE
 - Phase 1 no longer allows a messages block on a conversational checkpoint: under CONV-CHECKPOINT it carries none, and intake removes its block at its own next update.
 - Phase 3 removes the hook-line scope sentence when the hook's role gate lands, with the pointer's conversational clause; the output style's scope paragraph stays, because Claude cannot unload a style.
 
+The work model, [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) and the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md), has since replaced the checkpoint with the work file and the thread role with the work file's `level`, and [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) writes it into the harness. Under it the key becomes `<repository name>/<work id>`; `level: territory` or `level: project` is coordinating work and `level: regular` is not, so the `role` field and PMO-10's role check are superseded by `level`, which PMO-10 now checks against the id; RECORD-4 checks that coordinating work, by level or, for an old checkpoint, by role, lives only where `[skills.ki-pmo]` is declared; and the `ki-pmo` Work naming section, ids `ki`, `ki.regular`, `ki.regular.<slug>` and `ki.<project>`, replaces Thread naming and answers IDS-MIGRATE's naming half. The binding moves to `~/.local/state/ki/threads/<repository>/<work id>.json`. The agreed design otherwise stands, read with work file for checkpoint and level for role.
+
 This record owns the harness phases. [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) owns the `ki thread` tooling and the background-agent style, and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md) the hook registration. [KI-TOOL-KI-CLI-127](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-127-agent-status-live-threads.md) lists live runs and might later show bound threads; [KI-HARNESS-GOV-189](KI-HARNESS-GOV-189-move-thread-between-hosts.md) owns moving a thread between hosts, which this work leaves to it, since bindings are rebuilt on each host.
 
 ## Boundary
@@ -49,6 +51,8 @@ This record owns the harness phases. [KI-TOOL-KI-CLI-145](/Users/krisbrown/works
 
 ## Current state
 
+The work-model write-in under [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) supersedes the `role` field, the role-reading PMO-10 and Thread naming, as Context sets out; old checkpoints keep `role` through the migration's tolerance window. The steps below are read under the work model: the identity section names the work file and work id, and the role gating reads `level`.
+
 The Thread naming section has landed in the `ki-pmo` standard, with pointers from `ki-checkpoint` and `ki-delegation`, documenting the model only. Phase 1's role field has landed: the `ki-checkpoint` Thread role section with the optional `role` field, its three values, the conversational default and the `[skills.ki-pmo]` rule, checked by RECORD-2 and the new RECORD-4; one paragraph in the `ki-pmo` Thread types section; and the new PMO-10 rubric item, at WARN while existing coordinating checkpoints migrate through their own updates. The rest of Phase 1, the identity section and the `ki-pmo` Bootstrap and Re-anchoring role edits, the naming migration, the scope-sentence rewording, Phase 3 and the pilots remain.
 
 ## Steps
@@ -57,10 +61,10 @@ The Thread naming section has landed in the `ki-pmo` standard, with pointers fro
 - [x] Have `ki-pmo` Thread types read the role, and add PMO-10 checking that every coordinating checkpoint declares it.
 - [x] Regenerate both rubrics and the `ki-pmo` surfaces.
 - [x] Document the thread id, slug and title model in one `ki-pmo` Thread naming section, pointed to from `ki-checkpoint` and `ki-delegation`.
-- [ ] Once the owner answers IDS-MIGRATE, accept `id` and `title` in the `ki-checkpoint` checker and carry out the approved renames in their order.
+- [ ] Once the owner answers IDS-MIGRATE, accept `id` and `title` in the `ki-checkpoint` checker and carry out the approved renames in their order. Superseded by the work model: the work file carries `id` and `title`, and the moves happen in the migration's phase 3.
 - [ ] Add the thread identity and native sessions section to `ki-checkpoint`, with pointers from the `ki-pmo` Glossary and `ki-delegation`.
 - [ ] Gate Report forms by role with the narrowed role-gated table; have Bootstrap check the declared role against the opener; limit Re-anchoring to coordinating roles.
-- [ ] Once the territory's coordinating checkpoints carry `role`, reword the hook-line and output-style scope sentences to "whose checkpoint declares role coordination or state-of-play" and regenerate.
+- [ ] Once the territory's coordinating work has work files, reword the hook-line and output-style scope sentences to "whose work file declares level territory or project" and regenerate.
 - [ ] Phase 3: the hook script's identity line and role gate, removing the hook-line scope sentence and the pointer's conversational clause.
 - [ ] Record the pilot results from Phases 4 and 4b.
 

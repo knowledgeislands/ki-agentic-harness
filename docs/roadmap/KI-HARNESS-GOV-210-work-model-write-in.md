@@ -7,12 +7,12 @@ purpose: governance
 project: ways-of-working
 component: governance
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: [KI-HARNESS-GOV-206]
 blocked_by: []
 baseline_ref: be65ccad13720226c85626093538d744fae8f024
 created_at: 2026-10-18T01:49:05Z
-updated_at: 2026-10-18T01:49:05Z
+updated_at: 2026-10-18T02:23:41Z
 ---
 
 # KI-HARNESS-GOV-210: Work Model Write-In
@@ -32,18 +32,18 @@ The harness standards, skills, checkers and generated coordinator surfaces descr
 
 ## Current state
 
-In progress at `now` from baseline `be65ccad13720226c85626093538d744fae8f024`, under the migration's phase 1.
+Delivered from baseline `be65ccad13720226c85626093538d744fae8f024` under the migration's phase 1 and awaiting review; see Review.
 
 ## Steps
 
-- [ ] `ki-pmo`: the work levels and forms, seven states, On hold, the receive words, the glyph banner and send line, no reply block, the work file, the heartbeat while work lies with a worker, the decisions life cycle, pruning the work folder, two-part ids with the theme as display text, `+/_WORK_REVIEW/<id>/` and design notes in `+/_WORK/<id>/design/`; regenerate the surfaces.
-- [ ] `ki-delegation`: briefs in `+/_WORK/<id>/briefs/<run>.md`, the run report's glyph banner and no reply block, the decisions log in the work folder.
-- [ ] `ki-checkpoint`: the work-file standard, still reading old checkpoints.
-- [ ] The Project registry, Streams and roadmap standards and checkers: `Streams/Themes/`, flat Project notes with `theme:`, no `design/` under `Streams/`, records naming an optional `theme`; `initiative:` and `Streams/Initiatives/` warn.
-- [ ] `ki-repo-kb-activities` and `ki-work-recurring`: an Activity's home is regular work or a Project, with an optional `theme:`; regular work is self-coordinating. Amend KI-HARNESS-GOV-206.
-- [ ] `ki-pmo-design`: the artefact home `+/_WORK/<id>/design/`.
-- [ ] Amend KI-HARNESS-GOV-189, KI-HARNESS-GOV-199 and KI-HARNESS-GOV-200 where the work folder replaces the thread folder and checkpoint.
-- [ ] Run the checks under Verify.
+- [x] `ki-pmo`: the work levels and forms, seven states, On hold, the receive words, the glyph banner and send line, no reply block, the work file, the heartbeat while work lies with a worker, the decisions life cycle, pruning the work folder, two-part ids with the theme as display text, `+/_WORK_REVIEW/<id>/` and design notes in `+/_WORK/<id>/design/`; regenerate the surfaces.
+- [x] `ki-delegation`: briefs in `+/_WORK/<id>/briefs/<run>.md`, the run report's glyph banner and no reply block, the decisions log in the work folder.
+- [x] `ki-checkpoint`: the work-file standard, still reading old checkpoints.
+- [x] The Project registry, Streams and roadmap standards and checkers: `Streams/Themes/`, flat Project notes with `theme:`, no `design/` under `Streams/`, records naming an optional `theme`; `initiative:` and `Streams/Initiatives/` warn.
+- [x] `ki-repo-kb-activities` and `ki-work-recurring`: an Activity's home is regular work or a Project, with an optional `theme:`; regular work is self-coordinating. Amend KI-HARNESS-GOV-206.
+- [x] `ki-pmo-design`: the artefact home `+/_WORK/<id>/design/`.
+- [x] Amend KI-HARNESS-GOV-189, KI-HARNESS-GOV-199 and KI-HARNESS-GOV-200 where the work folder replaces the thread folder and checkpoint.
+- [x] Run the checks under Verify.
 
 ## Files touched
 
@@ -84,6 +84,39 @@ The hooks README describes the hook under the work model.
 ### Roadmap
 
 The four amended records; phase 5 closes the tolerance window in a later record.
+
+## Review
+
+### Delivered
+
+Every step: the `ki-pmo`, `ki-delegation`, `ki-checkpoint`, Project registry, Streams, roadmap, Activities, recurring-work and `ki-pmo-design` standards and checkers describe the work model and accept the thread-model shapes with a `legacy:` warning; the generated hook line, output style, run-prompt and authority footers are current; [KI-HARNESS-GOV-189](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-189-move-thread-between-hosts.md), [KI-HARNESS-GOV-199](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-199-thread-identity-role-native-sessions.md), [KI-HARNESS-GOV-200](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-200-thread-folder-closed-list.md) and [KI-HARNESS-GOV-206](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-206-activity-homes-and-coordination.md) are amended.
+
+### Change Summary
+
+- `ki-pmo`: the work model in the standard, skill, rubric items PMO-9 and PMO-10 and generator, with the hook line, output style, hooks README and HARN-012 and HARN-013 regenerated or rewritten.
+- `ki-delegation`: briefs, decisions log and reports in `+/_WORK/<id>/`, the run report's glyph banner with no reply block, and the run-prompt decisions-log path.
+- `ki-checkpoint`: the work-file standard; old `+/_CHECKPOINTS/` records still read with a warning; `ki-repo-kb` exempts work files from note typing.
+- `ki-work`, `ki-repo-kb-streams` and `ki-work-roadmap`: `Streams/Themes/`, flat Project notes with `theme:`, no `design/` under `Streams/`, and `initiative:` and `Streams/Initiatives/` warning.
+- `ki-repo-kb-activities` and `ki-work-recurring`: an Activity's home is regular work or a Project with an optional `theme`; recurring work is self-coordinating; a legacy `initiative` warns.
+- `ki-pmo-design`: the artefact home `+/_WORK/<id>/design/`.
+- No skill is renamed and `ki agent` is unchanged.
+
+### Verification
+
+`bun run test` and `bunx tsc --noEmit` pass; `ki dev skill generate ki-pmo` reports every surface current; `ki repo audit` for `ki-work-roadmap`, `ki-checkpoint`, `ki-delegation` and `ki-skills` passes. `ki-pmo` reports FAIL=4 and WARN=2, the same findings as at the baseline, in an old thread folder, not in the contract under change. Against Knowledge Islands Principal, the old checkpoints, `Streams/` design folders and Activity `initiative:` fields report the expected legacy findings for phase 3.
+
+### Outstanding concerns
+
+- `ki-repo`'s `standards-repository.md` and `standards-configuration.md`, and its COVERAGE detect in `scripts/rubric/contexts/audit.ts`, still name `+/_CHECKPOINTS/` and `+/_THREADS/<run>/`; they lay outside this record's boundary and want a follow-up.
+- Planning decides whether [KI-HARNESS-GOV-206](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-206-activity-homes-and-coordination.md) closes as delivered by this record.
+
+### Post-change review
+
+Reviewer: pending; this record awaits an independent review before acceptance.
+
+### Mini recap
+
+The harness now speaks the work model and reads the thread model with warnings until phase 5 closes the window; tools-ki's phase 2 can build on it.
 
 ## Discussion
 

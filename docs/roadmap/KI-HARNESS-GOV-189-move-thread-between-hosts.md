@@ -8,14 +8,14 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-14T17:00:00Z
+updated_at: 2026-10-18T02:22:09Z
 ---
 
 # Move a Coordinating Thread to Another Host
 
 ## Goal
 
-A coordinating thread can move from one machine to another without waiting for its whole queue to drain: only the agents already running finish on the old host, and the queued work restarts on the new host from the thread's checkpoint.
+A coordinating thread can move from one machine to another without waiting for its whole queue to drain: only the agents already running finish on the old host, and the queued work restarts on the new host from the work's work file.
 
 ## Context
 
@@ -24,6 +24,8 @@ A coordinating thread can move from one machine to another without waiting for i
 This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studio Setup Project](../../../ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md), which is bringing a second machine back into service so that threads can resume there. Kris decided on 2026-10-14, recorded in that run's machine-local decisions log on the laptop, in these words:
 
 > if there is a wish to somehow move a thread over to another machine, because of the way that we're doing the delegation, we need to drain it down. But obviously, there can be quite a lot of stuff that can be queued up potentially. So we should almost decide that stuff that's queued up gets pushed back into the checkpoint, and so when the next machine starts up, it will re-queue it on its machine from that checkpoint, and that will allow us to move things over and only wait for things that are actually already running to be completed.
+
+The work model, [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) and the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md), written into the harness by [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md), has since changed the ground this record stands on. The checkpoint becomes the work file `+/_WORK/<id>/work.md`; the decisions log, reports and briefs already live in the tracked work folder `+/_WORK/<id>/`, with briefs under `briefs/<run>.md`; a pause is the `on-hold` state rather than a drain; and a closing is the `finished` state with its glyph banner rather than the DONE frame. The proposed rule below is read in those terms, and the DONE-on-handover decision is noted, not settled, under the work model.
 
 The receiving repository keeps priority, planning and acceptance; capturing this record adopts nothing. It is not blocking the Mac Studio Setup Project.
 
@@ -34,12 +36,12 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 
 ## Proposed rule
 
-1. **Drain only running agents.** On the old host, stop launching; let the agents already running finish and report.
-2. **Write queued work back into the checkpoint.** Each queued agent's brief, or a pointer to it, is recorded in the thread checkpoint as work to re-queue, and removed from the old host's queue.
-3. **Move the run's state into the tracked thread folder.** The run's decisions log and reports move from `~/.local/state/ki/agents/<run>/` into the tracked `+/_THREADS/<run>/` folder, which is committed and pushed.
-4. **Start on the new host.** The new host pulls every affected repository level, opens the Capital, re-queues from the checkpoint and pastes the thread's resume line.
+1. **Hold, letting only running agents finish.** On the old host, the work moves to `on-hold`: stop launching, and let the agents already running finish and report.
+2. **Write queued work back into the work file.** Each queued agent's brief sits in `+/_WORK/<id>/briefs/<run>.md`, is named in the work file's Next steps as work to re-queue, and is removed from the old host's queue.
+3. **Commit and push the work folder.** The decisions log, reports and briefs already live in the tracked `+/_WORK/<id>/`, so this step is only its commit and push; nothing moves out of `~/.local/state/ki/agents/<run>/`, which keeps runtime files alone.
+4. **Start on the new host.** The new host pulls every affected repository level, opens the Capital, re-queues from the work file's Next steps and pastes the thread's resume line.
 5. **Retire the old host's session.** The old session ends once the move is pushed and the new session has re-bootstrapped.
-6. **Close the old instance with DONE.** Once the handover has pushed, the thread instance left on the old host closes with a DONE frame that has no resume line and points to the host that took over.
+6. **Close the old instance.** Once the handover has pushed, the instance left on the old host closes with no resume line and points to the host that took over. The 2026-10-14 decision named the DONE frame, which the work model's `finished` glyph banner supersedes; planning settles which form an old-host instance uses, since the work itself continues and is not finished.
 
 ## Discussion
 
@@ -50,7 +52,7 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 
 ### Decisions-log transfer, observed 2026-10-14
 
-The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, and Kris approved recording what that took (Kris, 2026-10-14: "I want to capture any differences and also make an onboarding guide for a rig"). The run's decisions log, `~/.local/state/ki/agents/mac-studio-bootstrap/decisions.md`, is machine-local and not in Git, so nothing carried it: an approved agent copied it to the same path on `sol` with the run reports, and the checkpoint recorded that the live copy was now on `sol` and the laptop's copy frozen. Until rule 3 lands, a move depends on that manual copy, and a thread that resumes without it has its checkpoint but none of the owner decisions in the owner's words. The procedure should say:
+The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, and Kris approved recording what that took (Kris, 2026-10-14: "I want to capture any differences and also make an onboarding guide for a rig"). The run's decisions log, `~/.local/state/ki/agents/mac-studio-bootstrap/decisions.md`, is machine-local and not in Git, so nothing carried it: an approved agent copied it to the same path on `sol` with the run reports, and the checkpoint recorded that the live copy was now on `sol` and the laptop's copy frozen. Under the work model the decisions log is tracked in `+/_WORK/<id>/decisions.md`, so this gap closes once the work moves into its work folder; until then, a move depends on that manual copy, and a thread that resumes without it has its checkpoint but none of the owner decisions in the owner's words. The procedure should say:
 
 - which files in the run folder travel (the decisions log, reports and briefs) and which stay behind (process ids, launch records, logs and status files);
 - that the checkpoint names the host holding the live decisions log, and the old host's copy is frozen from the move mark;
