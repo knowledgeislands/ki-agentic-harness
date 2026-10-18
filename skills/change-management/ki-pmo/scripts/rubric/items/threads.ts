@@ -104,6 +104,23 @@ const PMO_11: RubricItem<PmoRubricContext> = {
   }
 }
 
+const PMO_12: RubricItem<PmoRubricContext> = {
+  code: 'PMO-12',
+  title: 'every work report opens with its report heading',
+  description:
+    'Every report under `+/_WORK/<id>/` or `+/_THREADS/<run>/` has the `#` report heading as its first non-blank line, or, for a report saved with front matter, the front matter first and the heading as the first non-blank line after it. A frame rule, a lint directive or a form line before the heading does not pass. Work awaiting review is not read.',
+  sources: [`${SOURCE}#owner-report`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Move the report heading to the top of each flagged report, after its front matter if it has any. Fix only the reports of the work under review; other work fixes its own at its next mark.'
+    },
+    audit: { phase: 'INSPECT', run: ({ headings }) => headings.outcomes }
+  }
+}
+
 const PMO_9: RubricItem<PmoRubricContext> = {
   code: 'PMO-9',
   title: 'every work folder is pruned to what is still open',
@@ -210,5 +227,5 @@ export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
     'The territory work and Project work a repository shows in its work files, with old-shape checkpoints for the tolerance window, and the responsiveness, reporting and currency of the coordinators behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_11, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
+  items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_11, PMO_12, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
 }

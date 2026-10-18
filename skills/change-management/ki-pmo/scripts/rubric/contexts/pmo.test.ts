@@ -11,6 +11,7 @@ import {
   reportHasGlyphForm,
   reportIssuedDay,
   reportLinkFindings,
+  reportOpensWithHeading,
   reportQueryTags,
   repositoryIdentity,
   workFolderFindings,
@@ -368,6 +369,42 @@ describe('recommendation confidence', () => {
 
   test('no thread folder is not applicable', () => {
     expect(statuses(context(fixture(null)).confidence.outcomes)).toEqual(['NOT_APPLICABLE'])
+  })
+})
+
+describe('report heading', () => {
+  test('a report opens with its heading, after front matter if it has any', () => {
+    expect(
+      reportOpensWithHeading('# [Model](/m.md) › run\n\n**🤖 → 🧑 Handoff to supervisor · Run report at 08:00 BST**\n')
+    ).toBe(true)
+    expect(reportOpensWithHeading('\n\n# Report\n')).toBe(true)
+    expect(reportOpensWithHeading('---\nid: KI-HARNESS-GOV-175\nstatus: draft\n---\n\n# Report\n')).toBe(true)
+  })
+
+  test('a frame, a lint directive, a form line or unclosed front matter first does not', () => {
+    expect(reportOpensWithHeading('---\n\n**Run report at 00:50 BST**\n\n---\n\n## Done\n')).toBe(false)
+    expect(reportOpensWithHeading('<!-- rumdl-disable-file MD041 -->\n# Report\n')).toBe(false)
+    expect(reportOpensWithHeading('**Run report at 00:50 BST**\n\n# Report\n')).toBe(false)
+    expect(reportOpensWithHeading('## Done\n')).toBe(false)
+    expect(reportOpensWithHeading('---\nid: KI-HARNESS-GOV-175\n\n# Report\n')).toBe(false)
+    expect(reportOpensWithHeading('')).toBe(false)
+  })
+
+  test('a work report that does not open with its heading is a violation naming it', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    const folder = work(root, 'ki.ways-of-working', { id: 'ki.ways-of-working' })
+    writeFileSync(join(folder, 'framed.report.md'), '---\n\n**Run report at 00:50 BST**\n\n---\n\n## Done\n')
+    writeFileSync(join(folder, 'headed.report.md'), '# Report\n\n## Done\n')
+    const outcomes = context(root).headings.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_WORK', 'ki.ways-of-working', 'framed.report.md'))
+  })
+
+  test('headed reports pass, and no work or thread folder is not applicable', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    report(root, 'ways-of-working', 'headed', '# Report\n\n## Done\n')
+    expect(statuses(context(root).headings.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(fixture(null)).headings.outcomes)).toEqual(['NOT_APPLICABLE'])
   })
 })
 

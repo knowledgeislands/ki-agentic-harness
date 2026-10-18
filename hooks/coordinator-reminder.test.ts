@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -24,24 +24,6 @@ writeFileSync(join(undeclared, '.ki.toml'), '[skills.ki-repo]\nrepository = "und
 spawnSync('git', ['init', '--quiet'], { cwd: undeclared })
 mkdirSync(ordinary, { recursive: true })
 
-// `ps -o tty=` up the ancestry is the detachment signal; the wrapper fixes it so
-// the suite does not depend on whether the test runner itself has a terminal.
-// FAKE_TTY answers every process except FAKE_TTY_PID, which answers FAKE_TTY_AT_PID;
-// FAKE_PPID is every process's parent.
-const wrappers = join(root, 'wrappers')
-mkdirSync(wrappers)
-writeFileSync(
-  join(wrappers, 'ps'),
-  `#!/usr/bin/env bash
-case " $* " in
-  *" tty= "*) if [ "$4" = "\${FAKE_TTY_PID:-}" ]; then printf '%s\\n' "\${FAKE_TTY_AT_PID:-}"; else printf '%s\\n' "\${FAKE_TTY-ttys001}"; fi ;;
-  *" ppid= "*) printf '%s\\n' "\${FAKE_PPID:-1}" ;;
-  *) exit 1 ;;
-esac
-`
-)
-chmodSync(join(wrappers, 'ps'), 0o755)
-
 process.on('exit', () => rmSync(root, { recursive: true, force: true }))
 
 interface Outcome {
@@ -58,7 +40,6 @@ const run = (input: string, extraEnv: Record<string, string> = {}): Outcome => {
   // The suite may itself run inside Claude Code; the runtime split is driven per test.
   delete env.CLAUDECODE
   Object.assign(env, extraEnv)
-  env.PATH = `${wrappers}:${env.PATH ?? ''}`
   const result = spawnSync('bash', [script], { input, encoding: 'utf8', env, cwd: ordinary })
   const stdout = result.stdout ?? ''
   if (stdout.trim() === '') return { status: result.status, stdout }
@@ -142,36 +123,12 @@ test('a Claude child from an older launcher is recognised by its print-mode ceil
   expect(outcome.stdout).toBe('')
 })
 
-test('a detached Codex process with no controlling terminal anywhere above it gets nothing', () => {
-  for (const tty of ['??', '?', '']) {
-    const outcome = run(codexPrompt(coordinating), { FAKE_TTY: tty })
-    expect(outcome.status).toBe(0)
-    expect(outcome.stdout).toBe('')
-  }
-  const looping = run(codexPrompt(coordinating), { FAKE_TTY: '??', FAKE_PPID: '4242' })
-  expect(looping).toEqual({ status: 0, stdout: '' })
-})
-
-test('a Claude Code session with no terminal, as in an editor, still gets the line', () => {
-  const outcome = run(claudePrompt(coordinating), { FAKE_TTY: '??', CLAUDECODE: '1' })
-  expect(outcome.status).toBe(0)
-  expect(outcome.context).toBe(line)
-  expect(run(claudePrompt(coordinating), { FAKE_TTY: '??' })).toEqual({ status: 0, stdout: '' })
-})
-
-test('a hook process started without the terminal finds it on an ancestor', () => {
-  const outcome = run(claudePrompt(coordinating), { FAKE_TTY: '??', FAKE_PPID: '4242', FAKE_TTY_PID: '4242', FAKE_TTY_AT_PID: 'ttys001' })
-  expect(outcome.status).toBe(0)
-  expect(outcome.context).toBe(line)
-})
-
 test('the post-compaction session start injects the re-anchoring pointer', () => {
-  const outcome = run(sessionStart(coordinating, 'compact'), { FAKE_TTY: '??', CLAUDECODE: '1' })
+  const outcome = run(sessionStart(coordinating, 'compact'), { CLAUDECODE: '1' })
   expect(outcome.status).toBe(0)
   expect(outcome.event).toBe('SessionStart')
   expect(outcome.context).toBe(pointer)
   expect(run(sessionStart(coordinating, 'compact')).context).toBe(pointer)
-  expect(run(sessionStart(coordinating, 'compact'), { FAKE_TTY: '??' })).toEqual({ status: 0, stdout: '' })
 })
 
 test('other session starts and other events stay silent', () => {

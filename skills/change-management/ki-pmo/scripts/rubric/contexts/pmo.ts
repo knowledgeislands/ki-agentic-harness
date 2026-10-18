@@ -70,6 +70,7 @@ export type PmoRubricContext = {
   readonly cap: OutcomeContext
   readonly links: OutcomeContext
   readonly confidence: OutcomeContext
+  readonly headings: OutcomeContext
   readonly tidy: OutcomeContext
   readonly binding: OutcomeContext
   readonly judgment: OutcomeContext
@@ -569,6 +570,32 @@ const confidenceOutcomes = (root: string, reports: readonly string[]): AuditOutc
 }
 
 /**
+ * Whether a saved report opens with its `#` heading: the first non-blank line, or for a report saved with front matter,
+ * a leading `---` block whose first line is a YAML key, the first non-blank line after it. A frame rule, a comment or
+ * any other line first does not count.
+ */
+export const reportOpensWithHeading = (text: string): boolean => {
+  const lines = text.replace(/^\uFEFF/u, '').split('\n')
+  let start = 0
+  if (lines[0]?.trim() === '---' && /^[A-Za-z_][\w-]*:/u.test(lines[1] ?? '')) {
+    const close = lines.findIndex((line, at) => at > 0 && line.trim() === '---')
+    if (close < 0) return false
+    start = close + 1
+  }
+  const first = lines.slice(start).find((line) => line.trim() !== '')
+  return first !== undefined && /^# \S/u.test(first)
+}
+
+const headingOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] =>
+  reports
+    .filter((report) => !reportOpensWithHeading(readFileSync(report, 'utf8')))
+    .map((report) => ({
+      status: 'VIOLATION' as const,
+      message: "a saved report's first non-blank line is its `#` report heading, after front matter if it has any",
+      subject: relative(root, report)
+    }))
+
+/**
  * The Needs tags of a report's open queries: the `###` headings under its `## Queries` section, each
  * `<TAG> - <title>`, the tag optionally linked to its record. A report with no Queries section, or one that says it has
  * no outstanding queries, names none.
@@ -795,6 +822,15 @@ export const createPmoSession = ({
         confidenceOutcomes(root, reports ?? []),
         reports && reports.length > 0
           ? `Every recommended option in the work reports written on or after ${CONFIDENCE_SINCE} carries its confidence.`
+          : 'No work report is present under `+/_WORK/` or `+/_THREADS/`.',
+        unreported
+      )
+    },
+    headings: {
+      outcomes: one(
+        headingOutcomes(root, reports ?? []),
+        reports && reports.length > 0
+          ? `Each of the ${reports.length} work report(s) opens with its \`#\` heading.`
           : 'No work report is present under `+/_WORK/` or `+/_THREADS/`.',
         unreported
       )

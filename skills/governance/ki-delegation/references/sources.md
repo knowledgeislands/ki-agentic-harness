@@ -4,13 +4,15 @@
 
 | Source | Last reviewed | Governs |
 | --- | --- | --- |
-| Knowledge Islands delegation practice | 2026-10-14 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet, authority tiers, decisions log and its tracked thread-folder home, coordination, worktree placement, run-folder retention, monitoring, and the owner report with its Needs tags and reply block; coordinating threads are `ki-pmo`'s |
+| Knowledge Islands delegation practice | 2026-10-18 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet and run events, authority tiers, decisions log and its tracked thread-folder home, coordination, worktree placement, run-folder retention, monitoring, and the owner report with its Needs tags and reply block; coordinating threads are `ki-pmo`'s |
 | `ki-tokenomics` | 2026-10-13 | Model-purpose and context-cost policy belong outside the packet, including the coordinating-thread model |
 | `ki-work-roadmap` | 2026-08-12 | Approved work-record lifecycle, plan ownership, and review boundary |
 | [OpenAI: Codex subagents][openai-subagents] | 2026-08-12 | Ordinary subagent task selection, permissions, and execution guidance |
 | [Anthropic: Claude Code sub-agents][anthropic-subagents] | 2026-08-12 | Ordinary subagent task fit, restricted capabilities, and isolation guidance |
 
 ## Last review
+
+A 2026-10-18 review, under `KI-HARNESS-GOV-175`, wrote phase 1 of the delegated-work notification strategy into the background-run standard after Kris adopted it on 2026-10-13, "ADOPT adopt KI-PRINCIPAL-ECO-012 to draft through ki-next; hand phase 1 to tools-ki and the harness now", and set the order, "tools-ki first". The new Run events subsection names the events the `tools-ki` launcher derives, `launch`, `held`, `progress`, `done`, `failed`, `blocked` and `needs-owner`, with the `milestone:`, `blocked:` and `failed:` status forms quoted from the launcher's progress protocol and the privacy rule for anything derived from a packet; the waiter returns the next unseen finish, failure, block or query in the order it happened, the monitor prints events as they appear, and agent names are unique within a run. The `ki agent send` inbox idiom replaced `decide --log`, and the coordinator-reminder hook dropped its Codex terminal check now that `KI_AGENT_RUN` reaches both runtimes, as Kris widened the record on 2026-10-16. The vendor guides were not re-reviewed.
 
 An eighth 2026-10-14 review put the `ki-pmo` footer's form word and padding into the owner report after Kris, in the `ways-of-working` thread, asked "What about with some spaces around it, so that it's got a bit more impact?" and approved with "Okay, I'm really happy with that. Yeah, let's go with it.": a background agent's report closes with the thread's block-letter footer whose top border reads `╭─ run report · <YYYY-MM-DDTHH:MM:SSZ> ─` filled to 52 code points, with one blank framed line inside each border; the four authority footers, the run-prompt skeleton and RUN-4 say so, and reports issued before that approval keep their `issued` border and unpadded frame. The vendor guides were not re-reviewed.
 

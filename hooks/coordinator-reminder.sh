@@ -9,9 +9,9 @@
 # This hook is deliberately fail-open: every failure path exits 0 with no
 # output, so it can never block a prompt. It is silent unless the thread is a
 # coordinating thread, which it decides from the ki-pmo declaration in the
-# working directory's checkout, and it is
-# silent in any agent `ki agent` launched, which it decides from the run marker
-# or from the detachment that launch performs.
+# working directory's checkout, and it is silent in any agent `ki agent`
+# launched, which it decides from the run marker the launcher sets under both
+# runtimes.
 set -u
 
 line='In coordinating work only, a session opened or resumed as ki-pmo territory work or Project work, whose work file declares level territory or project; in any other session ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.'
@@ -22,35 +22,6 @@ pointer='Context was compacted. While coordinating work, before replying, follow
 # signal for agents an older launcher started.
 [ -z "${KI_AGENT_RUN:-}" ] || exit 0
 [ -z "${CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS:-}" ] || exit 0
-
-# A detached agent runs in its own session with no controlling terminal, while
-# an interactive thread has one. Both runtimes start hook processes without the
-# terminal, so the check walks up the ancestry; unknown counts as detached.
-# Claude Code sets CLAUDECODE in every session, interactive or not, and an
-# interactive Claude Code session may have no terminal at all, as in an editor,
-# so under Claude Code the run marker and the ceiling are the only signals and
-# the terminal check is skipped. Codex keeps it until its launcher sets
-# KI_AGENT_RUN.
-has_terminal() {
-  pid=$$
-  depth=0
-  while [ "$pid" -gt 1 ] && [ "$depth" -lt 8 ]; do
-    tty=$(ps -o tty= -p "$pid" 2>/dev/null | tr -d '[:space:]') || return 1
-    case "$tty" in
-      '' | '?' | '??' | '-') ;;
-      *) return 0 ;;
-    esac
-    pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d '[:space:]') || return 1
-    case "$pid" in
-      '' | *[!0-9]*) return 1 ;;
-    esac
-    depth=$((depth + 1))
-  done
-  return 1
-}
-if [ -z "${CLAUDECODE:-}" ]; then
-  has_terminal || exit 0
-fi
 
 command -v jq >/dev/null 2>&1 || exit 0
 input=$(cat 2>/dev/null) || exit 0

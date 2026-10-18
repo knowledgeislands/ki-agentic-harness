@@ -6,6 +6,7 @@
 - [Detachment](#detachment)
 - [Coordinating work](#coordinating-work)
 - [Run packet](#run-packet)
+  - [Run events](#run-events)
 - [Prompt shape](#prompt-shape)
 - [Authority tiers](#authority-tiers)
 - [Decisions log](#decisions-log)
@@ -54,14 +55,14 @@ Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 | `<name>.draft.md`, `<name>.queued.md` | A brief's drafts, and a queued agent's brief until it launches |
 | `<name>.prompt.md` | The prompt as launched, with its authority footer and progress protocol |
 | `<name>.launch.json` | The launch record: runtime, model and effort as launched |
-| `<name>.status` | One line, `HH:MM <TZ> - plain-language activity`, in the owner's local time |
+| `<name>.status` | One line, `HH:MM <TZ> - plain-language activity`, in the owner's local time, or one of the [run-event](#run-events) forms |
 | `<name>.pid` | The detached process identifier |
 | `<name>.log` | The runtime's combined output |
 | `<name>.report.md` | Each agent's final report, as written |
 | `<name>.work/` | Machine-only scratch with no repository home, removed with the state folder |
 | `thread.json`, `thread.status`, `inbox.md` | The coordinating session's runtime: the run's recorded home, its status line and its inbox. The native-session binding is a separate machine-local file under the work-file standard's [Work identity and native sessions](../../ki-checkpoint/references/standards-checkpoints.md#work-identity-and-native-sessions) |
-| `events.jsonl`, `events.state.json`, `_archive/` | The event log, its read position and retained files |
-| `queue.jsonl`, `seen`, `dispatch.*` | The run queue, the waiter's seen list and the dispatcher's own files |
+| `events.jsonl`, `events.state.json`, `events.seen` | The [event log](#run-events), the snapshot the launcher derives it from, and the waiter's read position |
+| `queue.jsonl`, `dispatch.*` | The run queue and the dispatcher's own files |
 | `worktrees/` | The run's Git worktrees, placed under [Coordination](#coordination) |
 
 A run report is written to the run's state folder, and the launcher copies it into the owning work folder, `+/_WORK/<id>/`. The work folder's list is closed, under `ki-pmo`'s [Pruning the work folder](../../../change-management/ki-pmo/references/standards-pmo.md#pruning-the-work-folder): `work.md`, which [`ki-checkpoint`](../../ki-checkpoint/SKILL.md) owns, `decisions.md`, the reports that still carry an open query, `briefs/` and `design/`. Kris set the closed list for the thread folder on 2026-10-15: "A thread folder holds a closed list, decisions.md and <name>.report.md only; briefs live in the state folder, work products in their owning home, temporary output in the temporary location." The work model moves the briefs into the work folder, so that a brief survives the loss of a state folder.
@@ -77,6 +78,25 @@ The owning repository is the one that holds the work file, and the work folder t
 Everything else a run produces has a home outside the work folder. The prompt a run is launched from lives in the state folder beside the packet. A work product, such as a record, a standard, a diagram or a patch, lives in its owning home in the repository that owns it and is committed there. Temporary output lives in `<primary checkout>/tmp/<run>/<name>/` in the repository the agent works in, which that repository ignores; the agent deletes it once it is superfluous, and it goes when the run closes. Machine-only scratch that belongs to no repository may stay in the state folder as `<name>.work/`. Kris set the temporary home on 2026-10-15: "Temporary output goes in <primary checkout>/tmp/<run>/<name>/ in the repository the agent works in, ignored and deleted when the run closes or they are superflous to requirements; machine-only scratch may stay in the state folder as <name>.work/."
 
 The agent overwrites its status at each change of activity and at least every two minutes, writes its report, then writes `DONE` as the last line of its status. `DONE` is the only completion signal.
+
+An agent's name is unique within its run. A name that has already run is refused; relaunching it on purpose sets its earlier packet aside, and the agent's events then belong to its new attempt.
+
+### Run events
+
+The launcher turns what a run's files show into events, one JSON line each in `events.jsonl`, in the order they happened, so that every coordinator and agent reads one vocabulary. Kris adopted the notification strategy behind it on 2026-10-13, "ADOPT adopt KI-PRINCIPAL-ECO-012 to draft through ki-next; hand phase 1 to tools-ki and the harness now", and the order of delivery, "tools-ki first".
+
+| Event | Derived from |
+| --- | --- |
+| `launch`, `held` | The launcher starting an agent, or holding it on a gate |
+| `progress` | A status line of the form `HH:MM <zone> - milestone: <text>` |
+| `done` | `DONE` written as the last status line with the report present |
+| `failed` | A status line `HH:MM <zone> - failed: <text>`; `DONE` with no report; an exit without `DONE`; or a launch the launcher cannot make |
+| `blocked` | A status line `HH:MM <zone> - blocked: <text>`, or a gate that closes on a held agent because its predecessor failed |
+| `needs-owner` | One per query heading under `## Queries` in the report, `### <TAG> - <title>`, or under an older report's `## Outstanding queries` |
+
+Every other status line stays local: it shows in `ki agent status` and the monitor, and makes no event. The launcher appends the forms to each prompt's progress protocol in these words, which every brief and skeleton keeps: "For a milestone the coordinator should hear about, write the line as 'HH:MM <zone> - milestone: <text>'; when you are blocked or the work has failed, as 'HH:MM <zone> - blocked: <text>' or 'HH:MM <zone> - failed: <text>'." A material failure an agent reports in `## Done` reaches the coordinator through its `failed:` status line, since the report's prose gives no parseable signal. The run is finished, `ALL FINISHED`, once no agent is running or held and its queue is empty.
+
+Anything derived from a packet, an event's text, a waiter's line or a later notification, carries summaries, identifiers and paths, never file contents, secrets or the owner's addresses.
 
 The semantics are portable; the file names are the reference layout the launcher writes.
 
@@ -150,11 +170,11 @@ Keep agents moving. A coordinator never waits for a whole batch to finish before
 - **Queue:** ready-made prompts wait in the run's queue, each with its agent name and launch options. Queue order sets priority; reorder the queue, not the prompts, to change it.
 - **Dispatcher:** one detached dispatcher per run keeps up to a set number of agents running. As soon as any running agent finishes, it launches the next queued agent, logs each launch, and exits when the queue is empty and nothing is running. Under the concurrency practice Kris set on 2026-10-14, "CONCURRENCY / add the current practice to ki-pmo: chain agents that touch the same files, run different repositories in parallel, about three running per thread, the rest queued", the number is about three per thread; agents that touch the same files are queued with a wait on each other so they run in a chain, and agents in different repositories run side by side.
 - **Gates:** queued work still waits on `DONE` gates. A queued agent that depends on another is launched with its wait, and waits in the foreground as under [Coordination](#coordination).
-- **Waiter:** the coordinator keeps one background waiter armed. It blocks until the next agent finishes, prints that agent's name and last status (or that it exited without `DONE`), and marks it seen. On each wake, the coordinator reports the finish to the owner and re-arms the waiter.
+- **Waiter:** the coordinator keeps one background waiter armed, `ki agent wait --next`. It blocks until the next unseen `done`, `failed`, `blocked` or `needs-owner` [event](#run-events), in the order they happened, prints it and moves its read position past it, or prints `ALL FINISHED` when the run has ended with nothing unseen; launches, holds and milestones stay in the log and the monitor. The coordinator reads the event at its next turn, reports it to the owner and re-arms the waiter; it never waits, polls or relays in the foreground, under [Coordinating work](#coordinating-work).
 
 ## Monitoring
 
-The launching session stays non-blocking. One monitor per run prints a single line every two minutes listing each agent's latest status, and ends with `ALL FINISHED` once no agent is still running.
+The launching session stays non-blocking. One monitor per run, `ki agent watch`, prints each new [event](#run-events) as it appears and a single line every two minutes listing each agent's latest status, and ends with `ALL FINISHED` once no agent is still running.
 
 An agent whose process has exited without `DONE` is flagged, never counted as finished.
 
@@ -176,7 +196,7 @@ Each outstanding query carries a stable mnemonic Needs tag, never a number, defi
 
 ## Reference launcher
 
-`ki agent` in `tools-ki` is the reference launcher. It writes the run packet's runtime files under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, which it writes to the tracked work folder once that change ships, and provides `status` and `watch`, plus `queue`, `dispatch` and `wait --next` for the run queue. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md). For the work model's tolerance window it still reads a thread folder, `+/_THREADS/<run>/`, and a checkpoint as before.
+`ki agent` in `tools-ki` is the reference launcher. It writes the run packet's runtime files under the KI state root, detaches the Claude Code or Codex adapter, appends the footer selected by `--rules` from this skill, keeps the decisions log, which it writes to the tracked work folder once that change ships, and provides `status` and `watch`, `queue`, `dispatch` and `wait --next` for the run queue, and `send` for a run's inbox. It derives the [run events](#run-events) and sets `KI_AGENT_RUN` to the run's name in every agent it starts, under Claude Code and Codex alike. `ki agent new` writes a prompt from [the run-prompt skeleton](../assets/run-prompt.md). For the work model's tolerance window it still reads a thread folder, `+/_THREADS/<run>/`, and a checkpoint as before.
 
 Runtime mechanics belong in the launcher, not in this skill or in personal setup.
 
