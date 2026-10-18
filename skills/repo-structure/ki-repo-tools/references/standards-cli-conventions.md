@@ -52,7 +52,7 @@ These letters and names carry an expected meaning across Unix tools. Give an opt
 | `--json` | Print machine-readable JSON on standard output. Use `--format <name>` instead only when a command offers several formats. | `npm ls --json`, `gh pr list --json` |
 | `--color[=when]`, `--no-color` | `always`, `auto` (the default) or `never`. | GNU `ls`, `grep`, `diff` |
 
-Two KI house rules refine this table. A command whose writes need review previews by default and writes only with an explicit option such as `--apply`, as the [shared CLI conventions](standards-tool-repositories.md#shared-cli-conventions) require of `repair`; `--dry-run` remains the opt-in preview for a command that acts by default. And within one tool, the same option has the same name and meaning on every subcommand.
+Three KI house rules refine this table. A command whose writes need review previews by default and writes only with an explicit option such as `--apply`, as the [shared CLI conventions](standards-tool-repositories.md#shared-cli-conventions) require of `repair`; `--dry-run` remains the opt-in preview for a command that acts by default. Within one tool, the same option has the same name and meaning on every subcommand. And a repeatable selector that narrows the working set by name is the long `--filter <prefix>` with no short letter, as in `ki` and `mgit`, so that `-f` stays free for force or file.
 
 ## Symbolic links
 

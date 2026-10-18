@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 78b04030f1ca8c131a130bd019509a345aa05047
 created_at: 2026-10-18T17:55:48Z
-updated_at: 2026-10-18T17:55:48Z
+updated_at: 2026-10-18T18:38:30Z
 ---
 
 # KI-HARNESS-GOV-218: Command-Line Conventions
@@ -49,6 +49,7 @@ The tool-repository standard set house rules for `--help`, exit statuses 0, 1 an
 - `skills/repo-structure/ki-repo-tools/references/standards-cli-conventions.md` (new)
 - `skills/repo-structure/ki-repo-tools/SKILL.md`
 - `skills/repo-structure/ki-repo-tools/references/standards-tool-repositories.md`, `mode-audit.md`, `mode-educate.md` and `sources.md`
+- `skills/keystone/ki-repo/references/standards-configuration.md`, for the `--filter` house form
 - this record and `docs/roadmap/_ISSUES.md`
 
 ## Verify
@@ -88,6 +89,7 @@ None in this repository. Tool departures are reported to their owners rather tha
 ### Change Summary
 
 - The commit carrying this record: the new reference, its links, the sources, and this record.
+- A follow-on commit for CLI-F-FILTER c): the house rule that a working-set name filter is the long `--filter <prefix>` with no short letter, and the shared KI and mgit selection rule in `ki-repo` without `-f`.
 
 ### Verification
 
@@ -108,3 +110,5 @@ KI tools now have one place that says which flags, streams, exit statuses, colou
 ## Discussion
 
 Captured by the `cli-conventions` run of the ways-of-working Project work as the one harness record for CLI-CONVENTIONS.
+
+Kris answered CLI-F-FILTER c) on 18 October 2026, under "owner answer, CLI-F-FILTER; mark" in the [ways-of-working decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.ways-of-working/decisions.md): "I'm thinking we just go with `--filter` and no short version". The `mgit-filter` run folded it here: the reference records `--filter` with no short letter as the house form, so `-f` stays reserved for force or file and the `-f` filter is no longer a departure. tools-mgit made `-f` a usage error naming `--filter`; tools-ki's change rides in the ki-release run.
