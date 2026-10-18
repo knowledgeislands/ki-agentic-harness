@@ -43,36 +43,36 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-3',
       title: 'run records are tracked and consolidated',
       description:
-        "A run's decisions log and agent reports live in the owning repository's tracked `+/_THREADS/<run>/` folder and are committed as the thread goes, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or checkpoint rather than living only in the run directory, at each mark the thread deletes by explicit path every report whose queries are all answered and whose outcome has a durable home, keeping `decisions.md` and the reports with open queries while Git history holds the rest, and a prompt or record describes a decision by the owner's words and date, never by its number.",
+        "A run's brief, decisions log and agent reports live in the tracked work folder `+/_WORK/<id>/` of the work that launched it, the brief as `briefs/<name>.md` until its report is received, a thread folder `+/_THREADS/<run>/` being read for the tolerance window, and are committed at each send, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or the work file rather than living only in the run directory, at each mark the coordinator deletes by explicit path every report whose queries are all answered and whose outcome has a durable home and every brief whose report it has, while Git history holds the rest, and a prompt or record describes a decision by the owner's words and date, never by its number.",
       sources: ['standards-background-runs.md'],
       judgment: {
-        scope: 'Thread folders, decisions logs, run directories and run prompts the owner selects for review.',
+        scope: 'Work folders, decisions logs, run directories and run prompts the owner selects for review.',
         prompt:
-          'Is every decision logged in the tracked thread folder before its work launched, does anything durable exist only in the run directory, does the thread folder hold only `decisions.md` and the reports with open queries after each mark, with the answered and homed reports deleted by explicit path, and does any prompt or record cite a decision by number alone?',
+          'Is every decision logged in the tracked work folder before its work launched, does anything durable exist only in the run directory, does the work folder hold only its closed list after each mark, with the answered and homed reports and the received briefs deleted by explicit path, and does any prompt or record cite a decision by number alone?',
         outcomes: [
           'conforming',
           'consolidate decisions',
           'log decisions',
-          'tidy the thread folder',
+          'prune the work folder',
           'escalate to owner'
         ],
         guidance:
-          "Consolidate in-force decisions into their durable owner, record missing decisions before further launches, and replace a bare decision number with the owner's words and the date, and delete by explicit path each report whose queries are answered and whose outcome is homed, keeping one whose home is unclear; escalate when the durable owner is unclear."
+          "Consolidate in-force decisions into their durable owner, record missing decisions before further launches, and replace a bare decision number with the owner's words and the date, and delete by explicit path each report whose queries are answered and whose outcome is homed and each brief whose report is in, keeping one whose home is unclear; escalate when the durable owner is unclear."
       }
     },
     {
       code: 'RUN-4',
       title: 'reports take the owner-report shape',
       description:
-        "Every agent report and thread Summary is an owner report opening with the `ki-pmo` report heading, with no rule before it, one `#` heading of the Initiative linked to its local note, ` › ` and the Project linked to its local note, both as display names, a run report adding ` › <run name>`, then the bold `<Form> at <local time> · last mark <local time>` line and one rule, a report written before 2026-10-14 keeping its earlier heading, closing with the thread's block-letter footer banner, the lower-case form word and the issued time on its top border and one blank framed line inside each border, a report issued before 2026-10-14 keeping its `issued` border and unpadded frame, with the sections `## Done`, `## In Progress` and `## Queries` in that order, each query under a stable Needs tag, never a number, with **Context**, **Query** and **Options**, the options lettered a), b) and so on with no bullet and a) always marked `(recommended, confidence <level> - <reason>)`, its confidence high, medium or low with a one-line reason, a query written before 2026-10-14 keeping its Summary, Need from you and Recommendation, ending in one copyable reply block whose entries are each stacked, the tag alone on its line, a blank line, then the option a) instruction written out in full rather than a menu of the options, an entry the owner answers with a bare letter being accepted, separated by a blank line, `---` and a blank line, with a placeholder only where the owner alone can supply the value, that is a suggestion and not approval, and no output style, proxy shaping block or communication level shortens it.",
+        "Every agent report and coordinator Summary is an owner report opening with the `ki-pmo` report heading, one `#` heading of the work's title with its theme and Project linked, a run report adding ` › <run name>` and the form `Run report`, then the bold glyph form line and one rule, with the sections `## Done`, `## In Progress` and `## Queries` in that order, each query under a stable Needs tag, never a number, with **Context**, **Query** and **Options**, the options lettered a), b) and so on with no bullet and a) always marked `(recommended, confidence <level> - <reason>)`, closing with the glyph banner of the work's state and no reply block, the owner answering in speech, and no output style, proxy shaping block or communication level shortens it; a report written before 18 October 2026 keeps its earlier heading, footer frame and reply block.",
       sources: ['../../../change-management/ki-pmo/references/standards-pmo.md#owner-report'],
       judgment: {
-        scope: 'Background-agent reports and coordinating-thread Summaries the owner selects for review.',
+        scope: 'Background-agent reports and coordinator Summaries the owner selects for review.',
         prompt:
-          'Does each report open with the `ki-pmo` report heading, the Initiative and the Project linked with the form line beneath, or an earlier heading if written before 2026-10-14, close with the block-letter footer banner carrying its form word and issued time on the top border and one blank framed line inside each border, and carry the three owner-report sections in order with routine open matters kept out of the queries, could the owner answer each query cold by a tag that kept its meaning until resolved from its Context, Query and lettered Options with a) marked recommended with its confidence, or from Summary, Need from you and Recommendation if written before 2026-10-14, and send back the reply block as it stands because each entry stacks its tag over the option a) instruction in full and not the options, or answer with a bare letter, and was any section, query or reply block shortened by a style or level?',
+          'Does each report open with the `ki-pmo` report heading and its glyph form line, carry the three owner-report sections in order with routine open matters kept out of the queries, let the owner answer each query cold by a tag that kept its meaning until resolved from its Context, Query and lettered Options with a) marked recommended with its confidence, close with the glyph banner and no reply block, or keep its earlier shape if written before 18 October 2026, and was any section, query or banner shortened by a style or level?',
         outcomes: ['conforming', 'reshape the report', 'retag queries', 'escalate to owner'],
         guidance:
-          'Restore the report heading with the Initiative and the Project linked and its form line, the three owner-report sections and the reply block in full, stack each reply-block entry as its tag, a blank line and the option a) instruction in full in place of a one-line menu, and give each query a stable mnemonic tag, a Context, a one-sentence Query, lettered Options with a) marked recommended and no bullets, and links.'
+          'Restore the report heading and its glyph form line, the three owner-report sections and the glyph banner in full, remove any reply block from a report written under the work model, and give each query a stable mnemonic tag, a Context, a one-sentence Query, lettered Options with a) marked recommended and no bullets, and links.'
       }
     }
   ]
