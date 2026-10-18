@@ -777,7 +777,7 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
   const declared = {
     '@biomejs/biome': '^2.5.15',
     knip: '^6.39.0',
-    rumdl: '^0.2.78',
+    rumdl: '^0.3.0',
     husky: '^9.1.7',
     'lint-staged': '^17.6.0',
     syncpack: '^15.3.3',

@@ -180,7 +180,7 @@ const versions: Record<string, string> = {
   '@commitlint/cli': '^21.2.3',
   '@commitlint/config-conventional': '^21.2.3',
   knip: '^6.39.0',
-  rumdl: '^0.2.78',
+  rumdl: '^0.3.0',
   husky: '^9.1.7',
   'lint-staged': '^17.6.0',
   syncpack: '^15.3.3',

@@ -19,7 +19,7 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 | VITEST | [Vitest guide][vitest] | config-gated test profile + 100% coverage (`vitest run`, v8) | capability-selected; upstream `5.0.3` | 2026-10-06 |
 | SYNCPACK | [syncpack releases][syncpack] | package ordering inside engineering audit/conform | declared range and resolved `15.3.3` | 2026-10-06 |
 | COMMITLINT | [Commitlint releases][commitlint] | deterministic Conventional Commit validation in the Husky `commit-msg` binding | declared range and resolved `21.2.3` | 2026-10-06 |
-| MDLINT | [rumdl releases][rumdl] | Markdown audit/conform inside `ki-authoring` ❡ | declared `^0.2.78`, resolved `0.2.78` | 2026-10-06 |
+| MDLINT | [rumdl releases][rumdl] | Markdown audit/conform inside `ki-authoring` ❡ | declared `^0.3.0`, resolved `0.3.0` | 2026-10-18 |
 | KNIP | [knip releases][knip] | dependency + dead-code checks inside engineering audit/conform | declared range and resolved `6.39.0` | 2026-10-06 |
 | DEPCRUISER | [dependency-cruiser releases][depcruise] | module-boundary checker in the isolated `tooling/boundaries` root (`DESIGN-2`) | collection declares `^18.5.0` with TypeScript `^6.0.3` | 2026-10-06 |
 
@@ -62,7 +62,7 @@ The standard is a **deliberately selected house shape**, not a vote count. Curre
 
 REFRESH last run **2026-10-06**. Cadence: monthly, alongside the other governance skills.
 
-- **Reconciled declared and resolved evidence:** the canonical harness declares Bun `1.4.2`, Biome `2.5.15`, TypeScript `^7.0.2`, syncpack `^15.3.3`, Commitlint `^21.2.3`, knip `^6.39.0`, lint-staged `^17.6.0` and rumdl `^0.2.78`; its committed lock resolves those releases. The CONFORM scaffold defaults and the Biome exemplar move to the same releases.
+- **Reconciled declared and resolved evidence:** the canonical harness declares Bun `1.4.2`, Biome `2.5.15`, TypeScript `^7.0.2`, syncpack `^15.3.3`, Commitlint `^21.2.3`, knip `^6.39.0`, lint-staged `^17.6.0` and rumdl `^0.3.0`; its committed lock resolves those releases. rumdl moved from `^0.2.78` on 2026-10-18, after the `ki-authoring` reproductions passed on 0.3.0. The CONFORM scaffold defaults and the Biome exemplar move to the same releases.
 - **Current upstream comparison:** Biome, TypeScript, syncpack, Commitlint, knip and rumdl match their latest releases. Vitest `5.0.3` is current for capability-selected repositories. Bun `1.4.2` was published on 2026-09-05; the harness and every configured repository still pinned `1.4.1`, past the 14-day window, and no audit criterion measured the runtime, because the freshness check read only `bun outdated`. That gap is now closed: `DEPS-1` grades the `packageManager` runtime under the same window, and the harness and CONFORM scaffold pin `1.4.2`. Node 24 is the active LTS and 26 is current; the `>=22` floor stands while 22 remains in maintenance.
 - **Compatibility constraints added:** dependency-cruiser `18.5.0` supports `typescript >=2 <7`, so the isolated install root stays. TypeScript 7.0 ships no compiler API; 7.1 makes stabilising it the release goal, with stable planned for 2026-11-24.
 - **Collection:** the configured `ki-engineering` repositories declare Bun `1.4.1` and TypeScript `^7.0.2`; the 23 with boundary enforcement pin `dependency-cruiser ^18.5.0` with TypeScript `^6.0.3` and install it from `prepare`.
