@@ -22,7 +22,7 @@ This is a base-agnostic standard skill selected by `[skills.ki-repo-website-clou
 
 Use these references progressively:
 
-- [Cloudflare hosting standard](references/standards-cloudflare-hosting.md) — load for the normative model, seam, configuration, scripts, CI/CD, and ownership boundaries.
+- [Cloudflare hosting standard](references/standards-cloudflare-hosting.md) — load for the normative model, seam, configuration, scripts, CI/CD, branch previews behind Access, the guide, and ownership boundaries.
 - [Generated rubric](references/rubric.md) — load when applying the mechanical and judgment criteria.
 - [Source list](references/sources.md) — load during REFRESH to recheck volatile Cloudflare facts and review dates.
 - [Worked exemplars](references/exemplars.md) — load only when a standard clause needs a concrete multi-artifact configuration or CI/CD illustration; examples do not define policy.

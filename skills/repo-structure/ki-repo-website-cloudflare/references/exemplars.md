@@ -95,6 +95,73 @@ Commit-SHA injection (`WORKERS_CI_COMMIT_SHA` surfaced into the page as a `<meta
 // data file or a transform in eleventy.config.ts.
 ```
 
+### Branch previews behind Access — the guide rows
+
+A site with branch previews on, adapted from a hosted repository's Cloudflare guide, with the account, hostnames and policy members replaced by placeholders. The normative steps are in [standard §6](standards-cloudflare-hosting.md#6-branch-previews-behind-access); these are the rows the guide records for them.
+
+`wrangler.jsonc` carries the versioned half:
+
+```jsonc
+{
+  // Production is served only on the custom domain.
+  "workers_dev": false,
+  // Branch uploads get Version URLs, behind the preview Access application.
+  "preview_urls": true
+}
+```
+
+The guide records the non-production trigger beside the production one:
+
+```markdown
+Non-production branch builds are on, through a second trigger named "Preview branches":
+
+| Setting | Value |
+| --- | --- |
+| Branches | Every branch except `main` |
+| Root directory | Repository root |
+| Build command | `bun run ki:site:build` |
+| Preview command | `bun run ki:site:upload`, which runs `bunx wrangler versions upload` |
+| Build variables | None, as for production |
+```
+
+It records the preview Access application with the site's own:
+
+```markdown
+| `workers.dev` | Off, from `wrangler.jsonc` |
+| Preview URLs | On, from `wrangler.jsonc`, behind the preview application below |
+
+A self-hosted application, "<site> preview URLs", covers `*-<worker>.<account-subdomain>.workers.dev`
+and `<worker>.<account-subdomain>.workers.dev` on every path, with the same login method and the
+same reusable allow policy as the site, and no bypass. It admits the same people, so it adds no seats.
+```
+
+It tells a reader where previews appear:
+
+```markdown
+A push to any branch other than `main` builds the site and uploads it as a preview version;
+production keeps serving the version last deployed from `main`. Each build log ends with two addresses:
+
+- the version URL, `https://<version-prefix>-<worker>.<account-subdomain>.workers.dev`
+- the branch alias, `https://<branch>-<worker>.<account-subdomain>.workers.dev`, which follows the latest push to that branch
+```
+
+And it keeps the restore path saved before the change:
+
+```markdown
+### Restore path
+
+The settings before branch previews were saved on <date>. To return to that state, in this order,
+with a user-scoped API token holding Workers Scripts Edit, Workers Builds Configuration Edit and
+Access: Apps and Policies Edit:
+
+1. Turn preview URLs off: `POST /accounts/{account_id}/workers/scripts/<worker>/subdomain` with
+   `{"enabled":false,"previews_enabled":false}`, and set `preview_urls` to false in `wrangler.jsonc`
+   on `main`, or the next deploy turns them back on.
+2. Delete the "Preview branches" trigger: `DELETE /accounts/{account_id}/builds/triggers/{trigger_uuid}`.
+3. Only once preview URLs are off, delete the preview Access application:
+   `DELETE /accounts/{account_id}/access/apps/{app_id}`.
+```
+
 ### `_redirects` and `_headers` — static asset rules
 
 Place `_redirects` and `_headers` in `apps/site/src/` (or wherever Eleventy's passthrough copies them to `dist/`) when you need redirect rules or custom response headers. Cloudflare Workers Static Assets reads these files from the `assets.directory` root.

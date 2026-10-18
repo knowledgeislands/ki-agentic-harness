@@ -18,6 +18,7 @@ test('the catalogue exposes the complete ordered Cloudflare hosting family', () 
     'WCF-14',
     'WCF-25',
     'WCF-26',
+    'WCF-27',
     'WCF-19',
     'WCF-20',
     'WCF-21',

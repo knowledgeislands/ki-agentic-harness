@@ -62,19 +62,25 @@ Workers Static Assets hosting standard.
   - _Review prompt:_ Verify the preview script builds the site before wrangler dev and serves the same dist seam as production.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the hosting design through the responsible site owner, record a named gap, or record an explicit justified exclusion.
-- **WCF-25 [M + J] — version-upload authority** — An optional local upload script and its public alias create an undeployed Worker version only through explicit remote-effect authority. (standards-cloudflare-hosting.md#4-the-script-family)
+- **WCF-25 [M + J] — version-upload authority** — A local upload script and its public alias, optional unless preview_urls is true, create an undeployed Worker version only through explicit remote-effect authority. (standards-cloudflare-hosting.md#4-the-script-family, standards-cloudflare-hosting.md#6-branch-previews-behind-access)
   - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
   - _Evidence scope:_ The Cloudflare Worker, static assets, deployment configuration, and evidence named by this criterion.
   - _Review prompt:_ Confirm audits, conformance, local builds, tests, and dry evaluation inspect ki:site:upload without executing Wrangler; only an explicitly authorised operator or Workers Builds service may supply Cloudflare credentials and create the remote version.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the hosting design through the responsible site owner, record a named gap, or record an explicit justified exclusion.
-- **WCF-26 [M + J] — the Cloudflare guide** — A tracked guide at docs/guides/developer/cloudflare.md records the dashboard-owned settings — Workers Builds commands, domains, redirects — that wrangler.jsonc cannot express. (standards-cloudflare-hosting.md#6-the-cloudflare-guide--dashboard-owned-settings)
+- **WCF-26 [M + J] — the Cloudflare guide** — A tracked guide at docs/guides/developer/cloudflare.md records the dashboard-owned settings — Workers Builds commands, domains, redirects — that wrangler.jsonc cannot express. (standards-cloudflare-hosting.md#7-the-cloudflare-guide--dashboard-owned-settings)
   - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
   - _Evidence scope:_ The Cloudflare Worker, static assets, deployment configuration, and evidence named by this criterion.
-  - _Review prompt:_ Confirm the guide records the exact dashboard-owned values — Workers Builds build/deploy commands and root directory, domain and redirect choices, workers.dev — matching the live dashboard, and duplicates nothing wrangler.jsonc already declares.
+  - _Review prompt:_ Confirm the guide records the exact dashboard-owned values — Workers Builds build/deploy commands and root directory, domain and redirect choices, workers.dev, and, when preview_urls is true, the non-production trigger's branch filters and build and preview commands, the preview Access application and its policy, the previews_enabled flag, and the saved restore path — matching the live dashboard, and duplicates nothing wrangler.jsonc already declares.
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Revise the hosting design through the responsible site owner, record a named gap, or record an explicit justified exclusion.
-- **WCF-19 [M + J] — companion Worker boundary** — Companion Workers remain out of scope. (standards-cloudflare-hosting.md#7-boundaries--what-is-not-in-scope)
+- **WCF-27 [M-heuristic + J] — preview Access pairing** — When preview_urls is true, the Cloudflare guide declares a preview Access application covering *-<name>.<account-subdomain>.workers.dev, so no preview is a public copy of unreleased work. (standards-cloudflare-hosting.md#6-branch-previews-behind-access)
+  - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
+  - _Evidence scope:_ The Cloudflare Worker, static assets, deployment configuration, and evidence named by this criterion.
+  - _Review prompt:_ Confirm the live preview Access application covers the version and branch-alias hostnames and the bare workers.dev hostname with the site allow policy and no bypass, and that a preview URL redirects to the Access login; read the dashboard only through an authorised operator.
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Revise the hosting design through the responsible site owner, record a named gap, or record an explicit justified exclusion.
+- **WCF-19 [M + J] — companion Worker boundary** — Companion Workers remain out of scope. (standards-cloudflare-hosting.md#8-boundaries--what-is-not-in-scope)
   - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
   - _Evidence scope:_ The Cloudflare Worker, static assets, deployment configuration, and evidence named by this criterion.
   - _Review prompt:_ Confirm configs classified as companions have main without assets and route their bindings, secrets, and runtime concerns to cloudflare/wrangler.
@@ -84,7 +90,7 @@ Workers Static Assets hosting standard.
   - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
 - **WCF-21 [M] — opt-in validation** — The hosting table is keyless or selects a valid non-empty subset of named website sites. (standards-cloudflare-hosting.md#1-model--workers-static-assets-not-pages)
   - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
-- **WCF-22 [M + J] — hosting delta** — This remains the hosting delta only. (standards-cloudflare-hosting.md#7-boundaries--what-is-not-in-scope)
+- **WCF-22 [M + J] — hosting delta** — This remains the hosting delta only. (standards-cloudflare-hosting.md#8-boundaries--what-is-not-in-scope)
   - _Remediation:_ diagnostic — Correct the evidenced Cloudflare hosting issue through the responsible site owner; hosted conform does not infer deployment or security intent.
   - _Evidence scope:_ The Cloudflare Worker, static assets, deployment configuration, and evidence named by this criterion.
   - _Review prompt:_ Confirm Workers Builds, account/domain binding, and deployed behavior separately without expanding this rubric into the site build or general Worker concerns.

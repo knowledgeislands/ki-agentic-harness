@@ -32,9 +32,11 @@ export type WranglerConfigEvidence = {
   readonly assetsDirectory: string | null
   readonly notFoundHandling: string | null
   readonly hasName: boolean
+  readonly name: string | null
   readonly hasCompatibilityDate: boolean
   readonly observabilityEnabled: boolean
   readonly hasCustomDomain: boolean
+  readonly previewUrls: boolean | null
 }
 
 export type WebsiteCloudflareContext = {
@@ -160,6 +162,7 @@ const inspectWranglerConfig = (root: string, path: string): WranglerConfigEviden
     assetsDirectory: typeof assetTable?.directory === 'string' ? assetTable.directory : null,
     notFoundHandling: typeof assetTable?.not_found_handling === 'string' ? assetTable.not_found_handling : null,
     hasName: typeof value?.name === 'string' && value.name.length > 0,
+    name: typeof value?.name === 'string' && value.name.length > 0 ? value.name : null,
     hasCompatibilityDate:
       typeof value?.compatibility_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.compatibility_date),
     observabilityEnabled: observable?.enabled === true,
@@ -167,7 +170,8 @@ const inspectWranglerConfig = (root: string, path: string): WranglerConfigEviden
       Array.isArray(routes) &&
       routes.some(
         (route) => route && typeof route === 'object' && (route as Record<string, unknown>).custom_domain === true
-      )
+      ),
+    previewUrls: typeof value?.preview_urls === 'boolean' ? value.preview_urls : null
   }
 }
 

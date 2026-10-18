@@ -24,6 +24,10 @@ const skipped = (context: WebsiteCloudflareContext): readonly AuditOutcome[] | n
 
 const firstSite = (context: WebsiteCloudflareContext) => context.siteConfigs[0]
 
+const previewsOn = (context: WebsiteCloudflareContext): boolean => firstSite(context)?.previewUrls === true
+
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 const WCF_1: RubricItem<WebsiteCloudflareContext> = {
   code: 'WCF-1',
   title: 'site Worker config',
@@ -248,7 +252,7 @@ const WCF_26: RubricItem<WebsiteCloudflareContext> = {
   title: 'the Cloudflare guide',
   description:
     'A tracked guide at docs/guides/developer/cloudflare.md records the dashboard-owned settings — Workers Builds commands, domains, redirects — that wrangler.jsonc cannot express.',
-  sources: [`${SOURCE}#6-the-cloudflare-guide--dashboard-owned-settings`],
+  sources: [`${SOURCE}#7-the-cloudflare-guide--dashboard-owned-settings`],
   mechanical: {
     level: 'FAIL',
     remediation: DIAGNOSTIC,
@@ -280,7 +284,58 @@ const WCF_26: RubricItem<WebsiteCloudflareContext> = {
     }
   },
   judgment: judgment(
-    'Confirm the guide records the exact dashboard-owned values — Workers Builds build/deploy commands and root directory, domain and redirect choices, workers.dev — matching the live dashboard, and duplicates nothing wrangler.jsonc already declares.'
+    "Confirm the guide records the exact dashboard-owned values — Workers Builds build/deploy commands and root directory, domain and redirect choices, workers.dev, and, when preview_urls is true, the non-production trigger's branch filters and build and preview commands, the preview Access application and its policy, the previews_enabled flag, and the saved restore path — matching the live dashboard, and duplicates nothing wrangler.jsonc already declares."
+  )
+}
+
+const WCF_27: RubricItem<WebsiteCloudflareContext> = {
+  code: 'WCF-27',
+  title: 'preview Access pairing',
+  description:
+    'When preview_urls is true, the Cloudflare guide declares a preview Access application covering *-<name>.<account-subdomain>.workers.dev, so no preview is a public copy of unreleased work.',
+  sources: [`${SOURCE}#6-branch-previews-behind-access`],
+  mechanical: {
+    level: 'FAIL',
+    heuristic: true,
+    remediation: DIAGNOSTIC,
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        const skip = skipped(context)
+        if (skip) return skip
+        const site = firstSite(context)
+        if (!site) return []
+        if (site.previewUrls !== true)
+          return [
+            {
+              status: 'NOT_APPLICABLE',
+              message: 'preview_urls is not true, so the site serves no preview URLs.',
+              subject: site.path
+            }
+          ]
+        const { guide } = context
+        const worker = site.name ?? '<name>'
+        const hostname = new RegExp(`\\*-${escapeRegExp(worker)}\\.[^\\s\`/]+\\.workers\\.dev`)
+        return guide.state === 'present' && /\bAccess\b/.test(guide.text) && hostname.test(guide.text)
+          ? [
+              {
+                status: 'PASS',
+                message: `The guide declares an Access application covering *-${worker}.<account-subdomain>.workers.dev.`,
+                subject: guide.path
+              }
+            ]
+          : [
+              {
+                status: 'VIOLATION',
+                message: `preview_urls is true, but ${guide.path} declares no preview Access application covering *-${worker}.<account-subdomain>.workers.dev; every preview URL may be public.`,
+                subject: guide.path
+              }
+            ]
+      }
+    }
+  },
+  judgment: judgment(
+    'Confirm the live preview Access application covers the version and branch-alias hostnames and the bare workers.dev hostname with the site allow policy and no bypass, and that a preview URL redirects to the Access login; read the dashboard only through an authorised operator.'
   )
 }
 
@@ -561,8 +616,8 @@ const WCF_25: RubricItem<WebsiteCloudflareContext> = {
   code: 'WCF-25',
   title: 'version-upload authority',
   description:
-    'An optional local upload script and its public alias create an undeployed Worker version only through explicit remote-effect authority.',
-  sources: [`${SOURCE}#4-the-script-family`],
+    'A local upload script and its public alias, optional unless preview_urls is true, create an undeployed Worker version only through explicit remote-effect authority.',
+  sources: [`${SOURCE}#4-the-script-family`, `${SOURCE}#6-branch-previews-behind-access`],
   mechanical: {
     level: 'FAIL',
     remediation: DIAGNOSTIC,
@@ -588,11 +643,18 @@ const WCF_25: RubricItem<WebsiteCloudflareContext> = {
         const alias = context.rootPackage.scripts['ki:site:upload']
         if (!upload && (!context.primary || !alias))
           return [
-            {
-              status: 'NOT_APPLICABLE',
-              message: 'No optional site upload operation is declared.',
-              subject: context.package.path
-            }
+            previewsOn(context)
+              ? {
+                  status: 'VIOLATION',
+                  message:
+                    'preview_urls is true, so the non-production Workers Builds trigger runs ki:site:upload; declare the site upload script "bunx wrangler versions upload" and its public ki:site:upload alias.',
+                  subject: context.package.path
+                }
+              : {
+                  status: 'NOT_APPLICABLE',
+                  message: 'No optional site upload operation is declared.',
+                  subject: context.package.path
+                }
           ]
         const expectedUpload = 'bunx wrangler versions upload'
         const expectedAlias = expectedRootAlias(context, 'upload')
@@ -637,7 +699,7 @@ const WCF_19: RubricItem<WebsiteCloudflareContext> = {
   code: 'WCF-19',
   title: 'companion Worker boundary',
   description: 'Companion Workers remain out of scope.',
-  sources: [`${SOURCE}#7-boundaries--what-is-not-in-scope`],
+  sources: [`${SOURCE}#8-boundaries--what-is-not-in-scope`],
   mechanical: {
     level: 'WARN',
     remediation: DIAGNOSTIC,
@@ -747,7 +809,7 @@ const WCF_22: RubricItem<WebsiteCloudflareContext> = {
   code: 'WCF-22',
   title: 'hosting delta',
   description: 'This remains the hosting delta only.',
-  sources: [`${SOURCE}#7-boundaries--what-is-not-in-scope`],
+  sources: [`${SOURCE}#8-boundaries--what-is-not-in-scope`],
   mechanical: {
     level: 'WARN',
     remediation: DIAGNOSTIC,
@@ -790,6 +852,7 @@ export const WCF: RubricFamily<WebsiteCloudflareRubricContext, WebsiteCloudflare
     WCF_14,
     WCF_25,
     WCF_26,
+    WCF_27,
     WCF_19,
     WCF_20,
     WCF_21,

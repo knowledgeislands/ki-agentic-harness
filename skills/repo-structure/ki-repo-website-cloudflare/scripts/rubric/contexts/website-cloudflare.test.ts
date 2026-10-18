@@ -281,6 +281,60 @@ describe('ki-repo-website-cloudflare session', () => {
     })
   })
 
+  test('reads preview_urls and requires upload and preview Access only when previews are on', () => {
+    const repository = makeRoot()
+    writeCanonicalRepository(repository)
+    const configPath = join(repository, 'apps', 'site', 'wrangler.jsonc')
+    const guidePath = join(repository, 'docs', 'guides', 'developer', 'cloudflare.md')
+    const canonical = readFileSync(configPath, 'utf8')
+    const setPreviewUrls = (value: string | null): void =>
+      writeFileSync(
+        configPath,
+        value === null
+          ? canonical
+          : canonical.replace('  "observability"', `  "preview_urls": ${value},\n  "observability"`)
+      )
+    const context = () => WCF.selectContext(createWebsiteCloudflareSession(options(repository)).subjects[0].context())
+    const run = (code: string): readonly AuditOutcome[] =>
+      WCF.items.find((item) => item.code === code)?.mechanical?.audit.run(context()) ?? []
+
+    expect(context().siteConfigs[0]?.previewUrls).toBeNull()
+    expect(run('WCF-25')[0]?.status).toBe('NOT_APPLICABLE')
+    expect(run('WCF-27')[0]?.status).toBe('NOT_APPLICABLE')
+
+    setPreviewUrls('false')
+    expect(context().siteConfigs[0]?.previewUrls).toBe(false)
+    expect(run('WCF-25')[0]?.status).toBe('NOT_APPLICABLE')
+    expect(run('WCF-27')[0]?.status).toBe('NOT_APPLICABLE')
+
+    setPreviewUrls('true')
+    expect(context().siteConfigs[0]?.previewUrls).toBe(true)
+    expect(run('WCF-25')[0]).toMatchObject({ status: 'VIOLATION', subject: 'apps/site/package.json' })
+    expect(run('WCF-27')[0]).toMatchObject({ status: 'VIOLATION', subject: 'docs/guides/developer/cloudflare.md' })
+
+    const packagePath = join(repository, 'apps', 'site', 'package.json')
+    const packageJson = JSON.parse(readFileSync(packagePath, 'utf8')) as { scripts: Record<string, string> }
+    packageJson.scripts.upload = 'bunx wrangler versions upload'
+    writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`)
+    const rootPackagePath = join(repository, 'package.json')
+    const rootPackageJson = JSON.parse(readFileSync(rootPackagePath, 'utf8')) as { scripts: Record<string, string> }
+    rootPackageJson.scripts['ki:site:upload'] = 'bun run --cwd apps/site upload'
+    writeFileSync(rootPackagePath, `${JSON.stringify(rootPackageJson, null, 2)}\n`)
+    expect(run('WCF-25').map((outcome) => outcome.status)).toEqual(['PASS', 'PASS'])
+
+    writeFileSync(
+      guidePath,
+      '# Cloudflare\n\nA self-hosted Access application covers `*-other-site.example.workers.dev`.\n'
+    )
+    expect(run('WCF-27')[0]?.status).toBe('VIOLATION')
+
+    writeFileSync(
+      guidePath,
+      '# Cloudflare\n\nA self-hosted Access application covers `*-example-site.<account-subdomain>.workers.dev` and `example-site.<account-subdomain>.workers.dev`.\n'
+    )
+    expect(run('WCF-27')[0]).toMatchObject({ status: 'PASS', subject: 'docs/guides/developer/cloudflare.md' })
+  })
+
   test('does not follow a symlinked Wrangler config', () => {
     const repository = makeRoot()
     const outside = makeRoot()
