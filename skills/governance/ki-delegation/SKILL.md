@@ -16,7 +16,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | ref
 
 `ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-- **Background runs** - routine delegation to background agents: detachment, the run packet and its run events, prompt shape, authority tiers and their footers, the decisions log, coordination, the run queue and monitoring. Every agent report is an owner report in the shape the [`ki-coordination` standard](../../change-management/ki-coordination/references/standards-coordination.md#owner-report) sets. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent. The coordinating work that launches runs - territory work or Project work, its responsiveness, report forms, glyph banner, openers, bootstrap, decision classes and working rules - is governed by [`ki-coordination`](../../change-management/ki-coordination/references/standards-coordination.md), which depends on this skill.
+- **Background runs** - routine delegation to background agents: detachment, the run packet and its run events, prompt shape, authority tiers and their footers and grants, the decisions log, coordination, the run queue and monitoring. Every agent report is an owner report in the shape the [`ki-coordination` standard](../../change-management/ki-coordination/references/standards-coordination.md#owner-report) sets. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent. The coordinating work that launches runs - territory work or Project work, its responsiveness, report forms, glyph banner, openers, bootstrap, decision classes and working rules - is governed by [`ki-coordination`](../../change-management/ki-coordination/references/standards-coordination.md), which depends on this skill.
 - **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
@@ -35,7 +35,7 @@ Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
 
 Run `ki repo audit --skill ki-delegation --repo <repo>`.
 
-The native rubric checks that this skill's authority footers exist and grant exactly their tier, then reviews run prompts against the background-run standard.
+The native rubric checks that this skill's authority footers exist and grant exactly their tier and that each grant lifts only its own ban, then reviews run prompts against the background-run standard.
 
 For durable packets, a roadmap record opts in by carrying `## Delegation` with both `### Locked decisions` and `### Escalate` sections plus a worker brief. The rubric checks the mechanically legible packet shape, then reviews whether packet activation, locked decisions, authority, isolation, escalation boundaries, return contract, and verification gates are actually sound.
 

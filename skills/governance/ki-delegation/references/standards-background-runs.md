@@ -9,6 +9,7 @@
   - [Run events](#run-events)
 - [Prompt shape](#prompt-shape)
 - [Authority tiers](#authority-tiers)
+  - [Grants](#grants)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
   - [Connection-critical changes](#connection-critical-changes)
@@ -103,7 +104,7 @@ A run prompt is cold-agent ready. It contains, in order:
 3. a verification step;
 4. the report path;
 5. the instructions "Do not use background subagents." and "Never end your session while waiting.";
-6. one authority footer, appended last.
+6. one authority footer, appended last, followed only by any [grant](#grants) sections the task needs.
 
 When writing the steps and rules:
 
@@ -116,7 +117,7 @@ A long wait belongs in the foreground: the agent checks the condition every two 
 
 ## Authority tiers
 
-Each prompt ends with exactly one footer from this skill's `assets/`. Footers are cumulative and generalised; the task supplies the specifics.
+Each prompt ends with exactly one footer from this skill's `assets/`, followed only by any [grants](#grants) the task needs. Footers are cumulative and generalised; the task supplies the specifics.
 
 | Tier | Footer | Adds |
 | --- | --- | --- |
@@ -128,6 +129,17 @@ Each prompt ends with exactly one footer from this skill's `assets/`. Footers ar
 No grant is implied. Every remote call an agent may make is named explicitly, either in its footer or in the task. A higher tier needs a cited owner decision. An explicit push rule in the brief's task overrides any generic no-push line in the footer's Rules, because the footer is generic and the task supplies the specifics, as Kris set on 2026-10-17: "the generic brief footer gives way to an explicit push rule in the brief." No footer authorises accepting work, force-pushing, `--no-verify`, handling secrets, or pushing commits the agent did not make.
 
 Authority limits stay consistent with `ki-agent-coordination-paperclip`, which owns Paperclip delivery and integration grants.
+
+### Grants
+
+A grant is a section appended after the tier footer that lifts exactly one of the footer's bans and nothing else, for authority that is not a step on the cumulative tier ladder. A grant suits any tier. The task names the scope the grant needs: the remotes for a fetch, and each machine change for a machine grant.
+
+| Grant | Section | Lifts |
+| --- | --- | --- |
+| fetch | [grant-fetch.md](../assets/grant-fetch.md) | Only the ban on a Git fetch: `git fetch` and a rebase or fast-forward pull from the remotes the task names; adds nothing under `push` or above |
+| machine | [grant-machine.md](../assets/grant-machine.md) | Only the ban on an environment or scheduler change: the local changes the task names, on this machine, each with its undo; credentials stay banned and the [connection-critical rule](#connection-critical-changes) still applies |
+
+`ki agent launch --allow <grant>` appends a grant section from its `## Grant: <name>` heading, after the tier footer; until the launcher offers that option, a brief appends the section by hand after its footer. Kris approved both texts as drafted on 2026-10-18, taking the recommended option: "you've got my approval for all those things that were recommended".
 
 ## Decisions log
 

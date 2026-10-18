@@ -30,8 +30,8 @@ Opted-in durable delegation-packet structure and governance quality.
 
 Shipped authority footers and the quality of background-run prompts and reports.
 
-- **RUN-1 [M] — authority footers grant exactly their tier** — Each shipped authority footer exists, carries the shared prohibitions, includes every grant of its tier and below, and grants nothing above it. (standards-background-runs.md)
-  - _Remediation:_ diagnostic — Restore the footer wording in the canonical harness skill so each tier grants exactly what the standard lists.
+- **RUN-1 [M] — authority footers grant exactly their tier and grants lift only their own ban** — Each shipped authority footer exists, carries the shared prohibitions, includes every grant of its tier and below, and grants nothing above it; each shipped grant section exists, is approved, lifts exactly its own ban, keeps its limits and carries no tier grant. (standards-background-runs.md)
+  - _Remediation:_ diagnostic — Restore the footer or grant wording in the canonical harness skill so each tier and each grant permits exactly what the standard lists.
 - **RUN-2 [J] — run prompts are cold-agent ready and authority-bounded** — A background-run prompt cites the owner decision that authorises it in the owner's words and date, has numbered steps, a verification step and a report path, forbids background subagents and ending while waiting, and ends with the lowest sufficient authority footer. (standards-background-runs.md)
   - _Evidence scope:_ Background-run prompts, decisions logs and run reports the delegating owner selects for review.
   - _Review prompt:_ Does each prompt cite a real owner decision by its words and date, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report?

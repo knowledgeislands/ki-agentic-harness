@@ -10,16 +10,16 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
   items: [
     {
       code: 'RUN-1',
-      title: 'authority footers grant exactly their tier',
+      title: 'authority footers grant exactly their tier and grants lift only their own ban',
       description:
-        'Each shipped authority footer exists, carries the shared prohibitions, includes every grant of its tier and below, and grants nothing above it.',
+        'Each shipped authority footer exists, carries the shared prohibitions, includes every grant of its tier and below, and grants nothing above it; each shipped grant section exists, is approved, lifts exactly its own ban, keeps its limits and carries no tier grant.',
       sources: ['standards-background-runs.md'],
       mechanical: {
         level: 'FAIL',
         remediation: {
           class: 'diagnostic',
           guidance:
-            'Restore the footer wording in the canonical harness skill so each tier grants exactly what the standard lists.'
+            'Restore the footer or grant wording in the canonical harness skill so each tier and each grant permits exactly what the standard lists.'
         },
         audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
       }
