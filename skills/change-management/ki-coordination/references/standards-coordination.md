@@ -61,7 +61,7 @@ A repository that runs coordinating work declares `[skills.ki-coordination]` in 
 
 The model of work is decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) and described once, canonically, by the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note in Knowledge Islands Principal: the unit is work; its levels and forms; worker, supervisor and the derived holder; send and receive; the seven states with On hold's two reasons; the receive words; the heartbeat and stuck; the work folder and work file; Git as the logbook; the decisions life cycle; the banner and its answers; and the observatory fields. This standard cites the note and restates none of it. It sets what the note leaves to the harness: how a coordinating session keeps to the model, the shape of every report, the generated surfaces, and the checks.
 
-The model replaced the thread model of 13 to 17 October. Kris agreed it on 18 October and launched its migration the same day; the harness half is [KI-HARNESS-GOV-210](../../../../docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md). The old words map to the new:
+The model replaced the thread model of 13 to 17 October. Kris agreed it on 18 October and launched its migration the same day; the harness half is [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md). The old words map to the new:
 
 | Thread model | Work model |
 | --- | --- |

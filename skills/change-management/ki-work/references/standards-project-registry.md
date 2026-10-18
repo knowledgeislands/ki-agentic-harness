@@ -176,7 +176,7 @@ Membership is classification, not authority. A Project may count records from an
 
 ## Tolerance window
 
-The thread-model registry stays readable, with a warning on each shape, until a later phase of the migration closes the window that [KI-HARNESS-GOV-210](../../../../docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) opens:
+The thread-model registry stays readable, with a warning on each shape, until a later phase of the migration closes the window that [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) opens:
 
 - `Streams/Initiatives/<slug>.md`, read as the theme page of the same slug, and its `Initiatives.md` index;
 - a Project folder note, `Streams/Projects/<slug>/<slug>.md`, read as the flat note;

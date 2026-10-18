@@ -23,7 +23,7 @@ AI-session acquisition is complete for the sources the knowledge-acquisition Pro
 
 ## Context
 
-[KI-HARNESS-OPS-005](KI-HARNESS-OPS-005-acquire-ai-sessions.md) was narrowed on 2026-10-14 to what it had delivered and accepted as done on 2026-10-17. Its eight unfinished steps were carried in the Notes of the [knowledge-acquisition Project](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/knowledge-acquisition.md) until a record was opened for them. Kris Brown decided on 2026-10-17 at 22:50 BST, in the knowledge-acquisition thread's SUCCESSOR-RECORD reply, to capture one follow-up record in this harness at Next for all eight, rather than one record per step.
+[KI-HARNESS-OPS-005 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/bf227839/docs/roadmap/KI-HARNESS-OPS-005-acquire-ai-sessions.md) was narrowed on 2026-10-14 to what it had delivered and accepted as done on 2026-10-17. Its eight unfinished steps were carried in the Notes of the [knowledge-acquisition Project](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/knowledge-acquisition.md) until a record was opened for them. Kris Brown decided on 2026-10-17 at 22:50 BST, in the knowledge-acquisition thread's SUCCESSOR-RECORD reply, to capture one follow-up record in this harness at Next for all eight, rather than one record per step.
 
 Two open questions travel with the steps: the provisional Spirituality project binding, and what becomes of the 77 export files referenced by no conversation.
 
