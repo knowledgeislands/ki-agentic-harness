@@ -20,7 +20,7 @@ The harness standards home a regular activity in its territory's regular work, `
 
 ## Context
 
-The [activity-levels run report](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/activity-levels.report.md) set out the model and, in its section 5, the harness changes. Kris Brown answered on 17 October 2026 at 22:50 BST in the ways-of-working thread:
+The [activity-levels run report (deleted)](https://github.com/knowledgeislands/ki-principal/blob/ab526abed0d493bddd9c44ddb48c104d7fa2c846/+/_THREADS/ways-of-working/activity-levels.report.md) set out the model and, in its section 5, the harness changes. Kris Brown answered on 17 October 2026 at 22:50 BST in the ways-of-working thread:
 
 - ACT-HOME: "Home a regular activity at territory or Initiative level, never in a Project; a territory-level Activity declares a territory home and state-of-play stewards it; Initiative stays the default."
 - ACT-THREAD: "Run regular activities with no standing thread: state-of-play or a scheduler dispatches each occurrence as one agent in the state-of-play run, reports and answers land there, standing changes go to the Activity note through Enactment, and improving an activity is a Project with a coordination thread while active."
