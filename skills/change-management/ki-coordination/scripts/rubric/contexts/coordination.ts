@@ -58,9 +58,9 @@ const OUTPUT_STYLE = 'ki-coordinator'
 const COORDINATOR_HOOK = 'coordinator-reminder.sh'
 const HOOK_EVENTS = ['UserPromptSubmit', 'SessionStart'] as const
 const PROJECT_THREAD = /^(?<initiative>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<project>[a-z0-9]+(?:-[a-z0-9]+)*)$/
-/** A report whose form line leads with a glyph state was written under the work model, so on or after 2026-10-18. */
+/** A report whose form line leads with a glyph state was written under the work model, so on or after 2026-10-18; 🧑 and → 👤 are the glyphs before GLYPH-OWNER. */
 const GLYPH_FORM_LINE =
-  /^\*\*(?:🤖|🧑|⏸️|🏁|→ 👤)[^\n]* · (?:Summary|Recap|Full summary|Re-bootstrap|Run report|Hold report) at /mu
+  /^\*\*(?:🤖|👤|🧑|⏸️|🏁|→ 🎯|→ 👤)[^\n]* · (?:Summary|Recap|Full summary|Re-bootstrap|Run report|Hold report) at /mu
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
 

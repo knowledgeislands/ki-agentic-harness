@@ -30,7 +30,7 @@ const PROJECT_NOTE = '/Users/krisbrown/workspaces/knowledge-islands/ki-principal
 const HEADING_EXAMPLE = [
   `# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE})`,
   '',
-  '**🤖 → 🧑 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**',
+  '**🤖 → 👤 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**',
   '',
   '---',
   '',
@@ -41,7 +41,7 @@ const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a
 /** Territory work's heading: a linked territory or theme, then ` › State of play`. */
 const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
 /** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason. */
-const GLYPH_STATE = String.raw`(?:🤖 With worker|🧑 With supervisor|🤖 → 🧑 Handoff to supervisor(?: · blocked)?|🧑 → 🤖 Handoff to worker|→ 👤 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
+const GLYPH_STATE = String.raw`(?:🤖 With worker|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
 /** The form line: the glyph state, the form, the local issued time and the last mark, bold; a hold report names the hold's mark. */
 const FORM_LINE = new RegExp(
   String.raw`^\*\*${GLYPH_STATE} · (?:(?:Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
@@ -58,9 +58,9 @@ const ITEM =
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
 const SEND_LINE =
-  'Send <label> back to its worker under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
+  'Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
 const HOLD_SEND_LINE =
-  'Resume <label> from its work file under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.'
+  'Resume <label> from its work file in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.'
 const HOLD_CLOSING_LINE = 'To bring this work back and continue it, paste this:'
 
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
@@ -120,31 +120,31 @@ test('the standard carries the report heading as a linked theme › Project head
   expect(summary?.join('\n')).toBe(HEADING_EXAMPLE)
   expectReportHeading(summary)
   expect(territory?.[0]).toBe('# [<territory or theme>](<its local note>) › State of play')
-  expect(territory?.[2]).toBe('**🧑 With supervisor · Full summary at 19:13 BST · last mark 14:54 BST**')
+  expect(territory?.[2]).toBe('**👤 With supervisor · Full summary at 19:13 BST · last mark 14:54 BST**')
   expectReportHeading(territory)
   expect(runReport?.[0]).toBe(`# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE}) › migrate-phase1`)
-  expect(runReport?.[2]).toBe('**🤖 → 🧑 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**')
+  expect(runReport?.[2]).toBe('**🤖 → 👤 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**')
   expectReportHeading(runReport)
 })
 
 test('the form line leads with the glyph state, then the form, the local issued time and the last mark', () => {
   expect('**🤖 With worker · Summary at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**🤖 → 🧑 Handoff to supervisor · blocked · Recap at 09:05 GMT · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**→ 👤 Handoff to KI > Tools burndown · Summary at 23:10 BST · last mark 22:00 BST**').toMatch(FORM_LINE)
+  expect('**🤖 → 👤 Handoff to supervisor · blocked · Recap at 09:05 GMT · last mark 14:54 BST**').toMatch(FORM_LINE)
+  expect('**→ 🎯 Handoff to KI > Tools burndown · Summary at 23:10 BST · last mark 22:00 BST**').toMatch(FORM_LINE)
   expect('**⏸️ On hold · Hold report at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
   expect('**⏸️ On hold · Hold report at 15:02 BST · last mark 14:58 BST**').not.toMatch(FORM_LINE)
   expect('**Summary at 19:13 BST · last mark 14:54 BST**').not.toMatch(FORM_LINE)
-  expect('**🧑 With supervisor · Summary at 2026-10-14T17:03:02Z · last mark 14:54 BST**').not.toMatch(FORM_LINE)
+  expect('**👤 With supervisor · Summary at 2026-10-14T17:03:02Z · last mark 14:54 BST**').not.toMatch(FORM_LINE)
   expect('# [Ways of working](/a/b.md)').not.toMatch(HEADING_LINE)
   expect('# [KI Capital](/a/b.md) › State of play').toMatch(STATE_OF_PLAY_LINE)
 })
 
 test('the glyph banner shows a settled holder alone and an arrow only in a handoff state', () => {
-  for (const settled of ['🤖 With worker', '🧑 With supervisor', '⏸️ On hold · more expected'])
+  for (const settled of ['🤖 With worker', '👤 With supervisor', '⏸️ On hold · more expected'])
     expect(`### ${settled} · since 07:40 BST`).toMatch(BANNER_HEADING)
-  for (const handoff of ['🤖 → 🧑 Handoff to supervisor', '🧑 → 🤖 Handoff to worker', '→ 👤 Handoff to run/obs-push'])
+  for (const handoff of ['🤖 → 👤 Handoff to supervisor', '👤 → 🤖 Handoff to worker', '→ 🎯 Handoff to run/obs-push'])
     expect(`### ${handoff} · since 07:55 BST`).toMatch(BANNER_HEADING)
-  expect('### 🧑 → 🧑 With supervisor · since 07:40 BST').not.toMatch(BANNER_HEADING)
+  expect('### 👤 → 👤 With supervisor · since 07:40 BST').not.toMatch(BANNER_HEADING)
   expect('### 🤖 Handoff to supervisor · since 07:40 BST').not.toMatch(BANNER_HEADING)
   expect('### 🏁 Finished · Ways of working closed at 18:00 BST').toMatch(BANNER_HEADING)
 })
@@ -153,13 +153,13 @@ test('the standard carries the With worker, handoff, On hold and Finished banner
   const found = banners(standard)
   expect(found.map((lines) => lines[0]?.split(' · ')[0])).toEqual([
     '### 🤖 With worker',
-    '### 🤖 → 🧑 Handoff to supervisor',
+    '### 🤖 → 👤 Handoff to supervisor',
     '### ⏸️ On hold',
     '### 🏁 Finished'
   ])
   for (const lines of found) expectBanner(lines)
   const [withWorker, handoff, hold] = found
-  expect(withWorker?.[2]).toBe('🤖 2 running · 🧑 1 with you · ⛔ 1 blocked')
+  expect(withWorker?.[2]).toBe('🤖 2 running · 👤 1 with you · ⛔ 1 blocked')
   expect(withWorker).toContain('- [running] work-model · run/work-model · since 23:20')
   expect(handoff).toContain('- [committed] work folder, pushed')
   expect(handoff?.some((line) => line.startsWith('- [running]'))).toBe(false)
@@ -232,7 +232,7 @@ test('the run-report and footer-report sources carry the quiet-tools rule and no
   const quiet = 'run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.'
   for (const surface of generate(harnessRoot).filter(({ path }) => path.includes('ki-delegation/assets/'))) {
     expect(surface.content).toContain(quiet)
-    expect(surface.content).toContain('🤖 → 🧑 Handoff to supervisor · Run report at')
+    expect(surface.content).toContain('🤖 → 👤 Handoff to supervisor · Run report at')
     expect(surface.content).toContain('no reply block')
   }
 })

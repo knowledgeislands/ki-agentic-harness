@@ -392,7 +392,7 @@ describe('recommendation confidence', () => {
 describe('report heading', () => {
   test('a report opens with its heading, after front matter if it has any', () => {
     expect(
-      reportOpensWithHeading('# [Model](/m.md) › run\n\n**🤖 → 🧑 Handoff to supervisor · Run report at 08:00 BST**\n')
+      reportOpensWithHeading('# [Model](/m.md) › run\n\n**🤖 → 👤 Handoff to supervisor · Run report at 08:00 BST**\n')
     ).toBe(true)
     expect(reportOpensWithHeading('\n\n# Report\n')).toBe(true)
     expect(reportOpensWithHeading('---\nid: KI-HARNESS-GOV-175\nstatus: draft\n---\n\n# Report\n')).toBe(true)
@@ -571,14 +571,14 @@ describe('work files', () => {
 
   test('a report with a glyph form line has its confidence checked whatever its date', () => {
     expect(
-      reportHasGlyphForm('**🤖 → 🧑 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**')
+      reportHasGlyphForm('**🤖 → 👤 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**')
     ).toBe(true)
     expect(reportHasGlyphForm('**Summary at 19:13 BST · last mark 14:54 BST**')).toBe(false)
     const root = fixture(capital)
     const folder = work(root, 'ki.ways-of-working', project())
     writeFileSync(
       join(folder, 'run.report.md'),
-      '# Run\n\n**🤖 → 🧑 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**\n\n## Queries\n\n### TAG - a question\n\n**Options:**\n\na) (recommended) Do it.\n'
+      '# Run\n\n**🤖 → 👤 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**\n\n## Queries\n\n### TAG - a question\n\n**Options:**\n\na) (recommended) Do it.\n'
     )
     expect(statuses(context(root).confidence.outcomes)).toEqual(['VIOLATION'])
   })

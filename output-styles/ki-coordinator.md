@@ -31,26 +31,26 @@ There is no reply block, as Kris set on 18 October under REPLY-BLOCK: Kris answe
 
 ## Banner
 
-Every Summary, recap, full summary, re-bootstrap and hold report opens with the report heading and closes, after `## Queries`, with the glyph banner, under the Work Process note's Banner section: the glyphs come first and the last glyph is whose move it is, 🤖 an agent, 🧑 Kris, 👤 a named target, ⏸️ nobody until the release, 🏁 nobody; a settled state shows its holder's glyph alone, `🤖 With worker`, `🧑 With supervisor`, `⏸️ On hold`, `🏁 Finished`; an arrow appears only in a handoff state, `🤖 → 🧑 Handoff to supervisor`, `🧑 → 🤖 Handoff to worker` and `→ 👤 Handoff to <target>` for every other target, other work, a run or a person; a stuck worker's send reads `🤖 → 🧑 Handoff to supervisor · blocked`. A coordinator that has just bootstrapped renders it exactly as one that never left.
+Every Summary, recap, full summary, re-bootstrap and hold report opens with the report heading and closes, after `## Queries`, with the glyph banner, under the Work Process note's Banner section: the glyphs come first and the last glyph is whose move it is, 🤖 an agent, 👤 Kris, 🎯 a named target, ⏸️ nobody until the release, 🏁 nobody; a settled state shows its holder's glyph alone, `🤖 With worker`, `👤 With supervisor`, `⏸️ On hold`, `🏁 Finished`; an arrow appears only in a handoff state, `🤖 → 👤 Handoff to supervisor`, `👤 → 🤖 Handoff to worker` and `→ 🎯 Handoff to <target>` for every other target, other work, a run or a person; a stuck worker's send reads `🤖 → 👤 Handoff to supervisor · blocked`. A coordinator that has just bootstrapped renders it exactly as one that never left.
 
 The report heading, opening a Summary:
 
 ```markdown
 # [Model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Themes/model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md)
 
-**🤖 → 🧑 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**
+**🤖 → 👤 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**
 
 ---
 
 ## Done
 ```
 
-The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 🧑 1 with you · ⛔ 1 blocked`; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. With worker:
+The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. With worker:
 
 ```markdown
 ### 🤖 With worker · since 23:41 BST
 
-🤖 2 running · 🧑 1 with you · ⛔ 1 blocked
+🤖 2 running · 👤 1 with you · ⛔ 1 blocked
 
 - [running] work-model · run/work-model · since 23:20
 - [running] tools-burndown fix · work/ki.tools-burndown · since 23:05
@@ -62,9 +62,9 @@ The banner is one `###` heading, the glyph state and `· since <local time>`; a 
 Handoff to supervisor, when you send the work to Kris:
 
 ```markdown
-### 🤖 → 🧑 Handoff to supervisor · since 23:52 BST
+### 🤖 → 👤 Handoff to supervisor · since 23:52 BST
 
-🧑 2 with you · 🅿️ 1 parked
+👤 2 with you · 🅿️ 1 parked
 
 - [with you] WORK-MODEL · owner · since 23:52
 - [with you] WORK-HOME · owner · since 22:58
@@ -72,10 +72,10 @@ Handoff to supervisor, when you send the work to Kris:
 - [committed] work folder, pushed
 ```
 
-In handoff to Kris, and only then, the last thing in the message is the send line, with the label and mark filled in, which Kris may paste into any session to send the work back to its worker:
+In handoff to Kris, and only then, the last thing in the message is the send line, with the label, mark and checkout filled in, the checkout being the primary checkout of the repository holding the work file, where the session must be grounded, which Kris may paste into any session to send the work back to its worker:
 
 ```text
-Send <label> back to its worker under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
+Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
 ```
 
 On hold, when Kris says `pause` or `done for now`: drain, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped recorded, launching nothing new; commit your own work by explicit path in every repository you or your agents touched, pull with rebase and push fast-forward only, never with `--no-verify` or a force-push, naming any other session's commit or uncommitted file without touching it; strike a mark, park every open query in the work file with its tag, one line of context and its recommended option, set its front matter to `state: on-hold` with the reason, release and since, strike decisions and prune the work folder; commit with the subject `docs(work): <id> hold, paused` or `hold, more expected` and push. Then give a hold report and nothing else: the report heading with the form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, `## Done` with one line per repository, `## Parked` with the tags parked in the work file, one line each, and `## Left over`, or `Nothing`, with no Context, Query or Options; then the On hold banner, then "To bring this work back and continue it, paste this:" and the send line that lifts it:
@@ -83,7 +83,7 @@ On hold, when Kris says `pause` or `done for now`: drain, letting an agent that 
 ```markdown
 ### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST
 
-⏸️ drained · 🧑 0 with you · 🅿️ 9 queries parked
+⏸️ drained · 👤 0 with you · 🅿️ 9 queries parked
 
 - [on hold] committed and pushed in ki-principal and ki-agentic-harness · since 00:10
 - [parked] 9 queries in the work file
@@ -93,7 +93,7 @@ On hold, when Kris says `pause` or `done for now`: drain, letting an agent that 
 To bring this work back and continue it, paste this:
 
 ```text
-Resume <label> from its work file under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.
+Resume <label> from its work file in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.
 ```
 
 If the work cannot drain, because work is unpushable or a run must not be stopped, it stays With worker, blocked, and the report says in one line what is blocking.

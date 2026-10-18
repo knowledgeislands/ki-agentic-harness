@@ -211,20 +211,20 @@ The note's The seven states and Roles sections own the states, the two moves and
 - **Its state:** territory work and Project work are With worker while any of their items lies with a run or the coordinator is mid-turn; Handoff to supervisor once the coordinator has sent to the owner; With supervisor once the owner has received; Handoff to worker once the owner has replied and no session has yet received it; Handoff to `<target>` while it waits on other work, a run or a person; On hold once agreed and drained; Finished once closed. Only the owner's receive and the hold are set; the coordinator derives every other state from where its items lie.
 - **Receiving:** the owner receives with `with me`, `ack`, `got it` or `seen`, and agrees a hold with `pause` or `done for now`; `resume` and `finish` move work off hold and to Finished. `hold` is not a receive word. A coordinator's own receive is committed with whatever it next sends.
 - **Sending:** a send is a commit of the work folder whose subject carries the move, such as `docs(work): ki.ways-of-working send to owner`, `docs(work): ki.ways-of-working receive by owner` or `docs(work): ki.ways-of-working hold, paused`, under the note's Git is the logbook. Only sends and the owner's receives commit.
-- **A stuck worker** comes back to its supervisor with a blocking query: its send reads `🤖 → 🧑 Handoff to supervisor · blocked`. A worker item that has neither moved nor beaten for 10 minutes is stuck; nobody sets stuck.
+- **A stuck worker** comes back to its supervisor with a blocking query: its send reads `🤖 → 👤 Handoff to supervisor · blocked`. A worker item that has neither moved nor beaten for 10 minutes is stuck; nobody sets stuck.
 - **Old shape:** an old-shape checkpoint's REST reads as Handoff to supervisor or With supervisor, BUSY as With worker, HOLD as On hold, paused, and DONE as Finished.
 
 ### Banner
 
-A report shows its state in rich text, under the note's Banner section, which Kris set with BANNER-GLYPH and REPLY-BLOCK on 18 October and TARGET-GLYPH the same day: the glyphs come first and the last glyph is whose move it is, a settled state shows its holder's glyph alone, an arrow appears only in a handoff state, and `→ 👤 Handoff to <target>` serves every target, the target's name saying whether it is other work, a run or a person. The block-letter frames retired with the model; a report written before 18 October keeps its frame, and anything that reads past reports accepts both. Every coordinator renders the heading and the banner the same way, whether it has just bootstrapped, re-bootstrapped or run for days: the examples below are the shapes, and a banner that differs from them is wrong.
+A report shows its state in rich text, under the note's Banner section, which Kris set with BANNER-GLYPH and REPLY-BLOCK on 18 October and TARGET-GLYPH the same day: the glyphs come first and the last glyph is whose move it is, a settled state shows its holder's glyph alone, an arrow appears only in a handoff state, and `→ 🎯 Handoff to <target>` serves every target, the target's name saying whether it is other work, a run or a person. Kris set GLYPH-OWNER the same evening: Kris appears as 👤 everywhere, and every other handoff target, other work, a run or a person, as 🎯. The block-letter frames retired with the model; a report written before 18 October keeps its frame, a report written before GLYPH-OWNER keeps 🧑 for Kris and 👤 for a target, and anything that reads past reports accepts every one of these. Every coordinator renders the heading and the banner the same way, whether it has just bootstrapped, re-bootstrapped or run for days: the examples below are the shapes, and a banner that differs from them is wrong.
 
 | State | Glyph heading |
 | --- | --- |
 | With worker | `🤖 With worker` |
-| Handoff to supervisor | `🤖 → 🧑 Handoff to supervisor`, or `🤖 → 🧑 Handoff to supervisor · blocked` |
-| With supervisor | `🧑 With supervisor` |
-| Handoff to worker | `🧑 → 🤖 Handoff to worker` |
-| Handoff to `<target>` | `→ 👤 Handoff to <target>` |
+| Handoff to supervisor | `🤖 → 👤 Handoff to supervisor`, or `🤖 → 👤 Handoff to supervisor · blocked` |
+| With supervisor | `👤 With supervisor` |
+| Handoff to worker | `👤 → 🤖 Handoff to worker` |
+| Handoff to `<target>` | `→ 🎯 Handoff to <target>` |
 | On hold | `⏸️ On hold · paused until <release>` or `⏸️ On hold · more expected` |
 | Finished | `🏁 Finished` |
 
@@ -242,7 +242,7 @@ Opening a Summary:
 ```markdown
 # [Model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Themes/model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md)
 
-**🤖 → 🧑 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**
+**🤖 → 👤 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**
 
 ---
 
@@ -254,14 +254,14 @@ Territory work opening a full summary:
 ```markdown
 # [<territory or theme>](<its local note>) › State of play
 
-**🧑 With supervisor · Full summary at 19:13 BST · last mark 14:54 BST**
+**👤 With supervisor · Full summary at 19:13 BST · last mark 14:54 BST**
 
 ---
 
 ## Decided
 ```
 
-**Glyph banner.** The report closes, after `## Queries`, with the banner: one `###` heading, the glyph state and `· since <local time>`, the time of the last move; a blank line; one line of counts, each a glyph, a number and a view, joined by ` · `, such as `🤖 2 running · 🧑 1 with you · ⛔ 1 blocked`; a blank line; and one Markdown list, each item `- [<state>] <what> · <holder> · since <time>`. The counts and the list say "with you", because they are views by holder; the heading gives the state in role words. List items come in this order and only where they apply: `[running]` and `[queued]` for each agent, the holder `run/<name>`; `[with you]` for each open Needs tag, the holder `owner`, oldest first; `[stuck]` and `[blocked]` with their holder; `[handoff]` for each item with other work, a run or a person; `[parked]` for parked queries or tangents; `[release]` on hold; then the housekeeping items, which name no holder: `- [committed] work folder, pushed`, or the `[uncommitted]`, `[unpushed]` or `[blocked]` truth, `- [recovered] <UTC>` for the one report after a red x and `- [unlogged] decisions: <count>`. Nothing in the banner cites a decision number.
+**Glyph banner.** The report closes, after `## Queries`, with the banner: one `###` heading, the glyph state and `· since <local time>`, the time of the last move; a blank line; one line of counts, each a glyph, a number and a view, joined by ` · `, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`; a blank line; and one Markdown list, each item `- [<state>] <what> · <holder> · since <time>`. The counts and the list say "with you", because they are views by holder; the heading gives the state in role words. List items come in this order and only where they apply: `[running]` and `[queued]` for each agent, the holder `run/<name>`; `[with you]` for each open Needs tag, the holder `owner`, oldest first; `[stuck]` and `[blocked]` with their holder; `[handoff]` for each item with other work, a run or a person; `[parked]` for parked queries or tangents; `[release]` on hold; then the housekeeping items, which name no holder: `- [committed] work folder, pushed`, or the `[uncommitted]`, `[unpushed]` or `[blocked]` truth, `- [recovered] <UTC>` for the one report after a red x and `- [unlogged] decisions: <count>`. Nothing in the banner cites a decision number.
 
 With worker, closing a Summary while runs are out:
 
@@ -270,7 +270,7 @@ With worker, closing a Summary while runs are out:
 ```markdown
 ### 🤖 With worker · since 23:41 BST
 
-🤖 2 running · 🧑 1 with you · ⛔ 1 blocked
+🤖 2 running · 👤 1 with you · ⛔ 1 blocked
 
 - [running] work-model · run/work-model · since 23:20
 - [running] tools-burndown fix · work/ki.tools-burndown · since 23:05
@@ -284,9 +284,9 @@ Handoff to supervisor, closing a Summary that sends the work to the owner:
 <!-- ki-coordination:block handoff-banner -->
 
 ```markdown
-### 🤖 → 🧑 Handoff to supervisor · since 23:52 BST
+### 🤖 → 👤 Handoff to supervisor · since 23:52 BST
 
-🧑 2 with you · 🅿️ 1 parked
+👤 2 with you · 🅿️ 1 parked
 
 - [with you] WORK-MODEL · owner · since 23:52
 - [with you] WORK-HOME · owner · since 22:58
@@ -294,15 +294,15 @@ Handoff to supervisor, closing a Summary that sends the work to the owner:
 - [committed] work folder, pushed
 ```
 
-**Send line.** In handoff to the owner, and only then, the last thing in the message is the send line, in its own one-line fenced `text` block so it copies cleanly, with the work's label and its [mark](#recap-since-the-mark) filled in. It replaced the resume line, which Kris had set on 2026-10-14 as "shown only at rest". The owner usually answers in speech in the same session; the send line is for sending the work back to its worker from any session, after a red x, a compaction or a move between hosts.
+**Send line.** In handoff to the owner, and only then, the last thing in the message is the send line, in its own one-line fenced `text` block so it copies cleanly, with the work's label, its [mark](#recap-since-the-mark) and its checkout filled in. The checkout is the absolute path of the primary checkout of the repository holding the work file, such as `/Users/krisbrown/workspaces/knowledge-islands/ki-principal`: the working directory the session must be grounded in, as Kris set on 18 October under RESUME-PWD. It replaced the resume line, which Kris had set on 2026-10-14 as "shown only at rest". The owner usually answers in speech in the same session; the send line is for sending the work back to its worker from any session, after a red x, a compaction or a move between hosts.
 
 <!-- ki-coordination:block send-line -->
 
 ```text
-Send <label> back to its worker under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
+Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
 ```
 
-Pasted into any session, it makes the coordinator do these in order: re-bootstrap under [Bootstrap](#bootstrap), re-reading this standard, `ki-delegation`'s Reporting, its work file and its decisions log; strike the mark at the send time, commit the work file and confirm in one line; give a fresh Summary covering only what follows the new mark plus every open point carried forward from before it, built from the work file, the decisions log and the work folder rather than from transcript memory; take stock since the last move, from the decisions log, `ki agent status`, its Messages section and the owner's messages; restart any work the owner authorised since; and end with a fresh banner. The label on the line is a guard: a coordinator whose work file title or label does not match it stops and asks before doing anything.
+Pasted into any session, it makes the coordinator do these in order: re-bootstrap under [Bootstrap](#bootstrap), re-reading this standard, `ki-delegation`'s Reporting, its work file and its decisions log; strike the mark at the send time, commit the work file and confirm in one line; give a fresh Summary covering only what follows the new mark plus every open point carried forward from before it, built from the work file, the decisions log and the work folder rather than from transcript memory; take stock since the last move, from the decisions log, `ki agent status`, its Messages section and the owner's messages; restart any work the owner authorised since; and end with a fresh banner. The label on the line is a guard: a coordinator whose work file title or label does not match it stops and asks before doing anything. The checkout grounds the session: one started in another directory works in the named checkout, by absolute path or `git -C`, before anything else.
 
 On hold, closing a hold report:
 
@@ -311,21 +311,21 @@ On hold, closing a hold report:
 ```markdown
 ### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST
 
-⏸️ drained · 🧑 0 with you · 🅿️ 9 queries parked
+⏸️ drained · 👤 0 with you · 🅿️ 9 queries parked
 
 - [on hold] committed and pushed in ki-principal and ki-agentic-harness · since 00:10
 - [parked] 9 queries in the work file
 - [release] after the harness migration lands, or `resume`
 ```
 
-Then the closing line and the send line that lifts the hold, in its own one-line fenced `text` block, with the label and the hold's mark filled in:
+Then the closing line and the send line that lifts the hold, in its own one-line fenced `text` block, with the label, the hold's mark and the checkout filled in:
 
 To bring this work back and continue it, paste this:
 
 <!-- ki-coordination:block hold-send-line -->
 
 ```text
-Resume <label> from its work file under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.
+Resume <label> from its work file in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.
 ```
 
 Finished, closing the last report at [Finishing Project work](#finishing-project-work), with no send line:
@@ -336,12 +336,12 @@ Finished, closing the last report at [Finishing Project work](#finishing-project
 - [finished] 14 work items accepted, decisions homed, work folder pruned
 ```
 
-**In an agent's report.** A background agent's run report takes the same heading and banner, under the [owner report](#owner-report): the report heading of the work it reports to with `› <run name>` added at its end and the form `Run report`, so its form line reads `**🤖 → 🧑 Handoff to supervisor · Run report at <local time> · last mark <local time>**`, the mark being that work's, and `· blocked` added where it sends back with a blocking query; then its own banner, the run's state and its items, with no send line, because a run's supervisor is the coordinator. Opening a run report:
+**In an agent's report.** A background agent's run report takes the same heading and banner, under the [owner report](#owner-report): the report heading of the work it reports to with `› <run name>` added at its end and the form `Run report`, so its form line reads `**🤖 → 👤 Handoff to supervisor · Run report at <local time> · last mark <local time>**`, the mark being that work's, and `· blocked` added where it sends back with a blocking query; then its own banner, the run's state and its items, with no send line, because a run's supervisor is the coordinator. Opening a run report:
 
 ```markdown
 # [Model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Themes/model.md) › [Ways of working](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md) › migrate-phase1
 
-**🤖 → 🧑 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**
+**🤖 → 👤 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**
 
 ---
 
@@ -357,7 +357,7 @@ A compaction keeps a coordinator's session but replaces its transcript with a su
 ```
 
 ```text
-Send <label> back to its worker under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
+Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
 ```
 
 The first line, where the runtime accepts `/compact <instructions>`, compacts the transcript keeping the named facts verbatim and ends the turn; the second is the [send line](#banner) as it stands. A compaction that is not needed throws away transcript detail for nothing, so the send line alone is the default and the compact paste is the owner's call when the session is long or has just recovered from an error.
@@ -557,13 +557,13 @@ Context was compacted. While coordinating work, before replying, follow "Re-anch
 <!-- ki-coordination:source run-report -->
 
 ```markdown
-**Report** to `<report path>` as an owner report: the ki-coordination report heading of the work you report to with `› <run name>` added, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>) › <run name>`, the bold `**🤖 → 🧑 Handoff to supervisor · Run report at <local time> · last mark <local time>**` line, adding `· blocked` after the state where you send back with a blocking query, and one `---`, then `## Done`, `## In Progress` and `## Queries`, each query carrying **Context**, **Query** and lettered **Options** with `a) (recommended, confidence <level> - <reason>)` first and no reply block, then, for coordinating work, the glyph banner the ki-coordination [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner) section prints, its `###` state heading, counts line and `- [state] what · holder · since` list, with no send line; a run report to a conversational session or ad hoc work has no mark in its form line and no banner. The report's first non-blank line is its `#` heading, after front matter if the report has any. Run tools quietly under the ki-coordination [quiet-tools rule](../../../change-management/ki-coordination/references/standards-coordination.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
+**Report** to `<report path>` as an owner report: the ki-coordination report heading of the work you report to with `› <run name>` added, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>) › <run name>`, the bold `**🤖 → 👤 Handoff to supervisor · Run report at <local time> · last mark <local time>**` line, adding `· blocked` after the state where you send back with a blocking query, and one `---`, then `## Done`, `## In Progress` and `## Queries`, each query carrying **Context**, **Query** and lettered **Options** with `a) (recommended, confidence <level> - <reason>)` first and no reply block, then, for coordinating work, the glyph banner the ki-coordination [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner) section prints, its `###` state heading, counts line and `- [state] what · holder · since` list, with no send line; a run report to a conversational session or ad hoc work has no mark in its form line and no banner. The report's first non-blank line is its `#` heading, after front matter if the report has any. Run tools quietly under the ki-coordination [quiet-tools rule](../../../change-management/ki-coordination/references/standards-coordination.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
 ```
 
 <!-- ki-coordination:source footer-report -->
 
 ```markdown
-- Write the report as the owner report the ki-coordination [owner-report standard](../../../change-management/ki-coordination/references/standards-coordination.md#owner-report) sets: the ki-coordination report heading of the work you report to with `› <run name>` added, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>) › <run name>`, then the bold `**🤖 → 🧑 Handoff to supervisor · Run report at <local time> · last mark <local time>**` line, with `· blocked` after the state where you send back with a blocking query, and one `---`; `## Done`, with commit identifiers and each check's outcome in one line; `## In Progress`; `## Queries`, each query carrying **Context**, **Query** and **Options** with `a) (recommended, confidence <level> - <reason>)` first and no bullets, and no reply block, the owner answering in speech; then, for coordinating work, the glyph banner, its `###` state heading, counts line and `- [state] what · holder · since` list, with no send line; a run report to a conversational session or ad hoc work has no mark in its form line and no banner. Run tools quietly under the ki-coordination [quiet-tools rule](../../../change-management/ki-coordination/references/standards-coordination.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
+- Write the report as the owner report the ki-coordination [owner-report standard](../../../change-management/ki-coordination/references/standards-coordination.md#owner-report) sets: the ki-coordination report heading of the work you report to with `› <run name>` added, `# [<Theme>](<local theme page>) › [<Project>](<local Project note>) › <run name>`, then the bold `**🤖 → 👤 Handoff to supervisor · Run report at <local time> · last mark <local time>**` line, with `· blocked` after the state where you send back with a blocking query, and one `---`; `## Done`, with commit identifiers and each check's outcome in one line; `## In Progress`; `## Queries`, each query carrying **Context**, **Query** and **Options** with `a) (recommended, confidence <level> - <reason>)` first and no bullets, and no reply block, the owner answering in speech; then, for coordinating work, the glyph banner, its `###` state heading, counts line and `- [state] what · holder · since` list, with no send line; a run report to a conversational session or ad hoc work has no mark in its form line and no banner. Run tools quietly under the ki-coordination [quiet-tools rule](../../../change-management/ki-coordination/references/standards-coordination.md#quiet-tools): run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.
 ```
 
 <!-- ki-coordination:source output-style -->
@@ -602,13 +602,13 @@ There is no reply block, as Kris set on 18 October under REPLY-BLOCK: Kris answe
 
 ## Banner
 
-Every Summary, recap, full summary, re-bootstrap and hold report opens with the report heading and closes, after `## Queries`, with the glyph banner, under the Work Process note's Banner section: the glyphs come first and the last glyph is whose move it is, 🤖 an agent, 🧑 Kris, 👤 a named target, ⏸️ nobody until the release, 🏁 nobody; a settled state shows its holder's glyph alone, `🤖 With worker`, `🧑 With supervisor`, `⏸️ On hold`, `🏁 Finished`; an arrow appears only in a handoff state, `🤖 → 🧑 Handoff to supervisor`, `🧑 → 🤖 Handoff to worker` and `→ 👤 Handoff to <target>` for every other target, other work, a run or a person; a stuck worker's send reads `🤖 → 🧑 Handoff to supervisor · blocked`. A coordinator that has just bootstrapped renders it exactly as one that never left.
+Every Summary, recap, full summary, re-bootstrap and hold report opens with the report heading and closes, after `## Queries`, with the glyph banner, under the Work Process note's Banner section: the glyphs come first and the last glyph is whose move it is, 🤖 an agent, 👤 Kris, 🎯 a named target, ⏸️ nobody until the release, 🏁 nobody; a settled state shows its holder's glyph alone, `🤖 With worker`, `👤 With supervisor`, `⏸️ On hold`, `🏁 Finished`; an arrow appears only in a handoff state, `🤖 → 👤 Handoff to supervisor`, `👤 → 🤖 Handoff to worker` and `→ 🎯 Handoff to <target>` for every other target, other work, a run or a person; a stuck worker's send reads `🤖 → 👤 Handoff to supervisor · blocked`. A coordinator that has just bootstrapped renders it exactly as one that never left.
 
 The report heading, opening a Summary:
 
 {{heading-example}}
 
-The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 🧑 1 with you · ⛔ 1 blocked`; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. With worker:
+The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. With worker:
 
 {{with-worker-banner}}
 
@@ -616,7 +616,7 @@ Handoff to supervisor, when you send the work to Kris:
 
 {{handoff-banner}}
 
-In handoff to Kris, and only then, the last thing in the message is the send line, with the label and mark filled in, which Kris may paste into any session to send the work back to its worker:
+In handoff to Kris, and only then, the last thing in the message is the send line, with the label, mark and checkout filled in, the checkout being the primary checkout of the repository holding the work file, where the session must be grounded, which Kris may paste into any session to send the work back to its worker:
 
 {{send-line}}
 
