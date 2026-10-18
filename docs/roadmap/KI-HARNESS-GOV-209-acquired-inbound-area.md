@@ -29,7 +29,7 @@ Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist s
 ## Boundary
 
 - In: a scaffold `README.md` for `+/_ACQUIRED/` in each territory principal, saying who writes there (the port alone), what a packet is, and the four receiver dispositions; and receiver triage guidance in `ki-repo-kb`: file, turn into work, park, or mark the packet `returned <reason>`, with the rule that the receiver never writes into the port and never deletes a packet it marks returned.
-- Out: the port's dispatch, return-reading, removal and routing cards, which belong to the acquire repository's dispatch record (KB-ACQUIRE-007, not yet written when this record was captured; related by its title, "Dispatch packet, push and return"); the Observatory view and the `ki-trades` envelope; amending Personal's Decision 7, which belongs to Personal's acquire-dispatch thread; the Acquisition Process note's Enactment record.
+- Out: the port's dispatch, return-reading, removal and routing cards, which belong to the acquire repository's dispatch record ([KB-ACQUIRE-007](/Users/krisbrown/workspaces/personal/acquire/docs/roadmap/KB-ACQUIRE-007-dispatch-packet-push-and-return.md), "Dispatch packet, push and return"); the Observatory view and the `ki-trades` envelope; amending Personal's Decision 7, which belongs to Personal's acquire-dispatch thread; the Acquisition Process note's Enactment record.
 
 ## Current state
 
@@ -51,7 +51,7 @@ To be set when planned.
 
 ## Dependencies / blocks
 
-Related, not blocking: acquire's dispatch record, "Dispatch packet, push and return" (KB-ACQUIRE-007 in `/Users/krisbrown/workspaces/personal/acquire/docs/roadmap/`, not yet present).
+Related, not blocking: acquire's dispatch record, [KB-ACQUIRE-007](/Users/krisbrown/workspaces/personal/acquire/docs/roadmap/KB-ACQUIRE-007-dispatch-packet-push-and-return.md), "Dispatch packet, push and return".
 
 ## Documentation impact
 
