@@ -7,12 +7,12 @@ purpose: governance
 project: ways-of-working
 component: change-management
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 0b95efbb51e54a813a49d1d477dbc23681ecc70e
 created_at: 2026-10-18T09:10:18Z
-updated_at: 2026-10-18T09:10:18Z
+updated_at: 2026-10-18T09:34:11Z
 ---
 
 # KI-HARNESS-GOV-217: Coordination and Work-Design Renames
@@ -43,11 +43,11 @@ The work-folder half of the same batch, CHECKPOINT-FATE and WORK-FOLDER-DEDUP, w
 
 ## Steps
 
-- [ ] Move `skills/change-management/ki-pmo/` to `ki-coordination/` and `ki-pmo-design/` to `ki-work-design/`, with `standards-pmo.md` as `standards-coordination.md` and `standards-pmo-design.md` as `standards-work-design.md`; descriptions speak in work-model terms.
-- [ ] Rename the rubric family `PMO` to `COORD` and regenerate both rubrics.
-- [ ] Repoint every reference across skills, hooks, the output style, guides, specs, diagrams, the catalogue, `.ki.toml` and tests; regenerate the generated surfaces through `ki dev skill generate ki-coordination`.
-- [ ] Slim `ki-repo-kb-streams`: retire the ITERATE, PROPOSE, READY and ROLLOUT modes and their reference files, and link to `ki-work-roadmap`'s status table instead of repeating it.
-- [ ] Run Verify.
+- [x] Move `skills/change-management/ki-pmo/` to `ki-coordination/` and `ki-pmo-design/` to `ki-work-design/`, with `standards-pmo.md` as `standards-coordination.md` and `standards-pmo-design.md` as `standards-work-design.md`; descriptions speak in work-model terms.
+- [x] Rename the rubric family `PMO` to `COORD` and regenerate both rubrics.
+- [x] Repoint every reference across skills, hooks, the output style, guides, specs, diagrams, the catalogue, `.ki.toml` and tests; regenerate the generated surfaces through `ki dev skill generate ki-coordination`.
+- [x] Slim `ki-repo-kb-streams`: retire the ITERATE, PROPOSE, READY and ROLLOUT modes and their reference files, and link to `ki-work-roadmap`'s status table instead of repeating it.
+- [x] Run Verify.
 
 ## Files touched
 
@@ -84,6 +84,36 @@ None: the names are Kris Brown's PMO-NAME and DESIGN-NAME answers.
 ### Roadmap
 
 Open records that name `ki-pmo` or PMO rubric codes are repointed; closed records keep their history.
+
+## Review
+
+### Delivered
+
+`ki-pmo` is `ki-coordination` and `ki-pmo-design` is `ki-work-design`, outright, with no alias: folders, names, descriptions in work-model terms, standards files, the rubric family `COORD` with its item numbers kept, and every live reference across skills, hooks, the output style, guides, diagrams, the catalogue, `.ki.toml` and tests. `ki-repo-kb-streams` keeps its container and Enactment-gate jobs, drops the ITERATE, PROPOSE, READY and ROLLOUT modes with their files, and links to `ki-work-roadmap`'s status and horizon table instead of repeating it.
+
+### Change Summary
+
+- `c4cbb5aa`: the two skill moves, the standards, guide and rubric-context renames, the `PMO` to `COORD` family rename, every reference, the regenerated rubric, catalogue and skill-graph sources, and this record.
+- `157896d3`: the skill map and the coordination and records-and-code area diagrams rebuilt at the rename commit; the thread-model diagram's traced source and README prose point at the coordination standard.
+- `92c0db6c`: `ki-repo-kb-streams` slimmed, with the catalogue refreshed.
+
+### Verification
+
+On 18 October 2026, after each commit: `bun run test` passed 1253 tests and `bunx tsc --noEmit` passed; `ki dev skill rubric ki-coordination` and `ki-repo-kb-streams` report the rubric current, and `ki dev skill generate ki-coordination` reports 7 surfaces in sync. `ki repo audit --skill` reports PASS for `ki-coordination`, `ki-authoring`, `ki-work-roadmap`, `ki-delegation` and `ki-checkpoint`, WARN only for `ki-skills` (three LONG-3 cadence warnings that predate this record), `ki-repo-harness` and `ki-diagrams` (DIAG-4 freshness warnings), and `ki-repo-kb-streams` passes with warnings against Knowledge Islands Principal, which declares it. `ki-work-design` ships no rubric catalogue and is not declared here, so it has no focused audit. No live `ki-pmo` remains outside `+/_WORK_REVIEW/`, closed records, this record and the thread-model diagram.
+
+### Outstanding concerns
+
+- The thread-model diagram stays pinned at `b7d3b53e`, where its cited `ki-pmo` paths and lines exist; renaming its node label and sources means re-tracing it at HEAD under its `regenerate` instruction, a separate diagram refresh.
+- Released `ki` v0.11.1 pins a Harness carrying `ki-pmo`, so a repository declaring `[skills.ki-coordination]` fails its CI repair step until a release repins; that release asks Kris first.
+- The user-level skill links and the chezmoi-managed `~/.config/ki/config.toml` still name `ki-pmo` and `ki-pmo-design`, and the other territories' `.ki.toml` files still declare `[skills.ki-pmo]`; both are handed to their owners through the ways-of-working work file's Messages.
+
+### Post-change review
+
+None beyond the outstanding concerns.
+
+### Mini recap
+
+Coordination and work design now carry work-model names, and the Streams skill no longer repeats the lifecycle skills or the status table.
 
 ## Discussion
 
