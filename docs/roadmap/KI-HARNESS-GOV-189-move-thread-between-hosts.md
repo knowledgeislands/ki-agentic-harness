@@ -8,7 +8,7 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-18T02:22:09Z
+updated_at: 2026-10-18T17:11:52Z
 ---
 
 # Move a Coordinating Thread to Another Host
@@ -31,15 +31,15 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 
 ## Boundary
 
-- In scope: a thread-move procedure in the `ki-coordination` standard, and whatever `ki-delegation` needs to say about the run's machine-local state when it moves.
-- Out of scope: the `ki agent` queue export and re-import mechanics, which belong to `tools-ki`; host provisioning, which belongs to the Mac Studio Setup Project and Rig; any change to the skill made by this capture.
+- In scope: a thread-move procedure in the `ki-coordination` standard, and whatever `ki-delegation` needs to say about the run's machine-local state when it moves; the level check below at resume on another Mac and at every mark, with its `[behind]` and `[unpushed]` banner items.
+- Out of scope: the `ki agent` queue export and re-import mechanics, and any `ki repo level` command, which belong to `tools-ki`; changes to `mgit` or `mcp-git-audit` themselves; host provisioning, which belongs to the Mac Studio Setup Project and Rig; any change to the skill made by this capture.
 
 ## Proposed rule
 
 1. **Hold, letting only running agents finish.** On the old host, the work moves to `on-hold`: stop launching, and let the agents already running finish and report.
 2. **Write queued work back into the work file.** Each queued agent's brief sits in `+/_WORK/<id>/briefs/<run>.md`, is named in the work file's Next steps as work to re-queue, and is removed from the old host's queue.
 3. **Commit and push the work folder.** The decisions log, reports and briefs already live in the tracked `+/_WORK/<id>/`, so this step is only its commit and push; nothing moves out of `~/.local/state/ki/agents/<run>/`, which keeps runtime files alone.
-4. **Start on the new host.** The new host pulls every affected repository level, opens the Capital, re-queues from the work file's Next steps and pastes the thread's resume line.
+4. **Start on the new host.** The new host runs the level check below and pulls every affected repository level, opens the Capital, re-queues from the work file's Next steps and pastes the thread's resume line.
 5. **Retire the old host's session.** The old session ends once the move is pushed and the new session has re-bootstrapped.
 6. **Close the old instance.** Once the handover has pushed, the instance left on the old host closes with no resume line and points to the host that took over. The 2026-10-14 decision named the DONE frame, which the work model's `finished` glyph banner supersedes; planning settles which form an old-host instance uses, since the work itself continues and is not finished.
 
@@ -61,6 +61,10 @@ The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, an
 ### DONE on handover, decided 2026-10-14
 
 Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). The decision named the DONE frame for its closing banner, issued only after the handover has pushed, carrying no send line, because that session must not be resumed, and naming the host that took over the work. Under the work model, `ki-coordination`'s closing banner, `🏁 Finished`, appears only at [Finishing Project work](../../skills/change-management/ki-coordination/references/standards-coordination.md#finishing-project-work); this requirement extends a closing form to the session a host move retires on the old host, while the work itself continues on the new host, and step 6 leaves planning to settle which form that is.
+
+### Level check, decided 2026-10-18
+
+Before a work resumes on another Mac, and at every mark, the coordinator checks that the work's repositories are level: `mgit fetch` across them, then `mcp-git-audit`'s ahead and behind report. A repository behind its remote shows as a `[behind]` item in the banner and an unpushed one as `[unpushed]`, so neither is lost between hosts. Kris agreed on 18 October 2026 in the ways-of-working decisions log, 17:59 BST owner answers: "sync guard. Yeah, got your recommendation" (SYNC-GUARD a)). The recommendation read: "Fold 'level before resume and at every mark' into KI-HARNESS-GOV-189: mgit fetch then mcp-git-audit ahead/behind across the estate at session start, at every mark and before leaving a host, with [behind] and [unpushed] banner items; capture a tools-ki `ki repo level` record only if that proves too slow." The banner's housekeeping items do not yet include `[behind]`, so planning adds it to `ki-coordination` with the check.
 
 ### Relation to existing records
 
