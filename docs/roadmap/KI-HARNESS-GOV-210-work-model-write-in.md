@@ -88,7 +88,7 @@ The four amended records; phase 5 closes the tolerance window in a later record.
 
 ### Delivered
 
-Every step: the `ki-pmo`, `ki-delegation`, `ki-checkpoint`, Project registry, Streams, roadmap, Activities, recurring-work and `ki-pmo-design` standards and checkers describe the work model and accept the thread-model shapes with a `legacy:` warning; the generated hook line, output style, run-prompt and authority footers are current; [KI-HARNESS-GOV-189](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-189-move-thread-between-hosts.md), [KI-HARNESS-GOV-199](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-199-thread-identity-role-native-sessions.md), [KI-HARNESS-GOV-200](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-200-thread-folder-closed-list.md) and [KI-HARNESS-GOV-206](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-206-activity-homes-and-coordination.md) are amended.
+Every step: the `ki-pmo`, `ki-delegation`, `ki-checkpoint`, Project registry, Streams, roadmap, Activities, recurring-work and `ki-pmo-design` standards and checkers describe the work model and accept the thread-model shapes with a `legacy:` warning; the generated hook line, output style, run-prompt and authority footers are current; [KI-HARNESS-GOV-189](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-189-move-thread-between-hosts.md), [KI-HARNESS-GOV-199](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-199-thread-identity-role-native-sessions.md), [KI-HARNESS-GOV-200](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-200-thread-folder-closed-list.md) and [KI-HARNESS-GOV-206 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/346c8dbc/docs/roadmap/KI-HARNESS-GOV-206-activity-homes-and-coordination.md) are amended.
 
 ### Change Summary
 
@@ -107,7 +107,7 @@ Every step: the `ki-pmo`, `ki-delegation`, `ki-checkpoint`, Project registry, St
 ### Outstanding concerns
 
 - `ki-repo`'s `standards-repository.md` and `standards-configuration.md`, and its COVERAGE detect in `scripts/rubric/contexts/audit.ts`, still name `+/_CHECKPOINTS/` and `+/_THREADS/<run>/`; they lay outside this record's boundary and want a follow-up.
-- Planning decides whether [KI-HARNESS-GOV-206](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-206-activity-homes-and-coordination.md) closes as delivered by this record.
+- Planning decides whether [KI-HARNESS-GOV-206 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/346c8dbc/docs/roadmap/KI-HARNESS-GOV-206-activity-homes-and-coordination.md) closes as delivered by this record.
 
 ### Post-change review
 

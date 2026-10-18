@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 72ad16866f1f3b4fbae2cac0f7c1ce09395465d2
 created_at: 2026-10-16T21:28:02Z
-updated_at: 2026-10-18T09:02:59Z
+updated_at: 2026-10-18T17:42:10Z
 ---
 
 # KI-HARNESS-GOV-199: Thread Identity and Role
@@ -29,7 +29,7 @@ Kris asked on 16 October 2026, in the `ways-of-working` thread, to "take ownersh
 
 The agreed design: the stable key is `<repository name>/<checkpoint stem>`; the checkpoint `label` is authoritative and the native name derives from it; native session identifiers live only in a machine-local binding at `~/.local/state/ki/threads/<repository>/<stem>.json`, never committed and never moved; identity reaches a session through the launcher's environment and name, the `SessionStart` hook on startup, resume and compact, and the pasted resume line where no hook runs; drift is reported, never repaired. The role is an optional checkpoint field `role: conversational | coordination | state-of-play`, absent meaning conversational, with coordinating values valid only where `[skills.ki-coordination]` is declared.
 
-The reply forms, agreed under REPLY-FORMS and delivered as Phase 1a in [KI-HARNESS-GOV-198](KI-HARNESS-GOV-198-reply-forms.md), narrow the plan as the [reporting-forms report (deleted)](https://github.com/knowledgeislands/ki-principal/blob/528b53b1cddabb0bb4fb809a426a08baac75fa8b/+/_THREADS/ways-of-working/reporting-forms.report.md) sets out, and this record carries the narrowed text:
+The reply forms, agreed under REPLY-FORMS and delivered as Phase 1a in [KI-HARNESS-GOV-198 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-198-reply-forms.md), narrow the plan as the [reporting-forms report (deleted)](https://github.com/knowledgeislands/ki-principal/blob/528b53b1cddabb0bb4fb809a426a08baac75fa8b/+/_THREADS/ways-of-working/reporting-forms.report.md) sets out, and this record carries the narrowed text:
 
 - ROLE-REPORT is withdrawn; the owner-report rule is not scoped by role, and Phase 3 carries no chezmoi owner-report edit.
 - ROLE-STYLE decides the mechanism only: the repository keeps its `outputStyle` selection, whose scope paragraph landed with the reply forms, and `ki agent launch` starts background agents with a non-coordinator style.
@@ -82,7 +82,7 @@ The Thread naming section has landed in the `ki-coordination` standard, with poi
 
 ## Dependencies / blocks
 
-- Phase 1 depended on REPLY-FORMS landing, done in [KI-HARNESS-GOV-198](KI-HARNESS-GOV-198-reply-forms.md).
+- Phase 1 depended on REPLY-FORMS landing, done in [KI-HARNESS-GOV-198 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-198-reply-forms.md).
 - Phase 3 needs [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) for the binding file and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md) for the matchers.
 - The intake pilot waits for PILOT-LABEL, which now waits for THREAD-IDS-AGREE and IDS-MIGRATE.
 
