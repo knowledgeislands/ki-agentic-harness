@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: keystone
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: ea8ad578a5c2ae7f07f35515b16b508a8526b75c
 created_at: 2026-10-15T01:21:10Z
-updated_at: 2026-10-18T10:30:00Z
+updated_at: 2026-10-18T17:05:00Z
 ---
 
 # KI-HARNESS-GOV-194: Preflight verification effects
@@ -33,7 +32,7 @@ Canonical change only `skills/keystone/ki-repo/references/mode-review.md`, withi
 
 ## Current state
 
-The four existing carriers were re-grounded and deduplicated; none owns this Goal and Boundary. The ledger-only reservation is commit `10bb4988f2a187524b1f763edb2b5c493763ace0`. The pre-change checklist SHA-256 is `8499d05beaaa845f05ed6910b68cf9a79b4fa11d3538e1108ea3320357147ab6`. Read-only ki-work, ki-work-roadmap and ki-trades audits passed before planning. Installed local tools are present. On 18 October 2026 the LONG-3 blocker was cleared by a separate source refresh, and a delivery run under GOV194-DELIVER completed the effects preflight and every required check on `main` at `0828bd06`; the record is Awaiting review.
+The four existing carriers were re-grounded and deduplicated; none owns this Goal and Boundary. The ledger-only reservation is commit `10bb4988f2a187524b1f763edb2b5c493763ace0`. The pre-change checklist SHA-256 is `8499d05beaaa845f05ed6910b68cf9a79b4fa11d3538e1108ea3320357147ab6`. Read-only ki-work, ki-work-roadmap and ki-trades audits passed before planning. Installed local tools are present. On 18 October 2026 the LONG-3 blocker was cleared by a separate source refresh, and a delivery run under GOV194-DELIVER completed the effects preflight and every required check on `main` at `0828bd06`; the record was reviewed and accepted; see Review and Done.
 
 ## Steps
 
@@ -109,6 +108,10 @@ The patch matches the approved wording, adds reviewer guidance only and preserve
 ### Mini recap
 
 Reserved the identity, committed the Ready plan, preserved the two checklist additions, stopped on fleet LONG-3 warnings on 15 October, and after the 18 October source refresh cleared them, completed the effects preflight and every required check and returned the record as Awaiting review. No acceptance, pruning or learning promotion occurs here.
+
+## Done
+
+Accepted as delivered on 2026-10-18 at 18:05 BST under Kris Brown's answers of 18 October 2026 in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch": REVIEW-GOV-194-201 a), "review GOV-194-2 of 1, yes agreed", taken as one independent review run with acceptance after a clean review, and ACCEPT-AND-PRUNE, "anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Reviewer: the `review-gov194-201` run of the ways-of-working Project work, independent of the delivery run, against `main` at `021dddbf`. The Automated verification section of `skills/keystone/ki-repo/references/mode-review.md` differs from baseline `ea8ad578` only by the two approved items and is byte-identical to `d0c94558`; peer commit `05ee5b1f` stays in its own section. Effects preflight repeated: every check below is local, with TypeScript run `--no-install`. `bun run test` 1254 pass, 0 fail; `bunx --no-install tsc --noEmit` clean; `ki repo audit` passes with no failure or warning for `ki-repo`, `ki-work`, `ki-work-roadmap`, `ki-trades`, `ki-skills` and `ki-authoring`. No finding; the six-part Review packet above stands as the closure evidence. No live proof is claimed.
 
 ## Discussion
 

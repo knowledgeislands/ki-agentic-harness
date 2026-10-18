@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: cbe77385540ff630edc7e5495022b2e6c55c8f5c
 created_at: 2026-10-16T21:51:55Z
-updated_at: 2026-10-18T10:55:00Z
+updated_at: 2026-10-18T17:05:00Z
 ---
 
 # KI-HARNESS-GOV-201: Fetch and Machine Grants
@@ -34,7 +33,7 @@ The [Authority tiers](../../skills/governance/ki-delegation/references/standards
 
 ## Current state
 
-Both grant texts are adopted as drafted, with their unapproved markers removed. The background-run standard's Authority tiers section names them in a Grants subsection, Prompt shape lets grant sections follow the tier footer, and RUN-1 checks each shipped grant. The launcher option is not built here.
+Both grant texts are adopted as drafted, with their unapproved markers removed. The background-run standard's Authority tiers section names them in a Grants subsection, Prompt shape lets grant sections follow the tier footer, and RUN-1 checks each shipped grant. The launcher option is not built here. Reviewed and accepted; see Review and Done.
 
 ## Steps
 
@@ -105,6 +104,10 @@ The grant wording is byte-for-byte the approved draft below each `## Grant:` hea
 ### Mini recap
 
 Adopted the two approved grant texts, wired them into the standard and RUN-1, and handed the launcher option to `tools-ki`. No acceptance or pruning.
+
+## Done
+
+Accepted as delivered on 2026-10-18 at 18:05 BST under Kris Brown's answers of 18 October 2026 in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch": REVIEW-GOV-194-201 a), "review GOV-194-2 of 1, yes agreed", taken as one independent review run with acceptance after a clean review, and ACCEPT-AND-PRUNE, "anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". The outstanding concern is settled by GRANT-INTERIM a), answered in the same entry: the interim sentence that a brief appends a grant section by hand stays until [KI-TOOL-KI-CLI-134](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-134-launch-footer-follows-brief.md) ships `--allow`, which is still in progress and whose handoff says the sentence can then go. Reviewer: the `review-gov194-201` run of the ways-of-working Project work, independent of the `harness-upkeep` run that delivered it, against `main` at `021dddbf`. Commit `ef9d275f` removes only the draft markers and intro lines from both assets, leaving each grant section's approved wording unchanged; the standard's Grants subsection, Contents entry and Prompt shape clause match the record; RUN-1 checks each grant. `bun run test` 1254 pass, 0 fail; `bunx --no-install tsc --noEmit` clean; `ki dev skill rubric ki-delegation` in sync; `ki repo audit` passes with no failure or warning for `ki-delegation`, `ki-skills`, `ki-authoring` and `ki-work-roadmap`. No finding; the six-part Review packet above stands as the closure evidence.
 
 ## Discussion
 
