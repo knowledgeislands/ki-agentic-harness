@@ -7,6 +7,8 @@ import {
   createPmoSession,
   isCapital,
   recordIdentifiers,
+  reportConfidenceFindings,
+  reportIssuedDay,
   reportLinkFindings,
   reportQueryTags,
   repositoryIdentity
@@ -294,6 +296,57 @@ describe('thread report links', () => {
     const outcomes = context(root).links.outcomes
     expect(statuses(outcomes)).toEqual(['PASS'])
     expect(outcomes[0]?.message).toContain('No thread report')
+  })
+})
+
+describe('recommendation confidence', () => {
+  const footer = (issued: string): string => `\n\`\`\`text\n╭─ run report · ${issued} ─────────────╮\n\`\`\`\n`
+  const options = (...lines: string[]): string =>
+    `# Report\n\n## Queries\n\n### TAG - title\n\n**Options:**\n\n${lines.join('\n')}\n\n\`\`\`text\nTAG\n\na) (recommended) do it\n\`\`\`\n`
+
+  test('the latest footer border dates a report, and a report with no footer has no date', () => {
+    expect(reportIssuedDay(`${footer('2026-10-17T22:00:00Z')}${footer('2026-10-18T01:00:00Z')}`)).toBe('2026-10-18')
+    expect(reportIssuedDay('# Report\n')).toBeUndefined()
+  })
+
+  test('only a recommended option without the confidence form is flagged, never in a fenced block', () => {
+    const text = options(
+      'a) (recommended, confidence high - already on main) push it',
+      'a) (recommended) push it',
+      '**Options:** a) (recommended, confidence) push it',
+      'b) leave it'
+    )
+    expect(reportConfidenceFindings(text)).toEqual([
+      'a) (recommended) push it',
+      '**Options:** a) (recommended, confidence) push it'
+    ])
+    expect(reportConfidenceFindings('# Report\n\n## Done\n\na) (recommended) outside Queries\n')).toEqual([])
+  })
+
+  test('a report issued on or after 18 October with a bare recommendation is a violation naming it', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    report(root, 'ways-of-working', 'bare', options('a) (recommended) push it') + footer('2026-10-18T09:00:00Z'))
+    const outcomes = context(root).confidence.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working', 'bare.report.md'))
+    expect(outcomes[0]?.message).toContain('a) (recommended) push it')
+  })
+
+  test('an earlier or undated report is not checked, and a confident one passes', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    report(root, 'ways-of-working', 'old', options('a) (recommended) push it') + footer('2026-10-17T23:59:59Z'))
+    report(root, 'ways-of-working', 'undated', options('a) (recommended) push it'))
+    report(
+      root,
+      'ways-of-working',
+      'new',
+      options('a) (recommended, confidence low - not verified) push it') + footer('2026-10-18T09:00:00Z')
+    )
+    expect(statuses(context(root).confidence.outcomes)).toEqual(['PASS'])
+  })
+
+  test('no thread folder is not applicable', () => {
+    expect(statuses(context(fixture(null)).confidence.outcomes)).toEqual(['NOT_APPLICABLE'])
   })
 })
 

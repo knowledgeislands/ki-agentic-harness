@@ -53,6 +53,7 @@ export type PmoRubricContext = {
   readonly roles: OutcomeContext
   readonly cap: OutcomeContext
   readonly links: OutcomeContext
+  readonly confidence: OutcomeContext
   readonly tidy: OutcomeContext
   readonly binding: OutcomeContext
   readonly judgment: OutcomeContext
@@ -318,6 +319,57 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
   return outcomes
 }
 
+/** The prose of a report's `## Queries` section, fenced blocks blanked, or empty when it has none. */
+const querySection = (text: string): string =>
+  /^## Queries[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(text.replace(FENCED_BLOCK, ' '))?.[1] ?? ''
+
+/** The first UTC day on which a report's recommended option must carry a confidence, set by KI-HARNESS-GOV-207. */
+export const CONFIDENCE_SINCE = '2026-10-18'
+/** A footer banner's top border, `╭─ <form> · <YYYY-MM-DDTHH:MM:SSZ> ─…`, capturing the issued UTC day. */
+const ISSUED_BORDER = /^╭─ [a-z -]+ · (\d{4}-\d{2}-\d{2})T\d{2}:\d{2}:\d{2}Z /gm
+const RECOMMENDED_OPTION = /^[ \t]*(?:\*\*Options:\*\*[ \t]*)?[a-z]\) \(recommended/
+const CONFIDENT_OPTION =
+  /^[ \t]*(?:\*\*Options:\*\*[ \t]*)?[a-z]\) \(recommended, confidence (?:high|medium|low) - [^)\s][^)]*\)/
+
+/** The latest UTC day a report's footer banners were issued, or undefined for a report with no footer. */
+export const reportIssuedDay = (text: string): string | undefined =>
+  Array.from(text.matchAll(ISSUED_BORDER), (match) => match[1] ?? '')
+    .sort()
+    .at(-1)
+
+/**
+ * The lines of a report's Queries section that mark an option recommended without the confidence form
+ * `(recommended, confidence high|medium|low - <reason>)`. Fenced blocks, such as the reply block, are skipped.
+ */
+export const reportConfidenceFindings = (text: string): readonly string[] => {
+  const section = querySection(text)
+  return section
+    .split(/\r?\n/)
+    .filter((line) => RECOMMENDED_OPTION.test(line) && !CONFIDENT_OPTION.test(line))
+    .map((line) => line.trim())
+}
+
+/**
+ * A report is held to the confidence form only when a footer banner dates it on or after {@link CONFIDENCE_SINCE};
+ * an earlier report, or one with no footer to date it, is not checked.
+ */
+const confidenceOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] => {
+  const outcomes: AuditOutcome[] = []
+  for (const report of reports) {
+    const text = readFileSync(report, 'utf8')
+    const issued = reportIssuedDay(text)
+    if (!issued || issued < CONFIDENCE_SINCE) continue
+    const lines = reportConfidenceFindings(text)
+    if (lines.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a recommended option reads \`a) (recommended, confidence high|medium|low - <reason>)\`; without it: ${lines.map((line) => `\`${line.slice(0, 60)}\``).join(', ')}`,
+        subject: relative(root, report)
+      })
+  }
+  return outcomes
+}
+
 /** Thread folders: `+/_THREADS/<run>/`, or undefined when no thread folder exists. */
 const threadFolders = (root: string): readonly string[] | undefined => {
   const directory = join(root, THREADS_DIRECTORY)
@@ -334,8 +386,7 @@ const threadFolders = (root: string): readonly string[] | undefined => {
  * no outstanding queries, names none.
  */
 export const reportQueryTags = (text: string): readonly string[] => {
-  const prose = text.replace(FENCED_BLOCK, ' ')
-  const section = /^## Queries[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(prose)?.[1] ?? ''
+  const section = querySection(text)
   return Array.from(section.matchAll(QUERY_HEADING), (match) => match[1] ?? match[2] ?? '').filter(Boolean)
 }
 
@@ -499,6 +550,15 @@ export const createPmoSession = ({
         linkOutcomes(root, reports ?? []),
         reports && reports.length > 0
           ? `Every record identifier in the ${reports.length} thread report(s) under \`+/_THREADS/\` is a link to an existing file.`
+          : 'No thread report is present under `+/_THREADS/`.',
+        reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
+      )
+    },
+    confidence: {
+      outcomes: one(
+        confidenceOutcomes(root, reports ?? []),
+        reports && reports.length > 0
+          ? `Every recommended option in the thread reports issued on or after ${CONFIDENCE_SINCE} carries its confidence.`
           : 'No thread report is present under `+/_THREADS/`.',
         reports ? undefined : 'No `+/_THREADS/` folder is present; no coordinating thread has reported here.'
       )

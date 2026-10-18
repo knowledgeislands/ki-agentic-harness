@@ -88,6 +88,23 @@ const PMO_7: RubricItem<PmoRubricContext> = {
   }
 }
 
+const PMO_11: RubricItem<PmoRubricContext> = {
+  code: 'PMO-11',
+  title: 'every recommended option in a thread report carries its confidence',
+  description:
+    'In every thread report `+/_THREADS/<run>/*.report.md` whose footer banner was issued on or after 2026-10-18, each line of its Queries section that marks a lettered option recommended, `<letter>) (recommended`, reads `<letter>) (recommended, confidence high|medium|low - <reason>)`. A report issued earlier, or with no footer banner to date it, and fenced blocks, such as the reply block, are not checked.',
+  sources: [`${SOURCE}#owner-report`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Give each flagged option its confidence and a one-line reason, never `high` for a destructive course resting on claims not verified directly. Fix only the reports of the thread under review.'
+    },
+    audit: { phase: 'INSPECT', run: ({ confidence }) => confidence.outcomes }
+  }
+}
+
 const PMO_9: RubricItem<PmoRubricContext> = {
   code: 'PMO-9',
   title: 'every thread folder is trimmed to what is still open',
@@ -197,5 +214,5 @@ export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
     'The state-of-play and coordination thread checkpoints a repository shows, and the responsiveness, reporting and currency of the threads behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
+  items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_11, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
 }
