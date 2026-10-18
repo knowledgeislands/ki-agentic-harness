@@ -12,25 +12,22 @@
 
 This standard was published under the skill name `ki-design-loop` until 14 October 2026, when the skill became `ki-pmo-design` under Kris's naming decision for the change-management design ("LOOP-NAME - `ki-pmo-design`"); the method is still called a design loop.
 
-The loop shapes one subject - a Project, an Initiative, or a cross-cutting model that precedes its Project - from the owner's proposal to approved decisions and a rollout of ordinary work records. It begins before any record exists and ends when the rollout records are captured and the pilot is selected. The records then follow `ki-plan`, `ki-implement`, `ki-batch` and `ki-accept` as usual.
+The loop shapes one subject - a Project, a theme, or a cross-cutting model that precedes its Project - from the owner's proposal to approved decisions and a rollout of ordinary work records. It begins before any record exists and ends when the rollout records are captured and the pilot is selected. The records then follow `ki-plan`, `ki-implement`, `ki-batch` and `ki-accept` as usual.
 
 The loop fixes independence and diversity, not a roster: no stage requires a particular model, vendor or runtime.
 
 ## Artefact home
 
-The repository that owns the subject owns its design: the territory Capital for a Project or Initiative, or the owning repository for a repository-local design. Name it in the brief before any other work.
+A design is working material of the work whose concern it shapes, under the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md). Name that work, by its id, in the brief before any other work: the Project work `<territory>.<project>` for a Project's design, or the territory work `<territory>` for a new Project, a theme or a cross-cutting model that no Project holds yet.
 
-- **Design folder.** The brief, each review, the merged report and the decisions file live in a `design/` subfolder of the subject, sharing one descriptive slug prefix such as `roadmap-model-brief.md`, `roadmap-model-review-fable.md`, `roadmap-model-report.md` and `roadmap-model-decisions.md`:
-  - In a territory Capital the folder sits under the Project's registry folder, `Streams/Projects/<slug>/design/`, or the Initiative's, `Streams/Initiatives/<slug>/design/`. A subject not yet registered as a Project - a new Project or a cross-cutting model - uses the Initiative it serves.
-  - The registry note then becomes the folder note of its own folder under the index-note rule: `Streams/Projects/<slug>.md` moves to `Streams/Projects/<slug>/<slug>.md`, keeping its slug, frontmatter and body. The [Project registry standard](../../ki-work/references/standards-project-registry.md) accepts either form.
-  - The `design/` folder carries its same-name index note, `design.md`, which names the subject and introduces each artefact.
-  - In a repository without `Streams/`, a repository-local design lives in `docs/design/<subject-slug>/`. A Knowledge Base without a registry designs its territory's Projects and Initiatives in the Capital.
-- **Temporary.** The artefacts are working material, not a record. Once their outcome is consolidated - into a Decision Record where a decision changed, the Project or Initiative note, and the standards and records the rollout touches - delete the design folder in one commit. The folder note stays where it is.
+- **Design folder.** The brief, each review, the merged report and the decisions file live in the work folder's `design/` subfolder, `+/_WORK/<id>/design/`, in the repository that holds the work file, sharing one descriptive slug prefix such as `roadmap-model-brief.md`, `roadmap-model-review-fable.md`, `roadmap-model-report.md` and `roadmap-model-decisions.md`. Options papers and mocks for the same concern sit beside them. The `design/` folder carries no index note; the work file's `## Next steps` names what it holds while the design is open.
+- **Nothing under `Streams/`.** No `design/` folder sits anywhere under `Streams/`, and no Project or theme note points into a work folder, under the [Project registry standard](../../ki-work/references/standards-project-registry.md). The Streams checker fails a `design/` folder there, and its papers move to the work folder at the territory's migration.
+- **Temporary.** A design note is a draft, under review, graduated or deleted. It graduates when every decision it carried has a durable home - a Decision Record where a decision changed, the Project note, and the standards and records the rollout touches - and is deleted in the same change, so that nothing cites a deleted note. Once every note has graduated, the `design/` folder is gone; Git history holds the rest.
 - **Decision Record only on change.** The loop produces a Decision Record under `ki-decision-records` only when it changes a decision. Where an existing record owns the concern, refine that record in place; otherwise write one new record. The record states the consolidated current decision and quotes any authority grant; it never links or cites the design artefacts, which are deleted.
-- **Commit as produced.** From the brief onward, write and commit each artefact in the owning repository when it is produced, never gathered later. Local state keeps only runtime material: agent prompts, pid, status and report files.
-- **Registry link.** While the design folder exists, the Project or Initiative note mentions it in its `## Notes`; once a Decision Record carries the outcome, the note links that record instead, under the [Project registry standard](../../ki-work/references/standards-project-registry.md).
+- **Commit as produced.** From the brief onward, write and commit each artefact in the work folder when it is produced, never gathered later. A run's state folder keeps only runtime material: agent prompts, pid, status and report files.
+- **Registry link.** Once a Decision Record carries the outcome, the Project or theme note links that record, under the [Project registry standard](../../ki-work/references/standards-project-registry.md).
 
-`resume <subject>` reads the design folder; it never relies on a local folder outside the repository.
+`resume <id>` reads the work folder's `design/`; it never relies on a local folder outside the repository.
 
 ## Stage contracts
 
@@ -51,4 +48,4 @@ Start each artefact from its template in `assets/`.
 
 ## Stops
 
-Stop and report when the subject has no owning repository or no home for its design folder, the owner's proposal is missing, fewer than two independent reviews exist, or a decision would be made on the owner's behalf. The loop never pushes, prunes, releases or accepts on its own authority.
+Stop and report when the subject has no owning work or no work folder to hold its design, the owner's proposal is missing, fewer than two independent reviews exist, or a decision would be made on the owner's behalf. The loop never pushes, prunes, releases or accepts on its own authority.
