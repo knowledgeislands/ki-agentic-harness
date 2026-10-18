@@ -407,7 +407,7 @@ test('project membership warns on unknown slugs and fails only on a contradicted
   const unavailable = member('project: baseline-rollout', false)
   expect(failures(unavailable)).toEqual([])
   expect(warnings(unavailable)).toContain(
-    'project registry is unavailable: the capital has no Streams/Projects/ or Streams/Initiatives/ registry'
+    'project registry is unavailable: the capital has no Streams/Themes/, Streams/Projects/ or Streams/Initiatives/ registry'
   )
 
   expect(failures(member('project: baseline-rollout'))).toEqual([])
@@ -541,7 +541,9 @@ test('qualified membership resolves in the named territory and warns when it can
     expect(warnings(absent)).toContain(
       "territory 'nowhere' registry is unavailable: territory 'nowhere' is not in the local ki registry"
     )
-    expect(warnings(member('initiative: capital/techne'))).toEqual([])
+    expect(warnings(member('initiative: capital/techne'))).toEqual([
+      'legacy: initiative is the thread-model classification; name the theme in theme'
+    ])
     expect(warnings(member('project: capital/baseline-rollout\ninitiative: capital/platform-foundations'))).toContain(
       'initiative is redundant beside a registered project'
     )
@@ -585,9 +587,62 @@ test('the retired Initiatives index inside Projects still resolves slugs with a 
   cpSync(join(capital, 'Streams'), join(repository, 'Streams'), { recursive: true })
   expect(failures(repository)).toEqual([])
   expect(warnings(repository)).toContain(
-    'legacy: Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/'
+    'legacy: Streams/Projects/Initiatives.md is retired; keep one theme page per theme in Streams/Themes/'
   )
   expect(warnings(repository)).not.toContain("initiative 'techne' is not in the project registry")
+})
+
+test('theme pages and flat Project notes naming a theme resolve, and the thread-model shapes warn', () => {
+  const capital = temporary('ki-capital-')
+  writeFileSync(
+    join(capital, '.ki.toml'),
+    '[skills.ki-repo]\nrepo_code = "TEST"\nrepository = "https://example.test/own"\ncapital = "https://example.test/own"\n'
+  )
+  mkdirSync(join(capital, 'Streams', 'Themes'), { recursive: true })
+  mkdirSync(join(capital, 'Streams', 'Projects'), { recursive: true })
+  writeFileSync(join(capital, 'Streams', 'Themes', 'model.md'), '---\ntitle: Model\n---\n\n# Model\n')
+  writeFileSync(join(capital, 'Streams', 'Themes', 'foundations.md'), '# Foundations\n')
+  writeFileSync(
+    join(capital, 'Streams', 'Projects', 'ways-of-working.md'),
+    '---\nnote_type: streams/project\nslug: ways-of-working\ntitle: Ways of working\ntheme: model\nlifecycle: active\n---\n\n# Ways of working\n'
+  )
+  const lookup = loadProjectRegistry(capital, {})
+  expect('registry' in lookup && [...lookup.registry.projects]).toEqual([['ways-of-working', 'model']])
+  expect('registry' in lookup && [...lookup.registry.themes].sort()).toEqual(['foundations', 'model'])
+  expect('registry' in lookup && lookup.registry.legacy).toEqual([])
+
+  const member = (fields: string): string => {
+    const repository = createRepository(
+      `kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null\n${fields}`,
+      ''
+    )
+    writeFileSync(join(repository, '.ki.toml'), readFileSync(join(capital, '.ki.toml'), 'utf8'))
+    cpSync(join(capital, 'Streams'), join(repository, 'Streams'), { recursive: true })
+    return repository
+  }
+  expect(failures(member('purpose: upkeep\ntheme: foundations'))).toEqual([])
+  expect(warnings(member('purpose: upkeep\ntheme: foundations'))).toEqual([])
+  expect(warnings(member('theme: nowhere'))).toContain("theme 'nowhere' is not in the project registry")
+  expect(failures(member('project: ways-of-working\ntheme: foundations'))).toContainEqual(
+    expect.objectContaining({
+      msg: "theme 'foundations' contradicts project 'ways-of-working', which serves 'model'"
+    })
+  )
+  expect(failures(member('theme: model\ninitiative: model'))).toContainEqual(
+    expect.objectContaining({ msg: 'name a theme or a legacy initiative, not both' })
+  )
+  expect(failures(member('theme: Model'))).toContainEqual(
+    expect.objectContaining({
+      msg: 'theme must be a lowercase kebab-case slug, optionally qualified as <territory>/<slug>'
+    })
+  )
+
+  const old = createCapital()
+  const legacy = loadProjectRegistry(old, {})
+  expect('registry' in legacy && legacy.registry.legacy).toEqual([
+    "a Project note's `initiative:`; it names an optional `theme:`",
+    '`Streams/Initiatives/`; each Initiative becomes a theme page, `Streams/Themes/<theme>.md`'
+  ])
 })
 
 test('the issue ledger accepts a digit-leading area code but not an all-digit one', () => {

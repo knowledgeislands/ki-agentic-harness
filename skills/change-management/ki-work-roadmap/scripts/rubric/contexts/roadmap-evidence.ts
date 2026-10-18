@@ -99,6 +99,7 @@ const RECORD_FIELDS = new Set([
   'kind',
   'purpose',
   'project',
+  'theme',
   'initiative',
   'component',
   'horizon',
@@ -116,7 +117,6 @@ const RECORD_FIELDS = new Set([
   'housekeeping_template',
   'scheduled_for',
   // Retired fields, recognised only so the checker can fail them.
-  'theme',
   'waiting_on_trades',
   'intake_disposition',
   'intake_disposition_target'
@@ -800,6 +800,7 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add('FAIL', 'ITEM-2', 'purpose must be one canonical value', FORMAT, display)
   for (const [key, slug] of [
     ['project', project],
+    ['theme', theme],
     ['initiative', initiative],
     ['component', component]
   ] as const)
@@ -817,7 +818,10 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add('FAIL', 'ITEM-2', `component '${component}' must be declared in ki-work-roadmap components`, STANDARD, display)
   if (kind === undefined && status && OPEN_STATUSES.has(status) && !legacyHorizon)
     tolerate('an adopted record should declare kind', display)
-  if ('theme' in parsed.values) retire('theme; classify with project, initiative or component', display)
+  if ('initiative' in parsed.values)
+    tolerate('initiative is the thread-model classification; name the theme in theme', display)
+  if ('theme' in parsed.values && 'initiative' in parsed.values)
+    add('FAIL', 'ITEM-2', 'name a theme or a legacy initiative, not both', FORMAT, display)
   validateLegacyIntake(parsed.values, id, terminalTriage, intakeDisposition, intakeDispositionTarget, display)
   if ('waiting_on_trades' in parsed.values)
     retire('waiting_on_trades; name the trades in hold.trades', display, 'TRADE-2')
@@ -930,11 +934,12 @@ const validateDependencies = (items: readonly WorkItem[], configuration?: Roadma
 }
 
 /**
- * Project and initiative membership: unresolvable references warn; only a contradicted initiative fails. A bare slug
- * resolves in the repository's own Capital territory; `<territory>/<slug>` resolves in the named territory's registry.
+ * Project and theme membership, with a legacy `initiative` read as the theme: unresolvable references warn; only a
+ * contradicted theme fails. A bare slug resolves in the repository's own Capital territory; `<territory>/<slug>`
+ * resolves in the named territory's registry.
  */
 const validateClassification = (repository: string, items: readonly WorkItem[]): void => {
-  const classified = items.filter((item) => item.project || item.initiative)
+  const classified = items.filter((item) => item.project || item.theme || item.initiative)
   if (!classified.length) return
   const lookups = new Map<string, RegistryLookup>()
   const registryFor = (territory: string | undefined): ProjectRegistry | undefined => {
@@ -945,11 +950,14 @@ const validateClassification = (repository: string, items: readonly WorkItem[]):
       if (!('unavailable' in lookup)) {
         if (territory === undefined && lookup.registry.legacyInitiativesIndex)
           tolerate(
-            'Streams/Projects/Initiatives.md is retired; keep one note per Initiative in Streams/Initiatives/',
+            'Streams/Projects/Initiatives.md is retired; keep one theme page per theme in Streams/Themes/',
             undefined,
             'ITEM-2',
             STANDARD
           )
+        if (territory === undefined)
+          for (const shape of lookup.registry.legacy)
+            tolerate(`the project registry holds ${shape}`, undefined, 'ITEM-2', STANDARD)
       } else if (territory === undefined)
         add('WARN', 'ITEM-2', `project registry is unavailable: ${lookup.unavailable}`, STANDARD)
       else add('WARN', 'ITEM-2', `territory '${territory}' registry is unavailable: ${lookup.unavailable}`, STANDARD)
@@ -958,25 +966,27 @@ const validateClassification = (repository: string, items: readonly WorkItem[]):
     return lookup && 'registry' in lookup ? lookup.registry : undefined
   }
   for (const item of classified) {
+    const key = item.theme ? 'theme' : 'initiative'
+    const named = item.theme ?? item.initiative
     const project = item.project ? parseRegistryReference(item.project) : undefined
-    const initiative = item.initiative ? parseRegistryReference(item.initiative) : undefined
+    const group = named ? parseRegistryReference(named) : undefined
     const projectRegistry = project && registryFor(project.territory)
-    const initiativeRegistry = initiative && registryFor(initiative.territory)
+    const groupRegistry = group && registryFor(group.territory)
     if (project && projectRegistry && !projectRegistry.projects.has(project.slug))
       add('WARN', 'ITEM-2', `project '${item.project}' is not in the project registry`, STANDARD, item.file)
-    if (initiative && initiativeRegistry && !initiativeRegistry.initiatives.has(initiative.slug))
-      add('WARN', 'ITEM-2', `initiative '${item.initiative}' is not in the project registry`, STANDARD, item.file)
-    if (!project || !initiative || !projectRegistry?.projects.has(project.slug) || !initiativeRegistry) continue
+    if (group && groupRegistry && !groupRegistry.themes.has(group.slug) && !groupRegistry.initiatives.has(group.slug))
+      add('WARN', 'ITEM-2', `${key} '${named}' is not in the project registry`, STANDARD, item.file)
+    if (!project || !group || !projectRegistry?.projects.has(project.slug) || !groupRegistry) continue
     const registered = projectRegistry.projects.get(project.slug)
-    if (registered && (registered !== initiative.slug || projectRegistry.root !== initiativeRegistry.root))
+    if (registered && (registered !== group.slug || projectRegistry.root !== groupRegistry.root))
       add(
         'FAIL',
         'ITEM-2',
-        `initiative '${item.initiative}' contradicts project '${item.project}', which serves '${project.territory ? `${project.territory}/` : ''}${registered}'`,
+        `${key} '${named}' contradicts project '${item.project}', which serves '${project.territory ? `${project.territory}/` : ''}${registered}'`,
         STANDARD,
         item.file
       )
-    else add('WARN', 'ITEM-2', 'initiative is redundant beside a registered project', STANDARD, item.file)
+    else add('WARN', 'ITEM-2', `${key} is redundant beside a registered project`, STANDARD, item.file)
   }
   const members = new Map<string, WorkItem[]>()
   for (const item of items) if (item.project) members.set(item.project, [...(members.get(item.project) ?? []), item])

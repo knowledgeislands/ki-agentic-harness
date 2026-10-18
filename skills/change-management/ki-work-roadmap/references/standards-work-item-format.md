@@ -80,7 +80,7 @@ updated_at: 2026-08-12T09:30:00Z
 
 `area` is the immutable issuing code included in an area-qualified identifier. It is not a mutable group.
 
-`theme`, `intake_disposition`, `intake_disposition_target`, and `waiting_on_trades` are retired. The [migration window](standards-repository-roadmaps.md#migration-tolerance) has closed, so the checker fails them.
+`intake_disposition`, `intake_disposition_target`, and `waiting_on_trades` are retired. The [migration window](standards-repository-roadmaps.md#migration-tolerance) has closed, so the checker fails them. The former free-text `theme` grouping is retired with them; `theme` now names a territory theme under [Classification](#classification).
 
 An optional non-empty `transferred_from` records a durable handoff origin.
 
@@ -93,14 +93,15 @@ Classification fields say what sort of work a record is and what it serves. Each
 | `kind` | this standard | `deliver`, `decide`, `investigate`, `audit` | once adopted |
 | `purpose` | this standard | `capability`, `corrective`, `debt`, `governance`, `learning`, `adoption`, `upkeep` | optional |
 | `project` | territory | a Project registry slug, optionally territory-qualified | optional |
-| `initiative` | territory | an Initiative registry slug, optionally territory-qualified | projectless records only |
+| `theme` | territory | a theme registry slug, optionally territory-qualified | projectless records only |
+| `initiative` | territory | the thread-model name for `theme`, accepted with a warning | legacy |
 | `component` | repository | a `components` entry in `.ki.toml` | optional |
 
 `kind` classifies the controlling outcome, not every step. `deliver` produces a change; `decide` closes on an owned decision; `investigate` closes on a finding; `audit` checks an existing state, and is the default for recurring runs. Kind-specific plan and review sections are a later change; today every kind carries the sections below.
 
 `purpose` says why the work exists. Use `upkeep` for work that keeps something accurate and never finishes.
 
-`project` names the finite outcome the record serves; its Initiative is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, names its `initiative` directly instead. Naming both is redundant, and a contradiction with the registry fails. Project and Initiative slugs are territory-scoped kebab-case. A bare slug names an entry in the repository's own Capital territory; a record serving another territory's Project or Initiative qualifies it as `<territory>/<slug>`, such as `ki-principal/agent-host`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md#cross-territory-references). An unknown slug or an unavailable registry is a warning, never a failure. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
+`project` names the finite outcome the record serves; its theme is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, may name its `theme` directly instead. Naming both is redundant, and a contradiction with the registry fails. Under the [work model](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) a theme is a label only: it owns no work, and the work a record serves is the territory's regular work or a Project. For the [tolerance window](standards-repository-roadmaps.md#migration-tolerance) a record may still name `initiative`, read as its theme with a warning; naming both `theme` and `initiative` fails. Project and theme slugs are territory-scoped kebab-case. A bare slug names an entry in the repository's own Capital territory; a record serving another territory's Project or theme qualifies it as `<territory>/<slug>`, such as `ki-principal/agent-host`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md#cross-territory-references). An unknown slug or an unavailable registry is a warning, never a failure. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
 
 `component` names the part of the repository the record touches, from the repository's declared vocabulary.
 

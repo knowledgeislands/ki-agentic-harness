@@ -833,16 +833,16 @@ test('KB scope follows the declared repository kind, not a directory shape', () 
   expect(inspectRoadmap(repository).filter((finding) => finding.area === 'SCOPE-1')).toEqual([])
 })
 
-test('a retired theme field fails', () => {
+test('a theme slug is accepted and a legacy initiative warns', () => {
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
-  writeFileSync(item, readFileSync(item, 'utf8').replace('kind: deliver', 'kind: deliver\ntheme: other-theme'))
-  expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([
-    expect.objectContaining({
-      area: 'ITEM-2',
-      msg: 'retired: theme; classify with project, initiative or component'
-    })
-  ])
+  const text = readFileSync(item, 'utf8')
+  writeFileSync(item, text.replace('kind: deliver', 'kind: deliver\ntheme: other-theme'))
+  expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
+  writeFileSync(item, text.replace('kind: deliver', 'kind: deliver\ninitiative: other-theme'))
+  expect(inspectRoadmap(repository).map((finding) => finding.msg)).toContain(
+    'legacy: initiative is the thread-model classification; name the theme in theme'
+  )
 })
 
 test('waiting_on_trades is retired', () => {

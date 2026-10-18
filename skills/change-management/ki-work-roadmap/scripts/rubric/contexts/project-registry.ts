@@ -1,4 +1,8 @@
-/** Read-only discovery of the Capital's registry under `Streams/Projects/` and `Streams/Initiatives/`. */
+/**
+ * Read-only discovery of the Capital's registry: theme pages under `Streams/Themes/` and flat Project notes under
+ * `Streams/Projects/` naming an optional `theme:`, under the work model. For the tolerance window it still reads
+ * `Streams/Initiatives/`, folder notes and a Project's `initiative:`, flagging each in `legacy`.
+ */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
@@ -6,17 +10,24 @@ import { parseStrictYaml as parseYaml } from './strict-yaml.ts'
 
 export type ProjectRegistry = {
   readonly root: string
+  /** Each Project slug and the theme, or legacy Initiative, it names. */
   readonly projects: ReadonlyMap<string, string | undefined>
+  /** Theme slugs from `Streams/Themes/` and from Project notes' `theme:`. */
+  readonly themes: ReadonlySet<string>
+  /** Legacy Initiative slugs from `Streams/Initiatives/` and from Project notes' `initiative:`. */
   readonly initiatives: ReadonlySet<string>
   /** Set when Initiative slugs still come from the retired `Streams/Projects/Initiatives.md` index. */
   readonly legacyInitiativesIndex: boolean
+  /** The thread-model shapes the registry still holds, each a short phrase for a tolerance-window warning. */
+  readonly legacy: readonly string[]
 }
 export type RegistryLookup = { readonly registry: ProjectRegistry } | { readonly unavailable: string }
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const PROJECTS_DIRECTORY = join('Streams', 'Projects')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
-const INDEX_NOTES = new Set(['Projects.md', 'Initiatives.md'])
+const THEMES_DIRECTORY = join('Streams', 'Themes')
+const INDEX_NOTES = new Set(['Projects.md', 'Initiatives.md', 'Themes.md'])
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 const table = (value: unknown): Record<string, unknown> | undefined =>
@@ -120,15 +131,17 @@ const isDirectory = (path: string): boolean => existsSync(path) && lstatSync(pat
  * Registry notes inside a registry folder, by name and text: each regular Markdown note directly inside it, and the
  * folder note `<slug>/<slug>.md` of a registry note that holds a `ki-pmo-design` design folder.
  */
-const notes = (directory: string | undefined): [string, string][] =>
+const notes = (directory: string | undefined, onFolderNote?: () => void): [string, string][] =>
   directory === undefined
     ? []
     : readdirSync(directory, { withFileTypes: true }).flatMap((entry): [string, string][] => {
         if (entry.isFile() && entry.name.endsWith('.md'))
           return [[entry.name, readFileSync(join(directory, entry.name), 'utf8')]]
         const folderNote = join(directory, entry.name, `${entry.name}.md`)
-        if (entry.isDirectory() && existsSync(folderNote) && lstatSync(folderNote).isFile())
+        if (entry.isDirectory() && existsSync(folderNote) && lstatSync(folderNote).isFile()) {
+          onFolderNote?.()
           return [[`${entry.name}.md`, readFileSync(folderNote, 'utf8')]]
+        }
         return []
       })
 
@@ -136,14 +149,21 @@ const notes = (directory: string | undefined): [string, string][] =>
 const readRegistry = (root: string): RegistryLookup => {
   const projectsDirectory = join(root, PROJECTS_DIRECTORY)
   const initiativesDirectory = join(root, INITIATIVES_DIRECTORY)
+  const themesDirectory = join(root, THEMES_DIRECTORY)
   const hasProjects = isDirectory(projectsDirectory)
   const hasInitiatives = isDirectory(initiativesDirectory)
-  if (!hasProjects && !hasInitiatives)
-    return { unavailable: `the capital has no ${PROJECTS_DIRECTORY}/ or ${INITIATIVES_DIRECTORY}/ registry` }
+  const hasThemes = isDirectory(themesDirectory)
+  if (!hasProjects && !hasInitiatives && !hasThemes)
+    return {
+      unavailable: `the capital has no ${THEMES_DIRECTORY}/, ${PROJECTS_DIRECTORY}/ or ${INITIATIVES_DIRECTORY}/ registry`
+    }
   const projects = new Map<string, string | undefined>()
+  const themes = new Set<string>()
   const initiatives = new Set<string>()
+  const legacy = new Set<string>()
   let legacyInitiativesIndex = false
-  for (const [name, text] of notes(hasProjects ? projectsDirectory : undefined)) {
+  const folderNote = () => legacy.add('a Project folder note; Project notes are flat, `Streams/Projects/<slug>.md`')
+  for (const [name, text] of notes(hasProjects ? projectsDirectory : undefined, folderNote)) {
     const values = frontmatter(text)
     if (name === 'Initiatives.md') {
       // Retired index: still read, with a warning.
@@ -155,16 +175,28 @@ const readRegistry = (root: string): RegistryLookup => {
     }
     if (INDEX_NOTES.has(name) || values?.note_type !== 'streams/project') continue
     if (typeof values.slug !== 'string' || !SLUG_RE.test(values.slug)) continue
+    const theme = typeof values.theme === 'string' ? values.theme : undefined
     const initiative = typeof values.initiative === 'string' ? values.initiative : undefined
-    projects.set(values.slug, initiative)
-    if (initiative) initiatives.add(initiative)
+    projects.set(values.slug, theme ?? initiative)
+    if (theme) themes.add(theme)
+    if (initiative) {
+      initiatives.add(initiative)
+      legacy.add("a Project note's `initiative:`; it names an optional `theme:`")
+    }
   }
+  for (const [name, text] of notes(hasThemes ? themesDirectory : undefined)) {
+    const values = frontmatter(text)
+    if (INDEX_NOTES.has(name)) continue
+    themes.add(typeof values?.slug === 'string' && SLUG_RE.test(values.slug) ? values.slug : name.slice(0, -3))
+  }
+  if (hasInitiatives)
+    legacy.add('`Streams/Initiatives/`; each Initiative becomes a theme page, `Streams/Themes/<theme>.md`')
   for (const [name, text] of notes(hasInitiatives ? initiativesDirectory : undefined)) {
     const values = frontmatter(text)
     if (INDEX_NOTES.has(name) || values?.note_type !== 'streams/initiative') continue
     if (typeof values.slug === 'string' && SLUG_RE.test(values.slug)) initiatives.add(values.slug)
   }
-  return { registry: { root, projects, initiatives, legacyInitiativesIndex } }
+  return { registry: { root, projects, themes, initiatives, legacyInitiativesIndex, legacy: [...legacy] } }
 }
 
 /** Resolves the repository's own Capital registry; any unavailable step is reported once by the caller, never as a failure. */

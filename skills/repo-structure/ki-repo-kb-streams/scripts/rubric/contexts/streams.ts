@@ -163,6 +163,7 @@ export const RECORD_FIELDS: ReadonlySet<string> = new Set([
   'kind',
   'purpose',
   'project',
+  'theme',
   'initiative',
   'component',
   'horizon',

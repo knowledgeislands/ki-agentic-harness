@@ -55,7 +55,7 @@ The item identifier is globally unique within its repository. A repository choos
 
 The filename repeats the identifier followed by a lowercase kebab-case slug.
 
-`area` declares only the issuing namespace. Grouping lives in the classification fields of [the work-item format](standards-work-item-format.md#classification): `kind`, `purpose`, `project`, `initiative`, and `component`.
+`area` declares only the issuing namespace. Grouping lives in the classification fields of [the work-item format](standards-work-item-format.md#classification): `kind`, `purpose`, `project`, `theme`, and `component`.
 
 A repository in repository-wide mode declares no issuing vocabulary. A fixed-area repository declares its durable area codes as a map from code to title:
 
@@ -77,11 +77,11 @@ The title is the area's definition, so the checks stay mechanical: a short noun 
 
 A bare list of codes (`areas = ["FND", "GOV"]`) is the legacy form. The checker fails it in a repository listed in Knowledge Islands Principal's canonical `territory_members`, resolved through the repository's Capital, and warns elsewhere, because other territories keep the list until they migrate. While a repository keeps the list, its roadmap index defines each code under an `## Areas` heading that names the code in backticks, and the checker warns for each code the index does not name.
 
-The optional `components` list is the repository's kebab-case vocabulary for which part of the repository a record touches. An item's `component`, when present, must be declared there. Components are repository-owned; Projects and Initiatives are territory-owned and live in the [Project registry](../../ki-work/references/standards-project-registry.md).
+The optional `components` list is the repository's kebab-case vocabulary for which part of the repository a record touches. An item's `component`, when present, must be declared there. Components are repository-owned; Projects and themes are territory-owned and live in the [Project registry](../../ki-work/references/standards-project-registry.md).
 
 Keep statuses, horizons, lifecycle moves, work-item location, and reporting behaviour universal rather than per-repository configuration.
 
-The former `theme` grouping is retired. The checker fails a `themes = [...]` list and an area-to-theme map, whose values are theme slugs (`FND = "foundation-tooling"`) rather than titles.
+The former repository `theme` grouping is retired. The checker fails a `themes = [...]` list and an area-to-theme map, whose values are theme slugs (`FND = "foundation-tooling"`) rather than titles. A record's `theme` field is a different thing: it names a territory theme from the Project registry.
 
 ## Status and horizon
 
@@ -164,12 +164,12 @@ An idea has no identifier, horizon, or status, and never owns state. The Project
 
 - as an `Idea:` bullet in its Project note's `## Notes` section when a Project is known, under the [Project registry](../../ki-work/references/standards-project-registry.md);
 - in an [idea-stage Project](../../ki-work/references/standards-project-registry.md#idea-stage-project) when a decision must be taken before any delivery, the Project's `## Notes` holding the ideas;
-- as an `Idea:` bullet in its Initiative note's `## Notes` when the Initiative is known and no Project fits; or
+- as an `Idea:` bullet in its theme page's `## Notes` when the theme is known and no Project fits; or
 - otherwise as a plain bullet in the repository's `docs/roadmap/_IDEAS.md`, or `Streams/Roadmap/_IDEAS.md` in a Knowledge Base, beside `_ISSUES.md`.
 
-A new idea therefore starts as an `Idea:` bullet in its owning Project or Initiative note; `_IDEAS.md` holds only an idea that no Project or Initiative owns yet. Kris set this on 2026-10-17, as received: "Ideas start as Idea: bullets in the owning Project or Initiative note".
+A new idea therefore starts as an `Idea:` bullet in its owning Project note or theme page; `_IDEAS.md` holds only an idea that no Project or theme owns yet. Kris set this on 2026-10-17, as received: "Ideas start as Idea: bullets in the owning Project or Initiative note"; under the work model an Initiative note becomes a theme page.
 
-`_IDEAS.md` is not a record. It carries no identity, the structural-validity invariant skips it, and CONFORM never creates or rewrites it. When a whole idea graduates, its bullet is removed and useful research moves into the record; `_IDEAS.md` may link the new record, but a Project or Initiative note never names a record identifier, because [links point upwards](../../ki-work/references/standards-project-registry.md#links-point-upwards). No record names an idea-stage Project: the Project graduates to `active` first.
+`_IDEAS.md` is not a record. It carries no identity, the structural-validity invariant skips it, and CONFORM never creates or rewrites it. When a whole idea graduates, its bullet is removed and useful research moves into the record; `_IDEAS.md` may link the new record, but a Project note or theme page never names a record identifier, because [links point upwards](../../ki-work/references/standards-project-registry.md#links-point-upwards). No record names an idea-stage Project: the Project graduates to `active` first.
 
 An idea often settles in part while ideation carries on behind it. That part graduates **by quotation**: the settled slice is quoted into its new home, a record, a standard, a Decision Record or a delivering Project, and the idea's place gains one line, "built as" or "settled in", naming that home and otherwise stays as it was. In a registry note the line names the durable home, never a record identifier. Kris asked on 2026-10-14 for a home for ideas "where we've got aspects of them that get built out because we know there's a certain amount of them, which are already valuable and kind of more fixed, but there's a lot more ideation to go on behind it."
 
@@ -179,19 +179,21 @@ Goal, Context, and Boundary alone are not enough to make a record. After checkin
 - (b) it is a **decision** with an owner and a needed-by date, adopted as `kind: decide`; or
 - (c) it must **survive the session**: it is deferred, delegated, multi-step, or reviewed by someone else.
 
-Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate as an `Idea:` bullet in its Project or Initiative note's Notes section when either is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where a coordinating thread runs under `ki-pmo`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the thread's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard".
+Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate as an `Idea:` bullet in its Project note's or theme page's Notes section when either is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where coordinating work runs under `ki-pmo`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the work folder's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-pmo standard".
 
 ## Migration tolerance
 
 The model stays at v1: new fields and statuses entered v1 directly. The migration window has closed, and done records were pruned rather than migrated. The checker now fails these retired shapes in any record or configuration:
 
-- a `theme` field, or a `themes` list or area-to-theme map in `.ki.toml`;
+- a `themes` list or area-to-theme map in `.ki.toml`;
 - `horizon: waiting-for` or `horizon: parked`, which `horizon: hold` with a `hold` mapping replaces;
 - `horizon: triage`, which `status: triage` without a horizon replaces;
 - `waiting_on_trades`, which `hold.trades` replaces;
 - `intake_disposition` and `intake_disposition_target`, which a cancellation with a `resolution` replaces.
 
-A few residual shapes still only warn: a `done` record carrying Now or Next, an open record at a horizon the former rule allowed but the table above does not, an adopted record without `kind`, and a Capital's retired `Streams/Projects/Initiatives.md` index. This section is the one place these rules are defined.
+A few residual shapes still only warn: a `done` record carrying Now or Next, an open record at a horizon the former rule allowed but the table above does not, an adopted record without `kind`, and a Capital's retired `Streams/Projects/Initiatives.md` index.
+
+The work model's tolerance window, which [KI-HARNESS-GOV-210](../../../../docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) opens and a later phase of the migration closes, adds warnings for the thread-model classification: a record's `initiative`, read as its theme; and, in the record's own territory, a registry that keeps `Streams/Initiatives/`, a Project folder note or a Project note's `initiative:`. This section is the one place these rules are defined.
 
 ## Work-item discipline
 
