@@ -6,12 +6,12 @@ kind: deliver
 purpose: learning
 component: repo-structure
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T23:40:14Z
-updated_at: 2026-10-17T23:53:51Z
+updated_at: 2026-10-18T00:19:20Z
 ---
 
 # KI-HARNESS-GOV-208: Branch Previews Behind Access
@@ -35,7 +35,7 @@ The current standard names the optional `upload` script in section 4 and the `ma
 
 ## Current state
 
-Draft at `next`, adopted on 18 October 2026 and shaped here for Kris's Ready decision. The [Cloudflare hosting standard](../../skills/repo-structure/ki-repo-website-cloudflare/references/standards-cloudflare-hosting.md) names the optional `upload` script in section 4 and the `main` build-and-deploy pair in section 5, and says nothing about non-production branch builds, preview URLs, Access in front of them, or a restore path for the dashboard state they change. Rubric item WCF-25 treats the upload script as optional in every case, WCF-26 checks the guide for builds, domains, redirects and `workers.dev` but not previews, and the rubric context does not read `preview_urls` from `wrangler.jsonc`. The [source list](../../skills/repo-structure/ki-repo-website-cloudflare/references/sources.md) was last refreshed on 4 October 2026 and carries a watch note that Workers Builds now names a non-production **Preview command** on its build settings; the Phase 3 run instead built previews through a second trigger. The worked example is the `5g-emerge-phase3` repository's Cloudflare developer guide at commits `80395f5` and `05e1d44`.
+Ready at `next`, adopted, planned and approved on 18 October 2026. The [Cloudflare hosting standard](../../skills/repo-structure/ki-repo-website-cloudflare/references/standards-cloudflare-hosting.md) names the optional `upload` script in section 4 and the `main` build-and-deploy pair in section 5, and says nothing about non-production branch builds, preview URLs, Access in front of them, or a restore path for the dashboard state they change. Rubric item WCF-25 treats the upload script as optional in every case, WCF-26 checks the guide for builds, domains, redirects and `workers.dev` but not previews, and the rubric context does not read `preview_urls` from `wrangler.jsonc`. The [source list](../../skills/repo-structure/ki-repo-website-cloudflare/references/sources.md) was last refreshed on 4 October 2026 and carries a watch note that Workers Builds now names a non-production **Preview command** on its build settings; the Phase 3 run instead built previews through a second trigger. The worked example is the `5g-emerge-phase3` repository's Cloudflare developer guide at commits `80395f5` and `05e1d44`.
 
 ## Steps
 
@@ -94,11 +94,11 @@ None expected. If the source refresh shows the Workers Builds Preview command re
 
 ## Discussion
 
-Captured from the Phase 3 run's refined skill-learning draft. Adopting this record and approving the section's content are Kris's, under `ki-next` and `ki-plan`.
+Captured from the Phase 3 run's refined skill-learning draft. Kris adopted this record under `ki-next` and approved its plan and section content under `ki-plan`.
 
 ### Adoption
 
-Kris Brown approved adoption on 18 October 2026 in the 5G Emerge Phase 3 coordination thread, answering ADOPT-208 with option a): "adopt KI-HARNESS-GOV-208 as draft, horizon next, kind deliver, purpose learning, and launch a ki-agentic-harness run to plan it to Ready under ki-plan". Approving the section's content and the plan remains Kris's, at the Ready decision.
+Kris Brown approved adoption on 18 October 2026 in the 5G Emerge Phase 3 coordination thread, answering ADOPT-208 with option a): "adopt KI-HARNESS-GOV-208 as draft, horizon next, kind deliver, purpose learning, and launch a ki-agentic-harness run to plan it to Ready under ki-plan". Kris approved the section's content and the plan at the Ready decision, recorded under Approval.
 
 ### Proposed section content
 
@@ -117,8 +117,12 @@ Kris Brown approved adoption on 18 October 2026 in the 5G Emerge Phase 3 coordin
 
 ### Planning answers
 
-Proposed by the planning run on 18 October 2026 for Kris's approval with the plan:
+Proposed by the planning run on 18 October 2026 and approved by Kris with the plan:
 
 - **Rubric pairing.** Check it. A preview URL without Access is a public copy of unreleased work, and the mechanical half is cheap: WCF-27 reads `preview_urls` and looks for a preview Access application in the guide, while judgment confirms the dashboard matches, as WCF-26 already does for the other dashboard rows.
 - **Restore-path home.** Keep the capture in this skill's section. It is the only consumer today, and Access for preview hostnames does not cut an operator's connection, so it falls outside the `ki-engineering` connection-critical rule rather than under it. Extract a shared Cloudflare restore procedure only when a second Cloudflare change needs one.
 - **Upload script.** Make it required when `preview_urls` is true. The non-production trigger's deploy command is `ki:site:upload`, so a site with previews on and no upload script has failing preview builds.
+
+### Approval
+
+Kris Brown approved the plan on 18 October 2026 in the 5G Emerge Phase 3 coordination thread, answering READY-208 with option a), "Approve as Ready": "approve the KI-HARNESS-GOV-208 plan and its three planning answers as recorded; a ki-agentic-harness run sets it to Ready under ki-plan". The three planning answers above are settled as written. Delivery follows under `ki-implement`; acceptance remains Kris's under `ki-accept`.
