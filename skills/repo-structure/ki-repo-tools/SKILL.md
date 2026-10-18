@@ -51,7 +51,7 @@ tools-<name>/
 
 Mirrors `ki-engineering`'s capability-conditional pattern: what the repo _is_ decides which checks apply, so the same standard covers a bash tool and a TS tool without forking.
 
-- **Shell entrypoint** (the primary `bin/` file has a `bash`/`sh` shebang): it MUST be shellcheck-clean in CI (a workflow references `shellcheck`) and ship a `bats` suite that CI runs (a `*.bats` file under `tests/` and a workflow that references `bats`).
+- **Shell entrypoint** (the primary `bin/` file has a `bash`/`sh` shebang): it MUST be shellcheck-clean in CI (a workflow references `shellcheck`) and ship a `bats` suite that CI runs (a `*.bats` file under `tests/` and a workflow that references `bats`). Every `[[ ]]` or `!` assertion in that suite ends `|| false`, because under macOS Bash 3.2 such an assertion failing mid-test does not fail the test (`SHELL-FATAL`, WARN; evidence tools-mgit `00ef0de`).
 - **A `package.json` appears** (a TS/Bun tool): the repo defers lint/test to `ki-engineering` and MUST also declare `[skills.ki-engineering]` in its `.ki.toml`. The shell checks don't apply.
 - **A physical `man/<tool>.1` page appears**: CI MUST run `mandoc -T lint man/<tool>.1`, directly or through the repository's native task runner. The release installer and its `--link` mode publish or link that manual alongside the executable.
 - **Another language** (Python, Go, …): defer to that language's own toolchain; the container checks (bin, install.sh, versioning, changelog, CI, tests) still apply.

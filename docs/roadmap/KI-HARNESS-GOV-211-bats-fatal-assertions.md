@@ -7,12 +7,12 @@ purpose: governance
 project: ways-of-working
 component: repo-structure
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a7b3d17a159147934816a4d94c43c42e514e493c
 created_at: 2026-10-18T08:42:02Z
-updated_at: 2026-10-18T08:47:00Z
+updated_at: 2026-10-18T09:05:00Z
 ---
 
 # KI-HARNESS-GOV-211: Bats Fatal Assertions
@@ -38,14 +38,14 @@ The evidence is tools-mgit commit `00ef0de`, "test: make Bats assertions fatal u
 
 ## Steps
 
-- [ ] State the rule in `references/standards-tool-repositories.md`: in a shell tool's Bats suite every assertion line that starts with `[[` or `!` ends `|| false`, because under macOS Bash 3.2 such an assertion failing in the middle of a test does not fail it; cite tools-mgit `00ef0de` as the evidence and name the new criterion in the capability table.
-- [ ] Summarise the rule in `SKILL.md`'s shell capability bullet.
-- [ ] Record the evidence in `references/sources.md` beside the BATS source.
-- [ ] Read the text of each physical `tests/*.bats` file into the shell context in `scripts/rubric/contexts/tools.ts`.
-- [ ] Add the WARN-level `SHELL-FATAL` criterion to `scripts/rubric/items/shell.ts`: one VIOLATION per suite naming the count and first line numbers of `[[` or `!` assertion lines without a trailing `|| false`, joining backslash continuations and leaving comments and `&&`/`||` control-flow lines alone; PASS when every assertion is fatal; NOT_APPLICABLE outside a shell entrypoint or without a suite.
-- [ ] Cover it in `scripts/rubric/contexts/tools.test.ts` and update the ordered catalogue in `scripts/rubric/items/index.test.ts`.
-- [ ] Regenerate `references/rubric.md` and any other generated surface.
-- [ ] Run the checks under Verify and list the territory's other Bats suites that would warn.
+- [x] State the rule in `references/standards-tool-repositories.md`: in a shell tool's Bats suite every assertion line that starts with `[[` or `!` ends `|| false`, because under macOS Bash 3.2 such an assertion failing in the middle of a test does not fail it; cite tools-mgit `00ef0de` as the evidence and name the new criterion in the capability table.
+- [x] Summarise the rule in `SKILL.md`'s shell capability bullet.
+- [x] Record the evidence in `references/sources.md` beside the BATS source.
+- [x] Read the text of each physical `tests/*.bats` file into the shell context in `scripts/rubric/contexts/tools.ts`.
+- [x] Add the WARN-level `SHELL-FATAL` criterion to `scripts/rubric/items/shell.ts`: one VIOLATION per suite naming the count and first line numbers of `[[` or `!` assertion lines without a trailing `|| false`, joining backslash continuations and leaving comments and `&&`/`||` control-flow lines alone; PASS when every assertion is fatal; NOT_APPLICABLE outside a shell entrypoint or without a suite.
+- [x] Cover it in `scripts/rubric/contexts/tools.test.ts` and update the ordered catalogue in `scripts/rubric/items/index.test.ts`.
+- [x] Regenerate `references/rubric.md` and any other generated surface.
+- [x] Run the checks under Verify and list the territory's other Bats suites that would warn.
 
 ## Files touched
 
@@ -54,6 +54,7 @@ The evidence is tools-mgit commit `00ef0de`, "test: make Bats assertions fatal u
 - `skills/repo-structure/ki-repo-tools/scripts/rubric/contexts/tools.ts` and `tools.test.ts`
 - `skills/repo-structure/ki-repo-tools/scripts/rubric/items/shell.ts` and `index.test.ts`
 - any generated capability catalogue entry the skill generator refreshes
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`, whose pinned criterion counts the new criterion moves
 
 ## Verify
 
@@ -84,6 +85,45 @@ None: each tool repository's own developer guides own its test procedure, and th
 ### Roadmap
 
 None in this repository. Cleaning up the other repositories' Bats suites belongs to their owners; the run report lists them.
+
+## Review
+
+### Delivered
+
+The approved boundary from baseline `a7b3d17a159147934816a4d94c43c42e514e493c`: the `ki-repo-tools` standard, skill summary and sources state that every `[[ ]]` or `!` assertion in a shell tool's Bats suite ends `|| false`, citing tools-mgit `00ef0de`, and the WARN-level `SHELL-FATAL` criterion reports each `tests/*.bats` suite that carries such an assertion without it. No other repository's suite is edited, `(( ))` and `run !` are not checked, and nothing is released.
+
+### Change Summary
+
+- `references/standards-tool-repositories.md`: the capability table names `SHELL-FATAL`, the scope paragraph says the suite's assertions must be able to fail, and a new "Fatal Bats assertions" section gives the rule, its reason, examples, the tools-mgit `00ef0de` evidence and the check's detection limits.
+- `SKILL.md`: the shell capability bullet carries the rule. `references/sources.md`: the BATS and MGIT rows name it and its evidence, with review dates unchanged because no source was re-fetched.
+- `scripts/rubric/contexts/tools.ts`: the shell context reads each physical `tests/*.bats` suite's text as `batsSuites`.
+- `scripts/rubric/items/shell.ts`: `SHELL-FATAL`, WARN, diagnostic remediation, one outcome per suite with the count and first five line numbers; ordered between `SHELL-TEST` and `SHELL-HOOK`.
+- Tests: a `SHELL-FATAL` case in `tools.test.ts` covering plain, negated, already-fatal, control-flow, commented and continued lines, several suites, and the not-applicable paths; the ordered catalogue and levels in `index.test.ts`.
+- `references/rubric.md` regenerated.
+- Approved deviation: `ki-skills`' `remediation-inventory.test.ts` pins the estate's criterion counts, so criteria, mechanical and diagnostic counts each rise by one and the report-only count from 431 to 432; `SHELL-FATAL` is a justified diagnostic boundary because appending `|| false` can expose latent failures that need a human fix, as it did in tools-mgit.
+
+### Verification
+
+- `bun run test`: pass, 1248 tests.
+- `bunx tsc --noEmit`: pass.
+- `ki dev skill rubric ki-repo-tools`: current after `--write`.
+- `ki repo audit --skill ki-skills`: no failure; WARN=3, all LONG-3 refresh-cadence findings in other skills' `sources.md`, date-driven and outside this change.
+- `ki repo audit --skill ki-authoring` and `--skill ki-work-roadmap`: pass.
+- `ki repo audit --repo tools-mgit --skill ki-repo-tools`: `tests/mgit.bats`, the suite `00ef0de` fixed, passes `SHELL-FATAL`; its two other suites warn, `territory-producer.bats` with 6 lines and `territory-protocol.bats` with 1, all true `!` or `[[` assertions.
+- `ki repo audit --repo tools-rig --skill ki-repo-tools`: 9 suites warn, 64 lines in all; a sample read shows true `!` assertions.
+
+### Outstanding concerns
+
+- The other Bats suites in the territory that would warn, all in tools-mgit and tools-rig, are listed in the run report for their owners to clean up; no other repository in the workspaces or the chezmoi source carries a Bats suite.
+- The check is line-based, as Discussion's "Detection limits" says; an assertion that uses `||` between two conditions is not flagged.
+
+### Post-change review
+
+Reviewer: pending; this record awaits an independent review before acceptance.
+
+### Mini recap
+
+`ki-repo-tools` now carries the `|| false` rule for Bats assertions and warns where a suite misses it; tools-mgit's main suite passes, and its two smaller suites and nine of tools-rig's suites are left for their owners.
 
 ## Discussion
 

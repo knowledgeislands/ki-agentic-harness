@@ -83,6 +83,69 @@ const SHELL_TEST: RubricItem<ShellToolsContext> = {
   }
 }
 
+/**
+ * Line numbers of `[[` or `!` assertions that do not end `|| false`. Backslash continuations are joined, and a line
+ * that already uses `&&` or `||` is control flow rather than an assertion.
+ */
+const nonFatalAssertions = (text: string): readonly number[] => {
+  const found: number[] = []
+  const lines = text.split(/\r?\n/)
+  for (let index = 0; index < lines.length; index += 1) {
+    const start = index + 1
+    let line = lines[index] ?? ''
+    while (line.endsWith('\\') && index + 1 < lines.length) {
+      index += 1
+      line = `${line.slice(0, -1)} ${lines[index] ?? ''}`
+    }
+    const command = line.trim()
+    if (!/^(\[\[|!)\s/.test(command) || /\|\|\s*false$/.test(command) || /&&|\|\|/.test(command)) continue
+    found.push(start)
+  }
+  return found
+}
+
+const SHELL_FATAL: RubricItem<ShellToolsContext> = {
+  code: 'SHELL-FATAL',
+  title: 'Fatal Bats assertions',
+  description:
+    'Every `[[ ]]` or `!` assertion in a shell entrypoint repository’s `tests/*.bats` suite ends `|| false`, because under macOS Bash 3.2 such an assertion failing in the middle of a test does not fail it.',
+  sources: SOURCE,
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Append `|| false` to each reported assertion, then run the suite and correct any latent failure it exposes.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        const skipped = unavailable(context)
+        if (skipped) return skipped
+        if (!context.primary || !context.shell)
+          return one({ status: 'NOT_APPLICABLE', message: 'Primary executable is not a shell entrypoint.' })
+        if (context.tests === 'unsafe' || context.unsafeTestEntries.length > 0)
+          return one({ status: 'VIOLATION', message: 'Bats test evidence is unsafe or unreadable.', subject: 'tests/' })
+        if (context.batsSuites.length === 0)
+          return one({ status: 'NOT_APPLICABLE', message: 'No physical *.bats suite; SHELL-TEST reports its absence.' })
+        return context.batsSuites.map(({ name, text }): AuditOutcome => {
+          const subject = `tests/${name}`
+          if (text === null) return { status: 'VIOLATION', message: `${subject} is unreadable.`, subject }
+          const lines = nonFatalAssertions(text)
+          if (lines.length === 0)
+            return { status: 'PASS', message: `Every [[ ]] or ! assertion in ${subject} ends || false.`, subject }
+          const shown = lines.slice(0, 5).join(', ')
+          return {
+            status: 'VIOLATION',
+            message: `${subject} has ${lines.length} [[ ]] or ! assertion${lines.length === 1 ? '' : 's'} without a trailing || false (line${lines.length === 1 ? '' : 's'} ${shown}${lines.length > 5 ? ', …' : ''}).`,
+            subject
+          }
+        })
+      }
+    }
+  }
+}
+
 const HOOK = '.githooks/pre-commit'
 
 /** A command runs check-only when it sits on a non-comment line that carries no rewriting flag. */
@@ -136,8 +199,8 @@ const SHELL_HOOK: RubricItem<ShellToolsContext> = {
 export const SHELL: RubricFamily<ToolsRubricContext, ShellToolsContext> = {
   code: 'SHELL',
   title: 'shell capabilities',
-  description: 'Shell-specific CI requirements.',
+  description: 'Shell-specific CI and test requirements.',
   standard: STANDARD,
   selectContext: (context) => context.shell,
-  items: [SHELL_LINT, SHELL_TEST, SHELL_HOOK]
+  items: [SHELL_LINT, SHELL_TEST, SHELL_FATAL, SHELL_HOOK]
 }

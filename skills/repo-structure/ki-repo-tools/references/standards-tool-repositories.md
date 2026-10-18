@@ -21,7 +21,7 @@ The full, quotable standard behind the `ki-repo-tools` skill. A `tools-*` repo h
 
 ## Scope: container, not contents
 
-This standard judges the **container** (the repo's shape) and a small shared public interface — it does **not** judge the quality of tool-specific operations. A shell tool must be shellcheck-clean and carry a bats suite; this standard checks those are **wired into CI**, not what they report. Whether a tool's own operations are correct, well-factored, or fast is its author's concern.
+This standard judges the **container** (the repo's shape) and a small shared public interface — it does **not** judge the quality of tool-specific operations. A shell tool must be shellcheck-clean and carry a bats suite; this standard checks those are **wired into CI** and that the suite's assertions can fail, not what they report. Whether a tool's own operations are correct, well-factored, or fast is its author's concern.
 
 Applicability is declaration or structure: `[skills.ki-repo-tools]` in `.ki.toml` or a root `bin/` directory activates the complete audit. With neither, `ki repo audit --skill ki-repo-tools` reports one `NA` and stops. A declared repository without `bin/` and an undeclared repository with `bin/` remain applicable; the former fails the executable-container requirement and the latter is audited for the missing declaration.
 
@@ -102,12 +102,25 @@ What the repo _is_ decides which checks apply — the same standard covers a bas
 
 | Capability signal | Requirement it turns on |
 | --- | --- |
-| Primary bin has a `bash`/`sh` shebang (SHELL) | A CI workflow references **shellcheck** (the tool is shellcheck-clean); `tests/` holds a **`*.bats`** suite CI runs (references `bats`). Where a committed `.githooks/pre-commit` exists, it runs `shellcheck` and `bats` check-only (`SHELL-HOOK`). |
+| Primary bin has a `bash`/`sh` shebang (SHELL) | A CI workflow references **shellcheck** (the tool is shellcheck-clean); `tests/` holds a **`*.bats`** suite CI runs (references `bats`), whose `[[ ]]` and `!` assertions end `|| false` (`SHELL-FATAL`, [below](#fatal-bats-assertions)). Where a committed `.githooks/pre-commit` exists, it runs `shellcheck` and `bats` check-only (`SHELL-HOOK`). |
 | A `package.json` appears (TS/Bun tool) | The repo defers lint/test to **`ki-engineering`** and MUST also declare `[skills.ki-engineering]` in `.ki.toml`. Shell checks don't apply. |
 | A physical `man/<tool>.1` page appears | CI runs `mandoc -T lint man/<tool>.1`, directly or through the repository's native task runner. The installer publishes it and `--link` links it alongside the executable. |
 | Another language (Python, Go, …) | Defer to that language's own toolchain. The container checks (bin, install.sh, versioning, changelog, CI, tests) still apply. |
 
 There is deliberately **no `ki-shell` skill**: shell is the reference language, and its two tool-specific gates (shellcheck, bats) live here as capability conditionals rather than a separate skill (YAGNI at n=1). If a second shell-specific concern emerges, revisit. `SHELL-HOOK` agrees with that decision rather than superseding it: it is the shell capability's commit-gate content criterion under [ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md), and `ki-repo` still owns whether the hook exists.
+
+### Fatal Bats assertions
+
+In a shell tool's Bats suite, every assertion line that starts with `[[` or `!` ends `|| false`:
+
+```bash
+[[ "$output" == *"Usage: mgit"* ]] || false
+! grep -q error <<<"$output" || false
+```
+
+Under Bash 3.2, the Bash that macOS ships, a failing `[[ ]]` in the middle of a Bats test does not fail the test, and a command negated with `!` never triggers the test's exit-on-error, so the test runs on and passes. `|| false` turns either into a plain failing command. The rule holds for every assertion, including the last in a test, so that one form applies throughout and reordering a test cannot silently weaken it. The evidence is tools-mgit commit `00ef0de`, "test: make Bats assertions fatal under Bash 3.2": appending `|| false` to its 307 such assertions exposed five latent faults the suite had been passing over.
+
+`SHELL-FATAL` warns, per `tests/*.bats` suite, on each `[[` or `!` assertion line without a trailing `|| false`. It joins backslash continuations, skips comments, and leaves alone a line that already uses `&&` or `||`, which is a condition rather than an assertion, such as `[[ -n "$SKIP" ]] && skip`. It is part of the Bats gate rather than a second shell-specific concern.
 
 ## Shared CLI conventions
 

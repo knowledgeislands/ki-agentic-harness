@@ -11,7 +11,7 @@ Two layers feed the standard: the **external specs** (shellcheck, bats, keep-a-c
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
 | SHELLCHECK | [ShellCheck][shellcheck] | Shell-tool lint gate (SHELL-LINT) — clean in CI | 2026-07-09 |
-| BATS | [bats-core][bats] | Shell-tool test framework (SHELL-TEST) — `*.bats` + CI run | 2026-07-09 |
+| BATS | [bats-core][bats] | Shell-tool test framework (SHELL-TEST) — `*.bats` + CI run; fatal `[[ ]]` and `!` assertions (SHELL-FATAL) | 2026-07-09 |
 | CHANGELOG | [Keep a Changelog][keepachangelog] | Optional chronological changelog shape | 2026-07-30 |
 | SEMVER | [Semantic Versioning 2.0.0][semver] | `vX.Y.Z` version marker + release tags | 2026-07-09 |
 | XDG | [XDG Base Directory Specification][xdg] | Where the tool writes config/state/cache | 2026-07-09 |
@@ -22,7 +22,7 @@ The tool repositories under `knowledgeislands/` provide evidence for house style
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| MGIT | `tools-mgit` | Bash/Git boundary, installer overrides, workspace/repository command grouping | 2026-10-04 |
+| MGIT | `tools-mgit` | Bash/Git boundary, installer overrides, workspace/repository command grouping; fatal Bats assertions under Bash 3.2 (`00ef0de`) | 2026-10-04 |
 | KI | `tools-ki` | Typed command host, diagnostics, completion, signed installer, manual distribution | 2026-10-04 |
 | RIG | `tools-rig` | Authored assembly, terminal ownership, workstation isolation, installer verification | 2026-10-04 |
 | TECHNE | `tools-techne` | Typed operator boundary, compiled archives, remote-environment hold | 2026-10-04 |

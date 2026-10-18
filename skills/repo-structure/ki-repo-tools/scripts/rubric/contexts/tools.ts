@@ -47,6 +47,12 @@ export type ToolRepositoryContext = {
   readonly requestInstallExecutable?: () => void
 }
 
+/** A physical `tests/*.bats` suite; `text` is null when the file cannot be read. */
+export type BatsSuite = {
+  readonly name: string
+  readonly text: string | null
+}
+
 export type ShellToolsContext = {
   readonly applicable: boolean
   readonly primary: string | null
@@ -56,6 +62,7 @@ export type ShellToolsContext = {
   readonly unsafeWorkflowEntries: readonly string[]
   readonly tests: DirectoryState
   readonly bats: boolean
+  readonly batsSuites: readonly BatsSuite[]
   readonly unsafeTestEntries: readonly string[]
   readonly hook: FileState
   readonly hookText: string
@@ -323,7 +330,10 @@ export const createToolsSession = ({
   const testDirectories = testInspections
     .filter(([, inspection]) => inspection.state === 'present')
     .map(([path]) => path)
-  const bats = inspectedTests.files.some((name) => name.endsWith('.bats'))
+  const batsSuites = inspectedTests.files
+    .filter((name) => name.endsWith('.bats'))
+    .map((name) => ({ name, text: readableText(join(testsPath, name)) }))
+  const bats = batsSuites.length > 0
 
   const packageKind = rootState === 'physical' ? nodeKind(join(root, 'package.json')) : 'missing'
   const packageJson: FileState = packageKind === 'missing' ? 'missing' : packageKind === 'file' ? 'physical' : 'unsafe'
@@ -413,6 +423,7 @@ export const createToolsSession = ({
       unsafeWorkflowEntries,
       tests: inspectedTests.state,
       bats,
+      batsSuites,
       unsafeTestEntries: inspectedTests.unsafe,
       hook,
       hookText

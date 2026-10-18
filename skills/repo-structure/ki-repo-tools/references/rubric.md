@@ -115,12 +115,14 @@ Layout, executable, distribution, versioning, and judgment criteria.
 
 → [standard](standards-tool-repositories.md)
 
-Shell-specific CI requirements.
+Shell-specific CI and test requirements.
 
 - **SHELL-LINT [M] — Shell lint CI** — Shell entrypoints have a physical CI workflow that references shellcheck. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Add or correct the shellcheck CI evidence through the repository’s maintained workflow.
 - **SHELL-TEST [M] — Shell test CI** — Shell entrypoints have a physical Bats suite referenced by CI. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Add or correct the Bats suite and CI evidence through the repository’s maintained test workflow.
+- **SHELL-FATAL [M] — Fatal Bats assertions** — Every `[[ ]]` or `!` assertion in a shell entrypoint repository’s `tests/*.bats` suite ends `|| false`, because under macOS Bash 3.2 such an assertion failing in the middle of a test does not fail it. (standards-tool-repositories.md)
+  - _Remediation:_ diagnostic — Append `|| false` to each reported assertion, then run the suite and correct any latent failure it exposes.
 - **SHELL-HOOK [M] — Shell commit gate** — Where a committed `.githooks/pre-commit` exists, a shell entrypoint repository runs `shellcheck` and `bats` from it check-only; `ki-repo` HOOK-1 owns whether the hook exists. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Add check-only `shellcheck` and `bats` lines to `.githooks/pre-commit`, then rerun the audit.
 

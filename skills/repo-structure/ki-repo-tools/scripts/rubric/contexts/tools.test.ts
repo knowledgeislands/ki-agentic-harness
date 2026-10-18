@@ -545,3 +545,52 @@ test('SHELL-HOOK reads the committed gate only when it exists and requires check
   symlinkSync(join(repository, 'install.sh'), hook)
   expect(status()?.message).toContain('not a safe regular file')
 })
+
+test('SHELL-FATAL warns on each Bats suite whose [[ ]] or ! assertions do not end || false', () => {
+  const { repository } = fixture()
+  const primary = join(repository, 'bin', basename(repository).replace(/^tools-/, ''))
+  writeFileSync(primary, '#!/bin/sh\n')
+  const fatalItem = SHELL.items.find((entry) => entry.code === 'SHELL-FATAL')?.mechanical
+  if (!fatalItem) throw new Error('SHELL-FATAL mechanical item is missing')
+  const outcomes = () => {
+    const subject = createToolsSession(options(repository, 'audit')).subjects[0]
+    if (!subject) throw new Error('ki-repo-tools session has no repository subject')
+    return fatalItem.audit.run(SHELL.selectContext(subject.context()))
+  }
+  expect(outcomes()[0]?.status).toBe('PASS')
+
+  const suite = join(repository, 'tests', 'demo.bats')
+  writeFileSync(
+    suite,
+    [
+      '@test "assertions" {',
+      '  run bin/demo --version',
+      '  [ "$status" -eq 0 ]',
+      '  [[ "$output" == *demo* ]]',
+      '  ! grep -q error <<<"$output"',
+      '  [[ "$output" != *fail* ]] || false',
+      '  ! grep -q warn <<<"$output" || false',
+      '  [[ -n "$SKIP" ]] && skip',
+      '  # [[ a commented-out assertion ]]',
+      '  [[ "$output" == \\',
+      '     *0.1.0* ]]',
+      '}'
+    ].join('\n')
+  )
+  writeFileSync(join(repository, 'tests', 'other.bats'), '@test "ok" {\n  [[ 1 == 1 ]] || false\n}\n')
+  const [demo, other] = outcomes()
+  expect(demo?.status).toBe('VIOLATION')
+  expect(demo?.subject).toBe('tests/demo.bats')
+  expect(demo?.message).toContain('has 3 [[ ]] or ! assertions without a trailing || false (lines 4, 5, 10)')
+  expect(other?.status).toBe('PASS')
+
+  rmSync(join(repository, 'tests', 'other.bats'))
+  writeFileSync(suite, '@test "one" {\n  [[ 1 == 2 ]]\n}\n')
+  expect(outcomes()[0]?.message).toContain('has 1 [[ ]] or ! assertion without a trailing || false (line 2)')
+
+  rmSync(suite)
+  expect(outcomes()[0]?.status).toBe('NOT_APPLICABLE')
+
+  writeFileSync(primary, '#!/usr/bin/env bun\n')
+  expect(outcomes()[0]?.message).toContain('not a shell entrypoint')
+})
