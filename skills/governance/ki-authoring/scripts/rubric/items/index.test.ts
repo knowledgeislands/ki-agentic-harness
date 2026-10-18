@@ -59,10 +59,10 @@ test('the default export is the sole catalogue entrypoint and families are compl
   ])
 })
 
-test('the owned rumdl template preserves unsafe structural rules and prevents the standard-flavor MD056 destructive fix', () => {
+test('the owned rumdl template enables MD005 and MD075 and prevents the standard-flavor MD056 destructive fix', () => {
   expect(RUMDL_DEFAULT).toContain('".git"')
-  expect(RUMDL_DEFAULT).toContain('"MD005"')
-  expect(RUMDL_DEFAULT).toContain('"MD075"')
+  expect(RUMDL_DEFAULT).not.toMatch(/disable = \[[^\]]*"MD005"/)
+  expect(RUMDL_DEFAULT).not.toMatch(/disable = \[[^\]]*"MD075"/)
   expect(RUMDL_DEFAULT).not.toMatch(/disable = \[[^\]]*"MD056"/)
   expect(RUMDL_DEFAULT).toContain('unfixable = ["MD056"]')
 })
@@ -161,7 +161,7 @@ test('conform retains drafts, coalesces writes, and leaves publication to the ho
     ],
     commands: [
       { program: 'rm', arguments: ['-f', '--', '.prettierrc.json'] },
-      { program: 'bunx', arguments: ['rumdl', 'check', '--fix', '.'] }
+      { program: 'bunx', arguments: ['rumdl', 'check', '--fix', '--preflight', '.'] }
     ]
   })
   expect(readFileSync(join(repository, '.prettierrc.json'), 'utf8')).toBe('{}\n')

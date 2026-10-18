@@ -25,16 +25,11 @@ exclude = [
   ".agents/skills"
 ]
 
-# MD005 list indentation: rumdl 0.2.54 misreads an ordered list inside a
-# blockquote nested in a list item as top-level. Its fix de-indents only the
-# blockquote list, splitting otherwise valid Markdown structure.
 # MD033 inline HTML: <br> in table cells, angle-bracket placeholders in skills.
 # MD036 bold-as-heading: bold labels are used deliberately in skill bodies.
 # MD057 relative-link existence: real signal, but it fires on links that are
 # correct in this repository and dangle in a published copy of it, so switching
 # it on is a content decision rather than a formatting one. Tracked separately.
-# MD075 orphaned pipe rows: after a blockquote, it treats otherwise preserved
-# pipe-formatted rows as a malformed table and its fix can rewrite them.
 # MD060 table alignment stays off (it is opt-in). No style reproduces the former
 # behaviour, where a table was padded only if the padded form fit the print
 # width and left compact otherwise; "aligned" would rewrite every wide table
@@ -46,7 +41,7 @@ exclude = [
 # standard flavor and forbids wikilinks, where the pipe remains a real column
 # separator. Keep MD056 enabled so AUDIT catches that invalid shape, but make
 # it unfixable so CONFORM cannot truncate the row while reporting it.
-disable = ["MD005", "MD033", "MD036", "MD057", "MD075"]
+disable = ["MD033", "MD036", "MD057"]
 unfixable = ["MD056"]
 
 # MD013 owns line length and prose wrapping together, replacing the former
@@ -98,9 +93,10 @@ trim_trailing_whitespace = false
 const MARKDOWN_AUDIT_COMMANDS: readonly ConformCommand[] = [{ program: 'bunx', arguments: ['rumdl', 'check', '.'] }]
 
 // `check --fix` rather than `fmt`: fmt exits 0 even when unfixable violations remain, which
-// would let CONFORM report success over a file it could not settle.
+// would let CONFORM report success over a file it could not settle. `--preflight` plans the
+// whole batch first, so a batch holding a file it cannot write is refused whole.
 const MARKDOWN_CONFORM_COMMANDS: readonly ConformCommand[] = [
-  { program: 'bunx', arguments: ['rumdl', 'check', '--fix', '.'] }
+  { program: 'bunx', arguments: ['rumdl', 'check', '--fix', '--preflight', '.'] }
 ]
 
 // Retired with the move to rumdl. CONFORM removes them, because a repository that keeps a

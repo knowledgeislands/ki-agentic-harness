@@ -188,7 +188,7 @@ const versions: Record<string, string> = {
 }
 const lintStaged = {
   '*.{ts,tsx,js,jsx,json,jsonc}': ['bunx @biomejs/biome check --write --no-errors-on-unmatched'],
-  '*.md': ['bunx rumdl check --fix']
+  '*.md': ['bunx rumdl check --fix --preflight']
 }
 const defaults = {
   'mise.toml': `[tools]\nnode = "22"\nbun = "1.4.2"\n`,
