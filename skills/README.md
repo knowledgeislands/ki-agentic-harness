@@ -584,7 +584,7 @@ Govern the KI knowledge-base Streams container and flat Roadmap records. Use for
 
 - **Kind:** Governance
 - **Applicability:** Detected
-- **Arguments:** `audit | conform | help | educate | iterate | propose | ready | refresh | rollout`
+- **Arguments:** `audit | conform | help | educate | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

@@ -8,7 +8,7 @@ description: >
   Govern the KI knowledge-base Streams container and flat Roadmap records. Use for KB
   forward-work structure or migration; lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and
   `ki-accept`, while `ki-repo-kb` owns zones.
-argument-hint: 'audit | conform | help | educate | iterate | propose | ready | refresh | rollout'
+argument-hint: 'audit | conform | help | educate | refresh'
 ---
 
 # Knowledge Islands Streams
@@ -37,19 +37,7 @@ Legacy `Active`, `Background`, `Dormant`, and Focus-style folders are migration 
 
 ## Status lifecycle
 
-A roadmap item's `status` is its position in the shared delivery lifecycle:
-
-| Status            | Meaning                                                                 |
-| ----------------- | ----------------------------------------------------------------------- |
-| `triage`          | Captured intake, not yet adopted                                        |
-| `draft`           | Work is being shaped in its roadmap record                              |
-| `ready`           | Stable; no open questions; prerequisites satisfied; approved to deliver |
-| `in-progress`     | Approved rollout underway                                               |
-| `awaiting-review` | Checklist executed; required review packet awaits human closure         |
-| `done`            | Review accepted; retain the completed record until explicit pruning     |
-| `cancelled`       | Closed with a resolution; retain the record until explicit pruning      |
-
-Order: `draft` → `ready` → `in-progress` → `awaiting-review` → `done`.
+A roadmap item's `status` and `horizon` are set by the [status and horizon table](../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md#status-and-horizon), which `ki-work-roadmap` owns; this container repeats neither.
 
 ## Record ownership
 
@@ -72,20 +60,16 @@ Almost everything is fixed above. Only these come from the host base — take de
 
 ## Operating modes
 
-Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the operational areas, lifecycle, bindings, Step 1, and Working rules — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. EDUCATE explains the canonical Streams model and routes creation of the parent zone to `ki-repo-kb`; it ships no standalone scaffold or runner. Its adapter modes are **ITERATE · PROPOSE · READY · ROLLOUT**. Common review and closure belong to `ki-accept`. Modes are named and alphabetical.
+Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the operational areas, lifecycle, bindings, Step 1, and Working rules — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. EDUCATE explains the canonical Streams model and routes creation of the parent zone to `ki-repo-kb`; it ships no standalone scaffold or runner. Lifecycle actions are not modes here: capture belongs to `ki-next`, shaping and the Ready move to `ki-plan`, delivery to `ki-implement`, and review and closure to `ki-accept`. Modes are named and alphabetical.
 
 | Mode | Fires on | Read before acting |
 | --- | --- | --- |
 | AUDIT | "audit my streams" | [mode-audit.md](references/mode-audit.md) |
 | CONFORM | "conform my streams / bring them into line" | [mode-conform.md](references/mode-conform.md) |
 | EDUCATE | "bootstrap streams governance" (via the `ki-bootstrap` chain) | the EDUCATE sentence above — no procedure file |
-| ITERATE | "plan this roadmap record" | [mode-iterate.md](references/mode-iterate.md) |
-| PROPOSE | "capture KB work" | [mode-propose.md](references/mode-propose.md) |
-| READY | "mark this ready" | [mode-ready.md](references/mode-ready.md) |
 | REFRESH | "is the Streams model still current" (on its declared cadence) | [mode-refresh.md](references/mode-refresh.md) |
-| ROLLOUT | "implement this roadmap record" (needs explicit authorisation) | [mode-rollout.md](references/mode-rollout.md) |
 
-The Working rules apply on every fire, before any mode procedure loads — ROLLOUT in particular must not begin without explicit user authorisation.
+The Working rules apply on every fire, before any mode procedure loads.
 
 ## Working rules
 
