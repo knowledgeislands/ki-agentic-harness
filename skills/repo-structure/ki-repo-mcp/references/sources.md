@@ -21,12 +21,12 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 | Tag       | Source                                 | Governs | Last reviewed |
 | --------- | -------------------------------------- | ------- | ------------- |
-| SPEC      | [MCP spec — versioning / latest][spec] | ※       | 2026-10-06    |
-| CHANGELOG | [2026-07-28 changelog][changelog]      | †       | 2026-10-06    |
-| SDK       | [TypeScript SDK releases][sdk]         | ※       | 2026-10-06    |
-| TOOLS     | [Server → Tools][tools]                | ‡       | 2026-10-06    |
-| SEC       | [Security Best Practices][sec]         | §       | 2026-10-06    |
-| AUTH      | [Authorization][auth]                  | ¶       | 2026-10-06    |
+| SPEC      | [MCP spec — versioning / latest][spec] | ※       | 2026-10-18    |
+| CHANGELOG | [2026-07-28 changelog][changelog]      | †       | 2026-10-18    |
+| SDK       | [TypeScript SDK releases][sdk]         | ※       | 2026-10-18    |
+| TOOLS     | [Server → Tools][tools]                | ‡       | 2026-10-18    |
+| SEC       | [Security Best Practices][sec]         | §       | 2026-10-18    |
+| AUTH      | [Authorization][auth]                  | ¶       | 2026-10-18    |
 
 † What changed since 2025-11-25 (stateless core, `server/discover`, required `resultType`, Multi Round-Trip Requests, tasks moved to an extension, transport-session and SSE-resumability removals).
 
@@ -42,13 +42,10 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 | Tag       | Source                                                        | Governs | Last reviewed |
 | --------- | ------------------------------------------------------------- | ------- | ------------- |
-| COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)][annotations] | †       | 2026-10-06    |
-| COMMUNITY | [NSA/CISA — MCP security CSI][csi]                            | ‡       | 2026-06-21    |
-| REGISTRY  | [GitHub MCP Registry][github-mcp]                             | §       | 2026-10-05    |
+| COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)][annotations] | †       | 2026-10-18    |
+| REGISTRY  | [GitHub MCP Registry][github-mcp]                             | §       | 2026-10-18    |
 
 † What the `*Hint` annotations can and can't do — anchors the annotation-driven gate.
-
-‡ External restatement of MCP server hardening (least privilege, allowlists, logging).
 
 § MCP server discovery and integration examples; catalogue entries are discovery evidence, not protocol requirements.
 
@@ -58,8 +55,8 @@ The standard is defined as the **majority shape** across the six sibling repos u
 
 | Tag    | Source                      | Governs                                                       | Last reviewed |
 | ------ | --------------------------- | ------------------------------------------------------------- | ------------- |
-| REPOS  | The six sibling repos †     | Layout, config, tool naming, shared `utils/`, the toolchain ‡ | 2026-10-06    |
-| CLAUDE | Each repo's own `CLAUDE.md` | Per-repo invariants ※                                         | 2026-10-06    |
+| REPOS  | The six sibling repos †     | Layout, config, tool naming, shared `utils/`, the toolchain ‡ | 2026-10-18    |
+| CLAUDE | Each repo's own `CLAUDE.md` | Per-repo invariants ※                                         | 2026-10-18    |
 
 † `mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gsuite`, `mcp-m365`, `mcp-housekeeping-claude`, `mcp-ki-kb-notion-mirror`. Two newer v1 repositories (`mcp-acquire-whatsapp`, `mcp-housekeeping-chatgpt`) are not yet part of the majority basis.
 
@@ -73,15 +70,34 @@ These primary sources ground the separate source-install contract. They do not m
 
 | Tag | Source | Governs | Last reviewed |
 | --- | ------ | ------- | ------------- |
-| SEMVER | [Semantic Versioning 2.0.0][semver] | Version grammar and precedence | 2026-09-24 |
-| GIT-TAG | [Git tag documentation][git-tag] | Annotated release tags and object identity | 2026-09-24 |
-| GITHUB-RELEASE | [GitHub release management][github-release] | Owner-designated stable release marker | 2026-09-24 |
-| BUN-INSTALL | [Bun install documentation][bun-install] | Frozen lockfile installation | 2026-09-24 |
-| BUN-LOCK | [Bun lockfile documentation][bun-lock] | Committed dependency evidence | 2026-09-24 |
+| SEMVER | [Semantic Versioning 2.0.0][semver] | Version grammar and precedence | 2026-10-18    |
+| GIT-TAG | [Git tag documentation][git-tag] | Annotated release tags and object identity | 2026-10-18    |
+| GITHUB-RELEASE | [GitHub release management][github-release] | Owner-designated stable release marker | 2026-10-18    |
+| BUN-INSTALL | [Bun install documentation][bun-install] | Frozen lockfile installation | 2026-10-18    |
+| BUN-LOCK | [Bun lockfile documentation][bun-lock] | Committed dependency evidence | 2026-10-18    |
 
 ## Last review
 
-REFRESH last ran **2026-10-06**. Every row was re-fetched except the NSA/CISA CSI, which returned HTTP 403 and keeps its 2026-06-21 date; this skill therefore remains overdue until that document is re-checked or rehosted.
+REFRESH last ran **2026-10-18** under KI-HARNESS-GOV-194. Every row was re-fetched, and the sibling repositories were re-scanned locally.
+
+- **SPEC / CHANGELOG:** 2026-07-28 is still the latest released revision, with no newer revision or release candidate listed. Its changelog now also records an error-code allocation policy (`-32000` to `-32019` implementation-defined, `-32020` to `-32099` reserved, with three renumbered codes), deterministic `tools/list` ordering (SHOULD), required `ttlMs` and `cacheScope` on cacheable results, and the deprecation of Roots, Sampling and Logging under a twelve-month feature lifecycle. These sharpen the 2026-07-28 profile watch-item; none touches the 2025-11-25 profile.
+- **SDK:** `@modelcontextprotocol/server`, `client` and `core` remain at **2.3.1** (2026-10-05) and the v1 SDK at **1.32.1**, with no newer release. 2.3.0 enforces one server per connection, which the per-connection `serveStdio` factory already satisfies.
+- **TOOLS / SEC / AUTH:** the 2025-11-25 pages are unchanged since 2026-10-06.
+- **COMMUNITY / REGISTRY:** the annotations post is unchanged and still lists SEP-1913, 1984, 1561, 1560 and 1487. The GitHub registry lists 490 servers and states no curation or protocol requirement, so it stays discovery evidence only.
+- **Source distribution:** SemVer 2.0.0 is current; the `git tag` manual is unchanged since Git 2.55.0; GitHub release guidance adds immutable releases, which lock assets and the tag but leave the latest-release flag editable; Bun still requires a committed text `bun.lock` and does not freeze the lockfile in CI unless asked, with `bun ci` as the shorthand.
+- **REPOS / CLAUDE:** all six original siblings still declare `@modelcontextprotocol/server` 2.3.0, one patch behind; `mcp-acquire-whatsapp` and `mcp-housekeeping-chatgpt` still declare the v1 SDK `^1.32.0`. `mcp-git-audit` (AGENTS.md line 31), `mcp-ki-kb-notion-mirror` (line 21) and `mcp-m365` (now line 109) still declare the 2025-11-25 profile while running the v2 package.
+- **Retired:** the [NSA/CISA MCP security CSI][csi] returned HTTP 403 again, as on 2026-10-06, and the CISA resources listing offered no alternative host. It was an external restatement of server hardening that no standard or rubric clause cites, so its row is retired rather than left to keep the skill permanently overdue. Re-add it if a reachable host is found.
+
+**Open watch-items:**
+
+- Correct the sibling names in the standard and `SKILL.md`, which still say `mcp-ki-repo-kb-fs` and `mcp-ki-repo-kb-notion-mirror`, and decide whether the two v1 repositories join the majority basis.
+- Add 2026-07-28 TOOLS, SEC and AUTH rows beside the 2025-11-25 ones, make the structured-output rule profile-dependent, and assess the new error-code range, deterministic tool ordering and cacheable-result fields for the 2026-07-28 profile.
+- Track the three AGENTS.md profile declarations above, sibling pins against SDK 2.3.1, and migration of the two v1 repositories.
+- Unchanged: rate limiting for any future remote server, and the open annotation vocabulary proposals.
+
+## Previous review
+
+REFRESH ran **2026-10-06**. Every row was re-fetched except the NSA/CISA CSI, which returned HTTP 403 and kept its 2026-06-21 date.
 
 - **SPEC / CHANGELOG:** 2026-07-28 is still the latest released revision, with no newer revision or release candidate; its changelog is unchanged.
 - **SDK:** `@modelcontextprotocol/server`, `client` and `core` are at **2.3.1** (2026-10-05), with new `server-legacy`, `codemod` and `node` packages; the v1 `@modelcontextprotocol/sdk` is at **1.32.1**.
@@ -91,16 +107,6 @@ REFRESH last ran **2026-10-06**. Every row was re-fetched except the NSA/CISA CS
 - **COMMUNITY:** the annotations post (2026-03-16) still treats annotations as untrusted hints and lists open proposals SEP-1913, 1984, 1561, 1560 and 1487.
 - **REPOS:** all six original siblings declare `@modelcontextprotocol/server` 2.3.0, one patch behind; the `mcp-ki-kb-fs` structured-output gap is resolved, and `mcp-m365` declares `outputSchema` only on tools that emit `structuredContent`, by design. The fleet now also includes three v1 repositories.
 - **CLAUDE:** `mcp-git-audit` (AGENTS.md line 31), `mcp-ki-kb-notion-mirror` (line 21) and `mcp-m365` (line 106) still declare the 2025-11-25 profile while running the v2 server package, contradicting the package-derived profile rule.
-
-**Open watch-items:**
-
-- Correct the sibling names in the standard and `SKILL.md`, which still say `mcp-ki-repo-kb-fs` and `mcp-ki-repo-kb-notion-mirror`, and decide whether the two newer v1 repositories join the majority basis.
-- Add 2026-07-28 TOOLS, SEC and AUTH rows beside the 2025-11-25 ones, and make the structured-output rule profile-dependent (object versus any JSON value).
-- Track the three AGENTS.md profile declarations above, sibling pins against SDK 2.3.1, and migration of the two v1 repositories.
-- Find a reachable host for the NSA/CISA CSI.
-- Unchanged: rate limiting for any future remote server, and the open annotation vocabulary proposals.
-
-## Previous review
 
 REFRESH last ran **2026-09-02** for the profile reanchor. The official specification index still resolves to **2026-07-28**, its changelog still requires `server/discover` and result discriminators, and the TypeScript SDK release surface still publishes the v1 SDK alongside the v2 server and client package families.
 
