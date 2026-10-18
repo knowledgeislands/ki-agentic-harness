@@ -4,12 +4,14 @@ area: GOV
 title: Activity homes and coordination
 project: ways-of-working
 component: change-management
-status: triage
+status: cancelled
+resolution: merged
+resolution_target: KI-HARNESS-GOV-210
 blocks: []
 blocked_by: [KI-HARNESS-GOV-210]
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-18T02:18:20Z
+updated_at: 2026-10-18T08:27:00Z
 ---
 
 # KI-HARNESS-GOV-206: Activity Homes and Coordination
@@ -44,10 +46,14 @@ The [work model decision](https://github.com/knowledgeislands/ki-principal/blob/
 - Phase 1 of the work-model migration, under [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md), writes each of these into its standard.
 - Out: renaming existing checkpoints, folders or slugs and moving Activity notes from `initiative` to `theme`, which belong to each territory's migration; Personal's section 6 handoff and its `Admin/Operations/Activities/` work, which go to Personal > SoP through Kris; a short-title field, which ACT-NAMES declined.
 
-## Dependencies / blocks
+## Cancelled
 
-Sequenced after the SHAPE-AGREE migration's harness checker. Kris Brown agreed SHAPE-AGREE on 17 October 2026 at 22:50 BST as "one migration after the restart: harness checker first, then folders, decisions logs and thread ids together". This record's checkpoint and naming changes must land against that checker and in the same pass as the folder and thread-id renames, so that nothing is renamed twice. [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) is that checker and the work model's write-in, so it stands in `blocked_by`.
+Closed on 2026-10-18 at 09:27 BST as delivered by [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md), into which its work was merged, under Kris Brown's GOV-206-CLOSE a), answered on 18 October in the ways-of-working decisions log, "Agreed with all of the recommendations": close this record as delivered once KI-HARNESS-GOV-210 is accepted. Phase 1 of the work-model migration wrote every Boundary item into its standard, and KI-HARNESS-GOV-210 was accepted on its review packet the same morning; that record carries the delivery and review evidence. It leaves no outstanding change here: renaming checkpoints, folders and slugs, moving Activity notes from `initiative` to `theme`, and Personal's section 6 handoff stay with each territory's migration, as the Boundary's Out says.
 
 ## Discussion
 
 Captured on Kris Brown's ACT-WORK answer. Questions for planning: whether the seven skill changes stay one delivery or split by skill; and how a territory home is written in Activity frontmatter. The work model answered the second: regular work is the default home and needs no key. With phase 1 writing every Boundary item in, planning decides whether this record closes as delivered by [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) or keeps a residue.
+
+### Sequencing
+
+Sequenced after the SHAPE-AGREE migration's harness checker. Kris Brown agreed SHAPE-AGREE on 17 October 2026 at 22:50 BST as "one migration after the restart: harness checker first, then folders, decisions logs and thread ids together". This record's checkpoint and naming changes must land against that checker and in the same pass as the folder and thread-id renames, so that nothing is renamed twice. [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) is that checker and the work model's write-in, so it stands in `blocked_by`.
