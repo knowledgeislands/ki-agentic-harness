@@ -649,14 +649,14 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="388" class="t-muted" font-size="9" text-anchor="middle">records · automatic</text>
         </g>
 
-        <g id="node-ki-checkpoint" data-node-id="ki-checkpoint" data-node-label="ki-checkpoint" tabindex="0" role="button" aria-label="Focus ki-checkpoint, coordination · automatic, Governance · 13 skills › Coordination · Delegation and programme" aria-pressed="false" data-node-kind="backend" data-node-sublabel="coordination · automatic" data-node-context="Governance · 13 skills › Coordination · Delegation and programme">
-          <title>ki-checkpoint · coordination · automatic · Governance · 13 skills › Coordination · Delegation and programme</title>
+        <g id="node-ki-work-folder" data-node-id="ki-work-folder" data-node-label="ki-work-folder" tabindex="0" role="button" aria-label="Focus ki-work-folder, coordination · automatic, Governance · 13 skills › Coordination · Delegation and programme" aria-pressed="false" data-node-kind="backend" data-node-sublabel="coordination · automatic" data-node-context="Governance · 13 skills › Coordination · Delegation and programme">
+          <title>ki-work-folder · coordination · automatic · Governance · 13 skills › Coordination · Delegation and programme</title>
           <rect x="712" y="484" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="484" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 10;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(718 490) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="812" y="512" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-checkpoint</text>
+          <text data-node-label="" x="812" y="512" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-folder</text>
         <text x="812" y="528" class="t-muted" font-size="9" text-anchor="middle">coordination · automatic</text>
         </g>
 
