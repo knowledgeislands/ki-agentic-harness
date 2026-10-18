@@ -724,10 +724,13 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   {
     skill: 'checkpoint',
     table: skillTable('ki-checkpoint'),
-    artifact: '+/_CHECKPOINTS/ subarea',
-    detect: (s) => [...s.tree].some((p) => p.startsWith('+/_CHECKPOINTS/'))
+    artifact: '+/_WORK/ or +/_WORK_REVIEW/ subarea',
+    detect: (s) =>
+      [...s.tree].some((p) => ['+/_WORK/', '+/_WORK_REVIEW/', '+/_CHECKPOINTS/'].some((area) => p.startsWith(area)))
   }
 ]
+// Thread-model working areas read for the work model's tolerance window, each warned with its new home.
+const LEGACY_WORKING_AREAS = ['+/_CHECKPOINTS/', '+/_THREADS/'] as const
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
 export const detectedCoverageSkills = (): readonly string[] => COVERAGE.map((entry) => entry.table).sort()
 // A primary structure is exclusive; all other ki-repo-* skills are composable
@@ -1124,6 +1127,12 @@ async function auditRepo(
       else if (declared && !detected)
         warn('COV-1', `declares [skills.${c.table}] but no ${c.artifact} found — stale opt-in?`)
     }
+    for (const area of LEGACY_WORKING_AREAS)
+      if ([...signals.tree].some((p) => p.startsWith(area)))
+        warn(
+          'COV-1',
+          `${area} is a thread-model working area, read for the tolerance window — its territory's migration moves it to +/_WORK/<id>/`
+        )
 
     // ── primary-structure cardinality ── STRUCT-1/2
     // Project and KB are mutually exclusive primaries. Repository specialisations compose
