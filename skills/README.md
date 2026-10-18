@@ -465,7 +465,7 @@ Govern directional work and knowledge trades between KI repositories: routes, re
 
 #### `ki-work-folder`
 
-Create, update, resume, audit, or remove the work file of one piece of work, `+/_WORK/<id>/work.md`: its front matter of id, level, title, worker, supervisor, state and times, its next steps, Messages and parked query tags. Use for picking work up without a transcript or vendor session; Git is the logbook, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners, and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
+Own the work folder of one piece of work, `+/_WORK/<id>/`: its closed list, who may write each kind, its tidy and close-out rules, the `+/_WORK_REVIEW/` holding area, the Messages line shape, and its work file `work.md` with front matter of id, level, title, worker, supervisor, state and times, next steps, Messages and parked query tags. Use to create, update, resume, audit, tidy or remove a work file or folder, or to pick work up without a transcript or vendor session; Git is the logbook, decisions, roadmap state and durable knowledge stay with their owners, and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
 
 - **Kind:** Governance
 - **Applicability:** Detected

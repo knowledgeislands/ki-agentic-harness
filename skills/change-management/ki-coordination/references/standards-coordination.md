@@ -32,6 +32,7 @@
   - [Bootstrap](#bootstrap)
   - [Messages between work](#messages-between-work)
 - [Decisions and design](#decisions-and-design)
+  - [Decisions log](#decisions-log)
   - [Decision classes](#decision-classes)
   - [Decisions life cycle](#decisions-life-cycle)
   - [Design notes](#design-notes)
@@ -52,7 +53,7 @@
 
 ## Scope
 
-Coordinating work - territory work and Project work - is how the worker to the owner holds Knowledge Islands work that has runs of its own: the session working it dispatches work, decides with the owner and reports. This standard owns how a session behaves while it coordinates work, how it reports and how it keeps itself current. It is the coordinator half of the practice that the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md) governs on the run side: detachment, the run packet, prompt shape, authority tiers, the decisions log, coordination, the run queue, monitoring, while this standard owns the [owner report](#owner-report) with its [Needs tags](#needs-tags), which every report a background agent or a coordinator gives takes, and the [generated surfaces](#generated-surfaces) that carry it. The work's state is its work file, `+/_WORK/<id>/work.md`, under the `ki-work-folder` [work-file standard](../../../governance/ki-work-folder/references/standards-work-folder.md).
+Coordinating work - territory work and Project work - is how the worker to the owner holds Knowledge Islands work that has runs of its own: the session working it dispatches work, decides with the owner and reports. This standard owns how a session behaves while it coordinates work, how it reports and how it keeps itself current. It is the coordinator half of the practice that the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md) governs on the run side: detachment, the run packet, prompt shape, authority tiers, the launcher's part in the decisions log, coordination, the run queue, monitoring, while this standard owns the [owner report](#owner-report) with its [Needs tags](#needs-tags), which every report a background agent or a coordinator gives takes, and the [generated surfaces](#generated-surfaces) that carry it. The work's state is its work file, `+/_WORK/<id>/work.md`, and the work folder that holds it - its closed list, entry points, tidy rules, review area and Messages line shape - is the `ki-work-folder` [work-folder standard](../../../governance/ki-work-folder/references/standards-work-folder.md)'s; this standard says when the folder is tidied, whether an outcome has a durable home, and how a decision is logged and what becomes of it.
 
 A repository that runs coordinating work declares `[skills.ki-coordination]` in its `.ki.toml`. The declaration is the signal the runtime hook and the output style key on, so a repository that does not delegate never gets them.
 
@@ -105,7 +106,7 @@ The Work Process note's Words table owns the words of the model: work, work item
 | run | A named set of agents sharing one state folder for runtime files; its reports and briefs live in the work folder of the work it serves | `ki-delegation` |
 | agent | A process `ki agent` launches detached under the background-run contract; an in-session subagent is not one | `ki-delegation` |
 | send line | The one line the owner pastes to send work in handoff to them back to its worker in any session, under [Banner](#banner); it replaced the resume line | `ki-coordination` |
-| binding | The machine-local runtime file that ties native client sessions to one piece of work, keyed `<repository name>/<work id>`, never committed and never moved between hosts, under the work-file standard's [Work identity and native sessions](../../../governance/ki-work-folder/references/standards-work-folder.md#work-identity-and-native-sessions) | `ki-work-folder` |
+| binding | The machine-local runtime file that ties native client sessions to one piece of work, keyed `<repository name>/<work id>`, never committed and never moved between hosts, under the work-folder standard's [Work identity and native sessions](../../../governance/ki-work-folder/references/standards-work-folder.md#work-identity-and-native-sessions) | `ki-work-folder` |
 
 ### Levels and forms
 
@@ -121,7 +122,7 @@ The note's Levels and forms of work table sets the three levels, the two forms a
 
 The coordinating forms are territory work and Project work; where this standard says "coordinating work" it means both, and "coordinator" means the session working it. Regular work needs no coordinator, in Kris's words "because it is sort of self-coordinating, but there's no reason why the state of play thread can't sort of talk about it": territory work may discuss it but does not necessarily dispatch it. A session that works with the owner on one bounded matter, with or without an ad hoc work folder, is a conversational session under [Conversational bounded work](#conversational-bounded-work).
 
-The work file declares its level in its `level` field under the work-file standard: `territory`, `regular` or `project`, ad hoc work taking `regular`. The level follows from the id: one segment is territory work, a second segment `regular` is regular or ad hoc work, and any other second segment is Project work. A checkpoint in the old shape declares its type in `role` until it moves: `state-of-play` for territory work, `coordination` for Project work, and `conversational` or no field otherwise.
+The work file declares its level in its `level` field under the work-folder standard: `territory`, `regular` or `project`, ad hoc work taking `regular`. The level follows from the id: one segment is territory work, a second segment `regular` is regular or ad hoc work, and any other second segment is Project work. A checkpoint in the old shape declares its type in `role` until it moves: `state-of-play` for territory work, `coordination` for Project work, and `conversational` or no field otherwise.
 
 Kris set territory work's role on 2026-10-14 as "the coordination thread of coordination threads", in these words: "As the state of play thread, I think you are very much in a position where you can write directly into the projects and the checkpoints of the other coordination threads. And you're responsible for fundamentally dispatching that work around. So rather than building up more and more of your own context, the key thing is to understand mostly where that work goes first and foremost and get it dispatched out of this thread and then if I ask a similar question or an extension to something or even repeat myself you're the one who can understand all of this and then deal with that." So territory work sends direction down into Project work through the [Messages section](#messages-between-work) of each receiving work file, and its first concern with any new matter is where the work goes, not holding it in its own context.
 
@@ -200,7 +201,7 @@ A coordinator also follows these practices with the owner. Every report it gives
 - **Work file:** every send, receive, mark and hold rewrites the work file's front matter, under [Picking work up](#picking-work-up), so that the work file alone says how the work is picked up.
 - **Links:** every roadmap record a report names is linked by its full identifier to its local file, under [Linking records](#linking-records), and a pruned record is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`. The rubric flags any record identifier a report leaves unlinked.
 - **Wording:** plain language, and "background agents", never "helpers". When the owner must paste a message into another session, the coordinator gives it in a code block ready to copy.
-- **Decisions:** the coordinator records each owner decision in the work's [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log), `+/_WORK/<id>/decisions.md`, before launching the work it authorises, in the turn the decision arrives, and verifies any later quotation from the transcript file, under the two rules that section sets. It strikes, points or keeps each entry at the mark under the [decisions life cycle](#decisions-life-cycle).
+- **Decisions:** the coordinator records each owner decision in the work's [decisions log](#decisions-log), `+/_WORK/<id>/decisions.md`, before launching the work it authorises, in the turn the decision arrives, and verifies any later quotation from the transcript file, under the two rules that section sets. It strikes, points or keeps each entry at the mark under the [decisions life cycle](#decisions-life-cycle).
 - **Messages:** a message from other work reaches this work through its work file's [Messages section](#messages-between-work), or a run's inbox; a backend nudge is not visible progress, and the [surfaces rule](#surfaces) says where the owner sees it.
 
 ### States and moves
@@ -376,7 +377,7 @@ A coordinator may receive a message from other work through its work file's Mess
 | Surface | Carries | Who writes it | When |
 | --- | --- | --- | --- |
 | Transcript | Owner turns and the coordinator's own replies; nothing injected | The coordinator, in its owner report | Every owner-facing turn names messages received and acted on since the last one |
-| Work file | The front matter the observatory reads; Messages; parked tags | The coordinator, under the work-file standard | At every send, receive, mark and hold |
+| Work file | The front matter the observatory reads; Messages; parked tags | The coordinator, under the work-folder standard | At every send, receive, mark and hold |
 | Work status | `ki work status --format json`, schema `ki/work-status/v1`, and the five views | `ki`, reading every work file | On demand; the Observatory reads only this |
 | Status line | `~/.local/state/ki/agents/<run>/thread.status`: one line, `HH:MM <zone> - <state> - <what it is doing or waiting on>` | The coordinator, at each owner report | Until `ki work status` reads the work file directly |
 | Notification | Message received, acknowledgement sent, session recovered, session errored | Not this standard | The notification record in Knowledge Islands Principal owns the channel |
@@ -421,7 +422,7 @@ A change the owner asked for and that was made in the same turn, in one file or 
 
 A conversational session does bounded work directly, without delegating, opening a run or becoming a coordinator. The work is bounded when it serves the matter the owner raised in the session, stays within the authority the owner gave there and each repository's own rules, and can finish with the owner in the session. The session may delegate when it chooses. It becomes a coordinator only when the owner opens or re-bootstraps it with a coordinating [opener](#opening-work), never on its own. When the work outgrows the bound, because it needs a Project's decisions, more than one run at once, or would keep the owner waiting across sessions, the session says so in one line and proposes the Project's work, or new Project work through territory work.
 
-Work that must outlive the session takes an ad hoc work folder, `+/_WORK/<territory>.regular.<slug>/`, under the work-file standard, as Kris answered CONVERSATIONAL-RUN on 2026-10-16 by taking CONVRUN-NARROW's option a) for the run and folder it may take. It pauses by putting the work On hold through a work-file update, with no hold report or banner, and its agents head their reports `# <work title> › <run name>` with `**Run report at <local time>**` and no banner.
+Work that must outlive the session takes an ad hoc work folder, `+/_WORK/<territory>.regular.<slug>/`, under the work-folder standard, as Kris answered CONVERSATIONAL-RUN on 2026-10-16 by taking CONVRUN-NARROW's option a) for the run and folder it may take. It pauses by putting the work On hold through a work-file update, with no hold report or banner, and its agents head their reports `# <work title> › <run name>` with `**Run report at <local time>**` and no banner.
 
 ### Coordinator-only machinery
 
@@ -662,7 +663,7 @@ A **full summary** is the owner report for the whole of the work: everything dec
 Its shape, in this order:
 
 - **Heading:** the [report heading](#banner), its form line reading `**<glyph state> · Full summary at <local time> · last mark <local time>**`.
-- **`## Decided`:** every owner decision since the work began, one line each in the order taken, each linked to its entry in the work's [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) or, for a struck entry, to the durable home that now holds it. A decision that a later one superseded stays on its line and says so.
+- **`## Decided`:** every owner decision since the work began, one line each in the order taken, each linked to its entry in the work's [decisions log](#decisions-log) or, for a struck entry, to the durable home that now holds it. A decision that a later one superseded stays on its line and says so.
 - **`## Done`:** the whole work's completed outcomes, grouped by topic under `###` sub-headings wherever more than a few lines would otherwise run together, with failures, corrections and limitations beside the outcomes they qualify.
 - **`## In Progress`:** as the owner report, with `Outstanding - no action requested now` beneath it. A dated upcoming deadline or scheduled event belongs there with its date, so the owner sees what is coming without being asked anything.
 - **`## Queries`:** every open query, however long it has been open, restated in full under its own `### <tag> - <title>` heading with **Context**, **Query** and **Options**, written to be answered cold. Nothing is shortened because it was asked before.
@@ -676,7 +677,7 @@ Sources are the work's decisions log, every report in the work folder and, for t
 
 Project work coordinates exactly one Project for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
 
-- **Work file:** the coordinator picks the work up from `+/_WORK/<territory>.<project>/work.md`, which holds current state only, and keeps it current under the work-file standard. The work file names its Project in front matter, and the Project note does not link down.
+- **Work file:** the coordinator picks the work up from `+/_WORK/<territory>.<project>/work.md`, which holds current state only, and keeps it current under the work-folder standard. The work file names its Project in front matter, and the Project note does not link down.
 - **Decisions:** it records each owner approval in `+/_WORK/<id>/decisions.md` before launching the work that approval authorises.
 - **Territory work:** [territory work](#territory-work) owns cross-Project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. Project work raises those there.
 - **Naming:** where the runtime can name a session, the session takes the work's label, such as `KI > Model > Ways of working`, under [Work naming](#work-naming), so territory work and the owner can find it.
@@ -733,7 +734,7 @@ A one-line opener brings a new or already-running session onto this contract, fo
 
 1. reads this standard and the Work Process note;
 2. checks `ki agent status` for its runs, and reconciles what is actually running rather than assuming;
-3. resolves the id to its work file, `+/_WORK/<id>/work.md`, or, for old-shape work in the tolerance window, to its single `+/_CHECKPOINTS/` checkpoint, stopping to ask the owner if no file or more than one file matches; then creates or reconciles it under the work-file standard, and checks its `level` against the opener, `territory` for a territory opener and `project` for a Project opener, or for an old checkpoint its `role`; on `regular` or a mismatch it says so in one line and answers in the [Reply forms](#reply-forms) rather than as a coordinator;
+3. resolves the id to its work file, `+/_WORK/<id>/work.md`, or, for old-shape work in the tolerance window, to its single `+/_CHECKPOINTS/` checkpoint, stopping to ask the owner if no file or more than one file matches; then creates or reconciles it under the work-folder standard, and checks its `level` against the opener, `territory` for a territory opener and `project` for a Project opener, or for an old checkpoint its `role`; on `regular` or a mismatch it says so in one line and answers in the [Reply forms](#reply-forms) rather than as a coordinator;
 4. reads the work file's [Messages section](#messages-between-work) and acts on each line, `FIRST-STEP` first, before launching any work;
 5. reports under the [report heading](#banner), its form line reading `**<glyph state> · Re-bootstrap at <local time> · last mark <local time>**`, in three lines: its coordinator role and where the work stands, what is running, and what it needs from the owner; then closes with the [glyph banner](#banner) and, in handoff to the owner, the send line, rendered exactly as a Summary renders them.
 
@@ -741,14 +742,24 @@ A one-line opener brings a new or already-running session onto this contract, fo
 
 Territory work propagates common instructions and any piece of coordinating work may message another. Rules go to their durable owner, a skill or a Decision Record. Messages go into the receiving work file's **Messages section**, the asynchronous channel between work, which Kris set on 2026-10-14: "send a message effectively to another thread asynchronously by adding something at the top of its checkpoint so the next time that it reaches its checkpoint it will probably see that there's a change there and it can decide what to do with it." The section travels across hosts through Git, so it reaches work wherever and whenever it is next picked up. Writing a Messages line is a send to that work.
 
-- **Place:** the work file's `## Messages` section, under the work-file standard, holding one item per message. An old-shape checkpoint keeps its bold-line messages block beneath its pick-up block until it moves.
-- **Shape:** `- <YYYY-MM-DD> · <TAG> · <sender title>: <the owner's words or the instruction, with links>`, newest first, about 60 words at most with the detail linked. A message citing an owner decision quotes its words.
-- **Sender:** any coordinating work in the same Capital. It adds its line and edits nothing else in the receiver's work file, commits that path alone, with the subject `docs(work): <receiver id> message from <sender id>`, and pushes at once. Territory work routes the owner's dumps and anything with no owning work, may also write into its territory's Project notes to dispatch work, and alone writes to another Capital, through that Capital's territory work.
+- **Place and shape:** one line in the work file's `## Messages` section, in the shape, length and commit subject the `ki-work-folder` [Messages lines](../../../governance/ki-work-folder/references/standards-work-folder.md#messages-lines) section sets. An old-shape checkpoint keeps its bold-line messages block beneath its pick-up block until it moves.
+- **Sender:** any coordinating work in the same Capital. It adds its line and edits nothing else in the receiver's work file, commits that path alone and pushes at once. Territory work routes the owner's dumps and anything with no owning work, may also write into its territory's Project notes to dispatch work, and alone writes to another Capital, through that Capital's territory work.
 - **Receiver:** the coordinator pulls fast-forward, then re-reads its work file at bootstrap, every send line, every Summary and recap, and before launching work, acts on each line, `FIRST-STEP` first, folding it into its decisions log, work or next steps, then removes that line in its next work-file update. A line it cannot act on yet stays, with an open query naming it.
 
 ## Decisions and design
 
-A coordinator turns the owner's words into durable knowledge. Every owner decision is logged in the turn it arrives, in the owner's words, under the `ki-delegation` [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log) rules, in the work's `decisions.md`; this section says what becomes of each entry, where design notes live and what finishes Project work. A record, report or banner describes a decision by its words and date and never by its number, under Kris's rule of 2026-10-14: "I actually think we should not necessarily need to put the decision number anywhere. It should be written about what the decision was or is."
+A coordinator turns the owner's words into durable knowledge. Every owner decision is logged in the turn it arrives, in the owner's words, in the work's `decisions.md`, under the [decisions log](#decisions-log) rules; this section says how an entry is written, what becomes of it, where design notes live and what finishes Project work. A record, report or banner describes a decision by its words and date and never by its number, under Kris's rule of 2026-10-14: "I actually think we should not necessarily need to put the decision number anywhere. It should be written about what the decision was or is."
+
+### Decisions log
+
+Each owner decision about the work becomes one timestamped entry in the work folder's decisions log, `+/_WORK/<id>/decisions.md`, quoted in the owner's own words where possible. Entries carry no numbers, and a prompt, brief, record, report, work file or banner describes the decision it acts under in the owner's words and with its date: Kris said on 2026-10-13 that "it should be written about what the decision was or is", and on 2026-10-14 that a numbered citation "has no meaning to me because I don't know what the decision was ... and I don't know where the list is". A log written before the work model keeps its numbers as history.
+
+The owner's words are whole only on the turn they arrive: a context-compressing proxy, a compaction or a shell read of a transcript can rewrite every earlier turn without saying so. Two rules keep the log faithful, on any machine and whatever the proxy setting:
+
+- **Log in the turn it arrives:** the coordinator writes an owner decision into the log in the same turn as the message that carries it, while that turn is still uncompressed, before it does anything else with the message.
+- **Verify later quotations from the file:** any later quotation of the owner's words, in a log entry, a brief, a record or a report, is checked against the session transcript file read with the runtime's file-read tool, which the proxy protects, never from in-context recall or from shell output such as `cat` or `grep`, which it does not.
+
+The coordinator writes the log by hand or through `ki agent decide`, and commits and pushes it under [Committing the work folder](#committing-the-work-folder), so that the test Kris set on 2026-10-13 holds: "if the state folder is lost, you shouldn't lose any knowledge". The log is the work's working record between consolidations, not a replacement for them, and it is not a Decision Record: each entry is classified under [decision classes](#decision-classes) and homed under the [decisions life cycle](#decisions-life-cycle), so that nothing durable exists only in the work folder. The launcher's part, adopting the log and the close gate's decision check, is the `ki-delegation` [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log)'s.
 
 ### Decision classes
 
@@ -775,7 +786,7 @@ The work's `decisions.md` is its one decisions list for its whole life: successi
 
 Design notes of every kind - options papers, mocks, loop reports and their stage decisions - live in the work folder of the work whose concern they design, `+/_WORK/<id>/design/`, under the `ki-work-design` standard. No `design/` folder sits anywhere under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc work folder. The earlier `+/_DESIGN/<subject-slug>/` home, set with "DESIGN-RETENTION - (a) +/_DESIGN/<subject-slug>/ in every repository", is read for the tolerance window and moves with its territory's migration.
 
-A design note is a draft, under review, graduated or deleted. It graduates when every decision it carried has a durable home: the standards, records and Decision Records that now hold the words. A graduated note is deleted in the same change, so nothing cites a deleted note: a work record cites a design note only while the note exists, and by `ready` the record's `Context` quotes what it needs in words; a Decision Record never cites a design note.
+A design note's life cycle - draft, under review, graduated or deleted - and the rule that nothing cites a deleted note are the `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home)'s, which owns graduation; the `ki-work-folder` [closed list](../../../governance/ki-work-folder/references/standards-work-folder.md#closed-list) sets which file kinds `design/` may hold. This standard resolves `design/` before Project work finishes.
 
 ### Finishing Project work
 
@@ -784,7 +795,7 @@ Project work moves to Finished once only, on the owner's `finish`, after the clo
 1. every logged decision is homed under the [decisions life cycle](#decisions-life-cycle), with none left homeless or held;
 2. the `design/` folder is resolved: every note graduated and deleted;
 3. the work file is set to `state: finished`, its durable information routed, and the commit `docs(work): <id> finish` made;
-4. the work folder is deleted at the mark that closes it, Git keeping it, and the runs archived by `ki agent close`, whose gate stays strict, with `--reconciled` as the owner's waiver, as Kris settled: "keep the close gate strict with the reconciled waiver".
+4. the work folder is deleted at the mark that closes it, under the `ki-work-folder` [close-out](../../../governance/ki-work-folder/references/standards-work-folder.md#tidying-the-work-folder), Git keeping it, and the runs archived by `ki agent close`, whose gate stays strict, with `--reconciled` as the owner's waiver, as Kris settled: "keep the close gate strict with the reconciled waiver".
 
 The Project note then points at the outcome. Reopening a Project is a new opener from territory work, not a send.
 
@@ -808,7 +819,7 @@ A recap is a plain-language roll-up for the owner of what has changed in the wor
 
 When the owner raises a side topic in passing, the coordinator records it as one dated line, says it is parked, and carries on with the current work. It does not explore the tangent unasked.
 
-Parked tangents live in the work file's `## Parked` section beside the parked query tags, each as `- Parked <YYYY-MM-DD>: <one line>`, under the work-file standard. They count as outstanding in the [recap](#recap-since-the-mark).
+Parked tangents live in the work file's `## Parked` section beside the parked query tags, each as `- Parked <YYYY-MM-DD>: <one line>`, under the work-folder standard. They count as outstanding in the [recap](#recap-since-the-mark).
 
 On request, such as "what's parked?", the coordinator lists them. When the owner picks one up, it gets a home - a Project, a work record through `ki-next`, or other work's Messages section - or is dropped, and the coordinator removes it in the same update.
 
@@ -824,15 +835,11 @@ The work folder `+/_WORK/<id>/` is tracked, and the knowledge in it is safe only
 
 ### Pruning the work folder
 
-At every send and at each mark the coordinator prunes its own work folder, so that `+/_WORK/<id>/` shows only what is still open and Git history holds the rest, as the note's Shared history is never rewritten sets. Kris set the rule as THREAD-TIDY on 2026-10-14, as received: "THREAD-TIDY / add a rule to ki-coordination: at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest; each thread applies it to its own folder at its next mark, starting with this one once the commit gate passes", and made it regular on 2026-10-16 by taking option a) of THREADS-TRIM.
+At every send and at each mark the coordinator prunes its own work folder, so that `+/_WORK/<id>/` shows only what is still open and Git history holds the rest, as the note's Shared history is never rewritten sets. Kris set the rule as THREAD-TIDY on 2026-10-14 and made it regular on 2026-10-16 by taking option a) of THREADS-TRIM. What goes, what stays, how and who are the `ki-work-folder` [Tidying the work folder](../../../governance/ki-work-folder/references/standards-work-folder.md#tidying-the-work-folder) rules, over the folder's [closed list](../../../governance/ki-work-folder/references/standards-work-folder.md#closed-list); this standard keeps their timing and the judgement each needs.
 
-The folder's contents are a closed list, under the work-file standard: `work.md`, `decisions.md`, `<name>.report.md`, `briefs/<run>.md` and `design/`.
-
-- **What goes:** every `<name>.report.md` whose queries are all answered and whose outcome has a durable home, a work record, the decisions log, the work file or a commit; and every `briefs/<run>.md` once its run's report has been received, under the `ki-delegation` [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet). A query is answered when the owner has answered its Needs tag and the answer is read back in the log.
-- **What stays:** `work.md` and `decisions.md`, always; every report that still carries an open query; every brief whose handoff is open; and `design/` until its notes graduate.
-- **What does not belong:** any other file. Temporary output belongs under `tmp/<run>/<name>/` in the repository its agent worked in, and the coordinator deletes, by explicit path, each `tmp/<run>/` folder of its own whose output is superfluous.
-- **How:** in one commit by explicit path, `git rm` of each file it names and nothing else, never a folder-wide delete, so that Git history holds every report and a later [recap](#recap-since-the-mark) or [full summary](#full-summary) reads a deleted one from its last revision. The deletion is operational work under the [record threshold](#decision-classes) and opens no record.
-- **Who:** each coordinator prunes only its own folder. Territory work never prunes another work folder, a background agent never deletes a report, and a report whose outcome has no durable home yet is kept, not homed in haste.
+- **Judgement:** whether a report's outcome has a durable home, a work record, the decisions log, the work file or a commit, and whether its queries are answered, which they are when the owner has answered each Needs tag and the answer is read back in the log. A report whose outcome has no durable home yet is kept, not homed in haste, and a later [recap](#recap-since-the-mark) or [full summary](#full-summary) reads a deleted one from its last revision.
+- **Temporary output:** the coordinator deletes, by explicit path, each `tmp/<run>/` folder of its own whose output is superfluous.
+- **Record threshold:** the deletion is operational work under the [record threshold](#decision-classes) and opens no record.
 - **Flagging:** the rubric's COORD-9 lists every work folder holding a file outside the closed list, and every report whose Needs tags the decisions log all names, as candidates for the prune; whether each candidate's outcome has a durable home stays the owning coordinator's judgement, and the listing is never permission to delete. At its own mark territory work names each flagged folder in that work file's Messages section, and the owning coordinator prunes it at its next send. A `+/_THREADS/<run>/` folder is checked against its old closed list, `decisions.md` and `<name>.report.md`, for the tolerance window.
 
 ### Putting work on hold
@@ -876,11 +883,7 @@ An old-shape checkpoint keeps its pick-up block, read as the table above through
 
 ### Work awaiting review
 
-`+/_WORK_REVIEW/<id>/` is the holding area for migrated work a territory's migration was not confident is live, as Kris set under MIGRATION-REVIEW on 18 October: "put everything which you're confident in into the work folder and then put everything else into a underscore work review folder ... you're not waiting on me to answer those, and then we can pick up on the review ones later". Its folders keep the work-folder shape, and its index note, `+/_WORK_REVIEW/README.md`, gives one line per folder saying why it is there.
-
-- **Not live:** work awaiting review is neither picked up, dispatched nor counted against the cap; `ki work status` keeps it out of the five views and shows it as a count.
-- **Leaving review:** the owner, or the work itself at its next mark, moves a folder to `+/_WORK/<id>/` by `git mv` when it is live, or deletes it when it is not, removing its index line in the same commit.
-- **Checks:** the rubric accepts the holding area and reports its count; it applies no closed-list or link check to it until the folder leaves review.
+`+/_WORK_REVIEW/<id>/` is the holding area for migrated work a territory's migration was not confident is live, under MIGRATION-REVIEW of 18 October; its shape, index note, leaving rules and checks are the `ki-work-folder` [Work awaiting review](../../../governance/ki-work-folder/references/standards-work-folder.md#work-awaiting-review) section's. For coordinating work it is not live: it is neither picked up, dispatched nor counted against the cap, and `ki work status` keeps it out of the five views and shows it as a count.
 
 ### Pushing beneath other sessions
 

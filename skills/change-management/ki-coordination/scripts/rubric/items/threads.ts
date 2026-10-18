@@ -14,7 +14,7 @@ const COORD_1: RubricItem<CoordinationRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Create the territory work file in the Capital under the `ki-work-folder` work-file standard, or move the state-of-play checkpoint there at the territory's migration, and remove territory work from any repository that is not its own capital."
+        "Create the territory work file in the Capital under the `ki-work-folder` work-folder standard, or move the state-of-play checkpoint there at the territory's migration, and remove territory work from any repository that is not its own capital."
     },
     audit: { phase: 'INSPECT', run: ({ master }) => master.outcomes }
   }

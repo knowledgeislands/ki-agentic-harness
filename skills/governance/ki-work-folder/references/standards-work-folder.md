@@ -1,13 +1,19 @@
-# Work-file standard
+# Work-folder standard
 
-A work file is the minimal current state of one piece of work: `+/_WORK/<id>/work.md`. Its front matter says where the work lies, and its body holds the next steps, the Messages sent down to it and the tags of parked queries. It lets a fresh agent pick the work up without relying on a transcript, private runtime state or a vendor session. Git is its logbook: each move is a commit, so the file keeps no moves list and no history.
+A work folder, `+/_WORK/<id>/`, holds one piece of work's knowledge files between its moves: its work file, its decisions log, the reports and briefs of its runs and its design notes. Its work file, `work.md`, is the minimal current state of the work: its front matter says where the work lies, and its body holds the next steps, the Messages sent down to it and the tags of parked queries. Together they let a fresh agent pick the work up without relying on a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the folder keeps no moves list and no history.
 
-The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md); this standard owns the record form and its validation, and `ki-coordination` owns the levels, states, moves and coordination. The skill was `ki-checkpoint` until Kris answered WORK-FOLDER-NAME on 18 October 2026, "work forward makes a lot of sense, right? So let's go with that", read back as `ki-work-folder`, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
+The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md). The skill was `ki-checkpoint` until Kris answered WORK-FOLDER-NAME on 18 October 2026, "work forward makes a lot of sense, right? So let's go with that", read back as `ki-work-folder`, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
 
 ## Contents
 
 - [Activation and ownership](#activation-and-ownership)
 - [Location and identity](#location-and-identity)
+- [The work folder](#the-work-folder)
+  - [Closed list](#closed-list)
+  - [Entry points](#entry-points)
+  - [Tidying the work folder](#tidying-the-work-folder)
+  - [Messages lines](#messages-lines)
+  - [Work awaiting review](#work-awaiting-review)
 - [Exact record form](#exact-record-form)
   - [Front matter](#front-matter)
   - [Body](#body)
@@ -23,15 +29,88 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 
 ## Activation and ownership
 
-The capability is optional. A repository declares `ki-work-folder` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. `ki-repo` owns the generic `+/` scaffold, `ki-coordination` owns the work folder's [closed list](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder), and `ki-work-folder` alone interprets the work file.
+The capability is optional. A repository declares `ki-work-folder` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. The repository owns its work folders; Git supplies any recovery history.
 
-The repository owns its work files. Removal deletes a work file after its durable information has been routed; Git supplies any recovery history.
+This standard is the one specification of `+/_WORK/<id>/` and `+/_WORK_REVIEW/<id>/`, as Kris answered WORK-FOLDER-OWNER on 18 October 2026, read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract". It owns the folder's shape, its closed list, its entry points, the tidy and prune rules, the review area and the Messages line shape, and the work file's form at every level, coordinated or not. The other owners keep only their side and link here for the rest:
+
+| Concern | Owner |
+| --- | --- |
+| When a folder is tidied, at send, mark, hold and finish; whether an outcome has a durable home; the decisions log's entry form and life cycle; the report forms; acting on Messages | `ki-coordination` |
+| The run packet, the state folder, the launcher and the close gate, and the brief and report paths for runs | `ki-delegation` |
+| A design note's life cycle: draft, review, graduation and deletion | `ki-work-design` |
+| The generic `+/` scaffold and the working-area coverage signal | `ki-repo` |
 
 ## Location and identity
 
 A work file is one regular Markdown file at `+/_WORK/<id>/work.md`, one per piece of work above a work item; a work item has no folder, because its record is its home. `<id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field and the H1 agree exactly.
 
-`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under `ki-coordination`'s [Work awaiting review](../../../change-management/ki-coordination/references/standards-coordination.md#work-awaiting-review); its work files are checked only when the folder leaves review.
+`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under [Work awaiting review](#work-awaiting-review); its work files are checked only when the folder leaves review.
+
+## The work folder
+
+### Closed list
+
+A work folder holds these kinds and nothing else:
+
+| Kind | Path | Kept until |
+| --- | --- | --- |
+| Work file | `work.md` | The mark that closes finished work |
+| Decisions log | `decisions.md` | The mark that closes finished work |
+| Run report | `<name>.report.md` | A tidy finds its queries all answered and its outcome homed |
+| Brief | `briefs/<run>.md` | Its run's report is received |
+| Design note | `design/<slug>.md`, or `design/<subject>/` holding the same kinds | It graduates under `ki-work-design` |
+| Design artefact | `design/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its note graduates |
+
+Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs under `tmp/<run>/<name>/` in the repository its agent worked in, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
+
+### Entry points
+
+Every writer is a named entry point with its permitted kinds, and every other party only reads. This is the contract other skills, tools and runs check in on, set out in the design note behind WORK-FOLDER-OWNER:
+
+1. **One owner sets the shape and the tidy rules:** this standard sets the closed list, what each entry point may write, when each kind goes and how a deletion is made.
+2. **Every other writer is a named entry point** with its single permitted kind, in the table below.
+3. **Only the folder's own work deletes.** The launcher, runs, other work and tools never delete there.
+4. **A check backs each entry point mechanically,** through the [rubric](rubric.md); the judgement whether an outcome has a durable home stays with the work's own steward under `ki-coordination`.
+
+| Entry point | Writes | Never |
+| --- | --- | --- |
+| The work's own steward: its coordinator, or for regular and ad hoc work the session working it | `work.md`, `decisions.md` and `briefs/`, and the deletions of a tidy | Another work's folder, except one Messages line |
+| The launcher, `ki agent` | `<name>.report.md`, copied in from the run's state folder; a state-folder `decisions.md` adopted where the folder has none; entries `decide` and `reconcile` append to `decisions.md` on the steward's instruction | Deletes anything, or replaces a report Git does not already hold |
+| A background run | Its work product in its owning home, and `design/` where its brief names a design note | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
+| `ki-work-design` and design runs | `design/` | Other kinds |
+| Other work | One line in `work.md`'s `## Messages`, committed alone | Any other edit |
+
+Readers, such as `ki work status`, the observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
+
+### Tidying the work folder
+
+A tidy keeps the folder to what is still open, with Git history holding the rest, as Kris set under THREAD-TIDY on 2026-10-14, as received: "at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest", and made regular on 2026-10-16 with THREADS-TRIM. `ki-coordination` says when a coordinator tidies, at every send and each mark; regular and ad hoc work tidies at its own next update.
+
+- **What goes:** every `<name>.report.md` whose queries are all answered and whose outcome has a durable home, a work record, the decisions log, the work file or a commit; and every `briefs/<run>.md` once its run's report has been received. A query is answered when the owner has answered its Needs tag and the answer is read back in the log.
+- **What stays:** `work.md` and `decisions.md`, always; every report that still carries an open query; every brief whose handoff is open; and `design/` until its notes graduate.
+- **How:** in one commit by explicit path, `git rm` of each file named and nothing else, never a folder-wide delete, so that Git history holds every report and a later recap or full summary reads a deleted one from its last revision. The deletion is operational work and opens no record.
+- **Who:** each piece of work tidies only its own folder. Territory work never tidies another work folder; it names each folder the rubric flags in that work file's Messages section, and the owning work tidies at its next send.
+- **Close-out:** finished work's folder is deleted at the mark that closes it, in one commit, once its decisions are homed and `design/` is resolved, under [Removal lifecycle](#removal-lifecycle).
+
+A report whose outcome has no durable home yet is kept, not homed in haste. The rubric lists candidates; a listing is never permission to delete.
+
+### Messages lines
+
+The `## Messages` section of a work file carries one list item per message sent down to the work, `FIRST-STEP` lines first, then newest first:
+
+```markdown
+- <YYYY-MM-DD> · <TAG> · <sender title>: <the owner's words or the instruction, with links>
+```
+
+A line is about 60 words at most with the detail linked, and a message citing an owner decision quotes its words. The sender adds its line and edits nothing else in the receiver's work file, committing that path alone with the subject `docs(work): <receiver id> message from <sender id>`. The receiver removes each line it has acted on in its next work-file update. Who may send, and how a coordinator acts on a line, are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work).
+
+### Work awaiting review
+
+`+/_WORK_REVIEW/<id>/` is the holding area for migrated work a territory's migration was not confident is live, as Kris set under MIGRATION-REVIEW on 18 October: "put everything which you're confident in into the work folder and then put everything else into a underscore work review folder ... you're not waiting on me to answer those, and then we can pick up on the review ones later". Its folders keep the work-folder shape, and its index note, `+/_WORK_REVIEW/README.md`, gives one line per folder saying why it is there.
+
+- **Not live:** work awaiting review is neither picked up, dispatched nor counted against the cap; `ki work status` keeps it out of the five views and shows it as a count.
+- **Leaving review:** the owner, or the work itself at its next mark, moves a folder to `+/_WORK/<id>/` by `git mv` when it is live, or deletes it when it is not, removing its index line in the same commit.
+- **Checks:** the rubric accepts the holding area, warns on a folder with no index line, and applies no closed-list or record check to it until the folder leaves review.
 
 ## Exact record form
 
@@ -95,9 +174,9 @@ After the front matter, the work file uses exactly this heading sequence:
 ## Parked
 ```
 
-The H1 repeats the id. `Next steps` holds substantive content: what the worker does when the work is next in its hands, with a coordinator's `ki-coordination read at <revision>` line under [its refresh rule](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance). `Messages` holds one list item per direction sent down to the work, under [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work), `FIRST-STEP` lines first. `Parked` holds one list item per parked query, its tag, one line of context and its recommended option, linked to the report that holds it, under [Parking tangents](../../../change-management/ki-coordination/references/standards-coordination.md#parking-tangents). Either may say `None`.
+The H1 repeats the id. `Next steps` holds substantive content: what the worker does when the work is next in its hands, with a coordinator's `ki-coordination read at <revision>` line under [its refresh rule](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance). `Messages` holds one list item per direction sent down to the work, in the shape [Messages lines](#messages-lines) sets, `FIRST-STEP` lines first. `Parked` holds one list item per parked query, its tag, one line of context and its recommended option, linked to the report that holds it, under [Parking tangents](../../../change-management/ki-coordination/references/standards-coordination.md#parking-tangents). Either may say `None`.
 
-Nothing else belongs in the file: no moves list, decisions log, report, brief or design paper, each of which has its own home in the work folder, and no copy of a durable fact that has an owner elsewhere.
+Nothing else belongs in the file: no moves list, decisions log, report, brief or design paper, each of which has its own place in the folder's [closed list](#closed-list), and no copy of a durable fact that has an owner elsewhere.
 
 ## Old checkpoints
 
@@ -139,7 +218,7 @@ Every send, receive, mark and hold rewrites the work file's front matter and nex
 
 An update replaces the current state in place. It never appends a moves list, timestamped copies or transcript history. Only sends and the supervisor's receives commit, each subject carrying the move, as in `docs(work): ki.ways-of-working send to owner`; `git log -- +/_WORK/<id>/` is the logbook.
 
-Other work may add one item to a work file's `Messages` section under `ki-coordination` and commit that path alone; that is a send to the work, not an update of its state. The work's own next update removes each item it has acted on.
+Other work may add one item to a work file's `Messages` section under [Messages lines](#messages-lines) and commit that path alone; that is a send to the work, not an update of its state. The work's own next update removes each item it has acted on.
 
 Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a work file. The work file may name those canonical artifacts; it must not become their only copy.
 
@@ -162,7 +241,7 @@ The title and label never take part in resolution. Do not search archived or nes
 
 ## Removal lifecycle
 
-Finished work keeps its work file with `state: finished` until the mark that closes it, when the work folder is deleted with Git keeping it, under `ki-coordination`'s [Pruning the work folder](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners, then delete the exact work folder or old checkpoint.
+Finished work keeps its work file with `state: finished` until the mark that closes it, when the work folder is deleted in one commit with Git keeping it, under [Tidying the work folder](#tidying-the-work-folder) and `ki-coordination`'s [Finishing Project work](../../../change-management/ki-coordination/references/standards-coordination.md#finishing-project-work). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners, then delete the exact work folder or old checkpoint.
 
 No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested layouts are invalid.
 

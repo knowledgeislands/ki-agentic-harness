@@ -7,20 +7,22 @@ ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
 owns: ['+/_CHECKPOINTS/README.md']
 description: >
-  Create, update, resume, audit, or remove the work file of one piece of work, `+/_WORK/<id>/work.md`: its front
-  matter of id, level, title, worker, supervisor, state and times, its next steps, Messages and parked query tags. Use
-  for picking work up without a transcript or vendor session; Git is the logbook, while decisions, roadmap state,
-  durable knowledge, recaps, and runtime continuity stay with their owners, and old `+/_CHECKPOINTS/` records stay
-  readable for the tolerance window.
+  Own the work folder of one piece of work, `+/_WORK/<id>/`: its closed list, who may write each kind, its tidy and
+  close-out rules, the `+/_WORK_REVIEW/` holding area, the Messages line shape, and its work file `work.md` with front
+  matter of id, level, title, worker, supervisor, state and times, next steps, Messages and parked query tags. Use to
+  create, update, resume, audit, tidy or remove a work file or folder, or to pick work up without a transcript or
+  vendor session; Git is the logbook, decisions, roadmap state and durable knowledge stay with their owners, and old
+  `+/_CHECKPOINTS/` records stay readable for the tolerance window.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>'
 ---
 
-# Knowledge Islands work files
+# Knowledge Islands work folder
 
-This governance skill owns the work-file contract: one concise repository record, `+/_WORK/<id>/work.md`, says where a piece of work lies and lets a fresh agent pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-file standard](references/standards-work-folder.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance. Kris gave the skill its name under WORK-FOLDER-NAME on 18 October 2026, replacing its checkpoint name, and a checkpoint stays the conversational word for writing a work file before a pause.
+This governance skill is the canonical specification of the work folder, `+/_WORK/<id>/`: its closed list, its entry points, its tidy rules, its review area, its Messages lines and the four-point contract other skills check in on. In it one concise repository record, the work file `work.md`, says where a piece of work lies and lets a fresh agent pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-folder standard](references/standards-work-folder.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance. Kris gave the skill its name under WORK-FOLDER-NAME on 18 October 2026, replacing its checkpoint name, and a checkpoint stays the conversational word for writing a work file before a pause.
 
 ## Shared model
 
+- **Work folder** - `+/_WORK/<id>/` holds only its [closed list](references/standards-work-folder.md#closed-list): the work file, the decisions log, run reports, open briefs and `design/`. Each [entry point](references/standards-work-folder.md#entry-points) writes only its own kinds, and [a tidy](references/standards-work-folder.md#tidying-the-work-folder) deletes what is answered and homed, Git keeping the rest. `ki-coordination` says when to tidy and whether an outcome is homed, `ki-delegation` owns the run side, and `ki-work-design` owns a design note's graduation.
 - **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-coordination`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-work-folder.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
 - **Old checkpoints** - `+/_CHECKPOINTS/<thread>.md` records keep their old form and stay readable, each with a warning, until the territory's migration moves them ([old checkpoints](references/standards-work-folder.md#old-checkpoints)).
 - **Removal** - finished work's folder is deleted at the mark that closes it, and any other removal follows explicit user direction after durable information has reached its proper owners. There is no retired-record state; Git supplies recovery history.
@@ -51,7 +53,7 @@ Correct authored records only through an explicit UPDATE or REMOVE request, then
 
 ### Mode EDUCATE
 
-Run `ki repo educate --skill ki-work-folder --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the work-file standard](references/standards-work-folder.md); do not create a declaration, work folder, or work file merely to demonstrate it.
+Run `ki repo educate --skill ki-work-folder --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the work-folder standard](references/standards-work-folder.md); do not create a declaration, work folder, or work file merely to demonstrate it.
 
 ### Mode HELP
 
@@ -71,7 +73,7 @@ RESUME is an agent procedure, not a current `ki repo` host command. Require the 
 
 ### Mode UPDATE
 
-UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<id>` plus a move, an explicit request or a documented local trigger. Write the exact work-file structure from [the work-file standard](references/standards-work-folder.md), setting `since` at each move and preserving `created_at`; replace the current state in place rather than appending a moves list or history. Record only current state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier or host, or create a work file from an unqualified Stop event. An old checkpoint is updated in its old form only until its move, which writes the work file and deletes the checkpoint in one commit.
+UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<id>` plus a move, an explicit request or a documented local trigger. Write the exact work-file structure from [the work-folder standard](references/standards-work-folder.md), setting `since` at each move and preserving `created_at`; replace the current state in place rather than appending a moves list or history. Record only current state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier or host, or create a work file from an unqualified Stop event. An old checkpoint is updated in its old form only until its move, which writes the work file and deletes the checkpoint in one commit.
 
 ## Verification boundary
 
