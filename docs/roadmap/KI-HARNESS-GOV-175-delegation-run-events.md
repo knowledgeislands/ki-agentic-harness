@@ -6,12 +6,12 @@ project: ways-of-working
 component: governance
 kind: deliver
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 0ae39eaca092303a2ae5e481b078a221f955e1d2
 created_at: 2026-10-13T13:53:25Z
-updated_at: 2026-10-18T07:10:00Z
+updated_at: 2026-10-18T09:02:41Z
 ---
 
 # Delegation Run Events
@@ -31,7 +31,7 @@ The run that produced the strategy also showed why the vocabulary matters now: t
 ## Boundary
 
 - In scope: the five event kinds and the run-level close, each with its derivation rule; the milestone line form in the progress protocol and in the run-prompt skeleton; what the waiter and the monitor return; the coordinator reading events at its next turn and never waiting or relaying in the foreground; the privacy rule for anything derived from a packet, stated once so later phases inherit it; the skill's sources note.
-- Merged from KI-HARNESS-GOV-184 on 2026-10-14: the working-area mark rule, with its Goal, Boundary, Steps and open questions carried into Discussion below. The `ki-delegation` part lands in the same standard edit as the event vocabulary; the `ki-diagrams` part is a second Step of this record.
+- Split out on 18 October 2026 (MARK-RULE-SPLIT): the working-area mark rule, merged from KI-HARNESS-GOV-184 on 2026-10-14, moved to its own triage record, [KI-HARNESS-GOV-214](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-214-working-area-marks.md), with its scope, history and open field-name questions. Kris answered in these words: "MARK-RULE-SPLIT a) - split the mark rule into its own harness record; KI-HARNESS-GOV-175 to Awaiting review."
 - Widened on 2026-10-15 (HEADING-LASTING): a mechanical `ki-pmo` rubric check that a saved report's first non-blank line is the report's `#` heading, or, for a report saved as a record with front matter, that the front matter comes first and the `#` heading is the first non-blank line after it; and one `ki-delegation` `assets/run-prompt.md` footer line saying so. Kris widened the record in these words: "Widen KI-HARNESS-GOV-175 to add a mechanical ki-pmo rubric check that a saved report's first non-blank line is the # heading (or that record's front matter, then the heading) and one ki-delegation run-prompt.md footer line saying so; no new record."
 - Widened on 2026-10-16 (HARNESS-FOLLOW-ONS): the four wording follow-ons the delivered `tools-ki` mechanics need, carried as requirements 7 to 10. Kris widened the record in these words, taking option a) in the tools-burndown thread: "The next ki-agentic-harness session folds the four wording follow-ons (run events, ki-delegation flags, the coordinator-reminder Codex check, unique agent names) into KI-HARNESS-GOV-175 and lands them together." The four land in one delivery with requirements 1 to 6.
 - Out of scope: the notifier, channels, receipts, quiet hours, Telegram, Slack and the Observatory, which are phases 2 to 4 of the strategy; the owner-facing side of the vocabulary, which moves to `ki-pmo` once the PMO extraction pilot creates that skill; any change to the owner report shape Kris set on 2026-10-13: "standardise owner reports through the ways-of-working process. Three sections in order: 1 What has been done (outcomes, material failures, corrections, limitations); 2 What is in progress ...; 3 Outstanding queries, each headed '<stable tag> - <plain title>'".
@@ -51,12 +51,12 @@ The run that produced the strategy also showed why the vocabulary matters now: t
 
 ## Current state
 
-Requirements 1 to 10 have landed, planned on 18 October 2026 against the delivered `tools-ki` mechanics of KI-TOOL-KI-CLI-123, read at `src/core/agent/events.ts` and `runs.ts`: the event kinds, their derivation, the waiter's `waitedKinds` and the protocol sentence are the launcher's as written. The working-area mark rule merged from KI-HARNESS-GOV-184 is not built: its sidecar and field names are still open questions below, and its `ki-diagrams` exporter change is a separate delivery, so the record stays in progress until the owner settles them or splits the rule out.
+Requirements 1 to 10 have landed, planned on 18 October 2026 against the delivered `tools-ki` mechanics of KI-TOOL-KI-CLI-123, read at `src/core/agent/events.ts` and `runs.ts`: the event kinds, their derivation, the waiter's `waitedKinds` and the protocol sentence are the launcher's as written. The working-area mark rule merged from KI-HARNESS-GOV-184 was split out to [KI-HARNESS-GOV-214](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-214-working-area-marks.md) on 18 October 2026 and is not part of this delivery.
 
 ## Steps
 
 - [x] Shape this record against requirements 1 to 5 and the delivered `tools-ki` mechanics: a Run events subsection in the background-run standard with the event table, the status forms, the run-level close and the privacy rule; the Run packet table naming `events.seen` and dropping the retired `seen` list; the Waiter bullet and Monitoring section describing events; the Reference launcher naming `send`, the derivation and `KI_AGENT_RUN`; the SKILL summary and the sources note.
-- [ ] Plan the working-area mark rule merged from KI-HARNESS-GOV-184 as its own Steps in the same plan: settle the sidecar and front-matter field names, add the rule to the `ki-delegation` and `ki-diagrams` standards and rubrics, write the receipt fields in the `ki-diagrams` exporter, and reword the two SKILL.md summaries. Waiting on the owner, MARK-RULE-SPLIT in the roadmap-next report.
+- [x] Split the working-area mark rule merged from KI-HARNESS-GOV-184 out to [KI-HARNESS-GOV-214](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-214-working-area-marks.md), carrying its open field-name questions, on the owner's MARK-RULE-SPLIT a) answer.
 - [x] Plan the HEADING-LASTING widening as its own Steps: the PMO-12 rubric item with boundary tests, at WARN, `rubric.md` regenerated through `ki dev skill rubric ki-pmo --write`, and the run-report source line, regenerated into `assets/run-prompt.md`.
 - [x] Plan the HARNESS-FOLLOW-ONS widening as its own Steps, landing with the rest: the run-events and status-line wording quoting the launcher's protocol sentence (requirement 7); the `--log` inbox idiom replaced by `ki agent send` in `ki-pmo` (requirement 8; `ki-delegation` never named it); the Codex terminal check removed from `hooks/coordinator-reminder.sh`, with its test, `hooks/README.md` and the `ki-pmo` hook paragraph following (requirement 9); and the unique-name rule beside the run-packet table (requirement 10).
 
@@ -97,14 +97,35 @@ Phases 2 to 4 of the notification strategy are later records in their owning rep
 
 ## Review
 
-Evidence for requirements 1 to 10 from the roadmap-next run, 18 October 2026; the record stays in progress for the mark rule:
+### Delivered
+
+The approved boundary from baseline `0ae39eaca092303a2ae5e481b078a221f955e1d2`, requirements 1 to 10: the event vocabulary, milestone, blocked and failed status lines, the waiter and monitor wording, the coordinator out of the delivery path and the privacy rule in the `ki-delegation` background-run standard; PMO-12 at WARN with its run-prompt footer line; the `ki agent send` inbox idiom; the reduced coordinator-reminder hook; and the unique-name rule. The working-area mark rule left the boundary for [KI-HARNESS-GOV-214](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-214-working-area-marks.md) on 18 October 2026. Nothing is released.
+
+### Change Summary
 
 - The background-run standard's new Run events subsection names the seven kinds the launcher derives, with the derivation `tools-ki` implements in `src/core/agent/events.ts`; it quotes the launcher's protocol sentence verbatim from `composePrompt` in `runs.ts`, says every other status line stays local, gives the run-level `ALL FINISHED` and states the privacy rule. The Waiter bullet names the four kinds `wait --next` returns, matching `waitedKinds`, and the Monitoring section the events `watch` prints.
 - The Run packet table names `events.seen` and drops the `seen` list the launcher no longer writes; the unique-name rule follows the table, matching the launcher's refusal of a name that has already run and its `--relaunch` attempt.
 - `ki-pmo`'s messages surface names `ki agent send <run> <line>` in place of `decide --log`; no `ki-delegation` text named the old idiom.
 - `hooks/coordinator-reminder.sh` keeps only the run marker and the print-mode ceiling, since `runtimes.ts` sets `KI_AGENT_RUN` for both adapters; the terminal tests and the `ps` wrapper went from the hook test, and `hooks/README.md` and the `ki-pmo` hook paragraph follow.
 - PMO-12 flags any work report whose first non-blank line is not its `#` heading, after front matter if it has any, at WARN, because 14 reports in other work's folders in ki-principal open with a lint directive or a frame; the run-report source gains the matching line, regenerated into `assets/run-prompt.md`, and `rubric.md` is regenerated. The remediation inventory test counts the new diagnostic criterion.
-- `bun run test` passes, 1247 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric ki-pmo` verifies; `ki repo audit --skill ki-delegation`, `--skill ki-pmo`, `--skill ki-work-roadmap` and `--skill ki-checkpoint` pass; `--skill ki-skills` passes with the three existing LONG-3 warnings KI-HARNESS-GOV-194 tracks; `--skill ki-authoring` passes once the older KI-HARNESS-GOV-189 fragment is repointed in its own commit.
+
+### Verification
+
+- `bun run test` passes, 1247 tests at delivery; `bunx tsc --noEmit` passes; `ki dev skill rubric ki-pmo` verifies; `ki repo audit --skill ki-delegation`, `--skill ki-pmo`, `--skill ki-work-roadmap` and `--skill ki-checkpoint` pass; `--skill ki-skills` passes with the three existing LONG-3 warnings KI-HARNESS-GOV-194 tracks; `--skill ki-authoring` passes once the older KI-HARNESS-GOV-189 fragment is repointed in its own commit.
+- Re-run on 18 October 2026 after the split, with KI-HARNESS-GOV-212 and KI-HARNESS-GOV-213 landed: `bun run test` passes, 1253 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric ki-pmo` verifies and `ki dev skill rubric ki-delegation` verifies once its `rubric.md` is regenerated for a one-space rendering drift in RUN-4, committed on its own; `ki repo audit --skill ki-delegation`, `--skill ki-pmo`, `--skill ki-repo`, `--skill ki-checkpoint`, `--skill ki-authoring` and `--skill ki-work-roadmap` pass; `--skill ki-skills` has no failure and the same three LONG-3 warnings.
+
+### Outstanding concerns
+
+- PMO-12 stays WARN until the older work folders are pruned; its promotion to FAIL is [KI-HARNESS-GOV-215](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-215-pmo-12-to-fail.md), on hold until then.
+- The owner-facing side of the event vocabulary moves to `ki-pmo` only as the PMO extraction continues; phases 2 to 4 of the notification strategy belong to their owning repositories.
+
+### Post-change review
+
+Reviewer: pending; this record awaits an independent review before acceptance.
+
+### Mini recap
+
+`ki-delegation` now names the events of a run and the status lines that raise them, matching the `tools-ki` launcher; `ki-pmo` warns on a work report that does not open with its heading.
 
 ## Discussion
 
@@ -116,26 +137,13 @@ The Run packet table gains the events log beside the status, pid, log and report
 
 The strategy named "the report's Failed part" and "each Needs tag", from the report shape the owner report replaced. The owner report gives each outstanding query a heading `<tag> - <title>`, so `needs-owner` derives from those headings; material failures sit inside "Done" with no fixed marker, so `failed` needs a signal the standard can name, most simply the agent's final status line. Settle the rule here so the launcher implements one definition.
 
-### Merged from KI-HARNESS-GOV-184 on 2026-10-14
+### Mark rule split out
 
-Kris approved merging KI-HARNESS-GOV-184 into this record on 14 October 2026 in the state-of-play thread's roadmap census ('RC-ALL: approve all; ways-of-working applies the harness part'), because both records edit the `ki-delegation` background-run standard under the ways-of-working Project and one plan serves them. Its scope and decisions, carried as written:
+The working-area mark rule merged from KI-HARNESS-GOV-184 on 14 October 2026 moved on 18 October 2026 to [KI-HARNESS-GOV-214](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-214-working-area-marks.md), which carries its Goal, Boundary, owner decisions, Steps, forms and the open field-name questions for the owner.
 
-**Goal.** Every file an agent or a session writes into a repository's `+/` working area says who wrote it and when: the thread it belongs to, the background run and agent or the interactive session that wrote it, and the time. A later reader, agent or owner, can tell at a glance whether a working file is current, whose it is, and which run to ask before moving or deleting it.
+### PMO-12 level
 
-**Owner decisions.** Kris confirmed the rule on 2026-10-14, in these words: "MARK-RULE - yes, that reading; capture as a harness deliver record at next." In the same answer set Kris chose how to tidy the scratch that prompted it: "DIAGRAMS-TIDY - (b) delete scratch and rebuild the stale HTML after the push; keep +/diagrams/ visible." The rebuilt `skill-graph` and `skill-map` folders under this repository's `+/diagrams/` carry a `mark.toml` sidecar written by the `mark-tidy` run as a hand-made early application of the rule.
-
-**Boundary.**
-
-- `ki-delegation`: the background-run standard gains the mark rule as a rule on what a run writes into a working area, naming the fields (thread, run and agent or session, time), the Markdown front-matter form and the sidecar form for a folder, and saying that a coordinating thread or an interactive session marks its own working files the same way. The rubric gains the matching criterion and `rubric.md` is regenerated.
-- `ki-diagrams`: the diagrams standard's working-folder rule under `+/diagrams/<slug>/` names the sidecar and its fields, and the delivery receipt the exporter or the finalize step writes beside the HTML gains the same fields. The rubric gains the matching criterion and `rubric.md` is regenerated.
-- The two skills' SKILL.md summaries are reworded only where they list what the standards cover.
-- Not the `+/README.md` text in adopting repositories, which `ki-repo` owns; not Git tracking of `+/`; not a tidy-up tool that acts on marks, which is a later record if wanted; not any checkpoint, decisions log or Project note.
-
-**Steps carried.** Settle the sidecar's name and field names and the front-matter field names, checking the two hand-written `mark.toml` files against the choice; add the rule to the `ki-delegation` standard and rubric; add the sidecar and receipt fields to the `ki-diagrams` standard and rubric; make the exporter or finalize wrapper write the fields into the delivery receipt, with a boundary test; reword the two SKILL.md summaries. Files: `skills/governance/ki-delegation/references/standards-background-runs.md`, `rubric.md` and `SKILL.md`; `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md`, and `scripts/export-svg.ts` with its test if the receipt fields are written there. Verify: `ki repo audit --skill ki-diagrams` and `ki dev skill rubric ki-diagrams` join this record's gates, and a diagram rebuilt by the documented route leaves a sidecar and a receipt naming the thread, the run and agent or session, and the time.
-
-**Forms.** Markdown carries the mark in front matter; a folder of non-Markdown output carries one small sidecar at its root (the hand-written example is `mark.toml` with `thread`, `run`, `agent`, `written_at` and `rebuilt_from`); the `ki-diagrams` receipt carries the same fields. A mark is not provenance for committed work, which Git carries, and says nothing about retention.
-
-**Open questions carried.** Whether a coordinating thread working interactively writes `session` where a background run writes `run` and `agent`, or one `writer` field covers both; and whether the sidecar is TOML or a front-matter-only Markdown file.
+Kris settled PMO-12's level on 18 October 2026 in these words: "PMO12-LEVEL a) - PMO-12 stays WARN, a leading lint directive still fails it, promote to FAIL once folders are pruned." PMO-12 therefore lands at WARN; a report that opens with a lint directive such as `<!-- markdownlint-disable -->` before its heading still fails the check, with no exemption; and the promotion to FAIL is [KI-HARNESS-GOV-215](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-215-pmo-12-to-fail.md), held until no report PMO-12 reads opens with anything but its heading.
 
 ### Open questions
 
