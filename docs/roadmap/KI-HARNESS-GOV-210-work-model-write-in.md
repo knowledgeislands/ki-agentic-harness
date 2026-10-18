@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: [KI-HARNESS-GOV-206]
 blocked_by: []
 baseline_ref: be65ccad13720226c85626093538d744fae8f024
 created_at: 2026-10-18T01:49:05Z
-updated_at: 2026-10-18T02:23:41Z
+updated_at: 2026-10-18T08:25:53Z
 ---
 
 # KI-HARNESS-GOV-210: Work Model Write-In
@@ -23,7 +22,7 @@ The harness standards, skills, checkers and generated coordinator surfaces descr
 
 ## Context
 
-[GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) decides the work model: work at territory, regular and Project level, a worker and a supervisor, seven states, send and receive, the work file `+/_WORK/<id>/work.md` with Git as its logbook, and themes in place of Initiatives. Kris Brown agreed it on 18 October 2026 in the ways-of-working thread and launched its migration the same day under MIGRATION-LAUNCH, answering REPLY-BLOCK, BANNER-GLYPH, MIGRATION-REVIEW, SKILL-NAMES, TITLE-THEME, WORK-THEME-SLUGS and TARGET-GLYPH. The migration brief in Knowledge Islands Principal, `+/_THREADS/ways-of-working/work-migration.brief.md`, sets this repository's work as its phase 1; tools-ki and a release follow as phase 2, the Capital's move as phase 3.
+[GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) decides the work model: work at territory, regular and Project level, a worker and a supervisor, seven states, send and receive, the work file `+/_WORK/<id>/work.md` with Git as its logbook, and themes in place of Initiatives. Kris Brown agreed it on 18 October 2026 in the ways-of-working Project work and launched its migration the same day under MIGRATION-LAUNCH, answering REPLY-BLOCK, BANNER-GLYPH, MIGRATION-REVIEW, SKILL-NAMES, TITLE-THEME, WORK-THEME-SLUGS and TARGET-GLYPH. The migration brief in Knowledge Islands Principal, `+/_WORK/ki.ways-of-working/briefs/work-migration.md`, sets this repository's work as its phase 1; tools-ki and a release follow as phase 2, the Capital's move as phase 3.
 
 ## Boundary
 
@@ -32,7 +31,7 @@ The harness standards, skills, checkers and generated coordinator surfaces descr
 
 ## Current state
 
-Delivered from baseline `be65ccad13720226c85626093538d744fae8f024` under the migration's phase 1 and awaiting review; see Review.
+Delivered from baseline `be65ccad13720226c85626093538d744fae8f024` under the migration's phase 1, reviewed and accepted; see Review and Done.
 
 ## Steps
 
@@ -112,12 +111,16 @@ Every step: the `ki-pmo`, `ki-delegation`, `ki-checkpoint`, Project registry, St
 
 ### Post-change review
 
-Reviewer: pending; this record awaits an independent review before acceptance.
+Reviewer: the `accept-harness` run of the ways-of-working Project work, independent of the `migrate-phase1` run that delivered it, on 2026-10-18 against `0f166c31`. Every Step is delivered as written and the standards cite the Work Process note rather than restate it. The overnight review's one finding, the broken `#project-close` anchor in [KI-HARNESS-GOV-189](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-189-move-thread-between-hosts.md), was repointed to `#finishing-project-work` beforehand; this review reworded that record's DONE-on-handover sentence and this record's Context and Discussion in work-model terms. `bun run test` 1247 pass, 0 fail; `bunx tsc --noEmit` clean; `ki dev skill generate ki-pmo` finds all 7 surfaces in sync; `ki repo audit` passes for `ki-authoring`, including MD-mech, `ki-work-roadmap`, `ki-pmo`, `ki-checkpoint`, `ki-delegation`, `ki-work` and `ki-work-recurring`, and `ki-skills` shows only three LONG-3 refresh-cadence warnings. `ki-pmo-design`, `ki-repo-kb-streams` and `ki-repo-kb-activities` are not declared in this repository; against Knowledge Islands Principal, `ki-repo-kb-streams` warns only on four STREAM-10 Project close-out assessments and `ki-repo-kb-activities` and `ki-checkpoint` pass. `ki-pmo` there reports 43 PMO-7 unlinked or missing record links and PMO-9, PMO-11 and PMO-12 warnings in existing work reports, fleet findings rather than failures of the contract under change. No skill is renamed. Regression risk is low.
 
 ### Mini recap
 
 The harness now speaks the work model and reads the thread model with warnings until phase 5 closes the window; tools-ki's phase 2 can build on it.
 
+## Done
+
+Accepted as delivered on 2026-10-18 at 09:25 BST under Kris Brown's standing grant ACCEPT-NIGHT, "an independent review run may accept KI-HARNESS-GOV-210 and KI-TOOL-KI-CLI-127 if the review passes; any finding leaves the record for Kris", and HARN-ANCHOR a), answered on 18 October in the ways-of-working decisions log, "Agreed with all of the recommendations": a fresh independent review accepts this record if every audit passes and tidies the thread-model wording. The six-part Review packet above stands as the closure evidence.
+
 ## Discussion
 
-Captured by the `migrate-phase1` run of the ways-of-working thread on 18 October 2026, under the migration brief's phase 1 and Kris's MIGRATION-LAUNCH.
+Captured by the `migrate-phase1` run of the ways-of-working Project work on 18 October 2026, under the migration brief's phase 1 and Kris's MIGRATION-LAUNCH.

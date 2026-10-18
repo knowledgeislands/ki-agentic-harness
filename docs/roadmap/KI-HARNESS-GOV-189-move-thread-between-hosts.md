@@ -60,7 +60,7 @@ The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, an
 
 ### DONE on handover, decided 2026-10-14
 
-Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). Its closing banner uses the DONE frame, issued only after the handover has pushed, carries no resume line, because that instance must not be resumed, and names the host that took over the thread. `ki-pmo`'s DONE frame today appears only at [Finishing Project work](../../skills/change-management/ki-pmo/references/standards-pmo.md#finishing-project-work); this requirement extends it to a thread instance retired by a host move, while the thread itself continues on the new host.
+Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). The decision named the DONE frame for its closing banner, issued only after the handover has pushed, carrying no send line, because that session must not be resumed, and naming the host that took over the work. Under the work model, `ki-pmo`'s closing banner, `🏁 Finished`, appears only at [Finishing Project work](../../skills/change-management/ki-pmo/references/standards-pmo.md#finishing-project-work); this requirement extends a closing form to the session a host move retires on the old host, while the work itself continues on the new host, and step 6 leaves planning to settle which form that is.
 
 ### Relation to existing records
 
