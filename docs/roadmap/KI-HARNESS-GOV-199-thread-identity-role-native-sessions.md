@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 72ad16866f1f3b4fbae2cac0f7c1ce09395465d2
 created_at: 2026-10-16T21:28:02Z
-updated_at: 2026-10-18T07:02:00Z
+updated_at: 2026-10-18T09:02:59Z
 ---
 
 # KI-HARNESS-GOV-199: Thread Identity and Role
@@ -116,6 +116,8 @@ Evidence for the Phase 1 completion from the roadmap-next run, 18 October 2026; 
 
 ## Discussion
 
-Settled provisionally on 18 October by the roadmap-next run: the identity section lands now, with Phase 1, and says that no binding is written until the `ki thread` tooling and hook registration ship, so it documents the contract the tooling builds to without claiming behaviour that does not exist yet. The owner may still move it to Phase 3.
+Settled provisionally on 18 October by the roadmap-next run: the identity section lands now, with Phase 1, and says that no binding is written until the `ki thread` tooling and hook registration ship, so it documents the contract the tooling builds to without claiming behaviour that does not exist yet.
+
+Confirmed by Kris on 18 October 2026 in these words: "IDENTITY-TIMING a) - keep the identity section landed; Phase 3 waits on KI-TOOL-KI-CLI-145 and KB-DOTFILES-UE-096." The identity section stays where it landed, and Phase 3 waits on the `ki thread` session bindings in [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) and the hook registration in [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md).
 
 PMO-10 uses the file name only to choose which checkpoints to ask, never to decide the role: an `<initiative>.<project>` checkpoint passes with `role: coordination` or `role: conversational`, so the owner's declaration always wins. It sits at WARN rather than FAIL so that ki-principal's gate keeps passing while each coordinating thread adds its field at its own next update.
