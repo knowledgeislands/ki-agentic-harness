@@ -72,7 +72,8 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 - Open watch-item: keep hosted `qwen3.8-max` separate from Apache-2.0 Qwen3.8 open-weight checkpoints.
 - Open watch-item: track Gemini 4 Argon only once it reaches general availability. On 2026-10-18 a Gemini API site banner says it is now available, but no tracked source gives it a model page, release date, or lifecycle entry.
 - Open watch-item: watch for a formal Claude Haiku 4.5 deprecation notice. On 2026-10-18 it is still active on the deprecations page with no notice, its not-sooner-than date of 2026-10-15 has passed, and the models overview lists it as legacy; Anthropic gives at least 60 days' notice before retiring a publicly released model, so it cannot retire before mid-December 2026. It has no route today.
-- Open watch-item: Claude Haiku 5.5 (`claude-haiku-5-5`, retirement not sooner than 2027-10-07) is now the current Haiku but is not a radar model; adding it needs its own decision.
+- Open watch-item: the next weekly refresh adds Claude Haiku 5.5 (`claude-haiku-5-5`, retirement not sooner than 2027-10-07) as a model identity with no route, verified against the current Claude models and deprecations pages; Claude Haiku 4.5 stays on the radar until it retires. The owner decided this on 2026-10-18 (HAIKU-5.5).
+- Open watch-item: the owner kept the [GPT-6 Astra launch post][openai-astra] retired on 2026-10-18 (ASTRA-SOURCE). Re-add the Astra launch post when fetchable, restoring the release date and cloud-access claims only it carried.
 
 [aa-coding]: https://artificialanalysis.ai/methodology/coding-agents-benchmarking/
 [aa-intelligence]: https://artificialanalysis.ai/methodology/intelligence-benchmarking
