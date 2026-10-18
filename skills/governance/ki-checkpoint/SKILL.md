@@ -21,7 +21,7 @@ This governance skill owns the work-file contract: one concise repository record
 
 ## Shared model
 
-- **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-pmo`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-checkpoints.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
+- **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-coordination`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-checkpoints.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
 - **Old checkpoints** - `+/_CHECKPOINTS/<thread>.md` records keep their old form and stay readable, each with a warning, until the territory's migration moves them ([old checkpoints](references/standards-checkpoints.md#old-checkpoints)).
 - **Removal** - finished work's folder is deleted at the mark that closes it, and any other removal follows explicit user direction after durable information has reached its proper owners. There is no retired-record state; Git supplies recovery history.
 - **Current state, not continuity** - a work file carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, host, completion signal, roadmap, decision log, or memory system.
@@ -39,7 +39,7 @@ The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-checkpoint --repo <repo>`. The structured catalogue checks that `+/_WORK/` holds only work folders with their work files, each work file's identity, closed front matter with its state-dependent fields, timestamp chronology and exact heading set, that coordinating work lives only where `ki-pmo` is declared, and mechanically recognisable transcript or session dependencies. It warns on each old checkpoint and checks it under its old form, with the retained `+/_CHECKPOINTS/README.md` scaffold while that directory exists.
+Run `ki repo audit --skill ki-checkpoint --repo <repo>`. The structured catalogue checks that `+/_WORK/` holds only work folders with their work files, each work file's identity, closed front matter with its state-dependent fields, timestamp chronology and exact heading set, that coordinating work lives only where `ki-coordination` is declared, and mechanically recognisable transcript or session dependencies. It warns on each old checkpoint and checks it under its old form, with the retained `+/_CHECKPOINTS/README.md` scaffold while that directory exists.
 
 Review the judgment aspects: whether each work file is concise and agrees with the work's last move, its id is chosen under Work naming rather than runtime-derived, durable facts already live with their proper owners, and the record lets a fresh agent pick the work up.
 
@@ -55,7 +55,7 @@ Run `ki repo educate --skill ki-checkpoint --repo <repo>` to render the concern 
 
 ### Mode HELP
 
-Explain the work-file layout and form, the old checkpoints read for the tolerance window, the manual resume flow, explicit write boundary, removal-and-Git-history lifecycle, and off-ramps to `ki-pmo` for the levels, states and moves, `ki-recap`, roadmap or knowledge owners, and optional runtime adapters, then stop without reading or changing repository state.
+Explain the work-file layout and form, the old checkpoints read for the tolerance window, the manual resume flow, explicit write boundary, removal-and-Git-history lifecycle, and off-ramps to `ki-coordination` for the levels, states and moves, `ki-recap`, roadmap or knowledge owners, and optional runtime adapters, then stop without reading or changing repository state.
 
 ### Mode REFRESH
 
@@ -67,7 +67,7 @@ REMOVE is an agent procedure, not a current `ki repo` host command. Require expl
 
 ### Mode RESUME
 
-RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<id>` or, from an opener, the Project slug. Resolve `+/_WORK/<id>/work.md`; for the tolerance window, when it is absent, the single old checkpoint whose stem maps to that id under Work naming; if no file or more than one file matches, stop and ask. Never resolve by title or label. Read the record in full and verify its folder, `id` and H1 agree, then act on its state as `ki-pmo`'s Picking work up sets it, its `Messages` first, and continue from its next steps in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named record is absent or invalid, stop and report the exact problem.
+RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<id>` or, from an opener, the Project slug. Resolve `+/_WORK/<id>/work.md`; for the tolerance window, when it is absent, the single old checkpoint whose stem maps to that id under Work naming; if no file or more than one file matches, stop and ask. Never resolve by title or label. Read the record in full and verify its folder, `id` and H1 agree, then act on its state as `ki-coordination`'s Picking work up sets it, its `Messages` first, and continue from its next steps in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named record is absent or invalid, stop and report the exact problem.
 
 ### Mode UPDATE
 

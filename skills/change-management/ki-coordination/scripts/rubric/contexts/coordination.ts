@@ -1,5 +1,5 @@
 /**
- * Read-only discovery of a repository's coordinating work for the thin `ki-pmo` rubric.
+ * Read-only discovery of a repository's coordinating work for the thin `ki-coordination` rubric.
  *
  * Boundary: reads the repository's `.ki.toml` identity, its work files `+/_WORK/<id>/work.md` and the reports and
  * decisions logs beside them, the holding area `+/_WORK_REVIEW/`, which it only counts, and for the tolerance window
@@ -64,7 +64,7 @@ const GLYPH_FORM_LINE =
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
 
-export type PmoRubricContext = {
+export type CoordinationRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly master: OutcomeContext
   readonly labels: OutcomeContext
@@ -715,7 +715,7 @@ const runsHook = (hooks: Readonly<Record<string, unknown>> | null, event: string
 }
 
 /**
- * The coordinator binding where `ki-pmo` is declared: the repository's tracked settings select the output style, and
+ * The coordinator binding where `ki-coordination` is declared: the repository's tracked settings select the output style, and
  * the user's Claude Code settings register the hook with the style deployed beside them. The user half is reported as
  * not checked when the user settings are absent, as on a machine with no Claude Code.
  */
@@ -728,7 +728,7 @@ export const bindingOutcomes = (root: string, userHome: string): AuditOutcome[] 
       ? { status: 'PASS', message: `The repository selects the \`${OUTPUT_STYLE}\` output style.` }
       : {
           status: 'VIOLATION',
-          message: `a repository that declares \`ki-pmo\` selects \`"outputStyle": "${OUTPUT_STYLE}"\` in its tracked \`.claude/settings.json\``,
+          message: `a repository that declares \`ki-coordination\` selects \`"outputStyle": "${OUTPUT_STYLE}"\` in its tracked \`.claude/settings.json\``,
           subject: repositorySettings
         }
   )
@@ -762,11 +762,11 @@ export const bindingOutcomes = (root: string, userHome: string): AuditOutcome[] 
   return outcomes
 }
 
-export const createPmoSession = ({
+export const createCoordinationSession = ({
   repository,
   userHome,
   publication
-}: RubricContextOptions): RubricSession<PmoRubricContext> => {
+}: RubricContextOptions): RubricSession<CoordinationRubricContext> => {
   const root = resolve(repository)
   const identity = repositoryIdentity(root)
   const capital = isCapital(identity)
@@ -782,7 +782,7 @@ export const createPmoSession = ({
   const unreported = reports
     ? undefined
     : 'No `+/_WORK/` or `+/_THREADS/` folder is present; no coordinating work has reported here.'
-  const context: PmoRubricContext = {
+  const context: CoordinationRubricContext = {
     rubric: { publication },
     master: {
       outcomes: one(
@@ -861,7 +861,7 @@ export const createPmoSession = ({
     }
   }
   return {
-    subjects: [{ families: ['RUBRIC', 'PMO'], context: () => context }],
+    subjects: [{ families: ['RUBRIC', 'COORD'], context: () => context }],
     proposal: () => ({ writes: [] })
   }
 }

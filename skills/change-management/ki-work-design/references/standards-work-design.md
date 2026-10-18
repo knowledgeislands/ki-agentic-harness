@@ -1,4 +1,4 @@
-# PMO design standard
+# Work design standard
 
 ## Contents
 
@@ -10,7 +10,7 @@
 
 ## Scope
 
-This standard was published under the skill name `ki-design-loop` until 14 October 2026, when the skill became `ki-pmo-design` under Kris's naming decision for the change-management design ("LOOP-NAME - `ki-pmo-design`"); the method is still called a design loop.
+This standard was published under the skill name `ki-design-loop` until 14 October 2026, when the skill became `ki-work-design` under Kris's naming decision for the change-management design ("LOOP-NAME - `ki-work-design`"); the method is still called a design loop.
 
 The loop shapes one subject - a Project, a theme, or a cross-cutting model that precedes its Project - from the owner's proposal to approved decisions and a rollout of ordinary work records. It begins before any record exists and ends when the rollout records are captured and the pilot is selected. The records then follow `ki-plan`, `ki-implement`, `ki-batch` and `ki-accept` as usual.
 

@@ -1,10 +1,10 @@
 /**
- * Renders the runtime surfaces that carry the owner-report shape from the `ki-pmo` standard's Generated surfaces
+ * Renders the runtime surfaces that carry the owner-report shape from the `ki-coordination` standard's Generated surfaces
  * section, so the standard is their one source: the coordinator hook's `line` and `pointer`, the whole
  * `ki-coordinator` output style, the run-prompt skeleton's Report paragraph and each authority footer's report rule.
  *
  * Boundary: reads the standard and the current surfaces under the harness root and returns each surface's rendered
- * bytes; it never writes. `ki dev skill generate ki-pmo` compares or publishes them, and the banner test checks the
+ * bytes; it never writes. `ki dev skill generate ki-coordination` compares or publishes them, and the banner test checks the
  * committed surfaces against them.
  */
 import { readFileSync } from 'node:fs'
@@ -18,7 +18,7 @@ export type SkillGeneration = {
   readonly generate: (harnessRoot: string) => readonly GeneratedSurface[]
 }
 
-const STANDARD = 'skills/change-management/ki-pmo/references/standards-pmo.md'
+const STANDARD = 'skills/change-management/ki-coordination/references/standards-coordination.md'
 const HOOK = 'hooks/coordinator-reminder.sh'
 const OUTPUT_STYLE = 'output-styles/ki-coordinator.md'
 const DELEGATION_ASSETS = 'skills/governance/ki-delegation/assets'
@@ -36,18 +36,18 @@ const BANNER_BLOCKS = [
 
 type Marked = { readonly block: string; readonly body: string }
 
-/** The fenced block directly after `<!-- ki-pmo:<kind> <name> -->` and one blank line: whole, and its body alone. */
+/** The fenced block directly after `<!-- ki-coordination:<kind> <name> -->` and one blank line: whole, and its body alone. */
 export const markedBlock = (standard: string, kind: 'source' | 'block', name: string): Marked => {
-  const marker = `<!-- ki-pmo:${kind} ${name} -->\n\n`
+  const marker = `<!-- ki-coordination:${kind} ${name} -->\n\n`
   const at = standard.indexOf(marker)
   if (at < 0 || standard.indexOf(marker, at + 1) >= 0)
-    throw new Error(`${STANDARD} must mark exactly one ki-pmo:${kind} ${name} block`)
+    throw new Error(`${STANDARD} must mark exactly one ki-coordination:${kind} ${name} block`)
   const rest = standard.slice(at + marker.length)
   const opening = /^(`{3,})[a-z]*\n/.exec(rest)
-  if (!opening?.[1]) throw new Error(`ki-pmo:${kind} ${name} is not followed by a fenced block`)
+  if (!opening?.[1]) throw new Error(`ki-coordination:${kind} ${name} is not followed by a fenced block`)
   const fence = opening[1]
   const close = rest.indexOf(`\n${fence}\n`, opening[0].length - 1)
-  if (close < 0) throw new Error(`ki-pmo:${kind} ${name} has no closing fence`)
+  if (close < 0) throw new Error(`ki-coordination:${kind} ${name} has no closing fence`)
   return { block: rest.slice(0, close + fence.length + 2), body: rest.slice(opening[0].length, close) }
 }
 
@@ -61,7 +61,7 @@ const spliceLine = (text: string, path: string, pattern: RegExp, line: string): 
 
 const shellValue = (name: string, value: string): string => {
   if (value.includes("'") || value.includes('\n'))
-    throw new Error(`ki-pmo:source hook-${name} must be one line with no single quote`)
+    throw new Error(`ki-coordination:source hook-${name} must be one line with no single quote`)
   return `${name}='${value}'`
 }
 
@@ -77,7 +77,8 @@ export const generate = (harnessRoot: string): readonly GeneratedSurface[] => {
   let style = `${source('output-style')}\n`
   for (const name of BANNER_BLOCKS) {
     const token = `{{${name}}}\n`
-    if (style.split(token).length !== 2) throw new Error(`ki-pmo:source output-style must name {{${name}}} once`)
+    if (style.split(token).length !== 2)
+      throw new Error(`ki-coordination:source output-style must name {{${name}}} once`)
     style = style.replace(token, () => markedBlock(standard, 'block', name).block)
   }
 
@@ -95,4 +96,4 @@ export const generate = (harnessRoot: string): readonly GeneratedSurface[] => {
   ]
 }
 
-export default { contract: 1, name: 'ki-pmo', generate } satisfies SkillGeneration
+export default { contract: 1, name: 'ki-coordination', generate } satisfies SkillGeneration

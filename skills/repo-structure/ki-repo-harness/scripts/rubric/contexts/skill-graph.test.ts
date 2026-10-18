@@ -28,12 +28,12 @@ describe('readSkillGraphNodes', () => {
       ...FIXTURE,
       source(
         'skills/governance/ki-dangling/SKILL.md',
-        'name: ki-dangling\nki-kind: governance\nki-applicability: detected\nki-depends-on: [ki-pmo]\ndescription: Dangling.'
+        'name: ki-dangling\nki-kind: governance\nki-applicability: detected\nki-depends-on: [ki-coordination]\ndescription: Dangling.'
       )
     ])
     expect(nodes.map((node) => node.name)).toEqual(['ki-base', 'ki-dangling', 'ki-flow', 'ki-leaf'])
     expect(nodes.find((node) => node.name === 'ki-flow')?.optionalDependsOn).toEqual(['ki-base'])
-    expect(issues).toEqual(['skills/governance/ki-dangling/SKILL.md: depends on unknown skill `ki-pmo`'])
+    expect(issues).toEqual(['skills/governance/ki-dangling/SKILL.md: depends on unknown skill `ki-coordination`'])
   })
 })
 

@@ -34,7 +34,7 @@ The two answers change one check and one owner list, so they share this record. 
 ## Boundary
 
 - In: `ki-repo`'s working-area owner list in `references/standards-repository.md`; the coverage signal table and its tolerance sentence in `references/standards-configuration.md`; the `ki-checkpoint` COVERAGE entry and a tolerance-window warning for each old area present in `scripts/rubric/contexts/audit.ts`; their tests; any regenerated surface.
-- Out: `ki-checkpoint`'s and `ki-pmo`'s own audits, which already read both shapes; `ki-checkpoint`'s `owns` declaration of the retained `+/_CHECKPOINTS/README.md` scaffold; moving any repository's files; closing the tolerance window, which phase 5 of the migration does; a release of `ki` or the harness.
+- Out: `ki-checkpoint`'s and `ki-coordination`'s own audits, which already read both shapes; `ki-checkpoint`'s `owns` declaration of the retained `+/_CHECKPOINTS/README.md` scaffold; moving any repository's files; closing the tolerance window, which phase 5 of the migration does; a release of `ki` or the harness.
 
 ## Current state
 
@@ -42,7 +42,7 @@ The two answers change one check and one owner list, so they share this record. 
 
 ## Steps
 
-- [x] `standards-repository.md`: replace the two old owner lines with `+/_WORK/` (the work file `work.md` owned by `ki-checkpoint`, the rest of each work folder by `ki-pmo`) and `+/_WORK_REVIEW/` with its `README.md` index (owned by `ki-pmo`), and add the tolerance-window sentence for `+/_CHECKPOINTS/` and `+/_THREADS/<run>/`.
+- [x] `standards-repository.md`: replace the two old owner lines with `+/_WORK/` (the work file `work.md` owned by `ki-checkpoint`, the rest of each work folder by `ki-coordination`) and `+/_WORK_REVIEW/` with its `README.md` index (owned by `ki-coordination`), and add the tolerance-window sentence for `+/_CHECKPOINTS/` and `+/_THREADS/<run>/`.
 - [x] `audit.ts`: the `ki-checkpoint` COVERAGE entry detects a path under `+/_WORK/`, `+/_WORK_REVIEW/` or, for the tolerance window, `+/_CHECKPOINTS/`; in a confirmed ki-repo, each old area present, `+/_CHECKPOINTS/` or `+/_THREADS/`, adds one COV-1 warning naming its new home.
 - [x] `standards-configuration.md`: the signal row names the new areas and the old one, and one sentence states the old-area warning.
 - [x] Tests in `repository.test.ts`: `+/_WORK/` and `+/_WORK_REVIEW/` each satisfy a declared `[skills.ki-checkpoint]` and require it when undeclared; `+/_CHECKPOINTS/` still satisfies it, with one warning; `+/_THREADS/` warns; a repository with only new areas has no COV-1 finding once declared.
@@ -89,11 +89,11 @@ None.
 
 ### Delivered
 
-The approved boundary from baseline `d76d248533aa871c7d64421dd061df0b1dad3400`: `ki-repo`'s working-area owner list names `+/_WORK/` and `+/_WORK_REVIEW/` and their owners, the `ki-checkpoint` coverage signal takes either new area or the old `+/_CHECKPOINTS/`, and each thread-model area present, `+/_CHECKPOINTS/` or `+/_THREADS/`, warns COV-1 with its new home. No repository's files move, `ki-checkpoint`'s and `ki-pmo`'s audits are unchanged, and nothing is released.
+The approved boundary from baseline `d76d248533aa871c7d64421dd061df0b1dad3400`: `ki-repo`'s working-area owner list names `+/_WORK/` and `+/_WORK_REVIEW/` and their owners, the `ki-checkpoint` coverage signal takes either new area or the old `+/_CHECKPOINTS/`, and each thread-model area present, `+/_CHECKPOINTS/` or `+/_THREADS/`, warns COV-1 with its new home. No repository's files move, `ki-checkpoint`'s and `ki-coordination`'s audits are unchanged, and nothing is released.
 
 ### Change Summary
 
-- `references/standards-repository.md`: `ki-checkpoint` owns `+/_WORK/<id>/work.md` and keeps `+/_WORK/` to work folders; `ki-pmo` owns the rest of each work folder and `+/_WORK_REVIEW/<id>/` with its index; a tolerance-window paragraph keeps `+/_CHECKPOINTS/` and `+/_THREADS/<run>/` accepted with a COV-1 warning.
+- `references/standards-repository.md`: `ki-checkpoint` owns `+/_WORK/<id>/work.md` and keeps `+/_WORK/` to work folders; `ki-coordination` owns the rest of each work folder and `+/_WORK_REVIEW/<id>/` with its index; a tolerance-window paragraph keeps `+/_CHECKPOINTS/` and `+/_THREADS/<run>/` accepted with a COV-1 warning.
 - `references/standards-configuration.md`: the `ki-checkpoint` signal row names `+/_WORK/`, `+/_WORK_REVIEW/` and the old `+/_CHECKPOINTS/`, and one paragraph states the old-area warning.
 - `scripts/rubric/contexts/audit.ts`: the `ki-checkpoint` COVERAGE entry detects all three areas, its artifact text names the new two, and a `LEGACY_WORKING_AREAS` loop warns once for each old area present in a confirmed ki-repo.
 - `scripts/rubric/contexts/repository.test.ts`: the old-checkpoint case now expects its one warning once declared; new cases cover `+/_WORK/` and `+/_WORK_REVIEW/` as the signal, failing undeclared and clean declared, and `+/_THREADS/` warning.

@@ -25,12 +25,12 @@ Every thread replies to the owner in one of three named forms: a plain conversat
 
 Kris asked on 2026-10-16, as relayed in the `ways-of-working` thread, for the reporting rules to "explicitly distinguish ordinary conversational replies, completed-work reports, and coordinator summaries", with routine answers kept plain and coordinator checkpoints, marks and banners confined to coordinating threads. The `reporting-forms` run drafted the definitions and every edit in [its report](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/reporting-forms.report.md). Kris agreed the draft under REPLY-FORMS in the [decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_THREADS/ways-of-working/decisions.md): "Take the recommended option a) for FORMS-AGREE, FORMS-OWNER, UNIT-TRIVIAL, NO-REPLY-BLOCK, CONV-CHECKPOINT, CONVRUN-NARROW (which answers CONVERSATIONAL-RUN), FORMS-PHASE and FORMS-RECORD; withdraw ROLE-REPORT; land the reply forms first as Phase 1a." FORMS-RECORD asked for this one record for the harness edits, separate from the proposed thread-identity record.
 
-Before this change the `ki-pmo` standard said every report to the owner was an owner report, the hook line and output style fired in any session of a declaring checkout without a scope, and the pick-up table gave a conversational thread HOLD and DONE rows.
+Before this change the `ki-coordination` standard said every report to the owner was an owner report, the hook line and output style fired in any session of a declaring checkout without a scope, and the pick-up table gave a conversational thread HOLD and DONE rows.
 
 ## Boundary
 
-- In: the report's edits 5.1 to 5.6 in this repository - the `ki-pmo` standard's new Reply forms section and the scoping edits around it, the `ki-pmo` description and body, the banner test, the `ki-delegation` Reporting pointers, the `ki-checkpoint` conversational-checkpoint sentence, the two source reviews - and the regenerated hook line, pointer, output style, run-prompt Report paragraph and authority footers.
-- Out: the chezmoi edits 5.7 to 5.9 and the ki-principal edit 5.10, which go under REPORTING-FORMS with no record after Kris reviews `chezmoi diff`; the role field and the hook's role gate, which the session-identity Phases 1 and 3 own and which later remove the hook-line scope sentence; a `ki-pmo` rubric item checking conversational replies, which the drafting run left out.
+- In: the report's edits 5.1 to 5.6 in this repository - the `ki-coordination` standard's new Reply forms section and the scoping edits around it, the `ki-coordination` description and body, the banner test, the `ki-delegation` Reporting pointers, the `ki-checkpoint` conversational-checkpoint sentence, the two source reviews - and the regenerated hook line, pointer, output style, run-prompt Report paragraph and authority footers.
+- Out: the chezmoi edits 5.7 to 5.9 and the ki-principal edit 5.10, which go under REPORTING-FORMS with no record after Kris reviews `chezmoi diff`; the role field and the hook's role gate, which the session-identity Phases 1 and 3 own and which later remove the hook-line scope sentence; a `ki-coordination` rubric item checking conversational replies, which the drafting run left out.
 
 ## Current state
 
@@ -41,12 +41,12 @@ Delivered at the resting point recorded under Review.
 - [x] Add the Reply forms section, with Units of work, Conversational bounded work and Coordinator-only machinery, before Owner report, and answer CONVERSATIONAL-RUN there with CONVRUN-NARROW's wording.
 - [x] Scope the Thread types Banner row, Re-anchoring, the Owner report opening, Heading and Reply block bullets, Report forms, Draining and the pick-up table to coordinating threads.
 - [x] Scope the `hook-line`, `hook-pointer`, `run-report`, `footer-report` and `output-style` sources.
-- [x] Update the `ki-pmo` SKILL.md, the `ki-delegation` Reporting section, the `ki-checkpoint` standard and both source reviews.
-- [x] Regenerate the surfaces with `ki dev skill generate ki-pmo --write` and pin the scope in the banner and hook tests.
+- [x] Update the `ki-coordination` SKILL.md, the `ki-delegation` Reporting section, the `ki-checkpoint` standard and both source reviews.
+- [x] Regenerate the surfaces with `ki dev skill generate ki-coordination --write` and pin the scope in the banner and hook tests.
 
 ## Files touched
 
-- `skills/change-management/ki-pmo/references/standards-pmo.md`, `SKILL.md`, `references/sources.md`, `scripts/banner.test.ts`
+- `skills/change-management/ki-coordination/references/standards-coordination.md`, `SKILL.md`, `references/sources.md`, `scripts/banner.test.ts`
 - `skills/governance/ki-delegation/references/standards-background-runs.md`, `references/sources.md`, `assets/run-prompt.md`, `assets/rules-none.md`, `assets/rules-push.md`, `assets/rules-prune.md`, `assets/rules-release.md`
 - `skills/governance/ki-checkpoint/references/standards-checkpoints.md`
 - `hooks/coordinator-reminder.sh`, `hooks/coordinator-reminder.test.ts`, `output-styles/ki-coordinator.md`
@@ -54,7 +54,7 @@ Delivered at the resting point recorded under Review.
 
 ## Verify
 
-`bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-pmo`, `--skill ki-delegation`, `--skill ki-checkpoint` and `--skill ki-work-roadmap`, run sequentially.
+`bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-coordination`, `--skill ki-delegation`, `--skill ki-checkpoint` and `--skill ki-work-roadmap`, run sequentially.
 
 ## Dependencies / blocks
 
@@ -86,14 +86,14 @@ The boundary above, from baseline `737cd4d11a738415bf5c92b16b6eabd3da4b68c8`, in
 
 ### Change Summary
 
-The `ki-pmo` standard gains `## Reply forms` with the three forms, the five-criterion unit-of-work test and its one-line exemption, the bound on conversational work, CONVRUN-NARROW's answer to CONVERSATIONAL-RUN and the coordinator-only list. The Banner row, Re-anchoring, Owner report, Report forms, Draining and Picking up now confine the coordinator machinery to coordinating threads; the conversational HOLD and DONE rows leave the pick-up table, replaced by one impossible-combination line. `No reply needed.` stays in completed-work reports only. The hook line opens with a scope sentence, the pointer gains its conversational clause, the run-report and footer sources drop the footer banner for a conversational thread's run report, and the output style opens with its scope paragraph; all are regenerated. `hooks/coordinator-reminder.test.ts` carries the new literal line and pointer, a change the report did not list but the hook test requires.
+The `ki-coordination` standard gains `## Reply forms` with the three forms, the five-criterion unit-of-work test and its one-line exemption, the bound on conversational work, CONVRUN-NARROW's answer to CONVERSATIONAL-RUN and the coordinator-only list. The Banner row, Re-anchoring, Owner report, Report forms, Draining and Picking up now confine the coordinator machinery to coordinating threads; the conversational HOLD and DONE rows leave the pick-up table, replaced by one impossible-combination line. `No reply needed.` stays in completed-work reports only. The hook line opens with a scope sentence, the pointer gains its conversational clause, the run-report and footer sources drop the footer banner for a conversational thread's run report, and the output style opens with its scope paragraph; all are regenerated. `hooks/coordinator-reminder.test.ts` carries the new literal line and pointer, a change the report did not list but the hook test requires.
 
 ### Verification
 
 - `bun run test`: 1203 pass, 0 fail.
 - `bunx tsc --noEmit`: clean.
 - `ki repo audit --skill ki-delegation` and `--skill ki-checkpoint`: pass. `--skill ki-skills`: pass with two LONG-3 refresh-cadence warnings on untouched skills.
-- `ki repo audit --skill ki-pmo`: four PMO-7 failures and one PMO-9 warning, all in the untouched `+/_THREADS/skill-reviews/` folder. `--skill ki-work-roadmap`: one ITEM-1 failure, the duplicate `KI-HARNESS-GOV-195` that harness-routine raised as GOV-195-DUP. Fleet findings, not failures of this change.
+- `ki repo audit --skill ki-coordination`: four COORD-7 failures and one COORD-9 warning, all in the untouched `+/_THREADS/skill-reviews/` folder. `--skill ki-work-roadmap`: one ITEM-1 failure, the duplicate `KI-HARNESS-GOV-195` that harness-routine raised as GOV-195-DUP. Fleet findings, not failures of this change.
 
 ### Outstanding concerns
 
@@ -105,7 +105,7 @@ The change meets the Goal in text: every surface a session sees now names the th
 
 ### Mini recap
 
-Reply forms land as Phase 1a in the harness, with the hook and style regenerated and tests green. Learning route: a `ki-pmo` rubric item for conversational replies, if Kris wants one, would be its own record.
+Reply forms land as Phase 1a in the harness, with the hook and style regenerated and tests green. Learning route: a `ki-coordination` rubric item for conversational replies, if Kris wants one, would be its own record.
 
 ## Discussion
 

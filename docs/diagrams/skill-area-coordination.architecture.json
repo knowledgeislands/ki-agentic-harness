@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "0b95efbb51e54a813a49d1d477dbc23681ecc70e"
     },
     "legend": {
       "mode": "auto",
@@ -106,32 +106,13 @@
       ]
     },
     {
-      "id": "ki-delegation",
+      "id": "ki-coordination",
       "type": "database",
-      "label": "ki-delegation",
-      "sublabel": "governance · opt-in",
-      "sources": [
-        {
-          "path": "skills/governance/ki-delegation/SKILL.md"
-        }
-      ],
-      "pos": [
-        44,
-        252
-      ],
-      "size": [
-        208,
-        60
-      ]
-    },
-    {
-      "id": "ki-pmo",
-      "type": "database",
-      "label": "ki-pmo",
+      "label": "ki-coordination",
       "sublabel": "change management · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/SKILL.md"
+          "path": "skills/change-management/ki-coordination/SKILL.md"
         }
       ],
       "pos": [
@@ -144,18 +125,18 @@
       ]
     },
     {
-      "id": "ki-pmo-design",
-      "type": "frontend",
-      "label": "ki-pmo-design",
-      "sublabel": "change management · command",
+      "id": "ki-delegation",
+      "type": "database",
+      "label": "ki-delegation",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+          "path": "skills/governance/ki-delegation/SKILL.md"
         }
       ],
       "pos": [
         44,
-        376
+        252
       ],
       "size": [
         208,
@@ -194,6 +175,25 @@
       "pos": [
         588,
         252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-work-design",
+      "type": "frontend",
+      "label": "ki-work-design",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-work-design/SKILL.md"
+        }
+      ],
+      "pos": [
+        44,
+        376
       ],
       "size": [
         208,
@@ -245,8 +245,8 @@
       "wraps": [
         "ki-delegation",
         "ki-checkpoint",
-        "ki-pmo",
-        "ki-pmo-design"
+        "ki-coordination",
+        "ki-work-design"
       ],
       "pad": 28
     },
@@ -265,8 +265,8 @@
       "wraps": [
         "ki-delegation",
         "ki-checkpoint",
-        "ki-pmo",
-        "ki-pmo-design",
+        "ki-coordination",
+        "ki-work-design",
         "ki-trades",
         "ki-trade"
       ],
@@ -281,6 +281,18 @@
       "variant": "dashed"
     },
     {
+      "id": "ki-coordination--ki-checkpoint",
+      "from": "ki-coordination",
+      "to": "ki-checkpoint",
+      "variant": "default"
+    },
+    {
+      "id": "ki-coordination--ki-delegation",
+      "from": "ki-coordination",
+      "to": "ki-delegation",
+      "variant": "default"
+    },
+    {
       "id": "ki-implement--ki-delegation",
       "from": "ki-implement",
       "to": "ki-delegation",
@@ -293,34 +305,22 @@
       "variant": "dashed"
     },
     {
-      "id": "ki-pmo--ki-checkpoint",
-      "from": "ki-pmo",
-      "to": "ki-checkpoint",
-      "variant": "default"
-    },
-    {
-      "id": "ki-pmo--ki-delegation",
-      "from": "ki-pmo",
-      "to": "ki-delegation",
-      "variant": "default"
-    },
-    {
-      "id": "ki-pmo-design--ki-decision-records",
-      "from": "ki-pmo-design",
-      "to": "ki-decision-records",
-      "variant": "dashed"
-    },
-    {
-      "id": "ki-pmo-design--ki-delegation",
-      "from": "ki-pmo-design",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
-    {
       "id": "ki-trade--ki-trades",
       "from": "ki-trade",
       "to": "ki-trades",
       "variant": "default"
+    },
+    {
+      "id": "ki-work-design--ki-decision-records",
+      "from": "ki-work-design",
+      "to": "ki-decision-records",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-work-design--ki-delegation",
+      "from": "ki-work-design",
+      "to": "ki-delegation",
+      "variant": "dashed"
     }
   ],
   "cards": [

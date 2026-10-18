@@ -39,7 +39,7 @@ mcp_servers = 5
 total = 30000
 ```
 
-Model types express purpose, not a provider product: `fast` for mechanical or bulk work, `standard` for well-scoped default work, `reasoning` for hard judgement, and `frontier` for long-horizon autonomous work. A coordinating thread under `ki-pmo` runs on a fast, low-effort model and hands heavy reasoning to background agents, under [the standard](references/standards-tokenomics.md#model-purpose). A runtime adapter may report an effective model only where its documented configuration exposes one; it does not change this portable purpose taxonomy.
+Model types express purpose, not a provider product: `fast` for mechanical or bulk work, `standard` for well-scoped default work, `reasoning` for hard judgement, and `frontier` for long-horizon autonomous work. A coordinating thread under `ki-coordination` runs on a fast, low-effort model and hands heavy reasoning to background agents, under [the standard](references/standards-tokenomics.md#model-purpose). A runtime adapter may report an effective model only where its documented configuration exposes one; it does not change this portable purpose taxonomy.
 
 ## Operating modes
 

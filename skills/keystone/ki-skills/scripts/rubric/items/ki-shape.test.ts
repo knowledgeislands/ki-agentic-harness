@@ -144,8 +144,8 @@ describe('KI-SHAPE-21', () => {
           dependsOn: '[]',
           dependencyGraph: graph,
           skillMentions: [
-            { name: 'ki-pmo', line: 2, reliance: false },
-            { name: 'ki-pmo', line: 9, reliance: true },
+            { name: 'ki-coordination', line: 2, reliance: false },
+            { name: 'ki-coordination', line: 9, reliance: true },
             { name: 'ki-c', line: 7, reliance: true },
             { name: 'ki-c', line: 8, reliance: true }
           ]
@@ -153,7 +153,7 @@ describe('KI-SHAPE-21', () => {
       })
     )
     expect(findings).toEqual([
-      { status: 'VIOLATION', message: 'line 2 references `ki-pmo`, which is not a skill in this collection' },
+      { status: 'VIOLATION', message: 'line 2 references `ki-coordination`, which is not a skill in this collection' },
       {
         status: 'VIOLATION',
         message: 'line 7 relies on `ki-c` without declaring it in ki-depends-on or ki-optional-depends-on'

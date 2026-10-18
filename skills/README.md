@@ -35,7 +35,7 @@ Govern incremental readable ChatGPT project and conversation acquisition, includ
 
 #### `ki-acquire-granola`
 
-Acquire and reconcile Granola meetings through read-only MCP evidence, including complete date windows, folder routing, faithful reads, checkpoints, and amendment detection. Use for Granola meeting import or audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
+Acquire and reconcile Granola meetings through MCP reads, including screenshots, complete date windows, folder routing, verified Acquired markers, checkpoints, and amendment detection. Use for Granola import or audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -117,6 +117,16 @@ Prepare and run one bounded authority envelope over an exact set of Ready work r
 - **Dependencies:** None
 - **Runtime:** Portable
 
+#### `ki-coordination`
+
+Govern coordinating work under the Knowledge Islands work model: the responsive coordinator and its turn budget, the work levels and forms with their ids, openers and bootstrap, the seven states and the receive words, the Summary, recap since the mark and full summary, the report heading, the closing glyph banner and send line, On hold with its hold report, the work file and its Messages section, re-anchoring after compaction, decision classes and their life cycle, design notes, Finished, the working rules, and the three reply forms every session uses. Use while coordinating territory or Project work to give a summary, recap, full summary or banner or strike the mark, or to decide how any session replies; `ki-delegation` owns the background runs the coordinator launches.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
+- **Dependencies:** `ki-delegation`, `ki-checkpoint`
+- **Runtime:** Portable
+
 #### `ki-implement`
 
 Deliver one approved Ready local work record from immutable baseline through verification and Awaiting review. Use to implement planned work; it never selects, replans, self-accepts, prunes, pushes, releases, or expands authority.
@@ -147,26 +157,6 @@ Shape selected Now or Next draft work in the local roadmap or KB Streams adapter
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-pmo`
-
-Govern the coordinating thread: the responsive coordinator and its turn budget, the three thread types with their openers and bootstrap, the Summary, recap since the mark and full summary, the report heading, the closing block-letter banner with its REST, BUSY, HOLD and DONE frames and resume line, the hold, the pick-up block, the messages block, re-anchoring after compaction, decision classes, design notes, Project close and the thread working rules. Use in a state-of-play or coordination thread, or to give a summary, recap, full summary, banner or strike the mark; `ki-delegation` owns the background runs the thread launches.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
-- **Dependencies:** `ki-delegation`, `ki-checkpoint`
-- **Runtime:** Portable
-
-#### `ki-pmo-design`
-
-Shape a new Project, Initiative or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed beside the subject's Project or Initiative. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `start <subject> | resume <subject> | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-recap`
 
 Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work and housekeeping skills for historical session acquisition.
@@ -184,6 +174,16 @@ Select and audit a repository's KI forward-work adapter and shared lifecycle voc
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-design`
+
+Shape a new Project, theme or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed in the work folder's `design/`, `+/_WORK/<id>/design/`. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `start <subject> | resume <id> | help`
 - **Dependencies:** None
 - **Runtime:** Portable
 
@@ -241,7 +241,7 @@ Find website design inspiration in curated galleries and turn selected examples 
 
 #### `ki-design-system`
 
-Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for design-system method; use `ki-design-inspiration` for visual references and `ki-pmo-design` for project shape.
+Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for design-system method; use `ki-design-inspiration` for visual references and `ki-work-design` for project shape.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -365,11 +365,11 @@ Govern KI Markdown, TOML, README composition, and durable knowledge placement. U
 
 #### `ki-checkpoint`
 
-Create, update, resume, audit, or remove a concise repository-owned checkpoint for one human-named active thread. Use for reconstruction without a transcript or vendor session; Git owns history, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners.
+Create, update, resume, audit, or remove the work file of one piece of work, `+/_WORK/<id>/work.md`: its front matter of id, level, title, worker, supervisor, state and times, its next steps, Messages and parked query tags. Use for picking work up without a transcript or vendor session; Git is the logbook, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners, and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
 
 - **Kind:** Governance
 - **Applicability:** Detected
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <thread> | resume <thread> | update <thread>`
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>`
 - **Dependencies:** None
 - **Runtime:** Portable
 
@@ -385,7 +385,7 @@ Create or audit typed KI Decision Records for durable rationale and authority. U
 
 #### `ki-delegation`
 
-Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and `ki-pmo` governs the coordinating thread that launches them.
+Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and `ki-coordination` governs the coordinating work that launches them.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

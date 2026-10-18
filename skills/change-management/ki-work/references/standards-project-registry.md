@@ -37,7 +37,7 @@ Streams/Themes/
   <slug>.md            # one theme page per theme
 ```
 
-A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; a `theme` value resolves to `Streams/Themes/<slug>.md`. Every registry note is flat: no folder note, and no `design/` folder anywhere under `Streams/`. A [`ki-pmo-design`](../../ki-pmo-design/SKILL.md) design lives in its work folder, `+/_WORK/<id>/design/`, with the work's other churning papers. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs. A record in another territory names an entry with a [cross-territory reference](#cross-territory-references).
+A work record's `project` value is a Project slug, so it resolves to `Streams/Projects/<slug>.md`; a `theme` value resolves to `Streams/Themes/<slug>.md`. Every registry note is flat: no folder note, and no `design/` folder anywhere under `Streams/`. A [`ki-work-design`](../../ki-work-design/SKILL.md) design lives in its work folder, `+/_WORK/<id>/design/`, with the work's other churning papers. Slugs are lowercase kebab-case and scoped to the territory: each territory keeps its own registry and its own slugs. A record in another territory names an entry with a [cross-territory reference](#cross-territory-references).
 
 ## Project note
 
@@ -84,7 +84,7 @@ It leaves the stage in one of two ways. It **graduates** when its lead takes the
 
 ## Paused Project
 
-A `paused` Project says why it waits and until when. Its `## Notes` opens with one line giving its release condition and a review date; the territory work under [`ki-pmo`](../../ki-pmo/SKILL.md) reviews it at its first mark after that date. The line is prose, and the note gains no frontmatter. Kris set on 2026-10-15: "A paused Project's ## Notes opens with one line giving its release condition and review date, reviewed by state-of-play after that date; no new front matter".
+A `paused` Project says why it waits and until when. Its `## Notes` opens with one line giving its release condition and a review date; the territory work under [`ki-coordination`](../../ki-coordination/SKILL.md) reviews it at its first mark after that date. The line is prose, and the note gains no frontmatter. Kris set on 2026-10-15: "A paused Project's ## Notes opens with one line giving its release condition and review date, reviewed by state-of-play after that date; no new front matter".
 
 ## Close-out assessment
 
@@ -119,7 +119,7 @@ A theme page lists neither its Projects nor its records, Activities or housekeep
 
 Upkeep and other work that never finishes has no Project. Its records may name a `theme` directly, usually with `purpose: upkeep`, and recurring runs inherit any theme from their template or Activity.
 
-A Project or theme shaped through [`ki-pmo-design`](../../ki-pmo-design/SKILL.md) links any resulting Decision Record once the design is consolidated. The note never copies the brief, reviews, report or decisions, and never points into a work folder.
+A Project or theme shaped through [`ki-work-design`](../../ki-work-design/SKILL.md) links any resulting Decision Record once the design is consolidated. The note never copies the brief, reviews, report or decisions, and never points into a work folder.
 
 ## Attributes by level
 

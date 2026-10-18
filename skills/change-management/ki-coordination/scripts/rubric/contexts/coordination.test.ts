@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
   bindingOutcomes,
-  createPmoSession,
+  createCoordinationSession,
   isCapital,
   recordIdentifiers,
   reportConfidenceFindings,
@@ -16,12 +16,12 @@ import {
   repositoryIdentity,
   workFolderFindings,
   workLevel
-} from './pmo.ts'
+} from './coordination.ts'
 
 const roots: string[] = []
 
 const fixture = (identity: { repository: string; capital: string } | null): string => {
-  const root = mkdtempSync(join(tmpdir(), 'ki-pmo-'))
+  const root = mkdtempSync(join(tmpdir(), 'ki-coordination-'))
   roots.push(root)
   if (identity)
     writeFileSync(
@@ -66,7 +66,7 @@ const register = (root: string, kind: 'Projects' | 'Initiatives', slug: string):
 }
 
 const context = (root: string) => {
-  const session = createPmoSession({ mode: 'audit', repository: root, userHome: root, configuration: {} })
+  const session = createCoordinationSession({ mode: 'audit', repository: root, userHome: root, configuration: {} })
   return session.subjects[0]!.context()
 }
 
@@ -313,7 +313,7 @@ describe('thread report links', () => {
       root,
       'ways-of-working',
       'pruned',
-      '# Report\n\n- Pruned [KI-HARNESS-GOV-181 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-181-link-rule.md) and [KI-HARNESS-GOV-185 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-pmo-extraction.md).\n'
+      '# Report\n\n- Pruned [KI-HARNESS-GOV-181 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-181-link-rule.md) and [KI-HARNESS-GOV-185 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-coordination-extraction.md).\n'
     )
     expect(statuses(context(root).links.outcomes)).toEqual(['PASS'])
     report(

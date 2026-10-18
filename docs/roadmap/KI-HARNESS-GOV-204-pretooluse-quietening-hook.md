@@ -22,7 +22,7 @@ The harness decides, on a week's evidence from the source-level cuts, whether to
 
 Kris Brown answered QUIET-HOOK on 17 October 2026 at 22:50 BST in the ways-of-working thread: "Yes: capture an unadopted tools-ki record for a KI_QUIET setting implying --concise --progress never, and an unadopted ki-agentic-harness record for a PreToolUse quietening hook, first checking the current Claude Code hooks reference; decide whether to build them after a week of the source-level cuts." This record is the harness half; the `tools-ki` `KI_QUIET` record is captured separately in that repository.
 
-The source-level cuts landed on 17 October 2026: the harness pre-commit gate went quiet on success, ki-principal's gate followed, and the `ki-pmo` quiet-tools rule tells agents to run Git with `-q` and report each outcome in one line. The hook is a backstop for calls that escape those cuts, not a replacement for them.
+The source-level cuts landed on 17 October 2026: the harness pre-commit gate went quiet on success, ki-principal's gate followed, and the `ki-coordination` quiet-tools rule tells agents to run Git with `-q` and report each outcome in one line. The hook is a backstop for calls that escape those cuts, not a replacement for them.
 
 ### Hooks reference, checked 17 October 2026
 

@@ -72,8 +72,8 @@ Closed metadata and document shape make one work file portable and deterministic
   - _Review prompt:_ Does each label match the name the human uses for the thread in their client?
   - _Outcomes:_ conforming; explicit update required; escalate to user
   - _Conforming guidance:_ Take the label from the human; never derive identity or resolution from it.
-- **RECORD-4 [M + J] — coordinating work lives only where ki-pmo is declared** — A work file at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate. (standards-checkpoints.md#front-matter)
-  - _Remediation:_ guarded — Declare `[skills.ki-pmo]` where the repository coordinates, or correct the level through an explicit work-file update.
+- **RECORD-4 [M + J] — coordinating work lives only where ki-coordination is declared** — A work file at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate. (standards-checkpoints.md#front-matter)
+  - _Remediation:_ guarded — Declare `[skills.ki-coordination]` where the repository coordinates, or correct the level through an explicit work-file update.
   - _Evidence scope:_ Every work file level and old checkpoint role.
   - _Review prompt:_ Does each declared level or role match how the owner runs the work?
   - _Outcomes:_ conforming; explicit update required; escalate to user

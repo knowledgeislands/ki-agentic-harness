@@ -148,12 +148,12 @@ const inspectDirectory = (directory: string, root: string): { records: ParsedRec
 const validTimestamp = (value: unknown): value is string =>
   typeof value === 'string' && UTC_TIMESTAMP.test(value) && !Number.isNaN(Date.parse(value))
 
-/** Whether the repository's `.ki.toml` declares `[skills.ki-pmo]`, the gate for a coordinating role. */
-const declaresPmo = (root: string): boolean => {
+/** Whether the repository's `.ki.toml` declares `[skills.ki-coordination]`, the gate for a coordinating role. */
+const declaresCoordination = (root: string): boolean => {
   const config = join(root, '.ki.toml')
   if (!physicalFile(config)) return false
   try {
-    return table(table(table(Bun.TOML.parse(readFileSync(config, 'utf8')))?.skills)?.['ki-pmo']) !== null
+    return table(table(table(Bun.TOML.parse(readFileSync(config, 'utf8')))?.skills)?.['ki-coordination']) !== null
   } catch {
     return false
   }
@@ -192,7 +192,7 @@ const boundaryOutcomes = (record: ParsedRecord, fields: Readonly<Record<string, 
 
 const recordEvidence = (
   records: readonly ParsedRecord[],
-  pmoDeclared: boolean,
+  coordinationDeclared: boolean,
   absent?: string
 ): {
   identity: readonly AuditOutcome[]
@@ -308,10 +308,10 @@ const recordEvidence = (
           message: `role must be one of ${ROLES.join(', ')}`,
           subject: record.path
         })
-      else if (COORDINATING_ROLES.includes(fields.role) && !pmoDeclared)
+      else if (COORDINATING_ROLES.includes(fields.role) && !coordinationDeclared)
         role.push({
           status: 'VIOLATION',
-          message: `role ${String(fields.role)} is valid only where .ki.toml declares [skills.ki-pmo]`,
+          message: `role ${String(fields.role)} is valid only where .ki.toml declares [skills.ki-coordination]`,
           subject: record.path
         })
     }
@@ -353,7 +353,7 @@ const recordEvidence = (
     identity: one(identity, 'Every checkpoint has one consistent human-selected thread identity.'),
     schema: one(schema, 'Every checkpoint uses the closed metadata and heading schema.'),
     label: one(label, 'Every checkpoint carries a presentation label.'),
-    role: one(role, 'Every coordinating role is declared where ki-pmo is declared.'),
+    role: one(role, 'Every coordinating role is declared where ki-coordination is declared.'),
     lifecycle: one(lifecycle, 'Checkpoint states, uniqueness, and timestamps are coherent.'),
     boundary: one(boundary, 'No mechanically recognisable transcript or session-continuity dependency is present.')
   }
@@ -410,7 +410,7 @@ const section = (body: string, heading: string, next: string | undefined): strin
 }
 
 /** Validates each work file `+/_WORK/<id>/work.md` against the closed work-file form. */
-const workEvidence = (works: readonly ParsedRecord[], pmoDeclared: boolean): Evidence => {
+const workEvidence = (works: readonly ParsedRecord[], coordinationDeclared: boolean): Evidence => {
   const evidence: Evidence = { identity: [], schema: [], role: [], lifecycle: [], boundary: [] }
   const fail = (list: AuditOutcome[], record: ParsedRecord, message: string): void => {
     list.push({ status: 'VIOLATION', message, subject: record.path })
@@ -481,14 +481,18 @@ const workEvidence = (works: readonly ParsedRecord[], pmoDeclared: boolean): Evi
     )
       fail(evidence.lifecycle, work, 'created_at must not be later than since')
 
-    if (COORDINATING_LEVELS.includes(fields.level) && !pmoDeclared)
-      fail(evidence.role, work, `${String(fields.level)} work is valid only where .ki.toml declares [skills.ki-pmo]`)
+    if (COORDINATING_LEVELS.includes(fields.level) && !coordinationDeclared)
+      fail(
+        evidence.role,
+        work,
+        `${String(fields.level)} work is valid only where .ki.toml declares [skills.ki-coordination]`
+      )
     evidence.boundary.push(...boundaryOutcomes(work, fields))
   }
   return evidence
 }
 
-/** Whether an old checkpoint's stem maps to a work id that already has a work file, under ki-pmo's Work naming. */
+/** Whether an old checkpoint's stem maps to a work id that already has a work file, under ki-coordination's Work naming. */
 const supersededBy = (stem: string, works: readonly ParsedRecord[]): string | undefined => {
   const ids = works.map((work) => work.stem)
   if (stem === '_state-of-play') return ids.find((id) => !id.includes('.'))
@@ -582,13 +586,13 @@ export const createCheckpointsSession = ({
         subject: '.ki.toml'
       }))
     : []
-  const pmoDeclared = declaresPmo(root)
+  const coordinationDeclared = declaresCoordination(root)
   const unsafe =
     (workExists && !workSafe) || (checkpointExists && !checkpointSafe)
       ? 'Records are unavailable until every subarea is safe.'
       : undefined
-  const old = recordEvidence(records, pmoDeclared, undeclaredAbsent ?? unsafe)
-  const current = workEvidence(works, pmoDeclared)
+  const old = recordEvidence(records, coordinationDeclared, undeclaredAbsent ?? unsafe)
+  const current = workEvidence(works, coordinationDeclared)
   for (const record of records) {
     const id = supersededBy(record.stem, works)
     if (id)
@@ -637,7 +641,7 @@ export const createCheckpointsSession = ({
       ),
       schema: merged(old.schema, current.schema, 'Every work file and old checkpoint uses its closed schema.'),
       label: old.label,
-      role: merged(old.role, current.role, 'Coordinating work lives only where ki-pmo is declared.')
+      role: merged(old.role, current.role, 'Coordinating work lives only where ki-coordination is declared.')
     },
     lifecycle: {
       mechanical: merged(old.lifecycle, current.lifecycle, 'Record states, uniqueness, and timestamps are coherent.')

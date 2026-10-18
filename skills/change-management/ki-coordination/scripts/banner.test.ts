@@ -15,12 +15,12 @@ import { generate } from './generate/index.ts'
 // glyph is whose move it is, a settled state shows its holder's glyph alone,
 // an arrow appears only in a handoff state, and no report carries a reply
 // block. The block-letter frames retired with the work model. This test is the
-// mechanical check the PMO rubric cannot run against a repository, because the
+// mechanical check the COORD rubric cannot run against a repository, because the
 // transcripts the banners appear in are not tracked.
 
 const skillRoot = resolve(import.meta.dir, '..')
 const harnessRoot = resolve(skillRoot, '..', '..', '..')
-const standard = readFileSync(resolve(skillRoot, 'references', 'standards-pmo.md'), 'utf8')
+const standard = readFileSync(resolve(skillRoot, 'references', 'standards-coordination.md'), 'utf8')
 const outputStyle = readFileSync(resolve(harnessRoot, 'output-styles', 'ki-coordinator.md'), 'utf8')
 const hook = readFileSync(resolve(harnessRoot, 'hooks', 'coordinator-reminder.sh'), 'utf8')
 
@@ -58,14 +58,14 @@ const ITEM =
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
 const SEND_LINE =
-  'Send <label> back to its worker under current ki-pmo and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
+  'Send <label> back to its worker under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
 const HOLD_SEND_LINE =
-  'Resume <label> from its work file under current ki-pmo and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.'
+  'Resume <label> from its work file under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.'
 const HOLD_CLOSING_LINE = 'To bring this work back and continue it, paste this:'
 
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
-  text.replace(/<!-- ki-pmo:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
+  text.replace(/<!-- ki-coordination:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
 
 /** Every fenced `markdown` block in a document, as lines. */
 const markdownBlocks = (text: string): string[][] =>
@@ -202,7 +202,7 @@ test('the standard and the output style retire the reply block and the block-let
 test('the hook line points at the standard and carries only its five hard rules', () => {
   const line = /^line='(.*)'$/m.exec(hook)?.[1] ?? ''
   expect(line).toContain(
-    'follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md)'
+    'follow the ki-coordination coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md)'
   )
   expect(line).toContain(
     'whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive'
@@ -239,7 +239,7 @@ test('the run-report and footer-report sources carry the quiet-tools rule and no
 
 test('the hook line, the pointer and the output style confine the coordinator forms to coordinating work', () => {
   expect(hook).toContain("line='In coordinating work only,")
-  expect(hook).toContain('in any other session ignore this line and reply in the ki-pmo Reply forms')
+  expect(hook).toContain('in any other session ignore this line and reply in the ki-coordination Reply forms')
   expect(hook).toContain('In a conversational session, re-read your work file if you have one')
   expect(outputStyle).toContain('This style applies only while a session coordinates work')
   expect(standard).toContain('## Reply forms')

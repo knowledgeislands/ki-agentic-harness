@@ -6,9 +6,9 @@ import { join, resolve } from 'node:path'
 
 const script = resolve(import.meta.dir, 'coordinator-reminder.sh')
 const line =
-  'In coordinating work only, a session opened or resumed as ki-pmo territory work or Project work, whose work file declares level territory or project; in any other session ignore this line and reply in the ki-pmo Reply forms. Coordinator: follow the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.'
+  'In coordinating work only, a session opened or resumed as ki-coordination territory work or Project work, whose work file declares level territory or project; in any other session ignore this line and reply in the ki-coordination Reply forms. Coordinator: follow the ki-coordination coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md) and the Work Process note it cites, whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive, answering this message within one short turn; 2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner exactly as the standard prints them, with no reply block, reading each spoken answer back in the decisions log; 5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first, then remove it.'
 const pointer =
-  'Context was compacted. While coordinating work, before replying, follow "Re-anchoring after compaction" in the ki-pmo coordinating-work standard (skills/change-management/ki-pmo/references/standards-pmo.md): re-read the standard, your work file in full and its decisions log, run ki agent status and read its Messages section, then confirm in one line and answer in owner-report form with the report heading and the glyph banner. Re-anchoring moves no mark. In a conversational session, re-read your work file if you have one and carry on with a conversational reply.'
+  'Context was compacted. While coordinating work, before replying, follow "Re-anchoring after compaction" in the ki-coordination coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md): re-read the standard, your work file in full and its decisions log, run ki agent status and read its Messages section, then confirm in one line and answer in owner-report form with the report heading and the glyph banner. Re-anchoring moves no mark. In a conversational session, re-read your work file if you have one and carry on with a conversational reply.'
 
 const root = mkdtempSync(join(tmpdir(), 'ki-coordinator-reminder-'))
 const coordinating = join(root, 'capital')
@@ -16,9 +16,9 @@ const undeclared = join(root, 'undeclared')
 const ordinary = join(root, 'ordinary')
 mkdirSync(join(coordinating, '+', '_CHECKPOINTS'), { recursive: true })
 mkdirSync(join(coordinating, 'Streams', 'Projects'), { recursive: true })
-writeFileSync(join(coordinating, '.ki.toml'), '[skills.ki-repo]\nrepository = "capital"\n\n[skills.ki-delegation]\n\n[skills.ki-pmo]\n\n[skills.ki-checkpoint]\n')
+writeFileSync(join(coordinating, '.ki.toml'), '[skills.ki-repo]\nrepository = "capital"\n\n[skills.ki-delegation]\n\n[skills.ki-coordination]\n\n[skills.ki-checkpoint]\n')
 spawnSync('git', ['init', '--quiet'], { cwd: coordinating })
-// Checkpoints without the declaration: the signal is the `[skills.ki-pmo]` table, not `+/_CHECKPOINTS/`.
+// Checkpoints without the declaration: the signal is the `[skills.ki-coordination]` table, not `+/_CHECKPOINTS/`.
 mkdirSync(join(undeclared, '+', '_CHECKPOINTS'), { recursive: true })
 writeFileSync(join(undeclared, '.ki.toml'), '[skills.ki-repo]\nrepository = "undeclared"\n\n[skills.ki-checkpoint]\n')
 spawnSync('git', ['init', '--quiet'], { cwd: undeclared })
@@ -96,7 +96,7 @@ test('a subdirectory of a coordinating checkout still counts', () => {
   expect(outcome.context).toBe(line)
 })
 
-test('a checkout holding checkpoints but not declaring ki-pmo gets nothing', () => {
+test('a checkout holding checkpoints but not declaring ki-coordination gets nothing', () => {
   const outcome = run(claudePrompt(undeclared))
   expect(outcome.status).toBe(0)
   expect(outcome.stdout).toBe('')

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "0b95efbb51e54a813a49d1d477dbc23681ecc70e"
     },
     "legend": {
       "mode": "auto",
@@ -334,13 +334,13 @@
       ]
     },
     {
-      "id": "ki-pmo",
+      "id": "ki-coordination",
       "type": "database",
-      "label": "ki-pmo",
+      "label": "ki-coordination",
       "sublabel": "coordination · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/SKILL.md"
+          "path": "skills/change-management/ki-coordination/SKILL.md"
         }
       ],
       "pos": [
@@ -353,13 +353,13 @@
       ]
     },
     {
-      "id": "ki-pmo-design",
+      "id": "ki-work-design",
       "type": "frontend",
-      "label": "ki-pmo-design",
+      "label": "ki-work-design",
       "sublabel": "coordination · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+          "path": "skills/change-management/ki-work-design/SKILL.md"
         }
       ],
       "pos": [
@@ -1341,8 +1341,8 @@
       "kind": "region",
       "label": "Coordination · Delegation and programme",
       "wraps": [
-        "ki-pmo",
-        "ki-pmo-design"
+        "ki-coordination",
+        "ki-work-design"
       ],
       "pad": 10
     },
@@ -1375,8 +1375,8 @@
       "kind": "region",
       "label": "Change Management · 13 skills",
       "wraps": [
-        "ki-pmo",
-        "ki-pmo-design",
+        "ki-coordination",
+        "ki-work-design",
         "ki-work",
         "ki-work-github-issues",
         "ki-work-linear",

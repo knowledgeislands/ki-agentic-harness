@@ -1,5 +1,5 @@
 ---
-name: ki-pmo-design
+name: ki-work-design
 ki-kind: process
 ki-applicability: invocation-only
 ki-depends-on: []
@@ -12,15 +12,15 @@ description: >
 argument-hint: 'start <subject> | resume <id> | help'
 ---
 
-# ki-pmo-design
+# ki-work-design
 
 **Kind:** process. Runs one design from an owner's proposal to approved decisions and a rollout of ordinary work records.
 
-Read [the design-loop standard](references/standards-pmo-design.md) before acting. Start each artefact from its template: [brief](assets/brief.md), [review](assets/review.md), [merged report](assets/report.md) and [decisions](assets/decisions.md). [Source notes](references/sources.md) record the worked exemplar.
+Read [the design-loop standard](references/standards-work-design.md) before acting. Start each artefact from its template: [brief](assets/brief.md), [review](assets/review.md), [merged report](assets/report.md) and [decisions](assets/decisions.md). [Source notes](references/sources.md) record the worked exemplar.
 
 ## When to use it
 
-Use the loop when the owner has a proposal for something whose shape is still open and wrong choices would be costly to unwind: a new Project or theme, a model several skills or repositories must share, or a migration across the estate. Kris starts it by name, for example `/ki-pmo-design start techne`.
+Use the loop when the owner has a proposal for something whose shape is still open and wrong choices would be costly to unwind: a new Project or theme, a model several skills or repositories must share, or a migration across the estate. Kris starts it by name, for example `/ki-work-design start techne`.
 
 Do not use it for work that already has a clear shape. A finite change with a known goal goes straight to `ki-next` for capture and `ki-plan` for readiness; an open question with one obvious answer is a Discussion entry on its record.
 
@@ -40,7 +40,7 @@ The loop writes no work record, grants itself no authority and never chooses for
 - `ki-decision-records`, when selected, owns the Decision Record's shape and identity.
 - `ki-delegation`, when selected, supplies the packet for any high-risk reviewer or rollout handoff.
 - The [Project registry standard](../ki-work/references/standards-project-registry.md) owns the flat Project or theme note, which never points into a work folder and links any resulting Decision Record.
-- `ki-pmo` owns the work folder, its closed list and its pruning; `ki-checkpoint` owns its work file.
+- `ki-coordination` owns the work folder, its closed list and its pruning; `ki-checkpoint` owns its work file.
 
 ## Invocation
 

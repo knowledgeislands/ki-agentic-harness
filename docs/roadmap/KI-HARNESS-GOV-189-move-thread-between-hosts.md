@@ -19,7 +19,7 @@ A coordinating thread can move from one machine to another without waiting for i
 
 ## Context
 
-`ki-pmo` governs coordinating threads and `ki-delegation` the detached background agents they launch through `ki agent`. Both assume a thread stays on the host where it started: running and queued agents, the run's decisions log and its reports live in machine-local state under `~/.local/state/ki/agents/<run>/`. A thread that has to move today must either wait until every queued agent has run, or abandon its queue.
+`ki-coordination` governs coordinating threads and `ki-delegation` the detached background agents they launch through `ki agent`. Both assume a thread stays on the host where it started: running and queued agents, the run's decisions log and its reports live in machine-local state under `~/.local/state/ki/agents/<run>/`. A thread that has to move today must either wait until every queued agent has run, or abandon its queue.
 
 This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studio Setup Project](../../../ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md), which is bringing a second machine back into service so that threads can resume there. Kris decided on 2026-10-14, recorded in that run's machine-local decisions log on the laptop, in these words:
 
@@ -31,7 +31,7 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 
 ## Boundary
 
-- In scope: a thread-move procedure in the `ki-pmo` standard, and whatever `ki-delegation` needs to say about the run's machine-local state when it moves.
+- In scope: a thread-move procedure in the `ki-coordination` standard, and whatever `ki-delegation` needs to say about the run's machine-local state when it moves.
 - Out of scope: the `ki agent` queue export and re-import mechanics, which belong to `tools-ki`; host provisioning, which belongs to the Mac Studio Setup Project and Rig; any change to the skill made by this capture.
 
 ## Proposed rule
@@ -60,8 +60,8 @@ The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, an
 
 ### DONE on handover, decided 2026-10-14
 
-Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). The decision named the DONE frame for its closing banner, issued only after the handover has pushed, carrying no send line, because that session must not be resumed, and naming the host that took over the work. Under the work model, `ki-pmo`'s closing banner, `🏁 Finished`, appears only at [Finishing Project work](../../skills/change-management/ki-pmo/references/standards-pmo.md#finishing-project-work); this requirement extends a closing form to the session a host move retires on the old host, while the work itself continues on the new host, and step 6 leaves planning to settle which form that is.
+Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). The decision named the DONE frame for its closing banner, issued only after the handover has pushed, carrying no send line, because that session must not be resumed, and naming the host that took over the work. Under the work model, `ki-coordination`'s closing banner, `🏁 Finished`, appears only at [Finishing Project work](../../skills/change-management/ki-coordination/references/standards-coordination.md#finishing-project-work); this requirement extends a closing form to the session a host move retires on the old host, while the work itself continues on the new host, and step 6 leaves planning to settle which form that is.
 
 ### Relation to existing records
 
-KI-HARNESS-GOV-187 makes the thread model and the issued banner normative in `ki-pmo`; any procedure here edits the same standard and should follow it.
+KI-HARNESS-GOV-187 makes the thread model and the issued banner normative in `ki-coordination`; any procedure here edits the same standard and should follow it.

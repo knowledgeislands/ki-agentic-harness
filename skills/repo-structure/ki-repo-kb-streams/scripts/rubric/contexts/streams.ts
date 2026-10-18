@@ -353,7 +353,7 @@ const REGISTRY_AREAS = ['Projects', 'Themes', 'Initiatives'] as const
 const WORK_RECORD_REFERENCE = /(?<![\w-])(?!(?:[SPADXOGRK]DR)-)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3}(?!\d)/g
 const UPDATE_SECTION = /^##\s+Update\b/m
 
-// A `ki-pmo-design` design folder holds temporary artefacts, not registry notes. Under the work model it lives in the
+// A `ki-work-design` design folder holds temporary artefacts, not registry notes. Under the work model it lives in the
 // work folder, so one anywhere under Streams/ fails, and its notes are not also checked as registry notes.
 const DESIGN_FOLDER = /(?:^|[\\/])design[\\/]/
 

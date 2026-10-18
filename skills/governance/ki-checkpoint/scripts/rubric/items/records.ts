@@ -72,16 +72,16 @@ const RECORD_3: RubricItem<RecordContext> = {
 
 const RECORD_4: RubricItem<RecordContext> = {
   code: 'RECORD-4',
-  title: 'coordinating work lives only where ki-pmo is declared',
+  title: 'coordinating work lives only where ki-coordination is declared',
   description:
-    'A work file at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate.',
+    'A work file at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate.',
   sources: [`${SOURCE}#front-matter`],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'guarded',
       guidance:
-        'Declare `[skills.ki-pmo]` where the repository coordinates, or correct the level through an explicit work-file update.'
+        'Declare `[skills.ki-coordination]` where the repository coordinates, or correct the level through an explicit work-file update.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.role }
   },

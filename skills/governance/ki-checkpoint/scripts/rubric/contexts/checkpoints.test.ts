@@ -220,7 +220,7 @@ test('a missing label warns and an empty label fails the closed schema', () => {
   )
 })
 
-test('a role is one of three values and a coordinating role needs a ki-pmo declaration', () => {
+test('a role is one of three values and a coordinating role needs a ki-coordination declaration', () => {
   const { repository, checkpointDirectory } = fixture()
   const roleItem = mechanical(RECORD, 'RECORD-4')
   const schema = () => mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(context(repository)))[0]?.status
@@ -238,7 +238,7 @@ test('a role is one of three values and a coordinating role needs a ki-pmo decla
   expect(schema()).toBe('PASS')
   expect(role()).toBe('VIOLATION')
 
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-pmo]\n')
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-coordination]\n')
   expect(role()).toBe('PASS')
 })
 
@@ -364,11 +364,11 @@ const workFile = ({
       ].join('\n')
   ].join('\n')
 
-const workFixture = (pmo = true): string => {
+const workFixture = (coordination = true): string => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-work-file-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, '+', '_WORK'), { recursive: true })
-  if (pmo) writeFileSync(join(repository, '.ki.toml'), '[skills.ki-pmo]\n')
+  if (coordination) writeFileSync(join(repository, '.ki.toml'), '[skills.ki-coordination]\n')
   return repository
 }
 
@@ -409,7 +409,7 @@ test('a well-formed work file passes every record check', () => {
   expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
 })
 
-test('coordinating work needs a ki-pmo declaration', () => {
+test('coordinating work needs a ki-coordination declaration', () => {
   const repository = workFixture(false)
   writeWork(repository, 'ki.ways-of-working', workFile())
 

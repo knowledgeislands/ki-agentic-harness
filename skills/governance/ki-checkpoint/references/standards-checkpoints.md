@@ -2,7 +2,7 @@
 
 A work file is the minimal current state of one piece of work: `+/_WORK/<id>/work.md`. Its front matter says where the work lies, and its body holds the next steps, the Messages sent down to it and the tags of parked queries. It lets a fresh agent pick the work up without relying on a transcript, private runtime state or a vendor session. Git is its logbook: each move is a commit, so the file keeps no moves list and no history.
 
-The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md); this standard owns the record form and its validation, and `ki-pmo` owns the levels, states, moves and coordination. The skill keeps the name `ki-checkpoint`, as Kris answered SKILL-NAMES on 18 October, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
+The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md); this standard owns the record form and its validation, and `ki-coordination` owns the levels, states, moves and coordination. The skill keeps the name `ki-checkpoint`, as Kris answered SKILL-NAMES on 18 October, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
 
 ## Contents
 
@@ -23,15 +23,15 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 
 ## Activation and ownership
 
-The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. `ki-repo` owns the generic `+/` scaffold, `ki-pmo` owns the work folder's [closed list](../../../change-management/ki-pmo/references/standards-pmo.md#pruning-the-work-folder), and `ki-checkpoint` alone interprets the work file.
+The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. `ki-repo` owns the generic `+/` scaffold, `ki-coordination` owns the work folder's [closed list](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder), and `ki-checkpoint` alone interprets the work file.
 
 The repository owns its work files. Removal deletes a work file after its durable information has been routed; Git supplies any recovery history.
 
 ## Location and identity
 
-A work file is one regular Markdown file at `+/_WORK/<id>/work.md`, one per piece of work above a work item; a work item has no folder, because its record is its home. `<id>` is the work's dotted id under `ki-pmo`'s [Work naming](../../../change-management/ki-pmo/references/standards-pmo.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field and the H1 agree exactly.
+A work file is one regular Markdown file at `+/_WORK/<id>/work.md`, one per piece of work above a work item; a work item has no folder, because its record is its home. `<id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field and the H1 agree exactly.
 
-`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under `ki-pmo`'s [Work awaiting review](../../../change-management/ki-pmo/references/standards-pmo.md#work-awaiting-review); its work files are checked only when the folder leaves review.
+`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under `ki-coordination`'s [Work awaiting review](../../../change-management/ki-coordination/references/standards-coordination.md#work-awaiting-review); its work files are checked only when the folder leaves review.
 
 ## Exact record form
 
@@ -79,7 +79,7 @@ The field set is closed:
 
 A holder is `owner`, `agent`, `run/<name>`, `work/<id>`, `person/<handle>` or `repo/<name>`. The holder the work lies with now and its role are derived from `state`, `worker`, `supervisor` and `target`, never stored. Timestamps use UTC RFC 3339 second precision; quote `title` and `label` in YAML because they contain `>`. These are the fields the Work Process note's Observatory fields read through `ki work status`.
 
-Coordinating work, at `territory` or `project` level, is valid only in a repository whose `.ki.toml` declares `[skills.ki-pmo]`. Regular and ad hoc work is valid anywhere the capability is declared. The level is the one authority for the kind of work: not the title, a native session name, the folder name, the repository declaration, an output style, a hook line or a cached copy.
+Coordinating work, at `territory` or `project` level, is valid only in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. Regular and ad hoc work is valid anywhere the capability is declared. The level is the one authority for the kind of work: not the title, a native session name, the folder name, the repository declaration, an output style, a hook line or a cached copy.
 
 ### Body
 
@@ -95,7 +95,7 @@ After the front matter, the work file uses exactly this heading sequence:
 ## Parked
 ```
 
-The H1 repeats the id. `Next steps` holds substantive content: what the worker does when the work is next in its hands, with a coordinator's `ki-pmo read at <revision>` line under [its refresh rule](../../../change-management/ki-pmo/references/standards-pmo.md#refreshing-this-guidance). `Messages` holds one list item per direction sent down to the work, under [Messages between work](../../../change-management/ki-pmo/references/standards-pmo.md#messages-between-work), `FIRST-STEP` lines first. `Parked` holds one list item per parked query, its tag, one line of context and its recommended option, linked to the report that holds it, under [Parking tangents](../../../change-management/ki-pmo/references/standards-pmo.md#parking-tangents). Either may say `None`.
+The H1 repeats the id. `Next steps` holds substantive content: what the worker does when the work is next in its hands, with a coordinator's `ki-coordination read at <revision>` line under [its refresh rule](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance). `Messages` holds one list item per direction sent down to the work, under [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work), `FIRST-STEP` lines first. `Parked` holds one list item per parked query, its tag, one line of context and its recommended option, linked to the report that holds it, under [Parking tangents](../../../change-management/ki-coordination/references/standards-coordination.md#parking-tangents). Either may say `None`.
 
 Nothing else belongs in the file: no moves list, decisions log, report, brief or design paper, each of which has its own home in the work folder, and no copy of a durable fact that has an owner elsewhere.
 
@@ -103,12 +103,12 @@ Nothing else belongs in the file: no moves list, decisions log, report, brief or
 
 For the tolerance window that phase 5 of the migration closes, an old checkpoint, `+/_CHECKPOINTS/<thread>.md`, stays readable and its audit warns on each record, naming its new home. It keeps its old form until its territory's migration moves it:
 
-- **Front matter:** `type: ki-checkpoint`, `thread`, `state: active`, `created_at` and `updated_at`, with an optional quoted `label` and an optional `role` of `conversational`, `coordination` or `state-of-play`, a coordinating role valid only where `[skills.ki-pmo]` is declared.
+- **Front matter:** `type: ki-checkpoint`, `thread`, `state: active`, `created_at` and `updated_at`, with an optional quoted `label` and an optional `role` of `conversational`, `coordination` or `state-of-play`, a coordinating role valid only where `[skills.ki-coordination]` is declared.
 - **Identity:** the filename stem, `thread` field and H1 agree; `<initiative>.<project>` names a Project's coordination thread, `_state-of-play` the territory's, and any other stem a conversational thread.
 - **Body:** the H1 and the six H2 sections `Objective`, `Current state`, `Decisions made`, `Files touched`, `Open questions` and `Next step`, each with substantive content.
 - **Scaffold:** while `+/_CHECKPOINTS/` exists it keeps its exact `README.md` scaffold, and CONFORM may restore it.
 
-An old checkpoint's id is read from its stem under `ki-pmo`'s [Work naming](../../../change-management/ki-pmo/references/standards-pmo.md#work-naming). A work file and the old checkpoint it replaces are never both active: the move that writes the work file deletes the checkpoint.
+An old checkpoint's id is read from its stem under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming). A work file and the old checkpoint it replaces are never both active: the move that writes the work file deletes the checkpoint.
 
 ## Work identity and native sessions
 
@@ -135,11 +135,11 @@ The only first-delivery action is a compact reminder that the already-selected r
 
 ## Update lifecycle
 
-Every send, receive, mark and hold rewrites the work file's front matter and next steps, under `ki-pmo`'s [Picking work up](../../../change-management/ki-pmo/references/standards-pmo.md#picking-work-up), and otherwise it changes only on explicit user request or a documented repository-local trigger, such as before context compaction or a known pause. A generic Stop event is not authority to create or choose a work file.
+Every send, receive, mark and hold rewrites the work file's front matter and next steps, under `ki-coordination`'s [Picking work up](../../../change-management/ki-coordination/references/standards-coordination.md#picking-work-up), and otherwise it changes only on explicit user request or a documented repository-local trigger, such as before context compaction or a known pause. A generic Stop event is not authority to create or choose a work file.
 
 An update replaces the current state in place. It never appends a moves list, timestamped copies or transcript history. Only sends and the supervisor's receives commit, each subject carrying the move, as in `docs(work): ki.ways-of-working send to owner`; `git log -- +/_WORK/<id>/` is the logbook.
 
-Other work may add one item to a work file's `Messages` section under `ki-pmo` and commit that path alone; that is a send to the work, not an update of its state. The work's own next update removes each item it has acted on.
+Other work may add one item to a work file's `Messages` section under `ki-coordination` and commit that path alone; that is a send to the work, not an update of its state. The work's own next update removes each item it has acted on.
 
 Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from a work file. The work file may name those canonical artifacts; it must not become their only copy.
 
@@ -156,13 +156,13 @@ The manual portable flow is deliberately small:
 1. Require the user-selected work id or, from an opener, the Project slug.
 2. Resolve to one exact path: `+/_WORK/<id>/work.md`; for the tolerance window, when no work file exists, the single old checkpoint whose stem maps to that id. If no file or more than one file matches, stop and ask the human which record is meant.
 3. Read the whole record and validate its identity and schema.
-4. Act on its state as `ki-pmo`'s Picking work up sets it, the `Messages` section first, and continue from its next steps.
+4. Act on its state as `ki-coordination`'s Picking work up sets it, the `Messages` section first, and continue from its next steps.
 
 The title and label never take part in resolution. Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that last held the work.
 
 ## Removal lifecycle
 
-Finished work keeps its work file with `state: finished` until the mark that closes it, when the work folder is deleted with Git keeping it, under `ki-pmo`'s [Pruning the work folder](../../../change-management/ki-pmo/references/standards-pmo.md#pruning-the-work-folder). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners, then delete the exact work folder or old checkpoint.
+Finished work keeps its work file with `state: finished` until the mark that closes it, when the work folder is deleted with Git keeping it, under `ki-coordination`'s [Pruning the work folder](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners, then delete the exact work folder or old checkpoint.
 
 No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested layouts are invalid.
 

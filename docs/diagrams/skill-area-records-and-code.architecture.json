@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "0b95efbb51e54a813a49d1d477dbc23681ecc70e"
     },
     "legend": {
       "mode": "auto",
@@ -49,13 +49,13 @@
       ]
     },
     {
-      "id": "ki-pmo-design",
+      "id": "ki-work-design",
       "type": "frontend",
-      "label": "ki-pmo-design",
+      "label": "ki-work-design",
       "sublabel": "change management · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo-design/SKILL.md"
+          "path": "skills/change-management/ki-work-design/SKILL.md"
         }
       ],
       "pos": [
@@ -233,7 +233,7 @@
       "kind": "region",
       "label": "Coordination · Delegation and programme",
       "wraps": [
-        "ki-pmo-design"
+        "ki-work-design"
       ],
       "pad": 32
     },
@@ -296,12 +296,6 @@
   ],
   "connections": [
     {
-      "id": "ki-pmo-design--ki-decision-records",
-      "from": "ki-pmo-design",
-      "to": "ki-decision-records",
-      "variant": "dashed"
-    },
-    {
       "id": "ki-repo-harness--ki-decision-records",
       "from": "ki-repo-harness",
       "to": "ki-decision-records",
@@ -318,6 +312,12 @@
       "from": "ki-repo-mcp",
       "to": "ki-engineering",
       "variant": "default"
+    },
+    {
+      "id": "ki-work-design--ki-decision-records",
+      "from": "ki-work-design",
+      "to": "ki-decision-records",
+      "variant": "dashed"
     }
   ],
   "cards": [

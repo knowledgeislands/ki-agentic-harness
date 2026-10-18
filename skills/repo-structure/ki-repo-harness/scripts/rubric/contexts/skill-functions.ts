@@ -51,7 +51,10 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     short: 'coordination',
     purpose: 'hand work between agents, threads and repositories',
     groups: [
-      { title: 'Delegation and programme', skills: ['ki-delegation', 'ki-checkpoint', 'ki-pmo', 'ki-pmo-design'] },
+      {
+        title: 'Delegation and programme',
+        skills: ['ki-delegation', 'ki-checkpoint', 'ki-coordination', 'ki-work-design']
+      },
       { title: 'Trades', skills: ['ki-trades', 'ki-trade'] }
     ]
   },

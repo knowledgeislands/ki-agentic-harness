@@ -1,10 +1,10 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { PmoRubricContext } from '../contexts/pmo.ts'
+import type { CoordinationRubricContext } from '../contexts/coordination.ts'
 
-const SOURCE = 'standards-pmo.md'
+const SOURCE = 'standards-coordination.md'
 
-const PMO_1: RubricItem<PmoRubricContext> = {
-  code: 'PMO-1',
+const COORD_1: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-1',
   title: 'territory work belongs to the Capital',
   description:
     'A territory Capital, a repository whose declared `capital` is itself, holds its territory work, `+/_WORK/<territory>/work.md` with an id of one segment, titled `<Territory> > SoP`, and no other repository holds territory work. For the tolerance window a Capital whose territory work is still the state-of-play checkpoint `+/_CHECKPOINTS/_state-of-play.md` passes with a warning naming its new home.',
@@ -20,8 +20,8 @@ const PMO_1: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_2: RubricItem<PmoRubricContext> = {
-  code: 'PMO-2',
+const COORD_2: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-2',
   title: 'Project work resolves in the registry',
   description:
     "Each Project work file `+/_WORK/<territory>.<project>/work.md` names its `project`, its title ends in that Project's title, as in `KI > Model > Ways of working`, and on a Capital its Project resolves in `Streams/Projects/` and any `theme` in `Streams/Themes/`. For the tolerance window an `<initiative>.<project>.md` checkpoint is checked as before, its label ending in its Project in words and its Initiative resolving in `Streams/Initiatives/`, with a warning naming its new home.",
@@ -37,8 +37,8 @@ const PMO_2: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_10: RubricItem<PmoRubricContext> = {
-  code: 'PMO-10',
+const COORD_10: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-10',
   title: 'work files declare a level that agrees with their id',
   description:
     'Each work file declares its `level`, which agrees with its id: one segment is `territory`, a second segment `regular` is `regular`, and any other second segment is `project`. For the tolerance window the `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint `role: coordination`, or `role: conversational`, and no other checkpoint declares `state-of-play`.',
@@ -54,8 +54,8 @@ const PMO_10: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_3: RubricItem<PmoRubricContext> = {
-  code: 'PMO-3',
+const COORD_3: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-3',
   title: 'active Project work is within the cap',
   description:
     'At most three or four pieces of Project work are active at once, neither On hold nor Finished, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted.',
@@ -70,8 +70,8 @@ const PMO_3: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_7: RubricItem<PmoRubricContext> = {
-  code: 'PMO-7',
+const COORD_7: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-7',
   title: 'every record identifier in a work report is a link',
   description:
     'In every report in a work folder, `+/_WORK/<id>/*.report.md`, and for the tolerance window in every thread report `+/_THREADS/<run>/*.report.md`, each full record identifier in the prose, a work record such as `KI-HARNESS-GOV-187` or a Decision Record such as `ADR-KI-HARNESS-010`, sits inside the text of a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists; a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision. Fenced blocks, such as a past reply block, inline code spans, which quote literal text such as a commit subject, and Needs tags such as `ACCEPT-181` are not checked; work awaiting review is not checked.',
@@ -87,8 +87,8 @@ const PMO_7: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_11: RubricItem<PmoRubricContext> = {
-  code: 'PMO-11',
+const COORD_11: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-11',
   title: 'every recommended option in a work report carries its confidence',
   description:
     'In every report under `+/_WORK/<id>/` or `+/_THREADS/<run>/` whose form line leads with a glyph state, or whose block-letter footer was issued on or after 2026-10-18, each line of its Queries section that marks a lettered option recommended, `<letter>) (recommended`, reads `<letter>) (recommended, confidence high|medium|low - <reason>)`. A report issued earlier, or with neither to date it, and fenced blocks are not checked.',
@@ -104,8 +104,8 @@ const PMO_11: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_12: RubricItem<PmoRubricContext> = {
-  code: 'PMO-12',
+const COORD_12: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-12',
   title: 'every work report opens with its report heading',
   description:
     'Every report under `+/_WORK/<id>/` or `+/_THREADS/<run>/` has the `#` report heading as its first non-blank line, or, for a report saved with front matter, the front matter first and the heading as the first non-blank line after it. A frame rule, a lint directive or a form line before the heading does not pass. Work awaiting review is not read.',
@@ -121,8 +121,8 @@ const PMO_12: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_9: RubricItem<PmoRubricContext> = {
-  code: 'PMO-9',
+const COORD_9: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-9',
   title: 'every work folder is pruned to what is still open',
   description:
     "Each work folder `+/_WORK/<id>/` holds only the closed list, `work.md`, `decisions.md`, `<name>.report.md`, `briefs/` and `design/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
@@ -147,11 +147,11 @@ const PMO_9: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_8: RubricItem<PmoRubricContext> = {
-  code: 'PMO-8',
-  title: 'the coordinator hook and output style are bound where ki-pmo is declared',
+const COORD_8: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-8',
+  title: 'the coordinator hook and output style are bound where ki-coordination is declared',
   description:
-    'In the runtime-specific Claude Code binding, a repository that declares `[skills.ki-pmo]` selects `"outputStyle": "ki-coordinator"` in its tracked `.claude/settings.json`, and, where the user\'s Claude Code settings are present, they run the harness `hooks/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart` and the style is deployed as `~/.claude/output-styles/ki-coordinator.md`. The user-environment manager, chezmoi, stays the binder; the rubric only checks that the binding is present.',
+    'In the runtime-specific Claude Code binding, a repository that declares `[skills.ki-coordination]` selects `"outputStyle": "ki-coordinator"` in its tracked `.claude/settings.json`, and, where the user\'s Claude Code settings are present, they run the harness `hooks/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart` and the style is deployed as `~/.claude/output-styles/ki-coordinator.md`. The user-environment manager, chezmoi, stays the binder; the rubric only checks that the binding is present.',
   sources: [`${SOURCE}#coordinator-responsiveness`],
   mechanical: {
     level: 'WARN',
@@ -164,8 +164,8 @@ const PMO_8: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_4: RubricItem<PmoRubricContext> = {
-  code: 'PMO-4',
+const COORD_4: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-4',
   title: 'coordinators stay responsive and work stays current',
   description:
     'A coordinator never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the work file, `ki agent status`, one report and one short file and writes limited to the work file, the decisions log and a brief, waits only through a detached waiter or monitor, keeps a background check armed while work lies with a worker that wakes it at least every 5 minutes, or sooner when an agent finishes, for a one-to-two-line timed update naming the current step of each running agent, with no heartbeat otherwise, answers owner messages within one short turn and reports drift in one line; each territory Capital has one piece of territory work doing project management only, keeping the Project-work queue within its cap and seeding each work folder and opener; Project work works only its Project, follows the bootstrap, keeps its work file current and records approvals before launching.',
@@ -180,8 +180,8 @@ const PMO_4: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_5: RubricItem<PmoRubricContext> = {
-  code: 'PMO-5',
+const COORD_5: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-5',
   title: 'coordinators park tangents, link records and keep checkouts current',
   description:
     "A coordinator parks passing side topics as dated one-line items in its work file's Parked section, cites and links every record, work file, theme and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.",
@@ -196,16 +196,16 @@ const PMO_5: RubricItem<PmoRubricContext> = {
   }
 }
 
-const PMO_6: RubricItem<PmoRubricContext> = {
-  code: 'PMO-6',
+const COORD_6: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-6',
   title: 'coordinators report in the owner forms, recap since the mark and refresh their guidance',
   description:
-    "A coordinator asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work and reads each spoken answer back as taken in the decisions log, opens every Summary, recap, full summary, re-bootstrap and hold report with the report heading, with no rule before it, one `#` heading of the theme linked to its local page, ` › ` and the Project linked to its local note, both as display names, a bold form line leading with the work's glyph state and giving the form, the local time and the last mark, and one rule, keeps the sections at H2 and each query at H3 under the owner report, each query carrying Context, Query and lettered Options with a) marked recommended with a high, medium or low confidence and a one-line reason and no bullets, with no reply block, closes every such report with the glyph banner exactly as the standard prints it, a `###` heading of the glyph state and since, a settled state showing its holder's glyph alone and an arrow only in a handoff state, a counts line and a `- [state] what · holder · since` list, and, in handoff to the owner only, the send line in its own text block, and Finished once only at Project close, rewrites its work file's front matter at every send, receive, mark and hold, naming no host, gives a hold report only when the owner agrees a hold with `pause` or `done for now`, after draining and parking every open query in the work file with its front matter `state: on-hold`, its sections `Done`, `Parked` and `Left over` under the form line `⏸️ On hold · Hold report at <local time> · mark <local time>`, with no Context, Query or Options, closing with the On hold banner, the line \"To bring this work back and continue it, paste this:\" and the hold send line, or stays With worker, blocked, with one line on what blocks it, never points an owner-facing report back to an earlier one, gives a full summary of the whole work on request with every owner decision linked under Decided and every open query in full, keeps its one mark in its work file's front matter and gives recaps since that mark that carry every open item forward across marks, at each mark strikes, points or keeps each decision with no numbering and prunes its own work folder by explicit path, and re-reads this standard at bootstrap, before each work-file update and whenever the skill has changed, noting the revision read as `ki-pmo read at <revision>`. A report written before 2026-10-18 keeps its block-letter frame, resume line and reply block, and one written before 2026-10-14 its earlier heading and query shape.",
+    "A coordinator asks clear-option decisions through the runtime's structured-question tool, logs each owner decision before launching its work and reads each spoken answer back as taken in the decisions log, opens every Summary, recap, full summary, re-bootstrap and hold report with the report heading, with no rule before it, one `#` heading of the theme linked to its local page, ` › ` and the Project linked to its local note, both as display names, a bold form line leading with the work's glyph state and giving the form, the local time and the last mark, and one rule, keeps the sections at H2 and each query at H3 under the owner report, each query carrying Context, Query and lettered Options with a) marked recommended with a high, medium or low confidence and a one-line reason and no bullets, with no reply block, closes every such report with the glyph banner exactly as the standard prints it, a `###` heading of the glyph state and since, a settled state showing its holder's glyph alone and an arrow only in a handoff state, a counts line and a `- [state] what · holder · since` list, and, in handoff to the owner only, the send line in its own text block, and Finished once only at Project close, rewrites its work file's front matter at every send, receive, mark and hold, naming no host, gives a hold report only when the owner agrees a hold with `pause` or `done for now`, after draining and parking every open query in the work file with its front matter `state: on-hold`, its sections `Done`, `Parked` and `Left over` under the form line `⏸️ On hold · Hold report at <local time> · mark <local time>`, with no Context, Query or Options, closing with the On hold banner, the line \"To bring this work back and continue it, paste this:\" and the hold send line, or stays With worker, blocked, with one line on what blocks it, never points an owner-facing report back to an earlier one, gives a full summary of the whole work on request with every owner decision linked under Decided and every open query in full, keeps its one mark in its work file's front matter and gives recaps since that mark that carry every open item forward across marks, at each mark strikes, points or keeps each decision with no numbering and prunes its own work folder by explicit path, and re-reads this standard at bootstrap, before each work-file update and whenever the skill has changed, noting the revision read as `ki-coordination read at <revision>`. A report written before 2026-10-18 keeps its block-letter frame, resume line and reply block, and one written before 2026-10-14 its earlier heading and query shape.",
   sources: [`${SOURCE}#coordinating-practices`, `${SOURCE}#report-forms`, `${SOURCE}#working-rules`],
   judgment: {
     scope: 'Coordinator transcripts, summaries, recaps, decisions logs and work files the owner selects for review.',
     prompt:
-      "Were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched and every spoken answer read back, does every Summary, recap, full summary, re-bootstrap and hold report open with the report heading as the standard draws it, the theme and the Project linked as display names in one `#` heading, the bold glyph form line and one rule, with the owner report's sections at H2 and queries at H3, each query giving Context, a one-sentence Query and lettered Options with a) marked recommended with a confidence and one-line reason, never high for a destructive course resting on unverified claims, no reply block and no pointer back to an earlier report, does every such report close with the glyph banner as the standard prints it, the holder's glyph alone in a settled state and an arrow only in a handoff state, the counts line and the holder list, with no decision number anywhere in it, and the send line only in handoff to the owner, does every send leave the work file's front matter agreeing with the banner and naming no host, does a hold report carry only Done, Parked and Left over, every open query parked in the work file, then the On hold banner, the closing line and the hold send line, or stay With worker and say what blocks the drain, does a full summary list every owner decision since the work began with a link to each and restate every open query in full, does the work file hold one mark, does each recap cover the window since that mark with outstanding work in full, at each mark were decisions struck, pointed or kept and the work folder pruned to its closed list by explicit path, and does the work file's noted ki-pmo revision match the skill's latest change?",
+      "Were clear-option decisions asked as structured questions with the recommendation first, was every decision logged before its work launched and every spoken answer read back, does every Summary, recap, full summary, re-bootstrap and hold report open with the report heading as the standard draws it, the theme and the Project linked as display names in one `#` heading, the bold glyph form line and one rule, with the owner report's sections at H2 and queries at H3, each query giving Context, a one-sentence Query and lettered Options with a) marked recommended with a confidence and one-line reason, never high for a destructive course resting on unverified claims, no reply block and no pointer back to an earlier report, does every such report close with the glyph banner as the standard prints it, the holder's glyph alone in a settled state and an arrow only in a handoff state, the counts line and the holder list, with no decision number anywhere in it, and the send line only in handoff to the owner, does every send leave the work file's front matter agreeing with the banner and naming no host, does a hold report carry only Done, Parked and Left over, every open query parked in the work file, then the On hold banner, the closing line and the hold send line, or stay With worker and say what blocks the drain, does a full summary list every owner decision since the work began with a link to each and restate every open query in full, does the work file hold one mark, does each recap cover the window since that mark with outstanding work in full, at each mark were decisions struck, pointed or kept and the work folder pruned to its closed list by explicit path, and does the work file's noted ki-coordination revision match the skill's latest change?",
     outcomes: [
       'conforming',
       'log decisions',
@@ -220,12 +220,12 @@ const PMO_6: RubricItem<PmoRubricContext> = {
   }
 }
 
-export const PMO: RubricFamily<PmoRubricContext, PmoRubricContext> = {
-  code: 'PMO',
+export const COORD: RubricFamily<CoordinationRubricContext, CoordinationRubricContext> = {
+  code: 'COORD',
   title: 'Coordinating work',
   description:
     'The territory work and Project work a repository shows in its work files, with old-shape checkpoints for the tolerance window, and the responsiveness, reporting and currency of the coordinators behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PMO_1, PMO_2, PMO_10, PMO_3, PMO_7, PMO_11, PMO_12, PMO_9, PMO_8, PMO_4, PMO_5, PMO_6]
+  items: [COORD_1, COORD_2, COORD_10, COORD_3, COORD_7, COORD_11, COORD_12, COORD_9, COORD_8, COORD_4, COORD_5, COORD_6]
 }

@@ -25,7 +25,7 @@ A design system here is the set of visual and interaction rules one product surf
 | --------------------------------------------------------------- | ---------------------- |
 | Where design knowledge lives, design work, design checks        | **this skill**         |
 | Visual references and inspiration for a new direction           | `ki-design-inspiration` |
-| The shape of a new Project, Initiative or cross-cutting model   | `ki-pmo-design`       |
+| The shape of a new Project, Initiative or cross-cutting model   | `ki-work-design`       |
 | How tokens are built into an Eleventy and Tailwind site         | `ki-repo-website-content` |
 | The format of a guide, Specification, Decision Record or record | `ki-guides`, `ki-specs`, `ki-decision-records`, `ki-work-roadmap` |
 | Living diagrams of the system                                   | `ki-diagrams`          |
@@ -103,7 +103,7 @@ A design question that changes what readers see moves through six stages. Each p
 5. **Consolidate.** The outcome moves to its homes: new values to the token source, new rules to the design guide, new stable behaviour to a Specification, a new or changed decision to a Decision Record, and every new checkable rule to a check.
 6. **Retire.** The brief, option boards, canvases and screenshots are working material. Once consolidated, they are not kept as documents: the work record that summarised them is pruned with the rest of the roadmap, and Git history keeps what was considered.
 
-A design question about the shape of a Project or a model that several repositories share follows `ki-pmo-design` instead. A small change that needs no options, such as applying an existing component, goes straight to build and consolidate.
+A design question about the shape of a Project or a model that several repositories share follows `ki-work-design` instead. A small change that needs no options, such as applying an existing component, goes straight to build and consolidate.
 
 ## Checks
 
