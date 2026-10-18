@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: ea8ad578a5c2ae7f07f35515b16b508a8526b75c
 created_at: 2026-10-15T01:21:10Z
-updated_at: 2026-10-15T01:23:19Z
+updated_at: 2026-10-18T09:51:07Z
 ---
 
 # KI-HARNESS-GOV-194: Preflight verification effects
@@ -103,6 +103,8 @@ The incident is assessed without replay: tracing the engineering collector reach
 ### Outstanding concerns
 
 Required LONG-3 warnings block delivery under the agreed plan; repairing sources would widen this task and may need network access, so no repair is attempted. Coordinator deposit is not ACK. Eight peer ancestors block this worker's own-only push. Preserve all peer files/history and both unchecked steps; do not mark Awaiting review or accept this record until required verification has a legitimate passing route.
+
+On 18 October 2026 the owner authorised a separate network-enabled refresh of the long-skill sources, and the LONG-3 blocker is cleared: commits `6f89352a`, `b8bf6973` and `3a5e7879` refresh ki-authoring, ki-repo-mcp and ki-model-radar. On `main` at `3a5e7879`, which includes this patch, `bun run test` passed 1253 tests with zero failures, `bunx tsc --noEmit` exited zero, `ki repo audit --skill ki-skills` passed with FAIL=0 and no LONG-3 warning, and the ki-authoring audit passed. That refresh did not run this record's effects preflight, the ki-work, ki-work-roadmap and ki-trades checks or the review packet, so both unchecked steps remain open and the record stays in progress, ready for its own delivery run.
 
 ### Post-change review
 
