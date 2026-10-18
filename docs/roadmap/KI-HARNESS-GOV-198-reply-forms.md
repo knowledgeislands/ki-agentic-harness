@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 737cd4d11a738415bf5c92b16b6eabd3da4b68c8
 created_at: 2026-10-16T21:21:46Z
-updated_at: 2026-10-16T21:21:46Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-198: Reply Forms
@@ -107,8 +106,16 @@ The change meets the Goal in text: every surface a session sees now names the th
 
 Reply forms land as Phase 1a in the harness, with the hook and style regenerated and tests green. Learning route: a `ki-coordination` rubric item for conversational replies, if Kris wants one, would be its own record.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### CONVERSATIONAL-RUN
 
 Kris answered it through CONVRUN-NARROW's option a), so the standard states it under Conversational bounded work rather than as a separate decision: a run and a thread folder named for the checkpoint, a pause through a checkpoint update, and run reports headed `# <thread label> › <run name>` with no mark or footer banner.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record.

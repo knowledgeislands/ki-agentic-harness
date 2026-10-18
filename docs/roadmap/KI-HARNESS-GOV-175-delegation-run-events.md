@@ -5,13 +5,12 @@ title: Delegation run events
 project: ways-of-working
 component: governance
 kind: deliver
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 0ae39eaca092303a2ae5e481b078a221f955e1d2
 created_at: 2026-10-13T13:53:25Z
-updated_at: 2026-10-18T09:02:41Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # Delegation Run Events
@@ -127,6 +126,10 @@ Reviewer: pending; this record awaits an independent review before acceptance.
 
 `ki-delegation` now names the events of a run and the status lines that raise them, matching the `tools-ki` launcher; `ki-coordination` warns on a work report that does not open with its heading.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Where the wording lives
@@ -149,3 +152,7 @@ Kris settled COORD-12's level on 18 October 2026 in these words: "PMO12-LEVEL a)
 
 - Whether a `blocked` status line needs a fixed form mirroring the milestone line: the launcher's protocol sentence now gives one, `HH:MM <zone> - blocked: <text>`, which requirement 7 adopts.
 - Whether the five kinds belong in the standard's body or in a short table the launcher's help can mirror verbatim.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record. Its post-change review was still pending an independent reviewer; the owner's grant covers closure without it, and this re-check stands in its place.

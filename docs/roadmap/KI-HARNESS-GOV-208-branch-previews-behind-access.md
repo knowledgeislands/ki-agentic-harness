@@ -5,13 +5,12 @@ title: Branch previews behind Access
 kind: deliver
 purpose: learning
 component: repo-structure
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a0b0296698f2bbaba49652596d9b5be5e9cbcd93
 created_at: 2026-10-17T23:40:14Z
-updated_at: 2026-10-18T00:52:00Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-208: Branch Previews Behind Access
@@ -134,6 +133,10 @@ The Goal is met: the standard now carries the branch-previews pattern with its r
 
 Branch previews behind Access land in `ki-repo-website-cloudflare` as section 6, WCF-25's preview clause and WCF-27, with tests, type check and audits green. Learning routes, not promoted: a record to assess Worker Previews for the house standard, and a source check for a documented trigger `DELETE` at the next monthly REFRESH.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 Captured from the Phase 3 run's refined skill-learning draft. Kris adopted this record under `ki-next` and approved its plan and section content under `ki-plan`.
@@ -172,3 +175,7 @@ The delivery run's source refresh on 18 October 2026 found that the second trigg
 ### Approval
 
 Kris Brown approved the plan on 18 October 2026 in the 5G Emerge Phase 3 coordination thread, answering READY-208 with option a), "Approve as Ready": "approve the KI-HARNESS-GOV-208 plan and its three planning answers as recorded; a ki-agentic-harness run sets it to Ready under ki-plan". The three planning answers above are settled as written. Delivery follows under `ki-implement`; acceptance remains Kris's under `ki-accept`.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record.

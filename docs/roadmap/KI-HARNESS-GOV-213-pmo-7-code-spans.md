@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 5527b917c708f30276067cc5a84dc1da5d34e37a
 created_at: 2026-10-18T08:55:29Z
-updated_at: 2026-10-18T09:01:54Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-213: COORD-7 Code Spans
@@ -111,6 +110,14 @@ Reviewer: pending; this record awaits an independent review before acceptance.
 
 COORD-7 now treats an inline code span like a fenced block: literal quoted text is not asked to hold a link.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 Captured, adopted to Now and planned to Ready by the `harness-followups` run in the ways-of-working work on Kris Brown's PMO-CODE a) answer, which asked for a harness record.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record.

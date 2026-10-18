@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: repo-structure
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a7b3d17a159147934816a4d94c43c42e514e493c
 created_at: 2026-10-18T08:42:02Z
-updated_at: 2026-10-18T09:05:00Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-211: Bats Fatal Assertions
@@ -125,6 +124,10 @@ Reviewer: pending; this record awaits an independent review before acceptance.
 
 `ki-repo-tools` now carries the `|| false` rule for Bats assertions and warns where a suite misses it; tools-mgit's main suite passes, and its two smaller suites and nine of tools-rig's suites are left for their owners.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 Captured on Kris Brown's TEST-FATAL a) answer by the `bats-rule` run in the ways-of-working work, and adopted to Now and planned to Ready by that run under the same answer and its brief, which asked for the record to be captured, planned and delivered to Awaiting review.
@@ -132,3 +135,7 @@ Captured on Kris Brown's TEST-FATAL a) answer by the `bats-rule` run in the ways
 ### Detection limits
 
 The check is line-based. It joins backslash continuations, skips comments, and leaves lines alone that use `&&` or `||` for control flow, such as `[[ -n $x ]] && skip`, because those are conditions rather than assertions; an assertion written as `[[ a ]] || [[ b ]]` is therefore not flagged. `(( ))` and `run !` are outside the answer and not checked.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record. `ki repo audit --repo tools-mgit --skill ki-repo-tools` still passes `SHELL-FATAL` for `tests/mgit.bats`, the two smaller suites warning under KI-TOOL-MGIT-CLI-027.

@@ -6,13 +6,12 @@ kind: deliver
 purpose: capability
 project: knowledge-acquisition
 component: acquire
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 2851ef5cc382a9e4a0bda58ec69b101096b28a05
 created_at: 2026-10-16T00:36:09Z
-updated_at: 2026-10-16T01:04:35Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-195: Granola screenshots and markers
@@ -98,8 +97,16 @@ An independent runtime reviewer found missing screenshot-proof validation during
 
 Read import remains source-read-only. Explicit marking adds one private membership after committed preservation checks, retains every original membership and verifies the result. No deletion, reset, migration, publication or push was performed. Owner acceptance remains pending.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 ### Preservation and marker semantics
 
 Acquired is a source-side progress marker. Stable UUIDs, source-account binding, hashes, manifests and committed locators remain preservation evidence. Explicit refresh detects later amendments; missing local proof is an exception, not permission to silently skip or reacquire handled material.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record.

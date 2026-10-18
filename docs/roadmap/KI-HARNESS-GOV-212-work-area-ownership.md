@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: keystone
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: d76d248533aa871c7d64421dd061df0b1dad3400
 created_at: 2026-10-18T08:55:28Z
-updated_at: 2026-10-18T08:59:02Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-212: Work Area Ownership
@@ -119,6 +118,14 @@ Reviewer: pending; this record awaits an independent review before acceptance.
 
 `ki-repo` now knows the work-model areas: `+/_WORK/` and `+/_WORK_REVIEW/` satisfy `ki-work-folder` coverage, and the thread-model areas warn with their new home through the tolerance window.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 Captured, adopted to Now and planned to Ready by the `harness-followups` run in the ways-of-working work on Kris Brown's REPO-OWNERSHIP a) and COV-1 a) answers, which asked for one harness record each, landed before the next territory migrates; the two share this record because they change one owner list and one check.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record.

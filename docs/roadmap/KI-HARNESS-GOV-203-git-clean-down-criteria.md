@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: governance
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b2e8e784efaf333bc7d0aaec2a69ad7c57952c1a
 created_at: 2026-10-16T21:53:45Z
-updated_at: 2026-10-16T21:56:10Z
+updated_at: 2026-10-18T17:35:03Z
 ---
 
 # KI-HARNESS-GOV-203: Git Clean-Down Criteria
@@ -104,6 +103,14 @@ The change meets the Goal in text and keeps the judgment-only contract the exist
 
 The clean-down criteria are in the `ki-git` standard and rubric with their deciding commands; the mechanical executor is KI-TOOL-KI-CLI-140's.
 
+## Done
+
+Accepted 2026-10-18 by Kris Brown on the review packet above.
+
 ## Discussion
 
 Captured and delivered in one run on Kris Brown's REPO-GIT-HYGIENE routing, as the ways-of-working thread's master-harness brief set it: capture one record and deliver it to awaiting review. The stale threshold and whether a criterion warns or fails once mechanical are for KI-TOOL-KI-CLI-140's planning.
+
+### Acceptance
+
+Accepted on 18 October 2026 by the `accept-prune` run of the ways-of-working Project work, under Kris Brown's standing grant recorded in the ways-of-working decisions log, entry "2026-10-18 17:59 BST - owner answers, recap batch" (ACCEPT-AND-PRUNE): "I think anything which is awaiting acceptance can be accepted, and then we can prune anything which is in a state of done". Re-check against `main` at `7d9959dc` before closure: `bun run test` passes, 1255 tests; `bunx tsc --noEmit` passes; `ki dev skill rubric` reports the touched skills' rubrics current and `ki dev skill generate ki-coordination` reports the surfaces in sync; `ki repo audit` passes every skill this record's Verify names, its one failure being the pre-existing `ki-engineering` SCR-11 hook finding outside this record.
