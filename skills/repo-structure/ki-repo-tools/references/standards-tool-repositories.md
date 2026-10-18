@@ -124,7 +124,7 @@ Under Bash 3.2, the Bash that macOS ships, a failing `[[ ]]` in the middle of a 
 
 ## Shared CLI conventions
 
-These are Knowledge Islands house style across the standalone tools; they do not prescribe a tool's domain commands.
+These are Knowledge Islands house style across the standalone tools; they do not prescribe a tool's domain commands. The [command-line conventions](standards-cli-conventions.md) give the Unix and Linux syntax, flag letters, streams, exit statuses, terminal behaviour and directories these rules sit beside; design a new option against them first.
 
 - `--help` describes the currently available command surface and completes successfully. Successful commands exit 0; a normal operational error exits 1; invalid syntax the tool itself owns exits 2.
 - Every tool exposes `help [command]`, `completion <shell>`, `diag`, and `doctor` at the root. `help` gives general or command-specific usage; `diag` gives factual, share-safe environment information (with an explicit fuller form when local identities are needed); `doctor` evaluates read-only health and uses an operational failure status for findings. Do not make a wrapper such as `manage` the only route to these common actions.

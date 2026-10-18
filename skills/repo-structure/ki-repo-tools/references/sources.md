@@ -14,7 +14,13 @@ Two layers feed the standard: the **external specs** (shellcheck, bats, keep-a-c
 | BATS | [bats-core][bats] | Shell-tool test framework (SHELL-TEST) — `*.bats` + CI run; fatal `[[ ]]` and `!` assertions (SHELL-FATAL) | 2026-07-09 |
 | CHANGELOG | [Keep a Changelog][keepachangelog] | Optional chronological changelog shape | 2026-07-30 |
 | SEMVER | [Semantic Versioning 2.0.0][semver] | `vX.Y.Z` version marker + release tags | 2026-07-09 |
-| XDG | [XDG Base Directory Specification][xdg] | Where the tool writes config/state/cache | 2026-07-09 |
+| XDG | [XDG Base Directory Specification][xdg] | Where the tool writes config/state/cache; the [command-line conventions](standards-cli-conventions.md#configuration-state-and-cache) directory table | 2026-10-18 |
+| POSIX-UTIL | [POSIX.1-2024 Utility Conventions][posix-util] | [Command-line](standards-cli-conventions.md) option syntax, `--`, `-` as standard input | 2026-10-18 |
+| POSIX-FIND | [POSIX `find`][posix-find] and the `cp`, `chown`, `cd` pages | `-H`, `-L` and `-P` symbolic-link options | 2026-10-18 |
+| GNU-CLI | [GNU Coding Standards: Command-Line Interfaces][gnu-cli] | Long options, `--help`, `--version`, the option table | 2026-10-18 |
+| BASH-EXIT | [Bash Reference Manual: Exit Status][bash-exit] | 2 for usage, 126, 127 and 128 + n | 2026-10-18 |
+| CLIG | [Command Line Interface Guidelines][clig] | Streams, prompts, colour, signals, secrets, configuration precedence | 2026-10-18 |
+| NO-COLOR | [NO_COLOR][no-color] | Disabling colour by environment | 2026-10-18 |
 
 ## In-house tool repositories
 
@@ -32,6 +38,8 @@ The tool repositories under `knowledgeislands/` provide evidence for house style
 
 The external-spec REFRESH last ran **2026-07-30**. The targeted in-house review on **2026-10-04** compared all five tools' standing instructions and delivery/release guides, clarified shared policy versus executable local procedures, and consolidated repeated guidance. Installer verification examples now require explicit disposable executable/manual destinations, unavailable checks remain visible, and post-hook committed-path inspection belongs to `ki-git`. Repeatable CLI parity remains a native-test responsibility; static hosted audit does not execute tools or claim semantic conformance. External specifications were not re-fetched in this review.
 
+The CLI-CONVENTIONS addition on **2026-10-18** wrote the [command-line conventions](standards-cli-conventions.md) from the POSIX, GNU, Bash, clig.dev, `NO_COLOR` and XDG sources above and from the symbolic-link survey of the `mgit-learn` run, comparing `tools-ki`, `tools-mgit` and `tools-rig` against it. The sources were cited from their published text without being re-fetched in that run; the next external-spec REFRESH re-reads them.
+
 The owner-approved diagnostic review on **2026-10-05** compared all five tools' `diag` and `doctor` implementations and Rig's table renderer. It established common execution-context facts, evidence-backed local/release/unknown installation provenance, scoped health verdicts and counts, share-safe default diagnostics, and width-aware tables with lossless identifiers and deterministic redirected output. These are house conventions rather than new external requirements. Isolated repository-native fixtures own runtime proof; the hosted audit continues to report the semantic review as judgment work without launching target executables.
 
 **Open watch-items:**
@@ -44,3 +52,9 @@ The owner-approved diagnostic review on **2026-10-05** compared all five tools' 
 [keepachangelog]: https://keepachangelog.com/en/1.1.0/
 [semver]: https://semver.org/spec/v2.0.0.html
 [xdg]: https://specifications.freedesktop.org/basedir-spec/latest/
+[posix-util]: https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap12.html
+[posix-find]: https://pubs.opengroup.org/onlinepubs/9799919799/utilities/find.html
+[gnu-cli]: https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html
+[bash-exit]: https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
+[clig]: https://clig.dev/
+[no-color]: https://no-color.org/
