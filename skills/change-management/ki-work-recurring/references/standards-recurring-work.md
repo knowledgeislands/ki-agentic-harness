@@ -51,7 +51,7 @@ grace: P7D
 spawn-policy: when-overdue
 spawn-horizon: now
 active-run: null
-initiative: platform-foundations
+theme: foundations
 component: skills
 purpose: upkeep
 ---
@@ -63,12 +63,12 @@ purpose: upkeep
 
 Recurring work is classified like any other record, under the [work-item classification](../../ki-work-roadmap/references/standards-work-item-format.md#classification):
 
-- **`initiative`** names the territory Initiative the obligation serves. The Initiative is the obligation's home: recurring work never belongs to a finite Project, so a template declares `initiative` rather than `project`; a template without it warns during the migration window.
+- **`theme`** optionally labels the obligation with a territory theme. A theme is a label, not a home: under the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) recurring work belongs to the territory's regular work, `<territory>.regular`, which is self-coordinating, and a Project's own recurring checks stay with that Project. The former `initiative` is the thread-model name for `theme` and warns during the migration window.
 - **`component`** optionally names the repository component the run touches, from the `.ki.toml` vocabulary.
 - **`purpose`** optionally says why the obligation exists, usually `upkeep`.
 - **`kind`** optionally overrides the runs' default `audit`.
 
-Each spawned run inherits `initiative`, `component`, and `purpose`, takes `kind: audit` unless the template sets another kind, and never carries `project`.
+Each spawned run inherits `theme`, `component`, and `purpose`, takes `kind: audit` unless the template sets another kind, and never carries `project`.
 
 Two optional fields enable change-volume scheduling without changing calendar-only templates:
 
@@ -85,7 +85,7 @@ AUDIT accepts only safe regular Markdown files below the selected root, without 
 
 An Activity opts into this lifecycle by declaring a `housekeeping` mapping. Declare and activate `ki-work-recurring` alongside `ki-repo-kb-activities`; the latter owns Activity identity, indexing, realization, and the location binding, while this skill owns the recurring profile. An ordinary Activity without the mapping is not a housekeeping template, even if it has a scheduled realization.
 
-Keep `id`, `title`, and `status` at the Activity's top level. Use snake_case inside the mapping: required `cadence`, `last_run`, `grace`, `spawn_policy`, `spawn_horizon`, and `active_run`; optional `commit_threshold`, `last_run_ref`, `initiative`, `component`, `purpose`, and `kind`. These map one-to-one to the Project template's hyphenated fields. There is one status, not a second nested lifecycle. All schedule and acceptance rules below apply to those mapped fields.
+Keep `id`, `title`, and `status` at the Activity's top level. Use snake_case inside the mapping: required `cadence`, `last_run`, `grace`, `spawn_policy`, `spawn_horizon`, and `active_run`; optional `commit_threshold`, `last_run_ref`, `theme`, `component`, `purpose`, and `kind`, with the former `initiative` accepted with a warning. These map one-to-one to the Project template's hyphenated fields. There is one status, not a second nested lifecycle. All schedule and acceptance rules below apply to those mapped fields.
 
 ```yaml
 ---
@@ -103,7 +103,7 @@ housekeeping:
   spawn_policy: manual
   spawn_horizon: next
   active_run: null
-  initiative: platform-foundations
+  theme: foundations
   purpose: upkeep
 ---
 ```
@@ -113,6 +113,8 @@ Use the normal Activity body plus the four recurring-work sections above. The ex
 ## Optional execution environments
 
 Recurring definitions are repository-owned and remain usable by a person or another execution environment with the declared skills and tooling. A scheduler may trigger evaluation and coordinate a run, but does not own another backlog or successful-run state. Before spawning, every caller re-reads the same definition and uses the same serialised reservation; an existing active run is reused or reported, never duplicated. Schedule activation, repairs, acceptance, and pruning retain their separate authority gates. Capture durable outcomes and learning in their repository-owned destinations rather than only in scheduler history.
+
+Recurring work is self-coordinating. It needs no coordinating session: an occurrence starts by its schedule or by whoever needs it, and rests on hold, more expected, between occurrences. The territory's state of play may discuss regular work but does not necessarily dispatch it.
 
 ## Due-run procedure
 

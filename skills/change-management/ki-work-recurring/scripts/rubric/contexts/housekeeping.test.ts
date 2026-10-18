@@ -36,7 +36,7 @@ const template = (id = 'KI-HARNESS-HK-001') =>
     'grace: P7D',
     'spawn-policy: when-due',
     'spawn-horizon: next',
-    'initiative: platform-foundations',
+    'theme: platform-foundations',
     'active-run: null',
     '---',
     '',
@@ -150,7 +150,7 @@ const activity = (status = 'active') =>
     '  grace: P1D',
     '  spawn_policy: when-due',
     '  spawn_horizon: next',
-    '  initiative: platform-foundations',
+    '  theme: platform-foundations',
     '  active_run: null',
     '---',
     template().split('\n---\n')[1]
@@ -351,35 +351,34 @@ test('rejects unsafe entries and duplicate or stale active-run linkage', () => {
   )
 })
 
-test('a retired spawn horizon or missing initiative is a migration notice, while invalid classification fails', () => {
+test('a retired spawn horizon or legacy initiative is a migration notice, while invalid classification fails', () => {
   const repository = temporaryDirectory()
   const root = join(repository, 'docs', 'housekeeping')
   mkdirSync(root, { recursive: true })
   const path = join(root, 'KI-HARNESS-HK-001-monthly-maintenance.md')
   writeFileSync(
     path,
-    template().replace('spawn-horizon: next', 'spawn-horizon: parked').replace('initiative: platform-foundations\n', '')
+    template()
+      .replace('spawn-horizon: next', 'spawn-horizon: parked')
+      .replace('theme: platform-foundations', 'initiative: platform-foundations')
   )
   const legacy = outcomes(repository)
   expect(legacy.filter((outcome) => outcome.status === 'VIOLATION')).toEqual([])
   expect(legacy.map((outcome) => outcome.message)).toEqual(
     expect.arrayContaining([
       "Migration: spawn-horizon 'parked' is retired; spawn at now, next, soon or future.",
-      'Migration: the template should declare the initiative its runs serve.'
+      'Migration: initiative is the thread-model name for the optional theme; rename it theme.'
     ])
   )
   writeFileSync(
     path,
-    template().replace(
-      'initiative: platform-foundations',
-      'initiative: Platform\ncomponent: skills\npurpose: fun\nkind: build'
-    )
+    template().replace('theme: platform-foundations', 'theme: Platform\ncomponent: skills\npurpose: fun\nkind: build')
   )
   expect(outcomes(repository)).toContainEqual(
     expect.objectContaining({
       status: 'VIOLATION',
       message:
-        'Housekeeping template is invalid: initiative must be a lowercase kebab-case slug; purpose must be one canonical value; kind must be one canonical value.'
+        'Housekeeping template is invalid: theme must be a lowercase kebab-case slug; purpose must be one canonical value; kind must be one canonical value.'
     })
   )
 })

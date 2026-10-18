@@ -20,13 +20,15 @@ An activity note that carries frontmatter declares:
 | `realization` | The execution form described below.    |
 | `author`      | Who authored or adopted this activity. |
 
-An active Activity also names its home in `initiative`, as described under [Home](#home). The `ki-repo-kb` skill owns general note frontmatter such as tags and dates.
+An active Activity may also name a `theme` and, for a Project's own recurring check, a `project`, as described under [Home](#home). The `ki-repo-kb` skill owns general note frontmatter such as tags and dates.
 
 ## Home
 
-Every active Activity names the territory Initiative it serves in a top-level `initiative` key, so recurring work is never lost. The value is an Initiative slug in the territory's [Project registry](../../../change-management/ki-work/references/standards-project-registry.md), qualified as `<territory>/<slug>` when the Initiative belongs to another territory. An Activity with a housekeeping profile may instead rely on the profile's `initiative`, which its runs inherit; when both are present they agree. AUDIT warns when an active Activity names no Initiative, or two that disagree; paused and retired Activities need none.
+Under the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md), an Activity's home is its territory's regular work, `<territory>.regular`: the territory's recurring work, defined here in the Activity notes. An Activity needs no key to say so. A Project's own recurring check, needed only while the Project runs, stays with that Project instead and names it in a top-level `project` key, a slug in the territory's [Project registry](../../../change-management/ki-work/references/standards-project-registry.md).
 
-Recurring work belongs to an Initiative, never to a finite Project, because an Initiative never completes. The link points upwards only: the Initiative note does not list its Activities.
+An Activity may carry an optional top-level `theme`, a territory theme slug. A theme is a label, not a home: it holds no work. An Activity with a housekeeping profile may name the theme in the profile instead, which its runs inherit; when both are present they agree. The former `initiative`, at either place, is the thread-model name for `theme`: AUDIT warns on it, and on two themes that disagree, until the territory's migration renames it. Paused and retired Activities are not checked.
+
+Regular work is self-coordinating. An occurrence starts by its schedule or by whoever needs it, with no coordinating session; the territory's state of play may discuss regular work but does not necessarily dispatch it. The link points upwards only: neither a theme page nor a Project note lists its Activities.
 
 ## Realization
 

@@ -15,7 +15,7 @@ const LEGACY_HORIZONS = new Set(['waiting-for', 'parked'])
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const KINDS = new Set(['deliver', 'decide', 'investigate', 'audit'])
 const PURPOSES = new Set(['capability', 'corrective', 'debt', 'governance', 'learning', 'adoption', 'upkeep'])
-const CLASSIFICATION_FIELDS = ['initiative', 'component', 'purpose', 'kind'] as const
+const CLASSIFICATION_FIELDS = ['theme', 'initiative', 'component', 'purpose', 'kind'] as const
 const RUN_STATES = new Set(['draft', 'ready', 'in-progress', 'awaiting-review'])
 const KB_SCHEDULE_FIELDS = new Set([
   'cadence',
@@ -144,7 +144,8 @@ const migrationNotices = (values: Readonly<Record<string, string>>): string[] =>
   const horizon = values['spawn-horizon'] ?? ''
   if (LEGACY_HORIZONS.has(horizon))
     notices.push(`Migration: spawn-horizon '${horizon}' is retired; spawn at now, next, soon or future.`)
-  if (!('initiative' in values)) notices.push('Migration: the template should declare the initiative its runs serve.')
+  if ('initiative' in values)
+    notices.push('Migration: initiative is the thread-model name for the optional theme; rename it theme.')
   return notices
 }
 
@@ -245,7 +246,7 @@ const templateErrors = ({
     errors.push('has an invalid spawn-policy')
   const horizon = parsed.values['spawn-horizon'] ?? ''
   if (!HORIZONS.has(horizon) && !LEGACY_HORIZONS.has(horizon)) errors.push('has an invalid spawn-horizon')
-  for (const key of ['initiative', 'component'] as const)
+  for (const key of ['theme', 'initiative', 'component'] as const)
     if (key in parsed.values && !SLUG.test(parsed.values[key] ?? ''))
       errors.push(`${key} must be a lowercase kebab-case slug`)
   if ('purpose' in parsed.values && !PURPOSES.has(parsed.values.purpose ?? ''))

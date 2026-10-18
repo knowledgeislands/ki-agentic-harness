@@ -44,8 +44,8 @@ Activity note structure, frontmatter, realization-specific declarations, and saf
   - _Remediation:_ diagnostic — Document an unknown realization in the agentic environment or select a known realization only when it accurately describes the activity.
 - **ACT-F-4 [M] — activity author** — Frontmatter-bearing activity notes declare who authored or adopted the activity. (standards-activities.md)
   - _Remediation:_ diagnostic — Declare the person or agent that authored or adopted the activity according to its actual provenance.
-- **ACT-F-5 [M] — activity home** — An active Activity names the territory Initiative it serves in `initiative`, or in its housekeeping profile, so recurring work keeps a home. (standards-activities.md#home)
-  - _Remediation:_ diagnostic — Name the Initiative the Activity serves, agreed with its owner; a housekeeping profile that already names one needs no second field.
+- **ACT-F-5 [M] — activity home and theme** — An active Activity's home is the territory's regular work, or the Project named in `project` when it is that Project's own recurring check. A `theme`, at the top level or in its housekeeping profile, is an optional label and the two agree; the former `initiative` warns. (standards-activities.md#home)
+  - _Remediation:_ diagnostic — Rename `initiative` to the optional `theme`, agreed with the Activity owner; name `project` only for a Project's own recurring check.
 - **ACT-R-1 [M] — slash-command skill field** — A `slash-command` activity declares its `skill` field. (standards-activities.md)
   - _Remediation:_ diagnostic — Declare the owning SKILL.md for the slash-command activity after confirming the command’s intended capability.
 - **ACT-R-2 [M] — slash-command skill resolution** — A declared slash-command skill resolves when a harness path is supplied. (standards-activities.md)

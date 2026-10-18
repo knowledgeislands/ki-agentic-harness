@@ -6,17 +6,17 @@ project: ways-of-working
 component: change-management
 status: triage
 blocks: []
-blocked_by: []
+blocked_by: [KI-HARNESS-GOV-210]
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-17T22:06:58Z
+updated_at: 2026-10-18T02:18:20Z
 ---
 
 # KI-HARNESS-GOV-206: Activity Homes and Coordination
 
 ## Goal
 
-The harness standards let a regular activity live at territory or Initiative level, never in a Project, and run it without a standing thread: the state-of-play thread or a scheduler dispatches each occurrence as one agent in the state-of-play run, its report and answers land there, standing changes reach the Activity note through Enactment, and improving an activity is a Project with its own coordination thread while active.
+The harness standards home a regular activity in its territory's regular work, `<territory>.regular`, or, for a Project's own recurring check, in that Project, under the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md). Regular work is self-coordinating: an occurrence starts by its schedule or by whoever needs it, with no standing session, and the territory's state of play may discuss it but does not necessarily dispatch it. A theme is an optional label in `theme`, replacing `initiative`. Improving an activity remains Project work.
 
 ## Context
 
@@ -29,22 +29,25 @@ The [activity-levels run report](/Users/krisbrown/workspaces/knowledge-islands/k
 
 ACT-THREAD took option a), so the optional `<territory>.<initiative>` thread id in section 5 is not wanted.
 
+The [work model decision](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) of 18 October 2026 superseded ACT-HOME and part of ACT-THREAD: Initiatives became themes, which hold no work, so an Activity's home moved from an Initiative or the territory to the territory's regular work, and the state-of-play thread no longer necessarily dispatches each occurrence. This record was amended to match under [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md).
+
 ## Boundary
 
-- In, from section 5:
-  - `ki-repo-kb-activities`: Home accepts either `initiative: <slug>` or an explicit territory home stewarded by the state-of-play thread; the audit warns only when an Activity has neither, or both.
-  - `ki-work-recurring`: templates and runs inherit an Initiative or territory home on the same terms.
-  - `ki-work`: Attributes by level gives an Activity's parent as one Initiative or the territory; the Initiative `## Notes` rule still points to Activities by upward link only.
-  - `ki-pmo`: a new Activities subsection: no thread for an Activity; the state-of-play thread may dispatch a briefed occurrence into its own run; reports, queries and decisions land as section 3 describes; improving an Activity is a Project; occurrences count against the agent limit, not the thread cap.
-  - `ki-pmo` Thread naming: no `<territory>.<initiative>.<activity>` id.
-  - `ki-checkpoint`: a checkpoint with no Project no longer takes an `<initiative>.` prefix that looks like a Project stem.
-  - `ki-delegation`: an activity occurrence runs in the state-of-play run, its brief taken from the Activity note.
-- Out: renaming existing checkpoints, folders or slugs, and retitling Initiatives, which belong to the SHAPE-AGREE migration and its IDS-MIGRATE pass; Personal's section 6 handoff and its `Admin/Operations/Activities/` work, which go to Personal > SoP through Kris; a short-title field, which ACT-NAMES declined.
+- In, from section 5 as the work model amends it:
+  - `ki-repo-kb-activities`: Home names the territory's regular work as the default home with no key, an optional `project` for a Project's own recurring check and an optional `theme`; the former `initiative` warns.
+  - `ki-work-recurring`: templates and runs carry and inherit an optional `theme` on the same terms, and the standard states that recurring work is self-coordinating.
+  - `ki-work`: Attributes by level gives recurring work's home as regular work or its Project; a theme page points to no Activities.
+  - `ki-pmo`: regular work needs no coordinating session; the state of play may discuss it and send it Messages but does not necessarily dispatch it; improving an Activity is a Project.
+  - `ki-pmo` Work naming: regular work is `<territory>.regular`, and ad hoc work `<territory>.regular.<slug>`; no `<territory>.<initiative>.<activity>` id.
+  - `ki-checkpoint`: the work file replaces the checkpoint, so no Initiative prefix remains.
+  - `ki-delegation`: an occurrence's run is briefed from its Activity note into the work folder of the work it serves.
+- Phase 1 of the work-model migration, under [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md), writes each of these into its standard.
+- Out: renaming existing checkpoints, folders or slugs and moving Activity notes from `initiative` to `theme`, which belong to each territory's migration; Personal's section 6 handoff and its `Admin/Operations/Activities/` work, which go to Personal > SoP through Kris; a short-title field, which ACT-NAMES declined.
 
 ## Dependencies / blocks
 
-Sequenced after the SHAPE-AGREE migration's harness checker. Kris Brown agreed SHAPE-AGREE on 17 October 2026 at 22:50 BST as "one migration after the restart: harness checker first, then folders, decisions logs and thread ids together". This record's checkpoint and naming changes must land against that checker and in the same pass as the folder and thread-id renames, so that nothing is renamed twice. No record for the checker exists yet; when it is captured, it belongs in this record's `blocked_by`.
+Sequenced after the SHAPE-AGREE migration's harness checker. Kris Brown agreed SHAPE-AGREE on 17 October 2026 at 22:50 BST as "one migration after the restart: harness checker first, then folders, decisions logs and thread ids together". This record's checkpoint and naming changes must land against that checker and in the same pass as the folder and thread-id renames, so that nothing is renamed twice. [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) is that checker and the work model's write-in, so it stands in `blocked_by`.
 
 ## Discussion
 
-Captured on Kris Brown's ACT-WORK answer. Questions for planning: whether the seven skill changes stay one delivery or split by skill; and how a territory home is written in Activity frontmatter.
+Captured on Kris Brown's ACT-WORK answer. Questions for planning: whether the seven skill changes stay one delivery or split by skill; and how a territory home is written in Activity frontmatter. The work model answered the second: regular work is the default home and needs no key. With phase 1 writing every Boundary item in, planning decides whether this record closes as delivered by [KI-HARNESS-GOV-210](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) or keeps a residue.

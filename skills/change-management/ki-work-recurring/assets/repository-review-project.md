@@ -9,7 +9,7 @@ grace: P1D
 spawn-policy: manual
 spawn-horizon: next
 active-run: null
-initiative: example-initiative
+theme: example-theme
 purpose: upkeep
 ---
 

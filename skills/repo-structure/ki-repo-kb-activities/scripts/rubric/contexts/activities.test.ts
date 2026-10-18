@@ -77,6 +77,30 @@ test('recurring-work lifecycle is required only for opted-in Activities', () => 
   expect(audit()[0]?.status).toBe('PASS')
 })
 
+test("an Activity's home is regular work or its Project, and a legacy initiative warns", () => {
+  const repository = activityBase()
+  const path = join(repository, 'Admin', 'Operations', 'Activities', 'Morning Briefing.md')
+  const original = readFileSync(path, 'utf8')
+  const criterion = ACT.items.find((item) => item.code === 'ACT-F-5')?.mechanical
+  if (!criterion) throw new Error('Missing activity home criterion')
+  const audit = (fields: string) => {
+    writeFileSync(path, original.replace('status: active', `status: active\n${fields}`))
+    const [outcome] = criterion.audit.run(activityContext(createActivitiesSession(options(repository, 'audit'))))
+    return { status: outcome?.status, message: outcome?.message }
+  }
+  expect(audit('author_note: none')).toEqual({ status: 'PASS', message: "home is the territory's regular work" })
+  expect(audit('theme: model\nproject: ways-of-working')).toEqual({
+    status: 'PASS',
+    message: "home is Project 'ways-of-working', theme 'model'"
+  })
+  expect(audit('initiative: platform-foundations').message).toStartWith('legacy: ')
+  expect(audit('housekeeping:\n  initiative: platform-foundations').status).toBe('VIOLATION')
+  expect(audit('theme: model\nhousekeeping:\n  theme: foundations').message).toBe(
+    "theme 'model' disagrees with the housekeeping profile's 'foundations'"
+  )
+  expect(audit('project: Ways of working').status).toBe('VIOLATION')
+})
+
 test('audit is read-only and returns one stable prepared context', () => {
   const repository = activityBase()
   const session = createActivitiesSession(options(repository, 'audit'))

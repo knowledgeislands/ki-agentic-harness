@@ -8,7 +8,7 @@ project: ways-of-working
 component: governance
 horizon: now
 status: in-progress
-blocks: []
+blocks: [KI-HARNESS-GOV-206]
 blocked_by: []
 baseline_ref: be65ccad13720226c85626093538d744fae8f024
 created_at: 2026-10-18T01:49:05Z

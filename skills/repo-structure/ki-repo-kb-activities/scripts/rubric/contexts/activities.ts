@@ -17,7 +17,9 @@ export type ActivityNote = {
   readonly frontmatter: Readonly<Record<string, string>> | null
   readonly malformedFrontmatter: boolean
   readonly recurring: boolean
-  /** The `initiative` named inside a `housekeeping` profile, which spawned runs inherit. */
+  /** The `theme` named inside a `housekeeping` profile, which spawned runs inherit. */
+  readonly recurringTheme: string | undefined
+  /** The legacy `initiative` named inside a `housekeeping` profile. */
   readonly recurringInitiative: string | undefined
 }
 
@@ -94,6 +96,7 @@ const parseFrontmatter = (
   value: Readonly<Record<string, string>> | null
   malformed: boolean
   recurring: boolean
+  recurringTheme?: string
   recurringInitiative?: string
 } => {
   if (text.split(/\r?\n/, 1)[0]?.trim() !== '---') return { value: null, malformed: false, recurring: false }
@@ -104,10 +107,13 @@ const parseFrontmatter = (
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
       return { value: null, malformed: true, recurring: false }
     const profile = (parsed as Record<string, unknown>).housekeeping
-    const profileInitiative =
-      profile && typeof profile === 'object' && !Array.isArray(profile)
-        ? (profile as Record<string, unknown>).initiative
-        : undefined
+    const profileField = (key: string): string | undefined => {
+      const value =
+        profile && typeof profile === 'object' && !Array.isArray(profile)
+          ? (profile as Record<string, unknown>)[key]
+          : undefined
+      return typeof value === 'string' && value ? value : undefined
+    }
     const fields = Object.fromEntries(
       Object.entries(parsed as Record<string, unknown>).filter(
         (entry): entry is [string, string] => typeof entry[1] === 'string'
@@ -117,7 +123,8 @@ const parseFrontmatter = (
       value: fields,
       malformed: false,
       recurring: Object.hasOwn(parsed, 'housekeeping'),
-      recurringInitiative: typeof profileInitiative === 'string' && profileInitiative ? profileInitiative : undefined
+      recurringTheme: profileField('theme'),
+      recurringInitiative: profileField('initiative')
     }
   } catch {
     return { value: null, malformed: true, recurring: false }
@@ -205,6 +212,7 @@ export const createActivitiesSession = ({
             frontmatter: frontmatter.value,
             malformedFrontmatter: frontmatter.malformed,
             recurring: frontmatter.recurring,
+            recurringTheme: frontmatter.recurringTheme,
             recurringInitiative: frontmatter.recurringInitiative
           }
         })

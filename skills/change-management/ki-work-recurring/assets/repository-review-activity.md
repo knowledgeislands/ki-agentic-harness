@@ -13,7 +13,7 @@ housekeeping:
   spawn_policy: manual
   spawn_horizon: next
   active_run: null
-  initiative: example-initiative
+  theme: example-theme
   purpose: upkeep
 ---
 

@@ -354,16 +354,16 @@ const ACT_F_4: RubricItem<ActivitiesContext> = {
 
 const ACT_F_5: RubricItem<ActivitiesContext> = {
   code: 'ACT-F-5',
-  title: 'activity home',
+  title: 'activity home and theme',
   description:
-    'An active Activity names the territory Initiative it serves in `initiative`, or in its housekeeping profile, so recurring work keeps a home.',
+    "An active Activity's home is the territory's regular work, or the Project named in `project` when it is that Project's own recurring check. A `theme`, at the top level or in its housekeeping profile, is an optional label and the two agree; the former `initiative` warns.",
   sources: [`${SOURCE}#home`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Name the Initiative the Activity serves, agreed with its owner; a housekeeping profile that already names one needs no second field.'
+        "Rename `initiative` to the optional `theme`, agreed with the Activity owner; name `project` only for a Project's own recurring check."
     },
     audit: {
       phase: 'INSPECT',
@@ -373,22 +373,35 @@ const ACT_F_5: RubricItem<ActivitiesContext> = {
         const outcomes = notesWithFrontmatter(context)
           .filter((note) => note.frontmatter?.status === 'active')
           .map((note): AuditOutcome => {
-            const declared = note.frontmatter?.initiative
-            const profile = note.recurringInitiative
+            const legacy = note.frontmatter?.initiative ?? note.recurringInitiative
+            if (legacy)
+              return {
+                status: 'VIOLATION',
+                message: `legacy: initiative '${legacy}' becomes the optional theme; the home is the territory's regular work`,
+                subject: note.relative
+              }
+            const declared = note.frontmatter?.theme
+            const profile = note.recurringTheme
             if (declared && profile && declared !== profile)
               return {
                 status: 'VIOLATION',
-                message: `initiative '${declared}' disagrees with the housekeeping profile's '${profile}'`,
+                message: `theme '${declared}' disagrees with the housekeeping profile's '${profile}'`,
                 subject: note.relative
               }
-            const home = declared ?? profile
-            return home
-              ? { status: 'PASS', message: `serves Initiative '${home}'`, subject: note.relative }
-              : {
-                  status: 'VIOLATION',
-                  message: 'active Activity names no Initiative; recurring work needs a home',
-                  subject: note.relative
-                }
+            const project = note.frontmatter?.project
+            if (project !== undefined && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project))
+              return {
+                status: 'VIOLATION',
+                message: `project '${project}' must be a Project registry slug`,
+                subject: note.relative
+              }
+            const home = project ? `Project '${project}'` : "the territory's regular work"
+            const theme = declared ?? profile
+            return {
+              status: 'PASS',
+              message: theme ? `home is ${home}, theme '${theme}'` : `home is ${home}`,
+              subject: note.relative
+            }
           })
         return outcomes.length
           ? oneOrMore(outcomes)
