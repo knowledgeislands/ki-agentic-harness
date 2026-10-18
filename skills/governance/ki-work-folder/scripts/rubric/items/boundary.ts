@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { CheckpointsRubricContext, OutcomeContext } from '../contexts/checkpoints.ts'
+import type { OutcomeContext, WorkFolderRubricContext } from '../contexts/work-folder.ts'
 
-const SOURCE = 'standards-checkpoints.md'
+const SOURCE = 'standards-work-folder.md'
 
 const BOUNDARY_1: RubricItem<OutcomeContext> = {
   code: 'BOUNDARY-1',
@@ -28,7 +28,7 @@ const BOUNDARY_1: RubricItem<OutcomeContext> = {
   }
 }
 
-export const BOUNDARY: RubricFamily<CheckpointsRubricContext, OutcomeContext> = {
+export const BOUNDARY: RubricFamily<WorkFolderRubricContext, OutcomeContext> = {
   code: 'BOUNDARY',
   title: 'Runtime-neutral reconstruction',
   description: 'Portable work-file content never depends on a transcript, vendor session, or private runtime state.',

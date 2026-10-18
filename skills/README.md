@@ -124,7 +124,7 @@ Govern coordinating work under the Knowledge Islands work model: the responsive 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
-- **Dependencies:** `ki-delegation`, `ki-checkpoint`
+- **Dependencies:** `ki-delegation`, `ki-work-folder`
 - **Runtime:** Portable
 
 #### `ki-implement`
@@ -363,16 +363,6 @@ Govern KI Markdown, TOML, README composition, and durable knowledge placement. U
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-checkpoint`
-
-Create, update, resume, audit, or remove the work file of one piece of work, `+/_WORK/<id>/work.md`: its front matter of id, level, title, worker, supervisor, state and times, its next steps, Messages and parked query tags. Use for picking work up without a transcript or vendor session; Git is the logbook, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners, and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-decision-records`
 
 Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
@@ -473,6 +463,16 @@ Govern directional work and knowledge trades between KI repositories: routes, re
 - **Dependencies:** None
 - **Runtime:** Portable
 
+#### `ki-work-folder`
+
+Create, update, resume, audit, or remove the work file of one piece of work, `+/_WORK/<id>/work.md`: its front matter of id, level, title, worker, supervisor, state and times, its next steps, Messages and parked query tags. Use for picking work up without a transcript or vendor session; Git is the logbook, while decisions, roadmap state, durable knowledge, recaps, and runtime continuity stay with their owners, and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
+
+- **Kind:** Governance
+- **Applicability:** Detected
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 ### Keystone
 
 #### `ki-bootstrap`
@@ -491,7 +491,7 @@ Audit or conform the universal KI repository contract declared by `.ki.toml`, in
 
 - **Kind:** Governance
 - **Applicability:** Baseline
-- **Detects:** `ki-checkpoint`, `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`
+- **Detects:** `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`, `ki-work-folder`
 - **Arguments:** `audit | conform <repo> | educate <repo> | help | refresh | review [scope] | review close <REV-NNN>`
 - **Dependencies:** `ki-authoring`, `ki-git`
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract

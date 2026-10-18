@@ -1,13 +1,13 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { CheckpointsRubricContext, OutcomeContext } from '../contexts/checkpoints.ts'
+import type { OutcomeContext, WorkFolderRubricContext } from '../contexts/work-folder.ts'
 
-const SOURCE = 'standards-checkpoints.md'
+const SOURCE = 'standards-work-folder.md'
 
 const CONFIG_1: RubricItem<OutcomeContext> = {
   code: 'CONFIG-1',
   title: 'checkpoint declaration has no private options',
   description:
-    'The optional `ki-checkpoint` declaration is an empty capability marker. It carries no runtime, session, retention, or lifecycle options; repository policy and optional adapters remain separate owners.',
+    'The optional `ki-work-folder` declaration is an empty capability marker. It carries no runtime, session, retention, or lifecycle options; repository policy and optional adapters remain separate owners.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
@@ -16,7 +16,7 @@ const CONFIG_1: RubricItem<OutcomeContext> = {
   }
 }
 
-export const CONFIG: RubricFamily<CheckpointsRubricContext, OutcomeContext> = {
+export const CONFIG: RubricFamily<WorkFolderRubricContext, OutcomeContext> = {
   code: 'CONFIG',
   title: 'Capability declaration',
   description: 'The repository opts into one portable contract without embedding runtime or retention policy.',

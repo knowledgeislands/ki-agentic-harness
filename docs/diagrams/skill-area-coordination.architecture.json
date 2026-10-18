@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "c4cbb5aac2e7c955925e2bd0c7fabc7a1629c388"
+      "revision": "0d0c3e8d06a130e428579cdd89789077b8e30005"
     },
     "legend": {
       "mode": "auto",
@@ -80,25 +80,6 @@
       "pos": [
         556,
         64
-      ],
-      "size": [
-        208,
-        60
-      ]
-    },
-    {
-      "id": "ki-checkpoint",
-      "type": "backend",
-      "label": "ki-checkpoint",
-      "sublabel": "governance · automatic",
-      "sources": [
-        {
-          "path": "skills/governance/ki-checkpoint/SKILL.md"
-        }
-      ],
-      "pos": [
-        300,
-        252
       ],
       "size": [
         208,
@@ -201,6 +182,25 @@
       ]
     },
     {
+      "id": "ki-work-folder",
+      "type": "backend",
+      "label": "ki-work-folder",
+      "sublabel": "governance · automatic",
+      "sources": [
+        {
+          "path": "skills/governance/ki-work-folder/SKILL.md"
+        }
+      ],
+      "pos": [
+        300,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
       "id": "ki-decision-records",
       "type": "backend",
       "label": "ki-decision-records",
@@ -244,7 +244,7 @@
       "label": "Delegation and programme",
       "wraps": [
         "ki-delegation",
-        "ki-checkpoint",
+        "ki-work-folder",
         "ki-coordination",
         "ki-work-design"
       ],
@@ -264,7 +264,7 @@
       "label": "Coordination · 6 skills",
       "wraps": [
         "ki-delegation",
-        "ki-checkpoint",
+        "ki-work-folder",
         "ki-coordination",
         "ki-work-design",
         "ki-trades",
@@ -281,15 +281,15 @@
       "variant": "dashed"
     },
     {
-      "id": "ki-coordination--ki-checkpoint",
-      "from": "ki-coordination",
-      "to": "ki-checkpoint",
-      "variant": "default"
-    },
-    {
       "id": "ki-coordination--ki-delegation",
       "from": "ki-coordination",
       "to": "ki-delegation",
+      "variant": "default"
+    },
+    {
+      "id": "ki-coordination--ki-work-folder",
+      "from": "ki-coordination",
+      "to": "ki-work-folder",
       "variant": "default"
     },
     {

@@ -83,7 +83,7 @@ export type RecordContext = {
 }
 export type LifecycleContext = { readonly mechanical: readonly AuditOutcome[] }
 
-export type CheckpointsRubricContext = {
+export type WorkFolderRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly configuration: OutcomeContext
   readonly structure: ScaffoldContext
@@ -508,15 +508,15 @@ const supersededBy = (stem: string, works: readonly ParsedRecord[]): string | un
 export const checkpointReadme = {
   path: '+/_CHECKPOINTS/README.md',
   content:
-    "# Checkpoints\n\nThis directory retains active, human-named reconstruction snapshots while `ki-checkpoint` is declared. A Project's coordination thread is named `<initiative>.<project>.md` and the state-of-play thread `_state-of-play.md`; each record's `label` is the human's client-side thread name, for presentation only. Checkpoint records are temporary inputs to further repository work. Removing a checkpoint deletes its record after durable information is routed; this README remains as the capability boundary. Git supplies recovery history.\n"
+    "# Checkpoints\n\nThis directory retains active, human-named reconstruction snapshots while `ki-work-folder` is declared. A Project's coordination thread is named `<initiative>.<project>.md` and the state-of-play thread `_state-of-play.md`; each record's `label` is the human's client-side thread name, for presentation only. Checkpoint records are temporary inputs to further repository work. Removing a checkpoint deletes its record after durable information is routed; this README remains as the capability boundary. Git supplies recovery history.\n"
 } as const
 
-export const createCheckpointsSession = ({
+export const createWorkFolderSession = ({
   mode,
   repository,
   configuration,
   publication
-}: RubricContextOptions): RubricSession<CheckpointsRubricContext> => {
+}: RubricContextOptions): RubricSession<WorkFolderRubricContext> => {
   const root = resolve(repository)
   const workDirectory = join(root, '+', '_WORK')
   const checkpointDirectory = join(root, '+', '_CHECKPOINTS')
@@ -563,7 +563,7 @@ export const createCheckpointsSession = ({
     else if (readFileSync(readmePath, 'utf8') !== checkpointReadme.content)
       structureViolations.push({
         status: 'VIOLATION',
-        message: '+/_CHECKPOINTS/README.md differs from canonical ki-checkpoint orientation',
+        message: '+/_CHECKPOINTS/README.md differs from canonical ki-work-folder orientation',
         subject: checkpointReadme.path
       })
     const active = inspectDirectory(checkpointDirectory, root)
@@ -582,7 +582,7 @@ export const createCheckpointsSession = ({
     ? Object.keys(configured).map((key) => ({
         status: 'VIOLATION' as const,
         level: 'WARN' as const,
-        message: `unrecognised ki-checkpoint configuration key ${key}`,
+        message: `unrecognised ki-work-folder configuration key ${key}`,
         subject: '.ki.toml'
       }))
     : []
@@ -614,14 +614,14 @@ export const createCheckpointsSession = ({
   const canConformScaffold =
     Boolean(configured) && checkpointSafe && (!existsSync(readmePath) || physicalFile(readmePath))
   let scaffoldRequested = false
-  const context: CheckpointsRubricContext = {
+  const context: WorkFolderRubricContext = {
     rubric: { publication },
     configuration: {
       outcomes: one(
         configOutcomes,
         configured
-          ? 'The ki-checkpoint declaration is an empty capability marker.'
-          : 'No ki-checkpoint declaration is active.'
+          ? 'The ki-work-folder declaration is an empty capability marker.'
+          : 'No ki-work-folder declaration is active.'
       )
     },
     structure: {

@@ -1,7 +1,7 @@
 import { createRubricPublicationFamily } from '../../shared/rubric.ts'
-import type { CheckpointsRubricContext } from '../contexts/checkpoints.ts'
+import type { WorkFolderRubricContext } from '../contexts/work-folder.ts'
 
-export const RUBRIC = createRubricPublicationFamily<CheckpointsRubricContext>(
+export const RUBRIC = createRubricPublicationFamily<WorkFolderRubricContext>(
   ({ rubric }) => rubric,
   '../../../keystone/ki-skills/references/standards-rubric-authoring.md',
   ['../../../keystone/ki-skills/references/standards-rubric-authoring.md#generated-rubric-publication']

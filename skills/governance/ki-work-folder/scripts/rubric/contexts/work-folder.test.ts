@@ -8,7 +8,7 @@ import { CONFIG } from '../items/configuration.ts'
 import { LIFECYCLE } from '../items/lifecycle.ts'
 import { RECORD } from '../items/records.ts'
 import { STRUCTURE } from '../items/structure.ts'
-import { type CheckpointsRubricContext, checkpointReadme, createCheckpointsSession } from './checkpoints.ts'
+import { checkpointReadme, createWorkFolderSession, type WorkFolderRubricContext } from './work-folder.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -17,7 +17,7 @@ afterEach(() => {
 })
 
 const fixture = (): { repository: string; checkpointDirectory: string } => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-'))
   temporaryDirectories.push(repository)
   const checkpointDirectory = join(repository, '+', '_CHECKPOINTS')
   mkdirSync(checkpointDirectory, { recursive: true })
@@ -77,10 +77,10 @@ const record = ({
     ''
   ].join('\n')
 
-const context = (repository: string): CheckpointsRubricContext => {
-  const session = createCheckpointsSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+const context = (repository: string): WorkFolderRubricContext => {
+  const session = createWorkFolderSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
   const value = session.subjects[0]?.context()
-  if (!value) throw new Error('ki-checkpoint session did not expose its repository subject')
+  if (!value) throw new Error('ki-work-folder session did not expose its repository subject')
   return value
 }
 
@@ -91,10 +91,10 @@ const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, 
 }
 
 test('a selected empty marker needs no subarea and audit never proposes writes', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-absent-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-absent-'))
   temporaryDirectories.push(repository)
-  const session = createCheckpointsSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
-  const value = session.subjects[0]?.context() as CheckpointsRubricContext
+  const session = createWorkFolderSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+  const value = session.subjects[0]?.context() as WorkFolderRubricContext
 
   expect(mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('PASS')
   expect(mechanical(STRUCTURE, 'STRUCTURE-2').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('PASS')
@@ -102,17 +102,17 @@ test('a selected empty marker needs no subarea and audit never proposes writes',
 })
 
 test('an existing legacy checkpoint directory requires and can restore its scaffold', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-declared-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-declared-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, '+', '_CHECKPOINTS'), { recursive: true })
-  const session = createCheckpointsSession({
+  const session = createWorkFolderSession({
     mode: 'conform',
     repository,
     userHome: tmpdir(),
     configuration: {}
   })
   const value = session.subjects[0]?.context()
-  if (!value) throw new Error('ki-checkpoint session did not expose repository subject')
+  if (!value) throw new Error('ki-work-folder session did not expose repository subject')
   const item = mechanical(STRUCTURE, 'STRUCTURE-1')
 
   expect(item.audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('VIOLATION')
@@ -244,7 +244,7 @@ test('a role is one of three values and a coordinating role needs a ki-coordinat
 
 test('unknown selected capability keys warn without hiding scaffold requirements', () => {
   const { repository } = fixture()
-  const session = createCheckpointsSession({
+  const session = createWorkFolderSession({
     mode: 'audit',
     repository,
     userHome: tmpdir(),
@@ -256,7 +256,7 @@ test('unknown selected capability keys warn without hiding scaffold requirements
     expect.objectContaining({
       status: 'VIOLATION',
       level: 'WARN',
-      message: 'unrecognised ki-checkpoint configuration key unexpected'
+      message: 'unrecognised ki-work-folder configuration key unexpected'
     })
   ])
 })
@@ -266,7 +266,7 @@ test('malformed YAML records fail schema and CONFORM preserves authored bytes', 
   const target = join(checkpointDirectory, 'release-audit.md')
   const malformed = record().replace('type: ki-checkpoint', 'type: [')
   writeFileSync(target, malformed)
-  const session = createCheckpointsSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+  const session = createWorkFolderSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
   const value = session.subjects[0]?.context()
   if (!value) throw new Error('checkpoint context missing')
   expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))).toEqual([
@@ -285,9 +285,9 @@ for (const unsafe of [
   'readme-directory'
 ] as const) {
   test(`CONFORM refuses unsafe target: ${unsafe}`, () => {
-    const repository = mkdtempSync(join(tmpdir(), 'ki-checkpoint-unsafe-'))
+    const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-unsafe-'))
     temporaryDirectories.push(repository)
-    const outside = mkdtempSync(join(tmpdir(), 'ki-checkpoint-outside-'))
+    const outside = mkdtempSync(join(tmpdir(), 'ki-work-folder-outside-'))
     temporaryDirectories.push(outside)
     const plus = join(repository, '+')
     const directory = join(plus, '_CHECKPOINTS')
@@ -304,7 +304,7 @@ for (const unsafe of [
         } else mkdirSync(join(directory, 'README.md'))
       }
     }
-    const session = createCheckpointsSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+    const session = createWorkFolderSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
     const value = session.subjects[0]?.context()
     if (!value) throw new Error('checkpoint context missing')
     expect(value.structure.ensureScaffold).toBeUndefined()
@@ -377,7 +377,7 @@ const writeWork = (repository: string, folder: string, content: string): void =>
   writeFileSync(join(repository, '+', '_WORK', folder, 'work.md'), content)
 }
 
-const statuses = (value: CheckpointsRubricContext): Record<string, string | undefined> => ({
+const statuses = (value: WorkFolderRubricContext): Record<string, string | undefined> => ({
   'STRUCTURE-1': mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status,
   'RECORD-1': mechanical(RECORD, 'RECORD-1').audit.run(RECORD.selectContext(value))[0]?.status,
   'RECORD-2': mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))[0]?.status,

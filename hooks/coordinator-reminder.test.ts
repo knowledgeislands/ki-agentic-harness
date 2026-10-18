@@ -16,11 +16,11 @@ const undeclared = join(root, 'undeclared')
 const ordinary = join(root, 'ordinary')
 mkdirSync(join(coordinating, '+', '_CHECKPOINTS'), { recursive: true })
 mkdirSync(join(coordinating, 'Streams', 'Projects'), { recursive: true })
-writeFileSync(join(coordinating, '.ki.toml'), '[skills.ki-repo]\nrepository = "capital"\n\n[skills.ki-delegation]\n\n[skills.ki-coordination]\n\n[skills.ki-checkpoint]\n')
+writeFileSync(join(coordinating, '.ki.toml'), '[skills.ki-repo]\nrepository = "capital"\n\n[skills.ki-delegation]\n\n[skills.ki-coordination]\n\n[skills.ki-work-folder]\n')
 spawnSync('git', ['init', '--quiet'], { cwd: coordinating })
 // Checkpoints without the declaration: the signal is the `[skills.ki-coordination]` table, not `+/_CHECKPOINTS/`.
 mkdirSync(join(undeclared, '+', '_CHECKPOINTS'), { recursive: true })
-writeFileSync(join(undeclared, '.ki.toml'), '[skills.ki-repo]\nrepository = "undeclared"\n\n[skills.ki-checkpoint]\n')
+writeFileSync(join(undeclared, '.ki.toml'), '[skills.ki-repo]\nrepository = "undeclared"\n\n[skills.ki-work-folder]\n')
 spawnSync('git', ['init', '--quiet'], { cwd: undeclared })
 mkdirSync(ordinary, { recursive: true })
 

@@ -40,7 +40,7 @@ The loop writes no work record, grants itself no authority and never chooses for
 - `ki-decision-records`, when selected, owns the Decision Record's shape and identity.
 - `ki-delegation`, when selected, supplies the packet for any high-risk reviewer or rollout handoff.
 - The [Project registry standard](../ki-work/references/standards-project-registry.md) owns the flat Project or theme note, which never points into a work folder and links any resulting Decision Record.
-- `ki-coordination` owns the work folder, its closed list and its pruning; `ki-checkpoint` owns its work file.
+- `ki-coordination` owns the work folder, its closed list and its pruning; `ki-work-folder` owns its work file.
 
 ## Invocation
 

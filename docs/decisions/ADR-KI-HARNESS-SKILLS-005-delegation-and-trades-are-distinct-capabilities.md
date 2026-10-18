@@ -20,7 +20,7 @@ The harness keeps these concerns separate. `ki-delegation` governs the run contr
 ## Consequences
 
 - Delegation packets remain optional and contextual rather than becoming a required repository-wide declaration.
-- A coordinating thread is governed by `ki-coordination`, which depends on `ki-delegation` for the runs it launches and on `ki-checkpoint` for the checkpoint it resumes; the run contract itself carries no thread rules.
+- A coordinating thread is governed by `ki-coordination`, which depends on `ki-delegation` for the runs it launches and on `ki-work-folder` for the checkpoint it resumes; the run contract itself carries no thread rules.
 - Cross-repository submissions remain reviewable and directional, with receiver-owned disposition and no automatic adoption.
 - The capability names describe their distinct operations, avoiding an overloaded handoff concept.
 

@@ -29,7 +29,7 @@ Before this change the `ki-coordination` standard said every report to the owner
 
 ## Boundary
 
-- In: the report's edits 5.1 to 5.6 in this repository - the `ki-coordination` standard's new Reply forms section and the scoping edits around it, the `ki-coordination` description and body, the banner test, the `ki-delegation` Reporting pointers, the `ki-checkpoint` conversational-checkpoint sentence, the two source reviews - and the regenerated hook line, pointer, output style, run-prompt Report paragraph and authority footers.
+- In: the report's edits 5.1 to 5.6 in this repository - the `ki-coordination` standard's new Reply forms section and the scoping edits around it, the `ki-coordination` description and body, the banner test, the `ki-delegation` Reporting pointers, the `ki-work-folder` conversational-checkpoint sentence, the two source reviews - and the regenerated hook line, pointer, output style, run-prompt Report paragraph and authority footers.
 - Out: the chezmoi edits 5.7 to 5.9 and the ki-principal edit 5.10, which go under REPORTING-FORMS with no record after Kris reviews `chezmoi diff`; the role field and the hook's role gate, which the session-identity Phases 1 and 3 own and which later remove the hook-line scope sentence; a `ki-coordination` rubric item checking conversational replies, which the drafting run left out.
 
 ## Current state
@@ -41,20 +41,20 @@ Delivered at the resting point recorded under Review.
 - [x] Add the Reply forms section, with Units of work, Conversational bounded work and Coordinator-only machinery, before Owner report, and answer CONVERSATIONAL-RUN there with CONVRUN-NARROW's wording.
 - [x] Scope the Thread types Banner row, Re-anchoring, the Owner report opening, Heading and Reply block bullets, Report forms, Draining and the pick-up table to coordinating threads.
 - [x] Scope the `hook-line`, `hook-pointer`, `run-report`, `footer-report` and `output-style` sources.
-- [x] Update the `ki-coordination` SKILL.md, the `ki-delegation` Reporting section, the `ki-checkpoint` standard and both source reviews.
+- [x] Update the `ki-coordination` SKILL.md, the `ki-delegation` Reporting section, the `ki-work-folder` standard and both source reviews.
 - [x] Regenerate the surfaces with `ki dev skill generate ki-coordination --write` and pin the scope in the banner and hook tests.
 
 ## Files touched
 
 - `skills/change-management/ki-coordination/references/standards-coordination.md`, `SKILL.md`, `references/sources.md`, `scripts/banner.test.ts`
 - `skills/governance/ki-delegation/references/standards-background-runs.md`, `references/sources.md`, `assets/run-prompt.md`, `assets/rules-none.md`, `assets/rules-push.md`, `assets/rules-prune.md`, `assets/rules-release.md`
-- `skills/governance/ki-checkpoint/references/standards-checkpoints.md`
+- `skills/governance/ki-work-folder/references/standards-work-folder.md`
 - `hooks/coordinator-reminder.sh`, `hooks/coordinator-reminder.test.ts`, `output-styles/ki-coordinator.md`
 - `docs/roadmap/_ISSUES.md`, this record
 
 ## Verify
 
-`bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-coordination`, `--skill ki-delegation`, `--skill ki-checkpoint` and `--skill ki-work-roadmap`, run sequentially.
+`bun run test`, `bunx tsc --noEmit`, and `ki repo audit --skill ki-coordination`, `--skill ki-delegation`, `--skill ki-work-folder` and `--skill ki-work-roadmap`, run sequentially.
 
 ## Dependencies / blocks
 
@@ -92,7 +92,7 @@ The `ki-coordination` standard gains `## Reply forms` with the three forms, the 
 
 - `bun run test`: 1203 pass, 0 fail.
 - `bunx tsc --noEmit`: clean.
-- `ki repo audit --skill ki-delegation` and `--skill ki-checkpoint`: pass. `--skill ki-skills`: pass with two LONG-3 refresh-cadence warnings on untouched skills.
+- `ki repo audit --skill ki-delegation` and `--skill ki-work-folder`: pass. `--skill ki-skills`: pass with two LONG-3 refresh-cadence warnings on untouched skills.
 - `ki repo audit --skill ki-coordination`: four COORD-7 failures and one COORD-9 warning, all in the untouched `+/_THREADS/skill-reviews/` folder. `--skill ki-work-roadmap`: one ITEM-1 failure, the duplicate `KI-HARNESS-GOV-195` that harness-routine raised as GOV-195-DUP. Fleet findings, not failures of this change.
 
 ### Outstanding concerns

@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { CheckpointsRubricContext, RecordContext } from '../contexts/checkpoints.ts'
+import type { RecordContext, WorkFolderRubricContext } from '../contexts/work-folder.ts'
 
-const SOURCE = 'standards-checkpoints.md'
+const SOURCE = 'standards-work-folder.md'
 
 const RECORD_1: RubricItem<RecordContext> = {
   code: 'RECORD-1',
@@ -93,7 +93,7 @@ const RECORD_4: RubricItem<RecordContext> = {
   }
 }
 
-export const RECORD: RubricFamily<CheckpointsRubricContext, RecordContext> = {
+export const RECORD: RubricFamily<WorkFolderRubricContext, RecordContext> = {
   code: 'RECORD',
   title: 'Work-file record',
   description: 'Closed metadata and document shape make one work file portable and deterministically readable.',

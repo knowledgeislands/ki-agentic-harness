@@ -39,14 +39,14 @@ const refused = (reason: string): CheckpointHandoffDecision => ({ kind: 'refused
 
 /**
  * Models the fail-closed boundary before `ki-recap checkpoint <thread>` may
- * invoke the separately owned `ki-checkpoint` update procedure. It reads no
+ * invoke the separately owned `ki-work-folder` update procedure. It reads no
  * repository or runtime state and performs no write.
  */
 export const evaluateCheckpointHandoff = (input: CheckpointHandoffInput): CheckpointHandoffDecision => {
   if (input.repository.actual !== input.repository.expected)
     return refused('repository identity does not match the requested hand-off')
-  if (!input.checkpoint.declared) return refused('target repository does not declare ki-checkpoint')
-  if (!input.checkpoint.valid) return refused('target ki-checkpoint capability is invalid')
+  if (!input.checkpoint.declared) return refused('target repository does not declare ki-work-folder')
+  if (!input.checkpoint.valid) return refused('target ki-work-folder capability is invalid')
 
   const thread = input.checkpoint.requestedThread
   if (!thread) return refused('an exact human-selected thread is required')

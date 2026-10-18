@@ -2,7 +2,7 @@
 name: ki-coordination
 ki-kind: governance
 ki-applicability: declaration-only
-ki-depends-on: [ki-delegation, ki-checkpoint]
+ki-depends-on: [ki-delegation, ki-work-folder]
 ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 contributes: ['.ki.toml']
 description: >
@@ -24,9 +24,9 @@ The standard holds coordinator responsiveness with the counted turn budget and s
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
 
-A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-checkpoint`. The declaration is the signal the harness `hooks/coordinator-reminder.sh` reminder and the ki-coordinator output style key on: a repository that does not delegate never gets them, and removing the declaration disables them.
+A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-work-folder`. The declaration is the signal the harness `hooks/coordinator-reminder.sh` reminder and the ki-coordinator output style key on: a repository that does not delegate never gets them, and removing the declaration disables them.
 
-It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work file, which `ki-checkpoint` owns; and it does not summarise a single ordinary session, which `ki-recap` owns and which keeps the ordinary session recap only.
+It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work file, which `ki-work-folder` owns; and it does not summarise a single ordinary session, which `ki-recap` owns and which keeps the ordinary session recap only.
 
 ## Operating modes
 
@@ -56,7 +56,7 @@ While coordinating, `/ki-coordination full-summary` gives [the full summary](ref
 
 ### Mode HELP
 
-Explain the work levels and forms, the coordinator and its three rules, territory work and Project work with their openers and bootstrap, the seven states and the receive words, the report forms, the closing glyph banner and, in handoff to the owner, the send line, re-anchoring after compaction, the decision classes and their life cycle and Finishing Project work, and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: the Work Process note for the model itself, background runs and the run report in `ki-delegation`, the work file in `ki-checkpoint`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-tokenomics` and the theme and Project registry in `ki-work`.
+Explain the work levels and forms, the coordinator and its three rules, territory work and Project work with their openers and bootstrap, the seven states and the receive words, the report forms, the closing glyph banner and, in handoff to the owner, the send line, re-anchoring after compaction, the decision classes and their life cycle and Finishing Project work, and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: the Work Process note for the model itself, background runs and the run report in `ki-delegation`, the work file in `ki-work-folder`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-tokenomics` and the theme and Project registry in `ki-work`.
 
 ### Mode MARK
 

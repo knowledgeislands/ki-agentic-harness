@@ -1,5 +1,5 @@
 ---
-name: ki-checkpoint
+name: ki-work-folder
 ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
@@ -17,21 +17,21 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh 
 
 # Knowledge Islands work files
 
-This governance skill owns the work-file contract: one concise repository record, `+/_WORK/<id>/work.md`, says where a piece of work lies and lets a fresh agent pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-file standard](references/standards-checkpoints.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance. The skill keeps its name, and a checkpoint stays the word for writing a work file before a pause.
+This governance skill owns the work-file contract: one concise repository record, `+/_WORK/<id>/work.md`, says where a piece of work lies and lets a fresh agent pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-file standard](references/standards-work-folder.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance. Kris gave the skill its name under WORK-FOLDER-NAME on 18 October 2026, replacing its checkpoint name, and a checkpoint stays the conversational word for writing a work file before a pause.
 
 ## Shared model
 
-- **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-coordination`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-checkpoints.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
-- **Old checkpoints** - `+/_CHECKPOINTS/<thread>.md` records keep their old form and stay readable, each with a warning, until the territory's migration moves them ([old checkpoints](references/standards-checkpoints.md#old-checkpoints)).
+- **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-coordination`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-work-folder.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
+- **Old checkpoints** - `+/_CHECKPOINTS/<thread>.md` records keep their old form and stay readable, each with a warning, until the territory's migration moves them ([old checkpoints](references/standards-work-folder.md#old-checkpoints)).
 - **Removal** - finished work's folder is deleted at the mark that closes it, and any other removal follows explicit user direction after durable information has reached its proper owners. There is no retired-record state; Git supplies recovery history.
 - **Current state, not continuity** - a work file carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, host, completion signal, roadmap, decision log, or memory system.
 - **Explicit write authority** - write at a move, at the user's request or at a documented repository-local trigger. When the selected work or content is uncertain, do not write.
 
 Project notes and theme pages are not a home for status: a work file says where work lies, a registry note carries only its standing outcome or direction, `lifecycle` and notes, and the work records and `ki` views carry status.
 
-`ki-checkpoint` remains the portable work-state record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid work file under `ki-checkpoint`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
+`ki-work-folder` remains the portable work-state record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid work file under `ki-work-folder`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
 
-The optional `ki-recap checkpoint <id>` composition is a caller of the existing UPDATE procedure, never a second implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact work, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-checkpoint` still validates the record and owns every write or refusal.
+The optional `ki-recap checkpoint <id>` composition is a caller of the existing UPDATE procedure, never a second implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact work, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-work-folder` still validates the record and owns every write or refusal.
 
 ## Operating modes
 
@@ -39,19 +39,19 @@ The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-checkpoint --repo <repo>`. The structured catalogue checks that `+/_WORK/` holds only work folders with their work files, each work file's identity, closed front matter with its state-dependent fields, timestamp chronology and exact heading set, that coordinating work lives only where `ki-coordination` is declared, and mechanically recognisable transcript or session dependencies. It warns on each old checkpoint and checks it under its old form, with the retained `+/_CHECKPOINTS/README.md` scaffold while that directory exists.
+Run `ki repo audit --skill ki-work-folder --repo <repo>`. The structured catalogue checks that `+/_WORK/` holds only work folders with their work files, each work file's identity, closed front matter with its state-dependent fields, timestamp chronology and exact heading set, that coordinating work lives only where `ki-coordination` is declared, and mechanically recognisable transcript or session dependencies. It warns on each old checkpoint and checks it under its old form, with the retained `+/_CHECKPOINTS/README.md` scaffold while that directory exists.
 
 Review the judgment aspects: whether each work file is concise and agrees with the work's last move, its id is chosen under Work naming rather than runtime-derived, durable facts already live with their proper owners, and the record lets a fresh agent pick the work up.
 
 ### Mode CONFORM
 
-Run AUDIT first, then `ki repo conform --skill ki-checkpoint --repo <repo> --dry-run`. CONFORM may safely restore an existing `+/_CHECKPOINTS/` directory's exact README scaffold, but never chooses work, edits an authored work file or checkpoint, moves work between states, removes a record, infers completion, or writes a runtime-session identifier.
+Run AUDIT first, then `ki repo conform --skill ki-work-folder --repo <repo> --dry-run`. CONFORM may safely restore an existing `+/_CHECKPOINTS/` directory's exact README scaffold, but never chooses work, edits an authored work file or checkpoint, moves work between states, removes a record, infers completion, or writes a runtime-session identifier.
 
 Correct authored records only through an explicit UPDATE or REMOVE request, then re-run AUDIT.
 
 ### Mode EDUCATE
 
-Run `ki repo educate --skill ki-checkpoint --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the work-file standard](references/standards-checkpoints.md); do not create a declaration, work folder, or work file merely to demonstrate it.
+Run `ki repo educate --skill ki-work-folder --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the work-file standard](references/standards-work-folder.md); do not create a declaration, work folder, or work file merely to demonstrate it.
 
 ### Mode HELP
 
@@ -71,7 +71,7 @@ RESUME is an agent procedure, not a current `ki repo` host command. Require the 
 
 ### Mode UPDATE
 
-UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<id>` plus a move, an explicit request or a documented local trigger. Write the exact work-file structure from [the work-file standard](references/standards-checkpoints.md), setting `since` at each move and preserving `created_at`; replace the current state in place rather than appending a moves list or history. Record only current state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier or host, or create a work file from an unqualified Stop event. An old checkpoint is updated in its old form only until its move, which writes the work file and deletes the checkpoint in one commit.
+UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<id>` plus a move, an explicit request or a documented local trigger. Write the exact work-file structure from [the work-file standard](references/standards-work-folder.md), setting `since` at each move and preserving `created_at`; replace the current state in place rather than appending a moves list or history. Record only current state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier or host, or create a work file from an unqualified Stop event. An old checkpoint is updated in its old form only until its move, which writes the work file and deletes the checkpoint in one commit.
 
 ## Verification boundary
 

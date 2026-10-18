@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { CheckpointsRubricContext, LifecycleContext } from '../contexts/checkpoints.ts'
+import type { LifecycleContext, WorkFolderRubricContext } from '../contexts/work-folder.ts'
 
-const SOURCE = 'standards-checkpoints.md'
+const SOURCE = 'standards-work-folder.md'
 
 const LIFECYCLE_1: RubricItem<LifecycleContext> = {
   code: 'LIFECYCLE-1',
@@ -41,7 +41,7 @@ const LIFECYCLE_2: RubricItem<LifecycleContext> = {
   }
 }
 
-export const LIFECYCLE: RubricFamily<CheckpointsRubricContext, LifecycleContext> = {
+export const LIFECYCLE: RubricFamily<WorkFolderRubricContext, LifecycleContext> = {
   code: 'LIFECYCLE',
   title: 'Work-file lifecycle',
   description:

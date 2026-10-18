@@ -18,13 +18,13 @@ _Evidence:_ `skills/change-management/ki-recap/scripts/recap-grounding.test.ts` 
 
 ### AHO-002 — Checkpoint-owned composition
 
-`ki-recap checkpoint <thread>` MUST invoke the existing `ki-checkpoint` update procedure only after the target repository declares a valid checkpoint capability and the user explicitly authorises the exact thread update.
+`ki-recap checkpoint <thread>` MUST invoke the existing `ki-work-folder` update procedure only after the target repository declares a valid checkpoint capability and the user explicitly authorises the exact thread update.
 
 _Conformance:_ conforming
 
 _Verify:_ inspect both skill contracts and run focused fixtures for undeclared, malformed, unauthorised, missing-thread, and ambiguous-thread inputs.
 
-_Evidence:_ the `ki-recap` and `ki-checkpoint` standards retain separate ownership, while `recap-grounding.test.ts` proves the fail-closed preflight.
+_Evidence:_ the `ki-recap` and `ki-work-folder` standards retain separate ownership, while `recap-grounding.test.ts` proves the fail-closed preflight.
 
 ### AHO-003 — Portable work state
 
@@ -54,7 +54,7 @@ _Conformance:_ conforming
 
 _Verify:_ construct and audit a valid checkpoint containing only portable repository evidence and durable-owner references, then evaluate a valid hand-off input with no runtime-session fields.
 
-_Evidence:_ `skills/governance/ki-checkpoint/scripts/rubric/contexts/checkpoints.test.ts` proves the portable checkpoint passes schema and boundary checks, and the recap hand-off fixture succeeds without transcript state.
+_Evidence:_ `skills/governance/ki-work-folder/scripts/rubric/contexts/work-folder.test.ts` proves the portable checkpoint passes schema and boundary checks, and the recap hand-off fixture succeeds without transcript state.
 
 ### AHO-006 — Result evidence return
 

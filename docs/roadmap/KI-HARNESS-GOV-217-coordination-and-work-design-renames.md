@@ -30,12 +30,12 @@ Kris Brown answered the skills-audit batch on 18 October 2026, recorded in the w
 - STREAMS-SLIM: "So is slimming down the streams, that makes a lot of sense."
 - VISIBLE-PUSH: commit and push each verified step, and capture as few new records as possible.
 
-The work-folder half of the same batch, CHECKPOINT-FATE and WORK-FOLDER-DEDUP, was reopened at 10:15 the same day ("owner message, work-folder skill") and goes to the `work-folder-design` run. This record leaves `ki-checkpoint` and the work-folder, clean-out and close-out rules where they stand.
+The work-folder half of the same batch, CHECKPOINT-FATE and WORK-FOLDER-DEDUP, was reopened at 10:15 the same day ("owner message, work-folder skill") and goes to the `work-folder-design` run. This record leaves `ki-work-folder` and the work-folder, clean-out and close-out rules where they stand.
 
 ## Boundary
 
 - In: the `ki-pmo` and `ki-pmo-design` skill folders, names, descriptions, standards file names and rubric family code (`PMO` becomes `COORD`, item numbers kept); every reference to them in skills, hooks, the output style, guides, specs, diagrams, the catalogue, `.ki.toml` and tests; the regenerated rubric, generated surfaces, skill graph and map; the `ki-repo-kb-streams` ITERATE, PROPOSE, READY and ROLLOUT modes and its status table.
-- Out: `ki-checkpoint` and the work-folder rules (the `work-folder-design` run); the tools-ki CLI side, which is a tools-ki record; other repositories' declarations; historical text in `+/_WORK_REVIEW/`, accepted Decision Records' decisions and closed records; a release.
+- Out: `ki-work-folder` and the work-folder rules (the `work-folder-design` run); the tools-ki CLI side, which is a tools-ki record; other repositories' declarations; historical text in `+/_WORK_REVIEW/`, accepted Decision Records' decisions and closed records; a release.
 
 ## Current state
 
@@ -99,7 +99,7 @@ Open records that name `ki-pmo` or PMO rubric codes are repointed; closed record
 
 ### Verification
 
-On 18 October 2026, after each commit: `bun run test` passed 1253 tests and `bunx tsc --noEmit` passed; `ki dev skill rubric ki-coordination` and `ki-repo-kb-streams` report the rubric current, and `ki dev skill generate ki-coordination` reports 7 surfaces in sync. `ki repo audit --skill` reports PASS for `ki-coordination`, `ki-authoring`, `ki-work-roadmap`, `ki-delegation` and `ki-checkpoint`, WARN only for `ki-skills` (three LONG-3 cadence warnings that predate this record), `ki-repo-harness` and `ki-diagrams` (DIAG-4 freshness warnings), and `ki-repo-kb-streams` passes with warnings against Knowledge Islands Principal, which declares it. `ki-work-design` ships no rubric catalogue and is not declared here, so it has no focused audit. No live `ki-pmo` remains outside `+/_WORK_REVIEW/`, closed records, this record and the thread-model diagram.
+On 18 October 2026, after each commit: `bun run test` passed 1253 tests and `bunx tsc --noEmit` passed; `ki dev skill rubric ki-coordination` and `ki-repo-kb-streams` report the rubric current, and `ki dev skill generate ki-coordination` reports 7 surfaces in sync. `ki repo audit --skill` reports PASS for `ki-coordination`, `ki-authoring`, `ki-work-roadmap`, `ki-delegation` and `ki-work-folder`, WARN only for `ki-skills` (three LONG-3 cadence warnings that predate this record), `ki-repo-harness` and `ki-diagrams` (DIAG-4 freshness warnings), and `ki-repo-kb-streams` passes with warnings against Knowledge Islands Principal, which declares it. `ki-work-design` ships no rubric catalogue and is not declared here, so it has no focused audit. No live `ki-pmo` remains outside `+/_WORK_REVIEW/`, closed records, this record and the thread-model diagram.
 
 ### Outstanding concerns
 

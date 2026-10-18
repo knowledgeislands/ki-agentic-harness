@@ -2,7 +2,7 @@
 
 A work file is the minimal current state of one piece of work: `+/_WORK/<id>/work.md`. Its front matter says where the work lies, and its body holds the next steps, the Messages sent down to it and the tags of parked queries. It lets a fresh agent pick the work up without relying on a transcript, private runtime state or a vendor session. Git is its logbook: each move is a commit, so the file keeps no moves list and no history.
 
-The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md); this standard owns the record form and its validation, and `ki-coordination` owns the levels, states, moves and coordination. The skill keeps the name `ki-checkpoint`, as Kris answered SKILL-NAMES on 18 October, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
+The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md); this standard owns the record form and its validation, and `ki-coordination` owns the levels, states, moves and coordination. The skill was `ki-checkpoint` until Kris answered WORK-FOLDER-NAME on 18 October 2026, "work forward makes a lot of sense, right? So let's go with that", read back as `ki-work-folder`, and the session-level checkpoint remains the conversational word for writing a work file before a pause.
 
 ## Contents
 
@@ -23,7 +23,7 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 
 ## Activation and ownership
 
-The capability is optional. A repository declares `ki-checkpoint` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. `ki-repo` owns the generic `+/` scaffold, `ki-coordination` owns the work folder's [closed list](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder), and `ki-checkpoint` alone interprets the work file.
+The capability is optional. A repository declares `ki-work-folder` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. `ki-repo` owns the generic `+/` scaffold, `ki-coordination` owns the work folder's [closed list](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder), and `ki-work-folder` alone interprets the work file.
 
 The repository owns its work files. Removal deletes a work file after its durable information has been routed; Git supplies any recovery history.
 
@@ -126,8 +126,8 @@ Until the `ki thread` tooling and its hook registration ship, no binding is writ
 
 A runtime-specific reminder consumer is separately opt-in. It may act only when its native event contract is independently evidenced and all of the following are true:
 
-1. The repository declares `ki-checkpoint` and resolves to one physical repository root.
-2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-checkpoint` declaration remains an empty capability marker.
+1. The repository declares `ki-work-folder` and resolves to one physical repository root.
+2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-work-folder` declaration remains an empty capability marker.
 3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `+/_WORK/<id>/work.md`, or, for the tolerance window, `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
 4. The resolved record is a regular work file, or old checkpoint, that satisfies this standard's identity and closed-schema requirements.
 
@@ -145,7 +145,7 @@ Write durable decisions, accepted work state, or reusable knowledge to their pro
 
 ### Recap-supplied hand-off evidence
 
-An explicit `ki-recap checkpoint <id>` invocation may supply grounded evidence to this update lifecycle. The composition does not grant write authority or weaken validation: the repository must declare a valid `ki-checkpoint` capability, the user must select exactly one piece of work and explicitly authorise its update, and the update procedure must refuse any repository mismatch, stale baseline, ambiguous work, interrupted update, or incomplete work state.
+An explicit `ki-recap checkpoint <id>` invocation may supply grounded evidence to this update lifecycle. The composition does not grant write authority or weaken validation: the repository must declare a valid `ki-work-folder` capability, the user must select exactly one piece of work and explicitly authorise its update, and the update procedure must refuse any repository mismatch, stale baseline, ambiguous work, interrupted update, or incomplete work state.
 
 The supplied hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available to the caller but is never required evidence and cannot replace those portable inputs. The work file records concise current state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
 
@@ -174,6 +174,6 @@ It is also not a completion signal, roadmap, decision record, knowledge store, o
 
 ## Audit and conform boundary
 
-AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT reads every work file under `+/_WORK/` and validates its identity, closed front matter, body and boundary; it warns on each old checkpoint and validates it under its old form; it reports absent scope as not applicable when `ki-checkpoint` is undeclared and nothing is present, and rejects symlinks, unsupported nesting and any retired-record layout.
+AUDIT, CONFORM, and EDUCATE are currently hosted `ki repo` operations. REMOVE, RESUME, and UPDATE remain explicit agent procedures until a host operation is implemented and independently verified. AUDIT reads every work file under `+/_WORK/` and validates its identity, closed front matter, body and boundary; it warns on each old checkpoint and validates it under its old form; it reports absent scope as not applicable when `ki-work-folder` is undeclared and nothing is present, and rejects symlinks, unsupported nesting and any retired-record layout.
 
 CONFORM never authors a work file or old checkpoint, or moves work between states. It may restore an existing `+/_CHECKPOINTS/` directory's README scaffold and publish the generated rubric, but it cannot create, update, or remove a record, because those actions need human-selected work and explicit write authority.

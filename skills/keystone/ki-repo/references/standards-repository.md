@@ -125,12 +125,12 @@ Every KI repository, Knowledge Bases included, may also use a top-level `tmp/` w
 A declared capability with a stable specialist working-area subarea owns an exact README scaffold, requires it while declared, retains it when no records remain, and safely restores it through its own CONFORM. The scaffold is the visible capability boundary; records inside retain their shorter owner-defined lifecycle. Before removing the declaration, resolve or remove owned records and then remove the now-undeclared scaffold. `ki-repo` owns only the generic working-area scaffold and neither creates, interprets, nor retains specialist subareas.
 
 - `ki-work` owns `+/_BATCHES/README.md`; `ki-batch` owns temporary batch records.
-- `ki-checkpoint` owns `+/_WORK/<id>/work.md`, the work file of each piece of work, and keeps `+/_WORK/` to work folders alone; `ki-coordination` owns the rest of each work folder, its decisions log, reports, briefs and `design/` notes.
+- `ki-work-folder` owns `+/_WORK/<id>/work.md`, the work file of each piece of work, and keeps `+/_WORK/` to work folders alone; `ki-coordination` owns the rest of each work folder, its decisions log, reports, briefs and `design/` notes.
 - `ki-coordination` owns `+/_WORK_REVIEW/<id>/`, the holding area for migrated work awaiting review, and its `README.md` index.
 - `ki-trades` owns `+/_TRADES/README.md`, `-/_TRADES/README.md`, and cross-repository trade records.
 - `ki-repo-kb` owns `-/_DIGESTS/README.md` and session digests in a Knowledge Base.
 
-For the work model's tolerance window, which phase 5 of the migration closes, the thread-model areas stay accepted until each territory's migration moves them, each with a COV-1 warning naming its new home: `ki-checkpoint`'s `+/_CHECKPOINTS/README.md` and its old checkpoints, and `ki-delegation`'s `+/_THREADS/<run>/` thread folders, a coordinating thread's decisions log and its background agents' reports.
+For the work model's tolerance window, which phase 5 of the migration closes, the thread-model areas stay accepted until each territory's migration moves them, each with a COV-1 warning naming its new home: `ki-work-folder`'s `+/_CHECKPOINTS/README.md` and its old checkpoints, and `ki-delegation`'s `+/_THREADS/<run>/` thread folders, a coordinating thread's decisions log and its background agents' reports.
 
 ## Commit gate
 

@@ -722,8 +722,8 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
     detect: (s) => [...s.tree].some((p) => /^\.codex\/agents\/.+\.toml$/.test(p))
   },
   {
-    skill: 'checkpoint',
-    table: skillTable('ki-checkpoint'),
+    skill: 'work-folder',
+    table: skillTable('ki-work-folder'),
     artifact: '+/_WORK/ or +/_WORK_REVIEW/ subarea',
     detect: (s) =>
       [...s.tree].some((p) => ['+/_WORK/', '+/_WORK_REVIEW/', '+/_CHECKPOINTS/'].some((area) => p.startsWith(area)))

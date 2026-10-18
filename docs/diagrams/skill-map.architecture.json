@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "c4cbb5aac2e7c955925e2bd0c7fabc7a1629c388"
+      "revision": "0d0c3e8d06a130e428579cdd89789077b8e30005"
     },
     "legend": {
       "mode": "auto",
@@ -220,13 +220,13 @@
       ]
     },
     {
-      "id": "ki-checkpoint",
+      "id": "ki-work-folder",
       "type": "backend",
-      "label": "ki-checkpoint",
+      "label": "ki-work-folder",
       "sublabel": "coordination · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-checkpoint/SKILL.md"
+          "path": "skills/governance/ki-work-folder/SKILL.md"
         }
       ],
       "pos": [
@@ -1294,7 +1294,7 @@
       "kind": "region",
       "label": "Coordination · Delegation and programme",
       "wraps": [
-        "ki-checkpoint",
+        "ki-work-folder",
         "ki-delegation"
       ],
       "pad": 10
@@ -1328,7 +1328,7 @@
         "ki-guides",
         "ki-specs",
         "ki-engineering",
-        "ki-checkpoint",
+        "ki-work-folder",
         "ki-delegation",
         "ki-trades",
         "ki-trade",

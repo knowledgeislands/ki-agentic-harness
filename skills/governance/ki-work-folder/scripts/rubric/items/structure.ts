@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { CheckpointsRubricContext, ScaffoldContext } from '../contexts/checkpoints.ts'
+import type { ScaffoldContext, WorkFolderRubricContext } from '../contexts/work-folder.ts'
 
-const SOURCE = 'standards-checkpoints.md'
+const SOURCE = 'standards-work-folder.md'
 
 const STRUCTURE_1: RubricItem<ScaffoldContext> = {
   code: 'STRUCTURE-1',
@@ -42,7 +42,7 @@ const STRUCTURE_2: RubricItem<ScaffoldContext> = {
   }
 }
 
-export const STRUCTURE: RubricFamily<CheckpointsRubricContext, ScaffoldContext> = {
+export const STRUCTURE: RubricFamily<WorkFolderRubricContext, ScaffoldContext> = {
   code: 'STRUCTURE',
   title: 'Work-file locations',
   description:
