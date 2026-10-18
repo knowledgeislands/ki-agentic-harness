@@ -36,6 +36,6 @@ Every adapter maps these abstract terms; the [repository-roadmap standard](../..
 - **Status** - how far work has got: triage (unadopted intake), draft, ready, in progress, awaiting review, and two terminal endings, done and cancelled.
 - **Horizon** - when adopted, open work is intended: now, next, soon, future, or hold. Hold carries a reason, a named release condition, an optional review date, and any observed trades.
 - **Resolution** - why cancelled work ended: obsolete, rejected, duplicate, merged, or superseded, with a qualified target record for the last three. Only the owning repository closes its own record.
-- **Classification** - `kind` (deliver, decide, investigate, audit), optional `purpose`, territory-owned `project` or, for projectless work, `initiative`, and repository-owned `component`.
+- **Classification** - `kind` (deliver, decide, investigate, audit), optional `purpose`, territory-owned `project` or, for projectless work, an optional `theme`, and repository-owned `component`.
 
-Projects and Initiatives are territory registry entries under the [Project registry standard](standards-project-registry.md); an adapter maps them to its native grouping where one exists, such as Linear Projects and Initiatives, and otherwise stores the slugs.
+Projects and themes are territory registry entries under the [Project registry standard](standards-project-registry.md); an adapter maps them to its native grouping where one exists, such as Linear Projects and Initiatives for themes, and otherwise stores the slugs.

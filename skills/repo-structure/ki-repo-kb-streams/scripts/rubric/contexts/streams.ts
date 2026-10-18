@@ -11,7 +11,8 @@ import type {
 import { SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
 import { closeOutEvidence, ideaStageEvidence } from './closeout.ts'
 
-const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Initiatives'] as const
+// `Initiatives` is the thread-model registry, read with a warning for the work model's tolerance window.
+const OPERATIONAL_AREAS = ['Roadmap', 'Trades', 'Projects', 'Themes', 'Initiatives'] as const
 const REQUIRED_AREAS = ['Roadmap'] as const
 const EXECUTION_FAMILIES = ['STREAM', 'GATE', 'CONFIG'] as const
 const LEGACY_FOLDERS = [
@@ -346,14 +347,20 @@ const issueLedgerEvidence = (root: string, roadmapPath: string): StreamsEvidence
     : [{ level: 'FAIL', message: 'The issue ledger holds content beyond its canonical header and counters.', subject }]
 }
 
-// Registry notes link upwards only: a record names its Project, and a Project its Initiative. Decision Record
+// Registry notes link upwards only: a record names its Project, and a Project its theme. Decision Record
 // identifiers share the work-record grammar, so their nine prefixes are excluded.
-const REGISTRY_AREAS = ['Projects', 'Initiatives'] as const
+const REGISTRY_AREAS = ['Projects', 'Themes', 'Initiatives'] as const
 const WORK_RECORD_REFERENCE = /(?<![\w-])(?!(?:[SPADXOGRK]DR)-)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3}(?!\d)/g
 const UPDATE_SECTION = /^##\s+Update\b/m
 
-// A `ki-pmo-design` design folder beside a registry note holds temporary artefacts, not registry notes.
+// A `ki-pmo-design` design folder holds temporary artefacts, not registry notes. Under the work model it lives in the
+// work folder, so one anywhere under Streams/ fails, and its notes are not also checked as registry notes.
 const DESIGN_FOLDER = /(?:^|[\\/])design[\\/]/
+
+const designFolders = (path: string): string[] =>
+  directories(path).flatMap((name) =>
+    name === 'design' ? [join(path, name)] : name.startsWith('.') ? [] : designFolders(join(path, name))
+  )
 
 const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidence[] => {
   const notes = REGISTRY_AREAS.flatMap((area) =>
@@ -361,7 +368,7 @@ const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidenc
       (path) => !DESIGN_FOLDER.test(relative(join(streamsPath, area), path))
     )
   ).sort()
-  if (notes.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No Project or Initiative notes are present.' }]
+  if (notes.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No Project notes or theme pages are present.' }]
   const findings = notes.flatMap((path): StreamsEvidence[] => {
     const subject = relative(root, path)
     const body = readFileSync(path, 'utf8').replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, '')
@@ -371,7 +378,7 @@ const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidenc
         ? [
             {
               level: 'FAIL' as const,
-              message: `Registry note lists work records (${sample(references)}); records name their Project or Initiative instead.`,
+              message: `Registry note lists work records (${sample(references)}); records name their Project or theme instead.`,
               subject
             }
           ]
@@ -392,7 +399,7 @@ const registryNoteEvidence = (root: string, streamsPath: string): StreamsEvidenc
     : [
         {
           level: 'PASS',
-          message: 'Project and Initiative notes link upwards only.',
+          message: 'Project notes and theme pages link upwards only.',
           subject: REGISTRY_AREAS.map((area) => relative(root, join(streamsPath, area))).join(', ')
         }
       ]
@@ -485,7 +492,32 @@ export const createStreamsSession = ({
         'Recurring obligations belong in the configured Activity collection. Reconcile existing Streams/Housekeeping definitions with owner approval; do not automatically move, delete or duplicate them.',
       subject: join(configuration.streams, 'Housekeeping')
     })
+  for (const path of designFolders(streamsPath))
+    operationalAreas.push({
+      level: 'FAIL',
+      message:
+        'Streams/ holds only definitions and records; move this design folder to the work folder, +/_WORK/<id>/design/.',
+      subject: relative(root, path)
+    })
   const legacyFolders: StreamsEvidence[] = [
+    ...(present.includes('Initiatives')
+      ? [
+          {
+            level: 'WARN' as const,
+            message:
+              'legacy: Streams/Initiatives/ is the thread-model registry; each Initiative becomes a theme page, Streams/Themes/<theme>.md.',
+            subject: join(configuration.streams, 'Initiatives')
+          }
+        ]
+      : []),
+    ...directories(join(streamsPath, 'Projects'))
+      .filter((name) => !name.startsWith('.'))
+      .sort()
+      .map((name) => ({
+        level: 'WARN' as const,
+        message: `legacy: a Project folder note; Project notes are flat, Streams/Projects/${name}.md.`,
+        subject: join(configuration.streams, 'Projects', name)
+      })),
     {
       level: legacy.length ? 'WARN' : 'PASS',
       message: legacy.length

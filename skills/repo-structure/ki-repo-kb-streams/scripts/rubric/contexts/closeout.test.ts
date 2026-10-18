@@ -128,7 +128,7 @@ test('an idea-stage Project named by an open record, or past a cap, is warned', 
     ['WARN', projects],
     ['WARN', projects]
   ])
-  expect(evidence[1]?.message).toContain("Initiative 'rig' has 2 idea-stage Projects (host-network, second-rig)")
+  expect(evidence[1]?.message).toContain("Theme 'rig' has 2 idea-stage Projects (host-network, second-rig)")
   expect(evidence[2]?.message).toBe('The territory has 4 idea-stage Projects; the cap is 3.')
 })
 

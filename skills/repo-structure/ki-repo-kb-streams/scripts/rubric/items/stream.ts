@@ -7,7 +7,7 @@ const STREAM_1: RubricItem<StreamRubricContext> = {
   code: 'STREAM-1',
   title: 'operational areas',
   description:
-    'Streams contains the Roadmap operational area; recurring definitions belong in Activities, with Trades reserved for later explicit adoption.',
+    'Streams contains the Roadmap operational area and no design folder; recurring definitions belong in Activities, with Trades reserved for later explicit adoption.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
@@ -15,7 +15,7 @@ const STREAM_1: RubricItem<StreamRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Establish Roadmap; reconcile any Housekeeping definitions into configured Activities only with owner approval, preserving linked-run evidence.'
+        'Establish Roadmap; move any design folder to its work folder, +/_WORK/<id>/design/; reconcile any Housekeeping definitions into configured Activities only with owner approval, preserving linked-run evidence.'
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.operationalAreas, 'WARN', ['FAIL']) }
   }
@@ -24,13 +24,15 @@ const STREAM_1: RubricItem<StreamRubricContext> = {
 const STREAM_2: RubricItem<StreamRubricContext> = {
   code: 'STREAM-2',
   title: 'legacy state folders',
-  description: 'Legacy state and Focus folders are migration inputs, not target Streams structure.',
+  description:
+    'Legacy state and Focus folders, Streams/Initiatives/ and Project folder notes are migration inputs, not target Streams structure.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Classify each retained legacy record before removing or replacing a legacy navigation folder.'
+      guidance:
+        'Classify each retained legacy record before removing or replacing a legacy navigation folder; move each Initiative to a theme page and each Project folder note to a flat note.'
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.legacyFolders, 'WARN') }
   }
@@ -121,14 +123,14 @@ const STREAM_9: RubricItem<StreamRubricContext> = {
   code: 'STREAM-9',
   title: 'upward-only registry notes',
   description:
-    'Project and Initiative notes under Streams/Projects/ and Streams/Initiatives/ name no work records and carry no dated ## Update section; records link upwards to their Project or Initiative.',
+    'Project notes and theme pages under Streams/Projects/ and Streams/Themes/, and any legacy Initiative notes, name no work records and carry no dated ## Update section; records link upwards to their Project or theme.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or initiative, and ki views list them.'
+        'Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or theme, and ki views list them.'
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.registryNotes, 'FAIL') }
   }
@@ -155,7 +157,7 @@ const STREAM_11: RubricItem<StreamRubricContext> = {
   code: 'STREAM-11',
   title: 'idea-stage Projects',
   description:
-    "A Capital's idea-stage Project, planned with a decision as its outcome, is named by no open record, and there is at most one per Initiative and three across the territory.",
+    "A Capital's idea-stage Project, planned with a decision as its outcome, is named by no open record, and there is at most one per theme and three across the territory.",
   sources: [`${SOURCE}#idea-stage-projects`],
   mechanical: {
     level: 'WARN',

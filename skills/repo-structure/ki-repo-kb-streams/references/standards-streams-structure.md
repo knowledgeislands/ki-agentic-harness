@@ -21,11 +21,13 @@ This standard defines `Streams/` as the operational container of a Knowledge Isl
 Streams/
   Roadmap/
   Projects/        # only in a territory Capital holding the Project registry
-  Initiatives/     # only in a territory Capital holding the Initiative registry
+  Themes/          # only in a territory Capital holding the theme registry
   Trades/          # only when a future KB trade placement is adopted
 ```
 
-`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Initiatives/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one note per Project with a `Projects.md` index, and one note per Initiative with an `Initiatives.md` index. They hold no work records, and their notes link upwards only: a note names no work record and carries no dated `## Update` section, because each record names its Project or Initiative and `ki` views list the records. AUDIT fails a Project or Initiative note, or either index note, that names a work-record identifier or carries an `## Update` section. Decision Record identifiers are not work records. A registry note that holds a `ki-pmo-design` design folder is the folder note `<slug>/<slug>.md`, and AUDIT checks it the same way; the temporary artefacts in its `design/` folder are not registry notes and are not checked. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
+`Roadmap/` is the fixed area, not a horizon or lifecycle state. In particular, triage is roadmap status metadata and never a `Streams/Triage/` directory. `Projects/` and `Themes/` are the fixed homes of a territory Capital's registry under the [Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md): one flat note per Project with a `Projects.md` index, and one theme page per theme with a `Themes.md` index. They hold no work records, and their notes link upwards only: a note names no work record and carries no dated `## Update` section, because each record names its Project or theme and `ki` views list the records. AUDIT fails a Project note or theme page, or either index note, that names a work-record identifier or carries an `## Update` section. Decision Record identifiers are not work records.
+
+`Streams/` holds only definitions and records, under the [work model](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md): everything that churns, the work file, decisions, reports, briefs and `ki-pmo-design` papers, stays in the work folder `+/_WORK/<id>/`. AUDIT therefore fails any `design/` folder anywhere under `Streams/`; its papers move to `+/_WORK/<id>/design/`. For the [tolerance window](../../../change-management/ki-work/references/standards-project-registry.md#tolerance-window) AUDIT reads `Streams/Initiatives/` and a Project folder note `Projects/<slug>/<slug>.md` as before, checking them the same way and warning on each. A future `Trades/` area needs an explicit contract; do not create it merely because the generic `ki-trades` working areas exist elsewhere in the repository.
 
 The container does not prescribe a topical-folder or `groups` vocabulary. Where an owning adapter supports topical metadata, the receiving base chooses its vocabulary. That metadata never replaces an operational area or changes an identifier.
 
@@ -35,7 +37,7 @@ A Project does not close when its records finish: it first gets the [close-out a
 
 ## Idea-stage Projects
 
-In a Capital, AUDIT recognises an [idea-stage Project](../../../change-management/ki-work/references/standards-project-registry.md#idea-stage-project) as a `planned` Project whose `outcome` opens with its lead's name, or their first name, followed by "decides". Counting open records as for close-out, it warns on each idea-stage Project an open record names, because the Project graduates to `active` before records name it. It warns when an Initiative has more than one idea-stage Project, and when the territory has more than three. The state-of-play review of each idea-stage Project at its marks stays with [`ki-pmo`](../../../change-management/ki-pmo/SKILL.md).
+In a Capital, AUDIT recognises an [idea-stage Project](../../../change-management/ki-work/references/standards-project-registry.md#idea-stage-project) as a `planned` Project whose `outcome` opens with its lead's name, or their first name, followed by "decides". Counting open records as for close-out, it warns on each idea-stage Project an open record names, because the Project graduates to `active` before records name it. It warns when a theme has more than one idea-stage Project, and when the territory has more than three. The territory work's review of each idea-stage Project at its marks stays with [`ki-pmo`](../../../change-management/ki-pmo/SKILL.md).
 
 ## Roadmap
 
@@ -55,7 +57,7 @@ Explicit human approval is required before a captured record leaves triage or is
 
 ## Recurring Activities
 
-Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). Each active Activity names the Initiative that is its home. An Activity with the `housekeeping` profile uses `ki-work-recurring` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
+Recurring obligations are canonical Activity notes in the collection configured by `ki-repo-kb-activities` (default `Admin/Operations/Activities/`). Each active Activity names its home, the territory's regular work or a Project, and may carry a `theme`. An Activity with the `housekeeping` profile uses `ki-work-recurring` for scheduling, due-run reservation and successful-run evidence. It is the single authoritative definition, not a duplicate of a Streams template. Its due runs are ordinary linked roadmap records under `Streams/Roadmap/`.
 
 A due run is a linked ordinary roadmap record in `Streams/Roadmap/`. Its horizon and lifecycle remain record metadata; it is not moved into a Streams state folder.
 

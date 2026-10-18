@@ -28,10 +28,10 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 Operational-area layout, legacy migration, and adapter routing.
 
-- **STREAM-1 [M] — operational areas** — Streams contains the Roadmap operational area; recurring definitions belong in Activities, with Trades reserved for later explicit adoption. (standards-streams-structure.md)
-  - _Remediation:_ diagnostic — Establish Roadmap; reconcile any Housekeeping definitions into configured Activities only with owner approval, preserving linked-run evidence.
-- **STREAM-2 [M] — legacy state folders** — Legacy state and Focus folders are migration inputs, not target Streams structure. (standards-streams-structure.md)
-  - _Remediation:_ diagnostic — Classify each retained legacy record before removing or replacing a legacy navigation folder.
+- **STREAM-1 [M] — operational areas** — Streams contains the Roadmap operational area and no design folder; recurring definitions belong in Activities, with Trades reserved for later explicit adoption. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Establish Roadmap; move any design folder to its work folder, +/_WORK/<id>/design/; reconcile any Housekeeping definitions into configured Activities only with owner approval, preserving linked-run evidence.
+- **STREAM-2 [M] — legacy state folders** — Legacy state and Focus folders, Streams/Initiatives/ and Project folder notes are migration inputs, not target Streams structure. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Classify each retained legacy record before removing or replacing a legacy navigation folder; move each Initiative to a theme page and each Project folder note to a flat note.
 - **STREAM-4 [J] — adapter-owned records** — Roadmap records follow their owning adapter; recurring definitions are Activity notes rather than a generic Streams record model. (standards-streams-structure.md)
   - _Evidence scope:_ Roadmap records and any recurring definitions still awaiting reconciliation out of Streams.
   - _Review prompt:_ Does each roadmap record follow its adapter, with recurring obligations routed to the configured Activity collection?
@@ -48,11 +48,11 @@ Operational-area layout, legacy migration, and adapter routing.
   - _Remediation:_ diagnostic — Give the record canonical frontmatter in the roadmap adapter's work-item format with an id matching its filename, or move a non-record out of Streams/Roadmap/. Full record format remains the roadmap adapter's audit.
 - **STREAM-8 [M] — counts-only issue ledger** — Streams/Roadmap/_ISSUES.md is the roadmap adapter's canonical issue ledger: its header and its last_id or area counters, and nothing else. (standards-streams-structure.md)
   - _Remediation:_ diagnostic — Rewrite the ledger in the roadmap adapter's canonical form from its current high-water marks, never lowering one. Move any migration history or other prose to Git history or a Decision Record.
-- **STREAM-9 [M] — upward-only registry notes** — Project and Initiative notes under Streams/Projects/ and Streams/Initiatives/ name no work records and carry no dated ## Update section; records link upwards to their Project or Initiative. (standards-streams-structure.md)
-  - _Remediation:_ diagnostic — Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or initiative, and ki views list them.
+- **STREAM-9 [M] — upward-only registry notes** — Project notes and theme pages under Streams/Projects/ and Streams/Themes/, and any legacy Initiative notes, name no work records and carry no dated ## Update section; records link upwards to their Project or theme. (standards-streams-structure.md)
+  - _Remediation:_ diagnostic — Remove record lists, record links and status narrative from the note, keeping any idea or context in ## Notes. Records carry their own project or theme, and ki views list them.
 - **STREAM-10 [M] — Project close-out assessment** — A Capital's active or paused Project with no open record in any locally registered checkout, or a completed or cancelled Project, carries a ### Close-out assessment in its ## Notes before its lead closes it. (standards-streams-structure.md#project-close-out)
   - _Remediation:_ diagnostic — Assess what was delivered against the Project's Outcome and whether follow-up or remedial work is needed, capture that work as triage records in the owning repositories, and write the assessment in ## Notes; the lead then decides whether to close the Project.
-- **STREAM-11 [M] — idea-stage Projects** — A Capital's idea-stage Project, planned with a decision as its outcome, is named by no open record, and there is at most one per Initiative and three across the territory. (standards-streams-structure.md#idea-stage-projects)
+- **STREAM-11 [M] — idea-stage Projects** — A Capital's idea-stage Project, planned with a decision as its outcome, is named by no open record, and there is at most one per theme and three across the territory. (standards-streams-structure.md#idea-stage-projects)
   - _Remediation:_ diagnostic — Graduate an idea-stage Project to active with a delivery Outcome before records name it; over a cap, graduate or fold an idea-stage Project, or have its lead lift the cap.
 - **STREAM-12 [M] — known record fields** — Every Streams/Roadmap record's frontmatter carries only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define. (standards-streams-structure.md#roadmap)
   - _Remediation:_ diagnostic — Remove the unknown field, or move its content into the record body; horizon is the only priority signal. A field the work-item format should carry is a change to the roadmap adapter's standard.

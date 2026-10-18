@@ -15,14 +15,14 @@ const CLOSED_LIFECYCLES = new Set(['completed', 'cancelled'])
 const ROADMAP_DIRECTORIES = [join('docs', 'roadmap'), join('Streams', 'Roadmap')] as const
 const ROADMAP_NON_RECORDS = new Set(['_ISSUES.md', '_IDEAS.md', 'Roadmap.md'])
 const CLOSE_OUT_HEADING = /^###\s+Close-out assessment\s*$/m
-// The Project registry standard's idea-stage caps: one per Initiative and three across the territory.
-const IDEA_STAGE_PER_INITIATIVE = 1
+// The Project registry standard's idea-stage caps: one per theme and three across the territory.
+const IDEA_STAGE_PER_THEME = 1
 const IDEA_STAGE_PER_TERRITORY = 3
 
 type ProjectNote = {
   slug: string
   lifecycle: string
-  initiative: string
+  theme: string
   lead: string
   outcome: string
   assessed: boolean
@@ -98,7 +98,8 @@ const projectNotes = (root: string, projectsPath: string): ProjectNote[] =>
         {
           slug: values.slug,
           lifecycle: trimmed(values.lifecycle),
-          initiative: trimmed(values.initiative),
+          // A thread-model Project note names its theme as `initiative:`.
+          theme: trimmed(values.theme) || trimmed(values.initiative),
           lead: trimmed(values.lead),
           outcome: trimmed(values.outcome),
           assessed: CLOSE_OUT_HEADING.test(notes),
@@ -221,7 +222,7 @@ export const closeOutEvidence = (
   ]
 }
 
-/** Idea-stage Projects hold no open record and stay within one per Initiative and three across the territory. */
+/** Idea-stage Projects hold no open record and stay within one per theme and three across the territory. */
 export const ideaStageEvidence = (
   root: string,
   streamsPath: string,
@@ -243,13 +244,13 @@ export const ideaStageEvidence = (
         ]
       : []
   })
-  const byInitiative = Map.groupBy(ideas, (project) => project.initiative || '(none)')
-  const perInitiative = [...byInitiative].flatMap(([initiative, members]): StreamsEvidence[] =>
-    members.length > IDEA_STAGE_PER_INITIATIVE
+  const byTheme = Map.groupBy(ideas, (project) => project.theme || '(none)')
+  const perTheme = [...byTheme].flatMap(([theme, members]): StreamsEvidence[] =>
+    members.length > IDEA_STAGE_PER_THEME
       ? [
           {
             level: 'WARN',
-            message: `Initiative '${initiative}' has ${members.length} idea-stage Projects (${members.map((project) => project.slug).join(', ')}); the cap is ${IDEA_STAGE_PER_INITIATIVE}.`,
+            message: `Theme '${theme}' has ${members.length} idea-stage Projects (${members.map((project) => project.slug).join(', ')}); the cap is ${IDEA_STAGE_PER_THEME}.`,
             subject: join(relative(root, streamsPath), 'Projects')
           }
         ]
@@ -265,7 +266,7 @@ export const ideaStageEvidence = (
           }
         ]
       : []
-  const findings = [...withRecords, ...perInitiative, ...territory]
+  const findings = [...withRecords, ...perTheme, ...territory]
   return findings.length
     ? findings
     : [

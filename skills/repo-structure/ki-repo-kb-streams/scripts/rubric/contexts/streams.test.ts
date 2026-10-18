@@ -445,8 +445,8 @@ describe('ki-repo-kb-streams session', () => {
     expect(audit()).toEqual([
       {
         level: 'PASS',
-        message: 'Project and Initiative notes link upwards only.',
-        subject: 'Streams/Projects, Streams/Initiatives'
+        message: 'Project notes and theme pages link upwards only.',
+        subject: 'Streams/Projects, Streams/Themes, Streams/Initiatives'
       }
     ])
 
@@ -458,7 +458,7 @@ describe('ki-repo-kb-streams session', () => {
       {
         level: 'FAIL',
         message:
-          'Registry note lists work records (KI-TOOL-KI-CLI-112; KI-ARCADIA-GOV-026); records name their Project or Initiative instead.',
+          'Registry note lists work records (KI-TOOL-KI-CLI-112; KI-ARCADIA-GOV-026); records name their Project or theme instead.',
         subject: 'Streams/Initiatives/techne.md'
       },
       {
@@ -467,6 +467,48 @@ describe('ki-repo-kb-streams session', () => {
         subject: 'Streams/Initiatives/techne.md'
       }
     ])
+  })
+
+  test('reads a theme page and a flat Project note, and warns on the thread-model registry shapes', () => {
+    const root = targetFixture()
+    mkdirSync(join(root, 'Streams', 'Themes'), { recursive: true })
+    mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })
+    writeFileSync(
+      join(root, 'Streams', 'Projects', 'website.md'),
+      '---\nnote_type: streams/project\ntheme: techne\nlifecycle: active\n---\n\n# Website\n\n## Outcome\n\nA site.\n'
+    )
+    writeFileSync(
+      join(root, 'Streams', 'Themes', 'techne.md'),
+      '---\nnote_type: streams/theme\nslug: techne\n---\n\n# Techne\n\n## Direction\n\nHosting.\n'
+    )
+    const context = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+
+    expect(context().operationalAreas.map((finding) => finding.level)).toEqual(['PASS'])
+    expect(context().legacyFolders.map((finding) => finding.level)).toEqual(['PASS'])
+    expect(context().registryNotes.map((finding) => finding.level)).toEqual(['PASS'])
+
+    mkdirSync(join(root, 'Streams', 'Initiatives'), { recursive: true })
+    mkdirSync(join(root, 'Streams', 'Projects', 'agent-host'), { recursive: true })
+    writeFileSync(join(root, 'Streams', 'Projects', 'agent-host', 'agent-host.md'), '# Agent host\n')
+    expect(context().legacyFolders.map((finding) => [finding.level, finding.subject])).toEqual([
+      ['WARN', 'Streams/Initiatives'],
+      ['WARN', 'Streams/Projects/agent-host'],
+      ['PASS', 'Streams']
+    ])
+    expect(context().legacyFolders[0]?.message).toContain('Streams/Themes/<theme>.md')
+  })
+
+  test('fails a design folder anywhere under Streams', () => {
+    const root = targetFixture()
+    mkdirSync(join(root, 'Streams', 'Themes', 'model', 'design'), { recursive: true })
+    mkdirSync(join(root, 'Streams', 'Roadmap', 'design'), { recursive: true })
+    const areas = STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit')))).operationalAreas
+
+    expect(areas.filter((finding) => finding.level === 'FAIL').map((finding) => finding.subject)).toEqual([
+      'Streams/Roadmap/design',
+      'Streams/Themes/model/design'
+    ])
+    expect(areas.at(-1)?.message).toContain('+/_WORK/<id>/design/')
   })
 
   test('checks a folder note but not the design artefacts beside it', () => {
@@ -485,8 +527,8 @@ describe('ki-repo-kb-streams session', () => {
     expect(audit()).toEqual([
       {
         level: 'PASS',
-        message: 'Project and Initiative notes link upwards only.',
-        subject: 'Streams/Projects, Streams/Initiatives'
+        message: 'Project notes and theme pages link upwards only.',
+        subject: 'Streams/Projects, Streams/Themes, Streams/Initiatives'
       }
     ])
 
