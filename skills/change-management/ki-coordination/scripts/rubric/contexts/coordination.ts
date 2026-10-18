@@ -11,7 +11,7 @@
  * owner selects.
  */
 import { type Dirent, existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { basename, extname, join, relative, resolve } from 'node:path'
+import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import type {
   AuditOutcome,
   RubricContextOptions,
@@ -473,34 +473,59 @@ export const recordIdentifiers = (text: string): readonly string[] => [
 ]
 
 /**
+ * How a record link's absolute local target is checked: for existence inside the audited checkout, or outside it
+ * where the target's folder is present on this machine, such as another checkout beside it; otherwise, as on a CI
+ * runner where no other checkout exists, for shape only.
+ */
+const linkCheck = (root: string, file: string): 'existence' | 'shape' => {
+  const within = relative(resolve(root), file)
+  const inside = !isAbsolute(within) && within.split(sep)[0] !== '..'
+  return inside || existsSync(dirname(file)) ? 'existence' : 'shape'
+}
+
+/** A record link's shape: its file name is a Markdown file opening with one of the identifiers its text names. */
+const recordShaped = (file: string, named: readonly string[]): boolean => {
+  const name = basename(file)
+  return (
+    name.endsWith('.md') && named.some((identifier) => name.startsWith(`${identifier}-`) || name === `${identifier}.md`)
+  )
+}
+
+/**
  * Review one report for the linking rule: every full record identifier in its prose sits inside the text of a
  * Markdown link, and a link whose text names a record and whose target is an absolute local path points at a file
  * that exists, so a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last
- * revision rather than to its deleted file. Fenced blocks, such as the reply block the owner pastes back, are not prose
+ * revision rather than to its deleted file. A target outside the audited checkout `root` whose folder is absent from
+ * this machine cannot be checked for existence, so it is checked for shape only: its file name opens with a named
+ * identifier and ends `.md`. Fenced blocks, such as the reply block the owner pastes back, are not prose
  * and are skipped; so are inline code spans, which quote literal text such as a commit subject and cannot hold a link.
  * Links are read first, so a link whose text is a code span still has its target checked.
  */
 export const reportLinkFindings = (
-  text: string
-): { readonly bare: readonly string[]; readonly missing: readonly string[] } => {
+  text: string,
+  root: string
+): { readonly bare: readonly string[]; readonly missing: readonly string[]; readonly misshapen: readonly string[] } => {
   const prose = text.replace(FENCED_BLOCK, ' ')
   const missing = new Set<string>()
+  const misshapen = new Set<string>()
   const unlinked = prose.replace(MARKDOWN_LINK, (_whole, label: string, target: string) => {
     const named = recordIdentifiers(label)
     if (named.length > 0 && target.startsWith('/')) {
       const file = target.split('#')[0] ?? target
-      if (!existsSync(file)) for (const identifier of named) missing.add(`${identifier} -> ${target}`)
+      if (linkCheck(root, file) === 'existence') {
+        if (!existsSync(file)) for (const identifier of named) missing.add(`${identifier} -> ${target}`)
+      } else if (!recordShaped(file, named)) for (const identifier of named) misshapen.add(`${identifier} -> ${target}`)
     }
     return ' '
   })
-  return { bare: recordIdentifiers(unlinked.replace(CODE_SPAN, ' ')), missing: [...missing] }
+  return { bare: recordIdentifiers(unlinked.replace(CODE_SPAN, ' ')), missing: [...missing], misshapen: [...misshapen] }
 }
 
 const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
   for (const report of reports) {
     const subject = relative(root, report)
-    const { bare, missing } = reportLinkFindings(readFileSync(report, 'utf8'))
+    const { bare, missing, misshapen } = reportLinkFindings(readFileSync(report, 'utf8'), root)
     if (bare.length > 0)
       outcomes.push({
         status: 'VIOLATION',
@@ -511,6 +536,12 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
       outcomes.push({
         status: 'VIOLATION',
         message: `a record link points at a file that exists, or for a pruned record at the GitHub link to the file at its last revision; missing: ${missing.join(', ')}`,
+        subject
+      })
+    if (misshapen.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        message: `a record link outside this checkout, whose folder is not on this machine, targets a Markdown file named for the record; misshapen: ${misshapen.join(', ')}`,
         subject
       })
   }
@@ -815,7 +846,7 @@ export const createCoordinationSession = ({
       outcomes: one(
         linkOutcomes(root, reports ?? []),
         reports && reports.length > 0
-          ? `Every record identifier in the ${reports.length} work report(s) is a link to an existing file.`
+          ? `Every record identifier in the ${reports.length} work report(s) is a link to an existing file, or outside this checkout to a record-shaped one.`
           : 'No work report is present under `+/_WORK/` or `+/_THREADS/`.',
         unreported
       )

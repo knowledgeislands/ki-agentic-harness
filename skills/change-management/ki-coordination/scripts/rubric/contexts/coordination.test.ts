@@ -19,6 +19,8 @@ import {
 } from './coordination.ts'
 
 const roots: string[] = []
+/** An audited checkout root that does not exist, so a link inside it is checked for existence and fails. */
+const CHECKOUT = '/checkout'
 
 const fixture = (identity: { repository: string; capital: string } | null): string => {
   const root = mkdtempSync(join(tmpdir(), 'ki-coordination-'))
@@ -251,32 +253,75 @@ describe('record identifiers in prose', () => {
 
   test('an identifier inside a link is linked and one outside is bare', () => {
     const findings = reportLinkFindings(
-      '- Accepted [KI-HARNESS-GOV-187](/nowhere/KI-HARNESS-GOV-187.md) and KI-HARNESS-GOV-188; see [`KI-PRINCIPAL-ECO-013`](https://example.invalid/ECO-013).\n'
+      '- Accepted [KI-HARNESS-GOV-187](/checkout/KI-HARNESS-GOV-187.md) and KI-HARNESS-GOV-188; see [`KI-PRINCIPAL-ECO-013`](https://example.invalid/ECO-013).\n',
+      CHECKOUT
     )
     expect(findings.bare).toEqual(['KI-HARNESS-GOV-188'])
-    expect(findings.missing).toEqual(['KI-HARNESS-GOV-187 -> /nowhere/KI-HARNESS-GOV-187.md'])
+    expect(findings.missing).toEqual(['KI-HARNESS-GOV-187 -> /checkout/KI-HARNESS-GOV-187.md'])
   })
 
   test('a fenced reply block is not prose', () => {
-    const findings = reportLinkFindings('Prose.\n\n```text\nACCEPT-188\n\naccept KI-HARNESS-GOV-188\n```\n')
-    expect(findings).toEqual({ bare: [], missing: [] })
+    const findings = reportLinkFindings('Prose.\n\n```text\nACCEPT-188\n\naccept KI-HARNESS-GOV-188\n```\n', CHECKOUT)
+    expect(findings).toEqual({ bare: [], missing: [], misshapen: [] })
   })
 
   test('an inline code span is not prose, but an identifier beside one is', () => {
     const findings = reportLinkFindings(
-      'Committed `docs(roadmap): close KI-HARNESS-GOV-206` and ``a `quoted` KI-HARNESS-GOV-207``, spanning `a\nKI-HARNESS-GOV-208`; KI-HARNESS-GOV-209 is bare.\n'
+      'Committed `docs(roadmap): close KI-HARNESS-GOV-206` and ``a `quoted` KI-HARNESS-GOV-207``, spanning `a\nKI-HARNESS-GOV-208`; KI-HARNESS-GOV-209 is bare.\n',
+      CHECKOUT
     )
-    expect(findings).toEqual({ bare: ['KI-HARNESS-GOV-209'], missing: [] })
+    expect(findings).toEqual({ bare: ['KI-HARNESS-GOV-209'], missing: [], misshapen: [] })
   })
 
   test('an unclosed backtick or a span across a blank line does not hide an identifier', () => {
-    expect(reportLinkFindings('A stray ` before KI-HARNESS-GOV-210.\n').bare).toEqual(['KI-HARNESS-GOV-210'])
-    expect(reportLinkFindings('Opens `here\n\nKI-HARNESS-GOV-211 then` closes.\n').bare).toEqual(['KI-HARNESS-GOV-211'])
+    expect(reportLinkFindings('A stray ` before KI-HARNESS-GOV-210.\n', CHECKOUT).bare).toEqual(['KI-HARNESS-GOV-210'])
+    expect(reportLinkFindings('Opens `here\n\nKI-HARNESS-GOV-211 then` closes.\n', CHECKOUT).bare).toEqual([
+      'KI-HARNESS-GOV-211'
+    ])
   })
 
   test('a link whose text is a code span still has its target checked', () => {
-    const findings = reportLinkFindings('See [`KI-HARNESS-GOV-212`](/nowhere/KI-HARNESS-GOV-212.md).\n')
-    expect(findings).toEqual({ bare: [], missing: ['KI-HARNESS-GOV-212 -> /nowhere/KI-HARNESS-GOV-212.md'] })
+    const findings = reportLinkFindings('See [`KI-HARNESS-GOV-212`](/checkout/KI-HARNESS-GOV-212.md).\n', CHECKOUT)
+    expect(findings).toEqual({
+      bare: [],
+      missing: ['KI-HARNESS-GOV-212 -> /checkout/KI-HARNESS-GOV-212.md'],
+      misshapen: []
+    })
+  })
+
+  test('a link outside the checkout whose folder is absent is checked for shape only', () => {
+    const findings = reportLinkFindings(
+      '- [KI-TOOL-KI-CLI-123](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-123-channel.md#goal) and [ADR-KI-HARNESS-010](/Users/nobody/workspaces/ki-agentic-harness/docs/decisions/ADR-KI-HARNESS-010.md) pass;\n- [KI-TOOL-KI-CLI-124](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-125-other.md), [KI-TOOL-KI-CLI-126](/Users/nobody/workspaces/tools-ki/docs/roadmap/) and [KI-TOOL-KI-CLI-127](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-1270-x.md) do not.\n',
+      CHECKOUT
+    )
+    expect(findings).toEqual({
+      bare: [],
+      missing: [],
+      misshapen: [
+        'KI-TOOL-KI-CLI-124 -> /Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-125-other.md',
+        'KI-TOOL-KI-CLI-126 -> /Users/nobody/workspaces/tools-ki/docs/roadmap/',
+        'KI-TOOL-KI-CLI-127 -> /Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-1270-x.md'
+      ]
+    })
+  })
+
+  test('a link outside the checkout whose folder is present on this machine is checked for existence', () => {
+    const checkout = fixture(null)
+    const other = fixture(null)
+    writeFileSync(join(other, 'KI-TOOL-KI-CLI-123-channel.md'), '# record\n')
+    const live = join(other, 'KI-TOOL-KI-CLI-123-channel.md')
+    const gone = join(other, 'KI-TOOL-KI-CLI-124-gone.md')
+    const findings = reportLinkFindings(
+      `- [KI-TOOL-KI-CLI-123](${live}) and [KI-TOOL-KI-CLI-124](${gone}).\n`,
+      checkout
+    )
+    expect(findings).toEqual({ bare: [], missing: [`KI-TOOL-KI-CLI-124 -> ${gone}`], misshapen: [] })
+  })
+
+  test('a link inside the checkout is checked for existence even when its folder is absent', () => {
+    const target = '/checkout/docs/roadmap/KI-HARNESS-GOV-213-gone.md'
+    const findings = reportLinkFindings(`- [KI-HARNESS-GOV-213](${target}).\n`, CHECKOUT)
+    expect(findings).toEqual({ bare: [], missing: [`KI-HARNESS-GOV-213 -> ${target}`], misshapen: [] })
   })
 })
 
@@ -326,6 +371,23 @@ describe('thread report links', () => {
     expect(statuses(outcomes)).toEqual(['VIOLATION'])
     expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working', 'deleted.report.md'))
     expect(outcomes[0]?.message).toContain('missing: KI-HARNESS-GOV-181 ->')
+  })
+
+  test('a link to another checkout absent from this machine passes by shape and a misshapen one is a violation', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    const elsewhere = '/Users/nobody/workspaces/ki-agentic-harness/docs/roadmap'
+    report(
+      root,
+      'ways-of-working',
+      'runner',
+      `# Report\n\n- Planned [KI-HARNESS-GOV-197](${elsewhere}/KI-HARNESS-GOV-197-pmo-7-outside-checkout-links.md).\n`
+    )
+    expect(statuses(context(root).links.outcomes)).toEqual(['PASS'])
+    report(root, 'ways-of-working', 'misshapen', `# Report\n\n- Planned [KI-HARNESS-GOV-197](${elsewhere}/notes.md).\n`)
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working', 'misshapen.report.md'))
+    expect(outcomes[0]?.message).toContain(`misshapen: KI-HARNESS-GOV-197 -> ${elsewhere}/notes.md`)
   })
 
   test('a thread folder with no reports, and files that are not reports, pass', () => {
