@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-16T21:51:55Z
-updated_at: 2026-10-16T21:51:55Z
+updated_at: 2026-10-18T09:59:16Z
 ---
 
 # KI-HARNESS-GOV-201: Fetch and Machine Grants
@@ -32,3 +32,5 @@ The [Authority tiers](../../skills/governance/ki-delegation/references/standards
 ## Discussion
 
 Captured on Kris Brown's FOOTER-GRANTS answer; adoption, priority and plan belong to this repository. Questions for planning: whether `machine` needs the connection-critical restore-path rule restated in its grant or only cited; whether a grant names the scope the brief must state, such as the remote for a fetch; and whether the two grants also suit the `push` tier, where a fetch is already allowed.
+
+Kris Brown answered CLI134-GRANTS on 18 October 2026 in the ways-of-working work, taking option a): a harness run drafts `grant-fetch.md` and `grant-machine.md` under this record for Kris's review, and nothing is adopted until the wording is approved. The drafts sit in `skills/governance/ki-delegation/assets/`, each marked unapproved inside its own section; the standard's tier table, the sources note and the rubric do not yet name them. The drafts take positions on the planning questions for review: `machine` cites the connection-critical rule rather than restating it, a grant names the scope the brief must state, and `fetch` adds nothing under the `push` tier while `machine` suits every tier.
