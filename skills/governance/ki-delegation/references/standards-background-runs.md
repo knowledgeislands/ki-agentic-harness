@@ -102,7 +102,7 @@ A run prompt is cold-agent ready. It contains, in order:
 1. the task, quoting the owner decision that authorises it, in the owner's words and dated;
 2. numbered steps;
 3. a verification step;
-4. the report path;
+4. the report path, in the run's state folder; the launcher homes the report in the work folder;
 5. the instructions "Do not use background subagents." and "Never end your session while waiting.";
 6. one authority footer, appended last, followed only by any [grant](#grants) sections the task needs.
 
