@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: high
 size: s
-status: ready
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: f163531d5098a42912a325d2a1b6df84a33d27ee
 created_at: 2026-10-18T17:56:31Z
-updated_at: 2026-10-19T23:40:00Z
+updated_at: 2026-10-19T23:41:38Z
 ---
 
 # KI-HARNESS-GOV-219: Feedback Work-Folder Kind
@@ -42,11 +42,11 @@ The [closed list](../../skills/governance/ki-work-package/references/standards-w
 
 ## Steps
 
-- [ ] `ki-work-package` standard: add a Feedback package row, `feedback/<date>-<slug>.md`, to the closed list, kept until a tidy finds every point in it homed; add the owner, through the Observatory, to the entry-point table, writing one package and one `messages.md` line linking it, committed together; add the package to the tidy's What goes and What stays; and name the kind in `SKILL.md`'s work-folder summary.
-- [ ] `ki-coordination` standard: Messages between work names the owner, through the Observatory, as a sender, and says the receiver reads the linked package as part of the line, recording each point's disposition where it lands; the prune's judgement line covers a package as it covers a report.
-- [ ] COORD-9: admit `feedback` in `WORK_SUBFOLDERS`, and name it in the item description, the `workFolderFindings` comment and the tidy outcome's closed-list string.
-- [ ] Extend the closed-list fixture test in `coordination.test.ts` to hold a `feedback/` folder.
-- [ ] Regenerate the `ki-coordination` rubric reference and run the verification below.
+- [x] `ki-work-package` standard: add a Feedback package row, `feedback/<date>-<slug>.md`, to the closed list, kept until a tidy finds every point in it homed; add the owner, through the Observatory, to the entry-point table, writing one package and one `messages.md` line linking it, committed together; add the package to the tidy's What goes and What stays; and name the kind in `SKILL.md`'s work-folder summary.
+- [x] `ki-coordination` standard: Messages between work names the owner, through the Observatory, as a sender, and says the receiver reads the linked package as part of the line, recording each point's disposition where it lands; the prune's judgement line covers a package as it covers a report.
+- [x] COORD-9: admit `feedback` in `WORK_SUBFOLDERS`, and name it in the item description, the `workFolderFindings` comment and the tidy outcome's closed-list string.
+- [x] Extend the closed-list fixture test in `coordination.test.ts` to hold a `feedback/` folder.
+- [x] Regenerate the `ki-coordination` rubric reference and run the verification below.
 
 ## Files touched
 
@@ -86,6 +86,41 @@ None: no guide names the closed list; the two standards, the `ki-work-package` s
 ### Roadmap
 
 Unblocks [KI-OBSERVA-BRG-002](https://github.com/knowledgeislands/apps-observatory.local/blob/886833981a7e57c82bda9ee5f562ce6a4804c79f/docs/roadmap/KI-OBSERVA-BRG-002-capture-feedback.md) in apps-observatory.local.
+
+## Review
+
+### Delivered
+
+The approved boundary, against baseline `f163531d5098a42912a325d2a1b6df84a33d27ee`: the `ki-work-package` closed list, entry points and tidy rules gain the feedback package and the owner, through the Observatory, as its writer; `ki-coordination`'s Messages between work names that sender and the receiver's handling of a package link; and COORD-9 admits `feedback/`. The Observatory's `feedback.send` operation stays out, with apps-observatory.local.
+
+### Change Summary
+
+- `skills/governance/ki-work-package/references/standards-work-package.md`: a Feedback package row, `feedback/<date>-<slug>.md`, kept until a tidy finds every point in it homed; an entry point for the owner, through the Observatory, writing one package and one linking `messages.md` line, committed together; the package in the tidy's What goes and What stays.
+- `skills/governance/ki-work-package/SKILL.md`: the work-folder summary names feedback packages.
+- `skills/change-management/ki-coordination/references/standards-coordination.md`: the Sender bullet adds the owner, through the Observatory; the Receiver bullet takes a linked package with its line and records each point's disposition; the prune's Judgement line covers a package.
+- `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.ts` and `items/threads.ts`: `WORK_SUBFOLDERS` admits `feedback`, and COORD-9's description, the `workFolderFindings` comment and the tidy's closed-list string name it.
+- `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.test.ts`: the closed-list test holds a `feedback/` folder with a package and finds nothing stray.
+- `skills/change-management/ki-coordination/references/rubric.md`: COORD-9's line carries the new description. `ki dev skill rubric` renders only from the dev-linked main checkout, not this worktree, so the line was edited to the item's description, checked equal to it by script; the integrating session's `ki dev skill rubric ki-coordination` confirms sync.
+
+### Verification
+
+- `bun test skills/change-management/ki-coordination`: 80 pass, 0 fail.
+- `bunx tsc --noEmit`: passes.
+- `bun run test`: 1302 pass, 4 fail; the four, in `hooks/pre-commit.test.ts`, `hooks/commit-msg.test.ts` and `hooks/git-hook-stub.test.ts`, fail the same way on the untouched baseline in a clean detached worktree, so none comes from this change.
+- `bunx @biomejs/biome check` on the rubric scripts: no fixes; its one warning is not in a changed line.
+- `ki repo audit --skill ki-coordination` and `--skill ki-work-package`: PASS. `--skill ki-work-roadmap`: FAIL, every finding ITEM-3 on the other drafts adopted into Now on TRIAGE-ALL and not yet planned; none on this record.
+
+### Outstanding concerns
+
+None for this record. The audit runs the installed harness, so COORD-9's new tolerance takes effect across the estate only once this change is integrated and installed.
+
+### Post-change review
+
+The goal is met: a feedback package has a home, a writer and a tidy rule, and COORD-9 no longer flags it. Scope held to the two skills; the Observatory side is untouched. Regression risk is low: the rubric change widens one allowed set by one name, and the closed-list test still catches a stray file. Ready for acceptance.
+
+### Mini recap
+
+The work folder now admits the owner's consolidated feedback, written through the Observatory beside one linking Messages line and tidied once every point is homed; the tests and both skill audits pass, with four pre-existing hook-test failures unrelated. Learning route, not promoted: `ki dev skill rubric` could render from the current worktree, so a worktree run can regenerate its own rubric.
 
 ## Discussion
 

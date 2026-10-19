@@ -659,11 +659,13 @@ describe('work files', () => {
     expect(statuses(context(root).confidence.outcomes)).toEqual(['VIOLATION'])
   })
 
-  test('a work folder keeps its closed list, briefs/ and design/ included', () => {
+  test('a work folder keeps its closed list, briefs/, design/ and feedback/ included', () => {
     const root = fixture(capital)
     const folder = work(root, 'ki.ways-of-working', project())
     mkdirSync(join(folder, 'briefs'))
     mkdirSync(join(folder, 'design'))
+    mkdirSync(join(folder, 'feedback'))
+    writeFileSync(join(folder, 'feedback', '2026-10-20-review.md'), '# Feedback\n')
     writeFileSync(join(folder, 'decisions.md'), '# Decisions\n')
     expect(workFolderFindings(folder).stray).toEqual([])
     expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])

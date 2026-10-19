@@ -40,8 +40,8 @@ const QUERIES_FILE = 'queries.md'
 const PACKAGE_FILES: ReadonlySet<string> = new Set([STATE_FILE, QUERIES_FILE, 'messages.md'])
 /** More open queries than this in `queries.md` is a coordination smell, warned on rather than failed. */
 export const OPEN_QUERY_LIMIT = 8
-/** The folders a work folder may hold beside its files: open briefs and design notes. */
-const WORK_SUBFOLDERS: ReadonlySet<string> = new Set(['briefs', 'design'])
+/** The folders a work folder may hold beside its files: open briefs, the owner's feedback packages and design notes. */
+const WORK_SUBFOLDERS: ReadonlySet<string> = new Set(['briefs', 'design', 'feedback'])
 const WORK_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*'
 /** A work id: the territory, then a Project slug or `regular`, then for ad hoc work its slug. */
 const WORK_ID = new RegExp(`^${WORK_SEGMENT}(?:\\.${WORK_SEGMENT}){0,2}$`)
@@ -691,8 +691,8 @@ export const threadFolderFindings = (folder: string): FolderFindings => folderFi
 
 /**
  * Review one work folder for the prune: entries outside its closed list, `work.md`, `decisions.md`, `state.md`,
- * `queries.md`, `messages.md`, `<name>.report.md`, `briefs/` and `design/`, and the reports whose queries the decisions
- * log names.
+ * `queries.md`, `messages.md`, `<name>.report.md`, `briefs/`, `design/` and `feedback/`, and the reports whose queries
+ * the decisions log names.
  */
 export const workFolderFindings = (folder: string): FolderFindings =>
   folderFindings(
@@ -736,7 +736,7 @@ const tidyOutcomes = (
     review(
       folder,
       workFolderFindings(folder),
-      `the five package files, \`<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\``,
+      `the five package files, \`<name>${REPORT_SUFFIX}\`, \`briefs/\`, \`design/\` and \`feedback/\``,
       'work'
     )
   for (const folder of work) {

@@ -67,6 +67,7 @@ A work folder holds these kinds and nothing else:
 | Decisions log | `decisions.md` | The mark that closes finished work |
 | Run report | `<name>.report.md` | A tidy finds its outcome homed, its queries having been copied into `queries.md` at receive |
 | Brief | `briefs/<run>.md` | Its run's report is received |
+| Feedback package | `feedback/<date>-<slug>.md`, the owner's consolidated feedback on a document the work produced | A tidy finds every point in it homed |
 | Design note | `design/<slug>.md`, or `design/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
 | Design artefact | `design/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its note goes |
 
@@ -88,6 +89,7 @@ Every writer is a named entry point with its permitted kinds, and every other pa
 | A background run | Its work product in its owning home, and `design/` where its brief names a design note | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
 | `ki-work-design` and design runs | `design/` | Other kinds |
 | Other work and State of play | One line in `messages.md`, added or replacing its own line not yet acted on, committed alone | Any other edit |
+| The owner, through the Observatory | One `feedback/<date>-<slug>.md` package and one `messages.md` line linking it, committed together | Any other edit |
 
 The `description` in `work.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a line in `messages.md`. Readers, such as `ki work status`, the Observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
 
@@ -96,8 +98,8 @@ The `description` in `work.md` is written by the work's steward, at seeding with
 A tidy keeps the folder to what is still open, with Git history holding the rest, as Kris set under THREAD-TIDY on 2026-10-14, as received: "at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest", and made regular on 2026-10-16 with THREADS-TRIM. `ki-coordination` says when a coordinator tidies, at every send and each mark; regular and ad hoc work tidies at its own next update.
 
 - **Queries leave reports at receive:** when the steward receives a run report it copies each of its queries, whole, into `queries.md` under QUERIES-FILE, so a report is kept only until its outcome is homed, not until its queries are answered.
-- **What goes:** every `<name>.report.md` whose outcome has a durable home, a work record, the decisions log, the package or a commit, its queries already in `queries.md`; every `briefs/<run>.md` once its run's report has been received; and, at a mark, each design note the steward's review finds graduated or superseded, under the `ki-coordination` [design-note guards](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). In a folder still in [the single-file shape](#the-single-file-shape), a report also waits until its queries are all answered and read back in the log.
-- **What stays:** the five package files, always; every report whose outcome is not yet homed; every brief whose handoff is open; and each design note until it graduates or is recorded as superseded.
+- **What goes:** every `<name>.report.md` whose outcome has a durable home, a work record, the decisions log, the package or a commit, its queries already in `queries.md`; every `briefs/<run>.md` once its run's report has been received; every `feedback/<date>-<slug>.md` once every point in it has a durable home; and, at a mark, each design note the steward's review finds graduated or superseded, under the `ki-coordination` [design-note guards](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). In a folder still in [the single-file shape](#the-single-file-shape), a report also waits until its queries are all answered and read back in the log.
+- **What stays:** the five package files, always; every report whose outcome is not yet homed; every brief whose handoff is open; every feedback package with a point not yet homed; and each design note until it graduates or is recorded as superseded.
 - **How:** in one commit by explicit path, `git rm` of each file named and nothing else, never a folder-wide delete, so that Git history holds every report and a later recap or full summary reads a deleted one from its last revision. The deletion is operational work and opens no record.
 - **Who:** each piece of work tidies only its own folder. Territory work never tidies another work folder; it names each folder the rubric flags in a line in that work's `messages.md`, and the owning work tidies at its next send.
 - **Close-out:** finished work's folder is deleted at the mark that closes it, in one commit, once its decisions are homed and `design/` is resolved, under [Removal lifecycle](#removal-lifecycle).
