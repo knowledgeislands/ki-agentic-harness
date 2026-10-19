@@ -690,6 +690,8 @@ for (const [name, change] of [
   ['a message line out of shape', { messages: '# ki.ways-of-working messages\n\n- take the timeline unit\n' }],
   ['a missing description', { work: { description: "''" } }],
   ['a method_read that is not a revision', { state: { method_read: 'latest' } }],
+  ['a numeric method_read instead of a revision string', { state: { method_read: '1234567' } }],
+  ['a timestamp method_read instead of a revision', { state: { method_read: '2026-10-19T21:00:00Z' } }],
   ['a state field it does not know', { state: { updated_at: '2026-10-19T11:25:41Z' } }],
   [
     'a Queue outside territory work',

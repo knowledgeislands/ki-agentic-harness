@@ -762,7 +762,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
       if (
         'method_read' in stateFields &&
         stateFields.method_read !== null &&
-        !REVISION.test(String(stateFields.method_read))
+        (typeof stateFields.method_read !== 'string' || !REVISION.test(stateFields.method_read))
       )
         fail(state, 'method_read must be a short harness revision or null')
       chronology(state, fields.created_at, stateFields.since, evidence)
