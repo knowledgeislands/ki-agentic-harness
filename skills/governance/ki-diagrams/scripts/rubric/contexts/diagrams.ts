@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { externalReference } from '../../export-svg.ts'
@@ -9,6 +10,10 @@ const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unk
 const DIAGRAMS_DIRECTORY = 'docs/diagrams'
 const MANIFEST_FILE = 'diagrams.toml'
 const INDEX_FILE = 'README.md'
+/** The suffix of a committed viewer's receipt, `<slug>.receipt.json`, beside its `<slug>.html`. */
+export const RECEIPT_SUFFIX = '.receipt.json'
+/** The receipt shape's version, raised only when a field changes meaning. */
+export const RECEIPT_SCHEMA = 1
 export const DIAGRAM_TYPES = ['architecture', 'workflow', 'sequence', 'dataflow', 'lifecycle'] as const
 const FIELDS = ['type', 'question', 'audience', 'traced', 'stale_when', 'regenerate', 'last_checked'] as const
 /** Optional fields: `commit_html = true` opts a diagram into committing its interactive HTML. */
@@ -29,6 +34,22 @@ export type DiagramEntry = {
   readonly traced: readonly string[]
   readonly lastChecked: string
   readonly commitHtml: boolean
+}
+
+/** One file a receipt vouches for: its name under docs/diagrams, its SHA-256 and its byte count. */
+export type ReceiptFile = { readonly file: string; readonly sha256: string; readonly bytes: number }
+
+/**
+ * The portable proof that a committed viewer was rendered from its source: both files' hashes and the renderer's
+ * identity, with file names only, so it carries no local path.
+ */
+export type DiagramReceipt = {
+  readonly schema: number
+  readonly slug: string
+  readonly type: string
+  readonly source: ReceiptFile
+  readonly html: ReceiptFile
+  readonly renderer: { readonly name: string; readonly version: string }
 }
 
 export type DiagramsLayoutContext = {
@@ -61,12 +82,19 @@ export type DiagramsFreshnessContext = {
   readonly diagramCount: number
 }
 
+export type DiagramsReceiptContext = {
+  /** One entry per committed viewer whose receipt is missing, unreadable or does not match its source and HTML. */
+  readonly findings: readonly string[]
+  readonly viewerCount: number
+}
+
 export type DiagramsRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly layout: DiagramsLayoutContext
   readonly privacy: DiagramsPrivacyContext
   readonly svg: DiagramsSvgContext
   readonly freshness: DiagramsFreshnessContext
+  readonly receipts: DiagramsReceiptContext
   readonly judgment: Record<never, never>
 }
 
@@ -133,7 +161,8 @@ export const parseManifest = (
 
 /**
  * Files under docs/diagrams that no listed diagram accounts for, and the committed forms a listed diagram lacks.
- * A diagram's `<slug>.html` belongs to it only under `commit_html = true`, which also requires it.
+ * A diagram's `<slug>.html` and its receipt belong to it only under `commit_html = true`, which also requires the
+ * HTML; whether the receipt is present and matches is the receipt check's question.
  */
 export const reconcile = (
   files: readonly string[],
@@ -148,7 +177,7 @@ export const reconcile = (
     const html = `${slug}.html`
     expected.add(source).add(svg)
     if (commitHtml) {
-      expected.add(html)
+      expected.add(html).add(`${slug}${RECEIPT_SUFFIX}`)
       if (!files.includes(html)) missing.push(`${DIAGRAMS_DIRECTORY}/${html}`)
       else if (index !== undefined && !index.includes(`(${html})`))
         missing.push(`${DIAGRAMS_DIRECTORY}/${INDEX_FILE} links no ${html}`)
@@ -167,6 +196,88 @@ export const reconcile = (
 /** Each private-information pattern a committed source, SVG or HTML carries, named by file and kind. */
 export const privateFindings = (file: string, text: string): string[] =>
   PRIVATE_PATTERNS.flatMap(([kind, pattern]) => (pattern.test(text) ? [`${file}: ${kind}`] : []))
+
+/** The receipt entry for one file's bytes. */
+export const fingerprint = (file: string, bytes: Uint8Array): ReceiptFile => ({
+  file,
+  sha256: createHash('sha256').update(bytes).digest('hex'),
+  bytes: bytes.byteLength
+})
+
+/** The receipt for a diagram's source and committed viewer bytes, as rendered by the named renderer. */
+export const diagramReceipt = (
+  { slug, type }: DiagramEntry,
+  source: Uint8Array,
+  html: Uint8Array,
+  renderer: DiagramReceipt['renderer']
+): DiagramReceipt => ({
+  schema: RECEIPT_SCHEMA,
+  slug,
+  type,
+  source: fingerprint(`${slug}.${type}.json`, source),
+  html: fingerprint(`${slug}.html`, html),
+  renderer: { name: renderer.name, version: renderer.version }
+})
+
+const isReceiptFile = (value: unknown): value is ReceiptFile =>
+  isRecord(value) &&
+  typeof value.file === 'string' &&
+  typeof value.sha256 === 'string' &&
+  /^[0-9a-f]{64}$/.test(value.sha256) &&
+  typeof value.bytes === 'number'
+
+/**
+ * Each committed viewer under `directory` whose receipt is missing, unreadable, names the wrong diagram or files, or
+ * whose hashes no longer match the current source and HTML. A viewer or source that is itself missing is DIAG-1's
+ * finding, not this one's; `last_checked` plays no part.
+ */
+export const receiptFindings = (directory: string, entries: readonly DiagramEntry[]): string[] =>
+  entries.flatMap((entry) => {
+    if (!entry.commitHtml) return []
+    const { slug, type } = entry
+    const sourcePath = join(directory, `${slug}.${type}.json`)
+    const htmlPath = join(directory, `${slug}.html`)
+    if (!isFile(sourcePath) || !isFile(htmlPath)) return []
+    const name = `${DIAGRAMS_DIRECTORY}/${slug}${RECEIPT_SUFFIX}`
+    const receiptPath = join(directory, `${slug}${RECEIPT_SUFFIX}`)
+    if (!isFile(receiptPath)) return [`${slug}: no receipt at ${name}`]
+    let receipt: unknown
+    try {
+      receipt = JSON.parse(readFileSync(receiptPath, 'utf8'))
+    } catch {
+      return [`${slug}: ${name} is not valid JSON`]
+    }
+    if (
+      !isRecord(receipt) ||
+      receipt.schema !== RECEIPT_SCHEMA ||
+      !isReceiptFile(receipt.source) ||
+      !isReceiptFile(receipt.html) ||
+      !isRecord(receipt.renderer) ||
+      typeof receipt.renderer.name !== 'string' ||
+      !receipt.renderer.name ||
+      typeof receipt.renderer.version !== 'string' ||
+      !receipt.renderer.version
+    )
+      return [`${slug}: ${name} does not hold a schema ${RECEIPT_SCHEMA} receipt`]
+    const expected = diagramReceipt(entry, readFileSync(sourcePath), readFileSync(htmlPath), {
+      name: receipt.renderer.name,
+      version: receipt.renderer.version
+    })
+    if (receipt.slug !== slug || receipt.type !== type)
+      return [`${slug}: ${name} names ${String(receipt.slug)} as ${String(receipt.type)}`]
+    const findings: string[] = []
+    for (const [part, label] of [
+      ['source', 'the source'],
+      ['html', 'the viewer']
+    ] as const) {
+      const held = receipt[part] as ReceiptFile
+      const now = expected[part]
+      if (held.file !== now.file) findings.push(`${slug}: ${name} names ${held.file} for ${label}, not ${now.file}`)
+      else if (held.sha256 !== now.sha256 || held.bytes !== now.bytes)
+        findings.push(`${slug}: ${label} ${now.file} changed since the viewer was rendered`)
+    }
+    return findings
+  })
 
 const git = (repository: string, args: readonly string[]): { ok: boolean; stdout: string } => {
   const result = spawnSync('git', ['-C', repository, ...args], {
@@ -245,6 +356,10 @@ export const createDiagramsSession = ({
       gitAvailable,
       stale: gitAvailable ? staleDiagrams(root, entries) : [],
       diagramCount: entries.length
+    },
+    receipts: {
+      findings: manifestExists ? receiptFindings(directory, entries) : [],
+      viewerCount: entries.filter((entry) => entry.commitHtml).length
     },
     judgment: {}
   }

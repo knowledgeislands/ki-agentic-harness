@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "slug": "skill-area-acquire",
+  "type": "architecture",
+  "source": {
+    "file": "skill-area-acquire.architecture.json",
+    "sha256": "b1d928b1853676873fc341ea22337f2a178f7d6ecdadf8b4805b2e477504f3ef",
+    "bytes": 4079
+  },
+  "html": {
+    "file": "skill-area-acquire.html",
+    "sha256": "621821c4c14edf3895fd0819ed90d56af555cc3f561c03bb9a1983c3a69f959d",
+    "bytes": 813006
+  },
+  "renderer": {
+    "name": "archify",
+    "version": "3.2.0"
+  }
+}

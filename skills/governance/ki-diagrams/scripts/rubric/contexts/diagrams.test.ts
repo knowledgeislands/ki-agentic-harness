@@ -1,10 +1,16 @@
 import { expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { DIAG } from '../items/diagrams.ts'
-import { createDiagramsSession, type DiagramsRubricContext, parseManifest, privateFindings } from './diagrams.ts'
+import {
+  createDiagramsSession,
+  type DiagramsRubricContext,
+  diagramReceipt,
+  parseManifest,
+  privateFindings
+} from './diagrams.ts'
 
 const SVG = '<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"><use href="#a"/></svg>\n'
 const README = '# Diagrams\n\n![Architecture](architecture.svg)\n'
@@ -203,4 +209,78 @@ test('DIAG-4 warns when a traced file changed after last_checked or the revision
 test('DIAG-4 is not applicable outside Git', () => {
   const { root } = repository()
   expect(statuses('DIAG-4', root)).toEqual(['NOT_APPLICABLE'])
+})
+
+/** A repository whose one diagram commits its viewer, linked from the README, with a matching receipt. */
+const withViewer = (): string => {
+  const { root } = repository()
+  const directory = join(root, 'docs/diagrams')
+  writeFileSync(
+    join(directory, 'diagrams.toml'),
+    `${entry('architecture', 'architecture', '0000000')}commit_html = true\n`
+  )
+  writeFileSync(join(directory, 'architecture.html'), '<html></html>\n')
+  writeFileSync(join(directory, 'README.md'), `${README}\n[Interactive](architecture.html)\n`)
+  const receipt = diagramReceipt(
+    { slug: 'architecture', type: 'architecture', traced: ['src'], lastChecked: '0000000', commitHtml: true },
+    readFileSync(join(directory, 'architecture.architecture.json')),
+    readFileSync(join(directory, 'architecture.html')),
+    { name: 'archify', version: '3.2.0' }
+  )
+  writeFileSync(join(directory, 'architecture.receipt.json'), `${JSON.stringify(receipt, null, 2)}\n`)
+  return root
+}
+
+test('DIAG-6 passes a matching receipt and is not applicable without a committed viewer', () => {
+  const root = withViewer()
+  expect(statuses('DIAG-1', root)).toEqual(['PASS'])
+  expect(statuses('DIAG-2', root)).toEqual(['PASS'])
+  expect(statuses('DIAG-6', root)).toEqual(['PASS'])
+  expect(statuses('DIAG-6', repository().root)).toEqual(['NOT_APPLICABLE'])
+})
+
+test('DIAG-6 fails for a missing receipt, a changed source or viewer, and a malformed or misnamed receipt', () => {
+  const subjects = (root: string): (string | undefined)[] =>
+    run('DIAG-6', context(root)).map((outcome) => outcome.subject)
+  const receipt = (root: string): string => join(root, 'docs/diagrams/architecture.receipt.json')
+
+  const stale = withViewer()
+  writeFileSync(join(stale, 'docs/diagrams/architecture.architecture.json'), '{"schema_version":2}\n')
+  expect(subjects(stale)).toEqual([
+    'architecture: the source architecture.architecture.json changed since the viewer was rendered'
+  ])
+  writeFileSync(join(stale, 'docs/diagrams/architecture.html'), '<html>edited</html>\n')
+  expect(subjects(stale)).toEqual([
+    'architecture: the source architecture.architecture.json changed since the viewer was rendered',
+    'architecture: the viewer architecture.html changed since the viewer was rendered'
+  ])
+
+  const malformed = withViewer()
+  writeFileSync(receipt(malformed), '{"schema":1}\n')
+  expect(subjects(malformed)).toEqual([
+    'architecture: docs/diagrams/architecture.receipt.json does not hold a schema 1 receipt'
+  ])
+  writeFileSync(receipt(malformed), 'not json')
+  expect(subjects(malformed)).toEqual(['architecture: docs/diagrams/architecture.receipt.json is not valid JSON'])
+
+  const misnamed = withViewer()
+  const held = JSON.parse(readFileSync(receipt(misnamed), 'utf8'))
+  writeFileSync(receipt(misnamed), JSON.stringify({ ...held, slug: 'other' }))
+  expect(subjects(misnamed)).toEqual([
+    'architecture: docs/diagrams/architecture.receipt.json names other as architecture'
+  ])
+
+  const missing = withViewer()
+  rmSync(receipt(missing))
+  expect(subjects(missing)).toEqual(['architecture: no receipt at docs/diagrams/architecture.receipt.json'])
+  expect(statuses('DIAG-1', missing)).toEqual(['PASS'])
+})
+
+test('DIAG-1 treats a receipt as stray without commit_html', () => {
+  const root = withViewer()
+  writeFileSync(join(root, 'docs/diagrams/diagrams.toml'), entry('architecture', 'architecture', '0000000'))
+  expect(run('DIAG-1', context(root)).map((outcome) => outcome.subject)).toEqual([
+    'not in the manifest: docs/diagrams/architecture.html',
+    'not in the manifest: docs/diagrams/architecture.receipt.json'
+  ])
 })

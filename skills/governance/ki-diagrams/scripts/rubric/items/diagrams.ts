@@ -11,7 +11,7 @@ const DIAG_1: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-1',
   title: 'the manifest and the committed files agree both ways',
   description:
-    '`docs/diagrams/diagrams.toml` is valid and complete; every listed diagram has its source, its SVG and an embed in `docs/diagrams/README.md`, and a diagram with `commit_html = true` also has its `<slug>.html`, linked from the README; and every file under `docs/diagrams/` belongs to a listed diagram, an HTML file only under that opt-in.',
+    '`docs/diagrams/diagrams.toml` is valid and complete; every listed diagram has its source, its SVG and an embed in `docs/diagrams/README.md`, and a diagram with `commit_html = true` also has its `<slug>.html`, linked from the README; and every file under `docs/diagrams/` belongs to a listed diagram, an HTML file and its `<slug>.receipt.json` only under that opt-in.',
   sources: [MANIFEST, COMMITTED],
   mechanical: {
     level: 'FAIL',
@@ -159,6 +159,41 @@ const DIAG_4: RubricItem<DiagramsRubricContext> = {
   }
 }
 
+const DIAG_6: RubricItem<DiagramsRubricContext> = {
+  code: 'DIAG-6',
+  title: 'each committed viewer carries a receipt that matches its source',
+  description:
+    "Every diagram with `commit_html = true` has a `docs/diagrams/<slug>.receipt.json` naming its slug, type, source and HTML, whose SHA-256 hashes and byte counts match the committed source and viewer, with the renderer's name and version; it is read from committed files alone, and `last_checked` plays no part.",
+  sources: [COMMITTED, FRESHNESS],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Re-render the diagram with the build command, which writes its viewer and receipt together, and commit both with the source; never hand-edit a receipt. Then rerun the audit.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ receipts }) => {
+        if (receipts.viewerCount === 0)
+          return [{ status: 'NOT_APPLICABLE', message: 'No diagram commits its interactive HTML.' }]
+        return receipts.findings.length === 0
+          ? [
+              {
+                status: 'PASS',
+                message: `All ${receipts.viewerCount} committed viewers carry a receipt matching their source.`
+              }
+            ]
+          : receipts.findings.map((subject) => ({
+              status: 'VIOLATION',
+              message: 'A committed viewer must carry a receipt matching its current source and HTML.',
+              subject
+            }))
+      }
+    }
+  }
+}
+
 const DIAG_5: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-5',
   title: 'each diagram finalizes at showcase quality and its type answers its question',
@@ -181,5 +216,5 @@ export const DIAG: RubricFamily<DiagramsRubricContext, DiagramsRubricContext> = 
   description: 'A repository keeps traced, self-contained, current Archify diagrams under one manifest.',
   standard: MANIFEST,
   selectContext: (context) => context,
-  items: [DIAG_1, DIAG_2, DIAG_3, DIAG_4, DIAG_5]
+  items: [DIAG_1, DIAG_2, DIAG_3, DIAG_4, DIAG_5, DIAG_6]
 }

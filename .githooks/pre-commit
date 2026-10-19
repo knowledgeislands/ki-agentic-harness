@@ -77,5 +77,18 @@ audit_staged_skills() {
   return "$result"
 }
 
+# A committed diagram viewer must carry a receipt matching its staged source and
+# HTML. The staged snapshot's own checker runs, so the check is the one the commit
+# carries, and it needs neither Archify nor a browser.
+check_staged_receipts() {
+  receipts="$(mktemp -d)" || return 1
+  git checkout-index --all --prefix="$receipts/" || { rm -rf "$receipts"; return 1; }
+  bun "$receipts/skills/governance/ki-diagrams/scripts/build-html.ts" --check --repo "$receipts"
+  result=$?
+  rm -rf "$receipts"
+  return "$result"
+}
+
 if matches_staged '\.ts$'; then tsc --noEmit || exit 1; fi
 if matches_staged '^(skills/|\.agents/skills/ki-self/)'; then audit_staged_skills || exit 1; fi
+if matches_staged '^(docs/diagrams/|skills/governance/ki-diagrams/)'; then check_staged_receipts || exit 1; fi

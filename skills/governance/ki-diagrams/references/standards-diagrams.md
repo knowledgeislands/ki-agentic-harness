@@ -49,11 +49,12 @@ If a question needs two types, it is two questions; draw two diagrams.
 
 ## Committed forms
 
-Each diagram has up to three forms under `docs/diagrams/`:
+Each diagram has up to four forms under `docs/diagrams/`:
 
 - **Source** - `<slug>.<type>.json`, the Archify input. It records the repository revision and cites the file and line each node was traced from. It is the thing to edit. Always committed.
 - **SVG** - `<slug>.svg`, the self-contained dual-theme export: dark by default, light under `prefers-color-scheme: light`, fonts inlined, and no reference outside the file other than a fragment or an inline `data:` URI. Always committed.
 - **Interactive HTML** - `<slug>.html`, the finalized viewer with search, focus, zoom and source links, roughly 800 KB per diagram. Committed only for a diagram whose manifest table sets `commit_html = true`, as a repository that serves its diagrams does, or one whose readers open the viewer from a checkout or a forge; the opt-in then requires it. Otherwise it is rebuilt locally under `+/diagrams/<slug>/` and never committed.
+- **Receipt** - `<slug>.receipt.json`, beside each committed viewer and only there: the proof that the viewer was rendered from the committed source. It holds the receipt schema version, the slug and type, the source and HTML file names with their SHA-256 hashes and byte counts, and the renderer's name and version, with no local path, so it is portable. [The build command](#the-build-command) writes it with the viewer, and it is never hand-edited. A viewer whose receipt is missing or no longer matches its source and HTML is stale, whatever its `last_checked` says: a matching receipt never refreshes `last_checked`, and a stale `last_checked` never fails the receipt.
 
 `docs/diagrams/` holds nothing else apart from the manifest and its `README.md`.
 
@@ -74,7 +75,7 @@ The slug is lower-case kebab-case and names the question's subject, not the type
 | `stale_when`   | The changes to those paths that would make the diagram untrue                                              |
 | `regenerate`   | The prompt an agent with the Archify skill is given to rebuild the diagram from repository evidence        |
 | `last_checked` | The commit the diagram was last traced or confirmed against                                                |
-| `commit_html`  | Optional; `true` commits the diagram's `<slug>.html`, and absent or `false` keeps it local                 |
+| `commit_html`  | Optional; `true` commits the diagram's `<slug>.html` and its receipt, and absent or `false` keeps it local |
 
 `docs/diagrams/README.md` is the reader-facing index: a short introduction, one section per diagram stating its question in prose, and the SVG embedded with `![Title](<slug>.svg)`; a diagram with `commit_html = true` also links its figure to `<slug>.html`, for example `[![Title](<slug>.svg)](<slug>.html)`. It does not repeat the manifest's operational fields. Both templates ship in the skill's `assets/`.
 
@@ -105,7 +106,7 @@ To refresh a stale diagram, or to confirm a warned one:
 
 1. Give an agent with the Archify skill the diagram's `regenerate` prompt and its current source. Ask it to re-trace from the repository and keep the existing layout wherever the facts have not changed.
 2. Rebuild and check it: `node <archify>/bin/archify.mjs finalize <type> docs/diagrams/<slug>.<type>.json +/diagrams/<slug>/<slug>.html --repo-root "$PWD" --quality showcase --json`. All four gates - validate, deliver, check, browser check - must pass.
-3. Re-export the SVG: `bun <ki-diagrams>/scripts/export-svg.ts +/diagrams/<slug>/<slug>.html docs/diagrams/<slug>.svg`. A diagram with `commit_html = true` also copies the finalized `<slug>.html` to `docs/diagrams/`.
+3. Re-export the SVG: `bun <ki-diagrams>/scripts/export-svg.ts +/diagrams/<slug>/<slug>.html docs/diagrams/<slug>.svg`. A diagram with `commit_html = true` also copies the finalized `<slug>.html` to `docs/diagrams/` and writes its receipt, which the build command does for it.
 4. Set `last_checked` to the commit the diagram was traced against.
 
 [The build command](#the-build-command) runs steps 2 and 3 for every listed diagram at once.
@@ -116,7 +117,7 @@ To add a diagram, write its manifest table and README section first, then author
 
 ### The build command
 
-`bun <ki-diagrams>/scripts/build-html.ts [--repo <dir>] [--svg] [slug...]` builds every diagram the manifest lists, or the named ones, in one local command. Each is finalized as step 2 runs it, with a fresh `--out-dir` at `+/diagrams/<slug>/build/`, and a diagram with `commit_html = true` has its HTML copied to `docs/diagrams/<slug>.html`; `--svg` also re-exports each SVG as step 3 does. A failing gate stops the build before that diagram's committed forms are touched. It finds Archify at `ARCHIFY_HOME` when set, otherwise as the Agent Skill the Rig install places in the runtime's skills directory, and never edits a source or the manifest. A repository may bind it to a repository-owned `self:` package script.
+`bun <ki-diagrams>/scripts/build-html.ts [--repo <dir>] [--svg | --check] [slug...]` builds every diagram the manifest lists, or the named ones, in one local command. Each is finalized as step 2 runs it, with a fresh `--out-dir` at `+/diagrams/<slug>/build/`, and a diagram with `commit_html = true` has its HTML copied to `docs/diagrams/<slug>.html` with its receipt, refused where Archify's own delivery receipt vouches for other bytes; `--svg` also re-exports each SVG as step 3 does. A failing gate stops the build before that diagram's committed forms are touched. `--check` renders nothing and needs neither Archify nor a browser: it fails when a committed viewer's receipt is missing or does not match, and a repository's pre-commit hook runs it on the staged snapshot so a commit that changes a source or viewer without re-rendering is refused. It finds Archify at `ARCHIFY_HOME` when set, otherwise as the Agent Skill the Rig install places in the runtime's skills directory, and never edits a source or the manifest. A repository may bind it to a repository-owned `self:` package script.
 
 ### The SVG exporter
 
@@ -126,4 +127,4 @@ The browser is found and launched the way Archify's own browser gate finds and l
 
 ### Without Archify or a browser
 
-Both are optional prerequisites. AUDIT reads committed files and Git history only and runs without either. EDUCATE, REFRESH and authoring stop without Archify and give the Rig install instruction. The exporter stops without a Google Chrome or Chromium and gives Archify's own message, `Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.`; the browser is the machine's, not a development dependency of the adopting repository or of the harness.
+Both are optional prerequisites. AUDIT, and the build command's `--check`, read committed files and Git history only and run without either. EDUCATE, REFRESH and authoring stop without Archify and give the Rig install instruction. The exporter stops without a Google Chrome or Chromium and gives Archify's own message, `Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.`; the browser is the machine's, not a development dependency of the adopting repository or of the harness.
