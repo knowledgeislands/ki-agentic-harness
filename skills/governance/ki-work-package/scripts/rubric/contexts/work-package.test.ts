@@ -666,6 +666,19 @@ test('a package missing one of its five files fails the structure', () => {
   ])
 })
 
+test('an empty message queue may say None with or without a full stop', () => {
+  for (const messages of ['None', 'None.']) {
+    const repository = workFixture()
+    writePackage(
+      repository,
+      'ki.ways-of-working',
+      packageFiles('ki.ways-of-working', { messages: `# ki.ways-of-working messages\n\n${messages}\n` })
+    )
+
+    expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  }
+})
+
 const today = new Date().toISOString().slice(0, 10)
 for (const [name, change] of [
   [

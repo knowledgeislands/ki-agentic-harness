@@ -627,7 +627,7 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
     return
   }
   const content = messages.body.replace(/^#\s+.+$/m, '').trim()
-  if (content === 'None') return
+  if (content === 'None' || content === 'None.') return
   if (content.length === 0) {
     fail('messages.md must say something, if only None')
     return
