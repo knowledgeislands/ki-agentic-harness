@@ -97,6 +97,7 @@ test('the catalogue preserves the current compatible-harness criteria', () => {
     'SKILLS',
     'LONG',
     'COLL',
+    'GATE',
     'RUBRIC'
   ])
   const codes = catalogue.families.flatMap((family) => family.items.map((item) => item.code))
@@ -125,6 +126,7 @@ test('the catalogue preserves the current compatible-harness criteria', () => {
     'SKILLS-3',
     'LONG-1',
     'COLL-1',
+    'GATE-1',
     'RUBRIC-1'
   ])
   expect(new Set(codes).size).toBe(codes.length)

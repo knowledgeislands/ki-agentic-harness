@@ -18,7 +18,7 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 | TS | [TypeScript releases][ts] | `tsconfig` / `tsconfig.build` compiler options | declared range and resolved `7.0.2` | 2026-10-06 |
 | VITEST | [Vitest guide][vitest] | config-gated test profile + 100% coverage (`vitest run`, v8) | capability-selected; upstream `5.0.3` | 2026-10-06 |
 | SYNCPACK | [syncpack releases][syncpack] | package ordering inside engineering audit/conform | declared range and resolved `15.3.3` | 2026-10-06 |
-| COMMITLINT | [Commitlint releases][commitlint] | deterministic Conventional Commit validation in the Husky `commit-msg` binding | declared range and resolved `21.2.3` | 2026-10-06 |
+| COMMITLINT | [Commitlint releases][commitlint] | deterministic Conventional Commit validation in the `.githooks/commit-msg` binding | declared range and resolved `21.2.3` | 2026-10-06 |
 | MDLINT | [rumdl releases][rumdl] | Markdown audit/conform inside `ki-authoring` ❡ | declared `^0.3.0`, resolved `0.3.0` | 2026-10-18 |
 | KNIP | [knip releases][knip] | dependency + dead-code checks inside engineering audit/conform | declared range and resolved `6.39.0` | 2026-10-06 |
 | DEPCRUISER | [dependency-cruiser releases][depcruise] | module-boundary checker in the isolated `tooling/boundaries` root (`DESIGN-2`) | collection declares `^18.5.0` with TypeScript `^6.0.3` | 2026-10-06 |

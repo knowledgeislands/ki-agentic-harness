@@ -85,7 +85,7 @@ export const PACKAGE: RubricFamily<EngineeringRubricContext, PackageRubricContex
     mechanical(
       'PKG-5',
       'Toolchain dependencies declared',
-      'The toolchain devDependencies `@biomejs/biome`, Commitlint, `knip`, `rumdl`, `husky`, `lint-staged`, `syncpack`, and `typescript` are declared rather than implied.',
+      'The toolchain devDependencies `@biomejs/biome`, Commitlint, `knip`, `rumdl`, `lint-staged`, `syncpack`, and `typescript` are declared rather than implied; `ki-repo` HOOK-5 reports a retired `husky`.',
       'FAIL',
       (context) => context.pkg5,
       { conform: synchronise }

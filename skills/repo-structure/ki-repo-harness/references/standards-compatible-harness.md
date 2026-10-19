@@ -13,6 +13,7 @@ The [generated rubric](rubric.md) is the checkable publication of this standard.
 - [Root orientation](#root-orientation)
 - [Root roadmap](#root-roadmap)
 - [Harness declaration](#harness-declaration)
+- [Commit gate](#commit-gate)
 - [Ownership boundaries](#ownership-boundaries)
 
 ## Source and installed boundaries
@@ -133,6 +134,10 @@ If a physical readable `.ki.toml` exists without `[skills.ki-repo-harness]`, CON
 ```
 
 CONFORM does not invent a prefix, create a missing configuration, or replace or follow a symlink, directory, dangling link, special file, or unreadable path. The session coalesces repeated marker requests into one host-published proposal, but a newly appended keyless marker remains a failing declaration until the owner supplies its prefix. The host owns dry-run, transaction validation, atomic publication, rollback, and post-write re-audit.
+
+## Commit gate
+
+A source harness's committed `.githooks/pre-commit` runs `ki repo audit --repo "$root" --skill ki-repo-harness --staged` after the `ki-repo` frame (`GATE-1`), so a commit that breaks the harness's own container contract is refused before it lands. The gate is check-only: a line that runs `ki repo conform`, or passes `--fix` or `--write` to the audit, is reported, because a commit gate reports and never rewrites. A commented-out audit does not count. Without a committed hook `GATE-1` is not applicable; `ki-repo` owns whether the hook exists, is bound and refuses when a tool it needs is missing ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). `GATE-1` reports as a warning until the hooks rollout completes.
 
 ## Ownership boundaries
 

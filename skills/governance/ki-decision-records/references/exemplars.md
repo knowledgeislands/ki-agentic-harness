@@ -135,7 +135,7 @@ We adopt Bun as the sole package manager and script runner for this repo. `bun i
 
 - Contributors need Bun installed; the README documents the install step.
 - `bun.lockb` is committed and binary-diffed in PRs.
-- The husky pre-commit hook invokes the relevant governance audits for staged content.
+- The committed `.githooks/pre-commit` hook invokes the relevant governance audits for staged content.
 
 ## References
 

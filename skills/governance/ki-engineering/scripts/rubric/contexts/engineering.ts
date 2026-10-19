@@ -12,12 +12,14 @@ import type {
 } from '../../shared/rubric.ts'
 import { collectAuditEvidence, type EngineeringEvidenceFinding } from './audit-evidence.ts'
 import {
-  acceptedPrepares,
+  acceptedPrepare,
+  COMMIT_MSG_HOOK,
   COMMITLINT_CONFIGURATION,
-  HOOK_STUB_BINDING,
-  HOOK_STUBS,
+  HOOKS,
+  legacyPrepares,
   normaliseCommitMessage,
-  normalisePreCommit
+  normalisePreCommit,
+  PRE_COMMIT_HOOK
 } from './git-hooks.ts'
 import { inspectConsistencyReviewEvidence } from './review-evidence.ts'
 
@@ -170,7 +172,6 @@ const requiredDev = [
   '@commitlint/config-conventional',
   'knip',
   'rumdl',
-  'husky',
   'lint-staged',
   'syncpack',
   'typescript'
@@ -181,7 +182,6 @@ const versions: Record<string, string> = {
   '@commitlint/config-conventional': '^21.2.3',
   knip: '^6.39.0',
   rumdl: '^0.3.0',
-  husky: '^9.1.7',
   'lint-staged': '^17.6.0',
   syncpack: '^15.3.3',
   typescript: '^7.0.2'
@@ -282,7 +282,7 @@ const isSafeRegularFile = (path: string): boolean => {
   return metadata.isFile() && !metadata.isSymbolicLink()
 }
 
-const packageContent = (source: string, boundaryInstallRoot: boolean, stubsCommitted: boolean): string | undefined => {
+const packageContent = (source: string, boundaryInstallRoot: boolean, hooksCommitted: boolean): string | undefined => {
   let value: Record<string, unknown>
   try {
     value = JSON.parse(source) as Record<string, unknown>
@@ -310,9 +310,11 @@ const packageContent = (source: string, boundaryInstallRoot: boolean, stubsCommi
   }
   scripts['ki:deps:update'] = 'bun update --latest'
   scripts.clean = scripts.clean?.includes('node_modules') ? scripts.clean : 'rm -rf dist node_modules'
-  // Keep a repository's chosen stub binding; otherwise restore plain Husky.
-  const [husky, stubbed] = acceptedPrepares(boundaryInstallRoot, stubsCommitted)
-  scripts.prepare = stubbed && scripts.prepare?.includes(HOOK_STUB_BINDING) ? stubbed : (husky as string)
+  // Keep a Husky form until both committed hooks exist, so CONFORM never unbinds `.husky/` content.
+  scripts.prepare =
+    !hooksCommitted && legacyPrepares(boundaryInstallRoot).includes(scripts.prepare ?? '')
+      ? scripts.prepare
+      : acceptedPrepare(boundaryInstallRoot)
   packageJson.scripts = Object.fromEntries(
     Object.entries(scripts).sort(([first], [second]) => first.localeCompare(second))
   )
@@ -506,23 +508,23 @@ export const createEngineeringSession = async (
         const content = packageContent(
           packageSource,
           existsSync(join(target, 'tooling', 'boundaries', 'package.json')),
-          HOOK_STUBS.every((hook) => isSafeRegularFile(join(target, hook)))
+          HOOKS.every((hook) => isSafeRegularFile(join(target, hook)))
         )
         if (content !== undefined && content !== packageSource) writes.push({ path: 'package.json', content })
       }
       if (synchroniseHooks) {
         const hookWrites = [
-          { path: '.husky/pre-commit', normalise: normalisePreCommit },
-          { path: '.husky/commit-msg', normalise: normaliseCommitMessage }
+          { path: PRE_COMMIT_HOOK, normalise: normalisePreCommit },
+          { path: COMMIT_MSG_HOOK, normalise: normaliseCommitMessage }
         ] as const
+        // A write cannot carry the executable mode Git needs, so CONFORM repairs a committed
+        // hook and never creates one; an unsafe or unframed hook is left for the audit to report.
         for (const hook of hookWrites) {
           const path = join(target, hook.path)
-          if (!existsSync(path)) writes.push({ path: hook.path, content: hook.normalise(''), create: true })
-          else if (isSafeRegularFile(path)) {
-            const source = readFileSync(path, 'utf8')
-            const content = hook.normalise(source)
-            if (content !== source) writes.push({ path: hook.path, content })
-          }
+          if (!isSafeRegularFile(path)) continue
+          const source = readFileSync(path, 'utf8')
+          const content = hook.normalise(source)
+          if (content !== undefined && content !== source) writes.push({ path: hook.path, content })
         }
         const configPath = join(target, 'commitlint.config.ts')
         if (!existsSync(configPath))

@@ -16,6 +16,7 @@ Line-by-line criteria for auditing ki-repo-harness. Classifications are derived 
 - [SKILLS — Skill capability identity](#skills--skill-capability-identity)
 - [LONG — Longevity](#long--longevity)
 - [COLL — Capability boundary](#coll--capability-boundary)
+- [GATE — Commit gate](#gate--commit-gate)
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 
 ## CAP — Capability publication
@@ -148,6 +149,15 @@ Container ownership, host ownership, and sibling off-ramps.
   - _Review prompt:_ Are prerequisite dependencies, coverage-selected siblings, and description off-ramps complete and non-overlapping?
   - _Outcomes:_ conforming; boundary revision; route to owner
   - _Conforming guidance:_ Clarify the boundary or route the concern to its owner; do not claim another capability’s execution or content semantics.
+
+## GATE — Commit gate
+
+→ [standard](standards-compatible-harness.md)
+
+What a harness commit gate runs.
+
+- **GATE-1 [M] — Check-only harness commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit --skill ki-repo-harness --staged` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists. (standards-compatible-harness.md)
+  - _Remediation:_ diagnostic — Make `.githooks/pre-commit` run `ki repo audit --repo "$root" --skill ki-repo-harness --staged` without a rewriting flag, then rerun the audit.
 
 ## RUBRIC — Generated rubric publication
 

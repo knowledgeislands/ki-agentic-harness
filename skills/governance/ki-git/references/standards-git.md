@@ -35,11 +35,11 @@ Choose the narrowest type that describes the committed unit rather than combinin
 
 Historic messages are not rewritten merely to conform to this current convention.
 
-### Package-backed commit-message binding
+### Commit-message binding
 
-A repository governed by `ki-engineering` binds the deterministic portion of this policy through Husky's `commit-msg` lifecycle and Commitlint. The canonical configuration permits exactly the six types above, requires a lowercase kebab-case scope when present, requires a non-empty subject, and rejects a terminal full stop. Commitlint retains its conventional default treatment of Git-generated merge and revert messages.
+Every Knowledge Islands repository binds the deterministic portion of this policy through a committed `.githooks/commit-msg` hook in the `ki-repo` frame: Commitlint where a package exists, under the `ki-engineering` contract, or `ki git check-message` where none does, once `tools-ki` `KI-TOOL-KI-CLI-161` ships it. A gate that cannot run refuses the commit, and the remedy is the install it names, never `--no-verify`. The canonical configuration permits exactly the six types above, requires a lowercase kebab-case scope when present, requires a non-empty subject, and rejects a terminal full stop. Commitlint retains its conventional default treatment of Git-generated merge and revert messages.
 
-The binding does not attempt to decide whether a summary is genuinely imperative, whether the selected type is the narrowest truthful type, or whether the commit contains one coherent unit; those remain `ki-git` judgment. Husky can be deliberately bypassed with `--no-verify`, so the installed hook gives immediate feedback rather than replacing repository audit, CI, or review. `ki-engineering` owns the dependencies, hook files, deterministic audit, and bounded conformance; `ki-git` remains the sole owner of message semantics.
+The binding does not attempt to decide whether a summary is genuinely imperative, whether the selected type is the narrowest truthful type, or whether the commit contains one coherent unit; those remain `ki-git` judgment. A local hook can be deliberately bypassed with `--no-verify`, so the committed hook gives immediate feedback rather than replacing repository audit, CI, or review. `ki-repo` owns the hook's existence, binding and frame; `ki-engineering` owns the package-backed dependencies, hook content, deterministic audit, and bounded conformance; `ki-git` remains the sole owner of message semantics.
 
 Other skills MAY define a narrowly-scoped trailer block as durable evidence for their own concern. For example, `ki-engineering` owns the `KI-Consistency-Review-*` block for an advisory code-consistency review. That block is portable commit metadata, not a new Git-hygiene policy: `ki-git` neither interprets its engineering outcome nor requires it on ordinary commits.
 

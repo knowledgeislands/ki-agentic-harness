@@ -137,7 +137,7 @@ This standard owns only chezmoi's runtime-specific registration of a selected co
 
 Its existing local physical-lock observation is scoped evidence for a chezmoi repository, not an independent portable Git policy.
 
-The source repository's committed `.githooks/pre-commit` runs `ki repo audit` check-only (`GIT-2`): a line that runs `ki repo conform`, or passes `--fix` or `--write` to the audit, fails, because a commit gate reports and never rewrites. Without a committed hook `GIT-2` is not applicable; `ki-repo` `HOOK-1` owns whether the hook exists and `HOOK-2` whether it is bound ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
+The source repository's committed `.githooks/pre-commit` runs `ki repo audit` check-only (`GIT-2`): a line that runs `ki repo conform`, or passes `--fix` or `--write` to the audit, fails, because a commit gate reports and never rewrites. Without a committed hook `GIT-2` is not applicable; `ki-repo` owns whether the hook exists (`HOOK-1`), is bound (`HOOK-2`) and refuses when a tool it needs is missing (`HOOK-4`) ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
 
 ## Repo-shape expectations (additive to generic repo-standard checks)
 

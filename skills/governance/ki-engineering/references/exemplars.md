@@ -87,7 +87,7 @@ Repository-local operations make their ownership visible with the `self:` prefix
 {
   "scripts": {
     "clean": "rm -rf {dist,node_modules}",
-    "prepare": "husky",
+    "prepare": "git config core.hooksPath .githooks",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"

@@ -100,7 +100,7 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
     mechanical(
       'SCR-5',
       'Lifecycle clean and prepare scripts',
-      '`clean` removes `node_modules` (and `dist` where built), and `prepare` is `husky`, or `husky && git config core.hooksPath .githooks` where both committed `.githooks` stubs exist, followed by `&& bun install --frozen-lockfile --cwd tooling/boundaries` where that isolated install root exists.',
+      '`clean` removes `node_modules` (and `dist` where built), and `prepare` is `git config core.hooksPath .githooks`, followed by `&& bun install --frozen-lockfile --cwd tooling/boundaries` where that isolated install root exists; a retired Husky form warns.',
       'FAIL',
       (context) => context.scr5,
       { overrideLevels: ['WARN'], conform: true }
@@ -146,11 +146,12 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
       code: 'SCR-11',
       title: 'Common Git hooks are bound',
       description:
-        'Husky runs lint-staged then check-only Syncpack before commits, and Commitlint validates proposed messages against the `ki-git` Conventional Commit policy.',
+        'After its refusal frame, `.githooks/pre-commit` runs lint-staged then check-only Syncpack, and `.githooks/commit-msg` validates proposed messages against the `ki-git` Conventional Commit policy; content still in `.husky/` warns until the hooks rollout completes.',
       sources: ['standards-engineering.md'],
       mechanical: {
         level: 'FAIL',
-        audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.scr11, 'FAIL') },
+        overrideLevels: ['WARN'],
+        audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.scr11, 'FAIL', ['WARN']) },
         remediation: { class: 'automatic' },
         conform: { phase: 'PRIMARY', run: (context) => context.synchroniseHooks?.() }
       }

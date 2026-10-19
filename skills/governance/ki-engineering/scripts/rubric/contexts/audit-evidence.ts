@@ -29,10 +29,11 @@ import { promisify } from 'node:util'
 import type { PackageScriptClaim, RubricEmitter } from '../../shared/rubric.ts'
 import { inspectBoundaries } from './boundaries.ts'
 import {
-  acceptedPrepares,
+  acceptedPrepare,
   COMMITLINT_CONFIGURATION,
-  HOOK_STUBS,
   hasCommitMessageBaseline,
+  hasLegacyCommitMessageBaseline,
+  hasLegacyPreCommitBaseline,
   hasPreCommitBaseline
 } from './git-hooks.ts'
 
@@ -439,7 +440,6 @@ const TOOLCHAIN_DEV_DEPENDENCIES = [
   '@commitlint/config-conventional',
   'knip',
   'rumdl',
-  'husky',
   'lint-staged',
   'syncpack',
   'typescript'
@@ -482,6 +482,75 @@ export const inspectToolchainActivation = (
           subject: 'package.json'
         }
       ]
+}
+
+/**
+ * SCR-5 `prepare` and SCR-11 hook content. Content still in `.husky/` warns until the hooks
+ * rollout raises it to failure; `ki-repo` HOOK-5 reports the Husky remnant itself.
+ */
+export const inspectCommitGate = (repository: string, prepare: unknown): EngineeringEvidenceFinding[] => {
+  const findings: EngineeringEvidenceFinding[] = []
+  const add = (level: EngineeringEvidenceFinding['level'], code: string, message: string, subject: string): void => {
+    findings.push({ level, code, message, subject })
+  }
+  const isSafeRegularFile = (...p: string[]): boolean => {
+    if (!existsSync(join(repository, ...p))) return false
+    const metadata = lstatSync(join(repository, ...p))
+    return metadata.isFile() && !metadata.isSymbolicLink()
+  }
+  const read = (...p: string[]): string => (isSafeRegularFile(...p) ? readFileSync(join(repository, ...p), 'utf8') : '')
+
+  const preparation = acceptedPrepare(existsSync(join(repository, 'tooling', 'boundaries', 'package.json')))
+  prepare === preparation
+    ? add('PASS', 'SCR-5', `prepare = ${JSON.stringify(prepare)}`, 'package.json')
+    : add(
+        'WARN',
+        'SCR-5',
+        `prepare should be ${JSON.stringify(preparation)}, got ${JSON.stringify(prepare)}`,
+        'package.json'
+      )
+
+  const hookContent = (
+    name: 'pre-commit' | 'commit-msg',
+    current: (source: string) => boolean,
+    legacy: (source: string) => boolean,
+    pass: string,
+    fail: string
+  ): void => {
+    const subject = `.githooks/${name}`
+    if (current(read('.githooks', name))) add('PASS', 'SCR-11', pass, subject)
+    else if (legacy(read('.husky', name)))
+      add('WARN', 'SCR-11', `${name} content is still in .husky/${name}; move it into ${subject}`, subject)
+    else add('FAIL', 'SCR-11', fail, subject)
+  }
+  hookContent(
+    'pre-commit',
+    hasPreCommitBaseline,
+    hasLegacyPreCommitBaseline,
+    'pre-commit runs lint-staged then check-only Syncpack after the frame',
+    'pre-commit must run `lint-staged` then `syncpack format --check` straight after its node_modules/.bin PATH step'
+  )
+  hookContent(
+    'commit-msg',
+    hasCommitMessageBaseline,
+    hasLegacyCommitMessageBaseline,
+    'commit-msg validates the proposed message after the frame',
+    'commit-msg must run `commitlint --edit "$1"` or `ki git check-message "$1"` straight after its node_modules/.bin PATH step'
+  )
+  read('commitlint.config.ts') === COMMITLINT_CONFIGURATION
+    ? add(
+        'PASS',
+        'SCR-11',
+        'Commitlint configuration matches the KI Conventional Commit policy',
+        'commitlint.config.ts'
+      )
+    : add(
+        'FAIL',
+        'SCR-11',
+        'commitlint.config.ts must carry the canonical KI Conventional Commit policy',
+        'commitlint.config.ts'
+      )
+  return findings
 }
 
 type Level = EngineeringEvidenceFinding['level']
@@ -1173,11 +1242,6 @@ export const collectAuditEvidence = async (
   }
   const has = (...p: string[]) => existsSync(at(...p))
   const isDir = (...p: string[]) => has(...p) && statSync(at(...p)).isDirectory()
-  const isSafeRegularFile = (...p: string[]): boolean => {
-    if (!has(...p)) return false
-    const metadata = lstatSync(at(...p))
-    return metadata.isFile() && !metadata.isSymbolicLink()
-  }
   const read = (...p: string[]): string => {
     try {
       return readFileSync(at(...p), 'utf8')
@@ -1280,7 +1344,7 @@ export const collectAuditEvidence = async (
 
   // ── core: lint-staged block + toolchain devDependencies (§1/§5) ───────────────
   // The lint:* / deps:* / prepare families above invoke a fixed toolchain; assert that
-  // toolchain is actually declared, rather than left implied. lint-staged is the husky
+  // toolchain is actually declared, rather than left implied. lint-staged is the
   // pre-commit fan-out — a governed key in the manifest, so it must be present and wired.
   const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>
   const missingDev = TOOLCHAIN_DEV_DEPENDENCIES.filter((d) => !(d in devDeps))
@@ -1295,7 +1359,7 @@ export const collectAuditEvidence = async (
     : add(
         'PASS',
         'PKG-5',
-        'toolchain devDependencies present (biome, commitlint, rumdl, husky, lint-staged, syncpack, typescript)',
+        'toolchain devDependencies present (biome, commitlint, knip, rumdl, lint-staged, syncpack, typescript)',
         STD,
         'package.json'
       )
@@ -1303,7 +1367,7 @@ export const collectAuditEvidence = async (
     add(finding.level, finding.code, finding.message, STD, finding.subject)
   const lintStaged = pkg['lint-staged']
   if (!lintStaged || typeof lintStaged !== 'object') {
-    add('FAIL', 'PKG-6', 'lint-staged block missing (the husky pre-commit fan-out)', STD, 'package.json')
+    add('FAIL', 'PKG-6', 'lint-staged block missing (the pre-commit fan-out)', STD, 'package.json')
   } else {
     const ls = JSON.stringify(lintStaged)
     const fanOut = ls.includes('@biomejs/biome') && ls.includes('rumdl')
@@ -1479,55 +1543,13 @@ export const collectAuditEvidence = async (
         'package.json'
       )
     : add('PASS', 'SCR-4', 'no per-skill or path-based governance wrappers', STD, 'package.json')
-  // clean (removes node_modules; may also remove dist) + prepare = husky, optionally binding the committed
-  // hook stubs, plus the boundary install where present
+  // clean (removes node_modules; may also remove dist) + prepare binds the committed hooks,
+  // plus the boundary install where present
   scripts.clean?.includes('node_modules')
     ? add('PASS', 'SCR-5', `clean = ${JSON.stringify(scripts.clean)}`, STD, 'package.json')
     : add('FAIL', 'SCR-5', 'clean must remove node_modules (e.g. "rm -rf {dist,node_modules}")', STD, 'package.json')
-  const preparations = acceptedPrepares(
-    has('tooling', 'boundaries', 'package.json'),
-    HOOK_STUBS.every((hook) => isSafeRegularFile(hook))
-  )
-  preparations.includes(scripts.prepare ?? '')
-    ? add('PASS', 'SCR-5', `prepare = ${JSON.stringify(scripts.prepare)}`, STD, 'package.json')
-    : add(
-        'WARN',
-        'SCR-5',
-        `prepare should be ${preparations.map((form) => JSON.stringify(form)).join(' or ')}, got ${JSON.stringify(scripts.prepare)}`,
-        STD,
-        'package.json'
-      )
-
-  const preCommit = read('.husky', 'pre-commit')
-  const commitMessage = read('.husky', 'commit-msg')
-  const commitlint = read('commitlint.config.ts')
-  isSafeRegularFile('.husky', 'pre-commit') && hasPreCommitBaseline(preCommit)
-    ? add('PASS', 'SCR-11', 'pre-commit starts with lint-staged then check-only Syncpack', STD, '.husky/pre-commit')
-    : add(
-        'FAIL',
-        'SCR-11',
-        'pre-commit must start with lint-staged followed by `bunx syncpack format --check`',
-        STD,
-        '.husky/pre-commit'
-      )
-  isSafeRegularFile('.husky', 'commit-msg') && hasCommitMessageBaseline(commitMessage)
-    ? add('PASS', 'SCR-11', 'commit-msg invokes Commitlint for the proposed message', STD, '.husky/commit-msg')
-    : add('FAIL', 'SCR-11', 'commit-msg must invoke `bunx commitlint --edit "$1"`', STD, '.husky/commit-msg')
-  isSafeRegularFile('commitlint.config.ts') && commitlint === COMMITLINT_CONFIGURATION
-    ? add(
-        'PASS',
-        'SCR-11',
-        'Commitlint configuration matches the KI Conventional Commit policy',
-        STD,
-        'commitlint.config.ts'
-      )
-    : add(
-        'FAIL',
-        'SCR-11',
-        'commitlint.config.ts must carry the canonical KI Conventional Commit policy',
-        STD,
-        'commitlint.config.ts'
-      )
+  for (const finding of inspectCommitGate(repo, scripts.prepare))
+    add(finding.level, finding.code, finding.message, STD, finding.subject)
 
   // ── core: script ownership — bare lifecycle, ki: capability, or self: repository ──
   const trackedMjs = await collectTrackedMjs(repo)

@@ -328,12 +328,18 @@ Required generic inbound and outbound working-area scaffold and direction.
 
 → [standard](standards-repository.md)
 
-Existence and binding of the committed pre-commit gate; its content belongs to shape skills.
+Existence, binding and frame of the committed hooks; their content belongs to shape skills.
 
 - **HOOK-1 [M] — Committed commit gate** — A tracked, executable `.githooks/pre-commit` exists; what it runs belongs to the repository's shape skills. (standards-repository.md)
   - _Remediation:_ diagnostic — Commit an executable `.githooks/pre-commit` that runs the repository's check-only gate, then bind it with `git config core.hooksPath .githooks`.
-- **HOOK-2 [M] — Commit gate bound** — The clone’s `core.hooksPath` resolves to `.githooks`, so the committed gate runs on every commit. (standards-repository.md)
+- **HOOK-2 [M] — Commit gate bound** — The effective `core.hooksPath` of the audited working tree resolves to `.githooks`, so the committed gate runs on every commit; Husky’s `.husky/_` is named as the common wrong value. (standards-repository.md)
   - _Remediation:_ diagnostic — Run `git config core.hooksPath .githooks` in the clone, then rerun the audit.
+- **HOOK-3 [M] — Committed commit-message gate** — A tracked, executable `.githooks/commit-msg` exists in a package-backed repository; without a package it is not applicable until `ki git check-message` ships. (standards-repository.md)
+  - _Remediation:_ diagnostic — Commit an executable `.githooks/commit-msg` that validates the proposed message check-only, then rerun the audit.
+- **HOOK-4 [M] — Hook refuses before it runs** — Each committed hook starts `#!/bin/sh` and refuses when a required tool is missing before its first command, and never suggests `--no-verify`. (standards-repository.md)
+  - _Remediation:_ diagnostic — Open the hook with the common frame: test each required tool, name the missing ones and the install step, refuse with `exit 1`, then run the content.
+- **HOOK-5 [M] — Husky retired** — No tracked `.husky/` path, `husky` dependency, Husky call in `prepare` or hook delegating to `.husky/` remains; locally, no untracked `.husky/_` install is left behind. (standards-repository.md)
+  - _Remediation:_ diagnostic — Move the hook content into `.githooks/`, set `prepare` to `git config core.hooksPath .githooks`, remove `husky` and `.husky/`, rebind the clone and remove `.husky/_`.
 - **HOOK-J1 [J] — Stated gate matches the hook** — The gate root orientation tells a writer to run matches what the committed pre-commit hook runs. (standards-repository.md)
   - _Evidence scope:_ Root orientation (`AGENTS.md`, `README.md`) and `.githooks/pre-commit`.
   - _Review prompt:_ Compare the checks root orientation says run before a commit with the commands the committed hook runs, including any hook it delegates to.

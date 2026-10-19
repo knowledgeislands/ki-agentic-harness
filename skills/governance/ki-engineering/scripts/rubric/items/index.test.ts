@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import type { RubricEmitter, RubricFamily } from '../../shared/rubric.ts'
 import {
   BUN_RUNTIME,
@@ -13,6 +13,7 @@ import {
   findRelativeNodeModulesScriptUses,
   gradeDependencyFreshness,
   inspectCiWorkflow,
+  inspectCommitGate,
   inspectDependencyHolds,
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
@@ -32,10 +33,11 @@ import {
   type ScriptsRubricContext
 } from '../contexts/engineering.ts'
 import {
-  acceptedPrepares,
+  acceptedPrepare,
   COMMITLINT_CONFIGURATION,
   hasCommitMessageBaseline,
   hasPreCommitBaseline,
+  legacyPrepares,
   normaliseCommitMessage,
   normalisePreCommit
 } from '../contexts/git-hooks.ts'
@@ -673,11 +675,33 @@ test('SCR-2 proposes removal for any whole-repository or focused native governan
     'ki:deps:update': 'bun update --latest',
     'ki:harness:eval': 'bun evals/harness.ts',
     clean: 'rm -rf dist node_modules',
-    prepare: 'husky'
+    prepare: 'git config core.hooksPath .githooks'
   })
 })
 
-test('SCR-5 conform keeps the boundary install on prepare where its install root exists', async () => {
+// The refusal frame every committed hook opens with; content follows the PATH step.
+const FRAME = `#!/bin/sh
+root="$(git rev-parse --show-toplevel)" || exit 1
+if [ ! -x "$root/node_modules/.bin/lint-staged" ]; then
+  echo "pre-commit: the toolchain is not installed; run bun install, then commit again." >&2
+  echo "pre-commit: do not bypass with --no-verify; a gate that cannot run is unknown, not a pass." >&2
+  exit 1
+fi
+PATH="$root/node_modules/.bin:$PATH"
+export PATH
+`
+
+const PRE_COMMIT = `${FRAME}lint-staged || exit 1\nsyncpack format --check || exit 1\n`
+const COMMIT_MSG = `${FRAME}commitlint --edit "$1" || exit 1\n`
+
+const writeHooks = (repository: string, hooks: Readonly<Record<string, string>>): void => {
+  for (const [name, source] of Object.entries(hooks)) {
+    mkdirSync(dirname(join(repository, name)), { recursive: true })
+    writeFileSync(join(repository, name), source)
+  }
+}
+
+test('SCR-5 conform binds the committed hooks and keeps the boundary install where its install root exists', async () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, 'tooling', 'boundaries'), { recursive: true })
@@ -695,24 +719,26 @@ test('SCR-5 conform keeps the boundary install on prepare where its install root
   family.items.find((candidate) => candidate.code === 'SCR-5')?.mechanical?.conform?.run(family.selectContext(root))
 
   expect(JSON.parse(session.proposal().writes[0]?.content ?? '{}').scripts.prepare).toBe(
-    'husky && bun install --frozen-lockfile --cwd tooling/boundaries'
+    'git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
   )
 })
 
-test('SCR-5 accepts the hook stub binding only where both stubs are committed', () => {
-  expect(acceptedPrepares(false, false)).toEqual(['husky'])
-  expect(acceptedPrepares(false, true)).toEqual(['husky', 'husky && git config core.hooksPath .githooks'])
-  expect(acceptedPrepares(true, true)).toEqual([
+test('SCR-5 accepts one prepare form and names the retired Husky forms', () => {
+  expect(acceptedPrepare(false)).toBe('git config core.hooksPath .githooks')
+  expect(acceptedPrepare(true)).toBe(
+    'git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
+  )
+  expect(legacyPrepares(false)).toEqual(['husky', 'husky && git config core.hooksPath .githooks'])
+  expect(legacyPrepares(true)).toEqual([
     'husky && bun install --frozen-lockfile --cwd tooling/boundaries',
     'husky && git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
   ])
 })
 
-const conformPrepare = async (prepare: string, stubs: readonly string[]): Promise<string> => {
+const conformPrepare = async (prepare: string, hooks: Readonly<Record<string, string>>): Promise<string> => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
   temporaryDirectories.push(repository)
-  mkdirSync(join(repository, '.githooks'))
-  for (const stub of stubs) writeFileSync(join(repository, '.githooks', stub), '#!/bin/sh\n')
+  writeHooks(repository, hooks)
   writeFileSync(join(repository, 'package.json'), JSON.stringify({ scripts: { prepare } }))
   const session = await createEngineeringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
@@ -724,47 +750,87 @@ const conformPrepare = async (prepare: string, stubs: readonly string[]): Promis
     ScriptsRubricContext
   >
   family.items.find((candidate) => candidate.code === 'SCR-5')?.mechanical?.conform?.run(family.selectContext(root))
-  return JSON.parse(session.proposal().writes[0]?.content ?? '{}').scripts.prepare
+  return JSON.parse(session.proposal().writes[0]?.content ?? JSON.stringify({ scripts: { prepare } })).scripts.prepare
 }
 
-test('SCR-5 conform keeps a chosen hook stub binding and drops one whose stubs are absent', async () => {
-  const bound = 'husky && git config core.hooksPath .githooks'
-  expect(await conformPrepare(`${bound} && echo drift`, ['pre-commit', 'commit-msg'])).toBe(bound)
-  expect(await conformPrepare(bound, ['pre-commit'])).toBe('husky')
-  expect(await conformPrepare('husky install', ['pre-commit', 'commit-msg'])).toBe('husky')
+test('SCR-5 conform keeps a Husky prepare only until both committed hooks exist', async () => {
+  const bound = 'git config core.hooksPath .githooks'
+  const both = { '.githooks/pre-commit': PRE_COMMIT, '.githooks/commit-msg': COMMIT_MSG }
+  expect(await conformPrepare('husky', both)).toBe(bound)
+  expect(await conformPrepare(`husky && ${bound}`, both)).toBe(bound)
+  expect(await conformPrepare('husky', { '.githooks/pre-commit': PRE_COMMIT })).toBe('husky')
+  expect(await conformPrepare(`${bound} && echo drift`, {})).toBe(bound)
 })
 
-test('the common hook contract detects missing and ordered baselines', () => {
+test('a converted repository passes SCR-5 and SCR-11, and Husky content warns until it moves', () => {
+  const converted = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(converted)
+  writeHooks(converted, {
+    '.githooks/pre-commit': PRE_COMMIT,
+    '.githooks/commit-msg': COMMIT_MSG,
+    'commitlint.config.ts': COMMITLINT_CONFIGURATION
+  })
+  expect(inspectCommitGate(converted, 'git config core.hooksPath .githooks').map((finding) => finding.level)).toEqual([
+    'PASS',
+    'PASS',
+    'PASS',
+    'PASS'
+  ])
+
+  const legacy = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(legacy)
+  writeHooks(legacy, {
+    '.husky/pre-commit': 'bunx lint-staged || exit 1\nbunx syncpack format --check || exit 1\n',
+    '.husky/commit-msg': 'bunx commitlint --edit "$1" || exit 1\n'
+  })
+  const findings = inspectCommitGate(legacy, 'husky')
+  expect(findings.map((finding) => finding.level)).toEqual(['WARN', 'WARN', 'WARN', 'FAIL'])
+  expect(findings[1]?.message).toBe(
+    'pre-commit content is still in .husky/pre-commit; move it into .githooks/pre-commit'
+  )
+  expect(findings[1]?.subject).toBe('.githooks/pre-commit')
+
+  const drifted = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(drifted)
+  writeHooks(drifted, { '.githooks/pre-commit': `${FRAME}bunx lint-staged || exit 1\n` })
+  expect(inspectCommitGate(drifted, undefined)[1]?.level).toBe('FAIL')
+})
+
+test('the common hook contract requires the frame and the ordered baselines', () => {
   expect(hasPreCommitBaseline('')).toBe(false)
-  expect(hasPreCommitBaseline('bunx syncpack format --check || exit 1\nbunx lint-staged || exit 1\n')).toBe(false)
-  expect(hasPreCommitBaseline(normalisePreCommit(''))).toBe(true)
+  expect(hasPreCommitBaseline('lint-staged || exit 1\nsyncpack format --check || exit 1\n')).toBe(false)
+  expect(hasPreCommitBaseline(`${FRAME}syncpack format --check || exit 1\nlint-staged || exit 1\n`)).toBe(false)
+  expect(hasPreCommitBaseline(PRE_COMMIT)).toBe(true)
+  expect(hasPreCommitBaseline(normalisePreCommit(FRAME) ?? '')).toBe(true)
+  expect(normalisePreCommit('')).toBeUndefined()
+  expect(normalisePreCommit(`${FRAME}sh "$root/.husky/pre-commit" || exit 1\n`)).toBeUndefined()
   expect(hasCommitMessageBaseline('')).toBe(false)
-  expect(hasCommitMessageBaseline(normaliseCommitMessage(''))).toBe(true)
+  expect(hasCommitMessageBaseline(COMMIT_MSG)).toBe(true)
+  expect(hasCommitMessageBaseline(`${FRAME}ki git check-message "$1" || exit 1\n`)).toBe(true)
+  expect(hasCommitMessageBaseline(normaliseCommitMessage(FRAME) ?? '')).toBe(true)
 })
 
 test('the pre-commit baseline accepts lint-staged run quietly, and conform keeps that choice', () => {
-  const quiet = 'bunx lint-staged --quiet || exit 1\nbunx syncpack format --check || exit 1\n'
+  const quiet = `${FRAME}lint-staged --quiet || exit 1\nsyncpack format --check || exit 1\n`
   expect(hasPreCommitBaseline(quiet)).toBe(true)
-  expect(hasPreCommitBaseline('bunx lint-staged --verbose || exit 1\nbunx syncpack format --check || exit 1\n')).toBe(
+  expect(hasPreCommitBaseline(`${FRAME}lint-staged --verbose || exit 1\nsyncpack format --check || exit 1\n`)).toBe(
     false
   )
-  expect(normalisePreCommit('bunx syncpack format --check\nbunx lint-staged --quiet\ncustom-check\n')).toBe(
-    `${quiet}\ncustom-check\n`
+  expect(normalisePreCommit(`${FRAME}bunx syncpack format --check\nbunx lint-staged --quiet\ncustom-check\n`)).toBe(
+    `${quiet}custom-check\n`
   )
-  expect(normalisePreCommit('bunx lint-staged\n')).toBe(normalisePreCommit(''))
+  expect(normalisePreCommit(`${FRAME}bunx lint-staged\n`)).toBe(PRE_COMMIT)
 })
 
-test('SCR-11 conform repairs common prefixes while preserving repository checks', async () => {
+test('SCR-11 conform repairs committed hook content while preserving repository checks', async () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
   temporaryDirectories.push(repository)
-  mkdirSync(join(repository, '.husky'), { recursive: true })
   writeFileSync(join(repository, 'package.json'), '{}\n')
-  writeFileSync(
-    join(repository, '.husky/pre-commit'),
-    'bunx syncpack format --check\nbunx lint-staged\nif test -f custom; then custom-check; fi\n'
-  )
-  writeFileSync(join(repository, '.husky/commit-msg'), 'bunx commitlint --edit "$1"\ncustom-message-check "$1"\n')
-  writeFileSync(join(repository, 'commitlint.config.ts'), 'export default {}\n')
+  writeHooks(repository, {
+    '.githooks/pre-commit': `${FRAME}bunx syncpack format --check\nbunx lint-staged\nif test -f custom; then custom-check; fi\n`,
+    '.githooks/commit-msg': `${FRAME}bunx commitlint --edit "$1"\ncustom-message-check "$1"\n`,
+    'commitlint.config.ts': 'export default {}\n'
+  })
 
   const session = await createEngineeringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
@@ -778,9 +844,31 @@ test('SCR-11 conform repairs common prefixes while preserving repository checks'
   family.items.find((candidate) => candidate.code === 'SCR-11')?.mechanical?.conform?.run(family.selectContext(root))
 
   const writes = new Map(session.proposal().writes.map((write) => [write.path, write.content]))
-  expect(writes.get('.husky/pre-commit')).toBe(`${normalisePreCommit('if test -f custom; then custom-check; fi\n')}`)
-  expect(writes.get('.husky/commit-msg')).toBe(`${normaliseCommitMessage('custom-message-check "$1"\n')}`)
+  expect(writes.get('.githooks/pre-commit')).toBe(`${PRE_COMMIT}if test -f custom; then custom-check; fi\n`)
+  expect(writes.get('.githooks/commit-msg')).toBe(`${COMMIT_MSG}custom-message-check "$1"\n`)
   expect(writes.get('commitlint.config.ts')).toBe(COMMITLINT_CONFIGURATION)
+})
+
+test('SCR-11 conform never creates a hook, writes into .husky/ or rewrites an unframed hook', async () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
+  temporaryDirectories.push(repository)
+  writeFileSync(join(repository, 'package.json'), '{}\n')
+  writeHooks(repository, {
+    '.husky/pre-commit': 'bunx lint-staged\n',
+    '.githooks/commit-msg': '#!/bin/sh\ncommitlint --edit "$1"\n'
+  })
+  const session = await createEngineeringSession(
+    { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
+    () => [{ level: 'FAIL', code: 'SCR-11', message: 'hook drift' }]
+  )
+  const root = session.subjects[1]?.context() as EngineeringRubricContext
+  const family = catalogue.families.find((candidate) => candidate.code === 'SCR') as RubricFamily<
+    EngineeringRubricContext,
+    ScriptsRubricContext
+  >
+  family.items.find((candidate) => candidate.code === 'SCR-11')?.mechanical?.conform?.run(family.selectContext(root))
+
+  expect(session.proposal().writes.map((write) => write.path)).toEqual(['commitlint.config.ts'])
 })
 
 test('PKG-7 reports a conformed but uninstalled toolchain until its packages are present', async () => {
@@ -790,7 +878,6 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
     '@biomejs/biome': '^2.5.15',
     knip: '^6.39.0',
     rumdl: '^0.3.0',
-    husky: '^9.1.7',
     'lint-staged': '^17.6.0',
     syncpack: '^15.3.3',
     typescript: '^7.0.2'
@@ -799,6 +886,10 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
     join(repository, 'package.json'),
     `${JSON.stringify({ type: 'module', packageManager: 'bun@1.4.2', devDependencies: declared })}\n`
   )
+  writeHooks(repository, {
+    '.githooks/pre-commit': `${FRAME}bunx lint-staged\n`,
+    '.githooks/commit-msg': `${FRAME}custom-message-check "$1"\n`
+  })
   const session = await createEngineeringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
     () => [
@@ -826,15 +917,14 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
     ?.mechanical?.conform?.run(scriptFamily.selectContext(root))
   const proposal = session.proposal()
   expect(proposal.commands).toBeUndefined()
-  mkdirSync(join(repository, '.husky'), { recursive: true })
   for (const write of proposal.writes) writeFileSync(join(repository, write.path), write.content)
 
   const pkg = JSON.parse(readFileSync(join(repository, 'package.json'), 'utf8'))
   expect(Object.keys(pkg.devDependencies)).toEqual(
     expect.arrayContaining(['@commitlint/cli', '@commitlint/config-conventional'])
   )
-  expect(hasPreCommitBaseline(readFileSync(join(repository, '.husky/pre-commit'), 'utf8'))).toBe(true)
-  expect(hasCommitMessageBaseline(readFileSync(join(repository, '.husky/commit-msg'), 'utf8'))).toBe(true)
+  expect(hasPreCommitBaseline(readFileSync(join(repository, '.githooks/pre-commit'), 'utf8'))).toBe(true)
+  expect(hasCommitMessageBaseline(readFileSync(join(repository, '.githooks/commit-msg'), 'utf8'))).toBe(true)
   expect(readFileSync(join(repository, 'commitlint.config.ts'), 'utf8')).toBe(COMMITLINT_CONFIGURATION)
 
   const [pending] = inspectToolchainActivation(repository, pkg.devDependencies)
@@ -850,7 +940,7 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
     {
       level: 'PASS',
       code: 'PKG-7',
-      message: 'declared toolchain installed (9 packages)',
+      message: 'declared toolchain installed (8 packages)',
       subject: 'package.json'
     }
   ])
@@ -860,11 +950,11 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
 test('SCR-11 conform leaves unsafe hook paths untouched', async () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
   temporaryDirectories.push(repository)
-  mkdirSync(join(repository, '.husky'), { recursive: true })
+  mkdirSync(join(repository, '.githooks'), { recursive: true })
   writeFileSync(join(repository, 'package.json'), '{}\n')
   const hookTarget = join(repository, 'foreign-pre-commit')
-  writeFileSync(hookTarget, 'foreign-hook\n')
-  symlinkSync(hookTarget, join(repository, '.husky/pre-commit'))
+  writeFileSync(hookTarget, `${FRAME}foreign-hook\n`)
+  symlinkSync(hookTarget, join(repository, '.githooks/pre-commit'))
 
   const session = await createEngineeringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
@@ -877,8 +967,8 @@ test('SCR-11 conform leaves unsafe hook paths untouched', async () => {
   >
   family.items.find((candidate) => candidate.code === 'SCR-11')?.mechanical?.conform?.run(family.selectContext(root))
 
-  expect(session.proposal().writes.some((write) => write.path === '.husky/pre-commit')).toBe(false)
-  expect(readFileSync(hookTarget, 'utf8')).toBe('foreign-hook\n')
+  expect(session.proposal().writes.some((write) => write.path === '.githooks/pre-commit')).toBe(false)
+  expect(readFileSync(hookTarget, 'utf8')).toBe(`${FRAME}foreign-hook\n`)
 })
 
 test('guarded remedies do not expose unsafe command conform actions', async () => {

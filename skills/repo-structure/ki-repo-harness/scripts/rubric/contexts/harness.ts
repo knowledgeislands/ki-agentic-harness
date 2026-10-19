@@ -12,6 +12,7 @@ import {
   type CapabilitySource,
   prepareCapabilityPublication
 } from './capability-publication.ts'
+import { type HarnessGateContext, inspectCommitGate } from './commit-gate.ts'
 import { prepareRootCapabilitySummary, type RootCapabilitySummaryDraft } from './root-capability-summary.ts'
 import { prepareSkillDiagram, SKILL_DIAGRAMS, type SkillDiagramDraft } from './skill-diagrams.ts'
 
@@ -100,6 +101,7 @@ export type HarnessRubricContext = {
   config: HarnessConfigContext
   skills: HarnessSkillsContext
   review: HarnessReviewContext
+  gate: HarnessGateContext
   provenance: HarnessProvenanceContext
 }
 
@@ -388,6 +390,7 @@ export const createHarnessSession = ({
       ...inspectedSkills
     },
     review: { repository: root },
+    gate: inspectCommitGate(root),
     provenance: {
       repository: root,
       payload: [
@@ -403,7 +406,7 @@ export const createHarnessSession = ({
   return {
     subjects: [
       {
-        families: ['CAP', 'PAYLOAD', 'LAY', 'CLAUDE', 'CONFIG', 'SKILLS', 'LONG', 'COLL'],
+        families: ['CAP', 'PAYLOAD', 'LAY', 'CLAUDE', 'CONFIG', 'SKILLS', 'LONG', 'COLL', 'GATE'],
         context: () => context,
         subject: root
       },

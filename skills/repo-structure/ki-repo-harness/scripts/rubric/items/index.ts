@@ -4,6 +4,7 @@ import { CAP } from './capabilities.ts'
 import { CLAUDE } from './claude.ts'
 import { COLL } from './collision.ts'
 import { CONFIG } from './config.ts'
+import { GATE } from './gate.ts'
 import { LAY } from './layout.ts'
 import { LONG } from './longevity.ts'
 import { PAYLOAD } from './payload.ts'
@@ -16,5 +17,5 @@ export default {
   concern: 'Knowledge Islands compatible harnesses',
   packageScripts: ['ki:harness:eval'],
   createSession: createHarnessSession,
-  families: [CAP, PAYLOAD, LAY, CLAUDE, CONFIG, SKILLS, LONG, COLL, RUBRIC]
+  families: [CAP, PAYLOAD, LAY, CLAUDE, CONFIG, SKILLS, LONG, COLL, GATE, RUBRIC]
 } satisfies SkillRubricDefinition<HarnessRubricContext>

@@ -5,7 +5,7 @@ ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.ts]
-contributes: ['.ki.toml', '.gitignore', package.json, '.husky/pre-commit', '.husky/commit-msg', '.githooks/pre-commit', '.githooks/commit-msg']
+contributes: ['.ki.toml', '.gitignore', package.json, '.githooks/pre-commit', '.githooks/commit-msg']
 requires: ['.dependency-cruiser.ts', 'tooling/boundaries/package.json']
 description: >
   Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,
@@ -29,7 +29,7 @@ This is a **standard, base-agnostic governance skill**. It hard-codes no single 
 
 ## The common standard at a glance
 
-- **package.json and Git hooks** — `type: module`, `packageManager: bun@1.3.x`, `engines.node >= 22`; no aggregate or derived governance aliases; plus `clean` and Husky `prepare`. The common `pre-commit` prefix runs lint-staged then check-only Syncpack, while `commit-msg` runs Commitlint against `ki-git`'s message policy. `ki repo` invokes the declared native rubrics directly. Code tools run inside `ki-engineering`; Markdown tools run inside `ki-authoring`. The root manifest uses claimed `ki:` scripts, repository-owned `self:` scripts, and exact externally constrained bare `script_exclusions`; selected workspace packages follow their artifact skill's local command contract.
+- **package.json and Git hooks** — `type: module`, `packageManager: bun@1.3.x`, `engines.node >= 22`; no aggregate or derived governance aliases; plus `clean` and a `prepare` that binds `.githooks`. After the `ki-repo` frame, the common `pre-commit` prefix runs lint-staged then check-only Syncpack, while `commit-msg` runs Commitlint against `ki-git`'s message policy. `ki repo` invokes the declared native rubrics directly. Code tools run inside `ki-engineering`; Markdown tools run inside `ki-authoring`. The root manifest uses claimed `ki:` scripts, repository-owned `self:` scripts, and exact externally constrained bare `script_exclusions`; selected workspace packages follow their artifact skill's local command contract.
 - **Bun vs Node** — install/dev under Bun, `dist/` runs under Node ≥ 22. The bare `test` script may select Bun's runner, but **no other package script may contain `bun test`**: outside the governed entrypoint it bypasses that policy, so use `bun run test`. `NODE_ENV=development` only in dev/inspect scripts; the config loader calls `process.loadEnvFile()` in a try/catch for parity.
 - **Code design** — modules remain cohesive, code privileges comprehension over clever abstraction, and reuse is extracted only when it represents a stable shared concept. A change-aware consistency review is advisory: Git trailer evidence scopes a human or model review but never triggers one automatically.
 - **Knip entry points** — include authored repository commands and canonical skill scripts in the unused-code scan, while excluding managed projections. Review each declared entry or glob against a real supported invocation; declaring an entry does not establish that it is used.

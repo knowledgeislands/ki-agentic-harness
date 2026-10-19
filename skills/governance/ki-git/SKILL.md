@@ -23,12 +23,12 @@ Read [the Git standard](references/standards-git.md) before preparing a commit, 
 
 The hosted native rubric records the portable review prompts below. Its five policy families are **judgment-only**: an AUDIT renders them as unassessed review work, not as a clean Git result. Before recording a judgment, gather the named read-only evidence (for example `git status --short`, `git branch --show-current`, and the proposed commit diff/message) and retain its outcome with the review. It deliberately has no mechanical policy checks or private Git executor yet. The CLEAN family names, for each clean-down criterion, the read-only command and fixed rule that decide it, so that `ki repo audit` can run them mechanically across the estate; deleting a remote branch or closing a pull request always needs the owner's approval.
 
-Package-backed repositories mechanically bind this skill's message vocabulary through the `ki-engineering` Husky and Commitlint contract. This skill does not install hooks, write runtime settings, or own the package toolchain; its native rubric retains the judgment that a proposed message accurately describes one completed unit.
+Every repository mechanically binds this skill's message vocabulary through a committed `.githooks/commit-msg`: the `ki-engineering` Commitlint contract where a package exists, or `ki git check-message` once `tools-ki` `KI-TOOL-KI-CLI-161` ships it. This skill does not install hooks, write runtime settings, or own the package toolchain; its native rubric retains the judgment that a proposed message accurately describes one completed unit.
 
 ## Boundaries
 
 - `ki-repo` owns repository configuration and GitHub settings, including branch-protection choices.
-- `ki-engineering` owns repository-local Husky and Commitlint wiring for package-backed repositories; `ki-git` owns the message policy that binding enforces.
+- `ki-repo` owns the committed hooks' existence, binding and frame; `ki-engineering` owns the Commitlint content for package-backed repositories; `ki-git` owns the message policy that binding enforces.
 - The harness owns the runtime `hooks/` payload layout; `ki-git` owns the stale-lock guard's portable safety semantics.
 - `ki-repo-dotfiles-chezmoi` owns runtime-specific Claude Code settings registration after it has selected a compatible payload.
 

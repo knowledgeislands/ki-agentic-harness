@@ -1,5 +1,5 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import { HOOK_BINDING, type HooksRubricContext, PRE_COMMIT_HOOK } from '../contexts/hooks.ts'
+import { COMMIT_MSG_HOOK, HOOK_BINDING, type HooksRubricContext, PRE_COMMIT_HOOK } from '../contexts/hooks.ts'
 import type { RepoRubricContext } from '../contexts/repository.ts'
 
 const SOURCE = 'standards-repository.md'
@@ -22,12 +22,61 @@ const HOOK_1: RubricItem<HooksRubricContext> = {
 const HOOK_2: RubricItem<HooksRubricContext> = {
   code: 'HOOK-2',
   title: 'Commit gate bound',
-  description: 'The clone’s `core.hooksPath` resolves to `.githooks`, so the committed gate runs on every commit.',
+  description:
+    'The effective `core.hooksPath` of the audited working tree resolves to `.githooks`, so the committed gate runs on every commit; Husky’s `.husky/_` is named as the common wrong value.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: { class: 'diagnostic', guidance: `Run \`${HOOK_BINDING}\` in the clone, then rerun the audit.` },
     audit: { phase: 'INSPECT', run: (context) => context.hook2 }
+  }
+}
+
+const HOOK_3: RubricItem<HooksRubricContext> = {
+  code: 'HOOK-3',
+  title: 'Committed commit-message gate',
+  description: `A tracked, executable \`${COMMIT_MSG_HOOK}\` exists in a package-backed repository; without a package it is not applicable until \`ki git check-message\` ships.`,
+  sources: [SOURCE],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance: `Commit an executable \`${COMMIT_MSG_HOOK}\` that validates the proposed message check-only, then rerun the audit.`
+    },
+    audit: { phase: 'INSPECT', run: (context) => context.hook3 }
+  }
+}
+
+const HOOK_4: RubricItem<HooksRubricContext> = {
+  code: 'HOOK-4',
+  title: 'Hook refuses before it runs',
+  description:
+    'Each committed hook starts `#!/bin/sh` and refuses when a required tool is missing before its first command, and never suggests `--no-verify`.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Open the hook with the common frame: test each required tool, name the missing ones and the install step, refuse with `exit 1`, then run the content.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => context.hook4 }
+  }
+}
+
+const HOOK_5: RubricItem<HooksRubricContext> = {
+  code: 'HOOK-5',
+  title: 'Husky retired',
+  description:
+    'No tracked `.husky/` path, `husky` dependency, Husky call in `prepare` or hook delegating to `.husky/` remains; locally, no untracked `.husky/_` install is left behind.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance: `Move the hook content into \`.githooks/\`, set \`prepare\` to \`${HOOK_BINDING}\`, remove \`husky\` and \`.husky/\`, rebind the clone and remove \`.husky/_\`.`
+    },
+    audit: { phase: 'INSPECT', run: (context) => context.hook5 }
   }
 }
 
@@ -48,8 +97,8 @@ const HOOK_J1: RubricItem<HooksRubricContext> = {
 export const HOOK: RubricFamily<RepoRubricContext, HooksRubricContext> = {
   code: 'HOOK',
   title: 'Commit gate',
-  description: 'Existence and binding of the committed pre-commit gate; its content belongs to shape skills.',
+  description: 'Existence, binding and frame of the committed hooks; their content belongs to shape skills.',
   standard: SOURCE,
   selectContext: (context) => context.hooks,
-  items: [HOOK_1, HOOK_2, HOOK_J1]
+  items: [HOOK_1, HOOK_2, HOOK_3, HOOK_4, HOOK_5, HOOK_J1]
 }

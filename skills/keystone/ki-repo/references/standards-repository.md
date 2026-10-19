@@ -133,9 +133,26 @@ For the work model's tolerance window, which phase 5 of the migration closes, th
 
 ## Commit gate
 
-Every KI repository should commit an executable `.githooks/pre-commit` and bind it with the relative `git config core.hooksPath .githooks`, so the gate travels with the source and reaches every linked worktree ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). `ki-repo` owns only existence and binding: `HOOK-1` checks that the hook is a safe regular file tracked with mode `100755`, and `HOOK-2` checks the local binding, naming the exact command when it is absent or points elsewhere. `HOOK-2` is not applicable without a committed hook, or in CI where no local binding is configured. Both start at WARN while the estate converges; `ki-repo` never writes the hook.
+Every KI repository commits its hooks in `.githooks/`, `pre-commit` and `commit-msg`, and binds them with the relative `git config core.hooksPath .githooks`, so the gate travels with the source, is reviewed with it and reaches every linked worktree ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Each hook is the whole hook, a tracked regular file with mode `100755`, since Git ignores a hook that is not executable. Husky is retired: its untracked `.husky/_` runtime leaves an uninstalled clone or worktree committing unchecked, and a committed hook bound by one `prepare` line needs nothing else from it. A package-backed repository binds through `prepare`; elsewhere the binding is set in each clone.
 
-What the hook runs belongs to the repository's shape skill. `ki-engineering` contributes the package-backed stubs and `SCR-11` owns their content; other shape skills each declare one content criterion that is not applicable without a hook and requires its check-only command on a non-comment line. A gate that cannot run is unknown, not a pass: the hook stops with the activation step rather than inviting `--no-verify`.
+Every hook follows one frame:
+
+1. `#!/bin/sh`, then `root="$(git rev-parse --show-toplevel)" || exit 1`.
+2. Refuse unless every required tool is present: `node_modules/.bin/<tool>` in a package-backed repository, `command -v <tool>` otherwise. The refusal names the missing tools and the install step, and ends "do not bypass with --no-verify; a gate that cannot run is unknown, not a pass."
+3. In a package-backed repository, put `$root/node_modules/.bin` on `PATH`.
+4. The content, each command ending `|| exit 1` so failure propagates, with `"$@"` forwarded where a hook takes arguments.
+
+`ki-repo` owns existence, binding and the frame, never the commands:
+
+- `HOOK-1` checks that `.githooks/pre-commit` is a safe regular file tracked with mode `100755`.
+- `HOOK-2` checks the effective `core.hooksPath` of the audited working tree, so a worktree-scoped override shows, and names the exact command when it is absent or points elsewhere, calling out Husky's `.husky/_` as the common wrong value. It is not applicable without a committed `pre-commit`, or in CI where no local binding is configured.
+- `HOOK-3` checks `.githooks/commit-msg` the same way. It is required in a package-backed repository; without a package it is not applicable until `ki git check-message` ships under `tools-ki` `KI-TOOL-KI-CLI-161`, and such a repository runs `pre-commit` only.
+- `HOOK-4` checks that each committed hook starts `#!/bin/sh` and refuses on a missing tool before its first command, and that no line suggests `--no-verify`.
+- `HOOK-5` checks that Husky is gone: no tracked `.husky/` path, no `husky` dependency, no Husky call in `prepare`, no hook delegating to `.husky/`, and locally no leftover untracked `.husky/_`.
+
+`HOOK-1` to `HOOK-5` are WARN while the estate converges wave by wave, and move to FAIL after the last wave. Every KI repository takes part; a repository without `.ki.toml` is out of scope. `ki-repo` defines the frame but does not yet write it: hook composition, where conform writes the frame and each shape skill claims its content lines, and the binding sweep are `tools-ki` work.
+
+What the hook runs belongs to the repository's shape skill. `ki-engineering` owns the package-backed content through `SCR-11`; other shape skills each declare one content criterion that is not applicable without a hook and requires its check-only command on a non-comment line. Every command is check-only: no `ki repo conform`, `--fix` or `--write`. Local hooks give immediate feedback and can be bypassed with `--no-verify`, so the repository audit and CI remain the authoritative gate.
 
 ## Layer 2 — core GitHub settings
 
