@@ -68,7 +68,7 @@ The body carries only two sections, in order:
 - `## Outcome` expands the finite outcome and its test.
 - `## Notes` holds ideas and context: untracked ideas under the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation), boundaries, and links to the Project's Decision Records or other durable knowledge.
 
-The note tracks state with `lifecycle` alone. It carries no dated `## Update`, health or status section and lists no work records; status lives only in each record, and the state of the Project work lives in its work file under [`ki-work-folder`](../../../governance/ki-work-folder/SKILL.md).
+The note tracks state with `lifecycle` alone. It carries no dated `## Update`, health or status section and lists no work records; status lives only in each record, and the state of the Project work lives in its work file under [`ki-work-package`](../../../governance/ki-work-package/SKILL.md).
 
 ## Idea-stage Project
 
@@ -190,4 +190,4 @@ A `design/` folder under `Streams/` is not tolerated: the Streams checker fails 
 
 The roadmap checker resolves `project` slugs against `Streams/Projects/` and `theme` slugs against `Streams/Themes/` of the referenced territory when it can find the registry, reading the [tolerated](#tolerance-window) thread-model shapes with a warning. An unknown slug, or an unavailable registry, is a warning and never a failure or a silent ungrouping. A record naming both a `project` and a `theme` fails only when the registry gives that Project a different theme, including the same slug in a different territory. The Streams checker on the Capital reports a Project with no open record as due for its close-out assessment, and an assessed one as awaiting its lead's close decision. It recognises an idea-stage Project by its `planned` lifecycle and decision outcome, and warns when an open record names one or a cap is exceeded. A legacy `Streams/Projects/Initiatives.md` index stays readable with a warning during the [migration tolerance window](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance).
 
-Views group by Project and theme without copying record lists into a second status source. Status lives in the records and each Project note's `lifecycle`; the state of each piece of work lives in its work file, which `ki-work-folder` owns.
+Views group by Project and theme without copying record lists into a second status source. Status lives in the records and each Project note's `lifecycle`; the state of each piece of work lives in its work file, which `ki-work-package` owns.

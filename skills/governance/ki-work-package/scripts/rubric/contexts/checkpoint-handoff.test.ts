@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import type { RubricItem } from '../../shared/rubric.ts'
 import { BOUNDARY } from '../items/boundary.ts'
 import { RECORD } from '../items/records.ts'
-import { checkpointReadme, createWorkFolderSession } from './work-folder.ts'
+import { checkpointReadme, createWorkPackageSession } from './work-package.ts'
 
 const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, code: string) => {
   const item = family.items.find((candidate) => candidate.code === code)
@@ -15,7 +15,7 @@ const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, 
 }
 
 test('fresh agent can reconstruct a portable hand-off without transcript or runtime state', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-handoff-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-package-handoff-'))
   const checkpointDirectory = join(repository, '+', '_CHECKPOINTS')
 
   try {
@@ -61,14 +61,14 @@ test('fresh agent can reconstruct a portable hand-off without transcript or runt
       ].join('\n')
     )
 
-    const session = createWorkFolderSession({
+    const session = createWorkPackageSession({
       mode: 'audit',
       repository,
       userHome: tmpdir(),
-      configuration: { skills: { 'ki-work-folder': {} } }
+      configuration: { skills: { 'ki-work-package': {} } }
     })
     const context = session.subjects[0]?.context()
-    if (!context) throw new Error('ki-work-folder session did not expose its repository subject')
+    if (!context) throw new Error('ki-work-package session did not expose its repository subject')
 
     expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(context))[0]?.status).toBe('PASS')
     expect(mechanical(BOUNDARY, 'BOUNDARY-1').audit.run(BOUNDARY.selectContext(context))[0]?.status).toBe('PASS')

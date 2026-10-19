@@ -607,7 +607,14 @@ async function remoteContentEvidence(nwo: string, branch: string): Promise<Conte
   }
 }
 
-const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Signals) => boolean }[] = [
+// `alias` is a renamed skill's old declaration, still accepted, with a warning, for its tolerance window.
+const COVERAGE: {
+  skill: string
+  table: string
+  artifact: string
+  detect: (s: Signals) => boolean
+  alias?: { skill: string; table: string }
+}[] = [
   {
     skill: 'decision-records',
     table: skillTable('ki-decision-records'),
@@ -722,8 +729,9 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
     detect: (s) => [...s.tree].some((p) => /^\.codex\/agents\/.+\.toml$/.test(p))
   },
   {
-    skill: 'work-folder',
-    table: skillTable('ki-work-folder'),
+    skill: 'work-package',
+    table: skillTable('ki-work-package'),
+    alias: { skill: 'work-folder', table: skillTable('ki-work-folder') },
     artifact: '+/_WORK/ or +/_WORK_REVIEW/ subarea',
     detect: (s) =>
       [...s.tree].some((p) => ['+/_WORK/', '+/_WORK_REVIEW/', '+/_CHECKPOINTS/'].some((area) => p.startsWith(area)))
@@ -732,6 +740,7 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
 // Thread-model working areas read for the work model's tolerance window, each warned with its new home.
 const LEGACY_WORKING_AREAS = ['+/_CHECKPOINTS/', '+/_THREADS/'] as const
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
+const COVERAGE_ALIASES = new Map(COVERAGE.flatMap((c) => (c.alias ? [[c.alias.skill, c.skill] as const] : [])))
 export const detectedCoverageSkills = (): readonly string[] => COVERAGE.map((entry) => entry.table).sort()
 // A primary structure is exclusive; all other ki-repo-* skills are composable
 // specialisations. Each declaration must match the explicit repository kind.
@@ -1083,7 +1092,9 @@ async function auditRepo(
   for (const [id, v] of Object.entries(ki?.checks ?? {})) {
     if (id.startsWith('coverage-')) {
       const sk = id.slice('coverage-'.length)
-      if (!COVERAGE_SKILLS.has(sk))
+      const renamed = COVERAGE_ALIASES.get(sk)
+      if (renamed) warn('CHECKS-1', `"${id}" is a deprecated alias — rename it coverage-${renamed}`)
+      if (!COVERAGE_SKILLS.has(sk) && !renamed)
         warn('CHECKS-1', `"${id}" names no coverage skill (one of: ${[...COVERAGE_SKILLS].join(', ')})`)
       else if (!v) note('COV-1', `override: ki-${sk} coverage not enforced for this repo`)
       else
@@ -1116,8 +1127,14 @@ async function auditRepo(
   if (files.has(KI_CONFIG)) {
     const text = kiText ?? ''
     for (const c of COVERAGE) {
-      if (!enforced(`coverage-${c.skill}`)) continue
-      const declared = declaresTable(text, c.table)
+      if (!enforced(`coverage-${c.skill}`) || (c.alias && !enforced(`coverage-${c.alias.skill}`))) continue
+      const aliased = c.alias !== undefined && declaresTable(text, c.alias.table)
+      const declared = declaresTable(text, c.table) || aliased
+      if (aliased && c.alias && !declaresTable(text, c.table))
+        warn(
+          'COV-1',
+          `declares [skills.${c.alias.table}], a deprecated alias — declare [skills.${c.table}] in its place`
+        )
       const detected = c.detect(signals)
       if (detected && !declared)
         fail(

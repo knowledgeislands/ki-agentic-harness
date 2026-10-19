@@ -17,7 +17,7 @@ This normative standard defines the structure, linking, configuration, routing, 
 
 ## The Knowledge Islands model
 
-A Knowledge Islands base is a single markdown store organised into five fixed zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, and `Admin/` — flanked by working areas. `+/` holds inputs to further local repository work, whether received or created locally; `-/` holds produced outputs awaiting use or delivery. They are working areas, not canonical knowledge zones. Specialist skills own their records: `ki-batch` owns `_BATCHES`, `ki-work-folder` owns `_CHECKPOINTS`, and `ki-trades` owns peer-qualified `_TRADES` records and their lifecycle.
+A Knowledge Islands base is a single markdown store organised into five fixed zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, and `Admin/` — flanked by working areas. `+/` holds inputs to further local repository work, whether received or created locally; `-/` holds produced outputs awaiting use or delivery. They are working areas, not canonical knowledge zones. Specialist skills own their records: `ki-batch` owns `_BATCHES`, `ki-work-package` owns `_CHECKPOINTS`, and `ki-trades` owns peer-qualified `_TRADES` records and their lifecycle.
 
 The standard applies when a base either declares `[skills.ki-repo-kb]` / `[skills.ki-repo-kb.zones]` in `.ki.toml` or carries at least one canonical zone directory. With neither, the checker reports one `NA` and stops. Either signal activates the complete audit: a declared but structurally incomplete base still fails its missing zones, and a zone-bearing base without a declaration is audited with canonical zone names.
 

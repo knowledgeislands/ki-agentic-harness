@@ -1,5 +1,5 @@
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { basename, extname, join, relative, resolve } from 'node:path'
+import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import type {
   AuditOutcome,
   ConformWrite,
@@ -36,12 +36,51 @@ const WORK_STATES: readonly unknown[] = [
   'finished'
 ]
 const HOLD_REASONS: readonly unknown[] = ['paused', 'more-expected']
-const OPTIONAL_TIMES = ['received', 'beat', 'mark', 'created_at'] as const
 const KEBAB = '[a-z0-9]+(?:-[a-z0-9]+)*'
 const WORK_ID = new RegExp(`^${KEBAB}(?:\\.${KEBAB})*$`)
 const SLUG = new RegExp(`^${KEBAB}$`)
 const HOLDER = new RegExp(`^(?:owner|agent|(?:run|person|repo)/[A-Za-z0-9_.-]+|work/${KEBAB}(?:\\.${KEBAB})*)$`)
 const WORK_HEADINGS = ['Next steps', 'Messages', 'Parked'] as const
+const STATE_FILE = 'state.md'
+const PACKAGE_FILES = ['queries.md', 'messages.md', 'decisions.md'] as const
+const DEFINITION_REQUIRED = ['id', 'level', 'title', 'description', 'worker', 'supervisor'] as const
+const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
+  ...DEFINITION_REQUIRED,
+  'label',
+  'project',
+  'theme',
+  'created_at'
+])
+const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
+const STATE_REQUIRED = ['id', 'state', 'since'] as const
+const STATE_FIELDS: ReadonlySet<string> = new Set([
+  ...STATE_REQUIRED,
+  'target',
+  'hold',
+  'blocking',
+  'received',
+  'beat',
+  'mark',
+  'method_read'
+])
+const QUERY_HEADINGS = ['Open', 'Parked'] as const
+const QUERY_HEADING = /^[A-Z0-9][A-Z0-9-]* - \S/
+const QUERY_PARTS = ['**Context:**', '**Query:**', '**Options:**'] as const
+const MESSAGE_LINE = /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2}) · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
+const REVISION = /^[0-9a-f]{7,40}$/
+// Soft limits under the standard's Size limits, warned and never failed.
+const LIMITS = {
+  description: 500,
+  definitionWords: 300,
+  stateWords: 400,
+  nowLines: 5,
+  messageWords: 60,
+  messageDays: 7,
+  decisionLines: 400
+} as const
+const DATED_LINE = /^\s*(?:[-*]|\d+\.)?\s*(?:\*\*)?\d{4}-\d{2}-\d{2}/gm
+const COMMIT_ID = /\b(?=[0-9a-f]*\d)(?=[0-9a-f]*[a-f])[0-9a-f]{7,40}\b/g
+const TEST_COUNT = /\b\d+\s+(?:tests?|pass(?:ed|es)?|fail(?:ed|s|ures?)?)\b/gi
 const OPTIONAL_FIELDS = ['label', 'role'] as const
 const ROLES = ['conversational', 'coordination', 'state-of-play'] as const
 const COORDINATING_ROLES: readonly unknown[] = ['coordination', 'state-of-play']
@@ -81,9 +120,9 @@ export type RecordContext = {
   readonly label: readonly AuditOutcome[]
   readonly role: readonly AuditOutcome[]
 }
-export type LifecycleContext = { readonly mechanical: readonly AuditOutcome[] }
+export type LifecycleContext = { readonly mechanical: readonly AuditOutcome[]; readonly size: readonly AuditOutcome[] }
 
-export type WorkFolderRubricContext = {
+export type WorkPackageRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly configuration: OutcomeContext
   readonly structure: ScaffoldContext
@@ -364,12 +403,25 @@ type Evidence = {
   schema: AuditOutcome[]
   role: AuditOutcome[]
   lifecycle: AuditOutcome[]
+  size: AuditOutcome[]
+  legacy: AuditOutcome[]
   boundary: AuditOutcome[]
 }
 
-/** The work folders under `+/_WORK/`, each a physical directory holding its work file. */
-const inspectWork = (directory: string, root: string): { works: ParsedRecord[]; violations: AuditOutcome[] } => {
-  const works: ParsedRecord[] = []
+/** One work folder: its work file, and in the package shape its other four files where present. */
+type WorkFolder = {
+  readonly stem: string
+  readonly package: boolean
+  readonly work: ParsedRecord
+  readonly state?: ParsedRecord
+  readonly queries?: ParsedRecord
+  readonly messages?: ParsedRecord
+  readonly decisions?: string
+}
+
+/** The work folders under `+/_WORK/`, each a physical directory holding its work file and, as a package, `state.md`. */
+const inspectWork = (directory: string, root: string): { works: WorkFolder[]; violations: AuditOutcome[] } => {
+  const works: WorkFolder[] = []
   const violations: AuditOutcome[] = []
   for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) =>
     left.name.localeCompare(right.name)
@@ -392,7 +444,34 @@ const inspectWork = (directory: string, root: string): { works: ParsedRecord[]; 
       })
       continue
     }
-    works.push({ ...parseCheckpoint(path, root), stem: entry.name })
+    const work = { ...parseCheckpoint(path, root), stem: entry.name }
+    // A folder is in the package shape exactly when state.md exists.
+    if (!existsSync(join(folder, STATE_FILE))) {
+      works.push({ stem: entry.name, package: false, work })
+      continue
+    }
+    const files: Partial<Record<string, ParsedRecord>> = {}
+    for (const name of [STATE_FILE, ...PACKAGE_FILES]) {
+      const file = join(folder, name)
+      if (physicalFile(file)) files[name] = { ...parseCheckpoint(file, root), stem: entry.name }
+      else
+        violations.push({
+          status: 'VIOLATION',
+          message: `a work package holds all five files as regular files from creation; ${name} is missing or unsafe`,
+          subject: relative(root, folder)
+        })
+    }
+    works.push({
+      stem: entry.name,
+      package: true,
+      work,
+      ...(files[STATE_FILE] ? { state: files[STATE_FILE] } : {}),
+      ...(files['queries.md'] ? { queries: files['queries.md'] } : {}),
+      ...(files['messages.md'] ? { messages: files['messages.md'] } : {}),
+      ...(physicalFile(join(folder, 'decisions.md'))
+        ? { decisions: readFileSync(join(folder, 'decisions.md'), 'utf8') }
+        : {})
+    })
   }
   return { works, violations }
 }
@@ -409,91 +488,325 @@ const section = (body: string, heading: string, next: string | undefined): strin
   return sectionEnd < 0 ? undefined : body.slice(sectionStart + start.length, sectionEnd)
 }
 
-/** Validates each work file `+/_WORK/<id>/work.md` against the closed work-file form. */
-const workEvidence = (works: readonly ParsedRecord[], coordinationDeclared: boolean): Evidence => {
-  const evidence: Evidence = { identity: [], schema: [], role: [], lifecycle: [], boundary: [] }
-  const fail = (list: AuditOutcome[], record: ParsedRecord, message: string): void => {
+/** The H1 and H2 headings of a body, in order. */
+const outline = (body: string): { level: number; title: string }[] =>
+  [...body.matchAll(/^(#{1,2})\s+(.+?)\s*$/gm)].map((match) => ({
+    level: match[1]?.length ?? 0,
+    title: match[2] ?? ''
+  }))
+
+const sameOutline = (body: string, h1: string, h2: readonly string[]): boolean =>
+  JSON.stringify(outline(body)) ===
+  JSON.stringify([{ level: 1, title: h1 }, ...h2.map((title) => ({ level: 2, title }))])
+
+/** The content under each H2 heading, keyed by its title. */
+const h2Sections = (body: string): Map<string, string> => {
+  const sections = new Map<string, string>()
+  const matches = [...body.matchAll(/^## (.+?)\s*$/gm)]
+  for (const [index, match] of matches.entries()) {
+    const start = (match.index ?? 0) + match[0].length
+    const end = matches[index + 1]?.index ?? body.length
+    sections.set(match[1] ?? '', body.slice(start, end))
+  }
+  return sections
+}
+
+const words = (text: string): number => text.split(/\s+/).filter(Boolean).length
+
+/** The definition fields both shapes share: level, title, label, project, theme, holders and the coordination gate. */
+const definitionChecks = (
+  record: ParsedRecord,
+  fields: Readonly<Record<string, unknown>>,
+  coordinationDeclared: boolean,
+  evidence: Evidence
+): void => {
+  const fail = (list: AuditOutcome[], message: string): void => {
     list.push({ status: 'VIOLATION', message, subject: record.path })
   }
-  for (const work of works) {
-    const fields = work.fields
-    if (!fields) {
-      fail(evidence.schema, work, 'work file front matter must be a valid YAML mapping')
+  if (!WORK_ID.test(record.stem) || UUID.test(record.stem) || OPAQUE_SESSION_NAME.test(record.stem))
+    fail(evidence.identity, 'a work folder is named by a dotted id of lower-case kebab segments')
+  if (fields.id !== record.stem) fail(evidence.identity, 'id must exactly match the work folder name')
+  if (!WORK_LEVELS.includes(fields.level)) fail(evidence.schema, 'level must be territory, regular or project')
+  if (!singleLine(fields.title)) fail(evidence.schema, 'title must be a non-empty single-line string')
+  if ('label' in fields && !singleLine(fields.label))
+    fail(evidence.schema, 'label must be a non-empty single-line string')
+  if (fields.level === 'project' ? !SLUG.test(String(fields.project ?? '')) : 'project' in fields)
+    fail(evidence.schema, 'project names the Project slug at project level and is absent otherwise')
+  if (fields.theme !== undefined && fields.theme !== null && !SLUG.test(String(fields.theme)))
+    fail(evidence.schema, 'theme must be a theme slug or null')
+  for (const field of ['worker', 'supervisor'] as const)
+    if (!HOLDER.test(String(fields[field] ?? '')))
+      fail(evidence.schema, `${field} must be a holder: owner, agent, run/, work/, person/ or repo/`)
+  if ('created_at' in fields && fields.created_at !== null && !validTimestamp(fields.created_at))
+    fail(evidence.schema, 'created_at must be a UTC RFC 3339 timestamp or null')
+  if (COORDINATING_LEVELS.includes(fields.level) && !coordinationDeclared)
+    fail(evidence.role, `${String(fields.level)} work is valid only where .ki.toml declares [skills.ki-coordination]`)
+}
+
+/** The state fields both shapes share: state, target, hold, blocking and the move times. */
+const stateChecks = (record: ParsedRecord, fields: Readonly<Record<string, unknown>>, evidence: Evidence): void => {
+  const fail = (message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: record.path })
+  }
+  if (!WORK_STATES.includes(fields.state)) fail(`state must be one of ${WORK_STATES.join(', ')}`)
+  if (fields.state === 'handoff' ? !HOLDER.test(String(fields.target ?? '')) : 'target' in fields)
+    fail('target names a holder in handoff and is absent otherwise')
+  const hold = table(fields.hold)
+  if (
+    fields.state === 'on-hold'
+      ? !hold ||
+        Object.keys(hold).some((key) => key !== 'reason' && key !== 'release') ||
+        !HOLD_REASONS.includes(hold.reason) ||
+        !singleLine(hold.release)
+      : 'hold' in fields
+  )
+    fail('hold carries reason, paused or more-expected, and release when on hold, else absent')
+  if (
+    'blocking' in fields &&
+    (typeof fields.blocking !== 'boolean' || (fields.blocking && fields.state !== 'handoff-to-supervisor'))
+  )
+    fail('blocking is a boolean, true only in handoff-to-supervisor')
+  if (!validTimestamp(fields.since)) fail('since must be a UTC RFC 3339 timestamp')
+  for (const field of ['received', 'beat', 'mark'] as const)
+    if (field in fields && fields[field] !== null && !validTimestamp(fields[field]))
+      fail(`${field} must be a UTC RFC 3339 timestamp or null`)
+}
+
+const chronology = (record: ParsedRecord, created: unknown, since: unknown, evidence: Evidence): void => {
+  if (validTimestamp(created) && validTimestamp(since) && Date.parse(created) > Date.parse(since))
+    evidence.lifecycle.push({
+      status: 'VIOLATION',
+      message: 'created_at must not be later than since',
+      subject: record.path
+    })
+}
+
+/** A single-file work folder: `work.md` carries the definition and the state under its old form. */
+const singleFileEvidence = (work: ParsedRecord, coordinationDeclared: boolean, evidence: Evidence): void => {
+  const fields = work.fields
+  if (!fields) {
+    evidence.schema.push({
+      status: 'VIOLATION',
+      message: 'work file front matter must be a valid YAML mapping',
+      subject: work.path
+    })
+    return
+  }
+  const fail = (message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: work.path })
+  }
+  evidence.legacy.push({
+    status: 'VIOLATION',
+    message: `legacy: a single-file work folder, read for the tolerance window; it moves to the five-file package, adding ${STATE_FILE}, queries.md and messages.md, at the territory's migration`,
+    subject: work.path
+  })
+  if (!sameOutline(work.body, work.stem, WORK_HEADINGS))
+    fail('work file headings must be the id H1 and Next steps, Messages and Parked')
+  for (const [index, heading] of WORK_HEADINGS.entries())
+    if ((section(work.body, heading, WORK_HEADINGS[index + 1])?.trim().length ?? 0) === 0)
+      fail(`${heading} must say something, if only None`)
+  const keys = Object.keys(fields)
+  if (WORK_REQUIRED.some((field) => !keys.includes(field)) || keys.some((field) => !WORK_FIELDS.has(field)))
+    fail('work file front matter must use only its closed field set')
+  definitionChecks(work, fields, coordinationDeclared, evidence)
+  stateChecks(work, fields, evidence)
+  chronology(work, fields.created_at, fields.since, evidence)
+  evidence.boundary.push(...boundaryOutcomes(work, fields))
+}
+
+/** The message queue: its H1, then lines in the Messages line shape, important lines first, or None. */
+const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, evidence: Evidence): void => {
+  const fail = (message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: messages.path })
+  }
+  const warn = (message: string): void => {
+    evidence.size.push({ status: 'VIOLATION', message, subject: messages.path })
+  }
+  if (JSON.stringify(outline(messages.body)) !== JSON.stringify([{ level: 1, title: `${messages.stem} messages` }])) {
+    fail(`messages.md holds the H1 "# ${messages.stem} messages" and no other heading`)
+    return
+  }
+  const content = messages.body.replace(/^#\s+.+$/m, '').trim()
+  if (content === 'None') return
+  if (content.length === 0) {
+    fail('messages.md must say something, if only None')
+    return
+  }
+  const lines: string[] = []
+  for (const line of content.split(/\r?\n/)) {
+    if (line.trim().length === 0) continue
+    if (line.startsWith('- ')) lines.push(line)
+    else if (/^\s/.test(line) && lines.length > 0) lines[lines.length - 1] += ` ${line.trim()}`
+    else {
+      fail('messages.md holds only message lines, one list item each, or None')
+      return
+    }
+  }
+  let ordinarySeen = false
+  for (const line of lines) {
+    const match = MESSAGE_LINE.exec(line)
+    if (!match) {
+      fail('each message line reads "- <date> · <TAG> · <sender title>: ...", or begins "- IMPORTANT · "')
       continue
     }
-    if (!WORK_ID.test(work.stem) || UUID.test(work.stem) || OPAQUE_SESSION_NAME.test(work.stem))
-      fail(evidence.identity, work, 'a work folder is named by a dotted id of lower-case kebab segments')
-    if (fields.id !== work.stem) fail(evidence.identity, work, 'id must exactly match the work folder name')
-
-    const headings = [...work.body.matchAll(/^(#{1,2})\s+(.+?)\s*$/gm)].map((match) => ({
-      level: match[1]?.length ?? 0,
-      title: match[2] ?? ''
-    }))
-    const expected = [{ level: 1, title: work.stem }, ...WORK_HEADINGS.map((title) => ({ level: 2, title }))]
-    if (JSON.stringify(headings) !== JSON.stringify(expected))
-      fail(evidence.schema, work, 'work file headings must be the id H1 and Next steps, Messages and Parked')
-    for (const [index, heading] of WORK_HEADINGS.entries())
-      if ((section(work.body, heading, WORK_HEADINGS[index + 1])?.trim().length ?? 0) === 0)
-        fail(evidence.schema, work, `${heading} must say something, if only None`)
-
-    const keys = Object.keys(fields)
-    if (WORK_REQUIRED.some((field) => !keys.includes(field)) || keys.some((field) => !WORK_FIELDS.has(field)))
-      fail(evidence.schema, work, 'work file front matter must use only its closed field set')
-    if (!WORK_LEVELS.includes(fields.level)) fail(evidence.schema, work, 'level must be territory, regular or project')
-    if (!singleLine(fields.title)) fail(evidence.schema, work, 'title must be a non-empty single-line string')
-    if ('label' in fields && !singleLine(fields.label))
-      fail(evidence.schema, work, 'label must be a non-empty single-line string')
-    if (fields.level === 'project' ? !SLUG.test(String(fields.project ?? '')) : 'project' in fields)
-      fail(evidence.schema, work, 'project names the Project slug at project level and is absent otherwise')
-    if (fields.theme !== undefined && fields.theme !== null && !SLUG.test(String(fields.theme)))
-      fail(evidence.schema, work, 'theme must be a theme slug or null')
-    for (const field of ['worker', 'supervisor'] as const)
-      if (!HOLDER.test(String(fields[field] ?? '')))
-        fail(evidence.schema, work, `${field} must be a holder: owner, agent, run/, work/, person/ or repo/`)
-    if (!WORK_STATES.includes(fields.state))
-      fail(evidence.schema, work, `state must be one of ${WORK_STATES.join(', ')}`)
-    if (fields.state === 'handoff' ? !HOLDER.test(String(fields.target ?? '')) : 'target' in fields)
-      fail(evidence.schema, work, 'target names a holder in handoff and is absent otherwise')
-    const hold = table(fields.hold)
-    if (
-      fields.state === 'on-hold'
-        ? !hold ||
-          Object.keys(hold).some((key) => key !== 'reason' && key !== 'release') ||
-          !HOLD_REASONS.includes(hold.reason) ||
-          !singleLine(hold.release)
-        : 'hold' in fields
-    )
-      fail(evidence.schema, work, 'hold carries reason, paused or more-expected, and release when on hold, else absent')
-    if (
-      'blocking' in fields &&
-      (typeof fields.blocking !== 'boolean' || (fields.blocking && fields.state !== 'handoff-to-supervisor'))
-    )
-      fail(evidence.schema, work, 'blocking is a boolean, true only in handoff-to-supervisor')
-
-    if (!validTimestamp(fields.since)) fail(evidence.schema, work, 'since must be a UTC RFC 3339 timestamp')
-    for (const field of OPTIONAL_TIMES)
-      if (field in fields && fields[field] !== null && !validTimestamp(fields[field]))
-        fail(evidence.schema, work, `${field} must be a UTC RFC 3339 timestamp or null`)
-    if (
-      validTimestamp(fields.created_at) &&
-      validTimestamp(fields.since) &&
-      Date.parse(fields.created_at) > Date.parse(fields.since)
-    )
-      fail(evidence.lifecycle, work, 'created_at must not be later than since')
-
-    if (COORDINATING_LEVELS.includes(fields.level) && !coordinationDeclared)
-      fail(
-        evidence.role,
-        work,
-        `${String(fields.level)} work is valid only where .ki.toml declares [skills.ki-coordination]`
+    if (match[1]) {
+      if (ordinarySeen) fail('important message lines stand above every ordinary line')
+    } else ordinarySeen = true
+    if (words(line) > LIMITS.messageWords)
+      warn(`a message line runs past about ${LIMITS.messageWords} words; link the detail`)
+    const sent = Date.parse(`${match[2]}T00:00:00Z`)
+    if (!onHold && !Number.isNaN(sent) && now - sent > LIMITS.messageDays * 86_400_000)
+      warn(
+        `a message line dated ${match[2]} has waited more than ${LIMITS.messageDays} days on work that is not on hold`
       )
-    evidence.boundary.push(...boundaryOutcomes(work, fields))
   }
+}
+
+/** The queries file: its H1, Open and Parked, each query a tagged block with Context, Query and Options. */
+const queryEvidence = (queries: ParsedRecord, evidence: Evidence): void => {
+  const fail = (message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: queries.path })
+  }
+  if (!sameOutline(queries.body, `${queries.stem} queries`, QUERY_HEADINGS))
+    fail(`queries.md headings must be the H1 "# ${queries.stem} queries", then Open and Parked`)
+  const sections = h2Sections(queries.body)
+  for (const heading of QUERY_HEADINGS)
+    if ((sections.get(heading)?.trim().length ?? 0) === 0) fail(`${heading} must say something, if only None`)
+  const blocks = [...queries.body.matchAll(/^### (.+?)\s*$/gm)]
+  for (const block of blocks) {
+    const title = block[1] ?? ''
+    if (!QUERY_HEADING.test(title)) fail(`query heading "${title}" must read "<TAG> - <title>"`)
+    const start = (block.index ?? 0) + block[0].length
+    const following = queries.body.slice(start).search(/^#{2,3} /m)
+    const text = queries.body.slice(start, following < 0 ? undefined : start + following)
+    if (QUERY_PARTS.some((part) => !text.includes(part)))
+      fail(`query "${title}" must carry **Context:**, **Query:** and **Options:**`)
+  }
+}
+
+/** Bulk history in a state body: dated log lines, runs of commit identifiers or test counts. */
+const historyOutcome = (state: ParsedRecord): AuditOutcome | undefined => {
+  const dated = state.body.match(DATED_LINE)?.length ?? 0
+  const commits = state.body.match(COMMIT_ID)?.length ?? 0
+  const counts = state.body.match(TEST_COUNT)?.length ?? 0
+  if (dated < 3 && commits < 3 && counts < 2) return undefined
+  return {
+    status: 'VIOLATION',
+    message:
+      'state.md appears to carry history (dated log lines, commit identifiers or test counts); Git and the run reports hold it, so link one rather than copy it',
+    subject: state.path
+  }
+}
+
+/** A work package: the definition in `work.md` and the state, queries, messages and decisions beside it. */
+const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now: number, evidence: Evidence): void => {
+  const { work } = folder
+  const fields = work.fields
+  if (!fields) {
+    evidence.schema.push({
+      status: 'VIOLATION',
+      message: 'work file front matter must be a valid YAML mapping',
+      subject: work.path
+    })
+    return
+  }
+  const fail = (record: ParsedRecord, message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: record.path })
+  }
+  const warn = (record: ParsedRecord, message: string): void => {
+    evidence.size.push({ status: 'VIOLATION', message, subject: record.path })
+  }
+  const keys = Object.keys(fields)
+  const strayState = keys.filter((field) => STATE_FIELDS.has(field) && field !== 'id')
+  if (strayState.length > 0)
+    fail(
+      work,
+      `a package's work.md carries no state field (${strayState.join(', ')}); its state lives in ${STATE_FILE}`
+    )
+  else if (
+    DEFINITION_REQUIRED.some((field) => !keys.includes(field)) ||
+    keys.some((field) => !DEFINITION_FIELDS.has(field))
+  )
+    fail(work, 'work.md front matter must use only its closed definition field set')
+  if (!sameOutline(work.body, work.stem, DEFINITION_HEADINGS))
+    fail(work, `a package's work.md headings must be the id H1, Goals and Scope; its state lives in ${STATE_FILE}`)
+  const definition = h2Sections(work.body)
+  for (const heading of DEFINITION_HEADINGS)
+    if ((definition.get(heading)?.trim().length ?? 0) === 0) fail(work, `${heading} must say something`)
+  if (typeof fields.description !== 'string' || fields.description.trim().length === 0)
+    fail(work, 'description must be a non-empty routing description')
+  else if (fields.description.trim().length > LIMITS.description)
+    warn(work, `description runs past ${LIMITS.description} characters`)
+  if (words(work.body) > LIMITS.definitionWords) warn(work, `work.md body runs past ${LIMITS.definitionWords} words`)
+  definitionChecks(work, fields, coordinationDeclared, evidence)
+  evidence.boundary.push(...boundaryOutcomes(work, fields))
+
+  const state = folder.state
+  if (state) {
+    const stateFields = state.fields
+    if (!stateFields) fail(state, 'state.md front matter must be a valid YAML mapping')
+    else {
+      if (stateFields.id !== folder.stem)
+        evidence.identity.push({
+          status: 'VIOLATION',
+          message: 'id must exactly match the work folder name',
+          subject: state.path
+        })
+      const stateKeys = Object.keys(stateFields)
+      if (
+        STATE_REQUIRED.some((field) => !stateKeys.includes(field)) ||
+        stateKeys.some((field) => !STATE_FIELDS.has(field))
+      )
+        fail(state, 'state.md front matter must use only its closed state field set')
+      stateChecks(state, stateFields, evidence)
+      if (
+        'method_read' in stateFields &&
+        stateFields.method_read !== null &&
+        !REVISION.test(String(stateFields.method_read))
+      )
+        fail(state, 'method_read must be a short harness revision or null')
+      chronology(state, fields.created_at, stateFields.since, evidence)
+      evidence.boundary.push(...boundaryOutcomes(state, stateFields))
+    }
+    const headings = outline(state.body)
+    const queue =
+      fields.level === 'territory' && headings.some((heading) => heading.level === 2 && heading.title === 'Queue')
+    const expected = queue ? ['Now', 'Queue', 'Next steps', 'Held'] : ['Now', 'Next steps', 'Held']
+    if (!sameOutline(state.body, `${folder.stem} state`, expected))
+      fail(
+        state,
+        `state.md headings must be the H1 "# ${folder.stem} state", then Now, Next steps and Held, territory work adding Queue after Now`
+      )
+    const sections = h2Sections(state.body)
+    for (const heading of expected)
+      if ((sections.get(heading)?.trim().length ?? 0) === 0) fail(state, `${heading} must say something, if only None`)
+    const now = (sections.get('Now') ?? '').split(/\r?\n/).filter((line) => line.trim().length > 0).length
+    if (now > LIMITS.nowLines) warn(state, `Now runs past ${LIMITS.nowLines} lines`)
+    if (words(state.body) > LIMITS.stateWords) warn(state, `state.md body runs past ${LIMITS.stateWords} words`)
+    const history = historyOutcome(state)
+    if (history) evidence.size.push(history)
+  }
+  if (folder.queries) queryEvidence(folder.queries, evidence)
+  if (folder.messages) messageEvidence(folder.messages, state?.fields?.state === 'on-hold', now, evidence)
+  if (folder.decisions !== undefined && folder.decisions.split(/\r?\n/).length > LIMITS.decisionLines)
+    evidence.size.push({
+      status: 'VIOLATION',
+      message: `decisions.md runs past ${LIMITS.decisionLines} lines; strike decisions a durable home now carries`,
+      subject: join(dirname(work.path), 'decisions.md')
+    })
+}
+
+/** Validates each work folder under `+/_WORK/`, in the package shape or, for the tolerance window, the single-file shape. */
+const workEvidence = (works: readonly WorkFolder[], coordinationDeclared: boolean, now: number): Evidence => {
+  const evidence: Evidence = { identity: [], schema: [], role: [], lifecycle: [], size: [], legacy: [], boundary: [] }
+  for (const folder of works)
+    if (folder.package) packageEvidence(folder, coordinationDeclared, now, evidence)
+    else singleFileEvidence(folder.work, coordinationDeclared, evidence)
   return evidence
 }
 
 /** Whether an old checkpoint's stem maps to a work id that already has a work file, under ki-coordination's Work naming. */
-const supersededBy = (stem: string, works: readonly ParsedRecord[]): string | undefined => {
+const supersededBy = (stem: string, works: readonly WorkFolder[]): string | undefined => {
   const ids = works.map((work) => work.stem)
   if (stem === '_state-of-play') return ids.find((id) => !id.includes('.'))
   const project = stem.includes('.') ? stem.split('.').at(-1) : undefined
@@ -514,12 +827,12 @@ export const checkpointReadme = {
     "# Checkpoints\n\nThis directory retains active, human-named reconstruction snapshots while `ki-work-folder` is declared. A Project's coordination thread is named `<initiative>.<project>.md` and the state-of-play thread `_state-of-play.md`; each record's `label` is the human's client-side thread name, for presentation only. Checkpoint records are temporary inputs to further repository work. Removing a checkpoint deletes its record after durable information is routed; this README remains as the capability boundary. Git supplies recovery history.\n"
 } as const
 
-export const createWorkFolderSession = ({
+export const createWorkPackageSession = ({
   mode,
   repository,
   configuration,
   publication
-}: RubricContextOptions): RubricSession<WorkFolderRubricContext> => {
+}: RubricContextOptions): RubricSession<WorkPackageRubricContext> => {
   const root = resolve(repository)
   const workDirectory = join(root, '+', '_WORK')
   const checkpointDirectory = join(root, '+', '_CHECKPOINTS')
@@ -536,7 +849,7 @@ export const createWorkFolderSession = ({
       : undefined
   const structureViolations: AuditOutcome[] = []
   const legacy: AuditOutcome[] = []
-  const works: ParsedRecord[] = []
+  const works: WorkFolder[] = []
   const records: ParsedRecord[] = []
 
   if (workExists && !workSafe)
@@ -576,7 +889,7 @@ export const createWorkFolderSession = ({
     else if (readFileSync(readmePath, 'utf8') !== checkpointReadme.content)
       structureViolations.push({
         status: 'VIOLATION',
-        message: '+/_CHECKPOINTS/README.md differs from canonical ki-work-folder orientation',
+        message: '+/_CHECKPOINTS/README.md differs from its canonical scaffold',
         subject: checkpointReadme.path
       })
     const active = inspectDirectory(checkpointDirectory, root)
@@ -586,7 +899,7 @@ export const createWorkFolderSession = ({
   for (const record of records) {
     legacy.push({
       status: 'VIOLATION',
-      message: `legacy: an old checkpoint, read for the tolerance window; its work moves to +/_WORK/<id>/${WORK_FILE} at the territory's migration`,
+      message: `legacy: an old checkpoint, read for the tolerance window; its work moves to the work package +/_WORK/<id>/ at the territory's migration`,
       subject: record.path
     })
   }
@@ -595,7 +908,7 @@ export const createWorkFolderSession = ({
     ? Object.keys(configured).map((key) => ({
         status: 'VIOLATION' as const,
         level: 'WARN' as const,
-        message: `unrecognised ki-work-folder configuration key ${key}`,
+        message: `unrecognised ki-work-package configuration key ${key}`,
         subject: '.ki.toml'
       }))
     : []
@@ -605,7 +918,7 @@ export const createWorkFolderSession = ({
       ? 'Records are unavailable until every subarea is safe.'
       : undefined
   const old = recordEvidence(records, coordinationDeclared, undeclaredAbsent ?? unsafe)
-  const current = workEvidence(works, coordinationDeclared)
+  const current = workEvidence(works, coordinationDeclared, Date.now())
   for (const record of records) {
     const id = supersededBy(record.stem, works)
     if (id)
@@ -627,37 +940,50 @@ export const createWorkFolderSession = ({
   const canConformScaffold =
     Boolean(configured) && checkpointSafe && (!existsSync(readmePath) || physicalFile(readmePath))
   let scaffoldRequested = false
-  const context: WorkFolderRubricContext = {
+  const context: WorkPackageRubricContext = {
     rubric: { publication },
     configuration: {
       outcomes: one(
         configOutcomes,
         configured
-          ? 'The ki-work-folder declaration is an empty capability marker.'
-          : 'No ki-work-folder declaration is active.'
+          ? 'The ki-work-package declaration is an empty capability marker.'
+          : 'No ki-work-package declaration is active.'
       )
     },
     structure: {
       outcomes: one(
         structureViolations,
-        'The work area holds only work folders with their work files, and any legacy scaffold is canonical.',
+        'The work area holds only work folders with their package files, and any legacy scaffold is canonical.',
         undeclaredAbsent
       ),
-      legacy: one(legacy, 'No old checkpoint remains to be moved.', undeclaredAbsent),
+      legacy: one(
+        [...legacy, ...((undeclaredAbsent ?? unsafe) ? [] : current.legacy)],
+        'No single-file work folder or old checkpoint remains to be moved.',
+        undeclaredAbsent
+      ),
       ...(mode === 'conform' && canConformScaffold ? { ensureScaffold: () => (scaffoldRequested = true) } : {})
     },
     records: {
       identity: merged(
         old.identity,
         current.identity,
-        'Every work file and old checkpoint has one consistent identity.'
+        'Every work package, single-file work folder and old checkpoint has one consistent identity.'
       ),
-      schema: merged(old.schema, current.schema, 'Every work file and old checkpoint uses its closed schema.'),
+      schema: merged(
+        old.schema,
+        current.schema,
+        'Every work package, single-file work folder and old checkpoint uses its closed schema.'
+      ),
       label: old.label,
       role: merged(old.role, current.role, 'Coordinating work lives only where ki-coordination is declared.')
     },
     lifecycle: {
-      mechanical: merged(old.lifecycle, current.lifecycle, 'Record states, uniqueness, and timestamps are coherent.')
+      mechanical: merged(old.lifecycle, current.lifecycle, 'Record states, uniqueness, and timestamps are coherent.'),
+      size: one(
+        (undeclaredAbsent ?? unsafe) ? [] : current.size,
+        'Every work package keeps within its soft size limits and carries no history.',
+        undeclaredAbsent
+      )
     },
     boundary: {
       outcomes: merged(

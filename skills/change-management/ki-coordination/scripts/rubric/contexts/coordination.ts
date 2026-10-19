@@ -33,6 +33,13 @@ const THREADS_DIRECTORY = join('+', '_THREADS')
 const REPORT_SUFFIX = '.report.md'
 const DECISIONS_LOG = 'decisions.md'
 const WORK_FILE = 'work.md'
+/** The work package's state file; a folder holding one is in the five-file package shape. */
+const STATE_FILE = 'state.md'
+const QUERIES_FILE = 'queries.md'
+/** The files of the work package beside its work file and decisions log. */
+const PACKAGE_FILES: ReadonlySet<string> = new Set([STATE_FILE, QUERIES_FILE, 'messages.md'])
+/** More open queries than this in `queries.md` is a coordination smell, warned on rather than failed. */
+export const OPEN_QUERY_LIMIT = 8
 /** The folders a work folder may hold beside its files: open briefs and design notes. */
 const WORK_SUBFOLDERS: ReadonlySet<string> = new Set(['briefs', 'design'])
 const WORK_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*'
@@ -163,6 +170,17 @@ const folders = (directory: string): readonly string[] | undefined => {
     .sort((left, right) => left.localeCompare(right))
 }
 
+/**
+ * The front matter of a work: its work file's, with the state file's over it where the folder is in the package shape,
+ * so the state fields are read from `state.md` and the definition fields from `work.md`.
+ */
+const workFields = (folder: string): Readonly<Record<string, unknown>> | null => {
+  const definition = frontMatter(join(folder, WORK_FILE))
+  if (!existsSync(join(folder, STATE_FILE))) return definition
+  const state = frontMatter(join(folder, STATE_FILE))
+  return definition && state ? { ...definition, ...state, id: definition.id ?? state.id } : definition
+}
+
 /** The work files `+/_WORK/<id>/work.md`, or undefined when no `+/_WORK/` subarea exists. */
 const workFiles = (root: string): readonly Work[] | undefined => {
   const found = folders(join(root, WORK_DIRECTORY))
@@ -173,7 +191,7 @@ const workFiles = (root: string): readonly Work[] | undefined => {
       path: relative(root, join(folder, WORK_FILE)),
       id: basename(folder),
       folder,
-      fields: frontMatter(join(folder, WORK_FILE))
+      fields: workFields(folder)
     }))
 }
 
@@ -668,17 +686,26 @@ const report = (entry: Dirent): boolean =>
 export const threadFolderFindings = (folder: string): FolderFindings => folderFindings(folder, report)
 
 /**
- * Review one work folder for the prune: entries outside its closed list, `work.md`, `decisions.md`,
- * `<name>.report.md`, `briefs/` and `design/`, and the reports whose queries the decisions log names.
+ * Review one work folder for the prune: entries outside its closed list, `work.md`, `decisions.md`, `state.md`,
+ * `queries.md`, `messages.md`, `<name>.report.md`, `briefs/` and `design/`, and the reports whose queries the decisions
+ * log names.
  */
 export const workFolderFindings = (folder: string): FolderFindings =>
   folderFindings(
     folder,
     (entry) =>
       report(entry) ||
-      (entry.isFile() && entry.name === WORK_FILE) ||
+      (entry.isFile() && (entry.name === WORK_FILE || PACKAGE_FILES.has(entry.name))) ||
       (entry.isDirectory() && !entry.isSymbolicLink() && WORK_SUBFOLDERS.has(entry.name))
   )
+
+/** The open queries in a work package's `queries.md`: the `###` query headings under its `## Open` section. */
+export const openQueryCount = (folder: string): number => {
+  const path = join(folder, QUERIES_FILE)
+  if (!existsSync(path)) return 0
+  const open = /^## Open[ \t]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? ''
+  return Array.from(open.matchAll(QUERY_HEADING)).length
+}
 
 const tidyOutcomes = (
   root: string,
@@ -705,9 +732,19 @@ const tidyOutcomes = (
     review(
       folder,
       workFolderFindings(folder),
-      `\`${WORK_FILE}\`, \`${DECISIONS_LOG}\`, \`<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\``,
+      `the five package files, \`<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\``,
       'work'
     )
+  for (const folder of work) {
+    const open = openQueryCount(folder)
+    if (open > OPEN_QUERY_LIMIT)
+      outcomes.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `${open} open queries in \`${QUERIES_FILE}\`, more than ${OPEN_QUERY_LIMIT}: a coordination smell; answer, park or merge them`,
+        subject: relative(root, join(folder, QUERIES_FILE))
+      })
+  }
   for (const folder of threads ?? [])
     review(folder, threadFolderFindings(folder), `\`${DECISIONS_LOG}\` and \`<name>${REPORT_SUFFIX}\``, 'thread')
   if (threads && threads.length > 0)

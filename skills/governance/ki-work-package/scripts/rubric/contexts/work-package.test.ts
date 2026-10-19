@@ -8,7 +8,7 @@ import { CONFIG } from '../items/configuration.ts'
 import { LIFECYCLE } from '../items/lifecycle.ts'
 import { RECORD } from '../items/records.ts'
 import { STRUCTURE } from '../items/structure.ts'
-import { checkpointReadme, createWorkFolderSession, type WorkFolderRubricContext } from './work-folder.ts'
+import { checkpointReadme, createWorkPackageSession, type WorkPackageRubricContext } from './work-package.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -17,7 +17,7 @@ afterEach(() => {
 })
 
 const fixture = (): { repository: string; checkpointDirectory: string } => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-package-'))
   temporaryDirectories.push(repository)
   const checkpointDirectory = join(repository, '+', '_CHECKPOINTS')
   mkdirSync(checkpointDirectory, { recursive: true })
@@ -77,10 +77,10 @@ const record = ({
     ''
   ].join('\n')
 
-const context = (repository: string): WorkFolderRubricContext => {
-  const session = createWorkFolderSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+const context = (repository: string): WorkPackageRubricContext => {
+  const session = createWorkPackageSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
   const value = session.subjects[0]?.context()
-  if (!value) throw new Error('ki-work-folder session did not expose its repository subject')
+  if (!value) throw new Error('ki-work-package session did not expose its repository subject')
   return value
 }
 
@@ -91,10 +91,10 @@ const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, 
 }
 
 test('a selected empty marker needs no subarea and audit never proposes writes', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-absent-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-package-absent-'))
   temporaryDirectories.push(repository)
-  const session = createWorkFolderSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
-  const value = session.subjects[0]?.context() as WorkFolderRubricContext
+  const session = createWorkPackageSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+  const value = session.subjects[0]?.context() as WorkPackageRubricContext
 
   expect(mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('PASS')
   expect(mechanical(STRUCTURE, 'STRUCTURE-2').audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('PASS')
@@ -102,17 +102,17 @@ test('a selected empty marker needs no subarea and audit never proposes writes',
 })
 
 test('an existing legacy checkpoint directory requires and can restore its scaffold', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-declared-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-work-package-declared-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, '+', '_CHECKPOINTS'), { recursive: true })
-  const session = createWorkFolderSession({
+  const session = createWorkPackageSession({
     mode: 'conform',
     repository,
     userHome: tmpdir(),
     configuration: {}
   })
   const value = session.subjects[0]?.context()
-  if (!value) throw new Error('ki-work-folder session did not expose repository subject')
+  if (!value) throw new Error('ki-work-package session did not expose repository subject')
   const item = mechanical(STRUCTURE, 'STRUCTURE-1')
 
   expect(item.audit.run(STRUCTURE.selectContext(value))[0]?.status).toBe('VIOLATION')
@@ -244,7 +244,7 @@ test('a role is one of three values and a coordinating role needs a ki-coordinat
 
 test('unknown selected capability keys warn without hiding scaffold requirements', () => {
   const { repository } = fixture()
-  const session = createWorkFolderSession({
+  const session = createWorkPackageSession({
     mode: 'audit',
     repository,
     userHome: tmpdir(),
@@ -256,7 +256,7 @@ test('unknown selected capability keys warn without hiding scaffold requirements
     expect.objectContaining({
       status: 'VIOLATION',
       level: 'WARN',
-      message: 'unrecognised ki-work-folder configuration key unexpected'
+      message: 'unrecognised ki-work-package configuration key unexpected'
     })
   ])
 })
@@ -266,7 +266,7 @@ test('malformed YAML records fail schema and CONFORM preserves authored bytes', 
   const target = join(checkpointDirectory, 'release-audit.md')
   const malformed = record().replace('type: ki-checkpoint', 'type: [')
   writeFileSync(target, malformed)
-  const session = createWorkFolderSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+  const session = createWorkPackageSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
   const value = session.subjects[0]?.context()
   if (!value) throw new Error('checkpoint context missing')
   expect(mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))).toEqual([
@@ -285,9 +285,9 @@ for (const unsafe of [
   'readme-directory'
 ] as const) {
   test(`CONFORM refuses unsafe target: ${unsafe}`, () => {
-    const repository = mkdtempSync(join(tmpdir(), 'ki-work-folder-unsafe-'))
+    const repository = mkdtempSync(join(tmpdir(), 'ki-work-package-unsafe-'))
     temporaryDirectories.push(repository)
-    const outside = mkdtempSync(join(tmpdir(), 'ki-work-folder-outside-'))
+    const outside = mkdtempSync(join(tmpdir(), 'ki-work-package-outside-'))
     temporaryDirectories.push(outside)
     const plus = join(repository, '+')
     const directory = join(plus, '_CHECKPOINTS')
@@ -304,7 +304,7 @@ for (const unsafe of [
         } else mkdirSync(join(directory, 'README.md'))
       }
     }
-    const session = createWorkFolderSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
+    const session = createWorkPackageSession({ mode: 'conform', repository, userHome: tmpdir(), configuration: {} })
     const value = session.subjects[0]?.context()
     if (!value) throw new Error('checkpoint context missing')
     expect(value.structure.ensureScaffold).toBeUndefined()
@@ -377,7 +377,7 @@ const writeWork = (repository: string, folder: string, content: string): void =>
   writeFileSync(join(repository, '+', '_WORK', folder, 'work.md'), content)
 }
 
-const statuses = (value: WorkFolderRubricContext): Record<string, string | undefined> => ({
+const statuses = (value: WorkPackageRubricContext): Record<string, string | undefined> => ({
   'STRUCTURE-1': mechanical(STRUCTURE, 'STRUCTURE-1').audit.run(STRUCTURE.selectContext(value))[0]?.status,
   'RECORD-1': mechanical(RECORD, 'RECORD-1').audit.run(RECORD.selectContext(value))[0]?.status,
   'RECORD-2': mechanical(RECORD, 'RECORD-2').audit.run(RECORD.selectContext(value))[0]?.status,
@@ -496,4 +496,282 @@ test('a work file carries no session field or locator', () => {
   writeWork(repository, 'ki.ways-of-working', workFile({ fields: { session_id: 'hidden' } }))
 
   expect(statuses(context(repository))['BOUNDARY-1']).toBe('VIOLATION')
+})
+
+const packageFiles = (
+  id = 'ki.ways-of-working',
+  {
+    work = {},
+    state = {},
+    workBody,
+    stateBody,
+    queries,
+    messages
+  }: {
+    work?: Record<string, string>
+    state?: Record<string, string>
+    workBody?: string
+    stateBody?: string
+    queries?: string
+    messages?: string
+  } = {}
+): Record<string, string> => ({
+  'work.md': [
+    '---',
+    ...Object.entries({
+      id,
+      level: 'project',
+      title: "'KI > Model > Ways of working'",
+      project: 'ways-of-working',
+      theme: 'model',
+      description:
+        "'Shapes how Knowledge Islands work is held and moved. Takes changes to the work model and its skills. Not for the Observatory (ki.observatory).'",
+      worker: 'agent',
+      supervisor: 'owner',
+      created_at: '2026-10-17T20:00:00Z',
+      ...work
+    }).map(([key, value]) => `${key}: ${value}`),
+    '---',
+    '',
+    workBody ??
+      [
+        `# ${id}`,
+        '',
+        '## Goals',
+        '',
+        'Deliver the outcome in the Project note.',
+        '',
+        '## Scope',
+        '',
+        'In: the work model. Out: the Observatory (ki.observatory).',
+        ''
+      ].join('\n')
+  ].join('\n'),
+  'state.md': [
+    '---',
+    ...Object.entries({
+      id,
+      state: 'with-worker',
+      since: '2026-10-19T11:25:41Z',
+      mark: '2026-10-19T07:47:18Z',
+      method_read: '88cce3e',
+      ...state
+    }).map(([key, value]) => `${key}: ${value}`),
+    '---',
+    '',
+    stateBody ??
+      [
+        `# ${id} state`,
+        '',
+        '## Now',
+        '',
+        'The standard run is with its agent.',
+        '',
+        '## Next steps',
+        '',
+        '1. Receive the standard run.',
+        '',
+        '## Held',
+        '',
+        'None',
+        ''
+      ].join('\n')
+  ].join('\n'),
+  'queries.md':
+    queries ??
+    [
+      `# ${id} queries`,
+      '',
+      '## Open',
+      '',
+      '### WORK-INSTRUMENT - Whether the instrument reads both shapes',
+      '',
+      'since 2026-10-19',
+      '',
+      '**Context:** The reader changes first.',
+      '',
+      '**Query:** Should the instrument read both shapes?',
+      '',
+      '**Options:**',
+      '',
+      'a) (recommended, confidence high - additive) Read both.',
+      '',
+      '## Parked',
+      '',
+      'None',
+      ''
+    ].join('\n'),
+  'messages.md':
+    messages ??
+    [
+      `# ${id} messages`,
+      '',
+      `- IMPORTANT · ${new Date().toISOString().slice(0, 10)} · REFRESH · KI > State of play: re-read ki-coordination.`,
+      `- ${new Date().toISOString().slice(0, 10)} · ROUTE · KI > State of play: take the timeline unit.`,
+      ''
+    ].join('\n'),
+  'decisions.md': '# ki.ways-of-working decisions\n\nNone\n'
+})
+
+const writePackage = (repository: string, folder: string, files: Record<string, string>): void => {
+  mkdirSync(join(repository, '+', '_WORK', folder), { recursive: true })
+  for (const [name, content] of Object.entries(files))
+    writeFileSync(join(repository, '+', '_WORK', folder, name), content)
+}
+
+const run = <Context>(
+  family: { items: readonly RubricItem<Context>[]; selectContext: (value: WorkPackageRubricContext) => Context },
+  code: string,
+  value: WorkPackageRubricContext
+) => mechanical(family, code).audit.run(family.selectContext(value))
+
+test('a well-formed five-file package passes every check without a legacy or size warning', () => {
+  const repository = workFixture()
+  writePackage(repository, 'ki.ways-of-working', packageFiles())
+  const value = context(repository)
+
+  expect(Object.values(statuses(value))).toEqual(Array(6).fill('PASS'))
+  expect(run(STRUCTURE, 'STRUCTURE-2', value)[0]?.status).toBe('PASS')
+  expect(run(LIFECYCLE, 'LIFECYCLE-3', value)[0]?.status).toBe('PASS')
+})
+
+test('a single-file work folder is read under its old form with a legacy warning', () => {
+  const repository = workFixture()
+  writeWork(repository, 'ki.ways-of-working', workFile())
+  writePackage(repository, 'ki.observatory', packageFiles('ki.observatory', { work: { project: 'observatory' } }))
+  const value = context(repository)
+
+  expect(statuses(value)['RECORD-2']).toBe('PASS')
+  expect(run(STRUCTURE, 'STRUCTURE-2', value).map((outcome) => outcome.subject)).toEqual([
+    '+/_WORK/ki.ways-of-working/work.md'
+  ])
+})
+
+test("a package's work.md that still carries state fails the schema", () => {
+  const repository = workFixture()
+  writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { work: { state: 'with-worker' } }))
+
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('carries no state field (state)') })
+  )
+})
+
+test('a package missing one of its five files fails the structure', () => {
+  const repository = workFixture()
+  const { 'messages.md': _, ...files } = packageFiles()
+  writePackage(repository, 'ki.ways-of-working', files)
+
+  expect(run(STRUCTURE, 'STRUCTURE-1', context(repository))).toEqual([
+    expect.objectContaining({ message: expect.stringContaining('messages.md is missing') })
+  ])
+})
+
+const today = new Date().toISOString().slice(0, 10)
+for (const [name, change] of [
+  [
+    'an important line below an ordinary one',
+    {
+      messages: `# ki.ways-of-working messages\n\n- ${today} · ROUTE · Sender: take it.\n- IMPORTANT · ${today} · REFRESH · Sender: re-read.\n`
+    }
+  ],
+  ['a message line out of shape', { messages: '# ki.ways-of-working messages\n\n- take the timeline unit\n' }],
+  ['a missing description', { work: { description: "''" } }],
+  ['a method_read that is not a revision', { state: { method_read: 'latest' } }],
+  ['a state field it does not know', { state: { updated_at: '2026-10-19T11:25:41Z' } }],
+  [
+    'a Queue outside territory work',
+    {
+      stateBody:
+        '# ki.ways-of-working state\n\n## Now\n\nNone\n\n## Queue\n\nNone\n\n## Next steps\n\nNone\n\n## Held\n\nNone\n'
+    }
+  ],
+  [
+    'a query without its options',
+    {
+      queries:
+        '# ki.ways-of-working queries\n\n## Open\n\n### TAG - A title\n\n**Context:** c\n\n**Query:** q\n\n## Parked\n\nNone\n'
+    }
+  ],
+  ['a state.md id that disagrees', { state: { id: 'ki.other' } }]
+] as const)
+  test(`the package schema refuses ${name}`, () => {
+    const repository = workFixture()
+    writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', change))
+    const value = statuses(context(repository))
+
+    expect([value['RECORD-1'], value['RECORD-2']]).toContain('VIOLATION')
+  })
+
+test('territory work may keep a Queue after Now', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki',
+    packageFiles('ki', {
+      work: { level: 'territory', title: "'KI > State of play'" },
+      stateBody:
+        '# ki state\n\n## Now\n\nNone\n\n## Queue\n\n1. ki.observatory\n\n## Next steps\n\nNone\n\n## Held\n\nNone\n'
+    })
+  )
+  const files = packageFiles('ki')
+  writeFileSync(
+    join(repository, '+', '_WORK', 'ki', 'work.md'),
+    (files['work.md'] ?? '').replace('project: ways-of-working\n', '').replace('level: project', 'level: territory')
+  )
+
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+})
+
+test('size limits and history warn without failing', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', {
+      work: { description: `'${'Takes everything. '.repeat(40)}'` },
+      stateBody: [
+        '# ki.ways-of-working state',
+        '',
+        '## Now',
+        '',
+        '- 2026-10-17 committed 1a2b3c4d',
+        '- 2026-10-18 committed 5e6f7a8b',
+        '- 2026-10-19 committed 9c0d1e2f, 412 tests pass',
+        '',
+        '## Next steps',
+        '',
+        'None',
+        '',
+        '## Held',
+        '',
+        'None',
+        ''
+      ].join('\n'),
+      messages: '# ki.ways-of-working messages\n\n- 2026-09-01 · ROUTE · Sender: take the old unit.\n'
+    })
+  )
+  const value = context(repository)
+  const messages = run(LIFECYCLE, 'LIFECYCLE-3', value).map((outcome) => outcome.message)
+
+  expect(mechanical(LIFECYCLE, 'LIFECYCLE-3').level).toBe('WARN')
+  expect(messages).toEqual([
+    expect.stringContaining('description runs past 500 characters'),
+    expect.stringContaining('state.md appears to carry history'),
+    expect.stringContaining('has waited more than 7 days')
+  ])
+  expect(statuses(value)['RECORD-2']).toBe('PASS')
+})
+
+test('a message line on work that is on hold may wait', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', {
+      state: { state: 'on-hold', hold: '{ reason: paused, release: after the migration }' },
+      messages: '# ki.ways-of-working messages\n\n- 2026-09-01 · ROUTE · Sender: take the old unit.\n'
+    })
+  )
+
+  expect(run(LIFECYCLE, 'LIFECYCLE-3', context(repository))[0]?.status).toBe('PASS')
 })

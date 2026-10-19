@@ -1,13 +1,13 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { RecordContext, WorkFolderRubricContext } from '../contexts/work-folder.ts'
+import type { RecordContext, WorkPackageRubricContext } from '../contexts/work-package.ts'
 
-const SOURCE = 'standards-work-folder.md'
+const SOURCE = 'standards-work-package.md'
 
 const RECORD_1: RubricItem<RecordContext> = {
   code: 'RECORD-1',
   title: 'record identity is chosen and consistent',
   description:
-    "Each work folder is named by the work's dotted id, lower-case kebab segments joined by `.` with no mechanically recognisable opaque runtime-session identifier, and the folder, `id` field and H1 agree. An old checkpoint's filename stem is a non-empty single path component, dotted `<initiative>.<project>` and `_state-of-play` included, repeated in its `thread` field and H1.",
+    "Each work folder is named by the work's dotted id, lower-case kebab segments joined by `.` with no mechanically recognisable opaque runtime-session identifier, and the folder, the `id` fields of `work.md` and `state.md`, and each file's H1 agree. An old checkpoint's filename stem is a non-empty single path component, dotted `<initiative>.<project>` and `_state-of-play` included, repeated in its `thread` field and H1.",
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -30,18 +30,19 @@ const RECORD_2: RubricItem<RecordContext> = {
   code: 'RECORD-2',
   title: 'front matter and headings use the closed schema',
   description:
-    'A work file declares id, level, title, worker, supervisor, state and since; project at project level and only there, target in handoff and only there, hold with its reason and release on hold and only there; and at most the optional label, theme, blocking, received, beat, mark and created_at, each of its stated type. Its body is the id H1 and the ordered Next steps, Messages and Parked H2 sections, each saying something. An old checkpoint keeps its closed type, thread, state, created_at, updated_at, optional label and role, and its six H2 sections.',
+    "A package's `work.md` declares id, level, title, description, worker and supervisor, project at project level and only there, and at most the optional label, theme and created_at, with no state field, and its body is the id H1 then Goals and Scope. Its `state.md` declares id, state and since; target in handoff and only there, hold with its reason and release on hold and only there; and at most the optional blocking, received, beat, mark and method_read, each of its stated type, and its body is the `<id> state` H1 then Now, Queue for territory work only, Next steps and Held. `queries.md` holds its H1, Open and Parked, each query a `<TAG> - <title>` block with Context, Query and Options; `messages.md` holds its H1 and message lines, important lines first, or None. Every section says something. A single-file work file keeps its old closed fields and its Next steps, Messages and Parked sections, and an old checkpoint keeps its closed type, thread, state, created_at, updated_at, optional label and role, and its six H2 sections.",
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'guarded',
-      guidance: 'Correct authored record schema only through an explicit checkpoint update.'
+      guidance: 'Correct authored package schema only through an explicit update.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.schema }
   },
   judgment: {
-    scope: 'The authored front matter, headings, and sections of every work file and old checkpoint.',
+    scope:
+      'The authored front matter, headings, and sections of every package file, single-file work file and old checkpoint.',
     prompt: 'Can the schema correction be made without inventing or discarding user-owned work state?',
     outcomes: ['conforming', 'explicit update required', 'escalate to user'],
     guidance: 'Ask the user to update uncertain authored content; the checker must not infer missing work state.'
@@ -74,8 +75,8 @@ const RECORD_4: RubricItem<RecordContext> = {
   code: 'RECORD-4',
   title: 'coordinating work lives only where ki-coordination is declared',
   description:
-    'A work file at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate.',
-  sources: [`${SOURCE}#front-matter`],
+    'A work package at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate.',
+  sources: [`${SOURCE}#state-file`],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -93,10 +94,10 @@ const RECORD_4: RubricItem<RecordContext> = {
   }
 }
 
-export const RECORD: RubricFamily<WorkFolderRubricContext, RecordContext> = {
+export const RECORD: RubricFamily<WorkPackageRubricContext, RecordContext> = {
   code: 'RECORD',
-  title: 'Work-file record',
-  description: 'Closed metadata and document shape make one work file portable and deterministically readable.',
+  title: 'Work-package record',
+  description: 'Closed metadata and document shape make one work package portable and deterministically readable.',
   standard: SOURCE,
   selectContext: (context) => context.records,
   items: [RECORD_1, RECORD_2, RECORD_3, RECORD_4]

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "9ca8f7795154acd7540e1bd0f9b1340bdee71306"
+      "revision": "88cce3e54e8844f88df35789cef145849bd17d67"
     },
     "legend": {
       "mode": "auto",
@@ -135,7 +135,7 @@
         }
       ],
       "pos": [
-        588,
+        844,
         376
       ],
       "size": [
@@ -154,7 +154,7 @@
         }
       ],
       "pos": [
-        588,
+        844,
         252
       ],
       "size": [
@@ -183,12 +183,31 @@
     },
     {
       "id": "ki-work-folder",
-      "type": "backend",
+      "type": "database",
       "label": "ki-work-folder",
-      "sublabel": "governance · automatic",
+      "sublabel": "governance · opt-in",
       "sources": [
         {
           "path": "skills/governance/ki-work-folder/SKILL.md"
+        }
+      ],
+      "pos": [
+        556,
+        252
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
+      "id": "ki-work-package",
+      "type": "backend",
+      "label": "ki-work-package",
+      "sublabel": "governance · automatic",
+      "sources": [
+        {
+          "path": "skills/governance/ki-work-package/SKILL.md"
         }
       ],
       "pos": [
@@ -244,6 +263,7 @@
       "label": "Delegation and programme",
       "wraps": [
         "ki-delegation",
+        "ki-work-package",
         "ki-work-folder",
         "ki-coordination",
         "ki-work-design"
@@ -261,9 +281,10 @@
     },
     {
       "kind": "region",
-      "label": "Coordination · 6 skills",
+      "label": "Coordination · 7 skills",
       "wraps": [
         "ki-delegation",
+        "ki-work-package",
         "ki-work-folder",
         "ki-coordination",
         "ki-work-design",
@@ -287,10 +308,10 @@
       "variant": "default"
     },
     {
-      "id": "ki-coordination--ki-work-folder",
+      "id": "ki-coordination--ki-work-package",
       "from": "ki-coordination",
-      "to": "ki-work-folder",
-      "variant": "default"
+      "to": "ki-work-package",
+      "variant": "dashed"
     },
     {
       "id": "ki-implement--ki-delegation",
@@ -337,7 +358,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "6 skills, 1 outside prerequisite, 3 outside dependents, 3 composition and 5 optional edges, read from SKILL.md frontmatter.",
+        "7 skills, 1 outside prerequisite, 3 outside dependents, 2 composition and 6 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

@@ -26,7 +26,7 @@ supported_runtimes = [
   "chatgpt-codex",
 ]
 # source repository publishes the optional capability without adopting a checkpoint subarea
-checks.coverage-work-folder = false
+checks.coverage-work-package = false
 # source repository publishes the adapter without adopting Codex agent projections
 checks.coverage-subagents-chatgpt = false
 
@@ -129,7 +129,7 @@ RTP = "Runtime portability"
 
 [skills.ki-work-recurring]
 
-[skills.ki-work-folder]
+[skills.ki-work-package]
 
 [skills.ki-coordination]
 

@@ -1,16 +1,12 @@
 import type { SkillRubricDefinition } from '../../shared/rubric.ts'
-import { createWorkFolderSession, type WorkFolderRubricContext } from '../contexts/work-folder.ts'
-import { BOUNDARY } from './boundary.ts'
-import { CONFIG } from './configuration.ts'
-import { LIFECYCLE } from './lifecycle.ts'
+import { createWorkFolderAliasSession, type WorkFolderAliasRubricContext } from '../contexts/alias.ts'
+import { ALIAS } from './alias.ts'
 import { RUBRIC } from './publication.ts'
-import { RECORD } from './records.ts'
-import { STRUCTURE } from './structure.ts'
 
 export default {
   contract: 1,
   name: 'ki-work-folder',
-  concern: 'portable work files',
-  createSession: createWorkFolderSession,
-  families: [RUBRIC, CONFIG, STRUCTURE, RECORD, LIFECYCLE, BOUNDARY]
-} satisfies SkillRubricDefinition<WorkFolderRubricContext>
+  concern: 'the deprecated work-folder alias',
+  createSession: createWorkFolderAliasSession,
+  families: [RUBRIC, ALIAS]
+} satisfies SkillRubricDefinition<WorkFolderAliasRubricContext>

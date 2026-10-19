@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8bc9d49d0e4c06490a7f8ec81d00e65e92167fc5"
+      "revision": "88cce3e54e8844f88df35789cef145849bd17d67"
     },
     "legend": {
       "mode": "auto",
@@ -220,13 +220,13 @@
       ]
     },
     {
-      "id": "ki-work-folder",
+      "id": "ki-work-package",
       "type": "backend",
-      "label": "ki-work-folder",
+      "label": "ki-work-package",
       "sublabel": "coordination · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-work-folder/SKILL.md"
+          "path": "skills/governance/ki-work-package/SKILL.md"
         }
       ],
       "pos": [
@@ -250,6 +250,25 @@
       ],
       "pos": [
         920,
+        484
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
+      "id": "ki-work-folder",
+      "type": "database",
+      "label": "ki-work-folder",
+      "sublabel": "coordination · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-work-folder/SKILL.md"
+        }
+      ],
+      "pos": [
+        1128,
         484
       ],
       "size": [
@@ -1313,8 +1332,9 @@
       "kind": "region",
       "label": "Coordination · Delegation and programme",
       "wraps": [
-        "ki-work-folder",
-        "ki-delegation"
+        "ki-work-package",
+        "ki-delegation",
+        "ki-work-folder"
       ],
       "pad": 10
     },
@@ -1338,7 +1358,7 @@
     },
     {
       "kind": "region",
-      "label": "Governance · 13 skills",
+      "label": "Governance · 14 skills",
       "wraps": [
         "ki-authoring",
         "ki-diagrams",
@@ -1347,8 +1367,9 @@
         "ki-guides",
         "ki-specs",
         "ki-engineering",
-        "ki-work-folder",
+        "ki-work-package",
         "ki-delegation",
+        "ki-work-folder",
         "ki-trades",
         "ki-trade",
         "ki-agentic-radar",
@@ -1596,7 +1617,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "64 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 32 opt-in, 11 commands.",
+        "65 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 33 opt-in, 11 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

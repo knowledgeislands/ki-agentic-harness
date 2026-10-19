@@ -1,80 +1,45 @@
 ---
 name: ki-work-folder
 ki-kind: governance
-ki-applicability: detected
+ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
-owns: ['+/_CHECKPOINTS/README.md']
 description: >
-  Own the work folder of one piece of work, `+/_WORK/<id>/`: its closed list, who may write each kind, its tidy and
-  close-out rules, the `+/_WORK_REVIEW/` holding area, the Messages line shape, and its work file `work.md` with front
-  matter of id, level, title, worker, supervisor, state and times, next steps, Messages and parked query tags. Use to
-  create, update, resume, audit, tidy or remove a work file or folder, or to pick work up without a transcript or
-  vendor session; Git is the logbook, decisions, roadmap state and durable knowledge stay with their owners, and old
-  `+/_CHECKPOINTS/` records stay readable for the tolerance window.
-argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>'
+  Deprecated alias for `ki-work-package`, kept only so a repository still declaring `[skills.ki-work-folder]`
+  resolves during the rename's tolerance window. Its audit warns and names the replacement declaration; it owns no
+  record, standard or procedure. Use `ki-work-package` for the work package and its work folder `+/_WORK/<id>/`.
+argument-hint: 'audit <repo> | help | conform | educate | refresh'
 ---
 
-# Knowledge Islands work folder
+# Knowledge Islands work folder (deprecated alias)
 
-This governance skill is the canonical specification of the work folder, `+/_WORK/<id>/`: its closed list, its entry points, its tidy rules, its review area, its Messages lines and the four-point contract other skills check in on. In it one concise repository record, the work file `work.md`, says where a piece of work lies and lets a fresh agent pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-folder standard](references/standards-work-folder.md) before reading, creating, updating, or removing a record; [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance. Kris gave the skill its name under WORK-FOLDER-NAME on 18 October 2026, replacing its checkpoint name, and a checkpoint stays the conversational word for writing a work file before a pause.
+Kris renamed this skill `ki-work-package` under PACKAGE-NAME on 19 October 2026: "I want `ki-work-package` please, where it lives is a folder". This thin skill keeps the old declaration resolving for the tolerance window, so that no repository declaring `[skills.ki-work-folder]` fails while its territory catches up. It owns nothing: the work package, its work folder and every rule about them live in [`ki-work-package`](../ki-work-package/SKILL.md) and [its standard](../ki-work-package/references/standards-work-package.md).
 
-## Shared model
-
-- **Work folder** - `+/_WORK/<id>/` holds only its [closed list](references/standards-work-folder.md#closed-list): the work file, the decisions log, run reports, open briefs and `design/`. Each [entry point](references/standards-work-folder.md#entry-points) writes only its own kinds, and [a tidy](references/standards-work-folder.md#tidying-the-work-folder) deletes what is answered and homed, Git keeping the rest. `ki-coordination` says when to tidy and whether an outcome is homed, `ki-delegation` owns the run side, and `ki-work-design` owns a design note's graduation.
-- **Work file** - one regular Markdown file at `+/_WORK/<id>/work.md`, where `<id>` is the work's dotted id under `ki-coordination`'s Work naming. Its closed front matter carries the id, level, title, worker, supervisor, state and the times the observatory reads; its body holds `Next steps`, `Messages` and `Parked` ([the record form](references/standards-work-folder.md#exact-record-form)). Each move rewrites it in place, and Git is its logbook.
-- **Old checkpoints** - `+/_CHECKPOINTS/<thread>.md` records keep their old form and stay readable, each with a warning, until the territory's migration moves them ([old checkpoints](references/standards-work-folder.md#old-checkpoints)).
-- **Removal** - finished work's folder is deleted at the mark that closes it, and any other removal follows explicit user direction after durable information has reached its proper owners. There is no retired-record state; Git supplies recovery history.
-- **Current state, not continuity** - a work file carries only enough state for a fresh agent to continue. It is never a transcript, vendor-session identifier, conversation locator, host, completion signal, roadmap, decision log, or memory system.
-- **Explicit write authority** - write at a move, at the user's request or at a documented repository-local trigger. When the selected work or content is uncertain, do not write.
-
-Project notes and theme pages are not a home for status: a work file says where work lies, a registry note carries only its standing outcome or direction, `lifecycle` and notes, and the work records and `ki` views carry status.
-
-`ki-work-folder` remains the portable work-state record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid work file under `ki-work-folder`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
-
-The optional `ki-recap checkpoint <id>` composition is a caller of the existing UPDATE procedure, never a second implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact work, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-work-folder` still validates the record and owns every write or refusal.
+A repository replaces `[skills.ki-work-folder]` with `[skills.ki-work-package]` in its `.ki.toml` at its own pace. Until it does, `ki-work-package`'s own checks do not run there, because the host resolves each declared skill by its own name; the alias is removed when no declaration is left. [The generated rubric](references/rubric.md) publishes its one check and [the sources](references/sources.md) record why it exists.
 
 ## Operating modes
 
-The skill carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **REMOVE · RESUME · UPDATE** modes. Invoked as `help` / `-h` / `?`, it emits generated HELP and stops. With no recognised mode, it emits the same HELP and, only in an interactive session, offers the mode choice and prompts for any target shown in `argument-hint`.
-
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-work-folder --repo <repo>`. The structured catalogue checks that `+/_WORK/` holds only work folders with their work files, each work file's identity, closed front matter with its state-dependent fields, timestamp chronology and exact heading set, that coordinating work lives only where `ki-coordination` is declared, and mechanically recognisable transcript or session dependencies. It warns on each old checkpoint and checks it under its old form, with the retained `+/_CHECKPOINTS/README.md` scaffold while that directory exists.
-
-Review the judgment aspects: whether each work file is concise and agrees with the work's last move, its id is chosen under Work naming rather than runtime-derived, durable facts already live with their proper owners, and the record lets a fresh agent pick the work up.
+Run `ki repo audit --skill ki-work-folder --repo <repo>`. The one check warns that the declaration is a deprecated alias and names `[skills.ki-work-package]` as its replacement.
 
 ### Mode CONFORM
 
-Run AUDIT first, then `ki repo conform --skill ki-work-folder --repo <repo> --dry-run`. CONFORM may safely restore an existing `+/_CHECKPOINTS/` directory's exact README scaffold, but never chooses work, edits an authored work file or checkpoint, moves work between states, removes a record, infers completion, or writes a runtime-session identifier.
-
-Correct authored records only through an explicit UPDATE or REMOVE request, then re-run AUDIT.
+Run `ki repo conform --skill ki-work-folder --repo <repo> --dry-run` before applying it. CONFORM republishes the generated rubric only; it never rewrites a repository's declaration, which the repository changes itself.
 
 ### Mode EDUCATE
 
-Run `ki repo educate --skill ki-work-folder --repo <repo>` to render the concern and rubric. Explain the exact record form and lifecycle from [the work-folder standard](references/standards-work-folder.md); do not create a declaration, work folder, or work file merely to demonstrate it.
+Run `ki repo educate --skill ki-work-folder --repo <repo>` to render the concern and rubric, then point to `ki-work-package` for the work package itself.
 
 ### Mode HELP
 
-Explain the work-file layout and form, the old checkpoints read for the tolerance window, the manual resume flow, explicit write boundary, removal-and-Git-history lifecycle, and off-ramps to `ki-coordination` for the levels, states and moves, `ki-recap`, roadmap or knowledge owners, and optional runtime adapters, then stop without reading or changing repository state.
+Explain that the skill is a deprecated alias, name `ki-work-package` and the declaration change, then stop without reading or changing repository state.
 
 ### Mode REFRESH
 
-REFRESH writes only in `ki-agentic-harness`. When invoked from an installed copy, stop and name the Harness as the place to run it. Read [the sources](references/sources.md), re-check the portable work-state boundary and current runtime capabilities, propose any standard change, then update the source review evidence only after the review occurs.
+**Precondition:** REFRESH writes only this canonical skill under `ki-agentic-harness`.
 
-### Mode REMOVE
+When invoked from an installed copy, stop and redirect to the harness.
 
-REMOVE is an agent procedure, not a current `ki repo` host command. Require explicit user direction, or the mark that closes finished work, for one valid `<id>`. Confirm durable decisions, work status, and knowledge have reached their canonical owners; then delete that exact work folder, or the exact old checkpoint, retaining an existing `+/_CHECKPOINTS/README.md` scaffold. Stop on uncertainty. Removal does not infer completion; Git remains the recovery history.
-
-### Mode RESUME
-
-RESUME is an agent procedure, not a current `ki repo` host command. Require the user-selected `<id>` or, from an opener, the Project slug. Resolve `+/_WORK/<id>/work.md`; for the tolerance window, when it is absent, the single old checkpoint whose stem maps to that id under Work naming; if no file or more than one file matches, stop and ask. Never resolve by title or label. Read the record in full and verify its folder, `id` and H1 agree, then act on its state as `ki-coordination`'s Picking work up sets it, its `Messages` first, and continue from its next steps in a fresh context. Never search archived or nested paths, search by vendor identifier, or claim to reopen the original session. If the named record is absent or invalid, stop and report the exact problem.
-
-### Mode UPDATE
-
-UPDATE is an agent procedure, not a current `ki repo` host command. Require a user-selected `<id>` plus a move, an explicit request or a documented local trigger. Write the exact work-file structure from [the work-folder standard](references/standards-work-folder.md), setting `since` at each move and preserving `created_at`; replace the current state in place rather than appending a moves list or history. Record only current state and references to durable owners. Never manufacture decisions, copy a transcript, add a runtime-session identifier or host, or create a work file from an unqualified Stop event. An old checkpoint is updated in its old form only until its move, which writes the work file and deletes the checkpoint in one commit.
-
-## Verification boundary
-
-The checker is read-only over work files and old checkpoints. A runtime adapter may discover a user-selected record, but it remains a consumer: it cannot weaken the state, selection, write-authority, or no-session-continuity contract.
+Read [the sources](references/sources.md) and confirm the alias is still needed; once no repository declares `[skills.ki-work-folder]`, remove the alias rather than refresh it.

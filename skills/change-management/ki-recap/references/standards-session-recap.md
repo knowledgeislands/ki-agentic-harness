@@ -229,13 +229,13 @@ State plainly that this digest is a **carry-forward artefact**, not a context-wi
 
 ## 9. Create a portable checkpoint hand-off
 
-Run this composition only when the user explicitly invokes `ki-recap checkpoint <thread>`. It is optional and separate from ordinary recap. `ki-recap` supplies grounded source evidence; `ki-work-folder` remains the sole owner of checkpoint identity, schema, update, resume, and removal.
+Run this composition only when the user explicitly invokes `ki-recap checkpoint <thread>`. It is optional and separate from ordinary recap. `ki-recap` supplies grounded source evidence; `ki-work-package` remains the sole owner of checkpoint identity, schema, update, resume, and removal.
 
-1. Resolve the physical Git root and expected repository identity. Require the repository to declare `ki-work-folder`, then run its read-only audit and stop if the capability or target record is invalid.
+1. Resolve the physical Git root and expected repository identity. Require the repository to declare `ki-work-package`, then run its read-only audit and stop if the capability or target record is invalid.
 2. Require the exact human-selected `<thread>` and explicit authority to update it. Resolve only the work file `+/_WORK/<id>/work.md` the selected id names, never the retired `+/_CHECKPOINTS/` or `+/_THREADS/`; refuse missing, ambiguous, nested, runtime-derived, or mismatched identity.
 3. Ground the hand-off in the current immutable `HEAD`. If required work is uncommitted, require one complete portable patch against that exact baseline; a partial diff, shared working tree, transcript, runtime session, or provider snapshot is insufficient.
 4. Require the scoped authority, result destination, and expected verification that the receiving agent needs. Refuse repository mismatch, stale baseline, missing input, or an interrupted prior update without writing; re-ground all evidence before any retry.
-5. Invoke the existing `ki-work-folder` UPDATE procedure with concise reconstruction state and references to durable owners. Never embed a transcript or make the checkpoint the only copy of a decision, accepted work state, patch, or result. A Project or Initiative's health, update and ideas go to its registry note, not to a checkpoint.
+5. Invoke the existing `ki-work-package` UPDATE procedure with concise reconstruction state and references to durable owners. Never embed a transcript or make the checkpoint the only copy of a decision, accepted work state, patch, or result. A Project or Initiative's health, update and ideas go to its registry note, not to a checkpoint.
 6. Return a hand-off containing repository identity, thread, authority scope, result destination, verification plan, and committed baseline or portable-patch reference. A fresh agent must be able to reconstruct the governed task from those portable inputs without the originating transcript or shared filesystem.
 
 The pure [`checkpoint-handoff.ts`](../scripts/internal/checkpoint-handoff.ts) model exercises this no-write preflight. It is evidence for the procedure, not a host command or a replacement for live repository and checkpoint validation.

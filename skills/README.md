@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 64 skills: 53 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 65 skills: 54 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -129,12 +129,12 @@ Prepare and run one bounded authority envelope over an exact set of Ready work r
 
 #### `ki-coordination`
 
-Govern coordinating work under the Knowledge Islands work model: the responsive coordinator and its turn budget, the work levels and forms with their ids, openers and bootstrap, the seven states and the receive words, the Summary, recap since the mark and full summary, the report heading, the closing glyph banner and send line, On hold with its hold report, the work file and its Messages section, re-anchoring after compaction, decision classes and their life cycle, design notes, Finished, the working rules, and the three reply forms every session uses. Use while coordinating territory or Project work to give a summary, recap, full summary or banner or strike the mark, or to decide how any session replies; `ki-delegation` owns the background runs the coordinator launches.
+Govern coordinating work under the Knowledge Islands work model: the responsive coordinator and its turn budget, the work levels and forms with their ids, openers and bootstrap, the seven states and the receive words, the Summary, recap since the mark and full summary, the report heading, the closing glyph banner and send line, On hold with its hold report, the work package and its message queue, route receipt and the inbox check, re-anchoring after compaction, decision classes and their life cycle, design notes, Finished, the working rules, and the three reply forms every session uses. Use while coordinating territory or Project work to give a summary, recap, full summary or banner or strike the mark, or to decide how any session replies; `ki-delegation` owns the background runs the coordinator launches.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
-- **Dependencies:** `ki-delegation`, `ki-work-folder`
+- **Dependencies:** `ki-delegation`
 - **Runtime:** Portable
 
 #### `ki-implement`
@@ -475,7 +475,17 @@ Govern directional work and knowledge trades between KI repositories: routes, re
 
 #### `ki-work-folder`
 
-Own the work folder of one piece of work, `+/_WORK/<id>/`: its closed list, who may write each kind, its tidy and close-out rules, the `+/_WORK_REVIEW/` holding area, the Messages line shape, and its work file `work.md` with front matter of id, level, title, worker, supervisor, state and times, next steps, Messages and parked query tags. Use to create, update, resume, audit, tidy or remove a work file or folder, or to pick work up without a transcript or vendor session; Git is the logbook, decisions, roadmap state and durable knowledge stay with their owners, and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
+Deprecated alias for `ki-work-package`, kept only so a repository still declaring `[skills.ki-work-folder]` resolves during the rename's tolerance window. Its audit warns and names the replacement declaration; it owns no record, standard or procedure. Use `ki-work-package` for the work package and its work folder `+/_WORK/<id>/`.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | help | conform | educate | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-package`
+
+Own the work package of one piece of work, its five files in its work folder `+/_WORK/<id>/`: the definition `work.md` with its routing description, goals and scope, `state.md`, `queries.md`, the `messages.md` queue and `decisions.md`, plus the folder's closed list, entry points, tidy and close-out rules and the `+/_WORK_REVIEW/` holding area. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, durable knowledge stays with its owners, and single-file work folders and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
 
 - **Kind:** Governance
 - **Applicability:** Detected
@@ -501,7 +511,7 @@ Audit or conform the universal KI repository contract declared by `.ki.toml`, in
 
 - **Kind:** Governance
 - **Applicability:** Baseline
-- **Detects:** `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`, `ki-work-folder`
+- **Detects:** `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`, `ki-work-package`
 - **Arguments:** `audit | conform <repo> | educate <repo> | help | refresh | review [scope] | review close <REV-NNN>`
 - **Dependencies:** `ki-authoring`, `ki-git`
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract

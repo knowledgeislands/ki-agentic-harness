@@ -14,7 +14,7 @@ const COORD_1: RubricItem<CoordinationRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Create the territory work file in the Capital under the `ki-work-folder` work-folder standard, or move the state-of-play checkpoint there at the territory's migration, and remove territory work from any repository that is not its own capital."
+        "Create the territory work package in the Capital under the `ki-work-package` work-package standard, or move the state-of-play checkpoint there at the territory's migration, and remove territory work from any repository that is not its own capital."
     },
     audit: { phase: 'INSPECT', run: ({ master }) => master.outcomes }
   }
@@ -48,7 +48,7 @@ const COORD_10: RubricItem<CoordinationRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Have the work correct its `level`, or an old-shape checkpoint its `role`, at its next update, or ask through its Messages section; never edit another piece of work's front matter to change it."
+        "Have the work correct its `level`, or an old-shape checkpoint its `role`, at its next update, or ask by a line in its `messages.md`; never edit another piece of work's front matter to change it."
     },
     audit: { phase: 'INSPECT', run: ({ roles }) => roles.outcomes }
   }
@@ -58,7 +58,7 @@ const COORD_3: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-3',
   title: 'active Project work is within the cap',
   description:
-    'At most three or four pieces of Project work are active at once, neither On hold nor Finished, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted.',
+    'At most three or four pieces of Project work are active at once, neither On hold nor Finished, reading the state from `state.md` where the work package has one, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted.',
   sources: [`${SOURCE}#territory-work`],
   mechanical: {
     level: 'WARN',
@@ -125,14 +125,14 @@ const COORD_9: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-9',
   title: 'every work folder is pruned to what is still open',
   description:
-    "Each work folder `+/_WORK/<id>/` holds only the closed list, `work.md`, `decisions.md`, `<name>.report.md`, `briefs/` and `design/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
+    "Each work folder `+/_WORK/<id>/` holds only the closed list, the five package files `work.md`, `state.md`, `queries.md`, `messages.md` and `decisions.md`, `<name>.report.md`, `briefs/` and `design/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. More than eight open queries under `queries.md`'s `## Open` is a coordination smell and warns. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
   sources: [`${SOURCE}#pruning-the-work-folder`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "At the owning coordinator's next send, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear. The listing is never permission to delete another piece of work's files."
+        "At the owning coordinator's next send, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear; answer, park or merge open queries beyond eight. The listing is never permission to delete another piece of work's files."
     },
     heuristic: true,
     audit: { phase: 'INSPECT', run: ({ tidy }) => tidy.outcomes }
@@ -140,10 +140,10 @@ const COORD_9: RubricItem<CoordinationRubricContext> = {
   judgment: {
     scope: 'The flagged work folders, their decisions logs and the work files and records the reports name.',
     prompt:
-      "Does each flagged report's outcome have a durable home, a work record, the decisions log, the work file or a commit, and is every query it raised answered in the log, so that the owning coordinator may delete it, and did territory work name the flagged folders at its mark?",
+      "Does each flagged report's outcome have a durable home, a work record, the decisions log, the work package or a commit, and is every query it raised answered in the log, so that the owning coordinator may delete it, and did territory work name the flagged folders at its mark?",
     outcomes: ['conforming', 'prune the work folder', 'home the outcome first', 'escalate to owner'],
     guidance:
-      'Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another work folder to its own coordinator, told through its Messages section.'
+      'Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another work folder to its own coordinator, told by a line in its `messages.md`.'
   }
 }
 
@@ -168,15 +168,15 @@ const COORD_4: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-4',
   title: 'coordinators stay responsive and work stays current',
   description:
-    'A coordinator never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the work file, `ki agent status`, one report and one short file and writes limited to the work file, the decisions log and a brief, waits only through a detached waiter or monitor, keeps a background check armed while work lies with a worker that wakes it at least every 5 minutes, or sooner when an agent finishes, for a one-to-two-line timed update naming the current step of each running agent, with no heartbeat otherwise, answers owner messages within one short turn and reports drift in one line; each territory Capital has one piece of territory work doing project management only, keeping the Project-work queue within its cap and seeding each work folder and opener; Project work works only its Project, follows the bootstrap, keeps its work file current and records approvals before launching.',
+    'A coordinator never does substantive work itself, sends every unit of work to a detached background agent and treats an owner message as steering rather than a stop; each turn makes at most five tool calls with reads limited to the work package, one read of its files counting as one call, `ki agent status`, one report and one short file and writes limited to the work package, the decisions log and a brief, waits only through a detached waiter or monitor, keeps a background check armed while work lies with a worker that wakes it at least every 5 minutes, or sooner when an agent finishes, for a one-to-two-line timed update naming the current step of each running agent, with no heartbeat otherwise, acts on new `messages.md` lines at each wake in queue order, important lines first, answers owner messages within one short turn and reports drift in one line; each territory Capital has one piece of territory work doing project management only, keeping the Project-work queue within its cap and seeding each work folder and opener; Project work works only its Project, follows the bootstrap, keeps its state file current and records approvals before launching; a routed line is never rejected whole, only the part not its own returned once to territory work.',
   sources: [`${SOURCE}#coordinator-responsiveness`, `${SOURCE}#coordinating-work`],
   judgment: {
-    scope: 'Coordinator transcripts, work files, decisions logs and recaps the owner selects for review.',
+    scope: 'Coordinator transcripts, work packages, decisions logs and recaps the owner selects for review.',
     prompt:
-      'Did the coordinator keep within five tool calls a turn, delegate rather than analyse, draft, edit, test or wait in the foreground, give a timed heartbeat update naming the current step of each running agent at least every 5 minutes while work lay with a worker and none otherwise, answer owner messages within one short turn and stop work only on an express, named instruction, does territory work stay on project management with active Project work within the cap and a prepared work folder and opener for each, and does each piece of Project work run through background agents from a current work file?',
+      'Did the coordinator keep within five tool calls a turn, delegate rather than analyse, draft, edit, test or wait in the foreground, give a timed heartbeat update naming the current step of each running agent at least every 5 minutes while work lay with a worker and none otherwise, answer owner messages within one short turn and stop work only on an express, named instruction, does territory work stay on project management with active Project work within the cap and a prepared work folder and opener for each, and does each piece of Project work run through background agents from a current state file, taking its message queue in priority order?',
     outcomes: ['conforming', 'delegate longer work', 'escalate to owner'],
     guidance:
-      'Move longer coordinator work into background agents and note the drift in the work file; escalate to territory work when a direction touches more than one Project.'
+      'Move longer coordinator work into background agents and note the drift in the state file; escalate to territory work when a direction touches more than one Project.'
   }
 }
 
@@ -184,7 +184,7 @@ const COORD_5: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-5',
   title: 'coordinators park tangents, link records and keep checkouts current',
   description:
-    "A coordinator parks passing side topics as dated one-line items in its work file's Parked section, cites and links every record, work file, theme and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.",
+    "A coordinator parks passing side topics as dated one-line items under `queries.md`'s `## Parked`, cites and links every record, work file, theme and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push.",
   sources: [`${SOURCE}#working-rules`],
   judgment: {
     scope: 'Coordinator transcripts, status lines, reports, recaps and work files the owner selects for review.',
@@ -192,7 +192,7 @@ const COORD_5: RubricItem<CoordinationRubricContext> = {
       "Were side topics parked without derailing the work and later homed or dropped, does every mention of a record, work file, theme or Project carry its full identifier and a local link, and are the owner's primary checkouts current, with dirty or diverged ones reported rather than altered?",
     outcomes: ['conforming', 'park or home tangents', 'fix references', 'refresh checkouts', 'escalate to owner'],
     guidance:
-      "Move tangents into the work file's Parked section or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it."
+      "Move tangents into `queries.md`'s `## Parked` or their proper home, replace short or unlinked references with full identifiers and local paths, and fast-forward only clean checkouts; report a dirty or diverged checkout to the owner instead of repairing it."
   }
 }
 

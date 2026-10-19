@@ -6,6 +6,7 @@ import {
   bindingOutcomes,
   createCoordinationSession,
   isCapital,
+  openQueryCount,
   recordIdentifiers,
   reportConfidenceFindings,
   reportHasGlyphForm,
@@ -614,6 +615,16 @@ describe('work files', () => {
     expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
   })
 
+  test('a work package is read for its state from `state.md`, over the work file', () => {
+    const root = fixture(capital)
+    for (const slug of ['a', 'b', 'c', 'd']) work(root, `ki.${slug}`, { level: 'project', state: 'with-worker' })
+    const folder = work(root, 'ki.e', { id: 'ki.e', level: 'project' })
+    writeFileSync(join(folder, 'state.md'), "---\nid: 'ki.e'\nstate: 'with-worker'\n---\n\n# ki.e state\n")
+    expect(context(root).cap.outcomes[0]?.message).toContain('5 pieces of Project work')
+    writeFileSync(join(folder, 'state.md'), "---\nid: 'ki.e'\nstate: 'on-hold'\n---\n\n# ki.e state\n")
+    expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
+  })
+
   test('work awaiting review is counted, not checked', () => {
     const root = fixture(capital)
     mkdirSync(join(root, '+', '_WORK_REVIEW', 'ki.old-thread'), { recursive: true })
@@ -656,6 +667,21 @@ describe('work files', () => {
     writeFileSync(join(folder, 'notes.md'), '# Notes\n')
     expect(workFolderFindings(folder).stray).toEqual(['notes.md'])
     expect(context(root).tidy.outcomes[0]?.message).toStartWith('a work folder holds only')
+  })
+
+  test('a work package keeps its five files, and more than eight open queries is a warning', () => {
+    const root = fixture(capital)
+    const folder = work(root, 'ki.ways-of-working', project())
+    for (const name of ['decisions.md', 'state.md', 'messages.md']) writeFileSync(join(folder, name), '# x\n')
+    const queries = (count: number): string =>
+      `# ki.ways-of-working queries\n\n## Open\n\n${Array.from({ length: count }, (_, at) => `### TAG-${at} - a question\n\n`).join('')}## Parked\n\n### PARKED - parked\n`
+    writeFileSync(join(folder, 'queries.md'), queries(8))
+    expect(workFolderFindings(folder).stray).toEqual([])
+    expect(openQueryCount(folder)).toBe(8)
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
+    writeFileSync(join(folder, 'queries.md'), queries(9))
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
+    expect(context(root).tidy.outcomes[0]?.message).toStartWith('9 open queries')
   })
 })
 

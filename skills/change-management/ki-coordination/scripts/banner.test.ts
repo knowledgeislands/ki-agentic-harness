@@ -58,9 +58,9 @@ const ITEM =
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
 const SEND_LINE =
-  'Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
+  'Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work package, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
 const HOLD_SEND_LINE =
-  'Resume <label> from its work file in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work file and decisions, take stock, put the parked queries back, restart authorised work, then banner.'
+  'Resume <label> from its work package in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work package, take stock, put the parked queries back, restart authorised work, then banner.'
 const HOLD_CLOSING_LINE = 'To bring this work back and continue it, paste this:'
 
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
@@ -218,7 +218,7 @@ test('the hook line points at the standard and carries only its five hard rules'
   )
   expect(line).toContain('with no reply block')
   expect(line).toContain(
-    '5) commit your own work by explicit path at every send, and act on each line of the Messages section of the work file, FIRST-STEP first'
+    '5) commit your own work by explicit path at every send, and act on each line of the messages.md queue of the work package, IMPORTANT lines first and then in queue order'
   )
   expect(line).not.toContain('6)')
   // The shape itself lives in the standard and the output style; the line does not restate it.
@@ -240,7 +240,7 @@ test('the run-report and footer-report sources carry the quiet-tools rule and no
 test('the hook line, the pointer and the output style confine the coordinator forms to coordinating work', () => {
   expect(hook).toContain("line='In coordinating work only,")
   expect(hook).toContain('in any other session ignore this line and reply in the ki-coordination Reply forms')
-  expect(hook).toContain('In a conversational session, re-read your work file if you have one')
+  expect(hook).toContain('In a conversational session, re-read your work package if you have one')
   expect(outputStyle).toContain('This style applies only while a session coordinates work')
   expect(standard).toContain('## Reply forms')
 })
