@@ -13,6 +13,6 @@
   "project": ["skills/*/*/scripts/**/*.ts", "evals/**/*.ts", "hooks/**/*.ts"],
   "ignore": [".claude/skills/**", ".agents/skills/**"],
   "ignoreBinaries": ["codex", "op"],
-  "ignoreDependencies": ["syncpack"],
+  "ignoreDependencies": ["@commitlint/cli", "lint-staged", "syncpack"],
   "ignoreExportsUsedInFile": true
 }
