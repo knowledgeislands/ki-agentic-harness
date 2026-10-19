@@ -7,7 +7,7 @@ This ledger records the primary and corroborating sources accepted into the agen
 ## Identity, specification, and governance
 
 - **Model Context Protocol (MCP):** the [2026-07-28 specification](https://modelcontextprotocol.io/specification/2026-07-28/basic) is the normative protocol text; the [Agentic AI Foundation transfer announcement](https://blog.modelcontextprotocol.io/posts/2025-12-09-mcp-joins-agentic-ai-foundation/) establishes current governance; and the [SDK tier policy](https://modelcontextprotocol.io/community/sdk-tiers) defines scenario-based conformance expectations.
-- **Agent Client Protocol (ACP):** the [version 1 protocol overview](https://agentclientprotocol.com/protocol/v1/overview), stable [schema v1.24.1 release](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.24.1), and [governance page](https://agentclientprotocol.com/community/governance) define the stable wire contract and interim joint stewardship by Zed and JetBrains. v1.24.0 and v1.24.1 (both 2026-09-30) add only unstable surface: a subagents RFD and schema, request-scoped MCP-over-ACP, and MCP response extensions. The separately published [v2.0.0 alpha 7 schema](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v2.0.0-alpha.7) is pre-stable counter-evidence, not a replacement for protocolVersion 1.
+- **Agent Client Protocol (ACP):** the [version 1 protocol overview](https://agentclientprotocol.com/protocol/v1/overview), stable [schema v1.25.0 release](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.25.0), and [governance page](https://agentclientprotocol.com/community/governance) define the stable wire contract and interim joint stewardship by Zed and JetBrains. v1.25.0 (2026-10-09) stabilizes session notices and session compaction; all prior v1.24.x additions remain in place. The separately published [v2.0.0 alpha 8 schema](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v2.0.0-alpha.8) is pre-stable counter-evidence, not a replacement for protocolVersion 1.
 - **Agent Host Protocol (AHP):** the [specification overview](https://microsoft.github.io/agent-host-protocol/specification/overview.html), [1.0.0 release](https://github.com/microsoft/agent-host-protocol/releases/tag/spec%2Fv1.0.0), and [versioning policy](https://microsoft.github.io/agent-host-protocol/specification/versioning) establish a 1.0 Microsoft protocol (released 2026-10-02) with SemVer compatibility within a MAJOR for Stable channels. Root, Session, Chat, Terminal, Telemetry, and Resource watch are Stable; Canvas, Annotations, Changeset, MCP, and both Automation channels remain below Stable.
 - **Agent2Agent Protocol (A2A):** the [latest specification](https://a2a-protocol.org/latest/specification/) and [v1.0.1 release](https://github.com/a2aproject/A2A/releases/tag/v1.0.1) establish the current Linux Foundation protocol release.
 - **AGENTS.md:** the [format site](https://agents.md/) describes the unversioned repository instruction format; the [Linux Foundation Agentic AI Foundation announcement](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation) records its transfer to foundation governance.
@@ -28,7 +28,7 @@ This ledger records the primary and corroborating sources accepted into the agen
 ## Agent coordination tooling
 
 - **Gas City:** the [open-source orchestrator](https://github.com/gastownhall/gascity) supplies reference-implementation evidence; the [software-factory guide](https://gascity.com/guide/ai-software-factory/) describes Beads-backed durable work, configured coding workflows, routing, retries, and review gates.
-- **Paperclip:** the [open-source control plane](https://github.com/PaperclipAI/paperclip) supplies reference-implementation evidence; the [key concepts guide](https://docs.paperclip.ing/guides/welcome/key-concepts/) describes company boundaries, hierarchical agent roles, tasks, goals, budgets, and approvals. Latest release v2026.1001.0 (2026-10-02).
+- **Paperclip:** the [open-source control plane](https://github.com/PaperclipAI/paperclip) supplies reference-implementation evidence; the [key concepts guide](https://docs.paperclip.ing/guides/welcome/key-concepts/) describes company boundaries, hierarchical agent roles, tasks, goals, budgets, and approvals. Latest release v2026.1012.0 (2026-10-12), which adds experimental connectivity for outside assistants including Claude Code, Codex, OpenCode, and MCP clients.
 
 These sources establish two implemented coordination tools with overlapping multi-agent concerns but different primary abstractions. They do not establish comparative fitness, cross-tool interoperability, or a Knowledge Islands adoption decision.
 
@@ -52,11 +52,11 @@ Every source group below was re-fetched in the latest weekly review. The review 
 
 | Source group | Last reviewed |
 | ------------ | ------------- |
-| Identity, specification, and governance | 2026-10-06 |
-| Independent implementation and local evidence | 2026-10-06 |
-| Agent coordination tooling | 2026-10-06 |
-| Agent-owned browser runtimes | 2026-10-06 |
-| Structural vocabulary evidence | 2026-10-06 |
+| Identity, specification, and governance | 2026-10-19 |
+| Independent implementation and local evidence | 2026-10-19 |
+| Agent coordination tooling | 2026-10-19 |
+| Agent-owned browser runtimes | 2026-10-19 |
+| Structural vocabulary evidence | 2026-10-19 |
 
 | Review | Outcome | Date |
 | ------ | ------- | ---- |
@@ -67,7 +67,9 @@ Every source group below was re-fetched in the latest weekly review. The review 
 | Coordination-tooling signal | Added Gas City and Paperclip as new assessment subjects, preserving the workflow-factory versus company-control-plane distinction without adoption inference. | 2026-09-26 |
 | Weekly review | AHP released spec v1.0.0 (2026-10-02), firing its 1.0 return trigger; specification maturity moves from versioned to stable on normative text plus governance release, while interoperability stays untested, stance stays assess, and a new trigger tracks 1.0 host adoption and the six sub-Stable channels. ACP advanced to schema v1.24.1 and v2 alpha 7 (2026-09-30) with only unstable additions. Repointed the ki-binding, Codex AGENTS.md, and AGENTS.md governance sources to reachable primary pages. Paperclip released v2026.1001.0. MCP, A2A, AGENTS.md, W3C, Obscura, and Gas City unchanged. | 2026-10-06 |
 | Disposition | The 2026-09-26 AHP finding is closed: implementation multiplicity is recorded, interoperability remains unwitnessed, the assess stance is unchanged, and the open cross-implementation watch item carries the follow-up. | 2026-10-06 |
+| Weekly review | ACP schema v1.25.0 (2026-10-09) stabilizes session notices and session compaction on wire protocolVersion 1; v2.0.0 alpha 8 also released (pre-stable counter-evidence). Paperclip released v2026.1005.0 (Grok Build, agent directories, company skills from GitHub, Browser Use Cloud) and v2026.1012.0 (experimental outside-assistant connectivity for Claude Code, Codex, OpenCode, and MCP clients), firing the workspace-model return trigger; routed to ki-agent-coordination-paperclip, stance stays assess. MCP, AHP, A2A, AGENTS.md, W3C, Gas City, and Obscura unchanged. | 2026-10-19 |
 
 - Return triggers: new protocol release, governance transfer, independent implementation, published conformance result, cross-implementation demonstration, deprecation, or a Knowledge Islands use case requiring reassessment.
 - Agent Client Protocol is disambiguated from similarly named IBM and AGNTCY protocols; structural vocabulary remains outside the subject registry where the schema would misclassify it.
 - Open watch item: seek public cross-implementation conformance or interoperability results for AHP, A2A, and AGENTS.md rather than inferring them from package or implementation counts.
+- Open watch item (Paperclip): v2026.1012.0 experimental outside-assistant connectivity (Claude Code, Codex, MCP clients) fires the workspace-model return trigger — requires a bounded Knowledge Islands coordination evaluation before any stance advance. Routed to ki-agent-coordination-paperclip.

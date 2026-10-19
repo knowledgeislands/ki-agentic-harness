@@ -8,12 +8,12 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| [BIND] | `ki-binding` skill | The renderer-neutral surface audit this skill composes (surfaces agree with the single source) | 2026-07-13 |
-| [CHEZ] | `ki-repo-dotfiles-chezmoi` skill | The generic chezmoi source-repo standard this skill composes (repo is conventional) | 2026-07-13 |
-| [SRC] | `~/.config/ki/mcp-servers.yaml` (canonical) + either `.chezmoidata/*mcp*` (data-merge pattern) or a plain managed source file applied verbatim to the canonical path (managed-source pattern) | The single source and the chezmoi data the render path reads | 2026-07-14 |
-| [ADR] | `ADR-KI-HARNESS-SKILLS-004` (composition-for-backends corollary) | Why the render path is its own composition skill, not a fork or a `--backend` flag | 2026-07-13 |
-| [CHEZMOI] | [Chezmoi templating](https://www.chezmoi.io/user-guide/templating/) | Template/data/partial semantics | 2026-08-12 |
-| [APPLY] | [Chezmoi usage](https://www.chezmoi.io/user-guide/frequently-asked-questions/usage/) | Explicit preview and apply distinction | 2026-08-12 |
+| [BIND] | `ki-binding` skill | The renderer-neutral surface audit this skill composes (surfaces agree with the single source) | 2026-10-19 |
+| [CHEZ] | `ki-repo-dotfiles-chezmoi` skill | The generic chezmoi source-repo standard this skill composes (repo is conventional) | 2026-10-19 |
+| [SRC] | `~/.config/ki/mcp-servers.yaml` (canonical) + either `.chezmoidata/*mcp*` (data-merge pattern) or a plain managed source file applied verbatim to the canonical path (managed-source pattern) | The single source and the chezmoi data the render path reads | 2026-10-19 |
+| [ADR] | `ADR-KI-HARNESS-SKILLS-004` (composition-for-backends corollary) | Why the render path is its own composition skill, not a fork or a `--backend` flag | 2026-10-19 |
+| [CHEZMOI] | [Chezmoi templating](https://www.chezmoi.io/user-guide/templating/) | Template/data/partial semantics | 2026-10-19 |
+| [APPLY] | [Chezmoi usage](https://www.chezmoi.io/user-guide/frequently-asked-questions/usage/) | Explicit preview and apply distinction | 2026-10-19 |
 
 ## Open gates & watch-items
 
@@ -26,3 +26,5 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 Initial authoring, **2026-07-13** — drafted alongside the renderer-neutral split of `ki-binding` and the `ki-repo-dotfiles-chezmoi` standard.
 
 **REFRESH, 2026-07-14** — BINDCHEZ-3 recognises two source-data shapes: `.chezmoidata/*mcp*` (data-merge), or a plain, non-templated, chezmoi-managed source file applied verbatim to the canonical XDG path and read via chezmoi's `include` from the source tree (managed source). Standard, rubric, and session updated together (BINDCHEZ-7). Verified: BINDCHEZ-3 passes with the managed-source pattern.
+
+**REFRESH, 2026-10-19** — Quarterly date-bump. Re-checked ki-binding (canonical · on-change, contract stable since 2026-08-12), ki-repo-dotfiles-chezmoi (external-spec · quarterly), and the chezmoi docs (chezmoi 2.71 and 2.72 released; no changes to `.chezmoitemplates` partial semantics, `.chezmoidata` wiring, or `chezmoi apply` behavior). No render-contract drift found.
