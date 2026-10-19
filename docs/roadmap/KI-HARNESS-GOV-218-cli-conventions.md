@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: repo-structure
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 78b04030f1ca8c131a130bd019509a345aa05047
 created_at: 2026-10-18T17:55:48Z
-updated_at: 2026-10-18T18:38:30Z
+updated_at: 2026-10-19T22:17:32Z
 ---
 
 # KI-HARNESS-GOV-218: Command-Line Conventions
@@ -106,6 +105,10 @@ None.
 ### Mini recap
 
 KI tools now have one place that says which flags, streams, exit statuses, colour rules and directories users expect.
+
+## Done
+
+Accepted 2026-10-19 by Kris Brown on the review packet above. Kris said, on 19 October, "I think we should accept all the awaiting reviews."
 
 ## Discussion
 
