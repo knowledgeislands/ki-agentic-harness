@@ -45,7 +45,7 @@ export const scenarios: Scenario[] = [
     skill: 'ki-skills',
     id: 'skills-linking',
     prompt:
-      'Inside a SKILL.md, should I link with Obsidian [[wikilinks]] or relative markdown links, and how should I refer to another skill?',
+      'Inside a SKILL.md, what link form should I use, how does the GFM preference apply to KB notes, and how should I refer to another skill?',
     assertions: [
       {
         name: 'relative markdown links, not wikilinks',
@@ -54,6 +54,6 @@ export const scenarios: Scenario[] = [
       { name: 'refer to another skill by name', re: /by (its )?name|by `?name`?/i }
     ],
     rubric:
-      "House rubric (LINK): a SKILL.md uses standard relative markdown links, NEVER wikilinks; it refers to another skill by its `name` (not a file path), because a skill's on-disk location is not stable but its name is how it loads. A correct answer says relative-not-wikilinks and refer-to-skills-by-name."
+      "House rubric (LINK): a SKILL.md uses standard relative markdown links, NEVER wikilinks; it refers to another skill by its `name` (not a file path), because a skill's on-disk location is not stable but its name is how it loads. KB notes also prefer GFM with note-relative angle-bracket Markdown links, while existing wikilinks remain supported. A correct answer gives the SKILL.md relative-link rule, the shared GFM preference without inventing a KB wikilink mandate, and refer-to-skills-by-name."
   }
 ]

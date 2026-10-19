@@ -43,7 +43,15 @@ export const classifySourceMirror = ({
   malformed?: boolean
   frontmatter?: string
 }): SourceMirrorLabel => {
+  const referenceLabels = new Set(
+    [...body.matchAll(/^ {0,3}\[([^\]\n]+)\]:/gm)].map((match) => match[1]!.trim().replace(/\s+/g, ' ').toLowerCase())
+  )
   const text = body
+    .replace(/^ {0,3}\[[^\]]+\]:.*$/gm, '')
+    .replace(/!?\[[^\]\n]*\]\[[^\]\n]*\]/g, '')
+    .replace(/!?\[([^\]\n]+)\](?![[(])/g, (link, label: string) =>
+      referenceLabels.has(label.trim().replace(/\s+/g, ' ').toLowerCase()) ? '' : link
+    )
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/^\s{0,3}#{1,6}\s+.*$/gm, '')
     .replace(/!?\[[^\]]*\]\([^)]*\)/g, '')

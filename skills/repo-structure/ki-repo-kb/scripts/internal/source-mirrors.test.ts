@@ -102,3 +102,15 @@ test('raw provenance grammar cannot accept last-wins, quoted-key, merge, flow or
     )
   ).toBe(false)
 })
+
+test('Markdown pointer links do not masquerade as mirror content', () => {
+  for (const body of [
+    '[Source](<Records/Some File.pdf>)',
+    '[Source](Records/Some%20File.pdf)',
+    '[Source][record]\n\n[record]: <Records/Some File.pdf>',
+    '[Source][]\n\n[Source]: Records/Some%20File.pdf',
+    '[Source]\n\n[source]: <Records/Some File.pdf>'
+  ]) {
+    expect(classifySourceMirror({ fields, body })).toMatchObject({ word_count: 0, mirror_content: 'pointer' })
+  }
+})

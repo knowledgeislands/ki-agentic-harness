@@ -5,7 +5,7 @@
  * skill-less baseline (which still sees the user's ambient CLAUDE.md) cannot
  * already answer it. The global CLAUDE.md states the headline "wide table →
  * footnote" rule, so we deliberately do NOT test that; we test the rules it says
- * "live in the skill": the footnote-marker SERIES, the wikilink prohibition +
+ * "live in the skill": the footnote-marker SERIES, the GFM preference +
  * angle-bracket form, TOML presentation, and knowledge-promotion routing.
  *
  * Assertions are regexes over the answer text — the deterministic half of the
@@ -42,14 +42,17 @@ export const scenarios: Scenario[] = [
     skill: 'ki-authoring',
     id: 'link-style',
     prompt:
-      'Inside a SKILL.md or README.md file (a documentation file, NOT note content inside a base), should I use Obsidian [[wikilinks]] or relative markdown links to point at another file? And how do I link to a file whose path contains spaces?',
+      'What Markdown flavour and internal-link form should I prefer in Knowledge Islands documentation and KB notes? How should I handle existing wikilinks and Obsidian %20 spaces?',
     assertions: [
+      { name: 'prefers GFM', re: /GFM|GitHub[- ]flavou?red/i },
       { name: 'recommends relative links', re: /relative (markdown )?link/i },
-      { name: 'rejects wikilinks', re: /(never|avoid|not|don.?t|rather than|instead of|over)\b[^.\n]{0,40}wikilink/i },
-      { name: 'angle-bracket form for spaces', re: /angle[- ]bracket|\(<[^>\n]+\s[^>\n]+>\)/i }
+      { name: 'angle-bracket destinations', re: /angle[- ]bracket|\(<[^>\n]+>\)/i },
+      { name: 'supports existing flavours', re: /support|tolerat|remain|existing/i },
+      { name: 'normalises encoded spaces', re: /%20|encoded space/i }
     ],
     rubric:
-      'House convention: use standard RELATIVE markdown links, NEVER Obsidian wikilinks ([[…]]) — wikilinks break when a file is relocated, symlinked, or read outside the base. For a path containing spaces, use the CommonMark ANGLE-BRACKET form: [text](<path with spaces.md>). A correct answer says relative-not-wikilinks AND gives the angle-bracket form for spaces.'
+      'GFM is preferred across documentation and KB notes. House links are descriptive and note-relative, in angle brackets; normalise Obsidian %20 spaces within destinations without globally decoding other escapes. Existing flavours and wikilinks remain supported and never fail merely for syntax. Whole-file conversion uses the converter once available; refusal is flagged or an approved exception recorded, and constructs with no GFM equivalent need a decision. No per-note flavour field is required.'
+
   },
   {
     skill: 'ki-authoring',

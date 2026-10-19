@@ -3,36 +3,26 @@
  * `agents` is a SHAPE skill (it judges a definition's form, not a body of facts),
  * so these target house-ARBITRARY conventions it owns that a skill-less baseline
  * can't derive — and, where possible, ones that CONTRADICT generic best practice
- * (wikilinks allowed here; omitting `tools` is the wrong default) so the baseline
+ * (omitting `tools` is the wrong default) so the baseline
  * can't guess its way to the answer.
  */
 import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    // LINK-2: the sharpest house-contrarian rule — wikilinks are FORBIDDEN in a
-    // SKILL.md but ALLOWED in an agent, because a grounded agent cites KB notes.
-    // A baseline applies the generic "use markdown links" rule and gets it wrong.
+    // Grounded citations follow the GFM preference; existing KB wikilinks remain readable.
     skill: 'ki-subagents',
     id: 'agents-wikilinks',
     prompt:
-      'In a Knowledge Islands subagent definition (.md agent file), may I use Obsidian [[wikilinks]] to reference KB notes, or must I use relative markdown links the way a SKILL.md does?',
+      'A portable Knowledge Islands subagent role cites KB notes. What link form should I prefer, and should existing wikilinks be rejected merely for their syntax?',
     assertions: [
-      {
-        name: 'wikilinks explicitly OK in an agent (yes / allowed / may use)',
-        re: /\b(yes|can use|may use|allow|permit|fine|acceptable|not a defect)\b/i
-      },
-      {
-        name: 'contrasts with the SKILL.md rule (unlike a SKILL.md)',
-        re: /skill\.?md|unlike|differ|whereas|in contrast|by contrast/i
-      },
-      {
-        name: 'because a grounded agent cites its KB notes',
-        re: /(ground|cite|citing|cites)[^.\n]{0,40}(note|kb)|note[^.\n]{0,20}cit/i
-      }
+      { name: 'prefers relative Markdown links', re: /relative[^.\n]{0,30}(markdown )?link/i },
+      { name: 'keeps existing wikilinks supported', re: /support|tolerat|remain|not (a defect|reject)|no[^.\n]{0,30}reject/i },
+      { name: 'grounds the role in sources', re: /ground|cit(e|es|ing|ation)|source/i }
     ],
     rubric:
-      'House rubric (agents LINK-2): inside a subagent definition, [[wikilinks]] to KB notes are ALLOWED — a grounded agent cites its notes, so a wikilink is not a defect here, in deliberate contrast to a SKILL.md where only relative markdown links are permitted. A correct answer says wikilinks ARE allowed in an agent (because it cites KB notes), unlike in a SKILL.md.'
+      'A grounded role reads and cites its KB sources. Under ki-authoring and ki-repo-kb, GFM with descriptive note-relative Markdown links in angle brackets is preferred for KB citations too. Existing wikilinks remain supported and must not be rejected merely for their syntax. Do not invent an agent-versus-KB link exception or a KB wikilink mandate.'
+
   },
   {
     // PROMPT-2/3/5: the house system-prompt shape. Generic advice ("describe the
