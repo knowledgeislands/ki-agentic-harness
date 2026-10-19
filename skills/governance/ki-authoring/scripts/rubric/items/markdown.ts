@@ -105,14 +105,15 @@ const MD_LINK: RubricItem<MarkdownRubricContext> = {
   code: 'MD-link',
   title: 'house-file links are descriptive and portable',
   description:
-    'House-file links are descriptive relative Markdown links rather than wikilinks; paths with spaces use angle brackets. KB note content and agent prompts remain explicitly scoped exceptions.',
-  sources: ['standards-markdown.md#links'],
+    'GFM is preferred across house documents and KB notes, with descriptive note-relative Markdown links in angle brackets and Obsidian %20 spaces normalised structurally. Other flavours remain supported; unsupported constructs need decisions and conversion exceptions are recorded.',
+  sources: ['standards-markdown.md#markdown-flavour', 'standards-markdown.md#links'],
   judgment: {
-    scope: 'Every house-file Markdown link outside the explicitly scoped KB-note and agent-prompt exceptions.',
-    prompt: 'Assess whether links are descriptive, relative Markdown links where this convention applies.',
+    scope: 'Authored Markdown, including KB note content, and any conversion or recorded exception.',
+    prompt:
+      'Assess house link form, supported-flavour readability, and whether whole-file or batch conversion preserves meaning and records refused files or exceptions.',
     outcomes: ['conforming', 'correction required', 'scoped exception'],
     guidance:
-      'Replace the link with descriptive relative Markdown, use angle brackets for paths with spaces, or record the applicable scoped exception.'
+      'Use descriptive note-relative Markdown links in angle brackets, normalise only encoded spaces in destinations, and record conversion exceptions without failing supported flavours.'
   }
 }
 

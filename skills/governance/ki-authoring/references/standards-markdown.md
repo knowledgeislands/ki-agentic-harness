@@ -5,6 +5,7 @@ The **judgment-layer** rules for the Markdown written across Knowledge Islands r
 ## Contents
 
 - [What to leave to the linter](#what-to-leave-to-the-linter)
+- [Markdown flavour](#markdown-flavour)
 - [Migration safety](#migration-safety)
   - [Tables and footnotes](#tables-and-footnotes)
   - [Frontmatter](#frontmatter)
@@ -21,6 +22,14 @@ Don't hand-apply or document any of these — the toolchain owns them, and resta
 - **Heading hierarchy, single H1, duplicate-heading and list rules** — rumdl flags these.
 
 The one place column width _is_ your job is **tables**, and it is now wholly your job. The former formatter padded table columns only when the padded result fit within its print width, leaving wider tables compact; rumdl's `MD060` styles are unconditional, so the house configuration leaves the opt-in `MD060` off and enforces neither shape. Nothing mechanical will align a table for you — that makes the width conventions below load-bearing rather than advisory.
+
+## Markdown flavour
+
+Knowledge Islands prefers GitHub-flavoured Markdown (GFM). Other flavours, chiefly Obsidian's wikilinks, embeds and custom callouts, remain supported: a reader, audit or tool must never fail merely because a file uses another flavour, and no one need convert a file just to read or cite it. Do not add a per-note flavour field.
+
+A file you edit is converted as a whole to GFM in the same change, through the converter once it exists, with the conversion visible for review; if the converter refuses the file, flag it for a decision or record an approved exception.
+
+A repository may rewrite a batch of files, or the whole repository, to GFM in a dedicated change with no unrelated edits, after the converter's dry run, verification and decisions on exceptions. Where a construct has no GFM equivalent, such as a block reference, a transclusion or a plugin query, the author decides its replacement or records an approved exception; it is never dropped silently.
 
 ## Migration safety
 
@@ -98,8 +107,8 @@ This is an authoring presentation rule. Domain skills own a document's required 
 
 ## Links
 
-- **Use descriptive relative Markdown links in house documents and skill files.** For a path containing spaces, use the CommonMark angle-bracket form: `[ref](<references/My Detail.md>)`. KB note content and agent prompts are scoped exceptions; `ki-repo-kb` owns internal note linking, using wikilinks and the shortest unique destination path.
-- **Respect the KB convention inside table cells.** In KB note content, escape a wikilink alias separator as `\|`; an unescaped `|` is parsed as a column separator. Outside that scoped content, use a standard relative Markdown link (`[Display text](path/to/file.md)`).
+- **Use descriptive, note-relative Markdown links in angle brackets as the house form**, including KB note content: `[ref](<references/My Detail.md>)`. Normalise Obsidian's `%20` space encoding to literal spaces inside the angle-bracket destination, structurally within links; preserve other necessary URI escapes and literal percent signs. `ki-repo-kb` owns internal-link resolution.
+- **Keep supported wikilinks readable inside table cells.** Escape an existing wikilink alias separator as `\|`; an unescaped `|` is parsed as a column separator. GFM conversion uses a descriptive Markdown link instead.
 - **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo standard](…)`, not `[here](…)`.
 - **Refer to another skill by its `name`**, never by a file path — "the `ki-repo-kb` skill" — because a skill's location on disk is not stable, but its name is how it loads into the session.
 - **In editor / IDE contexts** where the harness asks for clickable references, link files and lines with relative markdown links (`[file.ts:42](src/file.ts#L42)`) rather than bare backtick paths, so the reference is navigable.

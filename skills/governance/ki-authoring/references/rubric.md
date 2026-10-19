@@ -43,11 +43,11 @@ The mechanical Markdown gate and reviewer-applied Markdown conventions.
   - _Review prompt:_ Assess whether table footnotes use the documented marker series and paragraph layout.
   - _Outcomes:_ conforming; correction required; exclusion
   - _Conforming guidance:_ Use the documented marker series and one paragraph per footnote, or record why the table is excluded.
-- **MD-link [J] — house-file links are descriptive and portable** — House-file links are descriptive relative Markdown links rather than wikilinks; paths with spaces use angle brackets. KB note content and agent prompts remain explicitly scoped exceptions. (standards-markdown.md#links)
-  - _Evidence scope:_ Every house-file Markdown link outside the explicitly scoped KB-note and agent-prompt exceptions.
-  - _Review prompt:_ Assess whether links are descriptive, relative Markdown links where this convention applies.
+- **MD-link [J] — house-file links are descriptive and portable** — GFM is preferred across house documents and KB notes, with descriptive note-relative Markdown links in angle brackets and Obsidian %20 spaces normalised structurally. Other flavours remain supported; unsupported constructs need decisions and conversion exceptions are recorded. (standards-markdown.md#markdown-flavour, standards-markdown.md#links)
+  - _Evidence scope:_ Authored Markdown, including KB note content, and any conversion or recorded exception.
+  - _Review prompt:_ Assess house link form, supported-flavour readability, and whether whole-file or batch conversion preserves meaning and records refused files or exceptions.
   - _Outcomes:_ conforming; correction required; scoped exception
-  - _Conforming guidance:_ Replace the link with descriptive relative Markdown, use angle brackets for paths with spaces, or record the applicable scoped exception.
+  - _Conforming guidance:_ Use descriptive note-relative Markdown links in angle brackets, normalise only encoded spaces in destinations, and record conversion exceptions without failing supported flavours.
 - **MD-cell-prose [J] — tables avoid descriptive prose in cells** — Tables avoid long descriptive prose in cells — that is the footnote’s job. (standards-markdown.md#keeping-tables-skimmable)
   - _Evidence scope:_ Every authored Markdown table containing descriptive text.
   - _Review prompt:_ Assess whether table cells avoid long descriptive prose.
