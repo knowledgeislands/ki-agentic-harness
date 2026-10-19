@@ -199,6 +199,16 @@ test('the standard and the output style retire the reply block and the block-let
   expect(standard).toContain('Taken as: <the instruction it will act on>')
 })
 
+test('a coordinator reply that moves the mark, changes the state or answers where the work stands ends with the banner', () => {
+  expect(standard).toContain('**When it appears.**')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain(
+      "moves the mark, changes the work's state or answers where the work stands ends with the banner"
+    )
+    expect(text).toContain('a plain answer that does none of these needs none')
+  }
+})
+
 test('the hook line points at the standard and carries only its five hard rules', () => {
   const line = /^line='(.*)'$/m.exec(hook)?.[1] ?? ''
   expect(line).toContain(
@@ -217,6 +227,9 @@ test('the hook line points at the standard and carries only its five hard rules'
     '4) give every Summary, recap and hold report in the owner-report shape, heading and form line to glyph banner'
   )
   expect(line).toContain('with no reply block')
+  expect(line).toContain(
+    'end any other reply that moves the mark, changes the state or answers where the work stands with the banner'
+  )
   expect(line).toContain(
     'every medium- or low-confidence query, and any high-confidence destructive, deletion or publication one, goes to one blind review before it reaches the owner'
   )
