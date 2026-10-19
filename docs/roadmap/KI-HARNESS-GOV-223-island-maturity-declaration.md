@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T18:51:40Z
-updated_at: 2026-10-19T18:51:40Z
+updated_at: 2026-10-19T19:12:00Z
 transferred_from: ki-principal ki.observatory CONDITION-TOML, 2026-10-19
 ---
 
@@ -33,7 +33,7 @@ Under CONDITION-TOML, the home:
 
 Read back as taken: each island declares its maturity in `.ki.toml` from a fixed scale the `ki-repo` standard defines; decline or ruin comes from `ki repo audit` health, not from a declaration; handoff records go to this harness and to tools-ki.
 
-Proposed scale, drafted from Kris's words "settled" and "thriving" and awaiting Kris's choice of names, lowest first:
+Kris chose the scale on 19 October 2026 under MATURITY-FOUR: "I agree with the maturity scale." It is read back as taken in the decisions log as MATURITY-SCALE a). The scale, lowest first:
 
 - `founding` - the island is being established; its contract and purpose are still forming;
 - `growing` - in active development towards what it is for;
@@ -56,4 +56,4 @@ The Observatory draws both signals in apps-observatory.local, in [KI-OBSERVA-BCN
 
 ## Discussion
 
-Open for planning: the scale's names, which Kris chooses; whether the key sits in `[skills.ki-repo]` or `[repo]`; whether an archived or retired island needs a level of its own or is read from audit health alone; and which `ki repo audit` outcome maps to decline and which to ruin, for example decline for open warnings past a tolerance and ruin for failing criteria or an audit that cannot run. The harness owns priority and design.
+Open for planning: whether the key sits in `[skills.ki-repo]` or `[repo]`; whether an archived or retired island needs a level of its own or is read from audit health alone; and which `ki repo audit` outcome maps to decline and which to ruin, for example decline for open warnings past a tolerance and ruin for failing criteria or an audit that cannot run. The harness owns priority and design.
