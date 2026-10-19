@@ -4,13 +4,17 @@ area: GOV
 title: COORD-1 undeclared warn level
 project: tools-burndown
 component: governance
-status: triage
+kind: deliver
+priority: medium
+size: s
+status: draft
+horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/tools-burndown.md
 created_at: 2026-10-19T07:16:09Z
-updated_at: 2026-10-19T07:16:09Z
+updated_at: 2026-10-19T23:30:55Z
 ---
 
 # KI-HARNESS-GOV-220: COORD-1 Undeclared Warn Level

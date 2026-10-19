@@ -4,12 +4,16 @@ area: GOV
 title: Working-area marks
 project: ways-of-working
 component: governance
-status: triage
+kind: deliver
+priority: medium
+size: m
+status: draft
+horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:30Z
-updated_at: 2026-10-18T17:11:34Z
+updated_at: 2026-10-19T23:30:55Z
 ---
 
 # KI-HARNESS-GOV-214: Working-Area Marks

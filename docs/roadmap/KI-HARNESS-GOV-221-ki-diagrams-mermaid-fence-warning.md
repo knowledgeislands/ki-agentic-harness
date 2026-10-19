@@ -4,12 +4,16 @@ area: GOV
 title: ki-diagrams Mermaid fence warning
 project: observatory
 component: governance
-status: triage
+kind: deliver
+priority: medium
+size: s
+status: draft
+horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T07:17:31Z
-updated_at: 2026-10-19T07:17:31Z
+updated_at: 2026-10-19T23:30:55Z
 ---
 
 # KI-HARNESS-GOV-221: ki-diagrams Mermaid Fence Warning

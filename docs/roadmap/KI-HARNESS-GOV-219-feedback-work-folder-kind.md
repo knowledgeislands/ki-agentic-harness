@@ -4,12 +4,16 @@ area: GOV
 title: Feedback work-folder kind
 project: observatory
 component: governance
-status: triage
+kind: deliver
+priority: high
+size: s
+status: draft
+horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T17:56:31Z
-updated_at: 2026-10-18T17:56:31Z
+updated_at: 2026-10-19T23:30:55Z
 ---
 
 # KI-HARNESS-GOV-219: Feedback Work-Folder Kind

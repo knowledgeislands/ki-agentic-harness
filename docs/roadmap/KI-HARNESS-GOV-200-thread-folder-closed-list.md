@@ -4,12 +4,16 @@ area: GOV
 title: Thread folder closed list
 project: ways-of-working
 component: governance
-status: triage
+kind: deliver
+priority: medium
+size: m
+status: draft
+horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-18T18:12:00Z
+updated_at: 2026-10-19T23:30:55Z
 ---
 
 # Thread Folder Closed List
