@@ -15,6 +15,7 @@ const mechanical = (
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
+    overrideLevels: code === 'CONFIG-1' ? ['FAIL'] : undefined,
     remediation: {
       class: 'diagnostic',
       guidance: 'Correct the selected ki-repo-kb configuration evidence, then rerun the audit.'
@@ -38,7 +39,7 @@ const CONFIG_0: RubricItem<KbConfigContext> = {
 const CONFIG_1 = mechanical(
   'CONFIG-1',
   'known configuration keys',
-  'Only required_frontmatter, preflight, zones, and templates are recognised beneath [skills.ki-repo-kb].',
+  'Only required_frontmatter, preflight, zones, templates, and boolean strict_link_resolution are recognised beneath [skills.ki-repo-kb].',
   (context) => context.knownKeys
 )
 const CONFIG_2 = mechanical(

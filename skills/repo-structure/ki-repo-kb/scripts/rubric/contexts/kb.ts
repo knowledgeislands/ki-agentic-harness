@@ -1,6 +1,6 @@
 import { accessSync, constants, existsSync, lstatSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
-import { unresolvedInternalLinks } from '../../internal/internal-links.ts'
+import { ambiguousWikilinks, unresolvedInternalLinks } from '../../internal/internal-links.ts'
 import { classifySourceMirror } from '../../internal/source-mirrors.ts'
 import type {
   AuditOutcome,
@@ -77,6 +77,8 @@ const delegatedNoteTypeRecord = (
 }
 
 type KiKbConfig = {
+  strictLinkResolution: boolean
+  invalidStrictLinkResolution: boolean
   keys: Record<string, string>
   zones: Record<string, string>
   templates: Record<string, string>
@@ -141,9 +143,15 @@ const parseConfig = (text: string): { value: KiKbConfig | null; malformed: boole
         : {}
     return {
       value: {
+        strictLinkResolution: record.strict_link_resolution === true,
+        invalidStrictLinkResolution:
+          record.strict_link_resolution !== undefined && typeof record.strict_link_resolution !== 'boolean',
         keys: Object.fromEntries<string>(
           Object.entries(record)
-            .filter(([key]) => !['zones', 'templates', 'required_frontmatter', 'preflight'].includes(key))
+            .filter(
+              ([key]) =>
+                !['zones', 'templates', 'required_frontmatter', 'preflight', 'strict_link_resolution'].includes(key)
+            )
             .map(([key, value]) => [key, String(value)] as const)
         ),
         zones,
@@ -309,9 +317,10 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       )
   } else {
     add('PASS', 'CONFIG-0', 'The ki-repo-kb configuration table is parseable.', CONFIG)
+    if (config.invalidStrictLinkResolution) add('FAIL', 'CONFIG-1', 'strict_link_resolution must be a boolean.', CONFIG)
     for (const key of Object.keys(config.keys))
       add('WARN', 'CONFIG-1', `Unrecognised scalar [skills.ki-repo-kb] key: ${key}.`, CONFIG)
-    if (Object.keys(config.keys).length === 0)
+    if (Object.keys(config.keys).length === 0 && !config.invalidStrictLinkResolution)
       add('PASS', 'CONFIG-1', 'No unrecognised scalar [skills.ki-repo-kb] keys.', CONFIG)
     const aliasable = new Set<string>([...ZONES, ...WORKING_AREAS])
     for (const [zone, folder] of Object.entries(config.zones)) {
@@ -549,14 +558,19 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
   const linked = notes
     .map((path) => path.slice(root.length + 1))
     .filter((path) => !workingAreas.some((folder) => path.startsWith(folder)))
+  const ambiguous = ambiguousWikilinks(root, linked)
   const unresolved = unresolvedInternalLinks(root, linked)
-  add(
-    unresolved.length ? 'FAIL' : 'PASS',
-    'LINK-1',
-    unresolved.length
-      ? `Internal links must resolve in exact case: ${sample(unresolved)}.`
-      : `Every internal link outside ${workingAreas.join(' and ')} resolves in exact case.`
-  )
+  const strict = config?.strictLinkResolution === true
+  if (ambiguous.length)
+    add('FAIL', 'LINK-1', `Wikilinks resolve to more than one note; qualify a unique path: ${sample(ambiguous)}.`)
+  if (unresolved.length)
+    add(
+      strict ? 'FAIL' : 'WARN',
+      'LINK-1',
+      `Internal links do not resolve in exact case (${strict ? 'strict resolution enabled' : 'warning until strict_link_resolution = true'}): ${sample(unresolved)}.`
+    )
+  if (!ambiguous.length && !unresolved.length)
+    add('PASS', 'LINK-1', `Every internal link outside ${workingAreas.join(' and ')} resolves in exact case.`)
   add(
     misplacedOutputs.length ? 'FAIL' : 'PASS',
     'ZONE-5',
@@ -569,7 +583,12 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
 
 const auditOutcome = (finding: KbEvidenceFinding): AuditOutcome => {
   const evidence = { message: finding.message, ...(finding.subject ? { subject: finding.subject } : {}) }
-  if (finding.level === 'FAIL' || finding.level === 'WARN') return { status: 'VIOLATION', ...evidence }
+  if (finding.level === 'FAIL' || finding.level === 'WARN')
+    return {
+      status: 'VIOLATION',
+      ...(finding.code === 'LINK-1' || finding.code === 'CONFIG-1' ? { level: finding.level } : {}),
+      ...evidence
+    }
   if (finding.level === 'NOT_APPLICABLE') return { status: 'NOT_APPLICABLE', ...evidence }
   if (finding.level === 'PASS') return { status: 'PASS', ...evidence }
   return { status: 'INFO', ...evidence }

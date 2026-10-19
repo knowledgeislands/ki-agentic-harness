@@ -178,10 +178,11 @@ test('wikilink resolution honours local precedence and rejects ambiguous targets
     expect.objectContaining({
       level: 'FAIL',
       message: expect.stringContaining('Pillars/Process/Process.md: [[Activities]]')
-    })
+    }),
+    expect.objectContaining({ level: 'WARN', message: expect.stringContaining('[[Glossary]]') })
   ])
-  // A working-area note is not audited as a source, but can still make an external source ambiguous.
-  expect(link()[0]?.message).toContain('Pillars/Process/Process.md: [[Glossary]]')
+  // Preserve the legacy ambiguity inventory: working-area notes are excluded.
+  expect(link()[0]?.message.split(' Resolution findings:')[0]).not.toContain('[[Glossary]]')
   expect(link()[0]?.message).not.toContain('+/')
 
   write('Pillars/Process/diagram.svg', '<svg/>')
@@ -596,5 +597,48 @@ test('LINK-1 resolves both link forms in exact case without global percent-decod
     '| Link |\n| --- |\n| [[Missing\\|table alias]] |',
     '![[missing.png]]'
   ])
-    expect(audit(body)).toMatchObject({ level: 'FAIL' })
+    expect(audit(body)).toMatchObject({ level: 'WARN' })
+})
+
+test('LINK-1 strict resolution is a typed repository opt-in and reaches hosted outcomes', async () => {
+  const repository = createBase()
+  writeFileSync(join(repository, 'Pillars', 'Source.md'), '# Source\n\n[missing](missing.md) and [[Missing]].\n')
+  const finding = () => collectKbAuditEvidence(repository).find((entry) => entry.code === 'LINK-1')
+  const hosted = async () => {
+    const session = await catalogue.createSession({ repository, mode: 'audit', userHome: tmpdir(), configuration: {} })
+    const subject = session.subjects.find((entry) => entry.families.includes('LINK'))!
+    const context = await subject.context()
+    return items.find((entry) => entry.code === 'LINK-1')!.mechanical!.audit!.run((context as KbRubricContext).links)
+  }
+  expect(finding()?.level).toBe('WARN')
+  expect(await hosted()).toEqual([expect.objectContaining({ status: 'VIOLATION', level: 'WARN' })])
+  for (const strict of [false, true]) {
+    writeFileSync(join(repository, '.ki.toml'), `[skills.ki-repo-kb]\nstrict_link_resolution = ${strict}\n`)
+    expect(finding()?.level).toBe(strict ? 'FAIL' : 'WARN')
+    expect(await hosted()).toEqual([expect.objectContaining({ status: 'VIOLATION', level: strict ? 'FAIL' : 'WARN' })])
+    expect(
+      collectKbAuditEvidence(repository).some((entry) => entry.code === 'CONFIG-1' && entry.level !== 'PASS')
+    ).toBe(false)
+  }
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo-kb]\nstrict_link_resolution = "true"\n')
+  expect(collectKbAuditEvidence(repository).find((entry) => entry.code === 'CONFIG-1')?.level).toBe('FAIL')
+  const session = await catalogue.createSession({ repository, mode: 'audit', userHome: tmpdir(), configuration: {} })
+  const context = session.subjects[1]!.context() as KbRubricContext
+  const item = items.find((entry) => entry.code === 'CONFIG-1')!
+  expect(item.mechanical!.audit.run(context.config)).toEqual([
+    expect.objectContaining({ status: 'VIOLATION', level: 'FAIL' })
+  ])
+})
+
+test('LINK-1 retains legacy ambiguity failures regardless of strict resolution', () => {
+  const repository = createBase()
+  for (const note of ['Resources/Topic.md', 'Admin/Topic.md']) writeFileSync(join(repository, note), '# Topic\n')
+  writeFileSync(join(repository, 'Pillars', 'Source.md'), '# Source\n\n[[Topic]]\n')
+  for (const setting of ['', '\nstrict_link_resolution = false', '\nstrict_link_resolution = true']) {
+    writeFileSync(join(repository, '.ki.toml'), `[skills.ki-repo-kb]${setting}\n`)
+    expect(collectKbAuditEvidence(repository).find((entry) => entry.code === 'LINK-1')).toMatchObject({
+      level: 'FAIL',
+      message: expect.stringContaining('[[Topic]]')
+    })
+  }
 })

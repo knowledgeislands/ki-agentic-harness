@@ -75,3 +75,37 @@ export const unresolvedInternalLinks = (root: string, notes: readonly string[]):
   }
   return [...new Set(failures)]
 }
+
+// Preserve the pre-resolution audit boundary, including its note inventory and syntax.
+const WIKILINK = /!?\[\[([^\]|#^\n]*)(?:[#^][^\]|\n]*)?(?:\\?\|[^\]\n]*)?\]\]/g
+const CODE = /```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]*`/g
+
+/**
+ * Bare or partial-path wikilinks that Obsidian could resolve to more than one note. Obsidian
+ * resolves a link first beside the linking note, then as a full path, and otherwise matches it
+ * case-insensitively against the end of every note path, so a second note with the same leaf
+ * name silently makes each existing bare link that falls through to that match ambiguous.
+ */
+export const ambiguousWikilinks = (root: string, notes: readonly string[]): string[] => {
+  const byLeaf = new Map<string, string[]>()
+  for (const note of notes) {
+    const key = note.slice(0, -'.md'.length).toLowerCase()
+    const leaf = key.slice(key.lastIndexOf('/') + 1)
+    byLeaf.set(leaf, [...(byLeaf.get(leaf) ?? []), key])
+  }
+  const ambiguous: string[] = []
+  for (const note of notes) {
+    const text = readFileSync(join(root, note), 'utf8')
+    const folder = note.includes('/') ? `${note.slice(0, note.lastIndexOf('/')).toLowerCase()}/` : ''
+    for (const match of text.replace(CODE, '').matchAll(WIKILINK)) {
+      const name = (match[1] ?? '').replace(/\\$/, '').trim()
+      const target = name.replace(/\.md$/i, '').toLowerCase()
+      if (!target || /\.[a-z0-9]+$/.test(target) || target.startsWith('/')) continue
+      const candidates = byLeaf.get(target.slice(target.lastIndexOf('/') + 1)) ?? []
+      if (candidates.some((path) => path === target || path === `${folder}${target}`)) continue
+      const matches = candidates.filter((path) => path.endsWith(`/${target}`))
+      if (matches.length > 1) ambiguous.push(`${note}: [[${name}]]`)
+    }
+  }
+  return [...new Set(ambiguous)]
+}

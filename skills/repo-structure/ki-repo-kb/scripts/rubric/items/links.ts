@@ -7,10 +7,11 @@ const LINK_1: RubricItem<KbLinkContext> = {
   code: 'LINK-1',
   title: 'Internal links resolve in exact case',
   description:
-    'Every internal link resolves in exact case, covering Markdown links and supported wikilinks; GFM is preferred.',
+    'Ambiguous wikilinks fail; unresolved or wrong-case internal links warn unless strict_link_resolution is true; GFM is preferred.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
       guidance:

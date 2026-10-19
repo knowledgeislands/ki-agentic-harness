@@ -54,7 +54,7 @@ Validate-down `[skills.ki-repo-kb]` configuration and zone aliases.
 
 - **CONFIG-0 [M] — parseable KB configuration** — When present, .ki.toml parses before the KB table is evaluated. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the TOML syntax before relying on KB configuration.
-- **CONFIG-1 [M] — known configuration keys** — Only required_frontmatter, preflight, zones, and templates are recognised beneath [skills.ki-repo-kb]. (standards-knowledge-base.md)
+- **CONFIG-1 [M] — known configuration keys** — Only required_frontmatter, preflight, zones, templates, and boolean strict_link_resolution are recognised beneath [skills.ki-repo-kb]. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
 - **CONFIG-2 [M] — non-redundant zone aliases** — A zone alias does not restate its canonical folder name. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Correct the selected ki-repo-kb configuration evidence, then rerun the audit.
@@ -145,7 +145,7 @@ Memory-index accuracy and its always-loaded anchor.
 
 Mechanical internal-link resolution in exact case and judgment review of the preferred GFM form.
 
-- **LINK-1 [M + J] — Internal links resolve in exact case** — Every internal link resolves in exact case, covering Markdown links and supported wikilinks; GFM is preferred. (standards-knowledge-base.md)
+- **LINK-1 [M + J] — Internal links resolve in exact case** — Ambiguous wikilinks fail; unresolved or wrong-case internal links warn unless strict_link_resolution is true; GFM is preferred. (standards-knowledge-base.md)
   - _Remediation:_ diagnostic — Repair missing or wrong-case destinations and qualify ambiguous wikilinks, then rerun the audit; supported link syntax alone is never a defect.
   - _Evidence scope:_ Sampled base notes and the prescribed linking convention.
   - _Review prompt:_ Do sampled notes prefer descriptive note-relative GFM links in angle brackets, while retaining readable supported wikilinks and preserving meaning during conversion?
