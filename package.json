@@ -9,7 +9,6 @@
     "@commitlint/config-conventional": "^21.2.3",
     "@types/bun": "^1.4.2",
     "@types/node": "^26.6.4",
-    "husky": "^9.1.7",
     "knip": "^6.39.0",
     "lint-staged": "^17.6.0",
     "rumdl": "^0.3.0",
@@ -49,7 +48,7 @@
     "clean": "rm -rf node_modules",
     "ki:deps:update": "bun update --latest",
     "ki:harness:eval": "bun evals/harness.ts",
-    "prepare": "husky && git config core.hooksPath .githooks",
+    "prepare": "git config core.hooksPath .githooks",
     "self:diagrams:html": "bun skills/governance/ki-diagrams/scripts/build-html.ts",
     "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks ./evals"
   },

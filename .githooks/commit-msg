@@ -1,8 +1,6 @@
 #!/bin/sh
-# Committed stub bound by `core.hooksPath` so every working tree, including a linked
-# worktree with no install, resolves a hook. Without the gate's tooling it refuses the
-# commit rather than letting Git find no hook and commit unchecked; with it, it runs
-# the governed Husky hook unchanged.
+# Committed commit-msg gate, bound by `core.hooksPath` so every working tree runs it.
+# Without its tools it refuses the commit rather than letting it pass unchecked.
 root="$(git rev-parse --show-toplevel)" || exit 1
 missing=''
 for tool in commitlint; do
@@ -16,4 +14,4 @@ if [ -n "$missing" ]; then
 fi
 PATH="$root/node_modules/.bin:$PATH"
 export PATH
-exec sh "$root/.husky/commit-msg" "$@"
+commitlint --edit "$1" || exit 1
