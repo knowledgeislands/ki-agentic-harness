@@ -165,6 +165,27 @@ test('the standard carries the With worker, handoff, On hold and Finished banner
   expect(handoff?.some((line) => line.startsWith('- [running]'))).toBe(false)
   expect(hold?.[0]).toBe('### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST')
   expect(hold).toContain('- [release] after the harness migration lands, or `resume`')
+  expect(hold?.[2]).toBe('⏸️ drained · 🅿️ 9 queries parked')
+  expect(hold?.slice(4).every((line) => /^- \[(parked|release|unpushed)\] /.test(line))).toBe(true)
+})
+
+test('a push of stacked commits is never with the owner, and an On hold banner lists nothing waiting', () => {
+  for (const text of [standard, outputStyle]) {
+    expect(text).not.toContain('who decides the push')
+    expect(text).not.toContain('- [on hold] committed')
+    expect(text).toContain('`⏸️ drained · 🅿️ <n> queries parked`')
+    expect(text).toContain('items are only `[parked]`, `[release]` and, where true, `[unpushed]`')
+    for (const lines of banners(text)) {
+      for (const item of lines.filter((line) => line.startsWith('- [with you]'))) expect(item).not.toMatch(/push/i)
+      if (!lines[0]?.startsWith('### ⏸️')) continue
+      expect(lines[2]).not.toContain('with you')
+      expect(lines.some((line) => /^- \[(with you|running|queued|on hold)\]/.test(line))).toBe(false)
+    }
+  }
+  expect(standard).toContain('**Pushes are not with the owner.**')
+  expect(standard).toContain('**A hold lists nothing waiting.**')
+  expect(standard).toContain('PUSH-NOT-WITH-YOU')
+  expect(standard).toContain('HOLD-CLEAN')
 })
 
 test('the output style carries the report heading and the live banners byte-identical to the standard', () => {
