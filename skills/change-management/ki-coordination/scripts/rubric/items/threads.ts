@@ -58,7 +58,7 @@ const COORD_3: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-3',
   title: 'active Project work is within the cap',
   description:
-    'At most three or four pieces of Project work are active at once, neither On hold nor Finished, reading the state from `state.md` where the work package has one, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted.',
+    'At most three or four pieces of Project work are active at once, neither On hold nor Finished, reading the state from `state.md` where the work package has one, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted, and a non-empty `+/_WORK_REVIEW/` warns so that territory work raises it as one `REVIEW-HOLD` query.',
   sources: [`${SOURCE}#territory-work`],
   mechanical: {
     level: 'WARN',

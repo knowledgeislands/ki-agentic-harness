@@ -625,12 +625,15 @@ describe('work files', () => {
     expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
   })
 
-  test('work awaiting review is counted, not checked', () => {
+  test('work awaiting review is counted, not checked, and warns while the area holds anything', () => {
     const root = fixture(capital)
+    mkdirSync(join(root, '+', '_WORK_REVIEW'), { recursive: true })
+    expect(context(root).cap.outcomes.some((outcome) => outcome.level === 'WARN')).toBe(false)
     mkdirSync(join(root, '+', '_WORK_REVIEW', 'ki.old-thread'), { recursive: true })
-    const outcomes = context(root).cap.outcomes
-    expect(outcomes.map((outcome) => outcome.status)).toContain('INFO')
-    expect(outcomes.find((outcome) => outcome.status === 'INFO')?.message).toContain('1 work folder(s) await review')
+    const warning = context(root).cap.outcomes.find((outcome) => outcome.level === 'WARN')
+    expect(warning?.status).toBe('VIOLATION')
+    expect(warning?.message).toContain('1 work folder(s) await review')
+    expect(warning?.message).toContain('REVIEW-HOLD')
   })
 
   test('a report in a work folder has its links checked', () => {

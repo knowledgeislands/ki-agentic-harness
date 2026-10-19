@@ -456,14 +456,18 @@ const capOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): Au
   ]
 }
 
-/** The work folders awaiting review under `+/_WORK_REVIEW/`, which are counted and otherwise not checked. */
+/**
+ * The work folders awaiting review under `+/_WORK_REVIEW/`, which are counted and otherwise not checked; a non-empty
+ * area warns, so that territory work raises it to the owner as one `REVIEW-HOLD` query.
+ */
 const reviewOutcomes = (root: string): AuditOutcome[] => {
   const review = folders(join(root, WORK_REVIEW_DIRECTORY))
   if (!review || review.length === 0) return []
   return [
     {
-      status: 'INFO',
-      message: `${review.length} work folder(s) await review under \`+/_WORK_REVIEW/\`; they are not live and not counted`,
+      status: 'VIOLATION',
+      level: 'WARN',
+      message: `${review.length} work folder(s) await review under \`+/_WORK_REVIEW/\`; they are not live and not counted, and territory work raises them as one \`REVIEW-HOLD\` query until the area is empty`,
       subject: WORK_REVIEW_DIRECTORY
     }
   ]
