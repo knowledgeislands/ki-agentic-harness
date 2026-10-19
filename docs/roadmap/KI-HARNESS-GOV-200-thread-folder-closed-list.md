@@ -16,7 +16,7 @@ updated_at: 2026-10-18T18:12:00Z
 
 ## Goal
 
-The `ki-delegation` run packet states the work folder's closed list and the temporary home, one footer line in `assets/run-prompt.md` tells every background agent where temporary output goes and that it writes nothing into the work folder beyond its report, and the `ki-work-folder` rubric checks each work folder against its closed list and tidy rules, failing a file kind outside the list and warning on what is due for a tidy, so that work folders stay pruned without relying on each coordinator remembering.
+The `ki-delegation` run packet states the work folder's closed list and the temporary home, one footer line in `assets/run-prompt.md` tells every background agent where temporary output goes and that it writes nothing into the work folder beyond its report, and the `ki-work-package` rubric checks each work folder against its closed list and tidy rules, failing a file kind outside the list and warning on what is due for a tidy, so that work folders stay pruned without relying on each coordinator remembering.
 
 ## Context
 
@@ -33,7 +33,7 @@ Kris Brown made `ki-work-folder` the canonical specification of the work folder 
 ## Boundary
 
 - In: the closed list stated in the run packet's knowledge-file table if the direct wording has not already done so; one `run-prompt.md` footer line naming `<primary checkout>/tmp/<run>/<name>/` for temporary output and saying the agent writes nothing else into `+/_WORK/<id>/`; the ki-coordination rubric item that lists every `+/_WORK/<id>/` folder and flags each file outside the closed list, which COORD-9 delivers as a warning.
-- In, under WORK-FOLDER-CHECKS, in the `ki-work-folder` rubric, with COORD-9 retired from `ki-coordination` in the same change:
+- In, under WORK-FOLDER-CHECKS, in the `ki-work-package` rubric, with COORD-9 retired from `ki-coordination` in the same change:
   - FAIL: a file kind outside the closed list in `+/_WORK/<id>/`, including anything in `design/` beyond design notes and their diagram sources and renders;
   - WARN: a report whose queries are all answered in the decisions log; a brief whose run's report has been received; finished work whose folder outlives the mark that closes it; a Messages line that does not take the `- <YYYY-MM-DD> · <TAG> · <sender title>: ...` shape; a `+/_WORK_REVIEW/` folder with no index line, or an index line with no folder; and a decisions-log heading the close gate cannot parse, matched to whatever heading form the tools-ki close-gate record settles.
 - In, built by the `threads-fix` run under THREADS-REGRESSION: STRUCTURE-1 fails a retired `+/_THREADS/` or `+/_CHECKPOINTS/` folder, tracked or not, beside an existing `+/_WORK/`, with the work-folder standard's Old checkpoints section saying so; and `ki-recap`'s portable hand-off resolves only `+/_WORK/<id>/work.md`, never a retired folder.

@@ -973,21 +973,6 @@ describe('local repository evidence', () => {
     }
   })
 
-  test('accepts the deprecated ki-work-folder declaration with a warning naming ki-work-package', async () => {
-    const root = repository()
-    mkdirSync(join(root, '+', '_WORK', 'ki.example'), { recursive: true })
-    writeFileSync(join(root, '+', '_WORK', 'ki.example', 'work.md'), '# ki.example\n')
-    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-work-folder]\n')
-
-    expect(
-      (await collectAuditFindings([root])).findings
-        .filter((finding) => finding.code === 'COV-1')
-        .map(({ level, message }) => `${level} ${message}`)
-    ).toEqual([
-      'WARN declares [skills.ki-work-folder], a deprecated alias — declare [skills.ki-work-package] in its place'
-    ])
-  })
-
   test('warns on a thread folder as a thread-model working area', async () => {
     const root = repository()
     mkdirSync(join(root, '+', '_THREADS', 'example'), { recursive: true })

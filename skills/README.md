@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 65 skills: 54 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 64 skills: 53 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -134,7 +134,7 @@ Govern coordinating work under the Knowledge Islands work model: the responsive 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
-- **Dependencies:** `ki-delegation`
+- **Dependencies:** `ki-delegation`, `ki-work-package`
 - **Runtime:** Portable
 
 #### `ki-implement`
@@ -470,16 +470,6 @@ Govern directional work and knowledge trades between KI repositories: routes, re
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-work-folder`
-
-Deprecated alias for `ki-work-package`, kept only so a repository still declaring `[skills.ki-work-folder]` resolves during the rename's tolerance window. Its audit warns and names the replacement declaration; it owns no record, standard or procedure. Use `ki-work-package` for the work package and its work folder `+/_WORK/<id>/`.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | help | conform | educate | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

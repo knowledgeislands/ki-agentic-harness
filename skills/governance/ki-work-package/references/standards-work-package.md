@@ -37,8 +37,6 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 
 The capability is optional. A repository declares `ki-work-package` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. The repository owns its work packages; Git supplies any recovery history.
 
-For the tolerance window of the rename, a `[skills.ki-work-folder]` declaration is a deprecated alias: it still resolves, through a thin `ki-work-folder` skill that only warns and names the new declaration, so that no repository declaring the old name fails while its territory catches up. Each repository replaces the declaration at its own pace; the alias, and with it the old name, is removed when no declaration is left.
-
 This standard is the one specification of `+/_WORK/<id>/` and `+/_WORK_REVIEW/<id>/`, as Kris answered WORK-FOLDER-OWNER on 18 October 2026, read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract". It owns the package's shape, its closed list, its entry points, the tidy and prune rules, the review area and the Messages line shape, and each file's form at every level, coordinated or not. The other owners keep only their side and link here for the rest:
 
 | Concern | Owner |
@@ -341,7 +339,7 @@ Until the `ki thread` tooling and its hook registration ship, no binding is writ
 
 A runtime-specific reminder consumer is separately opt-in. It may act only when its native event contract is independently evidenced and all of the following are true:
 
-1. The repository declares `ki-work-package`, or its deprecated alias `ki-work-folder`, and resolves to one physical repository root.
+1. The repository declares `ki-work-package` and resolves to one physical repository root.
 2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-work-package` declaration remains an empty capability marker.
 3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `+/_WORK/<id>/state.md`, or `+/_WORK/<id>/work.md` in the single-file shape, or, for the tolerance window, `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
 4. The resolved record is a regular file that satisfies this standard's identity and closed-schema requirements.
