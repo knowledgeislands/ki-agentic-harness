@@ -11,7 +11,7 @@ status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: af2387eae29315098b4ddd2675d43ffbcd65c66b
+baseline_ref: 46f4e14d8f9efffa34cb78f166c9c84aa0d54151
 created_at: 2026-10-19T19:10:30Z
 updated_at: 2026-10-19T23:50:31Z
 transferred_from: ki-principal ki.observatory OVERLAY-SYNC, 2026-10-19
@@ -106,7 +106,7 @@ The receipt shape is the input the Observatory's Interactive button in apps-obse
 
 ### Delivered
 
-The approved boundary, against baseline `af2387eae29315098b4ddd2675d43ffbcd65c66b`: the build command writes a portable `<slug>.receipt.json` beside each committed viewer; DIAG-6 fails on a missing or mismatched receipt from committed files alone; the pre-commit hook runs the same check on the staged snapshot; and the 12 manifest entries are re-rendered with matching receipts. `last_checked`, the 5G Emerge sites, the Observatory's Interactive button and Archify itself are untouched.
+The approved boundary, against baseline `46f4e14d8f9efffa34cb78f166c9c84aa0d54151`: the build command writes a portable `<slug>.receipt.json` beside each committed viewer; DIAG-6 fails on a missing or mismatched receipt from committed files alone; the pre-commit hook runs the same check on the staged snapshot; and the 12 manifest entries are re-rendered with matching receipts. `last_checked`, the 5G Emerge sites, the Observatory's Interactive button and Archify itself are untouched.
 
 ### Change Summary
 

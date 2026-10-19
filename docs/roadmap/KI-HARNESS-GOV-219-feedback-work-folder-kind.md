@@ -11,7 +11,7 @@ status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: f163531d5098a42912a325d2a1b6df84a33d27ee
+baseline_ref: b004ce1bfef9e6622c84b623b5aca5303690279a
 created_at: 2026-10-18T17:56:31Z
 updated_at: 2026-10-19T23:41:38Z
 ---
@@ -91,7 +91,7 @@ Unblocks [KI-OBSERVA-BRG-002](https://github.com/knowledgeislands/apps-observato
 
 ### Delivered
 
-The approved boundary, against baseline `f163531d5098a42912a325d2a1b6df84a33d27ee`: the `ki-work-package` closed list, entry points and tidy rules gain the feedback package and the owner, through the Observatory, as its writer; `ki-coordination`'s Messages between work names that sender and the receiver's handling of a package link; and COORD-9 admits `feedback/`. The Observatory's `feedback.send` operation stays out, with apps-observatory.local.
+The approved boundary, against baseline `b004ce1bfef9e6622c84b623b5aca5303690279a`: the `ki-work-package` closed list, entry points and tidy rules gain the feedback package and the owner, through the Observatory, as its writer; `ki-coordination`'s Messages between work names that sender and the receiver's handling of a package link; and COORD-9 admits `feedback/`. The Observatory's `feedback.send` operation stays out, with apps-observatory.local.
 
 ### Change Summary
 
