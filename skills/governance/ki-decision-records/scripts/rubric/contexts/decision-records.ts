@@ -239,8 +239,10 @@ const stripCode = (body: string): string => body.replace(/^(```|~~~)[\s\S]*?^\1/
 const bodyLinks = (body: string): string[] => {
   const text = stripCode(body)
   return [
-    ...[...text.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)].map((match) => match[1] as string),
-    ...[...text.matchAll(/^\s*\[[^\]]+\]:\s*<?(\S+?)>?(?:\s|$)/gm)].map((match) => match[1] as string),
+    ...[...text.matchAll(/\]\(\s*(?:<([^>\n]+)>|([^\s)]+))(?:\s+["'][^\n]*?["'])?\s*\)/g)].map(
+      (match) => match[1] ?? match[2] ?? ''
+    ),
+    ...[...text.matchAll(/^ {0,3}\[[^\]]+\]:\s*(?:<([^>\n]+)>|([^\s]+))/gm)].map((match) => match[1] ?? match[2] ?? ''),
     ...[...text.matchAll(/\[\[([^\]]+)\]\]/g)].map((match) => `[[${match[1] as string}]]`)
   ]
 }

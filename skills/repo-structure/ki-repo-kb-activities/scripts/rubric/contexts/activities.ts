@@ -132,7 +132,7 @@ const parseFrontmatter = (
 }
 
 const normaliseIndexTarget = (target: string): string => {
-  const relativeTarget = target.trim().replace(/^\.\//, '').split('#', 1)[0] ?? ''
+  const relativeTarget = target.trim().replace(/^\.\//, '').split('#', 1)[0]?.replace(/%20/gi, ' ') ?? ''
   return relativeTarget && !relativeTarget.endsWith('.md') ? `${relativeTarget}.md` : relativeTarget
 }
 

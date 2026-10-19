@@ -226,3 +226,17 @@ test('a configured collection cannot traverse an intermediate symlink', () => {
   expect(session.proposal()).toEqual({ writes: [] })
   expect(existsSync(join(outside, 'Activities', 'Activities.md'))).toBe(false)
 })
+
+test('encoded spaces cover the Activity index without decoding reserved escapes or literal percent signs', () => {
+  const repository = activityBase()
+  const directory = join(repository, 'Admin', 'Operations', 'Activities')
+  writeFileSync(join(directory, 'Literal%23.md'), '# Literal escape\n')
+  writeFileSync(join(directory, '100%.md'), '# Literal percent\n')
+  writeFileSync(
+    join(directory, 'Activities.md'),
+    '# Activities\n\n- [Morning](Morning%20Briefing.md)\n- [Literal](Literal%23.md)\n- [Percent](100%.md)\n'
+  )
+  expect(indexItem().audit.run(activityContext(createActivitiesSession(options(repository, 'audit'))))[0]?.status).toBe(
+    'PASS'
+  )
+})

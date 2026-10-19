@@ -655,6 +655,23 @@ describe('self-contained collection', () => {
     expect(audit('BODY-11', context as DecisionRecordsRubricContext)?.[0]?.status).toBe('PASS')
   })
 
+  test('keeps complete angle-bracket and reference-definition destinations outside code', () => {
+    const context = fixture(file, {
+      legacyDate: [
+        '[inline](<../guides/Some Guide.md>)',
+        '[reference][guide]',
+        '[guide]: <../guides/Other Guide.md> "Guide title"',
+        '[encoded]: ../guides/Encoded%20Guide.md',
+        '`[ignored](<../guides/Code Guide.md>)`'
+      ].join('\n')
+    })
+    expect(audit('BODY-11', context as DecisionRecordsRubricContext)?.map((outcome) => outcome.message)).toEqual([
+      'Record links outside the collection: ../guides/Some Guide.md',
+      'Record links outside the collection: ../guides/Other Guide.md',
+      'Record links outside the collection: ../guides/Encoded%20Guide.md'
+    ])
+  })
+
   test('reports relative links and wikilinks that leave the collection', () => {
     const context = fixture(file, {
       extra: [sibling],
