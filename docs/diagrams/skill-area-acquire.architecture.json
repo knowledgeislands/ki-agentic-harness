@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "57eb2f16f5ddbb210281a59301f35eb90ef5c9c1"
     },
     "legend": {
       "mode": "auto",
@@ -30,6 +30,25 @@
   },
   "components": [
     {
+      "id": "ki-acquire",
+      "type": "database",
+      "label": "ki-acquire",
+      "sublabel": "acquire · opt-in",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-acquire/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        208,
+        60
+      ]
+    },
+    {
       "id": "ki-acquire-chatgpt",
       "type": "database",
       "label": "ki-acquire-chatgpt",
@@ -41,7 +60,7 @@
       ],
       "pos": [
         32,
-        64
+        188
       ],
       "size": [
         208,
@@ -60,7 +79,7 @@
       ],
       "pos": [
         288,
-        64
+        188
       ],
       "size": [
         208,
@@ -79,7 +98,7 @@
       ],
       "pos": [
         32,
-        252
+        376
       ],
       "size": [
         208,
@@ -98,8 +117,9 @@
     },
     {
       "kind": "region",
-      "label": "Acquire · 2 skills",
+      "label": "Acquire · 3 skills",
       "wraps": [
+        "ki-acquire",
         "ki-acquire-chatgpt",
         "ki-acquire-granola"
       ],
@@ -108,9 +128,21 @@
   ],
   "connections": [
     {
+      "id": "ki-acquire-chatgpt--ki-acquire",
+      "from": "ki-acquire-chatgpt",
+      "to": "ki-acquire",
+      "variant": "default"
+    },
+    {
       "id": "ki-acquire-chatgpt--ki-housekeeping-chatgpt",
       "from": "ki-acquire-chatgpt",
       "to": "ki-housekeeping-chatgpt",
+      "variant": "default"
+    },
+    {
+      "id": "ki-acquire-granola--ki-acquire",
+      "from": "ki-acquire-granola",
+      "to": "ki-acquire",
       "variant": "default"
     }
   ],
@@ -128,7 +160,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "2 skills, 1 outside prerequisite, 0 outside dependents, 1 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "3 skills, 1 outside prerequisite, 0 outside dependents, 3 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

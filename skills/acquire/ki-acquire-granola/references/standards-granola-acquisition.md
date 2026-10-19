@@ -4,6 +4,8 @@
 
 This standard defines the provider-specific contract for faithfully acquiring Granola meetings into one or more Knowledge Islands repositories. It governs the read-only acquisition adapter and separately authorised additive progress marker and the evidence an executable `ki acquire import --adapter granola` implementation must preserve. Knowledge Islands Principal remains the authority for the provider-neutral lifecycle; `tools-ki` owns executable KEP construction and repository staging.
 
+The `ki-acquire` skill owns common scope, identity/retry, preservation, destination-verification and authority requirements. This standard adds the provider-specific completeness and capability contract. Its stronger full-source requirements remain in force; a bounded live-thread digest is not a substitute for a complete source export.
+
 ## Contents
 
 - [Owned-note scope](#owned-note-scope)

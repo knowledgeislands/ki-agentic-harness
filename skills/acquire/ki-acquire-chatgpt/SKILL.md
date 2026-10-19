@@ -2,7 +2,7 @@
 name: ki-acquire-chatgpt
 ki-kind: governance
 ki-applicability: declaration-only
-ki-depends-on: [ki-housekeeping-chatgpt]
+ki-depends-on: [ki-acquire, ki-housekeeping-chatgpt]
 ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
@@ -18,13 +18,13 @@ ki-acquire-reset-scopes: []
 description: >
   Govern incremental readable ChatGPT project and conversation acquisition, including stable project identity,
   prefixed routing, faithful versions, checkpoints, and later retirement evidence. Use for ChatGPT project import or
-  routing design; `ki-housekeeping-chatgpt` owns opaque installed-store inventory.
+  routing design; `ki-acquire` owns the common contract and `ki-housekeeping-chatgpt` owns opaque inventory.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
 # ChatGPT acquisition
 
-Use the provider-neutral lifecycle **discover → acquire → stage → triage → optional source retirement**. Read [the ChatGPT acquisition standard](references/standards-chatgpt-acquisition.md) when designing or auditing project routing, incremental reads, fidelity, or checkpoints; read [the source record](references/sources.md) only during REFRESH or when current provider capability matters.
+Apply `ki-acquire` for the common capture contract before the provider-specific rules here. Read [the ChatGPT acquisition standard](references/standards-chatgpt-acquisition.md) when designing or auditing project routing, incremental reads, fidelity, or checkpoints; read [the source record](references/sources.md) only during REFRESH or when current provider capability matters.
 
 The current executable bridge accepts one user-prepared readable capture and emits a verified KEP. Its machine-readable `ki-acquire-*` metadata deliberately advertises only that proven surface. Project enumeration, incremental readable retrieval, receiver staging, reconciliation, reset, and source retirement remain required contract outcomes rather than falsely declared executable capabilities.
 
@@ -36,7 +36,7 @@ Invoked as `help`, `-h`, or `?`, explain the capability, current bridge, modes, 
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-acquire-chatgpt --repo <repo>`, then review separately supplied runtime evidence against the generated rubric. Missing readable-source, project-binding, completeness, or checkpoint evidence remains a named gap; do not infer it from opaque local records or contact ChatGPT merely to make an audit pass.
+Run the prerequisite `ki-acquire` audit, then `ki repo audit --skill ki-acquire-chatgpt --repo <repo>`, then review separately supplied runtime evidence against the generated rubric. Missing readable-source, project-binding, completeness, or checkpoint evidence remains a named gap; do not infer it from opaque local records or contact ChatGPT merely to make an audit pass.
 
 ### Mode CONFORM
 

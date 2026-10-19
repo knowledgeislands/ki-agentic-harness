@@ -6,6 +6,8 @@ This standard defines faithful, incremental acquisition of readable ChatGPT proj
 
 The provider-neutral lifecycle belongs to Knowledge Islands Principal. `tools-ki` owns executable acquisition and receiver writes. The `ki-housekeeping-chatgpt` skill and its MCP own opaque installed-store evidence; that evidence can support identity and change detection but cannot satisfy readable conversation fidelity.
 
+The `ki-acquire` skill owns common scope, identity/retry, preservation, destination-verification and authority requirements. This standard adds the provider-specific completeness and capability contract. Its stronger full-source requirements remain in force; a bounded live-thread digest is not a substitute for a complete source export.
+
 ## Contents
 
 - [Current executable boundary](#current-executable-boundary)

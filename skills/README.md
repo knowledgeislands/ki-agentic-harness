@@ -19,28 +19,38 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 63 skills: 52 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 64 skills: 53 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
-#### `ki-acquire-chatgpt`
+#### `ki-acquire`
 
-Govern incremental readable ChatGPT project and conversation acquisition, including stable project identity, prefixed routing, faithful versions, checkpoints, and later retirement evidence. Use for ChatGPT project import or routing design; `ki-housekeeping-chatgpt` owns opaque installed-store inventory.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** `ki-housekeeping-chatgpt`
-- **Runtime:** Runtime-bound: `chatgpt-codex`
-
-#### `ki-acquire-granola`
-
-Acquire and reconcile Granola meetings through MCP reads, including screenshots, complete date windows, folder routing, verified Acquired markers, checkpoints, and amendment detection. Use for Granola import or audit; CLI staging belongs to tools-ki and retirement requires separate human approval.
+Govern source-independent knowledge capture: supplied scope, provenance, routing, faithful preservation, retry identity, required originals and verified destinations. Use for common acquisition rules and direct intake; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts, and ki-trades owns downstream movement.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-acquire-chatgpt`
+
+Govern incremental readable ChatGPT project and conversation acquisition, including stable project identity, prefixed routing, faithful versions, checkpoints, and later retirement evidence. Use for ChatGPT project import or routing design; `ki-acquire` owns the common contract and `ki-housekeeping-chatgpt` owns opaque inventory.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** `ki-acquire`, `ki-housekeeping-chatgpt`
+- **Runtime:** Runtime-bound: `chatgpt-codex`
+
+#### `ki-acquire-granola`
+
+Acquire and reconcile Granola meetings through MCP reads, including screenshots, complete date windows, folder routing, verified Acquired markers, checkpoints, and amendment detection. Use for Granola import or audit; `ki-acquire` owns the common contract, tools-ki owns CLI execution, and retirement needs separate approval.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** `ki-acquire`
 - **Runtime:** Portable
 
 #### `ki-pulse`
