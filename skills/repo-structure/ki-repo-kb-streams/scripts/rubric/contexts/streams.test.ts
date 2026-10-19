@@ -305,12 +305,12 @@ describe('ki-repo-kb-streams session', () => {
     expect(evaluate().roadmapFrontmatter.map((evidence) => evidence.level)).toEqual(['PASS'])
   })
 
-  test('warns on each Streams roadmap record carrying a field the roadmap adapter does not define', () => {
+  test('warns on each Streams roadmap record carrying an undefined field or lacking a size', () => {
     const root = targetFixture()
     const roadmap = join(root, 'Streams', 'Roadmap')
     writeFileSync(
       join(roadmap, 'KB-OPS-001-known.md'),
-      '---\nnote_type: stream-roadmap\nid: KB-OPS-001\ntitle: Known\nhorizon: next\ntags:\n  - topic/ops\n---\n'
+      '---\nnote_type: stream-roadmap\nid: KB-OPS-001\ntitle: Known\npriority: high\nsize: m\nhorizon: next\ntags:\n  - topic/ops\n---\n'
     )
     const item = STREAM.items.find((candidate) => candidate.code === 'STREAM-12')
     const evaluate = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
@@ -325,10 +325,11 @@ describe('ki-repo-kb-streams session', () => {
     const subject = join('Streams', 'Roadmap', 'KB-OPS-002-priority.md')
 
     expect(unknown.roadmapFields).toEqual([
-      { level: 'WARN', message: `Roadmap record ${subject} has unknown field(s): priority, owner.`, subject }
+      { level: 'WARN', message: `Roadmap record ${subject} has unknown field(s): owner.`, subject },
+      { level: 'WARN', message: `Roadmap record ${subject} has no size; give it s, m, l or xl.`, subject }
     ])
     expect(item?.mechanical?.level).toBe('WARN')
-    expect(item?.mechanical?.audit.run(unknown).map((outcome) => outcome.status)).toEqual(['VIOLATION'])
+    expect(item?.mechanical?.audit.run(unknown).map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
   })
 
   test("mirrors the roadmap adapter's current record fields", () => {

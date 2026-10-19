@@ -172,16 +172,16 @@ const STREAM_11: RubricItem<StreamRubricContext> = {
 
 const STREAM_12: RubricItem<StreamRubricContext> = {
   code: 'STREAM-12',
-  title: 'known record fields',
+  title: 'known and required record fields',
   description:
-    "Every Streams/Roadmap record's frontmatter carries only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define.",
+    "Every Streams/Roadmap record's frontmatter carries its required size and only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define.",
   sources: [`${SOURCE}#roadmap`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Remove the unknown field, or move its content into the record body; horizon is the only priority signal. A field the work-item format should carry is a change to the roadmap adapter's standard."
+        "Remove the unknown field, or move its content into the record body, and give a record without size one of s, m, l or xl by judgement. A field the work-item format should carry is a change to the roadmap adapter's standard."
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.roadmapFields, 'WARN') }
   }

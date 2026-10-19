@@ -80,7 +80,7 @@ const createRepository = (frontmatter: string, body: string, config = 'component
   )
   writeFileSync(
     join(repository, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md'),
-    `---\nid: TEST-001\ntitle: Deliver the slice\n${frontmatter}\nblocks: []\nblocked_by: []\ncreated_at: 2026-10-07T12:00:00Z\nupdated_at: 2026-10-07T12:00:00Z\n---\n\n## Goal\n\nDeliver the slice.\n\n## Context\n\nThe slice is needed.\n\n## Boundary\n\nOnly the slice.\n\n${body}## Discussion\n\nNone.\n`
+    `---\nid: TEST-001\ntitle: Deliver the slice\n${/^size:/m.test(frontmatter) ? '' : 'size: m\n'}${frontmatter}\nblocks: []\nblocked_by: []\ncreated_at: 2026-10-07T12:00:00Z\nupdated_at: 2026-10-07T12:00:00Z\n---\n\n## Goal\n\nDeliver the slice.\n\n## Context\n\nThe slice is needed.\n\n## Boundary\n\nOnly the slice.\n\n${body}## Discussion\n\nNone.\n`
   )
   writeFileSync(join(repository, 'docs', 'roadmap', ISSUE_LEDGER), issueLedger(1))
   writeFileSync(join(repository, 'ROADMAP.md'), rootRoadmap())
@@ -112,10 +112,39 @@ test('the horizon table admits each status only at its horizons', () => {
   )
 })
 
-test('an adopted open record without kind warns', () => {
+test('an adopted open record without kind warns during the migration window', () => {
   const repository = createRepository('horizon: future\nstatus: draft\nbaseline_ref: null', '')
   expect(failures(repository)).toEqual([])
-  expect(warnings(repository)).toContain('legacy: an adopted record should declare kind')
+  expect(warnings(repository)).toEqual(['migration window: an adopted record should declare kind'])
+})
+
+test('priority and size take their vocabularies; a missing size warns and a missing priority passes', () => {
+  const sized = (fields: string) =>
+    createRepository(`kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null\n${fields}`, '')
+  const clean = sized('priority: high\nsize: xl')
+  expect(failures(clean)).toEqual([])
+  expect(warnings(clean)).toEqual([])
+  expect(warnings(sized('size: s'))).toEqual([])
+  expect(failures(sized('priority: urgent\nsize: huge'))).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ msg: 'priority must be high, medium or low' }),
+      expect.objectContaining({ msg: 'size must be s, m, l or xl' })
+    ])
+  )
+  const sizeless = sized('priority: low')
+  const item = join(sizeless, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md')
+  writeFileSync(item, readFileSync(item, 'utf8').replace('size: m\n', ''))
+  expect(failures(sizeless)).toEqual([])
+  expect(warnings(sizeless)).toEqual(['migration window: a record should declare size: s, m, l or xl'])
+})
+
+test('purpose adoption is retired and warns during the migration window', () => {
+  const repository = createRepository(
+    'kind: deliver\npurpose: adoption\nhorizon: future\nstatus: draft\nbaseline_ref: null',
+    ''
+  )
+  expect(failures(repository)).toEqual([])
+  expect(warnings(repository)).toEqual(['migration window: purpose adoption is retired; use capability or upkeep'])
 })
 
 test('hold requires a valid mapping and is forbidden elsewhere', () => {
@@ -542,7 +571,7 @@ test('qualified membership resolves in the named territory and warns when it can
       "territory 'nowhere' registry is unavailable: territory 'nowhere' is not in the local ki registry"
     )
     expect(warnings(member('initiative: capital/techne'))).toEqual([
-      'legacy: initiative is the thread-model classification; name the theme in theme'
+      'migration window: initiative is retired; name the theme in theme'
     ])
     expect(warnings(member('project: capital/baseline-rollout\ninitiative: capital/platform-foundations'))).toContain(
       'initiative is redundant beside a registered project'

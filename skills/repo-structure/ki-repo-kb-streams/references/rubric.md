@@ -54,8 +54,8 @@ Operational-area layout, legacy migration, and adapter routing.
   - _Remediation:_ diagnostic — Assess what was delivered against the Project's Outcome and whether follow-up or remedial work is needed, capture that work as triage records in the owning repositories, and write the assessment in ## Notes; the lead then decides whether to close the Project.
 - **STREAM-11 [M] — idea-stage Projects** — A Capital's idea-stage Project, planned with a decision as its outcome, is named by no open record, and there is at most one per theme and three across the territory. (standards-streams-structure.md#idea-stage-projects)
   - _Remediation:_ diagnostic — Graduate an idea-stage Project to active with a delivery Outcome before records name it; over a cap, graduate or fold an idea-stage Project, or have its lead lift the cap.
-- **STREAM-12 [M] — known record fields** — Every Streams/Roadmap record's frontmatter carries only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define. (standards-streams-structure.md#roadmap)
-  - _Remediation:_ diagnostic — Remove the unknown field, or move its content into the record body; horizon is the only priority signal. A field the work-item format should carry is a change to the roadmap adapter's standard.
+- **STREAM-12 [M] — known and required record fields** — Every Streams/Roadmap record's frontmatter carries its required size and only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define. (standards-streams-structure.md#roadmap)
+  - _Remediation:_ diagnostic — Remove the unknown field, or move its content into the record body, and give a record without size one of s, m, l or xl by judgement. A field the work-item format should carry is a change to the roadmap adapter's standard.
 
 ## GATE — always-loaded gate
 

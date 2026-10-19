@@ -191,7 +191,9 @@ The model stays at v1: new fields and statuses entered v1 directly. The migratio
 - `waiting_on_trades`, which `hold.trades` replaces;
 - `intake_disposition` and `intake_disposition_target`, which a cancellation with a `resolution` replaces.
 
-A few residual shapes still only warn: a `done` record carrying Now or Next, an open record at a horizon the former rule allowed but the table above does not, an adopted record without `kind`, and a Capital's retired `Streams/Projects/Initiatives.md` index.
+A few residual shapes still only warn: a `done` record carrying Now or Next, an open record at a horizon the former rule allowed but the table above does not, and a Capital's retired `Streams/Projects/Initiatives.md` index.
+
+The field migration window, set on 2026-10-19, covers the [priority and size](standards-work-item-format.md#priority-and-size) fields and the [retired fields and values](standards-work-item-format.md#retired-fields-and-values). During it the checker warns on a record without `size`, an adopted open record without `kind`, a record naming `initiative`, and `purpose: adoption`; `ki work` lists the same gaps so that owners can backfill them by judgement. The window closes in the first `ki` release after `ki work` shows no gaps across the estate, and the harness checker then fails each of these shapes, as `ki` does. An absent `priority` never warns or fails: it reads as `medium`.
 
 The work model's tolerance window, which [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) opens and a later phase of the migration closes, adds warnings for the thread-model classification: a record's `initiative`, read as its theme; and, in the record's own territory, a registry that keeps `Streams/Initiatives/`, a Project folder note or a Project note's `initiative:`. This section is the one place these rules are defined.
 

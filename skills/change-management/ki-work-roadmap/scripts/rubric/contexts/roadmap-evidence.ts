@@ -88,7 +88,9 @@ const HOLD_PARSE_ERROR = Symbol('hold parse error')
 const RESOLUTIONS = new Set(['obsolete', 'rejected', 'duplicate', 'merged', 'superseded'])
 const TARGETED_RESOLUTIONS = new Set(['duplicate', 'merged', 'superseded'])
 const KINDS = new Set(['deliver', 'decide', 'investigate', 'audit'])
-const PURPOSES = new Set(['capability', 'corrective', 'debt', 'governance', 'learning', 'adoption', 'upkeep'])
+const PURPOSES = new Set(['capability', 'corrective', 'debt', 'governance', 'learning', 'upkeep'])
+const PRIORITIES = new Set(['high', 'medium', 'low'])
+const SIZES = new Set(['s', 'm', 'l', 'xl'])
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const INTAKE_DISPOSITIONS = new Set(['rejected', 'duplicate', 'merged'])
 const IMMEDIATE = new Set<string>(['now', 'next'])
@@ -102,6 +104,8 @@ const RECORD_FIELDS = new Set([
   'theme',
   'initiative',
   'component',
+  'priority',
+  'size',
   'horizon',
   'hold',
   'status',
@@ -555,6 +559,13 @@ const validateBody = (item: WorkItem): void => {
 const tolerate = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): void =>
   add('WARN', area, `legacy: ${msg}`, ref, file)
 
+/**
+ * Shapes the field migration window set on 2026-10-19 tolerates: a missing size or kind and the retired
+ * `initiative` and `purpose: adoption` warn until the window closes, then fail.
+ */
+const migrate = (msg: string, file?: string, area = 'ITEM-2'): void =>
+  add('WARN', area, `migration window: ${msg}`, STANDARD, file)
+
 /** Retired pre-v1 shapes (KI-HARNESS-GOV-150): the migration window has closed, so each one fails. */
 const retire = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): void =>
   add('FAIL', area, `retired: ${msg}`, ref, file)
@@ -734,6 +745,8 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   const status = value('status')
   const kind = value('kind')
   const purpose = value('purpose')
+  const priority = value('priority')
+  const size = value('size')
   const project = value('project')
   const initiative = value('initiative')
   const component = value('component')
@@ -796,8 +809,13 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   validateHold(parsed.values, status, horizon, updatedAt, display)
   validateResolution(parsed.values, id, status, resolution, resolutionTarget, display)
   if (kind !== undefined && !KINDS.has(kind)) add('FAIL', 'ITEM-2', 'kind must be one canonical value', FORMAT, display)
-  if (purpose !== undefined && !PURPOSES.has(purpose))
+  if (purpose === 'adoption') migrate('purpose adoption is retired; use capability or upkeep', display)
+  else if (purpose !== undefined && !PURPOSES.has(purpose))
     add('FAIL', 'ITEM-2', 'purpose must be one canonical value', FORMAT, display)
+  if ('priority' in parsed.values && (priority === undefined || !PRIORITIES.has(priority)))
+    add('FAIL', 'ITEM-2', 'priority must be high, medium or low', FORMAT, display)
+  if (!('size' in parsed.values)) migrate('a record should declare size: s, m, l or xl', display)
+  else if (size === undefined || !SIZES.has(size)) add('FAIL', 'ITEM-2', 'size must be s, m, l or xl', FORMAT, display)
   for (const [key, slug] of [
     ['project', project],
     ['theme', theme],
@@ -817,9 +835,8 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   if (component && SLUG_RE.test(component) && !configuration?.components.has(component))
     add('FAIL', 'ITEM-2', `component '${component}' must be declared in ki-work-roadmap components`, STANDARD, display)
   if (kind === undefined && status && OPEN_STATUSES.has(status) && !legacyHorizon)
-    tolerate('an adopted record should declare kind', display)
-  if ('initiative' in parsed.values)
-    tolerate('initiative is the thread-model classification; name the theme in theme', display)
+    migrate('an adopted record should declare kind', display)
+  if ('initiative' in parsed.values) migrate('initiative is retired; name the theme in theme', display)
   if ('theme' in parsed.values && 'initiative' in parsed.values)
     add('FAIL', 'ITEM-2', 'name a theme or a legacy initiative, not both', FORMAT, display)
   validateLegacyIntake(parsed.values, id, terminalTriage, intakeDisposition, intakeDispositionTarget, display)

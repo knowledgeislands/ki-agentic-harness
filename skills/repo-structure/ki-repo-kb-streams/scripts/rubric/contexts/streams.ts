@@ -167,6 +167,8 @@ export const RECORD_FIELDS: ReadonlySet<string> = new Set([
   'theme',
   'initiative',
   'component',
+  'priority',
+  'size',
   'horizon',
   'hold',
   'status',
@@ -186,7 +188,7 @@ export const RECORD_FIELDS: ReadonlySet<string> = new Set([
 // A KB record is also a KB note, so it may carry ki-repo-kb's universal note fields beside the work-item fields.
 const KB_NOTE_FIELDS: ReadonlySet<string> = new Set(['note_type', 'updated', 'reviewed', 'created', 'tags', 'author'])
 
-type RoadmapRecord = { path: string; id?: string; defect?: string; unknown?: readonly string[] }
+type RoadmapRecord = { path: string; id?: string; defect?: string; unknown?: readonly string[]; sizeless?: boolean }
 
 const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord => {
   const display = relative(root, path)
@@ -202,7 +204,10 @@ const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord 
     return { path: display, defect: 'has frontmatter that is not a YAML mapping' }
   const raw = (values as Record<string, unknown>).id
   const unknownFields = Object.keys(values).filter((key) => !RECORD_FIELDS.has(key) && !KB_NOTE_FIELDS.has(key))
-  const unknown = unknownFields.length ? { unknown: unknownFields } : {}
+  const unknown = {
+    ...(unknownFields.length ? { unknown: unknownFields } : {}),
+    ...('size' in values ? {} : { sizeless: true })
+  }
   const id = typeof raw === 'string' ? raw.trim() : ''
   if (!id) return { path: display, defect: 'has no frontmatter id', ...unknown }
   // A slug may begin with digits, so the identifier grammar alone cannot split every filename;
@@ -272,8 +277,9 @@ const roadmapFrontmatterEvidence = (
   }))
 }
 
-// The KB adapter otherwise skips frontmatter it does not read, so an undefined field such as `priority` would pass
-// silently; it warns instead, and horizon stays the only priority signal.
+// The KB adapter otherwise skips frontmatter it does not read, so an undefined field such as `owner` would pass
+// silently; it warns instead. A record without the required `size` warns during the roadmap standard's field
+// migration window.
 const roadmapFieldEvidence = (
   root: string,
   roadmapPath: string,
@@ -281,19 +287,27 @@ const roadmapFieldEvidence = (
 ): StreamsEvidence[] => {
   if (records.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No roadmap records are present.' }]
   const unknown = records.filter((record) => record.unknown?.length)
-  if (unknown.length === 0)
+  const sizeless = records.filter((record) => record.sizeless)
+  if (unknown.length === 0 && sizeless.length === 0)
     return [
       {
         level: 'PASS',
-        message: 'Every roadmap record carries only work-item fields the roadmap adapter defines.',
+        message: 'Every roadmap record carries a size and only work-item fields the roadmap adapter defines.',
         subject: relative(root, roadmapPath)
       }
     ]
-  return unknown.map((record) => ({
-    level: 'WARN' as const,
-    message: `Roadmap record ${record.path} has unknown field(s): ${record.unknown?.join(', ')}.`,
-    subject: record.path
-  }))
+  return [
+    ...unknown.map((record) => ({
+      level: 'WARN' as const,
+      message: `Roadmap record ${record.path} has unknown field(s): ${record.unknown?.join(', ')}.`,
+      subject: record.path
+    })),
+    ...sizeless.map((record) => ({
+      level: 'WARN' as const,
+      message: `Roadmap record ${record.path} has no size; give it s, m, l or xl.`,
+      subject: record.path
+    }))
+  ]
 }
 
 // Mirrors the roadmap adapter's canonical issue ledger (`issueLedger` in ki-work-roadmap). The ledger holds its

@@ -39,6 +39,7 @@ const createFixture = (): string => {
     `---
 id: TEST-001
 title: Build the foundation
+size: m
 kind: deliver
 horizon: next
 status: draft
@@ -841,7 +842,7 @@ test('a theme slug is accepted and a legacy initiative warns', () => {
   expect(inspectRoadmap(repository).filter((finding) => finding.level === 'FAIL')).toEqual([])
   writeFileSync(item, text.replace('kind: deliver', 'kind: deliver\ninitiative: other-theme'))
   expect(inspectRoadmap(repository).map((finding) => finding.msg)).toContain(
-    'legacy: initiative is the thread-model classification; name the theme in theme'
+    'migration window: initiative is retired; name the theme in theme'
   )
 })
 
