@@ -220,6 +220,22 @@ const COORD_6: RubricItem<CoordinationRubricContext> = {
   }
 }
 
+const COORD_13: RubricItem<CoordinationRubricContext> = {
+  code: 'COORD-13',
+  title: 'coordinators have doubtful and destructive queries reviewed blind',
+  description:
+    'Before a query reaches the owner, a coordinator sends every query whose recommended option carries `medium` or `low` confidence, and every `high` one whose course destroys, deletes or publishes, to one blind review run on the strongest model at high effort, under Codex rather than Claude Code where independence matters; agreement lifts the confidence one level, never to `high` for a destructive course resting on claims not verified directly, with its reason beginning `reviewed`, and disagreement keeps the confidence, begins the reason `review disagrees` and shows both views in the query. The queries a run report raises are reviewed at receive.',
+  sources: [`${SOURCE}#query-review`],
+  judgment: {
+    scope: 'Coordinator summaries, recaps, queries.md files and review-run reports the owner selects for review.',
+    prompt:
+      'Did every medium- or low-confidence query, and every high-confidence query with a destructive course, pass one blind review run before it reached the owner, did the run see the query without its recommendation or confidence, does each agreed query show its lifted confidence with a reason beginning `reviewed`, and does each disputed one keep its confidence and show both views?',
+    outcomes: ['conforming', 'review the query', 'show both views', 'escalate to owner'],
+    guidance:
+      'Hold an unreviewed query back from the owner until one blind review run has seen it, then mark it reviewed with its lifted confidence or show both views; never raise a destructive course resting on claims not verified directly to high.'
+  }
+}
+
 export const COORD: RubricFamily<CoordinationRubricContext, CoordinationRubricContext> = {
   code: 'COORD',
   title: 'Coordinating work',
@@ -227,5 +243,19 @@ export const COORD: RubricFamily<CoordinationRubricContext, CoordinationRubricCo
     'The territory work and Project work a repository shows in its work files, with old-shape checkpoints for the tolerance window, and the responsiveness, reporting and currency of the coordinators behind them.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [COORD_1, COORD_2, COORD_10, COORD_3, COORD_7, COORD_11, COORD_12, COORD_9, COORD_8, COORD_4, COORD_5, COORD_6]
+  items: [
+    COORD_1,
+    COORD_2,
+    COORD_10,
+    COORD_3,
+    COORD_7,
+    COORD_11,
+    COORD_12,
+    COORD_9,
+    COORD_8,
+    COORD_4,
+    COORD_5,
+    COORD_6,
+    COORD_13
+  ]
 }
