@@ -520,11 +520,11 @@ rect.c-bg-rect { fill: var(--bg); }
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="25" data-composition-frame-label="Environment · 9 skills" x="8" y="1350" width="664" height="486" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="26" data-composition-frame-label="Acquire" x="702" y="1896" width="428" height="104" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="26" data-composition-frame-label="Acquire" x="702" y="1896" width="636" height="104" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="27" data-composition-frame-label="Signals" x="702" y="2036" width="220" height="104" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="28" data-composition-frame-label="Acquire · 3 skills" x="688" y="1878" width="456" height="262" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="28" data-composition-frame-label="Acquire · 4 skills" x="688" y="1878" width="664" height="262" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="29" data-composition-frame-label="Design · 2 skills" x="8" y="1904" width="456" height="104" rx="12" class="c-region" stroke-width="1"/>
 
@@ -1227,32 +1227,44 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="340" y="1800" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         </g>
 
-        <g id="node-ki-acquire-chatgpt" data-node-id="ki-acquire-chatgpt" data-node-label="ki-acquire-chatgpt" tabindex="0" role="button" aria-label="Focus ki-acquire-chatgpt, acquire · opt-in, Acquire · 3 skills › Acquire" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 3 skills › Acquire">
-          <title>ki-acquire-chatgpt · acquire · opt-in · Acquire · 3 skills › Acquire</title>
+        <g id="node-ki-acquire" data-node-id="ki-acquire" data-node-label="ki-acquire" tabindex="0" role="button" aria-label="Focus ki-acquire, acquire · opt-in, Acquire · 4 skills › Acquire" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 4 skills › Acquire">
+          <title>ki-acquire · acquire · opt-in · Acquire · 4 skills › Acquire</title>
           <rect x="712" y="1920" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1920" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(718 1926) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="812" y="1948" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-acquire-chatgpt</text>
+          <text data-node-label="" x="812" y="1948" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-acquire</text>
         <text x="812" y="1964" class="t-muted" font-size="9" text-anchor="middle">acquire · opt-in</text>
         </g>
 
-        <g id="node-ki-acquire-granola" data-node-id="ki-acquire-granola" data-node-label="ki-acquire-granola" tabindex="0" role="button" aria-label="Focus ki-acquire-granola, acquire · opt-in, Acquire · 3 skills › Acquire" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 3 skills › Acquire">
-          <title>ki-acquire-granola · acquire · opt-in · Acquire · 3 skills › Acquire</title>
+        <g id="node-ki-acquire-chatgpt" data-node-id="ki-acquire-chatgpt" data-node-label="ki-acquire-chatgpt" tabindex="0" role="button" aria-label="Focus ki-acquire-chatgpt, acquire · opt-in, Acquire · 4 skills › Acquire" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 4 skills › Acquire">
+          <title>ki-acquire-chatgpt · acquire · opt-in · Acquire · 4 skills › Acquire</title>
           <rect x="920" y="1920" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="920" y="1920" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(926 1926) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="1020" y="1948" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-acquire-granola</text>
+          <text data-node-label="" x="1020" y="1948" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-acquire-chatgpt</text>
         <text x="1020" y="1964" class="t-muted" font-size="9" text-anchor="middle">acquire · opt-in</text>
         </g>
 
-        <g id="node-ki-pulse" data-node-id="ki-pulse" data-node-label="ki-pulse" tabindex="0" role="button" aria-label="Focus ki-pulse, signals · command, Acquire · 3 skills › Signals" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="signals · command" data-node-context="Acquire · 3 skills › Signals">
-          <title>ki-pulse · signals · command · Acquire · 3 skills › Signals</title>
+        <g id="node-ki-acquire-granola" data-node-id="ki-acquire-granola" data-node-label="ki-acquire-granola" tabindex="0" role="button" aria-label="Focus ki-acquire-granola, acquire · opt-in, Acquire · 4 skills › Acquire" aria-pressed="false" data-node-kind="database" data-node-sublabel="acquire · opt-in" data-node-context="Acquire · 4 skills › Acquire">
+          <title>ki-acquire-granola · acquire · opt-in · Acquire · 4 skills › Acquire</title>
+          <rect x="1128" y="1920" width="200" height="60" rx="8" class="c-mask"/>
+          <rect x="1128" y="1920" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1134 1926) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" x="1228" y="1948" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-acquire-granola</text>
+        <text x="1228" y="1964" class="t-muted" font-size="9" text-anchor="middle">acquire · opt-in</text>
+        </g>
+
+        <g id="node-ki-pulse" data-node-id="ki-pulse" data-node-label="ki-pulse" tabindex="0" role="button" aria-label="Focus ki-pulse, signals · command, Acquire · 4 skills › Signals" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="signals · command" data-node-context="Acquire · 4 skills › Signals">
+          <title>ki-pulse · signals · command · Acquire · 4 skills › Signals</title>
           <rect x="712" y="2060" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="2060" width="200" height="60" rx="8" class="c-frontend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(718 2066) scale(0.6875)">
@@ -1435,9 +1447,9 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-boundary-label="" x="710" y="2053" class="t-cloud" font-size="9" font-weight="600">Signals</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="28" data-composition-frame-kind="region" data-composition-frame-label="Acquire · 3 skills">
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="28" data-composition-frame-kind="region" data-composition-frame-label="Acquire · 4 skills">
           <rect data-graph-role="structural-frame-label-mask" x="692" y="1882" width="107.2" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="696" y="1895" class="t-cloud" font-size="9" font-weight="600">Acquire · 3 skills</text>
+          <text data-boundary-label="" x="696" y="1895" class="t-cloud" font-size="9" font-weight="600">Acquire · 4 skills</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="29" data-composition-frame-kind="region" data-composition-frame-label="Design · 2 skills">
