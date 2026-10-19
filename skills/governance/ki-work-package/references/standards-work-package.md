@@ -74,7 +74,7 @@ The five package files exist from the work's creation, `queries.md`, `messages.m
 
 ### Entry points
 
-Every writer is a named entry point with its permitted kinds, and every other party only reads. This is the contract other skills, tools and runs check in on, set out in the design note behind WORK-FOLDER-OWNER:
+Every writer is a named entry point with its permitted kinds, and every other party only reads. This standing contract implements the ownership set out in [Activation and ownership](#activation-and-ownership) and is the contract other skills, tools and runs check in on:
 
 1. **One owner sets the shape and the tidy rules:** this standard sets the closed list, what each entry point may write, when each kind goes and how a deletion is made.
 2. **Every other writer is a named entry point** with its single permitted kind, in the table below.
