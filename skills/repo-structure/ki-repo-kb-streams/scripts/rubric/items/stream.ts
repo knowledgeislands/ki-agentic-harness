@@ -89,14 +89,14 @@ const STREAM_7: RubricItem<StreamRubricContext> = {
   code: 'STREAM-7',
   title: 'roadmap record frontmatter',
   description:
-    'Every Streams/Roadmap record other than _ISSUES.md and the Roadmap.md index note begins with parseable frontmatter whose id matches its filename identifier.',
+    'Every Streams/Roadmap record other than _ISSUES.md and the Roadmap.md index note begins with parseable frontmatter whose id matches its filename identifier, and no ready record is size xl.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Give the record canonical frontmatter in the roadmap adapter's work-item format with an id matching its filename, or move a non-record out of Streams/Roadmap/. Full record format remains the roadmap adapter's audit."
+        "Give the record canonical frontmatter in the roadmap adapter's work-item format with an id matching its filename, split a ready size xl record before Ready, or move a non-record out of Streams/Roadmap/. Full record format remains the roadmap adapter's audit."
     },
     audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.roadmapFrontmatter, 'FAIL') }
   }

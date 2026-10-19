@@ -138,6 +138,32 @@ test('priority and size take their vocabularies; a missing size warns and a miss
   expect(warnings(sizeless)).toEqual(['migration window: a record should declare size: s, m, l or xl'])
 })
 
+test('a closed record needs no size and a ready record must not be xl', () => {
+  const unsized = (frontmatter: string) => {
+    const repository = createRepository(frontmatter, '')
+    const item = join(repository, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md')
+    writeFileSync(item, readFileSync(item, 'utf8').replace('size: m\n', ''))
+    return repository
+  }
+  const cancelled = unsized('kind: deliver\nstatus: cancelled\nresolution: obsolete\nbaseline_ref: null')
+  expect(warnings(cancelled)).not.toContain('migration window: a record should declare size: s, m, l or xl')
+  expect(
+    failures(createRepository('kind: deliver\nsize: xl\nhorizon: next\nstatus: ready\nbaseline_ref: null', EXECUTION))
+  ).toContainEqual(
+    expect.objectContaining({ area: 'ITEM-2', msg: 'a ready record must not be size xl; split it before Ready' })
+  )
+})
+
+test('a theme named beside a project warns during the migration window, registry or not', () => {
+  const repository = createRepository(
+    'kind: deliver\nproject: baseline-rollout\ntheme: platform-foundations\nhorizon: future\nstatus: draft\nbaseline_ref: null',
+    ''
+  )
+  expect(warnings(repository)).toContain(
+    'migration window: the theme comes from the project; do not name it beside the project'
+  )
+})
+
 test('purpose adoption is retired and warns during the migration window', () => {
   const repository = createRepository(
     'kind: deliver\npurpose: adoption\nhorizon: future\nstatus: draft\nbaseline_ref: null',
@@ -450,7 +476,7 @@ test('project membership warns on unknown slugs and fails only on a contradicted
     ])
   )
   expect(warnings(member('project: baseline-rollout\ninitiative: platform-foundations'))).toContain(
-    'initiative is redundant beside a registered project'
+    'migration window: the theme comes from the project; do not name it beside the project'
   )
   expect(failures(member('project: baseline-rollout\ninitiative: techne'))).toContainEqual(
     expect.objectContaining({
@@ -574,7 +600,7 @@ test('qualified membership resolves in the named territory and warns when it can
       'migration window: initiative is retired; name the theme in theme'
     ])
     expect(warnings(member('project: capital/baseline-rollout\ninitiative: capital/platform-foundations'))).toContain(
-      'initiative is redundant beside a registered project'
+      'migration window: the theme comes from the project; do not name it beside the project'
     )
     expect(failures(member('project: capital/baseline-rollout\ninitiative: capital/techne'))).toContainEqual(
       expect.objectContaining({

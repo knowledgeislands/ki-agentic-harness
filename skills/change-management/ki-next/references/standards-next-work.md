@@ -71,7 +71,9 @@ Before creating a record, search the selected adapter for an existing owner. Do 
 
 ### Non-KB repositories
 
-1. Gather dependency-ready `now` and `next` records, ordered within each horizon by `priority`, an absent one reading as `medium`. Reuse their canonical record; if several are independently ready, recommend a small ranked set only when each retains its own lifecycle and the user confirms the set and order.
+Selection follows one order, as the [work-item format](../../ki-work-roadmap/references/standards-work-item-format.md#priority-and-size) states: adoption, holds and dependencies first, then horizon, then `priority` (`high` a material cost from deferral, `medium` useful planned progress, `low` a discretionary benefit, an absent one reading as `medium`), then `size`, smallest first. Priority never crosses horizons: a `high` record at a later horizon is not selected ahead of earlier work, but prompts a proposal to move its horizon through the steps below.
+
+1. Gather dependency-ready `now` and `next` records, ordered within each horizon by `priority` and then by `size`, smallest first. Reuse their canonical record; if several are independently ready, recommend a small ranked set only when each retains its own lifecycle and the user confirms the set and order.
 2. Only when none is eligible, assess `soon` records against the Next entry rule. After confirmation, change horizon to `next`, run the adapter audit, then re-evaluate it at the destination.
 3. Only when Soon has no viable record, assess adopted Future work. Move directly to Next only when the full Next rule is met and Soon adds no value; otherwise move to Soon once the intended outcome and boundary are known. Re-evaluate after every confirmed move.
 4. Review triage separately from candidate selection. Present the exact destination horizon, `kind`, and why it satisfies that horizon; adopt only after explicit human confirmation, then re-evaluate at the destination.

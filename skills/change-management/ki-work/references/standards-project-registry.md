@@ -132,8 +132,8 @@ Each level carries the attributes it needs and no more. The comparable attribute
 | Type | None | None | `kind` and optional `purpose` | `realization`, how it runs |
 | Idea stage | Ideas in its `## Notes` when no Project fits | An [idea-stage Project](#idea-stage-project) | None: an idea becomes a record only through the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation) | None |
 | Priority signal | None | None | `horizon` for when and `priority` for how important | None |
-| Size | None | None | `size`, the effort, guiding a split | None |
-| Owner and parent | No holder; a label | `lead`; an optional `theme` | Its owning repository; one `project` or an optional `theme` | Its owning base; regular work or a Project, with an optional `theme` |
+| Size | None | None | `size`, the relative end-to-end effort, guiding a split | None |
+| Owner and parent | No holder; a label | `lead`; an optional `theme` | Its owning repository; one `project`, which gives its theme, or for projectless work an optional `theme` | Its owning base; regular work or a Project, with an optional `theme` |
 
 Projects and themes take no type field, and `kind` and `purpose` are record classification only. Only a work record carries `priority` and `size`, under the [work-item format](../../ki-work-roadmap/references/standards-work-item-format.md#priority-and-size); the order of Projects is a judgement the territory work makes, never a stored value. Kris reversed the 15 October answer that "horizon stays the only priority signal" on 2026-10-19: "horizon is about when, and then priority is about how important". The [work-item format](../../ki-work-roadmap/references/standards-work-item-format.md) owns the record fields and the [`ki-repo-kb-activities`](../../../repo-structure/ki-repo-kb-activities/SKILL.md) standard the Activity fields.
 

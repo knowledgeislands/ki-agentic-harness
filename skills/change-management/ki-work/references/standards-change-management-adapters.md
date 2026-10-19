@@ -35,8 +35,9 @@ Every adapter maps these abstract terms; the [repository-roadmap standard](../..
 
 - **Status** - how far work has got: triage (unadopted intake), draft, ready, in progress, awaiting review, and two terminal endings, done and cancelled.
 - **Horizon** - when adopted, open work is intended: now, next, soon, future, or hold. Hold carries a reason, a named release condition, an optional review date, and any observed trades.
-- **Priority** - how important the work is, beside its horizon: high, medium, or low, written at capture; an absent priority reads as medium.
-- **Size** - the effort the work involves, required from capture whatever the horizon: s, m, l, or xl, xl meaning split before Ready.
+- **Priority** - how important the work is among records at the same horizon: high, a material cost from deferral; medium, useful planned progress; or low, a discretionary benefit. It is written at capture, and an absent priority reads as medium.
+- **Size** - the relative end-to-end effort the work involves, from implementation to owner review but not external waiting, and not hours: s, m, l, or xl, xl meaning split before Ready. Required on open work from capture, provisional until revisited before Ready.
+- **Selection order** - adoption, holds and dependencies first, then horizon, then priority, then size, smallest first. Priority never crosses horizons; a high-priority record at a later horizon prompts a proposal to move its horizon.
 - **Resolution** - why cancelled work ended: obsolete, rejected, duplicate, merged, or superseded, with a qualified target record for the last three. Only the owning repository closes its own record.
 - **Classification** - `kind` (deliver, decide, investigate, audit), optional `purpose`, territory-owned `project` or, for projectless work, an optional `theme`, and repository-owned `component`.
 

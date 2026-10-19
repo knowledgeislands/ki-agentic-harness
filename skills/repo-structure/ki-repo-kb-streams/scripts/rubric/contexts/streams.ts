@@ -188,7 +188,17 @@ export const RECORD_FIELDS: ReadonlySet<string> = new Set([
 // A KB record is also a KB note, so it may carry ki-repo-kb's universal note fields beside the work-item fields.
 const KB_NOTE_FIELDS: ReadonlySet<string> = new Set(['note_type', 'updated', 'reviewed', 'created', 'tags', 'author'])
 
-type RoadmapRecord = { path: string; id?: string; defect?: string; unknown?: readonly string[]; sizeless?: boolean }
+type RoadmapRecord = {
+  path: string
+  id?: string
+  defect?: string
+  unknown?: readonly string[]
+  sizeless?: boolean
+  oversized?: boolean
+}
+
+// A closed record never needs a retrospective size.
+const CLOSED_STATUSES: ReadonlySet<string> = new Set(['done', 'cancelled'])
 
 const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord => {
   const display = relative(root, path)
@@ -203,10 +213,12 @@ const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord 
   if (!values || typeof values !== 'object' || Array.isArray(values))
     return { path: display, defect: 'has frontmatter that is not a YAML mapping' }
   const raw = (values as Record<string, unknown>).id
+  const fields = values as Record<string, unknown>
   const unknownFields = Object.keys(values).filter((key) => !RECORD_FIELDS.has(key) && !KB_NOTE_FIELDS.has(key))
   const unknown = {
     ...(unknownFields.length ? { unknown: unknownFields } : {}),
-    ...('size' in values ? {} : { sizeless: true })
+    ...('size' in values || CLOSED_STATUSES.has(String(fields.status)) ? {} : { sizeless: true }),
+    ...(fields.size === 'xl' && fields.status === 'ready' ? { oversized: true } : {})
   }
   const id = typeof raw === 'string' ? raw.trim() : ''
   if (!id) return { path: display, defect: 'has no frontmatter id', ...unknown }
@@ -262,7 +274,8 @@ const roadmapFrontmatterEvidence = (
 ): StreamsEvidence[] => {
   if (records.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No roadmap records are present.' }]
   const defective = records.filter((record) => record.defect)
-  if (defective.length === 0)
+  const oversized = records.filter((record) => record.oversized)
+  if (defective.length === 0 && oversized.length === 0)
     return [
       {
         level: 'PASS',
@@ -270,15 +283,23 @@ const roadmapFrontmatterEvidence = (
         subject: relative(root, roadmapPath)
       }
     ]
-  return defective.map((record) => ({
-    level: 'FAIL' as const,
-    message: `Roadmap record ${record.path} ${record.defect}.`,
-    subject: record.path
-  }))
+  return [
+    ...defective.map((record) => ({
+      level: 'FAIL' as const,
+      message: `Roadmap record ${record.path} ${record.defect}.`,
+      subject: record.path
+    })),
+    // A size xl record is not one record: it is split before Ready.
+    ...oversized.map((record) => ({
+      level: 'FAIL' as const,
+      message: `Roadmap record ${record.path} is ready at size xl; split it before Ready.`,
+      subject: record.path
+    }))
+  ]
 }
 
 // The KB adapter otherwise skips frontmatter it does not read, so an undefined field such as `owner` would pass
-// silently; it warns instead. A record without the required `size` warns during the roadmap standard's field
+// silently; it warns instead. An open record without the required `size` warns during the roadmap standard's field
 // migration window.
 const roadmapFieldEvidence = (
   root: string,

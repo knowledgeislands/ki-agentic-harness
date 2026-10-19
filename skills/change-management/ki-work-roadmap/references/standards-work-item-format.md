@@ -44,7 +44,7 @@ updated_at: 2026-08-12T09:30:00Z
 ---
 ```
 
-`id`, `title`, `size`, `status`, `blocks`, `blocked_by`, and `baseline_ref` are required. `priority` and `size` are written at capture, whatever the horizon, under [Priority and size](#priority-and-size); an absent `priority` reads as `medium`. `horizon` is required exactly when the record is adopted and open. `area` is required only when the repository configures fixed issuing areas, and prohibited otherwise. An adopted record also carries `kind`.
+`id`, `title`, `status`, `blocks`, `blocked_by`, and `baseline_ref` are required. `size` is required on every open record from capture, whatever the horizon, under [Priority and size](#priority-and-size); during the [migration window](standards-repository-roadmaps.md#migration-tolerance) a missing `size` warns, and a closed record never needs one. `priority` is written at capture, and an absent `priority` reads as `medium`. `horizon` is required exactly when the record is adopted and open. `area` is required only when the repository configures fixed issuing areas, and prohibited otherwise. An adopted record also carries `kind`.
 
 An adopted record looks like this:
 
@@ -91,16 +91,24 @@ An optional non-empty `transferred_from` records a durable handoff origin.
 
 ### Priority and size
 
-`horizon` says when the work is intended; `priority` says how important it is, and decides the order among many records at one horizon. `priority` is `high`, `medium`, or `low`. It is written at capture, and an absent `priority` reads as `medium`, so its absence never fails.
+`horizon` says when the work is intended; `priority` says how important it is among records at the same horizon. `priority` is `high`, `medium`, or `low`:
 
-`size` shows the effort a record involves and guides splitting. It is required on every record from capture, whatever its horizon, in roadmap and Streams records alike:
+- `high` - deferring it carries a material cost;
+- `medium` - useful planned progress;
+- `low` - a discretionary benefit.
 
-- `s` - an hour or two; one focused change;
-- `m` - about a day; a few related changes;
-- `l` - several days; several changes that land together;
-- `xl` - too large for one record; split it before it becomes Ready.
+It is written at capture, and an absent `priority` reads as `medium`, so its absence never fails.
 
-The owner sets a missing size by judgement. During the [migration window](standards-repository-roadmaps.md#migration-tolerance) the checker warns on a record without `size`; once the window closes it fails. A value outside either vocabulary fails at once.
+`size` measures the relative end-to-end effort a record involves: implementation, verification, integration and owner review, but not time spent waiting on others. It is not a count of hours, and it guides splitting and capacity, never importance or dispatch. It is required on every open record from capture, whatever its horizon, in roadmap and Streams records alike. The delivery shapes below are worked examples, not definitions:
+
+- `s` - one run, one repository, one commit;
+- `m` - one run, several commits and a plan;
+- `l` - several chained runs or repositories, with Delegation;
+- `xl` - not one record: split it before it becomes Ready.
+
+A size set at capture is provisional, set by judgement, and is revisited before the record becomes Ready; a record whose size is uncertain warrants investigation rather than an invented estimate. A `ready` record with `size: xl` fails. During the [migration window](standards-repository-roadmaps.md#migration-tolerance) the checker warns on an open record without `size`; once the window closes it fails. A closed record, done or cancelled, never needs a retrospective `size` or `kind`. A value outside either vocabulary fails at once.
+
+Selection orders work in one sequence, which [`ki-next`](../../ki-next/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then size, smallest first. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
 
 ### Retired fields and values
 
@@ -109,7 +117,7 @@ These shapes are retired. A record still carrying one is tolerated with a warnin
 - `initiative`, the thread-model name for `theme`: name the theme in `theme`, read meanwhile as the record's theme under the [Project registry tolerance window](../../ki-work/references/standards-project-registry.md#tolerance-window);
 - `purpose: adoption`, which no record has used: use `capability` or `upkeep`.
 
-The same review on 2026-10-19 kept three sparsely used shapes because other rules depend on them: `kind: decide`, which the [graduation test](standards-repository-roadmaps.md#ideas-and-graduation) names for decision records; `resolution_target`, which a duplicate, merged or superseded cancellation needs to name its replacement; and [`task_links`](#task-links), which the Paperclip coordination standard uses as the durable link from a record to its tasks.
+The same review on 2026-10-19 kept three sparsely used shapes because other rules depend on them: `kind: decide`, which the [graduation test](standards-repository-roadmaps.md#ideas-and-graduation) names for decision records; `resolution_target`, which a duplicate, merged or superseded cancellation needs to name its replacement; and [`task_links`](#task-links), which the Paperclip coordination standard uses as the durable link from a record to its tasks. `task_links` is revisited when Paperclip returns at Wave F.
 
 ### Classification
 
@@ -127,7 +135,7 @@ Classification fields say what sort of work a record is and what it serves. Each
 
 `purpose` says why the work exists. Use `upkeep` for work that keeps something accurate and never finishes.
 
-`project` names the finite outcome the record serves; its theme is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, may name its `theme` directly instead. Naming both is redundant, and a contradiction with the registry fails. Under the [work model](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) a theme is a label only: it owns no work, and the work a record serves is the territory's regular work or a Project. A record still naming the [retired](#retired-fields-and-values) `initiative` reads it as its theme with a warning; naming both `theme` and `initiative` fails. Project and theme slugs are territory-scoped kebab-case. A bare slug names an entry in the repository's own Capital territory; a record serving another territory's Project or theme qualifies it as `<territory>/<slug>`, such as `ki-principal/agent-host`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md#cross-territory-references). An unknown slug or an unavailable registry is a warning, never a failure. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
+`project` names the finite outcome the record serves; its theme is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, may name its `theme` directly instead. A record with a Project takes its theme from it and does not name `theme` beside it: naming both warns during the [migration window](standards-repository-roadmaps.md#migration-tolerance) and fails once it closes, and a contradiction with the registry fails at once. Under the [work model](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) a theme is a label only: it owns no work, and the work a record serves is the territory's regular work or a Project. A record still naming the [retired](#retired-fields-and-values) `initiative` reads it as its theme with a warning; naming both `theme` and `initiative` fails. Project and theme slugs are territory-scoped kebab-case. A bare slug names an entry in the repository's own Capital territory; a record serving another territory's Project or theme qualifies it as `<territory>/<slug>`, such as `ki-principal/agent-host`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md#cross-territory-references). An unknown slug or an unavailable registry is a warning, never a failure. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
 
 `component` names the part of the repository the record touches, from the repository's declared vocabulary.
 

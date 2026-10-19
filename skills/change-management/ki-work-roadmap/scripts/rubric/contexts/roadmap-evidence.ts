@@ -560,8 +560,8 @@ const tolerate = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): vo
   add('WARN', area, `legacy: ${msg}`, ref, file)
 
 /**
- * Shapes the field migration window set on 2026-10-19 tolerates: a missing size or kind and the retired
- * `initiative` and `purpose: adoption` warn until the window closes, then fail.
+ * Shapes the field migration window set on 2026-10-19 tolerates: a missing size or kind on an open record, a theme
+ * named beside a project, and the retired `initiative` and `purpose: adoption` warn until the window closes, then fail.
  */
 const migrate = (msg: string, file?: string, area = 'ITEM-2'): void =>
   add('WARN', area, `migration window: ${msg}`, STANDARD, file)
@@ -814,8 +814,12 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add('FAIL', 'ITEM-2', 'purpose must be one canonical value', FORMAT, display)
   if ('priority' in parsed.values && (priority === undefined || !PRIORITIES.has(priority)))
     add('FAIL', 'ITEM-2', 'priority must be high, medium or low', FORMAT, display)
-  if (!('size' in parsed.values)) migrate('a record should declare size: s, m, l or xl', display)
-  else if (size === undefined || !SIZES.has(size)) add('FAIL', 'ITEM-2', 'size must be s, m, l or xl', FORMAT, display)
+  if (!('size' in parsed.values)) {
+    if (!status || !TERMINAL_STATUSES.has(status)) migrate('a record should declare size: s, m, l or xl', display)
+  } else if (size === undefined || !SIZES.has(size))
+    add('FAIL', 'ITEM-2', 'size must be s, m, l or xl', FORMAT, display)
+  else if (size === 'xl' && status === 'ready')
+    add('FAIL', 'ITEM-2', 'a ready record must not be size xl; split it before Ready', FORMAT, display)
   for (const [key, slug] of [
     ['project', project],
     ['theme', theme],
@@ -837,6 +841,8 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   if (kind === undefined && status && OPEN_STATUSES.has(status) && !legacyHorizon)
     migrate('an adopted record should declare kind', display)
   if ('initiative' in parsed.values) migrate('initiative is retired; name the theme in theme', display)
+  if ('project' in parsed.values && ('theme' in parsed.values || 'initiative' in parsed.values))
+    migrate('the theme comes from the project; do not name it beside the project', display)
   if ('theme' in parsed.values && 'initiative' in parsed.values)
     add('FAIL', 'ITEM-2', 'name a theme or a legacy initiative, not both', FORMAT, display)
   validateLegacyIntake(parsed.values, id, terminalTriage, intakeDisposition, intakeDispositionTarget, display)
@@ -1003,7 +1009,6 @@ const validateClassification = (repository: string, items: readonly WorkItem[]):
         STANDARD,
         item.file
       )
-    else add('WARN', 'ITEM-2', `${key} is redundant beside a registered project`, STANDARD, item.file)
   }
   const members = new Map<string, WorkItem[]>()
   for (const item of items) if (item.project) members.set(item.project, [...(members.get(item.project) ?? []), item])

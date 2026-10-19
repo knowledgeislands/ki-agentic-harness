@@ -332,6 +332,25 @@ describe('ki-repo-kb-streams session', () => {
     expect(item?.mechanical?.audit.run(unknown).map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
   })
 
+  test('exempts a closed record from size and fails a ready record of size xl', () => {
+    const root = targetFixture()
+    const roadmap = join(root, 'Streams', 'Roadmap')
+    const evaluate = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
+    writeFileSync(join(roadmap, 'KB-OPS-001-known.md'), '---\nid: KB-OPS-001\ntitle: Known\nstatus: done\n---\n')
+    expect(evaluate().roadmapFields.map((evidence) => evidence.level)).toEqual(['PASS'])
+
+    writeFileSync(
+      join(roadmap, 'KB-OPS-001-known.md'),
+      '---\nid: KB-OPS-001\ntitle: Known\nsize: xl\nhorizon: next\nstatus: ready\n---\n'
+    )
+    const subject = join('Streams', 'Roadmap', 'KB-OPS-001-known.md')
+    expect(evaluate().roadmapFrontmatter).toContainEqual({
+      level: 'FAIL',
+      message: `Roadmap record ${subject} is ready at size xl; split it before Ready.`,
+      subject
+    })
+  })
+
   test("mirrors the roadmap adapter's current record fields", () => {
     const source = readFileSync(
       join(
