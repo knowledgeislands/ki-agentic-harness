@@ -8,7 +8,7 @@ audience = "Skill authors, reviewers and newcomers orienting themselves in the c
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill is added, moved between concerns, renamed or removed, its ki-kind or ki-applicability changes, or the functional-area table changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-map` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
-last_checked = "8bc9d49d0e4c06490a7f8ec81d00e65e92167fc5"
+last_checked = "9e1747504329ddb2267fdadbea302b7875fe5ce5"
 commit_html = true
 
 [skill-area-fundamentals]
@@ -38,7 +38,7 @@ audience = "Skill authors and reviewers deciding where a new or changed skill si
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Coordination functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-coordination` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
-last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+last_checked = "9e1747504329ddb2267fdadbea302b7875fe5ce5"
 commit_html = true
 
 [skill-area-work-and-delivery]
