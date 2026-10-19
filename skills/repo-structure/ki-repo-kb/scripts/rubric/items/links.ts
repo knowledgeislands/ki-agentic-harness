@@ -5,22 +5,23 @@ const SOURCE = 'standards-knowledge-base.md'
 
 const LINK_1: RubricItem<KbLinkContext> = {
   code: 'LINK-1',
-  title: 'Obsidian note linking',
-  description: 'Base note content uses shortest-unique Obsidian wikilinks, with aliased full paths for contents lists.',
+  title: 'Internal links resolve in exact case',
+  description:
+    'Every internal link resolves in exact case, covering Markdown links and supported wikilinks; GFM is preferred.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Qualify each ambiguous wikilink with the shortest path prefix that makes it unique, or rename one of the colliding notes, then rerun the audit.'
+        'Repair missing or wrong-case destinations and qualify ambiguous wikilinks, then rerun the audit; supported link syntax alone is never a defect.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.uniqueTargets }
   },
   judgment: {
     scope: 'Sampled base notes and the prescribed linking convention.',
     prompt:
-      'Beyond the mechanical uniqueness check, do sampled base notes use the shortest unique form and the aliased full paths the convention prescribes?',
+      'Do sampled notes prefer descriptive note-relative GFM links in angle brackets, while retaining readable supported wikilinks and preserving meaning during conversion?',
     outcomes: ['conforming', 'note revision', 'convention clarification'],
     guidance: 'Revise links to the established convention; do not change the convention from a sample alone.'
   }
@@ -29,7 +30,7 @@ const LINK_1: RubricItem<KbLinkContext> = {
 export const LINK: RubricFamily<KbRubricContext, KbLinkContext> = {
   code: 'LINK',
   title: 'base linking',
-  description: 'Mechanical wikilink uniqueness and judgment review of Obsidian wikilink content.',
+  description: 'Mechanical internal-link resolution in exact case and judgment review of the preferred GFM form.',
   standard: SOURCE,
   selectContext: (context) => context.links,
   items: [LINK_1]

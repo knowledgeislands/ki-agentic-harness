@@ -69,7 +69,9 @@ Both are checked by the mechanical audit and created as stubs by EDUCATE and CON
 
 ### Linking within a base
 
-Notes inside a base link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths — the five index-carrying zones are `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`. Body links use the shortest unique path (bare filename if unique, the minimum disambiguating prefix otherwise); a `## Contents` list uses the full path with an alias (`[[Full/Path/Note|Note Name]]`). This governs **note content inside a base** — it is independent of, and does not conflict with, the relative-markdown-link convention these skill files themselves use (see ki-agentic-harness `docs/installation.md`, "Linking inside skills").
+GFM is preferred for notes and zone indexes under `ki-authoring`'s Markdown-flavour and house-link conventions: use descriptive note-relative Markdown links in angle brackets, including in `## Contents` lists. Existing Obsidian `[[wikilinks]]` remain supported and are never a failure merely for their syntax; escape a table alias separator as `\|` while retaining them. No per-note flavour field is required.
+
+`LINK-1` checks that every internal link outside the inbound and outbound working areas resolves in exact case, whether a Markdown link, reference definition, wikilink or embed. Missing, ambiguous and wrong-case targets fail. Wikilinks resolve beside the linking note first, then as a base-relative path, then by a unique trailing path; use enough path to remove ambiguity. Markdown destinations resolve relative to the linking note, with `%20` recognised as a space without globally percent-decoding paths. The five index-carrying zones are Calendar, Pillars, Resources, Streams and Admin; the working areas have no same-name zone index.
 
 ### Routing test
 

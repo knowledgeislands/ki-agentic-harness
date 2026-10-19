@@ -143,12 +143,12 @@ Memory-index accuracy and its always-loaded anchor.
 
 → [standard](standards-knowledge-base.md)
 
-Mechanical wikilink uniqueness and judgment review of Obsidian wikilink content.
+Mechanical internal-link resolution in exact case and judgment review of the preferred GFM form.
 
-- **LINK-1 [M + J] — Obsidian note linking** — Base note content uses shortest-unique Obsidian wikilinks, with aliased full paths for contents lists. (standards-knowledge-base.md)
-  - _Remediation:_ diagnostic — Qualify each ambiguous wikilink with the shortest path prefix that makes it unique, or rename one of the colliding notes, then rerun the audit.
+- **LINK-1 [M + J] — Internal links resolve in exact case** — Every internal link resolves in exact case, covering Markdown links and supported wikilinks; GFM is preferred. (standards-knowledge-base.md)
+  - _Remediation:_ diagnostic — Repair missing or wrong-case destinations and qualify ambiguous wikilinks, then rerun the audit; supported link syntax alone is never a defect.
   - _Evidence scope:_ Sampled base notes and the prescribed linking convention.
-  - _Review prompt:_ Beyond the mechanical uniqueness check, do sampled base notes use the shortest unique form and the aliased full paths the convention prescribes?
+  - _Review prompt:_ Do sampled notes prefer descriptive note-relative GFM links in angle brackets, while retaining readable supported wikilinks and preserving meaning during conversion?
   - _Outcomes:_ conforming; note revision; convention clarification
   - _Conforming guidance:_ Revise links to the established convention; do not change the convention from a sample alone.
 

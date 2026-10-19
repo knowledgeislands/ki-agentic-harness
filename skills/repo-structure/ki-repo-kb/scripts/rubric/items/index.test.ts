@@ -160,7 +160,7 @@ test('source mirror diagnostics bind only to a declared sources role', () => {
   expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-4')?.level).toBe('PASS')
 })
 
-test('wikilink uniqueness fails only links that Obsidian could resolve to more than one note', () => {
+test('wikilink resolution honours local precedence and rejects ambiguous targets', () => {
   const repository = createBase()
   const write = (path: string, text: string): void => {
     mkdirSync(dirname(join(repository, path)), { recursive: true })
@@ -180,9 +180,11 @@ test('wikilink uniqueness fails only links that Obsidian could resolve to more t
       message: expect.stringContaining('Pillars/Process/Process.md: [[Activities]]')
     })
   ])
-  expect(link()[0]?.message).not.toContain('Glossary')
+  // A working-area note is not audited as a source, but can still make an external source ambiguous.
+  expect(link()[0]?.message).toContain('Pillars/Process/Process.md: [[Glossary]]')
   expect(link()[0]?.message).not.toContain('+/')
 
+  write('Pillars/Process/diagram.svg', '<svg/>')
   write(
     'Pillars/Process/Process.md',
     '# Process\n\nSee [[Admin/Activities/Activities|Activities]], ![[diagram.svg]] and `[[Activities]]`.\n\n```\n[[activities]]\n```\n'
@@ -552,4 +554,47 @@ test('GATE-1 requires a committed gate to run ki repo audit check-only', () => {
   rmSync(hook)
   symlinkSync(join(repository, 'AGENTS.md'), hook)
   expect(gate()?.message).toContain('not a safe regular file')
+})
+
+test('LINK-1 resolves both link forms in exact case without global percent-decoding', () => {
+  const repository = createBase()
+  const write = (path: string, text: string): void => {
+    mkdirSync(dirname(join(repository, path)), { recursive: true })
+    writeFileSync(join(repository, path), text)
+  }
+  write('Resources/Some Note.md', '# Some Note')
+  write('Resources/Literal%23.md', '# Literal escape')
+  write('Resources/100%.md', '# Literal percent')
+  write('.ki-link-fixture', 'configuration')
+  write('Resources/picture.png', 'image')
+  const audit = (body: string) => {
+    write('Pillars/Source.md', `# Source\n\n${body}\n`)
+    return collectKbAuditEvidence(repository).find((finding) => finding.code === 'LINK-1')
+  }
+  for (const body of [
+    '[space](<../Resources/Some Note.md>)',
+    '[encoded](../Resources/Some%20Note.md)',
+    '[reference][note]\n\n[note]: <../Resources/Some Note.md> "Title"',
+    '[reference][note]\n\n[note]: ../Resources/Some%20Note.md',
+    '| Link |\n| --- |\n| [[Some Note\\|table alias]] |',
+    '[[Some Note#Some Note]] and [[#Source]]',
+    '[config](../.ki-link-fixture) and [[Some Note.md]]',
+    '![picture](../Resources/picture.png)',
+    '[reserved](../Resources/Literal%23.md) and [percent](../Resources/100%.md)',
+    '[self](#source) and [web](https://example.com/missing) and [mail](mailto:owner@example.com)',
+    '`[code](missing.md)`\n\n```md\n[[Missing]]\n```\n<!-- [comment](missing.md) -->'
+  ])
+    expect(audit(body)).toMatchObject({ level: 'PASS' })
+  for (const body of [
+    '[[Missing]]',
+    '[[some note]]',
+    '[[Some Note.MD]]',
+    '[missing](../Resources/Missing.md)',
+    '[case](<../resources/Some Note.md>)',
+    '[case](../Resources/some%20Note.md)',
+    '[reference][note]\n\n[note]: <../Resources/Missing Note.md>',
+    '| Link |\n| --- |\n| [[Missing\\|table alias]] |',
+    '![[missing.png]]'
+  ])
+    expect(audit(body)).toMatchObject({ level: 'FAIL' })
 })
