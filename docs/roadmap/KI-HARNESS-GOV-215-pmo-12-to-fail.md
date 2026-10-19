@@ -6,16 +6,13 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: hold
-hold:
-  reason: waiting-for
-  condition: no report that COORD-12 reads opens with anything but its heading, once the older work folders are pruned
+horizon: next
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:31Z
-updated_at: 2026-10-18T08:55:31Z
+updated_at: 2026-10-19T23:31:03Z
 ---
 
 # KI-HARNESS-GOV-215: COORD-12 to FAIL
@@ -36,3 +33,7 @@ The `ki-coordination` rubric's COORD-12, the check that a saved work report open
 ## Discussion
 
 The release condition is observable: `ki repo audit --skill ki-coordination` across the territories' Capitals reports no COORD-12 warning. When it does, release this record to Now, plan it and deliver it; until then the warning lets coordinators mark without being blocked by reports that other work will prune.
+
+### Released, 20 October 2026
+
+The hold's condition was checked on 20 October 2026 with `ki repo audit --skill ki-coordination --reporter-levels all` in all eight territory Capitals, `ki-principal`, `er-principal`, `hnr-principal`, `legal-principal`, `personal-principal`, `si-principal`, `tmx-principal` and `va-principal`: none reports a COORD-12 warning, and in `ki-principal` COORD-12 passes over 102 work reports. The record is released to Next under the lane-triage run of the ways-of-working work, as roadmap-census-2 asked; the remediation inventory test's counts are re-read at planning.
