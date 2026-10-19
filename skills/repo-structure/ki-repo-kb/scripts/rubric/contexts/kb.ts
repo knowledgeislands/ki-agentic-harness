@@ -17,6 +17,13 @@ const CONFIG = '.ki.toml'
 const CONFIG_TABLE = 'ki-repo-kb'
 const SNAKE_CASE = /^[a-z][a-z0-9_]*$/
 const TRADE_RECORD = /^TRD-[0-9a-f]{8}\.md$/
+const WORK_PACKAGE_FILES: ReadonlySet<string> = new Set([
+  'work.md',
+  'state.md',
+  'queries.md',
+  'messages.md',
+  'decisions.md'
+])
 export const digestReadme = {
   path: '-/_DIGESTS/README.md',
   content:
@@ -48,7 +55,7 @@ const delegatedNoteTypeRecord = (
     segments[0] === zones.inbound &&
     (segments[1] === '_WORK' || segments[1] === '_WORK_REVIEW') &&
     segments.length === 4 &&
-    segments[3] === 'work.md'
+    WORK_PACKAGE_FILES.has(segments[3] ?? '')
   )
     return true
   if (

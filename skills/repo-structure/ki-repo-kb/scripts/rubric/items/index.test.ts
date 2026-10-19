@@ -392,7 +392,12 @@ test('adapter and protocol records delegate note-type metadata to their owning s
     '+/_BATCHES/KI-EXAMPLE-BATCH-001.md',
     '+/_CHECKPOINTS/active-thread.md',
     '+/_WORK/ki.ways-of-working/work.md',
+    '+/_WORK/ki.ways-of-working/state.md',
+    '+/_WORK/ki.ways-of-working/queries.md',
+    '+/_WORK/ki.ways-of-working/messages.md',
+    '+/_WORK/ki.ways-of-working/decisions.md',
     '+/_WORK_REVIEW/ki.unsure/work.md',
+    '+/_WORK_REVIEW/ki.unsure/state.md',
     '+/_ACQUIRE/granola/2026-07-28--example.md',
     '+/_TRADES/sender/repository/TRD-01234567.md',
     '-/_TRADES/receiver/repository/TRD-89abcdef.md'
@@ -415,6 +420,18 @@ test('adapter and protocol records delegate note-type metadata to their owning s
       message: 'Frontmatter uses note_type and does not use the legacy type field.'
     }
   ])
+})
+
+test('other files in a work folder keep the note-type metadata check', () => {
+  const repository = createBase()
+  const path = join(repository, '+/_WORK/ki.ways-of-working/sweep.report.md')
+  mkdirSync(dirname(path), { recursive: true })
+  writeFileSync(path, '---\nstatus: active\n---\n\n# Report\n')
+
+  expect(collectKbAuditEvidence(repository).find((finding) => finding.code === 'NOTE-1c')).toMatchObject({
+    level: 'FAIL',
+    message: expect.stringContaining('missing note_type: +/_WORK/ki.ways-of-working/sweep.report.md')
+  })
 })
 
 test('former Streams housekeeping definitions no longer delegate note-type metadata', () => {
