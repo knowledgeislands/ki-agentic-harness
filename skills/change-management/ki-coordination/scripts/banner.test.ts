@@ -202,29 +202,32 @@ test('the standard and the output style retire the reply block and the block-let
 test('the hook line points at the standard and carries only its five hard rules', () => {
   const line = /^line='(.*)'$/m.exec(hook)?.[1] ?? ''
   expect(line).toContain(
-    'follow the ki-coordination coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md)'
+    'Follow the coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md) and the Work Process note it cites'
   )
   expect(line).toContain(
-    'whose five hard rules are: 1) delegate every unit of work to a detached background agent and stay responsive'
+    'Hard rules: 1) delegate every unit of work to a detached background agent and stay responsive'
   )
   expect(line).toContain(
-    '2) an owner message never pre-empts work in flight, so stop a running agent only when the owner names it and says stop'
+    '2) an owner message never pre-empts work in flight: stop an agent only when the owner names it and says stop'
   )
   expect(line).toContain(
-    '3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, with no heartbeat otherwise'
+    '3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, and no heartbeat otherwise'
   )
   expect(line).toContain(
-    '4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, opening with the report heading and its state form line and closing with the glyph banner'
+    '4) give every Summary, recap and hold report in the owner-report shape, heading and form line to glyph banner'
   )
   expect(line).toContain('with no reply block')
   expect(line).toContain(
-    '5) commit your own work by explicit path at every send, and act on each line of the messages.md queue of the work package, IMPORTANT lines first and then in queue order'
+    'every medium- or low-confidence query, and any high-confidence destructive, deletion or publication one, goes to one blind review before it reaches the owner'
+  )
+  expect(line).toContain(
+    '5) commit your own work by explicit path at every send, and act on each messages.md line, IMPORTANT first, then in queue order'
   )
   expect(line).not.toContain('6)')
   // The shape itself lives in the standard and the output style; the line does not restate it.
   expect(line).not.toContain('Hold report at')
   expect(line).not.toContain('checkpoint')
-  expect(line.length).toBeLessThan(1400)
+  expect(line.length).toBeLessThan(1500)
 })
 
 test('the run-report and footer-report sources carry the quiet-tools rule and no reply block', () => {
@@ -239,7 +242,7 @@ test('the run-report and footer-report sources carry the quiet-tools rule and no
 
 test('the hook line, the pointer and the output style confine the coordinator forms to coordinating work', () => {
   expect(hook).toContain("line='In coordinating work only,")
-  expect(hook).toContain('in any other session ignore this line and reply in the ki-coordination Reply forms')
+  expect(hook).toContain('elsewhere ignore this line and use the ki-coordination Reply forms')
   expect(hook).toContain('In a conversational session, re-read your work package if you have one')
   expect(outputStyle).toContain('This style applies only while a session coordinates work')
   expect(standard).toContain('## Reply forms')
