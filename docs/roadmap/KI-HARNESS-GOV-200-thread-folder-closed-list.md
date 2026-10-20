@@ -13,14 +13,14 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-20T02:42:00Z
+updated_at: 2026-10-20T05:24:18Z
 ---
 
 # Thread Folder Closed List
 
 ## Goal
 
-The `ki-delegation` run packet states the work folder's closed list and the temporary home, one footer line in `assets/run-prompt.md` tells every background agent where temporary output goes and that it writes nothing into the work folder beyond its report, and the `ki-work-package` rubric checks each work folder against its closed list and tidy rules, failing a file kind outside the list and warning on what is due for a tidy, so that work folders stay pruned without relying on each coordinator remembering.
+The `ki-delegation` run packet states the work folder's closed list and the temporary home, one footer line in `assets/run-prompt.md` tells every background agent where temporary output goes and that it writes nothing into the work folder beyond its report, and the `ki-work-package` rubric checks each work folder against its closed list and tidy rules, failing a file kind outside the list and warning on what is due for a tidy, so that work folders stay pruned without relying on each coordinator remembering. It also carries the goal of [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md), merged here: the `ki-delegation` background-run standard tells every background agent to put screenshots and other scratch output in the launcher's per-run temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, never in a work folder or a working tree, so that tracked work folders and working trees carry only durable work.
 
 ## Context
 
@@ -33,6 +33,8 @@ This record was issued as KI-HARNESS-GOV-195, which the Granola record [KI-HARNE
 The work model, [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) and the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md), replaces the thread folder `+/_THREADS/<run>/` with the work folder `+/_WORK/<id>/`, and [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) writes it into the harness. Its closed list grows to `work.md`, `decisions.md`, `<name>.report.md`, `briefs/<run>.md` and `design/`, under the `ki-coordination` standard's Pruning the work folder, and briefs move from the state folder into `briefs/`. COORD-9 now checks the work folder against that list. THREADS-CONTENT's "briefs live in the state folder" is superseded by that move; its closed-list principle stands.
 
 Kris Brown made `ki-work-folder` the canonical specification of the work folder on 18 October 2026, taking WORK-FOLDER-OWNER a), read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract", and took WORK-FOLDER-CHECKS a) the same turn, "Yep, and the workflow checks we can go with", read back as "audit checks into KI-HARNESS-GOV-200; one new tools-ki record for the close-gate parse, unnumbered `decide`, launch refusal and `ki work message`/`prune`". The closed list, entry points, tidy rules, review area and Messages line shape now sit in the `ki-work-folder` [work-folder standard](../../skills/governance/ki-work-package/references/standards-work-package.md#the-work-folder), now the `ki-work-package` work-package standard,, so the checks belong to that skill's rubric, and COORD-9 moves there from `ki-coordination`.
+
+Kris Brown merged [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md) into this record on 20 October 2026 under SWEEP-MERGE a), recorded in Knowledge Islands Principal `+/_WORK/ki.ways-of-working/decisions.md` (05:20 BST), because both records edit the same temporary-home sentence and the same `run-prompt.md`. Its rule came from the 5G Emerge Phase 3 coordination work, where Kris said on 16 October 2026: "basically you should be using the temp folder for things like screenshots, not the threads folders", and decided: "Create a Harness work record to add the rule to the ki-delegation background-run standard: screenshots and other scratch output go in the system temp folder, never in a thread folder or repository." Kris adopted it on 20 October 2026 under HARNESS-TRIAGE a) as the launcher's per-run directory, which `ki agent close` empties and removes.
 
 ## Boundary
 
@@ -56,18 +58,19 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Steps
 
-- [ ] Make the background-run standard's temporary-home sentence name the launcher's per-run directory, `$TMPDIR/ki-agents/<run>/<name>/`, unless [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md) has already done so.
+- [ ] Replace the temporary-home sentence in the background-run standard's run packet section with the launcher's `$TMPDIR/ki-agents/<run>/<name>/`: screenshots and other scratch output go there, never in a work folder or a working tree, and `ki agent close` removes it; keep Kris's 15 October words as the superseded rule and quote the 16 October and 20 October answers that replace it.
+- [ ] Say how an agent keeps evidence the owner asks for: it copies the file to its owning home deliberately and names it in its report.
 - [ ] In the background-run standard's run packet section, link the `ki-work-package` closed list rather than restating it, and say that a run writes nothing into `+/_WORK/<id>/` beyond its report.
 - [ ] Add one footer line to `skills/governance/ki-delegation/assets/run-prompt.md` naming the temporary home and the no-other-writes rule, in the same words as the launcher footer.
 - [ ] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, a malformed Messages line, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions-log heading the close gate cannot parse.
 - [ ] Retire COORD-9 from `ki-coordination`, pointing its standard text at the new `ki-work-package` items, and keep the judgment prompt with the item that inherits it.
 - [ ] Add boundary fixtures for each new item, including a clean folder, a stray file, a stray `design/` file and each tidy case.
-- [ ] Regenerate both rubrics and update the remediation-inventory test's criteria counts.
+- [ ] Regenerate the `ki-work-package`, `ki-coordination` and, if its cited text changes, `ki-delegation` rubrics, and update the remediation-inventory test's criteria counts.
 - [ ] Before landing the FAIL, run `ki repo audit --skill ki-work-package` in the eight territory Capitals and record any stray file as a message to its owning work.
 
 ## Files touched
 
-- `skills/governance/ki-delegation/references/standards-background-runs.md`, `assets/run-prompt.md`
+- `skills/governance/ki-delegation/references/standards-background-runs.md`, `assets/run-prompt.md`, and `references/rubric.md` if regenerated
 - `skills/governance/ki-work-package/scripts/rubric/items/` (a new work-folder item file and `index.ts`), its rubric context and tests, `references/rubric.md`, and `references/standards-work-package.md` where an item needs a citable anchor
 - `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts`, its context and tests, `references/rubric.md`, and the standard's Pruning the work folder section
 - `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
@@ -78,10 +81,11 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - `ki repo audit --skill ki-work-package`, `--skill ki-coordination` and `--skill ki-delegation` report no FAIL here.
 - `ki dev skill rubric ki-work-package` and `ki dev skill rubric ki-coordination` leave no diff.
 - A fixture work folder holding a stray file fails the new item, and a clean folder passes it.
+- `ki dev skill rubric ki-delegation` leaves no diff, and `grep -rn 'primary checkout>/tmp' skills/governance/ki-delegation` finds no remaining rule text.
 
 ## Dependencies / blocks
 
-- Decided: the launcher's out-of-repository per-run directory is the temporary home, under HARNESS-TRIAGE a) of 20 October 2026, which also adopted [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md) into Now to amend the standard; whichever of the two lands first makes the edit.
+- Decided: the launcher's out-of-repository per-run directory is the temporary home, under HARNESS-TRIAGE a) of 20 October 2026; [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md), which amended the standard to it, is merged into this record under SWEEP-MERGE a).
 - Decided: the closed-list item lands as FAIL, as WORK-FOLDER-CHECKS a) set, after the Capitals' census in the last Step has recorded each stray file as a message to its owning work.
 - The decisions-log heading check follows [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md); if it has not landed, that one WARN item waits and the rest proceed.
 
