@@ -880,6 +880,33 @@ describe('repository kind and Knowledge Base stores', () => {
       expect.objectContaining({ code: 'KIND-2', message: expect.stringContaining('requires repo_type = "kb"') })
     )
   })
+
+  test('warns on an undeclared maturity and fails one off the scale', async () => {
+    const root = repository()
+    const cases = [
+      { configuration: project, level: 'WARN', message: 'declares no `maturity`' },
+      { configuration: project.replace('[skills.ki-repo]\n', '[skills.ki-repo]\nmaturity = "settled"\n') },
+      {
+        configuration: project.replace('[skills.ki-repo]\n', '[skills.ki-repo]\nmaturity = "ruined"\n'),
+        level: 'FAIL',
+        message: '(got "ruined")'
+      },
+      {
+        configuration: project.replace('[skills.ki-repo]\n', '[skills.ki-repo]\nmaturity = 3\n'),
+        level: 'FAIL',
+        message: '(got 3)'
+      }
+    ]
+    for (const fixture of cases) {
+      writeFileSync(join(root, '.ki.toml'), fixture.configuration)
+      const findings = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'MATURITY-1')
+      expect(findings).toEqual(
+        fixture.level
+          ? [expect.objectContaining({ level: fixture.level, message: expect.stringContaining(fixture.message) })]
+          : []
+      )
+    }
+  }, 10_000)
 })
 
 describe('local repository evidence', () => {

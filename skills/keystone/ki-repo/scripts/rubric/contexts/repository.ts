@@ -230,6 +230,7 @@ export type RepoRubricContext = {
   structure: StructureRubricContext
   access: EvidenceRubricContext
   kind: KindRubricContext
+  maturity: EvidenceRubricContext
   runtimes: RuntimesRubricContext
   descriptionFit: Record<string, never>
   overrides: Record<string, never>
@@ -571,6 +572,7 @@ export const createRepoSession = async (
     },
     access: { evidence: evidence('ACCESS-1') },
     kind: { kind1: evidence('KIND-1'), kind2: evidence('KIND-2') },
+    maturity: { evidence: evidence('MATURITY-1') },
     runtimes: {
       runtimes1: evidence('RUNTIMES-1'),
       runtimes2: [...evidence('RUNTIMES-2'), ...runtimeActivation.findings],

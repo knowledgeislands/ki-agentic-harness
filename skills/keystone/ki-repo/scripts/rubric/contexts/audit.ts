@@ -317,6 +317,8 @@ capital = ""
 description = ""
 # "public" | "private" — must match the repo's actual GitHub visibility
 visibility = "private"
+# Declared island maturity, lowest first: "founding" | "growing" | "settled" | "thriving"
+# maturity = ""
 # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/
 license = "MIT"
 # Required agent-runtime support surface
@@ -348,8 +350,12 @@ type KiConfig = {
   repoCode?: string
   visibility?: string
   license?: string
+  /** The declared maturity as written, kept raw so a non-string value can be reported. */
+  maturity?: unknown
   checks: Record<string, boolean>
 }
+/** The island maturity scale, lowest first; declared, ordinal and subjective by design. */
+export const MATURITY_LEVELS = ['founding', 'growing', 'settled', 'thriving'] as const
 export type RepositoryType = 'project' | 'kb'
 export type RepositoryConfiguration = {
   repositoryType: RepositoryType
@@ -380,6 +386,7 @@ function parseKiConfig(text: string): KiConfig | null {
   if (typeof table.repo_code === 'string') out.repoCode = table.repo_code
   if (typeof table.visibility === 'string') out.visibility = table.visibility
   if (typeof table.license === 'string') out.license = table.license
+  if (table.maturity !== undefined) out.maturity = table.maturity
   if (table.checks && typeof table.checks === 'object' && !Array.isArray(table.checks)) {
     for (const [key, check] of Object.entries(table.checks as Record<string, unknown>)) {
       if (typeof check === 'boolean') out.checks[key] = check
@@ -952,6 +959,19 @@ async function auditRepo(
         )
     } else if (declaresRootTable(kiText, skillTable('ki-repo-kb')))
       fail('KIND-2', '[skills.ki-repo-kb] requires repo_type = "kb"', KI_CONFIG)
+  }
+
+  // ── island maturity ── MATURITY-1
+  if (ki) {
+    const levels = MATURITY_LEVELS.join(', ')
+    if (ki.maturity === undefined)
+      warn('MATURITY-1', `${KI_CONFIG} declares no \`maturity\`; declare one of ${levels}`, KI_CONFIG)
+    else if (typeof ki.maturity !== 'string' || !(MATURITY_LEVELS as readonly string[]).includes(ki.maturity))
+      fail(
+        'MATURITY-1',
+        `${KI_CONFIG} \`maturity\` must be one of ${levels} (got ${JSON.stringify(ki.maturity)})`,
+        KI_CONFIG
+      )
   }
 
   // ── layer 2: core GitHub ── GH-1
@@ -1626,6 +1646,7 @@ const CONTENT_AREAS = new Set([
   'FILES-10',
   'KIND-1',
   'KIND-2',
+  'MATURITY-1',
   'GH-2',
   'GH-3',
   'PKG-1',

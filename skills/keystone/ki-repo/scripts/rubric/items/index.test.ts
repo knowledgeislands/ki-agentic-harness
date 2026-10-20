@@ -24,6 +24,7 @@ describe('ki-repo rubric catalogue', () => {
       'STRUCT',
       'ACCESS',
       'KIND',
+      'MATURITY',
       'RUNTIMES',
       'DESCFIT',
       'DOC',

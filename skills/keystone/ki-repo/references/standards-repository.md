@@ -14,6 +14,7 @@ The canonical configuration a Knowledge Islands repo should carry, so repos pres
 - [Repository kind and Knowledge Base stores](#repository-kind-and-knowledge-base-stores)
 - [Repository write authority](#repository-write-authority)
 - [Visibility](#visibility)
+- [Island maturity](#island-maturity)
 - [Per-repo overrides](#per-repo-overrides)
 - [Coverage cascade](#coverage-cascade)
 - [Applying it](#applying-it)
@@ -239,6 +240,33 @@ branch-protection = true   # default off — protect `main` on this repo
 ```
 
 `title` and `description` are mandatory repository identity. The title is exactly the README H1. The description is exactly the GitHub description and, where present, package.json `description`. A repository that declares `ki-work-roadmap` also declares its stable uppercase `repo_code` in this same table; `ki-work-roadmap` consumes that code and owns only its issuing-area and component vocabulary.
+
+## Island maturity
+
+Each island, each repository, declares its own maturity, so a reader such as the Observatory takes it from the island's declaration rather than inferring it from commit age. Kris set this on 19 October 2026: "I agree condition home should be stated in its ki.toml. Of course, that makes it subjective, but hey, that's fine", and chose the scale the same day: "I agree with the maturity scale." The key is `maturity` in `[skills.ki-repo]`, and its value is one level of this fixed, ordinal scale, lowest first:
+
+| Level | Meaning |
+| --- | --- |
+| `founding` | The island is being established; its contract and purpose are still forming. |
+| `growing` | In active development towards what it is for. |
+| `settled` | Established and doing what it is for, with work continuing. |
+| `thriving` | Settled and doing what it needs to, however long since its last commit. |
+
+```toml
+[skills.ki-repo]
+maturity = "settled"
+```
+
+The level is declared and subjective by design. It carries no score or percentage, and decline and ruin are never levels of it. MATURITY-1 warns while the key is absent and fails a value outside the scale; `--educate` proposes the key commented out, so no level is chosen on a repository's behalf. An archived island has no level of its own; a reader takes it from the repository's archived state and its audit health.
+
+Decline and ruin are read from audit health, never declared, under the rule Kris took on 20 October 2026, "Any recommendations is when I say agreed":
+
+1. **Failure first.** An audit that cannot complete, or that has any failure, reads as ruin; otherwise any WARN reads as decline; otherwise neither applies. An older successful audit never hides a newer failed attempt.
+2. **Latest full audit.** The source is the latest completed whole-repository `ki repo audit` of every applicable declared skill, with no skill or path filter, judged by its structured findings and execution outcome rather than its exit status alone or filtered terminal output, because a warning-only audit does not fail the command.
+3. **A current label.** Decline is the island's current audit-health label, not a measure of change over time. It never changes the declared level, and a missing or invalid `maturity` remains a separate declaration finding.
+4. **No exemption.** Because MATURITY-1 warns while the key is absent, an otherwise passing island that has not declared a level reads as decline; the warning is not exempted.
+
+A reader distinguishes four cases: a clean audit reads as neither, a warning-only audit as decline, an audit with a failure and a warning as ruin, and an audit that cannot complete as ruin.
 
 ## Per-repo overrides
 

@@ -26,6 +26,7 @@ Line-by-line criteria for auditing ki-repo. Classifications are derived from ite
 - [STRUCT — Repository structure](#struct--repository-structure)
 - [ACCESS — Repository access](#access--repository-access)
 - [KIND — Repository kind](#kind--repository-kind)
+- [MATURITY — Island maturity](#maturity--island-maturity)
 - [RUNTIMES — Runtime support](#runtimes--runtime-support)
 - [DESCFIT — Description fitness](#descfit--description-fitness)
 - [DOC — Documentation topology](#doc--documentation-topology)
@@ -239,6 +240,15 @@ The repository kind, primary Project shape, and named Knowledge Base store roles
   - _Remediation:_ diagnostic — Resolve Project or Knowledge Base, compatible store roles, and an unambiguous declared primary shape, then rerun the audit.
 - **KIND-2 [M] — Kind and structure compatibility** — A KB kind declares KB structure; shared ki-work-roadmap configuration requires its Streams container. A non-KB does not declare KB structure. (standards-repository.md)
   - _Remediation:_ diagnostic — Align the repository kind with its declared structure and planning model, then rerun the audit.
+
+## MATURITY — Island maturity
+
+→ [standard](standards-repository.md)
+
+The island's declared maturity on the fixed scale.
+
+- **MATURITY-1 [M] — Declared island maturity** — .ki.toml declares the island's `maturity` in [skills.ki-repo] as one level of the scale, `founding`, `growing`, `settled` or `thriving`; an absent key warns and a value outside the scale fails. (standards-repository.md#island-maturity)
+  - _Remediation:_ diagnostic — Declare `maturity` in [skills.ki-repo] as the one level of the scale that describes the island now; the owner chooses it, so no default is proposed. Then rerun the audit.
 
 ## RUNTIMES — Runtime support
 

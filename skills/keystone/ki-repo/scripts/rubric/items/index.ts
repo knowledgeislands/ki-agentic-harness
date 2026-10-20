@@ -12,6 +12,7 @@ import { FILES } from './files.ts'
 import { GH } from './gh.ts'
 import { HOOK } from './hooks.ts'
 import { KIND } from './kind.ts'
+import { MATURITY } from './maturity.ts'
 import { MERGE } from './merge.ts'
 import { OVR } from './overrides.ts'
 import { PKG } from './pkg.ts'
@@ -50,6 +51,7 @@ export default {
     STRUCT,
     ACCESS,
     KIND,
+    MATURITY,
     RUNTIMES,
     DESCFIT,
     DOC,
