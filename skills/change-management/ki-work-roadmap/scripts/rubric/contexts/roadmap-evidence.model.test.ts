@@ -214,19 +214,28 @@ test('a stale in-progress hold warns', () => {
   )
 })
 
-test('a cancelled record needs a resolution, a qualified target and a terminal Cancelled section', () => {
+test('a cancelled record needs a resolution, a local target and a terminal Cancelled section', () => {
   const cancelled = (fields: string, body = '## Cancelled\n\nApproved by Kris Brown on 2026-10-07.\n\n') =>
     createRepository(`status: cancelled\n${fields}\nbaseline_ref: null`, body)
   expect(failures(cancelled('resolution: obsolete'))).toEqual([])
-  expect(failures(cancelled('resolution: duplicate\nresolution_target: KI-OTHER-012'))).toEqual([])
   expect(warnings(cancelled('resolution: merged\nresolution_target: TEST-009'))).toContain(
     "resolution_target 'TEST-009' does not resolve to a retained work item; cite its revision in ## Cancelled"
   )
+  expect(failures(cancelled('resolution: duplicate\nresolution_target: KI-OTHER-012'))).toContainEqual(
+    expect.objectContaining({
+      msg: "resolution_target 'KI-OTHER-012' must name a record in this repository; name another repository's work in plain words in ## Cancelled"
+    })
+  )
+  expect(failures(cancelled('resolution: duplicate\nresolution_target: TESTX-012'))).toContainEqual(
+    expect.objectContaining({ area: 'ITEM-2', msg: expect.stringContaining('must name a record in this repository') })
+  )
+  // A replacement in another repository is described in ## Cancelled, so the target is absent.
+  expect(failures(cancelled('resolution: superseded'))).toEqual([])
+  expect(failures(cancelled("resolution: merged\nresolution_target: ''"))).toContainEqual(
+    expect.objectContaining({ msg: 'merged resolution_target must not be empty' })
+  )
   expect(failures(cancelled(''))).toContainEqual(
     expect.objectContaining({ msg: 'cancelled record requires a resolution' })
-  )
-  expect(failures(cancelled('resolution: superseded'))).toContainEqual(
-    expect.objectContaining({ msg: 'superseded resolution requires resolution_target' })
   )
   expect(failures(cancelled('resolution: rejected\nresolution_target: TEST-002'))).toContainEqual(
     expect.objectContaining({

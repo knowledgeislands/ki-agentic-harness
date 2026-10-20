@@ -51,6 +51,13 @@ type RoadmapConfiguration = {
   readonly components: ReadonlySet<string>
 }
 
+/** An identifier names a record of this repository: its code and, when configured, one declared area. */
+const isLocalIdentifier = (id: string, configuration: RoadmapConfiguration): boolean => {
+  if (!id.startsWith(`${configuration.repoCode}-`)) return false
+  const area = configuration.areas.size ? id.slice(configuration.repoCode.length + 1).split('-')[0] : undefined
+  return matchesRoadmapArea(id, area, configuration)
+}
+
 export const HORIZONS = ['now', 'next', 'soon', 'future', 'hold'] as const
 /** Retired pre-v1 horizons, recognised only so the checker can fail them. */
 export const LEGACY_HORIZONS = ['waiting-for', 'parked', 'triage'] as const
@@ -632,7 +639,9 @@ const validateResolution = (
   } else if ('resolution' in values)
     add('FAIL', 'ITEM-2', 'resolution is valid only on a cancelled record', FORMAT, display)
   if (resolution && TARGETED_RESOLUTIONS.has(resolution)) {
-    if (!target?.trim()) add('FAIL', 'ITEM-2', `${resolution} resolution requires resolution_target`, FORMAT, display)
+    // A replacement in another repository is named in plain words in ## Cancelled, so the target may be absent.
+    if (!('resolution_target' in values)) return
+    if (!target?.trim()) add('FAIL', 'ITEM-2', `${resolution} resolution_target must not be empty`, FORMAT, display)
     else if (!ID_RE.test(target))
       add('FAIL', 'ITEM-2', 'resolution_target must be a canonical work-item ID', FORMAT, display)
     else if (target === id)
@@ -866,7 +875,20 @@ const validateDependencies = (items: readonly WorkItem[], configuration?: Roadma
       ID_RE.test(item.resolutionTarget) &&
       item.resolutionTarget !== item.id &&
       configuration &&
-      item.resolutionTarget.startsWith(`${configuration.repoCode}-`) &&
+      !isLocalIdentifier(item.resolutionTarget, configuration)
+    )
+      add(
+        'FAIL',
+        'ITEM-2',
+        `resolution_target '${item.resolutionTarget}' must name a record in this repository; name another repository's work in plain words in ## Cancelled`,
+        FORMAT,
+        item.file
+      )
+    else if (
+      item.resolutionTarget &&
+      ID_RE.test(item.resolutionTarget) &&
+      item.resolutionTarget !== item.id &&
+      configuration &&
       !byId.has(item.resolutionTarget)
     )
       add(

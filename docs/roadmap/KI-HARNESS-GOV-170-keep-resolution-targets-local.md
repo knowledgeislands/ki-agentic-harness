@@ -8,13 +8,13 @@ project: ways-of-working
 component: change-management
 priority: medium
 size: s
-horizon: next
-status: ready
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: e66f313024baf4493fc732ca6251ca2aba21afb6
 created_at: 2026-10-09T21:50:21Z
-updated_at: 2026-10-20T07:44:30Z
+updated_at: 2026-10-20T07:58:00Z
 ---
 
 # KI-HARNESS-GOV-170: Keep Resolution Targets Local
@@ -47,10 +47,10 @@ Verified on 2026-10-10 and rechecked on 20 October 2026 at `727af90e`:
 
 ## Steps
 
-- [ ] Change the work-item format, repository roadmaps and acceptance standards, and `ki-accept`'s `SKILL.md`, so `resolution_target` must resolve in the same repository, and a duplicate of, or merge into, another repository's work keeps its resolution with no `resolution_target`, naming that repository in plain words in `## Cancelled` with no identifier or link.
-- [ ] Make `roadmap-evidence.ts` fail a `resolution_target` whose repository code is not this repository's, with tests in `roadmap-evidence.model.test.ts`.
-- [ ] Check the `ki-work-roadmap` eval scenario and `ki-accept` skill wording still agree.
-- [ ] Hand the matching work-item model change to `tools-ki` in plain language, as one line in ki.ways-of-working's `messages.md` for routing, since a handoff is a message, not a record.
+- [x] Change the work-item format, repository roadmaps and acceptance standards, and `ki-accept`'s `SKILL.md`, so `resolution_target` must resolve in the same repository, and a duplicate of, or merge into, another repository's work keeps its resolution with no `resolution_target`, naming that repository in plain words in `## Cancelled` with no identifier or link.
+- [x] Make `roadmap-evidence.ts` fail a `resolution_target` whose repository code is not this repository's, with tests in `roadmap-evidence.model.test.ts`.
+- [x] Check the `ki-work-roadmap` eval scenario and `ki-accept` skill wording still agree.
+- [x] Hand the matching work-item model change to `tools-ki` in plain language, as one line in ki.ways-of-working's `messages.md` for routing, since a handoff is a message, not a record.
 
 ## Files touched
 
@@ -88,6 +88,41 @@ None beyond the standards and skill text listed above.
 ### Roadmap
 
 A plain-language handoff to `tools-ki` for its work-item model.
+
+## Review
+
+### Delivered
+
+The approved boundary, against baseline `e66f313024baf4493fc732ca6251ca2aba21afb6`: a `resolution_target` must name a record of the same repository, and a `duplicate`, `merged` or `superseded` record whose replacing work lives in another repository keeps its resolution with no target and names that repository and work in plain words in `## Cancelled`. Done or cancelled records that already cite a cross-repository target were out of scope; none exists. The `tools-ki` change is handed off, not made.
+
+### Change Summary
+
+- `skills/change-management/ki-work-roadmap/references/standards-work-item-format.md`: the cancellation paragraph requires a same-repository target, fails a foreign one, and gives the plain-words form for work elsewhere.
+- `skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md`: the lifecycle table's Duplicate across repositories row cancels with no `resolution_target` and names the other repository's work in `## Cancelled`.
+- `skills/change-management/ki-accept/references/standards-acceptance.md` steps 6 and 3, and `skills/change-management/ki-accept/SKILL.md`'s invocation paragraph: the same rule for cancellation.
+- `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts`: a local `isLocalIdentifier` helper, built on the shared `matchesRoadmapArea`, so a target fails ITEM-2 unless it carries this repository's code and, where areas are declared, one declared area; a targeted resolution with no target now passes, and an empty one fails. The shared `roadmap-areas.ts` is untouched, because `ki-repo-kb-streams` carries a byte-identical copy of it.
+- `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.model.test.ts`: cases for a foreign code, a near-miss code (`TESTX-012` against `TEST`), an absent target and an empty target.
+- `evals/scenarios/ki-work-roadmap.ts`: the cancel-duplicate scenario says its target is in the same repository, and its rubric names the plain-words form.
+- The tools-ki follow-up is one line, TOOLS-KI-RESOLUTION-LOCAL, in ki.ways-of-working's `messages.md`, ki-principal `53184b64`.
+
+### Verification
+
+- `bun run test`: 1,372 pass, 0 fail.
+- `bunx tsc --noEmit`: pass.
+- In an isolated home linked to the worktree: `ki repo audit --skill ki-work-roadmap` no FAIL, three pre-existing migration-window size warnings on other records; `--skill ki-skills` and `--skill ki-authoring` pass; `ki dev skill rubric ki-work-roadmap` leaves no diff.
+- The pre-commit hook passed on each commit.
+
+### Outstanding concerns
+
+`tools-ki`'s work-item parser still throws on a targeted resolution with no target, so the new cross-repository form must not be used until tools-ki follows; the handoff line says so.
+
+### Post-change review
+
+The goal holds: a foreign target can no longer pass the audit, and the standards agree on one rule. Scope stayed inside the named files plus the `ki-accept` skill paragraph, recorded at planning. Regression risk is low: the estate has no record with a foreign target, and the one local target still resolves. Ready for acceptance review.
+
+### Mini recap
+
+Resolution targets are now local only, enforced by ITEM-2, with the cross-repository case recorded in plain words; tests, type check and focused audits pass. Learning route, not promoted: a worktree audit can seed the canonical harness as a link to the worktree, so the isolated-home recipe needs no download.
 
 ## Discussion
 

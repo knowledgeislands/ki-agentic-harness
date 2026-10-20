@@ -136,7 +136,7 @@ Moves are authored, judgment-led decisions. CONFORM never chooses a move; it onl
 | Accept | `awaiting-review` -> `done`, removing the horizon in the closure change | `ki-accept` |
 | Failed review | `awaiting-review` -> `in-progress` | `ki-accept` |
 | Cancel | any open record, including triage, -> `cancelled` with a `resolution` and a `## Cancelled` section, with explicit human approval; the horizon is removed | `ki-accept` |
-| Duplicate across repositories | cancel with `resolution: duplicate` or `merged` and a qualified `resolution_target`; only the owning repository closes its own record | `ki-accept` |
+| Duplicate across repositories | cancel with `resolution: duplicate` or `merged` and no `resolution_target`, naming the other repository and its work in plain words in `## Cancelled`; only the owning repository closes its own record | `ki-accept` |
 
 A defer keeps status, so its destination must admit that status: ready work moves only among Now, Next, and Hold, and in-progress or awaiting-review work leaves Now only for Hold. Moving lifecycle work to an earlier horizon than the table admits is a replan or a cancellation, not a defer.
 

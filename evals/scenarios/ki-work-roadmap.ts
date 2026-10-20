@@ -48,7 +48,7 @@ export const scenarios: Scenario[] = [
     skill: 'ki-work-roadmap',
     id: 'repo-roadmap-cancel-duplicate',
     prompt:
-      'This triage record duplicates KI-WEBSITE-SEO-005. The human approved closing it. Should I delete it now or add delivery evidence first?',
+      'This triage record duplicates KI-WEBSITE-SEO-005 in the same repository. The human approved closing it. Should I delete it now or add delivery evidence first?',
     assertions: [
       { name: 'retained cancelled closure', re: /cancel|retain/i },
       { name: 'duplicate resolution', re: /resolution.*duplicate|duplicate/i },
@@ -58,7 +58,7 @@ export const scenarios: Scenario[] = [
       { name: 'later prune boundary', re: /later|prior commit|before.*prun|cancel.*prun/i }
     ],
     rubric:
-      'House fact: exact human-approved obsolete, rejected, duplicate, merged, or superseded work closes through ki-accept as status cancelled with a resolution. Duplicate, merged, and superseded resolutions name the retained record in resolution_target. The record gains a ## Cancelled section before Discussion and carries no fabricated delivery evidence; the cancellation lands before a later prune-only commit.'
+      'House fact: exact human-approved obsolete, rejected, duplicate, merged, or superseded work closes through ki-accept as status cancelled with a resolution. Duplicate, merged, and superseded resolutions name the retained same-repository record in resolution_target; work in another repository is named in plain words in ## Cancelled. The record gains a ## Cancelled section before Discussion and carries no fabricated delivery evidence; the cancellation lands before a later prune-only commit.'
   },
   {
     skill: 'ki-work-roadmap',

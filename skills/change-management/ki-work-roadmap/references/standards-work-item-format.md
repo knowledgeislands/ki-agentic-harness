@@ -166,7 +166,7 @@ A held record keeps its status, `baseline_ref`, completed Steps, and review evid
 - `merged` - the work was folded into another record;
 - `superseded` - a later record replaces it.
 
-`resolution_target` is required for `duplicate`, `merged`, and `superseded`, and forbidden otherwise. It is a canonical work-item identifier different from the record, in this or any other repository; repository codes keep identifiers distinct across repositories. A same-repository target should resolve in the roadmap; a cross-repository target is accepted by shape. Only the owning repository closes its own record: closing a duplicate here never closes or edits the target.
+`resolution_target` names the replacing record for `duplicate`, `merged`, and `superseded` when it lives in the same repository, and is forbidden otherwise. It is a canonical work-item identifier of this repository, different from the record, and should resolve in the roadmap; a target with another repository's code fails, because records are pruned and cross-repository identifiers and links break. Where the replacing work lives in another repository, the record keeps its resolution with no `resolution_target`, and `## Cancelled` names that repository and describes the work in plain words, with no identifier or link. Only the owning repository closes its own record: closing a duplicate here never closes or edits the target.
 
 `resolution` and `resolution_target` are forbidden on every other status.
 
