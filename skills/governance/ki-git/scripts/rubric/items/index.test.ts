@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test'
 import { readdirSync } from 'node:fs'
 import catalogue from './index.ts'
 
-test('the Git catalogue exposes the complete judgment-only session contract', () => {
+test('the Git catalogue exposes the complete session contract', () => {
   expect(catalogue.contract).toBe(1)
   expect(catalogue.name).toBe('ki-git')
   expect(catalogue.createSession).toBeFunction()
@@ -36,10 +36,17 @@ test('the Git catalogue exposes the complete judgment-only session contract', ()
   ])
   const semanticItems = (
     catalogue.families.filter((family) => family.code !== 'RUBRIC') as unknown as readonly {
-      items: readonly { mechanical?: unknown }[]
+      items: readonly { code: string; mechanical?: unknown }[]
     }[]
   ).flatMap((family) => family.items)
-  expect(semanticItems.every((item) => item.mechanical === undefined)).toBeTrue()
+  expect(semanticItems.filter((item) => item.mechanical !== undefined).map((item) => item.code)).toEqual([
+    'CLEAN-2',
+    'CLEAN-3',
+    'CLEAN-4',
+    'CLEAN-5',
+    'CLEAN-6',
+    'CLEAN-7'
+  ])
 })
 
 test('judgment criteria expose complete v1 review metadata', () => {
@@ -72,7 +79,7 @@ test('judgment prompts name focused evidence without inventing a Git executor', 
   expect(metadata).toContain('git branch --show-current')
   expect(metadata).toContain('git worktree list --porcelain')
   expect(metadata).toContain('git status --short')
-  expect(items.every((item) => item.mechanical === undefined)).toBeTrue()
+  expect(metadata).toContain('mgit overview --json')
 })
 
 test('hygiene guidance retains the shared-working-tree safety boundary', () => {

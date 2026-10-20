@@ -21,7 +21,7 @@ It names four working approaches so branch choice and working-copy topology are 
 
 Read [the Git standard](references/standards-git.md) before preparing a commit, choosing a branch boundary, or assessing a stale lock.
 
-The hosted native rubric records the portable review prompts below. Its five policy families are **judgment-only**: an AUDIT renders them as unassessed review work, not as a clean Git result. Before recording a judgment, gather the named read-only evidence (for example `git status --short`, `git branch --show-current`, and the proposed commit diff/message) and retain its outcome with the review. It deliberately has no mechanical policy checks or private Git executor yet. The CLEAN family names, for each clean-down criterion, the read-only command and fixed rule that decide it, so that `ki repo audit` can run them mechanically across the estate; deleting a remote branch or closing a pull request always needs the owner's approval.
+The hosted native rubric records the portable review prompts below. Its COMMIT, BRANCH, HYGIENE and LOCK families are **judgment-only**: an AUDIT renders them as unassessed review work, not as a clean Git result. Before recording a judgment, gather the named read-only evidence (for example `git status --short`, `git branch --show-current`, and the proposed commit diff/message) and retain its outcome with the review. The CLEAN family is mechanical: CLEAN-2 to CLEAN-7 apply fixed rules to the read-only facts the `ki` host composes from `mgit overview --json`, and report each finding as a warning beside the owner's disposition judgment. Without those facts each criterion is unassessed, never passed. CLEAN-1 stays judgment-only while its only evidence is the provider's network pull-request list. The skill runs no Git command or private Git executor itself, and deleting a remote branch or closing a pull request always needs the owner's approval.
 
 Every repository with a commit gate mechanically binds this skill's message vocabulary through a committed `.githooks/commit-msg`: the `ki-engineering` Commitlint contract where a package exists, and `ki git check-message "$1"` where none does. This skill does not install hooks, write runtime settings, or own the package toolchain; its native rubric retains the judgment that a proposed message accurately describes one completed unit.
 
@@ -38,7 +38,7 @@ Every repository with a commit gate mechanically binds this skill's message voca
 
 Read the selected repository's commit history and working-state evidence against the Git standard.
 
-Run `ki repo audit --skill ki-git --repo <repo>` to render the portable review prompts. Treat the result as an unassessed judgment checklist until a reviewer records outcomes against the focused read-only evidence; it is not a pass/fail audit of Git state. It does not infer a missing configuration table or run a private wrapper.
+Run `ki repo audit --skill ki-git --repo <repo>` to render the portable review prompts and the CLEAN checks. Treat the judgment families as an unassessed checklist until a reviewer records outcomes against the focused read-only evidence; only the CLEAN checks assess Git state, and only when the host supplies `mgit overview` facts. It does not infer a missing configuration table or run a private wrapper.
 
 ### Mode CONFORM
 
