@@ -8,13 +8,13 @@ component: change-management
 priority: medium
 size: s
 kind: deliver
-horizon: now
-status: draft
+status: cancelled
+resolution: obsolete
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T23:30:04Z
-updated_at: 2026-10-20T02:39:00Z
+updated_at: 2026-10-20T04:29:55Z
 transferred_from: ki-design KI-DESIGN-OBS-015 and -/observatory-handoff/ANSWER-2026-10-19.md, via ki-principal ki.observatory BANNER-GLYPHS a), 2026-10-20
 ---
 
@@ -37,47 +37,9 @@ ki-design asked the question and drew five single-colour candidates in its house
 - In: a Banner-section statement that the emoji stay the written notation in reports, terminals and commits, and that a rendered surface may draw the five line glyphs from `@knowledgeislands/icons` in their place, always with the state's words beside them; the matching line in the work model wherever the harness restates the Banner notation.
 - Out: drawing or publishing the glyphs, which ki-design owns; the Work tab, which apps-observatory.local owns; any change to the written notation, the state words or the banner's shape.
 
-## Current state
+## Cancelled
 
-Checked on 20 October 2026 at `071567a1`. The `ki-coordination` standard's Banner section writes each state with emoji and says nothing about a rendered surface or `@knowledgeislands/icons`. `SKILL.md`, `references/rubric.md` and `scripts/banner.test.ts` restate or test the written notation, which this record leaves unchanged.
-
-## Steps
-
-- [ ] Add to the Banner section a short paragraph: the emoji stay the written notation in reports, terminals and commits; a rendered surface may draw the five states with the line glyphs from `@knowledgeislands/icons`, naming the package only, always with the state's words beside them; and cite BANNER-GLYPHS a) of 20 October 2026.
-- [ ] Add the same sentence wherever `SKILL.md` restates the Banner notation, if it does.
-- [ ] Regenerate `references/rubric.md` if the published text it cites changes.
-
-## Files touched
-
-- `skills/change-management/ki-coordination/references/standards-coordination.md`
-- `skills/change-management/ki-coordination/SKILL.md` and `references/rubric.md`, if they change
-
-## Verify
-
-- `bun run test` and `bunx tsc --noEmit` pass, `scripts/banner.test.ts` included and unchanged.
-- `ki dev skill rubric ki-coordination` leaves no diff, and `ki repo audit --skill ki-coordination` reports no FAIL here.
-
-## Dependencies / blocks
-
-Not blocking. ki-design moves the glyphs into `@knowledgeislands/icons` once the standard says so, and the Observatory's Work tab in apps-observatory.local follows the standard; neither is a build prerequisite for this wording, which names the package rather than its glyph identifiers.
-
-## Documentation impact
-
-### Decision Records
-
-None needed: BANNER-GLYPHS a) is in the Observatory decisions log, and PDR-KI-OBSERVA-008 stays the Observatory's record.
-
-### Specifications
-
-None.
-
-### Guides
-
-None.
-
-### Roadmap
-
-None; the glyphs and the Work tab are ki-design's and apps-observatory.local's work.
+Approved by Kris on 20 October 2026 under SWEEP-CONVERT a), recorded in Knowledge Islands Principal `+/_WORK/ki.ways-of-working/decisions.md` (05:20 BST): "I agree with sweep merge ... should become message records". Under HANDOFF-AS-MESSAGE this is one wording change in the `ki-coordination` Banner section that BANNER-GLYPHS a) has already decided, for the work that owns that standard, so it is cancelled as obsolete as a record. Its substance, keeping the emoji as the written notation and admitting a rendered form drawn with the `@knowledgeislands/icons` line glyphs beside the state's words, goes as one line to `ki.ways-of-working`'s `messages.md` in Knowledge Islands Principal. The Banner section is unchanged so far, and the Observatory Work tab follows the standard.
 
 ## Discussion
 

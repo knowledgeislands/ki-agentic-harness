@@ -4,12 +4,13 @@ area: GOV
 title: Timeline and calendar skill
 project: timelines
 component: governance
-status: triage
+status: cancelled
+resolution: obsolete
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T07:48:44Z
-updated_at: 2026-10-20T02:39:00Z
+updated_at: 2026-10-20T04:29:55Z
 ---
 
 # KI-HARNESS-GOV-222: Timeline and Calendar Skill
@@ -41,6 +42,10 @@ The 5G Emerge programme timeline milestones under `src/_data/programme-model/tim
 - In: candidate names under [ADR-KI-HARNESS-SKILLS-003](../decisions/ADR-KI-HARNESS-SKILLS-003-dependency-order-for-multi-skill-composition.md), whose concern is plural for a collection of kept things: `ki-calendars`, `ki-timelines` or `ki-key-dates`.
 - In: first adopters legal-principal, whose gantt sits in its `FR Timeline to FDR` working note, personal-principal and 5G Emerge.
 - Out: changing the 5G Emerge component or the legal gantt before the skill exists; Archify diagram work, which `ki-diagrams` owns.
+
+## Cancelled
+
+Approved by Kris on 20 October 2026 under SWEEP-CONVERT a), recorded in Knowledge Islands Principal `+/_WORK/ki.ways-of-working/decisions.md` (05:20 BST): "I agree with sweep merge ... should become message records". Kris handed this to the `timelines` Project; it is unshaped and its home (harness, tools-ki or a shared package) is undecided, so under HANDOFF-AS-MESSAGE it is cancelled as obsolete as a record. Its substance already went as one line to `ki.timelines`'s `messages.md` in Knowledge Islands Principal (`20e696d2`), with the decided `ki-calendars` design and the HANDOFF-GOV-222 text; that work owns whether a record is captured when it resumes. No skill has been written.
 
 ## Discussion
 

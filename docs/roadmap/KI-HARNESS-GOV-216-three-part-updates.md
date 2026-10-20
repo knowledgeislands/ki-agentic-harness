@@ -6,13 +6,13 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: soon
-status: draft
+status: cancelled
+resolution: obsolete
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:32Z
-updated_at: 2026-10-18T08:55:32Z
+updated_at: 2026-10-20T04:29:55Z
 ---
 
 # KI-HARNESS-GOV-216: Three-Part Coordinator Updates
@@ -33,6 +33,10 @@ On 18 October 2026 Kris Brown asked, in the ways-of-working work, that every upd
 ## Shaping
 
 Scheduled for the report-shape review around 21 October 2026, as Kris set it: promote it to Next, plan and build it then, not before. No record in this repository blocks it. The change is one cadence paragraph and one heartbeat paragraph in the standard, the matching clause of the hook line's third hard rule and of the output style's turn paragraph, and a regeneration.
+
+## Cancelled
+
+Approved by Kris on 20 October 2026 under SWEEP-CONVERT a), recorded in Knowledge Islands Principal `+/_WORK/ki.ways-of-working/decisions.md` (05:20 BST): "I agree with sweep merge ... should become message records". Under HANDOFF-AS-MESSAGE this is a wording change for the work that owns the `ki-coordination` standard and already applies the shape, not a unit of harness delivery, so it is cancelled as obsolete as a record. Its substance, three-part coordinator updates (done, left on the plan, outstanding) with the hook line and output style regenerated, goes as one line to `ki.ways-of-working`'s `messages.md` in Knowledge Islands Principal, which carries it into its next standards run. Nothing has been changed in the standard yet.
 
 ## Discussion
 
