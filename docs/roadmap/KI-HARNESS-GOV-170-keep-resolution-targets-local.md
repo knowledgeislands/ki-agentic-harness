@@ -8,13 +8,12 @@ project: ways-of-working
 component: change-management
 priority: medium
 size: s
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e66f313024baf4493fc732ca6251ca2aba21afb6
 created_at: 2026-10-09T21:50:21Z
-updated_at: 2026-10-20T08:10:13Z
+updated_at: 2026-10-20T08:16:49Z
 ---
 
 # KI-HARNESS-GOV-170: Keep Resolution Targets Local
@@ -129,7 +128,19 @@ The goal holds: a foreign target can no longer pass the audit or the acceptance 
 
 Resolution targets are now local only, enforced by ITEM-2 and by the acceptance model, with the cross-repository case recorded in plain words; tests, type check and focused audits pass. Learning route, not promoted: a worktree audit can seed the canonical harness as a link to the worktree, so the isolated-home recipe needs no download.
 
+## Done
+
+Accepted 20 October 2026 by Kris Brown under the quoted standing grant, after independent re-review, on the review packet above.
+
 ## Discussion
+
+### Independent re-review and acceptance, 20 October 2026
+
+accept2-harness-170 independently reviewed delivery `4a10ba0707abb4d1258fe0b46937880e46b02421` and rework `062c27e65a921041252977909ae1dcbd7e1d9411` against all five Steps and every Verify requirement at source revision `b5ad1d912960c1088a05156fac77b3209a463bac`. The standards, invocation and eval agree; the roadmap checker rejects foreign and near-miss repository codes; the acceptance model rejects foreign targets and permits the approved plain-words replacement form. Exact checks confirmed the immutable baseline, completed Steps and six-part Review packet. The tools-ki handoff was verified in ki-principal commit `53184b64fe1594ff547c292e06c4e98609017493`.
+
+Independent checks in the linked worktree: `bun run test` passed all 1,374 tests; `bunx tsc --noEmit` passed; isolated-home `ki-work-roadmap`, `ki-skills` and `ki-authoring` audits reported no FAIL. The roadmap audit retained three unrelated size warnings and the isolated home's unavailable capital registry. Running the current acceptance fixtures against the previous model produced four expected failures and five passes. `ki-accept` is a process skill without a declared audit or rubric catalogue; its model was reviewed directly and exercised by the passing suite.
+
+Acceptance authority: Kris Brown, 20 October 2026 about 05:20 BST, "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... getting the roadmaps down to zero", applied to exactly this record by the accept2-harness-170 brief and the ways-of-working decisions log's 09:00 and 09:06 entries. The explicit brief forbids pruning and pushing. The tools-ki parser follow-up remains receiver-owned, and the new cross-repository form remains subject to the Review packet's recorded limitation until that change lands. No other record is accepted.
 
 Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimisation batch 4 (Kris's 2026-10-12 approval in the state-of-play run, 'ROADMAP-BATCHES 3 to 5 approved as recommended'): the work-item standard still accepts a cross-repository `resolution_target` by shape, and no current work needs the change. Re-scope before it becomes actionable.
 
