@@ -5,6 +5,7 @@ kind: investigate
 purpose: capability
 theme: model
 component: acquire
+size: m
 area: OPS
 horizon: next
 status: draft

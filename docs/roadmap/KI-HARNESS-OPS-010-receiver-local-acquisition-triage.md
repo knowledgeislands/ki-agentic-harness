@@ -5,6 +5,7 @@ kind: deliver
 purpose: capability
 theme: model
 component: acquire
+size: m
 area: OPS
 horizon: next
 status: draft
