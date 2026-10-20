@@ -85,3 +85,6 @@ jobs:
       - name: Test
         timeout-minutes: 10
         run: bun run test
+
+      - name: Type check
+        run: bunx tsc --noEmit
