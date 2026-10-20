@@ -7,13 +7,12 @@ component: governance
 kind: deliver
 priority: medium
 size: m
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 7b9ec10cb403dda93c2eec7e5d38c02f939e2178
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-20T06:35:00Z
+updated_at: 2026-10-20T06:48:25Z
 ---
 
 # Thread Folder Closed List
@@ -159,6 +158,10 @@ The rubric listings name candidates only and never delete. The closed list match
 
 The FOLDER family replaces COORD-9, with FOLDER-7 now warning on decisions the close gate cannot see; temporary output moves to the launcher's directory, and five Capital work folders have stray-file messages waiting.
 
+## Done
+
+Accepted 2026-10-20 by Kris Brown under the quoted overnight grant on the review packet above.
+
 ## Discussion
 
 Capture only, on Kris Brown's explicit request in THREADS-TELL; adoption, priority and plan belong to this repository. Built in the work-folder rename run of 18 October only as far as the standards: the checks are recorded here and not built, because a new FAIL would fail every territory whose work folders still hold stray files until each is tidied, and because the decision-heading check must match the heading form the tools-ki close-gate record has yet to settle. Kris named THREADS-REGRESSION on 18 October 2026, in the ways-of-working decisions log under "owner answers, recap batch", after `ki agent` copied a chezmoi run report into `+/_THREADS/chezmoi/` in Knowledge Islands Principal at 09:19 BST; the launcher side is in [KI-TOOL-KI-CLI-150 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/4f8d97d2/docs/roadmap/KI-TOOL-KI-CLI-150-work-folder-entry-points.md). The STRUCTURE-1 failure fires only where `+/_WORK/` exists, so territories still in the tolerance window keep their warnings; today only Knowledge Islands Principal holds `+/_WORK/`, and it holds neither retired folder. Still open from that run: `ki-recap`'s `checkpoint <thread>` argument and its `checkpoint-handoff.ts` model keep the checkpoint names, for the work-model migration's phase 5 to rename. Questions for planning: whether COORD-9 should move from a warning to a failure once existing thread folders are cleared; whether an inbox file joins the closed list once the inbox moves into the thread folder, as the background-run standard anticipates; and whether this record and [KI-HARNESS-GOV-175 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-175-delegation-run-events.md) share one `run-prompt.md` edit.
@@ -174,3 +177,11 @@ Reviewed delivery `5f921df4385029e377f86a23e72b24cf59ac3401` at combined revisio
 The family Step includes a WARN for decisions-log headings the close gate cannot parse, but the delivered FOLDER family and work-folder.ts contain no such check. Outstanding concerns defers it because [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md) is said to be awaiting review and not landed. That dependency is Done, accepted in tools-ki commit `bc563d56`; its code landed at `22ee0609`. Its settled contract treats every H2 as an entry, including timestamped, date-only and free-text headings.
 
 Resolve the remaining heading requirement against that contract, implement any applicable boundary check or obtain an explicit scope disposition, and correct the Step and review packet before re-review. The closed-list, tidy and temporary-home changes otherwise match the inspected source and passing fixtures. Previously reported Capital FOLDER-1 findings remain receiver-owned.
+
+### Independent re-review and authorised acceptance, 20 October 2026
+
+PASS. Rework `b3b6a808`, `e27c3b3f` and `f5cdb726`, following delivery `5f921df4`, implements the missing FOLDER-7 WARN against the settled every-H2 close-gate contract. Its boundary fixtures cover unread entry-shaped lines, empty and repeated headings, recognised heading forms and fenced blocks. The Step and dependency evidence match the code. The closed-list, tidy and temporary-home requirements remain satisfied; the old temporary path occurs only in superseded history. The disclosed fence-handling difference does not change the settled heading form.
+
+Reviewed source `9590c86e1aaa965347663c8d7e837b58ab517f31` and combined acceptance baseline `4cf7581cda30f1f6b32798f95458d8c254422360`, whose additional change affects only another roadmap record. All planned Steps and the exact six-part Review packet are complete. Independent gates: `bun run test`, 1372 pass and 0 fail; `bunx tsc --noEmit`, pass; focused `ki-work-roadmap`, `ki-authoring`, `ki-work-package`, `ki-coordination`, `ki-delegation`, `ki-diagrams` and `ki-skills` audits, zero failures. All four named rubric publications are in sync. Four unrelated roadmap size warnings and sixteen existing diagram staleness or working-mark warnings are outside these records.
+
+Kris Brown granted overnight acceptance on 20 October 2026: "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... getting the roadmaps down to zero". The authorised independent-review brief applies that grant to [KI-HARNESS-GOV-200](KI-HARNESS-GOV-200-thread-folder-closed-list.md) and [KI-HARNESS-GOV-205](KI-HARNESS-GOV-205-static-light-diagram-export.md), with passing records accepted and retained, without pruning. The ways-of-working decisions log, Knowledge Islands Principal `+/_WORK/ki.ways-of-working/decisions.md`, records overnight independent acceptance under OVERNIGHT-BURNDOWN and the harness review and re-review at 07:14 and 07:24 BST.

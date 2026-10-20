@@ -7,13 +7,12 @@ component: governance
 kind: deliver
 priority: medium
 size: l
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 791c4ed635f658f0dc6e2e480281aee26feddeac
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-20T07:10:00Z
+updated_at: 2026-10-20T07:10:01Z
 ---
 
 # KI-HARNESS-GOV-205: Static Light Diagram Export
@@ -163,6 +162,10 @@ Commit `5abbe1ac` from baseline `791c4ed6`, reworked after the failed review by 
 
 Diagrams can now be exported as static light or Knowledge Islands-themed SVGs that render in any previewer, and the KI forms draw KI glyphs where the symbol library carries the meaning. Design reports use the static forms, committed beside the subject's Project note, and `thread-model` is current again.
 
+## Done
+
+Accepted 2026-10-20 by Kris Brown under the quoted overnight grant on the review packet above.
+
 ## Discussion
 
 Captured on Kris Brown's DIAGRAMS-EXPORT answer. Questions for planning: whether the static option should become the default for report diagrams only or for every diagram; whether the exporter's fail-closed checks, canonical export receipt and external-reference refusal apply unchanged to the flattened form; and whether the manifest needs a field naming the export form.
@@ -188,3 +191,11 @@ The report-diagrams Step and Boundary require exported SVGs beside the subject's
 ### Rework after review, 20 October 2026
 
 Both unmet requirements are now built rather than rescoped. The glyph mapping follows the DIAGRAM-STANDARD read-back, "KI-theme export (ki-design palette, fonts and glyphs ...)", through the symbol library's meanings. The placement follows the DIAGRAMS-EXPORT wording, "exported static SVGs beside a Project note", which `ki-repo-kb` allows, since an image or diagram belongs in the folder of the note it supports and nothing in `Streams/` then points into a work folder. `ki-night` is kept and justified under Boundary.
+
+### Independent re-review and authorised acceptance, 20 October 2026
+
+PASS. Rework `48c9bf5a` and `f97efaea`, following delivery `5abbe1ac`, implements the missing KI glyph mappings and reconciles static report diagrams with placement beside the Project note. The six mappings match the pinned symbol library and glyph files; the customs-house security mapping reasonably carries inspection at a boundary. Unmapped icons have no matching library meaning. The fourth form, `ki-night`, carries the approved night palette while `ki` carries day and `dual` remains the default. Until a Project note exists, reports use inline text diagrams. Independent light, ki and ki-night exports contain no stylesheet, variable or font-face dependency; rsvg-convert renders readable text and boxes, and visual inspection confirms the KI glyphs. No earlier review finding remains unmet.
+
+Reviewed source `9590c86e1aaa965347663c8d7e837b58ab517f31` and combined acceptance baseline `4cf7581cda30f1f6b32798f95458d8c254422360`, whose additional change affects only another roadmap record. All planned Steps and the exact six-part Review packet are complete. Independent gates: `bun run test`, 1372 pass and 0 fail; `bunx tsc --noEmit`, pass; focused `ki-work-roadmap`, `ki-authoring`, `ki-work-package`, `ki-coordination`, `ki-delegation`, `ki-diagrams` and `ki-skills` audits, zero failures. All four named rubric publications are in sync. Four unrelated roadmap size warnings and sixteen existing diagram staleness or working-mark warnings are outside these records.
+
+Kris Brown granted overnight acceptance on 20 October 2026: "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... getting the roadmaps down to zero". The authorised independent-review brief applies that grant to [KI-HARNESS-GOV-200](KI-HARNESS-GOV-200-thread-folder-closed-list.md) and [KI-HARNESS-GOV-205](KI-HARNESS-GOV-205-static-light-diagram-export.md), with passing records accepted and retained, without pruning. The ways-of-working decisions log, Knowledge Islands Principal `+/_WORK/ki.ways-of-working/decisions.md`, records overnight independent acceptance under OVERNIGHT-BURNDOWN and the harness review and re-review at 07:14 and 07:24 BST.
