@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: m
-status: in-progress
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: 7b9ec10cb403dda93c2eec7e5d38c02f939e2178
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-20T06:17:04Z
+updated_at: 2026-10-20T06:35:00Z
 ---
 
 # Thread Folder Closed List
@@ -54,7 +54,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - `assets/run-prompt.md` names only the report path; the launcher's footer, not the skeleton, carries the temporary-output line today.
 - COORD-9 in `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts` warns, as a heuristic, on a file outside the closed list, on an answered report and on more than eight open queries. The `ki-work-package` rubric (STRUCTURE, RECORD, LIFECYCLE, BOUNDARY and CONFIG families) reads none of the folder's closed list, tidy rules, Messages lines or review area.
 - The THREADS-REGRESSION part is delivered: STRUCTURE-1 fails a retired `+/_THREADS/` or `+/_CHECKPOINTS/` beside `+/_WORK/` (`7d9959dc`), and `ki-recap`'s hand-off resolves only `+/_WORK/<id>/work.md` (`references/standards-session-recap.md`).
-- The close gate's heading form is being settled in [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), in progress: the close gate reads every entry of a decisions log, whatever its heading.
+- The close gate's heading form is settled by [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), Done and accepted in tools-ki `bc563d56`, its code landed at `22ee0609`: `parseDecisions` in `src/core/agent/thread.ts` opens one entry at every `##` heading, timestamped, dated, numbered or free text, and reads nothing else.
 
 ## Steps
 
@@ -62,7 +62,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - [x] Say how an agent keeps evidence the owner asks for: it copies the file to its owning home deliberately and names it in its report.
 - [x] In the background-run standard's run packet section, link the `ki-work-package` closed list rather than restating it, and say that a run writes nothing into `+/_WORK/<id>/` beyond its report.
 - [x] Add one footer line to `skills/governance/ki-delegation/assets/run-prompt.md` naming the temporary home and the no-other-writes rule, in the same words as the launcher footer.
-- [ ] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, a malformed Messages line, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions-log heading the close gate cannot parse.
+- [x] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions log the close gate cannot read as `##` entries alone, under KI-TOOL-KI-CLI-152's every-H2 contract. A malformed Messages line is already failed by the RECORD family's `MESSAGE_LINE` schema check, which is stronger than the warning asked for, so no separate WARN is added.
 - [x] Retire COORD-9 from `ki-coordination`, pointing its standard text at the new `ki-work-package` items, and keep the judgment prompt with the item that inherits it.
 - [x] Add boundary fixtures for each new item, including a clean folder, a stray file, a stray `design/` file and each tidy case.
 - [x] Regenerate the `ki-work-package`, `ki-coordination` and, if its cited text changes, `ki-delegation` rubrics, and update the remediation-inventory test's criteria counts.
@@ -87,7 +87,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 - Decided: the launcher's out-of-repository per-run directory is the temporary home, under HARNESS-TRIAGE a) of 20 October 2026; [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md), which amended the standard to it, is merged into this record under SWEEP-MERGE a).
 - Decided: the closed-list item lands as FAIL, as WORK-FOLDER-CHECKS a) set, after the Capitals' census in the last Step has recorded each stray file as a message to its owning work.
-- The decisions-log heading check follows [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md); if it has not landed, that one WARN item waits and the rest proceed.
+- The decisions-log heading check follows [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), now Done: every `##` heading is an entry, so the check warns on what that rule leaves unread rather than on a heading form.
 
 ## Documentation impact
 
@@ -113,6 +113,8 @@ None beyond this record; COORD-12's promotion is [KI-HARNESS-GOV-215](KI-HARNESS
 
 The work folder's closed list and tidy are now checked by a new FOLDER family in the `ki-work-package` rubric, and COORD-9 is retired from `ki-coordination`. The background-run standard, the run-prompt footer and the work-package standard all name the launcher's per-run temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, in place of `<primary checkout>/tmp/<run>/<name>/`. This also delivers the goal of KI-HARNESS-GOV-196, merged into this record under SWEEP-MERGE.
 
+First delivered in `5f921df4`. After the independent review of 20 October, the decisions-log heading WARN was built as FOLDER-7 in `b3b6a808` on `run/harness-fix`, baseline `9d2cd168`, and the family Step, Current state and Dependencies / blocks were corrected to match.
+
 ### Change Summary
 
 - `ki-work-package`: new context `scripts/rubric/contexts/work-folder.ts` and new family `scripts/rubric/items/folder.ts`, wired into the context, the session families and `items/index.ts`.
@@ -122,35 +124,40 @@ The work folder's closed list and tidy are now checked by a new FOLDER family in
   - FOLDER-4 (WARN): a finished work's folder outliving its closing mark.
   - FOLDER-5 (WARN): an unmatched `+/_WORK_REVIEW/` folder or index line.
   - FOLDER-6 (WARN): more than eight open queries.
-- `ki-coordination`: COORD-9 is removed. Its awaiting-acceptance cap moves into COORD-3's owner-queue cap. `standards-coordination.md` and `output-styles/ki-coordinator.md` now point at the FOLDER items.
+  - FOLDER-7 (WARN), added in `b3b6a808`: a decisions log the `ki agent close` gate cannot read as `##` entries alone. Under [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md)'s settled contract every `##` heading is an entry, so no heading form is unparseable; the item warns instead on what that rule leaves unread: a list item or deeper heading before the first `##` heading, a heading with no text, and a repeated heading, which `ki agent reconcile` cannot address. `decisionLogFindings` mirrors the tools-ki `parseDecisions` and skips fenced blocks; prose before the first heading and a `None` log pass. Work and thread folders' logs are both read.
+- `ki-coordination`: COORD-9 is removed. Its awaiting-acceptance cap moves into COORD-3's owner-queue cap. `standards-coordination.md` and `output-styles/ki-coordinator.md` now point at the FOLDER items, and the Flagging line names FOLDER-7.
 - `ki-delegation`: the temporary-home rule is replaced. Kris's 15 October words are kept as superseded, and the 16 October words and the 20 October HARNESS-TRIAGE adoption are quoted. The rule now says a run writes nothing into `+/_WORK/<id>/` beyond its report, and kept evidence is copied to its owning home and named in the report. `assets/run-prompt.md` gains the launcher's footer line plus the no-other-writes rule.
-- The `ki-work-package` closed-list sentence is updated. Rubrics are regenerated, and the remediation-inventory counts are updated (+5 criteria).
+- The `ki-work-package` closed-list sentence is updated, and its Decisions log section states the close gate's reading rule. Rubrics are regenerated, and the remediation-inventory counts are updated (+6 criteria in all).
 
 ### Verification
 
-- `bun run test`: 1349 pass, 0 fail.
+At `b3b6a808`:
+
+- `bun run test`: 1368 pass, 0 fail.
 - `bunx tsc --noEmit`: clean.
-- Focused audits (isolated home): `ki-work-package` PASS, `ki-delegation` PASS and `ki-skills` PASS. `ki-coordination` has FAIL=0; its two COORD-8 warnings come from the isolated home. `ki-work-roadmap` has FAIL=0.
-- New fixture tests in `work-folder.test.ts` cover a clean folder (pass), a stray file and a stray `design/` file (fail), the thread legacy warning, answered reports, received briefs, the finished folder, the review index and the query limit.
+- Focused audits in an isolated home against the worktree: FAIL=0 for `ki-work-package`, `ki-coordination`, `ki-delegation`, `ki-skills` and `ki-work-roadmap`; the warnings are existing fleet findings outside this record.
+- `ki dev skill rubric ki-work-package`, `ki-coordination` and `ki-delegation` are in sync.
+- Fixture tests in `work-folder.test.ts` cover a clean folder (pass), a stray file and a stray `design/` file (fail), the thread legacy warning, answered reports, received briefs, the finished folder, the review index and the query limit; and for FOLDER-7, timestamped, dated, numbered and free-text headings, a `None` log and a prose preamble passing, each finding kind, fenced blocks, work and thread folders, and the not-applicable case.
 - `grep -rn 'primary checkout>/tmp' skills/governance/ki-delegation` finds only the superseded quotation and the history in `sources.md`.
-- Census of the eight Capitals with the new code:
+- Census of the eight Capitals for FOLDER-1, before it landed:
   - FOLDER-1 fails in Knowledge Islands Principal (`ki.baseline-rollout`, `ki.mac-studio-setup`, `ki.tools-burndown` and `ki.ways-of-working`) and in HNR Principal (`hnr.fourth-white-paper`).
   - Each owning work was sent a FOLDER-CLOSED line in its `messages.md`, committed locally and not pushed.
   - ER, TMX, VA and SI pass. Legal and Personal show only tidy warnings.
+- FOLDER-7 against Knowledge Islands Principal, read-only: it warns on five logs written as list lines with no `##` entry, `ki.knowledge-acquisition`, `ki.mac-studio-setup`, `ki.observatory`, `ki.paperclip-capture-and-rebuild` and `ki.timelines`, and passes `ki.tools-burndown`'s prose preamble.
 
 ### Outstanding concerns
 
-- The decisions-log heading WARN is not built. It must match the heading form settled by [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), which is awaiting review and not landed. The record's dependency rule lets the rest proceed.
-- No separate Messages-line WARN was added. The existing RECORD schema check (`MESSAGE_LINE`) already fails a malformed line, which is stronger than the warning asked for.
-- Once the harness is installed, FOLDER-1 will fail the Knowledge Islands and HNR Principal audits until those five folders are tidied.
+- No separate Messages-line WARN was added. The existing RECORD schema check (`MESSAGE_LINE`) already fails a malformed line, which is stronger than the warning asked for; the Step now says so.
+- Once the harness is installed, FOLDER-1 will fail the Knowledge Islands and HNR Principal audits until those five folders are tidied, and FOLDER-7 will warn on the five Principal logs above until each owning work gives its decisions `##` headings. Being a WARN, FOLDER-7's findings reach each owning work from territory work at its mark.
+- FOLDER-7 skips fenced blocks, but the close gate does not, so a `##` line inside a fence still opens an entry for the gate. No live log holds one.
 
 ### Post-change review
 
-The rubric listings name candidates only and never delete. The closed list matches the standard's Closed list section. The thread-folder checks keep COORD-9's old tolerance behaviour.
+The rubric listings name candidates only and never delete. The closed list matches the standard's Closed list section. The thread-folder checks keep COORD-9's old tolerance behaviour. FOLDER-7 reads the log by the same rule as the tools-ki gate, so the two cannot drift on a heading form; it adds no rule the gate lacks.
 
 ### Mini recap
 
-The FOLDER family replaces COORD-9, temporary output moves to the launcher's directory, and five Capital work folders have stray-file messages waiting.
+The FOLDER family replaces COORD-9, with FOLDER-7 now warning on decisions the close gate cannot see; temporary output moves to the launcher's directory, and five Capital work folders have stray-file messages waiting.
 
 ## Discussion
 
