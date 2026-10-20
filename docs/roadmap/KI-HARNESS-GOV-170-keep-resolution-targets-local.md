@@ -9,12 +9,12 @@ component: change-management
 priority: medium
 size: s
 horizon: now
-status: awaiting-review
+status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: e66f313024baf4493fc732ca6251ca2aba21afb6
 created_at: 2026-10-09T21:50:21Z
-updated_at: 2026-10-20T07:58:00Z
+updated_at: 2026-10-20T08:03:07Z
 ---
 
 # KI-HARNESS-GOV-170: Keep Resolution Targets Local
@@ -135,3 +135,14 @@ Deferred to Future on 2026-10-12 by Kris Brown's approval of the roadmap minimis
 ### Planning, 20 October 2026
 
 Promoted from Future to Next and planned to Ready in the harness-burn run under Kris's OVERNIGHT-BURNDOWN of 20 October 2026 in the ki.ways-of-working decisions log: "we can have a good run at whatever's left in the agentic harness ... keep you know motoring through them". The 2026-10-09 and 2026-10-10 owner decisions above settle the shape, so planning added no new choice.
+
+### Failed independent review, 20 October 2026
+
+Returned to `in-progress` by accept-harness-170 after independently reviewing delivery `4a10ba0707abb4d1258fe0b46937880e46b02421` against baseline `e66f313024baf4493fc732ca6251ca2aba21afb6`. The standards, roadmap checker, regression tests, eval wording and routed tools-ki handoff match the planned change, but the acceptance skill's executable contract still contradicts its changed guidance.
+
+- `skills/change-management/ki-accept/scripts/internal/acceptance-cycle.ts`, lines 154-169: `evaluateAcceptanceCycle` still stops an explicitly approved `superseded` cancellation with no target, even when its cancellation evidence names the replacing repository and work in plain words. The same input with a foreign target returns `kind: cancel`. This conflicts with the revised acceptance standard and invocation. Its input carries no repository identity or target-locality evidence, so canonical identifier shape alone cannot establish the required local boundary.
+- `skills/change-management/ki-accept/scripts/acceptance-cycle.test.ts`, lines 120-131 and 165-169: existing fixtures still require foreign targets to pass and absent targets to stop. Align the model and fixtures with the revised rule before seeking acceptance again; preserve human approval and cancellation-evidence checks. This review makes no implementation or scope change.
+- Independent verification in an isolated worktree home: `bun run test` passed (1,372 tests); `bunx tsc --noEmit` passed; `ki-work-roadmap`, `ki-skills` and `ki-authoring` audits reported no FAIL. The roadmap audit's three size warnings and unavailable isolated-home capital registry are separate from this finding. The six Review headings, completed Steps and immutable baseline were verified exactly.
+- The delivery report's claimed passing `ki-accept` audit could not be reproduced: `ki repo audit --skill ki-accept` exits 2 because it is not a declared resolved audit skill. This process skill's controlled model was reviewed directly instead; do not describe that command as a passing audit.
+
+No acceptance or pruning was performed. The separately routed tools-ki follow-up remains receiver-owned.
