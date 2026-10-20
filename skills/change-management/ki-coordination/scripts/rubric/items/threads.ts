@@ -125,14 +125,14 @@ const COORD_9: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-9',
   title: 'every work folder is pruned to what is still open',
   description:
-    "Each work folder `+/_WORK/<id>/` holds only the closed list, the five package files `work.md`, `state.md`, `queries.md`, `messages.md` and `decisions.md`, `<name>.report.md`, `briefs/`, `design/` and `feedback/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. More than eight open queries under `queries.md`'s `## Open` is a coordination smell and warns. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
+    "Each work folder `+/_WORK/<id>/` holds only the closed list, the five package files `work.md`, `state.md`, `queries.md`, `messages.md` and `decisions.md`, `<name>.report.md`, `briefs/`, `design/` and `feedback/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. More than eight open queries under `queries.md`'s `## Open` is a coordination smell and warns, and so, under the owner-queue cap, are more than eight roadmap records with `status: awaiting-review` naming a piece of Project work's Project, counted in the checkout and in each checkout beside it that names the same Capital. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
   sources: [`${SOURCE}#pruning-the-work-folder`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "At the owning coordinator's next send, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear; answer, park or merge open queries beyond eight. The listing is never permission to delete another piece of work's files."
+        "At the owning coordinator's next send, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear; answer, park or merge open queries beyond eight, and over eight records awaiting acceptance launch no new build or planning run until acceptance catches up, keeping acceptance fixes and backlog-clearing work. The listing is never permission to delete another piece of work's files."
     },
     heuristic: true,
     audit: { phase: 'INSPECT', run: ({ tidy }) => tidy.outcomes }

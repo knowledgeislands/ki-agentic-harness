@@ -3,6 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
+  awaitingAcceptanceCounts,
   bindingOutcomes,
   createCoordinationSession,
   isCapital,
@@ -687,6 +688,41 @@ describe('work files', () => {
     writeFileSync(join(folder, 'queries.md'), queries(9))
     expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
     expect(context(root).tidy.outcomes[0]?.message).toStartWith('9 open queries')
+  })
+
+  test('more than eight records awaiting acceptance for a Project, across the territory, is a warning', () => {
+    const parent = mkdtempSync(join(tmpdir(), 'ki-coordination-queue-'))
+    roots.push(parent)
+    const checkout = (name: string, owner: string): string => {
+      const root = join(parent, name)
+      mkdirSync(root)
+      writeFileSync(join(root, '.ki.toml'), `[skills.ki-repo]\nrepository = "${name}"\ncapital = "${owner}"\n`)
+      return root
+    }
+    const record = (root: string, roadmap: string, name: string, status: string, project = 'ways-of-working'): void => {
+      mkdirSync(join(root, roadmap), { recursive: true })
+      writeFileSync(
+        join(root, roadmap, `${name}.md`),
+        `---\nstatus: ${status}\nproject: ${project}\n---\n\n# ${name}\n`
+      )
+    }
+    const root = checkout('ki-principal', 'ki-principal')
+    const sibling = checkout('ki-agentic-harness', 'ki-principal')
+    const stranger = checkout('er-principal', 'er-principal')
+    const folder = work(root, 'ki.ways-of-working', project())
+    for (const name of ['decisions.md', 'state.md', 'messages.md', 'queries.md'])
+      writeFileSync(join(folder, name), '# x\n')
+    for (let at = 0; at < 4; at++)
+      record(root, join('Streams', 'Roadmap'), `KI-PRINCIPAL-MODEL-${at}`, 'awaiting-review')
+    for (let at = 0; at < 4; at++) record(sibling, join('docs', 'roadmap'), `KI-HARNESS-GOV-${at}`, 'awaiting-review')
+    record(sibling, join('docs', 'roadmap'), 'KI-HARNESS-GOV-DRAFT', 'draft')
+    record(sibling, join('docs', 'roadmap'), 'KI-HARNESS-GOV-OTHER', 'awaiting-review', 'observatory')
+    record(stranger, join('Streams', 'Roadmap'), 'ER-PRINCIPAL-OPS-1', 'awaiting-review')
+    expect(awaitingAcceptanceCounts([root, sibling]).get('ways-of-working')).toBe(8)
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
+    record(sibling, join('docs', 'roadmap'), 'KI-HARNESS-GOV-9', 'awaiting-review')
+    expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
+    expect(context(root).tidy.outcomes[0]?.message).toStartWith('9 roadmap records await acceptance')
   })
 })
 

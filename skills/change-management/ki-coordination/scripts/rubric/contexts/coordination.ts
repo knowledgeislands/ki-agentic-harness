@@ -6,7 +6,8 @@
  * its `+/_CHECKPOINTS/` records and the thread reports under `+/_THREADS/<run>/`, each old shape passing with a
  * warning; on a Capital the `Streams/Projects/`, `Streams/Themes/` and legacy `Streams/Initiatives/` registry; and the
  * coordinator binding: the repository's and the user's Claude Code settings, of which it reads only the output style and the hook
- * commands, and the deployed output style. It never
+ * commands, and the deployed output style; and for the owner-queue cap the front matter of the roadmap records in the
+ * checkout and in each checkout beside it that names the same Capital. It never
  * writes, and it never judges a transcript: coordinator behaviour is reviewed by the judgment items from evidence the
  * owner selects.
  */
@@ -40,6 +41,12 @@ const QUERIES_FILE = 'queries.md'
 const PACKAGE_FILES: ReadonlySet<string> = new Set([STATE_FILE, QUERIES_FILE, 'messages.md'])
 /** More open queries than this in `queries.md` is a coordination smell, warned on rather than failed. */
 export const OPEN_QUERY_LIMIT = 8
+/** More roadmap records than this awaiting acceptance for one Project is over the owner-queue cap, warned on rather than failed. */
+export const AWAITING_ACCEPTANCE_LIMIT = 8
+/** The roadmap folders of a Knowledge Base and of a code repository. */
+const ROADMAP_DIRECTORIES = [join('Streams', 'Roadmap'), join('docs', 'roadmap')] as const
+/** The roadmap status of a record whose delivery waits on the owner's acceptance. */
+const AWAITING_ACCEPTANCE = 'awaiting-review'
 /** The folders a work folder may hold beside its files: open briefs, the owner's feedback packages and design notes. */
 const WORK_SUBFOLDERS: ReadonlySet<string> = new Set(['briefs', 'design', 'feedback'])
 const WORK_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*'
@@ -711,6 +718,44 @@ export const openQueryCount = (folder: string): number => {
   return Array.from(open.matchAll(QUERY_HEADING)).length
 }
 
+/**
+ * The checkouts whose roadmaps count towards the owner queue: the audited root, and each checkout beside it whose
+ * `.ki.toml` names the same Capital, so a Capital counts the records its siblings hold for its Projects.
+ */
+const territoryCheckouts = (root: string): readonly string[] => {
+  const capital = repositoryIdentity(root).capital
+  if (!capital) return [root]
+  const parent = dirname(resolve(root))
+  let entries: Dirent[]
+  try {
+    entries = readdirSync(parent, { withFileTypes: true })
+  } catch {
+    return [resolve(root)]
+  }
+  const siblings = entries
+    .filter((entry) => entry.isDirectory() && !entry.isSymbolicLink())
+    .map((entry) => join(parent, entry.name))
+    .filter((checkout) => checkout !== resolve(root) && repositoryIdentity(checkout).capital === capital)
+  return [resolve(root), ...siblings]
+}
+
+/** The roadmap records awaiting the owner's acceptance in each checkout, counted by the Project their `project` field names. */
+export const awaitingAcceptanceCounts = (checkouts: readonly string[]): ReadonlyMap<string, number> => {
+  const counts = new Map<string, number>()
+  for (const checkout of checkouts)
+    for (const roadmap of ROADMAP_DIRECTORIES) {
+      const directory = join(checkout, roadmap)
+      if (!physicalDirectory(directory)) continue
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        if (!entry.isFile() || extname(entry.name) !== '.md') continue
+        const fields = frontMatter(join(directory, entry.name))
+        if (fields?.status !== AWAITING_ACCEPTANCE || typeof fields.project !== 'string') continue
+        counts.set(fields.project, (counts.get(fields.project) ?? 0) + 1)
+      }
+    }
+  return counts
+}
+
 const tidyOutcomes = (
   root: string,
   work: readonly string[],
@@ -745,8 +790,21 @@ const tidyOutcomes = (
       outcomes.push({
         status: 'VIOLATION',
         level: 'WARN',
-        message: `${open} open queries in \`${QUERIES_FILE}\`, more than ${OPEN_QUERY_LIMIT}: a coordination smell; answer, park or merge them`,
+        message: `${open} open queries in \`${QUERIES_FILE}\`, more than ${OPEN_QUERY_LIMIT}: a coordination smell and over the owner-queue cap; answer, park or merge them`,
         subject: relative(root, join(folder, QUERIES_FILE))
+      })
+  }
+  const projects = work.filter((folder) => workLevel(basename(folder)) === 'project')
+  const awaiting = projects.length > 0 ? awaitingAcceptanceCounts(territoryCheckouts(root)) : new Map<string, number>()
+  for (const folder of projects) {
+    const project = basename(folder).split('.')[1] ?? ''
+    const count = awaiting.get(project) ?? 0
+    if (count > AWAITING_ACCEPTANCE_LIMIT)
+      outcomes.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `${count} roadmap records await acceptance for Project \`${project}\`, more than ${AWAITING_ACCEPTANCE_LIMIT}: over the owner-queue cap; launch no new build or planning run until acceptance catches up, while acceptance fixes and backlog-clearing work stay allowed`,
+        subject: relative(root, folder)
       })
   }
   for (const folder of threads ?? [])
