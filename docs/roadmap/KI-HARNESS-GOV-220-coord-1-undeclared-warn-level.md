@@ -7,14 +7,14 @@ component: governance
 kind: deliver
 priority: medium
 size: s
-status: ready
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 78c547b369cc3f7ef6e0fae2f33a7c40f563d1d7
 transferred_from: ki-principal/Streams/Projects/tools-burndown.md
 created_at: 2026-10-19T07:16:09Z
-updated_at: 2026-10-20T02:42:00Z
+updated_at: 2026-10-20T05:28:36Z
 ---
 
 # KI-HARNESS-GOV-220: COORD-1 Undeclared Warn Level
@@ -51,9 +51,9 @@ Checked on 20 October 2026 at `30cbbd1d` with `ki` 0.12.0. The defect stands in 
 
 ## Steps
 
-- [ ] Declare `overrideLevels: ['WARN']` on COORD-1's mechanical audit.
-- [ ] Add a `ki-coordination` test that runs every item's emitted outcomes over fixtures, the tolerance-window checkpoint included, and asserts each outcome's level is the item's declared level or one of its `overrideLevels`.
-- [ ] Regenerate `references/rubric.md` if the published item line changes.
+- [x] Declare `overrideLevels: ['WARN']` on COORD-1's mechanical audit.
+- [x] Add a `ki-coordination` test that runs every item's emitted outcomes over fixtures, the tolerance-window checkpoint included, and asserts each outcome's level is the item's declared level or one of its `overrideLevels`.
+- [x] Regenerate `references/rubric.md` if the published item line changes.
 
 ## Files touched
 
@@ -88,6 +88,37 @@ None.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+Delivered within the approved boundary under KI-HARNESS-BATCH-025: COORD-1 now admits its tolerance-window warning, and a new test checks every `ki-coordination` item's emitted levels against its declaration. Excluded as planned: the `ki` validator in tools-ki and any Capital's checkpoint migration. Baseline `78c547b369cc3f7ef6e0fae2f33a7c40f563d1d7`; the delivery commit follows it on `run/harness-gov-220`.
+
+### Change Summary
+
+- `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts`: COORD-1's mechanical audit declares `overrideLevels: ['WARN']`, the validator's contract for a FAIL item that also warns; its level stays FAIL.
+- `skills/change-management/ki-coordination/scripts/rubric/items/threads.test.ts`, new: builds a tolerance-window Capital holding the state-of-play checkpoint, a theme checkpoint, a stray thread-folder file and a report opening with a lint directive, runs every COORD item's audit over it, and asserts each outcome level is the item's level or one of its `overrideLevels`, as `ki`'s `validateOutcome` requires; a second test pins COORD-1's declaration.
+- `references/rubric.md` needed no change: the published item line carries no level.
+
+### Verification
+
+- `bun run test`: 1345 pass, 0 fail. `bunx tsc --noEmit`: passed. Biome: clean on the changed files.
+- With `overrideLevels` removed, the new test fails (2 fail); restored, it passes.
+- In an isolated home under the background-run standard's worktree audit recipe: `ki dev skill rubric ki-coordination` reports in sync; `ki repo audit --skill ki-coordination` here reports FAIL=0, with only the two COORD-8 user-binding warnings an isolated home always shows.
+- A fixture Capital holding `+/_CHECKPOINTS/_state-of-play.md`, audited in the isolated home against this worktree with `ki` 0.12.0, renders COORD-1's tolerance-window warning instead of aborting with an undeclared-level error.
+
+### Outstanding concerns
+
+None for this record. The other `legacy()` callers feed COORD-2 and COORD-9, both declared WARN, and the new test covers them.
+
+### Post-change review
+
+The goal holds: an audit over a tolerance-window Capital completes and reports the warning the item describes. Scope held to the item declaration and one test. Regression risk is low: COORD-1's failing paths are unchanged at FAIL, and the new test guards every item against the same mismatch. Ready for review.
+
+### Mini recap
+
+One-line declaration fix plus a level-contract test that would have caught the defect before release. Learning route, not promoted: other skills' rubric tests could run the same declared-level check over their own fixtures.
 
 ## Discussion
 

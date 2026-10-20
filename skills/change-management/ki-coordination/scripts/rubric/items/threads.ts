@@ -11,6 +11,7 @@ const COORD_1: RubricItem<CoordinationRubricContext> = {
   sources: [`${SOURCE}#territory-work`, `${SOURCE}#the-work-model`],
   mechanical: {
     level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
       guidance:
