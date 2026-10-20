@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-19T23:30:55Z
+updated_at: 2026-10-20T01:44:15Z
 ---
 
 # KI-HARNESS-GOV-205: Static Light Diagram Export
@@ -38,6 +38,71 @@ Kris Brown widened the scope on 19 October 2026 in the Observatory work, answeri
 - In: re-tracing the `thread-model` diagram at HEAD under its `regenerate` instruction, and re-exporting it.
 - In: a KI-theme export option in `export-svg.ts`, mapped from the `ki-design` tokens as above, flattened like the static light form so that it needs no stylesheet, variables or embedded fonts; its tests and usage; the `ki-diagrams` standard text the decision changes, as proposed under Discussion; regenerated skill surfaces.
 - Out: changing the dual-theme default for living diagrams elsewhere; changing Archify; re-exporting existing diagrams in other repositories, which their owners do.
+
+## Current state
+
+Checked on 20 October 2026 at `30cbbd1d`.
+
+- `skills/governance/ki-diagrams/scripts/export-svg.ts` takes only `<input.html> <output.svg>`. It drives headless Chrome through `scripts/internal/chrome.ts`, runs Archify's own SVG export, requires Archify's canonical-export receipt and refuses an external reference. It has no option for theme or flattening.
+- [KI-HARNESS-GOV-224](KI-HARNESS-GOV-224-diagram-viewer-receipts.md) has since added `scripts/build-html.ts`, which rebuilds every manifest diagram and, with `--svg`, re-exports its SVG, so a new export form must be reachable through it as well.
+- The `thread-model` manifest table in `docs/diagrams/diagrams.toml` is still pinned at `last_checked = "b7d3b53e…"` with its `regenerate` instruction.
+- The diagrams standard's The tool: Archify and Committed forms sections still read as quoted under Discussion. The `ki-work-design` standard says only where design artefacts live, not how a report carries diagrams.
+- The `ki-design` tokens are in the separate `ki-design` repository at `packages/tokens/tokens.json`, a private, unpublished package (`@knowledgeislands/tokens` 0.2.0) with night and day themes and a `font.mono` stack. This harness has no copy and no dependency on it.
+
+## Steps
+
+- [ ] Settle the open questions under Dependencies / blocks with the owner.
+- [ ] Add an export-form option to `export-svg.ts`, recommended `--form dual|light|ki`, defaulting to `dual`. The `light` and `ki` forms switch the viewer to the chosen theme in Chrome, resolve every computed fill, stroke and text colour into plain attributes, replace embedded fonts with the system monospace stack, and strip the stylesheet, custom properties and font data.
+- [ ] Keep the existing gates for the flattened forms: Archify's canonical receipt before flattening, and the external-reference refusal after it. Add a check that the flattened SVG holds no `<style>`, `var(` or `@font-face`.
+- [ ] Bring the needed `ki-design` token values into `ki-diagrams` by the route the owner chooses. The `ki` form maps the night and day palettes and `font.mono` to the attributes it writes.
+- [ ] Pass the form through `build-html.ts --svg`, and record it in the manifest if the owner wants a field.
+- [ ] Add tests: argument parsing, a flattened fixture with no stylesheet, variables or font data, and the drift check if tokens are vendored.
+- [ ] Edit the diagrams standard: its opening scope to cover knowledge-base islands with a short island-diagrams section; The tool: Archify for D2 and Mermaid as proposed under Discussion; Committed forms to name the new forms; and The SVG exporter for the option.
+- [ ] Add the `ki-work-design` rule that a design report carries its diagrams as inline text diagrams or exported static SVGs committed beside the subject's Project note.
+- [ ] Re-trace `thread-model` at HEAD under its `regenerate` instruction, rebuild and re-export it, and advance its `last_checked`.
+- [ ] Regenerate the `ki-diagrams` `rubric.md` where the published text changes; `ki-work-design` has no rubric.
+
+## Files touched
+
+- `skills/governance/ki-diagrams/scripts/export-svg.ts`, `export-svg.test.ts`, `build-html.ts`, `build-html.test.ts`, and a token module under `scripts/shared/` if vendored
+- `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md` where it summarises the forms
+- `skills/change-management/ki-work-design/references/standards-work-design.md`
+- `docs/diagrams/diagrams.toml`, `docs/diagrams/thread-model.*` and `docs/diagrams/README.md`
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass.
+- `ki dev skill rubric ki-diagrams` leaves no diff.
+- `ki repo audit --skill ki-diagrams` reports no FAIL here.
+- `rsvg-convert` renders a `light` and a `ki` export of one diagram with visible text and boxes, and `grep -E '<style|var\(|@font-face'` finds nothing in either.
+
+## Dependencies / blocks
+
+Decisions needed before Ready, each with a recommendation:
+
+- Token source: recommended, a vendored copy of the needed values in `ki-diagrams` with a drift test against a pinned `ki-design` revision, because the package is private and unpublished; the alternative is a pinned Git dependency.
+- Default form: recommended, `dual` stays the default for living diagrams, and design reports use `ki` or `light`; the alternative makes `ki` the default everywhere.
+- Manifest field: recommended, an optional `svg_form` field, absent meaning `dual`, so a reader knows which form is committed.
+
+[KI-HARNESS-GOV-221](KI-HARNESS-GOV-221-ki-diagrams-mermaid-fence-warning.md) and [KI-HARNESS-GOV-214](KI-HARNESS-GOV-214-working-area-marks.md) edit the same standard; deliver them one after another. The size, `l`, may warrant splitting the KI-theme form from the light form at Ready.
+
+## Documentation impact
+
+### Decision Records
+
+None new: ADR-KI-HARNESS-SKILLS-003 already holds the name. The owner's DIAGRAM-STANDARD decision is recorded in the Observatory decisions log, and the standard carries its effect.
+
+### Specifications
+
+None: no Specification covers the exporter.
+
+### Guides
+
+`docs/diagrams/README.md` changes only if `thread-model`'s figure or wording changes on re-trace.
+
+### Roadmap
+
+None; re-exports in other repositories are their owners' work.
 
 ## Discussion
 

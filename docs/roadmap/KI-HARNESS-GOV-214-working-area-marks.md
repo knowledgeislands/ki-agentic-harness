@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:30Z
-updated_at: 2026-10-19T23:30:55Z
+updated_at: 2026-10-20T01:44:15Z
 ---
 
 # KI-HARNESS-GOV-214: Working-Area Marks
@@ -34,6 +34,68 @@ Kris then merged it into [KI-HARNESS-GOV-175 (pruned)](https://github.com/knowle
 - `ki-diagrams`: the diagrams standard's working-folder rule under `+/diagrams/<slug>/` names the sidecar and its fields, and the delivery receipt the exporter or the finalize step writes beside the HTML gains the same fields. The rubric gains the matching criterion and `rubric.md` is regenerated.
 - The two skills' SKILL.md summaries are reworded only where they list what the standards cover.
 - Not the `+/README.md` text in adopting repositories, which `ki-repo` owns; not Git tracking of `+/`; not a tidy-up tool that acts on marks, which is a later record if wanted; not any work file, decisions log or Project note.
+
+## Current state
+
+Checked on 20 October 2026 at `30cbbd1d`.
+
+- Neither the `ki-delegation` background-run standard nor the `ki-diagrams` standard names a mark, and neither rubric checks one.
+- The two hand-written `mark.toml` files are gone: the primary checkout's `+/diagrams/` now holds `skill-area-acquire`, `skill-area-coordination`, `skill-area-records-and-code`, `skill-map` and `thread-model`, none with a `mark.toml`, so the Step to migrate them from `thread` to `work` falls away.
+- Each working folder holds `build/`, `<slug>.html` and `<slug>.delivery.json`. The `.delivery.json` is Archify's own finalize output, which this record must not change, since changing Archify is out of scope for `ki-diagrams`.
+- [KI-HARNESS-GOV-224](KI-HARNESS-GOV-224-diagram-viewer-receipts.md) has since added a committed `<slug>.receipt.json` beside each committed viewer, written by `scripts/build-html.ts`. It is portable proof of what was rendered and carries no local path. A mark is not provenance for committed work, so the mark must not go into that receipt.
+- `scripts/build-html.ts` runs the documented rebuild route for every manifest diagram, so it is the one place a `ki-diagrams` working folder is written by tooling.
+
+## Steps
+
+- [ ] Settle the two field questions left to planning (see Dependencies / blocks).
+- [ ] Add a Working-area marks rule to the background-run standard that states the field names in one place: `work`, then `run` and `agent` for a background run or `session` for an interactive one, then the time field. It also names the Markdown front-matter form and the `mark.toml` sidecar form for a folder of non-Markdown output, and says that coordinating work and interactive sessions mark their own working files the same way.
+- [ ] Add a `ki-delegation` judgment criterion that a run's working-area files carry the mark, and regenerate its `rubric.md`.
+- [ ] In the diagrams standard's Regeneration and freshness section, name the `mark.toml` sidecar at the root of `+/diagrams/<slug>/`, its fields by reference to the background-run rule, and that neither Archify's `.delivery.json` nor the committed `.receipt.json` carries the mark.
+- [ ] Make `scripts/build-html.ts` write `+/diagrams/<slug>/mark.toml` after a successful finalize, reading `work`, `run` and `agent` from `KI_AGENT_RUN` and the run packet where present and writing `session` otherwise, with a boundary test for both.
+- [ ] Add a `ki-diagrams` mechanical criterion at WARN for a working folder without a well-formed `mark.toml`, and regenerate its `rubric.md`.
+- [ ] Reword the two SKILL.md summaries only where they list what the standards cover.
+
+## Files touched
+
+- `skills/governance/ki-delegation/references/standards-background-runs.md`, `rubric.md`, `SKILL.md`, and its rubric item file if the criterion is published there
+- `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md`
+- `skills/governance/ki-diagrams/scripts/build-html.ts` and `build-html.test.ts`
+- `skills/governance/ki-diagrams/scripts/rubric/contexts/diagrams.ts`, `diagrams.test.ts` and `scripts/rubric/items/diagrams.ts`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass.
+- `ki dev skill rubric ki-delegation` and `ki dev skill rubric ki-diagrams` leave no diff.
+- `ki repo audit --skill ki-diagrams` and `ki repo audit --skill ki-delegation` report no FAIL here.
+- Rebuilding one diagram with `build-html.ts` leaves `+/diagrams/<slug>/mark.toml` naming the work, the run and agent or the session, and the time, and leaves the committed receipt unchanged.
+
+## Dependencies / blocks
+
+Decisions needed before Ready, each with a recommendation:
+
+- Time field name: recommended, `written_at`, as the hand-written sidecars used, matching the field style of other KI timestamps such as `created_at`.
+- `rebuilt_from`: recommended, drop it; the manifest's `last_checked` and the committed receipt already say what a diagram was built from.
+
+[KI-HARNESS-GOV-205](KI-HARNESS-GOV-205-static-light-diagram-export.md) and [KI-HARNESS-GOV-221](KI-HARNESS-GOV-221-ki-diagrams-mermaid-fence-warning.md) edit the same diagrams standard and rubric; deliver them one after another.
+
+## Documentation impact
+
+### Decision Records
+
+None needed: the owner's MARK-RULE, MARK-RULE-SPLIT and MARK-FIELDS answers are in the ways-of-working decisions log, and the rule lives in the standard.
+
+### Specifications
+
+None: no Specification covers working areas.
+
+### Guides
+
+None: no guide describes `+/` working files.
+
+### Roadmap
+
+None; a tidy-up tool that acts on marks would be a later record if wanted.
 
 ## Discussion
 

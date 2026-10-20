@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-19T23:30:55Z
+updated_at: 2026-10-20T01:44:15Z
 ---
 
 # Thread Folder Closed List
@@ -42,6 +42,66 @@ Kris Brown made `ki-work-folder` the canonical specification of the work folder 
   - WARN: a report whose queries are all answered in the decisions log; a brief whose run's report has been received; finished work whose folder outlives the mark that closes it; a Messages line that does not take the `- <YYYY-MM-DD> · <TAG> · <sender title>: ...` shape; a `+/_WORK_REVIEW/` folder with no index line, or an index line with no folder; and a decisions-log heading the close gate cannot parse, matched to whatever heading form the tools-ki close-gate record settles.
 - In, built by the `threads-fix` run under THREADS-REGRESSION: STRUCTURE-1 fails a retired `+/_THREADS/` or `+/_CHECKPOINTS/` folder, tracked or not, beside an existing `+/_WORK/`, with the work-folder standard's Old checkpoints section saying so; and `ki-recap`'s portable hand-off resolves only `+/_WORK/<id>/work.md`, never a retired folder.
 - Out: the launcher creating and removing `tmp/<run>/<name>/`, which [KI-TOOL-KI-CLI-137 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/a22214ee581b73a1f395da88f9a118ad89814bb9/docs/roadmap/KI-TOOL-KI-CLI-137-agent-run-tmp-home.md) owns; clearing any existing thread folder, which each owning thread does at its next mark under THREADS-CLEAR, and moving old thread folders into work folders, which the work-model migration's phase 3 does; the report-heading check that [KI-HARNESS-GOV-175 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-175-delegation-run-events.md) carries.
+
+## Current state
+
+Checked on 20 October 2026 at `30cbbd1d`.
+
+- The closed list, entry points, tidy rules, review area and Messages line shape live in the `ki-work-package` [work-package standard](../../skills/governance/ki-work-package/references/standards-work-package.md#the-work-folder); `ki-work-folder` was renamed `ki-work-package` in `9e174750`. The background-run standard's run packet section describes the knowledge and runtime split but does not link that closed list.
+- The background-run standard still names `<primary checkout>/tmp/<run>/<name>/` as the temporary home. The `ki agent` launcher in tools-ki (`src/core/agent/runs.ts`) now appends a progress-protocol footer that names a per-run temporary directory outside every repository, under the system temporary root, which `ki agent close` empties and removes. The standard and the launcher disagree.
+- `assets/run-prompt.md` names only the report path; the launcher's footer, not the skeleton, carries the temporary-output line today.
+- COORD-9 in `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts` warns, as a heuristic, on a file outside the closed list, on an answered report and on more than eight open queries. The `ki-work-package` rubric (STRUCTURE, RECORD, LIFECYCLE, BOUNDARY and CONFIG families) reads none of the folder's closed list, tidy rules, Messages lines or review area.
+- The THREADS-REGRESSION part is delivered: STRUCTURE-1 fails a retired `+/_THREADS/` or `+/_CHECKPOINTS/` beside `+/_WORK/` (`7d9959dc`), and `ki-recap`'s hand-off resolves only `+/_WORK/<id>/work.md` (`references/standards-session-recap.md`).
+- The close gate's heading form is being settled in [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), in progress: the close gate reads every entry of a decisions log, whatever its heading.
+
+## Steps
+
+- [ ] Settle the temporary home with the owner (see Dependencies / blocks) and make the background-run standard's temporary-home sentence match it.
+- [ ] In the background-run standard's run packet section, link the `ki-work-package` closed list rather than restating it, and say that a run writes nothing into `+/_WORK/<id>/` beyond its report.
+- [ ] Add one footer line to `skills/governance/ki-delegation/assets/run-prompt.md` naming the temporary home and the no-other-writes rule, in the same words as the launcher footer.
+- [ ] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, a malformed Messages line, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions-log heading the close gate cannot parse.
+- [ ] Retire COORD-9 from `ki-coordination`, pointing its standard text at the new `ki-work-package` items, and keep the judgment prompt with the item that inherits it.
+- [ ] Add boundary fixtures for each new item, including a clean folder, a stray file, a stray `design/` file and each tidy case.
+- [ ] Regenerate both rubrics and update the remediation-inventory test's criteria counts.
+- [ ] Before landing the FAIL, run `ki repo audit --skill ki-work-package` in the eight territory Capitals and record any stray file as a message to its owning work.
+
+## Files touched
+
+- `skills/governance/ki-delegation/references/standards-background-runs.md`, `assets/run-prompt.md`
+- `skills/governance/ki-work-package/scripts/rubric/items/` (a new work-folder item file and `index.ts`), its rubric context and tests, `references/rubric.md`, and `references/standards-work-package.md` where an item needs a citable anchor
+- `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts`, its context and tests, `references/rubric.md`, and the standard's Pruning the work folder section
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass.
+- `ki repo audit --skill ki-work-package`, `--skill ki-coordination` and `--skill ki-delegation` report no FAIL here.
+- `ki dev skill rubric ki-work-package` and `ki dev skill rubric ki-coordination` leave no diff.
+- A fixture work folder holding a stray file fails the new item, and a clean folder passes it.
+
+## Dependencies / blocks
+
+- Decision needed before Ready: which temporary home stands, the launcher's out-of-repository directory or the standard's `<primary checkout>/tmp/<run>/<name>/`.
+- Decision needed before Ready: whether the closed-list item lands as FAIL straight away, as WORK-FOLDER-CHECKS says, or as WARN until the Capitals' census is clean.
+- The decisions-log heading check follows [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md); if it has not landed, that one WARN item waits and the rest proceed.
+
+## Documentation impact
+
+### Decision Records
+
+None needed: the owner decisions are recorded in the ways-of-working decisions log, and the work-folder ownership is already in the `ki-work-package` standard.
+
+### Specifications
+
+None: this repository keeps no Specification for the work folder; the standard is the contract.
+
+### Guides
+
+None: no human guide describes the work folder's checks.
+
+### Roadmap
+
+None beyond this record; COORD-12's promotion is [KI-HARNESS-GOV-215](KI-HARNESS-GOV-215-pmo-12-to-fail.md).
 
 ## Discussion
 

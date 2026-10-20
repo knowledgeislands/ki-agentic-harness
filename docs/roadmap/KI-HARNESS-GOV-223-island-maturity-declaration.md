@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T18:51:40Z
-updated_at: 2026-10-19T23:30:55Z
+updated_at: 2026-10-20T01:44:15Z
 transferred_from: ki-principal ki.observatory CONDITION-TOML, 2026-10-19
 ---
 
@@ -50,9 +50,62 @@ The scale is ordinal and declared, so it is subjective by design, as Kris accept
 - In: stating in the standard that decline or ruin is read from `ki repo audit` health, with the audit outcome that maps to each, so the declared and the derived signals stay apart.
 - Out: declaring a level in any repository's `.ki.toml`, which each repository does for itself once the key exists; the `ki` reader that exposes the declaration and the health, which tools-ki owns; the Observatory views that draw them, which apps-observatory.local owns.
 
+## Current state
+
+Checked on 20 October 2026 at `30cbbd1d`. No `ki-repo` standard, rubric item or `.ki.toml` names a maturity key or scale. The `[skills.ki-repo]` keys are documented in `skills/keystone/ki-repo/references/standards-repository.md`, for example Repository kind and Visibility, with the file-level contract in `references/standards-configuration.md`. Each key's mechanical checks are emitted as evidence findings by `scripts/rubric/contexts/audit.ts`, as `KIND-1` and `VIS-1` are, and published through item files under `scripts/rubric/items/` such as `kind.ts` and `visibility.ts`. The tools-ki reader is [KI-TOOL-KI-CLI-159](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-159-island-maturity-and-health.md), at Soon and draft.
+
+## Steps
+
+- [ ] Settle the three open questions under Discussion with the owner (see Dependencies / blocks).
+- [ ] Add an Island maturity section to `references/standards-repository.md`: the four levels in order with their one-line meanings, the key and its table, that the level is declared and subjective by design, and that decline and ruin are read from `ki repo audit` health with the mapping settled at planning.
+- [ ] Parse the key in `scripts/rubric/contexts/audit.ts` and emit a new `MATURITY-1` evidence finding: WARN when the key is absent, FAIL when it names a level outside the scale or is not a string.
+- [ ] Add `scripts/rubric/items/maturity.ts` declaring MATURITY-1 at FAIL with `overrideLevels: ['WARN']`, register it in `index.ts`, and cover it in `index.test.ts`.
+- [ ] Add fixture tests for absent, valid and invalid values in the context tests.
+- [ ] Add the key, commented, to `KI_REPO_DEFAULT` in `audit.ts`, the authoritative key list `--educate` writes, so that the default block proposes no level on a repository's behalf.
+- [ ] Regenerate `references/rubric.md` and the remediation-inventory counts.
+
+## Files touched
+
+- `skills/keystone/ki-repo/references/standards-repository.md` and `rubric.md`
+- `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts`, `repository.ts` if the evidence code needs listing, and their tests
+- `skills/keystone/ki-repo/scripts/rubric/items/maturity.ts`, `index.ts` and `index.test.ts`
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass.
+- `ki dev skill rubric ki-repo` leaves no diff.
+- `ki repo audit --skill ki-repo` here reports MATURITY-1 as a warning until this repository declares a level, and a fixture declaring `maturity = "ruined"` fails it.
+
 ## Dependencies / blocks
 
 Blocks the tools-ki work that exposes each island's declared maturity and its audit-derived health through `ki`, since that reader needs the key and scale this record defines.
+
+Decisions needed before Ready, each with a recommendation:
+
+- Key home: recommended, `maturity` in `[skills.ki-repo]`, because `[repo]` holds only harness resolution and `ki-repo` owns the island's identity keys; the alternative is `[repo]`.
+- Retired islands: recommended, no level of their own; an archived repository is read from its GitHub archived state and audit health.
+- Decline and ruin: recommended, decline for open warnings older than a tolerance the standard names, and ruin for failing criteria or an audit that cannot run.
+
+The `MATURITY` family name assumes no other `ki-repo` family uses it; `scripts/rubric/items/index.ts` confirms the codes in use.
+
+## Documentation impact
+
+### Decision Records
+
+None needed: the owner's CONDITION-TOML and MATURITY-FOUR answers are recorded in the Observatory decisions log, and the scale lives in the standard.
+
+### Specifications
+
+None: no Specification covers `.ki.toml` keys.
+
+### Guides
+
+None: no guide in this repository describes `.ki.toml` keys.
+
+### Roadmap
+
+Unblocks [KI-TOOL-KI-CLI-159](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-159-island-maturity-and-health.md); each repository declares its own level afterwards, with no record here.
 
 The Observatory draws both signals in apps-observatory.local, in [KI-OBSERVA-BCN-008](https://github.com/knowledgeislands/apps-observatory.local/blob/80c1a1b0faaf05e025ed37a8c8fdd6c9e62d9fbf/docs/roadmap/KI-OBSERVA-BCN-008-beacon-signal-anatomy.md) for the Beacon's condition chips and [KI-OBSERVA-VIS-030](https://github.com/knowledgeislands/apps-observatory.local/blob/934da9c9d3659fcccb3f0b07577363cc819761b7/docs/roadmap/KI-OBSERVA-VIS-030-known-lands-chart.md) for the Known Lands chart, each linked at a fixed revision so the link survives pruning. Both draw condition as unknown until the key exists, so nothing there is blocked by build order.
 

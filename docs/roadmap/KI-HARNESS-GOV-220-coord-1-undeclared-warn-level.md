@@ -14,7 +14,7 @@ blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/tools-burndown.md
 created_at: 2026-10-19T07:16:09Z
-updated_at: 2026-10-19T23:30:55Z
+updated_at: 2026-10-20T01:44:15Z
 ---
 
 # KI-HARNESS-GOV-220: COORD-1 Undeclared Warn Level
@@ -45,9 +45,49 @@ This is a handoff from the Tools burndown work in Knowledge Islands Principal, u
 - Not the `ki` validator in `tools-ki`, whose rejection of an undeclared level is the intended contract.
 - Not the migration of the seven Capitals' state-of-play checkpoints to `+/_WORK/`, which each territory owns.
 
+## Current state
+
+Checked on 20 October 2026 at `30cbbd1d` with `ki` 0.12.0. The defect stands in the source: `legacy()` in `scripts/rubric/contexts/coordination.ts` still returns a `WARN` violation, and COORD-1 in `scripts/rubric/items/threads.ts` still declares `level: 'FAIL'` with no `overrideLevels`. Of the four `legacy()` callers, only `masterOutcomes` feeds a FAIL item, COORD-1; `themeOutcomes`, reached from `labelOutcomes`, feeds COORD-2 and `tidyOutcomes` feeds COORD-9, both declared WARN, so they match. The `ki` validator (`tools-ki/src/core/runtime/audit.ts`, `validateOutcome`) is unchanged. No Capital reaches the path today: all seven named above, `si-principal` included, have moved their state-of-play checkpoint to `+/_WORK/`, and `ki repo audit --skill ki-coordination` in `er-principal` now renders its findings. The defect is latent: any repository that still holds a state-of-play checkpoint aborts its audit. Other skills already use `overrideLevels`, for example `ki-work-roadmap`'s `scripts/rubric/items/item.ts`.
+
+## Steps
+
+- [ ] Declare `overrideLevels: ['WARN']` on COORD-1's mechanical audit.
+- [ ] Add a `ki-coordination` test that runs every item's emitted outcomes over fixtures, the tolerance-window checkpoint included, and asserts each outcome's level is the item's declared level or one of its `overrideLevels`.
+- [ ] Regenerate `references/rubric.md` if the published item line changes.
+
+## Files touched
+
+- `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts`
+- A new or extended test beside it, or in `scripts/rubric/contexts/coordination.test.ts`
+- `skills/change-management/ki-coordination/references/rubric.md`, if regenerated
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass, and the new level test fails when `overrideLevels` is removed.
+- `ki dev skill rubric ki-coordination` leaves no diff.
+- `ki repo audit --skill ki-coordination` over a fixture Capital holding `+/_CHECKPOINTS/_state-of-play.md` renders COORD-1's tolerance-window warning instead of aborting.
+
 ## Dependencies / blocks
 
-No record is marked blocked. In practice it is a prerequisite for any `ki repo audit` of the seven Capitals named above: until it lands, each of their audits aborts before reporting anything, so no other finding in those repositories can be seen through the audit. The receiver judges whether that makes it blocking.
+None blocking. No Capital is affected today, so the fix guards against the path rather than unblocking a live audit.
+
+## Documentation impact
+
+### Decision Records
+
+None needed: the fix makes the item match its own description.
+
+### Specifications
+
+None: no Specification covers the coordination rubric.
+
+### Guides
+
+None.
+
+### Roadmap
+
+None.
 
 ## Discussion
 
