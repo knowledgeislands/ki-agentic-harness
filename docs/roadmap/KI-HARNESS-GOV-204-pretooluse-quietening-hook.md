@@ -4,12 +4,20 @@ area: GOV
 title: PreToolUse quietening hook
 project: ways-of-working
 component: governance
-status: triage
+kind: decide
+priority: medium
+size: s
+horizon: hold
+hold:
+  reason: waiting-for
+  condition: Kris reviews a week of evidence from the source-level quiet cuts on 24 October 2026
+  review: 2026-10-24
+status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-17T22:06:58Z
+updated_at: 2026-10-20T02:39:00Z
 ---
 
 # KI-HARNESS-GOV-204: PreToolUse Quietening Hook
@@ -46,3 +54,7 @@ So both routes are available: a `PreToolUse` rewrite changes what runs, adding `
 Captured on Kris Brown's QUIET-HOOK answer. Decision due on 24 October 2026, one week after the quiet gates landed on 17 October 2026. Evidence for the decision: how often agent sessions and run reports in that week still carried pasted gate, audit or Git output.
 
 Questions for that decision: whether a rewrite is safe enough to auto-`allow`, or should only `ask`; whether replacing output for the agent while telemetry keeps the original is acceptable; how the hook keeps failures and non-zero exits visible in full; and whether the backstop is needed at all once the `KI_QUIET` setting exists.
+
+### Disposition, 20 October 2026
+
+Kris Brown answered HARNESS-TRIAGE on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "let's get the ball moving forwards", taken as a) with changes. Adopted and held until Kris's evidence review on 24 October 2026, not left in triage. Release chooses its horizon afresh.

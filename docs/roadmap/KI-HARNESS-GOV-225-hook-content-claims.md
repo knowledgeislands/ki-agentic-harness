@@ -7,12 +7,14 @@ project: tools-burndown
 component: keystone
 priority: medium
 size: m
-status: triage
+kind: deliver
+horizon: next
+status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T22:46:17Z
-updated_at: 2026-10-20T00:51:03Z
+updated_at: 2026-10-20T02:39:00Z
 transferred_from: ki-principal ki.tools-burndown hooks-standard design section 4.2, HOOK-CAPTURE a), 2026-10-19
 ---
 
@@ -33,6 +35,51 @@ The [hooks-standard design](/Users/krisbrown/workspaces/knowledge-islands/ki-pri
 - In: the claim declaration shape in the rubric catalogue contract, beside `packageScripts`; the `ki-repo` frame template as declared data, matching the `HOOK-4` frame rule; claims from `ki-engineering`, `ki-repo-kb`, `ki-repo-tools`, `ki-repo-dotfiles-chezmoi` and `ki-repo-harness`; the new `ki-repo-harness` content criterion the design names; standard text in `ki-repo` and each shape skill saying that conform composes from claims; checker tests.
 - Out: the host loader, composer and conform step, which [KI-TOOL-KI-CLI-165](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) owns; `commit-msg` content for package-less repositories until `ki git check-message` ships in [KI-TOOL-KI-CLI-161 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/ce905bee422605f2f7c7c4c2d94819582f0c56b8/docs/roadmap/KI-TOOL-KI-CLI-161-git-check-message.md); raising the hook checks to FAIL; running conform in any repository.
 
+## Current state
+
+Checked on 20 October 2026 at `071567a1`. The rubric catalogue contract carries `packageScripts` claims, defined in `skills/keystone/ki-skills/scripts/shared/rubric.ts` and its per-skill copies, and no hook-line claim. `HOOK-1` to `HOOK-5` in `ki-repo`, `SCR-5`, `SCR-11` and `GATE-1` audit committed hooks; none composes one. The tools-ki host is [KI-TOOL-KI-CLI-165](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md). NO-GATE, which would widen this record to the Project, homebrew-tap and specifications shapes, is parked by Kris until the hooks course is settled.
+
+## Steps
+
+- [ ] Settle with the owner where the claim shape lives, the harness rubric catalogue contract or a KI Specifications contract, and how composed lines are ordered and how unclaimed repository lines are kept.
+- [ ] Add the hook-line claim shape beside `packageScripts` in the catalogue contract, with its validation and tests.
+- [ ] Declare the `ki-repo` frame as data matching the `HOOK-4` frame rule.
+- [ ] Add claims to `ki-engineering`, `ki-repo-kb`, `ki-repo-tools`, `ki-repo-dotfiles-chezmoi` and `ki-repo-harness`, and the new `ki-repo-harness` content criterion.
+- [ ] Add the standard text in `ki-repo` and each shape skill that conform composes from claims, and regenerate the affected rubrics.
+
+## Files touched
+
+- `skills/keystone/ki-skills/scripts/shared/rubric.ts` and the per-skill copies the drift check keeps level
+- `skills/keystone/ki-repo/` standard, rubric items and `rubric.md`
+- The five shape skills' rubric catalogues, standards and `rubric.md`
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass.
+- `ki dev skill rubric` leaves no diff for each touched skill, and `ki repo audit --skill ki-repo` and `--skill ki-repo-harness` report no FAIL here.
+
+## Dependencies / blocks
+
+The contract placement must be settled before either side writes code, since KI-TOOL-KI-CLI-165 reads the shape. NO-GATE may widen the boundary when Kris returns to it.
+
+## Documentation impact
+
+### Decision Records
+
+[ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) stands; a new record is needed only if the claim shape moves to KI Specifications.
+
+### Specifications
+
+Possibly a KI Specifications contract for the claim shape, settled in the first Step.
+
+### Guides
+
+None.
+
+### Roadmap
+
+None beyond KI-TOOL-KI-CLI-165 in tools-ki.
+
 ## Discussion
 
 ### Contract placement
@@ -42,3 +89,7 @@ The claim shape is read by the `ki` host, so it may belong in a KI Specification
 ### Order and repository-specific lines
 
 When several skills claim lines in one hook, the composed order must be stable: the design puts Bun lines first and the KB audit after them. Planning should decide whether order follows declared skill order or an explicit rank, and how a repository keeps lines no skill claims, which KI-TOOL-KI-CLI-165 also asks.
+
+### Disposition, 20 October 2026
+
+Kris Brown answered HARNESS-TRIAGE on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "let's get the ball moving forwards", taken as a) with changes. Adopted into Next. Planning decides whether the contract belongs in KI Specifications.

@@ -2,13 +2,18 @@
 id: KI-HARNESS-GOV-189
 area: GOV
 title: move thread between hosts
-status: triage
+project: mac-studio-setup
+kind: deliver
+priority: medium
+size: m
+horizon: next
+status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-18T17:11:52Z
+updated_at: 2026-10-20T02:39:00Z
 ---
 
 # Move a Coordinating Thread to Another Host
@@ -43,6 +48,50 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 5. **Retire the old host's session.** The old session ends once the move is pushed and the new session has re-bootstrapped.
 6. **Close the old instance.** Once the handover has pushed, the instance left on the old host closes with no resume line and points to the host that took over. The 2026-10-14 decision named the DONE frame, which the work model's `finished` glyph banner supersedes; planning settles which form an old-host instance uses, since the work itself continues and is not finished.
 
+## Current state
+
+Checked on 20 October 2026 at `071567a1`. The `ki-coordination` standard has On hold and drain, the work package and the banner's housekeeping items, but no host-move procedure, no level check and no `[behind]` item. The decisions log, reports and briefs are tracked in `+/_WORK/<id>/`, so the decisions-log transfer gap observed on 14 October has closed for work that lives in a work package. The `ki agent` queue lives in machine-local state, and no command exports or re-imports it.
+
+## Steps
+
+- [ ] Settle the two open questions under Discussion, queue export and host-bound agents, with the owner, and which closing form the old-host instance uses.
+- [ ] Add a Moving work to another host section to the `ki-coordination` standard carrying the proposed rule's six steps in work-model terms.
+- [ ] Add the level check at resume on another host and at every mark, and the `[behind]` housekeeping item beside `[unpushed]` in the Banner section.
+- [ ] Add to the `ki-delegation` background-run standard which state-folder files stay behind on a move and that queued briefs travel as tracked `briefs/<run>.md`.
+- [ ] Regenerate both skills' `rubric.md` where the published text they cite changes.
+
+## Files touched
+
+- `skills/change-management/ki-coordination/references/standards-coordination.md` and `rubric.md`
+- `skills/governance/ki-delegation/references/standards-background-runs.md` and `rubric.md`
+
+## Verify
+
+- `bun run test` and `bunx tsc --noEmit` pass.
+- `ki dev skill rubric ki-coordination` and `ki dev skill rubric ki-delegation` leave no diff, and `ki repo audit --skill ki-coordination` and `--skill ki-delegation` report no FAIL here.
+
+## Dependencies / blocks
+
+The queue export and re-import mechanics belong to tools-ki; the standard can name the manual route, briefs re-queued from the work package's Next steps, until a command exists. Not blocking the Mac Studio Setup Project.
+
+## Documentation impact
+
+### Decision Records
+
+None needed: the owner decisions of 14 and 18 October are in the decisions logs quoted above.
+
+### Specifications
+
+None: no Specification covers coordination.
+
+### Guides
+
+None in this repository; a host onboarding guide belongs to the Mac Studio Setup Project and Rig.
+
+### Roadmap
+
+None.
+
 ## Discussion
 
 ### Open questions
@@ -69,3 +118,7 @@ Before a work resumes on another Mac, and at every mark, the coordinator checks 
 ### Relation to existing records
 
 KI-HARNESS-GOV-187 makes the thread model and the issued banner normative in `ki-coordination`; any procedure here edits the same standard and should follow it.
+
+### Disposition, 20 October 2026
+
+Kris Brown answered HARNESS-TRIAGE on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "let's get the ball moving forwards", taken as a) with changes. Adopted into Next. Queue export and host-bound agents are still open, and it does not block the Mac Studio setup.

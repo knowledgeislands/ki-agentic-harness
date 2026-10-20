@@ -2,14 +2,14 @@
 id: KI-HARNESS-GOV-222
 area: GOV
 title: Timeline and calendar skill
-project: observatory
+project: timelines
 component: governance
 status: triage
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T07:48:44Z
-updated_at: 2026-10-19T07:48:44Z
+updated_at: 2026-10-20T02:39:00Z
 ---
 
 # KI-HARNESS-GOV-222: Timeline and Calendar Skill
@@ -45,3 +45,7 @@ The 5G Emerge programme timeline milestones under `src/_data/programme-model/tim
 ## Discussion
 
 Open questions for planning: where the subscription feeds are homed and served, a knowledge base's own site, the Observatory or elsewhere, and how a private base publishes without exposing its dates; whether timeline views and calendar feeds are one skill or a skill and a view; the busy-status vocabulary and its default; whether the extracted code lives in the harness, `tools-ki` or a shared package. The harness owns priority and design.
+
+### Disposition, 20 October 2026
+
+Kris Brown answered HARNESS-TRIAGE on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "let's get the ball moving forwards", taken as a) with changes. Left in triage and handed to the Timelines Project, whose work, `ki.timelines` in Knowledge Islands Principal, takes its disposition with the decided `ki-calendars` design; its `project` moves from `observatory` to `timelines`.
