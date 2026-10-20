@@ -122,7 +122,7 @@ The approved boundary, against baseline `46f4e14d8f9efffa34cb78f166c9c84aa0d5415
 
 - `bun test skills/governance/ki-diagrams`: 32 pass, 0 fail.
 - `bunx tsc --noEmit`: passes.
-- `bun run test`: 1308 pass, 4 fail; the four hook tests fail the same way on the untouched baseline, as recorded for [KI-HARNESS-GOV-219](KI-HARNESS-GOV-219-feedback-work-folder-kind.md).
+- `bun run test`: 1308 pass, 4 fail; the four hook tests fail the same way on the untouched baseline, as recorded for [KI-HARNESS-GOV-219 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/17166cf2e5f1f8ef7823cb3d22ad721d70db33b1/docs/roadmap/KI-HARNESS-GOV-219-feedback-work-folder-kind.md).
 - `bun skills/governance/ki-diagrams/scripts/build-html.ts --check`: 12 committed viewer receipts match; on a copy with one byte appended to `skill-map.html` it refuses, naming the viewer.
 - `bunx @biomejs/biome check skills/governance/ki-diagrams/scripts`: clean. `sh -n .githooks/pre-commit`: clean.
 - `ki repo audit --skill ki-skills`: PASS. `--skill ki-work-roadmap`: FAIL only on ITEM-3 for other drafts adopted into Now and not yet planned. `--skill ki-diagrams`: the installed harness, still the main checkout's, reads the 12 receipts as stray under its old DIAG-1, as planned; that clears once this change is integrated.
