@@ -8,7 +8,9 @@ import {
   createDiagramsSession,
   type DiagramsRubricContext,
   diagramReceipt,
+  formatMark,
   KEEP_MERMAID,
+  markIssues,
   mermaidFences,
   parseManifest,
   privateFindings
@@ -343,4 +345,46 @@ test('DIAG-7 passes a fence the owner kept and is not applicable outside Git', (
   expect(outcomes.map((outcome) => outcome.status)).toEqual(['PASS'])
   expect(outcomes[0]?.message).toContain('the 1 the owner kept')
   expect(statuses('DIAG-7', repository().root)).toEqual(['NOT_APPLICABLE'])
+})
+
+test('markIssues accepts a run or a session mark and names each way one falls short', () => {
+  const written_at = '2026-10-20T06:00:00.000Z'
+  expect(markIssues(formatMark({ work: 'ki.w', run: 'night', agent: 'builder', written_at }))).toEqual([])
+  expect(markIssues(formatMark({ work: 'ki.w', session: 'interactive', written_at }))).toEqual([])
+  expect(markIssues('work = "ki.w"\nrun = "night"\nwritten_at = "yesterday"\n')).toEqual([
+    'a background run names both run and agent',
+    'written_at is not an ISO 8601 time'
+  ])
+  expect(
+    markIssues(
+      'work = "ki.w"\nrun = "n"\nagent = "a"\nsession = "s"\nthread = "t"\nwritten_at = "2026-10-20T06:00:00Z"\n'
+    )
+  ).toEqual(['thread is not a mark field', 'a mark names a run or a session, not both'])
+  expect(markIssues('written_at = 1\n')).toEqual([
+    'written_at is not a non-empty string',
+    'work is missing',
+    'neither run and agent nor session is named',
+    'written_at is missing'
+  ])
+  expect(markIssues('= broken')).toEqual(['mark.toml is not TOML'])
+})
+
+test('DIAG-8 warns on a working folder without a well-formed mark and is not applicable without one', () => {
+  const { root } = repository()
+  expect(statuses('DIAG-8', root)).toEqual(['NOT_APPLICABLE'])
+  mkdirSync(join(root, '+/diagrams/map'), { recursive: true })
+  mkdirSync(join(root, '+/diagrams/area'), { recursive: true })
+  writeFileSync(
+    join(root, '+/diagrams/map/mark.toml'),
+    formatMark({ work: 'ki.w', session: 'interactive', written_at: '2026-10-20T06:00:00.000Z' })
+  )
+  const outcomes = run('DIAG-8', context(root))
+  expect(outcomes.map((outcome) => [outcome.status, outcome.subject])).toEqual([
+    ['VIOLATION', '+/diagrams/area: no mark.toml']
+  ])
+  writeFileSync(
+    join(root, '+/diagrams/area/mark.toml'),
+    formatMark({ work: 'ki.w', session: 's', written_at: '2026-10-20T06:00:00.000Z' })
+  )
+  expect(statuses('DIAG-8', root)).toEqual(['PASS'])
 })

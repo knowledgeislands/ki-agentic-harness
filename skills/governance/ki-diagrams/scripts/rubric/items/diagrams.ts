@@ -249,11 +249,41 @@ const DIAG_7: RubricItem<DiagramsRubricContext> = {
   }
 }
 
+const DIAG_8: RubricItem<DiagramsRubricContext> = {
+  code: 'DIAG-8',
+  title: 'each working folder under `+/diagrams/` carries a well-formed mark',
+  description:
+    "Each folder under `+/diagrams/` carries a `mark.toml` at its root naming the work, the run and agent or the session that wrote it, and `written_at`, under the `ki-delegation` background-run standard's working-area marks; a folder without one, or whose mark is not well formed, warns.",
+  sources: [FRESHNESS],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Rebuild the diagram with `scripts/build-html.ts`, which writes the mark, passing `--work <id>` from an interactive session; or delete a folder no one owns; rerun the audit.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ marks }) => {
+        if (marks.folderCount === 0)
+          return [{ status: 'NOT_APPLICABLE', message: 'No working folder under `+/diagrams/`.' }]
+        return marks.findings.length === 0
+          ? [{ status: 'PASS', message: `${marks.folderCount} working folders carry a well-formed mark.` }]
+          : marks.findings.map((subject) => ({
+              status: 'VIOLATION',
+              message: 'A working folder should carry a well-formed `mark.toml`.',
+              subject
+            }))
+      }
+    }
+  }
+}
+
 export const DIAG: RubricFamily<DiagramsRubricContext, DiagramsRubricContext> = {
   code: 'DIAG',
   title: 'living diagrams',
   description: 'A repository keeps traced, self-contained, current Archify diagrams under one manifest.',
   standard: MANIFEST,
   selectContext: (context) => context,
-  items: [DIAG_1, DIAG_2, DIAG_3, DIAG_4, DIAG_5, DIAG_6, DIAG_7]
+  items: [DIAG_1, DIAG_2, DIAG_3, DIAG_4, DIAG_5, DIAG_6, DIAG_7, DIAG_8]
 }

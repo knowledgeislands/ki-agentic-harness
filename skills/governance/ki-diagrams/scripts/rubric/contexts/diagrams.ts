@@ -96,6 +96,13 @@ export type DiagramsMermaidContext = {
   readonly kept: number
 }
 
+export type DiagramsMarkContext = {
+  /** The working folders under `+/diagrams/`, one per slug. */
+  readonly folderCount: number
+  /** One `<folder>: <problem>` per working folder whose `mark.toml` is missing or not well formed. */
+  readonly findings: readonly string[]
+}
+
 export type DiagramsRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly layout: DiagramsLayoutContext
@@ -104,6 +111,7 @@ export type DiagramsRubricContext = {
   readonly freshness: DiagramsFreshnessContext
   readonly receipts: DiagramsReceiptContext
   readonly mermaid: DiagramsMermaidContext
+  readonly marks: DiagramsMarkContext
   readonly judgment: Record<never, never>
 }
 
@@ -342,6 +350,83 @@ const repositoryMermaid = (repository: string): { fences: string[]; kept: number
   return { fences, kept }
 }
 
+/** The working area a build writes each diagram into, one folder per slug. */
+export const WORKING_DIRECTORY = '+/diagrams'
+/** The sidecar at the root of a working folder that says who wrote it and when. */
+export const MARK_FILE = 'mark.toml'
+
+/**
+ * A working-area mark under the `ki-delegation` background-run standard: the work, then the run and agent for a
+ * background run or the session for an interactive one, then the time.
+ */
+export type WorkingMark = {
+  readonly work?: string
+  readonly run?: string
+  readonly agent?: string
+  readonly session?: string
+  readonly written_at: string
+}
+
+const MARK_FIELDS = ['work', 'run', 'agent', 'session', 'written_at'] as const
+
+/** The `mark.toml` text for one mark, its fields in the standard's order and absent ones left out. */
+export const formatMark = (mark: WorkingMark): string =>
+  MARK_FIELDS.map((field) => {
+    const value = mark[field]
+    return value === undefined ? '' : `${field} = ${JSON.stringify(value)}\n`
+  }).join('')
+
+/** Every way one `mark.toml` text falls short of a well-formed mark; empty when it is well formed. */
+export const markIssues = (text: string): string[] => {
+  let parsed: unknown
+  try {
+    parsed = TOML.parse(text)
+  } catch {
+    return ['mark.toml is not TOML']
+  }
+  if (!isRecord(parsed)) return ['mark.toml is not a table']
+  const table = parsed
+  const issues: string[] = []
+  const stringField = (field: string): string | undefined => {
+    const value = table[field]
+    if (value === undefined) return undefined
+    if (typeof value !== 'string' || !value.trim()) {
+      issues.push(`${field} is not a non-empty string`)
+      return undefined
+    }
+    return value
+  }
+  const [work, run, agent, session, written] = MARK_FIELDS.map(stringField)
+  for (const field of Object.keys(table))
+    if (!(MARK_FIELDS as readonly string[]).includes(field)) issues.push(`${field} is not a mark field`)
+  if (!work) issues.push('work is missing')
+  if (run || agent) {
+    if (!run || !agent) issues.push('a background run names both run and agent')
+    if (session) issues.push('a mark names a run or a session, not both')
+  } else if (!session) issues.push('neither run and agent nor session is named')
+  if (!written) issues.push('written_at is missing')
+  else if (Number.isNaN(Date.parse(written)) || !/^\d{4}-\d{2}-\d{2}T/.test(written))
+    issues.push('written_at is not an ISO 8601 time')
+  return issues
+}
+
+/** The working folders under `+/diagrams/` with what each one's mark lacks. */
+const workingMarks = (root: string): DiagramsMarkContext => {
+  const directory = join(root, WORKING_DIRECTORY)
+  if (!isDirectory(directory)) return { folderCount: 0, findings: [] }
+  const folders = readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !entry.isSymbolicLink())
+    .map((entry) => entry.name)
+    .sort()
+  const findings = folders.flatMap((folder) => {
+    const path = join(directory, folder, MARK_FILE)
+    const subject = `${WORKING_DIRECTORY}/${folder}`
+    if (!isFile(path)) return [`${subject}: no ${MARK_FILE}`]
+    return markIssues(readFileSync(path, 'utf8')).map((issue) => `${subject}: ${issue}`)
+  })
+  return { folderCount: folders.length, findings }
+}
+
 /** Read-only history: the traced paths each diagram's `last_checked` revision has since seen change. */
 const staleDiagrams = (repository: string, entries: readonly DiagramEntry[]): string[] =>
   entries.flatMap(({ slug, traced, lastChecked }) => {
@@ -416,6 +501,7 @@ export const createDiagramsSession = ({
       viewerCount: entries.filter((entry) => entry.commitHtml).length
     },
     mermaid: { gitAvailable, ...(gitAvailable ? repositoryMermaid(root) : { fences: [], kept: 0 }) },
+    marks: workingMarks(root),
     judgment: {}
   }
 

@@ -16,7 +16,7 @@ argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | refresh'
 
 # Knowledge Islands Diagrams standard
 
-You are applying the **Knowledge Islands Diagrams standard** - one consistent way to keep diagrams that explain a system: traced from the code, committed as a source and a self-contained SVG, listed in one manifest, and refreshed when what they draw changes. Read [the Diagrams standard](references/standards-diagrams.md) before authoring, auditing or refreshing a set; [the rubric](references/rubric.md) publishes its checkable criteria, [exemplars](references/exemplars.md) point at a conforming set, and [sources](references/sources.md) records the tooling evidence.
+You are applying the **Knowledge Islands Diagrams standard** - one consistent way to keep diagrams that explain a system: traced from the code, committed as a source and a self-contained SVG, listed in one manifest, refreshed when what they draw changes, and built in a marked working folder. Read [the Diagrams standard](references/standards-diagrams.md) before authoring, auditing or refreshing a set; [the rubric](references/rubric.md) publishes its checkable criteria, [exemplars](references/exemplars.md) point at a conforming set, and [sources](references/sources.md) records the tooling evidence.
 
 ## What this skill owns
 

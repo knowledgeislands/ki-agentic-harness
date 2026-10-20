@@ -6,6 +6,6 @@ test('the catalogue contains the packet and background-run criteria', () => {
     code: string
     mechanical?: { remediation: { class: string } }
   }[]
-  expect(items.map((item) => item.code)).toEqual(['PACKET-1', 'RUN-1', 'RUN-2', 'RUN-3', 'RUN-4'])
+  expect(items.map((item) => item.code)).toEqual(['PACKET-1', 'RUN-1', 'RUN-2', 'RUN-3', 'RUN-4', 'RUN-5'])
   expect(items[0]?.mechanical?.remediation.class).toBe('guarded')
 })

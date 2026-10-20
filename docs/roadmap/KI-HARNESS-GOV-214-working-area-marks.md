@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: m
-status: ready
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: a3cd97aa73cb06d19a905beb8eec76f18a769234
 created_at: 2026-10-18T08:55:30Z
-updated_at: 2026-10-20T02:42:00Z
+updated_at: 2026-10-20T05:50:18Z
 ---
 
 # KI-HARNESS-GOV-214: Working-Area Marks
@@ -47,12 +47,12 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Steps
 
-- [ ] Add a Working-area marks rule to the background-run standard that states the field names in one place: `work`, then `run` and `agent` for a background run or `session` for an interactive one, then `written_at`. It also names the Markdown front-matter form and the `mark.toml` sidecar form for a folder of non-Markdown output, and says that coordinating work and interactive sessions mark their own working files the same way.
-- [ ] Add a `ki-delegation` judgment criterion that a run's working-area files carry the mark, and regenerate its `rubric.md`.
-- [ ] In the diagrams standard's Regeneration and freshness section, name the `mark.toml` sidecar at the root of `+/diagrams/<slug>/`, its fields by reference to the background-run rule, and that neither Archify's `.delivery.json` nor the committed `.receipt.json` carries the mark.
-- [ ] Make `scripts/build-html.ts` write `+/diagrams/<slug>/mark.toml` after a successful finalize, reading `work`, `run` and `agent` from `KI_AGENT_RUN` and the run packet where present and writing `session` otherwise, with a boundary test for both.
-- [ ] Add a `ki-diagrams` mechanical criterion at WARN for a working folder without a well-formed `mark.toml`, and regenerate its `rubric.md`.
-- [ ] Reword the two SKILL.md summaries only where they list what the standards cover.
+- [x] Add a Working-area marks rule to the background-run standard that states the field names in one place: `work`, then `run` and `agent` for a background run or `session` for an interactive one, then `written_at`. It also names the Markdown front-matter form and the `mark.toml` sidecar form for a folder of non-Markdown output, and says that coordinating work and interactive sessions mark their own working files the same way.
+- [x] Add a `ki-delegation` judgment criterion that a run's working-area files carry the mark, and regenerate its `rubric.md`.
+- [x] In the diagrams standard's Regeneration and freshness section, name the `mark.toml` sidecar at the root of `+/diagrams/<slug>/`, its fields by reference to the background-run rule, and that neither Archify's `.delivery.json` nor the committed `.receipt.json` carries the mark.
+- [x] Make `scripts/build-html.ts` write `+/diagrams/<slug>/mark.toml` after a successful finalize, reading `work`, `run` and `agent` from `KI_AGENT_RUN` and the run packet where present and writing `session` otherwise, with a boundary test for both.
+- [x] Add a `ki-diagrams` mechanical criterion at WARN for a working folder without a well-formed `mark.toml`, and regenerate its `rubric.md`.
+- [x] Reword the two SKILL.md summaries only where they list what the standards cover.
 
 ## Files touched
 
@@ -95,6 +95,48 @@ None: no guide describes `+/` working files.
 ### Roadmap
 
 None; a tidy-up tool that acts on marks would be a later record if wanted.
+
+## Review
+
+### Delivered
+
+Every working file a run or session writes into `+/` now has one named mark, stated once in the `ki-delegation` background-run standard, and `ki-diagrams` builds write it. Baseline `a3cd97aa73cb06d19a905beb8eec76f18a769234`.
+
+### Change Summary
+
+- `ki-delegation` `references/standards-background-runs.md`: a new Working-area marks section under Run packet. It states the fields once, in order: `work`; `run` and `agent` for a background run or `session` for an interactive one; `written_at`. It names the front-matter form for Markdown and the `mark.toml` sidecar for a folder, says coordinating work and interactive sessions mark the same way, and keeps marks out of committed receipts and reports. It quotes MARK-RULE (14 October) and MARK-FIELDS (18 October).
+- `ki-delegation` rubric: RUN-5, a judgment criterion that a run's working-area files carry the mark. `rubric.md` regenerated.
+- `ki-diagrams` `references/standards-diagrams.md`: Regeneration and freshness names the `mark.toml` sidecar at the root of `+/diagrams/<slug>/`, its fields by reference, and that neither Archify's `<slug>.delivery.json` nor the committed `<slug>.receipt.json` carries it. The build command paragraph names the mark and `--work <id>`.
+- `scripts/rubric/contexts/diagrams.ts`: `WorkingMark`, `formatMark`, `markIssues` and a `marks` context over `+/diagrams/*/`.
+- `scripts/rubric/items/diagrams.ts`: DIAG-8, mechanical at WARN, one violation per folder without a well-formed mark, not applicable where no working folder exists. `rubric.md` regenerated.
+- `scripts/build-html.ts`: after a successful finalize it writes `mark.toml`. In a background run it takes `run` from `KI_AGENT_RUN`, `work` from the run packet's `thread.json` and `agent` from the `<name>.pid` that names this process or an ancestor, under `KI_STATE_HOME` or `XDG_STATE_HOME`. Otherwise it writes `session` from `CLAUDE_CODE_SESSION_ID`, or `interactive`. A new `--work <id>` names the work where no run packet does.
+- Both SKILL.md summaries now list the marks.
+- Remediation-inventory counts updated: criteria 828, diagnostic 433, judgment 321, mechanical 563, report-only 452.
+
+### Verification
+
+- `bun run test`: 1356 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- New boundary tests cover the run case (packet work and agent from a pid chain, named work wins) and the interactive case (session, `interactive`, missing work), mark parsing, and DIAG-8 PASS, WARN and NOT_APPLICABLE.
+- `ki dev skill rubric ki-delegation` and `ki dev skill rubric ki-diagrams`: in sync after `--write`.
+- `ki repo audit --skill ki-diagrams` (isolated home): FAIL=0, 12 DIAG-4 staleness warnings; `thread-model` now also traces the background-run standard this change edits.
+- `ki repo audit --skill ki-delegation`: PASS. `ki repo audit --skill ki-skills`: PASS.
+- A real rebuild of `skill-map` from this run wrote `mark.toml` naming `ki.ways-of-working`, run `ways-of-working`, agent `harness-batch` and the time, and left `docs/diagrams/skill-map.receipt.json` and the committed HTML byte-identical.
+
+### Outstanding concerns
+
+- An interactive build without `--work` writes a mark with no `work`, which DIAG-8 warns on; that is the intended nudge.
+- The `agent` lookup walks the process tree with `ps`; where `ps` is missing the mark omits `agent` and DIAG-8 warns.
+- Existing working folders in the primary checkout carry no mark, so DIAG-8 will warn there until they are rebuilt or deleted.
+
+### Post-change review
+
+- Scope matches the record's Boundary: no `+/README.md`, no Git tracking of `+/`, no tidy tool, no Archify change, and the receipt format is unchanged.
+- Field names live in one rule; the diagrams standard and RUN-5 refer to it rather than restating it.
+
+### Mini recap
+
+Marks are defined once, checked by a delegation judgment and a diagrams WARN, and written by the diagram build without touching what is committed.
 
 ## Discussion
 

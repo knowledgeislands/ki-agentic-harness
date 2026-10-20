@@ -7,6 +7,7 @@
 - [Coordinating work](#coordinating-work)
 - [Run packet](#run-packet)
   - [Run events](#run-events)
+  - [Working-area marks](#working-area-marks)
 - [Prompt shape](#prompt-shape)
 - [Authority tiers](#authority-tiers)
   - [Grants](#grants)
@@ -96,6 +97,16 @@ Every other status line stays local: it shows in `ki agent status` and the monit
 Anything derived from a packet, an event's text, a waiter's line or a later notification, carries summaries, identifiers and paths, never file contents, secrets or the owner's addresses.
 
 The semantics are portable; the file names are the reference layout the launcher writes.
+
+### Working-area marks
+
+Every file an agent or a session writes into a repository's `+/` working area carries a mark that says who wrote it and when, so a later reader, agent or owner, can tell whether it is current, whose it is, and which run to ask before moving or deleting it. Kris confirmed the rule on 14 October 2026, "MARK-RULE - yes, that reading; capture as a harness deliver record at next", and settled the field names for now on 18 October, "Mark feels, let's go with it for now". This is the one place the names are stated, so a later change touches one rule. The fields, in this order:
+
+- `work`: the work id of the work the file belongs to, under `ki-coordination`'s work naming.
+- `run` and `agent`: the run and the agent within it, for a file a background run writes; or `session`, the native session, or `interactive` where none is named, for a file an interactive session writes.
+- `written_at`: the time it was written, as an ISO 8601 UTC timestamp.
+
+A Markdown file carries the mark in its front matter. A folder of non-Markdown output, such as a rebuilt diagram, carries one `mark.toml` sidecar at its root holding the same fields as TOML strings. Coordinating work and an interactive session mark their own working files the same way. A mark is not provenance for committed work, which Git carries, and says nothing about how long a file is kept; it goes only into the working area, never into a committed receipt or report.
 
 ## Prompt shape
 

@@ -74,6 +74,21 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
         guidance:
           'Restore the report heading and its glyph form line, the three owner-report sections and the glyph banner in full, remove any reply block from a report written under the work model, and give each query a stable mnemonic tag, a Context, a one-sentence Query, lettered Options with a) marked recommended and no bullets, and links.'
       }
+    },
+    {
+      code: 'RUN-5',
+      title: "a run's working-area files carry the mark",
+      description:
+        'Every file a run, coordinating work or an interactive session writes into a `+/` working area carries the working-area mark, `work`, then `run` and `agent` or `session`, then `written_at`, in front matter for Markdown and in a `mark.toml` sidecar at the root of a folder of non-Markdown output, and no mark goes into a committed receipt or report.',
+      sources: ['standards-background-runs.md#working-area-marks'],
+      judgment: {
+        scope: "The `+/` working areas a run or session wrote into, selected by the owner or the run's report.",
+        prompt:
+          'Does each working file or folder a run or session wrote carry a mark naming its work, its run and agent or its session, and when it was written, in the form the standard names, and has a mark leaked into anything committed?',
+        outcomes: ['conforming', 'add the mark', 'remove a committed mark', 'escalate to owner'],
+        guidance:
+          "Add the missing mark from the run's packet or the session that wrote the file, take a mark out of any committed receipt or report, and ask the owner before moving or deleting an unmarked file whose writer is unknown."
+      }
     }
   ]
 }
