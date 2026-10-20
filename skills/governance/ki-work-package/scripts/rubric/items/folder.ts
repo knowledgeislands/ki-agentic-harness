@@ -116,7 +116,7 @@ const FOLDER_7: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-7',
   title: 'every decisions log reads to the close gate as entries',
   description:
-    "The `ki agent close` gate opens one entry at every `## ` heading, timestamped, dated, numbered or free text, and reads nothing else. A list item or deeper heading before the first `## ` heading is a decision the gate never sees, a heading with no text is one it cannot name, and a repeated heading is one `ki agent reconcile` cannot address. Thread folders' logs are read too, since the gate reads whichever log a run's home holds.",
+    "The `ki agent close` gate opens one entry at every `##` heading, timestamped, dated, numbered or free text, and reads nothing else. A list item or deeper heading before the first `##` heading is a decision the gate never sees, a heading with no text is one it cannot name, and a repeated heading is one `ki agent reconcile` cannot address. Thread folders' logs are read too, since the gate reads whichever log a run's home holds.",
   sources: [`${SOURCE}#decisions-log`],
   mechanical: {
     level: 'WARN',
