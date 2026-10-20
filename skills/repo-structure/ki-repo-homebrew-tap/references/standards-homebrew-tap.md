@@ -11,6 +11,7 @@ The quotable standard behind the [skills.ki-repo-homebrew-tap](../SKILL.md) skil
 - [Sourcing — versioned tarball, never HEAD](#sourcing--versioned-tarball-never-head)
 - [The tap README](#the-tap-readme)
 - [CI — brew test-bot](#ci--brew-test-bot)
+- [Commit gate](#commit-gate)
 - [Config marker](#config-marker)
 - [What `brew` checks that this skill does not](#what-brew-checks-that-this-skill-does-not)
 
@@ -76,6 +77,10 @@ Every `Formula/*.rb` must appear in this table (`TAP-6`); a formula the table om
 ## CI — brew test-bot
 
 A tap MAY carry a `.github/workflows/` job running [`brew test-bot`][testbot] — Homebrew's own CI action that runs `brew audit`, `brew style`, and `brew install` on each changed formula per PR _(shape, OPTIONAL)_. It can supply separately captured package-manager evidence; hosted static audit neither executes it nor treats its absence as a structural failure.
+
+## Commit gate
+
+`ki-repo` owns whether a committed hook exists and compares it byte for byte with the canonical text ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). A tap's canonical hooks, with and without a `package.json`, are published as worked examples under [`assets/githooks/`](../assets/githooks/); copy them exactly _(shape)_. `GATE-1` checks what the committed `pre-commit` runs: `ruby -wc` over the staged Ruby files, which checks syntax with warnings and never rewrites, and the focused `ki repo audit --skill ki-repo-homebrew-tap --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`. It is not applicable without a committed hook. `brew style`, `brew audit` and `brew test-bot` stay out of the hook, which stays fast and offline.
 
 ## Config marker
 

@@ -54,8 +54,8 @@ Stray lock files that block Git operations, and what the commit gate runs.
 
 - **GIT-1 [M] — Git lock hygiene** — No stray physical `.git/*.lock` files remain in the repository. (standards-chezmoi-dotfiles.md)
   - _Remediation:_ diagnostic — Inspect the lock’s owning process and repository boundary, then use the governed stale-lock recovery procedure; do not remove it blindly.
-- **GIT-2 [M] — Check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists. (standards-chezmoi-dotfiles.md)
-  - _Remediation:_ diagnostic — Make `.githooks/pre-commit` run `ki repo audit` without a rewriting flag, then rerun the audit.
+- **GIT-2 [M] — No commit gate** — The source declares no commit gate: no `.githooks/` path is committed and no `core.hooksPath` is bound. Its gate is the manual one its `AGENTS.md` names, and `ki-repo` HOOK-1 to HOOK-4 are not applicable. (standards-chezmoi-dotfiles.md)
+  - _Remediation:_ diagnostic — Remove `.githooks/`, run `git config --unset core.hooksPath`, and keep the check commands in the AGENTS.md manual gate.
 
 ## PATTERN — App-mutated configuration
 

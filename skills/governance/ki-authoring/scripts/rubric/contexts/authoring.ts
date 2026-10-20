@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import type {
+  AuditOutcome,
   ConformCommand,
   ConformWrite,
   RubricContextOptions,
@@ -125,6 +126,8 @@ export type MarkdownRubricContext = {
   exists: boolean
   audit: MarkdownAudit
   frontmatter: FrontmatterRubricContext
+  /** What a package-less commit gate runs over staged Markdown (`MD-hook`). */
+  hook: readonly AuditOutcome[]
   normalise?: () => void
 }
 export type OwnedFileEvidence = {
@@ -354,6 +357,47 @@ const inspectMarkdown = (repository: string): MarkdownAudit => {
 
 export type MarkdownInspector = (repository: string) => MarkdownAudit
 
+const HOOK = '.githooks/pre-commit'
+
+// A staged listing piped to a check-only rumdl: the hook checks Markdown where it stands rather than rewriting it.
+const checksStagedMarkdown = (line: string): boolean =>
+  /\bgit diff --cached\b/.test(line) && /\brumdl check\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
+
+/**
+ * What a commit gate without a package runs over staged Markdown. A package-backed gate reaches rumdl through
+ * lint-staged under `ki-engineering` `SCR-11`, and `ki-repo` `HOOK-1` owns whether the hook exists.
+ */
+export const inspectMarkdownHook = (root: string): readonly AuditOutcome[] => {
+  const path = join(root, HOOK)
+  if (!existsSync(path))
+    return [
+      { status: 'NOT_APPLICABLE', message: 'no committed .githooks/pre-commit; ki-repo HOOK-1 owns its existence' }
+    ]
+  if (existsSync(join(root, 'package.json')))
+    return [
+      {
+        status: 'NOT_APPLICABLE',
+        message: 'a package-backed hook checks staged Markdown through lint-staged; ki-engineering SCR-11 owns it'
+      }
+    ]
+  const metadata = lstatSync(path)
+  if (!metadata.isFile() || metadata.isSymbolicLink())
+    return [{ status: 'VIOLATION', message: `${HOOK} is not a safe regular file`, subject: HOOK }]
+  const lines = readFileSync(path, 'utf8')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => !line.startsWith('#'))
+  return lines.some(checksStagedMarkdown)
+    ? [{ status: 'PASS', message: `${HOOK} checks staged Markdown with rumdl, check-only`, subject: HOOK }]
+    : [
+        {
+          status: 'VIOLATION',
+          message: `${HOOK} does not run a check-only \`rumdl check\` over the staged Markdown`,
+          subject: HOOK
+        }
+      ]
+}
+
 export const createAuthoringSession = (
   { mode, repository, configuration, publication }: RubricContextOptions,
   markdownInspector: MarkdownInspector = inspectMarkdown
@@ -395,6 +439,7 @@ export const createAuthoringSession = (
       exists: targetExists,
       audit: targetExists ? markdownInspector(target) : { clean: false },
       frontmatter: { files: frontmatterDrafts.map((draft) => draft.evidence) },
+      hook: targetExists ? inspectMarkdownHook(target) : [],
       ...(mutable
         ? {
             normalise: () => {

@@ -596,7 +596,7 @@ export const createRepoSession = async (
           }
         : {})
     },
-    hooks: hookEvidence(target)
+    hooks: hookEvidence(target, configSource ? parsedRepositoryConfiguration?.primaryShape : undefined)
   }
 
   return {

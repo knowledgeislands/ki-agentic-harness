@@ -12,6 +12,10 @@ Project does not select a work tracker. `[skills.ki-work]` separately selects `r
 
 Every Project repository inherits the `ki-repo` baseline. A specialised structure may add layout, toolchain, deployment, or publication rules, but it must not silently redefine the primary classification or install a second change tracker.
 
+## Commit gate
+
+A Project adds no hook content of its own. Its canonical hooks, with and without a `package.json`, are the `ki-repo` frame with the `ki-engineering` package lines or the `ki-authoring` staged-Markdown line, published as worked examples under [`assets/githooks/`](../assets/githooks/); copy them exactly, since `ki-repo` HOOK-4 compares each hook byte for byte ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
+
 ## Change boundary
 
 Changing Project to KB or KB to Project changes the repository's primary contract. Treat it as an explicit migration: decide the destination tracker, migrate canonical records, update configuration atomically, and verify the destination structure before removing the source declaration.

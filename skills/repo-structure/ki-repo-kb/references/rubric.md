@@ -158,5 +158,5 @@ Mechanical internal-link resolution in exact case and judgment review of the pre
 
 What a Knowledge Base commit gate runs.
 
-- **GATE-1 [M] — check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists. (standards-knowledge-base.md)
-  - _Remediation:_ diagnostic — Make `.githooks/pre-commit` run `ki repo audit` without a rewriting flag, then rerun the audit.
+- **GATE-1 [M] — check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs the focused `ki repo audit --skill ki-repo-kb --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-knowledge-base.md)
+  - _Remediation:_ diagnostic — Copy the canonical pre-commit from `assets/githooks/`, which runs the focused staged audit, then rerun the audit.

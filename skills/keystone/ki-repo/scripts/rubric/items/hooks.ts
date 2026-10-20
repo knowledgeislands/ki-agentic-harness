@@ -7,13 +7,13 @@ const SOURCE = 'standards-repository.md'
 const HOOK_1: RubricItem<HooksRubricContext> = {
   code: 'HOOK-1',
   title: 'Committed commit gate',
-  description: `A tracked, executable \`${PRE_COMMIT_HOOK}\` exists; what it runs belongs to the repository's shape skills.`,
+  description: `A tracked, executable \`${PRE_COMMIT_HOOK}\` exists, unless the repository's primary shape declares no hook.`,
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance: `Commit an executable \`${PRE_COMMIT_HOOK}\` that runs the repository's check-only gate, then bind it with \`${HOOK_BINDING}\`.`
+      guidance: `Copy the shape's canonical \`pre-commit\` from its \`assets/githooks/\`, mark it executable, commit it, then bind it with \`${HOOK_BINDING}\`.`
     },
     audit: { phase: 'INSPECT', run: (context) => context.hook1 }
   }
@@ -35,13 +35,13 @@ const HOOK_2: RubricItem<HooksRubricContext> = {
 const HOOK_3: RubricItem<HooksRubricContext> = {
   code: 'HOOK-3',
   title: 'Committed commit-message gate',
-  description: `A tracked, executable \`${COMMIT_MSG_HOOK}\` exists in a package-backed repository; without a package it is not applicable until \`ki git check-message\` ships.`,
+  description: `A tracked, executable \`${COMMIT_MSG_HOOK}\` exists wherever a commit gate is: Commitlint where a package exists, \`ki git check-message\` where none does.`,
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance: `Commit an executable \`${COMMIT_MSG_HOOK}\` that validates the proposed message check-only, then rerun the audit.`
+      guidance: `Copy the shape's canonical \`commit-msg\` from its \`assets/githooks/\`, mark it executable and commit it, then rerun the audit.`
     },
     audit: { phase: 'INSPECT', run: (context) => context.hook3 }
   }
@@ -49,16 +49,16 @@ const HOOK_3: RubricItem<HooksRubricContext> = {
 
 const HOOK_4: RubricItem<HooksRubricContext> = {
   code: 'HOOK-4',
-  title: 'Hook refuses before it runs',
+  title: 'Hook is the canonical text',
   description:
-    'Each committed hook starts `#!/bin/sh`, refuses when a required tool is missing before its first command, tests in that refusal every external tool it calls, conditional branches included, and never suggests `--no-verify`.',
+    'Each committed hook is, byte for byte, the canonical hook `ki-repo` composes for the primary shape and package presence: the frame, with its empty-index exit and missing-tool refusal, then the shape skills’ blocks in a fixed order, with no extension point. Without a resolvable shape only the frame is judged.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Open the hook with the common frame: test every external tool the content calls, in any branch, name the missing ones and the install step, refuse with `exit 1`, then run the content.'
+        'Copy the hook named in the finding from the shape skill’s `assets/githooks/<package|no-package>/` byte-exact; move any repository-specific check into a shape-skill criterion run by the focused staged audit.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.hook4 }
   }
@@ -97,7 +97,7 @@ const HOOK_J1: RubricItem<HooksRubricContext> = {
 export const HOOK: RubricFamily<RepoRubricContext, HooksRubricContext> = {
   code: 'HOOK',
   title: 'Commit gate',
-  description: 'Existence, binding and frame of the committed hooks; their content belongs to shape skills.',
+  description: 'Existence, binding and canonical text of the committed hooks, composed from the shape skills’ blocks.',
   standard: SOURCE,
   selectContext: (context) => context.hooks,
   items: [HOOK_1, HOOK_2, HOOK_3, HOOK_4, HOOK_5, HOOK_J1]

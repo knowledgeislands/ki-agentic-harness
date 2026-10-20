@@ -50,6 +50,7 @@ const CONFIG_1: RubricItem<ToolsConfigContext> = {
           ]
         const allowed = new Set([
           'profile',
+          'assembled',
           ...(typeof context.sharedProfile === 'string' ? toolSharedProfileParameters(context.sharedProfile) : [])
         ])
         const unknown = context.configKeys.filter((key) => !allowed.has(key))
@@ -72,7 +73,7 @@ const CONFIG_1: RubricItem<ToolsConfigContext> = {
               subject: '.ki.toml'
             }
           ]
-        const hasParameters = context.configKeys.some((key) => key !== 'profile')
+        const hasParameters = context.configKeys.some((key) => key !== 'profile' && key !== 'assembled')
         return [
           context.sharedProfile === undefined && !hasParameters
             ? {

@@ -148,24 +148,43 @@ const SHELL_FATAL: RubricItem<ShellToolsContext> = {
 
 const HOOK = '.githooks/pre-commit'
 
-/** A command runs check-only when it sits on a non-comment line that carries no rewriting flag. */
-const runsCheckOnly = (text: string, command: RegExp): boolean =>
+const nonComment = (text: string): readonly string[] =>
   text
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .some((line) => !line.startsWith('#') && command.test(line) && !/(^|\s)--(fix|write)\b/.test(line))
+    .filter((line) => line !== '' && !line.startsWith('#'))
+
+/** A command runs check-only when it sits on a non-comment line that carries no rewriting flag. */
+const runsCheckOnly = (lines: readonly string[], command: RegExp): boolean =>
+  lines.some((line) => command.test(line) && !/(^|\s)--(fix|write)\b/.test(line))
+
+const SKILL_FLAG = /--skill[=\s]+ki-repo-tools(?![\w-])/
+const stagedAudit = (line: string): boolean =>
+  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
+
+/** The focused staged ki-repo-tools audit, run directly or through the canonical `quiet_audit` helper. */
+const runsFocusedAudit = (lines: readonly string[]): boolean => {
+  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
+  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
+  return (
+    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
+    audits.length > 0 &&
+    audits.every(stagedAudit) &&
+    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
+  )
+}
 
 const SHELL_HOOK: RubricItem<ShellToolsContext> = {
   code: 'SHELL-HOOK',
   title: 'Shell commit gate',
   description:
-    'Where a committed `.githooks/pre-commit` exists, a shell entrypoint repository runs `shellcheck` and `bats` from it check-only; `ki-repo` HOOK-1 owns whether the hook exists.',
+    'Where a shell entrypoint repository without a `package.json` commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
   sources: SOURCE,
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Add check-only `shellcheck` and `bats` lines to `.githooks/pre-commit`, then rerun the audit.'
+      guidance: 'Copy the canonical pre-commit from `assets/githooks/no-package/`, then rerun the audit.'
     },
     audit: {
       phase: 'INSPECT',
@@ -178,17 +197,35 @@ const SHELL_HOOK: RubricItem<ShellToolsContext> = {
           return one({ status: 'NOT_APPLICABLE', message: `No committed ${HOOK}; ki-repo HOOK-1 owns its existence.` })
         if (context.hook === 'unsafe')
           return one({ status: 'VIOLATION', message: `${HOOK} is not a safe regular file.`, subject: HOOK })
+        if (context.packageJson)
+          return one({
+            status: 'NOT_APPLICABLE',
+            message: 'A package-backed hook carries the ki-engineering content; SCR-11 owns it.'
+          })
+        const lines = nonComment(context.hookText)
+        if (lines.some((line) => /\bbats\b/.test(line)))
+          return one({
+            status: 'VIOLATION',
+            message: `${HOOK} runs bats; the test suite belongs to the manual gate and CI, not the commit gate.`,
+            subject: HOOK
+          })
         const missing = [
-          ['shellcheck', /\bshellcheck\b/],
-          ['bats', /\bbats\b/]
+          ['shellcheck', runsCheckOnly(lines, /\bshellcheck\b/)],
+          ['bash -n', runsCheckOnly(lines, /\bbash -n\b/)],
+          ['mandoc -T lint', runsCheckOnly(lines, /\bmandoc -T lint\b/)],
+          ['the focused staged audit', runsFocusedAudit(lines)]
         ]
-          .filter(([, command]) => !runsCheckOnly(context.hookText, command as RegExp))
+          .filter(([, present]) => !present)
           .map(([name]) => name as string)
         return missing.length === 0
-          ? one({ status: 'PASS', message: `${HOOK} runs shellcheck and bats check-only.`, subject: HOOK })
+          ? one({
+              status: 'PASS',
+              message: `${HOOK} runs shellcheck, bash -n, mandoc and the focused audit check-only.`,
+              subject: HOOK
+            })
           : one({
               status: 'VIOLATION',
-              message: `${HOOK} does not run ${missing.join(' or ')} check-only.`,
+              message: `${HOOK} does not run ${missing.join(', ')} check-only.`,
               subject: HOOK
             })
       }

@@ -14,7 +14,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T22:46:17Z
-updated_at: 2026-10-20T02:39:00Z
+updated_at: 2026-10-20T04:30:00Z
 transferred_from: ki-principal ki.tools-burndown hooks-standard design section 4.2, HOOK-CAPTURE a), 2026-10-19
 ---
 
@@ -37,21 +37,30 @@ The [hooks-standard design](/Users/krisbrown/workspaces/knowledge-islands/ki-pri
 
 ## Current state
 
-Checked on 20 October 2026 at `071567a1`. The rubric catalogue contract carries `packageScripts` claims, defined in `skills/keystone/ki-skills/scripts/shared/rubric.ts` and its per-skill copies, and no hook-line claim. `HOOK-1` to `HOOK-5` in `ki-repo`, `SCR-5`, `SCR-11` and `GATE-1` audit committed hooks; none composes one. The tools-ki host is [KI-TOOL-KI-CLI-165](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md). NO-GATE, which would widen this record to the Project, homebrew-tap and specifications shapes, is parked by Kris until the hooks course is settled.
+Checked on 20 October 2026 on branch `roll-standards`, after step 6.1 of the [Git hooks model](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.chezmoi/design/git-hooks-model.md). Kris's STRICTNESS-CONFORM decision there settles the open questions below: there is one canonical hook pair per `primary_shape` and package presence, composed in a fixed order from the `ki-repo` frame and each shape's block, audited by exact comparison and with no extension point, so no repository keeps an unclaimed line; a repository-specific check becomes a criterion of its shape skill, run through the focused staged audit.
+
+- The claims live as data in `ki-repo`, `skills/keystone/ki-repo/scripts/rubric/contexts/canonical-hooks.ts`, not in the rubric catalogue contract beside `packageScripts`.
+- `ki-repo` `HOOK-4` compares each committed hook byte for byte with that text, and `HOOK-1` to `HOOK-4` are not applicable where a shape declares no hook.
+- Each shape skill publishes its generated worked example under `assets/githooks/{package,no-package}/`, written by `ki-repo`'s generator.
+- Content criteria: `ki-engineering` `SCR-11` and `PKG-6`, `ki-authoring` `MD-hook`, `ki-repo-kb` `GATE-1`, `ki-repo-harness` `GATE-1`, `ki-repo-tools` `SHELL-HOOK` and `ASSEMBLE-1`, and new `GATE-1` criteria in `ki-repo-specifications` and `ki-repo-homebrew-tap`; `ki-repo-dotfiles-chezmoi` `GIT-2` now requires that no hook is committed or bound.
+- The harness's own hooks are its canonical package pair.
+
+The host still composes nothing: writing the canonical text into a repository is [KI-TOOL-KI-CLI-165](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md), which can now read the published assets or the composer rather than a catalogue claim.
 
 ## Steps
 
-- [ ] Settle with the owner where the claim shape lives, the harness rubric catalogue contract or a KI Specifications contract, and how composed lines are ordered and how unclaimed repository lines are kept.
-- [ ] Add the hook-line claim shape beside `packageScripts` in the catalogue contract, with its validation and tests.
-- [ ] Declare the `ki-repo` frame as data matching the `HOOK-4` frame rule.
-- [ ] Add claims to `ki-engineering`, `ki-repo-kb`, `ki-repo-tools`, `ki-repo-dotfiles-chezmoi` and `ki-repo-harness`, and the new `ki-repo-harness` content criterion.
-- [ ] Add the standard text in `ki-repo` and each shape skill that conform composes from claims, and regenerate the affected rubrics.
+- [x] Settle where the claim shape lives and how lines are ordered: settled by STRICTNESS-CONFORM, as above.
+- [x] ~~Add the hook-line claim shape beside `packageScripts` in the catalogue contract.~~ Superseded: the claims are `ki-repo` data.
+- [x] Declare the `ki-repo` frame as data and make `HOOK-4` compare against it.
+- [x] Add each shape's block and content criterion, including the new `ki-repo-harness` criterion.
+- [x] Add the standard text in `ki-repo` and each shape skill, and regenerate the affected rubrics.
+- [ ] Agree with the owner whether this record now closes, leaving composition in repositories to KI-TOOL-KI-CLI-165.
 
 ## Files touched
 
-- `skills/keystone/ki-skills/scripts/shared/rubric.ts` and the per-skill copies the drift check keeps level
-- `skills/keystone/ki-repo/` standard, rubric items and `rubric.md`
-- The five shape skills' rubric catalogues, standards and `rubric.md`
+- `skills/keystone/ki-repo/` composer, generator, standard, rubric items and `rubric.md`
+- `ki-engineering`, `ki-authoring`, `ki-git` and the eight `ki-repo-*` shape skills' standards, criteria, `assets/githooks/` and `rubric.md`
+- The harness's own `.githooks/`, `package.json` and `AGENTS.md`
 
 ## Verify
 
@@ -60,17 +69,17 @@ Checked on 20 October 2026 at `071567a1`. The rubric catalogue contract carries 
 
 ## Dependencies / blocks
 
-The contract placement must be settled before either side writes code, since KI-TOOL-KI-CLI-165 reads the shape. NO-GATE may widen the boundary when Kris returns to it.
+KI-TOOL-KI-CLI-165 can proceed against the published canonical hooks. Kris's STRICTNESS-CONFORM decision brought the Project, homebrew-tap and specifications shapes in, which NO-GATE had parked.
 
 ## Documentation impact
 
 ### Decision Records
 
-[ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) stands; a new record is needed only if the claim shape moves to KI Specifications.
+[ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) is refined in place for the canonical hook and exact comparison.
 
 ### Specifications
 
-Possibly a KI Specifications contract for the claim shape, settled in the first Step.
+None: the canonical text is harness data.
 
 ### Guides
 

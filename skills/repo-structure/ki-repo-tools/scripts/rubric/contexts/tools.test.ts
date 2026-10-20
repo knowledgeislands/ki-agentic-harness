@@ -4,6 +4,7 @@ import { chmodSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, sym
 import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
+import { ASSEMBLE } from '../items/assembled.ts'
 import { CONFIG } from '../items/config.ts'
 import { MAN } from '../items/manual.ts'
 import { SHARED } from '../items/shared-code.ts'
@@ -517,7 +518,7 @@ test('an unrelated physical repository is not applicable', () => {
   expect(configItem().audit.run(CONFIG.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
 })
 
-test('SHELL-HOOK reads the committed gate only when it exists and requires check-only shell checks', () => {
+test('SHELL-HOOK requires the canonical shell checks and focused audit, and no bats suite', () => {
   const { repository } = fixture()
   const primary = join(repository, 'bin', basename(repository).replace(/^tools-/, ''))
   writeFileSync(primary, '#!/bin/sh\n')
@@ -532,18 +533,70 @@ test('SHELL-HOOK reads the committed gate only when it exists and requires check
 
   mkdirSync(join(repository, '.githooks'))
   const hook = join(repository, '.githooks', 'pre-commit')
-  writeFileSync(hook, '#!/bin/sh\n# shellcheck bin/demo\nbats tests/\n')
-  expect(status()?.message).toContain('does not run shellcheck check-only')
-
-  writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo --fix\nbats tests/\n')
-  expect(status()?.status).toBe('VIOLATION')
-
-  writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo\nbats tests/\n')
+  const canonical = readFileSync(join(import.meta.dir, '../../../assets/githooks/no-package/pre-commit'), 'utf8')
+  writeFileSync(hook, canonical)
   expect(status()?.status).toBe('PASS')
+
+  writeFileSync(hook, `${canonical}bats tests/\n`)
+  expect(status()?.message).toContain('runs bats')
+
+  writeFileSync(hook, canonical.replace(/^.*mandoc -T lint.*$/m, '# no manual pages'))
+  expect(status()?.message).toContain('does not run mandoc -T lint check-only')
+
+  writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo --fix\nbash -n bin/demo\n')
+  expect(status()?.message).toContain('shellcheck, mandoc -T lint, the focused staged audit')
+
+  writeFileSync(hook, canonical.replace('--skill ki-repo-tools', '--skill ki-repo-kb'))
+  expect(status()?.message).toContain('the focused staged audit')
+
+  writeFileSync(join(repository, 'package.json'), '{}\n')
+  expect(status()?.status).toBe('NOT_APPLICABLE')
+  rmSync(join(repository, 'package.json'))
 
   rmSync(hook)
   symlinkSync(join(repository, 'install.sh'), hook)
   expect(status()?.message).toContain('not a safe regular file')
+})
+
+test('ASSEMBLE-1 runs each declared repository check against the artefact and every source', () => {
+  const { repository, config } = fixture()
+  const item = ASSEMBLE.items[0]?.mechanical
+  if (!item) throw new Error('ASSEMBLE-1 mechanical item is missing')
+  const outcomes = () => {
+    const subject = createToolsSession(options(repository, 'audit')).subjects[0]
+    if (!subject) throw new Error('ki-repo-tools session has no repository subject')
+    return item.audit.run(ASSEMBLE.selectContext(subject.context()))
+  }
+  expect(outcomes()[0]?.status).toBe('NOT_APPLICABLE')
+
+  const check = join(repository, 'bin', 'assemble-demo')
+  writeFileSync(check, '#!/bin/sh\n[ "$1" = --check ] && cmp -s src/a.sh bin/demo\n')
+  chmodSync(check, 0o755)
+  mkdirSync(join(repository, 'src'))
+  writeFileSync(join(repository, 'src', 'a.sh'), readFileSync(join(repository, 'bin', 'demo'), 'utf8'))
+  writeFileSync(
+    config,
+    '[skills.ki-repo]\n[skills.ki-repo-tools]\nassembled = [{ artifact = "bin/demo", sources = ["src/a.sh"], check = ["bin/assemble-demo", "--check"] }]\n'
+  )
+  expect(outcomes().map((outcome) => [outcome.status, outcome.subject])).toEqual([
+    ['PASS', 'bin/demo'],
+    ['PASS', 'src/a.sh']
+  ])
+
+  writeFileSync(join(repository, 'src', 'a.sh'), '#!/bin/sh\necho changed\n')
+  expect(outcomes().map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
+
+  // The program must be the repository's own file, and the declaration is validated down.
+  writeFileSync(
+    config,
+    '[skills.ki-repo]\n[skills.ki-repo-tools]\nassembled = [{ artifact = "bin/demo", sources = ["src/a.sh"], check = ["/bin/true"] }]\n'
+  )
+  expect(outcomes()[0]?.message).toContain('repository-relative path')
+  writeFileSync(
+    config,
+    '[skills.ki-repo]\n[skills.ki-repo-tools]\nassembled = [{ artifact = "bin/demo", sources = ["src/a.sh"], check = ["bin/missing"] }]\n'
+  )
+  expect(outcomes()[0]?.message).toContain('not a committed regular file')
 })
 
 test('SHELL-FATAL warns on each Bats suite whose [[ ]] or ! assertions do not end || false', () => {

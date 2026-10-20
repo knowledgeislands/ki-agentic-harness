@@ -11,6 +11,7 @@ Line-by-line criteria for auditing ki-repo-specifications. Classifications are d
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 - [SPEC — Repository structure](#spec--repository-structure)
 - [SYNC — Standard synchronisation](#sync--standard-synchronisation)
+- [GATE — commit gate](#gate--commit-gate)
 
 ## RUBRIC — Generated rubric publication
 
@@ -55,3 +56,12 @@ Alignment across the knowledge chain.
   - _Review prompt:_ Do the standard, rubric, catalogue, tests, and source review agree?
   - _Outcomes:_ conforming; synchronisation required; source review required
   - _Conforming guidance:_ Update the affected canonical source, catalogue, tests, generated publication, and source record together, or record the outstanding source-review question.
+
+## GATE — commit gate
+
+→ [standard](standards-specifications.md)
+
+What a Specifications repository commit gate runs.
+
+- **GATE-1 [M] — check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs the focused `ki repo audit --skill ki-repo-specifications --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-specifications.md)
+  - _Remediation:_ diagnostic — Copy the canonical pre-commit from `assets/githooks/`, then rerun the audit.

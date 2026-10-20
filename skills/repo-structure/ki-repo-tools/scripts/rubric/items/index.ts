@@ -1,5 +1,6 @@
 import type { SkillRubricDefinition } from '../../shared/rubric.ts'
 import { createToolsSession, type ToolsRubricContext } from '../contexts/tools.ts'
+import { ASSEMBLE } from './assembled.ts'
 import { COMPLETION } from './completion.ts'
 import { CONFIG } from './config.ts'
 import { LANG } from './language.ts'
@@ -15,5 +16,5 @@ export default {
   concern: 'command-line tool repository structure',
   packageScripts: ['ki:tools:lint-man'],
   createSession: createToolsSession,
-  families: [RUBRIC, TOOL, SHELL, LANG, COMPLETION, MAN, CONFIG, SHARED]
+  families: [RUBRIC, TOOL, SHELL, LANG, COMPLETION, MAN, CONFIG, SHARED, ASSEMBLE]
 } satisfies SkillRubricDefinition<ToolsRubricContext>

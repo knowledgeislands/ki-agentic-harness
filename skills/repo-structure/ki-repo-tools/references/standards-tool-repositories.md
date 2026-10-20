@@ -102,12 +102,25 @@ What the repo _is_ decides which checks apply — the same standard covers a bas
 
 | Capability signal | Requirement it turns on |
 | --- | --- |
-| Primary bin has a `bash`/`sh` shebang (SHELL) | A CI workflow references **shellcheck** (the tool is shellcheck-clean); `tests/` holds a **`*.bats`** suite CI runs (references `bats`), whose `[[ ]]` and `!` assertions end `|| false` (`SHELL-FATAL`, [below](#fatal-bats-assertions)). Where a committed `.githooks/pre-commit` exists, it runs `shellcheck` and `bats` check-only (`SHELL-HOOK`). |
+| Primary bin has a `bash`/`sh` shebang (SHELL) | A CI workflow references **shellcheck** (the tool is shellcheck-clean); `tests/` holds a **`*.bats`** suite CI runs (references `bats`), whose `[[ ]]` and `!` assertions end `|| false` (`SHELL-FATAL`, [below](#fatal-bats-assertions)). Without a `package.json`, a committed `.githooks/pre-commit` runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused staged audit, and no `bats` suite (`SHELL-HOOK`, [below](#commit-gate)). |
 | A `package.json` appears (TS/Bun tool) | The repo defers lint/test to **`ki-engineering`** and MUST also declare `[skills.ki-engineering]` in `.ki.toml`. Shell checks don't apply. |
 | A physical `man/<tool>.1` page appears | CI runs `mandoc -T lint man/<tool>.1`, directly or through the repository's native task runner. The installer publishes it and `--link` links it alongside the executable. |
 | Another language (Python, Go, …) | Defer to that language's own toolchain. The container checks (bin, install.sh, versioning, changelog, CI, tests) still apply. |
 
-There is deliberately **no `ki-shell` skill**: shell is the reference language, and its two tool-specific gates (shellcheck, bats) live here as capability conditionals rather than a separate skill (YAGNI at n=1). If a second shell-specific concern emerges, revisit. `SHELL-HOOK` agrees with that decision rather than superseding it: it is the shell capability's commit-gate content criterion under [ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md), and `ki-repo` still owns whether the hook exists, is bound and carries the refusal frame (`HOOK-1`, `HOOK-2`, `HOOK-4`). A package-less tool repository commits only `pre-commit` until `tools-ki` `KI-TOOL-KI-CLI-161` ships `ki git check-message` for its `commit-msg`.
+There is deliberately **no `ki-shell` skill**: shell is the reference language, and its two tool-specific gates (shellcheck, bats) live here as capability conditionals rather than a separate skill (YAGNI at n=1). If a second shell-specific concern emerges, revisit. `SHELL-HOOK` agrees with that decision rather than superseding it: it is the shell capability's commit-gate content criterion, described under [Commit gate](#commit-gate).
+
+### Commit gate
+
+A tool repository's committed hooks are the `ki-repo` canonical pair for the `ki-repo-tools` shape, published as this skill's worked example under [`assets/githooks/`](../assets/githooks/), one pair with a `package.json` and one without ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Without a package, `pre-commit` checks the staged Markdown under `ki-authoring` `MD-hook`, then the shell block: `shellcheck` and `bash -n` over each staged shell file, found by a `.sh` or `.bash` name or a `sh` or `bash` shebang, and `mandoc -T lint` over each staged `man/*.[1-9]` page, all check-only (`SHELL-HOOK`). With a package, the `ki-engineering` content takes the place of the Markdown and shell lines. Both end with the focused `ki repo audit --skill ki-repo-tools --staged` through the hook's quiet helper, and `commit-msg` runs `ki git check-message "$1"` without a package and Commitlint with one. The `bats` suite, like any test suite, belongs to the manual gate and CI, never the commit gate, so `SHELL-HOOK` fails a hook that runs it. `ki-repo` owns whether the hook exists, is bound and matches its canonical text (`HOOK-1`, `HOOK-2`, `HOOK-4`).
+
+A repository-specific check that is fast and check-only joins the gate as a criterion of this skill rather than a line in the hook, so the canonical text stays exact. A tool that commits an artefact assembled from its sources declares it in its marker table, and `ASSEMBLE-1` runs the repository's own check from the repository root, without a shell, through the focused staged audit:
+
+```toml
+[skills.ki-repo-tools]
+assembled = [{ artifact = "bin/demo", sources = ["src/demo.sh"], check = ["bin/assemble-demo", "--check"] }]
+```
+
+The check's program must be a regular file committed in the repository; a non-zero exit fails the criterion. The finding is reported against the artefact and each listed source, so staging a source without its reassembled artefact fails the commit. Without a declaration `ASSEMBLE-1` is not applicable.
 
 ### Fatal Bats assertions
 
@@ -172,7 +185,7 @@ A physical `man/<tool>.1` is the installed command reference. It stays aligned w
 
 ## The qualified `ki-repo-tools` marker
 
-A `tools-*` repo opts in by declaring `[skills.ki-repo-tools]` in `.ki.toml`. A keyless table retains repository-owned installer files. The optional `profile`, `tool`, `repository`, `env_prefix`, `manual_path`, and profile-specific `public_key_path` keys select a managed projection defined by the [tool shared-code standard](standards-tool-shared-code.md). The checker validates down and never reads another skill's table. `ki repo conform --skill ki-repo-tools` may add the keyless marker to an existing parseable configuration, but it never selects a profile.
+A `tools-*` repo opts in by declaring `[skills.ki-repo-tools]` in `.ki.toml`. A keyless table retains repository-owned installer files. The optional `profile`, `tool`, `repository`, `env_prefix`, `manual_path`, and profile-specific `public_key_path` keys select a managed projection defined by the [tool shared-code standard](standards-tool-shared-code.md). The optional `assembled` key declares the committed artefacts `ASSEMBLE-1` checks, described under [Commit gate](#commit-gate), and needs no profile. The checker validates down and never reads another skill's table. `ki repo conform --skill ki-repo-tools` may add the keyless marker to an existing parseable configuration, but it never selects a profile.
 
 A language conditional is declared as its **own** table, not a key here: a TS/Bun tool carries both `ki-repo-tools` and `ki-engineering` qualified declarations.
 

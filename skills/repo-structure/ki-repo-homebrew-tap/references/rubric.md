@@ -11,6 +11,7 @@ Line-by-line criteria for auditing ki-repo-homebrew-tap. Classifications are der
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 - [TAP — tap structure](#tap--tap-structure)
 - [CONFIG — configuration](#config--configuration)
+- [GATE — commit gate](#gate--commit-gate)
 
 ## RUBRIC — Generated rubric publication
 
@@ -80,3 +81,12 @@ The repository declares the keyless Homebrew-tap governance marker.
 
 - **CONFIG-1 [M] — identity marker** — `.ki.toml` contains a keyless `[skills.ki-repo-homebrew-tap]` marker with no unknown keys. (standards-homebrew-tap.md)
   - _Remediation:_ diagnostic — Declare the selected standard through the repository configuration owner.
+
+## GATE — commit gate
+
+→ [standard](standards-homebrew-tap.md)
+
+What a Homebrew tap commit gate runs.
+
+- **GATE-1 [M] — check-only commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ruby -wc` over the staged Ruby files and the focused `ki repo audit --skill ki-repo-homebrew-tap --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-homebrew-tap.md)
+  - _Remediation:_ diagnostic — Copy the canonical pre-commit from `assets/githooks/`, then rerun the audit.

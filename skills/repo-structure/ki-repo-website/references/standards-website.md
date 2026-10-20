@@ -50,4 +50,4 @@ In multi-site mode the unqualified root `ki:site:*` aliases remain the public se
 
 ## 4. Ownership
 
-This core owns implementation selection, `site-root`, and the build-output/lifecycle seam only. It does not choose Eleventy, React, a CSS stack, a host, DNS provider, or server-side code.
+This core owns implementation selection, `site-root`, and the build-output/lifecycle seam only. It adds no hook content: a website's canonical hooks are the `ki-repo` frame with the `ki-engineering` package lines or the `ki-authoring` staged-Markdown line, published as worked examples under [`assets/githooks/`](../assets/githooks/); copy them exactly, since `ki-repo` HOOK-4 compares each hook byte for byte ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). The build stays out of the hook. It does not choose Eleventy, React, a CSS stack, a host, DNS provider, or server-side code.

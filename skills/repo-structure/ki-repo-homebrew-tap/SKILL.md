@@ -4,6 +4,7 @@ ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
+contributes: ['.githooks/pre-commit']
 description: >
   Audit or scaffold a KI Homebrew tap and its `Formula/*.rb` distribution surface. Use for formula sources,
   tap shape, README publication, `brew audit`, or `brew style`; `ki-repo-tools` owns CLI repositories and

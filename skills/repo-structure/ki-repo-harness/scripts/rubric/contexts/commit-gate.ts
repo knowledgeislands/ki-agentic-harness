@@ -8,13 +8,24 @@ export type HarnessGateContext = {
   hook: readonly AuditOutcome[]
 }
 
-const runsHarnessAudit = (line: string): boolean =>
-  /\bki repo audit\b/.test(line) &&
-  /--skill[=\s]+ki-repo-harness\b/.test(line) &&
-  /(^|\s)--staged\b/.test(line) &&
-  !/(^|\s)--(fix|write)\b/.test(line)
+const SKILL_FLAG = /--skill[=\s]+ki-repo-harness(?![\w-])/
 
-/** What a harness commit gate runs; `ki-repo` HOOK-1 owns whether the hook exists. */
+const stagedAudit = (line: string): boolean =>
+  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
+
+/** The focused staged ki-repo-harness audit, run directly or through the canonical `quiet_audit` helper. */
+const runsFocusedAudit = (lines: readonly string[]): boolean => {
+  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
+  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
+  return (
+    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
+    audits.length > 0 &&
+    audits.every(stagedAudit) &&
+    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
+  )
+}
+
+/** What a harness commit gate runs; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. */
 export const inspectCommitGate = (root: string): HarnessGateContext => {
   const directory = join(root, '.githooks')
   const path = join(root, HOOK)
@@ -41,7 +52,7 @@ export const inspectCommitGate = (root: string): HarnessGateContext => {
   const lines = readFileSync(path, 'utf8')
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line) => !line.startsWith('#'))
+    .filter((line) => line !== '' && !line.startsWith('#'))
   if (lines.some((line) => /\bki repo conform\b/.test(line)))
     return {
       hook: [
@@ -52,10 +63,14 @@ export const inspectCommitGate = (root: string): HarnessGateContext => {
         }
       ]
     }
-  return lines.some(runsHarnessAudit)
+  return runsFocusedAudit(lines)
     ? {
         hook: [
-          { status: 'PASS', message: `${HOOK} runs the harness audit check-only on staged content.`, subject: HOOK }
+          {
+            status: 'PASS',
+            message: `${HOOK} runs the focused ki-repo-harness audit check-only on staged content.`,
+            subject: HOOK
+          }
         ]
       }
     : {

@@ -533,7 +533,7 @@ test('delegation does not cover obsolete batch paths or noncanonical checkpoint 
   for (const relativePath of records) expect(finding?.message).toContain(relativePath)
 })
 
-test('GATE-1 requires a committed gate to run ki repo audit check-only', () => {
+test('GATE-1 requires a committed gate to run the focused staged audit check-only', () => {
   const repository = createBase()
   const gate = () => collectKbAuditEvidence(repository).find((finding) => finding.code === 'GATE-1')
   expect(gate()?.level).toBe('NOT_APPLICABLE')
@@ -541,15 +541,25 @@ test('GATE-1 requires a committed gate to run ki repo audit check-only', () => {
   mkdirSync(join(repository, '.githooks'))
   const hook = join(repository, '.githooks', 'pre-commit')
   writeFileSync(hook, '#!/bin/sh\n# ki repo audit\n')
-  expect(gate()?.message).toContain('does not run `ki repo audit` check-only')
+  expect(gate()?.message).toContain('does not run `ki repo audit --skill ki-repo-kb --staged` check-only')
 
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --fix\n')
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-kb --staged --fix\n')
   expect(gate()?.level).toBe('FAIL')
 
-  writeFileSync(hook, '#!/bin/sh\nki repo audit\nki repo conform\n')
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-kb --staged\nki repo conform\n')
   expect(gate()?.message).toContain('runs `ki repo conform`')
 
-  writeFileSync(hook, '#!/bin/sh\nki repo audit || exit 1\n')
+  // The full audit, or another skill's, is not the focused gate.
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --staged || exit 1\n')
+  expect(gate()?.level).toBe('FAIL')
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-kb-streams --staged || exit 1\n')
+  expect(gate()?.level).toBe('FAIL')
+
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --repo "$root" --skill ki-repo-kb --staged || exit 1\n')
+  expect(gate()?.level).toBe('PASS')
+
+  // The canonical hook reaches the same audit through its quiet helper.
+  writeFileSync(hook, readFileSync(join(import.meta.dir, '../../../assets/githooks/no-package/pre-commit'), 'utf8'))
   expect(gate()?.level).toBe('PASS')
 
   rmSync(hook)

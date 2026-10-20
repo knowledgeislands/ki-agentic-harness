@@ -5,6 +5,7 @@ ki-applicability: baseline
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['.editorconfig', '.rumdl.toml']
+contributes: ['.githooks/pre-commit']
 description: >
   Govern KI Markdown, TOML, README composition, and durable knowledge placement. Use to format or audit
   authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality,

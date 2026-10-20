@@ -93,7 +93,7 @@ export const PACKAGE: RubricFamily<EngineeringRubricContext, PackageRubricContex
     mechanical(
       'PKG-6',
       'Lint-staged fan-out',
-      '`lint-staged` is present and fans out to Biome on staged code and `rumdl check --fix` on staged authored Markdown.',
+      '`lint-staged` is present and fans out to Biome on staged code and `rumdl check --fix` on staged authored Markdown, calling each tool directly rather than through `bunx`, `npx` or `pnpm dlx`.',
       'FAIL',
       (context) => context.pkg6,
       { overrideLevels: ['WARN'], conform: synchronise }

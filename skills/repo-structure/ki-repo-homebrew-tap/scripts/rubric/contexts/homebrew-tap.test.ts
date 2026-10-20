@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { CONFIG } from '../items/config.ts'
+import { GATE } from '../items/gate.ts'
 import { TAP } from '../items/tap.ts'
 import { createHomebrewTapSession } from './homebrew-tap.ts'
 
@@ -117,4 +118,22 @@ test('an unrelated repository is not applicable', async () => {
   expect(tapItem('TAP-1').audit.run(TAP.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
   expect(tapItem('TAP-7').audit.run(TAP.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
   expect(configItem().audit.run(CONFIG.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
+})
+
+test('GATE-1 requires the committed gate to check staged Ruby and run the focused staged audit', async () => {
+  const { repository } = fixture()
+  const gate = async () => {
+    const { context } = rootContext(await createHomebrewTapSession(options(repository, 'audit')))
+    const item = GATE.items[0]?.mechanical
+    if (!item) throw new Error('GATE-1 mechanical item is missing')
+    return item.audit.run(GATE.selectContext(context))[0]
+  }
+  expect((await gate())?.status).toBe('NOT_APPLICABLE')
+
+  mkdirSync(join(repository, '.githooks'))
+  const hook = join(repository, '.githooks', 'pre-commit')
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-homebrew-tap --staged || exit 1\n')
+  expect((await gate())?.message).toContain('`ruby -wc` over the staged Ruby')
+  writeFileSync(hook, readFileSync(join(import.meta.dir, '../../../assets/githooks/no-package/pre-commit'), 'utf8'))
+  expect((await gate())?.status).toBe('PASS')
 })

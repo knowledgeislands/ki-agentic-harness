@@ -4,7 +4,7 @@ ki-kind: governance
 ki-applicability: detected
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
-contributes: [.ki.toml]
+contributes: [.ki.toml, '.githooks/pre-commit']
 description: >
   Audit or scaffold the KI Specifications repository container: proposals, specifications, schemas, templates,
   examples, docs, and tooling. Use `ki-specs` for requirement records, `ki-decision-records` for decisions,

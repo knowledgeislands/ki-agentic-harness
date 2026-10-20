@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import definition from './index.ts'
 
-const expectedFamilies = ['RUBRIC', 'TAP', 'CONFIG']
+const expectedFamilies = ['RUBRIC', 'TAP', 'CONFIG', 'GATE']
 const expectedItems = [
   'TAP-1',
   'TAP-2',
@@ -16,7 +16,8 @@ const expectedItems = [
   'TAP-J4',
   'TAP-J5',
   'TAP-J6',
-  'CONFIG-1'
+  'CONFIG-1',
+  'GATE-1'
 ]
 
 test('the catalogue exposes every ordered Homebrew-tap family and criterion', () => {
@@ -53,7 +54,7 @@ test('every criterion declares strict v1 remediation or review evidence', () => 
 
 test('the catalogue and family modules keep their public surfaces narrow', async () => {
   expect(Object.keys(await import('./index.ts'))).toEqual(['default'])
-  for (const file of ['tap', 'config']) {
+  for (const file of ['tap', 'config', 'gate']) {
     const module = (await import(`./${file}.ts`)) as Record<string, unknown>
     expect(Object.keys(module)).toHaveLength(1)
     const family = Object.values(module)[0] as { code?: unknown; items?: unknown }

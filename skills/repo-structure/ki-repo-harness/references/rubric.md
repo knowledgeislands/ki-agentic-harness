@@ -156,8 +156,8 @@ Container ownership, host ownership, and sibling off-ramps.
 
 What a harness commit gate runs.
 
-- **GATE-1 [M] — Check-only harness commit gate** — Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit --skill ki-repo-harness --staged` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists. (standards-compatible-harness.md)
-  - _Remediation:_ diagnostic — Make `.githooks/pre-commit` run `ki repo audit --repo "$root" --skill ki-repo-harness --staged` without a rewriting flag, then rerun the audit.
+- **GATE-1 [M] — Check-only harness commit gate** — Where a committed `.githooks/pre-commit` exists, it runs the focused `ki repo audit --skill ki-repo-harness --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-compatible-harness.md)
+  - _Remediation:_ diagnostic — Copy the canonical pre-commit from `assets/githooks/`, then rerun the audit.
 
 ## RUBRIC — Generated rubric publication
 

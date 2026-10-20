@@ -2,6 +2,8 @@ import { execFileSync } from 'node:child_process'
 import { lstatSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
+import { canonicalHooks, type HookVariant, hookAsset, hookOwner, SHAPE_HOOKS } from './canonical-hooks.ts'
+import type { RepositoryShape } from './shapes.ts'
 
 export const HOOK_DIRECTORY = '.githooks'
 export const PRE_COMMIT_HOOK = '.githooks/pre-commit'
@@ -44,7 +46,7 @@ const isSafeRegularFile = (path: string): boolean => {
   return Boolean(state?.isFile() && !state.isSymbolicLink())
 }
 
-// Existence only: what the hook runs belongs to the shape skill that knows the toolchain.
+// A tracked executable file; what it must say is HOOK-4's exact comparison.
 const trackedExecutable = (target: string, hook: string, absent: AuditOutcome): readonly AuditOutcome[] => {
   const state = stateOf(join(target, hook))
   if (!state) return one(absent)
@@ -68,23 +70,14 @@ const existence = (target: string): readonly AuditOutcome[] =>
     subject: PRE_COMMIT_HOOK
   })
 
-// A package-backed repository already validates messages with Commitlint; elsewhere the
-// hook waits for `ki git check-message` (KI-TOOL-KI-CLI-161).
+// Every committed gate validates proposed messages: Commitlint where a package exists, `ki git check-message` where
+// none does.
 const messageHook = (target: string): readonly AuditOutcome[] =>
-  trackedExecutable(
-    target,
-    COMMIT_MSG_HOOK,
-    isSafeRegularFile(join(target, 'package.json'))
-      ? {
-          status: 'VIOLATION',
-          message: `no committed ${COMMIT_MSG_HOOK}; a package-backed repository validates proposed messages there`,
-          subject: COMMIT_MSG_HOOK
-        }
-      : {
-          status: 'NOT_APPLICABLE',
-          message: `no ${COMMIT_MSG_HOOK} is required without a package until \`ki git check-message\` ships`
-        }
-  )
+  trackedExecutable(target, COMMIT_MSG_HOOK, {
+    status: 'VIOLATION',
+    message: `no committed ${COMMIT_MSG_HOOK}; the commit gate validates proposed messages there`,
+    subject: COMMIT_MSG_HOOK
+  })
 
 // The binding lives in each clone's Git configuration, so CI without one has nothing to bind.
 // `git config --get` run in the audited working tree also sees a worktree-scoped override.
@@ -107,14 +100,15 @@ const binding = (
   })
 }
 
-// Lines of the common frame: shebang, root, the missing-tool refusal and the PATH step.
+// Lines of the common frame: shebang, root, the empty-index exit, the missing-tool refusal and the PATH step.
 const FRAME_LINE =
-  /^(?:#|$|root=|missing=|for\s+tool\s+in\b|done\b|\[|test\s|if\b|then\b|elif\b|else\b|fi\b|echo\b|printf\b|exit\b|(?:export\s+)?PATH=|export\s+PATH\b)/
+  /^(?:#|$|root=|git\s+diff\s+--cached\s+--quiet\s+&&\s+exit\s+0$|missing=|for\s+tool\s+in\b|done\b|\[|test\s|if\b|then\b|elif\b|else\b|fi\b|echo\b|printf\b|exit\b|(?:export\s+)?PATH=|export\s+PATH\b)/
 const TOOL_TEST = /\bcommand\s+-v\b|node_modules\/\.bin\//
 const BYPASS = /--no-verify/
 const BYPASS_REFUSED = /\b(?:do not|don't|never|not)\b.*--no-verify/i
 
-const refusal = (hook: string, source: string): AuditOutcome => {
+/** The frame alone: a `#!/bin/sh` hook that refuses on any missing tool it calls and never suggests a bypass. */
+export const inspectFrame = (hook: string, source: string): AuditOutcome => {
   const lines = source.split(/\r?\n/).map((line) => line.trim())
   if (lines[0] !== '#!/bin/sh')
     return { status: 'VIOLATION', message: `${hook} must start with \`#!/bin/sh\``, subject: hook }
@@ -145,7 +139,7 @@ const refusal = (hook: string, source: string): AuditOutcome => {
 }
 
 // Tools every hook may call untested: shell keywords and builtins, Git, and the POSIX utilities.
-const SHELL_KEYWORD = new Set(['!', 'if', 'then', 'elif', 'else', 'fi', 'do', 'done', 'while', 'until', 'time'])
+const SHELL_KEYWORD = new Set(['!', 'if', 'then', 'elif', 'else', 'fi', 'do', 'done', 'esac', 'while', 'until', 'time'])
 const ALWAYS_PRESENT = new Set([
   '.',
   ':',
@@ -240,10 +234,37 @@ const calledTools = (lines: readonly string[]): string[] => {
   return [...tools]
 }
 
-const refusals = (target: string): readonly AuditOutcome[] => {
+const firstDifference = (actual: string, expected: string): number => {
+  const have = actual.split('\n')
+  const want = expected.split('\n')
+  const index = want.findIndex((line, at) => have[at] !== line)
+  return (index < 0 ? want.length : index) + 1
+}
+
+// The committed hook is the canonical text for its shape and package presence, byte for byte; with no resolvable
+// shape there is no canonical text, and only the frame is judged while the configuration items report the shape.
+const canonical = (target: string, shape: RepositoryShape | undefined): readonly AuditOutcome[] => {
   const present = HOOKS.filter((hook) => isSafeRegularFile(join(target, hook)))
   if (!present.length) return one({ status: 'NOT_APPLICABLE', message: 'no committed hook to inspect' })
-  return present.map((hook) => refusal(hook, readFileSync(join(target, hook), 'utf8')))
+  const read = (hook: string): string => readFileSync(join(target, hook), 'utf8')
+  if (!shape) return present.map((hook) => inspectFrame(hook, read(hook)))
+  const variant: HookVariant = isSafeRegularFile(join(target, 'package.json')) ? 'package' : 'no-package'
+  const expected = canonicalHooks(shape, variant)
+  const owner = hookOwner(shape)
+  if (!expected || !owner) return one({ status: 'NOT_APPLICABLE', message: `${shape} declares no hook` })
+  return present.map((hook) => {
+    const name = hook === PRE_COMMIT_HOOK ? 'pre-commit' : 'commit-msg'
+    const text = read(hook)
+    const want = expected[name]
+    if (text === want)
+      return { status: 'PASS', message: `${hook} is the canonical ${shape} ${variant} hook`, subject: hook }
+    const line = firstDifference(text, want)
+    return {
+      status: 'VIOLATION',
+      message: `${hook} differs from the canonical ${shape} ${variant} hook from line ${line}; copy ${hookAsset(owner, variant, name)} from the ki-agentic-harness byte-exact`,
+      subject: hook
+    }
+  })
 }
 
 const manifest = (target: string): Record<string, unknown> | undefined => {
@@ -291,14 +312,20 @@ const husky = (target: string, environment: Readonly<Record<string, string | und
 
 export const hookEvidence = (
   target: string,
+  shape: RepositoryShape | undefined,
   environment: Readonly<Record<string, string | undefined>> = process.env
 ): HooksRubricContext => {
+  // A shape that declares no hook leaves existence, binding, message and content to its own standard.
+  if (shape && SHAPE_HOOKS[shape] === null) {
+    const none = one({ status: 'NOT_APPLICABLE', message: `${shape} declares no hook; its standard owns the gate` })
+    return { hook1: none, hook2: none, hook3: none, hook4: none, hook5: husky(target, environment) }
+  }
   const hook1 = existence(target)
   return {
     hook1,
     hook2: binding(target, hook1[0]?.status === 'PASS', environment),
     hook3: messageHook(target),
-    hook4: refusals(target),
+    hook4: canonical(target, shape),
     hook5: husky(target, environment)
   }
 }

@@ -6,6 +6,7 @@ The cross-format mechanical contract for Knowledge Islands authoring. It is sepa
 
 - [Owned configuration](#owned-configuration)
 - [Markdown gate](#markdown-gate)
+- [Commit gate](#commit-gate)
 - [Hosted conform safety](#hosted-conform-safety)
 - [Synchronisation](#synchronisation)
 
@@ -46,6 +47,16 @@ AUDIT runs `rumdl check` against the repository's authored Markdown. The exclude
 CONFORM requests `rumdl check --fix --preflight` in the rubric's `NORMALISE` phase — `check --fix` rather than `fmt`, because `fmt` exits zero even when unfixable violations remain and would let CONFORM report success over a file it could not settle, and `--preflight` so that a batch with a file it cannot write is refused whole rather than left half-fixed, together with host-validated direct writes for safely canonicalized frontmatter. The formatter commands are part of the session's final proposal rather than launched by a rubric item.
 
 The [Markdown authoring standard](standards-markdown.md) defines the judgment choices left after this mechanical gate.
+
+## Commit gate
+
+A repository's committed `pre-commit` checks the Markdown it stages, check-only, so a commit never carries Markdown the audit would reject ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Where a package exists, lint-staged runs `rumdl check --fix --preflight` over the staged Markdown under `ki-engineering` `SCR-11`. Where none does, the canonical hook lists the staged Markdown and checks it where it stands:
+
+```sh
+git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1
+```
+
+`MD-hook` requires a non-comment line that pipes `git diff --cached` to `rumdl check` without `--fix`, and is not applicable without a committed hook or where a `package.json` exists. rumdl applies the `.rumdl.toml` exclusions to the files it is named, so a staged generated or vendored file is skipped as the full gate skips it. `ki-repo` owns the hook's existence, frame and canonical text.
 
 ## Hosted conform safety
 

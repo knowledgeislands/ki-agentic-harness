@@ -137,7 +137,7 @@ This standard owns only chezmoi's runtime-specific registration of a selected co
 
 Its existing local physical-lock observation is scoped evidence for a chezmoi repository, not an independent portable Git policy.
 
-The source repository's committed `.githooks/pre-commit` runs `ki repo audit` check-only (`GIT-2`): a line that runs `ki repo conform`, or passes `--fix` or `--write` to the audit, fails, because a commit gate reports and never rewrites. Without a committed hook `GIT-2` is not applicable; `ki-repo` owns whether the hook exists (`HOOK-1`), is bound (`HOOK-2`) and refuses when a tool it needs is missing (`HOOK-4`) ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
+The chezmoi source declares no commit gate (`GIT-2`): it commits no `.githooks/` path and binds no `core.hooksPath`, so `ki-repo` `HOOK-1` to `HOOK-4` are not applicable to it. Kris Brown set this on 20 October 2026: the dotfiles repository should have no hook. Its gate is the manual one its `AGENTS.md` names, the source's tests and focused audit, which a session runs before it commits ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
 
 ## Repo-shape expectations (additive to generic repo-standard checks)
 

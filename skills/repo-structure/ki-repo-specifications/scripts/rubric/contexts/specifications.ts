@@ -1,11 +1,13 @@
 import { existsSync, lstatSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import type {
+  AuditOutcome,
   ConformWrite,
   RubricContextOptions,
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { inspectCommitGate } from './commit-gate.ts'
 
 const SECTION = 'ki-repo-specifications'
 const core = ['proposals', 'specifications', 'schemas'] as const
@@ -36,6 +38,8 @@ export type SpecificationsContext = {
   readonly table: Readonly<Record<string, unknown>> | null
   readonly core: readonly { readonly path: string; readonly exists: boolean }[]
   readonly supporting: readonly { readonly path: string; readonly exists: boolean }[]
+  /** What the committed hook runs (`GATE-1`). */
+  readonly gate: readonly AuditOutcome[]
   readonly addMarker?: () => void
 }
 
@@ -77,13 +81,22 @@ export const createSpecificationsSession = ({
     // directory is evidence for ki-repo's coverage cascade, not authority to audit it here.
     applicable: table !== null,
     core: coreEvidence,
-    supporting: supportingEvidence
+    supporting: supportingEvidence,
+    gate:
+      table !== null
+        ? inspectCommitGate(target)
+        : [
+            {
+              status: 'NOT_APPLICABLE',
+              message: 'ki-repo-specifications is not applicable: its declaration is absent.'
+            }
+          ]
   }
 
   return {
     subjects: [
       { families: ['RUBRIC'], context: () => context },
-      { families: ['SPEC', 'SYNC'], subject: target, context: () => context }
+      { families: ['SPEC', 'SYNC', 'GATE'], subject: target, context: () => context }
     ],
     proposal: () => ({
       writes: [] satisfies readonly ConformWrite[]

@@ -1,4 +1,5 @@
 import { afterEach, expect, test } from 'bun:test'
+import { spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -160,31 +161,28 @@ test('conform refuses a symlinked or dangling ignore target', () => {
   }
 })
 
-test('GIT-2 requires a committed gate to run ki repo audit check-only', () => {
+test('GIT-2 requires no committed hook and no hooksPath binding', () => {
   const repository = fixture()
   const family = catalogue.families.find((entry) => entry.code === 'GIT') as RubricFamily<ChezmoiRubricContext, unknown>
   const item = family.items.find((entry) => entry.code === 'GIT-2')?.mechanical
   if (!item) throw new Error('GIT-2 mechanical item is missing')
-  const outcome = () => {
+  const outcomes = () => {
     const session = createChezmoiSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
     const subject = session.subjects.find((entry) => entry.families.includes('GIT'))
     if (!subject) throw new Error('chezmoi session has no GIT subject')
-    return item.audit.run(family.selectContext(subject.context()))[0]
+    return item.audit.run(family.selectContext(subject.context()))
   }
-  expect(outcome()?.status).toBe('NOT_APPLICABLE')
+  const git = (...args: string[]) => spawnSync('git', ['-C', repository, ...args], { encoding: 'utf8' })
+  expect(git('init', '--quiet').status).toBe(0)
+  expect(outcomes()[0]?.status).toBe('PASS')
 
   mkdirSync(join(repository, '.githooks'))
-  const hook = join(repository, '.githooks', 'pre-commit')
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --write\n')
-  expect(outcome()?.message).toContain('does not run `ki repo audit` check-only')
+  writeFileSync(join(repository, '.githooks', 'pre-commit'), '#!/bin/sh\nki repo audit --staged\n')
+  expect(outcomes()[0]?.subject).toBe('.githooks')
 
-  writeFileSync(hook, '#!/bin/sh\nki repo conform --skill ki-repo-dotfiles-chezmoi\n')
-  expect(outcome()?.message).toContain('runs `ki repo conform`')
+  expect(git('config', 'core.hooksPath', '.githooks').status).toBe(0)
+  expect(outcomes().map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
 
-  writeFileSync(hook, '#!/bin/sh\nexec ki repo audit\n')
-  expect(outcome()?.status).toBe('PASS')
-
-  rmSync(hook)
-  symlinkSync(join(repository, 'dot_zshrc.tmpl'), hook)
-  expect(outcome()?.status).toBe('VIOLATION')
+  rmSync(join(repository, '.githooks'), { recursive: true })
+  expect(outcomes()[0]?.message).toContain('core.hooksPath is ".githooks"')
 })

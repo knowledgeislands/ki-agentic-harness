@@ -147,11 +147,27 @@ const MD_CALLOUT: RubricItem<MarkdownRubricContext> = {
   }
 }
 
+const MD_HOOK: RubricItem<MarkdownRubricContext> = {
+  code: 'MD-hook',
+  title: 'package-less commit gate checks staged Markdown',
+  description:
+    'Where a repository commits `.githooks/pre-commit` and has no `package.json`, the hook runs `rumdl check` over the staged Markdown, listed by `git diff --cached`, check-only and without `--fix`. A package-backed hook reaches rumdl through lint-staged under `ki-engineering` `SCR-11`, so this criterion is not applicable there or without a hook.',
+  sources: ['standards-authoring.md#commit-gate'],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance: 'Copy the canonical pre-commit for the repository shape from its `assets/githooks/no-package/`.'
+    },
+    audit: { phase: 'INSPECT', run: ({ hook }) => hook }
+  }
+}
+
 export const MARKDOWN: RubricFamily<AuthoringRubricContext, MarkdownRubricContext> = {
   code: 'MD',
   title: 'Markdown authoring',
   description: 'The mechanical Markdown gate and reviewer-applied Markdown conventions.',
   standard: 'standards-markdown.md',
   selectContext: (context: AuthoringRubricContext) => context.markdown,
-  items: [MD_MECH, MD_FRONTMATTER, MD_TABLE, MD_FOOTNOTE, MD_LINK, MD_CELL_PROSE, MD_CALLOUT]
+  items: [MD_MECH, MD_FRONTMATTER, MD_TABLE, MD_FOOTNOTE, MD_LINK, MD_CELL_PROSE, MD_CALLOUT, MD_HOOK]
 }

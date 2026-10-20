@@ -1,12 +1,14 @@
 import { type Dirent, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import type {
+  AuditOutcome,
   ConformCommand,
   ConformWrite,
   RubricContextOptions,
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { type AssembledToolsContext, inspectAssembled } from './assembled.ts'
 import { prepareToolSharedCode, type ToolSharedCodeContext } from './shared-code.ts'
 
 type NodeKind = 'missing' | 'file' | 'directory' | 'unsafe'
@@ -66,6 +68,8 @@ export type ShellToolsContext = {
   readonly unsafeTestEntries: readonly string[]
   readonly hook: FileState
   readonly hookText: string
+  /** A package-backed hook carries `ki-engineering` content instead of the shell block. */
+  readonly packageJson: boolean
 }
 
 export type LanguageToolsContext = {
@@ -102,6 +106,7 @@ export type ToolsRubricContext = {
   readonly language: LanguageToolsContext
   readonly manual: ManualToolsContext
   readonly config: ToolsConfigContext
+  readonly assembled: AssembledToolsContext
   readonly sharedCode: ToolSharedCodeContext
 }
 
@@ -367,6 +372,7 @@ export const createToolsSession = ({
   const sharedWrites = new Map<string, ConformWrite>()
   const sharedCommands = new Map<string, ConformCommand>()
   let markerRequested = false
+  let assembledOutcomes: readonly AuditOutcome[] | undefined
   let manualSpacingRequested = false
   const originalConfig = configEvidence.content
   const sharedCode = prepareToolSharedCode({
@@ -426,7 +432,8 @@ export const createToolsSession = ({
       batsSuites,
       unsafeTestEntries: inspectedTests.unsafe,
       hook,
-      hookText
+      hookText,
+      packageJson: packageJson !== 'missing'
     },
     language: { applicable, packageJson },
     manual: {
@@ -464,13 +471,24 @@ export const createToolsSession = ({
           }
         : {})
     },
+    assembled: {
+      applicable,
+      inspect: () => {
+        assembledOutcomes ??= applicable ? inspectAssembled(root, configEvidence.values.assembled) : []
+        return assembledOutcomes
+      }
+    },
     sharedCode
   }
 
   return {
     subjects: [
       { families: ['RUBRIC'], context: () => context },
-      { families: ['TOOL', 'SHELL', 'LANG', 'MAN', 'CONFIG', 'SHARED'], context: () => context, subject: root }
+      {
+        families: ['TOOL', 'SHELL', 'LANG', 'MAN', 'CONFIG', 'SHARED', 'ASSEMBLE'],
+        context: () => context,
+        subject: root
+      }
     ],
     proposal: () => {
       const commands = [...requestedExecutables]

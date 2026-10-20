@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process'
 import { chmodSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { canonicalHooks } from './canonical-hooks.ts'
 import { hookEvidence } from './hooks.ts'
 
 const roots: string[] = []
@@ -42,7 +43,7 @@ const addHook = (root: string, mode = 0o755, name = 'pre-commit', source = '#!/b
 const local = {}
 
 test('HOOK-1 warns without a committed hook and HOOK-2 has nothing to bind', () => {
-  const evidence = hookEvidence(repository(), local)
+  const evidence = hookEvidence(repository(), undefined, local)
   expect(evidence.hook1[0]?.status).toBe('VIOLATION')
   expect(evidence.hook1[0]?.message).toContain('no committed .githooks/pre-commit')
   expect(evidence.hook2[0]?.status).toBe('NOT_APPLICABLE')
@@ -52,40 +53,40 @@ test('HOOK-1 rejects an untracked, non-executable or unsafe hook', () => {
   const untracked = repository()
   mkdirSync(join(untracked, '.githooks'))
   writeFileSync(join(untracked, '.githooks', 'pre-commit'), '#!/bin/sh\n')
-  expect(hookEvidence(untracked, local).hook1[0]?.message).toContain('is not tracked')
+  expect(hookEvidence(untracked, undefined, local).hook1[0]?.message).toContain('is not tracked')
 
   const plain = repository()
   addHook(plain, 0o644)
-  expect(hookEvidence(plain, local).hook1[0]?.message).toContain('without executable mode')
+  expect(hookEvidence(plain, undefined, local).hook1[0]?.message).toContain('without executable mode')
 
   const linked = repository()
   mkdirSync(join(linked, '.githooks'))
   writeFileSync(join(linked, 'gate.sh'), '#!/bin/sh\n')
   symlinkSync(join(linked, 'gate.sh'), join(linked, '.githooks', 'pre-commit'))
-  expect(hookEvidence(linked, local).hook1[0]?.message).toContain('not a safe regular file')
+  expect(hookEvidence(linked, undefined, local).hook1[0]?.message).toContain('not a safe regular file')
 })
 
 test('an executable tracked hook passes HOOK-1 and HOOK-2 names the exact binding step until bound', () => {
   const root = repository()
   addHook(root)
-  const unbound = hookEvidence(root, local)
+  const unbound = hookEvidence(root, undefined, local)
   expect(unbound.hook1[0]?.status).toBe('PASS')
   expect(unbound.hook2[0]?.status).toBe('VIOLATION')
   expect(unbound.hook2[0]?.message).toContain('git config core.hooksPath .githooks')
 
   git(root, 'config', 'core.hooksPath', '.husky/_')
-  expect(hookEvidence(root, local).hook2[0]?.message).toContain('".husky/_"')
+  expect(hookEvidence(root, undefined, local).hook2[0]?.message).toContain('".husky/_"')
 
   git(root, 'config', 'core.hooksPath', '.githooks')
-  expect(hookEvidence(root, local).hook2[0]?.status).toBe('PASS')
+  expect(hookEvidence(root, undefined, local).hook2[0]?.status).toBe('PASS')
 })
 
 test('HOOK-2 is not applicable in CI without a local binding, but still judges a wrong one', () => {
   const root = repository()
   addHook(root)
-  expect(hookEvidence(root, { CI: 'true' }).hook2[0]?.status).toBe('NOT_APPLICABLE')
+  expect(hookEvidence(root, undefined, { CI: 'true' }).hook2[0]?.status).toBe('NOT_APPLICABLE')
   git(root, 'config', 'core.hooksPath', 'elsewhere')
-  expect(hookEvidence(root, { CI: 'true' }).hook2[0]?.status).toBe('VIOLATION')
+  expect(hookEvidence(root, undefined, { CI: 'true' }).hook2[0]?.status).toBe('VIOLATION')
 })
 
 test('HOOK-2 reads a worktree-scoped override from the audited working tree', () => {
@@ -96,45 +97,72 @@ test('HOOK-2 reads a worktree-scoped override from the audited working tree', ()
   const worktree = join(mkdtempSync(join(tmpdir(), 'ki-repo-hooks-worktree-')), 'linked')
   roots.push(worktree)
   git(root, 'worktree', 'add', '--quiet', worktree)
-  expect(hookEvidence(worktree, local).hook2[0]?.status).toBe('PASS')
+  expect(hookEvidence(worktree, undefined, local).hook2[0]?.status).toBe('PASS')
   git(root, 'config', 'extensions.worktreeConfig', 'true')
   git(worktree, 'config', '--worktree', 'core.hooksPath', '.husky/_')
-  expect(hookEvidence(worktree, local).hook2[0]?.message).toContain("Husky's retired binding")
-  expect(hookEvidence(root, local).hook2[0]?.status).toBe('PASS')
+  expect(hookEvidence(worktree, undefined, local).hook2[0]?.message).toContain("Husky's retired binding")
+  expect(hookEvidence(root, undefined, local).hook2[0]?.status).toBe('PASS')
 })
 
-test('HOOK-3 requires a commit-msg hook only in a package-backed repository', () => {
+test('HOOK-3 requires a commit-msg hook wherever a gate is, package or not', () => {
   const bare = repository()
-  expect(hookEvidence(bare, local).hook3[0]?.status).toBe('NOT_APPLICABLE')
+  expect(hookEvidence(bare, undefined, local).hook3[0]?.message).toContain('no committed .githooks/commit-msg')
 
   const packaged = repository()
   writeFileSync(join(packaged, 'package.json'), '{}\n')
-  expect(hookEvidence(packaged, local).hook3[0]?.message).toContain('no committed .githooks/commit-msg')
+  expect(hookEvidence(packaged, undefined, local).hook3[0]?.message).toContain('no committed .githooks/commit-msg')
   addHook(packaged, 0o644, 'commit-msg', FRAMED)
-  expect(hookEvidence(packaged, local).hook3[0]?.message).toContain('without executable mode')
+  expect(hookEvidence(packaged, undefined, local).hook3[0]?.message).toContain('without executable mode')
   addHook(packaged, 0o755, 'commit-msg', FRAMED)
   git(packaged, 'update-index', '--chmod=+x', '.githooks/commit-msg')
-  expect(hookEvidence(packaged, local).hook3[0]?.status).toBe('PASS')
+  expect(hookEvidence(packaged, undefined, local).hook3[0]?.status).toBe('PASS')
 })
 
-test('HOOK-4 requires the refusal frame before the first command and never a bypass', () => {
+test('a shape that declares no hook leaves HOOK-1 to HOOK-4 not applicable', () => {
   const root = repository()
-  expect(hookEvidence(root, local).hook4[0]?.status).toBe('NOT_APPLICABLE')
+  const evidence = hookEvidence(root, 'ki-repo-dotfiles-chezmoi', local)
+  for (const outcomes of [evidence.hook1, evidence.hook2, evidence.hook3, evidence.hook4])
+    expect(outcomes[0]?.status).toBe('NOT_APPLICABLE')
+  expect(evidence.hook5[0]?.status).toBe('PASS')
+})
+
+test('HOOK-4 compares each committed hook with its shape canonical text byte for byte', () => {
+  const root = repository()
+  const hooks = canonicalHooks('ki-repo-kb', 'no-package')
+  if (!hooks) throw new Error('ki-repo-kb declares canonical hooks')
+  addHook(root, 0o755, 'pre-commit', hooks['pre-commit'])
+  addHook(root, 0o755, 'commit-msg', hooks['commit-msg'])
+  expect(hookEvidence(root, 'ki-repo-kb', local).hook4.map((outcome) => outcome.status)).toEqual(['PASS', 'PASS'])
+
+  addHook(root, 0o755, 'pre-commit', hooks['pre-commit'].replace('--skill ki-repo-kb', '--skill ki-repo-kb --full'))
+  const changed = hookEvidence(root, 'ki-repo-kb', local).hook4[0]
+  expect(changed?.status).toBe('VIOLATION')
+  expect(changed?.message).toContain('skills/repo-structure/ki-repo-kb/assets/githooks/no-package/pre-commit')
+
+  writeFileSync(join(root, 'package.json'), '{}\n')
+  expect(hookEvidence(root, 'ki-repo-kb', local).hook4[1]?.message).toContain('canonical ki-repo-kb package hook')
+})
+
+test('without a resolvable shape HOOK-4 judges the refusal frame and never a bypass', () => {
+  const root = repository()
+  expect(hookEvidence(root, undefined, local).hook4[0]?.status).toBe('NOT_APPLICABLE')
   addHook(root)
-  expect(hookEvidence(root, local).hook4[0]?.message).toContain('must refuse when a required tool is missing')
+  expect(hookEvidence(root, undefined, local).hook4[0]?.message).toContain(
+    'must refuse when a required tool is missing'
+  )
 
   addHook(root, 0o755, 'pre-commit', FRAMED)
-  expect(hookEvidence(root, local).hook4[0]?.status).toBe('PASS')
+  expect(hookEvidence(root, undefined, local).hook4[0]?.status).toBe('PASS')
 
   addHook(root, 0o755, 'pre-commit', FRAMED.replace('#!/bin/sh', '#!/bin/bash'))
-  expect(hookEvidence(root, local).hook4[0]?.message).toContain('must start with `#!/bin/sh`')
+  expect(hookEvidence(root, undefined, local).hook4[0]?.message).toContain('must start with `#!/bin/sh`')
 
   addHook(root, 0o755, 'pre-commit', `${FRAMED}echo "retry with git commit --no-verify"\n`)
-  expect(hookEvidence(root, local).hook4[0]?.message).toContain('suggests `--no-verify`')
+  expect(hookEvidence(root, undefined, local).hook4[0]?.message).toContain('suggests `--no-verify`')
 
   addHook(root, 0o755, 'pre-commit', FRAMED)
   addHook(root, 0o755, 'commit-msg', '#!/bin/sh\ncommitlint --edit "$1" || exit 1\n')
-  const outcomes = hookEvidence(root, local).hook4
+  const outcomes = hookEvidence(root, undefined, local).hook4
   expect(outcomes.map((outcome) => outcome.status)).toEqual(['PASS', 'VIOLATION'])
   expect(outcomes[1]?.subject).toBe('.githooks/commit-msg')
 })
@@ -147,7 +175,7 @@ test('HOOK-4 requires a refusal test for every external tool, conditional branch
     'pre-commit',
     `${FRAMED}if git diff --cached --quiet -- '*.ts'; then :; else tsc --noEmit || exit 1; fi\n`
   )
-  expect(hookEvidence(root, local).hook4[0]?.message).toContain('calls `tsc` without testing for it')
+  expect(hookEvidence(root, undefined, local).hook4[0]?.message).toContain('calls `tsc` without testing for it')
 
   const listed = FRAMED.replace(
     'if ! command -v ki >/dev/null 2>&1; then',
@@ -155,12 +183,12 @@ test('HOOK-4 requires a refusal test for every external tool, conditional branch
   )
   const helpers = `staged() { git diff --cached --name-only; }\nif staged | grep -q '\\.ts$'; then tsc --noEmit || exit 1; fi\nscripts/check --quiet || exit 1\necho "run \`bun install\` first" >&2\n`
   addHook(root, 0o755, 'pre-commit', `${listed}${helpers}`)
-  expect(hookEvidence(root, local).hook4[0]?.status).toBe('PASS')
+  expect(hookEvidence(root, undefined, local).hook4[0]?.status).toBe('PASS')
 })
 
 test('HOOK-5 names every Husky remnant and passes once Husky is gone', () => {
   const root = repository()
-  expect(hookEvidence(root, local).hook5[0]?.status).toBe('PASS')
+  expect(hookEvidence(root, undefined, local).hook5[0]?.status).toBe('PASS')
 
   writeFileSync(
     join(root, 'package.json'),
@@ -173,7 +201,7 @@ test('HOOK-5 names every Husky remnant and passes once Husky is gone', () => {
   writeFileSync(join(root, '.husky', 'pre-commit'), 'bunx lint-staged || exit 1\n')
   git(root, 'add', '.husky/pre-commit')
   addHook(root, 0o755, 'pre-commit', `${FRAMED}sh "$root/.husky/pre-commit" "$@" || exit 1\n`)
-  const messages = hookEvidence(root, local).hook5.map((outcome) => outcome.message)
+  const messages = hookEvidence(root, undefined, local).hook5.map((outcome) => outcome.message)
   expect(messages).toEqual([
     'tracked Husky files remain: .husky/pre-commit',
     'package.json still declares `husky`',
@@ -181,5 +209,5 @@ test('HOOK-5 names every Husky remnant and passes once Husky is gone', () => {
     '.githooks/pre-commit delegates to .husky/; move the hook content into it',
     'untracked .husky/_ is left from a Husky install; remove it'
   ])
-  expect(hookEvidence(root, { CI: 'true' }).hook5).toHaveLength(4)
+  expect(hookEvidence(root, undefined, { CI: 'true' }).hook5).toHaveLength(4)
 })

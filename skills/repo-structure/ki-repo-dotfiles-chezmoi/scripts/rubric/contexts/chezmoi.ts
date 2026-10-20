@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 import { type Dirent, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import type {
@@ -42,8 +43,10 @@ export type GitContext = {
   repositoryState: RepositoryState
   applicable: boolean
   locks: readonly string[] | null
-  hook: 'missing' | 'unsafe' | 'physical'
-  hookText: string
+  /** Whether any `.githooks` path exists. */
+  hookDirectory: boolean
+  /** The effective `core.hooksPath`, or `null` when unset. */
+  hooksPath: string | null
 }
 
 export type ReviewContext = {
@@ -164,13 +167,21 @@ const inspectGitLocks = (repository: string, state: RepositoryState): readonly s
   return locks.sort()
 }
 
-// `ki-repo` owns whether the commit gate exists; GIT-2 reads only what it runs.
-const inspectHook = (repository: string, state: RepositoryState): Pick<GitContext, 'hook' | 'hookText'> => {
-  const directory = state === 'physical' ? pathState(join(repository, '.githooks')) : 'missing'
-  const hook = directory === 'directory' ? pathState(join(repository, '.githooks/pre-commit')) : directory
-  if (hook === 'file' && directory === 'directory')
-    return { hook: 'physical', hookText: readFileSync(join(repository, '.githooks/pre-commit'), 'utf8') }
-  return { hook: hook === 'missing' || hook === 'file' ? 'missing' : 'unsafe', hookText: '' }
+// A chezmoi source declares no commit gate: its manual gate lives in AGENTS.md, so GIT-2 reads only that no
+// committed hook directory and no effective `core.hooksPath` binding remain.
+const inspectHook = (repository: string, state: RepositoryState): Pick<GitContext, 'hookDirectory' | 'hooksPath'> => {
+  if (state !== 'physical') return { hookDirectory: false, hooksPath: null }
+  let hooksPath: string | null = null
+  try {
+    hooksPath =
+      execFileSync('git', ['-C', repository, 'config', '--get', 'core.hooksPath'], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore']
+      }).trim() || null
+  } catch {
+    // Unset, or not a Git checkout: no binding to report.
+  }
+  return { hookDirectory: pathState(join(repository, '.githooks')) !== 'missing', hooksPath }
 }
 
 export const hasRecognisedPrefix = (name: string): boolean =>

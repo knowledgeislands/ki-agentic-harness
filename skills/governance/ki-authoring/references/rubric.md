@@ -58,6 +58,8 @@ The mechanical Markdown gate and reviewer-applied Markdown conventions.
   - _Review prompt:_ Assess whether callouts use supported GitHub alerts, remain concise, and are reserved for genuine contextual asides.
   - _Outcomes:_ conforming; rewrite required; remove required
   - _Conforming guidance:_ Use a supported concise alert for a genuine aside, rewrite the content as ordinary prose, or remove the callout.
+- **MD-hook [M] — package-less commit gate checks staged Markdown** — Where a repository commits `.githooks/pre-commit` and has no `package.json`, the hook runs `rumdl check` over the staged Markdown, listed by `git diff --cached`, check-only and without `--fix`. A package-backed hook reaches rumdl through lint-staged under `ki-engineering` `SCR-11`, so this criterion is not applicable there or without a hook. (standards-authoring.md#commit-gate)
+  - _Remediation:_ diagnostic — Copy the canonical pre-commit for the repository shape from its `assets/githooks/no-package/`.
 
 ## OWN — Owned authoring configuration
 

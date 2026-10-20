@@ -32,45 +32,47 @@ const GIT_1: RubricItem<GitContext> = {
   }
 }
 
-const HOOK = '.githooks/pre-commit'
-
 const GIT_2: RubricItem<GitContext> = {
   code: 'GIT-2',
-  title: 'Check-only commit gate',
+  title: 'No commit gate',
   description:
-    'Where a committed `.githooks/pre-commit` exists, it runs `ki repo audit` check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists.',
+    'The source declares no commit gate: no `.githooks/` path is committed and no `core.hooksPath` is bound. Its gate is the manual one its `AGENTS.md` names, and `ki-repo` HOOK-1 to HOOK-4 are not applicable.',
   sources: ['standards-chezmoi-dotfiles.md'],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Make `.githooks/pre-commit` run `ki repo audit` without a rewriting flag, then rerun the audit.'
+      guidance:
+        'Remove `.githooks/`, run `git config --unset core.hooksPath`, and keep the check commands in the AGENTS.md manual gate.'
     },
     audit: {
       phase: 'INSPECT',
-      run: ({ repositoryState, applicable, hook, hookText }) => {
+      run: ({ repositoryState, applicable, hookDirectory, hooksPath }) => {
         if (repositoryState !== 'physical')
           return [{ status: 'NOT_APPLICABLE', message: 'The target repository is not safely inspectable.' }]
         if (!applicable) return [{ status: 'NOT_APPLICABLE', message: 'ki-repo-dotfiles-chezmoi is not applicable.' }]
-        if (hook === 'missing')
-          return [{ status: 'NOT_APPLICABLE', message: `No committed ${HOOK}; ki-repo HOOK-1 owns its existence.` }]
-        if (hook === 'unsafe')
-          return [{ status: 'VIOLATION', message: `${HOOK} is not a safe regular file.`, subject: HOOK }]
-        const lines = hookText
-          .split(/\r?\n/)
-          .map((line) => line.trim())
-          .filter((line) => !line.startsWith('#'))
-        if (lines.some((line) => /\bki repo conform\b/.test(line)))
-          return [
-            {
-              status: 'VIOLATION',
-              message: `${HOOK} runs \`ki repo conform\`; the gate must be check-only.`,
-              subject: HOOK
-            }
-          ]
-        return lines.some((line) => /\bki repo audit\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line))
-          ? [{ status: 'PASS', message: `${HOOK} runs \`ki repo audit\` check-only.`, subject: HOOK }]
-          : [{ status: 'VIOLATION', message: `${HOOK} does not run \`ki repo audit\` check-only.`, subject: HOOK }]
+        const findings = [
+          ...(hookDirectory
+            ? [
+                {
+                  status: 'VIOLATION' as const,
+                  message: 'A chezmoi source commits no hooks; remove .githooks/ and keep the AGENTS.md manual gate.',
+                  subject: '.githooks'
+                }
+              ]
+            : []),
+          ...(hooksPath
+            ? [
+                {
+                  status: 'VIOLATION' as const,
+                  message: `core.hooksPath is ${JSON.stringify(hooksPath)}; a chezmoi source binds no hooks, so unset it.`
+                }
+              ]
+            : [])
+        ]
+        return findings.length
+          ? findings
+          : [{ status: 'PASS', message: 'No commit gate is committed or bound; the AGENTS.md manual gate applies.' }]
       }
     }
   }

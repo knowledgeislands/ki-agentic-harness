@@ -1,0 +1,12 @@
+#!/bin/sh
+# Canonical pre-commit for a ki-repo-project repository without a package.json, composed by ki-repo.
+# Copied byte-exact from ki-repo-project's assets/githooks/no-package/pre-commit; HOOK-4 compares it, so do not edit it here.
+git diff --cached --quiet && exit 0
+if ! command -v rumdl >/dev/null 2>&1; then
+  echo "pre-commit: the commit gate cannot run; not on PATH: rumdl" >&2
+  echo "pre-commit: install it, then commit again." >&2
+  echo "pre-commit: do not bypass with --no-verify; a gate that cannot run is unknown, not a pass." >&2
+  exit 1
+fi
+# Staged Markdown, checked where it stands (ki-authoring MD-hook).
+git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1

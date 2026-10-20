@@ -1,0 +1,19 @@
+#!/bin/sh
+# Canonical pre-commit for a ki-repo-project repository with a package.json, composed by ki-repo.
+# Copied byte-exact from ki-repo-project's assets/githooks/package/pre-commit; HOOK-4 compares it, so do not edit it here.
+root="$(git rev-parse --show-toplevel)" || exit 1
+git diff --cached --quiet && exit 0
+missing=''
+for tool in lint-staged syncpack biome rumdl; do
+  [ -x "$root/node_modules/.bin/$tool" ] || missing="$missing $tool"
+done
+if [ -n "$missing" ]; then
+  echo "pre-commit: the commit gate cannot run; missing from node_modules/.bin:$missing" >&2
+  echo "pre-commit: run \`bun install\` in $root, then commit again." >&2
+  echo "pre-commit: do not bypass with --no-verify; a gate that cannot run is unknown, not a pass." >&2
+  exit 1
+fi
+PATH="$root/node_modules/.bin:$PATH"
+export PATH
+lint-staged --quiet || exit 1
+syncpack format --check || exit 1

@@ -50,6 +50,7 @@ test('the default export is the sole catalogue entrypoint and families are compl
     'MD-link',
     'MD-cell-prose',
     'MD-callout',
+    'MD-hook',
     'OWN-1',
     'OWN-2',
     'TOML-values',
@@ -444,4 +445,34 @@ test('the repository Markdown audit inspects the selected checkout but never phy
   expect(markdownAudit(repository)).toBe('VIOLATION')
   expect(lstatSync(join(sibling, '.git')).isFile()).toBe(true)
   expect(markdownAudit(sibling)).toBe('VIOLATION')
+})
+
+test('MD-hook requires a package-less hook to check staged Markdown, check-only', () => {
+  const repository = temporaryRepository()
+  const outcome = () => {
+    const context = createAuthoringSession({
+      mode: 'audit',
+      repository,
+      userHome: tmpdir(),
+      configuration: {}
+    }).subjects[1]?.context()
+    const item = markdownModule.MARKDOWN.items.find((candidate) => candidate.code === 'MD-hook')
+    return item?.mechanical?.audit.run(context?.markdown as NonNullable<typeof context>['markdown'])[0]
+  }
+  expect(outcome()?.status).toBe('NOT_APPLICABLE')
+
+  mkdirSync(join(repository, '.githooks'))
+  const hook = join(repository, '.githooks', 'pre-commit')
+  const staged =
+    "git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1"
+  writeFileSync(hook, `#!/bin/sh\n${staged}\n`)
+  expect(outcome()?.status).toBe('PASS')
+
+  writeFileSync(hook, `#!/bin/sh\n# ${staged}\n`)
+  expect(outcome()?.status).toBe('VIOLATION')
+  writeFileSync(hook, `#!/bin/sh\n${staged.replace('--quiet', '--fix')}\n`)
+  expect(outcome()?.status).toBe('VIOLATION')
+
+  writeFileSync(join(repository, 'package.json'), '{}\n')
+  expect(outcome()?.message).toContain('SCR-11')
 })

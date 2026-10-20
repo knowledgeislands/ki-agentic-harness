@@ -18,6 +18,7 @@ import {
   inspectEngineeringCheckRecords,
   inspectGovernedScriptSurface,
   inspectKiPin,
+  inspectLintStaged,
   inspectManagedSurfaceExclusions,
   inspectToolchainActivation,
   inspectTurborepo,
@@ -1257,4 +1258,23 @@ test('freshness grades FAIL beyond the 14-day window, INFO within it, held and u
     { state: 'held', name: 'typescript', current: '5.9.3', reason: 'vendored packages still target TS 5' },
     { state: 'unknown', name: 'unknown-lib', current: '1.0.0' }
   ])
+})
+
+test('PKG-6 requires the biome and rumdl fan-out with each tool called directly', () => {
+  expect(inspectLintStaged(undefined).level).toBe('FAIL')
+  expect(inspectLintStaged({ '*.md': ['rumdl check --fix --preflight'] }).level).toBe('WARN')
+  const direct = {
+    '*.{ts,tsx,js,jsx,json,jsonc}': ['biome check --write --no-errors-on-unmatched'],
+    '*.md': ['rumdl check --fix --preflight']
+  }
+  expect(inspectLintStaged(direct)).toEqual({
+    level: 'PASS',
+    message: 'lint-staged fans out to biome and rumdl, each called directly'
+  })
+  const runner = {
+    '*.{ts,tsx,js,jsx,json,jsonc}': ['bunx @biomejs/biome check --write --no-errors-on-unmatched'],
+    '*.md': ['bunx rumdl check --fix --preflight']
+  }
+  expect(inspectLintStaged(runner).message).toContain('through a package runner')
+  expect(inspectLintStaged({ ...direct, '*.md': ['npx rumdl check --fix'] }).level).toBe('WARN')
 })

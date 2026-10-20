@@ -1201,6 +1201,32 @@ export const inspectKiPin = ({ ci, pin, hasReceiver }: KiPinInspection): readonl
   return findings
 }
 
+/**
+ * PKG-6: the lint-staged block fans out to Biome over staged code and `rumdl check --fix` over staged Markdown, each
+ * called directly. rumdl resolves its own scope from `.rumdl.toml`, so a staged invocation needs no flag to suppress
+ * a repository-wide glob. Trade records are formatted like any other file: `ki-trades` AUTH-1 proves their integrity by
+ * comparing meaning against the sender's copy.
+ */
+export const inspectLintStaged = (lintStaged: unknown): { level: Level; message: string } => {
+  if (!lintStaged || typeof lintStaged !== 'object')
+    return { level: 'FAIL', message: 'lint-staged block missing (the pre-commit fan-out)' }
+  const ls = JSON.stringify(lintStaged)
+  if (!/\bbiome\b/.test(ls) || !ls.includes('rumdl check --fix'))
+    return {
+      level: 'WARN',
+      message: 'lint-staged should run biome over staged code and rumdl check --fix over staged Markdown'
+    }
+  // The hook frame puts node_modules/.bin on PATH, so a package runner only adds a resolution step that can fetch a
+  // tool the clone has not installed.
+  if (/\b(?:bunx|npx)\b|\bpnpm\s+dlx\b/.test(ls))
+    return {
+      level: 'WARN',
+      message:
+        'lint-staged calls its tools through a package runner; call biome and rumdl directly, as the hook frame puts node_modules/.bin on PATH'
+    }
+  return { level: 'PASS', message: 'lint-staged fans out to biome and rumdl, each called directly' }
+}
+
 export const collectAuditEvidence = async (
   repo: string,
   emit?: RubricEmitter,
@@ -1365,28 +1391,8 @@ export const collectAuditEvidence = async (
       )
   for (const finding of inspectToolchainActivation(repo, devDeps))
     add(finding.level, finding.code, finding.message, STD, finding.subject)
-  const lintStaged = pkg['lint-staged']
-  if (!lintStaged || typeof lintStaged !== 'object') {
-    add('FAIL', 'PKG-6', 'lint-staged block missing (the pre-commit fan-out)', STD, 'package.json')
-  } else {
-    const ls = JSON.stringify(lintStaged)
-    const fanOut = ls.includes('@biomejs/biome') && ls.includes('rumdl')
-    // rumdl resolves its own scope from .rumdl.toml, so a staged invocation needs no
-    // flag to suppress a repository-wide glob the way markdownlint-cli2 did.
-    const stagedMarkdownOnly = ls.includes('rumdl check --fix')
-    // Trade records are no longer excluded from formatting: ki-trades AUTH-1 proves their
-    // integrity by comparing meaning against the sender's copy, so the boundary is a check
-    // rather than an exclusion list.
-    fanOut && stagedMarkdownOnly
-      ? add('PASS', 'PKG-6', 'lint-staged fans out to biome and rumdl', STD, 'package.json')
-      : add(
-          'WARN',
-          'PKG-6',
-          'lint-staged should run biome over staged code and rumdl check --fix over staged Markdown',
-          STD,
-          'package.json'
-        )
-  }
+  const lintStaged = inspectLintStaged(pkg['lint-staged'])
+  add(lintStaged.level, 'PKG-6', lintStaged.message, STD, 'package.json')
 
   // ── core: mise.toml toolchain pin ─────────────────────────────────────────────
   // Root mise.toml pins the actual node + bun (mise puts them on PATH on `cd`; CI

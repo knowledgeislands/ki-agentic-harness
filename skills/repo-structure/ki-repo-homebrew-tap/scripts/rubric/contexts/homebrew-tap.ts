@@ -7,6 +7,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { inspectCommitGate } from './commit-gate.ts'
 
 const FORMULA_DIRECTORY = 'Formula'
 const CONFIG_FILE = '.ki.toml'
@@ -43,6 +44,8 @@ export type HomebrewTapRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly tap: TapContext
   readonly config: TapConfigContext
+  /** What the committed hook runs (`GATE-1`). */
+  readonly gate: readonly AuditOutcome[]
 }
 
 const nodeKind = (path: string): NodeKind => {
@@ -121,13 +124,16 @@ export const createHomebrewTapSession = async ({
       applicable,
       config: configEvidence.state,
       configKeys: configEvidence.keys
-    }
+    },
+    gate: applicable
+      ? inspectCommitGate(target)
+      : [{ status: 'NOT_APPLICABLE', message: 'ki-repo-homebrew-tap is not applicable: its declaration is absent.' }]
   }
 
   return {
     subjects: [
       { families: ['RUBRIC'], context: () => context },
-      { families: ['TAP', 'CONFIG'], context: () => context }
+      { families: ['TAP', 'CONFIG', 'GATE'], context: () => context }
     ],
     proposal: () => ({ writes: [] satisfies readonly ConformWrite[] })
   }
