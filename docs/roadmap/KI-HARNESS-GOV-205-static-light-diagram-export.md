@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: l
-status: in-progress
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: 791c4ed635f658f0dc6e2e480281aee26feddeac
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-20T06:17:05Z
+updated_at: 2026-10-20T07:10:00Z
 ---
 
 # KI-HARNESS-GOV-205: Static Light Diagram Export
@@ -37,6 +37,7 @@ Kris Brown widened the scope on 19 October 2026 in the Observatory work, answeri
 - In: a light, static, flattened export option in `export-svg.ts`, built on the existing Chrome driver, with its tests and usage; the `ki-diagrams` rule on when to use it and how the manifest records it; the `ki-work-design` rule that design reports use inline text diagrams or exported static SVGs beside the Project note; regenerated skill surfaces.
 - In: re-tracing the `thread-model` diagram at HEAD under its `regenerate` instruction, and re-exporting it.
 - In: a KI-theme export option in `export-svg.ts`, mapped from the `ki-design` tokens as above, flattened like the static light form so that it needs no stylesheet, variables or embedded fonts; its tests and usage; the `ki-diagrams` standard text the decision changes, as proposed under Discussion; regenerated skill surfaces.
+- In: the KI theme's night palette as its own form, `ki-night`, because the decision maps both the night and day themes and a static SVG carries one; and KI glyphs drawn for the node icons whose meaning a KI symbol carries, vendored from `ki-design` like the tokens.
 - Out: changing the dual-theme default for living diagrams elsewhere; changing Archify; re-exporting existing diagrams in other repositories, which their owners do.
 
 ## Current state
@@ -55,15 +56,16 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - [x] Keep the existing gates for the flattened forms: Archify's canonical receipt before flattening, and the external-reference refusal after it. Add a check that the flattened SVG holds no `<style>`, `var(` or `@font-face`.
 - [x] Bring the needed `ki-design` token values into `ki-diagrams` as a vendored copy recording its pinned `ki-design` revision, with a drift test against that revision. The `ki` form maps the night and day palettes and `font.mono` to the attributes it writes.
 - [x] Pass the form through `build-html.ts --svg`, and record it in the manifest's optional `svg_form` field, absent meaning `dual`.
-- [x] Add tests: argument parsing, a flattened fixture with no stylesheet, variables or font data, and the token drift check.
+- [x] In the `ki` and `ki-night` forms, draw each Archify node icon whose meaning a `ki-design` symbol carries with that symbol's glyph, vendored at the pinned revision with a drift test against the glyph files and the symbol library.
+- [x] Add tests: argument parsing, a flattened fixture with no stylesheet, variables or font data, the token drift check and the glyph drift check.
 - [x] Edit the diagrams standard: its opening scope to cover knowledge-base islands with a short island-diagrams section; The tool: Archify for D2 and Mermaid as proposed under Discussion; Committed forms to name the new forms; and The SVG exporter for the option.
-- [ ] Add the `ki-work-design` rule that a design report carries its diagrams as inline text diagrams or exported static SVGs committed beside the subject's Project note.
+- [x] Add the `ki-work-design` rule that a design report carries its diagrams as inline text diagrams or exported static SVGs committed beside the subject's Project note.
 - [x] Re-trace `thread-model` at HEAD under its `regenerate` instruction, rebuild and re-export it, and advance its `last_checked`.
 - [x] Regenerate the `ki-diagrams` `rubric.md` where the published text changes; `ki-work-design` has no rubric.
 
 ## Files touched
 
-- `skills/governance/ki-diagrams/scripts/export-svg.ts`, `export-svg.test.ts`, `build-html.ts`, `build-html.test.ts`, and a token module under `scripts/shared/` if vendored
+- `skills/governance/ki-diagrams/scripts/export-svg.ts`, `export-svg.test.ts`, `build-html.ts`, `build-html.test.ts`, and the vendored token and glyph modules `scripts/internal/ki-design-tokens.ts` and `scripts/internal/ki-design-glyphs.ts` with their tests
 - `skills/governance/ki-diagrams/references/standards-diagrams.md`, `rubric.md`, `SKILL.md` where it summarises the forms
 - `skills/change-management/ki-work-design/references/standards-work-design.md`
 - `docs/diagrams/diagrams.toml`, `docs/diagrams/thread-model.*` and `docs/diagrams/README.md`
@@ -107,56 +109,59 @@ None; re-exports in other repositories are their owners' work.
 
 ### Delivered
 
-Commit `5abbe1ac` on `run/harness-gov-205` from baseline `791c4ed6`.
+Commit `5abbe1ac` from baseline `791c4ed6`, reworked after the failed review by `48c9bf5a` on `run/harness-fix`.
 
 ### Change Summary
 
-- `scripts/export-svg.ts`: `--form dual|light|ki|ki-night`, default `dual`. A static form first takes Archify's canonical export under the existing gates, then reopens it in the same headless Chrome with the form's theme and, for the KI forms, the Archify theme variables set from the tokens. Every computed paint, stroke and text property is written as a plain attribute where it differs from the inherited or initial value, colours as hex with a separate opacity. Hidden elements, the stylesheet, classes and inline styles are dropped, and the root font family is set to the form's monospace stack. The external-reference refusal still applies, and a new check refuses any result still holding `<style>`, `var(` or `@font-face`.
-- `scripts/internal/ki-design-tokens.ts`: the role, wash, `color.core.mist` and `font.mono` values from `ki-design` `packages/tokens/tokens.json` at `cbcc1ace`, with the Archify-variable-to-token map. Its test compares each value against that revision through `git show` in a `ki-design` checkout, found through `KI_DESIGN_ROOT` or as a sibling, and is skipped where none exists. It also checks that every variable comes from a vendored token.
-- `scripts/rubric/contexts/diagrams.ts`: optional manifest `svg_form`, validated against the forms, absent meaning `dual`. `build-html.ts --svg` passes it to the exporter and names the form in its output.
+- `scripts/export-svg.ts`: `--form dual|light|ki|ki-night`, default `dual`.
+  - A static form first takes Archify's canonical export under the existing gates, then reopens it in the same headless Chrome with the form's theme and, for the KI forms, the Archify theme variables set from the tokens.
+  - Every computed paint, stroke and text property is written as a plain attribute where it differs from the inherited or initial value, colours as hex with a separate opacity; `vector-effect` is kept, so icon strokes stay unscaled, and a default black stop colour is no longer written out.
+  - Hidden elements, the stylesheet, classes and inline styles are dropped, and the root font family is set to the form's monospace stack.
+  - The external-reference refusal still applies, and a new check refuses any result still holding `<style>`, `var(` or `@font-face`.
+  - In the `ki` and `ki-night` forms, each node icon whose meaning a KI symbol carries is drawn with that symbol's glyph, its group rescaled from the glyph's 24-unit grid to Archify's 16: database as the library, calendar as the calendar, decision as the council hall, external as the port, security as the customs house and message bus as the current. Every other icon stays as Archify draws it.
+- `scripts/internal/ki-design-tokens.ts`: the role, wash, `color.core.mist` and `font.mono` values from `ki-design` `packages/tokens/tokens.json` at `cbcc1ace`, with the Archify-variable-to-token map and a drift test through `git show` in a `ki-design` checkout, found through `KI_DESIGN_ROOT` or as a sibling and skipped where none exists.
+- `scripts/internal/ki-design-glyphs.ts`: the six glyph bodies from `packages/icons/svg/` at the same revision, each with the symbol that justifies it. Its test compares each body with its glyph file and each symbol's icon with `packages/symbols/src/symbols.ts` at that revision, and checks that no body carries paint of its own.
+- `scripts/rubric/contexts/diagrams.ts`: optional manifest `svg_form`, validated against the forms, absent meaning `dual`. `build-html.ts --svg` passes it to the exporter.
 - `references/standards-diagrams.md`:
   - the opening covers knowledge-base islands, and a new Island diagrams section has them cite notes in place of code;
   - The tool: Archify carries the D2 and Mermaid wording proposed under Discussion;
-  - Committed forms names the four forms, with `dual` the default for living diagrams and `ki` or `light` for design reports;
-  - the manifest table gains `svg_form`;
-  - the regeneration step and the exporter section document `--form`.
-- `ki-diagrams` `SKILL.md`: the exporter summary mentions the forms.
-- `ki-work-design` `references/standards-work-design.md`: a Report diagrams rule. A design report carries inline text diagrams or `ki` or `light` SVGs, committed beside the report in the design folder; a diagram that outlives the design moves beside the subject's Project note when the note graduates.
-- `thread-model` re-traced at `791c4ed6`:
-  - the thread lane now reads `ki-coordination`, and the checkpoint step is now the work package's `state.md`;
-  - reports go to `+/_WORK/<id>/`, the reply block is now Answer by tag, and Project close is now Finish Project;
-  - every source now cites a current heading line;
-  - the cards and the README paragraph are updated to match.
-  - Rebuilt with `self:diagrams:html --svg`: HTML, receipt and SVG re-committed, and `last_checked` advanced.
-- `rubric.md` regenerated with no change, since no criterion changed. The remediation-inventory counts are unchanged.
+  - Committed forms names the four forms, says why `ki-night` exists, and says a design report uses `ki` or `light` beside the subject's Project note;
+  - the manifest table gains `svg_form`, and the regeneration step and the exporter section document `--form` and the glyph mapping.
+- `ki-diagrams` `SKILL.md`: the exporter summary mentions the forms and the KI glyphs.
+- `ki-work-design` `references/standards-work-design.md`, Report diagrams: a design report carries each diagram as an inline text diagram or as a `ki` or `light` SVG committed beside the subject's Project note, in the folder of the note it supports as `ki-repo-kb` sets, and links to it there, so the SVG outlives the report. Until the subject has a Project note, the report carries inline text diagrams.
+- `thread-model`, re-traced at `791c4ed6` in `5abbe1ac`:
+  - the thread lane now reads `ki-coordination`, the checkpoint step is the work package's `state.md`, reports go to `+/_WORK/<id>/`, the reply block is Answer by tag and Project close is Finish Project;
+  - every source cites a current heading line, and the cards and README paragraph match.
+  - `last_checked` now advances to `b3b6a808`, whose one-line change to the traced coordination standard lies outside `stale_when` and moves no cited line.
+- `rubric.md` is unchanged, since no criterion changed. The remediation-inventory counts are unchanged.
 
 ### Verification
 
-- `bun run test`: 1363 pass, 0 fail. The token drift test ran against the local `ki-design` checkout and passed. `bunx tsc --noEmit`: OK.
+- `bun run test`: 1372 pass, 0 fail. The token and glyph drift tests ran against the local `ki-design` checkout and passed. `bunx tsc --noEmit`: OK.
 - `ki dev skill rubric ki-diagrams`: in sync.
-- `ki repo audit --skill ki-diagrams` (isolated home, worktree source): FAIL=0. Eleven DIAG-4 staleness warnings remain on the skill-map diagrams, which this record does not touch. `thread-model` no longer warns.
+- `ki repo audit --skill ki-diagrams` (isolated home, worktree source): FAIL=0, with eleven DIAG-4 staleness warnings on the skill-map diagrams, which this record does not touch. `thread-model` does not warn.
 - `ki repo audit --skill ki-skills`: PASS. The pre-commit focused audit passed.
-- `rsvg-convert` rendered `light` and `ki` exports of the rebuilt `thread-model` with visible text and boxes. `grep -E '<style|var\(|@font-face'` found nothing in either. A `ki-night` export was also checked the same way before the re-trace.
-- No local path appears in the committed `thread-model` source, SVG or HTML.
+- `thread-model` finalized from source into temporary output and exported as `ki`, `ki-night` and `light`: `grep -E '<style|var\(|@font-face'` found nothing in any, and `rsvg-convert` rendered each with visible text and boxes. The `ki` render shows the library, port and current glyphs in place of Archify's database, external and message-bus icons, and the `light` render keeps Archify's.
 
 ### Outstanding concerns
 
-- A fourth form, `ki-night`, was added beyond the record's `dual|light|ki`. The record maps both palettes, but a static SVG carries only one.
-- The KI forms take the `ki-design` palette and monospace stack but not its glyphs: the node icons stay Archify's. Substituting KI glyphs would need a per-icon map that the tokens do not define.
-- The static forms use the system monospace stack, not the embedded JetBrains Mono. Text metrics can differ slightly, so a long label may sit closer to its box edge than in `dual`.
-- The `ki-work-design` rule places report SVGs beside the report in `design/`, and beside the Project note only once they graduate. The record's wording, "beside the subject's Project note", predates the work-folder rule that nothing in `Streams/` points into a work folder.
-- The drift test skips on a machine with no `ki-design` checkout, including CI, so drift is caught only where that repository is cloned.
+- Backend, frontend, cloud and the state icons stay Archify's: no symbol in the `ki-design` library at `cbcc1ace` carries a service, interface or hosting meaning. Most of this repository's own diagrams use backend and frontend icons, so their KI forms change little. A new symbol in `ki-design` would extend the map.
+- Security as the customs house, "where what enters or leaves is inspected and declared", is the loosest match of the six; drop that line if the reviewer reads it otherwise.
+- `ki-night` stays as a fourth form beyond the planned `dual|light|ki`. The decision maps both the night and day themes, and a static file carries one, so `ki` is the day theme and `ki-night` the night. The design-report rule uses only `ki` or `light`.
+- Placement follows the approved wording, beside the Project note. Where a design shapes a Project that has no note yet, the rule falls back to the other approved carrier, inline text diagrams, rather than a third place.
+- The static forms use the system monospace stack, not the embedded JetBrains Mono, so a long label may sit closer to its box edge than in `dual`.
+- The drift tests skip on a machine with no `ki-design` checkout, including CI, so drift is caught only where that repository is cloned.
 - One `thread-model` sublabel was shortened to "record, standard, ADR" to pass Archify's desktop-readability gate.
 
 ### Post-change review
 
 - `dual` stays the default everywhere, so no other repository's diagrams change. Re-exports elsewhere remain their owners' work.
-- The fail-closed gates are kept: the canonical receipt is checked before flattening, and the external-reference and dynamic-style refusals after it.
-- `SVG_FORMS` is defined once, in `export-svg.ts`, and imported by the manifest context, which avoids an import cycle.
+- The fail-closed gates are kept: the canonical receipt is checked before flattening, and the external-reference and dynamic-style refusals after it. A glyph body is parsed as SVG shapes only and carries no paint, reference or script.
+- `SVG_FORMS` is defined once, in `export-svg.ts`, and imported by the manifest context, which avoids an import cycle. The glyph module takes its revision from the token module, so the two cannot be pinned apart.
 
 ### Mini recap
 
-Diagrams can now be exported as static light or Knowledge Islands-themed SVGs that render in any previewer. The diagrams standard covers knowledge-base islands, design reports use the static forms, and `thread-model` is current again.
+Diagrams can now be exported as static light or Knowledge Islands-themed SVGs that render in any previewer, and the KI forms draw KI glyphs where the symbol library carries the meaning. Design reports use the static forms, committed beside the subject's Project note, and `thread-model` is current again.
 
 ## Discussion
 
@@ -179,3 +184,7 @@ Reviewed code `5abbe1ac` and packet `4301c307` together at combined revision `ae
 Two approved requirements remain unmet. Goal and DIAGRAM-STANDARD require KI glyphs where the symbol library carries the meaning, but the exporter maps only paint and font tokens and retains every Archify node icon. Delivered claims glyph support and Outstanding concerns acknowledges its absence. The available ki-design symbol and icon libraries include canonical-record and builder meanings; absence of glyph values in the token file does not settle this requirement. Implement the semantic mapping or obtain an explicit scope change, and make Delivered match the result.
 
 The report-diagrams Step and Boundary require exported SVGs beside the subject's Project note. The new Report diagrams rule instead commits them beside the report under the work folder's design/ until graduation, a different placement and lifetime rule. Reconcile the approved requirement with the existing design-folder contract, obtain any required scope decision, and update the rule and packet before re-review. Include the declared extra ki-night form in that scope reconciliation.
+
+### Rework after review, 20 October 2026
+
+Both unmet requirements are now built rather than rescoped. The glyph mapping follows the DIAGRAM-STANDARD read-back, "KI-theme export (ki-design palette, fonts and glyphs ...)", through the symbol library's meanings. The placement follows the DIAGRAMS-EXPORT wording, "exported static SVGs beside a Project note", which `ki-repo-kb` allows, since an image or diagram belongs in the folder of the note it supports and nothing in `Streams/` then points into a work folder. `ki-night` is kept and justified under Boundary.
