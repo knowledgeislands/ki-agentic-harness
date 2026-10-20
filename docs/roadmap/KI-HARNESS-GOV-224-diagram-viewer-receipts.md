@@ -7,13 +7,13 @@ component: governance
 priority: high
 size: m
 kind: deliver
-status: awaiting-review
+status: in-progress
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: 46f4e14d8f9efffa34cb78f166c9c84aa0d54151
 created_at: 2026-10-19T19:10:30Z
-updated_at: 2026-10-19T23:50:31Z
+updated_at: 2026-10-20T21:16:23Z
 transferred_from: ki-principal ki.observatory OVERLAY-SYNC, 2026-10-19
 ---
 
@@ -54,7 +54,7 @@ A date or a viewer's presence cannot prove agreement; content hashes can.
 - [x] Receipt: `build-html.ts` writes `docs/diagrams/<slug>.receipt.json` beside each committed viewer, after the copy, holding the schema version, the slug and type, the source and HTML file names with their SHA-256 and byte counts, and the renderer's name and version from Archify's `package.json`, with no local path; it refuses when Archify's own delivery receipt disagrees with the bytes it hashed.
 - [x] Check: one pure `receiptFindings` in the rubric context names each `commit_html` entry whose receipt is missing, unreadable, misnamed or mismatched against the current source and HTML; DIAG-1 admits `<slug>.receipt.json` only under `commit_html = true`.
 - [x] Rubric: a new DIAG-6, FAIL, each committed viewer carries a receipt matching its source and HTML, run on committed files alone; `last_checked` plays no part.
-- [x] Commit check: `build-html.ts --check` runs the same `receiptFindings` without Archify, and the pre-commit hook runs it on the staged snapshot whenever `docs/diagrams/` or the `ki-diagrams` scripts are staged.
+- [ ] Commit check: `build-html.ts --check` runs the same `receiptFindings` without Archify, and the pre-commit hook runs it on the staged snapshot whenever `docs/diagrams/` or the `ki-diagrams` scripts are staged.
 - [x] Tests: fixture tests for the receipt writer's shape, a matching receipt, a missing one, a stale source, a stale viewer, a stray receipt and the `--check` exit code.
 - [x] Standard and skill text: Committed forms gains the receipt as a fourth form, the build command and the mechanical checker name it, and `rubric.md` gains DIAG-6.
 - [x] Re-render the 12 manifest entries through `bun run self:diagrams:html`, so each committed viewer carries a matching receipt.
@@ -142,6 +142,16 @@ The goal is met: a committed viewer can now be proved against its source, and a 
 Receipts of source and HTML hashes now sit beside each of the 12 committed viewers, DIAG-6 and the commit hook check them, and the tests and type check pass, with four pre-existing hook-test failures and the planned stray reading under the installed harness until integration. Learning routes, not promoted: whether the receipt should also carry the SVG export, and whether `ki dev skill rubric` should render from the current worktree.
 
 ## Discussion
+
+### Failed independent acceptance review, 20 October 2026
+
+Independent review of harness main at `e8f1da6ef0353c8448d0d7984ebe76f8846fb8f2` fails the Goal and the Commit check Step. The portable receipt writer, DIAG-1 opt-in handling, DIAG-6, receipt documentation, fixtures and all 12 saved viewers are present. Independent SHA-256 and byte-count checks match all 12 source-and-viewer pairs. `bun test skills/governance/ki-diagrams`, `bun run test`, `bunx tsc --noEmit`, the pristine `build-html.ts --check`, and isolated development-linked `ki-diagrams`, `ki-work-roadmap` and `ki-authoring` audits pass. Existing freshness warnings do not affect receipt validity.
+
+Defect: the current `.githooks/pre-commit` and canonical `skills/repo-structure/ki-repo-harness/assets/githooks/package/pre-commit` run the focused `ki-repo-harness` audit only; they no longer run the staged receipt check delivered by this record. In an isolated worktree, appending a comment to `docs/diagrams/skill-area-acquire.html` and staging that viewer made `bun skills/governance/ki-diagrams/scripts/build-html.ts --check` exit 1, while executing the actual pre-commit hook exited 0. The stale viewer would therefore be accepted by the commit gate. The probe was removed and the original bytes restored; the receipt check then passed again.
+
+A direct `ki repo audit --skill ki-diagrams --repo . --staged` on that staged viewer also exited 0 despite reporting a receipt failure outside its selected-path failure count. Rework must establish effective staged-snapshot enforcement, not merely add an audit invocation whose exit remains successful for a stale viewer. Restore it through the canonical hook contract and verify rejection of stale source, changed or missing viewer receipt, and stale viewer, while allowing a matching staged source, viewer and receipt when unstaged working files differ. Keep the delivery in this record; do not create a replacement roadmap item.
+
+The Commit check Step is reopened. The earlier Review packet remains delivery history, superseded by this failed review. Return to Awaiting review only after the defect is repaired and the required gates and independent review pass. Kris Brown's specific acceptance grant permits this failed-review return to In progress; no push or pruning was performed.
 
 ### Receipt shape
 

@@ -7,13 +7,12 @@ component: governance
 kind: deliver
 priority: high
 size: s
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b004ce1bfef9e6622c84b623b5aca5303690279a
 created_at: 2026-10-18T17:56:31Z
-updated_at: 2026-10-19T23:41:38Z
+updated_at: 2026-10-20T21:16:23Z
 ---
 
 # KI-HARNESS-GOV-219: Feedback Work-Folder Kind
@@ -122,7 +121,19 @@ The goal is met: a feedback package has a home, a writer and a tidy rule, and CO
 
 The work folder now admits the owner's consolidated feedback, written through the Observatory beside one linking Messages line and tidied once every point is homed; the tests and both skill audits pass, with four pre-existing hook-test failures unrelated. Learning route, not promoted: `ki dev skill rubric` could render from the current worktree, so a worktree run can regenerate its own rubric.
 
+## Done
+
+Accepted 2026-10-20 by the independent reviewer under Kris Brown's explicit acceptance grant on the review packet above.
+
 ## Discussion
+
+### Independent acceptance review, 20 October 2026
+
+Independent review of harness main at `e8f1da6ef0353c8448d0d7984ebe76f8846fb8f2` passes every Goal and Step outcome. The feedback package, owner through Observatory, atomic package-and-message write, receiver dispositions and tidy rules are present in the two standards. Subsequent work moved closed-list enforcement from COORD-9 to `ki-work-package` FOLDER-1; its allowed Markdown folders include `feedback`, its closed-list fixture includes a feedback package, and its stray-file fixture still rejects unsupported files.
+
+`bun test skills/change-management/ki-coordination`, `bun test skills/governance/ki-work-package`, `bun run test` and `bunx tsc --noEmit` pass. Isolated, development-linked `ki repo audit` runs for `ki-coordination`, `ki-work-package`, `ki-work-roadmap` and `ki-authoring` report no failures; existing warnings do not concern this delivery. `ki dev skill rubric ki-coordination` confirms the published reference matches its current sources. No Observatory application changes were required or made.
+
+Kris Brown's acceptance grant of 20 October 2026, renewed at 22:03 BST, explicitly authorises independent acceptance of this record and KI-HARNESS-GOV-224 despite the standing prohibition. This review accepts this record alone; no push or pruning is authorised by this run.
 
 ### Kept until
 
