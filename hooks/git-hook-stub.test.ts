@@ -85,6 +85,25 @@ test('a working tree without the gate tooling refuses the commit and names the a
   expect(head(worktree)).toBe(before)
 })
 
+test('a working tree without bun on PATH refuses before any gate runs', () => {
+  const { worktree } = repositoryWithWorktree()
+  install(worktree, ['lint-staged', 'syncpack', 'tsc', 'commitlint'])
+  const before = head(worktree)
+  writeFileSync(join(worktree, 'change.txt'), 'change\n')
+  git(worktree, 'add', 'change.txt')
+  // Only the stand-in ki and the system directories, which hold git and sh but not bun.
+  const result = spawnSync('git', ['commit', '-m', 'chore: change'], {
+    cwd: worktree,
+    encoding: 'utf8',
+    env: { ...process.env, ...identity, PATH: `${stubBin}:/usr/bin:/bin` }
+  })
+
+  expect(result.status).not.toBe(0)
+  expect(result.stderr).toContain('not on PATH: bun')
+  expect(result.stderr).toContain('--no-verify')
+  expect(head(worktree)).toBe(before)
+})
+
 test('commit-msg refuses on its own missing tool once pre-commit can run', () => {
   const { worktree } = repositoryWithWorktree()
   install(worktree, ['lint-staged', 'syncpack', 'tsc'])

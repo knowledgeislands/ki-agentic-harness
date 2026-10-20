@@ -13,7 +13,7 @@ if [ -n "$missing" ]; then
   exit 1
 fi
 missing=''
-for tool in ki; do
+for tool in ki bun; do
   if ! command -v "$tool" >/dev/null 2>&1; then missing="$missing $tool"; fi
 done
 if [ -n "$missing" ]; then
