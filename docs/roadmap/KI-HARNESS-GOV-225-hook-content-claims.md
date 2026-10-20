@@ -12,7 +12,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T22:46:17Z
-updated_at: 2026-10-19T22:46:17Z
+updated_at: 2026-10-20T00:51:03Z
 transferred_from: ki-principal ki.tools-burndown hooks-standard design section 4.2, HOOK-CAPTURE a), 2026-10-19
 ---
 
@@ -31,7 +31,7 @@ The [hooks-standard design](/Users/krisbrown/workspaces/knowledge-islands/ki-pri
 ## Boundary
 
 - In: the claim declaration shape in the rubric catalogue contract, beside `packageScripts`; the `ki-repo` frame template as declared data, matching the `HOOK-4` frame rule; claims from `ki-engineering`, `ki-repo-kb`, `ki-repo-tools`, `ki-repo-dotfiles-chezmoi` and `ki-repo-harness`; the new `ki-repo-harness` content criterion the design names; standard text in `ki-repo` and each shape skill saying that conform composes from claims; checker tests.
-- Out: the host loader, composer and conform step, which [KI-TOOL-KI-CLI-165](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) owns; `commit-msg` content for package-less repositories until `ki git check-message` ships in [KI-TOOL-KI-CLI-161](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-161-git-check-message.md); raising the hook checks to FAIL; running conform in any repository.
+- Out: the host loader, composer and conform step, which [KI-TOOL-KI-CLI-165](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) owns; `commit-msg` content for package-less repositories until `ki git check-message` ships in [KI-TOOL-KI-CLI-161 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/ce905bee422605f2f7c7c4c2d94819582f0c56b8/docs/roadmap/KI-TOOL-KI-CLI-161-git-check-message.md); raising the hook checks to FAIL; running conform in any repository.
 
 ## Discussion
 
