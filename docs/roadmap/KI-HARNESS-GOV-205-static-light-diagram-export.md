@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: l
-status: awaiting-review
+status: in-progress
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: 791c4ed635f658f0dc6e2e480281aee26feddeac
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-20T06:07:50Z
+updated_at: 2026-10-20T06:17:05Z
 ---
 
 # KI-HARNESS-GOV-205: Static Light Diagram Export
@@ -57,7 +57,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - [x] Pass the form through `build-html.ts --svg`, and record it in the manifest's optional `svg_form` field, absent meaning `dual`.
 - [x] Add tests: argument parsing, a flattened fixture with no stylesheet, variables or font data, and the token drift check.
 - [x] Edit the diagrams standard: its opening scope to cover knowledge-base islands with a short island-diagrams section; The tool: Archify for D2 and Mermaid as proposed under Discussion; Committed forms to name the new forms; and The SVG exporter for the option.
-- [x] Add the `ki-work-design` rule that a design report carries its diagrams as inline text diagrams or exported static SVGs committed beside the subject's Project note.
+- [ ] Add the `ki-work-design` rule that a design report carries its diagrams as inline text diagrams or exported static SVGs committed beside the subject's Project note.
 - [x] Re-trace `thread-model` at HEAD under its `regenerate` instruction, rebuild and re-export it, and advance its `last_checked`.
 - [x] Regenerate the `ki-diagrams` `rubric.md` where the published text changes; `ki-work-design` has no rubric.
 
@@ -171,3 +171,11 @@ The 19 October decision leaves the `ki-diagrams` standard narrower than the deci
 ### Planning answers, 20 October 2026
 
 Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The three decisions are recorded under Dependencies / blocks and the record is Ready at size `l`; the KI-theme form was not split out, since a split would create a new record, which CAPTURE-GATE leaves to the owning coordinator.
+
+### Independent review failed, 20 October 2026
+
+Reviewed code `5abbe1ac` and packet `4301c307` together at combined revision `ae58540ecf69ee171e14282496f8ed1b904d9359`. Tests, TypeScript, rubric publication and focused audits pass. The reported ki-diagrams FAIL is not reproducible: this audit has zero failures, eleven existing DIAG-4 staleness warnings and five DIAG-8 working-mark warnings. There is no observed audit regression to waive. Independently exported light and ki SVGs contain no stylesheet, variable or font-face dependency; rsvg-convert renders both with readable text and boxes.
+
+Two approved requirements remain unmet. Goal and DIAGRAM-STANDARD require KI glyphs where the symbol library carries the meaning, but the exporter maps only paint and font tokens and retains every Archify node icon. Delivered claims glyph support and Outstanding concerns acknowledges its absence. The available ki-design symbol and icon libraries include canonical-record and builder meanings; absence of glyph values in the token file does not settle this requirement. Implement the semantic mapping or obtain an explicit scope change, and make Delivered match the result.
+
+The report-diagrams Step and Boundary require exported SVGs beside the subject's Project note. The new Report diagrams rule instead commits them beside the report under the work folder's design/ until graduation, a different placement and lifetime rule. Reconcile the approved requirement with the existing design-folder contract, obtain any required scope decision, and update the rule and packet before re-review. Include the declared extra ki-night form in that scope reconciliation.

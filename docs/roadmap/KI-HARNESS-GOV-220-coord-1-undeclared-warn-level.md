@@ -7,14 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: s
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 78c547b369cc3f7ef6e0fae2f33a7c40f563d1d7
 transferred_from: ki-principal/Streams/Projects/tools-burndown.md
 created_at: 2026-10-19T07:16:09Z
-updated_at: 2026-10-20T05:28:36Z
+updated_at: 2026-10-20T06:16:32Z
 ---
 
 # KI-HARNESS-GOV-220: COORD-1 Undeclared Warn Level
@@ -120,6 +119,10 @@ The goal holds: an audit over a tolerance-window Capital completes and reports t
 
 One-line declaration fix plus a level-contract test that would have caught the defect before release. Learning route, not promoted: other skills' rubric tests could run the same declared-level check over their own fixtures.
 
+## Done
+
+Accepted 2026-10-20 by GPT-6 Codex as independent reviewer under Kris Brown's standing grant on the review packet above.
+
 ## Discussion
 
 ### Shape of the fix
@@ -129,3 +132,11 @@ Declaring `overrideLevels: ['WARN']` on COORD-1 is the smallest change and match
 ### Planning answers, 20 October 2026
 
 Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. It had no open decision, and the record is Ready.
+
+### Independent acceptance, 20 October 2026
+
+Kris Brown's overnight grant is quoted in the accept-harness-batch brief: "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... getting the roadmaps down to zero". The [ways-of-working decisions log](../../../ki-principal/+/_WORK/ki.ways-of-working/decisions.md), entry "2026-10-20 07:14 BST - received harness-batch", confirms the exact seven-record scope and independent review before acceptance. This acceptance exercises that grant for KI-HARNESS-GOV-220.
+
+Independently reviewed delivery `31fe7df1ab2ee90937878f9e3738354ba0acfe65` against combined revision `ae58540ecf69ee171e14282496f8ed1b904d9359`. Tests: 1,363 pass, zero failures. TypeScript passes. Published rubrics for ki-coordination, ki-work-package, ki-delegation, ki-diagrams and ki-repo are in sync. The eight focused harness audits (ki-work-roadmap, ki-authoring, ki-coordination, ki-work-package, ki-delegation, ki-diagrams, ki-repo and ki-skills) report zero failures. Existing roadmap and diagram warnings and the deliberately absent maturity declaration are recorded separately from this record's acceptance.
+
+COORD-1 admits WARN while retaining FAIL; the three item tests pass, and removing the WARN override in a temporary source copy makes the two regression assertions fail.

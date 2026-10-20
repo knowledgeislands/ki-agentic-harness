@@ -7,13 +7,12 @@ component: keystone
 priority: medium
 size: m
 kind: deliver
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 8835a9c79ed2e0e7145c80b601f9d6be781c229f
 created_at: 2026-10-19T18:51:40Z
-updated_at: 2026-10-20T05:56:41Z
+updated_at: 2026-10-20T06:17:05Z
 transferred_from: ki-principal ki.observatory CONDITION-TOML, 2026-10-19
 ---
 
@@ -147,6 +146,10 @@ Commits `c06c5d1f` (feature) and `5c38c0a8` (audit-subject fix) on `run/harness-
 
 Islands now declare their maturity on a fixed four-level scale; the audit warns when it is missing and fails when it is off the scale.
 
+## Done
+
+Accepted 2026-10-20 by GPT-6 Codex as independent reviewer under Kris Brown's standing grant on the review packet above.
+
 ## Discussion
 
 Settled at planning: whether the key sits in `[skills.ki-repo]` or `[repo]`; whether an archived or retired island needs a level of its own or is read from audit health alone; and which `ki repo audit` outcome maps to decline and which to ruin. The answers are under Dependencies / blocks and [Decline rule](#decline-rule). The harness owns priority and design.
@@ -166,3 +169,11 @@ Kris Brown answered MATURITY-DECLINE on 20 October 2026 in the ways-of-working d
 5. **Wording replaced.** The earlier age and tolerance wording is replaced here and in the standard, which states this rule and nothing about warning age, history or a tolerance; and the receiving reader, [KI-TOOL-KI-CLI-159](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-159-island-maturity-and-health.md), verifies four cases: a clean audit (neither signal), a warning-only audit (decline), a failure-plus-warning audit (ruin) and an audit that cannot complete (ruin).
 
 With the rule settled, the record passes the readiness checks: it is an adopted Now draft with a confirmed boundary, its dependencies are understood, and its verification is checkable. It is Ready at Now under PLANNED-READY a), "the old do need to move to Ready if possible, and we need to move them".
+
+### Independent acceptance, 20 October 2026
+
+Kris Brown's overnight grant is quoted in the accept-harness-batch brief: "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... getting the roadmaps down to zero". The [ways-of-working decisions log](../../../ki-principal/+/_WORK/ki.ways-of-working/decisions.md), entry "2026-10-20 07:14 BST - received harness-batch", confirms the exact seven-record scope and independent review before acceptance. This acceptance exercises that grant for KI-HARNESS-GOV-223.
+
+Independently reviewed delivery `c06c5d1f3af2ab1d5a677de48c9500892500fa60`, `5c38c0a80cad70cfa319eafe3e674e646a724be7`, `791c4ed635f658f0dc6e2e480281aee26feddeac` against combined revision `ae58540ecf69ee171e14282496f8ed1b904d9359`. Tests: 1,363 pass, zero failures. TypeScript passes. Published rubrics for ki-coordination, ki-work-package, ki-delegation, ki-diagrams and ki-repo are in sync. The eight focused harness audits (ki-work-roadmap, ki-authoring, ki-coordination, ki-work-package, ki-delegation, ki-diagrams, ki-repo and ki-skills) report zero failures. Existing roadmap and diagram warnings and the deliberately absent maturity declaration are recorded separately from this record's acceptance.
+
+The combined code registers MATURITY in both the family catalogue and audit subjects. Absent maturity warns, invalid or non-string values fail, valid levels pass, and the default proposes no declaration.

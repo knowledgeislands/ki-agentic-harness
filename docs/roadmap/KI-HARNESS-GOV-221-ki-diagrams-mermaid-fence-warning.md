@@ -7,13 +7,12 @@ component: governance
 kind: deliver
 priority: medium
 size: s
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 5f921df4385029e377f86a23e72b24cf59ac3401
 created_at: 2026-10-19T07:17:31Z
-updated_at: 2026-10-20T05:43:17Z
+updated_at: 2026-10-20T06:17:04Z
 ---
 
 # KI-HARNESS-GOV-221: ki-diagrams Mermaid Fence Warning
@@ -131,6 +130,10 @@ None; conversion in other repositories is their owners' work under the migration
 
 DIAG-7 warns on each Mermaid fence left after the Archify migration until it is replaced or kept by marker.
 
+## Done
+
+Accepted 2026-10-20 by GPT-6 Codex as independent reviewer under Kris Brown's standing grant on the review packet above.
+
 ## Discussion
 
 Questions for planning: whether the item applies to every repository that runs the audit or only to those adopting `ki-diagrams`; whether the scan reads tracked Markdown only or also other text files; and whether a kept diagram is recorded as a manifest exclusion or a marker beside the fence.
@@ -138,3 +141,11 @@ Questions for planning: whether the item applies to every repository that runs t
 ### Planning answers, 20 October 2026
 
 Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The three decisions are recorded under Dependencies / blocks, and the record is Ready.
+
+### Independent acceptance, 20 October 2026
+
+Kris Brown's overnight grant is quoted in the accept-harness-batch brief: "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... getting the roadmaps down to zero". The [ways-of-working decisions log](../../../ki-principal/+/_WORK/ki.ways-of-working/decisions.md), entry "2026-10-20 07:14 BST - received harness-batch", confirms the exact seven-record scope and independent review before acceptance. This acceptance exercises that grant for KI-HARNESS-GOV-221.
+
+Independently reviewed delivery `a3cd97aa73cb06d19a905beb8eec76f18a769234` against combined revision `ae58540ecf69ee171e14282496f8ed1b904d9359`. Tests: 1,363 pass, zero failures. TypeScript passes. Published rubrics for ki-coordination, ki-work-package, ki-delegation, ki-diagrams and ki-repo are in sync. The eight focused harness audits (ki-work-roadmap, ki-authoring, ki-coordination, ki-work-package, ki-delegation, ki-diagrams, ki-repo and ki-skills) report zero failures. Existing roadmap and diagram warnings and the deliberately absent maturity declaration are recorded separately from this record's acceptance.
+
+DIAG-7 reports tracked file and line, honours the adjacent keep marker and ignores untracked files and nested example fences; its boundary fixtures pass.

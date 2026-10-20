@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: m
-status: awaiting-review
+status: in-progress
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: 7b9ec10cb403dda93c2eec7e5d38c02f939e2178
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-20T05:40:24Z
+updated_at: 2026-10-20T06:17:04Z
 ---
 
 # Thread Folder Closed List
@@ -62,7 +62,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - [x] Say how an agent keeps evidence the owner asks for: it copies the file to its owning home deliberately and names it in its report.
 - [x] In the background-run standard's run packet section, link the `ki-work-package` closed list rather than restating it, and say that a run writes nothing into `+/_WORK/<id>/` beyond its report.
 - [x] Add one footer line to `skills/governance/ki-delegation/assets/run-prompt.md` naming the temporary home and the no-other-writes rule, in the same words as the launcher footer.
-- [x] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, a malformed Messages line, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions-log heading the close gate cannot parse.
+- [ ] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, a malformed Messages line, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions-log heading the close gate cannot parse.
 - [x] Retire COORD-9 from `ki-coordination`, pointing its standard text at the new `ki-work-package` items, and keep the judgment prompt with the item that inherits it.
 - [x] Add boundary fixtures for each new item, including a clean folder, a stray file, a stray `design/` file and each tidy case.
 - [x] Regenerate the `ki-work-package`, `ki-coordination` and, if its cited text changes, `ki-delegation` rubrics, and update the remediation-inventory test's criteria counts.
@@ -159,3 +159,11 @@ Capture only, on Kris Brown's explicit request in THREADS-TELL; adoption, priori
 ### Planning answers, 20 October 2026
 
 Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The two open decisions are recorded under Dependencies / blocks, and the record is Ready.
+
+### Independent review failed, 20 October 2026
+
+Reviewed delivery `5f921df4385029e377f86a23e72b24cf59ac3401` at combined revision `ae58540ecf69ee171e14282496f8ed1b904d9359`. Tests, TypeScript, rubric publication and all eight focused harness audits pass. The failure is incomplete and stale acceptance evidence.
+
+The family Step includes a WARN for decisions-log headings the close gate cannot parse, but the delivered FOLDER family and work-folder.ts contain no such check. Outstanding concerns defers it because [KI-TOOL-KI-CLI-152](../../../tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md) is said to be awaiting review and not landed. That dependency is Done, accepted in tools-ki commit `bc563d56`; its code landed at `22ee0609`. Its settled contract treats every H2 as an entry, including timestamped, date-only and free-text headings.
+
+Resolve the remaining heading requirement against that contract, implement any applicable boundary check or obtain an explicit scope disposition, and correct the Step and review packet before re-review. The closed-list, tidy and temporary-home changes otherwise match the inspected source and passing fixtures. Previously reported Capital FOLDER-1 findings remain receiver-owned.
