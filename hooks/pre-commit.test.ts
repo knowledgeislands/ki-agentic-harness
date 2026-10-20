@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path'
 
 const temporaryDirectories: string[] = []
 const repositoryRoot = resolve(import.meta.dir, '..')
-const hook = join(repositoryRoot, '.husky', 'pre-commit')
+const hook = join(repositoryRoot, '.githooks', 'pre-commit')
 
 afterEach(() => {
   for (const directory of temporaryDirectories.splice(0)) rmSync(directory, { recursive: true, force: true })
@@ -16,6 +16,16 @@ const write = (repository: string, path: string, content: string): void => {
   const target = join(repository, path)
   mkdirSync(dirname(target), { recursive: true })
   writeFileSync(target, content)
+}
+
+// The hook refuses unless its tools sit in the repository's node_modules/.bin, so each
+// fixture installs stand-ins that record their arguments and succeed.
+const installTools = (repository: string, capture = '/dev/null'): void => {
+  for (const tool of ['lint-staged', 'syncpack', 'tsc']) {
+    const target = join(repository, 'node_modules', '.bin', tool)
+    write(repository, join('node_modules', '.bin', tool), `#!/bin/sh\nprintf '${tool} %s\\n' "$*" >> '${capture}'\nexit 0\n`)
+    chmodSync(target, 0o755)
+  }
 }
 
 const skill = (name: string, extra = ''): string => `---
@@ -33,7 +43,7 @@ test('the staged skill audit includes unchanged siblings, providers, and the loc
   const binaries = join(repository, 'test-bin')
   const setCapture = join(repository, 'set-audit-focus')
   const localCapture = join(repository, 'local-audit-focus')
-  const bunxCapture = join(repository, 'bunx-calls')
+  const toolCapture = join(repository, 'tool-calls')
 
   write(repository, '.ki.toml', '["knowledgeislands/ki-agentic-harness:ki-skills"]\n')
   write(repository, 'README.md', '# Fixture\n')
@@ -47,7 +57,7 @@ test('the staged skill audit includes unchanged siblings, providers, and the loc
   write(repository, 'skills/repo-structure/ki-repo-specifications/SKILL.md', skill('ki-repo-specifications'))
   write(repository, '.agents/skills/ki-self/SKILL.md', skill('ki-self'))
 
-  write(repository, 'test-bin/bunx', '#!/bin/sh\nprintf \'%s\\n\' "$*" >> "$KI_HOOK_BUNX_CAPTURE"\nexit 0\n')
+  installTools(repository, toolCapture)
   write(
     repository,
     'test-bin/ki',
@@ -72,7 +82,6 @@ case "$focus" in
 esac
 `
   )
-  chmodSync(join(binaries, 'bunx'), 0o755)
   chmodSync(join(binaries, 'ki'), 0o755)
 
   execFileSync('git', ['init', '-q'], { cwd: repository })
@@ -91,14 +100,13 @@ esac
       ...process.env,
       PATH: `${binaries}:${process.env.PATH ?? ''}`,
       KI_HOOK_SET_CAPTURE: setCapture,
-      KI_HOOK_LOCAL_CAPTURE: localCapture,
-      KI_HOOK_BUNX_CAPTURE: bunxCapture
+      KI_HOOK_LOCAL_CAPTURE: localCapture
     }
   })
 
   expect(readFileSync(setCapture, 'utf8').trim()).not.toBe('')
   expect(readFileSync(localCapture, 'utf8').trim()).not.toBe('')
-  expect(readFileSync(bunxCapture, 'utf8').trim().split('\n').slice(0, 2)).toEqual([
+  expect(readFileSync(toolCapture, 'utf8').trim().split('\n').slice(0, 2)).toEqual([
     'lint-staged --quiet',
     'syncpack format --check'
   ])
@@ -112,7 +120,7 @@ test('a failing concise skill audit is run again in full so its findings print',
 
   write(repository, '.ki.toml', '["knowledgeislands/ki-agentic-harness:ki-skills"]\n')
   write(repository, 'skills/governance/ki-sibling/SKILL.md', skill('ki-sibling'))
-  write(repository, 'test-bin/bunx', '#!/bin/sh\nexit 0\n')
+  installTools(repository)
   write(
     repository,
     'test-bin/ki',
@@ -121,7 +129,6 @@ printf '%s\\n' "$*" | sed 's|--repo [^ ]*|--repo FOCUS|' >> "$KI_HOOK_AUDIT_CAPT
 exit 1
 `
   )
-  chmodSync(join(binaries, 'bunx'), 0o755)
   chmodSync(join(binaries, 'ki'), 0o755)
 
   execFileSync('git', ['init', '-q'], { cwd: repository })

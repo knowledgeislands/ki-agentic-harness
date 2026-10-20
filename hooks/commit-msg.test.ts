@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dir, '..')
-const hook = join(repositoryRoot, '.husky', 'commit-msg')
+const hook = join(repositoryRoot, '.githooks', 'commit-msg')
 
 const check = (message: string): boolean => {
   const directory = mkdtempSync(join(tmpdir(), 'ki-commit-msg-'))
