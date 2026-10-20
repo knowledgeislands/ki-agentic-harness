@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 /**
- * Purpose: Export the dual-theme SVG of a finalized Archify diagram through its viewer.
+ * Purpose: Export the dual-theme SVG of a finalized Archify diagram through its viewer, or a static flattened form.
  * Run: bun scripts/export-svg.ts --help
  * Boundary: Reads one finalized Archify HTML file and writes one SVG; needs a system Google Chrome or Chromium,
  * launched headless against the local file only, and never edits a diagram source.
  *
- * Usage: bun scripts/export-svg.ts <input.html> <output.svg>
+ * Usage: bun scripts/export-svg.ts [--form dual|light|ki|ki-night] <input.html> <output.svg>
  *
  * The dual-theme SVG a finalized Archify diagram's viewer exports, written without opening the viewer by hand.
  *
@@ -21,6 +21,13 @@
  * Archify's own message and the `ARCHIFY_CHROME` override. The viewer records whether its clone came out free of
  * viewer state, and an export it does not call canonical, or one that carries an external reference, is refused
  * rather than written.
+ *
+ * `--form` chooses what is written. `dual`, the default, is the viewer's file as it is. The static forms, `light`
+ * under Archify's light theme, `ki` under the `ki-design` day palette and `ki-night` under its night palette, flatten
+ * that same canonical file in Chrome: every computed fill, stroke, opacity and text style is written as a plain
+ * attribute, colours as hex, the font becomes a system monospace stack, and the stylesheet, custom properties, font
+ * data and animation are dropped, so any previewer, `rsvg-convert` included, renders it as the viewer shows it. A
+ * flattened file that still carries a stylesheet, a `var(` or a font face is refused.
  */
 
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
@@ -28,8 +35,16 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { Chrome, findChrome, NO_CHROME } from './internal/chrome.ts'
+import { kiMonoStack, kiThemeVariables } from './internal/ki-design-tokens.ts'
 
-const USAGE = 'usage: bun scripts/export-svg.ts <input.html> <output.svg>'
+const USAGE = 'usage: bun scripts/export-svg.ts [--form dual|light|ki|ki-night] <input.html> <output.svg>'
+
+/** The committed SVG forms: the viewer's dual-theme file, or one flattened static palette. */
+export const SVG_FORMS = ['dual', 'light', 'ki', 'ki-night'] as const
+export type SvgForm = (typeof SVG_FORMS)[number]
+
+/** Archify's system fallback stack, without the web font the static forms cannot carry. */
+const SYSTEM_MONO = 'ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace'
 
 /** The Archify release whose viewer and browser route this exporter was verified against, byte for byte. */
 export const VERIFIED_ARCHIFY = '3.0.1'
@@ -40,17 +55,56 @@ const EXTERNAL = /(?:href\s*=\s*["']|url\(\s*["']?)(?!#|data:)[^"')\s]/i
 /** A reason the export was not written, reported as one line rather than a stack. */
 export class Refusal extends Error {}
 
-/** The input HTML and output SVG named on the command line, or a refusal with the usage line. */
-export const parseArguments = (argv: readonly string[]): { readonly source: string; readonly target: string } => {
-  const [input, output, ...rest] = argv
+/** Whether `value` names one of the committed SVG forms. */
+export const isSvgForm = (value: unknown): value is SvgForm => SVG_FORMS.includes(value as SvgForm)
+
+/** The input HTML, output SVG and form named on the command line, or a refusal with the usage line. */
+export const parseArguments = (
+  argv: readonly string[]
+): { readonly source: string; readonly target: string; readonly form: SvgForm } => {
+  const positional: string[] = []
+  let form: SvgForm = 'dual'
+  for (let index = 0; index < argv.length; index++) {
+    const arg = argv[index] as string
+    if (arg !== '--form') {
+      positional.push(arg)
+      continue
+    }
+    const value = argv[++index]
+    if (!isSvgForm(value)) throw new Refusal(`--form must be one of ${SVG_FORMS.join(', ')}: ${value ?? ''}`)
+    form = value
+  }
+  const [input, output, ...rest] = positional
   if (!input || !output || rest.length > 0) throw new Refusal(USAGE)
   if (!input.endsWith('.html')) throw new Refusal(`the input must be a finalized Archify HTML file: ${input}`)
   if (!output.endsWith('.svg')) throw new Refusal(`the output must be an .svg file: ${output}`)
-  return { source: resolve(input), target: resolve(output) }
+  return { source: resolve(input), target: resolve(output), form }
 }
 
 /** The first reference that leaves the file, or `undefined` when the SVG is self-contained. */
 export const externalReference = (svg: string): string | undefined => svg.match(EXTERNAL)?.[0]
+
+/** The first stylesheet, custom property or font face left in a flattened SVG, or `undefined` when it is static. */
+export const dynamicStyle = (svg: string): string | undefined => svg.match(/<style|var\(|@font-face/)?.[0]
+
+/** Refuse a flattened SVG that still depends on CSS or carries a reference out of the file. */
+export const acceptFlattened = (svg: string, form: SvgForm): string => {
+  if (!svg.includes('<svg')) throw new Refusal(`the ${form} flattening did not return an SVG`)
+  const dynamic = dynamicStyle(svg)
+  if (dynamic) throw new Refusal(`the ${form} SVG still carries ${dynamic}`)
+  const external = externalReference(svg)
+  if (external) throw new Refusal(`the ${form} SVG carries an external reference: ${external}`)
+  return svg
+}
+
+/** The Archify theme, variable overrides and font stack each static form is flattened under. */
+export const flatteningFor = (
+  form: Exclude<SvgForm, 'dual'>
+): { readonly theme: 'light' | 'dark'; readonly variables: Record<string, string>; readonly font: string } => {
+  if (form === 'light') return { theme: 'light', variables: {}, font: SYSTEM_MONO }
+  if (form === 'ki') return { theme: 'light', variables: kiThemeVariables('light'), font: kiMonoStack() }
+  return { theme: 'dark', variables: kiThemeVariables('night'), font: kiMonoStack() }
+}
 
 /** Refuse a download the viewer did not call a canonical SVG, or one that is not self-contained. */
 export const acceptExport = (
@@ -92,6 +146,110 @@ const RECEIPT = `({
   canonical: document.documentElement.getAttribute('data-last-export-canonical')
 })`
 
+/**
+ * The page-side flattening, run in Chrome on the exported SVG opened as its own document. It pins the theme, stops
+ * animation, applies the variable overrides, reads every element's computed paint and text style, and writes each as
+ * a presentation attribute where it differs from what the element would otherwise inherit or default to. Colours are
+ * resolved through a canvas pixel to hex plus an opacity, so `color-mix()` and any colour space come out as plain
+ * sRGB. It then removes every stylesheet, `style` and `class` attribute and returns the serialised document.
+ */
+const FLATTEN = `(({ theme, variables, font }) => {
+  const NS = 'http://www.w3.org/2000/svg'
+  const svg = document.documentElement
+  svg.setAttribute('data-theme', theme)
+  svg.removeAttribute('data-animation')
+  const still = document.createElementNS(NS, 'style')
+  still.textContent = '*, *::before, *::after { animation: none !important; transition: none !important; }'
+  svg.appendChild(still)
+  for (const [name, value] of Object.entries(variables)) svg.style.setProperty(name, value)
+
+  const pixel = new OffscreenCanvas(1, 1).getContext('2d', { willReadFrequently: true })
+  const colours = new Map()
+  const colour = (value) => {
+    if (!colours.has(value)) {
+      pixel.clearRect(0, 0, 1, 1)
+      pixel.fillStyle = '#000'
+      pixel.fillStyle = value
+      pixel.fillRect(0, 0, 1, 1)
+      const [r, g, b, a] = pixel.getImageData(0, 0, 1, 1).data
+      const hex = '#' + [r, g, b].map((part) => part.toString(16).padStart(2, '0')).join('')
+      colours.set(value, { hex, alpha: a / 255 })
+    }
+    return colours.get(value)
+  }
+  const reference = (value) => value.match(/url\\(\\s*["']?(#[^"')\\s]+)/)?.[1]
+
+  const INHERITED = ['fill', 'fill-opacity', 'stroke', 'stroke-opacity', 'stroke-width', 'stroke-dasharray',
+    'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'font-size', 'font-weight', 'font-style',
+    'text-anchor', 'dominant-baseline', 'letter-spacing', 'visibility', 'marker-start', 'marker-mid', 'marker-end']
+  const OWN = { opacity: '1', 'stop-color': 'rgb(0, 0, 0)', 'stop-opacity': '1', filter: 'none', mask: 'none',
+    'clip-path': 'none' }
+  const DEFAULTS = { fill: 'rgb(0, 0, 0)', 'fill-opacity': '1', stroke: 'none', 'stroke-opacity': '1',
+    'stroke-width': '1px', 'stroke-dasharray': 'none', 'stroke-dashoffset': '0px', 'stroke-linecap': 'butt',
+    'stroke-linejoin': 'miter', 'font-size': '16px', 'font-weight': '400', 'font-style': 'normal',
+    'text-anchor': 'start', 'dominant-baseline': 'auto', 'letter-spacing': 'normal', visibility: 'visible',
+    'marker-start': 'none', 'marker-mid': 'none', 'marker-end': 'none' }
+
+  const read = (element) => {
+    const style = getComputedStyle(element)
+    const values = {}
+    for (const name of [...INHERITED, ...Object.keys(OWN)]) values[name] = style.getPropertyValue(name).trim()
+    for (const [paint, opacity] of [['fill', 'fill-opacity'], ['stroke', 'stroke-opacity'], ['stop-color', 'stop-opacity']]) {
+      const value = values[paint]
+      if (!value || value === 'none' || value.startsWith('context-')) continue
+      const url = reference(value)
+      if (url) { values[paint] = 'url(' + url + ')'; continue }
+      const { hex, alpha } = colour(value)
+      values[paint] = hex
+      const combined = Number(values[opacity] || '1') * alpha
+      values[opacity] = String(Math.round(combined * 1000) / 1000)
+    }
+    for (const name of ['filter', 'mask', 'clip-path', 'marker-start', 'marker-mid', 'marker-end']) {
+      const url = reference(values[name])
+      values[name] = url ? 'url(' + url + ')' : 'none'
+    }
+    return { display: style.display, values }
+  }
+
+  const elements = [svg, ...svg.querySelectorAll('*')].filter((element) => element !== still)
+  const computed = new Map(elements.map((element) => [element, read(element)]))
+  const hidden = []
+  for (const element of elements) {
+    const { display, values } = computed.get(element)
+    if (display === 'none' && !element.closest('defs')) { hidden.push(element); continue }
+    const parent = element === svg ? undefined : computed.get(element.parentElement)
+    for (const name of INHERITED) {
+      const value = values[name]
+      const inherited = parent ? parent.values[name] : DEFAULTS[name]
+      if (value && value !== inherited) element.setAttribute(name, value)
+    }
+    for (const [name, initial] of Object.entries(OWN)) {
+      const value = values[name]
+      if (value && value !== initial) element.setAttribute(name, value)
+    }
+  }
+  for (const element of hidden) element.remove()
+  for (const element of [...svg.querySelectorAll('style')]) element.remove()
+  for (const element of [svg, ...svg.querySelectorAll('*')]) {
+    element.removeAttribute('style')
+    element.removeAttribute('class')
+  }
+  svg.setAttribute('font-family', font)
+  return '<?xml version="1.0" encoding="UTF-8"?>\\n' + new XMLSerializer().serializeToString(svg)
+})`
+
+/** Open the canonical SVG at `file` as its own document in Chrome and return it flattened under `form`. */
+const flattenSvg = async (chrome: Chrome, file: string, form: Exclude<SvgForm, 'dual'>): Promise<string> => {
+  const session = await chrome.session
+  const loaded = chrome.protocol.waitFor('Page.loadEventFired', session)
+  loaded.catch(() => {})
+  const navigation = await chrome.protocol.send('Page.navigate', { url: pathToFileURL(file).href }, session)
+  if (navigation.errorText) throw new Refusal(`Chrome could not open the exported SVG: ${navigation.errorText}`)
+  await loaded
+  const svg = await chrome.evaluate<string>(`${FLATTEN}(${JSON.stringify(flatteningFor(form))})`)
+  return acceptFlattened(svg, form)
+}
+
 /** Open `source` in the viewer, run its SVG export, and return the downloaded file's text. */
 const exportSvg = async (chrome: Chrome, source: string, downloads: string): Promise<string> => {
   const session = await chrome.session
@@ -132,6 +290,8 @@ const exportSvg = async (chrome: Chrome, source: string, downloads: string): Pro
 const HELP = `${USAGE}
 
 Export the dual-theme SVG of a finalized Archify diagram through the viewer's own Export > SVG action.
+--form light, ki or ki-night flattens that export into a static SVG under Archify's light theme or the
+ki-design day or night palette, with no stylesheet, custom properties or embedded fonts; dual is the default.
 Needs a system Google Chrome or Chromium, the browser Archify's own browser gate drives; set ARCHIFY_CHROME to
 choose the executable. Verified against Archify ${VERIFIED_ARCHIFY}.`
 
@@ -143,14 +303,20 @@ const main = async (argv: readonly string[]): Promise<void> => {
     console.log(HELP)
     return
   }
-  const { source, target } = parseArguments(argv)
+  const { source, target, form } = parseArguments(argv)
   if (!(await Bun.file(source).exists())) throw new Refusal(`no such file: ${source}`)
 
   const chromePath = locateChrome()
   const downloads = await mkdtemp(join(tmpdir(), 'ki-diagrams-export-'))
   const chrome = new Chrome(chromePath)
   try {
-    const svg = await exportSvg(chrome, source, downloads)
+    const dual = await exportSvg(chrome, source, downloads)
+    let svg = dual
+    if (form !== 'dual') {
+      const canonical = join(downloads, 'canonical.svg')
+      await writeFile(canonical, dual)
+      svg = await flattenSvg(chrome, canonical, form)
+    }
     await mkdir(dirname(target), { recursive: true })
     await writeFile(target, svg)
     console.log(`${target} (${Buffer.byteLength(svg)} bytes)`)

@@ -4,7 +4,7 @@
  * Run: bun scripts/build-html.ts --help
  * Boundary: Reads `docs/diagrams/diagrams.toml` and each listed source, writes under `+/diagrams/<slug>/`, and
  * copies the HTML to `docs/diagrams/<slug>.html`, with its `<slug>.receipt.json`, only for a diagram with
- * `commit_html = true`; with `--svg` it re-exports each `docs/diagrams/<slug>.svg`. With `--check` it renders
+ * `commit_html = true`; with `--svg` it re-exports each `docs/diagrams/<slug>.svg` in its manifest `svg_form`. With `--check` it renders
  * nothing and only verifies each committed viewer's receipt. After each finalize it writes the working folder's
  * `mark.toml`, reading the run packet under the KI state home in a background run. It never edits a source or the
  * manifest.
@@ -262,9 +262,9 @@ const build = (
     done.push('HTML committed form and receipt written')
   }
   if (svg) {
-    const exported = run('bun', [EXPORTER, paths.html, paths.svg], repository)
+    const exported = run('bun', [EXPORTER, '--form', entry.svgForm, paths.html, paths.svg], repository)
     if (!exported.ok) throw new Refusal(`${entry.slug}: ${exported.stderr.trim() || 'SVG export failed'}`)
-    done.push('SVG exported')
+    done.push(entry.svgForm === 'dual' ? 'SVG exported' : `SVG exported (${entry.svgForm})`)
   }
   return done.join(', ')
 }
@@ -276,7 +276,7 @@ fresh --out-dir, and copy it to docs/diagrams/<slug>.html, with its <slug>.recei
 hashes, where the manifest sets commit_html = true. Each working folder gets a mark.toml naming the work, the
 run and agent from KI_AGENT_RUN and its run packet or the session, and the time; --work names the work where no
 run packet does. Name slugs to build only those. --svg also re-exports each
-docs/diagrams/<slug>.svg through the viewer. --check renders nothing and needs no Archify: it fails when a
+docs/diagrams/<slug>.svg through the viewer, in the form its svg_form names, dual where it names none. --check renders nothing and needs no Archify: it fails when a
 committed viewer's receipt is missing or does not match its source and HTML. Archify is found at ARCHIFY_HOME,
 otherwise under ~/.claude/skills/archify or ~/.agents/skills/archify.`
 

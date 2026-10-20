@@ -4,23 +4,63 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import {
   acceptExport,
+  acceptFlattened,
+  dynamicStyle,
   externalReference,
+  flatteningFor,
   locateChrome,
   parseArguments,
   Refusal,
+  SVG_FORMS,
   VERIFIED_ARCHIFY,
   wantsHelp
 } from './export-svg.ts'
+import { KI_DESIGN_TOKENS } from './internal/ki-design-tokens.ts'
 
 const CANONICAL = { format: 'svg', canonical: 'true' } as const
 
-test('the arguments name one finalized HTML input and one SVG output', () => {
+test('the arguments name one finalized HTML input, one SVG output and an optional form', () => {
   expect(parseArguments(['build/a.html', 'docs/diagrams/a.svg'])).toEqual({
     source: resolve('build/a.html'),
-    target: resolve('docs/diagrams/a.svg')
+    target: resolve('docs/diagrams/a.svg'),
+    form: 'dual'
   })
+  for (const form of SVG_FORMS) {
+    expect(parseArguments(['--form', form, 'a.html', 'a.svg']).form).toBe(form)
+    expect(parseArguments(['a.html', 'a.svg', '--form', form]).form).toBe(form)
+  }
   for (const argv of [[], ['a.html'], ['a.html', 'a.svg', 'extra'], ['a.json', 'a.svg'], ['a.html', 'a.png']])
     expect(() => parseArguments(argv)).toThrow(Refusal)
+  for (const argv of [
+    ['--form', 'dark', 'a.html', 'a.svg'],
+    ['a.html', 'a.svg', '--form']
+  ])
+    expect(() => parseArguments(argv)).toThrow(/--form must be one of dual, light, ki, ki-night/)
+})
+
+test('a flattened SVG is written only when no stylesheet, custom property, font face or external reference is left', () => {
+  const svg = '<?xml version="1.0"?><svg viewBox="0 0 1 1"><rect fill="#f5efe0" fill-opacity="0.5"/></svg>'
+  expect(dynamicStyle(svg)).toBeUndefined()
+  expect(acceptFlattened(svg, 'light')).toBe(svg)
+  expect(() => acceptFlattened('<svg><style>rect{fill:red}</style></svg>', 'light')).toThrow(/still carries <style/)
+  expect(() => acceptFlattened('<svg><rect fill="var(--bg)"/></svg>', 'ki')).toThrow(/still carries var\(/)
+  expect(() => acceptFlattened('<svg><g data-x="@font-face"/></svg>', 'ki')).toThrow(/still carries @font-face/)
+  expect(() => acceptFlattened('<svg><a href="https://example.com"/></svg>', 'ki-night')).toThrow(/external/)
+  expect(() => acceptFlattened('<html></html>', 'light')).toThrow(/did not return an SVG/)
+})
+
+test('each static form flattens under its theme, palette and font stack', () => {
+  expect(flatteningFor('light')).toEqual(expect.objectContaining({ theme: 'light', variables: {} }))
+  expect(flatteningFor('light').font).not.toContain('JetBrains')
+  const day = flatteningFor('ki')
+  const night = flatteningFor('ki-night')
+  expect([day.theme, night.theme]).toEqual(['light', 'dark'])
+  expect(day.variables['--bg']).toBe(KI_DESIGN_TOKENS['color.role.light.paper'])
+  expect(day.variables['--text']).toBe(KI_DESIGN_TOKENS['color.role.light.ink'])
+  expect(night.variables['--bg']).toBe(KI_DESIGN_TOKENS['color.role.night.paper'])
+  expect(night.variables['--text']).toBe(KI_DESIGN_TOKENS['color.role.night.ink'])
+  expect(Object.values(day.variables).every((value) => /^#[0-9a-f]{6}$/.test(value))).toBe(true)
+  expect(day.font).toBe('ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace')
 })
 
 test('only fragments and inline data stay inside the file', () => {
@@ -71,6 +111,8 @@ test('help is asked for with -h or --help, prints without a browser, and names t
     env: { ...process.env, ARCHIFY_CHROME: '/nonexistent/chrome' }
   })
   expect(result.exitCode).toBe(0)
-  expect(result.stdout.toString()).toContain('usage: bun scripts/export-svg.ts <input.html> <output.svg>')
+  expect(result.stdout.toString()).toContain(
+    'usage: bun scripts/export-svg.ts [--form dual|light|ki|ki-night] <input.html> <output.svg>'
+  )
   expect(result.stdout.toString()).toContain(`Verified against Archify ${VERIFIED_ARCHIFY}`)
 })

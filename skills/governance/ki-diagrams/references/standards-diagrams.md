@@ -1,6 +1,6 @@
 # Diagrams standard
 
-This standard defines how a Knowledge Islands repository keeps living diagrams: diagrams that explain the system as built, traced from named source files, and kept current as the code changes. The hosted rubric enforces its mechanical criteria; the generated [rubric](rubric.md) publishes every criterion, and [exemplars](exemplars.md) point at a conforming set. It was established by the `apps-observatory` pilot (`KI-OBSERVA-APP-034` there) and adopted as a harness standard by `KI-HARNESS-GOV-131`.
+This standard defines how a Knowledge Islands repository or knowledge-base island keeps diagrams: living diagrams that explain the system as built, traced from named source files and kept current as the code changes, and [island diagrams](#island-diagrams) that explain a model or process. The hosted rubric enforces its mechanical criteria; the generated [rubric](rubric.md) publishes every criterion, and [exemplars](exemplars.md) point at a conforming set. It was established by the `apps-observatory` pilot (`KI-OBSERVA-APP-034` there) and adopted as a harness standard by `KI-HARNESS-GOV-131`.
 
 ## Contents
 
@@ -11,6 +11,7 @@ This standard defines how a Knowledge Islands repository keeps living diagrams: 
 - [Embedding](#embedding)
 - [Privacy](#privacy)
 - [Regeneration and freshness](#regeneration-and-freshness)
+- [Island diagrams](#island-diagrams)
 
 ## The tool: Archify
 
@@ -23,7 +24,7 @@ Archify was chosen on 2026-10-03 against six criteria: visual quality, a committ
 - it has no route or import-graph importer;
 - its command line has no SVG export, which [the exporter](#the-svg-exporter) supplies.
 
-Mermaid and Graphviz were excluded at the owner's direction as not good enough to look at. The audit warns on each fenced `mermaid` block left in the repository's tracked Markdown, naming its file and line, until it is replaced by an Archify diagram or the owner decides to keep it, as Kris set on 19 October 2026 under DIAGRAM-REPLACE: "Re mermaid diagrams, if they can be replaced with archify they should be, e.g. activity diagrams. Flag any others that don't and I'll decide about them too". A kept diagram carries `<!-- ki-diagrams: keep mermaid -->` on the line before its fence, so the decision sits beside it. D2 is the best addition only for maps generated mechanically from code, such as a route manifest or a dependency graph, and has no interactive HTML. LikeC4 models C4 architecture only; Structurizr looks dated; Stately suits state charts only where XState is adopted; SlickMap has no dark theme; Ilograph, Eraser and IcePanel need payment or SaaS, which fails the private-repository rule; tldraw and Excalidraw are hand-drawn rather than generated; react-scanner, Storybook Composition and framework route visualisers are category mismatches. [Sources](sources.md) lists the evidence for each.
+Mermaid and Graphviz were excluded at the owner's direction as not good enough to look at. The audit warns on each fenced `mermaid` block left in the repository's tracked Markdown, naming its file and line, until it is replaced by an Archify diagram or the owner decides to keep it, as Kris set on 19 October 2026 under DIAGRAM-REPLACE: "Re mermaid diagrams, if they can be replaced with archify they should be, e.g. activity diagrams. Flag any others that don't and I'll decide about them too". A kept diagram carries `<!-- ki-diagrams: keep mermaid -->` on the line before its fence, so the decision sits beside it: Mermaid diagrams found in a repository are replaced by Archify diagrams wherever Archify can carry them, and the rest are flagged to the owner. D2 is allowed only for maps generated mechanically from code, such as a route manifest or a dependency graph, styled from the `ki-design` tokens; it has no interactive HTML. LikeC4 models C4 architecture only; Structurizr looks dated; Stately suits state charts only where XState is adopted; SlickMap has no dark theme; Ilograph, Eraser and IcePanel need payment or SaaS, which fails the private-repository rule; tldraw and Excalidraw are hand-drawn rather than generated; react-scanner, Storybook Composition and framework route visualisers are category mismatches. [Sources](sources.md) lists the evidence for each.
 
 The tool choice is recorded here rather than in a Decision Record. `ADR-KI-HARNESS-TOOLCHAIN-002` lists Archify among the harness's adopted complementary tools and links back to this section.
 
@@ -52,7 +53,13 @@ If a question needs two types, it is two questions; draw two diagrams.
 Each diagram has up to four forms under `docs/diagrams/`:
 
 - **Source** - `<slug>.<type>.json`, the Archify input. It records the repository revision and cites the file and line each node was traced from. It is the thing to edit. Always committed.
-- **SVG** - `<slug>.svg`, the self-contained dual-theme export: dark by default, light under `prefers-color-scheme: light`, fonts inlined, and no reference outside the file other than a fragment or an inline `data:` URI. Always committed.
+- **SVG** - `<slug>.svg`, self-contained, with no reference outside the file other than a fragment or an inline `data:` URI. Always committed. Its form is the manifest's `svg_form`:
+  - `dual`, the default for living diagrams: Archify's own export, dark by default and light under `prefers-color-scheme: light`, fonts inlined;
+  - `light`: a static light-only export with every paint resolved to a plain attribute, no `<style>`, no CSS variable and no `@font-face`, and the system monospace font, so it renders the same in any SVG viewer, `rsvg-convert` included;
+  - `ki`: the same static form painted from the `ki-design` light role, wash and font tokens, for a design report or a page in the Knowledge Islands look;
+  - `ki-night`: the `ki` form in the `ki-design` night palette, since a static SVG carries one palette.
+
+  A design report uses `ki` or `light`.
 - **Interactive HTML** - `<slug>.html`, the finalized viewer with search, focus, zoom and source links, roughly 800 KB per diagram. Committed only for a diagram whose manifest table sets `commit_html = true`, as a repository that serves its diagrams does, or one whose readers open the viewer from a checkout or a forge; the opt-in then requires it. Otherwise it is rebuilt locally under `+/diagrams/<slug>/` and never committed.
 - **Receipt** - `<slug>.receipt.json`, beside each committed viewer and only there: the proof that the viewer was rendered from the committed source. It holds the receipt schema version, the slug and type, the source and HTML file names with their SHA-256 hashes and byte counts, and the renderer's name and version, with no local path, so it is portable. [The build command](#the-build-command) writes it with the viewer, and it is never hand-edited. A viewer whose receipt is missing or no longer matches its source and HTML is stale, whatever its `last_checked` says: a matching receipt never refreshes `last_checked`, and a stale `last_checked` never fails the receipt.
 
@@ -64,7 +71,7 @@ The slug is lower-case kebab-case and names the question's subject, not the type
 
 ## The manifest
 
-`docs/diagrams/diagrams.toml` is the machine-readable authority: a reader such as the Observatory can list a repository's diagrams and flag stale ones without parsing prose. It has one table per slug and no other content. Every field is required except `commit_html`:
+`docs/diagrams/diagrams.toml` is the machine-readable authority: a reader such as the Observatory can list a repository's diagrams and flag stale ones without parsing prose. It has one table per slug and no other content. Every field is required except `commit_html` and `svg_form`:
 
 | Field          | Holds                                                                                                     |
 | -------------- | --------------------------------------------------------------------------------------------------------- |
@@ -76,6 +83,7 @@ The slug is lower-case kebab-case and names the question's subject, not the type
 | `regenerate`   | The prompt an agent with the Archify skill is given to rebuild the diagram from repository evidence        |
 | `last_checked` | The commit the diagram was last traced or confirmed against                                                |
 | `commit_html`  | Optional; `true` commits the diagram's `<slug>.html` and its receipt, and absent or `false` keeps it local |
+| `svg_form`     | Optional; the [SVG form](#committed-forms), one of `dual`, `light`, `ki`, `ki-night`, absent meaning `dual` |
 
 `docs/diagrams/README.md` is the reader-facing index: a short introduction, one section per diagram stating its question in prose, and the SVG embedded with `![Title](<slug>.svg)`; a diagram with `commit_html = true` also links its figure to `<slug>.html`, for example `[![Title](<slug>.svg)](<slug>.html)`. It does not repeat the manifest's operational fields. Both templates ship in the skill's `assets/`.
 
@@ -106,7 +114,7 @@ To refresh a stale diagram, or to confirm a warned one:
 
 1. Give an agent with the Archify skill the diagram's `regenerate` prompt and its current source. Ask it to re-trace from the repository and keep the existing layout wherever the facts have not changed.
 2. Rebuild and check it: `node <archify>/bin/archify.mjs finalize <type> docs/diagrams/<slug>.<type>.json +/diagrams/<slug>/<slug>.html --repo-root "$PWD" --quality showcase --json`. All four gates - validate, deliver, check, browser check - must pass.
-3. Re-export the SVG: `bun <ki-diagrams>/scripts/export-svg.ts +/diagrams/<slug>/<slug>.html docs/diagrams/<slug>.svg`. A diagram with `commit_html = true` also copies the finalized `<slug>.html` to `docs/diagrams/` and writes its receipt, which the build command does for it.
+3. Re-export the SVG: `bun <ki-diagrams>/scripts/export-svg.ts [--form <form>] +/diagrams/<slug>/<slug>.html docs/diagrams/<slug>.svg`, passing the manifest's `svg_form` where it is not `dual`. A diagram with `commit_html = true` also copies the finalized `<slug>.html` to `docs/diagrams/` and writes its receipt, which the build command does for it.
 4. Set `last_checked` to the commit the diagram was traced against.
 
 [The build command](#the-build-command) runs steps 2 and 3 for every listed diagram at once.
@@ -125,8 +133,14 @@ Each working folder `+/diagrams/<slug>/` carries a `mark.toml` sidecar at its ro
 
 Archify's SVG export lives only in its viewer's Export menu. The exporter opens the finalized HTML in the system Google Chrome or Chromium, headless, calls the function that menu item calls, and keeps the downloaded file byte for byte, so the committed SVG is exactly what a reader's click would produce and cannot drift from Archify's own serialiser. It fails closed: an export the viewer does not mark canonical, or one carrying an external reference, is refused rather than written.
 
+`--form <form>` selects a static form in place of the default `dual`. The exporter first takes the canonical export as above, then opens it in the same browser with the form's theme and, for `ki` and `ki-night`, the Archify theme variables set from the `ki-design` tokens. It writes every computed paint, stroke and text property as a plain attribute, drops the stylesheet, classes, inline styles and hidden elements, and sets the font family to the form's monospace stack. It refuses a result that still carries a `<style>` element, a `var(` reference or an `@font-face` rule. The `ki-design` values are vendored at a pinned revision in `scripts/internal/ki-design-tokens.ts`, whose test compares them against that revision of the `ki-design` token file where a checkout is available.
+
 The browser is found and launched the way Archify's own browser gate finds and launches it: `ARCHIFY_CHROME` names the executable when set, otherwise the platform's fixed install paths are tried before the commands on `PATH`, and the browser runs headless with a throwaway profile, speaking the DevTools Protocol over its remote-debugging pipe. The exporter carries its own small port of that route, verified against Archify 3.0.1, so it depends on no Archify internals and needs no package install: a repository that can finalize a diagram can export it.
 
 ### Without Archify or a browser
 
 Both are optional prerequisites. AUDIT, and the build command's `--check`, read committed files and Git history only and run without either. EDUCATE, REFRESH and authoring stop without Archify and give the Rig install instruction. The exporter stops without a Google Chrome or Chromium and gives Archify's own message, `Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.`; the browser is the machine's, not a development dependency of the adopting repository or of the harness.
+
+## Island diagrams
+
+A knowledge-base island keeps diagrams too, under the same tool, types, forms, manifest and privacy rules. An island diagram explains a model or a process rather than code, so its source and manifest cite the notes it draws from in place of traced source files: `traced` lists those notes' island-relative paths, and the audit's freshness check reads their history as it reads code. Its `stale_when` names the changes to those notes that would make it untrue. An island usually embeds its diagrams in notes and reports rather than serving a viewer, so a static `light` or `ki` form often suits it better than `dual`.

@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { externalReference } from '../../export-svg.ts'
+import { externalReference, SVG_FORMS, type SvgForm } from '../../export-svg.ts'
 import type { RubricContextOptions, RubricPublicationContext, RubricSession } from '../../shared/rubric.ts'
 
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
@@ -16,8 +16,11 @@ export const RECEIPT_SUFFIX = '.receipt.json'
 export const RECEIPT_SCHEMA = 1
 export const DIAGRAM_TYPES = ['architecture', 'workflow', 'sequence', 'dataflow', 'lifecycle'] as const
 const FIELDS = ['type', 'question', 'audience', 'traced', 'stale_when', 'regenerate', 'last_checked'] as const
-/** Optional fields: `commit_html = true` opts a diagram into committing its interactive HTML. */
-const OPTIONAL_FIELDS = ['commit_html'] as const
+/**
+ * Optional fields: `commit_html = true` opts a diagram into committing its interactive HTML, and `svg_form` names
+ * the committed SVG's form, absent meaning `dual`.
+ */
+const OPTIONAL_FIELDS = ['commit_html', 'svg_form'] as const
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const REVISION = /^[0-9a-f]{7,40}$/
 
@@ -34,6 +37,7 @@ export type DiagramEntry = {
   readonly traced: readonly string[]
   readonly lastChecked: string
   readonly commitHtml: boolean
+  readonly svgForm: SvgForm
 }
 
 /** One file a receipt vouches for: its name under docs/diagrams, its SHA-256 and its byte count. */
@@ -148,6 +152,9 @@ export const parseManifest = (
         issues.push(`${slug}: unknown field ${field}`)
     if ('commit_html' in table && typeof table.commit_html !== 'boolean')
       issues.push(`${slug}: commit_html must be true or false`)
+    const svgForm = table.svg_form
+    const svgFormValid = (SVG_FORMS as readonly unknown[]).includes(svgForm)
+    if ('svg_form' in table && !svgFormValid) issues.push(`${slug}: svg_form must be one of ${SVG_FORMS.join(', ')}`)
     const type = table.type
     if (typeof type !== 'string' || !(DIAGRAM_TYPES as readonly string[]).includes(type))
       issues.push(`${slug}: type must be one of ${DIAGRAM_TYPES.join(', ')}`)
@@ -170,7 +177,8 @@ export const parseManifest = (
         type,
         traced: tracedValid ? (traced as string[]) : [],
         lastChecked: typeof lastChecked === 'string' ? lastChecked : '',
-        commitHtml: table.commit_html === true
+        commitHtml: table.commit_html === true,
+        svgForm: svgFormValid ? (svgForm as SvgForm) : 'dual'
       })
   }
   return { entries, issues }

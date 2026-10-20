@@ -54,6 +54,6 @@ Each functional-area diagram answers, for one area: which outside skills do its 
 
 ## Thread model
 
-What steps does a piece of owner-directed work take? A coordinating thread under `ki-coordination` logs the owner's decision in their words, updates its checkpoint and writes a brief under `ki-delegation`; `ki agent` launches a detached agent, which does the work under `ki-git`, moves its work record, and ends with an owner report and `DONE`. The thread answers with a Summary and a reply block, and at each mark classifies its decisions into durable homes and tidies its folder until Project close. The diagram is traced from the two standards and cites the heading each step comes from.
+What steps does a piece of owner-directed work take? Coordinating work under `ki-coordination` logs the owner's decision in their words, updates its work package's state and writes a brief under `ki-delegation`; `ki agent` launches a detached agent, which does the work under `ki-git`, moves its work record, and ends with an owner report and `DONE`. The coordinator answers with a Summary, the owner answers by tag, and at each mark the coordinator homes its decisions and prunes its work folder until the Project finishes. The diagram is traced from the two standards and cites the heading each step comes from.
 
 [![Knowledge Islands thread model](thread-model.svg)](thread-model.html)

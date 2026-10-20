@@ -22,7 +22,8 @@ const entry = (slug: string, commitHtml = false): DiagramEntry => ({
   type: 'architecture',
   traced: ['src'],
   lastChecked: '0000000',
-  commitHtml
+  commitHtml,
+  svgForm: 'dual'
 })
 
 test('the arguments name an optional repository and work, the SVG flag and any slugs', () => {

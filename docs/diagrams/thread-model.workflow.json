@@ -9,7 +9,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "b7d3b53e42de9de3d48a6087a810b1f3004cf2cd"
+      "revision": "791c4ed635f658f0dc6e2e480281aee26feddeac"
     },
     "viewBox": [
       1232,
@@ -22,10 +22,10 @@
           "label": "Owner step"
         },
         "database": {
-          "label": "Log, checkpoint or record"
+          "label": "Log, work package or record"
         },
         "security": {
-          "label": "Thread rule step"
+          "label": "Coordinator rule step"
         },
         "cloud": {
           "label": "Launcher step"
@@ -49,7 +49,7 @@
     },
     {
       "id": "thread",
-      "label": "Coordinating thread · ki-pmo"
+      "label": "Coordinating work · ki-coordination"
     },
     {
       "id": "launcher",
@@ -114,8 +114,8 @@
       "sublabel": "instruction or answer",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 86,
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 175,
           "label": "coordinator responsiveness"
         }
       ],
@@ -130,9 +130,14 @@
       "sublabel": "decisions.md",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 107,
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 797,
           "label": "decisions log"
+        },
+        {
+          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "line": 161,
+          "label": "decisions log, run side"
         }
       ],
       "width": 160
@@ -142,16 +147,16 @@
       "lane": "thread",
       "col": 1,
       "type": "database",
-      "label": "Update checkpoint",
-      "sublabel": "ki-checkpoint",
+      "label": "Update state",
+      "sublabel": "state.md · ki-work-package",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 437,
-          "label": "mark in Current state"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 877,
+          "label": "committing the work folder"
         },
         {
-          "path": "skills/governance/ki-checkpoint/SKILL.md",
+          "path": "skills/governance/ki-work-package/SKILL.md",
           "line": 1
         }
       ],
@@ -168,12 +173,12 @@
       "sources": [
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 73,
+          "line": 111,
           "label": "prompt shape"
         },
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 92,
+          "line": 135,
           "label": "authority tiers"
         }
       ],
@@ -189,17 +194,17 @@
       "sources": [
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 32,
+          "line": 35,
           "label": "detachment"
         },
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 135,
+          "line": 186,
           "label": "run queue"
         },
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 279,
+          "line": 217,
           "label": "reference launcher"
         }
       ],
@@ -216,7 +221,7 @@
       "sources": [
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 122,
+          "line": 169,
           "label": "coordination"
         }
       ],
@@ -243,16 +248,16 @@
       "col": 4,
       "type": "messagebus",
       "label": "Report + DONE",
-      "sublabel": "+/_THREADS/<run>/",
+      "sublabel": "+/_WORK/<id>/",
       "sources": [
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 152,
+          "line": 203,
           "label": "reporting"
         },
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 158,
+          "line": 209,
           "label": "owner report"
         }
       ],
@@ -268,7 +273,7 @@
       "sources": [
         {
           "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 144,
+          "line": 195,
           "label": "monitoring"
         }
       ],
@@ -281,17 +286,17 @@
       "type": "frontend",
       "label": "Summary",
       "sublabel": "Done · Progress · Queries",
-      "tag": "ki-pmo",
+      "tag": "ki-coordination",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 104,
-          "label": "thread practices"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 447,
+          "label": "owner report"
         },
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 158,
-          "label": "owner report"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 197,
+          "label": "coordinating practices"
         }
       ],
       "width": 160
@@ -301,13 +306,13 @@
       "lane": "owner",
       "col": 5,
       "type": "external",
-      "label": "Reply block",
-      "sublabel": "option a), or a letter",
+      "label": "Answer by tag",
+      "sublabel": "speech, tag or a letter",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
-          "line": 158,
-          "label": "owner report"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 531,
+          "label": "answers"
         }
       ],
       "width": 160
@@ -318,17 +323,17 @@
       "col": 5,
       "type": "security",
       "label": "Mark",
-      "sublabel": "classify, tidy folder",
+      "sublabel": "home decisions, prune folder",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 393,
-          "label": "decision classes"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 823,
+          "label": "decisions life cycle"
         },
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 463,
-          "label": "tidying the folder"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 881,
+          "label": "pruning the work folder"
         }
       ],
       "width": 160
@@ -339,11 +344,11 @@
       "col": 5,
       "type": "database",
       "label": "Durable homes",
-      "sublabel": "record, skill, checkpoint",
+      "sublabel": "record, standard, ADR",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 393,
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 808,
           "label": "decision classes"
         }
       ],
@@ -354,13 +359,13 @@
       "lane": "launcher",
       "col": 5,
       "type": "cloud",
-      "label": "Project close",
-      "sublabel": "REMOVE, ki agent close",
+      "label": "Finish Project",
+      "sublabel": "finish, ki agent close",
       "sources": [
         {
-          "path": "skills/change-management/ki-pmo/references/standards-pmo.md",
-          "line": 418,
-          "label": "project close"
+          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "line": 835,
+          "label": "finishing project work"
         }
       ],
       "width": 160
@@ -449,25 +454,25 @@
       "title": "One loop",
       "items": [
         "An owner message is logged in the owner's words before any work it authorises launches.",
-        "The thread writes only the checkpoint, the decisions log and a brief; a detached agent does the work.",
-        "The agent ends with an owner report and DONE; the thread answers with a Summary and a reply block."
+        "The coordinator writes only the work package, the decisions log and a brief; a detached agent does the work.",
+        "The agent ends with an owner report and DONE; the coordinator sends a Summary and the owner answers by tag."
       ]
     },
     {
       "dot": "cyan",
       "title": "Who owns each step",
       "items": [
-        "ki-pmo: how the coordinating thread behaves, its Summary, marks and Project close.",
-        "ki-delegation: the run packet, prompt shape, authority footers, decisions log and owner report.",
-        "ki-git and the ki-work family: the agent's commits and the work record's lifecycle."
+        "ki-coordination: how coordinating work behaves, its Summary, marks and finishing.",
+        "ki-delegation: the run packet, prompt shape, authority footers, run queue and reporting.",
+        "ki-work-package, ki-git and the ki-work family: the work folder, the agent's commits and the record's lifecycle."
       ]
     },
     {
       "dot": "slate",
       "title": "Marks and close",
       "items": [
-        "At a mark the thread classifies each logged decision into its durable home and tidies its folder.",
-        "At Project close it promotes what remains, removes its checkpoint, deletes the folder and closes the run."
+        "At a mark the coordinator homes each logged decision under its life cycle and prunes the work folder.",
+        "On finish it homes what remains, sets the state finished, deletes the work folder and closes the runs."
       ]
     }
   ]

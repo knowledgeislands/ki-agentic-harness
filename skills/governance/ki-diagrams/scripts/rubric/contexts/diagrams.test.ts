@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { SVG_FORMS } from '../../export-svg.ts'
 import { DIAG } from '../items/diagrams.ts'
 import {
   createDiagramsSession,
@@ -137,6 +138,19 @@ test('DIAG-1 accepts committed HTML only under commit_html, and then requires it
   ])
 })
 
+test('the manifest names an optional SVG form, absent meaning dual', () => {
+  const base = entry('architecture', 'architecture', '0000000')
+  expect(parseManifest(base).entries[0]?.svgForm).toBe('dual')
+  for (const form of SVG_FORMS) {
+    const parsed = parseManifest(`${base}svg_form = "${form}"\n`)
+    expect(parsed.issues).toEqual([])
+    expect(parsed.entries[0]?.svgForm).toBe(form)
+  }
+  expect(parseManifest(`${base}svg_form = "dark"\n`).issues).toEqual([
+    'architecture: svg_form must be one of dual, light, ki, ki-night'
+  ])
+})
+
 test('DIAG-1 fails without a manifest or diagrams directory and reports every schema problem', () => {
   const root = mkdtempSync(join(tmpdir(), 'ki-diagrams-'))
   expect(statuses('DIAG-1', root)).toEqual(['VIOLATION'])
@@ -226,7 +240,14 @@ const withViewer = (): string => {
   writeFileSync(join(directory, 'architecture.html'), '<html></html>\n')
   writeFileSync(join(directory, 'README.md'), `${README}\n[Interactive](architecture.html)\n`)
   const receipt = diagramReceipt(
-    { slug: 'architecture', type: 'architecture', traced: ['src'], lastChecked: '0000000', commitHtml: true },
+    {
+      slug: 'architecture',
+      type: 'architecture',
+      traced: ['src'],
+      lastChecked: '0000000',
+      commitHtml: true,
+      svgForm: 'dual'
+    },
     readFileSync(join(directory, 'architecture.architecture.json')),
     readFileSync(join(directory, 'architecture.html')),
     { name: 'archify', version: '3.2.0' }
