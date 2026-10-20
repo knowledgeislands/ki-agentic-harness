@@ -3,7 +3,7 @@ name: ki-work-roadmap
 ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: []
-ki-shared-modules: [work-identifiers]
+ki-shared-modules: [work-identifiers, roadmap-areas]
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['ROADMAP.md']
 description: >

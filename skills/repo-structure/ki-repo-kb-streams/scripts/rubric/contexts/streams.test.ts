@@ -44,6 +44,82 @@ const rootContext = (session: ReturnType<typeof createStreamsSession>) => {
   return subject.context()
 }
 
+describe('shared roadmap area checks in Streams', () => {
+  const fixture = (areas: string, area?: string, id = 'TEST-KB-GOV-001'): string => {
+    const root = targetFixture()
+    writeFileSync(
+      join(root, '.ki.toml'),
+      `[skills.ki-repo]
+repo_type = "kb"
+repo_code = "TEST-KB"
+[skills.ki-repo-kb-streams]
+[skills.ki-work-roadmap]
+${areas}
+`
+    )
+    writeFileSync(
+      join(root, 'Streams', 'Roadmap', `${id}-example.md`),
+      `---
+id: ${id}
+${area === undefined ? '' : `area: ${area}\n`}status: triage
+size: s
+---
+`
+    )
+    return root
+  }
+  const evidence = (root: string) => rootContext(createStreamsSession(options(root, 'audit'))).stream
+
+  test('warns on retired slug-valued area titles through the shared ROAD-6 check', () => {
+    const root = fixture('areas = { GOV = "company-record" }', 'GOV')
+    expect(evidence(root).areaTitles).toEqual([
+      {
+        level: 'WARN',
+        subject: '.ki.toml',
+        message:
+          "area GOV maps to theme 'company-record'; the area-to-theme map is retired, so map the code to its title"
+      }
+    ])
+    expect(createStreamsSession(options(root, 'conform')).proposal()).toEqual({ writes: [] })
+  })
+
+  test('warns on undeclared issuing areas when no area map exists', () => {
+    const root = fixture('', 'GOV')
+    writeFileSync(
+      join(root, 'Streams', 'Roadmap', 'TEST-KB-KNW-001-knowledge.md'),
+      '---\nid: TEST-KB-KNW-001\narea: KNW\n---\n'
+    )
+    expect(evidence(root).areaDeclarations).toHaveLength(2)
+    expect(evidence(root).areaDeclarations.every((finding) => finding.level === 'WARN')).toBe(true)
+  })
+
+  test.each([
+    ['areas = { GOV = "Governance" }', 'GOV', 'TEST-KB-GOV-001'],
+    ['areas = ["GOV"]', 'GOV', 'TEST-KB-GOV-001'],
+    ['', undefined, 'TEST-KB-001']
+  ])('accepts declared and repository-wide issuing modes: %s', (areas, area, id) => {
+    const context = evidence(fixture(areas, area, id))
+    expect(context.areaTitles[0]?.level).toBe('PASS')
+    expect(context.areaDeclarations[0]?.level).toBe('PASS')
+  })
+
+  test.each([
+    ['KNW', 'TEST-KB-KNW-001'],
+    [undefined, 'TEST-KB-GOV-001'],
+    ['GOV', 'TEST-KB-KNW-001'],
+    ['GOV', 'OTHER-GOV-001']
+  ])('warns when area or identifier does not match declarations: %s %s', (area, id) => {
+    expect(evidence(fixture('areas = { GOV = "Governance" }', area, id)).areaDeclarations[0]?.level).toBe('WARN')
+  })
+
+  test('both new catalogue checks default to WARN', () => {
+    for (const code of ['STREAM-13', 'STREAM-14']) {
+      const item = STREAM.items.find((candidate) => candidate.code === code)
+      expect(item?.mechanical?.level).toBe('WARN')
+    }
+  })
+})
+
 describe('ki-repo-kb-streams session', () => {
   test('assigns only declared rubric families to every subject', () => {
     const session = createStreamsSession(options(repository(), 'audit'))

@@ -187,6 +187,41 @@ const STREAM_12: RubricItem<StreamRubricContext> = {
   }
 }
 
+// Existing islands still carry slug-valued titles and undeclared areas; migration remains diagnostic.
+const STREAM_13: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-13',
+  title: 'roadmap area titles',
+  description:
+    'Roadmap issuing areas follow the shared ROAD-6 code-to-title check. Existing non-conforming declarations warn during migration.',
+  sources: [`${SOURCE}#roadmap`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Map each fixed issuing-area code to a short capitalised noun phrase in ki-work-roadmap areas; the owner approves the titles.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.areaTitles, 'WARN') }
+  }
+}
+
+const STREAM_14: RubricItem<StreamRubricContext> = {
+  code: 'STREAM-14',
+  title: 'declared roadmap issuing areas',
+  description:
+    'Each roadmap record uses the configured repository code and, when present, a declared fixed issuing area, using the local roadmap adapter identity check. Existing mismatches warn during migration.',
+  sources: [`${SOURCE}#roadmap`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Confirm the repository issuing namespaces and declare each retained area under ki-work-roadmap areas; preserve issued identifiers and ledger high-water marks.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => auditEvidence(context.areaDeclarations, 'WARN') }
+  }
+}
+
 export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
   code: 'STREAM',
   title: 'Streams structure',
@@ -204,6 +239,8 @@ export const STREAM: RubricFamily<StreamsRubricContext, StreamRubricContext> = {
     STREAM_9,
     STREAM_10,
     STREAM_11,
-    STREAM_12
+    STREAM_12,
+    STREAM_13,
+    STREAM_14
   ]
 }

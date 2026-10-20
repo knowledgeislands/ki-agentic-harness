@@ -56,6 +56,10 @@ Operational-area layout, legacy migration, and adapter routing.
   - _Remediation:_ diagnostic — Graduate an idea-stage Project to active with a delivery Outcome before records name it; over a cap, graduate or fold an idea-stage Project, or have its lead lift the cap.
 - **STREAM-12 [M] — known and required record fields** — Every Streams/Roadmap record's frontmatter carries its required size and only fields the roadmap adapter's work-item format or the knowledge base's universal note fields define. (standards-streams-structure.md#roadmap)
   - _Remediation:_ diagnostic — Remove the unknown field, or move its content into the record body, and give a record without size one of s, m, l or xl by judgement. A field the work-item format should carry is a change to the roadmap adapter's standard.
+- **STREAM-13 [M] — roadmap area titles** — Roadmap issuing areas follow the shared ROAD-6 code-to-title check. Existing non-conforming declarations warn during migration. (standards-streams-structure.md#roadmap)
+  - _Remediation:_ diagnostic — Map each fixed issuing-area code to a short capitalised noun phrase in ki-work-roadmap areas; the owner approves the titles.
+- **STREAM-14 [M] — declared roadmap issuing areas** — Each roadmap record uses the configured repository code and, when present, a declared fixed issuing area, using the local roadmap adapter identity check. Existing mismatches warn during migration. (standards-streams-structure.md#roadmap)
+  - _Remediation:_ diagnostic — Confirm the repository issuing namespaces and declare each retained area under ki-work-roadmap areas; preserve issued identifiers and ledger high-water marks.
 
 ## GATE — always-loaded gate
 

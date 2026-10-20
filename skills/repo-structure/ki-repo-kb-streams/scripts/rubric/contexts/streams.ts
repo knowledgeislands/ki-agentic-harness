@@ -1,5 +1,6 @@
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, isAbsolute, join, relative, resolve } from 'node:path'
+import { inspectRoadmapAreas, matchesRoadmapArea } from '../../shared/roadmap-areas.ts'
 import type {
   AuditOutcome,
   RubricContextOptions,
@@ -8,7 +9,7 @@ import type {
   RubricSession,
   ViolationLevel
 } from '../../shared/rubric.ts'
-import { SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
+import { isRepositoryCode, SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
 import { closeOutEvidence, ideaStageEvidence } from './closeout.ts'
 
 // `Initiatives` is the thread-model registry, read with a warning for the work model's tolerance window.
@@ -44,6 +45,8 @@ export type StreamRubricContext = {
   projectCloseOut: readonly StreamsEvidence[]
   ideaStage: readonly StreamsEvidence[]
   roadmapFields: readonly StreamsEvidence[]
+  areaTitles: readonly StreamsEvidence[]
+  areaDeclarations: readonly StreamsEvidence[]
 }
 
 export type GateRubricContext = {
@@ -68,6 +71,8 @@ type StreamsConfiguration = {
   ownKeys: readonly string[]
   streams: string
   malformed: boolean
+  roadmap?: Record<string, unknown>
+  repoCode?: unknown
 }
 
 const safeRegularFile = (root: string, path: string): boolean => {
@@ -139,6 +144,8 @@ const parseConfiguration = (text: string): StreamsConfiguration => {
       ),
       ownKeys: Object.keys(own ?? {}),
       streams: 'Streams',
+      roadmap: (document.skills as Record<string, Record<string, unknown>> | undefined)?.['ki-work-roadmap'],
+      repoCode: (document.skills as Record<string, Record<string, unknown>> | undefined)?.['ki-repo']?.repo_code,
       malformed: false
     }
   } catch {
@@ -191,6 +198,7 @@ const KB_NOTE_FIELDS: ReadonlySet<string> = new Set(['note_type', 'updated', 're
 type RoadmapRecord = {
   path: string
   id?: string
+  area?: string
   defect?: string
   unknown?: readonly string[]
   sizeless?: boolean
@@ -216,6 +224,7 @@ const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord 
   const fields = values as Record<string, unknown>
   const unknownFields = Object.keys(values).filter((key) => !RECORD_FIELDS.has(key) && !KB_NOTE_FIELDS.has(key))
   const unknown = {
+    ...(typeof fields.area === 'string' ? { area: fields.area } : {}),
     ...(unknownFields.length ? { unknown: unknownFields } : {}),
     ...('size' in values || CLOSED_STATUSES.has(String(fields.status)) ? {} : { sizeless: true }),
     ...(fields.size === 'xl' && fields.status === 'ready' ? { oversized: true } : {})
@@ -244,6 +253,61 @@ const roadmapRecords = (root: string, roadmapPath: string): RoadmapRecord[] =>
     .filter((entry) => entry.isFile() && entry.name.endsWith('.md') && !ROADMAP_NON_RECORDS.has(entry.name))
     .sort((left, right) => left.name.localeCompare(right.name))
     .map((entry) => roadmapRecord(root, join(roadmapPath, entry.name), entry.name))
+
+const roadmapAreaEvidence = (
+  configuration: StreamsConfiguration,
+  records: readonly RoadmapRecord[]
+): { areaTitles: StreamsEvidence[]; areaDeclarations: StreamsEvidence[] } => {
+  if (configuration.malformed) {
+    const unavailable: StreamsEvidence[] = [
+      { level: 'NOT_APPLICABLE', message: 'Roadmap area configuration is unavailable.' }
+    ]
+    return { areaTitles: unavailable, areaDeclarations: unavailable }
+  }
+  const { areas, error } = inspectRoadmapAreas(configuration.roadmap?.areas)
+  const areaTitles: StreamsEvidence[] = [
+    error
+      ? { level: 'WARN', message: error, subject: '.ki.toml' }
+      : { level: 'PASS', message: 'Roadmap area titles follow ROAD-6.', subject: '.ki.toml' }
+  ]
+  // Do not turn an invalid title into a cascade of record-identity warnings.
+  if (error)
+    return {
+      areaTitles,
+      areaDeclarations: [
+        {
+          level: 'NOT_APPLICABLE',
+          message: 'Correct the roadmap area configuration before checking record declarations.'
+        }
+      ]
+    }
+  const repoCode = configuration.repoCode
+  if (!isRepositoryCode(repoCode))
+    return {
+      areaTitles,
+      areaDeclarations: [
+        {
+          level: 'WARN',
+          message: 'ki-repo repo_code must be a stable uppercase identifier for roadmap area checks.',
+          subject: '.ki.toml'
+        }
+      ]
+    }
+  const defects = records.filter(
+    (record) => record.id && !matchesRoadmapArea(record.id, record.area, { repoCode, areas })
+  )
+  return {
+    areaTitles,
+    areaDeclarations: defects.length
+      ? defects.map((record) => ({
+          level: 'WARN',
+          message:
+            'item identifier must use configured repository code, optional configured area code, and zero-padded issue number',
+          subject: record.path
+        }))
+      : [{ level: 'PASS', message: 'Roadmap records use only declared issuing areas.' }]
+  }
+}
 
 const roadmapIdentityEvidence = (
   root: string,
@@ -461,7 +525,9 @@ const unavailableContext = (
       registryNotes: notApplicable,
       projectCloseOut: notApplicable,
       ideaStage: notApplicable,
-      roadmapFields: notApplicable
+      roadmapFields: notApplicable,
+      areaTitles: notApplicable,
+      areaDeclarations: notApplicable
     },
     gate: { anchor: notApplicable },
     config: { parseable: notApplicable, knownKeys: notApplicable, processNote: notApplicable }
@@ -625,7 +691,8 @@ export const createStreamsSession = ({
       registryNotes: registryNoteEvidence(root, streamsPath),
       projectCloseOut: closeOutEvidence(root, streamsPath),
       ideaStage: ideaStageEvidence(root, streamsPath),
-      roadmapFields: roadmapFieldEvidence(root, roadmapPath, records)
+      roadmapFields: roadmapFieldEvidence(root, roadmapPath, records),
+      ...roadmapAreaEvidence(configuration, records)
     },
     gate: { anchor },
     config: { parseable, knownKeys, processNote: processNoteEvidence }

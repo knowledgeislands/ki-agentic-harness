@@ -41,6 +41,8 @@ In a Capital, AUDIT recognises an [idea-stage Project](../../../change-managemen
 
 ## Roadmap
 
+The Streams audit uses the roadmap adapter's shared ROAD-6 area-title validation and record-to-area declaration check. Area titles are capitalised noun phrases, and every record uses the configured repository code and any declared fixed issuing area. STREAM-13 and STREAM-14 default to WARN while existing islands migrate slug-valued titles and undeclared areas; the local roadmap adapter retains its FAIL policy. These checks diagnose only and never change island declarations or issued identifiers.
+
 `Streams/Roadmap/` is the KB placement equivalent of a project repository’s `docs/roadmap/`. It contains flat finite work records, its `_ISSUES.md` allocation ledger, and an optional `_IDEAS.md` list of ungraduated ideas. The [repository roadmap standard](../../../change-management/ki-work-roadmap/references/standards-repository-roadmaps.md) owns the record format, lifecycle, identifier grammar, and horizon metadata.
 
 Every record's `id` is unique within the base. AUDIT fails each record whose identifier another record shares, because a collision makes links, trades and closure ambiguous; resolve it by keeping the canonical holder and reallocating the other from `_ISSUES.md`. A pruned record's serial is never reused, but that reuse cannot be seen from the current tree alone.

@@ -2,13 +2,8 @@
 /** Mechanical auditor for flat non-KB repository work items. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
-import {
-  AREA_CODE,
-  isRepositoryCode,
-  SCOPE_SEGMENT,
-  workIdentifier,
-  workIdentifierSource
-} from '../../shared/work-identifiers.ts'
+import { inspectRoadmapAreas, matchesRoadmapArea } from '../../shared/roadmap-areas.ts'
+import { isRepositoryCode, SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
 import {
   isEnforcingTerritoryRepository,
   loadProjectRegistry,
@@ -63,7 +58,6 @@ export const LEGACY_HORIZONS = ['waiting-for', 'parked', 'triage'] as const
 const ID_RE = workIdentifier()
 const FILE_RE = new RegExp(`^(${workIdentifierSource()})-([a-z0-9]+(?:-[a-z0-9]+)*)\\.md$`)
 const LEDGER_AREA_ENTRY = new RegExp(`^(${SCOPE_SEGMENT}):\\s*(\\d+)$`)
-const AREA_TITLE_RE = /^[A-Z0-9]\S*(?: \S+)*$/
 const COMMIT_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 const TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
 const TRADE_RE = /^TRD-[0-9a-f]{8}$/
@@ -324,57 +318,14 @@ const roadmapConfiguration = (repository: string): RoadmapConfiguration | undefi
         : undefined
     if (values?.themes !== undefined)
       retire('ki-work-roadmap themes; remove the themes list', '.ki.toml', 'ROAD-6', STANDARD)
-    const configuredAreas = values?.areas
-    const areas = new Map<string, string | undefined>()
-    if (Array.isArray(configuredAreas)) {
-      if (
-        !configuredAreas.length ||
-        configuredAreas.some((area) => typeof area !== 'string' || !AREA_CODE.test(area))
-      ) {
-        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must map uppercase area codes to titles', STANDARD, '.ki.toml')
-        return undefined
-      }
-      if (new Set(configuredAreas).size !== configuredAreas.length) {
-        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not repeat an area code', STANDARD, '.ki.toml')
-        return undefined
-      }
-      const legacy = legacyAreaList(repository)
-      add(legacy.level, 'ROAD-6', legacy.msg, STANDARD, '.ki.toml')
-      for (const area of configuredAreas) areas.set(area, undefined)
-    } else if (configuredAreas !== undefined) {
-      if (typeof configuredAreas !== 'object' || configuredAreas === null) {
-        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must map uppercase area codes to titles', STANDARD, '.ki.toml')
-        return undefined
-      }
-      for (const [area, title] of Object.entries(configuredAreas)) {
-        if (!AREA_CODE.test(area)) {
-          add(
-            'FAIL',
-            'ROAD-6',
-            'roadmap area codes must be uppercase alphanumeric with at least one letter',
-            STANDARD,
-            '.ki.toml'
-          )
-          return undefined
-        }
-        if (typeof title !== 'string' || !AREA_TITLE_RE.test(title)) {
-          add(
-            'FAIL',
-            'ROAD-6',
-            typeof title === 'string' && SLUG_RE.test(title)
-              ? `area ${area} maps to theme '${title}'; the area-to-theme map is retired, so map the code to its title`
-              : `area ${area} must map to a title that starts with a capital letter`,
-            STANDARD,
-            '.ki.toml'
-          )
-          return undefined
-        }
-        areas.set(area, title)
-      }
-      if (!areas.size) {
-        add('FAIL', 'ROAD-6', 'ki-work-roadmap areas must not be empty when declared', STANDARD, '.ki.toml')
-        return undefined
-      }
+    const { areas, legacy, error } = inspectRoadmapAreas(values?.areas)
+    if (error) {
+      add('FAIL', 'ROAD-6', error, STANDARD, '.ki.toml')
+      return undefined
+    }
+    if (legacy) {
+      const finding = legacyAreaList(repository)
+      add(finding.level, 'ROAD-6', finding.msg, STANDARD, '.ki.toml')
     }
     const configuredComponents = values?.components
     const components = new Set<string>()
@@ -776,22 +727,7 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   if (!title?.trim()) add('FAIL', 'ITEM-1', 'title must be non-empty', FORMAT, display)
   else if (title.trim().split(/\s+/).length > MAX_TITLE_WORDS)
     add('FAIL', 'ITEM-1', `title must contain at most ${MAX_TITLE_WORDS} words`, FORMAT, display)
-  const configuredArea = configuration && area && configuration.areas.has(area) ? area : undefined
-  const issueNumber =
-    configuration && id
-      ? id.slice(`${configuration.repoCode}${configuration.areas.size ? `-${area ?? ''}` : ''}-`.length)
-      : undefined
-  const expectedPrefix = configuration?.areas.size
-    ? `${configuration.repoCode}-${configuredArea ?? ''}-`
-    : `${configuration?.repoCode ?? ''}-`
-  if (
-    !configuration ||
-    !id?.startsWith(expectedPrefix) ||
-    !issueNumber ||
-    !/^\d{3,}$/.test(issueNumber) ||
-    (configuration.areas.size > 0 && (!area || !configuredArea)) ||
-    (configuration.areas.size === 0 && area !== undefined)
-  )
+  if (!matchesRoadmapArea(id, area, configuration))
     add(
       'FAIL',
       'ITEM-1',
