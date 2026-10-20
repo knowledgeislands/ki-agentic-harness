@@ -7,16 +7,13 @@ import {
   bindingOutcomes,
   createCoordinationSession,
   isCapital,
-  openQueryCount,
   recordIdentifiers,
   reportConfidenceFindings,
   reportHasGlyphForm,
   reportIssuedDay,
   reportLinkFindings,
   reportOpensWithHeading,
-  reportQueryTags,
   repositoryIdentity,
-  workFolderFindings,
   workLevel
 } from './coordination.ts'
 
@@ -489,55 +486,6 @@ describe('report heading', () => {
   })
 })
 
-describe('thread folder tidy', () => {
-  const queries = (...tags: string[]): string =>
-    `# Run\n\n## Done\n\nWork.\n\n## Queries\n\n${tags.map((tag) => `### ${tag} - a question\n\n**Query:** Which?\n\n`).join('')}\`\`\`text\n### FENCED - not a query\n\`\`\`\n`
-  const log = (root: string, body: string): void => {
-    mkdirSync(join(root, '+', '_THREADS', 'ways-of-working'), { recursive: true })
-    writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'decisions.md'), body)
-  }
-
-  test('query tags are read from the Queries headings, linked or not, and never from a fenced block', () => {
-    expect(reportQueryTags(queries('PMO-CI', '[THREADS-TRIM](/x.md)'))).toEqual(['PMO-CI', 'THREADS-TRIM'])
-    expect(reportQueryTags('# Run\n\n## Queries\n\nNo outstanding queries\n')).toEqual([])
-  })
-
-  test('a thread folder of the closed list whose reports carry open queries passes with the tolerance warning', () => {
-    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
-    log(root, '- ROUTINE - "Take option a) for PMO-CI"\n')
-    report(root, 'ways-of-working', 'open', queries('PMO-CI', 'THREADS-TRIM'))
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
-  })
-
-  test('a report whose every query the log names, or with none, is listed for the tidy', () => {
-    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
-    log(root, '- ROUTINE - "Take option a) for PMO-CI and THREADS-TRIM"\n')
-    report(root, 'ways-of-working', 'answered', queries('PMO-CI', 'THREADS-TRIM'))
-    report(root, 'ways-of-working', 'quiet', '# Run\n\n## Queries\n\nNo outstanding queries\n')
-    report(root, 'ways-of-working', 'partial', queries('PMO-CI', 'PMO-CIX'))
-    const outcomes = context(root).tidy.outcomes
-    expect(statuses(outcomes)).toEqual(['VIOLATION', 'WARN'])
-    expect(outcomes[0]?.subject).toBe(join('+', '_THREADS', 'ways-of-working'))
-    expect(outcomes[0]?.message).toEndWith(': answered.report.md, quiet.report.md')
-  })
-
-  test('a file or folder outside the closed list is a violation naming it', () => {
-    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
-    log(root, '')
-    report(root, 'ways-of-working', 'open', queries('PMO-CI'))
-    writeFileSync(join(root, '+', '_THREADS', 'ways-of-working', 'brief.md'), 'brief\n')
-    mkdirSync(join(root, '+', '_THREADS', 'ways-of-working', 'shots'))
-    const outcomes = context(root).tidy.outcomes
-    expect(statuses(outcomes)).toEqual(['VIOLATION', 'WARN'])
-    expect(outcomes[0]?.message).toEndWith('outside the closed list: brief.md, shots/')
-  })
-
-  test('no thread folder is not applicable', () => {
-    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['NOT_APPLICABLE'])
-  })
-})
-
 describe('work files', () => {
   const capital = { repository: 'ki-principal', capital: 'ki-principal' }
   const project = (state = 'with-worker') => ({
@@ -660,36 +608,6 @@ describe('work files', () => {
     expect(statuses(context(root).confidence.outcomes)).toEqual(['VIOLATION'])
   })
 
-  test('a work folder keeps its closed list, briefs/, design/ and feedback/ included', () => {
-    const root = fixture(capital)
-    const folder = work(root, 'ki.ways-of-working', project())
-    mkdirSync(join(folder, 'briefs'))
-    mkdirSync(join(folder, 'design'))
-    mkdirSync(join(folder, 'feedback'))
-    writeFileSync(join(folder, 'feedback', '2026-10-20-review.md'), '# Feedback\n')
-    writeFileSync(join(folder, 'decisions.md'), '# Decisions\n')
-    expect(workFolderFindings(folder).stray).toEqual([])
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
-    writeFileSync(join(folder, 'notes.md'), '# Notes\n')
-    expect(workFolderFindings(folder).stray).toEqual(['notes.md'])
-    expect(context(root).tidy.outcomes[0]?.message).toStartWith('a work folder holds only')
-  })
-
-  test('a work package keeps its five files, and more than eight open queries is a warning', () => {
-    const root = fixture(capital)
-    const folder = work(root, 'ki.ways-of-working', project())
-    for (const name of ['decisions.md', 'state.md', 'messages.md']) writeFileSync(join(folder, name), '# x\n')
-    const queries = (count: number): string =>
-      `# ki.ways-of-working queries\n\n## Open\n\n${Array.from({ length: count }, (_, at) => `### TAG-${at} - a question\n\n`).join('')}## Parked\n\n### PARKED - parked\n`
-    writeFileSync(join(folder, 'queries.md'), queries(8))
-    expect(workFolderFindings(folder).stray).toEqual([])
-    expect(openQueryCount(folder)).toBe(8)
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
-    writeFileSync(join(folder, 'queries.md'), queries(9))
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
-    expect(context(root).tidy.outcomes[0]?.message).toStartWith('9 open queries')
-  })
-
   test('more than eight records awaiting acceptance for a Project, across the territory, is a warning', () => {
     const parent = mkdtempSync(join(tmpdir(), 'ki-coordination-queue-'))
     roots.push(parent)
@@ -719,10 +637,10 @@ describe('work files', () => {
     record(sibling, join('docs', 'roadmap'), 'KI-HARNESS-GOV-OTHER', 'awaiting-review', 'observatory')
     record(stranger, join('Streams', 'Roadmap'), 'ER-PRINCIPAL-OPS-1', 'awaiting-review')
     expect(awaitingAcceptanceCounts([root, sibling]).get('ways-of-working')).toBe(8)
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['PASS'])
+    expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
     record(sibling, join('docs', 'roadmap'), 'KI-HARNESS-GOV-9', 'awaiting-review')
-    expect(statuses(context(root).tidy.outcomes)).toEqual(['WARN'])
-    expect(context(root).tidy.outcomes[0]?.message).toStartWith('9 roadmap records await acceptance')
+    expect(statuses(context(root).cap.outcomes)).toEqual(['VIOLATION'])
+    expect(context(root).cap.outcomes[0]?.message).toStartWith('9 roadmap records await acceptance')
   })
 })
 

@@ -13,6 +13,7 @@ Line-by-line criteria for auditing ki-work-package. Classifications are derived 
 - [STRUCTURE — Work-package locations](#structure--work-package-locations)
 - [RECORD — Work-package record](#record--work-package-record)
 - [LIFECYCLE — Work-package lifecycle](#lifecycle--work-package-lifecycle)
+- [FOLDER — Work-folder closed list and tidy](#folder--work-folder-closed-list-and-tidy)
 - [BOUNDARY — Runtime-neutral reconstruction](#boundary--runtime-neutral-reconstruction)
 
 ## RUBRIC — Generated rubric publication
@@ -102,6 +103,29 @@ Update, resume, and removal preserve one package per piece of work without inven
   - _Review prompt:_ Is the flagged content needed in the package, or does it belong in a link, the commit, a run report or a durable home?
   - _Outcomes:_ conforming; trim at next update; escalate to user
   - _Conforming guidance:_ Trim only at the work's own next update; another session names the warning in a message line.
+
+## FOLDER — Work-folder closed list and tidy
+
+→ [standard](standards-work-package.md)
+
+Each work folder holds only its closed list, and what is due for the tidy is listed for its steward, so folders stay pruned without relying on memory.
+
+- **FOLDER-1 [M] — every work folder holds only its closed list** — Each work folder `+/_WORK/<id>/` holds only the five package files, `<name>.report.md`, Markdown briefs under `briefs/`, Markdown feedback packages under `feedback/`, and under `design/` only design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders. Scripts, screenshots, scratch folders and tool output fail. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home. (standards-work-package.md#closed-list)
+  - _Remediation:_ diagnostic — Move each stray file to its owning home, or delete it where it is temporary output, which belongs in the run's temporary directory. Fix only your own work's folder; tell other work by one line in its `messages.md`.
+- **FOLDER-2 [M-heuristic + J] — no work folder keeps a report whose queries are all answered** — A run report whose every Needs tag the folder's decisions log names, or which has no queries, is a candidate for the tidy once its outcome has a durable home. Whether it has one stays the steward's judgement; the listing is never permission to delete. (standards-work-package.md#tidying-the-work-folder)
+  - _Remediation:_ diagnostic — At the steward's next send or mark, delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear.
+  - _Evidence scope:_ The flagged work folders, their decisions logs and the work files and records the reports name.
+  - _Review prompt:_ Does each flagged report's outcome have a durable home, a work record, the decisions log, the work package or a commit, and is every query it raised answered in the log, so that the owning steward may delete it, and did territory work name the flagged folders at its mark?
+  - _Outcomes:_ conforming; prune the work folder; home the outcome first; escalate to owner
+  - _Conforming guidance:_ Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another work folder to its own steward, told by a line in its `messages.md`.
+- **FOLDER-3 [M-heuristic] — no work folder keeps a brief whose run's report it has received** — A brief `briefs/<run>.md` goes once its run's report has been received, which the folder shows by holding `<run>.report.md`. (standards-work-package.md#tidying-the-work-folder)
+  - _Remediation:_ diagnostic — Delete each listed brief by explicit path at the steward's next send or mark, unless its handoff is open.
+- **FOLDER-4 [M] — no finished work's folder outlives its closing mark** — Finished work keeps its package with `state: finished` only until the mark that closes it; a folder whose state is `finished` and whose `mark` falls at or after its `since` is due for the close-out. (standards-work-package.md#removal-lifecycle)
+  - _Remediation:_ diagnostic — Once its decisions are homed and `design/` resolved, delete the finished work folder in one commit, with Git keeping it.
+- **FOLDER-5 [M] — every folder awaiting review has its index line** — Each folder under `+/_WORK_REVIEW/` has one line in the holding area's `README.md` saying why it is there, and each index line names a folder still held. (standards-work-package.md#work-awaiting-review)
+  - _Remediation:_ diagnostic — Add the missing index line, or remove the line in the same commit that moves or deletes its folder.
+- **FOLDER-6 [M] — no work package holds more than eight open queries** — More than eight queries under `queries.md`'s `## Open` is a coordination smell and warns. (standards-work-package.md#queries-file)
+  - _Remediation:_ diagnostic — Answer, park or merge open queries until eight or fewer remain.
 
 ## BOUNDARY — Runtime-neutral reconstruction
 

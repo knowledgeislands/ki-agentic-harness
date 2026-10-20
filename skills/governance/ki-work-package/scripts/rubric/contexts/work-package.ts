@@ -7,6 +7,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
+import { type FolderOutcomes, folderOutcomes } from './work-folder.ts'
 
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
 const WORK_FILE = 'work.md'
@@ -129,6 +130,7 @@ export type WorkPackageRubricContext = {
   readonly records: RecordContext
   readonly lifecycle: LifecycleContext
   readonly boundary: OutcomeContext
+  readonly folder: FolderOutcomes
 }
 
 const table = (value: unknown): Readonly<Record<string, unknown>> | null =>
@@ -985,6 +987,7 @@ export const createWorkPackageSession = ({
         undeclaredAbsent
       )
     },
+    folder: folderOutcomes(root),
     boundary: {
       outcomes: merged(
         old.boundary,
@@ -998,7 +1001,7 @@ export const createWorkPackageSession = ({
     subjects: [
       {
         subject: relative(root, workDirectory),
-        families: ['RUBRIC', 'CONFIG', 'STRUCTURE', 'RECORD', 'LIFECYCLE', 'BOUNDARY'],
+        families: ['RUBRIC', 'CONFIG', 'STRUCTURE', 'RECORD', 'LIFECYCLE', 'FOLDER', 'BOUNDARY'],
         context: () => context
       }
     ],

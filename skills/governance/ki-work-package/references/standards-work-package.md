@@ -71,7 +71,7 @@ A work folder holds these kinds and nothing else:
 | Design note | `design/<slug>.md`, or `design/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
 | Design artefact | `design/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its note goes |
 
-The five package files exist from the work's creation, `queries.md`, `messages.md` and `decisions.md` starting as `None`, so a reader never meets a missing file and a sender never creates one. Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs under `tmp/<run>/<name>/` in the repository its agent worked in, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
+The five package files exist from the work's creation, `queries.md`, `messages.md` and `decisions.md` starting as `None`, so a reader never meets a missing file and a sender never creates one. Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs in the run's temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, outside every repository, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). The rubric's FOLDER family fails a file outside this list and warns on each tidy that is due. A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
 
 ### Entry points
 

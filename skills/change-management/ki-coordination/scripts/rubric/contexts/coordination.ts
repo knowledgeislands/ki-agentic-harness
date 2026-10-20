@@ -32,31 +32,20 @@ const THEMES_DIRECTORY = join('Streams', 'Themes')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
 const THREADS_DIRECTORY = join('+', '_THREADS')
 const REPORT_SUFFIX = '.report.md'
-const DECISIONS_LOG = 'decisions.md'
 const WORK_FILE = 'work.md'
 /** The work package's state file; a folder holding one is in the five-file package shape. */
 const STATE_FILE = 'state.md'
-const QUERIES_FILE = 'queries.md'
-/** The files of the work package beside its work file and decisions log. */
-const PACKAGE_FILES: ReadonlySet<string> = new Set([STATE_FILE, QUERIES_FILE, 'messages.md'])
-/** More open queries than this in `queries.md` is a coordination smell, warned on rather than failed. */
-export const OPEN_QUERY_LIMIT = 8
 /** More roadmap records than this awaiting acceptance for one Project is over the owner-queue cap, warned on rather than failed. */
 export const AWAITING_ACCEPTANCE_LIMIT = 8
 /** The roadmap folders of a Knowledge Base and of a code repository. */
 const ROADMAP_DIRECTORIES = [join('Streams', 'Roadmap'), join('docs', 'roadmap')] as const
 /** The roadmap status of a record whose delivery waits on the owner's acceptance. */
 const AWAITING_ACCEPTANCE = 'awaiting-review'
-/** The folders a work folder may hold beside its files: open briefs, the owner's feedback packages and design notes. */
-const WORK_SUBFOLDERS: ReadonlySet<string> = new Set(['briefs', 'design', 'feedback'])
 const WORK_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*'
 /** A work id: the territory, then a Project slug or `regular`, then for ad hoc work its slug. */
 const WORK_ID = new RegExp(`^${WORK_SEGMENT}(?:\\.${WORK_SEGMENT}){0,2}$`)
 /** The work states a work file's `state` takes, as the Work Process note's observatory fields name them. */
 const SETTLED_STATES: ReadonlySet<string> = new Set(['on-hold', 'finished'])
-/** A query heading, `### <TAG> - <title>` or `### [<TAG>](<record>) - <title>`, capturing the Needs tag. */
-const NEEDS_TAG = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*'
-const QUERY_HEADING = new RegExp(`^### (?:\\[(${NEEDS_TAG})\\]\\([^)\\s]*\\)|(${NEEDS_TAG})) - `, 'gm')
 /**
  * A full record identifier in prose: repository code, issuing area and serial, composed from the shared grammar, which
  * also matches a Decision Record such as `ADR-KI-HARNESS-010`.
@@ -87,7 +76,6 @@ export type CoordinationRubricContext = {
   readonly links: OutcomeContext
   readonly confidence: OutcomeContext
   readonly headings: OutcomeContext
-  readonly tidy: OutcomeContext
   readonly binding: OutcomeContext
   readonly judgment: OutcomeContext
 }
@@ -659,66 +647,6 @@ const headingOutcomes = (root: string, reports: readonly string[]): AuditOutcome
     }))
 
 /**
- * The Needs tags of a report's open queries: the `###` headings under its `## Queries` section, each
- * `<TAG> - <title>`, the tag optionally linked to its record. A report with no Queries section, or one that says it has
- * no outstanding queries, names none.
- */
-export const reportQueryTags = (text: string): readonly string[] => {
-  const section = querySection(text)
-  return Array.from(section.matchAll(QUERY_HEADING), (match) => match[1] ?? match[2] ?? '').filter(Boolean)
-}
-
-type FolderFindings = { readonly stray: readonly string[]; readonly answered: readonly string[] }
-
-const folderFindings = (folder: string, belongs: (entry: Dirent) => boolean): FolderFindings => {
-  const entries = readdirSync(folder, { withFileTypes: true }).sort((left, right) =>
-    left.name.localeCompare(right.name)
-  )
-  const stray = entries
-    .filter((entry) => !belongs(entry))
-    .map((entry) => (entry.isDirectory() ? `${entry.name}/` : entry.name))
-  const log = existsSync(join(folder, DECISIONS_LOG)) ? readFileSync(join(folder, DECISIONS_LOG), 'utf8') : ''
-  const named = (tag: string): boolean => new RegExp(`(?<![A-Z0-9-])${tag}(?![A-Z0-9-])`).test(log)
-  const answered = entries
-    .filter((entry) => entry.isFile() && !entry.isSymbolicLink() && entry.name.endsWith(REPORT_SUFFIX))
-    .filter((entry) => reportQueryTags(readFileSync(join(folder, entry.name), 'utf8')).every(named))
-    .map((entry) => entry.name)
-  return { stray, answered }
-}
-
-const report = (entry: Dirent): boolean =>
-  entry.isFile() && (entry.name === DECISIONS_LOG || entry.name.endsWith(REPORT_SUFFIX))
-
-/**
- * Review one thread folder for the tidy: files outside its closed list, `decisions.md` and `<name>.report.md`, and the
- * reports whose queries the decisions log names, so all are answered. Whether each such report's outcome has a durable
- * home is judged by its coordinator; the listing names candidates and is never permission to delete.
- */
-export const threadFolderFindings = (folder: string): FolderFindings => folderFindings(folder, report)
-
-/**
- * Review one work folder for the prune: entries outside its closed list, `work.md`, `decisions.md`, `state.md`,
- * `queries.md`, `messages.md`, `<name>.report.md`, `briefs/`, `design/` and `feedback/`, and the reports whose queries
- * the decisions log names.
- */
-export const workFolderFindings = (folder: string): FolderFindings =>
-  folderFindings(
-    folder,
-    (entry) =>
-      report(entry) ||
-      (entry.isFile() && (entry.name === WORK_FILE || PACKAGE_FILES.has(entry.name))) ||
-      (entry.isDirectory() && !entry.isSymbolicLink() && WORK_SUBFOLDERS.has(entry.name))
-  )
-
-/** The open queries in a work package's `queries.md`: the `###` query headings under its `## Open` section. */
-export const openQueryCount = (folder: string): number => {
-  const path = join(folder, QUERIES_FILE)
-  if (!existsSync(path)) return 0
-  const open = /^## Open[ \t]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? ''
-  return Array.from(open.matchAll(QUERY_HEADING)).length
-}
-
-/**
  * The checkouts whose roadmaps count towards the owner queue: the audited root, and each checkout beside it whose
  * `.ki.toml` names the same Capital, so a Capital counts the records its siblings hold for its Projects.
  */
@@ -756,67 +684,27 @@ export const awaitingAcceptanceCounts = (checkouts: readonly string[]): Readonly
   return counts
 }
 
-const tidyOutcomes = (
-  root: string,
-  work: readonly string[],
-  threads: readonly string[] | undefined
-): AuditOutcome[] => {
-  const outcomes: AuditOutcome[] = []
-  const review = (folder: string, findings: FolderFindings, closed: string, kind: string): void => {
-    const subject = relative(root, folder)
-    if (findings.stray.length > 0)
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `a ${kind} folder holds only ${closed}; outside the closed list: ${findings.stray.join(', ')}`,
-        subject
-      })
-    if (findings.answered.length > 0)
-      outcomes.push({
-        status: 'VIOLATION',
-        message: `a ${kind} folder keeps only reports with open queries; every query of these is answered in the decisions log, so each whose outcome has a durable home is due for the prune: ${findings.answered.join(', ')}`,
-        subject
-      })
-  }
-  for (const folder of work)
-    review(
-      folder,
-      workFolderFindings(folder),
-      `the five package files, \`<name>${REPORT_SUFFIX}\`, \`briefs/\`, \`design/\` and \`feedback/\``,
-      'work'
-    )
-  for (const folder of work) {
-    const open = openQueryCount(folder)
-    if (open > OPEN_QUERY_LIMIT)
-      outcomes.push({
-        status: 'VIOLATION',
-        level: 'WARN',
-        message: `${open} open queries in \`${QUERIES_FILE}\`, more than ${OPEN_QUERY_LIMIT}: a coordination smell and over the owner-queue cap; answer, park or merge them`,
-        subject: relative(root, join(folder, QUERIES_FILE))
-      })
-  }
+/**
+ * The owner-queue cap: more than eight roadmap records awaiting acceptance for a piece of Project work's Project warn.
+ * The work folder's closed list and tidy are the `ki-work-package` FOLDER items.
+ */
+const queueOutcomes = (root: string, work: readonly string[]): AuditOutcome[] => {
   const projects = work.filter((folder) => workLevel(basename(folder)) === 'project')
-  const awaiting = projects.length > 0 ? awaitingAcceptanceCounts(territoryCheckouts(root)) : new Map<string, number>()
-  for (const folder of projects) {
+  if (projects.length === 0) return []
+  const awaiting = awaitingAcceptanceCounts(territoryCheckouts(root))
+  return projects.flatMap((folder): AuditOutcome[] => {
     const project = basename(folder).split('.')[1] ?? ''
     const count = awaiting.get(project) ?? 0
-    if (count > AWAITING_ACCEPTANCE_LIMIT)
-      outcomes.push({
-        status: 'VIOLATION',
-        level: 'WARN',
-        message: `${count} roadmap records await acceptance for Project \`${project}\`, more than ${AWAITING_ACCEPTANCE_LIMIT}: over the owner-queue cap; launch no new build or planning run until acceptance catches up, while acceptance fixes and backlog-clearing work stay allowed`,
-        subject: relative(root, folder)
-      })
-  }
-  for (const folder of threads ?? [])
-    review(folder, threadFolderFindings(folder), `\`${DECISIONS_LOG}\` and \`<name>${REPORT_SUFFIX}\``, 'thread')
-  if (threads && threads.length > 0)
-    outcomes.push(
-      legacy(
-        `${threads.length} thread folder(s) under \`+/_THREADS/\` are the thread-model shape; each moves into its work folder \`+/_WORK/<id>/\` at the territory's migration`,
-        THREADS_DIRECTORY
-      )
-    )
-  return outcomes
+    return count > AWAITING_ACCEPTANCE_LIMIT
+      ? [
+          {
+            status: 'VIOLATION',
+            message: `${count} roadmap records await acceptance for Project \`${project}\`, more than ${AWAITING_ACCEPTANCE_LIMIT}: over the owner-queue cap; launch no new build or planning run until acceptance catches up, while acceptance fixes and backlog-clearing work stay allowed`,
+            subject: relative(root, folder)
+          }
+        ]
+      : []
+  })
 }
 
 const settings = (path: string): Readonly<Record<string, unknown>> | null | undefined => {
@@ -904,7 +792,6 @@ export const createCoordinationSession = ({
   const works = workFiles(root)
   const reports = workReports(root)
   const workFolders = folders(join(root, WORK_DIRECTORY))
-  const threads = folders(join(root, THREADS_DIRECTORY))
   const absent =
     records || works
       ? undefined
@@ -937,7 +824,11 @@ export const createCoordinationSession = ({
     },
     cap: {
       outcomes: [
-        ...one(capOutcomes(records ?? [], works ?? []), 'The active Project work is within the cap.', absent),
+        ...one(
+          [...capOutcomes(records ?? [], works ?? []), ...queueOutcomes(root, workFolders ?? [])],
+          'The active Project work and its records awaiting acceptance are within the cap.',
+          absent
+        ),
         ...reviewOutcomes(root)
       ]
     },
@@ -966,17 +857,6 @@ export const createCoordinationSession = ({
           ? `Each of the ${reports.length} work report(s) opens with its \`#\` heading.`
           : 'No work report is present under `+/_WORK/` or `+/_THREADS/`.',
         unreported
-      )
-    },
-    tidy: {
-      outcomes: one(
-        tidyOutcomes(root, workFolders ?? [], threads),
-        workFolders || threads
-          ? `The ${(workFolders?.length ?? 0) + (threads?.length ?? 0)} work folder(s) hold only the closed list and reports with open queries.`
-          : 'No work folder is present.',
-        workFolders || threads
-          ? undefined
-          : 'No `+/_WORK/` or `+/_THREADS/` folder is present; no coordinating work has reported here.'
       )
     },
     binding: { outcomes: bindingOutcomes(root, userHome) },

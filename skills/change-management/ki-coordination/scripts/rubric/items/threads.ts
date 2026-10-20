@@ -59,13 +59,14 @@ const COORD_3: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-3',
   title: 'active Project work is within the cap',
   description:
-    'At most three or four pieces of Project work are active at once, neither On hold nor Finished, reading the state from `state.md` where the work package has one, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted, and a non-empty `+/_WORK_REVIEW/` warns so that territory work raises it as one `REVIEW-HOLD` query.',
+    "At most three or four pieces of Project work are active at once, neither On hold nor Finished, reading the state from `state.md` where the work package has one, counting old-shape coordination checkpoints whose state is active; territory work, regular work and work awaiting review in `+/_WORK_REVIEW/` are not counted, and a non-empty `+/_WORK_REVIEW/` warns so that territory work raises it as one `REVIEW-HOLD` query. Under the owner-queue cap, more than eight roadmap records with `status: awaiting-review` naming a piece of Project work's Project also warn, counted in the checkout and in each checkout beside it that names the same Capital.",
   sources: [`${SOURCE}#territory-work`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Have territory work put Project work on hold or queue it until the active list is within the cap.'
+      guidance:
+        'Have territory work put Project work on hold or queue it until the active list is within the cap; over eight records awaiting acceptance, launch no new build or planning run until acceptance catches up, keeping acceptance fixes and backlog-clearing work.'
     },
     audit: { phase: 'INSPECT', run: ({ cap }) => cap.outcomes }
   }
@@ -119,32 +120,6 @@ const COORD_12: RubricItem<CoordinationRubricContext> = {
         'Move the report heading to the top of each flagged report, after its front matter if it has any, before the work is marked or sent. Fix only the reports of the work under review; other work fixes its own before its next mark.'
     },
     audit: { phase: 'INSPECT', run: ({ headings }) => headings.outcomes }
-  }
-}
-
-const COORD_9: RubricItem<CoordinationRubricContext> = {
-  code: 'COORD-9',
-  title: 'every work folder is pruned to what is still open',
-  description:
-    "Each work folder `+/_WORK/<id>/` holds only the closed list, the five package files `work.md`, `state.md`, `queries.md`, `messages.md` and `decisions.md`, `<name>.report.md`, `briefs/`, `design/` and `feedback/`, and no report whose queries are all answered and whose outcome has a durable home; a report counts as answered when the folder's decisions log names every Needs tag under its Queries, and one with no queries counts as answered. The coordinator prunes its own folder at every send and each mark, and territory work names the flagged folders at its own mark. More than eight open queries under `queries.md`'s `## Open` is a coordination smell and warns, and so, under the owner-queue cap, are more than eight roadmap records with `status: awaiting-review` naming a piece of Project work's Project, counted in the checkout and in each checkout beside it that names the same Capital. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.",
-  sources: [`${SOURCE}#pruning-the-work-folder`],
-  mechanical: {
-    level: 'WARN',
-    remediation: {
-      class: 'diagnostic',
-      guidance:
-        "At the owning coordinator's next send, move each stray file to its home under the closed list and delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear; answer, park or merge open queries beyond eight, and over eight records awaiting acceptance launch no new build or planning run until acceptance catches up, keeping acceptance fixes and backlog-clearing work. The listing is never permission to delete another piece of work's files."
-    },
-    heuristic: true,
-    audit: { phase: 'INSPECT', run: ({ tidy }) => tidy.outcomes }
-  },
-  judgment: {
-    scope: 'The flagged work folders, their decisions logs and the work files and records the reports name.',
-    prompt:
-      "Does each flagged report's outcome have a durable home, a work record, the decisions log, the work package or a commit, and is every query it raised answered in the log, so that the owning coordinator may delete it, and did territory work name the flagged folders at its mark?",
-    outcomes: ['conforming', 'prune the work folder', 'home the outcome first', 'escalate to owner'],
-    guidance:
-      'Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another work folder to its own coordinator, told by a line in its `messages.md`.'
   }
 }
 
@@ -252,7 +227,6 @@ export const COORD: RubricFamily<CoordinationRubricContext, CoordinationRubricCo
     COORD_7,
     COORD_11,
     COORD_12,
-    COORD_9,
     COORD_8,
     COORD_4,
     COORD_5,
