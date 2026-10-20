@@ -61,4 +61,16 @@ describe('declared outcome levels', () => {
     expect(coord1?.mechanical?.level).toBe('FAIL')
     expect(coord1?.mechanical?.overrideLevels).toContain('WARN')
   })
+
+  test('COORD-12 fails a report that opens with a lint directive', () => {
+    const coord12 = COORD.items.find((item) => item.code === 'COORD-12')
+    expect(coord12?.mechanical?.level).toBe('FAIL')
+    const audit = coord12?.mechanical?.audit
+    if (!audit) throw new Error('COORD-12 has no mechanical audit')
+    const outcomes = audit.run(COORD.selectContext(context(toleranceCapital()))) as readonly AuditOutcome[]
+    const violations = outcomes.filter((outcome) => outcome.status === 'VIOLATION')
+    expect(violations).toHaveLength(1)
+    expect(JSON.stringify(violations[0])).toContain('run.report.md')
+    expect(violations.every((outcome) => !('level' in outcome) || outcome.level === 'FAIL')).toBe(true)
+  })
 })

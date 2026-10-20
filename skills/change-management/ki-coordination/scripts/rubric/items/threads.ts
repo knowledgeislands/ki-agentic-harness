@@ -112,11 +112,11 @@ const COORD_12: RubricItem<CoordinationRubricContext> = {
     'Every report under `+/_WORK/<id>/` or `+/_THREADS/<run>/` has the `#` report heading as its first non-blank line, or, for a report saved with front matter, the front matter first and the heading as the first non-blank line after it. A frame rule, a lint directive or a form line before the heading does not pass. Work awaiting review is not read.',
   sources: [`${SOURCE}#owner-report`],
   mechanical: {
-    level: 'WARN',
+    level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Move the report heading to the top of each flagged report, after its front matter if it has any. Fix only the reports of the work under review; other work fixes its own at its next mark.'
+        'Move the report heading to the top of each flagged report, after its front matter if it has any, before the work is marked or sent. Fix only the reports of the work under review; other work fixes its own before its next mark.'
     },
     audit: { phase: 'INSPECT', run: ({ headings }) => headings.outcomes }
   }

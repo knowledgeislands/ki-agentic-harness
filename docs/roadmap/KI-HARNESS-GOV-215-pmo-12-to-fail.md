@@ -6,15 +6,15 @@ kind: deliver
 purpose: governance
 project: ways-of-working
 component: change-management
-horizon: next
+horizon: now
 priority: medium
 size: s
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 31fe7df1ab2ee90937878f9e3738354ba0acfe65
 created_at: 2026-10-18T08:55:31Z
-updated_at: 2026-10-20T02:42:00Z
+updated_at: 2026-10-20T05:31:23Z
 ---
 
 # KI-HARNESS-GOV-215: COORD-12 to FAIL
@@ -38,10 +38,10 @@ Checked on 20 October 2026 at `30cbbd1d`. COORD-12 in `skills/change-management/
 
 ## Steps
 
-- [ ] Re-run `ki repo audit --skill ki-coordination --reporter-levels all` in the eight territory Capitals and confirm no COORD-12 warning has appeared since the release.
-- [ ] Set COORD-12's `mechanical.level` to `'FAIL'` and reword its remediation guidance so that it no longer reads as advisory.
-- [ ] Add a test that a report opening with a lint directive yields a COORD-12 violation that the item declares at FAIL.
-- [ ] Regenerate `references/rubric.md` and confirm the remediation-inventory counts are unchanged.
+- [x] Re-run `ki repo audit --skill ki-coordination --reporter-levels all` in the eight territory Capitals and confirm no COORD-12 warning has appeared since the release.
+- [x] Set COORD-12's `mechanical.level` to `'FAIL'` and reword its remediation guidance so that it no longer reads as advisory.
+- [x] Add a test that a report opening with a lint directive yields a COORD-12 violation that the item declares at FAIL.
+- [x] Regenerate `references/rubric.md` and confirm the remediation-inventory counts are unchanged.
 
 ## Files touched
 
@@ -76,6 +76,39 @@ None: no guide states COORD-12's level.
 ### Roadmap
 
 None.
+
+## Review
+
+### Delivered
+
+COORD-12 now fails a saved work report whose first non-blank line is not its `#` report heading. The census before the change found no COORD-12 warning in any of the eight territory Capitals: ki-principal, hnr-principal, legal-principal and personal-principal pass with 30, 14, 24 and 44 reports; er-principal, si-principal, tmx-principal and va-principal hold no reports in scope.
+
+### Change Summary
+
+- `threads.ts`: COORD-12's `mechanical.level` is `'FAIL'`, and its remediation asks for the heading to be fixed before the work is marked or sent.
+- `threads.test.ts`: a new test that a report opening with a lint directive gives exactly one COORD-12 violation, and that the item declares FAIL.
+- `references/rubric.md`: regenerated. Only the remediation line changed, so the remediation-inventory counts are unchanged.
+
+### Verification
+
+- `bun run test`: 1346 pass, 0 fail.
+- `bunx tsc --noEmit`: passes.
+- `ki dev skill rubric ki-coordination`, run in an isolated home bound to the worktree: in sync.
+- `ki repo audit --skill ki-coordination` in the worktree: FAIL=0. The two COORD-8 warnings come from the isolated home's missing user bindings.
+- `ki repo audit --skill ki-skills`: PASS.
+- `ki repo audit --skill ki-coordination` in ki-principal: COORD-12 passes on 30 reports. That audit uses the installed harness, so it will show COORD-12 at FAIL only after release. The run also has 30 COORD-7 failures in ki-principal's own work folders; they were there before and this record does not touch them.
+
+### Outstanding concerns
+
+None for this record. The COORD-7 failures in ki-principal are territory work's to fix at its mark.
+
+### Post-change review
+
+The level change applies to all reports, including those from the tolerance window. The census shows none of them currently fails, so the promotion does not newly fail any Capital.
+
+### Mini recap
+
+COORD-12 now fails. The census was clean, a test covers the change and the rubric has been regenerated.
 
 ## Discussion
 
