@@ -8,13 +8,13 @@ component: keystone
 priority: medium
 size: m
 kind: deliver
-horizon: next
-status: draft
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 76b6e5c51cee6c8a7f34c683b497ea1dc1fad817
 created_at: 2026-10-19T22:46:17Z
-updated_at: 2026-10-20T04:30:00Z
+updated_at: 2026-10-20T22:52:14Z
 transferred_from: ki-principal ki.tools-burndown hooks-standard design section 4.2, HOOK-CAPTURE a), 2026-10-19
 ---
 
@@ -28,12 +28,12 @@ Each shape skill declares, in its rubric catalogue, the check-only lines it requ
 
 Kris decided on 19 October, under GIT-HOOKS a) in the ki.tools-burndown [decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.tools-burndown/decisions.md), that all hook content lives in a committed `.githooks/`. ki-agentic-harness `95a1ab58` standardised the convention: [ADR-KI-HARNESS-SKILLS-017](../decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md) keeps existence and binding with `ki-repo` and content with the shape skills, and `HOOK-1` to `HOOK-5`, `SCR-5`, `SCR-11` and `GATE-1` audit the result. None of them creates a hook.
 
-The [hooks-standard design](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.tools-burndown/design/hooks-standard.md), section 2.2, tabulates each shape's content and owning criterion: Bun (`SCR-11`), Knowledge Base (`GATE-1`), harness (a new `ki-repo-harness` criterion), Bash tool (`SHELL-HOOK`), chezmoi source (`GIT-2`) and the `HOOK-1`-only remainder. Section 4.2 names a claims mechanism on the model of the package-script claims. Kris took HOOK-CAPTURE a) at 23:21 BST: capture now, plans refined by pilot evidence, with the host in tools-ki, [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md), and the declarations and standards here. The wave 1 pilot hand-wrote va-principal's `pre-commit` because no claim existed.
+The [hooks-standard design](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.tools-burndown/design/hooks-standard.md), section 2.2, tabulates each shape's content and owning criterion: Bun (`SCR-11`), Knowledge Base (`GATE-1`), harness (a new `ki-repo-harness` criterion), Bash tool (`SHELL-HOOK`), chezmoi source (`GIT-2`) and the `HOOK-1`-only remainder. Section 4.2 names a claims mechanism on the model of the package-script claims. Kris took HOOK-CAPTURE a) at 23:21 BST: capture now, plans refined by pilot evidence, with the host in tools-ki, [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e978a4c9b0e697252bac3e0979f09d85e8c/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md), and the declarations and standards here. The wave 1 pilot hand-wrote va-principal's `pre-commit` because no claim existed.
 
 ## Boundary
 
 - In: the claim declaration shape in the rubric catalogue contract, beside `packageScripts`; the `ki-repo` frame template as declared data, matching the `HOOK-4` frame rule; claims from `ki-engineering`, `ki-repo-kb`, `ki-repo-tools`, `ki-repo-dotfiles-chezmoi` and `ki-repo-harness`; the new `ki-repo-harness` content criterion the design names; standard text in `ki-repo` and each shape skill saying that conform composes from claims; checker tests.
-- Out: the host loader, composer and conform step, which [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) owns; `commit-msg` content for package-less repositories until `ki git check-message` ships in [KI-TOOL-KI-CLI-161 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/ce905bee422605f2f7c7c4c2d94819582f0c56b8/docs/roadmap/KI-TOOL-KI-CLI-161-git-check-message.md); raising the hook checks to FAIL; running conform in any repository.
+- Out: the host loader, composer and conform step, which [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e978a4c9b0e697252bac3e0979f09d85e8c/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) owns; `commit-msg` content for package-less repositories until `ki git check-message` ships in [KI-TOOL-KI-CLI-161 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/ce905bee422605f2f7c7c4c2d94819582f0c56b8/docs/roadmap/KI-TOOL-KI-CLI-161-git-check-message.md); raising the hook checks to FAIL; running conform in any repository.
 
 ## Current state
 
@@ -45,7 +45,7 @@ Checked on 20 October 2026 on branch `roll-standards`, after step 6.1 of the [Gi
 - Content criteria: `ki-engineering` `SCR-11` and `PKG-6`, `ki-authoring` `MD-hook`, `ki-repo-kb` `GATE-1`, `ki-repo-harness` `GATE-1`, `ki-repo-tools` `SHELL-HOOK` and `ASSEMBLE-1`, and new `GATE-1` criteria in `ki-repo-specifications` and `ki-repo-homebrew-tap`; `ki-repo-dotfiles-chezmoi` `GIT-2` now requires that no hook is committed or bound.
 - The harness's own hooks are its canonical package pair.
 
-The host still composes nothing: writing the canonical text into a repository is [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md), which can now read the published assets or the composer rather than a catalogue claim.
+The host still composes nothing: writing the canonical text into a repository is [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e978a4c9b0e697252bac3e0979f09d85e8c/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md), which can now read the published assets or the composer rather than a catalogue claim.
 
 ## Steps
 
@@ -54,7 +54,7 @@ The host still composes nothing: writing the canonical text into a repository is
 - [x] Declare the `ki-repo` frame as data and make `HOOK-4` compare against it.
 - [x] Add each shape's block and content criterion, including the new `ki-repo-harness` criterion.
 - [x] Add the standard text in `ki-repo` and each shape skill, and regenerate the affected rubrics.
-- [ ] Agree with the owner whether this record now closes, leaving composition in repositories to KI-TOOL-KI-CLI-165.
+- [x] Kris agreed GOV225-CLOSE a) on 20 October 2026 at 23:16 BST: this record closes once independently reviewed; tools-ki has delivered repository hook writing.
 
 ## Files touched
 
@@ -69,7 +69,7 @@ The host still composes nothing: writing the canonical text into a repository is
 
 ## Dependencies / blocks
 
-KI-TOOL-KI-CLI-165 can proceed against the published canonical hooks. Kris's STRICTNESS-CONFORM decision brought the Project, homebrew-tap and specifications shapes in, which NO-GATE had parked.
+[KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e978a4c9b0e697252bac3e0979f09d85e8c/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) can proceed against the published canonical hooks. Kris's STRICTNESS-CONFORM decision brought the Project, homebrew-tap and specifications shapes in, which NO-GATE had parked.
 
 ## Documentation impact
 
@@ -87,7 +87,43 @@ None.
 
 ### Roadmap
 
-None beyond KI-TOOL-KI-CLI-165 in tools-ki.
+None beyond [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e978a4c9b0e697252bac3e0979f09d85e8c/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) in tools-ki.
+
+## Review
+
+### Delivered
+
+The five delivery steps are complete. Canonical hook policy and text are owned by `ki-repo`; the host writes that text into repositories. Implementation is committed at `cea02aa56326ef3290ef9ec058a6a2287616cea4`.
+
+The record never passed through `in-progress`, so its start transition wrote no baseline. A repair run set `baseline_ref` on 20 October 2026 from Git evidence alone, under GOV225-CLOSE a) and the coordinator's 23:42 BST entry in the ways-of-working decisions log. Three independent lines fix it at `76b6e5c51cee6c8a7f34c683b497ea1dc1fad817`:
+
+1. The implementing run, `hooks/roll-standards`, Claude Code session `d8ef7048-5057-4645-b197-24543efcd9b1`, created its worktree at 03:37:22Z with `git worktree add -q -b roll-standards <worktree> main`. It ran no reset, checkout, pull or rebase before its first commit.
+2. The primary checkout's `HEAD` reflog holds `main` at `76b6e5c5` from the `wow-rules2` fast-forward at 02:54:49Z until the `skills-cut` fast-forward at 03:39:42Z, which spans the worktree's creation.
+3. The original implementation commit, `ac7d54764221b3258ed8b1b00b726cda3a4cfe44`, has the same subject and author time, 04:16:55Z, and its parent is `76b6e5c5`. The run rebased it onto `main` at 04:18:47Z, producing `cea02aa5`. Its present parent, `ba4055efca9a58d3790822f811ee621199c28122`, was committed at 04:19:03Z, after the original implementation commit, so it is not the execution baseline.
+
+### Change Summary
+
+Canonical hook data, fixed frame and shape blocks, exact `HOOK-4` comparison, generated package and no-package examples, shape content criteria, standards and readable rubrics were delivered. STRICTNESS-CONFORM superseded the proposed catalogue claim extension. This acceptance run changes the lifecycle evidence only.
+
+### Verification
+
+`bun run test` passed on the baseline and worktree: 1,374 tests, zero failures. `bunx tsc --noEmit` passed. `ki dev skill rubric` passed without writes for all 13 affected skills: `ki-repo`, `ki-engineering`, `ki-authoring`, `ki-git` and the nine repository shapes. The isolated-home `ki-repo` and `ki-authoring` audits passed. The isolated-home `ki-work-roadmap` audit failed because this executing or completed record needs an immutable `baseline_ref`; `ki-repo-harness` failed through that same governing check. Existing fleet warnings are separate from this blocking record failure.
+
+After the baseline repair, `bun run test` passed with 1,385 tests and zero failures, and `bunx tsc --noEmit` passed. The isolated-home `ki-work-roadmap`, `ki-repo-harness`, `ki-authoring` and `ki-repo` audits reported no failures. Their warnings are fleet findings about other records and the unregistered ki-principal checkout, not this record.
+
+### Outstanding concerns
+
+The first acceptance run stopped on `baseline_ref: null`. The repair under Delivered fixes the baseline from Git evidence, and a fresh independent acceptance review must still pass. The original commit `ac7d5476` is unreachable from any ref, so a future `git gc` may prune it; the reflog and session log stay as evidence. No new work record has been created.
+
+Reference preflight searched 23 local repository roots under the Knowledge Islands workspace. Surviving inbound references exist in ki-principal, including the tools-burndown hook design and ways-of-working review material. They must be pinned to this record's final committed revision before any later prune. This run has no authority to edit those peer documents directly; any follow-up goes to the owning work's message queue. No reference was orphaned because this record is retained.
+
+### Post-change review
+
+This run independently inspected the canonical data, the byte-exact comparison and its failure path, generated-asset equality coverage, the five completed delivery steps, and tools-ki's canonical hook loader. Kris's GOV225-CLOSE a) agreement is recorded in the ways-of-working decisions log under "query sign-offs, first batch", 20 October 2026 at 23:16 BST. The grant authorises acceptance and pruning of this record only after a passing review.
+
+### Mini recap
+
+The source work is delivered and Kris has agreed that it closes. The first acceptance failed on the missing immutable execution baseline, which a repair run has now fixed from Git evidence at `76b6e5c5`. The record remains awaiting review for a fresh independent acceptance; it has not been accepted or pruned.
 
 ## Discussion
 
@@ -97,7 +133,7 @@ The claim shape is read by the `ki` host, so it may belong in a KI Specification
 
 ### Order and repository-specific lines
 
-When several skills claim lines in one hook, the composed order must be stable: the design puts Bun lines first and the KB audit after them. Planning should decide whether order follows declared skill order or an explicit rank, and how a repository keeps lines no skill claims, which KI-TOOL-KI-CLI-165 also asks.
+When several skills claim lines in one hook, the composed order must be stable: the design puts Bun lines first and the KB audit after them. Planning should decide whether order follows declared skill order or an explicit rank, and how a repository keeps lines no skill claims, which [KI-TOOL-KI-CLI-165 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e978a4c9b0e697252bac3e0979f09d85e8c/docs/roadmap/KI-TOOL-KI-CLI-165-hook-composition-claims-host.md) also asks.
 
 ### Disposition, 20 October 2026
 
