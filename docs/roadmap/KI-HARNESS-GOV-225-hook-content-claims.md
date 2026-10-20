@@ -8,13 +8,12 @@ component: keystone
 priority: medium
 size: m
 kind: deliver
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 76b6e5c51cee6c8a7f34c683b497ea1dc1fad817
 created_at: 2026-10-19T22:46:17Z
-updated_at: 2026-10-20T22:52:14Z
+updated_at: 2026-10-20T23:15:19Z
 transferred_from: ki-principal ki.tools-burndown hooks-standard design section 4.2, HOOK-CAPTURE a), 2026-10-19
 ---
 
@@ -111,11 +110,13 @@ Canonical hook data, fixed frame and shape blocks, exact `HOOK-4` comparison, ge
 
 After the baseline repair, `bun run test` passed with 1,385 tests and zero failures, and `bunx tsc --noEmit` passed. The isolated-home `ki-work-roadmap`, `ki-repo-harness`, `ki-authoring` and `ki-repo` audits reported no failures. Their warnings are fleet findings about other records and the unregistered ki-principal checkout, not this record.
 
+The fourth independent acceptance pass on 21 October 2026 reviewed the combined result at `3f203c63da4434d925c2aaec34bf907c0456a621`. `bun run test` passed with 1,393 tests and zero failures; `bunx tsc --noEmit` passed. All 13 affected rubric publications verified without writes. The isolated-home `ki-work-roadmap`, `ki-authoring`, `ki-repo`, `ki-repo-harness`, `ki-skills` and `ki-diagrams` audits reported no failures. Existing fleet warnings remain separate from this record. The canonical hook data, byte-exact mismatch path, generated-asset equality tests, all completed delivery steps and the host loader were independently inspected.
+
 ### Outstanding concerns
 
-The first acceptance run stopped on `baseline_ref: null`. The repair under Delivered fixes the baseline from Git evidence, and a fresh independent acceptance review must still pass. The original commit `ac7d5476` is unreachable from any ref, so a future `git gc` may prune it; the reflog and session log stay as evidence. No new work record has been created.
+The first acceptance run stopped on `baseline_ref: null`. The repair under Delivered fixes the baseline from Git evidence, and the fourth independent acceptance review has passed. The original commit `ac7d5476` is unreachable from any ref, so a future `git gc` may prune it; the reflog and session log stay as evidence. No new work record has been created.
 
-Reference preflight searched 23 local repository roots under the Knowledge Islands workspace. Surviving inbound references exist in ki-principal, including the tools-burndown hook design and ways-of-working review material. They must be pinned to this record's final committed revision before any later prune. This run has no authority to edit those peer documents directly; any follow-up goes to the owning work's message queue. No reference was orphaned because this record is retained.
+Reference preflight searched 23 local repository roots under the Knowledge Islands workspace. Surviving inbound references exist in ki-principal, including the tools-burndown hook design and ways-of-working review material. They must be pinned to this record's final committed revision before any later prune. The first acceptance run had no authority to edit those peer documents directly; the fourth pass explicitly includes pinning every inbound link before pruning. No reference was orphaned because this record is retained.
 
 ### Post-change review
 
@@ -123,7 +124,11 @@ This run independently inspected the canonical data, the byte-exact comparison a
 
 ### Mini recap
 
-The source work is delivered and Kris has agreed that it closes. The first acceptance failed on the missing immutable execution baseline, which a repair run has now fixed from Git evidence at `76b6e5c5`. The record remains awaiting review for a fresh independent acceptance; it has not been accepted or pruned.
+The source work is delivered, the repaired immutable baseline is verified and the independent acceptance review passes. Kris's GOV225-CLOSE a) grant authorises this closure. This commit retains the accepted record; inbound references must be pinned to its last committed revision before a separate prune-only commit.
+
+## Done
+
+Accepted 21 October 2026 by Kris Brown under GOV225-CLOSE a), agreed on 20 October 2026 at 23:16 BST in the [ways-of-working decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.ways-of-working/decisions.md), following the fourth independent review on the review packet above.
 
 ## Discussion
 
