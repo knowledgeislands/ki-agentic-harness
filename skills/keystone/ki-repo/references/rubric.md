@@ -336,8 +336,8 @@ Existence, binding and frame of the committed hooks; their content belongs to sh
   - _Remediation:_ diagnostic — Run `git config core.hooksPath .githooks` in the clone, then rerun the audit.
 - **HOOK-3 [M] — Committed commit-message gate** — A tracked, executable `.githooks/commit-msg` exists in a package-backed repository; without a package it is not applicable until `ki git check-message` ships. (standards-repository.md)
   - _Remediation:_ diagnostic — Commit an executable `.githooks/commit-msg` that validates the proposed message check-only, then rerun the audit.
-- **HOOK-4 [M] — Hook refuses before it runs** — Each committed hook starts `#!/bin/sh` and refuses when a required tool is missing before its first command, and never suggests `--no-verify`. (standards-repository.md)
-  - _Remediation:_ diagnostic — Open the hook with the common frame: test each required tool, name the missing ones and the install step, refuse with `exit 1`, then run the content.
+- **HOOK-4 [M] — Hook refuses before it runs** — Each committed hook starts `#!/bin/sh`, refuses when a required tool is missing before its first command, tests in that refusal every external tool it calls, conditional branches included, and never suggests `--no-verify`. (standards-repository.md)
+  - _Remediation:_ diagnostic — Open the hook with the common frame: test every external tool the content calls, in any branch, name the missing ones and the install step, refuse with `exit 1`, then run the content.
 - **HOOK-5 [M] — Husky retired** — No tracked `.husky/` path, `husky` dependency, Husky call in `prepare` or hook delegating to `.husky/` remains; locally, no untracked `.husky/_` install is left behind. (standards-repository.md)
   - _Remediation:_ diagnostic — Move the hook content into `.githooks/`, set `prepare` to `git config core.hooksPath .githooks`, remove `husky` and `.husky/`, rebind the clone and remove `.husky/_`.
 - **HOOK-J1 [J] — Stated gate matches the hook** — The gate root orientation tells a writer to run matches what the committed pre-commit hook runs. (standards-repository.md)

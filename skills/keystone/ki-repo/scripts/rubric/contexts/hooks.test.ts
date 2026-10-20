@@ -139,6 +139,25 @@ test('HOOK-4 requires the refusal frame before the first command and never a byp
   expect(outcomes[1]?.subject).toBe('.githooks/commit-msg')
 })
 
+test('HOOK-4 requires a refusal test for every external tool, conditional branches included', () => {
+  const root = repository()
+  addHook(
+    root,
+    0o755,
+    'pre-commit',
+    `${FRAMED}if git diff --cached --quiet -- '*.ts'; then :; else tsc --noEmit || exit 1; fi\n`
+  )
+  expect(hookEvidence(root, local).hook4[0]?.message).toContain('calls `tsc` without testing for it')
+
+  const listed = FRAMED.replace(
+    'if ! command -v ki >/dev/null 2>&1; then',
+    'for tool in ki tsc; do\n  if ! command -v "$tool" >/dev/null 2>&1; then missing="$missing $tool"; fi\ndone\nif [ -n "$missing" ]; then'
+  )
+  const helpers = `staged() { git diff --cached --name-only; }\nif staged | grep -q '\\.ts$'; then tsc --noEmit || exit 1; fi\nscripts/check --quiet || exit 1\necho "run \`bun install\` first" >&2\n`
+  addHook(root, 0o755, 'pre-commit', `${listed}${helpers}`)
+  expect(hookEvidence(root, local).hook4[0]?.status).toBe('PASS')
+})
+
 test('HOOK-5 names every Husky remnant and passes once Husky is gone', () => {
   const root = repository()
   expect(hookEvidence(root, local).hook5[0]?.status).toBe('PASS')

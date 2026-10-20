@@ -133,7 +133,111 @@ const refusal = (hook: string, source: string): AuditOutcome => {
       message: `${hook} must refuse when a required tool is missing before its first command`,
       subject: hook
     }
+  const tested = testedTools(frame)
+  const untested = calledTools(lines).filter((tool) => !tested.has(tool))
+  if (untested.length)
+    return {
+      status: 'VIOLATION',
+      message: `${hook} calls ${untested.map((tool) => `\`${tool}\``).join(', ')} without testing for it in its refusal frame`,
+      subject: hook
+    }
   return { status: 'PASS', message: `${hook} refuses on a missing tool before its first command`, subject: hook }
+}
+
+// Tools every hook may call untested: shell keywords and builtins, Git, and the POSIX utilities.
+const SHELL_KEYWORD = new Set(['!', 'if', 'then', 'elif', 'else', 'fi', 'do', 'done', 'while', 'until', 'time'])
+const ALWAYS_PRESENT = new Set([
+  '.',
+  ':',
+  '[',
+  'cd',
+  'command',
+  'echo',
+  'eval',
+  'exec',
+  'exit',
+  'export',
+  'false',
+  'local',
+  'printf',
+  'read',
+  'return',
+  'set',
+  'shift',
+  'test',
+  'trap',
+  'true',
+  'umask',
+  'unset',
+  'wait',
+  'awk',
+  'basename',
+  'cat',
+  'chmod',
+  'cmp',
+  'cp',
+  'cut',
+  'date',
+  'diff',
+  'dirname',
+  'env',
+  'find',
+  'git',
+  'grep',
+  'head',
+  'ln',
+  'ls',
+  'mkdir',
+  'mktemp',
+  'mv',
+  'rm',
+  'rmdir',
+  'sed',
+  'sh',
+  'sleep',
+  'sort',
+  'tail',
+  'tee',
+  'touch',
+  'tr',
+  'uname',
+  'uniq',
+  'wc',
+  'xargs'
+])
+
+// The tools a refusal frame tests: a `for tool in ...` list, `command -v <tool>` and `node_modules/.bin/<tool>`.
+const testedTools = (frame: readonly string[]): Set<string> => {
+  const tools = new Set<string>()
+  for (const line of frame) {
+    const list = /^for\s+tool\s+in\s+([^;]*?)\s*;/.exec(line)
+    for (const tool of list?.[1]?.split(/\s+/) ?? []) tools.add(tool)
+    for (const match of line.matchAll(/(?:\bcommand\s+-v\s+|node_modules\/\.bin\/)"?([\w.+-]+)/g))
+      if (match[1]) tools.add(match[1])
+  }
+  return tools
+}
+
+// Every command a hook calls, conditional branches and function bodies included. A path is
+// the repository's own script, and a name the hook defines as a function is its own.
+const calledTools = (lines: readonly string[]): string[] => {
+  const joined = lines.join('\n').replace(/\\\n/g, ' ').split('\n').slice(1)
+  const functions = new Set(joined.flatMap((line) => /^([\w-]+)\s*\(\)/.exec(line)?.[1] ?? []))
+  const tools = new Set<string>()
+  for (const line of joined) {
+    if (line.startsWith('#')) continue
+    const substitutions = [...line.matchAll(/\$\(([^()]*)\)/g)].map((match) => match[1] ?? '')
+    const unquoted = line.replace(/"(?:[^"\\]|\\.)*"/g, ' ').replace(/'[^']*'/g, ' ')
+    for (const segment of [unquoted, ...substitutions].flatMap((part) => part.split(/;|&&|\|\||\||[(){}]/))) {
+      const words = segment.trim().split(/\s+/)
+      while (words[0] && (SHELL_KEYWORD.has(words[0]) || /^\w+=/.test(words[0]))) words.shift()
+      const word = words[0]
+      if (!word || word === 'for' || word === 'case' || word.startsWith('#')) continue
+      if (word.includes('/') || word.includes('$') || !/^[\w.+-]+$/.test(word)) continue
+      if (!ALWAYS_PRESENT.has(word) && !functions.has(word)) tools.add(word)
+    }
+  }
+  return [...tools]
 }
 
 const refusals = (target: string): readonly AuditOutcome[] => {

@@ -51,14 +51,14 @@ const HOOK_4: RubricItem<HooksRubricContext> = {
   code: 'HOOK-4',
   title: 'Hook refuses before it runs',
   description:
-    'Each committed hook starts `#!/bin/sh` and refuses when a required tool is missing before its first command, and never suggests `--no-verify`.',
+    'Each committed hook starts `#!/bin/sh`, refuses when a required tool is missing before its first command, tests in that refusal every external tool it calls, conditional branches included, and never suggests `--no-verify`.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Open the hook with the common frame: test each required tool, name the missing ones and the install step, refuse with `exit 1`, then run the content.'
+        'Open the hook with the common frame: test every external tool the content calls, in any branch, name the missing ones and the install step, refuse with `exit 1`, then run the content.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.hook4 }
   }
