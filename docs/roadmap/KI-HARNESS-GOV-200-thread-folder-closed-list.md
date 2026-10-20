@@ -54,7 +54,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 - `assets/run-prompt.md` names only the report path; the launcher's footer, not the skeleton, carries the temporary-output line today.
 - COORD-9 in `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts` warns, as a heuristic, on a file outside the closed list, on an answered report and on more than eight open queries. The `ki-work-package` rubric (STRUCTURE, RECORD, LIFECYCLE, BOUNDARY and CONFIG families) reads none of the folder's closed list, tidy rules, Messages lines or review area.
 - The THREADS-REGRESSION part is delivered: STRUCTURE-1 fails a retired `+/_THREADS/` or `+/_CHECKPOINTS/` beside `+/_WORK/` (`7d9959dc`), and `ki-recap`'s hand-off resolves only `+/_WORK/<id>/work.md` (`references/standards-session-recap.md`).
-- The close gate's heading form is being settled in [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), in progress: the close gate reads every entry of a decisions log, whatever its heading.
+- The close gate's heading form is being settled in [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), in progress: the close gate reads every entry of a decisions log, whatever its heading.
 
 ## Steps
 
@@ -87,7 +87,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 - Decided: the launcher's out-of-repository per-run directory is the temporary home, under HARNESS-TRIAGE a) of 20 October 2026; [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md), which amended the standard to it, is merged into this record under SWEEP-MERGE a).
 - Decided: the closed-list item lands as FAIL, as WORK-FOLDER-CHECKS a) set, after the Capitals' census in the last Step has recorded each stray file as a message to its owning work.
-- The decisions-log heading check follows [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md); if it has not landed, that one WARN item waits and the rest proceed.
+- The decisions-log heading check follows [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md); if it has not landed, that one WARN item waits and the rest proceed.
 
 ## Documentation impact
 
@@ -140,7 +140,7 @@ The work folder's closed list and tidy are now checked by a new FOLDER family in
 
 ### Outstanding concerns
 
-- The decisions-log heading WARN is not built. It must match the heading form settled by [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), which is awaiting review and not landed. The record's dependency rule lets the rest proceed.
+- The decisions-log heading WARN is not built. It must match the heading form settled by [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md), which is awaiting review and not landed. The record's dependency rule lets the rest proceed.
 - No separate Messages-line WARN was added. The existing RECORD schema check (`MESSAGE_LINE`) already fails a malformed line, which is stronger than the warning asked for.
 - Once the harness is installed, FOLDER-1 will fail the Knowledge Islands and HNR Principal audits until those five folders are tidied.
 
@@ -164,6 +164,6 @@ Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working deci
 
 Reviewed delivery `5f921df4385029e377f86a23e72b24cf59ac3401` at combined revision `ae58540ecf69ee171e14282496f8ed1b904d9359`. Tests, TypeScript, rubric publication and all eight focused harness audits pass. The failure is incomplete and stale acceptance evidence.
 
-The family Step includes a WARN for decisions-log headings the close gate cannot parse, but the delivered FOLDER family and work-folder.ts contain no such check. Outstanding concerns defers it because [KI-TOOL-KI-CLI-152](../../../tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md) is said to be awaiting review and not landed. That dependency is Done, accepted in tools-ki commit `bc563d56`; its code landed at `22ee0609`. Its settled contract treats every H2 as an entry, including timestamped, date-only and free-text headings.
+The family Step includes a WARN for decisions-log headings the close gate cannot parse, but the delivered FOLDER family and work-folder.ts contain no such check. Outstanding concerns defers it because [KI-TOOL-KI-CLI-152 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/fde00e97/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md) is said to be awaiting review and not landed. That dependency is Done, accepted in tools-ki commit `bc563d56`; its code landed at `22ee0609`. Its settled contract treats every H2 as an entry, including timestamped, date-only and free-text headings.
 
 Resolve the remaining heading requirement against that contract, implement any applicable boundary check or obtain an explicit scope disposition, and correct the Step and review packet before re-review. The closed-list, tidy and temporary-home changes otherwise match the inspected source and passing fixtures. Previously reported Capital FOLDER-1 findings remain receiver-owned.
