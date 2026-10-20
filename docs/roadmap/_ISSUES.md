@@ -1,5 +1,5 @@
 ---
-areas: { FND: 28, GOV: 230, OPS: 9, REV: 11, RTP: 19 }
+areas: { FND: 28, GOV: 230, OPS: 11, REV: 11, RTP: 19 }
 ---
 
 # Roadmap issue ledger
@@ -8,6 +8,6 @@ This ledger reserves fixed issuing-area namespaces. Allocate the next work item 
 
 - `FND` reserves through `028`.
 - `GOV` reserves through `230`.
-- `OPS` reserves through `009`.
+- `OPS` reserves through `011`.
 - `REV` reserves through `011`.
 - `RTP` reserves through `019`.
