@@ -45,7 +45,7 @@ The report heading, opening a Summary:
 ## Done
 ```
 
-The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`, ending `· 📥 <n> to accept` in Project work with records awaiting acceptance; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. A push of stacked commits is never "with you", a count or a query: it shows only as `[unpushed]`, Done names the other sessions' stacked commits once, and Kris pushes when ready. With worker:
+The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`, ending `· 📥 <n> to accept` in Project work with records awaiting acceptance; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[unpushed]`, `[recovered]` and `[unlogged]` naming no holder, and territory work adds its worktree sweep's `[stranded]`, `[branch]` and `[stash]` findings at each mark. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. A push of stacked commits is never "with you", a count or a query: it shows only as `[unpushed]`, Done names the other sessions' stacked commits once, and Kris pushes when ready. With worker:
 
 ```markdown
 ### 🤖 With worker · since 23:41 BST
