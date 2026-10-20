@@ -33,10 +33,10 @@
   "license": "MIT",
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,jsonc}": [
-      "bunx @biomejs/biome check --write --no-errors-on-unmatched"
+      "biome check --write --no-errors-on-unmatched"
     ],
     "*.md": [
-      "bunx rumdl check --fix --preflight"
+      "rumdl check --fix --preflight"
     ]
   },
   "packageManager": "bun@1.4.2",

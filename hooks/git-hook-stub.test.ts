@@ -55,6 +55,9 @@ const repositoryWithWorktree = () => {
   return { primary, worktree }
 }
 
+// The package tools the canonical pre-commit refuses without.
+const PACKAGE_TOOLS = ['lint-staged', 'syncpack', 'biome', 'rumdl']
+
 const install = (root: string, tools: readonly string[], bodies: Readonly<Record<string, string>> = {}): void => {
   mkdirSync(join(root, 'node_modules', '.bin'), { recursive: true })
   for (const tool of tools) executable(join(root, 'node_modules', '.bin', tool), bodies[tool] ?? 'exit 0')
@@ -79,34 +82,34 @@ test('a working tree without the gate tooling refuses the commit and names the a
   const result = commit(worktree)
 
   expect(result.status).not.toBe(0)
-  expect(result.stderr).toContain('lint-staged syncpack tsc')
+  expect(result.stderr).toContain('lint-staged syncpack biome rumdl')
   expect(result.stderr).toContain('bun install')
   expect(result.stderr).toContain('--no-verify')
   expect(head(worktree)).toBe(before)
 })
 
-test('a working tree without bun on PATH refuses before any gate runs', () => {
+test('a working tree without ki on PATH refuses before any gate runs', () => {
   const { worktree } = repositoryWithWorktree()
-  install(worktree, ['lint-staged', 'syncpack', 'tsc', 'commitlint'])
+  install(worktree, [...PACKAGE_TOOLS, 'commitlint'])
   const before = head(worktree)
   writeFileSync(join(worktree, 'change.txt'), 'change\n')
   git(worktree, 'add', 'change.txt')
-  // Only the stand-in ki and the system directories, which hold git and sh but not bun.
+  // Only the system directories, which hold git and sh but not ki.
   const result = spawnSync('git', ['commit', '-m', 'chore: change'], {
     cwd: worktree,
     encoding: 'utf8',
-    env: { ...process.env, ...identity, PATH: `${stubBin}:/usr/bin:/bin` }
+    env: { ...process.env, ...identity, PATH: '/usr/bin:/bin' }
   })
 
   expect(result.status).not.toBe(0)
-  expect(result.stderr).toContain('not on PATH: bun')
+  expect(result.stderr).toContain('not on PATH: ki')
   expect(result.stderr).toContain('--no-verify')
   expect(head(worktree)).toBe(before)
 })
 
 test('commit-msg refuses on its own missing tool once pre-commit can run', () => {
   const { worktree } = repositoryWithWorktree()
-  install(worktree, ['lint-staged', 'syncpack', 'tsc'])
+  install(worktree, PACKAGE_TOOLS)
   const before = head(worktree)
   const result = commit(worktree)
 
@@ -118,7 +121,7 @@ test('commit-msg refuses on its own missing tool once pre-commit can run', () =>
 
 test('with the tooling installed the committed hooks run their gate and the commit lands', () => {
   const { worktree } = repositoryWithWorktree()
-  install(worktree, ['lint-staged', 'syncpack', 'tsc', 'commitlint'], {
+  install(worktree, [...PACKAGE_TOOLS, 'commitlint'], {
     'lint-staged': '[ "$1" = --quiet ] || exit 1',
     commitlint: '[ "$1" = --edit ] && grep -q "^chore: change$" "$2" || exit 1'
   })
@@ -130,7 +133,7 @@ test('with the tooling installed the committed hooks run their gate and the comm
 
 test('a failing gate tool still refuses the commit', () => {
   const { worktree } = repositoryWithWorktree()
-  install(worktree, ['lint-staged', 'syncpack', 'tsc', 'commitlint'], {
+  install(worktree, [...PACKAGE_TOOLS, 'commitlint'], {
     'lint-staged': 'echo staged check failed >&2; exit 1'
   })
   const before = head(worktree)
