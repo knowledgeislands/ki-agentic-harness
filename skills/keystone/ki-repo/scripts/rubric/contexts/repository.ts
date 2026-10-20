@@ -623,6 +623,7 @@ export const createRepoSession = async (
           'STRUCT',
           'ACCESS',
           'KIND',
+          'MATURITY',
           'RUNTIMES',
           'DESCFIT',
           'OVR',

@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
 import { FILES } from '../items/files.ts'
+import definition from '../items/index.ts'
 import { RUNTIMES } from '../items/runtimes.ts'
 import { WORK } from '../items/working-areas.ts'
 import {
@@ -98,6 +99,16 @@ const applyWrites = (
 }
 
 describe('ki-repo session', () => {
+  test('gives every family with a mechanical criterion an audit subject', async () => {
+    const root = repository()
+    const session = await createRepoSession(options(root, 'audit'), inspect)
+    const covered = new Set(session.subjects.flatMap(({ families }) => families))
+    const mechanical = definition.families
+      .filter((family) => family.items.some((item) => item.mechanical))
+      .map((family) => family.code)
+    expect(mechanical.filter((code) => !covered.has(code))).toEqual([])
+  })
+
   test('coalesces two item actions into one explicit config create plus one gitignore create', async () => {
     const root = repository()
     const session = await createRepoSession(options(root, 'conform'), inspect)
