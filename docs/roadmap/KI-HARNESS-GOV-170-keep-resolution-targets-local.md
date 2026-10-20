@@ -9,12 +9,12 @@ component: change-management
 priority: medium
 size: s
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: e66f313024baf4493fc732ca6251ca2aba21afb6
 created_at: 2026-10-09T21:50:21Z
-updated_at: 2026-10-20T08:03:07Z
+updated_at: 2026-10-20T08:10:13Z
 ---
 
 # KI-HARNESS-GOV-170: Keep Resolution Targets Local
@@ -51,6 +51,7 @@ Verified on 2026-10-10 and rechecked on 20 October 2026 at `727af90e`:
 - [x] Make `roadmap-evidence.ts` fail a `resolution_target` whose repository code is not this repository's, with tests in `roadmap-evidence.model.test.ts`.
 - [x] Check the `ki-work-roadmap` eval scenario and `ki-accept` skill wording still agree.
 - [x] Hand the matching work-item model change to `tools-ki` in plain language, as one line in ki.ways-of-working's `messages.md` for routing, since a handoff is a message, not a record.
+- [x] Align `ki-accept`'s acceptance model and its fixtures with the same rule, with regression tests that fail on the old behaviour; added after the failed independent review.
 
 ## Files touched
 
@@ -59,13 +60,14 @@ Verified on 2026-10-10 and rechecked on 20 October 2026 at `727af90e`:
 - `skills/change-management/ki-accept/references/standards-acceptance.md`
 - `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts` and `roadmap-evidence.model.test.ts`
 - `skills/change-management/ki-accept/SKILL.md`
+- `skills/change-management/ki-accept/scripts/internal/acceptance-cycle.ts` and `acceptance-cycle.test.ts`
 - `evals/scenarios/ki-work-roadmap.ts`
 
 ## Verify
 
-- `bun run test` passes, including a new case where a foreign-code `resolution_target` fails ITEM-2 and a targeted resolution with no target passes.
+- `bun run test` passes, including a new case where a foreign-code `resolution_target` fails ITEM-2 and a targeted resolution with no target passes, and acceptance-model cases where a foreign target stops and a plain-words replacement in another repository cancels.
 - `bunx tsc --noEmit` passes.
-- `ki repo audit --skill ki-work-roadmap`, `--skill ki-skills` and `--skill ki-authoring` report no FAIL, run on the worktree in an isolated home.
+- `ki repo audit --skill ki-work-roadmap`, `--skill ki-skills` and `--skill ki-authoring` report no FAIL, run on the worktree in an isolated home. `ki-accept` is not a declared audit skill and has no rubric catalogue, so its acceptance model is verified by its focused tests.
 
 ## Dependencies / blocks
 
@@ -93,36 +95,39 @@ A plain-language handoff to `tools-ki` for its work-item model.
 
 ### Delivered
 
-The approved boundary, against baseline `e66f313024baf4493fc732ca6251ca2aba21afb6`: a `resolution_target` must name a record of the same repository, and a `duplicate`, `merged` or `superseded` record whose replacing work lives in another repository keeps its resolution with no target and names that repository and work in plain words in `## Cancelled`. Done or cancelled records that already cite a cross-repository target were out of scope; none exists. The `tools-ki` change is handed off, not made.
+The approved boundary, against baseline `e66f313024baf4493fc732ca6251ca2aba21afb6`, in delivery `4a10ba0707abb4d1258fe0b46937880e46b02421` and rework `062c27e65a921041252977909ae1dcbd7e1d9411`: a `resolution_target` must name a record of the same repository, and a `duplicate`, `merged` or `superseded` record whose replacing work lives in another repository keeps its resolution with no target and names that repository and work in plain words in `## Cancelled`. The rework brings `ki-accept`'s acceptance model and fixtures into line with that rule, as the failed independent review required. Done or cancelled records that already cite a cross-repository target were out of scope; none exists. The `tools-ki` change is handed off, not made.
 
 ### Change Summary
 
 - `skills/change-management/ki-work-roadmap/references/standards-work-item-format.md`: the cancellation paragraph requires a same-repository target, fails a foreign one, and gives the plain-words form for work elsewhere.
 - `skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md`: the lifecycle table's Duplicate across repositories row cancels with no `resolution_target` and names the other repository's work in `## Cancelled`.
-- `skills/change-management/ki-accept/references/standards-acceptance.md` steps 6 and 3, and `skills/change-management/ki-accept/SKILL.md`'s invocation paragraph: the same rule for cancellation.
+- `skills/change-management/ki-accept/references/standards-acceptance.md` steps 6 and 3, and `skills/change-management/ki-accept/SKILL.md`'s invocation paragraph: the same rule for cancellation. The Controlled acceptance models paragraph now lists the same-repository target and plain-words replacement fixtures.
 - `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.ts`: a local `isLocalIdentifier` helper, built on the shared `matchesRoadmapArea`, so a target fails ITEM-2 unless it carries this repository's code and, where areas are declared, one declared area; a targeted resolution with no target now passes, and an empty one fails. The shared `roadmap-areas.ts` is untouched, because `ki-repo-kb-streams` carries a byte-identical copy of it.
 - `skills/change-management/ki-work-roadmap/scripts/rubric/contexts/roadmap-evidence.model.test.ts`: cases for a foreign code, a near-miss code (`TESTX-012` against `TEST`), an absent target and an empty target.
+- `skills/change-management/ki-accept/scripts/internal/acceptance-cycle.ts`: a cancel item now carries the selected repository's code and declared areas and an optional `replacementRepository`. A target must be canonical, differ from the record and be local by code and area; a foreign target stops. With no target, a targeted resolution cancels only when it names another repository, its cancellation evidence names that repository, and the evidence cites no other repository's identifier and no link. A target and a replacing repository together stop, as does a replacing repository on `obsolete` or `rejected`. The outcome returns `replacementRepository`. Human approval and the evidence checks are unchanged.
+- `skills/change-management/ki-accept/scripts/acceptance-cycle.test.ts`: the fixtures that required a foreign target to pass and an absent target to stop now use local targets and an empty target; two new tests cover the plain-words cross-repository cancellation and every new stop, including near-miss and undeclared-area targets.
 - `evals/scenarios/ki-work-roadmap.ts`: the cancel-duplicate scenario says its target is in the same repository, and its rubric names the plain-words form.
 - The tools-ki follow-up is one line, TOOLS-KI-RESOLUTION-LOCAL, in ki.ways-of-working's `messages.md`, ki-principal `53184b64`.
 
 ### Verification
 
-- `bun run test`: 1,372 pass, 0 fail.
+- `bun run test`: 1,374 pass, 0 fail. Against the old acceptance model, the four affected acceptance-cycle tests, including both new ones, fail.
 - `bunx tsc --noEmit`: pass.
-- In an isolated home linked to the worktree: `ki repo audit --skill ki-work-roadmap` no FAIL, three pre-existing migration-window size warnings on other records; `--skill ki-skills` and `--skill ki-authoring` pass; `ki dev skill rubric ki-work-roadmap` leaves no diff.
+- In an isolated home linked to the worktree: `ki repo audit --skill ki-work-roadmap` no FAIL, with three pre-existing migration-window size warnings on other records and the isolated home's unavailable capital registry; `--skill ki-skills` and `--skill ki-authoring` pass; `ki dev skill rubric ki-work-roadmap` and `ki dev skill rubric ki-skills` report in sync.
+- `ki-accept` cannot be audited as a skill: `ki repo audit --skill ki-accept` exits because it is not a declared resolved audit skill, and `ki dev skill rubric ki-accept` reports no rubric catalogue. Its acceptance model is verified directly by its focused tests above.
 - The pre-commit hook passed on each commit.
 
 ### Outstanding concerns
 
-`tools-ki`'s work-item parser still throws on a targeted resolution with no target, so the new cross-repository form must not be used until tools-ki follows; the handoff line says so.
+`tools-ki`'s work-item parser still throws on a targeted resolution with no target, so the new cross-repository form must not be used until tools-ki follows; the handoff line says so. The acceptance model is a pure model: a caller must supply the repository's code and areas for the locality check to hold.
 
 ### Post-change review
 
-The goal holds: a foreign target can no longer pass the audit, and the standards agree on one rule. Scope stayed inside the named files plus the `ki-accept` skill paragraph, recorded at planning. Regression risk is low: the estate has no record with a foreign target, and the one local target still resolves. Ready for acceptance review.
+The goal holds: a foreign target can no longer pass the audit or the acceptance model, and the standards, checker and model agree on one rule. Scope stayed inside the named files plus the `ki-accept` skill paragraph, recorded at planning, and the acceptance model and fixtures, required by the failed review. Regression risk is low: the estate has no record with a foreign target, and the one local target still resolves.
 
 ### Mini recap
 
-Resolution targets are now local only, enforced by ITEM-2, with the cross-repository case recorded in plain words; tests, type check and focused audits pass. Learning route, not promoted: a worktree audit can seed the canonical harness as a link to the worktree, so the isolated-home recipe needs no download.
+Resolution targets are now local only, enforced by ITEM-2 and by the acceptance model, with the cross-repository case recorded in plain words; tests, type check and focused audits pass. Learning route, not promoted: a worktree audit can seed the canonical harness as a link to the worktree, so the isolated-home recipe needs no download.
 
 ## Discussion
 
@@ -146,3 +151,7 @@ Returned to `in-progress` by accept-harness-170 after independently reviewing de
 - The delivery report's claimed passing `ki-accept` audit could not be reproduced: `ki repo audit --skill ki-accept` exits 2 because it is not a declared resolved audit skill. This process skill's controlled model was reviewed directly instead; do not describe that command as a passing audit.
 
 No acceptance or pruning was performed. The separately routed tools-ki follow-up remains receiver-owned.
+
+### Rework after failed review, 20 October 2026
+
+Returned to `awaiting-review` by harness-rework-170 under the ways-of-working coordinator's brief. `ki-accept`'s acceptance model and fixtures now follow the revised rule, a step and the two script files were added to the record for that, and the review packet was refreshed. No acceptance or pruning was performed.
