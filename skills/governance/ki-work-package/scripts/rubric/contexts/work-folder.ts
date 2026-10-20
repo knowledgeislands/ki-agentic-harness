@@ -1,8 +1,9 @@
 /**
  * The work folder's closed list and tidy, read for the `ki-work-package` FOLDER family: each `+/_WORK/<id>/` against
  * its closed list, the tidy candidates (answered reports, received briefs, finished folders outliving their closing
- * mark, open queries beyond the limit), the `+/_WORK_REVIEW/` index, and for the tolerance window each thread folder
- * `+/_THREADS/<run>/` against its old closed list. The listings name candidates; they are never permission to delete.
+ * mark, open queries beyond the limit), decisions-log text the `ki agent close` gate cannot read as an entry, the
+ * `+/_WORK_REVIEW/` index, and for the tolerance window each thread folder `+/_THREADS/<run>/` against its old closed
+ * list. The listings name candidates; they are never permission to delete.
  */
 import { type Dirent, existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { extname, join, relative } from 'node:path'
@@ -32,6 +33,11 @@ const QUERY_HEADING = new RegExp(`^### (?:\\[(${NEEDS_TAG})\\]\\([^)\\s]*\\)|(${
 const FENCED_BLOCK = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
 /** An index line's work id: a wikilink, a Markdown link or a code span leading the list item. */
 const INDEX_ID = /^- +(?:\[\[([^\]/|#]+)|\[[^\]]*\]\(<?([^)/>#]+)|`([^`/]+)\/?`)/
+/** A decisions-log entry: the `ki agent close` gate opens one at every `## ` heading, whatever its text. */
+const ENTRY_HEADING = '## '
+/** Entry-shaped text before the first entry: a list item, or a heading deeper than an entry's. */
+const ENTRY_SHAPED = /^(?:[-*+] |\d+[.)] |#{3,6} )/
+const FENCE = /^(`{3,}|~{3,})/
 
 export type FolderOutcomes = {
   readonly closed: readonly AuditOutcome[]
@@ -40,6 +46,7 @@ export type FolderOutcomes = {
   readonly finished: readonly AuditOutcome[]
   readonly review: readonly AuditOutcome[]
   readonly queries: readonly AuditOutcome[]
+  readonly decisions: readonly AuditOutcome[]
 }
 
 const physicalDirectory = (path: string): boolean =>
@@ -149,6 +156,56 @@ export const outlivesClosingMark = (folder: string): boolean => {
   return !Number.isNaN(since) && !Number.isNaN(mark) && mark >= since
 }
 
+/**
+ * What in a decisions log the `ki agent close` gate cannot read as an entry, under the tools-ki contract that every
+ * `## ` heading opens one and runs to the next: entry-shaped lines before the first heading, which the gate never
+ * sees; headings with no text, which it cannot name; and repeated headings, which `ki agent reconcile` cannot address.
+ * Fenced blocks are skipped; the gate itself does not skip them, so a `## ` line there still opens an entry.
+ */
+export const decisionLogFindings = (text: string): readonly string[] => {
+  let fence: string | undefined
+  let entries = 0
+  let unseen = 0
+  let empty = 0
+  const headings = new Set<string>()
+  const repeated = new Set<string>()
+  for (const line of text.split(/\r?\n/)) {
+    const marker = FENCE.exec(line)?.[1]
+    if (marker && (fence === undefined || marker.startsWith(fence))) {
+      fence = fence === undefined ? marker : undefined
+      continue
+    }
+    if (fence !== undefined) continue
+    if (line.startsWith(ENTRY_HEADING)) {
+      entries += 1
+      const heading = line.slice(ENTRY_HEADING.length).trim()
+      if (heading === '') empty += 1
+      else if (headings.has(heading)) repeated.add(heading)
+      headings.add(heading)
+    } else if (entries === 0 && ENTRY_SHAPED.test(line)) unseen += 1
+  }
+  return [
+    ...(unseen > 0
+      ? [`${unseen} entry-shaped line(s) before the first \`## \` heading, which the close gate never reads`]
+      : []),
+    ...(empty > 0 ? [`${empty} \`## \` heading(s) with no text, which the close gate cannot name`] : []),
+    ...[...repeated].map((heading) => `repeated heading \`## ${heading}\`, which \`ki agent reconcile\` cannot address`)
+  ]
+}
+
+const decisionLogOutcome = (folder: string, subject: (path: string) => string): AuditOutcome | undefined => {
+  const path = join(folder, DECISIONS_LOG)
+  if (!existsSync(path) || !lstatSync(path).isFile()) return undefined
+  const findings = decisionLogFindings(readFileSync(path, 'utf8'))
+  return findings.length > 0
+    ? {
+        status: 'VIOLATION',
+        message: `the close gate reads every \`## \` heading as one entry and nothing else; ${findings.join('; ')}`,
+        subject: subject(path)
+      }
+    : undefined
+}
+
 /** The `+/_WORK_REVIEW/` folders with no index line, and the index lines naming no folder. */
 export const reviewIndexFindings = (
   directory: string
@@ -178,6 +235,11 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
   const briefs: AuditOutcome[] = []
   const finished: AuditOutcome[] = []
   const queries: AuditOutcome[] = []
+  const decisions: AuditOutcome[] = []
+  for (const folder of [...(work ?? []), ...(threads ?? [])]) {
+    const unread = decisionLogOutcome(folder, subject)
+    if (unread) decisions.push(unread)
+  }
   for (const folder of work ?? []) {
     const stray = workFolderStray(folder)
     if (stray.length > 0)
@@ -268,6 +330,7 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
       'Every folder awaiting review has its index line, and every index line its folder.',
       physicalDirectory(reviewDirectory) ? undefined : 'No `+/_WORK_REVIEW/` holding area is present.'
     ),
-    queries: one(queries, `No work package holds more than ${OPEN_QUERY_LIMIT} open queries.`, noWork)
+    queries: one(queries, `No work package holds more than ${OPEN_QUERY_LIMIT} open queries.`, noWork),
+    decisions: one(decisions, 'Every decisions log is read by the close gate as `## ` entries alone.', absent)
   }
 }

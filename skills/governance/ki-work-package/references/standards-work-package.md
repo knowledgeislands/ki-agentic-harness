@@ -274,6 +274,8 @@ Each query is a `### <TAG> - <title>` block carrying **Context**, **Query** and 
 
 `decisions.md` keeps its entry form and life cycle under `ki-coordination`'s decisions log, one entry format per work. It exists from creation, starting as `None`.
 
+The `ki agent close` gate reads the log as entries alone: every `##` heading opens one, whatever its text, and runs to the next. A decision written as a list item or a deeper heading before the first `##` heading is one the gate never reads, so the FOLDER rubric warns on it, on a heading with no text and on a repeated heading, which `ki agent reconcile` cannot address.
+
 ### Size limits
 
 The limits are soft, warned and never failed, like a skill's budgets:

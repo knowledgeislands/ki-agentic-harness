@@ -112,6 +112,23 @@ const FOLDER_6: RubricItem<FolderOutcomes> = {
   }
 }
 
+const FOLDER_7: RubricItem<FolderOutcomes> = {
+  code: 'FOLDER-7',
+  title: 'every decisions log reads to the close gate as entries',
+  description:
+    "The `ki agent close` gate opens one entry at every `## ` heading, timestamped, dated, numbered or free text, and reads nothing else. A list item or deeper heading before the first `## ` heading is a decision the gate never sees, a heading with no text is one it cannot name, and a repeated heading is one `ki agent reconcile` cannot address. Thread folders' logs are read too, since the gate reads whichever log a run's home holds.",
+  sources: [`${SOURCE}#decisions-log`],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Give each unread decision its own `## <YYYY-MM-DD HH:MM zone> - <title>` heading, the form `ki agent decide` writes, title any empty heading, and make repeated headings distinct. Fix only your own work's log; tell other work by one line in its `messages.md`."
+    },
+    audit: { phase: 'INSPECT', run: ({ decisions }) => decisions }
+  }
+}
+
 export const FOLDER: RubricFamily<WorkPackageRubricContext, FolderOutcomes> = {
   code: 'FOLDER',
   title: 'Work-folder closed list and tidy',
@@ -119,5 +136,5 @@ export const FOLDER: RubricFamily<WorkPackageRubricContext, FolderOutcomes> = {
     'Each work folder holds only its closed list, and what is due for the tidy is listed for its steward, so folders stay pruned without relying on memory.',
   standard: SOURCE,
   selectContext: (context) => context.folder,
-  items: [FOLDER_1, FOLDER_2, FOLDER_3, FOLDER_4, FOLDER_5, FOLDER_6]
+  items: [FOLDER_1, FOLDER_2, FOLDER_3, FOLDER_4, FOLDER_5, FOLDER_6, FOLDER_7]
 }

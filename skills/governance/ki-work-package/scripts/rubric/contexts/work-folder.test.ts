@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
-import { folderOutcomes, openQueryCount, reportQueryTags, workFolderStray } from './work-folder.ts'
+import { decisionLogFindings, folderOutcomes, openQueryCount, reportQueryTags, workFolderStray } from './work-folder.ts'
 
 const roots: string[] = []
 
@@ -144,5 +144,47 @@ describe('work folder tidy', () => {
     expect(statuses(folderOutcomes(root).queries)).toEqual(['PASS'])
     write(root, join(WORK, 'queries.md'), open(9))
     expect(statuses(folderOutcomes(root).queries)).toEqual(['VIOLATION'])
+  })
+})
+
+describe('decisions-log entries', () => {
+  test('timestamped, dated, numbered and free-text headings all read, and a None log is clean', () => {
+    const log =
+      '# Decisions\n\n## 2026-10-20 00:31 BST - WOW-RESUME\n\n- taken\n\n## 2026-10-19 WAVE-1\n\n## Decision 3 (2026-10-14)\n\n## Standing push authorities\n'
+    expect(decisionLogFindings(log)).toEqual([])
+    expect(decisionLogFindings('# Decisions\n\nNone\n')).toEqual([])
+    expect(decisionLogFindings('# Decisions\n\nStruck at the last mark; Git holds the rest.\n\n## A\n')).toEqual([])
+  })
+
+  test('entry-shaped lines before the first heading, empty and repeated headings are named', () => {
+    const log =
+      '# Decisions\n\n- PILOT-GO · Kris: build it\n### LATE - c)\n\n## \n\n## 2026-10-20 BST - SAME\n\n## 2026-10-20 BST - SAME\n'
+    const findings = decisionLogFindings(log)
+    expect(findings).toHaveLength(3)
+    expect(findings[0]).toContain('2 entry-shaped line(s)')
+    expect(findings[1]).toContain('1 `## ` heading(s) with no text')
+    expect(findings[2]).toContain('`## 2026-10-20 BST - SAME`')
+  })
+
+  test('a fenced block is skipped', () => {
+    expect(decisionLogFindings('# Decisions\n\n```text\n- not an entry\n## nor a heading\n```\n\n## A\n')).toEqual([])
+  })
+
+  test('a log the gate cannot read warns, in work and thread folders alike', () => {
+    const root = fixture()
+    pkg(root)
+    expect(statuses(folderOutcomes(root).decisions)).toEqual(['PASS'])
+    write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- 2026-10-18 · PUSH-ALL · Kris: push\n')
+    write(root, join(THREAD, 'decisions.md'), '# Decisions\n\n## A\n\n## A\n')
+    const outcomes = folderOutcomes(root).decisions
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
+    expect(outcomes.map((outcome) => outcome.subject)).toEqual([
+      join(WORK, 'decisions.md'),
+      join(THREAD, 'decisions.md')
+    ])
+  })
+
+  test('no work or thread folder is not applicable', () => {
+    expect(statuses(folderOutcomes(fixture()).decisions)).toEqual(['NOT_APPLICABLE'])
   })
 })

@@ -126,6 +126,8 @@ Each work folder holds only its closed list, and what is due for the tidy is lis
   - _Remediation:_ diagnostic — Add the missing index line, or remove the line in the same commit that moves or deletes its folder.
 - **FOLDER-6 [M] — no work package holds more than eight open queries** — More than eight queries under `queries.md`'s `## Open` is a coordination smell and warns. (standards-work-package.md#queries-file)
   - _Remediation:_ diagnostic — Answer, park or merge open queries until eight or fewer remain.
+- **FOLDER-7 [M] — every decisions log reads to the close gate as entries** — The `ki agent close` gate opens one entry at every `##` heading, timestamped, dated, numbered or free text, and reads nothing else. A list item or deeper heading before the first `##` heading is a decision the gate never sees, a heading with no text is one it cannot name, and a repeated heading is one `ki agent reconcile` cannot address. Thread folders' logs are read too, since the gate reads whichever log a run's home holds. (standards-work-package.md#decisions-log)
+  - _Remediation:_ diagnostic — Give each unread decision its own `## <YYYY-MM-DD HH:MM zone> - <title>` heading, the form `ki agent decide` writes, title any empty heading, and make repeated headings distinct. Fix only your own work's log; tell other work by one line in its `messages.md`.
 
 ## BOUNDARY — Runtime-neutral reconstruction
 
