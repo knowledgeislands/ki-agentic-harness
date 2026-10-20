@@ -3,7 +3,7 @@ id: KI-HARNESS-OPS-009
 title: Complete AI session acquisition
 kind: deliver
 purpose: capability
-project: knowledge-acquisition
+theme: model
 component: acquire
 area: OPS
 horizon: next
@@ -12,14 +12,14 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T21:42:09Z
-updated_at: 2026-10-17T21:42:09Z
+updated_at: 2026-10-20T04:14:07Z
 ---
 
 # KI-HARNESS-OPS-009: Complete AI Session Acquisition
 
 ## Goal
 
-AI-session acquisition is complete for the sources the knowledge-acquisition Project covers: a readable, authorised source enumerates ChatGPT projects and returns complete conversations, every unmapped, overlapping, missing, changed or failed case is explicit, acquired sessions are triaged in their receiving repository, Claude and Codex acquisition is separated from housekeeping, and a source is retired only through a fail-closed, human-approved manifest after one complete ChatGPT project move and one agent-session no-op are verified.
+AI-session acquisition is complete for the sources the knowledge-acquisition Project covered: a readable, authorised source enumerates ChatGPT projects and returns complete conversations, every unmapped, overlapping, missing, changed or failed case is explicit, acquired sessions are triaged in their receiving repository, Claude and Codex acquisition is separated from housekeeping, and a source is retired only through a fail-closed, human-approved manifest after one complete ChatGPT project move and one agent-session no-op are verified.
 
 ## Context
 
@@ -75,7 +75,7 @@ None yet.
 
 ### Roadmap
 
-The Project's Notes list these steps; once this record exists the Project can point to it.
+The Knowledge acquisition Project closed on 20 October 2026, and this record now carries its unfinished AI-session steps under the Model theme.
 
 ## Discussion
 
