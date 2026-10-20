@@ -30,7 +30,9 @@ const cancelItem = (overrides: Partial<Extract<AcceptanceCycleInput['item'], { k
   status: 'triage' as const,
   resolution: 'rejected' as const,
   cancellationEvidence: 'The concern is no longer applicable.',
+  repository: { code: 'KI-HARNESS', areas: [] },
   targetId: null,
+  replacementRepository: null,
   ...overrides
 })
 
@@ -111,6 +113,7 @@ test('cancels any explicitly approved open record without delivery evidence or w
       transition: 'open-to-cancelled',
       resolution: 'rejected',
       targetId: null,
+      replacementRepository: null,
       writes: false
     })
   expect(evaluateAcceptanceCycle(input({ item: cancelItem({ resolution: 'obsolete' }) }))).toMatchObject({
@@ -120,15 +123,119 @@ test('cancels any explicitly approved open record without delivery evidence or w
   for (const resolution of ['duplicate', 'merged', 'superseded'] as const)
     expect(
       evaluateAcceptanceCycle(
-        input({ item: cancelItem({ resolution, targetId: '5GE-P2-001', cancellationEvidence: 'Owned there.' }) })
+        input({ item: cancelItem({ resolution, targetId: 'KI-HARNESS-001', cancellationEvidence: 'Owned there.' }) })
       )
-    ).toEqual({ kind: 'cancel', transition: 'open-to-cancelled', resolution, targetId: '5GE-P2-001', writes: false })
-  for (const targetId of ['5GE-P2-1001', 'KI-HARNESS-GOV-1001'])
+    ).toEqual({
+      kind: 'cancel',
+      transition: 'open-to-cancelled',
+      resolution,
+      targetId: 'KI-HARNESS-001',
+      replacementRepository: null,
+      writes: false
+    })
+  for (const targetId of ['KI-HARNESS-GOV-1001', 'KI-HARNESS-SKILLS-012'])
     expect(
       evaluateAcceptanceCycle(
-        input({ item: cancelItem({ resolution: 'superseded', targetId, cancellationEvidence: 'Replaced there.' }) })
+        input({
+          item: cancelItem({
+            resolution: 'superseded',
+            repository: { code: 'KI-HARNESS', areas: ['GOV', 'SKILLS'] },
+            targetId,
+            cancellationEvidence: 'Replaced here.'
+          })
+        })
       )
     ).toMatchObject({ kind: 'cancel', targetId })
+})
+
+test('cancels a replacement held in another repository with no target, named in plain words', () => {
+  for (const resolution of ['duplicate', 'merged', 'superseded'] as const)
+    expect(
+      evaluateAcceptanceCycle(
+        input({
+          item: cancelItem({
+            resolution,
+            replacementRepository: 'tools-ki',
+            cancellationEvidence:
+              'Approved by Kris. The work-item parser change now lives in tools-ki, as its own work.'
+          })
+        })
+      )
+    ).toEqual({
+      kind: 'cancel',
+      transition: 'open-to-cancelled',
+      resolution,
+      targetId: null,
+      replacementRepository: 'tools-ki',
+      writes: false
+    })
+  expect(
+    evaluateAcceptanceCycle(
+      input({
+        item: cancelItem({
+          resolution: 'superseded',
+          replacementRepository: 'tools-ki',
+          cancellationEvidence: 'Replaces KI-HARNESS-001 here; the parser change now lives in tools-ki.'
+        })
+      })
+    )
+  ).toMatchObject({ kind: 'cancel', replacementRepository: 'tools-ki' })
+})
+
+test('refuses a foreign target and a cross-repository replacement that cites an identifier or link', () => {
+  const superseded = (overrides: Parameters<typeof cancelItem>[0]) =>
+    evaluateAcceptanceCycle(input({ item: cancelItem({ resolution: 'superseded', ...overrides }) }))
+  for (const targetId of ['5GE-P2-001', 'KI-TOOLS-012', 'KI-HARNESSX-012'])
+    expect(superseded({ targetId, cancellationEvidence: 'Replaced there.' })).toMatchObject({
+      kind: 'stop',
+      reason:
+        "superseded cancellation target must name a record in this repository; name another repository's work in plain words in ## Cancelled",
+      writes: false
+    })
+  expect(
+    superseded({
+      repository: { code: 'KI-HARNESS', areas: ['GOV'] },
+      targetId: 'KI-HARNESS-WEB-012',
+      cancellationEvidence: 'Replaced there.'
+    })
+  ).toMatchObject({ kind: 'stop', reason: expect.stringContaining('must name a record in this repository') })
+  expect(
+    superseded({ targetId: 'KI-HARNESS-001', replacementRepository: 'tools-ki', cancellationEvidence: 'In tools-ki.' })
+  ).toMatchObject({
+    kind: 'stop',
+    reason: 'superseded cancellation names either a target record in this repository or another repository, not both'
+  })
+  for (const replacementRepository of [null, ' '])
+    expect(superseded({ replacementRepository, cancellationEvidence: 'Replaced elsewhere.' })).toMatchObject({
+      kind: 'stop',
+      reason:
+        'superseded cancellation must name a target record in this repository or the repository holding the replacing work'
+    })
+  expect(
+    superseded({ replacementRepository: 'KI-HARNESS', cancellationEvidence: 'Replaced in KI-HARNESS.' })
+  ).toMatchObject({
+    kind: 'stop',
+    reason: 'superseded cancellation of work in this repository must name its target record'
+  })
+  expect(superseded({ replacementRepository: 'tools-ki', cancellationEvidence: 'Replaced elsewhere.' })).toMatchObject({
+    kind: 'stop',
+    reason: 'superseded cancellation evidence must name the repository holding the replacing work'
+  })
+  for (const cancellationEvidence of [
+    'Replaced by KI-TOOLS-012 in tools-ki.',
+    'Replaced in tools-ki by [the parser record](../tools-ki/docs/roadmap/parser.md).',
+    'Replaced in tools-ki: https://github.com/knowledgeislands/tools-ki/issues/1'
+  ])
+    expect(superseded({ replacementRepository: 'tools-ki', cancellationEvidence })).toMatchObject({
+      kind: 'stop',
+      reason:
+        "superseded cancellation evidence must describe another repository's work in plain words, with no identifier or link"
+    })
+  expect(
+    evaluateAcceptanceCycle(
+      input({ item: cancelItem({ replacementRepository: 'tools-ki', cancellationEvidence: 'Moot in tools-ki.' }) })
+    )
+  ).toMatchObject({ kind: 'stop', reason: 'rejected cancellation must not name a replacing repository' })
 })
 
 test('requires an open record, exact human authority and complete cancellation evidence', () => {
@@ -163,9 +270,9 @@ test('requires an open record, exact human authority and complete cancellation e
     reason: 'rejected cancellation must not name a target record'
   })
   for (const resolution of ['duplicate', 'merged', 'superseded'] as const) {
-    expect(evaluateAcceptanceCycle(input({ item: cancelItem({ resolution, targetId: null }) }))).toMatchObject({
+    expect(evaluateAcceptanceCycle(input({ item: cancelItem({ resolution, targetId: ' ' }) }))).toMatchObject({
       kind: 'stop',
-      reason: `${resolution} cancellation must name its target record`
+      reason: `${resolution} cancellation target must not be empty`
     })
     expect(
       evaluateAcceptanceCycle(input({ item: cancelItem({ resolution, targetId: 'not-canonical' }) }))

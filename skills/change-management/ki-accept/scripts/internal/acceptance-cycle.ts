@@ -1,4 +1,4 @@
-import { workIdentifier } from '../shared/work-identifiers.ts'
+import { workIdentifier, workIdentifierSource } from '../shared/work-identifiers.ts'
 
 export const REVIEW_PACKET_HEADINGS = [
   'Delivered',
@@ -10,6 +10,8 @@ export const REVIEW_PACKET_HEADINGS = [
 ] as const
 
 const WORK_ITEM_ID_RE = workIdentifier()
+const EMBEDDED_WORK_ITEM_ID_RE = new RegExp(`(?<![A-Z0-9-])${workIdentifierSource()}(?![A-Z0-9-])`, 'g')
+const LINK_RE = /\]\(|https?:\/\//
 
 export type AcceptanceAdapter =
   | { kind: 'local'; adapter: 'roadmap' | 'kb-streams'; root: 'docs/roadmap' | 'Streams/Roadmap' }
@@ -77,7 +79,12 @@ export type AcceptanceCycleItem =
       status: 'triage' | 'draft' | 'ready' | 'in-progress' | 'awaiting-review' | 'done' | 'cancelled'
       resolution: CancelResolution
       cancellationEvidence: string
+      /** The selected repository's `repo_code` and declared issuing areas, which bound a local target. */
+      repository: { code: string; areas: readonly string[] }
+      /** A same-repository replacing record, for duplicate, merged or superseded. */
       targetId: string | null
+      /** The repository holding replacing work elsewhere, named in plain words instead of a target. */
+      replacementRepository: string | null
     }
 
 export type AcceptanceCycleInput = {
@@ -106,6 +113,7 @@ export type AcceptanceCycleOutcome =
       transition: 'open-to-cancelled'
       resolution: CancelResolution
       targetId: string | null
+      replacementRepository: string | null
       writes: false
     }
   | { kind: 'stop'; reason: string; writes: false }
@@ -121,6 +129,45 @@ const closureAuthorised = (authority: ClosureAuthority, itemId: string): boolean
       authority.payloadMatchesApproval &&
       authority.runMatchesApproval &&
       authority.closureItemIds.includes(itemId)
+
+/** An identifier names a record of this repository: its code and, when areas are declared, one declared area. */
+const isLocalIdentifier = (id: string, repository: { code: string; areas: readonly string[] }): boolean => {
+  if (!id.startsWith(`${repository.code}-`)) return false
+  const rest = id.slice(repository.code.length + 1)
+  if (!repository.areas.length) return /^\d{3,}$/.test(rest)
+  const [area, serial, ...extra] = rest.split('-')
+  return repository.areas.includes(area as string) && /^\d{3,}$/.test(serial ?? '') && !extra.length
+}
+
+type CancelItem = Extract<AcceptanceCycleItem, { kind: 'cancel' }>
+
+/** Why a targeted resolution's replacement is not acceptable, or null when it is. */
+const targetedReplacementProblem = (item: CancelItem): string | null => {
+  const { resolution, targetId, replacementRepository, repository, cancellationEvidence } = item
+  if (targetId !== null) {
+    if (!targetId.trim()) return `${resolution} cancellation target must not be empty`
+    if (!WORK_ITEM_ID_RE.test(targetId))
+      return `${resolution} cancellation target must be a canonical work-item identifier`
+    if (targetId === item.id) return `${resolution} cancellation target must differ from the cancelled record`
+    if (!isLocalIdentifier(targetId, repository))
+      return `${resolution} cancellation target must name a record in this repository; name another repository's work in plain words in ## Cancelled`
+    if (replacementRepository !== null)
+      return `${resolution} cancellation names either a target record in this repository or another repository, not both`
+    return null
+  }
+  if (!replacementRepository?.trim())
+    return `${resolution} cancellation must name a target record in this repository or the repository holding the replacing work`
+  if (replacementRepository.trim().toUpperCase() === repository.code)
+    return `${resolution} cancellation of work in this repository must name its target record`
+  if (!cancellationEvidence.toLowerCase().includes(replacementRepository.trim().toLowerCase()))
+    return `${resolution} cancellation evidence must name the repository holding the replacing work`
+  const foreignIds = [...cancellationEvidence.matchAll(EMBEDDED_WORK_ITEM_ID_RE)].filter(
+    ([id]) => !isLocalIdentifier(id, repository)
+  )
+  if (foreignIds.length || LINK_RE.test(cancellationEvidence))
+    return `${resolution} cancellation evidence must describe another repository's work in plain words, with no identifier or link`
+  return null
+}
 
 export const evaluateAcceptanceCycle = ({
   adapter,
@@ -148,28 +195,25 @@ export const evaluateAcceptanceCycle = ({
       return { kind: 'stop', reason: 'exact explicit human approval is required for cancellation', writes: false }
     if (!item.cancellationEvidence.trim())
       return { kind: 'stop', reason: 'cancellation evidence is required', writes: false }
-    const targeted = TARGETED_RESOLUTIONS.has(item.resolution)
-    if (!targeted && item.targetId !== null)
-      return { kind: 'stop', reason: `${item.resolution} cancellation must not name a target record`, writes: false }
-    if (targeted && !item.targetId?.trim())
-      return { kind: 'stop', reason: `${item.resolution} cancellation must name its target record`, writes: false }
-    if (targeted && !WORK_ITEM_ID_RE.test(item.targetId as string))
-      return {
-        kind: 'stop',
-        reason: `${item.resolution} cancellation target must be a canonical work-item identifier`,
-        writes: false
-      }
-    if (targeted && item.targetId === item.id)
-      return {
-        kind: 'stop',
-        reason: `${item.resolution} cancellation target must differ from the cancelled record`,
-        writes: false
-      }
+    if (!TARGETED_RESOLUTIONS.has(item.resolution)) {
+      if (item.targetId !== null)
+        return { kind: 'stop', reason: `${item.resolution} cancellation must not name a target record`, writes: false }
+      if (item.replacementRepository !== null)
+        return {
+          kind: 'stop',
+          reason: `${item.resolution} cancellation must not name a replacing repository`,
+          writes: false
+        }
+    } else {
+      const problem = targetedReplacementProblem(item)
+      if (problem) return { kind: 'stop', reason: problem, writes: false }
+    }
     return {
       kind: 'cancel',
       transition: 'open-to-cancelled',
       resolution: item.resolution,
       targetId: item.targetId,
+      replacementRepository: item.replacementRepository,
       writes: false
     }
   }
