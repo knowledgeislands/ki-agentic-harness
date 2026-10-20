@@ -1,6 +1,6 @@
 <!-- GENERATED FILE: produced by `ki dev skill rubric`. Do not hand-edit; edit scripts/rubric/items/, then rerun `ki dev skill rubric <skill> --write`. -->
 
-# Generated rubric — Incremental and faithful ChatGPT project acquisition
+# Generated rubric — Faithful ChatGPT conversation capture
 
 > **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `ki dev skill rubric ki-acquire-chatgpt --write`.
 
@@ -8,60 +8,50 @@ Line-by-line criteria for auditing ki-acquire-chatgpt. Classifications are deriv
 
 ## Contents
 
-- [SOURCE — ChatGPT source evidence](#source--chatgpt-source-evidence)
-- [ROUTING — ChatGPT project routing](#routing--chatgpt-project-routing)
-- [FIDELITY — ChatGPT conversation fidelity](#fidelity--chatgpt-conversation-fidelity)
+- [SOURCE — ChatGPT source and coverage](#source--chatgpt-source-and-coverage)
+- [ROUTING — ChatGPT routing](#routing--chatgpt-routing)
+- [FIDELITY — ChatGPT capture fidelity](#fidelity--chatgpt-capture-fidelity)
 - [RETIRE — ChatGPT source retirement](#retire--chatgpt-source-retirement)
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 
-## SOURCE — ChatGPT source evidence
+## SOURCE — ChatGPT source and coverage
 
 → [standard](standards-chatgpt-acquisition.md)
 
-Authorised readable content paired with content-minimised identity and change evidence.
+Readable source only, honest coverage, and the end point in the digest front matter.
 
-- **SOURCE-1 [J] — readable source is authorised and explicit** — Readable conversation acquisition uses an authorised stable source and never treats opaque local records, browser scraping, or undocumented private APIs as faithful content. (standards-chatgpt-acquisition.md#source-pairing)
+- **SOURCE-1 [J] — readable source is authorised and explicit** — Captures use readable conversation text or an official export and never treat opaque local records, browser scraping, or undocumented private APIs as content. (standards-chatgpt-acquisition.md#readable-source)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does runtime evidence distinguish the readable source from opaque identity evidence and stop when either layer is unavailable?
+  - _Review prompt:_ Does the evidence show a readable, authorised source and stop where none was available?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **SOURCE-2 [J] — incremental checkpoints separate identity and content** — Identity enumeration and readable content versions carry distinct hashes and checkpoints so opaque changes can nominate revalidation without claiming readable content is unchanged. (standards-chatgpt-acquisition.md#incremental-acquisition)
+- **SOURCE-2 [J] — the end point lives in the digest front matter** — Each capture records its inclusive last substantive message, scope, sequence, and previous capture in its README front matter, with no separate mark file. (standards-chatgpt-acquisition.md#coverage-and-end-point)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Do checkpoints distinguish complete identity coverage from readable content evidence and advance only with explicit outcomes for every selected identity?
+  - _Review prompt:_ Does the front matter state an evidenced end point, and did retries no-op, finish in place, or start a linked segment accordingly?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
-## ROUTING — ChatGPT project routing
+## ROUTING — ChatGPT routing
 
 → [standard](standards-chatgpt-acquisition.md)
 
-Immutable project selectors, prefixed presentation, and explicit receiver conflicts.
+Routes from project and conversation evidence, with unknown routes left visible.
 
-- **ROUTING-1 [J] — project identity survives renames** — Receiver bindings use immutable project IDs while current `<Domain>: <Topic>` names, parsed prefixes, and prior names remain review evidence and aliases. (standards-chatgpt-acquisition.md#project-identity-and-naming)
+- **ROUTING-1 [J] — unknown and conflicting routes stay visible** — Project names and conversation evidence inform the route; unknown or conflicting routes remain open for review rather than defaulting. (standards-chatgpt-acquisition.md#routing)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does each project binding use stable source identity while retaining current and prior names and making prefix drift visible?
-  - _Outcomes:_ conforming; gap; exclusion
-  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **ROUTING-2 [J] — receiver conflicts fail closed** — Unknown prefixes, unmapped projects, conflicting bindings, and intentional duplication remain explicit rather than resolving through lexical or repository precedence. (standards-chatgpt-acquisition.md#receiver-routing)
-  - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Are unmapped, malformed, conflicting, and duplicated project routes visible and resolved only through explicit human authority?
+  - _Review prompt:_ Was the route evidenced, with any unknown or conflicting route left visible for review?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
-## FIDELITY — ChatGPT conversation fidelity
+## FIDELITY — ChatGPT capture fidelity
 
 → [standard](standards-chatgpt-acquisition.md)
 
-Complete readable conversations, explicit omissions, immutable versions, and retained copies.
+Faithful digests with honest dates, exact attachments, and explicit omissions.
 
-- **FIDELITY-1 [J] — complete conversations are acquired** — The acquisition unit is one complete conversation with ordered roles, returned messages, write-ups, assets, provenance, hashes, and explicit omissions rather than selected excerpts. (standards-chatgpt-acquisition.md#conversation-fidelity)
+- **FIDELITY-1 [J] — the digest is faithful** — Reasoning, decisions, corrections, and uncertainty are preserved, dates are evidenced or unknown, and required attachments are exact originals or listed omissions. (standards-chatgpt-acquisition.md#fidelity)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does each acquired version preserve all readable content and assets the source returned without fabricating missing fields or decoding opaque records?
-  - _Outcomes:_ conforming; gap; exclusion
-  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **FIDELITY-2 [J] — versions and missing sources are non-destructive** — Changed conversations create verified versions, unchanged repeats avoid payload churn, and source absence never deletes a retained receiver copy. (standards-chatgpt-acquisition.md#incremental-acquisition)
-  - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does repeated acquisition preserve prior versions, avoid unexplained churn, and report missing source identities without deleting retained evidence?
+  - _Review prompt:_ Does the capture keep source statements and interpretation distinct without fabricating dates, messages, or URLs, and preserve or list every attachment?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
@@ -69,11 +59,11 @@ Complete readable conversations, explicit omissions, immutable versions, and ret
 
 → [standard](standards-chatgpt-acquisition.md)
 
-Separate release authority, current exact evidence, and a manual-only fallback.
+Separate release authority and current evidence.
 
-- **RETIRE-1 [J] — retirement is separately authorised** — Acquisition remains read-only; source retirement requires recoverable receiver evidence, a current exact manifest, unchanged source identity and content, resolved omissions, and immediate human approval. (standards-chatgpt-acquisition.md#source-retirement)
+- **RETIRE-1 [J] — retirement is separately authorised** — Acquisition remains read-only; archiving or deleting a conversation needs a separate current decision, a verified capture at a named Git revision, and immediate human approval. (standards-chatgpt-acquisition.md#source-retirement)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does proposed retirement refuse stale or incomplete evidence and stop at a manual manifest when no supported identity-specific mutation surface exists?
+  - _Review prompt:_ Does proposed retirement refuse stale or incomplete evidence and stop for explicit human approval?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

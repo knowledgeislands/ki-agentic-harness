@@ -7,9 +7,7 @@ describe('ChatGPT acquisition catalogue', () => {
       'SOURCE-1',
       'SOURCE-2',
       'ROUTING-1',
-      'ROUTING-2',
       'FIDELITY-1',
-      'FIDELITY-2',
       'RETIRE-1',
       'RUBRIC-1'
     ])

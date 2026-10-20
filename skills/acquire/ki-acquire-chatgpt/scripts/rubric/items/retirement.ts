@@ -5,17 +5,17 @@ export const RETIRE = {
   code: 'RETIRE',
   title: 'ChatGPT source retirement',
   standard: 'standards-chatgpt-acquisition.md',
-  description: 'Separate release authority, current exact evidence, and a manual-only fallback.',
+  description: 'Separate release authority and current evidence.',
   selectContext: (context) => context,
   items: [
     {
       code: 'RETIRE-1',
       title: 'retirement is separately authorised',
       description:
-        'Acquisition remains read-only; source retirement requires recoverable receiver evidence, a current exact manifest, unchanged source identity and content, resolved omissions, and immediate human approval.',
+        'Acquisition remains read-only; archiving or deleting a conversation needs a separate current decision, a verified capture at a named Git revision, and immediate human approval.',
       sources: ['standards-chatgpt-acquisition.md#source-retirement'],
       judgment: judgment(
-        'Does proposed retirement refuse stale or incomplete evidence and stop at a manual manifest when no supported identity-specific mutation surface exists?'
+        'Does proposed retirement refuse stale or incomplete evidence and stop for explicit human approval?'
       )
     }
   ]

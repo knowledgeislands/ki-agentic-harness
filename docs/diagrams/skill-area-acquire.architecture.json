@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8bc9d49d0e4c06490a7f8ec81d00e65e92167fc5"
+      "revision": "76b6e5c51cee6c8a7f34c683b497ea1dc1fad817"
     },
     "legend": {
       "mode": "auto",
@@ -85,36 +85,9 @@
         208,
         60
       ]
-    },
-    {
-      "id": "ki-housekeeping-chatgpt",
-      "type": "database",
-      "label": "ki-housekeeping-chatgpt",
-      "sublabel": "environment · opt-in",
-      "sources": [
-        {
-          "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        376
-      ],
-      "size": [
-        208,
-        60
-      ]
     }
   ],
   "boundaries": [
-    {
-      "kind": "region",
-      "label": "Environment · Housekeeping",
-      "wraps": [
-        "ki-housekeeping-chatgpt"
-      ],
-      "pad": 32
-    },
     {
       "kind": "region",
       "label": "Acquire · 3 skills",
@@ -131,12 +104,6 @@
       "id": "ki-acquire-chatgpt--ki-acquire",
       "from": "ki-acquire-chatgpt",
       "to": "ki-acquire",
-      "variant": "default"
-    },
-    {
-      "id": "ki-acquire-chatgpt--ki-housekeeping-chatgpt",
-      "from": "ki-acquire-chatgpt",
-      "to": "ki-housekeeping-chatgpt",
       "variant": "default"
     },
     {
@@ -160,7 +127,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "3 skills, 1 outside prerequisite, 0 outside dependents, 3 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "3 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

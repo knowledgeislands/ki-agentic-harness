@@ -25,7 +25,7 @@ This source harness publishes 64 skills: 53 governance skills and 11 process ski
 
 #### `ki-acquire`
 
-Govern source-independent knowledge capture: supplied scope, provenance, routing, faithful preservation, retry identity, required originals and verified destinations. Use for common acquisition rules and direct intake; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts, and ki-trades owns downstream movement.
+Govern source-independent knowledge capture: supplied scope, honest coverage, faithful preservation, exact required originals, verified destinations and dispatch by Git move, with the capture package as the only record. Use for common acquisition rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -35,17 +35,17 @@ Govern source-independent knowledge capture: supplied scope, provenance, routing
 
 #### `ki-acquire-chatgpt`
 
-Govern incremental readable ChatGPT project and conversation acquisition, including stable project identity, prefixed routing, faithful versions, checkpoints, and later retirement evidence. Use for ChatGPT project import or routing design; `ki-acquire` owns the common contract and `ki-housekeeping-chatgpt` owns opaque inventory.
+Govern ChatGPT conversation capture: honest digest or full-thread coverage, routing from project and conversation evidence, and the capture end point recorded in the digest's README front matter. Use for ChatGPT capture or audit; `ki-acquire` owns the common contract.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** `ki-acquire`, `ki-housekeeping-chatgpt`
+- **Dependencies:** `ki-acquire`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
 
 #### `ki-acquire-granola`
 
-Acquire and reconcile Granola meetings through MCP reads, including screenshots, complete date windows, folder routing, verified Acquired markers, checkpoints, and amendment detection. Use for Granola import or audit; `ki-acquire` owns the common contract, tools-ki owns CLI execution, and retirement needs separate approval.
+Acquire Granola meetings through read-only MCP calls: complete date windows, folder routing, transcripts and screenshots, one capture per meeting UUID, skipping on Acquired-folder membership. Use for Granola import or audit; `ki-acquire` owns the common contract, tools-ki owns CLI execution, and marking or retirement needs separate approval.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

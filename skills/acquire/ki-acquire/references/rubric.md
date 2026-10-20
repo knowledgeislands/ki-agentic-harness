@@ -25,21 +25,21 @@ The common contract takes local conventions from repository guidance and accepts
 
 → [standard](standards-acquisition.md)
 
-Policy judgments require source, request and destination evidence; mechanical success does not establish fidelity.
+Policy judgments require source and destination evidence; mechanical success does not establish fidelity.
 
 - **ACQUIRE-1 [J] — scope and coverage are explicit** — The authorised scope, provenance and chronology distinguish supplied text, a bounded digest and a complete source export. (standards-acquisition.md#scope-and-coverage)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does the evidence establish the authorised source scope and coverage without inventing dates or weakening source-specific completeness?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **ACQUIRE-2 [J] — identities and routes survive retries** — Verified retries reuse established identities and paths while amendments and unknown or conflicting routes remain explicit. (standards-acquisition.md#identities-and-routing)
+- **ACQUIRE-2 [J] — existing captures are found before writing** — An existing capture of the same source identity is found first; unchanged retries are no-ops and unknown or conflicting routes remain visible. (standards-acquisition.md#identity-and-routing)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Were existing identities and handling evidence checked before writing, with request/package relationships and unresolved routing preserved?
+  - _Review prompt:_ Was an existing capture of the source identity sought before writing, with changed scope linked or refreshed deliberately and unresolved routing left visible?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **ACQUIRE-3 [J] — promised material and originals are preserved** — The selected source contract governs fidelity, exact required originals, retained versions and explicit omissions. (standards-acquisition.md#preservation-and-originals)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Do source and asset evidence prove the promised coverage and required original bytes, with gaps and earlier commitments still visible?
+  - _Review prompt:_ Do source and asset evidence prove the promised coverage and required original bytes, with gaps still visible?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **ACQUIRE-4 [J] — completion follows destination verification** — Reports distinguish offered, received, committed and remotely verified material rather than overstating success. (standards-acquisition.md#verification-and-reporting)
@@ -47,9 +47,9 @@ Policy judgments require source, request and destination evidence; mechanical su
   - _Review prompt:_ Was the agreed destination read back and compared, and does the report match the actual verified scope and remaining gaps?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **ACQUIRE-5 [J] — handling proof and authority remain separate** — Handling evidence survives authorised package removal; capture does not grant receiver writes, provider mutation, source retirement or history compaction. (standards-acquisition.md#retained-state-and-authority)
+- **ACQUIRE-5 [J] — the capture is the record and authority stays separate** — No ledger, checkpoint or receipt accompanies the capture; dispatch is a Git move into `+/_ACQUIRED/`, and capture grants no provider mutation, reconciliation, retirement or history compaction. (standards-acquisition.md#scope, standards-acquisition.md#dispatch-and-authority)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does retained proof prevent reacquisition of handled sources, and did every publication or destructive operation stay within its own authority?
+  - _Review prompt:_ Is the capture package the only acquisition record, and did every dispatch, provider mutation or destructive operation stay within its own authority?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

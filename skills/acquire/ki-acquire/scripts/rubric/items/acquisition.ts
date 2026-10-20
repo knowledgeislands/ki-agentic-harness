@@ -6,7 +6,7 @@ export const ACQUIRE = {
   title: 'Faithful common acquisition',
   standard: 'standards-acquisition.md',
   description:
-    'Policy judgments require source, request and destination evidence; mechanical success does not establish fidelity.',
+    'Policy judgments require source and destination evidence; mechanical success does not establish fidelity.',
   selectContext: (context) => context,
   items: [
     {
@@ -21,12 +21,12 @@ export const ACQUIRE = {
     },
     {
       code: 'ACQUIRE-2',
-      title: 'identities and routes survive retries',
+      title: 'existing captures are found before writing',
       description:
-        'Verified retries reuse established identities and paths while amendments and unknown or conflicting routes remain explicit.',
-      sources: ['standards-acquisition.md#identities-and-routing'],
+        'An existing capture of the same source identity is found first; unchanged retries are no-ops and unknown or conflicting routes remain visible.',
+      sources: ['standards-acquisition.md#identity-and-routing'],
       judgment: judgment(
-        'Were existing identities and handling evidence checked before writing, with request/package relationships and unresolved routing preserved?'
+        'Was an existing capture of the source identity sought before writing, with changed scope linked or refreshed deliberately and unresolved routing left visible?'
       )
     },
     {
@@ -36,7 +36,7 @@ export const ACQUIRE = {
         'The selected source contract governs fidelity, exact required originals, retained versions and explicit omissions.',
       sources: ['standards-acquisition.md#preservation-and-originals'],
       judgment: judgment(
-        'Do source and asset evidence prove the promised coverage and required original bytes, with gaps and earlier commitments still visible?'
+        'Do source and asset evidence prove the promised coverage and required original bytes, with gaps still visible?'
       )
     },
     {
@@ -51,12 +51,12 @@ export const ACQUIRE = {
     },
     {
       code: 'ACQUIRE-5',
-      title: 'handling proof and authority remain separate',
+      title: 'the capture is the record and authority stays separate',
       description:
-        'Handling evidence survives authorised package removal; capture does not grant receiver writes, provider mutation, source retirement or history compaction.',
-      sources: ['standards-acquisition.md#retained-state-and-authority'],
+        'No ledger, checkpoint or receipt accompanies the capture; dispatch is a Git move into `+/_ACQUIRED/`, and capture grants no provider mutation, reconciliation, retirement or history compaction.',
+      sources: ['standards-acquisition.md#scope', 'standards-acquisition.md#dispatch-and-authority'],
       judgment: judgment(
-        'Does retained proof prevent reacquisition of handled sources, and did every publication or destructive operation stay within its own authority?'
+        'Is the capture package the only acquisition record, and did every dispatch, provider mutation or destructive operation stay within its own authority?'
       )
     }
   ]

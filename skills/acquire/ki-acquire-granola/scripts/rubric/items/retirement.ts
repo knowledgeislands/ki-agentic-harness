@@ -4,7 +4,7 @@ import type { GranolaRubricContext } from '../contexts/granola.ts'
 export const RETIRE = {
   code: 'RETIRE',
   title: 'Granola source retirement',
-  standard: 'standards-granola-retirement.md',
+  standard: 'standards-granola-acquisition.md',
   description: 'Separate release authority, complete evidence gate, manual fallback.',
   selectContext: (context) => context,
   items: [
@@ -13,7 +13,7 @@ export const RETIRE = {
       title: 'retirement separately authorised',
       description:
         'Reads and confirmed additive markers remain separate from retirement, which requires every evidence gate, a current exact manifest, and immediate human approval.',
-      sources: ['standards-granola-retirement.md#retirement-evidence-gate'],
+      sources: ['standards-granola-acquisition.md#source-retirement'],
       judgment: judgment(
         'Does the proposed retirement refuse every missing or stale gate and fall back to a manual manifest when no safe API exists?'
       )

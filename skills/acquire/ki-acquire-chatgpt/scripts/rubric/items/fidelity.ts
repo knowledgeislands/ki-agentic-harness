@@ -3,29 +3,19 @@ import type { ChatGPTRubricContext } from '../contexts/chatgpt.ts'
 
 export const FIDELITY = {
   code: 'FIDELITY',
-  title: 'ChatGPT conversation fidelity',
+  title: 'ChatGPT capture fidelity',
   standard: 'standards-chatgpt-acquisition.md',
-  description: 'Complete readable conversations, explicit omissions, immutable versions, and retained copies.',
+  description: 'Faithful digests with honest dates, exact attachments, and explicit omissions.',
   selectContext: (context) => context,
   items: [
     {
       code: 'FIDELITY-1',
-      title: 'complete conversations are acquired',
+      title: 'the digest is faithful',
       description:
-        'The acquisition unit is one complete conversation with ordered roles, returned messages, write-ups, assets, provenance, hashes, and explicit omissions rather than selected excerpts.',
-      sources: ['standards-chatgpt-acquisition.md#conversation-fidelity'],
+        'Reasoning, decisions, corrections, and uncertainty are preserved, dates are evidenced or unknown, and required attachments are exact originals or listed omissions.',
+      sources: ['standards-chatgpt-acquisition.md#fidelity'],
       judgment: judgment(
-        'Does each acquired version preserve all readable content and assets the source returned without fabricating missing fields or decoding opaque records?'
-      )
-    },
-    {
-      code: 'FIDELITY-2',
-      title: 'versions and missing sources are non-destructive',
-      description:
-        'Changed conversations create verified versions, unchanged repeats avoid payload churn, and source absence never deletes a retained receiver copy.',
-      sources: ['standards-chatgpt-acquisition.md#incremental-acquisition'],
-      judgment: judgment(
-        'Does repeated acquisition preserve prior versions, avoid unexplained churn, and report missing source identities without deleting retained evidence?'
+        'Does the capture keep source statements and interpretation distinct without fabricating dates, messages, or URLs, and preserve or list every attachment?'
       )
     }
   ]

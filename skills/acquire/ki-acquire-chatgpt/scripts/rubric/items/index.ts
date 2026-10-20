@@ -9,7 +9,7 @@ import { SOURCE } from './source.ts'
 export default {
   contract: 1,
   name: 'ki-acquire-chatgpt',
-  concern: 'Incremental and faithful ChatGPT project acquisition',
+  concern: 'Faithful ChatGPT conversation capture',
   createSession: createChatGPTSession,
   families: [SOURCE, ROUTING, FIDELITY, RETIRE, RUBRIC]
 } satisfies SkillRubricDefinition<ChatGPTRubricContext>

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "76b6e5c51cee6c8a7f34c683b497ea1dc1fad817"
     },
     "legend": {
       "mode": "auto",
@@ -30,25 +30,6 @@
   },
   "components": [
     {
-      "id": "ki-acquire-chatgpt",
-      "type": "database",
-      "label": "ki-acquire-chatgpt",
-      "sublabel": "acquire · opt-in",
-      "sources": [
-        {
-          "path": "skills/acquire/ki-acquire-chatgpt/SKILL.md"
-        }
-      ],
-      "pos": [
-        44,
-        64
-      ],
-      "size": [
-        208,
-        60
-      ]
-    },
-    {
       "id": "ki-binding",
       "type": "database",
       "label": "ki-binding",
@@ -60,7 +41,7 @@
       ],
       "pos": [
         44,
-        252
+        64
       ],
       "size": [
         208,
@@ -79,7 +60,7 @@
       ],
       "pos": [
         300,
-        376
+        188
       ],
       "size": [
         208,
@@ -98,7 +79,7 @@
       ],
       "pos": [
         44,
-        376
+        188
       ],
       "size": [
         208,
@@ -117,7 +98,7 @@
       ],
       "pos": [
         300,
-        252
+        64
       ],
       "size": [
         208,
@@ -136,7 +117,7 @@
       ],
       "pos": [
         876,
-        252
+        64
       ],
       "size": [
         208,
@@ -155,7 +136,7 @@
       ],
       "pos": [
         876,
-        376
+        188
       ],
       "size": [
         208,
@@ -174,7 +155,7 @@
       ],
       "pos": [
         588,
-        252
+        64
       ],
       "size": [
         208,
@@ -193,7 +174,7 @@
       ],
       "pos": [
         588,
-        376
+        188
       ],
       "size": [
         208,
@@ -212,7 +193,7 @@
       ],
       "pos": [
         588,
-        500
+        312
       ],
       "size": [
         208,
@@ -231,7 +212,7 @@
       ],
       "pos": [
         44,
-        688
+        500
       ],
       "size": [
         208,
@@ -240,14 +221,6 @@
     }
   ],
   "boundaries": [
-    {
-      "kind": "region",
-      "label": "Acquire · 1 skill",
-      "wraps": [
-        "ki-acquire-chatgpt"
-      ],
-      "pad": 32
-    },
     {
       "kind": "region",
       "label": "Repository types · Single-type repositories",
@@ -305,12 +278,6 @@
   ],
   "connections": [
     {
-      "id": "ki-acquire-chatgpt--ki-housekeeping-chatgpt",
-      "from": "ki-acquire-chatgpt",
-      "to": "ki-housekeeping-chatgpt",
-      "variant": "default"
-    },
-    {
       "id": "ki-binding-chatgpt--ki-binding",
       "from": "ki-binding-chatgpt",
       "to": "ki-binding",
@@ -361,7 +328,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "9 skills, 1 outside prerequisite, 1 outside dependent, 7 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "9 skills, 1 outside prerequisite, 0 outside dependents, 6 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
