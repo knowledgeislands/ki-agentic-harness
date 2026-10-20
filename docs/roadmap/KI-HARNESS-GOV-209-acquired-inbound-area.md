@@ -22,7 +22,7 @@ Each territory principal carries a `+/_ACQUIRED/` folder, with a scaffold README
 
 ## Context
 
-Kris decided on 18 October 2026, 01:40 BST, in the `knowledge-acquisition` thread, taking option a) on DISPATCH-PUSH and RETURN-ROUTE ("You have bypassed my finishes, you don't need to ask me"): the port may write, commit and push its own packet commits in `+/_ACQUIRED/` of each territory principal and nowhere else; an island hands back a packet that is not about it by marking it `returned <reason>` in its own `+/_ACQUIRED/`, and the port's next run reads the mark, takes the packet back as a new acquisition with source `return`, removes the packet folder it wrote after reading it back, and adds the reason to that territory's routing card. The options and reasoning are in the [dispatch options report (deleted)](https://github.com/knowledgeislands/ki-principal/blob/ae15e273a39a1cecb7ab7859230339c1359974d1/+/_THREADS/knowledge-acquisition/dispatch-options.report.md) and the [decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.knowledge-acquisition/decisions.md).
+Kris decided on 18 October 2026, 01:40 BST, in the `knowledge-acquisition` thread, taking option a) on DISPATCH-PUSH and RETURN-ROUTE ("You have bypassed my finishes, you don't need to ask me"): the port may write, commit and push its own packet commits in `+/_ACQUIRED/` of each territory principal and nowhere else; an island hands back a packet that is not about it by marking it `returned <reason>` in its own `+/_ACQUIRED/`, and the port's next run reads the mark, takes the packet back as a new acquisition with source `return`, removes the packet folder it wrote after reading it back, and adds the reason to that territory's routing card. The options and reasoning are in the [dispatch options report (deleted)](https://github.com/knowledgeislands/ki-principal/blob/ae15e273a39a1cecb7ab7859230339c1359974d1/+/_THREADS/knowledge-acquisition/dispatch-options.report.md) and the [decisions log (finished work)](https://github.com/knowledgeislands/ki-principal/blob/e5ae1ad3/+/_WORK/ki.knowledge-acquisition/decisions.md).
 
 Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist skills own (`_TRADES`, `_BATCHES`, `_CHECKPOINTS`), but has no inbound area for packets pushed by the acquire port and no receiver guidance for them.
 
@@ -33,7 +33,7 @@ Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist s
 
 ## Current state
 
-Captured only, at `next`, on Kris's direction. Not planned, not ready; no scaffold or guidance is written. The packet layout and the exact `returned <reason>` mark form are set by the acquire dispatch record and must be agreed with it before this record is planned.
+Captured only, at `next`, on Kris's direction. Not planned, not ready; no scaffold or guidance is written. This is a standalone harness record with no coordinating Project: the Knowledge acquisition work that captured it is finishing on Kris's word of 20 October 2026. The port side now lives in Acquire's [dispatch guide](/Users/krisbrown/workspaces/personal/acquire/docs/guides/operator/dispatch.md), under which a delivery creates a receiver's missing `+/_ACQUIRED/`, so the scaffold is not a precondition for dispatch. On 20 October Kris also dropped the return route, so planning revisits the `returned <reason>` disposition. The packet layout and the exact `returned <reason>` mark form are set by the acquire dispatch record and must be agreed with it before this record is planned.
 
 ## Steps
 
