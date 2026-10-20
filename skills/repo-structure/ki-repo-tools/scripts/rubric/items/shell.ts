@@ -178,13 +178,14 @@ const SHELL_HOOK: RubricItem<ShellToolsContext> = {
   code: 'SHELL-HOOK',
   title: 'Shell commit gate',
   description:
-    'Where a shell entrypoint repository without a `package.json` commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
+    'Where a shell entrypoint repository commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
   sources: SOURCE,
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Copy the canonical pre-commit from `assets/githooks/no-package/`, then rerun the audit.'
+      guidance:
+        'Copy the canonical pre-commit from the matching `assets/githooks/` package variant, then rerun the audit.'
     },
     audit: {
       phase: 'INSPECT',
@@ -197,11 +198,6 @@ const SHELL_HOOK: RubricItem<ShellToolsContext> = {
           return one({ status: 'NOT_APPLICABLE', message: `No committed ${HOOK}; ki-repo HOOK-1 owns its existence.` })
         if (context.hook === 'unsafe')
           return one({ status: 'VIOLATION', message: `${HOOK} is not a safe regular file.`, subject: HOOK })
-        if (context.packageJson)
-          return one({
-            status: 'NOT_APPLICABLE',
-            message: 'A package-backed hook carries the ki-engineering content; SCR-11 owns it.'
-          })
         const lines = nonComment(context.hookText)
         if (lines.some((line) => /\bbats\b/.test(line)))
           return one({

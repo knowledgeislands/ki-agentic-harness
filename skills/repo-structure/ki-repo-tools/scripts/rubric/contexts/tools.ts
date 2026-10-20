@@ -472,9 +472,9 @@ export const createToolsSession = ({
         : {})
     },
     assembled: {
-      applicable,
+      applicable: rootState === 'physical',
       inspect: () => {
-        assembledOutcomes ??= applicable ? inspectAssembled(root, configEvidence.values.assembled) : []
+        assembledOutcomes ??= inspectAssembled(root, configEvidence.values.assembled)
         return assembledOutcomes
       }
     },

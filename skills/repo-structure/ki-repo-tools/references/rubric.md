@@ -124,8 +124,8 @@ Shell-specific CI and test requirements.
   - _Remediation:_ diagnostic — Add or correct the Bats suite and CI evidence through the repository’s maintained test workflow.
 - **SHELL-FATAL [M] — Fatal Bats assertions** — Every `[[ ]]` or `!` assertion in a shell entrypoint repository’s `tests/*.bats` suite ends `|| false`, because under macOS Bash 3.2 such an assertion failing in the middle of a test does not fail it. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Append `|| false` to each reported assertion, then run the suite and correct any latent failure it exposes.
-- **SHELL-HOOK [M] — Shell commit gate** — Where a shell entrypoint repository without a `package.json` commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-tool-repositories.md)
-  - _Remediation:_ diagnostic — Copy the canonical pre-commit from `assets/githooks/no-package/`, then rerun the audit.
+- **SHELL-HOOK [M] — Shell commit gate** — Where a shell entrypoint repository commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-tool-repositories.md)
+  - _Remediation:_ diagnostic — Copy the canonical pre-commit from the matching `assets/githooks/` package variant, then rerun the audit.
 
 ## LANG — language capabilities
 
@@ -212,5 +212,5 @@ Optional digested installer and release-packaging profiles.
 
 Committed artefacts assembled from repository sources.
 
-- **ASSEMBLE-1 [M] — Assembled artefact matches its sources** — Each artefact declared under `[[skills.ki-repo-tools.assembled]]` passes its repository-owned check, run from the repository root without a shell, so a committed artefact never drifts from the sources it is assembled from. The finding is reported against the artefact and each source, so the focused staged audit in the commit gate catches a source staged without its reassembled artefact. Not applicable where nothing is declared. (standards-tool-repositories.md)
+- **ASSEMBLE-1 [M] — Assembled artefact matches its sources** — Each artefact declared under `[[skills.ki-repo-tools.assembled]]` passes its git-tracked executable check, contained in the repository after resolving symlinks and run without a shell under a 60-second timeout in a disposable checkout of the Git index. The declaration, checker, artefact and sources are read from that same index, so unstaged edits cannot conceal a staged mismatch. Findings cover the declaration, checker, artefact and each source for the focused staged audit. Not applicable where nothing is declared. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Reassemble the artefact with the repository’s own command, stage it with its sources, then rerun the audit.

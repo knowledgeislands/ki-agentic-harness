@@ -8,7 +8,7 @@ const ASSEMBLE_1: RubricItem<AssembledToolsContext> = {
   code: 'ASSEMBLE-1',
   title: 'Assembled artefact matches its sources',
   description:
-    'Each artefact declared under `[[skills.ki-repo-tools.assembled]]` passes its repository-owned check, run from the repository root without a shell, so a committed artefact never drifts from the sources it is assembled from. The finding is reported against the artefact and each source, so the focused staged audit in the commit gate catches a source staged without its reassembled artefact. Not applicable where nothing is declared.',
+    'Each artefact declared under `[[skills.ki-repo-tools.assembled]]` passes its git-tracked executable check, contained in the repository after resolving symlinks and run without a shell under a 60-second timeout in a disposable checkout of the Git index. The declaration, checker, artefact and sources are read from that same index, so unstaged edits cannot conceal a staged mismatch. Findings cover the declaration, checker, artefact and each source for the focused staged audit. Not applicable where nothing is declared.',
   sources: [STANDARD],
   mechanical: {
     level: 'FAIL',

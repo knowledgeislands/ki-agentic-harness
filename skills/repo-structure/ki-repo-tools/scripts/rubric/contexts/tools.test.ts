@@ -550,7 +550,12 @@ test('SHELL-HOOK requires the canonical shell checks and focused audit, and no b
   expect(status()?.message).toContain('the focused staged audit')
 
   writeFileSync(join(repository, 'package.json'), '{}\n')
-  expect(status()?.status).toBe('NOT_APPLICABLE')
+  expect(status()?.status).toBe('VIOLATION')
+  const packaged = readFileSync(join(import.meta.dir, '../../../assets/githooks/package/pre-commit'), 'utf8')
+  writeFileSync(hook, packaged)
+  expect(status()?.status).toBe('PASS')
+  writeFileSync(hook, `${packaged}bats tests/\n`)
+  expect(status()?.message).toContain('runs bats')
   rmSync(join(repository, 'package.json'))
 
   rmSync(hook)
@@ -578,25 +583,35 @@ test('ASSEMBLE-1 runs each declared repository check against the artefact and ev
     config,
     '[skills.ki-repo]\n[skills.ki-repo-tools]\nassembled = [{ artifact = "bin/demo", sources = ["src/a.sh"], check = ["bin/assemble-demo", "--check"] }]\n'
   )
+  const git = (...args: string[]) => execFileSync('git', ['-C', repository, ...args], { stdio: 'pipe' })
+  git('init', '-q')
+  git('add', '--', '.ki.toml', 'bin/assemble-demo', 'bin/demo', 'src/a.sh')
   expect(outcomes().map((outcome) => [outcome.status, outcome.subject])).toEqual([
     ['PASS', 'bin/demo'],
-    ['PASS', 'src/a.sh']
+    ['PASS', 'src/a.sh'],
+    ['PASS', '.ki.toml'],
+    ['PASS', 'bin/assemble-demo']
   ])
 
   writeFileSync(join(repository, 'src', 'a.sh'), '#!/bin/sh\necho changed\n')
-  expect(outcomes().map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
+  git('add', '--', 'src/a.sh')
+  expect(outcomes().map((outcome) => outcome.status)).toEqual(Array(4).fill('VIOLATION'))
+  writeFileSync(config, '[skills.ki-repo]\n')
+  expect(outcomes().map((outcome) => outcome.status)).toEqual(Array(4).fill('VIOLATION'))
 
   // The program must be the repository's own file, and the declaration is validated down.
   writeFileSync(
     config,
     '[skills.ki-repo]\n[skills.ki-repo-tools]\nassembled = [{ artifact = "bin/demo", sources = ["src/a.sh"], check = ["/bin/true"] }]\n'
   )
+  git('add', '--', '.ki.toml')
   expect(outcomes()[0]?.message).toContain('repository-relative path')
   writeFileSync(
     config,
     '[skills.ki-repo]\n[skills.ki-repo-tools]\nassembled = [{ artifact = "bin/demo", sources = ["src/a.sh"], check = ["bin/missing"] }]\n'
   )
-  expect(outcomes()[0]?.message).toContain('not a committed regular file')
+  git('add', '--', '.ki.toml')
+  expect(outcomes()[0]?.message).toContain('git-tracked executable regular file')
 })
 
 test('SHELL-FATAL warns on each Bats suite whose [[ ]] or ! assertions do not end || false', () => {

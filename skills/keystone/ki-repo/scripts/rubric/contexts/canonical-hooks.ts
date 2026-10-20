@@ -66,15 +66,11 @@ export const SHAPE_HOOKS: Readonly<Record<RepositoryShape, ShapeHooks>> = {
     lines: RUBY_LINES,
     audit: 'ki-repo-homebrew-tap'
   }),
-  'ki-repo-tools': {
-    owner: 'ki-repo-tools',
-    package: { ...NONE, audit: 'ki-repo-tools' },
-    'no-package': {
-      tools: ['shellcheck', 'bash', 'mandoc'],
-      lines: SHELL_LINES,
-      audit: 'ki-repo-tools'
-    }
-  },
+  'ki-repo-tools': both('ki-repo-tools', {
+    tools: ['shellcheck', 'bash', 'mandoc'],
+    lines: SHELL_LINES,
+    audit: 'ki-repo-tools'
+  }),
   'ki-repo-dotfiles-chezmoi': null
 }
 

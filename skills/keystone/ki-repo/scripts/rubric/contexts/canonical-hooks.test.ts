@@ -49,3 +49,13 @@ test('each shape skill publishes its canonical hooks as committed assets', () =>
     expect(readFileSync(path, 'utf8'), surface.path).toBe(surface.content)
   }
 })
+
+test('both tools package variants retain the shell checks after their common staged lint', () => {
+  for (const variant of HOOK_VARIANTS) {
+    const hook = canonicalHooks('ki-repo-tools', variant)?.['pre-commit'] ?? ''
+    for (const command of ['shellcheck', 'bash -n', 'mandoc -T lint', 'quiet_audit --skill ki-repo-tools'])
+      expect(hook, variant).toContain(command)
+    const lint = variant === 'package' ? 'syncpack format --check' : 'rumdl check --quiet'
+    expect(hook.indexOf(lint), variant).toBeLessThan(hook.indexOf('staged_shell()'))
+  }
+})
