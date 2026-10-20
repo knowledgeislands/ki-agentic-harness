@@ -24,6 +24,8 @@ When the owner must decide, use the runtime's structured ask-user-questions inte
 
 Require explicit human approval before writing `done` or `cancelled`. A standing human grant counts only when quoted with its source and it covers the exact record.
 
+An acceptance bundle is such a grant. Kris adopted ACCEPT-BUNDLE on 2026-10-20, "from Knowledge Islands perspective, I think we need to accept them ... happier for us to go through that ... definitely something that should happen as the first point of call in the state of play", so a coordinating work brings its `awaiting-review` records as one `ACCEPT` query, oldest first, each line naming the record, its outcome and any concern, under the `ki-coordination` [acceptance bundles](../../ki-coordination/references/standards-coordination.md#acceptance-bundles) rule. The owner's one-word answer, `ACCEPT` or `ACCEPT` with exceptions named, quoted in the work's decisions log with its source and the exact list of records it covers, approves delivery closure for each listed record that is not an exception. It never approves a cancellation, a record outside the list or a record whose review packet has changed since the list was written; those still need their own approval.
+
 The sole exception is an approved `ki-batch` authority whose payload and run binding are still valid and which explicitly grants delivery closure for this exact record. Batch authority never cancels a record. An authority that merely permits execution, delegation, reporting, or a different named record is not closure authority.
 
 ## 3. Record, retain, and reconcile completion
