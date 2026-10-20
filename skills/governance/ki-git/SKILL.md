@@ -13,7 +13,7 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 
 # Knowledge Islands Git conventions
 
-Ordinary interactive work uses the repository's primary checkout by default. An unattended coordinator or another explicit isolation requirement may instead select a linked worktree under a safe runtime-owned root. Committing, pushing, and integrating into the primary branch remain separate authority decisions.
+Ordinary interactive work uses the repository's primary checkout by default. An unattended coordinator or another explicit isolation requirement may instead select a linked worktree under a safe runtime-owned root. Committing, pushing, and integrating into the primary branch remain separate authority decisions, except that a background run may fast-forward its own worktree branch into the local primary checkout's `main` once its gates pass, under the standard's worktree-run self-integration.
 
 `ki-git` is the portable policy owner for Git and commit practice across Knowledge Islands repositories.
 
