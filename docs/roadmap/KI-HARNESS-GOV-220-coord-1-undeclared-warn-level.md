@@ -7,14 +7,14 @@ component: governance
 kind: deliver
 priority: medium
 size: s
-status: draft
+status: ready
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 transferred_from: ki-principal/Streams/Projects/tools-burndown.md
 created_at: 2026-10-19T07:16:09Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 ---
 
 # KI-HARNESS-GOV-220: COORD-1 Undeclared Warn Level
@@ -94,3 +94,7 @@ None.
 ### Shape of the fix
 
 Declaring `overrideLevels: ['WARN']` on COORD-1 is the smallest change and matches the validator's contract. Lowering COORD-1 to `WARN` would weaken its main check, that a Capital holds its territory work and no other repository does, which is meant to fail.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. It had no open decision, and the record is Ready.

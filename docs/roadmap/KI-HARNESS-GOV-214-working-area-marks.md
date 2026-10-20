@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: m
-status: draft
+status: ready
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:30Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 ---
 
 # KI-HARNESS-GOV-214: Working-Area Marks
@@ -47,8 +47,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Steps
 
-- [ ] Settle the two field questions left to planning (see Dependencies / blocks).
-- [ ] Add a Working-area marks rule to the background-run standard that states the field names in one place: `work`, then `run` and `agent` for a background run or `session` for an interactive one, then the time field. It also names the Markdown front-matter form and the `mark.toml` sidecar form for a folder of non-Markdown output, and says that coordinating work and interactive sessions mark their own working files the same way.
+- [ ] Add a Working-area marks rule to the background-run standard that states the field names in one place: `work`, then `run` and `agent` for a background run or `session` for an interactive one, then `written_at`. It also names the Markdown front-matter form and the `mark.toml` sidecar form for a folder of non-Markdown output, and says that coordinating work and interactive sessions mark their own working files the same way.
 - [ ] Add a `ki-delegation` judgment criterion that a run's working-area files carry the mark, and regenerate its `rubric.md`.
 - [ ] In the diagrams standard's Regeneration and freshness section, name the `mark.toml` sidecar at the root of `+/diagrams/<slug>/`, its fields by reference to the background-run rule, and that neither Archify's `.delivery.json` nor the committed `.receipt.json` carries the mark.
 - [ ] Make `scripts/build-html.ts` write `+/diagrams/<slug>/mark.toml` after a successful finalize, reading `work`, `run` and `agent` from `KI_AGENT_RUN` and the run packet where present and writing `session` otherwise, with a boundary test for both.
@@ -72,10 +71,10 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Dependencies / blocks
 
-Decisions needed before Ready, each with a recommendation:
+Decided on 20 October 2026 under PLANNED-READY a), each as recommended:
 
-- Time field name: recommended, `written_at`, as the hand-written sidecars used, matching the field style of other KI timestamps such as `created_at`.
-- `rebuilt_from`: recommended, drop it; the manifest's `last_checked` and the committed receipt already say what a diagram was built from.
+- Time field name: `written_at`, as the hand-written sidecars used, matching the field style of other KI timestamps such as `created_at`.
+- `rebuilt_from`: dropped; the manifest's `last_checked` and the committed receipt already say what a diagram was built from.
 
 [KI-HARNESS-GOV-205](KI-HARNESS-GOV-205-static-light-diagram-export.md) and [KI-HARNESS-GOV-221](KI-HARNESS-GOV-221-ki-diagrams-mermaid-fence-warning.md) edit the same diagrams standard and rubric; deliver them one after another.
 
@@ -110,3 +109,7 @@ Check the two hand-written `mark.toml` files against the settled names below; ad
 ### Field names, settled for now
 
 Kris settled the names on 18 October 2026 in the ways-of-working decisions log, 17:59 BST owner answers: "Mark feels, let's go with it for now" (MARK-FIELDS a), "for now"). The first field is `work`, the work id the work model uses, in place of the hand-written `thread`; a background run writes `run` and `agent`, and an interactive session writes `session` instead; a folder's sidecar stays TOML, `mark.toml`. The two hand-written `mark.toml` files under `+/diagrams/` move from `thread` to `work` when the rule lands. The time field's name and whether `rebuilt_from` stays are left to planning. Because the answer is "for now", the standard should state the names in one place so a later change touches one rule.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The two field decisions are recorded under Dependencies / blocks, and the record is Ready.

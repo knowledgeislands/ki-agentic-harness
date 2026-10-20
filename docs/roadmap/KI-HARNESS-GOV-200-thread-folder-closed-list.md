@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: m
-status: draft
+status: ready
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-15T22:55:39Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 ---
 
 # Thread Folder Closed List
@@ -32,7 +32,7 @@ This record was issued as KI-HARNESS-GOV-195, which the Granola record [KI-HARNE
 
 The work model, [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) and the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md), replaces the thread folder `+/_THREADS/<run>/` with the work folder `+/_WORK/<id>/`, and [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) writes it into the harness. Its closed list grows to `work.md`, `decisions.md`, `<name>.report.md`, `briefs/<run>.md` and `design/`, under the `ki-coordination` standard's Pruning the work folder, and briefs move from the state folder into `briefs/`. COORD-9 now checks the work folder against that list. THREADS-CONTENT's "briefs live in the state folder" is superseded by that move; its closed-list principle stands.
 
-Kris Brown made `ki-work-folder` the canonical specification of the work folder on 18 October 2026, taking WORK-FOLDER-OWNER a), read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract", and took WORK-FOLDER-CHECKS a) the same turn, "Yep, and the workflow checks we can go with", read back as "audit checks into KI-HARNESS-GOV-200; one new tools-ki record for the close-gate parse, unnumbered `decide`, launch refusal and `ki work message`/`prune`". The closed list, entry points, tidy rules, review area and Messages line shape now sit in the `ki-work-folder` [work-folder standard](/Users/krisbrown/workspaces/knowledge-islands/ki-agentic-harness/skills/governance/ki-work-folder/references/standards-work-folder.md#the-work-folder), so the checks belong to that skill's rubric, and COORD-9 moves there from `ki-coordination`.
+Kris Brown made `ki-work-folder` the canonical specification of the work folder on 18 October 2026, taking WORK-FOLDER-OWNER a), read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract", and took WORK-FOLDER-CHECKS a) the same turn, "Yep, and the workflow checks we can go with", read back as "audit checks into KI-HARNESS-GOV-200; one new tools-ki record for the close-gate parse, unnumbered `decide`, launch refusal and `ki work message`/`prune`". The closed list, entry points, tidy rules, review area and Messages line shape now sit in the `ki-work-folder` [work-folder standard](../../skills/governance/ki-work-package/references/standards-work-package.md#the-work-folder), now the `ki-work-package` work-package standard,, so the checks belong to that skill's rubric, and COORD-9 moves there from `ki-coordination`.
 
 ## Boundary
 
@@ -56,7 +56,7 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Steps
 
-- [ ] Settle the temporary home with the owner (see Dependencies / blocks) and make the background-run standard's temporary-home sentence match it.
+- [ ] Make the background-run standard's temporary-home sentence name the launcher's per-run directory, `$TMPDIR/ki-agents/<run>/<name>/`, unless [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md) has already done so.
 - [ ] In the background-run standard's run packet section, link the `ki-work-package` closed list rather than restating it, and say that a run writes nothing into `+/_WORK/<id>/` beyond its report.
 - [ ] Add one footer line to `skills/governance/ki-delegation/assets/run-prompt.md` naming the temporary home and the no-other-writes rule, in the same words as the launcher footer.
 - [ ] Add a work-folder family to the `ki-work-package` rubric: a FAIL item for a file kind outside the closed list, `design/` included; WARN items for an answered report, a brief whose report has been received, a finished work's folder outliving its closing mark, a malformed Messages line, an unmatched `+/_WORK_REVIEW/` folder or index line, more than eight open queries, and a decisions-log heading the close gate cannot parse.
@@ -81,8 +81,8 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Dependencies / blocks
 
-- Decision needed before Ready: which temporary home stands, the launcher's out-of-repository directory or the standard's `<primary checkout>/tmp/<run>/<name>/`.
-- Decision needed before Ready: whether the closed-list item lands as FAIL straight away, as WORK-FOLDER-CHECKS says, or as WARN until the Capitals' census is clean.
+- Decided: the launcher's out-of-repository per-run directory is the temporary home, under HARNESS-TRIAGE a) of 20 October 2026, which also adopted [KI-HARNESS-GOV-196](KI-HARNESS-GOV-196-scratch-output-in-temp.md) into Now to amend the standard; whichever of the two lands first makes the edit.
+- Decided: the closed-list item lands as FAIL, as WORK-FOLDER-CHECKS a) set, after the Capitals' census in the last Step has recorded each stray file as a message to its owning work.
 - The decisions-log heading check follows [KI-TOOL-KI-CLI-152](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-152-work-folder-housekeeping-commands.md); if it has not landed, that one WARN item waits and the rest proceed.
 
 ## Documentation impact
@@ -105,4 +105,8 @@ None beyond this record; COORD-12's promotion is [KI-HARNESS-GOV-215](KI-HARNESS
 
 ## Discussion
 
-Capture only, on Kris Brown's explicit request in THREADS-TELL; adoption, priority and plan belong to this repository. Built in the work-folder rename run of 18 October only as far as the standards: the checks are recorded here and not built, because a new FAIL would fail every territory whose work folders still hold stray files until each is tidied, and because the decision-heading check must match the heading form the tools-ki close-gate record has yet to settle. Kris named THREADS-REGRESSION on 18 October 2026, in the ways-of-working decisions log under "owner answers, recap batch", after `ki agent` copied a chezmoi run report into `+/_THREADS/chezmoi/` in Knowledge Islands Principal at 09:19 BST; the launcher side is in [KI-TOOL-KI-CLI-150](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-150-work-folder-entry-points.md). The STRUCTURE-1 failure fires only where `+/_WORK/` exists, so territories still in the tolerance window keep their warnings; today only Knowledge Islands Principal holds `+/_WORK/`, and it holds neither retired folder. Still open from that run: `ki-recap`'s `checkpoint <thread>` argument and its `checkpoint-handoff.ts` model keep the checkpoint names, for the work-model migration's phase 5 to rename. Questions for planning: whether COORD-9 should move from a warning to a failure once existing thread folders are cleared; whether an inbox file joins the closed list once the inbox moves into the thread folder, as the background-run standard anticipates; and whether this record and [KI-HARNESS-GOV-175 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-175-delegation-run-events.md) share one `run-prompt.md` edit.
+Capture only, on Kris Brown's explicit request in THREADS-TELL; adoption, priority and plan belong to this repository. Built in the work-folder rename run of 18 October only as far as the standards: the checks are recorded here and not built, because a new FAIL would fail every territory whose work folders still hold stray files until each is tidied, and because the decision-heading check must match the heading form the tools-ki close-gate record has yet to settle. Kris named THREADS-REGRESSION on 18 October 2026, in the ways-of-working decisions log under "owner answers, recap batch", after `ki agent` copied a chezmoi run report into `+/_THREADS/chezmoi/` in Knowledge Islands Principal at 09:19 BST; the launcher side is in [KI-TOOL-KI-CLI-150 (pruned)](https://github.com/knowledgeislands/tools-ki/blob/4f8d97d2/docs/roadmap/KI-TOOL-KI-CLI-150-work-folder-entry-points.md). The STRUCTURE-1 failure fires only where `+/_WORK/` exists, so territories still in the tolerance window keep their warnings; today only Knowledge Islands Principal holds `+/_WORK/`, and it holds neither retired folder. Still open from that run: `ki-recap`'s `checkpoint <thread>` argument and its `checkpoint-handoff.ts` model keep the checkpoint names, for the work-model migration's phase 5 to rename. Questions for planning: whether COORD-9 should move from a warning to a failure once existing thread folders are cleared; whether an inbox file joins the closed list once the inbox moves into the thread folder, as the background-run standard anticipates; and whether this record and [KI-HARNESS-GOV-175 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/87da1b26/docs/roadmap/KI-HARNESS-GOV-175-delegation-run-events.md) share one `run-prompt.md` edit.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The two open decisions are recorded under Dependencies / blocks, and the record is Ready.

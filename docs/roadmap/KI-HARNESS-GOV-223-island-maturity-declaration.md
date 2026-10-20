@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T18:51:40Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 transferred_from: ki-principal ki.observatory CONDITION-TOML, 2026-10-19
 ---
 
@@ -81,11 +81,11 @@ Checked on 20 October 2026 at `30cbbd1d`. No `ki-repo` standard, rubric item or 
 
 Blocks the tools-ki work that exposes each island's declared maturity and its audit-derived health through `ki`, since that reader needs the key and scale this record defines.
 
-Decisions needed before Ready, each with a recommendation:
+Decided on 20 October 2026 under PLANNED-READY a), as recommended, except where marked open:
 
-- Key home: recommended, `maturity` in `[skills.ki-repo]`, because `[repo]` holds only harness resolution and `ki-repo` owns the island's identity keys; the alternative is `[repo]`.
-- Retired islands: recommended, no level of their own; an archived repository is read from its GitHub archived state and audit health.
-- Decline and ruin: recommended, decline for open warnings older than a tolerance the standard names, and ruin for failing criteria or an audit that cannot run.
+- Key home: `maturity` in `[skills.ki-repo]`, because `[repo]` holds only harness resolution and `ki-repo` owns the island's identity keys; the alternative is `[repo]`.
+- Retired islands: no level of their own; an archived repository is read from its GitHub archived state and audit health.
+- Decline and ruin: ruin for failing criteria or an audit that cannot run; decline for open warnings older than a tolerance the standard names. Still open: the tolerance has no value, and `ki repo audit` keeps no history from which a warning's age could be read, so the decline rule needs an owner answer before Ready.
 
 The `MATURITY` family name assumes no other `ki-repo` family uses it; `scripts/rubric/items/index.ts` confirms the codes in use.
 
@@ -112,3 +112,7 @@ The Observatory draws both signals in apps-observatory.local, in [KI-OBSERVA-BCN
 ## Discussion
 
 Open for planning: whether the key sits in `[skills.ki-repo]` or `[repo]`; whether an archived or retired island needs a level of its own or is read from audit health alone; and which `ki repo audit` outcome maps to decline and which to ruin, for example decline for open warnings past a tolerance and ruin for failing criteria or an audit that cannot run. The harness owns priority and design.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. Two of the three decisions are recorded under Dependencies / blocks. The record stays a draft: the decline rule needs a tolerance and a source for a warning's age, which no listed answer gives.

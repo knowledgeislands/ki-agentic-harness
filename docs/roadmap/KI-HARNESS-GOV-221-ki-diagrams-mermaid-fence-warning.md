@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: s
-status: draft
+status: ready
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-19T07:17:31Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 ---
 
 # KI-HARNESS-GOV-221: ki-diagrams Mermaid Fence Warning
@@ -40,11 +40,10 @@ Checked on 20 October 2026 at `30cbbd1d`. The `ki-diagrams` rubric has DIAG-1 to
 
 ## Steps
 
-- [ ] Settle the three open questions under Dependencies / blocks with the owner.
 - [ ] Add a context reader that lists tracked Markdown with `git ls-files '*.md'` and records each line opening a fenced block whose info string is `mermaid`, backtick or tilde, ignoring fences nested in a longer fence.
 - [ ] Add DIAG-7, mechanical at WARN, one violation per fence naming the file and line, with remediation pointing at Mode REFRESH or an owner decision.
-- [ ] If a kept-diagram record is wanted, add its form to the standard and have DIAG-7 pass a fence that carries it.
-- [ ] Add context and item tests: no fence passes, a fence warns with its file and line, an untracked file is ignored, a nested example fence is ignored, and a kept fence passes if the form exists.
+- [ ] Add the keep marker, `<!-- ki-diagrams: keep mermaid -->` on the line before the fence, to the standard, and have DIAG-7 pass a fence that carries it.
+- [ ] Add context and item tests: no fence passes, a fence warns with its file and line, an untracked file is ignored, a nested example fence is ignored, and a fence with the keep marker passes.
 - [ ] Add a sentence to the standard's The tool: Archify section saying the audit warns on each remaining Mermaid fence, and regenerate `references/rubric.md` and the remediation-inventory counts.
 
 ## Files touched
@@ -62,11 +61,11 @@ Checked on 20 October 2026 at `30cbbd1d`. The `ki-diagrams` rubric has DIAG-1 to
 
 ## Dependencies / blocks
 
-Decisions needed before Ready, each with a recommendation:
+Decided on 20 October 2026 under PLANNED-READY a), each as recommended:
 
-- Reach: recommended, the item applies where `ki-diagrams` is declared, the normal rubric rule, and the migration hand-offs ask each owner to declare the skill; the alternative, a scan in every audited repository, would need a `ki-repo` item instead.
-- Scan scope: recommended, tracked Markdown only, where the survey found every fence.
-- Kept diagrams: recommended, a marker comment on the line before the fence, `<!-- ki-diagrams: keep mermaid -->`, so the decision sits beside the diagram; the alternative is a manifest table, which the manifest's slug-only shape does not fit.
+- Reach: the item applies where `ki-diagrams` is declared, the normal rubric rule, and the migration hand-offs ask each owner to declare the skill; the alternative, a scan in every audited repository, would need a `ki-repo` item instead.
+- Scan scope: tracked Markdown only, where the survey found every fence.
+- Kept diagrams: a marker comment on the line before the fence, `<!-- ki-diagrams: keep mermaid -->`, so the decision sits beside the diagram; the alternative is a manifest table, which the manifest's slug-only shape does not fit.
 
 [KI-HARNESS-GOV-205](KI-HARNESS-GOV-205-static-light-diagram-export.md) edits the same standard section; deliver one after the other.
 
@@ -91,3 +90,7 @@ None; conversion in other repositories is their owners' work under the migration
 ## Discussion
 
 Questions for planning: whether the item applies to every repository that runs the audit or only to those adopting `ki-diagrams`; whether the scan reads tracked Markdown only or also other text files; and whether a kept diagram is recorded as a manifest exclusion or a marker beside the fence.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The three decisions are recorded under Dependencies / blocks, and the record is Ready.

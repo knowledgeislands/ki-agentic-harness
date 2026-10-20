@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: l
-status: draft
+status: ready
 horizon: now
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T22:06:58Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 ---
 
 # KI-HARNESS-GOV-205: Static Light Diagram Export
@@ -51,12 +51,11 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Steps
 
-- [ ] Settle the open questions under Dependencies / blocks with the owner.
 - [ ] Add an export-form option to `export-svg.ts`, recommended `--form dual|light|ki`, defaulting to `dual`. The `light` and `ki` forms switch the viewer to the chosen theme in Chrome, resolve every computed fill, stroke and text colour into plain attributes, replace embedded fonts with the system monospace stack, and strip the stylesheet, custom properties and font data.
 - [ ] Keep the existing gates for the flattened forms: Archify's canonical receipt before flattening, and the external-reference refusal after it. Add a check that the flattened SVG holds no `<style>`, `var(` or `@font-face`.
-- [ ] Bring the needed `ki-design` token values into `ki-diagrams` by the route the owner chooses. The `ki` form maps the night and day palettes and `font.mono` to the attributes it writes.
-- [ ] Pass the form through `build-html.ts --svg`, and record it in the manifest if the owner wants a field.
-- [ ] Add tests: argument parsing, a flattened fixture with no stylesheet, variables or font data, and the drift check if tokens are vendored.
+- [ ] Bring the needed `ki-design` token values into `ki-diagrams` as a vendored copy recording its pinned `ki-design` revision, with a drift test against that revision. The `ki` form maps the night and day palettes and `font.mono` to the attributes it writes.
+- [ ] Pass the form through `build-html.ts --svg`, and record it in the manifest's optional `svg_form` field, absent meaning `dual`.
+- [ ] Add tests: argument parsing, a flattened fixture with no stylesheet, variables or font data, and the token drift check.
 - [ ] Edit the diagrams standard: its opening scope to cover knowledge-base islands with a short island-diagrams section; The tool: Archify for D2 and Mermaid as proposed under Discussion; Committed forms to name the new forms; and The SVG exporter for the option.
 - [ ] Add the `ki-work-design` rule that a design report carries its diagrams as inline text diagrams or exported static SVGs committed beside the subject's Project note.
 - [ ] Re-trace `thread-model` at HEAD under its `regenerate` instruction, rebuild and re-export it, and advance its `last_checked`.
@@ -78,11 +77,11 @@ Checked on 20 October 2026 at `30cbbd1d`.
 
 ## Dependencies / blocks
 
-Decisions needed before Ready, each with a recommendation:
+Decided on 20 October 2026 under PLANNED-READY a), each as recommended:
 
-- Token source: recommended, a vendored copy of the needed values in `ki-diagrams` with a drift test against a pinned `ki-design` revision, because the package is private and unpublished; the alternative is a pinned Git dependency.
-- Default form: recommended, `dual` stays the default for living diagrams, and design reports use `ki` or `light`; the alternative makes `ki` the default everywhere.
-- Manifest field: recommended, an optional `svg_form` field, absent meaning `dual`, so a reader knows which form is committed.
+- Token source: a vendored copy of the needed values in `ki-diagrams` with a drift test against a pinned `ki-design` revision, because the package is private and unpublished; the alternative is a pinned Git dependency.
+- Default form: `dual` stays the default for living diagrams, and design reports use `ki` or `light`; the alternative makes `ki` the default everywhere.
+- Manifest field: an optional `svg_form` field, absent meaning `dual`, so a reader knows which form is committed.
 
 [KI-HARNESS-GOV-221](KI-HARNESS-GOV-221-ki-diagrams-mermaid-fence-warning.md) and [KI-HARNESS-GOV-214](KI-HARNESS-GOV-214-working-area-marks.md) edit the same standard; deliver them one after another. The size, `l`, may warrant splitting the KI-theme form from the light form at Ready.
 
@@ -113,3 +112,7 @@ The 19 October decision leaves the `ki-diagrams` standard narrower than the deci
 - `references/standards-diagrams.md`, opening paragraph: "This standard defines how a Knowledge Islands repository keeps living diagrams" becomes "This standard defines how a Knowledge Islands repository or knowledge-base island keeps diagrams", with a short section on island diagrams, which explain a model or process rather than code and so cite the notes they draw from in place of traced source files.
 - The same file, [The tool: Archify](../../skills/governance/ki-diagrams/references/standards-diagrams.md#the-tool-archify): "D2 is the best addition only for maps generated mechanically from code" becomes "D2 is allowed only for maps generated mechanically from code, such as a route manifest or a dependency graph, styled from the `ki-design` tokens; it has no interactive HTML", and "Mermaid and Graphviz were excluded" gains "Mermaid diagrams found in a repository are replaced by Archify diagrams wherever Archify can carry them, and the rest are flagged to the owner".
 - The same file, [Committed forms](../../skills/governance/ki-diagrams/references/standards-diagrams.md#committed-forms): the SVG form names the KI-theme export once it exists, and whether it replaces the dual-theme default is a planning question for this record.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. The three decisions are recorded under Dependencies / blocks and the record is Ready at size `l`; the KI-theme form was not split out, since a split would create a new record, which CAPTURE-GATE leaves to the owning coordinator.

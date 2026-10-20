@@ -7,12 +7,14 @@ purpose: governance
 project: ways-of-working
 component: change-management
 horizon: next
-status: draft
+priority: medium
+size: s
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T08:55:31Z
-updated_at: 2026-10-20T01:44:15Z
+updated_at: 2026-10-20T02:42:00Z
 ---
 
 # KI-HARNESS-GOV-215: COORD-12 to FAIL
@@ -82,3 +84,7 @@ The release condition is observable: `ki repo audit --skill ki-coordination` acr
 ### Released, 20 October 2026
 
 The hold's condition was checked on 20 October 2026 with `ki repo audit --skill ki-coordination --reporter-levels all` in all eight territory Capitals, `ki-principal`, `er-principal`, `hnr-principal`, `legal-principal`, `personal-principal`, `si-principal`, `tmx-principal` and `va-principal`: none reports a COORD-12 warning, and in `ki-principal` COORD-12 passes over 102 work reports. The record is released to Next under the lane-triage run of the ways-of-working work, as roadmap-census-2 asked; the remediation inventory test's counts are re-read at planning.
+
+### Planning answers, 20 October 2026
+
+Kris Brown answered PLANNED-READY on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "the old do need to move to Ready if possible, and we need to move them", taken as a): take the listed answers and mark each record Ready where the readiness checks pass. It had no open decision; `priority: medium` and `size: s` are set, and the record is Ready at Next.
