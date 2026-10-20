@@ -7,13 +7,12 @@ purpose: governance
 project: ways-of-working
 component: governance
 size: m
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 72ad16866f1f3b4fbae2cac0f7c1ce09395465d2
 created_at: 2026-10-16T21:28:02Z
-updated_at: 2026-10-20T06:44:00Z
+updated_at: 2026-10-20T06:59:01Z
 ---
 
 # KI-HARNESS-GOV-199: Thread Identity and Role
@@ -54,9 +53,11 @@ This record owns the harness phases. [KI-TOOL-KI-CLI-145](/Users/krisbrown/works
 
 ## Current state
 
+Accepted on 2026-10-20 after independent review of the narrowed boundary; see Done and the acceptance findings under Discussion. The following paragraph retains the delivery history.
+
 The work-model write-in under [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) supersedes the `role` field, the role-reading COORD-10 and Thread naming, as Context sets out; old checkpoints keep `role` through the migration's tolerance window. The steps below are read under the work model: the identity section names the work file and work id, and the role gating reads `level`.
 
-The Thread naming section has landed in the `ki-coordination` standard, with pointers from `ki-work-folder` and `ki-delegation`, documenting the model only. Phase 1's role field has landed: the `ki-work-folder` Thread role section with the optional `role` field, its three values, the conversational default and the `[skills.ki-coordination]` rule, checked by RECORD-2 and the new RECORD-4; one paragraph in the `ki-coordination` Thread types section; and the new COORD-10 rubric item, at WARN while existing coordinating checkpoints migrate through their own updates. The rest of Phase 1 has landed under the work model: the `ki-work-folder` Work identity and native sessions section, with a `binding` row in the `ki-coordination` Glossary and a pointer from the `ki-delegation` state-folder table; the Bootstrap check of the work file's `level` against the opener; and the hook-line and output-style scope sentences, reworded to read the work file's level and regenerated. Report forms and Re-anchoring were already gated to coordinating work by KI-HARNESS-GOV-210. Awaiting review since 2026-10-20, narrowed under Kris's "prepare the five" (SWEEP-ACCEPT-WAYS-OF-WORKING a), 20 October): the re-anchoring style re-read, folded in under STYLE-STALE on 18 October, goes to `ki.ways-of-working` as the STYLE-STALE line, and Phase 3 and the pilots, which wait on [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md), as the IDENTITY-PHASE3 line.
+The Thread naming section has landed in the `ki-coordination` standard, with pointers from `ki-work-folder` and `ki-delegation`, documenting the model only. Phase 1's role field has landed: the `ki-work-folder` Thread role section with the optional `role` field, its three values, the conversational default and the `[skills.ki-coordination]` rule, checked by RECORD-2 and the new RECORD-4; one paragraph in the `ki-coordination` Thread types section; and the new COORD-10 rubric item, at WARN while existing coordinating checkpoints migrate through their own updates. The rest of Phase 1 has landed under the work model: the `ki-work-folder` Work identity and native sessions section, with a `binding` row in the `ki-coordination` Glossary and a pointer from the `ki-delegation` state-folder table; the Bootstrap check of the work file's `level` against the opener; and the hook-line and output-style scope sentences, reworded to read the work file's level and regenerated. Report forms and Re-anchoring were already gated to coordinating work by KI-HARNESS-GOV-210. Previously awaiting review since 2026-10-20, narrowed under Kris's "prepare the five" (SWEEP-ACCEPT-WAYS-OF-WORKING a), 20 October): the re-anchoring style re-read, folded in under STYLE-STALE on 18 October, goes to `ki.ways-of-working` as the STYLE-STALE line, and Phase 3 and the pilots, which wait on [KI-TOOL-KI-CLI-145](/Users/krisbrown/workspaces/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-145-thread-session-bindings-role.md) and [KB-DOTFILES-UE-096](/Users/krisbrown/.local/share/chezmoi/docs/roadmap/KB-DOTFILES-UE-096-thread-identity-hook-registration.md), as the IDENTITY-PHASE3 line.
 
 ## Steps
 
@@ -140,7 +141,19 @@ The goal's portable declaration exists: the work file's `id` and `level`, docume
 
 Phase 1 of thread identity landed and was rewritten under the work model, so identity is now the work file's `id` and `level`. The style re-read, the hook gate and the pilots leave as two `messages.md` lines in `ki.ways-of-working`. Learning route: a record whose remainder waits on another repository's tooling should be narrowed at the hand-off, not held open.
 
+## Done
+
+Accepted 2026-10-20 by Kris, exercised by the independent accept-wow reviewer under his overnight grant, on the review packet above.
+
 ## Discussion
+
+### Independent acceptance review - 20 October 2026
+
+Acceptance authority: Kris, 20 October, "if you can quickly now accept ... accepting new things that are waiting with you and pruning those ... Same for ... the ways of working", as supplied in this run's brief and read back for this exact record and KI-PRINCIPAL-ECO-013 in the [Ways of working decisions log](</Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.ways-of-working/decisions.md>), including its 07:50 receipt. The grant covers acceptance on an independent pass; this run retains both records and commits locally only.
+
+Verdict: pass on the narrowed Phase 1 boundary. The reviewer did not deliver this work. At source `dacdcc337ccb94cc48dd3301e9d5a3871282b934`, the six-part packet and all checked Steps agree with the identity section, binding pointers, Work naming, Bootstrap level check and generated hook/style scope. Delivery commits `d6b705dc`, `655350a8`, `0ae39eac` and `73c227f2` are ancestors of the reviewed candidate. STYLE-STALE has since landed in that candidate; the decisions log carries IDENTITY-PHASE3 into the coordinator's next steps. The excluded native-session pilots remain outside this acceptance, and no owner-only or attended check remains inside its narrowed boundary.
+
+Fresh gates in an isolated worktree home after `ki repo repair`: `bun run test` passes 1372 tests; `bunx --no-install tsc --noEmit` passes; `ki-work-package`, `ki-coordination`, `ki-skills`, `ki-work-roadmap`, `ki-authoring`, `ki-delegation` and `ki-repo-harness` audits all have zero failures. The primary checkout's coordinator-hook test guard also passes. Audit warnings remain visible: two coordination warnings, five roadmap warnings and seventeen harness warnings; they do not invalidate this record's packet or delivered contract. No source, runtime or provider change was made by this review.
 
 ### Narrowing
 
