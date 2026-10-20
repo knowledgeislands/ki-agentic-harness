@@ -70,6 +70,8 @@ Select one of four approaches from repository policy, the requested review bound
 
 Do not invent a branch, pull-request, or worktree requirement merely because several interactive actors may modify one working copy. Use worktrees when concurrent deliveries require separate branches or isolated working files, or when an unattended coordinator must not mutate a human's checkout; do not keep independent branch work in one working copy merely because separate indexes are possible.
 
+A repository whose skills, hooks or rubrics run in other repositories' gates, such as the KI Agentic Harness, takes every edit off its shared primary checkout: in a linked worktree on its own branch, integrated into `main` by fast-forward only once its tests and audit pass, so that the `main` other repositories load stays green. Kris agreed GREEN-MAIN as recommended on 2026-10-20, "GREEN-MAIN - agreed as recommended", and the `ki-delegation` [green baseline](../../ki-delegation/references/standards-background-runs.md#coordination) rule stops the line when that `main` is red.
+
 ### Local integration write boundary
 
 Identify an integration destination by repository, host, designated checkout and branch, not by the branch name alone. For laptop-local operation, successful delivery places the reviewed result in the human's primary checkout on local `main` and in its working files. Verify both; advancing a ref in another clone or publishing a remote ref is a different action. A remote worker's own `main` remains that worker's local branch unless the repository explicitly designates it as the delivery destination.

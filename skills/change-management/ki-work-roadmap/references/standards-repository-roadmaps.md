@@ -119,7 +119,7 @@ Continuous practices belong in a standard or orientation file, not among finite 
 
 ### Triage
 
-A substantive prospective outcome, concern, dependency, or decision that passes the [graduation test](#ideas-and-graduation) may be captured as `status: triage` without prior approval after checking for an existing owner. Creating one does not adopt, prioritise, plan, implement, or accept the work. A human must explicitly approve every exit from triage: adoption to `draft`, or cancellation. Approval does not bypass the terminal-before-prune rule, and triage has no direct discard path.
+A substantive prospective outcome, concern, dependency, or decision that passes the [graduation test](#ideas-and-graduation) may be captured as `status: triage` without prior approval after checking for an existing owner, within the capture gate the `ki-next` [capture rule](../../ki-next/references/standards-next-work.md#capture-substantive-prospective-work) sets: only a blocker, a defect seen failing or an owner-requested item, and never by a background run. Creating one does not adopt, prioritise, plan, implement, or accept the work. A human must explicitly approve every exit from triage: adoption to `draft`, or cancellation. Approval does not bypass the terminal-before-prune rule, and triage has no direct discard path.
 
 ## Lifecycle moves
 
