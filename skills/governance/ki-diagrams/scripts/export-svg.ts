@@ -26,8 +26,9 @@
  * under Archify's light theme, `ki` under the `ki-design` day palette and `ki-night` under its night palette, flatten
  * that same canonical file in Chrome: every computed fill, stroke, opacity and text style is written as a plain
  * attribute, colours as hex, the font becomes a system monospace stack, and the stylesheet, custom properties, font
- * data and animation are dropped, so any previewer, `rsvg-convert` included, renders it as the viewer shows it. A
- * flattened file that still carries a stylesheet, a `var(` or a font face is refused.
+ * data and animation are dropped, so any previewer, `rsvg-convert` included, renders it as the viewer shows it. The
+ * `ki` forms also draw each node icon whose meaning a KI symbol carries with that symbol's glyph. A flattened file that
+ * still carries a stylesheet, a `var(` or a font face is refused.
  */
 
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
@@ -35,6 +36,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { Chrome, findChrome, NO_CHROME } from './internal/chrome.ts'
+import { KI_GLYPH_GRID, kiGlyphBodies } from './internal/ki-design-glyphs.ts'
 import { kiMonoStack, kiThemeVariables } from './internal/ki-design-tokens.ts'
 
 const USAGE = 'usage: bun scripts/export-svg.ts [--form dual|light|ki|ki-night] <input.html> <output.svg>'
@@ -97,13 +99,21 @@ export const acceptFlattened = (svg: string, form: SvgForm): string => {
   return svg
 }
 
-/** The Archify theme, variable overrides and font stack each static form is flattened under. */
+/** The Archify theme, variable overrides, font stack and node-icon glyphs each static form is flattened under. */
 export const flatteningFor = (
   form: Exclude<SvgForm, 'dual'>
-): { readonly theme: 'light' | 'dark'; readonly variables: Record<string, string>; readonly font: string } => {
-  if (form === 'light') return { theme: 'light', variables: {}, font: SYSTEM_MONO }
-  if (form === 'ki') return { theme: 'light', variables: kiThemeVariables('light'), font: kiMonoStack() }
-  return { theme: 'dark', variables: kiThemeVariables('night'), font: kiMonoStack() }
+): {
+  readonly theme: 'light' | 'dark'
+  readonly variables: Record<string, string>
+  readonly font: string
+  readonly glyphs: Record<string, string>
+  readonly glyphScale: number
+} => {
+  const glyphScale = 16 / KI_GLYPH_GRID
+  if (form === 'light') return { theme: 'light', variables: {}, font: SYSTEM_MONO, glyphs: {}, glyphScale }
+  const theme = form === 'ki' ? 'light' : 'dark'
+  const variables = kiThemeVariables(form === 'ki' ? 'light' : 'night')
+  return { theme, variables, font: kiMonoStack(), glyphs: kiGlyphBodies(), glyphScale }
 }
 
 /** Refuse a download the viewer did not call a canonical SVG, or one that is not self-contained. */
@@ -148,12 +158,13 @@ const RECEIPT = `({
 
 /**
  * The page-side flattening, run in Chrome on the exported SVG opened as its own document. It pins the theme, stops
- * animation, applies the variable overrides, reads every element's computed paint and text style, and writes each as
+ * animation, applies the variable overrides, swaps each mapped node icon's body for its KI glyph, scaling its group
+ * from the glyph's grid to Archify's, reads every element's computed paint and text style, and writes each as
  * a presentation attribute where it differs from what the element would otherwise inherit or default to. Colours are
  * resolved through a canvas pixel to hex plus an opacity, so `color-mix()` and any colour space come out as plain
  * sRGB. It then removes every stylesheet, `style` and `class` attribute and returns the serialised document.
  */
-const FLATTEN = `(({ theme, variables, font }) => {
+const FLATTEN = `(({ theme, variables, font, glyphs, glyphScale }) => {
   const NS = 'http://www.w3.org/2000/svg'
   const svg = document.documentElement
   svg.setAttribute('data-theme', theme)
@@ -162,6 +173,15 @@ const FLATTEN = `(({ theme, variables, font }) => {
   still.textContent = '*, *::before, *::after { animation: none !important; transition: none !important; }'
   svg.appendChild(still)
   for (const [name, value] of Object.entries(variables)) svg.style.setProperty(name, value)
+  for (const sigil of svg.querySelectorAll('[data-semantic-sigil]')) {
+    const body = glyphs[sigil.getAttribute('data-semantic-sigil')]
+    if (!body) continue
+    const glyph = new DOMParser().parseFromString('<svg xmlns="' + NS + '">' + body + '</svg>', 'image/svg+xml')
+    sigil.replaceChildren(...[...glyph.documentElement.children].map((shape) => document.importNode(shape, true)))
+    const transform = sigil.getAttribute('transform') || ''
+    const scale = Number(transform.match(/scale\\(([^)]*)\\)/)?.[1] ?? '1')
+    sigil.setAttribute('transform', transform.replace(/\\s*scale\\([^)]*\\)/, '') + ' scale(' + scale * glyphScale + ')')
+  }
 
   const pixel = new OffscreenCanvas(1, 1).getContext('2d', { willReadFrequently: true })
   const colours = new Map()
@@ -182,8 +202,8 @@ const FLATTEN = `(({ theme, variables, font }) => {
   const INHERITED = ['fill', 'fill-opacity', 'stroke', 'stroke-opacity', 'stroke-width', 'stroke-dasharray',
     'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'font-size', 'font-weight', 'font-style',
     'text-anchor', 'dominant-baseline', 'letter-spacing', 'visibility', 'marker-start', 'marker-mid', 'marker-end']
-  const OWN = { opacity: '1', 'stop-color': 'rgb(0, 0, 0)', 'stop-opacity': '1', filter: 'none', mask: 'none',
-    'clip-path': 'none' }
+  const OWN = { opacity: '1', 'stop-color': '#000000', 'stop-opacity': '1', filter: 'none', mask: 'none',
+    'clip-path': 'none', 'vector-effect': 'none' }
   const DEFAULTS = { fill: 'rgb(0, 0, 0)', 'fill-opacity': '1', stroke: 'none', 'stroke-opacity': '1',
     'stroke-width': '1px', 'stroke-dasharray': 'none', 'stroke-dashoffset': '0px', 'stroke-linecap': 'butt',
     'stroke-linejoin': 'miter', 'font-size': '16px', 'font-weight': '400', 'font-style': 'normal',
@@ -291,7 +311,8 @@ const HELP = `${USAGE}
 
 Export the dual-theme SVG of a finalized Archify diagram through the viewer's own Export > SVG action.
 --form light, ki or ki-night flattens that export into a static SVG under Archify's light theme or the
-ki-design day or night palette, with no stylesheet, custom properties or embedded fonts; dual is the default.
+ki-design day or night palette, with no stylesheet, custom properties or embedded fonts; the ki forms also draw
+node icons a KI symbol carries with its glyph. dual is the default.
 Needs a system Google Chrome or Chromium, the browser Archify's own browser gate drives; set ARCHIFY_CHROME to
 choose the executable. Verified against Archify ${VERIFIED_ARCHIFY}.`
 

@@ -118,5 +118,5 @@ audience = "The owner, coordinating threads and agents learning how threads and 
 traced = ["skills/change-management/ki-coordination/references/standards-coordination.md", "skills/governance/ki-delegation/references/standards-background-runs.md"]
 stale_when = "a step of the coordinating-thread loop, the run packet, the report-and-DONE hand-off, the mark or Project close changes in either standard, or a cited heading moves"
 regenerate = "Re-trace the thread loop from the ki-coordination and ki-delegation standards at HEAD, keeping the five lanes and the layout where the facts hold, cite each node's source heading by line at the pinned revision, then run `bun run self:diagrams:html --svg thread-model` to finalize it at showcase quality, commit its HTML and re-export the SVG."
-last_checked = "791c4ed635f658f0dc6e2e480281aee26feddeac"
+last_checked = "b3b6a8085316555dfe92712595a442194b34905e"
 commit_html = true

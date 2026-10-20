@@ -15,6 +15,7 @@ import {
   VERIFIED_ARCHIFY,
   wantsHelp
 } from './export-svg.ts'
+import { KI_GLYPHS } from './internal/ki-design-glyphs.ts'
 import { KI_DESIGN_TOKENS } from './internal/ki-design-tokens.ts'
 
 const CANONICAL = { format: 'svg', canonical: 'true' } as const
@@ -61,6 +62,16 @@ test('each static form flattens under its theme, palette and font stack', () => 
   expect(night.variables['--text']).toBe(KI_DESIGN_TOKENS['color.role.night.ink'])
   expect(Object.values(day.variables).every((value) => /^#[0-9a-f]{6}$/.test(value))).toBe(true)
   expect(day.font).toBe('ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace')
+})
+
+test('the KI forms draw the node icons a KI symbol carries with its glyph, and the light form keeps Archify’s', () => {
+  expect(flatteningFor('light').glyphs).toEqual({})
+  for (const form of ['ki', 'ki-night'] as const) {
+    const { glyphs, glyphScale } = flatteningFor(form)
+    expect(Object.keys(glyphs).sort()).toEqual(Object.keys(KI_GLYPHS).sort())
+    expect(glyphs.database).toBe(KI_GLYPHS.database.body)
+    expect(glyphScale).toBe(16 / 24)
+  }
 })
 
 test('only fragments and inline data stay inside the file', () => {
