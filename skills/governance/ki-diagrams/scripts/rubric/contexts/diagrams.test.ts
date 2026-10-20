@@ -8,6 +8,8 @@ import {
   createDiagramsSession,
   type DiagramsRubricContext,
   diagramReceipt,
+  KEEP_MERMAID,
+  mermaidFences,
   parseManifest,
   privateFindings
 } from './diagrams.ts'
@@ -283,4 +285,62 @@ test('DIAG-1 treats a receipt as stray without commit_html', () => {
     'not in the manifest: docs/diagrams/architecture.html',
     'not in the manifest: docs/diagrams/architecture.receipt.json'
   ])
+})
+
+const MERMAID = '```mermaid\ngraph TD\n  A --> B\n```\n'
+
+test('mermaidFences finds backtick and tilde fences, skips examples nested in a longer fence, and reads the keep marker', () => {
+  const text = [
+    '# Notes',
+    '',
+    '```mermaid',
+    'graph TD',
+    '```',
+    '',
+    '~~~ Mermaid title',
+    'graph LR',
+    '~~~',
+    '',
+    '````markdown',
+    '```mermaid',
+    'graph TD',
+    '```',
+    '````',
+    '',
+    KEEP_MERMAID,
+    '```mermaid',
+    'graph TD',
+    '```',
+    '',
+    '```ts',
+    'const x = 1',
+    '```'
+  ].join('\n')
+  expect(mermaidFences(text)).toEqual([
+    { line: 3, kept: false },
+    { line: 7, kept: false },
+    { line: 18, kept: true }
+  ])
+})
+
+test('DIAG-7 passes without a fence, warns on a tracked fence by file and line, and ignores untracked files', () => {
+  const { root } = repository({ git: true })
+  expect(statuses('DIAG-7', root)).toEqual(['PASS'])
+  mkdirSync(join(root, 'docs/notes'), { recursive: true })
+  writeFileSync(join(root, 'docs/notes/flow.md'), `# Flow\n\n${MERMAID}`)
+  expect(statuses('DIAG-7', root)).toEqual(['PASS'])
+  git(root, 'add', 'docs/notes/flow.md')
+  const outcomes = run('DIAG-7', context(root))
+  expect(outcomes.map((outcome) => outcome.status)).toEqual(['VIOLATION'])
+  expect(outcomes[0]?.subject).toBe('docs/notes/flow.md:3')
+})
+
+test('DIAG-7 passes a fence the owner kept and is not applicable outside Git', () => {
+  const { root } = repository({ git: true })
+  writeFileSync(join(root, 'kept.md'), `# Kept\n\n${KEEP_MERMAID}\n${MERMAID}`)
+  git(root, 'add', 'kept.md')
+  const outcomes = run('DIAG-7', context(root))
+  expect(outcomes.map((outcome) => outcome.status)).toEqual(['PASS'])
+  expect(outcomes[0]?.message).toContain('the 1 the owner kept')
+  expect(statuses('DIAG-7', repository().root)).toEqual(['NOT_APPLICABLE'])
 })

@@ -88,6 +88,14 @@ export type DiagramsReceiptContext = {
   readonly viewerCount: number
 }
 
+export type DiagramsMermaidContext = {
+  readonly gitAvailable: boolean
+  /** One `<file>:<line>` per tracked Markdown fence whose info string is `mermaid` and carries no keep marker. */
+  readonly fences: readonly string[]
+  /** Fences the owner decided to keep, marked on the line before. */
+  readonly kept: number
+}
+
 export type DiagramsRubricContext = {
   readonly rubric: RubricPublicationContext
   readonly layout: DiagramsLayoutContext
@@ -95,6 +103,7 @@ export type DiagramsRubricContext = {
   readonly svg: DiagramsSvgContext
   readonly freshness: DiagramsFreshnessContext
   readonly receipts: DiagramsReceiptContext
+  readonly mermaid: DiagramsMermaidContext
   readonly judgment: Record<never, never>
 }
 
@@ -288,6 +297,51 @@ const git = (repository: string, args: readonly string[]): { ok: boolean; stdout
   return { ok: !result.error && result.status === 0, stdout: result.stdout ?? '' }
 }
 
+/** The marker on the line before a Mermaid fence that records the owner's decision to keep it. */
+export const KEEP_MERMAID = '<!-- ki-diagrams: keep mermaid -->'
+const FENCE = /^ {0,3}(`{3,}|~{3,})(.*)$/
+
+/**
+ * The Mermaid fences in one Markdown text: each line that opens a fenced block whose info string is `mermaid`,
+ * backtick or tilde, as a 1-based line number with whether the line before carries the keep marker. A fence nested in
+ * a longer fence is part of its content and is not counted.
+ */
+export const mermaidFences = (text: string): { readonly line: number; readonly kept: boolean }[] => {
+  const lines = text.split(/\r?\n/)
+  const found: { line: number; kept: boolean }[] = []
+  let open: string | undefined
+  lines.forEach((line, index) => {
+    const match = FENCE.exec(line)
+    if (open) {
+      if (match?.[1] && match[1][0] === open[0] && match[1].length >= open.length && !match[2]?.trim()) open = undefined
+      return
+    }
+    if (!match?.[1]) return
+    const info = match[2]?.trim() ?? ''
+    if (match[1][0] === '`' && info.includes('`')) return
+    open = match[1]
+    if (info.split(/\s+/)[0]?.toLowerCase() === 'mermaid')
+      found.push({ line: index + 1, kept: lines[index - 1]?.trim() === KEEP_MERMAID })
+  })
+  return found
+}
+
+/** The Mermaid fences across a repository's tracked Markdown, read from the working tree. */
+const repositoryMermaid = (repository: string): { fences: string[]; kept: number } => {
+  const files = git(repository, ['ls-files', '-z', '--', '*.md']).stdout.split('\0').filter(Boolean)
+  const fences: string[] = []
+  let kept = 0
+  for (const file of files) {
+    const path = join(repository, file)
+    if (!isFile(path)) continue
+    for (const fence of mermaidFences(readFileSync(path, 'utf8'))) {
+      if (fence.kept) kept += 1
+      else fences.push(`${file}:${fence.line}`)
+    }
+  }
+  return { fences, kept }
+}
+
 /** Read-only history: the traced paths each diagram's `last_checked` revision has since seen change. */
 const staleDiagrams = (repository: string, entries: readonly DiagramEntry[]): string[] =>
   entries.flatMap(({ slug, traced, lastChecked }) => {
@@ -361,6 +415,7 @@ export const createDiagramsSession = ({
       findings: manifestExists ? receiptFindings(directory, entries) : [],
       viewerCount: entries.filter((entry) => entry.commitHtml).length
     },
+    mermaid: { gitAvailable, ...(gitAvailable ? repositoryMermaid(root) : { fences: [], kept: 0 }) },
     judgment: {}
   }
 

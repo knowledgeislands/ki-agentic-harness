@@ -6,6 +6,7 @@ const MANIFEST = 'standards-diagrams.md#the-manifest'
 const PRIVACY = 'standards-diagrams.md#privacy'
 const FRESHNESS = 'standards-diagrams.md#regeneration-and-freshness'
 const CHOOSING = 'standards-diagrams.md#choosing-a-diagram-type'
+const TOOL = 'standards-diagrams.md#the-tool-archify'
 
 const DIAG_1: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-1',
@@ -210,11 +211,49 @@ const DIAG_5: RubricItem<DiagramsRubricContext> = {
   }
 }
 
+const DIAG_7: RubricItem<DiagramsRubricContext> = {
+  code: 'DIAG-7',
+  title: 'no Mermaid diagram is left in tracked Markdown unless kept',
+  description:
+    "Each fenced block whose info string is `mermaid` in the repository's tracked Markdown, backtick or tilde, warns with its file and line until it is replaced by an Archify diagram or the owner decides to keep it, recorded by `<!-- ki-diagrams: keep mermaid -->` on the line before the fence; a fence shown inside a longer fence is an example and is not counted.",
+  sources: [TOOL],
+  mechanical: {
+    level: 'WARN',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Replace the diagram with an Archify diagram under Mode REFRESH, or, where the owner decides to keep it, put `<!-- ki-diagrams: keep mermaid -->` on the line before the fence; then rerun the audit.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ mermaid }) => {
+        if (!mermaid.gitAvailable)
+          return [{ status: 'NOT_APPLICABLE', message: 'Tracked Markdown cannot be listed outside a Git checkout.' }]
+        return mermaid.fences.length === 0
+          ? [
+              {
+                status: 'PASS',
+                message:
+                  mermaid.kept === 0
+                    ? 'No tracked Markdown holds a Mermaid fence.'
+                    : `No tracked Markdown holds a Mermaid fence beyond the ${mermaid.kept} the owner kept.`
+              }
+            ]
+          : mermaid.fences.map((subject) => ({
+              status: 'VIOLATION',
+              message: 'A Mermaid diagram is replaced by an Archify diagram or marked as kept by the owner.',
+              subject
+            }))
+      }
+    }
+  }
+}
+
 export const DIAG: RubricFamily<DiagramsRubricContext, DiagramsRubricContext> = {
   code: 'DIAG',
   title: 'living diagrams',
   description: 'A repository keeps traced, self-contained, current Archify diagrams under one manifest.',
   standard: MANIFEST,
   selectContext: (context) => context,
-  items: [DIAG_1, DIAG_2, DIAG_3, DIAG_4, DIAG_5, DIAG_6]
+  items: [DIAG_1, DIAG_2, DIAG_3, DIAG_4, DIAG_5, DIAG_6, DIAG_7]
 }

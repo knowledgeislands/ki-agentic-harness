@@ -7,13 +7,13 @@ component: governance
 kind: deliver
 priority: medium
 size: s
-status: ready
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 5f921df4385029e377f86a23e72b24cf59ac3401
 created_at: 2026-10-19T07:17:31Z
-updated_at: 2026-10-20T02:42:00Z
+updated_at: 2026-10-20T05:43:17Z
 ---
 
 # KI-HARNESS-GOV-221: ki-diagrams Mermaid Fence Warning
@@ -40,11 +40,11 @@ Checked on 20 October 2026 at `30cbbd1d`. The `ki-diagrams` rubric has DIAG-1 to
 
 ## Steps
 
-- [ ] Add a context reader that lists tracked Markdown with `git ls-files '*.md'` and records each line opening a fenced block whose info string is `mermaid`, backtick or tilde, ignoring fences nested in a longer fence.
-- [ ] Add DIAG-7, mechanical at WARN, one violation per fence naming the file and line, with remediation pointing at Mode REFRESH or an owner decision.
-- [ ] Add the keep marker, `<!-- ki-diagrams: keep mermaid -->` on the line before the fence, to the standard, and have DIAG-7 pass a fence that carries it.
-- [ ] Add context and item tests: no fence passes, a fence warns with its file and line, an untracked file is ignored, a nested example fence is ignored, and a fence with the keep marker passes.
-- [ ] Add a sentence to the standard's The tool: Archify section saying the audit warns on each remaining Mermaid fence, and regenerate `references/rubric.md` and the remediation-inventory counts.
+- [x] Add a context reader that lists tracked Markdown with `git ls-files '*.md'` and records each line opening a fenced block whose info string is `mermaid`, backtick or tilde, ignoring fences nested in a longer fence.
+- [x] Add DIAG-7, mechanical at WARN, one violation per fence naming the file and line, with remediation pointing at Mode REFRESH or an owner decision.
+- [x] Add the keep marker, `<!-- ki-diagrams: keep mermaid -->` on the line before the fence, to the standard, and have DIAG-7 pass a fence that carries it.
+- [x] Add context and item tests: no fence passes, a fence warns with its file and line, an untracked file is ignored, a nested example fence is ignored, and a fence with the keep marker passes.
+- [x] Add a sentence to the standard's The tool: Archify section saying the audit warns on each remaining Mermaid fence, and regenerate `references/rubric.md` and the remediation-inventory counts.
 
 ## Files touched
 
@@ -86,6 +86,50 @@ None.
 ### Roadmap
 
 None; conversion in other repositories is their owners' work under the migration hand-offs.
+
+## Review
+
+### Delivered
+
+`ki repo audit --skill ki-diagrams` warns on each fenced `mermaid` block in the repository's tracked Markdown, naming its file and line (DIAG-7). A fence passes when the owner keeps it with `<!-- ki-diagrams: keep mermaid -->` on the line before.
+
+### Change Summary
+
+- `scripts/rubric/contexts/diagrams.ts`: `mermaidFences(text)` finds fences that open with backticks or tildes and carry the info string `mermaid` (case-insensitive). It skips fences nested inside a longer fence and reads the keep marker on the line before. A repository reader lists tracked Markdown through `git ls-files -z -- '*.md'` and adds a `mermaid` context with `gitAvailable`, `fences` and `kept`.
+- `scripts/rubric/items/diagrams.ts`: adds DIAG-7, mechanical at WARN, with one violation per fence and the subject `<file>:<line>`. Remediation points to Mode REFRESH or the keep marker. It is not applicable outside Git.
+- `references/standards-diagrams.md`: The tool: Archify section now states the warning and the keep marker, and quotes Kris's DIAGRAM-REPLACE answer of 19 October.
+- `references/rubric.md` is regenerated. The `index.test.ts` catalogue and the remediation-inventory counts are updated (+1 criterion).
+
+### Verification
+
+- `bun run test`: 1352 pass, 0 fail.
+- `bunx tsc --noEmit`: clean.
+- New tests cover:
+  - backtick and tilde fences;
+  - an example nested in a longer fence (ignored);
+  - the keep marker;
+  - a repository with no fence (PASS);
+  - a tracked fence (WARN, subject `docs/notes/flow.md:3`);
+  - an untracked file (ignored);
+  - a kept fence (PASS);
+  - a checkout outside Git (NOT_APPLICABLE).
+- `ki repo audit --skill ki-diagrams` (isolated home): FAIL=0, and DIAG-7 passes here. The 12 warnings are pre-existing DIAG-4 staleness warnings on the harness's own diagrams.
+- `ki repo audit --skill ki-skills`: PASS.
+- `git grep` finds no Mermaid fence in this repository.
+
+### Outstanding concerns
+
+- The item runs only where `[skills.ki-diagrams]` is declared. Among local checkouts that is the harness alone, so the 34 fences the obs-diagrams survey counted in other repositories stay unflagged until those repositories adopt the skill. The record's planning answer accepted this.
+
+### Post-change review
+
+- Only tracked files are read, and they are read from the working tree.
+- The fence rule follows CommonMark: up to three spaces of indent, and a closing fence of the same character at least as long as the opening one.
+- A backtick info string containing a backtick is not treated as a fence.
+
+### Mini recap
+
+DIAG-7 warns on each Mermaid fence left after the Archify migration until it is replaced or kept by marker.
 
 ## Discussion
 

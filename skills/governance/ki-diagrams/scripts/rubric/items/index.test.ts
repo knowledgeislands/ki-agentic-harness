@@ -10,7 +10,7 @@ test('the catalogue exposes the ordered Diagrams criteria', () => {
     definition.families
       .filter((family) => family.code !== 'RUBRIC')
       .flatMap((family) => family.items.map((item) => item.code))
-  ).toEqual(['DIAG-1', 'DIAG-2', 'DIAG-3', 'DIAG-4', 'DIAG-5', 'DIAG-6'])
+  ).toEqual(['DIAG-1', 'DIAG-2', 'DIAG-3', 'DIAG-4', 'DIAG-5', 'DIAG-6', 'DIAG-7'])
 })
 
 test('the catalogue and family modules keep their public surfaces narrow', async () => {
@@ -39,4 +39,5 @@ test('only publication is automatic; staleness warns and type fit is judgment al
   expect(items.find((item) => item.code === 'DIAG-4')?.judgment?.prompt).toContain('stale_when')
   expect(items.find((item) => item.code === 'DIAG-5')?.mechanical).toBeUndefined()
   expect(items.find((item) => item.code === 'DIAG-5')?.judgment?.prompt).toContain('--quality showcase')
+  expect(items.find((item) => item.code === 'DIAG-7')?.mechanical?.level).toBe('WARN')
 })
