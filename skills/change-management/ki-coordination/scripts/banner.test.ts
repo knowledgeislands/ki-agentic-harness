@@ -54,7 +54,7 @@ const BANNER_HEADING = new RegExp(
 )
 /** A banner item: `- [<state>] <what>`, the live items naming a holder and a since. */
 const ITEM =
-  /^- \[(running|queued|with you|stuck|blocked|handoff|parked|on hold|release|committed|uncommitted|unpushed|recovered|unlogged|finished)\] .+$/
+  /^- \[(running|queued|with you|stuck|blocked|handoff|parked|on hold|release|committed|uncommitted|recovered|unlogged|finished)\] .+$/
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
 const SEND_LINE =
@@ -161,31 +161,36 @@ test('the standard carries the With worker, handoff, On hold and Finished banner
   const [withWorker, handoff, hold] = found
   expect(withWorker?.[2]).toBe('🤖 2 running · 👤 1 with you · ⛔ 1 blocked')
   expect(withWorker).toContain('- [running] work-model · run/work-model · since 23:20')
-  expect(handoff).toContain('- [committed] work folder, pushed')
+  expect(handoff).toContain('- [committed] work folder')
   expect(handoff?.some((line) => line.startsWith('- [running]'))).toBe(false)
   expect(hold?.[0]).toBe('### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST')
   expect(hold).toContain('- [release] after the harness migration lands, or `resume`')
   expect(hold?.[2]).toBe('⏸️ drained · 🅿️ 9 queries parked')
-  expect(hold?.slice(4).every((line) => /^- \[(parked|release|unpushed)\] /.test(line))).toBe(true)
+  expect(hold?.slice(4).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(true)
 })
 
-test('a push of stacked commits is never with the owner, and an On hold banner lists nothing waiting', () => {
+test('reports omit routine push state, and an On hold banner lists nothing waiting', () => {
   for (const text of [standard, outputStyle]) {
     expect(text).not.toContain('who decides the push')
     expect(text).not.toContain('- [on hold] committed')
     expect(text).toContain('`⏸️ drained · 🅿️ <n> queries parked`')
-    expect(text).toContain('items are only `[parked]`, `[release]` and, where true, `[unpushed]`')
+    expect(text).toContain('items are only `[parked]` and `[release]`')
     for (const lines of banners(text)) {
-      for (const item of lines.filter((line) => line.startsWith('- [with you]'))) expect(item).not.toMatch(/push/i)
+      for (const item of lines.filter((line) => line.startsWith('- ['))) expect(item).not.toMatch(/push/i)
       if (!lines[0]?.startsWith('### ⏸️')) continue
       expect(lines[2]).not.toContain('with you')
       expect(lines.some((line) => /^- \[(with you|running|queued|on hold)\]/.test(line))).toBe(false)
     }
   }
-  expect(standard).toContain('**Pushes are not with the owner.**')
+  expect(standard).toContain('**Push state stays out of reports.**')
   expect(standard).toContain('**A hold lists nothing waiting.**')
   expect(standard).toContain('PUSH-NOT-WITH-YOU')
   expect(standard).toContain('HOLD-CLEAN')
+  expect(standard).toContain('A hold report keeps nothing about pushes beyond a failure.')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('own unit could not be published because its push failed')
+    expect(text).not.toMatch(/names? the other sessions' stacked commits once|show them only as `\[unpushed\]`/)
+  }
 })
 
 test('the output style carries the report heading and the live banners byte-identical to the standard', () => {
@@ -283,7 +288,17 @@ test('the hook line, the pointer and the output style confine the coordinator fo
 })
 
 test('every generated surface matches what the standard renders, so none is edited by hand', () => {
-  for (const surface of generate(harnessRoot))
+  const surfaces = generate(harnessRoot)
+  for (const tier of ['none', 'push', 'prune', 'release']) {
+    const footer = surfaces.find((surface) => surface.path.endsWith(`rules-${tier}.md`))
+    expect(footer).toBeDefined()
+    expect(footer?.content).toContain('Owner reports, run reports and banners omit routine push state')
+    expect(footer?.content).toContain('own unit could not be published because its push failed')
+  }
+  const prompt = surfaces.find((surface) => surface.path.endsWith('run-prompt.md'))
+  expect(prompt?.content).toContain('Owner reports, run reports and banners omit routine push state')
+  expect(prompt?.content).toContain('own unit could not be published because its push failed')
+  for (const surface of surfaces)
     expect({
       path: surface.path,
       content: readFileSync(resolve(harnessRoot, surface.path), 'utf8')

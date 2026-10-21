@@ -12,6 +12,8 @@
 
 ## Last review
 
+A 2026-10-21 in-house review under `wow-day-push-reporting` applies Kris's instruction to omit routine push state and other sessions' stacked commits from reports, preserving a report of a failed push that prevented publication of the session's own unit. The recap now follows the aligned `ki-git` and `ki-coordination` rule. Runtime sources were not re-fetched; implementation history is in Git.
+
 On 2026-09-26, current official documentation still showed both Codex and Claude Code exposing user-invocable `/compact` alongside automatic compaction. Codex also documents explicit pre- and post-compaction hook events. These controls do not grant an agent standing authority to invoke compaction. Both vendors expose transcript paths or files, but their structured formats remain version-sensitive convenience surfaces; Git remains the authoritative repository-grounding source.
 
 On 2026-10-06, Claude Code documented `CLAUDE_CODE_SESSION_ID` as set in Bash, PowerShell, hook, and stdio MCP subprocesses, matching the hook `session_id` and updated on `/clear`; after `--continue` or an ID-less `--resume` it may carry the initial startup ID. Transcripts live at `<config>/projects/<project>/<session-id>.jsonl`. `<config>` is `CLAUDE_CONFIG_DIR` or `~/.claude`. `<project>` replaces every non-alphanumeric character of the working directory with `-`, is truncated with a hash beyond 200 characters, or is named by `CLAUDE_CODE_PROJECT_DIR_NAME`, and `/cd` relocates it. The helper therefore probes every project directory for the identified session rather than deriving the launch slug. The Codex documentation reviewed exposes no equivalent session-identity variable, so Codex selection remains bounded repository-matched discovery.

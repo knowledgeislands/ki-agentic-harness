@@ -52,7 +52,7 @@ Before reporting final repository state, apply the `ki-batch` “Batch retention
 
 Using the whole-thread inventory plus each touched repository's `filesTouched` / `diffStat`: state what changed, what was decided, and why — in the order it happened, not a topic reshuffle. Keep it to what a reader picking this up cold would need: no blow-by-blow tool narration. For each material topic, establish whether it was delivered, explicitly declined, superseded, or remains follow-up; do not treat an earlier recap as a terminal boundary.
 
-State push state as this session's action at the named local `HEAD`, as [`ki-git`](../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority) requires: pushed, or not pushed by this session, never "unpushed" or "the remote is behind". A peer may push the shared ref between two recaps, and Git grounding does not make that position durable.
+Omit routine push state and other sessions' stacked commits from the recap, under [`ki-git`](../../../governance/ki-git/references/standards-git.md#commit-publication-and-integration-authority) and `ki-coordination`. If this session's own unit could not be published because its push failed, name the affected unit and reason. Push authority and own-commits-only safeguards are unchanged.
 
 ## 3. Surface what is outstanding
 

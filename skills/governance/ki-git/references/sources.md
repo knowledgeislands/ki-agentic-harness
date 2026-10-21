@@ -27,6 +27,8 @@
 
 ## Last review
 
+A 2026-10-21 review under `wow-day-push-reporting` applies Kris's "push state out of reports" instruction in `ki.ways-of-working`: owner reports, run reports and banners omit routine push state and other sessions' stacked commits; a run still reports a failed push that prevented publication of its own unit, naming the unit and reason. A hold report keeps nothing about pushes beyond a failure. Fast-forward, own-commits-only and no-force safeguards remain. This is an in-house policy review; external sources were not re-fetched. Implementation history is in Git.
+
 The targeted in-house review on 2026-10-04 promoted actual committed-path inspection after hooks from Rig's delivery guidance into the shared hygiene standard and rubric. The external sources were not re-fetched during this consolidation.
 
 The 2026-08-12 refresh re-checked the primary Git, Git workflow, and worktree documentation. `git-worktree` now supplies the direct terminology source for the guard's linked-worktree boundary; the harness hook and its run test remain the normative local safety contract.
