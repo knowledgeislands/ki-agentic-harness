@@ -4,9 +4,10 @@ ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: [ki-repo-kb, ki-decision-records]
 ki-shared-dependencies: [ki-skills:rubric]
+owns: ['+/_ACQUIRED/README.md']
 description: >
   Audit or conform a designated principal KI knowledge base's governance overlay: territorial Charter,
-  Known Lands inventory and signposting, memory root, and Enactment gate. Use for principal governance
+  Known Lands inventory and signposting, memory root, acquired-packet scaffold, and Enactment gate. Use for principal governance
   declarations; designation and authority remain owner-governed, while `ki-repo-kb` owns general base structure.
 argument-hint: 'audit | conform | educate | help | refresh'
 ---
@@ -21,6 +22,8 @@ A designated principal base uses the `ki-repo-kb` zones and `ki-decision-records
 
 Substantive changes to `Admin/`, `Pillars/`, and `Resources/` must originate in a Stream proposal under the Enactment Process. This standing gate is anchored in the repository's always-loaded `CLAUDE.md` or `AGENTS.md`; the rubric verifies the anchor exists.
 
+The overlay owns the exact [acquired-packet scaffold](assets/templates/acquired/README.md) at `+/_ACQUIRED/README.md` while declared. The principal standard defines its audit and safe restoration; `ki-repo-kb` owns receiver triage.
+
 Repository identity, community language, integrations, and local operating detail belong in the principal's own governance notes, never in this shared skill.
 
 ## Operating modes
@@ -31,7 +34,7 @@ Run `ki repo audit --skill ki-repo-kb-principal --repo <repo>`, then apply the r
 
 ### Mode CONFORM
 
-Run `ki repo conform --skill ki-repo-kb-principal --repo <repo> --dry-run` first. The native checker reports the missing principal surface; establish it through EDUCATE or an approved local proposal. CONFORM never moves knowledge, creates a Stream proposal, or reclassifies an existing folder.
+Run `ki repo conform --skill ki-repo-kb-principal --repo <repo> --dry-run` first. CONFORM creates or restores the exact acquired-packet README, preserving packet folders and refusing unsafe path components. Other missing principal surfaces remain diagnostic; establish them through EDUCATE or an approved local proposal. CONFORM never moves knowledge, creates a Stream proposal, or reclassifies an existing folder.
 
 ### Mode EDUCATE
 

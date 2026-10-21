@@ -40,3 +40,5 @@ Principal governance surfaces, Enactment anchor, and authored territorial relati
   - _Review prompt:_ Are internal members and external destinations distinguishable, with external authority respected, local unavailability separate from membership, and adoption controlled by the receiver without publishing private consumer identities?
   - _Outcomes:_ conforming; relationship clarification required; owner decision required
   - _Conforming guidance:_ Clarify relationship sections or labels and authority references; keep local locations in the registry and adoption decisions with the receiver.
+- **PRINCIPAL-5 [M] — acquired-packet scaffold is exact** — While the principal overlay is declared, +/_ACQUIRED/README.md matches its owned template byte for byte. Missing or drifted regular scaffolds are restored without touching packets; unsafe ancestors or leaves fail without a write proposal. (standards-principal.md#acquired-packet-scaffold)
+  - _Remediation:_ automatic

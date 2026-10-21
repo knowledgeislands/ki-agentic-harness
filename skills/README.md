@@ -580,7 +580,7 @@ Create, audit, and maintain KI Live Artifact pairs: a Markdown source and render
 
 #### `ki-repo-kb-principal`
 
-Audit or conform a designated principal KI knowledge base's governance overlay: territorial Charter, Known Lands inventory and signposting, memory root, and Enactment gate. Use for principal governance declarations; designation and authority remain owner-governed, while `ki-repo-kb` owns general base structure.
+Audit or conform a designated principal KI knowledge base's governance overlay: territorial Charter, Known Lands inventory and signposting, memory root, acquired-packet scaffold, and Enactment gate. Use for principal governance declarations; designation and authority remain owner-governed, while `ki-repo-kb` owns general base structure.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

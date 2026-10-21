@@ -12,6 +12,14 @@ This overlay provides a visible governance system for a Knowledge Base designate
 
 The repository's always-loaded orientation anchors the Enactment gate: substantive changes to `Admin/`, `Pillars/`, and `Resources/` proceed through an approved Stream proposal. Calendar entries and inbound triage remain lightweight exceptions.
 
+## Acquired-packet scaffold
+
+While `ki-repo-kb-principal` is declared, the principal must carry the byte-exact `+/_ACQUIRED/README.md` from this skill's `assets/templates/acquired/README.md`. This overlay owns that scaffold; it is not required for ordinary knowledge bases. The literal path is independent of any base zone alias. Dropping the declaration ends this overlay's requirement without authorising removal of the README or packets.
+
+AUDIT fails when the README is missing, differs from the template, or has an unsafe path. CONFORM proposes only that README: it creates a missing scaffold or restores a drifted regular file. Every existing ancestor must be a real directory and the leaf must be a regular file; symlinks, dangling symlinks and other file types fail without a repair proposal. Publication and concurrent-change protection belong to the host. Neither mode reads or changes packet contents, invents a dispatch record, or grants dispatch authority.
+
+Acquire alone delivers packets: each delivery is a folder holding one whole capture package or a roll-up of whole packages, preserving original names and bytes without a manifest, dispatch ID or ledger. Delivery is acceptance. The receiver triages their local packets under `ki-repo-kb`; the scaffold does not authorise canonical adoption or change selection. There is no return route or return marker, and the receiver writes nothing into the port.
+
 ## Territorial declaration
 
 Each territory has exactly one principal island holding its Capital role. The Charter identifies that territory and the Capital's canonical repository identity. Known Lands identifies internal members by canonical repository identity, such as `owner/repo`, and states their governed relationship. The two declarations must agree; discrepancies remain visible for the territorial owner to resolve.

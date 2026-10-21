@@ -6,13 +6,13 @@ kind: deliver
 purpose: governance
 size: m
 component: repo-structure
-horizon: next
-status: ready
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: f59c00698d4535b617746a67e6d71c2ae98c1f4c
 created_at: 2026-10-18T00:40:08Z
-updated_at: 2026-10-21T13:15:45Z
+updated_at: 2026-10-21T13:21:47Z
 ---
 
 # KI-HARNESS-GOV-209: +/_ACQUIRED/ Inbound Area
@@ -34,17 +34,17 @@ Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist s
 
 ## Current state
 
-Ready under Kris's 21 October 2026 GOV209-OWNER a) decision and the 14:11 BST unattended grant, delivered by the designated harness writer wow-day-gov-209. The unchanged baseline passes the offline work-selector, roadmap, skill, harness, test and type gates; the roadmap's existing migration warnings are covered by the pre-existing-warnings decision. The principal overlay currently has no acquired scaffold or automatic conform writes.
+Delivered for independent review under Kris's 21 October 2026 GOV209-OWNER a) decision and the 14:11 BST unattended grant, delivered by the designated harness writer wow-day-gov-209. The unchanged baseline passes the offline work-selector, roadmap, skill, harness, test and type gates; the roadmap's existing migration warnings are covered by the pre-existing-warnings decision. At the immutable starting baseline, the principal overlay had no acquired scaffold or automatic conform writes. This delivery adds both without conforming a real principal.
 
 The 20 October decision supersedes the historical return route: delivery is acceptance and a misdelivery is handled case by case. Acquire's dispatch guide supplies the delivery layout: one folder per delivery, containing a whole capture package or several whole packages, with original names and bytes and no extra manifest, dispatch ID or ledger. The scaffold is not a dispatch precondition because Acquire can create the directory.
 
 ## Steps
 
-- [ ] Add the exact `+/_ACQUIRED/README.md` template owned by `ki-repo-kb-principal` and document its lifetime while the overlay is declared.
-- [ ] Add a principal audit criterion and native conform proposal to create or restore that README, refusing unsafe paths and preserving every delivery packet.
-- [ ] Add receiver triage guidance to `ki-repo-kb`: file the packet, turn it into work through the selected adapter, or park it locally; write nothing into the port and add no return marker.
-- [ ] Test missing, canonical and drifted scaffolds, unsafe ancestors and leaves, read-only audit, draft-only conform and packet preservation; regenerate the rubric and capability catalogue.
-- [ ] Run offline harness tests, TypeScript and focused work, roadmap, skills, authoring and harness audits; retain baseline warnings separately and prepare the independent-review packet without acceptance.
+- [x] Add the exact `+/_ACQUIRED/README.md` template owned by `ki-repo-kb-principal` and document its lifetime while the overlay is declared.
+- [x] Add a principal audit criterion and native conform proposal to create or restore that README, refusing unsafe paths and preserving every delivery packet.
+- [x] Add receiver triage guidance to `ki-repo-kb`: file the packet, turn it into work through the selected adapter, or park it locally; write nothing into the port and add no return marker.
+- [x] Test missing, canonical and drifted scaffolds, unsafe ancestors and leaves, read-only audit, draft-only conform and packet preservation; regenerate the rubric and capability catalogue.
+- [x] Run offline harness tests, TypeScript and focused work, roadmap, skills, authoring and harness audits; retain baseline warnings separately and prepare the independent-review packet without acceptance.
 
 ## Files touched
 
@@ -53,7 +53,8 @@ The 20 October decision supersedes the historical return route: delivery is acce
 - `skills/repo-structure/ki-repo-kb-principal/assets/templates/acquired/README.md`.
 - The principal overlay's `scripts/rubric/contexts/principal.ts`, `scripts/rubric/items/principal.ts` and `scripts/rubric/items/index.test.ts`.
 - `skills/repo-structure/ki-repo-kb/SKILL.md` and a focused receiver-triage reference.
-- Generated `skills/README.md` only if its declared ownership projection changes.
+- Generated `skills/README.md`, whose principal description changes with the published capability.
+- `skills/keystone/ki-skills/scripts/internal/remediation-inventory.test.ts`: increment the exact inventory counts for the one additional automatic mechanical criterion.
 
 ## Verify
 
@@ -80,6 +81,38 @@ None.
 ### Roadmap
 
 None beyond this record.
+
+## Review
+
+### Delivered
+
+The approved scaffold and receiver-triage boundary is delivered from immutable baseline `f59c00698d4535b617746a67e6d71c2ae98c1f4c`. The principal overlay owns the exact `+/_ACQUIRED/README.md` while declared and its native CONFORM requests only the scaffold. Real principal conformance, Acquire dispatch and acceptance remain outside this delivery. The committed plan precedes implementation.
+
+### Change Summary
+
+Added the scaffold template and PRINCIPAL-5 audit/conform support, with unsafe-component refusal and draft-only write proposals. Updated the principal standard and its generated rubric; added receiver-triage guidance routed from `ki-repo-kb`; regenerated the published capability description. The existing inventory test's exact totals increase by one criterion, one mechanical item and one automatic remediation; this is the only supporting file beyond the planned skill files. No packet format, dispatch authority, return route or roadmap record was introduced.
+
+### Verification
+
+- `bun run test`: 1,414 pass, zero fail; the unchanged baseline had 1,405 pass. The new fixtures cover missing, canonical, empty, changed, CRLF and extra-byte scaffolds, symlink and dangling-link ancestors and leaves, wrong file types, read-only audit, coalesced draft-only conform and original packet bytes.
+- `bunx --no-install tsc --noEmit`: pass.
+- Sequential focused `ki repo audit --skill ki-work`, `ki-work-roadmap`, `ki-skills`, `ki-authoring` and `ki-repo-harness`: pass, with unchanged baseline warnings retained separately under Kris's pre-existing-warnings decision.
+- Full `ki repo audit`: zero failures, 72 existing warnings across six warning-bearing skills, matching the pre-implementation full audit. Working-tree leftover counts reflect this run's source files until committed.
+- `ki dev skill rubric ki-repo-kb-principal --write` generated the readable rubric; the skill audit verifies exact publication. Harness CONFORM regenerated only `skills/README.md` in this repository.
+- Hosted principal fixture: the missing scaffold fails its scoped audit; dry-run CONFORM proposes the exact scaffold without writing it; the canonical scaffold passes the hosted scoped audit and the binary original remains unchanged. No real principal was conformed.
+- Every gate ran under the network-denying sandbox in this run's fresh audit-home copy, with both Capital registrations, local harness activation and worktree repair. Commit hooks remain enabled.
+
+### Outstanding concerns
+
+No unresolved delivery defect. Independent review and acceptance are still required. The eight receiver-owned conformance applications are outside this record's boundary and listed in the run report; this run sends nothing to those repositories. Existing fleet warnings are unchanged contract findings, not newly introduced failures.
+
+### Post-change review
+
+The change satisfies the decided ownership boundary: only declared principal overlays require the literal scaffold, and the base skill owns triage. The repair path refuses unsafe filesystem components and leaves packets alone; host publication retains race protection. The scaffold grants no new delivery or adoption authority. Review should inspect the exact delivery commit and verify the ownership and preservation fixtures before any acceptance.
+
+### Mini recap
+
+Delivered one governed scaffold, its audit and bounded repair, and receiver triage, with passing source and hosted checks. No work was accepted or pruned. The reusable guidance is already in its owning skill standards; no further learning promotion or new roadmap record is proposed.
 
 ## Discussion
 

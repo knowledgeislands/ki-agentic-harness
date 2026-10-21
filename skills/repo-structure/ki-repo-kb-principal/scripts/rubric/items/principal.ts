@@ -91,11 +91,43 @@ const PRINCIPAL_4: RubricItem<PrincipalContext> = {
       'Clarify relationship sections or labels and authority references; keep local locations in the registry and adoption decisions with the receiver.'
   }
 }
+const PRINCIPAL_5: RubricItem<PrincipalContext> = {
+  code: 'PRINCIPAL-5',
+  title: 'acquired-packet scaffold is exact',
+  description:
+    'While the principal overlay is declared, +/_ACQUIRED/README.md matches its owned template byte for byte. Missing or drifted regular scaffolds are restored without touching packets; unsafe ancestors or leaves fail without a write proposal.',
+  sources: [`${SOURCE}#acquired-packet-scaffold`],
+  mechanical: {
+    level: 'FAIL',
+    remediation: { class: 'automatic' },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ acquired }) => [
+        {
+          status: acquired.state === 'canonical' ? 'PASS' : 'VIOLATION',
+          message:
+            acquired.state === 'canonical'
+              ? 'The acquired-packet scaffold matches its owned template.'
+              : acquired.state === 'unsafe'
+                ? 'The acquired scaffold has an unsafe path; resolve it through the principal owner before conforming.'
+                : 'Create or restore the acquired-packet scaffold from its owned template.',
+          subject: '+/_ACQUIRED/README.md'
+        }
+      ]
+    },
+    conform: {
+      phase: 'PRIMARY',
+      run: ({ acquired }) => {
+        acquired.synchronise?.()
+      }
+    }
+  }
+}
 export const PRINCIPAL: RubricFamily<PrincipalContext, PrincipalContext> = {
   code: 'PRINCIPAL',
   title: 'principal governance',
   description: 'Principal governance surfaces, Enactment anchor, and authored territorial relationships.',
   standard: SOURCE,
   selectContext: (context) => context,
-  items: [PRINCIPAL_1, PRINCIPAL_2, PRINCIPAL_3, PRINCIPAL_4]
+  items: [PRINCIPAL_1, PRINCIPAL_2, PRINCIPAL_3, PRINCIPAL_4, PRINCIPAL_5]
 }
