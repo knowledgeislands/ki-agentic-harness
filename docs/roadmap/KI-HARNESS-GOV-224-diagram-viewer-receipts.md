@@ -7,13 +7,12 @@ component: governance
 priority: high
 size: m
 kind: deliver
-status: awaiting-review
-horizon: now
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 7dc5bb8aa8d8a0e0fce3a34084a90260033ba643
 created_at: 2026-10-19T19:10:30Z
-updated_at: 2026-10-21T02:56:19Z
+updated_at: 2026-10-21T03:04:48Z
 transferred_from: ki-principal ki.observatory OVERLAY-SYNC, 2026-10-19
 ---
 
@@ -128,19 +127,31 @@ GOV-224's staged-snapshot enforcement has been repaired within this existing rec
 - Actual canonical package hook, with the installed `ki` and network denied: rejects stale staged source, stale staged viewer, changed staged receipt and missing staged receipt; accepts a matching staged snapshot while source, viewer and receipt working files differ. Each rejected case reports GATE-2. The [proof receipt](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-night-harness-queue-d.hook-proof.json) and individual logs survive beside the run report.
 - New KNIP-1 repository fixture: the creation scaffold writes both committed-hook paths immediately, and an actual Knip scan recognises the hook-only tool dependencies without another conform pass.
 
+Fresh independent acceptance reproduced the claims at exact candidate `e92158541f47a5b41ad2c123ed6d99be7010f69f`, after inspecting both the original delivery and rework diffs and checking the six review headings with an exact predicate. `bun run test` passed 1405 tests with no failures; `bunx tsc --noEmit`, the 57 focused diagram tests, `build-html.ts --check`, focused diagrams, roadmap, authoring, harness and skills audits, the whole-repository audit and `git diff --check` passed. The isolated offline whole-repository audit reported PASS=30 WARN=5 FAIL=0, with 72 warning findings retained. Diagram freshness warnings remain separate from receipt validity.
+
+Independent SHA-256 and byte-count calculations verified all 12 committed source/viewer pairs and recorded hashes of all 12 receipts. Six disposable fixture repositories exercised the actual byte-identical canonical package hook through the installed `ki`, with network denied: stale staged source, stale staged viewer, changed staged receipt and missing staged receipt each failed at GATE-2; matching staged snapshots passed both with different unstaged source/viewer/receipt bytes and with all three working files missing. Exact staged blobs and working files stayed unchanged by every hook invocation. The [independent hash evidence](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-night-harness-224-accept-d.evidence/independent-12-receipts.json), [canonical-hook proof](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-night-harness-224-accept-d.evidence/canonical-hook-proof.json) and [acceptance report](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-night-harness-224-accept-d.report.md) retain the verification details.
+
 ### Outstanding concerns
 
-Fresh independent acceptance is still required for the exact combined candidate. Existing diagram freshness and other baseline warnings remain separate from receipt validity. The brief's isolated-home audit procedure was retained for this run. F5's committed implementation and boundary proof were inspected in tools-ki (`5889f847`, `fcc8876a`, `4a02b008`); this receipt repair does not retire that separate audit procedure.
+Fresh independent acceptance of `e92158541f47a5b41ad2c123ed6d99be7010f69f` passed in the separate `wow-night-harness-224-accept-d` run; no item-scoped concern remains. Existing diagram freshness and other baseline warnings remain separate from receipt validity. The brief's isolated-home audit procedure was retained for this run. F5's committed implementation and boundary proof were inspected in tools-ki (`5889f847`, `fcc8876a`, `4a02b008`); this receipt repair does not retire that separate audit procedure.
 
 ### Post-change review
 
-The failed acceptance defect is addressed through the canonical native hook contract. Receipt checks use the same shared implementation for working-file and index evidence; staged evidence is never repaired from unstaged bytes. The host continues to own verdict scoping and reporting. No viewer, receipt or `last_checked` value was regenerated because the receipt schema and rendered bytes have not changed. All required delivery gates pass; the exact combined candidate is ready for fresh independent acceptance.
+The failed acceptance defect is addressed through the canonical native hook contract. Receipt checks use the same shared implementation for working-file and index evidence; staged evidence is never repaired from unstaged bytes. The host continues to own verdict scoping and reporting. No viewer, receipt or `last_checked` value was regenerated because the receipt schema and rendered bytes have not changed. Fresh independent acceptance confirms the exact combined candidate meets the goal, closes the previously reproduced hook-enforcement defect and introduces no item-scoped regression found by the required gates. Acceptance covers this record alone; the terminal record remains retained.
 
 ### Mini recap
 
 GOV-224 now has a canonical staged receipt gate and regression fixtures, preserving the existing receipt format and record. The combined delivery also contains the separately authorised KNIP-HUSKY creation-scaffold correction, with no new roadmap record; F6 wording already matches. Learning remains with the owning skill standards rather than a new capture.
 
+## Done
+
+Accepted 2026-10-21 by GPT-6.1 Sol under Kris Brown's named overnight acceptance grant on the review packet above.
+
 ## Discussion
+
+### Independent acceptance authority
+
+Kris Brown's 20 October OVERNIGHT-BURNDOWN authority states, "Each delivered record gets an independent blind review; a pass is accepted under this grant". The 21 October 01:40 BST QUEUES-OVERNIGHT read-back and this run's explicit dispatch limit that authority to this record after a fresh independent pass. The acceptance run is separate from delivery, independently inspected the exact committed candidate and reproduced enforcement rather than relying on the delivery recommendation. It accepts no other record, performs no implementation repair and grants no pruning or publication.
 
 ### Failed independent acceptance review, 20 October 2026
 
