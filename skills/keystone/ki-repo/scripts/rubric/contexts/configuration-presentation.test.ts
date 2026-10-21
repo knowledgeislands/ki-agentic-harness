@@ -172,6 +172,57 @@ ${banner('Relationships')}
     ])
   })
 
+  test('accepts assembled artefact records as an array of tables', () => {
+    const text = `${header}[repo]
+
+[skills.ki-repo-tools]
+
+[[skills.ki-repo-tools.assembled]]
+artifact = "bin/demo"
+sources = [
+  "src/demo.sh",
+]
+check = [
+  "bin/assemble-demo",
+  "--check",
+]
+
+[[skills.ki-repo-tools.assembled]]
+artifact = "bin/other"
+sources = [
+  "src/other.sh",
+]
+check = [
+  "bin/assemble-other",
+  "--check",
+]
+`
+    expect(Bun.TOML.parse(text)).toMatchObject({
+      skills: {
+        'ki-repo-tools': {
+          assembled: [
+            { artifact: 'bin/demo', sources: ['src/demo.sh'], check: ['bin/assemble-demo', '--check'] },
+            { artifact: 'bin/other', sources: ['src/other.sh'], check: ['bin/assemble-other', '--check'] }
+          ]
+        }
+      }
+    })
+    expect(inspectConfigurationLayout(text)).toEqual([])
+  })
+
+  test('still rejects fixed assembly fields grouped in an ordinary subtable', () => {
+    const issues = inspectConfigurationLayout(`${header}[repo]
+
+[skills.ki-repo-tools]
+
+[skills.ki-repo-tools.assembled]
+artifact = "bin/demo"
+`)
+    expect(issues).toEqual([
+      'line 8: [skills.ki-repo-tools.assembled] groups fields in a subtable; use a subtable only for a data map, and put fixed keys in [skills.ki-repo-tools]'
+    ])
+  })
+
   test('reserves skill subtables for data maps and leaves only the trade-policy territory alone', () => {
     const issues = inspectConfigurationLayout(`${header}[repo]
 

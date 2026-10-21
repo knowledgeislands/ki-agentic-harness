@@ -117,7 +117,16 @@ A repository-specific check that is fast and check-only joins the gate as a crit
 
 ```toml
 [skills.ki-repo-tools]
-assembled = [{ artifact = "bin/demo", sources = ["src/demo.sh"], check = ["bin/assemble-demo", "--check"] }]
+
+[[skills.ki-repo-tools.assembled]]
+artifact = "bin/demo"
+sources = [
+  "src/demo.sh",
+]
+check = [
+  "bin/assemble-demo",
+  "--check",
+]
 ```
 
 The check's program must be a git-tracked executable regular file whose resolved path stays inside the repository, including through parent-directory symlinks. The audit freezes the current Git index and reads the declaration, checker, artefact and sources from a disposable checkout of its raw blobs, without working-tree attributes or checkout filters, then runs the check there without a shell under a 60-second timeout. The check must work from repository files alone, without untracked dependencies or Git metadata; its hook Git environment is cleared. Unstaged checker or input edits cannot conceal a staged mismatch. Declared inputs must also resolve inside that indexed checkout. A non-zero exit, timeout, unsafe path or unresolved index fails the criterion, and the disposable checkout is removed. Findings cover `.ki.toml`, the checker, the artefact and each listed source, so staging any of them exposes a mismatch to the focused audit. Without an indexed declaration `ASSEMBLE-1` is not applicable.

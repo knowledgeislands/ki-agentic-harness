@@ -212,7 +212,8 @@ const DATA_MAPS = new Set([
 const EXEMPT_SUBTABLES = new Set(['ki-trades.territory'])
 
 const KEY = String.raw`(?:"([^"\\]+)"|'([^']+)'|([A-Za-z0-9_-]+))`
-const SUBTABLE = new RegExp(String.raw`^\[\[?\s*skills\s*\.\s*${KEY}\s*\.\s*${KEY}`)
+// Array-of-tables headings declare records, not fixed-field grouping subtables.
+const SUBTABLE = new RegExp(String.raw`^\[\s*skills\s*\.\s*${KEY}\s*\.\s*${KEY}`)
 
 const subtableIssue = ({ code, line }: SourceLine): string | undefined => {
   const match = code.match(SUBTABLE)
@@ -227,7 +228,7 @@ const subtableIssue = ({ code, line }: SourceLine): string | undefined => {
 /**
  * Mechanical layout rules every `.ki.toml` shares: exactly one blank line before each table heading
  * and banner, arrays written one element per line with a trailing comma, and `[skills.ki-trades]` last
- * and skill subtables reserved for data maps.
+ * and ordinary skill subtables reserved for data maps; arrays of record tables remain valid.
  */
 export const inspectConfigurationLayout = (text: string): readonly string[] => {
   const lines = sourceLines(text)
