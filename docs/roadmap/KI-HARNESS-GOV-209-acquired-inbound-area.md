@@ -4,14 +4,15 @@ area: GOV
 title: "+/_ACQUIRED/ inbound area"
 kind: deliver
 purpose: governance
+size: m
 component: repo-structure
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-18T00:40:08Z
-updated_at: 2026-10-20T04:14:07Z
+updated_at: 2026-10-21T13:15:45Z
 ---
 
 # KI-HARNESS-GOV-209: +/_ACQUIRED/ Inbound Area
@@ -33,31 +34,40 @@ Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist s
 
 ## Current state
 
-Captured only, at `next`, on Kris's direction. Not planned, not ready; no scaffold or guidance is written. This is a standalone harness record with no coordinating Project: the Knowledge acquisition work that captured it finished on Kris's word of 20 October 2026. The port side now lives in Acquire's [dispatch guide](/Users/krisbrown/workspaces/personal/acquire/docs/guides/operator/dispatch.md), under which a delivery creates a receiver's missing `+/_ACQUIRED/`, so the scaffold is not a precondition for dispatch. That guide sets the delivery folder layout, and this record follows it when planned. On 20 October Kris dropped the return route: delivery is acceptance, a misdelivered capture is dealt with case by case, and the receiver has no `returned <reason>` mark.
+Ready under Kris's 21 October 2026 GOV209-OWNER a) decision and the 14:11 BST unattended grant, delivered by the designated harness writer wow-day-gov-209. The unchanged baseline passes the offline work-selector, roadmap, skill, harness, test and type gates; the roadmap's existing migration warnings are covered by the pre-existing-warnings decision. The principal overlay currently has no acquired scaffold or automatic conform writes.
+
+The 20 October decision supersedes the historical return route: delivery is acceptance and a misdelivery is handled case by case. Acquire's dispatch guide supplies the delivery layout: one folder per delivery, containing a whole capture package or several whole packages, with original names and bytes and no extra manifest, dispatch ID or ledger. The scaffold is not a dispatch precondition because Acquire can create the directory.
 
 ## Steps
 
-- [ ] Plan: take the delivery folder layout from Acquire's [dispatch guide](/Users/krisbrown/workspaces/personal/acquire/docs/guides/operator/dispatch.md).
-- [ ] Write the scaffold README and its template.
-- [ ] Add receiver triage guidance to `ki-repo-kb`, with rubric coverage for the scaffold where the audit can check it.
+- [ ] Add the exact `+/_ACQUIRED/README.md` template owned by `ki-repo-kb-principal` and document its lifetime while the overlay is declared.
+- [ ] Add a principal audit criterion and native conform proposal to create or restore that README, refusing unsafe paths and preserving every delivery packet.
+- [ ] Add receiver triage guidance to `ki-repo-kb`: file the packet, turn it into work through the selected adapter, or park it locally; write nothing into the port and add no return marker.
+- [ ] Test missing, canonical and drifted scaffolds, unsafe ancestors and leaves, read-only audit, draft-only conform and packet preservation; regenerate the rubric and capability catalogue.
+- [ ] Run offline harness tests, TypeScript and focused work, roadmap, skills, authoring and harness audits; retain baseline warnings separately and prepare the independent-review packet without acceptance.
 
 ## Files touched
 
-To be set when planned.
+- This existing roadmap record.
+- `skills/repo-structure/ki-repo-kb-principal/SKILL.md`, `references/standards-principal.md` and generated `references/rubric.md`.
+- `skills/repo-structure/ki-repo-kb-principal/assets/templates/acquired/README.md`.
+- The principal overlay's `scripts/rubric/contexts/principal.ts`, `scripts/rubric/items/principal.ts` and `scripts/rubric/items/index.test.ts`.
+- `skills/repo-structure/ki-repo-kb/SKILL.md` and a focused receiver-triage reference.
+- Generated `skills/README.md` only if its declared ownership projection changes.
 
 ## Verify
 
-To be set when planned.
+Run the harness's `bun run test`, then `bunx tsc --noEmit`, then sequential focused `ki repo audit --skill <skill>` checks for `ki-work`, `ki-work-roadmap`, `ki-skills`, `ki-authoring` and `ki-repo-harness`. Run the source catalogue's fixture tests for principal AUDIT and CONFORM behaviour, verify the generated principal rubric and use an isolated declared-principal fixture for hosted audit and dry-run conform. All commands run without network in a fresh copy of the prepared audit home, including its Capital registrations and worktree repair. Commit hooks stay enabled. An unchanged baseline warning passes under Kris's explicit decision; a new failure does not.
 
 ## Dependencies / blocks
 
-Related, not blocking: acquire's dispatch record, [KB-ACQUIRE-007 (pruned)](https://github.com/krisb/acquire/blob/7f43c67f899df0554de647920ec42609e32001b5/docs/roadmap/KB-ACQUIRE-007-dispatch-packet-push-and-return.md), "Dispatch packet, push and return".
+The scaffold owner decision is settled: `ki-repo-kb-principal` requires the exact README while declared and restores it through CONFORM; `ki-repo-kb` owns receiver triage. Kris's direct instruction authorises planning to Ready and delivery within this boundary. No open delivery dependency remains. The eight principal repositories' eventual conform runs are receiver-owned work, outside this delivery; this run only lists them in its report.
 
 ## Documentation impact
 
 ### Decision Records
 
-None: the decision is Kris's 18 October 2026 DISPATCH-PUSH and RETURN-ROUTE answer.
+No new Decision Record: the owner decisions are recorded in the Ways of working decisions log. The settled scaffold ownership and the superseding delivery-is-acceptance decision are preserved in this record and the skill standards.
 
 ### Specifications
 
@@ -72,5 +82,9 @@ None.
 None beyond this record.
 
 ## Discussion
+
+### Scaffold ownership and authority
+
+Kris took GOV209-OWNER a) on 21 October 2026: `ki-repo-kb-principal` owns, requires and conforms the exact `+/_ACQUIRED/README.md` while its overlay is declared; `ki-repo-kb` carries the receiver dispositions. This plan applies that decision rather than making every base carry the scaffold. The port alone delivers packets; the receiver may triage its own copies under local governance. The scaffold does not grant dispatch, push, canonical adoption or cross-repository authority. Independent review is required before acceptance.
 
 Captured from the `knowledge-acquisition` thread's inbound-record run. The receiver writes nothing back to the port, which keeps the port the single writer across repositories.
