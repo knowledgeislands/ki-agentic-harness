@@ -6,13 +6,12 @@ kind: deliver
 purpose: governance
 size: m
 component: repo-structure
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: f59c00698d4535b617746a67e6d71c2ae98c1f4c
 created_at: 2026-10-18T00:40:08Z
-updated_at: 2026-10-21T13:21:47Z
+updated_at: 2026-10-21T13:31:33Z
 ---
 
 # KI-HARNESS-GOV-209: +/_ACQUIRED/ Inbound Area
@@ -34,7 +33,7 @@ Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist s
 
 ## Current state
 
-Delivered for independent review under Kris's 21 October 2026 GOV209-OWNER a) decision and the 14:11 BST unattended grant, delivered by the designated harness writer wow-day-gov-209. The unchanged baseline passes the offline work-selector, roadmap, skill, harness, test and type gates; the roadmap's existing migration warnings are covered by the pre-existing-warnings decision. At the immutable starting baseline, the principal overlay had no acquired scaffold or automatic conform writes. This delivery adds both without conforming a real principal.
+Accepted after independent review by wow-day-gov-209-accept under Kris's 21 October 2026 GOV209-OWNER a) decision and the 14:11 BST extension of their 01:55 BST grant. The unchanged baseline passes the offline work-selector, roadmap, skill, harness, test and type gates; the roadmap's existing migration warnings are covered by the pre-existing-warnings decision. At the immutable starting baseline, the principal overlay had no acquired scaffold or automatic conform writes. This delivery adds both without conforming a real principal.
 
 The 20 October decision supersedes the historical return route: delivery is acceptance and a misdelivery is handled case by case. Acquire's dispatch guide supplies the delivery layout: one folder per delivery, containing a whole capture package or several whole packages, with original names and bytes and no extra manifest, dispatch ID or ledger. The scaffold is not a dispatch precondition because Acquire can create the directory.
 
@@ -114,7 +113,17 @@ The change satisfies the decided ownership boundary: only declared principal ove
 
 Delivered one governed scaffold, its audit and bounded repair, and receiver triage, with passing source and hosted checks. No work was accepted or pruned. The reusable guidance is already in its owning skill standards; no further learning promotion or new roadmap record is proposed.
 
+## Done
+
+Accepted 21 October 2026 by wow-day-gov-209-accept under Kris's explicit grant on the review packet above.
+
 ## Discussion
+
+### Independent acceptance
+
+Reviewed the complete plan and delivery range `d60b7b9381f83dfc20c01e6636d1ce274c899988..dc8ecc44d3b1d59ea8f831cac6281ab64e8dfc3d` against the Ready plan and GOV209-OWNER a), independently of its author. No delivery defect was found. Independent offline checks passed: 1,414 tests, TypeScript, the five focused audits named in Verify, generated principal rubric synchronisation, and hosted missing/canonical scaffold and dry-run preservation checks in a disposable principal. The template is a formatter fixed point. Full candidate audit: zero failures and 72 pre-existing warnings (LIFECYCLE-1, DIAG-4, CLEAN-7, MATURITY-1, COORD-8 and ITEM-2); comparison with the immutable Ready baseline introduced no warning groups. The historical comparison's COORD-15 failure and extra CLEAN-2 warning were consequences of temporarily checking out the old baseline behind current main; restoring the candidate resolved that setup state.
+
+Kris's 21 October 2026 01:55 BST grant says, "get as many things through to approved and even done if you want, and get them pushed"; their 14:11 BST instruction extends that grant to the answered work for the afternoon. The [Ways of working decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.ways-of-working/decisions.md) records both grants and GOV209-OWNER a). The explicit acceptance brief applies that authority to this record only and overrides the standing prohibition on accepting work records. The reviewed implementation is unchanged; the terminal record is retained, and receiver conformance remains receiver-owned.
 
 ### Scaffold ownership and authority
 
