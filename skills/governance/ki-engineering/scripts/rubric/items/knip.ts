@@ -11,7 +11,8 @@ export const KNIP: RubricFamily<EngineeringRubricContext, KnipRubricContext> = {
     {
       code: 'KNIP-1',
       title: 'Knip configuration exists',
-      description: '`knip.json` exists with per-repo entry points and ignores.',
+      description:
+        '`knip.json` exists with per-repo entry points and ignores; a newly scaffolded configuration immediately reads both committed hooks through the Husky plugin.',
       sources: ['standards-engineering.md'],
       mechanical: {
         level: 'FAIL',

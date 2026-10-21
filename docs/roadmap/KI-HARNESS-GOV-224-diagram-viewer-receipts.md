@@ -7,13 +7,13 @@ component: governance
 priority: high
 size: m
 kind: deliver
-status: in-progress
+status: awaiting-review
 horizon: now
 blocks: []
 blocked_by: []
-baseline_ref: 46f4e14d8f9efffa34cb78f166c9c84aa0d54151
+baseline_ref: 7dc5bb8aa8d8a0e0fce3a34084a90260033ba643
 created_at: 2026-10-19T19:10:30Z
-updated_at: 2026-10-20T21:16:23Z
+updated_at: 2026-10-21T02:56:19Z
 transferred_from: ki-principal ki.observatory OVERLAY-SYNC, 2026-10-19
 ---
 
@@ -54,7 +54,7 @@ A date or a viewer's presence cannot prove agreement; content hashes can.
 - [x] Receipt: `build-html.ts` writes `docs/diagrams/<slug>.receipt.json` beside each committed viewer, after the copy, holding the schema version, the slug and type, the source and HTML file names with their SHA-256 and byte counts, and the renderer's name and version from Archify's `package.json`, with no local path; it refuses when Archify's own delivery receipt disagrees with the bytes it hashed.
 - [x] Check: one pure `receiptFindings` in the rubric context names each `commit_html` entry whose receipt is missing, unreadable, misnamed or mismatched against the current source and HTML; DIAG-1 admits `<slug>.receipt.json` only under `commit_html = true`.
 - [x] Rubric: a new DIAG-6, FAIL, each committed viewer carries a receipt matching its source and HTML, run on committed files alone; `last_checked` plays no part.
-- [ ] Commit check: `build-html.ts --check` runs the same `receiptFindings` without Archify, and the pre-commit hook runs it on the staged snapshot whenever `docs/diagrams/` or the `ki-diagrams` scripts are staged.
+- [x] Commit check: `build-html.ts --check` and DIAG-6 share the receipt checker with canonical `ki-repo-harness` GATE-2. The unchanged canonical pre-commit hook runs its focused staged audit; GATE-2 reads exact index blobs and refuses stale source, stale viewer, changed or missing receipt, and missing required files while accepting a matching staged snapshot despite different unstaged files.
 - [x] Tests: fixture tests for the receipt writer's shape, a matching receipt, a missing one, a stale source, a stale viewer, a stray receipt and the `--check` exit code.
 - [x] Standard and skill text: Committed forms gains the receipt as a fourth form, the build command and the mechanical checker name it, and `rubric.md` gains DIAG-6.
 - [x] Re-render the 12 manifest entries through `bun run self:diagrams:html`, so each committed viewer carries a matching receipt.
@@ -106,40 +106,39 @@ The receipt shape is the input the Observatory's Interactive button in apps-obse
 
 ### Delivered
 
-The approved boundary, against baseline `46f4e14d8f9efffa34cb78f166c9c84aa0d54151`: the build command writes a portable `<slug>.receipt.json` beside each committed viewer; DIAG-6 fails on a missing or mismatched receipt from committed files alone; the pre-commit hook runs the same check on the staged snapshot; and the 12 manifest entries are re-rendered with matching receipts. `last_checked`, the 5G Emerge sites, the Observatory's Interactive button and Archify itself are untouched.
+GOV-224's staged-snapshot enforcement has been repaired within this existing record. The rework baseline is `7dc5bb8aa8d8a0e0fce3a34084a90260033ba643`; the original receipt delivery used baseline `46f4e14d8f9efffa34cb78f166c9c84aa0d54151`. The final combined candidate is recorded in the [run report](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-night-harness-queue-d.report.md) for fresh independent acceptance. No acceptance, browser rendering, estate rollout or release is included.
 
 ### Change Summary
 
-- `skills/governance/ki-diagrams/scripts/rubric/contexts/diagrams.ts`: the `DiagramReceipt` shape, `fingerprint`, `diagramReceipt` and `receiptFindings`, a `receipts` context, and DIAG-1 admitting `<slug>.receipt.json` only under `commit_html = true`.
-- `skills/governance/ki-diagrams/scripts/rubric/items/diagrams.ts`: DIAG-6, FAIL, diagnostic remediation; DIAG-1's description names the receipt.
-- `skills/governance/ki-diagrams/scripts/build-html.ts`: `archifyRenderer` reads the renderer's name and version from Archify's `package.json`; `committedReceipt` builds the receipt and refuses when Archify's own `<slug>.delivery.json` vouches for other bytes; the build writes the receipt with the viewer; `--check` verifies receipts without Archify.
-- `.githooks/pre-commit`: `check_staged_receipts` runs the staged snapshot's own `build-html.ts --check` whenever `docs/diagrams/` or the `ki-diagrams` skill is staged. It runs the staged code rather than `ki repo audit --skill ki-diagrams`, so the change lands without the installed harness already knowing the receipt.
-- Tests: `build-html.test.ts` covers the receipt shape, the delivery cross-check and the `--check` exit code; `diagrams.test.ts` covers a matching receipt, a missing one, a changed source and viewer, malformed and misnamed receipts, and a stray receipt; `items/index.test.ts` and the `ki-skills` remediation inventory count DIAG-6, a justified report-only boundary since its fix is a re-render.
-- `skills/governance/ki-diagrams/references/standards-diagrams.md` and `SKILL.md`: the receipt as a fourth committed form, the build command's receipt and `--check`, and the manifest's `commit_html` row; `references/rubric.md` gains DIAG-6, written to the item's text because `ki dev skill rubric` renders only from the dev-linked main checkout.
-- `docs/diagrams/`: 12 new receipts. Nine viewers changed bytes: their sources are unchanged since they were last rendered under Archify 3.0.1, and re-rendering under 3.2.0 gives new viewers; `skill-map`, `skill-area-coordination` and `skill-area-acquire` re-rendered byte for byte. The SVGs were not re-exported.
+- `ki-diagrams` publishes `diagram-receipts` and `staged-diagram-receipts` shared modules. Existing DIAG-6 and `build-html.ts --check` retain the same receipt comparison through their existing exports.
+- `ki-repo-harness` materialises those declared modules and adds FAIL-level GATE-2 to the focused audit already called by both canonical hooks. It reads the staged adoption declaration, manifest and regular-file blobs, compares source and viewer hashes and byte counts, refuses missing required files, and attaches findings to staged diagram paths so verdict scoping preserves rejection.
+- Canonical hook bytes remain unchanged; no local hook divergence or generic host-snapshot claim is introduced. The harness standard, generated rubric and root orientation describe the native integration.
+- Disposable fixture coverage includes stale and missing source, viewer and receipt, malformed or missing manifest, unsafe staged files, and a matching staged snapshot despite different or missing working files. Actual package-hook proof uses the installed `ki` under the offline audit home and proves all four required rejection cases plus valid-snapshot acceptance.
 
 ### Verification
 
-- `bun test skills/governance/ki-diagrams`: 32 pass, 0 fail.
-- `bunx tsc --noEmit`: passes.
-- `bun run test`: 1308 pass, 4 fail; the four hook tests fail the same way on the untouched baseline, as recorded for [KI-HARNESS-GOV-219 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/17166cf2e5f1f8ef7823cb3d22ad721d70db33b1/docs/roadmap/KI-HARNESS-GOV-219-feedback-work-folder-kind.md).
-- `bun skills/governance/ki-diagrams/scripts/build-html.ts --check`: 12 committed viewer receipts match; on a copy with one byte appended to `skill-map.html` it refuses, naming the viewer.
-- `bunx @biomejs/biome check skills/governance/ki-diagrams/scripts`: clean. `sh -n .githooks/pre-commit`: clean.
-- `ki repo audit --skill ki-skills`: PASS. `--skill ki-work-roadmap`: FAIL only on ITEM-3 for other drafts adopted into Now and not yet planned. `--skill ki-diagrams`: the installed harness, still the main checkout's, reads the 12 receipts as stray under its old DIAG-1, as planned; that clears once this change is integrated.
+- Untouched baseline: `bun run test` passed 1395 tests, TypeScript passed, and the isolated offline whole-repository audit had no failures.
+- `bun run test`: 1405 pass, 0 fail.
+- `bunx tsc --noEmit`: pass.
+- `bun test skills/governance/ki-diagrams`: 57 pass, 0 fail.
+- `bun skills/governance/ki-diagrams/scripts/build-html.ts --check`: all 12 committed viewer receipts match.
+- Sequential focused audits for `ki-engineering`, `ki-repo-harness`, `ki-diagrams`, `ki-skills`, `ki-authoring` and `ki-work-roadmap`: all pass without failures.
+- Whole-repository audit in this run's offline isolated home: PASS=29 WARN=6 FAIL=0; existing warnings are retained rather than suppressed.
+- `git diff --check`: pass.
+- Actual canonical package hook, with the installed `ki` and network denied: rejects stale staged source, stale staged viewer, changed staged receipt and missing staged receipt; accepts a matching staged snapshot while source, viewer and receipt working files differ. Each rejected case reports GATE-2. The [proof receipt](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-night-harness-queue-d.hook-proof.json) and individual logs survive beside the run report.
+- New KNIP-1 repository fixture: the creation scaffold writes both committed-hook paths immediately, and an actual Knip scan recognises the hook-only tool dependencies without another conform pass.
 
 ### Outstanding concerns
 
-- Until integrated and installed, `ki repo audit --skill ki-diagrams` on this repository fails DIAG-1 on the receipts; the pre-commit check does not, since it runs the staged code.
-- The nine SVGs were exported from the Archify 3.0.1 viewers. Their sources have not changed, so they still draw the same diagram, but they were not re-exported under 3.2.0; whether to re-export is a refresh choice outside this record.
-- The four pre-existing hook-test failures stand outside this record.
+Fresh independent acceptance is still required for the exact combined candidate. Existing diagram freshness and other baseline warnings remain separate from receipt validity. The brief's isolated-home audit procedure was retained for this run. F5's committed implementation and boundary proof were inspected in tools-ki (`5889f847`, `fcc8876a`, `4a02b008`); this receipt repair does not retire that separate audit procedure.
 
 ### Post-change review
 
-The goal is met: a committed viewer can now be proved against its source, and a stale one is caught at audit and at commit; the re-render itself showed nine viewers had been produced by an older renderer. Scope held: no `last_checked` change, no other repository, no Archify change. Regression risk is moderate and bounded: DIAG-1 now admits one more file kind only under `commit_html`, DIAG-6 is new, and the hook gains one check that fails closed without `bun`. Ready for acceptance.
+The failed acceptance defect is addressed through the canonical native hook contract. Receipt checks use the same shared implementation for working-file and index evidence; staged evidence is never repaired from unstaged bytes. The host continues to own verdict scoping and reporting. No viewer, receipt or `last_checked` value was regenerated because the receipt schema and rendered bytes have not changed. All required delivery gates pass; the exact combined candidate is ready for fresh independent acceptance.
 
 ### Mini recap
 
-Receipts of source and HTML hashes now sit beside each of the 12 committed viewers, DIAG-6 and the commit hook check them, and the tests and type check pass, with four pre-existing hook-test failures and the planned stray reading under the installed harness until integration. Learning routes, not promoted: whether the receipt should also carry the SVG export, and whether `ki dev skill rubric` should render from the current worktree.
+GOV-224 now has a canonical staged receipt gate and regression fixtures, preserving the existing receipt format and record. The combined delivery also contains the separately authorised KNIP-HUSKY creation-scaffold correction, with no new roadmap record; F6 wording already matches. Learning remains with the owning skill standards rather than a new capture.
 
 ## Discussion
 

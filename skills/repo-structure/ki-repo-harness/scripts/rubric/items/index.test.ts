@@ -127,6 +127,7 @@ test('the catalogue preserves the current compatible-harness criteria', () => {
     'LONG-1',
     'COLL-1',
     'GATE-1',
+    'GATE-2',
     'RUBRIC-1'
   ])
   expect(new Set(codes).size).toBe(codes.length)

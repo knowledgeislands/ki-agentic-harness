@@ -3,6 +3,7 @@ name: ki-diagrams
 ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: []
+ki-shared-modules: [diagram-receipts, staged-diagram-receipts]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Create, audit or refresh a repository's living Archify diagrams: committed sources and SVGs, the

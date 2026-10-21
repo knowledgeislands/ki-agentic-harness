@@ -144,3 +144,5 @@ Both are optional prerequisites. AUDIT, and the build command's `--check`, read 
 ## Island diagrams
 
 A knowledge-base island keeps diagrams too, under the same tool, types, forms, manifest and privacy rules. An island diagram explains a model or a process rather than code, so its source and manifest cite the notes it draws from in place of traced source files: `traced` lists those notes' island-relative paths, and the audit's freshness check reads their history as it reads code. Its `stale_when` names the changes to those notes that would make it untrue. An island usually embeds its diagrams in notes and reports rather than serving a viewer, so a static `light` or `ki` form often suits it better than `dual`.
+
+The canonical harness commit gate consumes the published `diagram-receipts` and `staged-diagram-receipts` modules under `ki-repo-harness` GATE-2. It compares index blobs using the same receipt checker as DIAG-6; working files never supply staged evidence, and a missing staged source or viewer is refused alongside missing or mismatched receipts. Ordinary DIAG-6 continues to check the supplied repository files.

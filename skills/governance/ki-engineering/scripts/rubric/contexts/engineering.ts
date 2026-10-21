@@ -252,7 +252,8 @@ const defaults = {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["src/index.ts"],
   "project": ["src/**/*.ts"],
-  "ignoreExportsUsedInFile": true
+  "ignoreExportsUsedInFile": true,
+  "husky": { "config": [".githooks/pre-commit", ".githooks/commit-msg"] }
 }
 `
 } as const

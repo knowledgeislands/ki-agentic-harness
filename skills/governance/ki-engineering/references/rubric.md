@@ -168,7 +168,7 @@ The read-only code-quality gate and shared formatter/linter configuration.
 
 The unused-code configuration and gate.
 
-- **KNIP-1 [M] — Knip configuration exists** — `knip.json` exists with per-repo entry points and ignores. (standards-engineering.md)
+- **KNIP-1 [M] — Knip configuration exists** — `knip.json` exists with per-repo entry points and ignores; a newly scaffolded configuration immediately reads both committed hooks through the Husky plugin. (standards-engineering.md)
   - _Remediation:_ automatic
 - **KNIP-2 [M + J] — Knip gate passes** — `bunx knip` exits clean. (standards-engineering.md)
   - _Remediation:_ guarded — Review each reported unused symbol or dependency and make the intended source or configuration change, then rerun Knip.

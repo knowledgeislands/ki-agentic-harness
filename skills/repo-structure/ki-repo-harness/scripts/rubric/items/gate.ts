@@ -20,11 +20,28 @@ const GATE_1: RubricItem<HarnessGateContext> = {
   }
 }
 
+const GATE_2: RubricItem<HarnessGateContext> = {
+  code: 'GATE-2',
+  title: 'Staged diagram viewer receipts',
+  description:
+    'For a staged repository declaring ki-diagrams, every commit_html viewer has a receipt matching the exact staged source and HTML; missing or unsafe staged files and unreadable snapshots fail closed. Unstaged bytes never supply or repair this evidence.',
+  sources: [SOURCE],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Rebuild the viewer and receipt, stage their matching source, HTML and receipt, then rerun the canonical commit gate.'
+    },
+    audit: { phase: 'INSPECT', run: (context) => context.receipts }
+  }
+}
+
 export const GATE: RubricFamily<HarnessRubricContext, HarnessGateContext> = {
   code: 'GATE',
   title: 'Commit gate',
   description: 'What a harness commit gate runs.',
   standard: SOURCE,
   selectContext: (context) => context.gate,
-  items: [GATE_1]
+  items: [GATE_1, GATE_2]
 }

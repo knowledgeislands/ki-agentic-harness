@@ -1,11 +1,13 @@
 import { existsSync, lstatSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
+import { inspectStagedDiagramReceipts } from '../../shared/staged-diagram-receipts.ts'
 
 const HOOK = '.githooks/pre-commit'
 
 export type HarnessGateContext = {
   hook: readonly AuditOutcome[]
+  receipts: readonly AuditOutcome[]
 }
 
 const SKILL_FLAG = /--skill[=\s]+ki-repo-harness(?![\w-])/
@@ -26,7 +28,7 @@ const runsFocusedAudit = (lines: readonly string[]): boolean => {
 }
 
 /** What a harness commit gate runs; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. */
-export const inspectCommitGate = (root: string): HarnessGateContext => {
+const inspectHook = (root: string): Pick<HarnessGateContext, 'hook'> => {
   const directory = join(root, '.githooks')
   const path = join(root, HOOK)
   if (!existsSync(path)) {
@@ -82,4 +84,19 @@ export const inspectCommitGate = (root: string): HarnessGateContext => {
           }
         ]
       }
+}
+
+/** The canonical focused hook audits receipt bytes from the index, independent of working files. */
+export const inspectCommitGate = (root: string): HarnessGateContext => {
+  const snapshot = inspectStagedDiagramReceipts(root)
+  const receipts: AuditOutcome[] = !snapshot.applicable
+    ? [{ status: 'NOT_APPLICABLE', message: 'The staged repository does not declare ki-diagrams.' }]
+    : snapshot.findings.length === 0
+      ? snapshot.subjects.map((subject) => ({
+          status: 'PASS',
+          message: 'Staged diagram viewer receipts match their source and viewer bytes.',
+          subject
+        }))
+      : snapshot.subjects.map((subject) => ({ status: 'VIOLATION', message: snapshot.findings.join('; '), subject }))
+  return { ...inspectHook(root), receipts }
 }

@@ -5,7 +5,7 @@ ki-applicability: declaration-only
 ki-runtime-binding: true
 ki-depends-on: [ki-skills, ki-subagents, ki-decision-records, ki-work-roadmap]
 ki-optional-depends-on: [ki-diagrams]
-ki-shared-dependencies: [ki-skills:rubric]
+ki-shared-dependencies: [ki-skills:rubric, ki-diagrams:diagram-receipts, ki-diagrams:staged-diagram-receipts]
 contributes: [skills/README.md, '.githooks/pre-commit']
 description: >
   Audit or design a KI-compatible harness that publishes skills, subagents, evals, and hooks as a

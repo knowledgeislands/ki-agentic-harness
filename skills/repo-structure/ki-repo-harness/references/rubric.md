@@ -158,6 +158,8 @@ What a harness commit gate runs.
 
 - **GATE-1 [M] — Check-only harness commit gate** — Where a committed `.githooks/pre-commit` exists, it runs the focused `ki repo audit --skill ki-repo-harness --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-compatible-harness.md)
   - _Remediation:_ diagnostic — Copy the canonical pre-commit from `assets/githooks/`, then rerun the audit.
+- **GATE-2 [M] — Staged diagram viewer receipts** — For a staged repository declaring ki-diagrams, every commit_html viewer has a receipt matching the exact staged source and HTML; missing or unsafe staged files and unreadable snapshots fail closed. Unstaged bytes never supply or repair this evidence. (standards-compatible-harness.md)
+  - _Remediation:_ diagnostic — Rebuild the viewer and receipt, stage their matching source, HTML and receipt, then rerun the canonical commit gate.
 
 ## RUBRIC — Generated rubric publication
 
