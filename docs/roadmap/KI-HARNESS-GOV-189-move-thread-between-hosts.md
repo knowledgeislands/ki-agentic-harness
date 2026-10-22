@@ -13,7 +13,7 @@ blocked_by: []
 baseline_ref: db5e3cff2946beaa05bbf2f821dc7d93fb1daf97
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-22T02:03:54Z
+updated_at: 2026-10-22T02:10:51Z
 ---
 
 # Repository Level Check
@@ -111,7 +111,7 @@ The rule covers the decided resume, mark and departure triggers without introduc
 
 ### Mini recap
 
-Delivered the repository level check and visible behind findings, with source tests, type checking and hosted verification. Durable guidance is homed in its owning standard. No new work record, acceptance or pruning occurred.
+Delivered the repository level check and visible behind findings, with source tests, type checking and hosted verification. Durable guidance is homed in its owning standard. A follow-up adds navigation to the expanded source reference so the review repair introduces no long-reference warning. No new work record, acceptance or pruning occurred.
 
 ## Discussion
 

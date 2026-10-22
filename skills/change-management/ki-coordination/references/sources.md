@@ -10,6 +10,11 @@
 | `ki-tokenomics` | 2026-10-14 | The coordination model purpose a coordinating thread runs on |
 | `ki-work` | 2026-10-14 | The Project registry the state-of-play thread manages and labels resolve against |
 
+## Contents
+
+- [Last review](#last-review)
+- [Deferred host-move evidence](#deferred-host-move-evidence)
+
 ## Last review
 
 The 22 October 2026 overnight blind-review repair aligns both ordered active-banner definitions and the generated coordinator style with the approved `[behind]` rule and its resume, mark and departure triggers. Deferred host-move questions and 14 October transfer evidence are retained in the linked design notes. This is an in-house policy correction; no external source was contacted.
