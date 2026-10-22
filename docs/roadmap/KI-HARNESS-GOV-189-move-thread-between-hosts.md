@@ -1,26 +1,26 @@
 ---
 id: KI-HARNESS-GOV-189
 area: GOV
-title: move thread between hosts
+title: Repository level check
 project: mac-studio-setup
 kind: deliver
 priority: medium
 size: m
-horizon: next
-status: draft
+horizon: now
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: db5e3cff2946beaa05bbf2f821dc7d93fb1daf97
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-20T02:39:00Z
+updated_at: 2026-10-22T01:44:06Z
 ---
 
-# Move a Coordinating Thread to Another Host
+# Repository Level Check
 
 ## Goal
 
-A coordinating thread can move from one machine to another without waiting for its whole queue to drain: only the agents already running finish on the old host, and the queued work restarts on the new host from the work's work file.
+Before a cross-host resume, at every mark and before leaving a host, the coordinator checks the work's repositories against their remotes and carries unresolved behind findings visibly in its active banner.
 
 ## Context
 
@@ -36,43 +36,38 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 
 ## Boundary
 
-- In scope: a thread-move procedure in the `ki-coordination` standard, and whatever `ki-delegation` needs to say about the run's machine-local state when it moves; the level check below at resume on another Mac and at every mark, with its `[behind]` and `[unpushed]` banner items.
-- Out of scope: the `ki agent` queue export and re-import mechanics, and any `ki repo level` command, which belong to `tools-ki`; changes to `mgit` or `mcp-git-audit` themselves; host provisioning, which belongs to the Mac Studio Setup Project and Rig; any change to the skill made by this capture.
+- In scope: the decided repository level check in `ki-coordination`, its resume and mark entry points, and the `[behind]` housekeeping item.
+- Out of scope: queue export or re-import, moving briefs, host-bound runs, the old host's closing form, a new CLI command, live estate synchronisation, and changes to `ki-delegation`.
+
+Kris narrowed the record to this boundary on 22 October 2026 at 02:25 BST under GOV189-SCOPE a). The overnight brief authorises shaping and delivery within it; the broader earlier host-move proposal is deferred, not implemented by this record.
 
 ## Proposed rule
 
-1. **Hold, letting only running agents finish.** On the old host, the work moves to `on-hold`: stop launching, and let the agents already running finish and report.
-2. **Write queued work back into the work file.** Each queued agent's brief sits in `+/_WORK/<id>/briefs/<run>.md`, is named in the work file's Next steps as work to re-queue, and is removed from the old host's queue.
-3. **Commit and push the work folder.** The decisions log, reports and briefs already live in the tracked `+/_WORK/<id>/`, so this step is only its commit and push; nothing moves out of `~/.local/state/ki/agents/<run>/`, which keeps runtime files alone.
-4. **Start on the new host.** The new host runs the level check below and pulls every affected repository level, opens the Capital, re-queues from the work file's Next steps and pastes the thread's resume line.
-5. **Retire the old host's session.** The old session ends once the move is pushed and the new session has re-bootstrapped.
-6. **Close the old instance.** Once the handover has pushed, the instance left on the old host closes with no resume line and points to the host that took over. The 2026-10-14 decision named the DONE frame, which the work model's `finished` glyph banner supersedes; planning settles which form an old-host instance uses, since the work itself continues and is not finished.
+Run `mgit fetch` for the work's repositories, then read `mcp-git-audit`'s ahead and behind report, before cross-host resume, at each mark and before departure. Territory work checks its estate. Carry unresolved behind findings as `[behind]` housekeeping items in active banners. Handle ahead findings under the existing publication rules and failed checks as unknown. Dirty or diverged checkouts retain the existing owner escalation. On hold banners retain their existing form.
 
 ## Current state
 
-Checked on 20 October 2026 at `071567a1`. The `ki-coordination` standard has On hold and drain, the work package and the banner's housekeeping items, but no host-move procedure, no level check and no `[behind]` item. The decisions log, reports and briefs are tracked in `+/_WORK/<id>/`, so the decisions-log transfer gap observed on 14 October has closed for work that lives in a work package. The `ki agent` queue lives in machine-local state, and no command exports or re-imports it.
+The narrowed plan is approved by the 22 October overnight brief. The narrowed guidance is delivered from the immutable baseline in front matter. Baseline harness tests, TypeScript and full isolated audit pass; existing warnings are retained separately.
 
 ## Steps
 
-- [ ] Settle the two open questions under Discussion, queue export and host-bound agents, with the owner, and which closing form the old-host instance uses.
-- [ ] Add a Moving work to another host section to the `ki-coordination` standard carrying the proposed rule's six steps in work-model terms.
-- [ ] Add the level check at resume on another host and at every mark, and the `[behind]` housekeeping item beside `[unpushed]` in the Banner section.
-- [ ] Add to the `ki-delegation` background-run standard which state-folder files stay behind on a move and that queued briefs travel as tracked `briefs/<run>.md`.
-- [ ] Regenerate both skills' `rubric.md` where the published text they cite changes.
+- [x] Apply the owner's narrowed scope and preserve the broader host-move questions as deferred.
+- [x] Add the repository level rule, mark and resume pointers, and `[behind]` active-banner housekeeping item.
+- [x] Verify generated coordination surfaces and rubric, harness tests, TypeScript and focused audits; prepare the review packet.
 
 ## Files touched
 
-- `skills/change-management/ki-coordination/references/standards-coordination.md` and `rubric.md`
-- `skills/governance/ki-delegation/references/standards-background-runs.md` and `rubric.md`
+- This roadmap record.
+- `skills/change-management/ki-coordination/references/standards-coordination.md`.
+- Generated coordination surfaces or rubric only if their source projection changes.
 
 ## Verify
 
-- `bun run test` and `bunx tsc --noEmit` pass.
-- `ki dev skill rubric ki-coordination` and `ki dev skill rubric ki-delegation` leave no diff, and `ki repo audit --skill ki-coordination` and `--skill ki-delegation` report no FAIL here.
+Run `bun run test`, `bunx --no-install tsc --noEmit`, `ki dev skill generate ki-coordination`, `ki dev skill rubric ki-coordination`, and sequential focused audits for `ki-coordination`, `ki-skills`, `ki-authoring`, `ki-work` and `ki-work-roadmap`. Run the full isolated harness audit and the mandatory commit hooks. No live estate-level check is part of this documentation delivery.
 
 ## Dependencies / blocks
 
-The queue export and re-import mechanics belong to tools-ki; the standard can name the manual route, briefs re-queued from the work package's Next steps, until a command exists. Not blocking the Mac Studio Setup Project.
+No implementation dependency remains for the narrowed check. Queue transfer and host-bound run handling remain outside the approved boundary.
 
 ## Documentation impact
 
@@ -92,9 +87,35 @@ None in this repository; a host onboarding guide belongs to the Mac Studio Setup
 
 None.
 
+## Review
+
+### Delivered
+
+Delivered the 22 October narrowed level-check boundary from the immutable `baseline_ref`. No queue-transfer or host-retirement procedure was delivered, and no live estate operation was run.
+
+### Change Summary
+
+Added one repository-level-check section in the coordination standard, pointers at mark and cross-host pick-up, and the unresolved `[behind]` housekeeping item. Existing publication authority, dirty/diverged-checkout handling and On hold banner rules remain the governing constraints. Narrowed this record under Kris's GOV189-SCOPE answer; generated surfaces and rubric require no changes.
+
+### Verification
+
+`bun run test`: 1,414 pass, zero fail. `bunx --no-install tsc --noEmit`: pass. `ki dev skill generate ki-coordination` and `ki dev skill rubric ki-coordination`: in sync. Sequential focused audits for coordination, skills, authoring, work and roadmap, plus the full isolated harness audit and mandatory commit hooks, pass before publication. Existing fleet warnings are recorded separately from this contract; the initial authoring and roadmap checks identified contents-list indentation and an overlong title, both corrected before the final checks.
+
+### Outstanding concerns
+
+No unresolved concern in the narrowed delivery. Full host-move mechanics and the historical questions below are deferred; this delivery supplies no authority to execute them. Independent acceptance remains outstanding.
+
+### Post-change review
+
+The rule covers the decided resume, mark and departure triggers without introducing a command or automatic synchronisation. Ahead findings remain governed by the existing publication rule, and unknown checks cannot claim level. The change is ready for independent review within its narrowed scope.
+
+### Mini recap
+
+Delivered the repository level check and visible behind findings, with source tests, type checking and hosted verification. Durable guidance is homed in its owning standard. No new work record, acceptance or pruning occurred.
+
 ## Discussion
 
-### Open questions
+### Deferred host-move questions
 
 - How `ki agent` exports a queue and re-imports it on another host: whether the checkpoint carries the briefs themselves or only references to tracked brief files, and how a re-queue avoids a duplicate run if the old queue was not cleared.
 - Agents that must run on a specific host, for example work against a machine-local resource or a host-bound service: whether they stay queued on the old host, are held in the checkpoint with a host constraint, or block the move.
@@ -122,3 +143,7 @@ KI-HARNESS-GOV-187 makes the thread model and the issued banner normative in `ki
 ### Disposition, 20 October 2026
 
 Kris Brown answered HARNESS-TRIAGE on 20 October 2026 in the ways-of-working decisions log, "owner answers on the 03:08 BST send": "let's get the ball moving forwards", taken as a) with changes. Adopted into Next. Queue export and host-bound agents are still open, and it does not block the Mac Studio setup.
+
+### Narrowed delivery authority - 22 October 2026
+
+Kris took GOV189-SCOPE a) at 02:25 BST: narrow this record to the decided level check and `[behind]`. The overnight brief authorises delivery to awaiting review, local fast-forward integration and publication of this run's own verified commits. The queue-transfer and old-instance closing proposals above remain historical context and supply no implementation authority.

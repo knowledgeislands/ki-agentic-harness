@@ -50,6 +50,7 @@
   - [Acceptance bundles](#acceptance-bundles)
   - [Worktree sweep](#worktree-sweep)
   - [Pushing beneath other sessions](#pushing-beneath-other-sessions)
+  - [Repository level check](#repository-level-check)
   - [Keeping primary checkouts current](#keeping-primary-checkouts-current)
   - [Refreshing this guidance](#refreshing-this-guidance)
 - [Mechanical boundary](#mechanical-boundary)
@@ -272,6 +273,8 @@ Territory work opening a full summary:
 
 ## Decided
 ```
+
+An active banner also carries unresolved `[behind]` findings from the [repository level check](#repository-level-check), as housekeeping items without a holder.
 
 **Glyph banner.** The report closes, after `## Queries`, with the banner: one `###` heading, the glyph state and `· since <local time>`, the time of the last move; a blank line; one line of counts, each a glyph, a number and a view, joined by ` · `, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`, and, in Project work with roadmap records awaiting the owner's acceptance, `📥 <n> to accept` last, under the [owner queue](#coordinating-practices) cap; a blank line; and one Markdown list, each item `- [<state>] <what> · <holder> · since <time>`. The counts and the list say "with you", because they are views by holder; the heading gives the state in role words. List items come in this order and only where they apply: `[running]` and `[queued]` for each agent, the holder `run/<name>`; `[with you]` for each open Needs tag, the holder `owner`, oldest first; `[stuck]` and `[blocked]` with their holder; `[handoff]` for each item with other work, a run or a person; `[parked]` for parked queries or tangents; `[release]` on hold; then the housekeeping items, which name no holder: `- [committed] work folder`, or the `[uncommitted]` or `[blocked]` truth, `- [recovered] <UTC>` for the one report after a red x, `- [unlogged] decisions: <count>`, and in territory work the `[stranded]`, `[branch]` and `[stash]` findings of its [worktree sweep](#worktree-sweep). Nothing in the banner cites a decision number.
 
@@ -853,6 +856,8 @@ These rules apply to every coordinator: territory work and each piece of Project
 
 A recap is a plain-language roll-up for the owner of what has changed in the work's scope since its mark. Project work's scope is its Project; territory work's scope is only what it itself deals with, the records and decisions it raised or owns. A recap is distinct from `ki-recap`, which summarises one session at a lower level; the two share no format or procedure.
 
+At each mark, perform the [repository level check](#repository-level-check) before reporting the mark.
+
 - **Mark:** the point at which decisions are struck and the working area tidied, struck by the owner at a moment of their choosing or by a hold. Each piece of work has one mark, and striking a new one replaces it; Git holds the history of earlier marks. The state file's front matter keeps it as `mark: <UTC timestamp>`. The timestamp bounds the logbook, work-record transitions, background-agent reports and the decisions log, whose entries carry their own timestamps. The banner, the mark and the send line describe or date a decision and never cite a number, because a number, in Kris's words of 2026-10-14, "has no meaning to me because I don't know what the decision was ... and I don't know where the list is".
 - **Striking:** only the owner moves the mark, by saying "mark", or "recap and mark" to roll up and then re-strike, and a hold strikes one. Giving a recap does not move it. The coordinator then works the [decisions life cycle](#decisions-life-cycle) on the entries, [prunes its work folder](#pruning-the-work-folder), commits the work folder and confirms in one line.
 - **Shape:** a recap opens with the [report heading](#banner), its form line reading `**<glyph state> · Recap at <local time> · last mark <local time>**`. Beneath it is one [owner report](#owner-report): `Done` covers what was delivered, decided, started, stopped or blocked, and newly captured since the mark; `In Progress` what is running now; `Queries` every open query in full. It cites records by full identifier as links, with no tool output and no commit identifiers, and never points back to an earlier recap or Summary. It closes with the [glyph banner](#banner).
@@ -925,6 +930,8 @@ The work package alone says how work is picked up. Kris set the principle on 202
 | On hold | Only on `resume`, the release, or territory work's next steps naming it: put the parked queries back and continue from the next steps; a line routed meanwhile waits in `messages.md` without waking it |
 | Finished | Nothing resumes. Reopening is a new opener from territory work |
 
+Before resuming on another Mac, perform the [repository level check](#repository-level-check); do the same before leaving a host.
+
 **Pick-up reads.** Picking work up stays within the [turn budget](#coordinator-responsiveness), as Kris took PICKUP-READS on 19 October. One read of the package's files counts as one call: all five files at bootstrap and re-anchoring, and otherwise the four pick-up files, `state.md`, `messages.md`, `queries.md` and `decisions.md`, `work.md` being read again only when it has changed. A write to the package's files with a brief counts as one write set, so the five-call budget is not spent before the first launch. After bootstrap the coordinator reads only what changed since its last read, plus the entries that bear on the question, not every decision and query at each owner message. The owner report's `## Queries` is rendered from `queries.md`'s `## Open`.
 
 A restart prompt is the send line, verbatim; no session is given a bespoke prompt. Whatever must be done first on pick-up is an important `FIRST-STEP` line in `messages.md`. Work that others wait on writes `READY` into territory work's `messages.md`, and territory work then gives the owner each waiting piece's send line in its own order.
@@ -957,6 +964,14 @@ Several sessions commit into one checkout, so a session's commits can sit on top
 - **Commit:** every session, a coordinator or a background agent, commits its own work by explicit path, under the `ki-delegation` [coordination](../../../governance/ki-delegation/references/standards-background-runs.md#coordination) rules.
 - **Push:** before pushing it fetches and reads what lies between the remote branch and its own commits. When only its own commits are stacked there, it pushes fast-forward under its authority. When another session's commits are stacked with its own, it does not push them on its own account and leaves the push to the owner, who pushes when ready. It never force-pushes. Under PUSH-NOT-WITH-YOU of 2026-10-19 that wait is never put against the owner: it is not a `[with you]` item, a "with you" count or a query.
 - **Report:** owner reports, run reports and banners omit routine push state and other sessions' stacked commits. If a run's own unit could not be published because its push failed, its `## Done` names the affected unit and reason. A hold report keeps nothing about pushes beyond a failure.
+
+### Repository level check
+
+Before work resumes on another Mac, at every mark, and before leaving a host, check the work's repositories are level: run `mgit fetch` across those repositories, then read `mcp-git-audit`'s ahead and behind report. Use the repositories in the work's scope; territory work checks its estate. Fetch and inspection do not authorise a push or a change to another writer's working tree.
+
+Carry each repository that is behind its remote as `- [behind] <repository>: <count> commits` in the next active banner until a fresh check proves it level. Read ahead findings under [Pushing beneath other sessions](#pushing-beneath-other-sessions); an unpublished change must not disappear during a host handoff. A failed or unavailable check is unknown, never level: report the affected repository and what prevented the check. Reconcile a behind checkout only under [Keeping primary checkouts current](#keeping-primary-checkouts-current), leaving dirty or diverged checkouts for their owner. An On hold banner still follows its existing parked-and-release form.
+
+Kris approved this check on 18 October 2026, “sync guard. Yeah, got your recommendation”, and narrowed the delivery to the level check and `[behind]` on 22 October 2026. Queue transfer, host-bound runs and the old session's closing form remain outside this rule.
 
 ### Keeping primary checkouts current
 
