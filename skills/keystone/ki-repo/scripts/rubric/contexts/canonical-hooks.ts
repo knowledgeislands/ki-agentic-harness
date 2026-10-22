@@ -119,14 +119,17 @@ const refusal = (hook: HookName, tools: readonly string[], packaged: boolean): s
   ]
 }
 
-const QUIET_AUDIT = [
-  '# The focused shape audit, check-only over the staged paths; on a failure it runs again in full.',
-  'quiet_audit() {',
-  '  ki repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0',
-  '  ki repo audit --repo "$root" --staged "$@"',
-  '  return 1',
-  '}'
-]
+const quietAudit = (skill: string): string[] => {
+  const command = skill === 'ki-repo' ? 'KI_REPO_OFFLINE=1 ki' : 'ki'
+  return [
+    '# The focused shape audit, check-only over the staged paths; on a failure it runs again in full.',
+    'quiet_audit() {',
+    `  ${command} repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0`,
+    `  ${command} repo audit --repo "$root" --staged "$@"`,
+    '  return 1',
+    '}'
+  ]
+}
 
 const header = (hook: HookName, shape: RepositoryShape, variant: HookVariant): string[] => [
   '#!/bin/sh',
@@ -150,7 +153,7 @@ const preCommit = (shape: RepositoryShape, variant: HookVariant, block: ShapeBlo
     lines.push(...refusal('pre-commit', external, false), ...PATH_LINES)
   } else lines.push(...refusal('pre-commit', ['rumdl', ...block.tools, ...(block.audit ? ['ki'] : [])], false))
   lines.push(...(packaged ? PACKAGE_LINES : MARKDOWN_LINES), ...block.lines)
-  if (block.audit) lines.push(...QUIET_AUDIT, `quiet_audit --skill ${block.audit} || exit 1`)
+  if (block.audit) lines.push(...quietAudit(block.audit), `quiet_audit --skill ${block.audit} || exit 1`)
   return `${lines.join('\n')}\n`
 }
 

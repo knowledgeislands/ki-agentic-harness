@@ -25,8 +25,8 @@ lint-staged --quiet || exit 1
 syncpack format --check || exit 1
 # The focused shape audit, check-only over the staged paths; on a failure it runs again in full.
 quiet_audit() {
-  ki repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0
-  ki repo audit --repo "$root" --staged "$@"
+  KI_REPO_OFFLINE=1 ki repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0
+  KI_REPO_OFFLINE=1 ki repo audit --repo "$root" --staged "$@"
   return 1
 }
 quiet_audit --skill ki-repo || exit 1

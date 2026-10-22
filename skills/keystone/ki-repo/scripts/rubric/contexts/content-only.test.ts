@@ -9,7 +9,7 @@ afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })
 })
 
-const fixture = (hosted: boolean) => {
+const fixture = (hosted: boolean, offline = false, flags: readonly string[] = []) => {
   const root = mkdtempSync(join(tmpdir(), 'ki-content-only-'))
   roots.push(root)
   const repository = join(root, 'repository')
@@ -55,12 +55,17 @@ console.error('Unexpected fixture command',JSON.stringify(args));process.exit(97
   const runner = join(root, 'runner.ts')
   writeFileSync(
     runner,
-    `import {collectAuditFindings} from ${JSON.stringify(join(import.meta.dir, 'audit.ts'))};\nconsole.log(JSON.stringify(await collectAuditFindings([${JSON.stringify(repository)}])));\n`
+    `import {collectAuditFindings} from ${JSON.stringify(join(import.meta.dir, 'audit.ts'))};\nconsole.log(JSON.stringify(await collectAuditFindings(${JSON.stringify([...flags, repository])})));\n`
   )
   const report = JSON.parse(
     execFileSync(process.execPath, [runner], {
       encoding: 'utf8',
-      env: { ...process.env, PATH: `${bin}:${process.env.PATH}`, KI_FIXTURE_REQUESTS: requests }
+      env: {
+        ...process.env,
+        PATH: `${bin}:${process.env.PATH}`,
+        KI_FIXTURE_REQUESTS: requests,
+        KI_REPO_OFFLINE: offline ? '1' : ''
+      }
     })
   ) as { findings: { code: string; message: string }[] }
   const calls = (() => {
@@ -102,5 +107,34 @@ test('default hosted collector still invokes and reports provider checks', () =>
   )
   expect(report.findings).toContainEqual(
     expect.objectContaining({ code: 'BP-1', message: 'no branch protection on main' })
+  )
+})
+
+test('explicitly offline hosted collector skips authentication and keeps local policy findings', () => {
+  const { report, calls } = fixture(true, true)
+  expect(calls).toEqual([])
+  expect(report.findings).toContainEqual(
+    expect.objectContaining({
+      code: 'DEP-1',
+      message: expect.stringContaining('updates')
+    })
+  )
+  expect(report.findings.some(({ message }) => message.includes('Dependabot alerts are off'))).toBe(false)
+})
+
+test('offline collector argument also selects local evidence before authentication', () => {
+  const { report, calls } = fixture(true, false, ['--offline'])
+  expect(calls).toEqual([])
+  expect(report.findings).toContainEqual(expect.objectContaining({ code: 'DEP-1' }))
+})
+
+test('offline organisation collection refuses before enumerating remote repositories', () => {
+  const { report, calls } = fixture(true, false, ['--offline', '--org', 'fixture'])
+  expect(calls).toEqual([])
+  expect(report.findings).toContainEqual(
+    expect.objectContaining({
+      code: 'ACCESS-1',
+      message: expect.stringContaining('offline evidence requires a local checkout')
+    })
   )
 })

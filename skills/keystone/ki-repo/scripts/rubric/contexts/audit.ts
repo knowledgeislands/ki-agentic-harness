@@ -4,7 +4,8 @@
  * A physical checkout is the primary source for repository files, configuration,
  * tree coverage, and package metadata. A remote `--org` run has no filesystem and
  * reads those same surfaces from the GitHub default branch. Live repository settings
- * always come from GitHub through `gh`. The tree path / `--org` decide which mode
+ * come from GitHub through `gh` unless `--offline` or `KI_REPO_OFFLINE=1` selects
+ * local-only evidence before authentication. The tree path / `--org` decide which mode
  * applies; a local target never silently falls back to remote file evidence.
  *
  * The standard has three layers (see references/standards-repository.md):
@@ -1717,6 +1718,7 @@ export const collectAuditFindings = async (
 }
 
 const collect = async (argv: readonly string[]): Promise<RepoAuditCollection> => {
+  const offline = argv.includes('--offline') || process.env.KI_REPO_OFFLINE === '1'
   // `--educate` prints the default [skills.ki-repo] block for a new repo's
   // .ki.toml (authoring creates the keys; the author edits the values).
   if (argv.includes('--educate')) {
@@ -1728,6 +1730,7 @@ const collect = async (argv: readonly string[]): Promise<RepoAuditCollection> =>
     if (orgIdx !== -1) {
       const org = argv[orgIdx + 1]
       if (!org) throw new Error('usage: audit.ts --org <org>')
+      if (offline) throw new Error('offline evidence requires a local checkout; --org is unavailable')
       targets = await orgTargets(org)
     } else {
       const path = argv.find((a) => !a.startsWith('-')) ?? '.'
@@ -1767,11 +1770,12 @@ const collect = async (argv: readonly string[]): Promise<RepoAuditCollection> =>
         continue
       }
     }
-    if (!t.nameWithOwner) {
+    // Decide before authentication: even gh auth status can contact its provider.
+    if (offline || !t.nameWithOwner) {
       all.push({
         level: 'NOT_APPLICABLE',
         area: 'ACCESS-1',
-        msg: t.note ?? 'GitHub checks skipped',
+        msg: offline ? 'offline local evidence requested — GitHub checks skipped' : (t.note ?? 'GitHub checks skipped'),
         ref: STD,
         file: t.label
       })

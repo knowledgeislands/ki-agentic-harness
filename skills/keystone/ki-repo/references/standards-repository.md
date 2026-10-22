@@ -138,6 +138,8 @@ Every KI repository whose primary shape declares a hook commits two hooks in `.g
 
 A hook runs only lint, format and message checks over what is staged, quiet on success, offline and check-only: no `ki repo conform`, `--fix` or `--write`, test suite, whole-project type check, full audit, build or network fetch. Those belong to the manual gate root orientation names and to CI, which remain the authoritative gate; a local hook gives immediate feedback and can be bypassed with `--no-verify`.
 
+The Project hook passes `KI_REPO_OFFLINE=1` to both staged `ki-repo` audit attempts. That collector must select local-only evidence before authentication and must never execute `gh`, including `gh auth status`, in offline mode. Its internal `--offline` collector argument selects the same boundary and refuses an organisation-wide target. Full audits without the offline request retain hosted checks.
+
 There is one canonical hook for each primary shape and package presence. `ki-repo` composes it in a fixed order, with no extension point:
 
 1. `#!/bin/sh`, a header comment naming the shape and variant, then `root="$(git rev-parse --show-toplevel)" || exit 1` where a later line uses it.

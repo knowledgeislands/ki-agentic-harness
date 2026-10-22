@@ -67,7 +67,10 @@ test('both general Project variants delegate only the staged ki-repo audit', () 
     expect(hook).not.toContain('quiet_audit --skill ki-repo-project')
     const audits = hook.split('\n').filter((line) => line.includes('ki repo audit'))
     expect(audits).toHaveLength(2)
-    for (const line of audits) expect(line).toContain('--staged')
+    for (const line of audits) {
+      expect(line).toContain('--staged')
+      expect(line.trim()).toStartWith('KI_REPO_OFFLINE=1 ki repo audit')
+    }
     expect(hook).not.toMatch(/ki repo conform|--(?:fix|write)\b/)
   }
 })
