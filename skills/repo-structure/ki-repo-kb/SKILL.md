@@ -43,7 +43,7 @@ A Knowledge Islands base is one markdown store with a fixed set of five zones, f
 
 ### Acquired packets
 
-For packets delivered to a territory principal's `+/_ACQUIRED/`, read [receiver triage](references/standards-acquired-triage.md). The receiver files the packet, turns it into work, or parks it locally; they write nothing back into the port. `ki-repo-kb-principal` owns the required exact scaffold while its overlay is declared.
+For packets delivered to a territory principal's `+/_ACQUIRED/`, read [receiver triage](references/standards-acquired-triage.md). The receiver files the packet, turns it into work, or parks it locally as intake handling; `ki-acquire` owns the separate knowledge dispositions recorded in the package. They preserve source material and write nothing back into the port. `ki-repo-kb-principal` owns the required exact scaffold while its overlay is declared.
 
 ### Admin/ subdivisions
 

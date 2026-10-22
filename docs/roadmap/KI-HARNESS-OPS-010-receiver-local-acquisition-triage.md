@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: ed49d2f26b622285a30005e00611fe8cc7b4bc4a
 created_at: 2026-10-20T22:26:28Z
-updated_at: 2026-10-22T01:46:47Z
+updated_at: 2026-10-22T02:06:43Z
 ---
 
 # KI-HARNESS-OPS-010: Receiver-Local Acquisition Triage
@@ -28,7 +28,7 @@ This is one of the eight unfinished AI-session acquisition steps carried by [KI-
 
 ## Boundary
 
-- In: the triage dispositions and their evidence in the `ki-acquire` common contract, its rubric and any provider skill that must cite them.
+- In: triage dispositions and evidence in `ki-acquire` common contract, rubric and any provider skill that must cite them; the `ki-repo-kb` packet-intake seam under the 22 October review-repair instruction.
 - Out: triaging any particular repository's captures, which each receiver does under its own authority; executable importer changes, which `tools-ki` owns; source retirement.
 
 ## Current state
@@ -43,6 +43,7 @@ Shaped and delivered under the 22 October overnight triage-and-draft grant. The 
 
 ## Files touched
 
+- `skills/repo-structure/ki-repo-kb/SKILL.md` and `references/standards-acquired-triage.md`.
 - This roadmap record.
 - `skills/acquire/ki-acquire/references/standards-acquisition.md`.
 - `skills/acquire/ki-acquire/scripts/rubric/items/acquisition.ts` and generated `references/rubric.md`.
@@ -80,6 +81,8 @@ Split from KI-HARNESS-OPS-009.
 Delivered the single approved receiver-local triage rule from `baseline_ref`, under the overnight brief's planning and implementation authority. No live captures were read, routed, reconciled or retired.
 
 ### Change Summary
+
+Blind-review repair reconciles packet intake with session knowledge triage through reciprocal links. Receiver-authored README annotations may change under the common rule; preserved source text, provenance, filenames and original bytes may not. Filing, turning into work and parking are intake handling, while the four evidenced session outcomes stay with `ki-acquire`. ACQUIRE-5 again names the dispatch Git move, destination and separately authorised operations. The direct review-repair instruction extends the original boundary to this seam.
 
 Added the four dispositions with evidence, scoped coverage and visible gaps in the existing capture package. Retained incomplete-session honesty, separate receiver authority and the prohibition on a parallel ledger or return marker. Extended ACQUIRE-5 and regenerated its publication; provider-specific contracts already inherit the common capture rule, so no provider text changed.
 
