@@ -28,6 +28,8 @@ A repository that runs coordinating work declares `[skills.ki-coordination]` in 
 
 It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work package or its files, which `ki-work-package` owns; and it does not summarise a single ordinary session, which `ki-recap` owns and which keeps the ordinary session recap only.
 
+The [deferred host-move design notes](references/sources.md#deferred-host-move-evidence) retain unresolved queue, host-bound-run and historical handover questions without granting implementation authority.
+
 ## Operating modes
 
 Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **FULL-SUMMARY · MARK · RECAP · SUMMARY** modes a coordinator gives the owner.

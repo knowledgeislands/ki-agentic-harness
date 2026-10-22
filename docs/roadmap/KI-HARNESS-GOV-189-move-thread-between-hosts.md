@@ -13,7 +13,7 @@ blocked_by: []
 baseline_ref: db5e3cff2946beaa05bbf2f821dc7d93fb1daf97
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-22T01:44:06Z
+updated_at: 2026-10-22T02:03:54Z
 ---
 
 # Repository Level Check
@@ -95,11 +95,11 @@ Delivered the 22 October narrowed level-check boundary from the immutable `basel
 
 ### Change Summary
 
-Added one repository-level-check section in the coordination standard, pointers at mark and cross-host pick-up, and the unresolved `[behind]` housekeeping item. Existing publication authority, dirty/diverged-checkout handling and On hold banner rules remain the governing constraints. Narrowed this record under Kris's GOV189-SCOPE answer; generated surfaces and rubric require no changes.
+Added one repository-level-check section in the coordination standard, pointers at mark and cross-host pick-up, and the unresolved `[behind]` housekeeping item. Existing publication authority, dirty/diverged-checkout handling and On hold banner rules remain the governing constraints. Narrowed this record under Kris's GOV189-SCOPE answer. Review repair adds `[behind]` to both ordered banner definitions and regenerates the coordinator style, including the level-check triggers. The deferred host-move questions and 14 October transfer and closing notes now also have a durable home in the coordination references.
 
 ### Verification
 
-`bun run test`: 1,414 pass, zero fail. `bunx --no-install tsc --noEmit`: pass. `ki dev skill generate ki-coordination` and `ki dev skill rubric ki-coordination`: in sync. Sequential focused audits for coordination, skills, authoring, work and roadmap, plus the full isolated harness audit and mandatory commit hooks, pass before publication. Existing fleet warnings are recorded separately from this contract; the initial authoring and roadmap checks identified contents-list indentation and an overlong title, both corrected before the final checks.
+`bun run test`: 1,415 pass, zero fail after the blind-review repair (1,414 before it). `bunx --no-install tsc --noEmit`: pass. `ki dev skill generate ki-coordination` and `ki dev skill rubric ki-coordination`: in sync. Sequential focused audits for coordination, skills, authoring, work and roadmap, plus the full isolated harness audit and mandatory commit hooks, pass before publication. Existing fleet warnings are recorded separately from this contract; the initial authoring and roadmap checks identified contents-list indentation and an overlong title, both corrected before the final checks.
 
 ### Outstanding concerns
 
@@ -114,6 +114,8 @@ The rule covers the decided resume, mark and departure triggers without introduc
 Delivered the repository level check and visible behind findings, with source tests, type checking and hosted verification. Durable guidance is homed in its owning standard. No new work record, acceptance or pruning occurred.
 
 ## Discussion
+
+The [deferred host-move design notes](../../skills/change-management/ki-coordination/references/sources.md#deferred-host-move-evidence) retain the following questions and historical evidence independently of this record.
 
 ### Deferred host-move questions
 
@@ -134,7 +136,7 @@ Kris decided on 2026-10-14 that the instance a host move leaves behind closes as
 
 ### Level check, decided 2026-10-18
 
-Before a work resumes on another Mac, and at every mark, the coordinator checks that the work's repositories are level: `mgit fetch` across them, then `mcp-git-audit`'s ahead and behind report. A repository behind its remote shows as a `[behind]` item in the banner and an unpushed one as `[unpushed]`, so neither is lost between hosts. Kris agreed on 18 October 2026 in the ways-of-working decisions log, 17:59 BST owner answers: "sync guard. Yeah, got your recommendation" (SYNC-GUARD a)). The recommendation read: "Fold 'level before resume and at every mark' into KI-HARNESS-GOV-189: mgit fetch then mcp-git-audit ahead/behind across the estate at session start, at every mark and before leaving a host, with [behind] and [unpushed] banner items; capture a tools-ki `ki repo level` record only if that proves too slow." The banner's housekeeping items do not yet include `[behind]`, so planning adds it to `ki-coordination` with the check.
+Before a work resumes on another Mac, and at every mark, the coordinator checks that the work's repositories are level: `mgit fetch` across them, then `mcp-git-audit`'s ahead and behind report. A repository behind its remote shows as a `[behind]` item in the banner and an unpushed one as `[unpushed]`, so neither is lost between hosts. Kris agreed on 18 October 2026 in the ways-of-working decisions log, 17:59 BST owner answers: "sync guard. Yeah, got your recommendation" (SYNC-GUARD a)). The recommendation read: "Fold 'level before resume and at every mark' into KI-HARNESS-GOV-189: mgit fetch then mcp-git-audit ahead/behind across the estate at session start, at every mark and before leaving a host, with [behind] and [unpushed] banner items; capture a tools-ki `ki repo level` record only if that proves too slow." The active banner and its generated coordinator style now include `[behind]` with the check; routine unpushed state follows the later publication-reporting rules.
 
 ### Relation to existing records
 

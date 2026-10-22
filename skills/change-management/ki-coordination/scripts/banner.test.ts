@@ -307,3 +307,12 @@ test('every generated surface matches what the standard renders, so none is edit
       content: surface.content
     })
 })
+
+test('active banner guidance carries behind findings and all level-check triggers', () => {
+  const orderedBanner = standard.split('**Glyph banner.**')[1]?.split('\n')[0] ?? ''
+  expect(orderedBanner).toContain('`- [behind] <repository>: <count> commits`')
+  expect(orderedBanner.indexOf('[behind]')).toBeGreaterThan(orderedBanner.indexOf('[unlogged]'))
+  expect(outputStyle).toContain('`[behind]` naming no holder')
+  expect(outputStyle).toContain('before a cross-host resume, at every mark and before leaving a host')
+  expect(outputStyle).toContain('A failed check remains unknown')
+})

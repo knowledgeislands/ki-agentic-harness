@@ -12,6 +12,8 @@
 
 ## Last review
 
+The 22 October 2026 overnight blind-review repair aligns both ordered active-banner definitions and the generated coordinator style with the approved `[behind]` rule and its resume, mark and departure triggers. Deferred host-move questions and 14 October transfer evidence are retained in the linked design notes. This is an in-house policy correction; no external source was contacted.
+
 A 2026-10-21 review under `wow-day-push-reporting` applies Kris's "push state out of reports" instruction in `ki.ways-of-working`: owner reports, run reports and banners omit routine push state and other sessions' stacked commits; a run still reports a failed push that prevented publication of its own unit, naming the unit and reason. A hold report keeps nothing about pushes beyond a failure. Fast-forward, own-commits-only and no-force safeguards remain. This is an in-house policy review; external sources were not re-fetched. Implementation history is in Git.
 
 A fourth review the same day shortened the owner report's section headings to `## Done`, `## In Progress` and `## Queries` in the Summary, recap, full summary and heading-level rules, after Kris set them with the words "What has been done -> Done", "What is in progress -> In Progress", "Outstanding queries -> Queries". `## Decided` still leads the full summary and nothing inside the sections changed.
@@ -75,3 +77,24 @@ A twenty-ninth review, on 2026-10-19 under the `query-review` brief, added Query
 A thirtieth review, on 2026-10-19 under the `banner-on-state` brief, added BANNER-ON-STATE to the Banner section, the coordinating practices and the reply forms after a coordinator's reply to "whats waiting on me? / mark" on held work gave no banner and Kris expected one: any coordinator reply that moves the mark, changes the work's state or answers where the work stands ends with the glyph banner, even when it is not a full report, and a plain answer that does none of these needs none. The output style and the hook line's fourth hard rule carry it in one clause each, within the hook line's length limit.
 
 A thirty-first review, on 2026-10-19 under the `banner-push-hold` brief, added PUSH-NOT-WITH-YOU and HOLD-CLEAN to the Banner section after Kris objected, in the `ki.ways-of-working` work, to a push shown as with the owner and to a hold banner listing per-repository status: "Why'd you need to put that against me? I can just push it. Also this is on hold, but it says on hold pushed to agentic harness. You're not on hold on if you're waiting on something." A push of stacked commits is never a "with you" item, count or query: it shows only as `[unpushed]` and Done names the other sessions' stacked commits once, in Pushing beneath other sessions, the hold procedure and the owner report's Queries alike. An On hold banner lists nothing waiting: its counts read `⏸️ drained · 🅿️ <n> queries parked` and its items are only `[parked]`, `[release]` and, where true, `[unpushed]`. The hold-banner example and the output style follow; the hook line names no push and is unchanged.
+
+## Deferred host-move evidence
+
+These notes retain unresolved design questions and historical evidence from the Mac Studio Setup handover. The approved repository level check is in the [coordination standard](standards-coordination.md#repository-level-check). The material below is deferred: it supplies no queue-transfer, host-bound-run or old-session-closing authority. Resolve it with the owner before any implementation. The historical checkpoint and host naming below are evidence, not current work-package requirements.
+
+### Deferred host-move questions
+
+- How `ki agent` exports a queue and re-imports it on another host: whether the checkpoint carries the briefs themselves or only references to tracked brief files, and how a re-queue avoids a duplicate run if the old queue was not cleared.
+- Agents that must run on a specific host, for example work against a machine-local resource or a host-bound service: whether they stay queued on the old host, are held in the checkpoint with a host constraint, or block the move.
+
+### Decisions-log transfer, observed 2026-10-14
+
+The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, and Kris approved recording what that took (Kris, 2026-10-14: "I want to capture any differences and also make an onboarding guide for a rig"). The run's decisions log, `~/.local/state/ki/agents/mac-studio-bootstrap/decisions.md`, is machine-local and not in Git, so nothing carried it: an approved agent copied it to the same path on `sol` with the run reports, and the checkpoint recorded that the live copy was now on `sol` and the laptop's copy frozen. Under the work model the decisions log is tracked in `+/_WORK/<id>/decisions.md`, so this gap closes once the work moves into its work folder; until then, a move depends on that manual copy, and a thread that resumes without it has its checkpoint but none of the owner decisions in the owner's words. The procedure should say:
+
+- which files in the run folder travel (the decisions log, reports and briefs) and which stay behind (process ids, launch records, logs and status files);
+- that the checkpoint names the host holding the live decisions log, and the old host's copy is frozen from the move mark;
+- how a re-bootstrap on the new host proves it has the latest log, for example by the last entry's time and words matching the checkpoint's last recorded decision.
+
+### DONE on handover, decided 2026-10-14
+
+Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). The decision named the DONE frame for its closing banner, issued only after the handover has pushed, carrying no send line, because that session must not be resumed, and naming the host that took over the work. Under the work model, `ki-coordination`'s closing banner, `🏁 Finished`, appears only at [Finishing Project work](standards-coordination.md#finishing-project-work); this requirement extends a closing form to the session a host move retires on the old host, while the work itself continues on the new host, and step 6 leaves planning to settle which form that is.
