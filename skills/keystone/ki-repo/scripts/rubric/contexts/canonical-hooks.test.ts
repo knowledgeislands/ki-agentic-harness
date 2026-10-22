@@ -59,3 +59,15 @@ test('both tools package variants retain the shell checks after their common sta
     expect(hook.indexOf(lint), variant).toBeLessThan(hook.indexOf('staged_shell()'))
   }
 })
+
+test('both general Project variants delegate only the staged ki-repo audit', () => {
+  for (const variant of HOOK_VARIANTS) {
+    const hook = canonicalHooks('ki-repo-project', variant)?.['pre-commit'] ?? ''
+    expect(hook).toContain('quiet_audit --skill ki-repo || exit 1')
+    expect(hook).not.toContain('quiet_audit --skill ki-repo-project')
+    const audits = hook.split('\n').filter((line) => line.includes('ki repo audit'))
+    expect(audits).toHaveLength(2)
+    for (const line of audits) expect(line).toContain('--staged')
+    expect(hook).not.toMatch(/ki repo conform|--(?:fix|write)\b/)
+  }
+})

@@ -1,7 +1,7 @@
 ---
 id: ADR-KI-HARNESS-SKILLS-017
 title: 'Commit-gate existence and content are owned separately'
-date: 2026-10-08
+date: 2026-10-22
 status: current
 decision_type: architecture
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/adr
@@ -26,9 +26,11 @@ Whether a repository has a commit gate is owned by `ki-repo`; what the gate runs
 - **A hook runs lint, format and message checks only.** It is check-only, quiet on success and offline, over what is staged: staged formatters under `lint-staged`, check-only Syncpack, staged Markdown, a shape's own staged lint, one focused `ki repo audit --staged` for the shape and the message check. Test suites, whole-project type checks, full audits, builds and network fetches belong to the manual gate and CI.
 - **One canonical hook per shape and package presence, with no extension point.** `ki-repo` composes it in a fixed order from its frame and the blocks the shape skills declare: the shebang and header, the root, the empty-index exit, the missing-tool refusal, the `PATH` step, the staged lint, the shape's lint and the focused audit through a quiet helper. `commit-msg` runs Commitlint where a package exists and `ki git check-message` where none does. Each shape skill publishes the generated text under `assets/githooks/`, and a repository copies it byte-exact. A repository-specific check that is fast and check-only becomes a criterion of its shape skill, run through the focused staged audit, never a hook line.
 - **`ki-repo` owns existence, binding and the canonical text.** `HOOK-1` requires the tracked, executable `pre-commit` and `HOOK-3` the `commit-msg`; `HOOK-2` requires the audited working tree's effective `core.hooksPath` to resolve to `.githooks`; `HOOK-4` compares each committed hook byte for byte with its canonical text; `HOOK-5` reports any Husky file, dependency, call or binding left behind; `HOOK-J1` judges that the gate stated in root orientation matches what the hook runs.
-- **Each shape skill keeps one content criterion.** It checks the shape's distinctive lines in its own terms and is not applicable without a hook: `SCR-11` in `ki-engineering`, `MD-hook` in `ki-authoring`, `SHELL-HOOK` in `ki-repo-tools`, and `GATE-1` in `ki-repo-kb`, `ki-repo-harness`, `ki-repo-specifications` and `ki-repo-homebrew-tap`. `GIT-2` in `ki-repo-dotfiles-chezmoi` requires no hook and no binding.
+- **Each shape skill keeps one content criterion.** It checks the shape's distinctive lines in its own terms and is not applicable without a hook: `SCR-11` in `ki-engineering`, `MD-hook` in `ki-authoring`, `SHELL-HOOK` in `ki-repo-tools`, and `GATE-1` in `ki-repo-project`, `ki-repo-kb`, `ki-repo-harness`, `ki-repo-specifications` and `ki-repo-homebrew-tap`. `GIT-2` in `ki-repo-dotfiles-chezmoi` requires no hook and no binding.
 
 The new and changed criteria report as warnings while the estate converts, and each becomes a failure once the last rollout wave lands. The rollout moves in waves, each under one owner grant covering the repositories it names, committed locally by explicit path in each repository; the owner pushes.
+
+The general Project shape’s focused gate audits `ki-repo`, its inherited repository contract, with `--staged` in both package variants. Its own GATE-1 checks the delegated content; it does not run a duplicate primary-kind audit.
 
 ## Consequences
 

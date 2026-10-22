@@ -23,7 +23,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes. `help` /
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-repo --repo <repo>` for the declared primary kind, then `ki repo audit --skill ki-work --repo <repo>` for the selected forward-work adapter. This skill adds no duplicate primary-kind audit.
+Run `ki repo audit --skill ki-repo --repo <repo>` for the declared primary kind, then `ki repo audit --skill ki-work --repo <repo>` for the selected forward-work adapter. Run `ki repo audit --skill ki-repo-project --repo <repo>` for the Project gate’s content. This skill adds no duplicate primary-kind audit.
 
 ### Mode CONFORM
 

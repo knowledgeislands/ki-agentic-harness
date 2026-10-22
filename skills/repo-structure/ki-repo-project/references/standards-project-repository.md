@@ -14,7 +14,7 @@ Every Project repository inherits the `ki-repo` baseline. A specialised structur
 
 ## Commit gate
 
-A Project adds no hook content of its own. Its canonical hooks, with and without a `package.json`, are the `ki-repo` frame with the `ki-engineering` package lines or the `ki-authoring` staged-Markdown line, published as worked examples under [`assets/githooks/`](../assets/githooks/); copy them exactly, since `ki-repo` HOOK-4 compares each hook byte for byte ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
+The general Project shape owns a staged, check-only `ki repo audit --skill ki-repo` commit gate over its inherited repository contract. Both package variants run it through the canonical quiet-audit helper after their staged lint. GATE-1 checks this content where `ki-repo-project` is the declared primary shape and a committed hook exists; specialised primary shapes retain their own gates even when they also declare Project orientation; `ki-repo` retains existence, binding and canonical-text ownership. No full audit, test suite, rewriting operation or network access belongs in this gate. Its canonical hooks, with and without a `package.json`, compose the `ki-repo` frame with the `ki-engineering` package lines or the `ki-authoring` staged-Markdown line, followed by this focused audit, published as worked examples under [`assets/githooks/`](../assets/githooks/); copy them exactly, since `ki-repo` HOOK-4 compares each hook byte for byte ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)).
 
 ## Change boundary
 

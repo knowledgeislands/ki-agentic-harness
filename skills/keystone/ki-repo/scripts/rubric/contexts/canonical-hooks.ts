@@ -20,7 +20,7 @@ type ShapeBlock = {
   /** External tools the lines call, tested in the refusal. */
   readonly tools: readonly string[]
   readonly lines: readonly string[]
-  /** The one shape skill whose focused `--staged` audit the hook runs. */
+  /** The skill whose focused `--staged` audit the shape delegates to. */
   readonly audit?: string
 }
 
@@ -55,7 +55,7 @@ const RUBY_LINES = [
 
 /** Every repository shape's hooks; `null` is a shape that declares no hook. */
 export const SHAPE_HOOKS: Readonly<Record<RepositoryShape, ShapeHooks>> = {
-  'ki-repo-project': both('ki-repo-project', NONE),
+  'ki-repo-project': both('ki-repo-project', { ...NONE, audit: 'ki-repo' }),
   'ki-repo-mcp': both('ki-repo-mcp', NONE),
   'ki-repo-website': both('ki-repo-website', NONE),
   'ki-repo-kb': both('ki-repo-kb', { ...NONE, audit: 'ki-repo-kb' }),
