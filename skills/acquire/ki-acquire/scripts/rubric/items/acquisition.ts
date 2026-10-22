@@ -53,10 +53,14 @@ export const ACQUIRE = {
       code: 'ACQUIRE-5',
       title: 'the capture is the record and authority stays separate',
       description:
-        'No ledger, checkpoint or receipt accompanies the capture; dispatch is a Git move into `+/_ACQUIRED/`, and capture grants no provider mutation, reconciliation, retirement or history compaction.',
-      sources: ['standards-acquisition.md#scope', 'standards-acquisition.md#dispatch-and-authority'],
+        'No ledger, checkpoint or receipt accompanies the capture; receiver triage stays in the package with evidenced dispositions and remaining gaps. Dispatch and every mutation retain their separate authority.',
+      sources: [
+        'standards-acquisition.md#scope',
+        'standards-acquisition.md#dispatch-and-authority',
+        'standards-acquisition.md#receiver-local-triage'
+      ],
       judgment: judgment(
-        'Is the capture package the only acquisition record, and did every dispatch, provider mutation or destructive operation stay within its own authority?'
+        'Is the capture package the only acquisition record, does each complete received session carry an evidenced local disposition with gaps visible, and did every dispatch, reconciliation, provider mutation or destructive operation stay within its own authority?'
       )
     }
   ]

@@ -47,9 +47,9 @@ Policy judgments require source and destination evidence; mechanical success doe
   - _Review prompt:_ Was the agreed destination read back and compared, and does the report match the actual verified scope and remaining gaps?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **ACQUIRE-5 [J] — the capture is the record and authority stays separate** — No ledger, checkpoint or receipt accompanies the capture; dispatch is a Git move into `+/_ACQUIRED/`, and capture grants no provider mutation, reconciliation, retirement or history compaction. (standards-acquisition.md#scope, standards-acquisition.md#dispatch-and-authority)
+- **ACQUIRE-5 [J] — the capture is the record and authority stays separate** — No ledger, checkpoint or receipt accompanies the capture; receiver triage stays in the package with evidenced dispositions and remaining gaps. Dispatch and every mutation retain their separate authority. (standards-acquisition.md#scope, standards-acquisition.md#dispatch-and-authority, standards-acquisition.md#receiver-local-triage)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Is the capture package the only acquisition record, and did every dispatch, provider mutation or destructive operation stay within its own authority?
+  - _Review prompt:_ Is the capture package the only acquisition record, does each complete received session carry an evidenced local disposition with gaps visible, and did every dispatch, reconciliation, provider mutation or destructive operation stay within its own authority?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
