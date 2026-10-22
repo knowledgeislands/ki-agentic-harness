@@ -14,6 +14,10 @@ For an authorised full-session exception, read the selected complete payload thr
 
 The read-only adapter does not write capture packages or KI checkpoints. Executable importer support belongs to `tools-ki`: establish the current supported adapter and coverage before advertising or invoking it. Where no complete route is proven, report the limitation rather than inventing an importer or weakening the promised scope.
 
+## Runtime binding: Claude session reads
+
+For Claude, `claude_code_session_read` has two forms: the repository/session form provides the faithful full-session source payload; the legacy project/session form provides only a bounded preview. Select the repository/session form and establish its current schema and completeness from the available read-only adapter before capture; do not treat a successful preview as a complete session.
+
 ## Verification and disposition
 
 Verify the receiving capture against the selected source and its required originals before claiming completion. The receiving repository records its triage disposition in the capture package under the common receiver-local rule. Source retention, successful acquisition and harvesting are distinct facts. Acquisition, a source checkpoint or a no-residual-knowledge disposition never grants archive, deletion or cleanup authority; any such operation must pass its own separately authorised housekeeping or retirement procedure.

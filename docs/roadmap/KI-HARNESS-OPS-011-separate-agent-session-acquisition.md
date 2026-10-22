@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: d2e2a8964c4868e407e3b2bc2d5d12c9c081589d
 created_at: 2026-10-20T22:26:28Z
-updated_at: 2026-10-22T01:49:32Z
+updated_at: 2026-10-22T02:07:40Z
 ---
 
 # KI-HARNESS-OPS-011: Separate Agent-Session Acquisition
@@ -82,6 +82,8 @@ Split from KI-HARNESS-OPS-009.
 Delivered the two approved guidance-and-decision steps from `baseline_ref`, under the overnight triage-and-draft grant. No session was imported and no adapter, runtime, credential or provider changed.
 
 ### Change Summary
+
+Blind-review repair restores the Claude read-route distinction in its acquisition-owned reference: the repository/session form of `claude_code_session_read` supplies the faithful source payload, while the legacy project/session form is a bounded preview. The guidance requires checking the currently exposed schema and coverage before capture. It changes no adapter or importer and makes no claim of a live provider exercise. The architecture decision remains edited in place with its current as-of date, as required by its owner standard.
 
 Homed Claude/Codex acquisition in a common acquisition reference, linked it from `ki-acquire`, and routed both housekeeping skills to it. Full-session capture requires a selected source-evidence need and retains faithful-completeness checks; routine bulk capture is excluded. Amended the existing architecture decision in place to retain shared read-only source adapters and their names, and refreshed the generated catalogue for the changed description.
 
