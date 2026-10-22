@@ -11,7 +11,7 @@ blocks: []
 blocked_by: []
 baseline_ref: f59c00698d4535b617746a67e6d71c2ae98c1f4c
 created_at: 2026-10-18T00:40:08Z
-updated_at: 2026-10-21T13:31:33Z
+updated_at: 2026-10-22T02:10:03Z
 ---
 
 # KI-HARNESS-GOV-209: +/_ACQUIRED/ Inbound Area
@@ -89,6 +89,8 @@ The approved scaffold and receiver-triage boundary is delivered from immutable b
 
 ### Change Summary
 
+Blind-review repair homes the rollout snapshot and immutable accepted-delivery citation in the principal overlay’s sources, with entry points from the skill and standard. PRINCIPAL-5 remains the current-state detector; no real receiver is claimed conformed. This resolves dependence on a temporary report or queue line without changing a receiver or deleting the accepted record.
+
 Added the scaffold template and PRINCIPAL-5 audit/conform support, with unsafe-component refusal and draft-only write proposals. Updated the principal standard and its generated rubric; added receiver-triage guidance routed from `ki-repo-kb`; regenerated the published capability description. The existing inventory test's exact totals increase by one criterion, one mechanical item and one automatic remediation; this is the only supporting file beyond the planned skill files. No packet format, dispatch authority, return route or roadmap record was introduced.
 
 ### Verification
@@ -103,7 +105,7 @@ Added the scaffold template and PRINCIPAL-5 audit/conform support, with unsafe-c
 
 ### Outstanding concerns
 
-No unresolved delivery defect. Independent review and acceptance are still required. The eight receiver-owned conformance applications are outside this record's boundary and listed in the run report; this run sends nothing to those repositories. Existing fleet warnings are unchanged contract findings, not newly introduced failures.
+No unresolved delivery defect; independent acceptance is recorded below and this record remains done. The [durable rollout source](../../skills/repo-structure/ki-repo-kb-principal/references/sources.md#acquired-scaffold-rollout) retains the eight-receiver snapshot, the still-owner-bound conformance work and a pinned accepted-delivery citation. GOV209-ROLLOUT can use that source independently of this record; its current live link remains valid because this repair retains the record. Any future pruning still requires its own reference preflight and owner authority. The eight receiver-owned conformance applications are outside this record's boundary and listed in the run report; this run sends nothing to those repositories. Existing fleet warnings are unchanged contract findings, not newly introduced failures.
 
 ### Post-change review
 

@@ -16,6 +16,8 @@ argument-hint: 'audit | conform | educate | help | refresh'
 
 This governance skill holds the portable governance overlay for a repository designated as its territory's principal island, holding the Capital role. It reviews the authored territorial declaration without appointing a principal or granting authority. Read [the principal standard](references/standards-principal.md) before acting and [the generated rubric](references/rubric.md) for mechanical and judgment criteria.
 
+The [source evidence and acquired-scaffold rollout](references/sources.md#acquired-scaffold-rollout) preserve the accepted delivery boundary and receiver-owned follow-through independently of roadmap retention.
+
 ## Shared model
 
 A designated principal base uses the `ki-repo-kb` zones and `ki-decision-records` collection, then adds a governance home: `Admin/Governance/Charter.md`, `Admin/Governance/Known Lands.md`, `Admin/Governance/Conventions/Conventions.md`, and `Admin/Operations/Processes/Enactment Process.md`. `Admin/MEMORY.md` remains the root memory anchor. The Charter declares the territory, its one Capital, and authority boundary. Known Lands distinguishes governed internal membership from external signposting. Mechanical checks establish readable, regular-file evidence and a routing anchor; judgment compares the declarations and their authority references. Neither appoints a principal or grants exchange rights.

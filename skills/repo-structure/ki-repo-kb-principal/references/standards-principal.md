@@ -20,6 +20,8 @@ AUDIT fails when the README is missing, differs from the template, or has an uns
 
 Acquire alone delivers packets: each delivery is a folder holding one whole capture package or a roll-up of whole packages, preserving original names and bytes without a manifest, dispatch ID or ledger. Delivery is acceptance. The receiver triages their local packets under `ki-repo-kb`; the scaffold does not authorise canonical adoption or change selection. There is no return route or return marker, and the receiver writes nothing into the port.
 
+Publishing this overlay does not conform its receivers. The [rollout evidence](sources.md#acquired-scaffold-rollout) distinguishes accepted reusable delivery from receiver-owned applications; audit each declared principal under its own authority before claiming it conformed. The scaffold is not a dispatch precondition.
+
 ## Territorial declaration
 
 Each territory has exactly one principal island holding its Capital role. The Charter identifies that territory and the Capital's canonical repository identity. Known Lands identifies internal members by canonical repository identity, such as `owner/repo`, and states their governed relationship. The two declarations must agree; discrepancies remain visible for the territorial owner to resolve.
