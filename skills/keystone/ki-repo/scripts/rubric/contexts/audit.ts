@@ -1780,7 +1780,7 @@ const collect = async (argv: readonly string[]): Promise<RepoAuditCollection> =>
         file: t.label
       })
       if (localContent) {
-        for (const x of await auditLocalContent(t.label, localContent))
+        for (const x of await auditLocalContent(t.nameWithOwner ?? t.label, localContent))
           all.push({
             level: x.level,
             area: x.area,

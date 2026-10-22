@@ -72,10 +72,10 @@ for (const variant of ['package', 'no-package'] as const) {
   for (const missingLicense of [false, true]) {
     test(`real ${variant} Project session stays offline with local failure=${missingLicense}`, () => {
       const run = fixture(true, 0, variant)
-      // Authentication would succeed if reached. Every provider invocation is recorded.
+      // Provider commands are denied and recorded; macOS also denies networking for the entire hook.
       const requests = join(run.root, 'remote-requests.log')
       for (const tool of ['gh', 'curl', 'wget', 'ssh']) {
-        writeFileSync(join(run.root, 'bin', tool), '#!/bin/sh\nprintf "%s\\n" "$*" >> "$REMOTE_LOG"\nexit 0\n', {
+        writeFileSync(join(run.root, 'bin', tool), '#!/bin/sh\nprintf "%s\\n" "$*" >> "$REMOTE_LOG"\nexit 97\n', {
           mode: 0o755
         })
       }
@@ -85,12 +85,14 @@ for (const variant of ['package', 'no-package'] as const) {
           env: run.env
         }).status
       ).toBe(0)
-      const config = '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\n'
+      const config =
+        '[skills.ki-repo]\nrepo_type = "project"\nprimary_shape = "ki-repo-project"\nrepository = "https://github.com/fixture/hosted"\ntitle = "Project"\ndescription = "Hosted identity regression"\n'
       writeFileSync(join(run.root, '.ki.toml'), config)
+      expect(spawnSync('git', ['add', '--', '.ki.toml'], { cwd: run.root, env: run.env }).status).toBe(0)
       for (const file of ['.gitignore', '.editorconfig', 'CLAUDE.md']) writeFileSync(join(run.root, file), '')
       if (!missingLicense) writeFileSync(join(run.root, 'LICENSE'), 'MIT\n')
       // A shell launcher replaces only CLI argument parsing. The default repository session,
-      // collector and FILES-1 criterion are real; the original unconditional audit stub is gone.
+      // collector and FILES-1/FILES-2 criteria are real, including the staged identity check.
       const runner = join(run.root, 'audit.ts')
       writeFileSync(
         runner,
@@ -103,8 +105,8 @@ if(!args.includes('--staged')||args.includes('conform')) process.exit(98);
 const root=args[args.indexOf('--repo')+1];
 const session=await createRepoSession({mode:'audit',repository:root,userHome:root,configuration:{}});
 const subject=session.subjects.find(s=>s.families.includes('FILES'));
-const item=FILES.items.find(i=>i.code==='FILES-1');
-const outcomes=item.mechanical.audit.run(FILES.selectContext(subject.context()));
+const context=FILES.selectContext(subject.context());
+const outcomes=FILES.items.filter(i=>['FILES-1','FILES-2'].includes(i.code)).flatMap(item=>item.mechanical.audit.run(context));
 appendFileSync(process.env.AUDIT_LOG,JSON.stringify({args,outcomes})+'\\n');
 process.exit(outcomes.some(o=>o.status==='VIOLATION')?1:0);
 `
@@ -112,7 +114,14 @@ process.exit(outcomes.some(o=>o.status==='VIOLATION')?1:0);
       writeFileSync(join(run.root, 'bin/ki'), `#!/bin/sh\nexec "${process.execPath}" "${runner}" "$@"\n`, {
         mode: 0o755
       })
-      const result = spawnSync('/bin/sh', [run.hook], {
+      const deniedNetwork =
+        process.platform === 'darwin'
+          ? ([
+              '/usr/bin/sandbox-exec',
+              ['-p', '(version 1) (allow default) (deny network*)', '/bin/sh', run.hook]
+            ] as const)
+          : (['/bin/sh', [run.hook]] as const)
+      const result = spawnSync(deniedNetwork[0], [...deniedNetwork[1]], {
         cwd: run.root,
         env: { ...run.env, REMOTE_LOG: requests, KI_REPO_OFFLINE: '' },
         encoding: 'utf8'
