@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-17T21:42:09Z
-updated_at: 2026-10-20T22:26:28Z
+updated_at: 2026-10-22T02:15:47Z
 ---
 
 # KI-HARNESS-OPS-009: Incremental ChatGPT Acquisition Path
@@ -26,7 +26,7 @@ The harness knows whether a hybrid incremental path can keep ChatGPT acquisition
 
 [KI-HARNESS-OPS-005 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/bf227839/docs/roadmap/KI-HARNESS-OPS-005-acquire-ai-sessions.md) was narrowed on 2026-10-14 to what it had delivered and accepted as done on 2026-10-17. Its eight unfinished steps were carried in the Notes of the [knowledge-acquisition Project](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/knowledge-acquisition.md) until a record was opened for them. Kris Brown decided on 2026-10-17 at 22:50 BST, in the knowledge-acquisition thread's SUCCESSOR-RECORD reply, to capture one follow-up record in this harness at Next for all eight, rather than one record per step.
 
-Kris took OPS009-SPLIT a) on 20 October 2026 at 23:16 BST, in the ways-of-working "query sign-offs, first batch": split this record, keeping in the harness only the steps it owns. This record keeps the evaluation of the incremental path; [KI-HARNESS-OPS-010](KI-HARNESS-OPS-010-receiver-local-acquisition-triage.md) carries receiver-local triage and [KI-HARNESS-OPS-011](KI-HARNESS-OPS-011-separate-agent-session-acquisition.md) the separation of Claude and Codex acquisition from housekeeping, with the adapter decision. The importer, explicit-case, retirement and verification steps belong to `tools-ki`, which is asked to capture its own records for them.
+Kris took OPS009-SPLIT a) on 20 October 2026 at 23:16 BST, in the ways-of-working "query sign-offs, first batch": split this record, keeping in the harness only the steps it owns. This record keeps the evaluation of the incremental path; [KI-HARNESS-OPS-010](https://github.com/knowledgeislands/ki-agentic-harness/blob/f1df870df6ea3ebd0ba7f19f392679797ccaaf0a/docs/roadmap/KI-HARNESS-OPS-010-receiver-local-acquisition-triage.md) carries receiver-local triage and [KI-HARNESS-OPS-011](https://github.com/knowledgeislands/ki-agentic-harness/blob/327efc93d23e0b2340b0b7b56130c1d9142b8c57/docs/roadmap/KI-HARNESS-OPS-011-separate-agent-session-acquisition.md) the separation of Claude and Codex acquisition from housekeeping, with the adapter decision. The importer, explicit-case, retirement and verification steps belong to `tools-ki`, which is asked to capture its own records for them.
 
 Two open questions travel with the evaluation: the provisional Spirituality project binding, and what becomes of the 77 export files referenced by no conversation.
 
