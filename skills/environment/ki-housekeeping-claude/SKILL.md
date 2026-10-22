@@ -7,9 +7,9 @@ ki-runtime-binding: true
 ki-supported-runtimes: [claude-code]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Acquire, audit, and safely clean accumulated Claude Desktop, Cowork, Claude Code, and VSCode chat state. Use
-  for Claude session import, memory or storage hygiene, plugins, caches, and backups; KB structure belongs to
-  `ki-repo-kb` and context budgets to `ki-tokenomics`.
+  Audit Claude Desktop, Cowork, Claude Code and VSCode state: memory, storage hygiene, plugins, caches
+  and backups. Use for local Claude housekeeping; `ki-acquire` owns exception-based agent-session
+  capture, `ki-repo-kb` KB structure and `ki-tokenomics` context budgets.
 argument-hint: 'audit | conform | help | educate | refresh'
 ---
 
@@ -28,9 +28,7 @@ The **mechanical arm** is split by area:
 
 ## AI session acquisition
 
-Use the provider-neutral lifecycle: **acquire → stage → harvest → durable knowledge → archive/delete source**. For one exact physical repository, `mcp-housekeeping-claude` exposes read-only `claude_code_sessions_discover`, `claude_code_sessions_list`, `claude_code_session_read`, and `claude_code_sessions_checkpoint` operations. `list` and `checkpoint` are content-minimised provenance; the repository/session form of `session_read` is the faithful source payload. Its legacy project/session form remains a bounded preview.
-
-The MCP does not write Knowledge Islands state. `ki acquire import --adapter claude` will own inbound staging and incremental checkpoint persistence. Do not archive or delete a Claude session until acquisition, review, and harvesting have passed their later safety checkpoint.
+Readable Claude session capture belongs to `ki-acquire`'s agent-session acquisition guidance. Full-session import is an owner-selected exception, not routine bulk housekeeping. The existing `mcp-housekeeping-claude` session-source surface stays read-only and shared; discovery or checkpoint evidence grants no capture, harvest or retirement authority. Keep this skill for content-minimised inventory, local memory and separately authorised storage cleanup.
 
 ## Operating modes
 

@@ -17,6 +17,8 @@ Read [the common acquisition standard](references/standards-acquisition.md), the
 
 This skill owns the common capture contract; provider skills add source completeness and capability rules. Repository guides supply local paths, publication authority and environment steps. Knowledge Islands owns the durable lifecycle and rationale; tools-ki owns executable importers. The [generated rubric](references/rubric.md) holds the review criteria. This skill accepts no repository configuration properties.
 
+For owner-selected Claude or Codex full-session capture, read [the agent-session acquisition guidance](references/standards-agent-session-acquisition.md). It owns exception-based session import; `ki-housekeeping-claude` and `ki-housekeeping-chatgpt` retain inventory, memory and cleanup.
+
 ## Operating modes
 
 For `help`, `-h`, `?` or no recognised mode, explain the contract, modes and provider off-ramps without capturing anything; offer a mode choice only in an interactive session.

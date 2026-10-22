@@ -1,7 +1,7 @@
 ---
 id: ADR-KI-HARNESS-SKILLS-007
 title: 'Provider-neutral AI session acquisition and adapter pairing'
-date: 2026-08-23
+date: 2026-10-22
 status: current
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/adr
 decision_type: architecture
@@ -26,6 +26,10 @@ ChatGPT project routing binds immutable provider project IDs to receiver reposit
 The Harness adopts Arcadia's provider-neutral knowledge-acquisition architecture. It supplies skills and provider MCP adapters that expose read-only discovery, listing, faithful reading, and checkpoint operations for a selected physical repository.
 
 The shared adapter surface is additive and access-gated. It returns only fields that the provider can faithfully supply, keeps content-minimised checkpoint data separate from source reads, and never writes KI state, classifies knowledge, or mutates a source session. `ki acquire import --adapter <provider>` remains the repository-context consumer of these operations, not an MCP operation.
+
+Claude and Codex readable acquisition guidance lives with `ki-acquire`, separate from their housekeeping skills. Full-session import is an exception for an explicitly selected source-evidence need, never routine bulk history capture. The common acquisition contract continues to govern faithful scope and receiver-local disposition.
+
+The existing `mcp-housekeeping-claude` and `mcp-housekeeping-chatgpt` repositories remain shared source adapters under their current names. Their session discovery, list, read and checkpoint surfaces stay read-only; acquisition-specific names or duplicate projections are unnecessary. Housekeeping's separately authorised cleanup surface does not transfer authority into capture. KI staging remains `tools-ki`'s concern, and a skill advertises only proven importer capabilities.
 
 ## Consequences
 

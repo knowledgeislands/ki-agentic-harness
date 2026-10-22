@@ -313,7 +313,7 @@ Audit ChatGPT opaque local-store evidence and Codex local memory or repository-s
 
 #### `ki-housekeeping-claude`
 
-Acquire, audit, and safely clean accumulated Claude Desktop, Cowork, Claude Code, and VSCode chat state. Use for Claude session import, memory or storage hygiene, plugins, caches, and backups; KB structure belongs to `ki-repo-kb` and context budgets to `ki-tokenomics`.
+Audit Claude Desktop, Cowork, Claude Code and VSCode state: memory, storage hygiene, plugins, caches and backups. Use for local Claude housekeeping; `ki-acquire` owns exception-based agent-session capture, `ki-repo-kb` KB structure and `ki-tokenomics` context budgets.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
