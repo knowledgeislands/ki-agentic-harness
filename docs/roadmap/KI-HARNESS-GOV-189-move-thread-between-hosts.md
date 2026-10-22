@@ -6,14 +6,13 @@ project: mac-studio-setup
 kind: deliver
 priority: medium
 size: m
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: db5e3cff2946beaa05bbf2f821dc7d93fb1daf97
 transferred_from: ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md
 created_at: 2026-10-14T14:17:58Z
-updated_at: 2026-10-22T02:10:51Z
+updated_at: 2026-10-22T08:06:20Z
 ---
 
 # Repository Level Check
@@ -26,7 +25,7 @@ Before a cross-host resume, at every mark and before leaving a host, the coordin
 
 `ki-coordination` governs coordinating threads and `ki-delegation` the detached background agents they launch through `ki agent`. Both assume a thread stays on the host where it started: running and queued agents, the run's decisions log and its reports live in machine-local state under `~/.local/state/ki/agents/<run>/`. A thread that has to move today must either wait until every queued agent has run, or abandon its queue.
 
-This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studio Setup Project](../../../ki-principal/Streams/Projects/mac-studio-setup/mac-studio-setup.md), which is bringing a second machine back into service so that threads can resume there. Kris decided on 2026-10-14, recorded in that run's machine-local decisions log on the laptop, in these words:
+This is a cross-repository handoff from Knowledge Islands Principal's [Mac Studio Setup Project](../../../ki-principal/Streams/Projects/mac-studio-setup.md), which is bringing a second machine back into service so that threads can resume there. Kris decided on 2026-10-14, recorded in that run's machine-local decisions log on the laptop, in these words:
 
 > if there is a wish to somehow move a thread over to another machine, because of the way that we're doing the delegation, we need to drain it down. But obviously, there can be quite a lot of stuff that can be queued up potentially. So we should almost decide that stuff that's queued up gets pushed back into the checkpoint, and so when the next machine starts up, it will re-queue it on its machine from that checkpoint, and that will allow us to move things over and only wait for things that are actually already running to be completed.
 
@@ -39,7 +38,7 @@ The receiving repository keeps priority, planning and acceptance; capturing this
 - In scope: the decided repository level check in `ki-coordination`, its resume and mark entry points, and the `[behind]` housekeeping item.
 - Out of scope: queue export or re-import, moving briefs, host-bound runs, the old host's closing form, a new CLI command, live estate synchronisation, and changes to `ki-delegation`.
 
-Kris narrowed the record to this boundary on 22 October 2026 at 02:25 BST under GOV189-SCOPE a). The overnight brief authorises shaping and delivery within it; the broader earlier host-move proposal is deferred, not implemented by this record.
+Kris narrowed the record to this boundary on 22 October 2026 at 02:25 BST under GOV189-SCOPE a). The overnight brief authorises shaping and delivery within it; the broader earlier host-move proposal is deferred, not implemented by this record. This record owns the repository level check only; moving threads between hosts remains deferred.
 
 ## Proposed rule
 
@@ -101,9 +100,11 @@ Added one repository-level-check section in the coordination standard, pointers 
 
 `bun run test`: 1,415 pass, zero fail after the blind-review repair (1,414 before it). `bunx --no-install tsc --noEmit`: pass. `ki dev skill generate ki-coordination` and `ki dev skill rubric ki-coordination`: in sync. Sequential focused audits for coordination, skills, authoring, work and roadmap, plus the full isolated harness audit and mandatory commit hooks, pass before publication. Existing fleet warnings are recorded separately from this contract; the initial authoring and roadmap checks identified contents-list indentation and an overlong title, both corrected before the final checks.
 
+Acceptance confirmation: the three blind reviews cited in Done each return ACCEPT with high confidence at reviewed revision `0809ff8056f62ee3757525fc770d63c4b20511a6`. The full isolated `ki repo audit` passed before closure. Final tests, lint, type check, audits and mandatory hooks gate this acceptance commit.
+
 ### Outstanding concerns
 
-No unresolved concern in the narrowed delivery. Full host-move mechanics and the historical questions below are deferred; this delivery supplies no authority to execute them. Independent acceptance remains outstanding.
+No unresolved concern in the narrowed delivery. Full host-move mechanics and the historical questions below are deferred; this delivery supplies no authority to execute them. Independent acceptance is recorded in Done below.
 
 ### Post-change review
 
@@ -112,6 +113,10 @@ The rule covers the decided resume, mark and departure triggers without introduc
 ### Mini recap
 
 Delivered the repository level check and visible behind findings, with source tests, type checking and hosted verification. Durable guidance is homed in its owning standard. A follow-up adds navigation to the expanded source reference so the review repair introduces no long-reference warning. No new work record, acceptance or pruning occurred.
+
+## Done
+
+Accepted on 22 October 2026 under `ki-accept` by the explicitly scoped `wow-accept-harness-3` instruction, applying [Kris's 21 October 2026 14:46 BST grant](../../../ki-principal/+/_WORK/ki.ways-of-working/decisions.md#2026-10-21-1446-bst---triple-checked-approval-while-kris-is-away): "I'm happy to accept that as being a suitable approval." Three independent blind reviews ([review a](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-a.report.md), [review b](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-b.report.md), [review c](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-c.report.md)) each return ACCEPT with high confidence for KI-HARNESS-GOV-189; their agreement stands in for Kris's acceptance under that grant.
 
 ## Discussion
 

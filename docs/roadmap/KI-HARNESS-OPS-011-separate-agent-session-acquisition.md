@@ -7,13 +7,12 @@ theme: model
 component: acquire
 size: m
 area: OPS
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: d2e2a8964c4868e407e3b2bc2d5d12c9c081589d
 created_at: 2026-10-20T22:26:28Z
-updated_at: 2026-10-22T02:07:40Z
+updated_at: 2026-10-22T08:06:20Z
 ---
 
 # KI-HARNESS-OPS-011: Separate Agent-Session Acquisition
@@ -91,9 +90,11 @@ Homed Claude/Codex acquisition in a common acquisition reference, linked it from
 
 Before commit, the full harness suite, TypeScript, the nine sequential focused audits named in Verify, the full isolated audit and mandatory hooks pass. The generated catalogue matches canonical descriptions. Judgment review preserves readable ChatGPT's provider route, distinguishes discovery/checkpoints from source payloads, and makes no new importer capability claim. Existing fleet warnings remain separate from this delivery.
 
+Acceptance confirmation: the three blind reviews cited in Done each return ACCEPT with high confidence at reviewed revision `0809ff8056f62ee3757525fc770d63c4b20511a6`. The full isolated `ki repo audit` passed before closure. Final tests, lint, type check, audits and mandatory hooks gate this acceptance commit.
+
 ### Outstanding concerns
 
-No guidance-delivery concern. Proving or extending executable importer support remains with `tools-ki`; no future capability is advertised by this change. Independent acceptance remains outstanding.
+No guidance-delivery concern. Proving or extending executable importer support remains with `tools-ki`; no future capability is advertised by this change. Independent acceptance is recorded in Done below.
 
 ### Post-change review
 
@@ -102,6 +103,10 @@ The separation is discoverable from acquisition and both housekeeping entry poin
 ### Mini recap
 
 Delivered acquisition-owned session guidance and the adapter naming decision, with source and hosted verification. Durable rationale is in the existing architecture decision. No roadmap record was created, accepted or pruned.
+
+## Done
+
+Accepted on 22 October 2026 under `ki-accept` by the explicitly scoped `wow-accept-harness-3` instruction, applying [Kris's 21 October 2026 14:46 BST grant](../../../ki-principal/+/_WORK/ki.ways-of-working/decisions.md#2026-10-21-1446-bst---triple-checked-approval-while-kris-is-away): "I'm happy to accept that as being a suitable approval." Three independent blind reviews ([review a](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-a.report.md), [review b](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-b.report.md), [review c](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-c.report.md)) each return ACCEPT with high confidence for KI-HARNESS-OPS-011; their agreement stands in for Kris's acceptance under that grant.
 
 ## Discussion
 

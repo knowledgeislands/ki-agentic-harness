@@ -7,13 +7,12 @@ theme: model
 component: acquire
 size: m
 area: OPS
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: ed49d2f26b622285a30005e00611fe8cc7b4bc4a
 created_at: 2026-10-20T22:26:28Z
-updated_at: 2026-10-22T02:06:43Z
+updated_at: 2026-10-22T08:06:20Z
 ---
 
 # KI-HARNESS-OPS-010: Receiver-Local Acquisition Triage
@@ -90,9 +89,11 @@ Added the four dispositions with evidence, scoped coverage and visible gaps in t
 
 Before commit, `bun run test`, TypeScript, generated acquisition rubric verification, the five focused audits named in Verify, the full isolated harness audit and mandatory commit hooks pass. Existing fleet warnings remain separate. Judgment review confirms that intake handling alone cannot claim knowledge harvested, and no-residual-knowledge cannot authorise deletion or hide incomplete coverage.
 
+Acceptance confirmation: the three blind reviews cited in Done each return ACCEPT with high confidence at reviewed revision `0809ff8056f62ee3757525fc770d63c4b20511a6`. The full isolated `ki repo audit` passed before closure. Final tests, lint, type check, audits and mandatory hooks gate this acceptance commit.
+
 ### Outstanding concerns
 
-No delivery concern. Applying the rule to a receiver's captures remains receiver-owned and requires its local authority. Independent acceptance remains outstanding.
+No delivery concern. Applying the rule to a receiver's captures remains receiver-owned and requires its local authority. Independent acceptance is recorded in Done below.
 
 ### Post-change review
 
@@ -101,6 +102,10 @@ The common rule supplies receiver-visible disposition without a new schema, ledg
 ### Mini recap
 
 Delivered one common triage rule and its rubric evidence. Durable guidance is homed in acquisition; no new work record or cross-repository action was needed. Awaiting independent review, with no acceptance or pruning.
+
+## Done
+
+Accepted on 22 October 2026 under `ki-accept` by the explicitly scoped `wow-accept-harness-3` instruction, applying [Kris's 21 October 2026 14:46 BST grant](../../../ki-principal/+/_WORK/ki.ways-of-working/decisions.md#2026-10-21-1446-bst---triple-checked-approval-while-kris-is-away): "I'm happy to accept that as being a suitable approval." Three independent blind reviews ([review a](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-a.report.md), [review b](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-b.report.md), [review c](/Users/krisbrown/.local/state/ki/agents/ways-of-working/wow-rev3-harness-c.report.md)) each return ACCEPT with high confidence for KI-HARNESS-OPS-010; their agreement stands in for Kris's acceptance under that grant.
 
 ## Discussion
 
