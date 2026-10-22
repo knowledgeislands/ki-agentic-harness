@@ -705,8 +705,8 @@ const writeHooks = (repository: string, hooks: Readonly<Record<string, string>>)
 test('SCR-5 conform binds the committed hooks and keeps the boundary install where its install root exists', async () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-engineering-'))
   temporaryDirectories.push(repository)
-  mkdirSync(join(repository, 'tooling', 'boundaries'), { recursive: true })
-  writeFileSync(join(repository, 'tooling', 'boundaries', 'package.json'), '{"private":true}\n')
+  mkdirSync(join(repository, 'tooling', 'depcruise'), { recursive: true })
+  writeFileSync(join(repository, 'tooling', 'depcruise', 'package.json'), '{"private":true}\n')
   writeFileSync(join(repository, 'package.json'), '{"scripts":{"prepare":"husky install"}}\n')
   const session = await createEngineeringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {}, packageScriptClaims: [] },
@@ -720,19 +720,19 @@ test('SCR-5 conform binds the committed hooks and keeps the boundary install whe
   family.items.find((candidate) => candidate.code === 'SCR-5')?.mechanical?.conform?.run(family.selectContext(root))
 
   expect(JSON.parse(session.proposal().writes[0]?.content ?? '{}').scripts.prepare).toBe(
-    'git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
+    'git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/depcruise'
   )
 })
 
 test('SCR-5 accepts one prepare form and names the retired Husky forms', () => {
   expect(acceptedPrepare(false)).toBe('git config core.hooksPath .githooks')
   expect(acceptedPrepare(true)).toBe(
-    'git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
+    'git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/depcruise'
   )
   expect(legacyPrepares(false)).toEqual(['husky', 'husky && git config core.hooksPath .githooks'])
   expect(legacyPrepares(true)).toEqual([
-    'husky && bun install --frozen-lockfile --cwd tooling/boundaries',
-    'husky && git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/boundaries'
+    'husky && bun install --frozen-lockfile --cwd tooling/depcruise',
+    'husky && git config core.hooksPath .githooks && bun install --frozen-lockfile --cwd tooling/depcruise'
   ])
 })
 

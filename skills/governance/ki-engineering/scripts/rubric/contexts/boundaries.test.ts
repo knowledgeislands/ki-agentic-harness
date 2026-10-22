@@ -15,17 +15,17 @@ afterEach(() => {
 const fixture = () => {
   const root = mkdtempSync(join(tmpdir(), 'ki-boundary-fixture-'))
   temporary.push(root)
-  for (const path of ['src/tests', 'node_modules', 'tooling/boundaries/node_modules/dependency-cruiser'])
+  for (const path of ['src/tests', 'node_modules', 'tooling/depcruise/node_modules/dependency-cruiser'])
     mkdirSync(join(root, path), { recursive: true })
   writeFileSync(
     join(root, 'package.json'),
     JSON.stringify({
       devDependencies: { 'dependency-cruiser': '^18' },
-      scripts: { prepare: 'husky && bun install --frozen-lockfile --cwd tooling/boundaries', test: 'vitest run' }
+      scripts: { prepare: 'husky && bun install --frozen-lockfile --cwd tooling/depcruise', test: 'vitest run' }
     })
   )
   writeFileSync(
-    join(root, 'tooling/boundaries/package.json'),
+    join(root, 'tooling/depcruise/package.json'),
     JSON.stringify({
       private: true,
       dependencies: { 'dependency-cruiser': '^18', typescript: '^6' }
@@ -158,7 +158,7 @@ test('isolated tooling must be private, development-only and limited to its two 
     { private: true, dependencies: { 'dependency-cruiser': '^18', typescript: '^6', other: '*' } }
   ]) {
     const root = fixture()
-    writeFileSync(join(root, 'tooling/boundaries/package.json'), JSON.stringify(manifest))
+    writeFileSync(join(root, 'tooling/depcruise/package.json'), JSON.stringify(manifest))
     expect((await inspectBoundaries(root, undefined, runner()))[0]?.level).toBe('FAIL')
   }
   const root = fixture()
@@ -172,10 +172,10 @@ test('an ordinary install provisions the isolated toolchain, and a missing insta
   writeFileSync(join(root, 'package.json'), JSON.stringify({ ...manifest, scripts: { prepare: 'husky' } }))
   expect((await inspectBoundaries(root, undefined, runner()))[0]?.message).toContain('prepare script')
   const uninstalled = fixture()
-  rmSync(join(uninstalled, 'tooling/boundaries/node_modules'), { recursive: true })
+  rmSync(join(uninstalled, 'tooling/depcruise/node_modules'), { recursive: true })
   const [finding] = await inspectBoundaries(uninstalled, undefined, runner())
   expect(finding).toMatchObject({ level: 'FAIL' })
-  expect(finding?.message).toContain('bun install --frozen-lockfile --cwd tooling/boundaries')
+  expect(finding?.message).toContain('bun install --frozen-lockfile --cwd tooling/depcruise')
 })
 
 test('baseline-only, disabled or type-blind rulesets fail before native proof execution', async () => {
@@ -322,7 +322,7 @@ const workspaceFixture = (memberTest = 'vitest run') => {
     join(root, 'package.json'),
     JSON.stringify({
       devDependencies: { 'dependency-cruiser': '^18' },
-      scripts: { prepare: 'husky && bun install --frozen-lockfile --cwd tooling/boundaries', test: 'turbo run test' },
+      scripts: { prepare: 'husky && bun install --frozen-lockfile --cwd tooling/depcruise', test: 'turbo run test' },
       workspaces: ['apps/*']
     })
   )

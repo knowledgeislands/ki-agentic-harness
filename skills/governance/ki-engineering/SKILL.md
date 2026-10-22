@@ -6,7 +6,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.ts]
 contributes: ['.ki.toml', '.gitignore', package.json, '.githooks/pre-commit', '.githooks/commit-msg']
-requires: ['.dependency-cruiser.ts', 'tooling/boundaries/package.json']
+requires: ['.dependency-cruiser.ts', 'tooling/depcruise/package.json']
 description: >
   Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,
   tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for

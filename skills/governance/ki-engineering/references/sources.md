@@ -21,7 +21,7 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 | COMMITLINT | [Commitlint releases][commitlint] | deterministic Conventional Commit validation in the `.githooks/commit-msg` binding | declared range and resolved `21.2.3` | 2026-10-06 |
 | MDLINT | [rumdl releases][rumdl] | Markdown audit/conform inside `ki-authoring` ❡ | declared `^0.3.0`, resolved `0.3.0` | 2026-10-18 |
 | KNIP | [knip releases][knip] | dependency + dead-code checks inside engineering audit/conform | declared range and resolved `6.39.0` | 2026-10-06 |
-| DEPCRUISER | [dependency-cruiser releases][depcruise] | module-boundary checker in the isolated `tooling/boundaries` root (`DESIGN-2`) | collection declares `^18.5.0` with TypeScript `^6.0.3` | 2026-10-06 |
+| DEPCRUISER | [dependency-cruiser releases][depcruise] | module-boundary checker in the isolated `tooling/depcruise` root (`DESIGN-2`) | collection declares `^18.5.0` with TypeScript `^6.0.3` | 2026-10-06 |
 
 ❡ The Markdown mechanical pass.
 
@@ -31,7 +31,7 @@ A pin is current only if every tool that consumes it supports it. A consumer tha
 
 | Consumer | Consumes | Consumer supports | Pinned | Workaround | Retire when | Last reviewed |
 | --- | --- | --- | --- | --- | --- | --- |
-| dependency-cruiser `18.5.0` | TypeScript compiler API | `typescript >=2 <7` | `7.0.2` | isolated `tooling/boundaries` root on TypeScript 6, installed by the root `prepare` script | a release accepts TypeScript 7, which awaits the compiler API planned for TypeScript 7.1 ([#1069][depcruise-ts7], [7.1 plan][ts71]) | 2026-10-06 |
+| dependency-cruiser `18.5.0` | TypeScript compiler API | `typescript >=2 <7` | `7.0.2` | isolated `tooling/depcruise` root on TypeScript 6, installed by the root `prepare` script | a release accepts TypeScript 7, which awaits the compiler API planned for TypeScript 7.1 ([#1069][depcruise-ts7], [7.1 plan][ts71]) | 2026-10-06 |
 
 ## Supported generated-artifact locations
 

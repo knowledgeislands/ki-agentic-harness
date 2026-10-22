@@ -100,7 +100,7 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
     mechanical(
       'SCR-5',
       'Lifecycle clean and prepare scripts',
-      '`clean` removes `node_modules` (and `dist` where built), and `prepare` is `git config core.hooksPath .githooks`, followed by `&& bun install --frozen-lockfile --cwd tooling/boundaries` where that isolated install root exists; a retired Husky form warns.',
+      '`clean` removes `node_modules` (and `dist` where built), and `prepare` is `git config core.hooksPath .githooks`, followed by `&& bun install --frozen-lockfile --cwd tooling/depcruise` where that isolated install root exists; a retired Husky form warns.',
       'FAIL',
       (context) => context.scr5,
       { overrideLevels: ['WARN'], conform: true }

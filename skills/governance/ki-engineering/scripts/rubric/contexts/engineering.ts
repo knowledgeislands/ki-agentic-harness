@@ -508,7 +508,7 @@ export const createEngineeringSession = async (
       if (synchronisePackage && packageSource !== undefined) {
         const content = packageContent(
           packageSource,
-          existsSync(join(target, 'tooling', 'boundaries', 'package.json')),
+          existsSync(join(target, 'tooling', 'depcruise', 'package.json')),
           HOOKS.every((hook) => isSafeRegularFile(join(target, hook)))
         )
         if (content !== undefined && content !== packageSource) writes.push({ path: 'package.json', content })

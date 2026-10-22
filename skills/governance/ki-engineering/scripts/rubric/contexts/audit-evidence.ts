@@ -500,7 +500,7 @@ export const inspectCommitGate = (repository: string, prepare: unknown): Enginee
   }
   const read = (...p: string[]): string => (isSafeRegularFile(...p) ? readFileSync(join(repository, ...p), 'utf8') : '')
 
-  const preparation = acceptedPrepare(existsSync(join(repository, 'tooling', 'boundaries', 'package.json')))
+  const preparation = acceptedPrepare(existsSync(join(repository, 'tooling', 'depcruise', 'package.json')))
   prepare === preparation
     ? add('PASS', 'SCR-5', `prepare = ${JSON.stringify(prepare)}`, 'package.json')
     : add(

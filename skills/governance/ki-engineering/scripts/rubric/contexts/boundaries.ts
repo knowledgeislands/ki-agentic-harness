@@ -9,8 +9,8 @@ import type { EngineeringEvidenceFinding } from './audit-evidence.ts'
 
 const execute = promisify(execFile)
 const configuration = '.dependency-cruiser.ts'
-const tooling = 'tooling/boundaries'
-const toolingManifest = 'tooling/boundaries/package.json'
+const tooling = 'tooling/depcruise'
+const toolingManifest = 'tooling/depcruise/package.json'
 const installedChecker = `${tooling}/node_modules/dependency-cruiser`
 export const BOUNDARY_INSTALL = `bun install --frozen-lockfile --cwd ${tooling}`
 const baselineRules = ['no-circular', 'no-unresolvable']
@@ -261,7 +261,7 @@ export const inspectBoundaries = async (
       return [
         finding(
           'FAIL',
-          'tooling/boundaries must be private and depend only on dependency-cruiser and its supported TypeScript.'
+          'tooling/depcruise must be private and depend only on dependency-cruiser and its supported TypeScript.'
         )
       ]
     if (!(pkg.devDependencies as Record<string, unknown> | undefined)?.['dependency-cruiser'])
