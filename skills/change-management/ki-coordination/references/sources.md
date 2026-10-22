@@ -17,6 +17,8 @@
 
 ## Last review
 
+The 22 October 2026 THREAD-FOOTER review follows Kris's 08:37 BST instruction in the `ki.ways-of-working` decisions log: "in the footer, I want a thread to say if is a coordination or state of play thread too" and the request to replace the copyable prompt with the thread type and its work name. Every banner now closes with one thread line carrying the type, exact work label and id; send and resume prompts are retired from handoff, hold, recovery and generated surfaces. The banner's state, counts and list and the owner-report sections keep their existing shape. This is an in-house policy review; no external source refresh is needed.
+
 The 22 October 2026 overnight blind-review repair aligns both ordered active-banner definitions and the generated coordinator style with the approved `[behind]` rule and its resume, mark and departure triggers. Deferred host-move questions and 14 October transfer evidence are retained in the linked design notes. This is an in-house policy correction; no external source was contacted.
 
 A 2026-10-21 review under `wow-day-push-reporting` applies Kris's "push state out of reports" instruction in `ki.ways-of-working`: owner reports, run reports and banners omit routine push state and other sessions' stacked commits; a run still reports a failed push that prevented publication of its own unit, naming the unit and reason. A hold report keeps nothing about pushes beyond a failure. Fast-forward, own-commits-only and no-force safeguards remain. This is an in-house policy review; external sources were not re-fetched. Implementation history is in Git.

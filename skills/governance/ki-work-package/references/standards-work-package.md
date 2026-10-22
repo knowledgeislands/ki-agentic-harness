@@ -334,10 +334,10 @@ A native client session, such as a Claude Code or Codex session or a Zed tab, be
 - **Key:** `<repository name>/<work id>`, such as `ki-principal/ki.ways-of-working`. It is stable across hosts, clients and sessions.
 - **Authority:** the work file's `id` says which work it is and its `level` whether it coordinates. The native session name is derived from the label under Work naming and copied into the client by hand or by the launcher; a native name, vendor field or session title never decides the work or its level.
 - **Binding:** the native session identifiers for a piece of work live only in a machine-local runtime file, `~/.local/state/ki/threads/<repository>/<slug>.json`, as Work naming names it. The binding is never committed, never copied into the package, which keeps no runtime identifier under [Prohibited payloads and claims](#prohibited-payloads-and-claims), and never moved between hosts: each host rebuilds its own.
-- **Supply:** identity reaches a session through one of three channels, in this order: the launcher's environment and session name, for a session `ki agent` or a host tool starts; the `SessionStart` hook on startup, resume and compact, where the binding exists; and the pasted opener or send line, which names the id and label, where no hook runs.
+- **Supply:** identity reaches a session through one of three channels, in this order: the launcher's environment and session name, for a session `ki agent` or a host tool starts; the `SessionStart` hook on startup, resume and compact, where the binding exists; and the pasted opener or thread identity, which names the id and label, where no hook runs.
 - **Drift:** a mismatch between the binding, the native name and the work file is reported in one line and never repaired by the session that finds it; the owner renames by hand, or the work's next update corrects the package.
 
-Until the `ki thread` tooling and its hook registration ship, no binding is written and a session knows its work only from its opener, its send line or an explicit id under [Resume lifecycle](#resume-lifecycle).
+Until the `ki thread` tooling and its hook registration ship, no binding is written and a session knows its work only from its opener, its thread identity or an explicit id under [Resume lifecycle](#resume-lifecycle).
 
 ## Optional runtime reminder consumers
 

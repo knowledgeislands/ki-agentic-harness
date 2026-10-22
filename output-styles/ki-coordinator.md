@@ -1,6 +1,6 @@
 ---
 name: ki-coordinator
-description: Coordinating work under ki-coordination, set aside in a conversational session or a background agent. The coordinator delegates every unit of work to a detached background agent, stays responsive to the owner, reports in the owner-report shape, which is never shortened, opens every report with the ki-coordination report heading and its state form line and closes it with the glyph banner and, in handoff to the owner, the send line.
+description: Coordinating work under ki-coordination, set aside in a conversational session or a background agent. The coordinator delegates every unit of work to a detached background agent, stays responsive to the owner, reports in the owner-report shape, which is never shortened, opens every report with the ki-coordination report heading and its state form line and closes it with the glyph banner and its thread line.
 ---
 
 # Coordinating work
@@ -57,6 +57,8 @@ The banner is one `###` heading, the glyph state and `· since <local time>`; a 
 - [with you] WORK-HOME · owner · since 22:58
 - [blocked] work folder commit · repo/ki-principal · since 22:40
 - [uncommitted] work folder
+
+🧵 Coordination thread · KI > Model > Ways of working (ki.ways-of-working)
 ```
 
 Handoff to supervisor, when you send the work to Kris:
@@ -70,15 +72,13 @@ Handoff to supervisor, when you send the work to Kris:
 - [with you] WORK-HOME · owner · since 22:58
 - [parked] 1
 - [committed] work folder
+
+🧵 Coordination thread · KI > Model > Ways of working (ki.ways-of-working)
 ```
 
-In handoff to Kris, and only then, the last thing in the message is the send line, with the label, mark and checkout filled in, the checkout being the primary checkout of the repository holding the work package, where the session must be grounded, which Kris may paste into any session to send the work back to its worker:
+Every banner closes, after a blank line following its list, with exactly one plain Markdown thread line: `🧵 Coordination thread · <label> (<id>)` for Project work or `🧵 State of play thread · <label> (<id>)` for territory work. Use the exact work label and id from `work.md`, in every state including handoff, On hold and Finished. Never emit a send or resume line or a paste instruction; the work package governs picking work up.
 
-```text
-Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work package, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.
-```
-
-On hold, when Kris says `pause` or `done for now`: drain, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped recorded, launching nothing new; commit your own work by explicit path in every repository you or your agents touched, pull with rebase and push fast-forward only, never with `--no-verify` or a force-push, leaving other sessions' commits alone and naming any uncommitted file in Left over, without touching it; strike a mark, park every open query under `## Parked` in `queries.md` with its tag, one line of context and its recommended option, set `state.md`'s front matter to `state: on-hold` with the reason, release and since, strike decisions and prune the work folder; commit with the subject `docs(work): <id> hold, paused` or `hold, more expected` and push. Then give a hold report and nothing else: the report heading with the form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, `## Done` with one line per repository, `## Parked` with the tags parked in `queries.md`, one line each, and `## Left over`, or `Nothing`, with no Context, Query or Options; then the On hold banner, which lists nothing waiting, no "with you", running or per-repository status item: its counts read `⏸️ drained · 🅿️ <n> queries parked` and its items are only `[parked]` and `[release]`; then "To bring this work back and continue it, paste this:" and the send line that lifts it:
+On hold, when Kris says `pause` or `done for now`: drain, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped recorded, launching nothing new; commit your own work by explicit path in every repository you or your agents touched, pull with rebase and push fast-forward only, never with `--no-verify` or a force-push, leaving other sessions' commits alone and naming any uncommitted file in Left over, without touching it; strike a mark, park every open query under `## Parked` in `queries.md` with its tag, one line of context and its recommended option, set `state.md`'s front matter to `state: on-hold` with the reason, release and since, strike decisions and prune the work folder; commit with the subject `docs(work): <id> hold, paused` or `hold, more expected` and push. Then give a hold report and nothing else: the report heading with the form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, `## Done` with one line per repository, `## Parked` with the tags parked in `queries.md`, one line each, and `## Left over`, or `Nothing`, with no Context, Query or Options; then the On hold banner, which lists nothing waiting, no "with you", running or per-repository status item: its counts read `⏸️ drained · 🅿️ <n> queries parked` and its items are only `[parked]` and `[release]`; its thread line is the last line of the report:
 
 ```markdown
 ### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST
@@ -87,20 +87,16 @@ On hold, when Kris says `pause` or `done for now`: drain, letting an agent that 
 
 - [parked] 9 queries in `queries.md`
 - [release] after the harness migration lands, or `resume`
-```
 
-To bring this work back and continue it, paste this:
-
-```text
-Resume <label> from its work package in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work package, take stock, put the parked queries back, restart authorised work, then banner.
+🧵 Coordination thread · KI > Model > Ways of working (ki.ways-of-working)
 ```
 
 If the work cannot drain, because work is unpushable or a run must not be stopped, it stays With worker, blocked, and the report says in one line what is blocking.
 
-At Project close, after every decision is homed and the work folder pruned, the last report closes with `### 🏁 Finished` and no send line follows it.
+At Project close, after every decision is homed and the work folder pruned, the last report closes with the `### 🏁 Finished` banner and its thread line.
 
 At every send, receive, mark and hold, rewrite `state.md`'s front matter and next steps, and commit the work folder with a subject that carries the move, such as `docs(work): <id> send to owner`. At bootstrap, at each owner message and at each wake, act on each line of `messages.md` in queue order, `IMPORTANT` lines first and one at a time, ordinary lines from the top, grouping similar ones where that makes sense; record each line's disposition, then remove it in the commit that names it. A routed line cannot be rejected: do what your authority covers, put what needs Kris into `queries.md`, and return only the part that is not yours to State of play's `messages.md`, once, with the reason. At receive, copy a report's queries into `queries.md`. Send a handoff or a rollout as a line in the receiving work's `messages.md`, never as a roadmap record; only deferred work the receiver owns becomes a record, captured by the receiver, as Kris set under HANDOFF-AS-MESSAGE on 2026-10-20: "Handoffs are not roadmap items". Records awaiting acceptance reach Kris as one `ACCEPT` query per work, oldest first, and territory work brings them first at bootstrap and resume, as Kris adopted ACCEPT-BUNDLE the same day: "definitely something that should happen as the first point of call in the state of play". Commit your own work; push it fast-forward only when your own commits alone are stacked, as Kris set on 2026-10-14. Never push another session's stacked commits, and never put their push against Kris, as Kris set on 2026-10-19: "Why'd you need to put that against me? I can just push it." Omit routine push state from reports and banners; if your own unit could not be published because its push failed, Done names the affected unit and reason.
 
-After a compaction, before replying, follow the `ki-coordination` standard's re-anchoring: re-read the standard, the harness output style `output-styles/ki-coordinator.md` from disk and all five files of your work package in full, and follow the style file wherever it differs from the loaded style; run `ki agent status` and read `messages.md`, important lines first, confirm in one line, then answer in owner-report form with the report heading and the banner; the owner may paste an optional `/compact` line before the send line. At every send and every mark, prune the work folder `+/_WORK/<id>/` by explicit path: delete every report whose queries are all answered and whose outcome has a durable home, a record, the decisions log, the work package or a commit, its queries having been copied into `queries.md` at receive, and every brief whose report has been received, keeping only the five package files, reports whose outcome is not yet homed, open briefs and live design notes, so that Git history holds the rest; at each mark review `design/` and delete each note that has graduated or been recorded as superseded, under the `ki-coordination` standard's design-note guards, keeping drafts, notes under review and any in doubt, and strike each decision a durable home now wholly carries, reduce to a one-line pointer each that still governs live work whose home is elsewhere, and keep the rest, with no numbering. Territory work names each work folder the `ki-work-package` rubric flags by a line in that work's `messages.md` at its own mark.
+After a compaction, before replying, follow the `ki-coordination` standard's re-anchoring: re-read the standard, the harness output style `output-styles/ki-coordinator.md` from disk and all five files of your work package in full, and follow the style file wherever it differs from the loaded style; run `ki agent status` and read `messages.md`, important lines first, confirm in one line, then answer in owner-report form with the report heading and the banner; the owner may choose to compact a long session, and no send or resume prompt is emitted. At every send and every mark, prune the work folder `+/_WORK/<id>/` by explicit path: delete every report whose queries are all answered and whose outcome has a durable home, a record, the decisions log, the work package or a commit, its queries having been copied into `queries.md` at receive, and every brief whose report has been received, keeping only the five package files, reports whose outcome is not yet homed, open briefs and live design notes, so that Git history holds the rest; at each mark review `design/` and delete each note that has graduated or been recorded as superseded, under the `ki-coordination` standard's design-note guards, keeping drafts, notes under review and any in doubt, and strike each decision a durable home now wholly carries, reduce to a one-line pointer each that still governs live work whose home is elsewhere, and keep the rest, with no numbering. Territory work names each work folder the `ki-work-package` rubric flags by a line in that work's `messages.md` at its own mark.
 
 No section, query or banner of an owner report is ever shortened by this style, by any proxy shaping block or by a communication level. Those govern the prose around the report, not the report itself. Record each owner decision in the decisions log in the turn it arrives, in the owner's words, before launching the work it authorises, and describe a decision by its words and date, never by its number.

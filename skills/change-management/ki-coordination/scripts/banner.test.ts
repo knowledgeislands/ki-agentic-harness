@@ -57,11 +57,10 @@ const ITEM =
   /^- \[(running|queued|with you|stuck|blocked|handoff|parked|on hold|release|committed|uncommitted|recovered|unlogged|finished)\] .+$/
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
-const SEND_LINE =
-  'Send <label> back to its worker in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work package, mark, fresh summary with carried-forward open points, take stock, restart authorised work, then banner.'
-const HOLD_SEND_LINE =
-  'Resume <label> from its work package in <checkout> under current ki-coordination and ki-delegation since <mark>: re-read the work package, take stock, put the parked queries back, restart authorised work, then banner.'
-const HOLD_CLOSING_LINE = 'To bring this work back and continue it, paste this:'
+const PROJECT_THREAD_LINE = '🧵 Coordination thread · KI > Model > Ways of working (ki.ways-of-working)'
+const TERRITORY_THREAD_LINE = '🧵 State of play thread · KI > SoP (ki)'
+const THREAD_LINE =
+  /^🧵 (?:Coordination thread · .+ \([a-z0-9-]+\.(?!regular(?:\.|\)))[a-z0-9-]+\)|State of play thread · .+ \([a-z0-9-]+\))$/u
 
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
@@ -101,7 +100,10 @@ const expectBanner = (lines: string[]): void => {
   expect(lines[0]).toMatch(BANNER_HEADING)
   expect(lines[1]).toBe('')
   const finished = lines[0]?.startsWith('### 🏁') ?? false
-  const items = lines.slice(finished ? 2 : 4)
+  expect(lines.at(-1)).toMatch(THREAD_LINE)
+  expect(lines.filter((line) => line.startsWith('🧵 '))).toHaveLength(1)
+  expect(lines.at(-2)).toBe('')
+  const items = lines.slice(finished ? 2 : 4, -2)
   if (!finished) {
     expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
     expect(lines[3]).toBe('')
@@ -166,7 +168,7 @@ test('the standard carries the With worker, handoff, On hold and Finished banner
   expect(hold?.[0]).toBe('### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST')
   expect(hold).toContain('- [release] after the harness migration lands, or `resume`')
   expect(hold?.[2]).toBe('⏸️ drained · 🅿️ 9 queries parked')
-  expect(hold?.slice(4).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(true)
+  expect(hold?.slice(4, -2).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(true)
 })
 
 test('reports omit routine push state, and an On hold banner lists nothing waiting', () => {
@@ -201,15 +203,34 @@ test('the output style carries the report heading and the live banners byte-iden
   expect(styled).toEqual(banners(standard).slice(0, 3))
 })
 
-test('the send line appears only in handoff to the owner, and the hold send line lifts a hold, both naming no host', () => {
+test('every banner closes with its work identity and never emits a send or resume prompt', () => {
   for (const text of [standard, outputStyle]) {
-    expect(text).toContain(`\`\`\`text\n${SEND_LINE}\n\`\`\``)
-    expect(text).toContain(`${HOLD_CLOSING_LINE}\n\n`)
-    expect(text).toContain(`\`\`\`text\n${HOLD_SEND_LINE}\n\`\`\``)
+    for (const lines of banners(text)) expect(lines.at(-1)).toBe(PROJECT_THREAD_LINE)
+    expect(text).toContain('`🧵 Coordination thread · <label> (<id>)` for Project work')
+    expect(text).toContain('`🧵 State of play thread · <label> (<id>)` for territory work')
+    expect(text).not.toMatch(/^(?:Send|Resume) <label>/m)
+    expect(text).not.toContain('To bring this work back and continue it, paste this:')
+    expect(text).not.toContain('{{send-line}}')
+    expect(text).not.toContain('{{hold-send-line}}')
     expect(text).toContain('**⏸️ On hold · Hold report at <local time> · mark <local time>**')
-    expect(text).not.toMatch(/(Send|Resume) <label> on [a-z]+ /)
   }
-  expect(standard).toContain('In handoff to the owner, and only then, the last thing in the message is the send line')
+  expect(PROJECT_THREAD_LINE).toMatch(THREAD_LINE)
+  expect(TERRITORY_THREAD_LINE).toMatch(THREAD_LINE)
+  for (const invalid of [
+    '🧵 State of play thread · Ways of working (ki.ways-of-working)',
+    '🧵 Coordination thread · KI > SoP (ki)',
+    '🧵 Coordination thread · Regular work (ki.regular)',
+    '🧵 Coordination thread · Missing id'
+  ])
+    expect(invalid).not.toMatch(THREAD_LINE)
+  for (const surface of generate(harnessRoot)) {
+    expect(surface.content).not.toMatch(/^(?:Send|Resume) <label>/m)
+    if (surface.path.includes('ki-delegation/assets/')) {
+      expect(surface.content).toContain('🧵 Coordination thread · <label> (<id>)')
+      expect(surface.content).toContain('🧵 State of play thread · <label> (<id>)')
+      expect(surface.content).toContain('using the work you report to')
+    }
+  }
   expect(standard).toContain('### Putting work on hold')
   expect(standard).toContain('### Picking work up')
   expect(standard).toContain('### Pushing beneath other sessions')
