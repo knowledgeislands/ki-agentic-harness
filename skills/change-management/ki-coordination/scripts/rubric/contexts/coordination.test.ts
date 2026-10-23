@@ -529,6 +529,31 @@ describe('work files', () => {
     expect(statuses(context(root).roles.outcomes)).toEqual(['PASS'])
   })
 
+  test('kb.personal-health uses its Project title Stocktake, falling back to the slug only without a title', () => {
+    const root = fixture({ repository: 'personal', capital: 'personal' })
+    const fields = {
+      id: 'kb.personal-health',
+      level: 'project',
+      project: 'personal-health',
+      theme: 'health',
+      title: 'Personal > Health > Stocktake'
+    }
+    work(root, fields.id, fields)
+    page(root, 'Themes', fields.theme)
+    page(root, 'Projects', fields.project)
+    const note = join(root, 'Streams', 'Projects', `${fields.project}.md`)
+    writeFileSync(note, '---\ntitle: Stocktake\n---\n\n# Stocktake\n')
+    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+
+    work(root, fields.id, { ...fields, title: 'Personal > Health > Personal health' })
+    const outcomes = context(root).labels.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.message).toContain(' > Stocktake')
+
+    writeFileSync(note, '# Stocktake\n')
+    expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
+  })
+
   test('a theme found only in the legacy Initiatives registry warns', () => {
     const root = fixture(capital)
     work(root, 'ki.ways-of-working', project())

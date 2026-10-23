@@ -221,8 +221,8 @@ const MASTER_LABEL = /^\S.* > SoP$/
 const masterLabel = (label: unknown): boolean =>
   typeof label === 'string' && (label === LEGACY_MASTER_LABEL || MASTER_LABEL.test(label))
 
-const projectLabel = (label: string, project: string): boolean =>
-  label.endsWith(`: ${project}`) || label.toLowerCase().endsWith(` > ${project.replaceAll('-', ' ')}`)
+const projectLabel = (label: string, project: string, title = project.replaceAll('-', ' ')): boolean =>
+  label.endsWith(`: ${project}`) || label.toLowerCase().endsWith(` > ${title.toLowerCase()}`)
 
 /** A tolerance-window warning: the old shape passes, naming its new home. */
 const legacy = (message: string, subject: string): AuditOutcome => ({
@@ -322,16 +322,21 @@ const labelOutcomes = (
     const slug = work.id.split('.')[1] ?? ''
     const project = work.fields?.project
     const title = work.fields?.title
+    const flatNote = join(root, PROJECTS_DIRECTORY, `${slug}.md`)
+    const projectNote = existsSync(flatNote) ? flatNote : join(root, PROJECTS_DIRECTORY, slug, `${slug}.md`)
+    const registeredTitle = projects?.has(slug) ? frontMatter(projectNote)?.title : undefined
+    const projectTitle =
+      typeof registeredTitle === 'string' && registeredTitle.trim() ? registeredTitle : slug.replaceAll('-', ' ')
     if (project !== slug)
       outcomes.push({
         status: 'VIOLATION',
         message: `Project work names its Project in \`project: ${slug}\`, the second segment of its id`,
         subject: work.path
       })
-    if (typeof title !== 'string' || !projectLabel(title, slug))
+    if (typeof title !== 'string' || !projectLabel(title, slug, projectTitle))
       outcomes.push({
         status: 'VIOLATION',
-        message: `the title of Project work ends in its Project's title, \` > ${slug.replaceAll('-', ' ')}\``,
+        message: `the title of Project work ends in its Project's title, \` > ${projectTitle}\``,
         subject: work.path
       })
     if (projects && !projects.has(slug))
