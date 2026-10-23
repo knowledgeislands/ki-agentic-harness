@@ -75,6 +75,8 @@ The five package files exist from the work's creation, `queries.md`, `messages.m
 
 ### Entry points
 
+First-message exception: the sender or the territory's State of play may create an absent, registered Project's package solely to queue its first message, within the receiving repository's authority. Create all five files with a minimal definition, empty queries and decisions, `state: on-hold`, `hold.reason: paused` and `hold.release: when Kris opens this Project work`, under `ki-coordination` [Seeding](../../../change-management/ki-coordination/references/standards-coordination.md#territory-work). The message does not open or automatically release the work; all other entry-point boundaries below remain.
+
 Every writer is a named entry point with its permitted kinds, and every other party only reads. This standing contract implements the ownership set out in [Activation and ownership](#activation-and-ownership) and is the contract other skills, tools and runs check in on:
 
 1. **One owner sets the shape and the tidy rules:** this standard sets the closed list, what each entry point may write, when each kind goes and how a deletion is made.
