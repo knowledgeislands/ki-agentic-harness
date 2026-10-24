@@ -202,6 +202,8 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] No skill remains declared after the capability it governs has left the repository.
 - [ ] A substantive change to a canonical zone went through the enactment process.
 - [ ] The work record exists and its status matches reality.
+- [ ] The `+/` inbox is triaged: every hand-in is sorted to its owner and nothing is left stale, under the [working areas](standards-repository.md#working-areas) standard.
+- [ ] Each `+/_WORK/<id>/` work folder is tidied under the `ki-work-package` [tidying rules](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder), with no homed report, spent brief or graduated design note left behind.
 - [ ] Where connected review is authorised and available, each open pull request is reconciled with its canonical work record or has an explicit disposition when no work record governs it.
 - [ ] Review evidence states whether live pull-request coverage was checked or unavailable; an offline roadmap listing is not evidence that no pull requests remain.
 - [ ] Each Ready plan references current criterion identifiers wherever it names governed criteria.
