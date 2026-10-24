@@ -737,6 +737,21 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
       [...s.tree].some((p) => ['+/_WORK/', '+/_WORK_REVIEW/', '+/_CHECKPOINTS/'].some((area) => p.startsWith(area)))
   }
 ]
+// The declared skills whose `ki-depends-on` closure requires each coverage table. A required
+// table is not a stale opt-in while a dependent is declared: the host refuses to run without
+// it. Mirrors the collection's SKILL.md frontmatter; repository.test.ts checks it for drift.
+export const COVERAGE_REQUIRED_BY: Readonly<Record<string, readonly string[]>> = {
+  'ki-decision-records': ['ki-repo-harness', 'ki-repo-kb-principal'],
+  'ki-engineering': ['ki-repo-mcp'],
+  'ki-repo-kb': ['ki-repo-kb-principal'],
+  'ki-repo-kb-streams': ['ki-repo-kb', 'ki-repo-kb-principal'],
+  'ki-repo-website': ['ki-repo-website-app', 'ki-repo-website-cloudflare', 'ki-repo-website-content'],
+  'ki-skills': ['ki-repo-harness'],
+  'ki-subagents': ['ki-repo-harness', 'ki-subagents-chatgpt', 'ki-subagents-claude'],
+  'ki-work-package': ['ki-coordination']
+}
+const requiredByDeclared = (kiText: string, table: string): boolean =>
+  (COVERAGE_REQUIRED_BY[table] ?? []).some((dependent) => declaresTable(kiText, dependent))
 // Thread-model working areas read for the work model's tolerance window, each warned with its new home.
 const LEGACY_WORKING_AREAS = ['+/_CHECKPOINTS/', '+/_THREADS/'] as const
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
@@ -1145,7 +1160,7 @@ async function auditRepo(
           'COV-1',
           `looks governed by ki-${c.skill} (${c.artifact}) but declares no [skills.${c.table}] — opt in, or set coverage-${c.skill} = false`
         )
-      else if (declared && !detected)
+      else if (declared && !detected && !requiredByDeclared(text, c.table))
         warn('COV-1', `declares [skills.${c.table}] but no ${c.artifact} found — stale opt-in?`)
     }
     for (const area of LEGACY_WORKING_AREAS)

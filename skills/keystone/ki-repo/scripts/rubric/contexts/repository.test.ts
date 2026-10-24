@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from 'bun:test'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import type { RubricContextOptions } from '../../shared/rubric.ts'
@@ -9,6 +9,7 @@ import definition from '../items/index.ts'
 import { RUNTIMES } from '../items/runtimes.ts'
 import { WORK } from '../items/working-areas.ts'
 import {
+  COVERAGE_REQUIRED_BY,
   collectAuditFindings,
   detectedCoverageSkills,
   KI_CONFIGURATION_HEADER,
@@ -25,6 +26,31 @@ test('ki-detects registry exactly matches executable coverage targets', () => {
   if (!document) throw new Error('ki-repo SKILL.md has no frontmatter')
   const frontmatter = Bun.YAML.parse(document) as Record<string, unknown>
   expect(frontmatter['ki-detects']).toEqual(detectedCoverageSkills())
+})
+
+test('coverage requirements match the collection dependency closure', () => {
+  const skillsRoot = join(import.meta.dir, '../../../../..')
+  const dependsOn = new Map<string, readonly string[]>()
+  for (const area of readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory()))
+    for (const skill of readdirSync(join(skillsRoot, area.name), { withFileTypes: true })) {
+      const path = join(skillsRoot, area.name, skill.name, 'SKILL.md')
+      const document = skill.isDirectory() && readFileSync(path, 'utf8').match(/^---\n([\s\S]*?)\n---/)?.[1]
+      if (!document) continue
+      const frontmatter = Bun.YAML.parse(document) as Record<string, unknown>
+      dependsOn.set(skill.name, (frontmatter['ki-depends-on'] as string[] | undefined) ?? [])
+    }
+  const closure = (name: string, seen = new Set<string>()): Set<string> => {
+    for (const dependency of dependsOn.get(name) ?? [])
+      if (!seen.has(dependency)) closure(dependency, seen.add(dependency))
+    return seen
+  }
+  const coverage = new Set(detectedCoverageSkills())
+  const expected: Record<string, string[]> = {}
+  for (const name of [...dependsOn.keys()].sort())
+    for (const dependency of closure(name))
+      if (coverage.has(dependency)) expected[dependency] = [...(expected[dependency] ?? []), name]
+
+  expect(COVERAGE_REQUIRED_BY).toEqual(expected)
 })
 
 afterEach(() => {
@@ -1195,6 +1221,30 @@ coverage-guides = false
       '[skills.ki-repo]\n\n[skills.ki-subagents]\n\n[skills.ki-subagents-chatgpt]\n'
     )
     expect((await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')).toEqual([])
+  })
+
+  test('accepts an undetected coverage table that a declared skill requires', async () => {
+    const root = repository()
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-harness]\n\n[skills.ki-subagents]\n')
+
+    expect(
+      (await collectAuditFindings([root])).findings.filter(
+        (finding) => finding.code === 'COV-1' && finding.message.includes('[skills.ki-subagents]')
+      )
+    ).toEqual([])
+  })
+
+  test('still warns on an undetected coverage table that no declared skill requires', async () => {
+    const root = repository()
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-subagents]\n')
+
+    expect(
+      (await collectAuditFindings([root])).findings
+        .filter((finding) => finding.code === 'COV-1')
+        .map(({ level, message }) => `${level} ${message}`)
+    ).toEqual([
+      'WARN declares [skills.ki-subagents] but no subagents/**/*.md or .codex/agents/**/*.toml found — stale opt-in?'
+    ])
   })
 
   test('fails a selected local target rather than falling back to GitHub content', async () => {
