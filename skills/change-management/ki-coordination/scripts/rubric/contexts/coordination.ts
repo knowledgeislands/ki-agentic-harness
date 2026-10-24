@@ -127,10 +127,13 @@ export const repositoryIdentity = (root: string): Identity => {
 export const isCapital = (identity: Identity): boolean =>
   Boolean(identity.repository) && identity.repository === identity.capital
 
-/** The level a work id implies: one segment is territory work, a second segment `regular` regular work, any other Project work. */
+/**
+ * The level a work id implies: one segment is territory work, the main State of play; a second segment `sop` is a
+ * secondary State of play, territory work too; a second segment `regular` regular work; any other Project work.
+ */
 export const workLevel = (id: string): WorkLevel => {
   const segments = id.split('.')
-  if (segments.length === 1) return 'territory'
+  if (segments.length === 1 || segments[1] === 'sop') return 'territory'
   return segments[1] === 'regular' ? 'regular' : 'project'
 }
 
@@ -217,6 +220,7 @@ const registrySlugs = (directory: string): ReadonlySet<string> | undefined => {
 
 const LEGACY_MASTER_LABEL = 'Master: state-of-play'
 const MASTER_LABEL = /^\S.* > SoP$/
+const SECONDARY_LABEL = /^\S.* > SoP \([a-z0-9]+(?:-[a-z0-9]+)*\)$/
 
 const masterLabel = (label: unknown): boolean =>
   typeof label === 'string' && (label === LEGACY_MASTER_LABEL || MASTER_LABEL.test(label))
@@ -237,7 +241,8 @@ const masterOutcomes = (
   works: readonly Work[] | undefined,
   capital: boolean
 ): AuditOutcome[] => {
-  const territory = works?.find((work) => workLevel(work.id) === 'territory')
+  const territory = works?.find((work) => !work.id.includes('.'))
+  const secondaries = works?.filter((work) => work.id.includes('.') && workLevel(work.id) === 'territory') ?? []
   const master = records?.find((record) => record.thread === MASTER_THREAD)
   if (capital && !territory && !master)
     return [
@@ -247,12 +252,12 @@ const masterOutcomes = (
         subject: WORK_DIRECTORY
       }
     ]
-  if (!capital && (territory || master))
+  if (!capital && (territory || secondaries.length || master))
     return [
       {
         status: 'VIOLATION',
         message: 'only a Capital holds territory work; this repository is not its own capital',
-        subject: territory?.path ?? master?.path ?? WORK_DIRECTORY
+        subject: territory?.path ?? secondaries[0]?.path ?? master?.path ?? WORK_DIRECTORY
       }
     ]
   const outcomes: AuditOutcome[] = []
@@ -262,6 +267,18 @@ const masterOutcomes = (
       message: 'territory work is titled `<Territory> > SoP`',
       subject: territory.path
     })
+  for (const secondary of secondaries) {
+    const name = secondary.id.split('.')[2]
+    if (
+      !SECONDARY_LABEL.test(String(secondary.fields?.title ?? '')) ||
+      !String(secondary.fields?.title).endsWith(`(${name})`)
+    )
+      outcomes.push({
+        status: 'VIOLATION',
+        message: 'a secondary State of play `<territory>.sop.<name>` is titled `<Territory> > SoP (<name>)`',
+        subject: secondary.path
+      })
+  }
   if (master && !masterLabel(master.fields?.label))
     outcomes.push({
       status: 'VIOLATION',

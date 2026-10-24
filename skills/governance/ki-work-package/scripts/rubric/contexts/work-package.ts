@@ -17,6 +17,8 @@ const WORK_FIELDS: ReadonlySet<string> = new Set([
   'label',
   'project',
   'theme',
+  'parent',
+  'covers',
   'target',
   'hold',
   'blocking',
@@ -38,6 +40,8 @@ const WORK_STATES: readonly unknown[] = [
 ]
 const HOLD_REASONS: readonly unknown[] = ['paused', 'more-expected']
 const KEBAB = '[a-z0-9]+(?:-[a-z0-9]+)*'
+/** The reserved second id segment of a secondary State of play, `<territory>.sop.<name>`. */
+const SECONDARY_SEGMENT = 'sop'
 const WORK_ID = new RegExp(`^${KEBAB}(?:\\.${KEBAB})*$`)
 const SLUG = new RegExp(`^${KEBAB}$`)
 const HOLDER = new RegExp(`^(?:owner|agent|(?:run|person|repo)/[A-Za-z0-9_.-]+|work/${KEBAB}(?:\\.${KEBAB})*)$`)
@@ -50,6 +54,8 @@ const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
   'label',
   'project',
   'theme',
+  'parent',
+  'covers',
   'created_at'
 ])
 const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
@@ -515,6 +521,40 @@ const h2Sections = (body: string): Map<string, string> => {
 
 const words = (text: string): number => text.split(/\s+/).filter(Boolean).length
 
+/**
+ * Where territory work stands in its territory: the main State of play, `<territory>`, carries no parent or covers; a
+ * secondary, `<territory>.sop.<name>`, names the main as parent and lists the other work it covers. `sop` is a second
+ * segment at territory level only, and parent and covers belong to secondaries alone.
+ */
+const placementFailures = (id: string, fields: Readonly<Record<string, unknown>>): readonly string[] => {
+  const segments = id.split('.')
+  const territory = segments[0] ?? ''
+  const secondary = segments[1] === SECONDARY_SEGMENT
+  const placed = 'parent' in fields || 'covers' in fields
+  if (fields.level !== 'territory') {
+    if (secondary) return [`a <territory>.${SECONDARY_SEGMENT}.<name> id is territory work`]
+    return placed ? ['parent and covers belong to a secondary State of play and are absent otherwise'] : []
+  }
+  if (segments.length === 1) return placed ? ['the main State of play carries no parent or covers'] : []
+  if (segments.length !== 3 || !secondary)
+    return [`territory work id must be <territory> or <territory>.${SECONDARY_SEGMENT}.<name>`]
+  const failures: string[] = []
+  if (fields.parent !== territory) failures.push(`parent must name the main State of play, ${territory}`)
+  const covers = fields.covers
+  if (!Array.isArray(covers) || !covers.length)
+    failures.push('covers must list the work ids the secondary State of play coordinates')
+  else
+    for (const covered of covers)
+      if (
+        typeof covered !== 'string' ||
+        !WORK_ID.test(covered) ||
+        !covered.startsWith(`${territory}.`) ||
+        covered.split('.')[1] === SECONDARY_SEGMENT
+      )
+        failures.push(`covers names ${String(covered)}, which is not other work of territory ${territory}`)
+  return failures
+}
+
 /** The definition fields both shapes share: level, title, label, project, theme, holders and the coordination gate. */
 const definitionChecks = (
   record: ParsedRecord,
@@ -536,6 +576,7 @@ const definitionChecks = (
     fail(evidence.schema, 'project names the Project slug at project level and is absent otherwise')
   if (fields.theme !== undefined && fields.theme !== null && !SLUG.test(String(fields.theme)))
     fail(evidence.schema, 'theme must be a theme slug or null')
+  for (const message of placementFailures(String(fields.id ?? ''), fields)) fail(evidence.schema, message)
   for (const field of ['worker', 'supervisor'] as const)
     if (!HOLDER.test(String(fields[field] ?? '')))
       fail(evidence.schema, `${field} must be a holder: owner, agent, run/, work/, person/ or repo/`)

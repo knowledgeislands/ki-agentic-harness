@@ -56,7 +56,7 @@ target: 2026-12-31
 ---
 ```
 
-- `slug` matches the filename and never changes.
+- `slug` matches the filename and never changes. It is never `regular` or `sop`, the second id segments the `ki-coordination` [Work naming](../../ki-coordination/references/standards-coordination.md#work-naming) reserves for regular work and secondary States of play.
 - `outcome` is one sentence naming the finite outcome.
 - `theme`, when present, is the slug of the theme the Project carries. A theme is a label: a Project may carry none, and relabelling it renames nothing, because no identifier carries a theme.
 - `lifecycle` is `planned`, `active`, `paused`, `completed`, or `cancelled`. A `planned` Project whose `outcome` is a decision is an [idea-stage Project](#idea-stage-project); a `paused` one states its [release condition](#paused-project). Completing or cancelling a Project is an accountable human decision taken after its [close-out assessment](#close-out-assessment); it is never inferred from its records' status.

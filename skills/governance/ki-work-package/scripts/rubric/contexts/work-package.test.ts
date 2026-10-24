@@ -737,6 +737,45 @@ test('territory work may keep a Queue after Now', () => {
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
 })
 
+const territoryPackage = (repository: string, id: string, extra: readonly string[]): void => {
+  const files = packageFiles(id, { work: { level: 'territory', title: "'HNR > SoP (5ge)'" } })
+  writePackage(repository, id, {
+    ...files,
+    'work.md': (files['work.md'] ?? '')
+      .replace('project: ways-of-working\n', '')
+      .replace('theme: model\n', extra.map((line) => `${line}\n`).join(''))
+  })
+}
+
+test('a secondary State of play names its main as parent and lists the work it covers', () => {
+  const repository = workFixture()
+  territoryPackage(repository, 'hnr', [])
+  territoryPackage(repository, 'hnr.sop.5ge', ['parent: hnr', 'covers: [hnr.5g-emerge-apex, hnr.regular.demo]'])
+
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+})
+
+test('parent and covers are checked and belong to secondary States of play alone', () => {
+  for (const [id, extra] of [
+    ['hnr', ['parent: hnr']],
+    ['hnr.sop.5ge', ['parent: other', 'covers: [hnr.5g-emerge-apex]']],
+    ['hnr.sop.5ge', ['parent: hnr']],
+    ['hnr.sop.5ge', ['parent: hnr', 'covers: [other.a]']],
+    ['hnr.sop.5ge', ['parent: hnr', 'covers: [hnr.sop.sites]']],
+    ['hnr.hub', []]
+  ] as const) {
+    const repository = workFixture()
+    territoryPackage(repository, id, extra)
+    expect(statuses(context(repository))['RECORD-2']).toBe('VIOLATION')
+  }
+  const project = workFixture()
+  writePackage(project, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { work: { parent: 'ki' } }))
+  expect(statuses(context(project))['RECORD-2']).toBe('VIOLATION')
+  const misplaced = workFixture()
+  writePackage(misplaced, 'ki.sop.tools', packageFiles('ki.sop.tools', { work: { project: 'sop' } }))
+  expect(statuses(context(misplaced))['RECORD-2']).toBe('VIOLATION')
+})
+
 test('size limits and history warn without failing', () => {
   const repository = workFixture()
   writePackage(
