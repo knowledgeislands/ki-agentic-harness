@@ -166,9 +166,13 @@ The field set is closed:
 | `label` | optional | the title with a `(<host>)` suffix, only for work limited to that machine |
 | `project` | required at `project` level, else absent | the Project note's slug, the id's second segment |
 | `theme` | optional | a theme page's slug, or `null` |
+| `parent` | required on a secondary State of play, else absent | the main State of play's id, the territory |
+| `covers` | required on a secondary State of play, else absent | a non-empty list of the Project and ad hoc work ids of the same territory it coordinates |
 | `description` | required | the routing description, at most 500 characters |
 | `worker`, `supervisor` | required | each a holder |
 | `created_at` | optional | UTC time the work folder was created, no later than `state.md`'s `since` |
+
+Territory work is the main State of play, id `<territory>`, or a secondary State of play, id `<territory>.sop.<name>`, under the `ki-coordination` [secondary States of play](../../../change-management/ki-coordination/references/standards-coordination.md#secondary-states-of-play); `sop` is never a second segment at another level. A secondary may keep a `## Queue` in its state file as the main does.
 
 The `description` is written for routing, in a skill description's voice, as Kris answered DESCRIPTION-SHAPE: third person, what the work does, then "Takes ..." naming the kinds of unit it accepts, then "Not for ..." naming the neighbouring works by id, one to three sentences, tested against a handful of ambiguous routing examples. There is no `active` or `accepts` field: every state except `finished` can receive, and a work winding down says "Not taking new units" in its description.
 
