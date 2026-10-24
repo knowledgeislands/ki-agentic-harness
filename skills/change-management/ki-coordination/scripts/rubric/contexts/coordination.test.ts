@@ -502,6 +502,7 @@ describe('work files', () => {
     expect(workLevel('ki.regular')).toBe('regular')
     expect(workLevel('ki.regular.tidy')).toBe('regular')
     expect(workLevel('ki.ways-of-working')).toBe('project')
+    expect(workLevel('ki.sop.sites')).toBe('territory')
   })
 
   test('a Capital holding titled territory work passes with no warning', () => {
@@ -516,6 +517,23 @@ describe('work files', () => {
     expect(statuses(context(titled).master.outcomes)).toEqual(['VIOLATION'])
     const outside = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
     work(outside, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
+    expect(statuses(context(outside).master.outcomes)).toEqual(['VIOLATION'])
+  })
+
+  test('a secondary State of play titled `<Territory> > SoP (<name>)` passes beside the main', () => {
+    const root = fixture(capital)
+    work(root, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
+    work(root, 'ki.sop.sites', { id: 'ki.sop.sites', level: 'territory', title: 'KI > SoP (sites)', parent: 'ki' })
+    expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
+  })
+
+  test('a secondary State of play with another title, or outside a Capital, is a violation', () => {
+    const titled = fixture(capital)
+    work(titled, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
+    work(titled, 'ki.sop.sites', { id: 'ki.sop.sites', level: 'territory', title: 'KI > SoP (web)', parent: 'ki' })
+    expect(statuses(context(titled).master.outcomes)).toEqual(['VIOLATION'])
+    const outside = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    work(outside, 'ki.sop.sites', { id: 'ki.sop.sites', level: 'territory', title: 'KI > SoP (sites)', parent: 'ki' })
     expect(statuses(context(outside).master.outcomes)).toEqual(['VIOLATION'])
   })
 
