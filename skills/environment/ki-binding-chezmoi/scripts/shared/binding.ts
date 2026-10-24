@@ -22,6 +22,7 @@ export type ServerEntry =
       name: string
       clients: readonly Client[]
       url: string
+      auth?: 'oauth'
       transports: Readonly<Partial<Record<Client, Transport>>>
       headers?: Readonly<Record<string, EnvValue>>
       lifecycle?: Lifecycle
@@ -86,7 +87,10 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
   const keys = Object.keys(entry)
   if (
     keys.some(
-      (key) => !['name', 'clients', 'command', 'args', 'env', 'url', 'transports', 'headers', 'lifecycle'].includes(key)
+      (key) =>
+        !['name', 'clients', 'command', 'args', 'env', 'url', 'transports', 'headers', 'auth', 'lifecycle'].includes(
+          key
+        )
     )
   )
     throw new Error(`entry ${index + 1} has an unsupported field`)
@@ -105,7 +109,13 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
   if ((typeof entry.command === 'string') === (typeof entry.url === 'string'))
     throw new Error(`entry ${index + 1} must define exactly one command or url`)
   if (typeof entry.command === 'string') {
-    if (!entry.command || entry.transports !== undefined || entry.url !== undefined || entry.headers !== undefined)
+    if (
+      !entry.command ||
+      entry.transports !== undefined ||
+      entry.url !== undefined ||
+      entry.headers !== undefined ||
+      entry.auth !== undefined
+    )
       throw new Error(`entry ${index + 1} has invalid stdio fields`)
     if (entry.args !== undefined && (!Array.isArray(entry.args) || !entry.args.every((arg) => typeof arg === 'string')))
       throw new Error(`entry ${index + 1} has invalid args`)
@@ -122,6 +132,7 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
   }
   if (!entry.url || entry.args !== undefined || entry.env !== undefined)
     throw new Error(`entry ${index + 1} has invalid URL fields`)
+  if (entry.auth !== undefined && entry.auth !== 'oauth') throw new Error(`entry ${index + 1} has invalid auth`)
   const transports = record(entry.transports)
   const headers = values(entry.headers)
   if (!headers) throw new Error(`entry ${index + 1} has invalid headers`)
@@ -138,6 +149,7 @@ const parseEntry = (value: unknown, index: number): ServerEntry => {
     name: entry.name,
     clients,
     url: entry.url as string,
+    ...(entry.auth ? { auth: entry.auth } : {}),
     transports: transports as Partial<Record<Client, Transport>>,
     headers,
     ...(lifecycle ? { lifecycle } : {})

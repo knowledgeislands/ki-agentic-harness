@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { ServerEntry } from '../../shared/binding.ts'
+import { readSource, type ServerEntry } from '../../shared/binding.ts'
 import type { RubricFamily } from '../../shared/rubric.ts'
 import { type BindingRubricContext, createBindingSession, mcporterMatches } from '../contexts/binding.ts'
 import catalogue from './index.ts'
@@ -232,5 +232,60 @@ test('family modules export only one complete family', async () => {
   )) {
     const module = (await import(`./${file}`)) as Record<string, unknown>
     expect(Object.keys(module)).toHaveLength(1)
+  }
+})
+
+test.each([
+  ['URL OAuth', { url: 'https://example.invalid/mcp', transports: { mcporter: 'http' }, auth: 'oauth' }, 'valid'],
+  ['command OAuth', { command: 'node', auth: 'oauth' }, 'invalid'],
+  [
+    'unknown URL auth',
+    { url: 'https://example.invalid/mcp', transports: { mcporter: 'http' }, auth: 'bearer' },
+    'invalid'
+  ]
+] as const)('the closed schema checks %s', (_label, definition, kind) => {
+  const directory = mkdtempSync(join(tmpdir(), 'ki-binding-auth-'))
+  temporaryDirectories.push(directory)
+  const source = join(directory, 'mcp-servers.yaml')
+  writeFileSync(source, JSON.stringify({ mcpServers: [{ name: 'ki-url', clients: ['mcporter'], ...definition }] }))
+  const state = readSource(source)
+  expect(state.kind).toBe(kind)
+  if (kind === 'valid') expect(state).toMatchObject({ entries: [{ auth: 'oauth' }] })
+})
+
+test('mcporter comparison preserves URL OAuth and detects missing or unexpected markers', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'ki-binding-auth-'))
+  temporaryDirectories.push(directory)
+  const target = join(directory, 'mcporter.json')
+  const entry = {
+    name: 'ki-url',
+    clients: ['mcporter'],
+    url: 'https://example.invalid/mcp',
+    transports: { mcporter: 'http' },
+    auth: 'oauth'
+  } as const satisfies ServerEntry
+  process.env.MCPORTER_CONFIG = target
+  const context = () =>
+    createBindingSession({
+      repository: directory,
+      userHome: directory,
+      mode: 'audit',
+      configuration: {}
+    }).subjects[0]?.context() as BindingRubricContext
+  writeFileSync(target, JSON.stringify({ mcpServers: { 'ki-url': { url: entry.url, auth: 'oauth' } } }))
+  const state = context().mcporter
+  expect(state.kind).toBe('valid')
+  if (state.kind !== 'valid') throw new Error('expected a valid OAuth target')
+  expect(state.servers['ki-url']).toMatchObject({ auth: 'oauth' })
+  expect(mcporterMatches(entry, state.servers['ki-url'])).toBe(true)
+  expect(mcporterMatches(entry, { url: entry.url })).toBe(false)
+  const { auth: _auth, ...withoutAuth } = entry
+  expect(mcporterMatches(withoutAuth, state.servers['ki-url'])).toBe(false)
+  for (const definition of [
+    { url: entry.url, auth: 'bearer' },
+    { command: 'node', auth: 'oauth' }
+  ]) {
+    writeFileSync(target, JSON.stringify({ mcpServers: { 'ki-url': definition } }))
+    expect(context().mcporter.kind).toBe('invalid')
   }
 })

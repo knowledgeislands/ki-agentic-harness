@@ -5,7 +5,7 @@ const BIND_1: RubricItem<BindingRubricContext> = {
   code: 'BIND-1',
   title: 'mcporter agrees with source definitions',
   description:
-    'An explicitly selected mcporter target has the complete non-secret definitions for each mcporter-targeted server, including header names, literal header values, and lifecycle; secret-derived header values are checked only for non-empty presence.',
+    'An explicitly selected mcporter target has the complete non-secret definitions for each mcporter-targeted server, including header names, literal header values, URL OAuth markers, and lifecycle; secret-derived header values are checked only for non-empty presence.',
   sources: ['standards-cross-surface-binding.md'],
   mechanical: {
     level: 'WARN',
@@ -63,7 +63,8 @@ const BIND_1: RubricItem<BindingRubricContext> = {
 const BIND_2: RubricItem<BindingRubricContext> = {
   code: 'BIND-2',
   title: 'Single MCP source is valid',
-  description: 'The resolved canonical source is a physical file with a closed, portable server schema.',
+  description:
+    'The resolved canonical source is a physical file with a closed, portable server schema; auth is URL-only and accepts only oauth.',
   sources: ['standards-cross-surface-binding.md'],
   mechanical: {
     level: 'FAIL',

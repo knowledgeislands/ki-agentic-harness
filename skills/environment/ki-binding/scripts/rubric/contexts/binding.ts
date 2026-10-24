@@ -14,6 +14,7 @@ type McporterDefinition = {
   command?: string
   args?: readonly string[]
   url?: string
+  auth?: 'oauth'
   baseUrl?: string
   headers?: Readonly<Record<string, string>>
   lifecycle?: Lifecycle
@@ -51,6 +52,8 @@ const mcporter = (): McporterState => {
       if (definition.lifecycle !== undefined && !['ephemeral', 'keep-alive'].includes(definition.lifecycle as string))
         return { kind: 'invalid', path: resolved }
       const lifecycle = definition.lifecycle as Lifecycle | undefined
+      if (definition.auth !== undefined && definition.auth !== 'oauth') return { kind: 'invalid', path: resolved }
+      const auth = definition.auth
       const headers = definition.headers
       if (
         headers !== undefined &&
@@ -63,6 +66,7 @@ const mcporter = (): McporterState => {
       if (typeof definition.command === 'string') {
         if (
           url ||
+          definition.auth !== undefined ||
           (definition.args !== undefined &&
             (!Array.isArray(definition.args) || !definition.args.every((arg) => typeof arg === 'string')))
         )
@@ -75,6 +79,7 @@ const mcporter = (): McporterState => {
       } else if (url)
         servers[name] = {
           url,
+          ...(auth ? { auth } : {}),
           ...(headers ? { headers: headers as Record<string, string> } : {}),
           ...(lifecycle ? { lifecycle } : {})
         }
@@ -98,7 +103,10 @@ const secretAwareValuesMatch = (
 export const mcporterMatches = (entry: ServerEntry, actual: McporterDefinition | undefined): boolean => {
   const lifecycleMatches = entry.lifecycle === undefined || actual?.lifecycle === entry.lifecycle
   return 'url' in entry
-    ? actual?.url === entry.url && lifecycleMatches && secretAwareValuesMatch(entry.headers ?? {}, actual?.headers)
+    ? actual?.url === entry.url &&
+        actual?.auth === entry.auth &&
+        lifecycleMatches &&
+        secretAwareValuesMatch(entry.headers ?? {}, actual?.headers)
     : actual?.command === entry.command &&
         JSON.stringify(actual?.args ?? []) === JSON.stringify(entry.args) &&
         lifecycleMatches
