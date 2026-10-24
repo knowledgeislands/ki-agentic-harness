@@ -365,7 +365,7 @@ Maintain an evidence-backed radar for agentic protocols, interfaces, organisatio
 
 #### `ki-authoring`
 
-Govern KI Markdown, TOML, README composition, and durable knowledge placement. Use to format or audit authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality, `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
+Govern KI Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality, `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
 
 - **Kind:** Governance
 - **Applicability:** Baseline

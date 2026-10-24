@@ -7,7 +7,7 @@ ki-shared-dependencies: [ki-skills:rubric]
 owns: ['.editorconfig', '.rumdl.toml']
 contributes: ['.githooks/pre-commit']
 description: >
-  Govern KI Markdown, TOML, README composition, and durable knowledge placement. Use to format or audit
+  Govern KI Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit
   authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality,
   `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
 argument-hint: 'audit <path> | conform <path> | educate <target> | help | refresh'
@@ -68,6 +68,7 @@ Each set is a self-contained reference, loaded on demand. Read the one relevant 
 - **[Markdown authoring](references/standards-markdown.md)** — wide tables → footnotes (with the marker series), link style, and what to leave to the linter. The footnote-marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` `§§` `¶¶` `‖‖`), reset per table — omitting `*`, which collides with markdown emphasis; where one table needs two footnote categories, a visually distinct second series `※` `❡` `¤` `¥` separates them. (Stated here so it is reachable without opening the reference; the worked example, gotchas, and rationale stay in the reference.)
 - **[TOML formatting](references/standards-toml.md)** — value quoting, short arrays, comments, neighbourhood banners, and compact dotted child keys; `ki-repo` owns key and table semantics.
 - **[README composition](references/standards-readme.md)** — purpose-first entry points, proportional navigation and examples, discoverable user routes, and explicit library-template exclusions.
+- **[Industry white papers](references/standards-whitepapers.md)** — reader-led argument, evidence, deployment implications, and editorial review; load when authoring or reviewing a white paper.
 - **[Knowledge promotion](references/standards-knowledge-promotion.md)** — runtime-neutral placement, evidence, and reconciliation for durable learnings; it routes knowledge deliberately without mining transcripts or creating guide areas automatically.
 - **[Worked exemplars](references/exemplars.md)** — annotated illustrations of the conventions in practice: the footnote-marker series and table spill, relative-link style, and a well-formed `.ki.toml` structure. Reach for these when a rule's application is a judgment call.
 
