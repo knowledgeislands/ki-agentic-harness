@@ -174,6 +174,69 @@ test('definitions accept typed headers and bounded lifecycle overrides', () => {
     ]
   })
 })
+test('a YAML source accepts oauth auth on a URL entry for several clients', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-binding-repository-'))
+  const userHome = mkdtempSync(join(tmpdir(), 'ki-binding-home-'))
+  temporaryDirectories.push(repository, userHome)
+  const source = join(userHome, 'mcp-servers.yaml')
+  process.env.KI_MCP_SOURCE = source
+  writeFileSync(
+    source,
+    'mcpServers:\n  - name: ki-url\n    clients: [mcporter, claude-code]\n    url: https://example.invalid/mcp\n    transports:\n      mcporter: http\n      claude-code: http\n    auth: oauth\n'
+  )
+  const context = createBindingSession({
+    mode: 'audit',
+    repository,
+    userHome,
+    configuration: {}
+  }).subjects[0]?.context() as BindingRubricContext
+  expect(context.sourceState).toMatchObject({ kind: 'valid', entries: [{ name: 'ki-url', auth: 'oauth' }] })
+})
+test('mcporter comparison keeps an absent source auth absent', () => {
+  const entry: ServerEntry = {
+    name: 'ki-url',
+    clients: ['mcporter'],
+    url: 'https://example.invalid/mcp',
+    transports: { mcporter: 'http' }
+  }
+  expect(mcporterMatches(entry, { url: 'https://example.invalid/mcp' })).toBe(true)
+  expect(mcporterMatches(entry, { url: 'https://example.invalid/mcp', auth: 'oauth' })).toBe(false)
+})
+test('BIND-1 compares OAuth markers on a baseUrl mcporter target', () => {
+  const repository = mkdtempSync(join(tmpdir(), 'ki-binding-repository-'))
+  const userHome = mkdtempSync(join(tmpdir(), 'ki-binding-home-'))
+  temporaryDirectories.push(repository, userHome)
+  const source = join(userHome, 'mcp-servers.yaml')
+  const target = join(userHome, 'mcporter.json')
+  process.env.KI_MCP_SOURCE = source
+  process.env.MCPORTER_CONFIG = target
+  writeFileSync(
+    source,
+    'mcpServers:\n  - name: ki-url\n    clients: [mcporter]\n    url: https://example.invalid/mcp\n    transports:\n      mcporter: http\n    auth: oauth\n'
+  )
+  const family = catalogue.families[0] as RubricFamily<BindingRubricContext, BindingRubricContext>
+  const bind1 = (): unknown => {
+    const context = createBindingSession({
+      mode: 'audit',
+      repository,
+      userHome,
+      configuration: {}
+    }).subjects[0]?.context() as BindingRubricContext
+    return family.items[0]?.mechanical?.audit?.run(context)
+  }
+  writeFileSync(
+    target,
+    JSON.stringify({ mcpServers: { 'ki-url': { baseUrl: 'https://example.invalid/mcp', auth: 'oauth' } } })
+  )
+  expect(bind1()).toEqual([expect.objectContaining({ status: 'PASS' })])
+  writeFileSync(target, JSON.stringify({ mcpServers: { 'ki-url': { baseUrl: 'https://example.invalid/mcp' } } }))
+  expect(bind1()).toEqual([expect.objectContaining({ status: 'VIOLATION' })])
+  writeFileSync(
+    target,
+    JSON.stringify({ mcpServers: { 'ki-url': { baseUrl: 'https://example.invalid/mcp', auth: 'token' } } })
+  )
+  expect(bind1()).toEqual([expect.objectContaining({ status: 'VIOLATION' })])
+})
 test('mcporter comparison verifies resolved headers and explicit lifecycle overrides', () => {
   const entry: ServerEntry = {
     name: 'ki-url',
