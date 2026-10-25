@@ -721,7 +721,7 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
   for (const line of lines) {
     const match = MESSAGE_LINE.exec(line)
     if (!match) {
-      fail('each message line reads "- <date> · <TAG> · <sender title>: ...", or begins "- IMPORTANT · "')
+      fail('each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", or begins "- IMPORTANT · "')
       continue
     }
     if (match[1]) {

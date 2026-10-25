@@ -137,9 +137,11 @@ A report whose outcome has no durable home yet is kept, not homed in haste. The 
 `messages.md` is the work's incoming queue: one list item per message sent to the work, in this shape:
 
 ```markdown
-- <YYYY-MM-DD> · <TAG> · <sender title>: <the owner's words or the instruction, with links>
-- IMPORTANT · <YYYY-MM-DD> · <TAG> · <sender title>: <the instruction, with links>
+- <YYYY-MM-DD> · <TAG> · <sender label> (<sender id>): <the owner's words or the instruction, with links>
+- IMPORTANT · <YYYY-MM-DD> · <TAG> · <sender label> (<sender id>): <the instruction, with links>
 ```
+
+The sender is named by its work name under `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), the label with the id in brackets, as in `KI > Model > Ways of working (ki.ways-of-working):` or `KI > SoP (ki):`, which Kris adopted under WORK-LABEL on 25 October 2026: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?" A line whose sender carries the label alone, as lines written before that date do, is read as the same sender through the tolerance window, and the checker accepts both.
 
 A line is about 60 words at most with the detail linked, and a message citing an owner decision quotes its words. The queue is taken in priority order, as Kris set under WORK-QUEUE-PRIORITY on 19 October 2026, read back as "a work package's incoming work is a queue taken in priority order; the worker may group similar items; a line added at the top with an important flag must be taken first, in that order, which lets State of play change how a work works":
 

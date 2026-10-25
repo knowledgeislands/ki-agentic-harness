@@ -833,6 +833,24 @@ test('a message line on work that is on hold may wait', () => {
   expect(run(LIFECYCLE, 'LIFECYCLE-3', context(repository))[0]?.status).toBe('PASS')
 })
 
+test('a message line names its sender by work name, and the label alone stays readable', () => {
+  for (const sender of [
+    'KI > Model > Ways of working (ki.ways-of-working)',
+    'KI > SoP (ki)',
+    'KI > Model > Ways of working'
+  ]) {
+    const repository = workFixture()
+    writePackage(
+      repository,
+      'ki.ways-of-working',
+      packageFiles('ki.ways-of-working', {
+        messages: `# ki.ways-of-working messages\n\n- ${today} · ROUTE · ${sender}: take the timeline unit.\n`
+      })
+    )
+    expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  }
+})
+
 test('package parents and coverage reject missing, cross-territory and conflicting assignments', () => {
   for (const parent of ['other', 'ki.ways-of-working', 'ki.regular']) {
     const repository = workFixture()
