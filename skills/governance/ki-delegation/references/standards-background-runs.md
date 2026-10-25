@@ -12,6 +12,8 @@
 - [Authority tiers](#authority-tiers)
   - [Grants](#grants)
   - [Unattended deny list](#unattended-deny-list)
+  - [Criticality test](#criticality-test)
+  - [Dotfiles and software](#dotfiles-and-software)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
   - [Conflict runs](#conflict-runs)
@@ -159,23 +161,41 @@ A grant is a section appended after the tier footer that lifts exactly one of th
 | Grant | Section | Lifts |
 | --- | --- | --- |
 | fetch | [grant-fetch.md](../assets/grant-fetch.md) | Only the ban on a Git fetch: `git fetch` and a rebase or fast-forward pull from the remotes the task names; adds nothing under `push` or above |
-| machine | [grant-machine.md](../assets/grant-machine.md) | Only the ban on an environment or scheduler change: the local changes the task names, on this machine, each with its undo; credentials stay banned and the [connection-critical rule](#connection-critical-changes) still applies |
+| machine | [grant-machine.md](../assets/grant-machine.md) | Only the ban on an environment or scheduler change: the local changes the task names, on this machine, each with its undo; an upgrade of installed software but never a new install, and a dotfile edit only after its judgement check, under [Dotfiles and software](#dotfiles-and-software); credentials stay banned and the [connection-critical rule](#connection-critical-changes) still applies |
 
 `ki agent launch --allow <grant>` appends a grant section from its `## Grant: <name>` heading, after the tier footer; until the launcher offers that option, a brief appends the section by hand after its footer. Kris approved both texts as drafted on 2026-10-18, taking the recommended option: "you've got my approval for all those things that were recommended".
 
 ### Unattended deny list
 
-An unattended window stays within its explicit grant and the coordinator's [window plan](../../../change-management/ki-coordination/references/standards-coordination.md#unattended-windows). Kris adopted DENY-LIST on 25 October 2026, with the review's safeguards. By default it performs none of these:
+An unattended window stays within its explicit grant and the coordinator's [window plan](../../../change-management/ki-coordination/references/standards-coordination.md#unattended-windows). Kris adopted DENY-LIST on 25 October 2026, with the review's safeguards, and later that day replaced its blanket exclusion of DNS, Cloudflare, GitHub settings, machine, scheduler, credential and connection-critical changes, and its exclusion of releases, with the [criticality test](#criticality-test). By default it performs none of these:
 
-- releases, force-pushes or use of `--no-verify`;
+- force-pushes or use of `--no-verify`;
 - acceptance, cancellation or pruning beyond the owner's answers at entry;
-- DNS, Cloudflare, GitHub settings, machine, scheduler, credential or connection-critical changes;
+- any change the criticality test excludes: one that could cut Kris off or take a site down;
 - messages to people or new publication;
-- standard or configuration changes beyond the owner's answers at entry.
+- standard or configuration changes beyond the owner's answers at entry, a dotfiles rollout under [Dotfiles and software](#dotfiles-and-software) aside.
 
-A grant lifts a permissible item only by naming it and its scope, within the authority tiers and any narrower repository gate. Force-push and `--no-verify` remain prohibited. No inferred or proposed rule joins this list without the owner's confirmation. Eligibility is not authority: any unit that still needs a decision is parked. The coordinator may plan already adopted, authorised Now or Next drafts to Ready and deliver eligible Ready work to awaiting review in frozen, repository-local `ki-batch` waves citing the grant, honouring dependencies and the owner-queue cap; adoption, discretionary promotion, acceptance and pruning stay with the owner.
+A grant lifts a permissible item only by naming it and its scope, within the authority tiers and any narrower repository gate. Force-push and `--no-verify` remain prohibited, and a change the criticality test excludes is never lifted. No inferred or proposed rule joins this list without the owner's confirmation. Eligibility is not authority: any unit that still needs a decision is parked. The coordinator may plan already adopted, authorised Now or Next drafts to Ready and deliver eligible Ready work to awaiting review in frozen, repository-local `ki-batch` waves citing the grant, honouring dependencies and the owner-queue cap; adoption, discretionary promotion, acceptance and pruning stay with the owner.
 
 A run serving another package names its reporting package separately from its product repository in the brief. The launcher homes the report into that reporting package whoever launched the run, and its explicitly assigned steward receives the queries, decisions and in-flight supervision under `ki-work-package`. The launching State of play is not a substitute report home.
+
+### Criticality test
+
+Kris reframed the window exclusions by criticality on 25 October 2026, answering UNWRITTEN-RULES-CLOUDFLARE "Window-only": "the point here is to exclude certain things in unattended mode ... DNS, Cloudflare, configuration ... I'm happy ... to make any alignments to GitHub ... from a Cloudflare perspective, I'm happy for you to do anything to get the builds passing ... I'm happy for you to do releases ... So it's more like any critical things that might break, that I can't then reconnect or deal with sites that go down." The test is whether a change could cut Kris off or take a site down.
+
+- **Never in a window:** any change that could cut Kris off or take a site down. That means DNS, Cloudflare Access, routes and Zero Trust, credentials, and connection-critical machine configuration. No grant lifts it. Attended, such a change still carries the tested restore path the [connection-critical rule](#connection-critical-changes) requires.
+- **Allowed in a window:** aligning GitHub settings with the declared standard; changing Cloudflare build settings to get builds passing; cutting a release under the repository's release process. Each stays within the authority tiers: a release run still carries the `release` footer with its calls named in the task, a GitHub settings change follows `ki-repo`, and a Cloudflare credential read follows the [credential condition](#authority-tiers) above.
+
+Nothing else becomes a standing rule outside a window. The test governs unattended work; attended work keeps its existing gates.
+
+### Dotfiles and software
+
+Kris set these two rules on 25 October 2026, answering UNWRITTEN-RULES-CONFIG and confirming UNATTENDED-LIMITS, "Yes, write it". They hold in every session, attended or in a window.
+
+- **Dotfiles:** a needed chezmoi or dotfiles rollout goes ahead after an independent judgement check: a blind review of the `chezmoi diff`, masked under the `ki-coordination` [query review](../../../change-management/ki-coordination/references/standards-coordination.md#query-review), confirming that each change is needed and safe. The check stands in for Kris's approval; the coordinator runs it before the rollout run, whose task cites it. Kris: "we should have an extra judgmental check on it instead to make sure that we're making changes ... that we need to make". A rollout that touches a connection-critical service still needs its tested restore path.
+- **Software:** upgrading an already installed library or tool, our own releases included, needs no check. No session ever installs new software. Kris: "If we need to install a new version of a library ... such as our own releases, then [approval] doesn't need to happen", and "critically we should never install new software. We could upgrade existing ones, but never new software as well."
+
+The [machine grant](../assets/grant-machine.md) carries both rules, and RUN-1 checks that it keeps them.
 
 ## Decisions log
 

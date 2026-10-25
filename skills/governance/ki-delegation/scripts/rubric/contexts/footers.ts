@@ -33,7 +33,9 @@ const GRANT_WORDING: Record<(typeof GRANT_NAMES)[number], readonly [string, ...s
   machine: [
     "overrides only the Rules' ban on an environment or scheduler change",
     'Credentials stay banned',
-    'connection-critical'
+    'connection-critical',
+    'Never install new software',
+    'judgement check'
   ]
 }
 
