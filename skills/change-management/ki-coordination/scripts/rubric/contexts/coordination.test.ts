@@ -547,10 +547,10 @@ describe('work files', () => {
     expect(statuses(context(root).roles.outcomes)).toEqual(['PASS'])
   })
 
-  test('kb.personal-health uses its Project title Stocktake, falling back to the slug only without a title', () => {
+  test('personal.personal-health uses its Project title Stocktake, falling back to the slug only without a title', () => {
     const root = fixture({ repository: 'personal', capital: 'personal' })
     const fields = {
-      id: 'kb.personal-health',
+      id: 'personal.personal-health',
       level: 'project',
       project: 'personal-health',
       theme: 'health',
