@@ -26,7 +26,7 @@ Do not use it for work that already has a clear shape. A finite change with a kn
 
 ## Contract
 
-The loop has five stages - brief, independent reviews, merged report, decisions and rollout - each with the contract the standard defines. Reviews are independent and read-only, disputes are settled on cited evidence rather than by vote, and only the owner decides. Anything the evidence cannot settle goes to the owner as a numbered decision with options and a recommendation.
+The loop has five stages - brief, independent reviews, merged report, decisions and rollout - each with the contract the standard defines. Reviews are independent and read-only, disputes are settled on cited evidence rather than by vote, and only the owner decides. Anything the evidence cannot settle goes to the owner as a tagged decision with lettered options and a recommendation.
 
 Every artefact is committed as it is produced in the `design/` subfolder of the work folder whose concern it shapes, `+/_WORK/<id>/design/`, with one shared slug prefix; no `design/` folder sits under `Streams/`. The artefacts are temporary: each graduates when its decisions have durable homes and is deleted in the same change. A Decision Record under `ki-decision-records` follows only when a decision changes, refining an existing record in place where one owns the concern. Local state holds only runtime material such as agent prompts and status files.
 

@@ -13,3 +13,5 @@ The [repository-roadmap lifecycle](../../ki-work-roadmap/references/standards-re
 ## Last review
 
 On 2026-08-12, the selected-adapter standard continued to make remote execution fail closed pending `KI-HARNESS-FND-014`; the roadmap work-item format continued to own the six-part review packet. This skill consumes those contracts and does not redefine them.
+
+Kris's 13 October 2026 coordinating-work rule, carried by [Coordinator responsiveness](../../ki-coordination/references/standards-coordination.md#coordinator-responsiveness), requires detached background runs for implementation units. His 16 October separation of [conversational bounded work](../../ki-coordination/references/standards-coordination.md#conversational-bounded-work) preserves direct work in an ordinary session; bounded subagents inside an authorised delivering run do not replace the coordinator's detached run.

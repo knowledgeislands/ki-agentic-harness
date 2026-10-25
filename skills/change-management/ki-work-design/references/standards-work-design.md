@@ -37,8 +37,10 @@ Start each artefact from its template in `assets/`.
 - **Brief.** The orchestrator writes the problem, the owner's proposal verbatim, the facts already established with their sources, and its own numbered reflection. Each numbered point is one claim a reviewer can agree with, differ from or extend.
 - **Reviews.** At least two independent reviews, on different models or runtimes, each read-only. A reviewer forms its own view before it reads any other review, fact-checks the brief against the sources and marks Agree, Differ or Add against every numbered point, with evidence for each Differ.
 - **Merged report.** The orchestrator settles disputes on cited evidence and the governing standards, never by counting votes. The report gives a summary, corrections to the brief, the proposed model, an agree-and-differ table, a rollout plan, at most about eight decisions each with options and a recommendation, and a changes-after-review log. Anything the evidence cannot settle goes to the owner as a decision.
-- **Decisions.** The owner's own words, numbered against the report's decisions, kept verbatim. It records any authority grant with its completion target, and the push and prune scope. Where the owner's words differ from the report, the decisions win.
+- **Decisions.** The owner's own words, keyed by the report's decision tags, kept verbatim. It records any authority grant with its completion target, and the push and prune scope. Where the owner's words differ from the report, the decisions win.
 - **Rollout.** Records are captured through `ki-next` from the decisions. One pilot is delivered before any parallel wave. The pilot's lessons are written into each wave's brief before it starts, and authority is exercised through `ki-batch` or `ki-accept`, quoting the grant.
+
+Decision tags follow Kris's 14 October 2026 rule, carried by the [coordination decisions life cycle](../../ki-coordination/references/standards-coordination.md#decisions-life-cycle): entries carry no running numbers. The brief's reflection points and the reviews' references to them remain numbered claims.
 
 ## Rollout hand-off
 

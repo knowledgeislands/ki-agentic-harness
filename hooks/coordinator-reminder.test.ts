@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { markedBlock } from '../skills/change-management/ki-coordination/scripts/generate/index.ts'
 
 const script = resolve(import.meta.dir, 'coordinator-reminder.sh')
@@ -149,12 +149,17 @@ test('malformed, empty or cwd-less input fails open without blocking', () => {
   expect(run(missingCwd)).toEqual({ status: 0, stdout: '' })
 })
 
-test('method warnings compare each active coordinating package with the method revision, not harness HEAD', () => {
-  const harness = join(root, 'method-harness')
-  const methodPath = 'skills/change-management/ki-coordination/method.md'
+test.each([
+  'skills/change-management/ki-coordination/method.md',
+  'skills/governance/ki-work-package/method.md',
+  'skills/governance/ki-delegation/method.md',
+  'output-styles/ki-coordinator.md'
+])('method warnings track %s independently of unrelated harness changes', (methodPath) => {
+  const suffix = methodPath.replaceAll('/', '-')
+  const harness = join(root, `method-harness-${suffix}`)
   const hook = join(harness, 'hooks/coordinator-reminder.sh')
   mkdirSync(join(harness, 'hooks'), { recursive: true })
-  mkdirSync(join(harness, 'skills/change-management/ki-coordination'), { recursive: true })
+  mkdirSync(join(harness, dirname(methodPath)), { recursive: true })
   copyFileSync(script, hook)
   const git = (...args: string[]): string => {
     const result = spawnSync('git', args, { cwd: harness, encoding: 'utf8' })
@@ -171,7 +176,7 @@ test('method warnings compare each active coordinating package with the method r
   const old = commit(methodPath, 'old\n')
   const current = commit(methodPath, 'current\n')
   const unrelated = commit('unrelated.md', 'unrelated\n')
-  const checkout = join(root, 'method-capital')
+  const checkout = join(root, `method-capital-${suffix}`)
   mkdirSync(checkout)
   writeFileSync(join(checkout, '.ki.toml'), '[skills.ki-coordination]\n')
   const packageState = (id: string, level: string, state: string, revision: string): void => {

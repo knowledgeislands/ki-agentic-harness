@@ -80,7 +80,7 @@ field() {
 method_warning() {
   local harness revision current state definition level held read_method read_revision
   harness=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." 2>/dev/null && pwd -P) || return 0
-  revision=$(git -C "$harness" log -1 --format=%H -- skills/change-management/ki-coordination skills/governance/ki-work-package 2>/dev/null) || return 0
+  revision=$(git -C "$harness" log -1 --format=%H -- skills/change-management/ki-coordination skills/governance/ki-work-package skills/governance/ki-delegation output-styles/ki-coordinator.md 2>/dev/null) || return 0
   [ -n "$revision" ] || return 0
   current=$(git -C "$harness" rev-parse --short "$revision" 2>/dev/null) || return 0
   for state in "$checkout"/+/_WORK/*/state.md; do

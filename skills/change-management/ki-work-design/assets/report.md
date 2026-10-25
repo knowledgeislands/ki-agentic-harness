@@ -26,7 +26,9 @@
 
 ## Decisions
 
-1. **<Question>** - Options: <a>, <b>. Recommendation: <choice and reason>.
+### <TAG> - <Question>
+
+**Options:** a) <option>; b) <option>. **Recommendation:** <choice and reason>.
 
 ## Changes after review
 

@@ -2,12 +2,13 @@
 
 **Owner:** <name> · **Report:** <path> · **Date:** <YYYY-MM-DD>
 
-These are the owner's own words, numbered against the report's decisions. Where they differ from the report, they win.
+These are the owner's own words, keyed by the report's decision tags. Where they differ from the report, they win.
 
 ## Decisions
 
-1. <The owner's words on decision 1, verbatim.>
-2. <...>
+### <TAG> - <Decision title>
+
+<The owner's words on this tagged decision, verbatim.>
 
 ## Authority
 
