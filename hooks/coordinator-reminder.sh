@@ -14,7 +14,7 @@
 # runtimes.
 set -u
 
-line='In coordinating work only, a session opened or resumed as ki-coordination territory or Project work, its work file at level territory or project; elsewhere ignore this line and use the ki-coordination Reply forms. Follow the coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md) and the Work Process note it cites. Hard rules: 1) delegate every unit of work to a detached background agent and stay responsive, answering within one short turn; 2) an owner message never pre-empts work in flight: stop an agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, and no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner, with no reply block, a re-bootstrap report and a full summary restating every open query in full, end any other reply that moves the mark, changes the state or answers where the work stands with the banner, and read each spoken answer back in the decisions log; every medium- or low-confidence query, and any high-confidence destructive, deletion or publication one, goes to one blind review before it reaches the owner; 5) commit your own work by explicit path at every send, and act on each messages.md line, IMPORTANT first, then in queue order, then remove it.'
+line='In coordinating work only, a session opened or resumed as ki-coordination territory or Project work, its work file at level territory or project; elsewhere ignore this line and use the ki-coordination Reply forms. Follow the coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md) and the Work Process note it cites. Hard rules: 1) delegate every unit of work to a detached background agent and stay responsive, answering within one short turn; 2) an owner message never pre-empts work in flight: stop an agent only when the owner names it and says stop; 3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, and no heartbeat otherwise; 4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner, with no reply block, a re-bootstrap report and a full summary restating every open query in full, end any other reply that moves the mark, changes the state or answers where the work stands with the banner, and read each spoken answer back in the decisions log; every medium- or low-confidence query, and any high-confidence destructive, deletion or publication one, goes to one blind review before it reaches the owner; 5) commit your own work and the work package by explicit path after every finished change; sync after each finished change and at least every 15 minutes under the standing push rule, fast-forward only, never forced or --no-verify, stopping on divergence; act on each messages.md line, IMPORTANT first, then in queue order, then remove it.'
 pointer='Context was compacted. While coordinating work, before replying, follow "Re-anchoring after compaction" in the ki-coordination coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md): re-read the standard, the harness output style output-styles/ki-coordinator.md from disk and all five files of your work package in full, and follow the style file wherever it differs from the loaded style; run ki agent status and read its messages.md queue, IMPORTANT lines first, then confirm in one line and answer in owner-report form with the report heading and the glyph banner and its closing thread line, with no send or resume line. Re-anchoring moves no mark. In a conversational session, re-read your work package if you have one and carry on with a conversational reply.'
 
 # `ki agent` marks each child with its run name; its Claude adapter has set the
@@ -51,10 +51,56 @@ coordinating() {
   [ -f "$1/.ki.toml" ] && grep -Eq '^\[skills\.ki-coordination\]' "$1/.ki.toml" 2>/dev/null
 }
 
+checkout=$cwd
 if ! coordinating "$cwd"; then
   top=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null) || exit 0
   [ -n "$top" ] || exit 0
   coordinating "$top" || exit 0
+  checkout=$top
+fi
+
+# Compare with the method's latest change, not an unrelated harness commit.
+# Only simple top-level YAML scalars are needed here. Unsupported or unreadable
+# metadata leaves the reminder unchanged; this hook never writes package state.
+field() {
+  awk -v key="$2" '
+    NR == 1 { if ($0 != "---") exit; next }
+    $0 == "---" { exit }
+    index($0, key ":") == 1 {
+      value = substr($0, length(key) + 2)
+      sub(/^[[:space:]]*/, "", value)
+      sub(/[[:space:]]+#.*$/, "", value)
+      sub(/[[:space:]]*$/, "", value)
+      if (value ~ /^".*"$/ || value ~ /^\047.*\047$/) value = substr(value, 2, length(value) - 2)
+      print value
+      exit
+    }
+  ' "$1" 2>/dev/null
+}
+method_warning() {
+  local harness revision current state definition level held read_method read_revision
+  harness=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." 2>/dev/null && pwd -P) || return 0
+  revision=$(git -C "$harness" log -1 --format=%H -- skills/change-management/ki-coordination skills/governance/ki-work-package 2>/dev/null) || return 0
+  [ -n "$revision" ] || return 0
+  current=$(git -C "$harness" rev-parse --short "$revision" 2>/dev/null) || return 0
+  for state in "$checkout"/+/_WORK/*/state.md; do
+    [ -f "$state" ] && [ ! -L "$state" ] && [ ! -L "$(dirname "$state")" ] || continue
+    definition="$(dirname "$state")/work.md"
+    [ -f "$definition" ] && [ ! -L "$definition" ] || continue
+    level=$(field "$definition" level) || continue
+    case "$level" in territory|project) ;; *) continue ;; esac
+    held=$(field "$state" state) || continue
+    case "$held" in on-hold|finished|'') continue ;; esac
+    read_method=$(field "$state" method_read) || continue
+    [ -n "$read_method" ] || continue
+    read_revision=$(git -C "$harness" rev-parse --verify --end-of-options "$read_method^{commit}" 2>/dev/null) || continue
+    [ "$read_revision" != "$revision" ] || continue
+    printf '\nMETHOD-NUDGE: %s method_read %s; current method %s. Follow Refreshing this guidance.' "$(basename "$(dirname "$state")")" "$read_method" "$current"
+  done
+  return 0
+}
+if [ "$event" = UserPromptSubmit ]; then
+  context="$context$(method_warning)"
 fi
 
 jq -cn --arg event "$event" --arg line "$context" \

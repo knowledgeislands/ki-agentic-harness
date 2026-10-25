@@ -62,3 +62,7 @@ REFRESH last ran in full on **2026-10-04**; all eight pages were reachable. Curr
 [previews]: https://developers.cloudflare.com/workers/previews/
 [access]: https://developers.cloudflare.com/workers/configuration/cloudflare-access/
 [access-paths]: https://developers.cloudflare.com/cloudflare-one/access-controls/policies/app-paths/
+
+## Owner decisions reviewed on 25 October 2026
+
+The Ways of working decisions log entries of 24 and 25 October 2026, read back as taken, govern this change. Coordination carries the report, command, publication and unattended-window decisions; delegation carries the authority, conflict-run and Cloudflare credential boundaries; Cloudflare hosting carries the matching credential-access rule. This is an in-house policy review, with no provider operation or external-source refresh.

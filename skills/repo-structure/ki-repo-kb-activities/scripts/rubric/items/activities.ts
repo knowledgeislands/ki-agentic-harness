@@ -7,6 +7,18 @@ import {
 } from '../contexts/activities.ts'
 
 const SOURCE = 'standards-activities.md'
+/** THEME-CLOSE: the first UTC day on which legacy initiative fields fail. */
+const legacyInitiativeOutcome = (
+  initiative: string,
+  subject: string,
+  today = new Date().toISOString().slice(0, 10)
+): AuditOutcome => ({
+  status: 'VIOLATION',
+  level: today < '2026-11-07' ? 'WARN' : 'FAIL',
+  message: `legacy: initiative '${initiative}' becomes optional theme; home is the territory's regular work; fails from 2026-11-07`,
+  subject
+})
+
 const KNOWN_REALIZATIONS = ['slash-command', 'scheduled-task', 'conversational', 'manual', 'workflow'] as const
 const KNOWN_STATUSES = ['active', 'paused', 'retired'] as const
 
@@ -356,7 +368,7 @@ const ACT_F_5: RubricItem<ActivitiesContext> = {
   code: 'ACT-F-5',
   title: 'activity home and theme',
   description:
-    "An active Activity's home is the territory's regular work, or the Project named in `project` when it is that Project's own recurring check. A `theme`, at the top level or in its housekeeping profile, is an optional label and the two agree; the former `initiative` warns.",
+    "An active Activity's home is the territory's regular work, or the Project named in `project` when it is that Project's own recurring check. A `theme`, at the top level or in its housekeeping profile, is an optional label and the two agree; the former `initiative` warns until 2026-11-07 and fails from that day.",
   sources: [`${SOURCE}#home`],
   mechanical: {
     level: 'WARN',
@@ -374,12 +386,7 @@ const ACT_F_5: RubricItem<ActivitiesContext> = {
           .filter((note) => note.frontmatter?.status === 'active')
           .map((note): AuditOutcome => {
             const legacy = note.frontmatter?.initiative ?? note.recurringInitiative
-            if (legacy)
-              return {
-                status: 'VIOLATION',
-                message: `legacy: initiative '${legacy}' becomes the optional theme; the home is the territory's regular work`,
-                subject: note.relative
-              }
+            if (legacy) return legacyInitiativeOutcome(legacy, note.relative)
             const declared = note.frontmatter?.theme
             const profile = note.recurringTheme
             if (declared && profile && declared !== profile)

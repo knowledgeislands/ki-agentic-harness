@@ -109,3 +109,7 @@ The mac-studio-bootstrap thread moved from the laptop to `sol` on 2026-10-14, an
 ### DONE on handover, decided 2026-10-14
 
 Kris decided on 2026-10-14 that the instance a host move leaves behind closes as done rather than resting (Kris, 2026-10-14: "we do sometimes need done, not just rest and busy"). The decision named the DONE frame for its closing banner, issued only after the handover has pushed, carrying no send line, because that session must not be resumed, and naming the host that took over the work. Under the work model, `ki-coordination`'s closing banner, `🏁 Finished`, appears only at [Finishing Project work](standards-coordination.md#finishing-project-work); this requirement extends a closing form to the session a host move retires on the old host, while the work itself continues on the new host, and step 6 leaves planning to settle which form that is.
+
+## Owner decisions reviewed on 25 October 2026
+
+The Ways of working decisions log entries of 24 and 25 October 2026, read back as taken, govern this change. Coordination carries the report, command, publication and unattended-window decisions; delegation carries the authority, conflict-run and Cloudflare credential boundaries; Cloudflare hosting carries the matching credential-access rule. This is an in-house policy review, with no provider operation or external-source refresh.

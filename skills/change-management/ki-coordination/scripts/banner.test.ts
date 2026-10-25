@@ -281,14 +281,12 @@ test('the hook line points at the standard and carries only its five hard rules'
   expect(line).toContain(
     'every medium- or low-confidence query, and any high-confidence destructive, deletion or publication one, goes to one blind review before it reaches the owner'
   )
-  expect(line).toContain(
-    '5) commit your own work by explicit path at every send, and act on each messages.md line, IMPORTANT first, then in queue order'
-  )
+  expect(line).toContain('5) commit your own work and the work package by explicit path after every finished change')
   expect(line).not.toContain('6)')
   // The shape itself lives in the standard and the output style; the line does not restate it.
   expect(line).not.toContain('Hold report at')
   expect(line).not.toContain('checkpoint')
-  expect(line.length).toBeLessThan(1500)
+  expect(line.length).toBeLessThan(1800)
 })
 
 test('the run-report and footer-report sources carry the quiet-tools rule and no reply block', () => {

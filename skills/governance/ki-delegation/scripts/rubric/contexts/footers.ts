@@ -19,7 +19,7 @@ const SHARED_PROHIBITIONS = [
 const NONE_PROHIBITIONS = ['never push', 'No remote call of any kind']
 
 const GRANTS: Record<Exclude<(typeof AUTHORITY_TIERS)[number], 'none'>, string> = {
-  push: 'push your own commits fast-forward only',
+  push: 'push everything stacked on `main` fast-forward only',
   prune: 'Deleting work records is authorised',
   release: 'Release calls are authorised only as the task names them'
 }

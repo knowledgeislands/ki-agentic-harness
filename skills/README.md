@@ -133,7 +133,7 @@ Govern coordinating work under the Knowledge Islands work model: the responsive 
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary`
+- **Arguments:** `audit <repo> | conform <repo> | drain | educate <repo> | full-summary | help | hold | mark | recap | receive | refresh | resume | send | summary`
 - **Dependencies:** `ki-delegation`, `ki-work-package`
 - **Runtime:** Portable
 

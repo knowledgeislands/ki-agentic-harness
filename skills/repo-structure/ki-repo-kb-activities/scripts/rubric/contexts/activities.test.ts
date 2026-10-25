@@ -1,4 +1,4 @@
-import { afterEach, expect, test } from 'bun:test'
+import { afterEach, expect, setSystemTime, test } from 'bun:test'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -239,4 +239,26 @@ test('encoded spaces cover the Activity index without decoding reserved escapes 
   expect(indexItem().audit.run(activityContext(createActivitiesSession(options(repository, 'audit'))))[0]?.status).toBe(
     'PASS'
   )
+})
+
+test('legacy initiative fields warn before THEME-CLOSE and fail on the cutover day', () => {
+  const repository = activityBase()
+  const path = join(repository, 'Admin', 'Operations', 'Activities', 'Morning Briefing.md')
+  const original = readFileSync(path, 'utf8')
+  writeFileSync(path, original.replace('status: active', 'status: active\ninitiative: model'))
+  const criterion = ACT.items.find((item) => item.code === 'ACT-F-5')?.mechanical
+  if (!criterion) throw new Error('Missing activity home criterion')
+  try {
+    for (const [date, level] of [
+      ['2026-11-06', 'WARN'],
+      ['2026-11-07', 'FAIL'],
+      ['2026-11-08', 'FAIL']
+    ]) {
+      setSystemTime(new Date(`${date}T00:00:00Z`))
+      const outcomes = criterion.audit.run(activityContext(createActivitiesSession(options(repository, 'audit'))))
+      expect(outcomes[0]).toMatchObject({ status: 'VIOLATION', level })
+    }
+  } finally {
+    setSystemTime()
+  }
 })

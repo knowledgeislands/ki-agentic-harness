@@ -8,6 +8,7 @@ This skill owns the **deploy/serve delta for the site Worker**. The `dist/` it s
 
 ## Contents
 
+- [Credential access](#credential-access)
 - [1. Model — Workers Static Assets, not Pages](#1-model--workers-static-assets-not-pages)
 - [2. The `dist/` seam](#2-the-dist-seam)
 - [3. The site `wrangler.jsonc` shape](#3-the-site-wranglerjsonc-shape)
@@ -90,6 +91,10 @@ The root `ki:site:build` / `ki:site:dev` aliases and local build/dev operations 
 - Builds of every other branch are optional and follow [§6](#6-branch-previews-behind-access): they upload an undeployed version and never run `wrangler deploy`.
 - A repo **may** run a **GitHub Action for pre-deploy content work** (e.g. applying content, optimising images) that commits to `main` and lets Workers Builds deploy the result — but that Action is content tooling, not the hosting standard.
 - **Commit-SHA injection** (`WORKERS_CI_COMMIT_SHA` surfaced into the page, e.g. as a `<meta>`) is an optional nicety, not required.
+
+## Credential access
+
+When a run is separately authorised to read Cloudflare credentials, it reads them only through `~/bin/cf_token`. No territory's notes record credential item or token ids, and credential values never enter output or tracked files. Kris adopted the Cloudflare half of RUN-SECRETS on 25 October 2026; this is an access rule, not authority for a credential read or a Cloudflare operation. The background-run [authority limits](../../../governance/ki-delegation/references/standards-background-runs.md#authority-tiers) still apply.
 
 ## 6. Branch previews behind Access
 

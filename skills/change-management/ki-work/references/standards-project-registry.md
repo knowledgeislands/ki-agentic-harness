@@ -184,6 +184,8 @@ The thread-model registry stays readable, with a warning on each shape, until a 
 - a Project note's `initiative:`, read as its `theme:`;
 - a record's `initiative`, read as its `theme`.
 
+The `Streams/Initiatives/` and `initiative:` warnings become failures on 7 November 2026, or earlier once a scan finds no residue, under Kris's THEME-CLOSE decision of 25 October 2026. The Project-folder tolerance is unchanged.
+
 A `design/` folder under `Streams/` is not tolerated: the Streams checker fails it, and its papers move to the work folder.
 
 ## Validation

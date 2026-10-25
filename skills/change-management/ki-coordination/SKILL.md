@@ -13,7 +13,7 @@ description: >
   design notes, Finished, the working rules, and the three reply forms every session uses. Use while coordinating
   territory or Project work to give a summary, recap, full summary or banner or strike the mark, or to decide how any
   session replies; `ki-delegation` owns the background runs the coordinator launches.
-argument-hint: 'audit <repo> | conform <repo> | educate <repo> | full-summary | help | mark | recap | refresh | summary'
+argument-hint: 'audit <repo> | conform <repo> | drain | educate <repo> | full-summary | help | hold | mark | recap | receive | refresh | resume | send | summary'
 ---
 
 # Knowledge Islands coordinating work
@@ -32,7 +32,7 @@ The [deferred host-move design notes](references/sources.md#deferred-host-move-e
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **FULL-SUMMARY · MARK · RECAP · SUMMARY** modes a coordinator gives the owner.
+Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **DRAIN · FULL-SUMMARY · HOLD · MARK · RECAP · RECEIVE · RESUME · SEND · SUMMARY** modes a coordinator gives the owner.
 
 Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
 
@@ -52,6 +52,10 @@ CONFORM republishes the generated rubric only. It never creates, renames or edit
 
 Run `ki repo educate --skill ki-coordination --repo <repo>` to render the concern and rubric. Explain the responsive coordinator, the openers, the bootstrap and the report forms from [the standard](references/standards-coordination.md); do not create a declaration or a work file merely to demonstrate them.
 
+### Mode DRAIN
+
+While coordinating, `/ki-coordination drain` stops new launches while the work stays With worker, receives running work and reports `DRAINED` or `NOT DRAINED` in Done, under [Putting work on hold](references/standards-coordination.md#putting-work-on-hold). It does not put the work on hold.
+
 ### Mode FULL-SUMMARY
 
 While coordinating, `/ki-coordination full-summary` gives [the full summary](references/standards-coordination.md#full-summary): the report heading, its form line reading `<glyph state> · Full summary at <local time> · last mark <local time>`, `## Decided` with every owner decision linked, then the whole-work owner report with every open query in full, closing with the glyph banner and its thread line. It never moves the mark.
@@ -59,6 +63,10 @@ While coordinating, `/ki-coordination full-summary` gives [the full summary](ref
 ### Mode HELP
 
 Explain the work levels and forms, the coordinator and its three rules, territory work and Project work with their openers and bootstrap, the seven states and the receive words, the report forms, the closing glyph banner and its thread line, re-anchoring after compaction, the decision classes and their life cycle and Finishing Project work, and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: the Work Process note for the model itself, background runs and the run report in `ki-delegation`, the work package in `ki-work-package`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-tokenomics` and the theme and Project registry in `ki-work`.
+
+### Mode HOLD
+
+While coordinating, `/ki-coordination hold` drains and puts the work On hold under [Putting work on hold](references/standards-coordination.md#putting-work-on-hold), ending with its hold report.
 
 ### Mode MARK
 
@@ -68,6 +76,10 @@ While coordinating, `/ki-coordination mark` strikes [the mark](references/standa
 
 While coordinating, `/ki-coordination recap` gives [the recap since the mark](references/standards-coordination.md#recap-since-the-mark): the report heading, its form line reading `<glyph state> · Recap at <local time> · last mark <local time>`, then the owner report with what was delivered, decided, started, stopped or blocked, and newly captured since the mark, and every open item in full, closing with the glyph banner. It does not move the mark.
 
+### Mode RECEIVE
+
+While coordinating, `/ki-coordination receive` records the owner's receive under [States and moves](references/standards-coordination.md#states-and-moves), as `with me` does.
+
 ### Mode REFRESH
 
 **Precondition:** REFRESH writes only this canonical skill under `ki-agentic-harness`.
@@ -75,6 +87,14 @@ While coordinating, `/ki-coordination recap` gives [the recap since the mark](re
 When invoked from an installed copy, stop and redirect to the harness.
 
 Read [the sources](references/sources.md), compare coordinating practice against the standard, the Work Process note and the rubric, then update the source review in the same commit as any normative change. A change here also regenerates the hook line in `hooks/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the report heading and the live glyph banners in the standard and the output style byte-identical, and asserts the glyph form line, the banner heading, counts line and holder list, the closing thread lines and the absence of send or resume lines and a reply block.
+
+### Mode RESUME
+
+While coordinating, `/ki-coordination resume` releases held work under [Putting work on hold](references/standards-coordination.md#putting-work-on-hold).
+
+### Mode SEND
+
+While coordinating, `/ki-coordination send` commits and syncs the work package and gives the Summary for the handoff under [States and moves](references/standards-coordination.md#states-and-moves).
 
 ### Mode SUMMARY
 
@@ -86,7 +106,7 @@ While coordinating, `/ki-coordination summary` gives [the Summary](references/st
 - Every banner closes with `🧵 Coordination thread · <label> (<id>)` for Project work or `🧵 State of play thread · <label> (<id>)` for territory work; no send or resume prompt is emitted, and the owner gets each thread's opener from `ki agent prompts <territory>`. A re-bootstrap report is a full owner report under the same report heading and banner as a Summary: `## Done` gives the coordinator role and where the work stands, `## In Progress` what is running, and `## Queries` every open query in full.
 - A hold, under [Putting work on hold](references/standards-coordination.md#putting-work-on-hold), is agreed only from With supervisor with `pause` or `done for now`, and ends with a hold report and nothing else: the report heading with the form line `⏸️ On hold · Hold report at <local time> · mark <local time>`, `## Done`, `## Parked` and `## Left over`, then the On hold banner, its closing thread line; work that cannot drain stays With worker, blocked, with one line on what blocks it.
 - Every send, receive, mark and hold rewrites the state file's front matter, under [Picking work up](references/standards-coordination.md#picking-work-up), and no work package names a host.
-- Each session commits its own work and pushes only when its own commits alone are stacked, under [Pushing beneath other sessions](references/standards-coordination.md#pushing-beneath-other-sessions).
+- Each session commits its own work by explicit path after every finished change, syncs at least every 15 minutes while work runs, and may push everything stacked on `main`, other sessions' commits included, fast-forward only, never forced or with `--no-verify`, stopping on divergence, under [Pushing beneath other sessions](references/standards-coordination.md#pushing-beneath-other-sessions).
 - The refresh rule compares `git log -1 --format=%h -- skills/change-management/ki-coordination skills/governance/ki-work-package` with `state.md`'s `method_read`, and an important `REFRESH` line in `messages.md` targets it.
 - The openers read `Bootstrap as <id> ... under ki-coordination`; the thread-model forms, naming the `state-of-play thread` or the `<project> coordination thread`, and the older `under ki-delegation`, `project thread` and `territory master thread` forms are accepted for the tolerance window and mean the same work.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

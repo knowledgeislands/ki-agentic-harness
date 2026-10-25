@@ -12,8 +12,11 @@ import {
   reportHasGlyphForm,
   reportIssuedDay,
   reportLinkFindings,
+  reportMultipleRecommendationFindings,
   reportOpensWithHeading,
   repositoryIdentity,
+  THEMES_CLOSE,
+  themeOutcomes,
   workLevel
 } from './coordination.ts'
 
@@ -175,6 +178,21 @@ describe('coordination thread checkpoints', () => {
     mkdirSync(join(root, 'Streams', 'Projects'), { recursive: true })
     mkdirSync(join(root, 'Streams', 'Initiatives'), { recursive: true })
     expect(statuses(context(root).labels.outcomes)).toEqual(['VIOLATION', 'VIOLATION', 'WARN'])
+  })
+
+  test('a label ending in the registered Project title passes, and the slug in words then fails', () => {
+    const root = fixture({ repository: 'personal', capital: 'personal' })
+    checkpoint(root, '_state-of-play', { label: 'Personal > SoP' })
+    checkpoint(root, 'health.personal-health', { label: 'Personal > Health > Stocktake' })
+    register(root, 'Projects', 'personal-health')
+    register(root, 'Initiatives', 'health')
+    const note = join(root, 'Streams', 'Projects', 'personal-health', 'personal-health.md')
+    writeFileSync(note, '---\ntitle: Stocktake\n---\n\n# Stocktake\n')
+    expect(statuses(context(root).labels.outcomes)).toEqual(['WARN'])
+    checkpoint(root, 'health.personal-health', { label: 'Personal > Health > personal health' })
+    const outcomes = context(root).labels.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'WARN'])
+    expect(outcomes[0]?.message).toContain(' > Stocktake')
   })
 
   test('the registry is not consulted outside a Capital', () => {
@@ -445,6 +463,20 @@ describe('recommendation confidence', () => {
     expect(statuses(context(root).confidence.outcomes)).toEqual(['PASS'])
   })
 
+  test('a query marking more than one option recommended warns, naming the query', () => {
+    const packed = options(
+      'a) (recommended, confidence high - on main) push it',
+      'b) (recommended, confidence medium - quicker) leave it'
+    )
+    const text = `${packed}\n### OTHER - single\n\na) (recommended, confidence high - fine) do it\nb) not\n`
+    expect(reportMultipleRecommendationFindings(text)).toEqual(['TAG - title'])
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    report(root, 'ways-of-working', 'packed', packed + footer('2026-10-25T01:00:00Z'))
+    const outcomes = context(root).confidence.outcomes
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toContain('TAG - title')
+  })
+
   test('no thread folder is not applicable', () => {
     expect(statuses(context(fixture(null)).confidence.outcomes)).toEqual(['NOT_APPLICABLE'])
   })
@@ -572,14 +604,21 @@ describe('work files', () => {
     expect(statuses(context(root).labels.outcomes)).toEqual(['PASS'])
   })
 
-  test('a theme found only in the legacy Initiatives registry warns', () => {
+  test('a theme found only in the legacy Initiatives registry warns before 7 November 2026 and fails from it', () => {
+    const subject = { path: 'work.md', id: 'ki.ways-of-working', folder: '.', fields: { theme: 'model' } }
+    const initiatives = new Set(['model'])
+    const before = themeOutcomes(subject, new Set(), initiatives, '2026-11-06')
+    expect(statuses(before)).toEqual(['WARN'])
+    expect(before[0]?.message).toContain('Streams/Themes/model.md')
+    expect(before[0]?.message).toContain(`fails from ${THEMES_CLOSE}`)
+    expect(themeOutcomes(subject, new Set(), initiatives, THEMES_CLOSE)[0]?.level).toBe('FAIL')
+    expect(themeOutcomes(subject, new Set(['model']), initiatives, THEMES_CLOSE)).toEqual([])
+
     const root = fixture(capital)
     work(root, 'ki.ways-of-working', project())
     page(root, 'Projects', 'ways-of-working')
     register(root, 'Initiatives', 'model')
-    const outcomes = context(root).labels.outcomes
-    expect(statuses(outcomes)).toEqual(['WARN'])
-    expect(outcomes[0]?.message).toContain('Streams/Themes/model.md')
+    expect(context(root).labels.outcomes[0]?.message).toContain('Streams/Themes/model.md')
   })
 
   test('a mismatched project, title, unregistered Project and unknown theme are each a violation', () => {

@@ -87,7 +87,7 @@ type Checkpoint = {
 }
 
 /** One work file: its id from its folder name, its folder and its front matter. */
-type Work = {
+export type Work = {
   readonly path: string
   readonly id: string
   readonly folder: string
@@ -296,24 +296,32 @@ const masterOutcomes = (
   return outcomes
 }
 
-/** The theme a work file names, resolved in `Streams/Themes/`, or with a warning in the legacy `Streams/Initiatives/`. */
-const themeOutcomes = (
+/** The first UTC day on which a theme resolving only in `Streams/Initiatives/` fails rather than warns, set under THEME-CLOSE. */
+export const THEMES_CLOSE = '2026-11-07'
+
+/** The current UTC day, `YYYY-MM-DD`. */
+const utcDay = (): string => new Date().toISOString().slice(0, 10)
+
+/** The theme a work file names, resolved in `Streams/Themes/`, or in the legacy `Streams/Initiatives/` with a warning until {@link THEMES_CLOSE} and a violation from it. */
+export const themeOutcomes = (
   work: Work,
   themes: ReadonlySet<string> | undefined,
-  initiatives: ReadonlySet<string> | undefined
+  initiatives: ReadonlySet<string> | undefined,
+  today = utcDay()
 ): AuditOutcome[] => {
   const theme = work.fields?.theme
   if (theme === undefined || theme === null) return []
   if (typeof theme !== 'string')
     return [{ status: 'VIOLATION', message: "a work file's `theme` is a theme slug", subject: work.path }]
   if (themes?.has(theme)) return []
-  if (initiatives?.has(theme))
+  if (initiatives?.has(theme)) {
+    const message = `the theme \`${theme}\` resolves only in the legacy \`Streams/Initiatives/\` registry; its page moves to \`Streams/Themes/${theme}.md\``
     return [
-      legacy(
-        `the theme \`${theme}\` resolves only in the legacy \`Streams/Initiatives/\` registry; its page moves to \`Streams/Themes/${theme}.md\``,
-        work.path
-      )
+      today < THEMES_CLOSE
+        ? legacy(`${message}, which fails from ${THEMES_CLOSE}`, work.path)
+        : { status: 'VIOLATION', level: 'FAIL', message, subject: work.path }
     ]
+  }
   if (!themes && !initiatives) return []
   return [
     {
@@ -324,11 +332,20 @@ const themeOutcomes = (
   ]
 }
 
+/** A registered Project's title from its note, flat or folder, falling back to the slug in words. */
+const registeredProjectTitle = (root: string, projects: ReadonlySet<string> | undefined, slug: string): string => {
+  const flatNote = join(root, PROJECTS_DIRECTORY, `${slug}.md`)
+  const projectNote = existsSync(flatNote) ? flatNote : join(root, PROJECTS_DIRECTORY, slug, `${slug}.md`)
+  const registeredTitle = projects?.has(slug) ? frontMatter(projectNote)?.title : undefined
+  return typeof registeredTitle === 'string' && registeredTitle.trim() ? registeredTitle : slug.replaceAll('-', ' ')
+}
+
 const labelOutcomes = (
   root: string,
   records: readonly Checkpoint[],
   works: readonly Work[],
-  capital: boolean
+  capital: boolean,
+  today = utcDay()
 ): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
   const projects = capital ? registrySlugs(join(root, PROJECTS_DIRECTORY)) : undefined
@@ -339,11 +356,7 @@ const labelOutcomes = (
     const slug = work.id.split('.')[1] ?? ''
     const project = work.fields?.project
     const title = work.fields?.title
-    const flatNote = join(root, PROJECTS_DIRECTORY, `${slug}.md`)
-    const projectNote = existsSync(flatNote) ? flatNote : join(root, PROJECTS_DIRECTORY, slug, `${slug}.md`)
-    const registeredTitle = projects?.has(slug) ? frontMatter(projectNote)?.title : undefined
-    const projectTitle =
-      typeof registeredTitle === 'string' && registeredTitle.trim() ? registeredTitle : slug.replaceAll('-', ' ')
+    const projectTitle = registeredProjectTitle(root, projects, slug)
     if (project !== slug)
       outcomes.push({
         status: 'VIOLATION',
@@ -362,17 +375,18 @@ const labelOutcomes = (
         message: `the Project \`${slug}\` is not in the Capital's \`Streams/Projects/\` registry`,
         subject: work.path
       })
-    if (capital) outcomes.push(...themeOutcomes(work, themes, initiatives))
+    if (capital) outcomes.push(...themeOutcomes(work, themes, initiatives, today))
   }
   for (const record of records) {
     const match = PROJECT_THREAD.exec(record.thread)
     if (!match?.groups) continue
     const { initiative, project } = match.groups as { initiative: string; project: string }
     const label = record.fields?.label
-    if (typeof label === 'string' && !projectLabel(label, project))
+    const projectTitle = registeredProjectTitle(root, projects, project)
+    if (typeof label === 'string' && !projectLabel(label, project, projectTitle))
       outcomes.push({
         status: 'VIOLATION',
-        message: `the label of a coordination thread checkpoint ends in its Project name, \` > ${project.replaceAll('-', ' ')}\` or \`: ${project}\``,
+        message: `the label of a coordination thread checkpoint ends in its Project name, \` > ${projectTitle}\` or \`: ${project}\``,
         subject: record.path
       })
     if (projects && !projects.has(project))
@@ -617,6 +631,17 @@ export const reportConfidenceFindings = (text: string): readonly string[] => {
     .map((line) => line.trim())
 }
 
+/**
+ * The `###` headings of a report's Queries section under which more than one lettered option is marked recommended,
+ * under REVIEW-CHECK. Fenced blocks are skipped.
+ */
+export const reportMultipleRecommendationFindings = (text: string): readonly string[] =>
+  querySection(text)
+    .split(/^(?=### )/m)
+    .filter((query) => query.startsWith('### '))
+    .filter((query) => query.split(/\r?\n/).filter((line) => RECOMMENDED_OPTION.test(line)).length > 1)
+    .map((query) => (query.split(/\r?\n/, 1)[0] ?? '').slice(4).trim())
+
 /** Whether a report's form line leads with a glyph state, so it was written under the work model. */
 export const reportHasGlyphForm = (text: string): boolean => GLYPH_FORM_LINE.test(text)
 
@@ -636,6 +661,14 @@ const confidenceOutcomes = (root: string, reports: readonly string[]): AuditOutc
       outcomes.push({
         status: 'VIOLATION',
         message: `a recommended option reads \`a) (recommended, confidence high|medium|low - <reason>)\`; without it: ${lines.map((line) => `\`${line.slice(0, 60)}\``).join(', ')}`,
+        subject: relative(root, report)
+      })
+    const packed = reportMultipleRecommendationFindings(text)
+    if (packed.length > 0)
+      outcomes.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `a query recommends one option; more than one is marked recommended under: ${packed.map((heading) => `\`${heading.slice(0, 60)}\``).join(', ')}`,
         subject: relative(root, report)
       })
   }
@@ -808,6 +841,7 @@ export const createCoordinationSession = ({
   publication
 }: RubricContextOptions): RubricSession<CoordinationRubricContext> => {
   const root = resolve(repository)
+  const today = utcDay()
   const identity = repositoryIdentity(root)
   const capital = isCapital(identity)
   const records = checkpoints(root)
@@ -832,7 +866,7 @@ export const createCoordinationSession = ({
     },
     labels: {
       outcomes: one(
-        labelOutcomes(root, records ?? [], works ?? [], capital),
+        labelOutcomes(root, records ?? [], works ?? [], capital, today),
         'Every piece of Project work names its Project, its title ends in it and it resolves in the registry.',
         absent
       )

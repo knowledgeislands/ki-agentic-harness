@@ -57,7 +57,7 @@ test('a missing grant, or one that lifts another ban, grants a tier, drops a lim
     const fetch = readFileSync(join(directory, 'grant-fetch.md'), 'utf8')
     writeFileSync(
       join(directory, 'grant-fetch.md'),
-      `${fetch.replace('never authorises a push', 'allows a push')}\n- Draft, not approved. This overrides only the Rules' ban on an environment or scheduler change; push your own commits fast-forward only.\n`
+      `${fetch.replace('never authorises a push', 'allows a push')}\n- Draft, not approved. This overrides only the Rules' ban on an environment or scheduler change; push everything stacked on \`main\` fast-forward only.\n`
     )
     const messages = footerOutcomes(directory).map((outcome) => `${outcome.subject}: ${outcome.message}`)
     expect(messages).toContain('assets/grant-machine.md: The `machine` grant is missing.')

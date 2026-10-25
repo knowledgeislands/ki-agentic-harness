@@ -11,8 +11,10 @@
 - [Prompt shape](#prompt-shape)
 - [Authority tiers](#authority-tiers)
   - [Grants](#grants)
+  - [Unattended deny list](#unattended-deny-list)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
+  - [Conflict runs](#conflict-runs)
   - [Connection-critical changes](#connection-critical-changes)
 - [Run queue](#run-queue)
 - [Monitoring](#monitoring)
@@ -139,13 +141,13 @@ Each prompt ends with exactly one footer from this skill's `assets/`, followed o
 | Tier | Footer | Adds |
 | --- | --- | --- |
 | none | [rules-none.md](../assets/rules-none.md) | Local commits only; no remote call of any kind |
-| push | [rules-push.md](../assets/rules-push.md) | `git fetch` and fast-forward `git push` of the agent's own commits |
+| push | [rules-push.md](../assets/rules-push.md) | `git fetch`, fast-forward pull and fast-forward `git push` of everything stacked on `main` under the standing push rule |
 | prune | [rules-prune.md](../assets/rules-prune.md) | Deleting `done` or `cancelled` work records the cited decision approves |
 | release | [rules-release.md](../assets/rules-release.md) | Only the release calls the task names, one by one |
 
-No grant is implied. Every remote call an agent may make is named explicitly, either in its footer or in the task. A higher tier needs a cited owner decision. An explicit push rule in the brief's task overrides any generic no-push line in the footer's Rules, because the footer is generic and the task supplies the specifics, as Kris set on 2026-10-17: "the generic brief footer gives way to an explicit push rule in the brief." No footer authorises accepting work, force-pushing, `--no-verify`, handling secrets, or pushing commits the agent did not make.
+No grant is implied. Every remote call an agent may make is named explicitly, either in its footer or in the task. A higher tier needs a cited owner decision. An explicit push rule in the brief's task overrides any generic no-push line in the footer's Rules, because the footer is generic and the task supplies the specifics, as Kris set on 2026-10-17: "the generic brief footer gives way to an explicit push rule in the brief." No footer authorises accepting work, force-pushing, `--no-verify`, handling secrets, or publication outside the cited task and the standing push rule.
 
-In Kris's managed environment, when a task separately authorises a 1Password read, use the managed `op_cache` helper with `OP_CACHE_SERVICE_ACCOUNT_ONLY=1`, never call `op` directly, and use `op_cache --tag <tag>` for discovery. If the helper cannot read without a desktop prompt, stop and report; do not fall back to interactive access. Keep credential values out of output and tracked files. This condition grants no credential authority.
+In Kris's managed environment, when a task separately authorises a 1Password read, use the managed `op_cache` helper with `OP_CACHE_SERVICE_ACCOUNT_ONLY=1`, never call `op` directly, and use `op_cache --tag <tag>` for discovery. If the helper cannot read without a desktop prompt, stop and report; do not fall back to interactive access. Keep credential values out of output and tracked files. This condition grants no credential authority. When a task separately authorises a Cloudflare credential read, use only `~/bin/cf_token`. No territory's notes record credential item or token ids. Keep credential values out of output and tracked files; this rule grants no Cloudflare operation or credential authority. Kris adopted this Cloudflare half of RUN-SECRETS on 25 October 2026.
 
 Authority limits stay consistent with `ki-agent-coordination-paperclip`, which owns Paperclip delivery and integration grants.
 
@@ -159,6 +161,18 @@ A grant is a section appended after the tier footer that lifts exactly one of th
 | machine | [grant-machine.md](../assets/grant-machine.md) | Only the ban on an environment or scheduler change: the local changes the task names, on this machine, each with its undo; credentials stay banned and the [connection-critical rule](#connection-critical-changes) still applies |
 
 `ki agent launch --allow <grant>` appends a grant section from its `## Grant: <name>` heading, after the tier footer; until the launcher offers that option, a brief appends the section by hand after its footer. Kris approved both texts as drafted on 2026-10-18, taking the recommended option: "you've got my approval for all those things that were recommended".
+
+### Unattended deny list
+
+An unattended window stays within its explicit grant and the coordinator's [window plan](../../../change-management/ki-coordination/references/standards-coordination.md#unattended-windows). Kris adopted DENY-LIST on 25 October 2026, with the review's safeguards. By default it performs none of these:
+
+- releases, force-pushes or use of `--no-verify`;
+- acceptance, cancellation or pruning beyond the owner's answers at entry;
+- DNS, Cloudflare, GitHub settings, machine, scheduler, credential or connection-critical changes;
+- messages to people or new publication;
+- standard or configuration changes beyond the owner's answers at entry.
+
+A grant lifts a permissible item only by naming it and its scope, within the authority tiers and any narrower repository gate. Force-push and `--no-verify` remain prohibited. No inferred or proposed rule joins this list without the owner's confirmation. Eligibility is not authority: any unit that still needs a decision is parked. The coordinator may plan already adopted, authorised Now or Next drafts to Ready and deliver eligible Ready work to awaiting review in frozen, repository-local `ki-batch` waves citing the grant, honouring dependencies and the owner-queue cap; adoption, discretionary promotion, acceptance and pruning stay with the owner.
 
 ## Decisions log
 
@@ -175,11 +189,15 @@ A background agent never deletes a report or brief; the work folder is tidied by
 - **Integration:** a run working in a worktree integrates its own work before it reports `DONE`, under the `ki-git` [worktree-run self-integration](../../ki-git/references/standards-git.md#worktree-run-self-integration) grant: rebase onto local `main` without a fetch, gates on the rebased range, a fast-forward into the primary checkout's `main` with one writer at a time in that checkout, then the worktree removed and the branch deleted. Independent review still comes before acceptance. A run that cannot fast-forward keeps its worktree and branch and reports `stranded: <reason>` as a blocking query, never a quiet `DONE`. Kris took WORKTREE-INTEGRATE a) on 2026-10-20: "do whatever that needs to be".
 - **Worktree trial:** from 2026-10-20 every writing run in a code repository works in a worktree; Knowledge Islands Principal's long runs join once the `ki` registry recognises a linked worktree as its registered repository, and coordinators and short work-package runs stay on the primary `main`. Kris took WORKTREE-START a) on 2026-10-20, "do whatever that needs to be", whose option read: "Start now in code repositories under F1 and F4, adding ki-principal's long runs once F5 lands."
 - **Worktree audit:** until the `ki` registry recognises linked worktrees, `ki repo audit` in a worktree reports false REPO-REG-1 and RUNTIMES-2 failures, because the real registry knows only the primary checkout. Audit a worktree in an isolated home, never against the real registry: from the worktree, point `HOME`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_STATE_HOME` and every `KI_*_HOME` at a fresh temporary directory, seed there the empty runtime settings and MCP inventory that CI's install step writes, then run `ki bootstrap`, `ki registry add --repo .`, `ki dev local set <harness> "$(pwd -P)"` and `ki dev local on <harness>` when the repository is a harness, `ki repo repair --repo .` and `ki repo audit --repo .`, and delete the temporary directory. This mirrors CI's install step, and on 2026-10-20 it gave the harness the same zero-failure verdict as CI under CI's pinned `ki` v0.11.3 and under v0.12.0, with nothing written under the real home. Kris took WORKTREE-AUDIT a) on 2026-10-20: "the work tree order needs to be a case as well", read as the worktree audit.
-- **Commits:** pull with `--ff-only` before committing, commit only explicit paths, and leave other uncommitted changes untouched, following `ki-git`.
+- **Commits:** commit each complete unit and each finished work-package change by explicit path before the turn ends; sync after each finished change and at least every 15 minutes while work runs, pulling with `--ff-only` into a clean checkout and pushing under the standing rule. Uncommitted package changes block pulls and pushes, as Kris warned on 25 October 2026. Commit only explicit paths, and leave other uncommitted changes untouched, following `ki-git`.
 - **Commit trailer:** an agent's co-author trailer names the model that actually made the commit, read from its launch record or runtime, never the coordinator's model or one copied from the brief. This line owns the rule; footers and briefs point here.
-- **Pushing:** each session commits its own work, fetches and checks the range above the remote branch before pushing, and pushes fast-forward only when its own commits alone sit above that branch. It never force-pushes or pushes another session's commits. Other sessions' stacked commits are left for the owner and omitted from owner reports, run reports and banners, as is routine push state, under Kris's 2026-10-21 instruction to take push state out of reports. If the run's own unit could not be published because its push failed, its `## Done` names the affected unit and reason. A hold report keeps nothing about pushes beyond a failure. `ki-coordination`'s [Pushing beneath other sessions](../../../change-management/ki-coordination/references/standards-coordination.md#pushing-beneath-other-sessions) applies the same rule to coordinating work.
+- **Pushing:** Kris replaced the own-commits-only rule on 25 October 2026 under PACKAGE-PUSH, choosing "Tonight's rule always": after verification, fetch and pull fast-forward only into a clean checkout, then push everything stacked on `main`, other sessions' commits included, where the task and repository permit publication. Never force-push or use `--no-verify`; stop on divergence and use a [bounded conflict run](#conflict-runs). Never commit, revert or stash another session's files. Owner reports, run reports and banners omit routine push state and other sessions' stacked commits. If the run's own unit could not be published because its push failed, its `## Done` names the affected unit and reason. A hold report keeps nothing about pushes beyond a failure. The same rule governs coordinating work under [Pushing beneath other sessions](../../../change-management/ki-coordination/references/standards-coordination.md#pushing-beneath-other-sessions).
 - **Green baseline:** a run starts only from a green harness `main`, and an estate-wide rollout only once the harness hook tests pass. An agent that finds the baseline red stops the line, reports it and changes nothing else; harness edits are made off the shared main checkout, under the `ki-git` [working-copy and review approaches](../../ki-git/references/standards-git.md#working-copy-and-review-approaches). Kris agreed GREEN-MAIN as recommended on 2026-10-20, "GREEN-MAIN - agreed as recommended".
 - **Ambiguity:** stop and report rather than guess.
+
+### Conflict runs
+
+Kris adopted CONFLICT-RUN on 25 October 2026 with the review's stop boundaries. A sync that cannot fast-forward goes to a bounded resolve run at push tier in its own worktree. It rebases only this work's unpublished commits onto the remote, resolves only changes whose ownership and content it has verified directly, reruns the required gates and pushes fast-forward within its existing authority. File ownership alone does not establish that a file contains no other session's content. Stop on another session's content, uncertain ownership or a judgement call; park a blocking query and make no further push from that repository in the window. Skip and name a checkout another session left dirty. Never stash, rebase or reset in the coordinator's checkout, never rewrite published commits, and never infer push permission from the conflict itself.
 
 ### Connection-critical changes
 
