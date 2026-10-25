@@ -13,6 +13,7 @@
   - [Grants](#grants)
   - [Unattended deny list](#unattended-deny-list)
   - [Criticality test](#criticality-test)
+  - [External systems](#external-systems)
   - [Dotfiles and software](#dotfiles-and-software)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
@@ -150,6 +151,8 @@ Each prompt ends with exactly one footer from this skill's `assets/`, followed o
 
 No grant is implied. Every remote call an agent may make is named explicitly, either in its footer or in the task. A higher tier needs a cited owner decision. An explicit push rule in the brief's task overrides any generic no-push line in the footer's Rules, because the footer is generic and the task supplies the specifics, as Kris set on 2026-10-17: "the generic brief footer gives way to an explicit push rule in the brief." No footer authorises accepting work, force-pushing, `--no-verify`, handling secrets, or publication outside the cited task and the standing push rule.
 
+A site, repository or note marked confidential is never made public without Kris's go in the thread. This holds at any time, attended or in a window, at every tier and under every grant: no footer, grant, task or standing rule lifts it, because a visibility change cannot be undone once the content has been crawled. Every authority footer carries the rule in one line. Kris set it on 25 October 2026, answering UNWRITTEN-RULES-CONFIDENTIAL.
+
 In Kris's managed environment, when a task separately authorises a 1Password read, use the managed `op_cache` helper with `OP_CACHE_SERVICE_ACCOUNT_ONLY=1`, never call `op` directly, and use `op_cache --tag <tag>` for discovery. If the helper cannot read without a desktop prompt, stop and report; do not fall back to interactive access. Keep credential values out of output and tracked files. This condition grants no credential authority. When a task separately authorises a Cloudflare credential read, use only `~/bin/cf_token`. No territory's notes record credential item or token ids. Keep credential values out of output and tracked files; this rule grants no Cloudflare operation or credential authority. Kris adopted this Cloudflare half of RUN-SECRETS on 25 October 2026.
 
 Authority limits stay consistent with `ki-agent-coordination-paperclip`, which owns Paperclip delivery and integration grants.
@@ -172,7 +175,7 @@ An unattended window stays within its explicit grant and the coordinator's [wind
 - force-pushes or use of `--no-verify`;
 - acceptance, cancellation or pruning beyond the owner's answers at entry;
 - any change the criticality test excludes: one that could cut Kris off or take a site down;
-- messages to people or new publication;
+- messages to the people around us, new publication, or a change in an external system other people see or rely on, such as Linear, Notion or Slack, unless expressly agreed as part of the piece of work, under [External systems](#external-systems); GitHub and the systems the window's work is expressly about stay allowed;
 - standard or configuration changes beyond the owner's answers at entry, a dotfiles rollout under [Dotfiles and software](#dotfiles-and-software) aside.
 
 A grant lifts a permissible item only by naming it and its scope, within the authority tiers and any narrower repository gate. Force-push and `--no-verify` remain prohibited, and a change the criticality test excludes is never lifted. No inferred or proposed rule joins this list without the owner's confirmation. Eligibility is not authority: any unit that still needs a decision is parked. The coordinator may plan already adopted, authorised Now or Next drafts to Ready and deliver eligible Ready work to awaiting review in frozen, repository-local `ki-batch` waves citing the grant, honouring dependencies and the owner-queue cap; adoption, discretionary promotion, acceptance and pruning stay with the owner.
@@ -187,6 +190,15 @@ Kris reframed the window exclusions by criticality on 25 October 2026, answering
 - **Allowed in a window:** aligning GitHub settings with the declared standard; changing Cloudflare build settings to get builds passing; cutting a release under the repository's release process. Each stays within the authority tiers: a release run still carries the `release` footer with its calls named in the task, a GitHub settings change follows `ki-repo`, and a Cloudflare credential read follows the [credential condition](#authority-tiers) above.
 
 Nothing else becomes a standing rule outside a window. The test governs unattended work; attended work keeps its existing gates.
+
+### External systems
+
+Kris set the window's limit on other systems on 25 October 2026, answering UNWRITTEN-RULES-DRAFTS: "[it's] saying [we] shouldn't [have] effects on other systems [or] messaging around us ... like GitHub, [for] example, [are expressly included] but [we] shouldn't [be] making changes [in] Linear [or] Notion unattended unless expressly agree[d as] part [of the] piece [of] work." The rule is the deny list's people-and-publication line read in full:
+
+- **Never in a window unless agreed:** an unattended window makes no change in a system other people see or rely on, and sends no message to the people around us, unless that is expressly agreed as part of the piece of work. Linear, Notion and Slack are the examples: an issue, a page or a message there reaches other people before Kris has seen it. The agreement is the grant or the task naming the system and the change, within the authority tiers; a system the window's work is expressly about is agreed by that work.
+- **Allowed in a window:** GitHub, under the standing push rule and the [criticality test](#criticality-test), and the systems the window's work is expressly about.
+
+The rule governs unattended work only. An attended turn keeps its existing gates: it changes an external system or sends a message where its task and tier allow, with Kris in the thread. A visibility change in any of these systems is also governed by the [confidential rule](#authority-tiers), which no agreement in a window lifts.
 
 ### Dotfiles and software
 

@@ -13,6 +13,7 @@ const SHARED_PROHIBITIONS = [
   'force-push',
   'Never touch, stage or revert other uncommitted changes',
   'Do not read or print secrets',
+  'marked confidential is never made public',
   'stop and report rather than guess'
 ]
 
