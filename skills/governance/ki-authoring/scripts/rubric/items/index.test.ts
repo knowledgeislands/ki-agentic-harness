@@ -204,7 +204,7 @@ test('frontmatter conform removes only safely unnecessary scalar quotes', () => 
   const repository = temporaryRepository()
   writeFileSync(
     join(repository, 'guide.md'),
-    '---\nid: \'KB-DOTFILES-UE-001\'\nname: "agent"\nenabled: "true"\nrelease: "2026-08-05"\ntitle: "A value: with punctuation"\n---\n\n# Guide\n'
+    '---\nid: \'PERSONAL-DOTFILES-UE-001\'\nname: "agent"\nenabled: "true"\nrelease: "2026-08-05"\ntitle: "A value: with punctuation"\n---\n\n# Guide\n'
   )
   const session = createAuthoringSession(
     { mode: 'conform', repository, userHome: tmpdir(), configuration: {} },
@@ -227,7 +227,7 @@ test('frontmatter conform removes only safely unnecessary scalar quotes', () => 
     {
       path: 'guide.md',
       content:
-        '---\nid: KB-DOTFILES-UE-001\nname: agent\nenabled: "true"\nrelease: "2026-08-05"\ntitle: "A value: with punctuation"\n---\n\n# Guide\n'
+        '---\nid: PERSONAL-DOTFILES-UE-001\nname: agent\nenabled: "true"\nrelease: "2026-08-05"\ntitle: "A value: with punctuation"\n---\n\n# Guide\n'
     }
   ])
 })

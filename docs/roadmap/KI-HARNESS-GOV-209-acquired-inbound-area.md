@@ -29,7 +29,7 @@ Today `ki-repo-kb` describes `+/` as an inbox and names the folders specialist s
 ## Boundary
 
 - In: a scaffold `README.md` for `+/_ACQUIRED/` in each territory principal, saying who writes there (the port alone), what a packet is, and the three receiver dispositions; and receiver triage guidance in `ki-repo-kb`: file, turn into work, or park, with the rule that the receiver never writes into the port.
-- Out: the port's dispatch, return-reading, removal and routing cards, which belong to the acquire repository's dispatch record ([KB-ACQUIRE-007 (pruned)](https://github.com/krisb/acquire/blob/7f43c67f899df0554de647920ec42609e32001b5/docs/roadmap/KB-ACQUIRE-007-dispatch-packet-push-and-return.md), "Dispatch packet, push and return"); the Observatory view and the `ki-trades` envelope; amending Personal's Decision 7, which belongs to Personal's acquire-dispatch thread; the Acquisition Process note's Enactment record.
+- Out: the port's dispatch, return-reading, removal and routing cards, which belong to the acquire repository's dispatch record ([PERSONAL-ACQUIRE-007 (pruned)](https://github.com/krisb/acquire/blob/7f43c67f899df0554de647920ec42609e32001b5/docs/roadmap/KB-ACQUIRE-007-dispatch-packet-push-and-return.md), "Dispatch packet, push and return"); the Observatory view and the `ki-trades` envelope; amending Personal's Decision 7, which belongs to Personal's acquire-dispatch thread; the Acquisition Process note's Enactment record.
 
 ## Current state
 
