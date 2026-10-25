@@ -271,9 +271,10 @@ test('the hook line points at the standard and carries only its five hard rules'
     '3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, and no heartbeat otherwise'
   )
   expect(line).toContain(
-    '4) give every Summary, recap and hold report in the owner-report shape, heading and form line to glyph banner'
+    '4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner'
   )
   expect(line).toContain('with no reply block')
+  expect(line).toContain('a re-bootstrap report and a full summary restating every open query in full')
   expect(line).toContain(
     'end any other reply that moves the mark, changes the state or answers where the work stands with the banner'
   )
