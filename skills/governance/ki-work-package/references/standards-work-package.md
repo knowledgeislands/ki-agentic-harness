@@ -70,11 +70,14 @@ A work folder holds these kinds and nothing else:
 | Queries file | `queries.md` | The mark that closes finished work |
 | Messages file | `messages.md` | The mark that closes finished work |
 | Decisions log | `decisions.md` | The mark that closes finished work |
+| Finding | `findings/<tag>.md` | Settlement under the owner-report Findings rule† |
 | Run report | `<name>.report.md` | A tidy finds its outcome homed, its queries having been copied into `queries.md` at receive |
 | Brief | `briefs/<run>.md` | Its run's report is received |
 | Feedback package | `feedback/<date>-<slug>.md`, the owner's consolidated feedback on a document the work produced | A tidy finds every point in it homed |
 | Design note | `design/<slug>.md`, or `design/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
 | Design artefact | `design/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its note goes |
+
+† Findings follow `ki-coordination`'s [owner-report Findings rule](../../../change-management/ki-coordination/references/standards-coordination.md#owner-report).
 
 The five package files exist from the work's creation, `queries.md`, `messages.md` and `decisions.md` starting as `None`, so a reader never meets a missing file and a sender never creates one. Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs in the run's temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, outside every repository, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). The rubric's FOLDER family fails a file outside this list and warns on each tidy that is due. A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
 
@@ -91,14 +94,16 @@ Every writer is a named entry point with its permitted kinds, and every other pa
 
 | Entry point | Writes | Never |
 | --- | --- | --- |
-| Own steward† | Package files, briefs and tidy deletions† | Other work's folder, except a message |
+| Own steward† | Package files, findings, briefs and tidy deletions† | Other work's folder, except a message |
 | The launcher, `ki agent` | `<name>.report.md`, copied in from the run's state folder; a state-folder `decisions.md` adopted where the folder has none; entries `decide` and `reconcile` append to `decisions.md` on the steward's instruction | Deletes anything, or replaces a report Git does not already hold |
 | A background run | Its work product in its owning home, and `design/` where its brief names a design note | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
 | `ki-work-design` and design runs | `design/` | Other kinds |
 | Other work and State of play | One line in `messages.md`, added or replacing its own line not yet acted on, committed alone | Any other edit |
 | The owner, through the Observatory | One `feedback/<date>-<slug>.md` package and one `messages.md` line linking it, committed together | Any other edit |
 
-† The work's own steward includes its explicitly assigned State of play. It may write `work.md`, `state.md`, `queries.md` and `decisions.md`, remove disposed lines from `messages.md`, write `briefs/` and make tidy deletions.
+† The work's own steward includes its explicitly assigned State of play. It may write `work.md`, `state.md`, `queries.md` and `decisions.md`, remove disposed lines from `messages.md`, write `findings/<tag>.md` and `briefs/` and make tidy deletions.
+
+Findings use `findings/<tag>.md`, one file per tag, holding exactly the text the report carries under the owner-report Findings rule. The work's own steward writes and settles them; package pick-up reads every open finding with the five package files.
 
 The `description` in `work.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a line in `messages.md`. Readers, such as `ki work status`, the Observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
 
@@ -119,11 +124,11 @@ A run brief names its reporting package separately from the product repository. 
 A tidy keeps the folder to what is still open, with Git history holding the rest, as Kris set under THREAD-TIDY on 2026-10-14, as received: "at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest", and made regular on 2026-10-16 with THREADS-TRIM. `ki-coordination` says when a coordinator tidies, at every send and each mark; regular and ad hoc work tidies at its own next update.
 
 - **Queries leave reports at receive:** when the steward receives a run report it copies each of its queries, whole, into `queries.md` under QUERIES-FILE, so a report is kept only until its outcome is homed, not until its queries are answered.
-- **What goes:** every `<name>.report.md` whose outcome has a durable home, a work record, the decisions log, the package or a commit, its queries already in `queries.md`; every `briefs/<run>.md` once its run's report has been received; every `feedback/<date>-<slug>.md` once every point in it has a durable home; and, at a mark, each design note the steward's review finds graduated or superseded, under the `ki-coordination` [design-note guards](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). In a folder still in [the single-file shape](#the-single-file-shape), a report also waits until its queries are all answered and read back in the log.
-- **What stays:** the five package files, always; every report whose outcome is not yet homed; every brief whose handoff is open; every feedback package with a point not yet homed; and each design note until it graduates or is recorded as superseded.
+- **What goes:** each `findings/<tag>.md` settled under `ki-coordination`'s owner-report Findings rule, with its disposition recorded in `decisions.md`; every `<name>.report.md` whose outcome has a durable home, a work record, the decisions log, the package or a commit, its queries already in `queries.md`; every `briefs/<run>.md` once its run's report has been received; every `feedback/<date>-<slug>.md` once every point in it has a durable home; and, at a mark, each design note the steward's review finds graduated or superseded, under the `ki-coordination` [design-note guards](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). In a folder still in [the single-file shape](#the-single-file-shape), a report also waits until its queries are all answered and read back in the log.
+- **What stays:** the five package files, always; every open `findings/<tag>.md`, including one the owner keeps open at a mark; every report whose outcome is not yet homed; every brief whose handoff is open; every feedback package with a point not yet homed; and each design note until it graduates or is recorded as superseded.
 - **How:** in one commit by explicit path, `git rm` of each file named and nothing else, never a folder-wide delete, so that Git history holds every report and a later recap or full summary reads a deleted one from its last revision. The deletion is operational work and opens no record.
 - **Who:** each piece of work tidies only its own folder. Territory work never tidies another work folder; it names each folder the rubric flags in a line in that work's `messages.md`, and the owning work tidies at its next send.
-- **Close-out:** finished work's folder is deleted at the mark that closes it, in one commit, once its decisions are homed and `design/` is resolved, under [Removal lifecycle](#removal-lifecycle).
+- **Close-out:** finished work's folder is deleted at the mark that closes it, in one commit, once its decisions are homed, every finding settled with its disposition recorded, and `design/` is resolved, under [Removal lifecycle](#removal-lifecycle).
 
 A report whose outcome has no durable home yet is kept, not homed in haste. The rubric lists candidates; a listing is never permission to delete.
 
@@ -326,8 +331,10 @@ The package reads in four levels, by analogy with a skill's metadata, body and r
 | --- | --- | --- |
 | 1. Register | `work.md` and `state.md` front matter | State of play at each routing; `ki work status`, the Observatory and `ki work` views; an opener |
 | 2. Definition | `work.md` body | State of play when two descriptions match; the owner checking a routing; a new session before it reads state |
-| 3. Pick-up | `state.md`, `messages.md`, `queries.md`, `decisions.md` | the work's own worker at bootstrap, re-anchoring, each owner message, each wake and each move |
+| 3. Pick-up | Package detail and open findings† | The work's own worker at each pick-up |
 | 4. On demand | reports, briefs, `design/` | only when `state.md` or `queries.md` names one |
+
+† Pick-up reads `state.md`, `messages.md`, `queries.md`, `decisions.md` and every open `findings/<tag>.md` at bootstrap, re-anchoring, each owner message, each wake and each move.
 
 Routing reads level 1 only, and a sender reads nothing in the receiver's folder: it adds a line to `messages.md`. A run reads its brief and what the brief names. How a coordinator's turn budget counts the pick-up reads is `ki-coordination`'s.
 
@@ -400,14 +407,14 @@ The manual portable flow is deliberately small:
 
 1. Require the user-selected work id or, from an opener, the Project slug.
 2. Resolve to one exact folder: `+/_WORK/<id>/`; for the tolerance window, when no work folder exists, the single old checkpoint whose stem maps to that id. If no folder or file, or more than one, matches, stop and ask the human which record is meant.
-3. Read the five package files in full, or `work.md` alone in the single-file shape, and validate their identity and schema.
+3. Read the five package files in full, or `work.md` alone in the single-file shape, and every open `findings/<tag>.md`; validate the package's identity and schema.
 4. Act on its state as `ki-coordination`'s Picking work up sets it, the message queue first, important lines first, and continue from its next steps.
 
 The title and label never take part in resolution. Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that last held the work.
 
 ## Removal lifecycle
 
-Finished work keeps its package with `state: finished` until the mark that closes it, when the work folder is deleted in one commit with Git keeping it, under [Tidying the work folder](#tidying-the-work-folder) and `ki-coordination`'s [Finishing Project work](../../../change-management/ki-coordination/references/standards-coordination.md#finishing-project-work). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners, then delete the exact work folder or old checkpoint.
+Finished work keeps its package with `state: finished` until the mark that closes it, when the work folder is deleted in one commit with Git keeping it, under [Tidying the work folder](#tidying-the-work-folder) and `ki-coordination`'s [Finishing Project work](../../../change-management/ki-coordination/references/standards-coordination.md#finishing-project-work). Removal otherwise requires explicit user direction; an agent must not infer completion from record content, a quiet session, or a Stop event. First confirm durable facts reached their proper owners and every finding is settled with its disposition recorded, then delete the exact work folder or old checkpoint.
 
 No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, timestamped-copy, and other nested layouts are invalid.
 

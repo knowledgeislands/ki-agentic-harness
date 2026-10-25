@@ -17,6 +17,8 @@
 
 ## Last review
 
+2026-10-25 - Reviewed Kris's FINDINGS-SECTION answer in `ki.ways-of-working/decisions.md` and the coordination standard's owner-report Findings retention. The existing `findings/<tag>.md` form is admitted by the work-package closed list and FOLDER-1, read with the package, retained while open and settled before tidy or close-out. This is an in-house contract review; no external source refreshed.
+
 - 2026-10-25 - Reviewed Kris's 24 and 25 October answers in the `ki.ways-of-working` decisions log and the `model-shape-report.md`, `overview.md` and `unattended-work.md` designs under `wow-harness-model-2`. Assigned-package cascade, work-qualified queries in one Summary, independent package states and marks, one package per turn, inventory-based execution requirements and package creation within the cap. This is an in-house decision review; no external source was refreshed.
 
 A 2026-10-25 review under `wow-coord-standard` applies two answers Kris gave in `ki.ways-of-working` that day. REBOOT-SHAPE a), "Full report": the re-bootstrap report is a full owner report, its `## Done` giving the coordinator role and where the work stands, `## In Progress` what is running and `## Queries` every open query in full, then the banner; the three-line report is retired from Bootstrap, Report forms, the openers and the hook line. GAP-SUMMARY a), "30-minute trigger": the first reply after 30 minutes or more without an owner message, while queries are with the owner, answers the message and then gives the Summary with every open query in full, in the standard, the skill and the output style. This is an in-house policy review; no external source was refreshed.

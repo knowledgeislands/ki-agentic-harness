@@ -20,8 +20,8 @@ const STATE_FILE = 'state.md'
 const WORK_FILE = 'work.md'
 /** The five package files; a single-file work folder holds only `work.md` of them. */
 const PACKAGE_FILES: ReadonlySet<string> = new Set([WORK_FILE, STATE_FILE, QUERIES_FILE, 'messages.md', DECISIONS_LOG])
-/** Briefs and feedback packages are Markdown files directly under their folder. */
-const MARKDOWN_FOLDERS: ReadonlySet<string> = new Set(['briefs', 'feedback'])
+/** Findings, briefs and feedback packages are Markdown files directly under their folder. */
+const MARKDOWN_FOLDERS: ReadonlySet<string> = new Set(['findings', 'briefs', 'feedback'])
 const DESIGN_FOLDER = 'design'
 /** Design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
 const DESIGN_EXTENSIONS: ReadonlySet<string> = new Set(['.md', '.json', '.mmd', '.svg', '.html'])
@@ -78,7 +78,7 @@ const strayDesign = (folder: string, prefix: string): string[] =>
     return plainFile(entry) && DESIGN_EXTENSIONS.has(extname(entry.name)) ? [] : [path]
   })
 
-/** Entries of a work folder outside its closed list, `design/`, `briefs/` and `feedback/` read one level down. */
+/** Entries of a work folder outside its closed list, `design/`, `findings/`, `briefs/` and `feedback/` read one level down. */
 export const workFolderStray = (folder: string): readonly string[] =>
   entries(folder).flatMap((entry) => {
     if (plainFile(entry) && (PACKAGE_FILES.has(entry.name) || entry.name.endsWith(REPORT_SUFFIX))) return []

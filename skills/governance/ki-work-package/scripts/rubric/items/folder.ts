@@ -9,7 +9,7 @@ const FOLDER_1: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-1',
   title: 'every work folder holds only its closed list',
   description:
-    'Each work folder `+/_WORK/<id>/` holds only the five package files, `<name>.report.md`, Markdown briefs under `briefs/`, Markdown feedback packages under `feedback/`, and under `design/` only design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders. Scripts, screenshots, scratch folders and tool output fail. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
+    'Each work folder `+/_WORK/<id>/` holds only the five package files, per-tag Markdown findings `findings/<tag>.md`, `<name>.report.md`, Markdown briefs under `briefs/`, Markdown feedback packages under `feedback/`, and under `design/` only design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders. Scripts, screenshots, scratch folders and tool output fail. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
   sources: [`${SOURCE}#closed-list`],
   mechanical: {
     level: 'FAIL',
@@ -78,7 +78,7 @@ const FOLDER_4: RubricItem<FolderOutcomes> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Once its decisions are homed and `design/` resolved, delete the finished work folder in one commit, with Git keeping it.'
+        'Once its decisions are homed, every finding settled with its disposition recorded, and `design/` resolved, delete the finished work folder in one commit, with Git keeping it.'
     },
     audit: { phase: 'INSPECT', run: ({ finished }) => finished }
   }

@@ -51,6 +51,20 @@ describe('work folder closed list', () => {
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
   })
 
+  test('per-tag findings pass FOLDER-1 while nested and non-Markdown findings fail', () => {
+    const root = fixture()
+    const folder = pkg(root)
+    write(root, join(WORK, 'findings', 'FINDINGS-SECTION.md'), '### FINDINGS-SECTION - Findings retention\n')
+    write(root, join(WORK, 'findings', 'QUERY-RULES.md'), '### QUERY-RULES - Query rules\n')
+    expect(workFolderStray(folder)).toEqual([])
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+
+    write(root, join(WORK, 'findings', 'out.log'), 'temporary output')
+    write(root, join(WORK, 'findings', 'nested', 'FINDINGS-SECTION.md'), 'nested finding')
+    expect(workFolderStray(folder)).toEqual(['findings/nested/', 'findings/out.log'])
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['VIOLATION'])
+  })
+
   test('a stray file or folder fails, naming each', () => {
     const root = fixture()
     const folder = pkg(root)
