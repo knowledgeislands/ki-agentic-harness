@@ -39,7 +39,7 @@
       "rumdl check --fix --preflight"
     ]
   },
-  "packageManager": "bun@1.4.2",
+  "packageManager": "bun@1.4.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/knowledgeislands/ki-agentic-harness.git"
