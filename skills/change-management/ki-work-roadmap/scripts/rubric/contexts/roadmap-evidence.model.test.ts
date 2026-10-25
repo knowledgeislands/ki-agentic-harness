@@ -454,7 +454,7 @@ test('a registry note holding a design folder is read as its folder note', () =>
   ])
 })
 
-test('project membership warns on unknown slugs and fails only on a contradicted initiative', () => {
+test('Project references must resolve while an unavailable registry remains unknown', () => {
   const capital = createCapital()
   const member = (fields: string, registry = true): string => {
     const repository = createRepository(
@@ -478,11 +478,11 @@ test('project membership warns on unknown slugs and fails only on a contradicted
   expect(warnings(member('project: baseline-rollout'))).not.toContain(
     "project 'baseline-rollout' is not in the project registry"
   )
-  expect(warnings(member('project: unknown-project\ninitiative: unknown-initiative'))).toEqual(
-    expect.arrayContaining([
-      "project 'unknown-project' is not in the project registry",
-      "initiative 'unknown-initiative' is not in the project registry"
-    ])
+  expect(failures(member('project: unknown-project'))).toContainEqual(
+    expect.objectContaining({ msg: "project 'unknown-project' is not in the project registry" })
+  )
+  expect(warnings(member('initiative: unknown-initiative'))).toContain(
+    "initiative 'unknown-initiative' is not in the project registry"
   )
   expect(warnings(member('project: baseline-rollout\ninitiative: platform-foundations'))).toContain(
     'migration window: the theme comes from the project; do not name it beside the project'
@@ -594,11 +594,11 @@ test('qualified membership resolves in the named territory and warns when it can
     const resolved = member('project: capital/baseline-rollout')
     expect(failures(resolved)).toEqual([])
     expect(warnings(resolved)).toEqual([])
-    expect(warnings(member('project: capital/unknown-project\ninitiative: capital/unknown-initiative'))).toEqual(
-      expect.arrayContaining([
-        "project 'capital/unknown-project' is not in the project registry",
-        "initiative 'capital/unknown-initiative' is not in the project registry"
-      ])
+    expect(failures(member('project: capital/unknown-project'))).toContainEqual(
+      expect.objectContaining({ msg: "project 'capital/unknown-project' is not in the project registry" })
+    )
+    expect(warnings(member('initiative: capital/unknown-initiative'))).toContain(
+      "initiative 'capital/unknown-initiative' is not in the project registry"
     )
     const absent = member('project: nowhere/agent-host')
     expect(failures(absent)).toEqual([])
@@ -724,3 +724,35 @@ test('the issue ledger accepts a digit-leading area code but not an all-digit on
   )
   expect(ledgerAllocation(ledger.replace('5GE: 12', '555: 12'))).toBeUndefined()
 })
+
+test('target dates accept due and milestone outcomes without adopting unattended metadata', () => {
+  for (const kind of ['due', 'milestone'])
+    expect(
+      failures(
+        createRepository(
+          `status: triage\nbaseline_ref: null\ntarget:\n  date: 2026-10-31\n  kind: ${kind}\n  what: Halloween activity planned`,
+          ''
+        )
+      )
+    ).toEqual([])
+  expect(failures(createRepository('status: triage\nbaseline_ref: null\nunattended: eligible', ''))).toContainEqual(
+    expect.objectContaining({ area: 'ITEM-1', msg: expect.stringContaining('unattended') })
+  )
+})
+
+for (const target of [
+  'target: 2026-10-31',
+  'target: []',
+  'target: null',
+  'target:\n  date: 2026-02-30\n  kind: due\n  what: Impossible date',
+  'target:\n  date: 2026-10-31\n  kind: later\n  what: Unknown kind',
+  'target:\n  date: 2026-10-31\n  kind: milestone',
+  'target:\n  date: 2026-10-31\n  kind: due\n  what: ""',
+  'target:\n  date: 2026-10-31\n  kind: due\n  what: Outcome\n  authority: execute',
+  'target:\n  date: 2026-10-31\n  date: 2026-11-01\n  kind: due\n  what: Duplicate date'
+])
+  test(`target rejects malformed metadata: ${target.replaceAll('\n', ' ')}`, () => {
+    expect(failures(createRepository(`status: triage\nbaseline_ref: null\n${target}`, ''))).toContainEqual(
+      expect.objectContaining({ area: 'ITEM-2', msg: expect.stringContaining('target') })
+    )
+  })

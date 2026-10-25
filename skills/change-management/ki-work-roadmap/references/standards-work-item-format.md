@@ -6,6 +6,7 @@
 - [Frontmatter](#frontmatter)
 - [Priority and size](#priority-and-size)
 - [Classification](#classification)
+- [Target dates](#target-dates)
 - [Hold](#hold)
 - [Cancellation and resolution](#cancellation-and-resolution)
 - [Body](#body)
@@ -108,7 +109,7 @@ It is written at capture, and an absent `priority` reads as `medium`, so its abs
 
 A size set at capture is provisional, set by judgement, and is revisited before the record becomes Ready; a record whose size is uncertain warrants investigation rather than an invented estimate. A `ready` record with `size: xl` fails. During the [migration window](standards-repository-roadmaps.md#migration-tolerance) the checker warns on an open record without `size`; once the window closes it fails. A closed record, done or cancelled, never needs a retrospective `size` or `kind`. A value outside either vocabulary fails at once.
 
-Selection orders work in one sequence, which [`ki-next`](../../ki-next/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then size, smallest first. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
+Selection orders work in one sequence, which [`ki-next`](../../ki-next/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then the nearer target date within that horizon and priority, then size, smallest first. An absent target has no date urgency. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
 
 ### Retired fields and values
 
@@ -135,9 +136,24 @@ Classification fields say what sort of work a record is and what it serves. Each
 
 `purpose` says why the work exists. Use `upkeep` for work that keeps something accurate and never finishes.
 
-`project` names the finite outcome the record serves; its theme is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, may name its `theme` directly instead. A record with a Project takes its theme from it and does not name `theme` beside it: naming both warns during the [migration window](standards-repository-roadmaps.md#migration-tolerance) and fails once it closes, and a contradiction with the registry fails at once. Under the [work model](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) a theme is a label only: it owns no work, and the work a record serves is the territory's regular work or a Project. A record still naming the [retired](#retired-fields-and-values) `initiative` reads it as its theme with a warning; naming both `theme` and `initiative` fails. Project and theme slugs are territory-scoped kebab-case. A bare slug names an entry in the repository's own Capital territory; a record serving another territory's Project or theme qualifies it as `<territory>/<slug>`, such as `ki-principal/agent-host`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md#cross-territory-references). An unknown slug or an unavailable registry is a warning, never a failure. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
+`project` names the finite outcome the record serves; its theme is looked up in the [Project registry](../../ki-work/references/standards-project-registry.md). A record without a Project, such as upkeep, may name its `theme` directly instead. A record with a Project takes its theme from it and does not name `theme` beside it: naming both warns during the [migration window](standards-repository-roadmaps.md#migration-tolerance) and fails once it closes, and a contradiction with the registry fails at once. Under the [work model](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md) a theme is a label only: it owns no work, and the work a record serves is the territory's regular work or a Project. A record still naming the [retired](#retired-fields-and-values) `initiative` reads it as its theme with a warning; naming both `theme` and `initiative` fails. Project and theme slugs are territory-scoped kebab-case. A bare slug names an entry in the repository's own Capital territory; a record serving another territory's Project or theme qualifies it as `<territory>/<slug>`, such as `ki-principal/agent-host`, under the [Project registry standard](../../ki-work/references/standards-project-registry.md#cross-territory-references). A record whose `project` does not resolve in an available registry fails the roadmap check. An unavailable registry remains an explicit warning, not a successful resolution; unknown theme slugs retain their existing warning. Tagging another repository's record with a Project is classification, not authority: the owning repository keeps its plan, priority, and acceptance.
 
 `component` names the part of the repository the record touches, from the repository's declared vocabulary.
+
+The resolved Project locates its package in the Capital; its `project` tag is the link, not a transfer of authority or records. Selection into `now` neither opens work nor grants execution. The assigned package steward adds the routed record to its next steps at its next wake. A record without `project` goes first to its existing regular or ad hoc owner and reaches State of play's routing queue only if ownership is unresolved. Reclassification first reconciles runs in flight and their reporting package.
+
+### Target dates
+
+An optional `target` mapping records the date the work aims towards:
+
+```yaml
+target:
+  date: 2026-10-31
+  kind: due
+  what: Halloween activity planned
+```
+
+The mapping contains exactly `date`, a valid ISO calendar date (`YYYY-MM-DD`), `kind`, either `due` for a hard due date or `milestone` for an aim, and `what`, a non-empty single-line description of the outcome. Both kinds may be used at any lifecycle stage, and absence means no target. A target grants no authority and never moves work across horizons or priorities; within one horizon and priority the nearer date goes first, before size. Views flag approaching and past targets and show the date, kind and outcome rather than treating a date as permission to execute. `hold.review` remains the date to reconsider a hold and does not stand in for a target. No unattended-eligibility field is adopted while UNATTENDED-FIELD remains undecided.
 
 ### Hold
 

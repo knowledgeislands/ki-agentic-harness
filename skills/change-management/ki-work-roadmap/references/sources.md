@@ -10,6 +10,8 @@
 
 ## Last review
 
+- 2026-10-25 - Reviewed Kris's 24 and 25 October answers in the `ki.ways-of-working` decisions log and the `model-shape-report.md`, `overview.md` and `unattended-work.md` designs under `wow-harness-model-2`. Resolvable Project references and the optional target date, due-or-milestone kind and outcome; no unattended field. This is an in-house decision review; no external source was refreshed.
+
 2026-10-17: made a new idea start as an `Idea:` bullet in its owning Project or Initiative note, with `_IDEAS.md` only for an idea neither owns, on Kris's IDEAS-ROOTING answer, as received: "Ideas start as Idea: bullets in the owning Project or Initiative note; a ki-principal run adds GIT-SURFACE to the ways-of-working Project note first."
 
 2026-10-14: aligned the graduation test with the `ki-coordination` record threshold Kris set that day, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-coordination standard". Under a coordinating thread the threshold decides whether a record is due; the graduation test then governs its capture.

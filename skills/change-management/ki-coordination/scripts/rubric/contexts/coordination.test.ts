@@ -779,3 +779,18 @@ describe('coordinator binding', () => {
     expect(outcomes.map((outcome) => outcome.message).join(' ')).not.toContain('not json')
   })
 })
+
+test('Project packages live in the Capital while member regular packages remain permitted', () => {
+  const member = fixture({ repository: 'member', capital: 'ki-principal' })
+  work(member, 'ki.ways-of-working', {
+    level: 'project',
+    title: 'KI > Model > Ways of working',
+    project: 'ways-of-working'
+  })
+  expect(context(member).master.outcomes).toContainEqual(
+    expect.objectContaining({ status: 'VIOLATION', message: 'a Project package lives in its territory Capital' })
+  )
+  const regular = fixture({ repository: 'member', capital: 'ki-principal' })
+  work(regular, 'ki.regular', { level: 'regular', title: 'KI > Regular work' })
+  expect(context(regular).master.outcomes.some((outcome) => outcome.status === 'VIOLATION')).toBe(false)
+})

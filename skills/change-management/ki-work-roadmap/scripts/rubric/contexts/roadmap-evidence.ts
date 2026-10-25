@@ -109,6 +109,7 @@ const RECORD_FIELDS = new Set([
   'size',
   'horizon',
   'hold',
+  'target',
   'status',
   'resolution',
   'resolution_target',
@@ -241,6 +242,19 @@ const parseFrontmatter = (
     }
     const [, key, raw] = field
     if (key in values) add('FAIL', 'ITEM-1', `frontmatter repeats '${key}'`, FORMAT, display)
+    if (key === 'target') {
+      const nested: string[] = []
+      while (index + 1 < lines.length && (lines[index + 1] === '' || /^\s+/.test(lines[index + 1])))
+        nested.push(lines[++index] as string)
+      try {
+        values[key] = (parseYaml(`target: ${raw}\n${nested.join('\n')}`) as { target?: unknown } | null)?.target
+      } catch {
+        add('FAIL', 'ITEM-2', 'target must be a valid YAML mapping', FORMAT, display)
+        values[key] = null
+      }
+      continue
+    }
+
     if (key === 'hold') {
       if (raw) {
         add('FAIL', 'ITEM-2', 'hold must be a nested mapping', FORMAT, display)
@@ -624,6 +638,25 @@ const validateHold = (
     )
 }
 
+const validateTarget = (values: Readonly<Record<string, unknown>>, display: string): void => {
+  if (!('target' in values)) return
+  const target = values.target
+  if (!target || typeof target !== 'object' || Array.isArray(target)) {
+    add('FAIL', 'ITEM-2', 'target must be a mapping of date, kind and what', FORMAT, display)
+    return
+  }
+  const fields = target as Record<string, unknown>
+  if (Object.keys(fields).length !== 3 || Object.keys(fields).some((key) => !['date', 'kind', 'what'].includes(key)))
+    add('FAIL', 'ITEM-2', 'target must contain exactly date, kind and what', FORMAT, display)
+  const date = fields.date instanceof Date ? fields.date.toISOString().slice(0, 10) : fields.date
+  if (!isoDate(date) || new Date(String(date)).toISOString().slice(0, 10) !== date)
+    add('FAIL', 'ITEM-2', 'target.date must be an ISO calendar date', FORMAT, display)
+  if (fields.kind !== 'due' && fields.kind !== 'milestone')
+    add('FAIL', 'ITEM-2', 'target.kind must be due or milestone', FORMAT, display)
+  if (typeof fields.what !== 'string' || !fields.what.trim() || /[\r\n]/.test(fields.what))
+    add('FAIL', 'ITEM-2', 'target.what must be a non-empty single-line description', FORMAT, display)
+}
+
 const validateResolution = (
   values: Record<string, unknown>,
   id: string | undefined,
@@ -752,6 +785,7 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add('FAIL', 'ITEM-2', 'horizon must be one canonical value', FORMAT, display)
   validateHorizon(status, horizon, legacyHorizon, display)
   validateHold(parsed.values, status, horizon, updatedAt, display)
+  validateTarget(parsed.values, display)
   validateResolution(parsed.values, id, status, resolution, resolutionTarget, display)
   if (kind !== undefined && !KINDS.has(kind)) add('FAIL', 'ITEM-2', 'kind must be one canonical value', FORMAT, display)
   if (purpose === 'adoption') migrate('purpose adoption is retired; use capability or upkeep', display)
@@ -954,7 +988,7 @@ const validateClassification = (repository: string, items: readonly WorkItem[]):
     const projectRegistry = project && registryFor(project.territory)
     const groupRegistry = group && registryFor(group.territory)
     if (project && projectRegistry && !projectRegistry.projects.has(project.slug))
-      add('WARN', 'ITEM-2', `project '${item.project}' is not in the project registry`, STANDARD, item.file)
+      add('FAIL', 'ITEM-2', `project '${item.project}' is not in the project registry`, STANDARD, item.file)
     if (group && groupRegistry && !groupRegistry.themes.has(group.slug) && !groupRegistry.initiatives.has(group.slug))
       add('WARN', 'ITEM-2', `${key} '${named}' is not in the project registry`, STANDARD, item.file)
     if (!project || !group || !projectRegistry?.projects.has(project.slug) || !groupRegistry) continue

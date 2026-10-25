@@ -36,7 +36,7 @@ export const ITEM: RubricFamily<RoadmapRubricContext, RoadmapAuditContext> = {
       code: 'ITEM-2',
       title: 'item state and classification',
       description:
-        'Each item has valid status, horizon for its status, hold, resolution, classification, baseline, dependency, and mandatory timestamp-pair fields.',
+        'Each item has valid status, horizon for its status, hold, optional target (date, due or milestone kind, and what), resolution, resolvable Project classification, baseline, dependency, and mandatory timestamp-pair fields.',
       sources: [SOURCE],
       mechanical: {
         level: 'FAIL',

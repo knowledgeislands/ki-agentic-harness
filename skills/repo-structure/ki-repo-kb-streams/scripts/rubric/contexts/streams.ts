@@ -178,6 +178,7 @@ export const RECORD_FIELDS: ReadonlySet<string> = new Set([
   'size',
   'horizon',
   'hold',
+  'target',
   'status',
   'resolution',
   'resolution_target',

@@ -261,6 +261,14 @@ const masterOutcomes = (
       }
     ]
   const outcomes: AuditOutcome[] = []
+  if (!capital)
+    for (const work of works ?? [])
+      if (workLevel(work.id) === 'project')
+        outcomes.push({
+          status: 'VIOLATION',
+          message: 'a Project package lives in its territory Capital',
+          subject: work.path
+        })
   if (territory && !MASTER_LABEL.test(String(territory.fields?.title ?? '')))
     outcomes.push({
       status: 'VIOLATION',

@@ -11,7 +11,8 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 - [The work folder](#the-work-folder)
   - [Closed list](#closed-list)
   - [Entry points](#entry-points)
-  - [Tidying the work folder](#tidying-the-work-folder)
+  - [Assigned package stewardship](#assigned-package-stewardship)
+- [Tidying the work folder](#tidying-the-work-folder)
   - [Messages lines](#messages-lines)
   - [Work awaiting review](#work-awaiting-review)
 - [Exact package form](#exact-package-form)
@@ -52,6 +53,10 @@ A work package lives in one work folder, `+/_WORK/<id>/`, one per piece of work 
 
 `+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under [Work awaiting review](#work-awaiting-review); its files are checked only when the folder leaves review.
 
+Every Project package lives in its territory's Capital. Its records stay in the repositories that own their plans, priority and acceptance; their `project` resolves through the Capital's registry to the Project and package, conferring no execution authority. Regular work in a member repository may keep its package there, with that home declared in `work.md`'s Scope. A record with no `project` goes first to its existing regular or ad hoc owner; only an unresolved owner reaches the State of play's routing queue.
+
+Every package below the main State of play names its coordinating State of play as `parent`, including a secondary, a Project, regular work and ad hoc work. For ad hoc work this is the coordinating State of play, not the regular-work prefix in its id. The main keeps `covers` as the register of the Project and ad hoc work it coordinates, including work covered through a secondary, before a package exists and after it is pruned. Secondary `covers` lists remain its assigned subset. Check package parents against that register, same-territory membership, unique coverage by secondaries and absence of cycles; never infer coverage from the presence of a package.
+
 ## The work folder
 
 ### Closed list
@@ -86,14 +91,28 @@ Every writer is a named entry point with its permitted kinds, and every other pa
 
 | Entry point | Writes | Never |
 | --- | --- | --- |
-| The work's own steward: its coordinator, or for regular and ad hoc work the session working it | `work.md`, `state.md`, `queries.md`, `decisions.md`, the removal of lines from `messages.md`, `briefs/`, and the deletions of a tidy | Another work's folder, except one line in its `messages.md` |
+| Own steward† | Package files, briefs and tidy deletions† | Other work's folder, except a message |
 | The launcher, `ki agent` | `<name>.report.md`, copied in from the run's state folder; a state-folder `decisions.md` adopted where the folder has none; entries `decide` and `reconcile` append to `decisions.md` on the steward's instruction | Deletes anything, or replaces a report Git does not already hold |
 | A background run | Its work product in its owning home, and `design/` where its brief names a design note | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
 | `ki-work-design` and design runs | `design/` | Other kinds |
 | Other work and State of play | One line in `messages.md`, added or replacing its own line not yet acted on, committed alone | Any other edit |
 | The owner, through the Observatory | One `feedback/<date>-<slug>.md` package and one `messages.md` line linking it, committed together | Any other edit |
 
+† The work's own steward includes its explicitly assigned State of play. It may write `work.md`, `state.md`, `queries.md` and `decisions.md`, remove disposed lines from `messages.md`, write `briefs/` and make tidy deletions.
+
 The `description` in `work.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a line in `messages.md`. Readers, such as `ki work status`, the Observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
+
+### Assigned package stewardship
+
+A Project package has one explicitly assigned coordinating work, either its covering State of play or its own Project coordination work. The assignment is committed when the package is created or adopted and names work, never a host, session or `self`. It is distinct from the holder derived from state, worker and supervisor: assignment neither receives work nor releases a hold.
+
+**STEWARD-FIELD - placeholder awaiting Kris:** the assignment's field and file are undecided. This rule adds no field, changes no holder field and does not select a storage encoding. Record the assignment and acknowledged handover in the owning work's decisions log pending that decision; do not invent front matter.
+
+Opening or closing a dedicated Project thread requires an acknowledged handover. The old steward reconciles runs in flight, queued launches and pending writes, stops launching for the package and commits the assignment change in one coherent write. The new steward acknowledges before acting and takes supervision of the reconciled runs. A closed or quiet session, missing binding or old heartbeat transfers nothing; there is no timeout takeover. Uncertain ownership is reported.
+
+An assigned State of play is the package's own steward for every entry-point purpose, including state, queries, decisions, briefs and tidying. Work assigned elsewhere receives only messages. Creation is limited to a registered Project within the territory's active-package cap, in the state its actual move supports; an absent package never implies `with-worker`. The first-message On hold exception remains for dormant Projects.
+
+A run brief names its reporting package separately from the product repository. The launcher homes the report in that package whoever launched the run; the package's steward receives the result, queries and decisions. A classification change reconciles running work and report destinations before rerouting anything.
 
 ### Tidying the work folder
 
@@ -125,6 +144,8 @@ A line is about 60 words at most with the detail linked, and a message citing an
 
 The sender adds or replaces only its own line and edits nothing else in the receiver's folder, committing that path alone with the subject `docs(work): <receiver id> message from <sender id>`. The receiver records each line's disposition where it lands, under `ki-coordination`'s route receipt, names it in the commit that removes the line, and only then removes it. Who may send, how a coordinator acts on a line, route receipt and the inbox check at each wake are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work). A folder still in [the single-file shape](#the-single-file-shape) carries the same lines in its work file's `## Messages` section.
 
+A message may carry an optional `@<host-or-category>` requirement immediately after its date, using a name resolved through the territory's machine inventory. It restricts device-dependent execution only. Any coordinator may acknowledge, plan, ask about or dispatch the line to an eligible host, preserving IMPORTANT and queue order. An unfulfilled requirement stays queued and counted; flag its age when no eligible host has taken it, without using age as takeover authority. A concrete host matches that inventory entry; a category matches inventory membership, never a guessed alias. Unknown or renamed names need resolution before execution.
+
 ### Work awaiting review
 
 `+/_WORK_REVIEW/<id>/` is the holding area for migrated work a territory's migration was not confident is live, as Kris set under MIGRATION-REVIEW on 18 October: "put everything which you're confident in into the work folder and then put everything else into a underscore work review folder ... you're not waiting on me to answer those, and then we can pick up on the review ones later". Its folders keep the work-folder shape they were moved in, and its index note, `+/_WORK_REVIEW/README.md`, gives one line per folder saying why it is there.
@@ -142,6 +163,7 @@ The sender adds or replaces only its own line and edits nothing else in the rece
 ```yaml
 ---
 id: ki.observatory
+parent: ki
 level: project
 title: 'KI > Model > Observatory'
 project: observatory
@@ -163,11 +185,11 @@ The field set is closed:
 | `id` | required | the work's dotted id, agreeing with its folder |
 | `level` | required | `territory`, `regular` or `project` |
 | `title` | required | the work's title under Work naming, a non-empty single-line string |
-| `label` | optional | the title with a `(<host>)` suffix, only for work limited to that machine |
+| `label` | optional | title with an inventory host or category requirement suffix; never a session seat |
 | `project` | required at `project` level, else absent | the Project note's slug, the id's second segment |
 | `theme` | optional | a theme page's slug, or `null` |
-| `parent` | required on a secondary State of play, else absent | the main State of play's id, the territory |
-| `covers` | required on a secondary State of play, else absent | a non-empty list of the Project and ad hoc work ids of the same territory it coordinates |
+| `parent` | required below the main, absent on the main | coordinating State of play id |
+| `covers` | required on States of play, absent otherwise | main register or secondary non-empty subset |
 | `description` | required | the routing description, at most 500 characters |
 | `worker`, `supervisor` | required | each a holder |
 | `created_at` | optional | UTC time the work folder was created, no later than `state.md`'s `since` |
@@ -335,7 +357,7 @@ Once a repository holds `+/_WORK/`, its territory has migrated and the retired s
 
 ## Work identity and native sessions
 
-A native client session, such as a Claude Code or Codex session or a Zed tab, belongs to at most one piece of work, and the work package says which work it is and whether it coordinates. Kris agreed the design under SESSION-IDENTITY on 16 October 2026, "take the recommended option a) for PLAN-AGREE, THREAD-KEY, BINDING-HOME, SUPPLY-CHANNEL, NAME-AUTHORITY, RECORD-OWNERS, ROLE-FIELD and ROLE-STYLE (mechanism only)", and the work model reads it with work file for checkpoint and level for role.
+A native client session, a Claude Code or Codex session or a Zed tab, is seated in one package and may act in other packages that its coordinating work explicitly stewards. The package identifies the work and its level; the session is an actor, never the unit of work or evidence of stewardship. A local binding establishes identity only, not liveness or write authority.
 
 - **Key:** `<repository name>/<work id>`, such as `ki-principal/ki.ways-of-working`. It is stable across hosts, clients and sessions.
 - **Authority:** the work file's `id` says which work it is and its `level` whether it coordinates. The native session name is derived from the label under Work naming and copied into the client by hand or by the launcher; a native name, vendor field or session title never decides the work or its level.
@@ -391,7 +413,7 @@ No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, 
 
 ## Prohibited payloads and claims
 
-A package contains its definition and current state, not a transcript. It has no vendor-session field, conversation URL, runtime identifier, chat log, or role-by-role dialogue, and no host. Its prose must not claim that a future agent can access or reopen the session that last held the work.
+A package contains its definition and current state, not a transcript. It has no vendor-session field, conversation URL, runtime identifier or chat log. A session's host seat, where it runs or will resume, stays out of packages, holds and reports. A host or category required by the work may appear on a message line, brief, record or package label. Names resolve through the territory's machine inventory, with concrete hosts distinguished from categories; bootstrap and re-anchoring map the local machine to that inventory rather than trusting a raw hostname. Unknown, renamed or ambiguous names block device-dependent execution until resolved. Prose must not claim that a future agent can access or reopen the session that last held the work.
 
 It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. Project notes and theme pages ([the Project registry standard](../../../change-management/ki-work/references/standards-project-registry.md)) are the durable home of standing outcome and status, and the work file names its Project while the Project note does not link down. `ki-recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#optional-runtime-reminder-consumers). It does not grant write authority, choose work, invoke recap, read session material, or turn a portable procedure into a native host operation.
 

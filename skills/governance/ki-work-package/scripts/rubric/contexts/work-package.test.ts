@@ -521,6 +521,7 @@ const packageFiles = (
     ...Object.entries({
       id,
       level: 'project',
+      ...(id.includes('.') ? { parent: id.split('.')[0] } : { covers: '[]' }),
       title: "'KI > Model > Ways of working'",
       project: 'ways-of-working',
       theme: 'model',
@@ -743,19 +744,21 @@ const territoryPackage = (repository: string, id: string, extra: readonly string
     ...files,
     'work.md': (files['work.md'] ?? '')
       .replace('project: ways-of-working\n', '')
+      .replace('covers: []\n', extra.some((line) => line.startsWith('covers:')) ? '' : 'covers: []\n')
+      .replace(`parent: ${id.split('.')[0]}\n`, '')
       .replace('theme: model\n', extra.map((line) => `${line}\n`).join(''))
   })
 }
 
 test('a secondary State of play names its main as parent and lists the work it covers', () => {
   const repository = workFixture()
-  territoryPackage(repository, 'hnr', [])
+  territoryPackage(repository, 'hnr', ['covers: [hnr.5g-emerge-apex, hnr.regular.demo]'])
   territoryPackage(repository, 'hnr.sop.5ge', ['parent: hnr', 'covers: [hnr.5g-emerge-apex, hnr.regular.demo]'])
 
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
 })
 
-test('parent and covers are checked and belong to secondary States of play alone', () => {
+test('parent identifies coordinating work and covers belongs only to States of play', () => {
   for (const [id, extra] of [
     ['hnr', ['parent: hnr']],
     ['hnr.sop.5ge', ['parent: other', 'covers: [hnr.5g-emerge-apex]']],
@@ -770,7 +773,7 @@ test('parent and covers are checked and belong to secondary States of play alone
   }
   const project = workFixture()
   writePackage(project, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { work: { parent: 'ki' } }))
-  expect(statuses(context(project))['RECORD-2']).toBe('VIOLATION')
+  expect(statuses(context(project))['RECORD-2']).toBe('PASS')
   const misplaced = workFixture()
   writePackage(misplaced, 'ki.sop.tools', packageFiles('ki.sop.tools', { work: { project: 'sop' } }))
   expect(statuses(context(misplaced))['RECORD-2']).toBe('VIOLATION')
@@ -828,4 +831,44 @@ test('a message line on work that is on hold may wait', () => {
   )
 
   expect(run(LIFECYCLE, 'LIFECYCLE-3', context(repository))[0]?.status).toBe('PASS')
+})
+
+test('package parents and coverage reject missing, cross-territory and conflicting assignments', () => {
+  for (const parent of ['other', 'ki.ways-of-working', 'ki.regular']) {
+    const repository = workFixture()
+    writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { work: { parent } }))
+    expect(statuses(context(repository))['RECORD-2']).toBe('VIOLATION')
+  }
+  const missing = workFixture()
+  const files = packageFiles()
+  files['work.md'] = (files['work.md'] ?? '').replace('parent: ki\n', '')
+  writePackage(missing, 'ki.ways-of-working', files)
+  expect(statuses(context(missing))['RECORD-2']).toBe('VIOLATION')
+
+  const repository = workFixture()
+  territoryPackage(repository, 'ki', ['covers: [ki.ways-of-working]'])
+  // Replace the helper's inherited empty main register rather than authoring duplicate YAML keys.
+  const main = join(repository, '+', '_WORK', 'ki', 'work.md')
+  writeFileSync(main, readFileSync(main, 'utf8').replace('covers: []\n', ''))
+  territoryPackage(repository, 'ki.sop.model', ['parent: ki', 'covers: [ki.ways-of-working]'])
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { work: { parent: 'ki.sop.model' } })
+  )
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  territoryPackage(repository, 'ki.sop.other', ['parent: ki', 'covers: [ki.ways-of-working]'])
+  expect(statuses(context(repository))['RECORD-2']).toBe('VIOLATION')
+})
+
+test('ad hoc parent names a State of play and host requirements preserve queue shape', () => {
+  const repository = workFixture()
+  const id = 'ki.regular.intake'
+  const files = packageFiles(id, {
+    work: { level: 'regular', parent: 'ki.sop.operations' },
+    messages: `# ${id} messages\n\n- IMPORTANT · 2026-10-25 @terra · HOST-WORK · KI State of play: plan intake.\n- 2026-10-25 @macos · HOST-NEXT · KI State of play: receive evidence.\n`
+  })
+  files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
+  writePackage(repository, id, files)
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
 })

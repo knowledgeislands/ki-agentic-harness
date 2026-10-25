@@ -50,7 +50,7 @@ At restart, each piece of coordinating work acts on the important `FIRST-STEP` l
 
 ## Run packet
 
-A run is a named set of agents sharing one state directory for runtime files and one tracked work folder for knowledge files. The split follows what each file is for. A runtime file describes one process on one machine and can be lost without losing knowledge. A knowledge file records what the owner approved and what was done under it, and later work or another machine needs it. Kris settled the split on 2026-10-14, in these words: "tracked +/_THREADS/<thread>/ for the decisions log and agent reports; state folder keeps runtime only." Under the work model the tracked folder is the work folder, `+/_WORK/<id>/`, of the work that launched the run.
+A run is a named set of agents sharing one state directory for runtime files and one tracked work folder for knowledge files. The split follows what each file is for. A runtime file describes one process on one machine and can be lost without losing knowledge. A knowledge file records what the owner approved and what was done under it, and later work or another machine needs it. Kris settled the split on 2026-10-14, in these words: "tracked +/_THREADS/<thread>/ for the decisions log and agent reports; state folder keeps runtime only." Under the work model the tracked folder is the work folder, `+/_WORK/<id>/`, of the reporting work named in the brief, which may differ from the launching State of play.
 
 Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 
@@ -173,6 +173,8 @@ An unattended window stays within its explicit grant and the coordinator's [wind
 - standard or configuration changes beyond the owner's answers at entry.
 
 A grant lifts a permissible item only by naming it and its scope, within the authority tiers and any narrower repository gate. Force-push and `--no-verify` remain prohibited. No inferred or proposed rule joins this list without the owner's confirmation. Eligibility is not authority: any unit that still needs a decision is parked. The coordinator may plan already adopted, authorised Now or Next drafts to Ready and deliver eligible Ready work to awaiting review in frozen, repository-local `ki-batch` waves citing the grant, honouring dependencies and the owner-queue cap; adoption, discretionary promotion, acceptance and pruning stay with the owner.
+
+A run serving another package names its reporting package separately from its product repository in the brief. The launcher homes the report into that reporting package whoever launched the run, and its explicitly assigned steward receives the queries, decisions and in-flight supervision under `ki-work-package`. The launching State of play is not a substitute report home.
 
 ## Decisions log
 

@@ -73,7 +73,8 @@ const STATE_FIELDS: ReadonlySet<string> = new Set([
 const QUERY_HEADINGS = ['Open', 'Parked'] as const
 const QUERY_HEADING = /^[A-Z0-9][A-Z0-9-]* - \S/
 const QUERY_PARTS = ['**Context:**', '**Query:**', '**Options:**'] as const
-const MESSAGE_LINE = /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2}) · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
+const MESSAGE_LINE =
+  /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)? · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
 const REVISION = /^[0-9a-f]{7,40}$/
 // Soft limits under the standard's Size limits, warned and never failed.
 const LIMITS = {
@@ -521,37 +522,67 @@ const h2Sections = (body: string): Map<string, string> => {
 
 const words = (text: string): number => text.split(/\s+/).filter(Boolean).length
 
-/**
- * Where territory work stands in its territory: the main State of play, `<territory>`, carries no parent or covers; a
- * secondary, `<territory>.sop.<name>`, names the main as parent and lists the other work it covers. `sop` is a second
- * segment at territory level only, and parent and covers belong to secondaries alone.
- */
-const placementFailures = (id: string, fields: Readonly<Record<string, unknown>>): readonly string[] => {
+/** Package parents name coordinating work, while State-of-play covers registers survive absent packages. */
+const placementFailures = (
+  id: string,
+  fields: Readonly<Record<string, unknown>>,
+  packageShape: boolean
+): readonly string[] => {
   const segments = id.split('.')
   const territory = segments[0] ?? ''
   const secondary = segments[1] === SECONDARY_SEGMENT
-  const placed = 'parent' in fields || 'covers' in fields
-  if (fields.level !== 'territory') {
-    if (secondary) return [`a <territory>.${SECONDARY_SEGMENT}.<name> id is territory work`]
-    return placed ? ['parent and covers belong to a secondary State of play and are absent otherwise'] : []
+  // Single-file records retain their pre-cascade field rules until migrated.
+  if (!packageShape) {
+    if (fields.level !== 'territory' && secondary)
+      return [`a <territory>.${SECONDARY_SEGMENT}.<name> id is territory work`]
+    if (fields.level !== 'territory')
+      return 'parent' in fields || 'covers' in fields
+        ? ['parent and covers belong to a secondary State of play in the single-file shape']
+        : []
+    if (segments.length === 1)
+      return 'parent' in fields || 'covers' in fields ? ['the single-file main carries no parent or covers'] : []
   }
-  if (segments.length === 1) return placed ? ['the main State of play carries no parent or covers'] : []
-  if (segments.length !== 3 || !secondary)
-    return [`territory work id must be <territory> or <territory>.${SECONDARY_SEGMENT}.<name>`]
   const failures: string[] = []
-  if (fields.parent !== territory) failures.push(`parent must name the main State of play, ${territory}`)
+  const main = fields.level === 'territory' && segments.length === 1
+  if (fields.level === 'territory' && !main && (segments.length !== 3 || !secondary))
+    failures.push(`territory work id must be <territory> or <territory>.${SECONDARY_SEGMENT}.<name>`)
+  if (fields.level !== 'territory' && secondary)
+    failures.push(`a <territory>.${SECONDARY_SEGMENT}.<name> id is territory work`)
+  const parent = fields.parent
+  const parentPattern = new RegExp(`^${KEBAB}(?:\\.${SECONDARY_SEGMENT}\\.${KEBAB})?$`)
+  if (
+    main
+      ? 'parent' in fields
+      : typeof parent !== 'string' || !parentPattern.test(parent) || parent.split('.')[0] !== territory || parent === id
+  )
+    failures.push(
+      main ? 'the main State of play carries no parent' : 'parent must name a different same-territory State of play'
+    )
+  if (secondary && parent !== territory) failures.push(`parent must name the main State of play, ${territory}`)
+  if (fields.level !== 'territory') {
+    if ('covers' in fields) failures.push('covers belongs only to States of play')
+    return failures
+  }
   const covers = fields.covers
-  if (!Array.isArray(covers) || !covers.length)
-    failures.push('covers must list the work ids the secondary State of play coordinates')
-  else
+  if (!Array.isArray(covers) || (!main && !covers.length))
+    failures.push(
+      main
+        ? 'covers must be the main State of play register, an array'
+        : 'covers must list the work ids the secondary State of play coordinates'
+    )
+  else {
+    if (new Set(covers).size !== covers.length) failures.push('covers must not repeat a work id')
     for (const covered of covers)
       if (
         typeof covered !== 'string' ||
         !WORK_ID.test(covered) ||
         !covered.startsWith(`${territory}.`) ||
-        covered.split('.')[1] === SECONDARY_SEGMENT
+        covered.split('.')[1] === SECONDARY_SEGMENT ||
+        covered.split('.').length < 2 ||
+        (covered.split('.')[1] === 'regular' && covered.split('.').length < 3)
       )
-        failures.push(`covers names ${String(covered)}, which is not other work of territory ${territory}`)
+        failures.push(`covers names ${String(covered)}, which is not Project or ad hoc work of territory ${territory}`)
+  }
   return failures
 }
 
@@ -560,7 +591,8 @@ const definitionChecks = (
   record: ParsedRecord,
   fields: Readonly<Record<string, unknown>>,
   coordinationDeclared: boolean,
-  evidence: Evidence
+  evidence: Evidence,
+  packageShape = false
 ): void => {
   const fail = (list: AuditOutcome[], message: string): void => {
     list.push({ status: 'VIOLATION', message, subject: record.path })
@@ -576,7 +608,7 @@ const definitionChecks = (
     fail(evidence.schema, 'project names the Project slug at project level and is absent otherwise')
   if (fields.theme !== undefined && fields.theme !== null && !SLUG.test(String(fields.theme)))
     fail(evidence.schema, 'theme must be a theme slug or null')
-  for (const message of placementFailures(String(fields.id ?? ''), fields)) fail(evidence.schema, message)
+  for (const message of placementFailures(String(fields.id ?? ''), fields, packageShape)) fail(evidence.schema, message)
   for (const field of ['worker', 'supervisor'] as const)
     if (!HOLDER.test(String(fields[field] ?? '')))
       fail(evidence.schema, `${field} must be a holder: owner, agent, run/, work/, person/ or repo/`)
@@ -781,7 +813,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
   else if (fields.description.trim().length > LIMITS.description)
     warn(work, `description runs past ${LIMITS.description} characters`)
   if (words(work.body) > LIMITS.definitionWords) warn(work, `work.md body runs past ${LIMITS.definitionWords} words`)
-  definitionChecks(work, fields, coordinationDeclared, evidence)
+  definitionChecks(work, fields, coordinationDeclared, evidence, true)
   evidence.boundary.push(...boundaryOutcomes(work, fields))
 
   const state = folder.state
@@ -840,11 +872,49 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
 }
 
 /** Validates each work folder under `+/_WORK/`, in the package shape or, for the tolerance window, the single-file shape. */
+const relationshipEvidence = (works: readonly WorkFolder[], evidence: Evidence): void => {
+  const packages = works.filter((folder) => folder.package && folder.work.fields)
+  const byId = new Map(packages.map((folder) => [folder.stem, folder]))
+  const fail = (folder: WorkFolder, message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: folder.work.path })
+  }
+  const secondaryOwners = new Map<string, string>()
+  for (const folder of packages) {
+    const fields = folder.work.fields
+    if (!fields) continue
+    const territory = folder.stem.split('.')[0] ?? ''
+    const main = byId.get(territory)
+    const parent = typeof fields.parent === 'string' ? byId.get(fields.parent) : undefined
+    const covers = Array.isArray(fields.covers) ? fields.covers : []
+    if (main && typeof fields.parent === 'string' && !parent)
+      fail(folder, 'parent does not resolve to a State of play in the Capital')
+    if (fields.level === 'territory' && folder.stem !== territory)
+      for (const covered of covers) {
+        if (typeof covered !== 'string') continue
+        const previous = secondaryOwners.get(covered)
+        if (previous && previous !== folder.stem) fail(folder, `covers duplicates ${covered} in ${previous}`)
+        secondaryOwners.set(covered, folder.stem)
+        if (main && Array.isArray(main.work.fields?.covers) && !main.work.fields.covers.includes(covered))
+          fail(folder, `covers names ${covered}, absent from the main register`)
+        const child = byId.get(covered)
+        if (child && child.work.fields?.parent !== folder.stem)
+          fail(child, `parent disagrees with ${folder.stem} coverage`)
+      }
+    if (fields.level !== 'territory' && (fields.level === 'project' || folder.stem.split('.').length > 2)) {
+      if (main && Array.isArray(main.work.fields?.covers) && !main.work.fields.covers.includes(folder.stem))
+        fail(folder, 'work is absent from the main covers register')
+      if (parent && Array.isArray(parent.work.fields?.covers) && !parent.work.fields.covers.includes(folder.stem))
+        fail(folder, 'parent covers does not include this work')
+    }
+  }
+}
+
 const workEvidence = (works: readonly WorkFolder[], coordinationDeclared: boolean, now: number): Evidence => {
   const evidence: Evidence = { identity: [], schema: [], role: [], lifecycle: [], size: [], legacy: [], boundary: [] }
   for (const folder of works)
     if (folder.package) packageEvidence(folder, coordinationDeclared, now, evidence)
     else singleFileEvidence(folder.work, coordinationDeclared, evidence)
+  relationshipEvidence(works, evidence)
   return evidence
 }
 
