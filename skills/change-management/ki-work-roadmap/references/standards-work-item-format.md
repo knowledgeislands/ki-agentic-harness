@@ -107,6 +107,8 @@ It is written at capture, and an absent `priority` reads as `medium`, so its abs
 - `l` - several chained runs or repositories, with Delegation;
 - `xl` - not one record: split it before it becomes Ready.
 
+Reports and messages display a size as a T-shirt label, 👕 and the letter in capitals: `👕 S`, `👕 M`, `👕 L` or `👕 XL`. The field value stays the lower-case `s`, `m`, `l` or `xl`, and there is no XS. Kris asked for it on 24 October 2026, "I wonder if there's a way of showing T-shirt S, M, etc. next to it. And probably put it in a capital letter, almost like it's a label on a t-shirt", and adopted it under SIZE-LABEL on 25 October.
+
 A size set at capture is provisional, set by judgement, and is revisited before the record becomes Ready; a record whose size is uncertain warrants investigation rather than an invented estimate. A `ready` record with `size: xl` fails. During the [migration window](standards-repository-roadmaps.md#migration-tolerance) the checker warns on an open record without `size`; once the window closes it fails. A closed record, done or cancelled, never needs a retrospective `size` or `kind`. A value outside either vocabulary fails at once.
 
 Selection orders work in one sequence, which [`ki-next`](../../ki-next/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then the nearer target date within that horizon and priority, then size, smallest first. An absent target has no date urgency. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
