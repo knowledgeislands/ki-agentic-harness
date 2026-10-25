@@ -14,6 +14,7 @@
   - [Unattended deny list](#unattended-deny-list)
   - [Criticality test](#criticality-test)
   - [External systems](#external-systems)
+  - [Questions in a window](#questions-in-a-window)
   - [Dotfiles and software](#dotfiles-and-software)
 - [Decisions log](#decisions-log)
 - [Coordination](#coordination)
@@ -176,6 +177,7 @@ An unattended window stays within its explicit grant and the coordinator's [wind
 - acceptance, cancellation or pruning beyond the owner's answers at entry;
 - any change the criticality test excludes: one that could cut Kris off or take a site down;
 - messages to the people around us, new publication, or a change in an external system other people see or rely on, such as Linear, Notion or Slack, unless expressly agreed as part of the piece of work, under [External systems](#external-systems); GitHub and the systems the window's work is expressly about stay allowed;
+- action on a question Kris has not answered: a question put to Kris during a window waits a couple of minutes at most and, unanswered, is parked as a query for the return report with nothing done on it, under [Questions in a window](#questions-in-a-window); silence is never consent;
 - standard or configuration changes beyond the owner's answers at entry, a dotfiles rollout under [Dotfiles and software](#dotfiles-and-software) aside.
 
 A grant lifts a permissible item only by naming it and its scope, within the authority tiers and any narrower repository gate. Force-push and `--no-verify` remain prohibited, and a change the criticality test excludes is never lifted. No inferred or proposed rule joins this list without the owner's confirmation. Eligibility is not authority: any unit that still needs a decision is parked. The coordinator may plan already adopted, authorised Now or Next drafts to Ready and deliver eligible Ready work to awaiting review in frozen, repository-local `ki-batch` waves citing the grant, honouring dependencies and the owner-queue cap; adoption, discretionary promotion, acceptance and pruning stay with the owner.
@@ -199,6 +201,16 @@ Kris set the window's limit on other systems on 25 October 2026, answering UNWRI
 - **Allowed in a window:** GitHub, under the standing push rule and the [criticality test](#criticality-test), and the systems the window's work is expressly about.
 
 The rule governs unattended work only. An attended turn keeps its existing gates: it changes an external system or sends a message where its task and tier allow, with Kris in the thread. A visibility change in any of these systems is also governed by the [confidential rule](#authority-tiers), which no agreement in a window lifts.
+
+### Questions in a window
+
+Kris set the rule for a question asked during a window on 25 October 2026: "If you ask me for input as well in ... an unattended period, you should only really ask it for a couple of minutes. And if I don't respond, then you should not take any action from it. That's also something they should learn about."
+
+- **Ask briefly:** a question put to Kris during an unattended window, by the coordinator or by a run, waits a couple of minutes at most for an answer.
+- **No answer, no action:** with no answer in that time, nothing is done on the matter the question raised, in either direction: the work it gates is neither taken on nor dropped. The question is parked as a query, keeping its tag, Context, Query and Options, for the return report, and the other authorised work carries on. Silence is never consent: no default, no recommended option and no earlier pattern stands in for the answer.
+- **A late answer:** an answer that arrives later in the window is an ordinary owner decision from then on, read back in the decisions log before the work it authorises launches.
+
+The rule governs unattended work only; attended, a question waits for Kris in the thread as usual. It lifts nothing: a grant widens by Kris's words, never by Kris's silence, and a parked question keeps the work it gates parked with it.
 
 ### Dotfiles and software
 
