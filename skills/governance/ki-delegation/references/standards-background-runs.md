@@ -204,9 +204,9 @@ The rule governs unattended work only. An attended turn keeps its existing gates
 
 ### Questions in a window
 
-Kris set the rule for a question asked during a window on 25 October 2026: "If you ask me for input as well in ... an unattended period, you should only really ask it for a couple of minutes. And if I don't respond, then you should not take any action from it. That's also something they should learn about."
+Kris set the rule for a question asked during a window on 25 October 2026, routed from the HNR State of play as METHOD-UNATTENDED: "If you ask me for input as well in ... an unattended period, you should only really ask it for a couple of minutes. And if I don't respond, then you should not take any action from it. That's also something they should learn about."
 
-- **Ask briefly:** a question put to Kris during an unattended window, by the coordinator or by a run, waits a couple of minutes at most for an answer.
+- **Ask briefly:** a question put to Kris during an unattended window, by the coordinator or by a run, is asked in plain text in the thread, never through a blocking question prompt, and waits a couple of minutes at most for an answer.
 - **No answer, no action:** with no answer in that time, nothing is done on the matter the question raised, in either direction: the work it gates is neither taken on nor dropped. The question is parked as a query, keeping its tag, Context, Query and Options, for the return report, and the other authorised work carries on. Silence is never consent: no default, no recommended option and no earlier pattern stands in for the answer.
 - **A late answer:** an answer that arrives later in the window is an ordinary owner decision from then on, read back in the decisions log before the work it authorises launches.
 
