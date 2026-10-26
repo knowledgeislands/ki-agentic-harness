@@ -204,6 +204,8 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 | `homepage`    | present                                                                 | WARN      |
 | `keywords`    | non-empty array                                                         | WARN      |
 
+**Homepage.** `.ki.toml` is the master for the repository's homepage, as it is for its description: an optional `homepage` in `[skills.ki-repo]` names the repository's one live landing page, and the root `package.json` `homepage` and the GitHub homepage mirror it, never the other way round, as Kris settled under HOMEPAGE-SOURCE on 24 October 2026. Where `.ki.toml` declares no `homepage`, the repository has no homepage: a value left in the root `package.json` or on GitHub is stale, the audit reports it as drift, and conform proposes clearing it but clears nothing without explicit approval, as Kris settled under INTERIM-HOMEPAGE-OMISSION on 26 October 2026, taking the recommended option. Workspace packages' own `homepage` fields are outside this rule. The `present` warning above stands until the metadata checker that implements this rule lands; the checker then replaces it.
+
 ## Layer 3 — deeper GitHub
 
 | Setting                             | Value | Scope                                                          |
