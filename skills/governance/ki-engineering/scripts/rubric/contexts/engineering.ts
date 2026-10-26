@@ -187,8 +187,8 @@ const versions: Record<string, string> = {
   typescript: '^7.0.2'
 }
 const lintStaged = {
-  '*.{ts,tsx,js,jsx,json,jsonc}': ['biome check --write --no-errors-on-unmatched'],
-  '*.md': ['rumdl check --fix --preflight']
+  '*.{ts,tsx,js,jsx,json,jsonc}': ['biome check --no-errors-on-unmatched'],
+  '*.md': ['rumdl check']
 }
 const defaults = {
   'mise.toml': `[tools]\nnode = "22"\nbun = "1.4.2"\n`,

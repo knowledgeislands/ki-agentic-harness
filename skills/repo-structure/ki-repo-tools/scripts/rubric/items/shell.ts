@@ -158,27 +158,15 @@ const nonComment = (text: string): readonly string[] =>
 const runsCheckOnly = (lines: readonly string[], command: RegExp): boolean =>
   lines.some((line) => command.test(line) && !/(^|\s)--(fix|write)\b/.test(line))
 
-const SKILL_FLAG = /--skill[=\s]+ki-repo-tools(?![\w-])/
-const stagedAudit = (line: string): boolean =>
-  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
-
-/** The focused staged ki-repo-tools audit, run directly or through the canonical `quiet_audit` helper. */
-const runsFocusedAudit = (lines: readonly string[]): boolean => {
-  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
-  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
-  return (
-    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
-    audits.length > 0 &&
-    audits.every(stagedAudit) &&
-    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
-  )
-}
+/** A line that audits, conforms, repairs or rewrites: none belongs at commit time; the full audit runs in CI. */
+const heavy = (line: string): boolean =>
+  /\bki repo (?:audit|conform|repair)\b|(?:^|\s)--(?:fix|write)(?=\s|$)|\bquiet_audit\b/.test(line)
 
 const SHELL_HOOK: RubricItem<ShellToolsContext> = {
   code: 'SHELL-HOOK',
   title: 'Shell commit gate',
   description:
-    'Where a shell entrypoint repository commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
+    'Where a shell entrypoint repository commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files and `mandoc -T lint` over the staged manual pages, all check-only, and runs no `bats` suite, `ki repo audit`, conform, repair, `--fix` or `--write`, which belong to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
   sources: SOURCE,
   mechanical: {
     level: 'FAIL',
@@ -205,18 +193,24 @@ const SHELL_HOOK: RubricItem<ShellToolsContext> = {
             message: `${HOOK} runs bats; the test suite belongs to the manual gate and CI, not the commit gate.`,
             subject: HOOK
           })
+        const offending = lines.find(heavy)
+        if (offending !== undefined)
+          return one({
+            status: 'VIOLATION',
+            message: `${HOOK} runs \`${offending}\`; the gate is check-only and runs no audit, conform, repair or fix.`,
+            subject: HOOK
+          })
         const missing = [
           ['shellcheck', runsCheckOnly(lines, /\bshellcheck\b/)],
           ['bash -n', runsCheckOnly(lines, /\bbash -n\b/)],
-          ['mandoc -T lint', runsCheckOnly(lines, /\bmandoc -T lint\b/)],
-          ['the focused staged audit', runsFocusedAudit(lines)]
+          ['mandoc -T lint', runsCheckOnly(lines, /\bmandoc -T lint\b/)]
         ]
           .filter(([, present]) => !present)
           .map(([name]) => name as string)
         return missing.length === 0
           ? one({
               status: 'PASS',
-              message: `${HOOK} runs shellcheck, bash -n, mandoc and the focused audit check-only.`,
+              message: `${HOOK} runs shellcheck, bash -n and mandoc check-only; the full audit runs in CI.`,
               subject: HOOK
             })
           : one({

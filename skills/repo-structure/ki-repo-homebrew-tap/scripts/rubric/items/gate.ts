@@ -7,7 +7,7 @@ const GATE_1: RubricItem<readonly AuditOutcome[]> = {
   code: 'GATE-1',
   title: 'check-only commit gate',
   description:
-    'Where a committed `.githooks/pre-commit` exists, it runs `ruby -wc` over the staged Ruby files and the focused `ki repo audit --skill ki-repo-homebrew-tap --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
+    'Where a committed `.githooks/pre-commit` exists, it runs `ruby -wc` over the staged Ruby files and otherwise only fast check-only staged lints: no `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`. The full `ki repo audit` runs in CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

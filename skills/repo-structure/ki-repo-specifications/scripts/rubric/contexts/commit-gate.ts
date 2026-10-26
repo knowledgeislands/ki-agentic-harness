@@ -3,22 +3,9 @@ import { join } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
 
 const HOOK = '.githooks/pre-commit'
-const SKILL_FLAG = /--skill[=\s]+ki-repo-specifications(?![\w-])/
-
-const stagedAudit = (line: string): boolean =>
-  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
-
-/** The focused staged ki-repo-specifications audit, run directly or through the canonical `quiet_audit` helper. */
-const runsFocusedAudit = (lines: readonly string[]): boolean => {
-  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
-  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
-  return (
-    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
-    audits.length > 0 &&
-    audits.every(stagedAudit) &&
-    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
-  )
-}
+/** A line that audits, conforms, repairs or rewrites: none belongs at commit time; the full audit runs in CI. */
+const heavy = (line: string): boolean =>
+  /\bki repo (?:audit|conform|repair)\b|(?:^|\s)--(?:fix|write)(?=\s|$)|\bquiet_audit\b/.test(line)
 
 /** What a Specifications repository commit gate runs; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. */
 export const inspectCommitGate = (root: string): readonly AuditOutcome[] => {
@@ -41,20 +28,20 @@ export const inspectCommitGate = (root: string): readonly AuditOutcome[] => {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line !== '' && !line.startsWith('#'))
-  if (lines.some((line) => /\bki repo conform\b/.test(line)))
-    return [
-      { status: 'VIOLATION', message: `${HOOK} runs \`ki repo conform\`; the gate must be check-only.`, subject: HOOK }
-    ]
-  const missing = ([['`ki repo audit --skill ki-repo-specifications --staged`', runsFocusedAudit(lines)]] as const)
-    .filter(([, present]) => !present)
-    .map(([name]) => name)
-  return missing.length === 0
+  const offending = lines.find(heavy)
+  return offending === undefined
     ? [
         {
           status: 'PASS',
-          message: `${HOOK} runs the focused ki-repo-specifications audit check-only on staged content.`,
+          message: `${HOOK} runs only check-only staged lints; the full audit runs in CI.`,
           subject: HOOK
         }
       ]
-    : [{ status: 'VIOLATION', message: `${HOOK} does not run ${missing.join(' or ')} check-only.`, subject: HOOK }]
+    : [
+        {
+          status: 'VIOLATION',
+          message: `${HOOK} runs \`${offending}\`; the gate is check-only and runs no audit, conform, repair or fix.`,
+          subject: HOOK
+        }
+      ]
 }

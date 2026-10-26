@@ -533,7 +533,7 @@ test('delegation does not cover obsolete batch paths or noncanonical checkpoint 
   for (const relativePath of records) expect(finding?.message).toContain(relativePath)
 })
 
-test('GATE-1 requires a committed gate to run the focused staged audit check-only', () => {
+test('GATE-1 requires a committed gate to be check-only, with no audit at commit time', () => {
   const repository = createBase()
   const gate = () => collectKbAuditEvidence(repository).find((finding) => finding.code === 'GATE-1')
   expect(gate()?.level).toBe('NOT_APPLICABLE')
@@ -541,24 +541,21 @@ test('GATE-1 requires a committed gate to run the focused staged audit check-onl
   mkdirSync(join(repository, '.githooks'))
   const hook = join(repository, '.githooks', 'pre-commit')
   writeFileSync(hook, '#!/bin/sh\n# ki repo audit\n')
-  expect(gate()?.message).toContain('does not run `ki repo audit --skill ki-repo-kb --staged` check-only')
-
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-kb --staged --fix\n')
-  expect(gate()?.level).toBe('FAIL')
-
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-kb --staged\nki repo conform\n')
-  expect(gate()?.message).toContain('runs `ki repo conform`')
-
-  // The full audit, or another skill's, is not the focused gate.
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --staged || exit 1\n')
-  expect(gate()?.level).toBe('FAIL')
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-kb-streams --staged || exit 1\n')
-  expect(gate()?.level).toBe('FAIL')
-
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --repo "$root" --skill ki-repo-kb --staged || exit 1\n')
   expect(gate()?.level).toBe('PASS')
 
-  // The canonical hook reaches the same audit through its quiet helper.
+  for (const line of [
+    'ki repo audit --skill ki-repo-kb --staged || exit 1',
+    'quiet_audit --skill ki-repo-kb || exit 1',
+    'ki repo conform',
+    'ki repo repair --repo "$root"',
+    'rumdl check --fix --preflight'
+  ]) {
+    writeFileSync(hook, `#!/bin/sh\n${line}\n`)
+    expect(gate()?.level, line).toBe('FAIL')
+    expect(gate()?.message, line).toContain('check-only')
+  }
+
+  // The canonical hook is check-only staged Markdown.
   writeFileSync(hook, readFileSync(join(import.meta.dir, '../../../assets/githooks/no-package/pre-commit'), 'utf8'))
   expect(gate()?.level).toBe('PASS')
 

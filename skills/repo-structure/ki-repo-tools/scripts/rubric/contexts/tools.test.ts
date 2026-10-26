@@ -518,7 +518,7 @@ test('an unrelated physical repository is not applicable', () => {
   expect(configItem().audit.run(CONFIG.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
 })
 
-test('SHELL-HOOK requires the canonical shell checks and focused audit, and no bats suite', () => {
+test('SHELL-HOOK requires the canonical shell checks, check-only, and no bats suite or audit', () => {
   const { repository } = fixture()
   const primary = join(repository, 'bin', basename(repository).replace(/^tools-/, ''))
   writeFileSync(primary, '#!/bin/sh\n')
@@ -544,10 +544,13 @@ test('SHELL-HOOK requires the canonical shell checks and focused audit, and no b
   expect(status()?.message).toContain('does not run mandoc -T lint check-only')
 
   writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo --fix\nbash -n bin/demo\n')
-  expect(status()?.message).toContain('shellcheck, mandoc -T lint, the focused staged audit')
+  expect(status()?.message).toContain('check-only')
 
-  writeFileSync(hook, canonical.replace('--skill ki-repo-tools', '--skill ki-repo-kb'))
-  expect(status()?.message).toContain('the focused staged audit')
+  writeFileSync(hook, '#!/bin/sh\nshellcheck bin/demo --format=gcc\nbash -n bin/demo\n')
+  expect(status()?.message).toContain('does not run mandoc -T lint check-only')
+
+  writeFileSync(hook, `${canonical}ki repo audit --repo "$root" --staged --skill ki-repo-tools || exit 1\n`)
+  expect(status()?.message).toContain('check-only')
 
   writeFileSync(join(repository, 'package.json'), '{}\n')
   expect(status()?.status).toBe('VIOLATION')

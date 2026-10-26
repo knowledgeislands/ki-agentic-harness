@@ -26,48 +26,36 @@ test('GATE-1 is not applicable without a committed pre-commit hook', () => {
   expect(status(repository())?.status).toBe('NOT_APPLICABLE')
 })
 
-test('GATE-1 passes a hook that runs the focused harness audit check-only on staged content', () => {
-  const root = repository('#!/bin/sh\nki repo audit --repo "$root" --skill ki-repo-harness --staged || exit 1\n')
-  expect(status(root)?.status).toBe('PASS')
-})
-
-test('GATE-1 passes both canonical hooks, which run the audit through the quiet_audit helper', () => {
+test('GATE-1 passes both canonical hooks and any hook that runs only check-only staged lints', () => {
   for (const variant of ['package', 'no-package']) {
     const hook = readFileSync(join(import.meta.dir, '../../../assets/githooks', variant, 'pre-commit'), 'utf8')
     expect(status(repository(hook))?.status).toBe('PASS')
   }
+  expect(
+    status(repository('#!/bin/sh\nlint-staged --quiet || exit 1\nsyncpack format --check || exit 1\n'))?.status
+  ).toBe('PASS')
 })
 
-test('GATE-1 rejects a helper that audits a different skill or rewrites', () => {
-  const helper = 'quiet_audit() {\n  ki repo audit --repo "$root" --staged "$@"\n}\n'
-  expect(status(repository(`#!/bin/sh\n${helper}quiet_audit --skill ki-repo-harness-extra || exit 1\n`))?.status).toBe(
-    'VIOLATION'
-  )
-  expect(
-    status(
-      repository(
-        '#!/bin/sh\nquiet_audit() {\n  ki repo audit --staged --fix "$@"\n}\nquiet_audit --skill ki-repo-harness\n'
-      )
-    )?.status
-  ).toBe('VIOLATION')
-})
-
-test('GATE-1 rejects a missing harness audit, a rewriting gate and a commented-out audit', () => {
-  expect(status(repository('#!/bin/sh\nki repo audit --repo "$root" --staged || exit 1\n'))?.message).toContain(
-    'does not run `ki repo audit --skill ki-repo-harness --staged`'
-  )
-  expect(
-    status(
-      repository('#!/bin/sh\nki repo audit --skill ki-repo-harness --staged\nki repo conform --skill ki-repo-harness\n')
-    )?.message
-  ).toContain('must be check-only')
-  expect(status(repository('#!/bin/sh\n# ki repo audit --skill ki-repo-harness --staged\n'))?.status).toBe('VIOLATION')
+test('GATE-1 rejects an audit, conform, repair or rewrite at commit time, commented lines ignored', () => {
+  for (const line of [
+    'ki repo audit --repo "$root" --skill ki-repo-harness --staged || exit 1',
+    'quiet_audit --skill ki-repo-harness || exit 1',
+    'ki repo conform --skill ki-repo-harness',
+    'KI_REPO_OFFLINE=1 ki repo repair --repo "$root"',
+    'biome check --write . || exit 1',
+    'rumdl check --fix || exit 1'
+  ]) {
+    const outcome = status(repository(`#!/bin/sh\nlint-staged --quiet || exit 1\n${line}\n`))
+    expect(outcome?.status, line).toBe('VIOLATION')
+    expect(outcome?.message, line).toContain('check-only')
+  }
+  expect(status(repository('#!/bin/sh\n# ki repo audit --skill ki-repo-harness --staged\n'))?.status).toBe('PASS')
 })
 
 test('GATE-1 rejects a symlinked hook or hook directory', () => {
   const linkedHook = repository()
   mkdirSync(join(linkedHook, '.githooks'))
-  writeFileSync(join(linkedHook, 'gate.sh'), 'ki repo audit --skill ki-repo-harness --staged\n')
+  writeFileSync(join(linkedHook, 'gate.sh'), 'lint-staged --quiet || exit 1\n')
   symlinkSync(join(linkedHook, 'gate.sh'), join(linkedHook, '.githooks', 'pre-commit'))
   expect(status(linkedHook)?.message).toContain('not a safe regular file')
 

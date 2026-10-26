@@ -8,7 +8,7 @@ const GATE_1: RubricItem<HarnessGateContext> = {
   code: 'GATE-1',
   title: 'Check-only harness commit gate',
   description:
-    'Where a committed `.githooks/pre-commit` exists, it runs the focused `ki repo audit --skill ki-repo-harness --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
+    'Where a committed `.githooks/pre-commit` exists, it runs only fast check-only staged lints: no `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`. The full `ki repo audit` runs in CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
@@ -31,7 +31,7 @@ const GATE_2: RubricItem<HarnessGateContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Rebuild the viewer and receipt, stage their matching source, HTML and receipt, then rerun the canonical commit gate.'
+        'Rebuild the viewer and receipt, stage their matching source, HTML and receipt, then rerun the focused audit.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.receipts }
   }

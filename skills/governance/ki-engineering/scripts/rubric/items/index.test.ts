@@ -1260,21 +1260,29 @@ test('freshness grades FAIL beyond the 14-day window, INFO within it, held and u
   ])
 })
 
-test('PKG-6 requires the biome and rumdl fan-out with each tool called directly', () => {
+test('PKG-6 requires the check-only biome and rumdl fan-out with each tool called directly', () => {
   expect(inspectLintStaged(undefined).level).toBe('FAIL')
-  expect(inspectLintStaged({ '*.md': ['rumdl check --fix --preflight'] }).level).toBe('WARN')
+  expect(inspectLintStaged({ '*.md': ['rumdl check'] }).level).toBe('WARN')
   const direct = {
-    '*.{ts,tsx,js,jsx,json,jsonc}': ['biome check --write --no-errors-on-unmatched'],
-    '*.md': ['rumdl check --fix --preflight']
+    '*.{ts,tsx,js,jsx,json,jsonc}': ['biome check --no-errors-on-unmatched'],
+    '*.md': ['rumdl check']
   }
   expect(inspectLintStaged(direct)).toEqual({
     level: 'PASS',
     message: 'lint-staged fans out to biome and rumdl, each called directly'
   })
+  for (const rewriting of [
+    { ...direct, '*.md': ['rumdl check --fix --preflight'] },
+    { ...direct, '*.{ts,tsx,js,jsx,json,jsonc}': ['biome check --write --no-errors-on-unmatched'] }
+  ]) {
+    const outcome = inspectLintStaged(rewriting)
+    expect(outcome.level).toBe('FAIL')
+    expect(outcome.message).toContain('check-only')
+  }
   const runner = {
-    '*.{ts,tsx,js,jsx,json,jsonc}': ['bunx @biomejs/biome check --write --no-errors-on-unmatched'],
-    '*.md': ['bunx rumdl check --fix --preflight']
+    '*.{ts,tsx,js,jsx,json,jsonc}': ['bunx @biomejs/biome check --no-errors-on-unmatched'],
+    '*.md': ['bunx rumdl check']
   }
   expect(inspectLintStaged(runner).message).toContain('through a package runner')
-  expect(inspectLintStaged({ ...direct, '*.md': ['npx rumdl check --fix'] }).level).toBe('WARN')
+  expect(inspectLintStaged({ ...direct, '*.md': ['npx rumdl check'] }).level).toBe('WARN')
 })

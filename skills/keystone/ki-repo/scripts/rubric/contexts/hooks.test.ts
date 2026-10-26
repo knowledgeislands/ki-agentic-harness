@@ -134,7 +134,7 @@ test('HOOK-4 compares each committed hook with its shape canonical text byte for
   addHook(root, 0o755, 'commit-msg', hooks['commit-msg'])
   expect(hookEvidence(root, 'ki-repo-kb', local).hook4.map((outcome) => outcome.status)).toEqual(['PASS', 'PASS'])
 
-  addHook(root, 0o755, 'pre-commit', hooks['pre-commit'].replace('--skill ki-repo-kb', '--skill ki-repo-kb --full'))
+  addHook(root, 0o755, 'pre-commit', hooks['pre-commit'].replace('rumdl check --quiet', 'rumdl check --quiet --fix'))
   const changed = hookEvidence(root, 'ki-repo-kb', local).hook4[0]
   expect(changed?.status).toBe('VIOLATION')
   expect(changed?.message).toContain('skills/repo-structure/ki-repo-kb/assets/githooks/no-package/pre-commit')

@@ -88,7 +88,7 @@ test('a working tree without the gate tooling refuses the commit and names the a
   expect(head(worktree)).toBe(before)
 })
 
-test('a working tree without ki on PATH refuses before any gate runs', () => {
+test('a working tree without ki on PATH still commits: the gate is check-only and needs no ki', () => {
   const { worktree } = repositoryWithWorktree()
   install(worktree, [...PACKAGE_TOOLS, 'commitlint'])
   const before = head(worktree)
@@ -98,13 +98,11 @@ test('a working tree without ki on PATH refuses before any gate runs', () => {
   const result = spawnSync('git', ['commit', '-m', 'chore: change'], {
     cwd: worktree,
     encoding: 'utf8',
-    env: { ...process.env, ...identity, PATH: '/usr/bin:/bin' }
+    env: { ...process.env, ...identity, PATH: `${join(worktree, 'node_modules', '.bin')}:/usr/bin:/bin` }
   })
 
-  expect(result.status).not.toBe(0)
-  expect(result.stderr).toContain('not on PATH: ki')
-  expect(result.stderr).toContain('--no-verify')
-  expect(head(worktree)).toBe(before)
+  expect(result.status, result.stderr).toBe(0)
+  expect(head(worktree)).not.toBe(before)
 })
 
 test('commit-msg refuses on its own missing tool once pre-commit can run', () => {

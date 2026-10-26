@@ -58,7 +58,7 @@ const HOOK_4: RubricItem<HooksRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Copy the hook named in the finding from the shape skill’s `assets/githooks/<package|no-package>/` byte-exact; move any repository-specific check into a shape-skill criterion run by the focused staged audit.'
+        'Copy the hook named in the finding from the shape skill’s `assets/githooks/<package|no-package>/` byte-exact; a fast check-only repository-specific check becomes a line of the shape’s block in the composer, anything else belongs to CI.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.hook4 }
   }

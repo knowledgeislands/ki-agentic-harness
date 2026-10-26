@@ -13,20 +13,7 @@ if [ -n "$missing" ]; then
   echo "pre-commit: do not bypass with --no-verify; a gate that cannot run is unknown, not a pass." >&2
   exit 1
 fi
-if ! command -v ki >/dev/null 2>&1; then
-  echo "pre-commit: the commit gate cannot run; not on PATH: ki" >&2
-  echo "pre-commit: install it, then commit again." >&2
-  echo "pre-commit: do not bypass with --no-verify; a gate that cannot run is unknown, not a pass." >&2
-  exit 1
-fi
 PATH="$root/node_modules/.bin:$PATH"
 export PATH
 lint-staged --quiet || exit 1
 syncpack format --check || exit 1
-# The focused shape audit, check-only over the staged paths; on a failure it runs again in full.
-quiet_audit() {
-  ki repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0
-  ki repo audit --repo "$root" --staged "$@"
-  return 1
-}
-quiet_audit --skill ki-repo-harness || exit 1

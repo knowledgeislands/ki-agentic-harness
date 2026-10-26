@@ -31,21 +31,9 @@ export const digestReadme = {
     '# Session digests\n\nThis directory holds temporary session digests while `ki-repo-kb` is declared. Digests are produced outputs awaiting extraction or routing; delete a digest after its useful content reaches the proper owner. This README remains as the capability boundary.\n'
 } as const
 
-const SKILL_FLAG = /--skill[=\s]+ki-repo-kb(?![\w-])/
-const stagedAudit = (line: string): boolean =>
-  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
-
-/** The focused staged ki-repo-kb audit, run directly or through the canonical `quiet_audit` helper. */
-const runsFocusedAudit = (lines: readonly string[]): boolean => {
-  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
-  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
-  return (
-    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
-    audits.length > 0 &&
-    audits.every(stagedAudit) &&
-    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
-  )
-}
+/** A line that audits, conforms, repairs or rewrites: none belongs at commit time; the full audit runs in CI. */
+const heavy = (line: string): boolean =>
+  /\bki repo (?:audit|conform|repair)\b|(?:^|\s)--(?:fix|write)(?=\s|$)|\bquiet_audit\b/.test(line)
 
 const delegatedNoteTypeRecord = (
   relativePath: string,
@@ -452,8 +440,8 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       anchor
     )
   }
-  // `ki-repo` owns whether the commit gate exists; GATE-1 reads only what it runs: the focused staged audit,
-  // directly or through the canonical hook's quiet helper, whose every audit is staged and check-only.
+  // `ki-repo` owns whether the commit gate exists; GATE-1 reads only what it runs, which must be check-only
+  // staged lints and never an audit, conform, repair or fix: the full audit runs in CI.
   const hookDirectory = join(root, '.githooks')
   const hookPath = join(root, '.githooks/pre-commit')
   if (!isDirectory(hookDirectory) || !isPresent(hookPath)) {
@@ -467,25 +455,19 @@ export const collectKbAuditEvidence = (target: string): readonly KbEvidenceFindi
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter((line) => !line.startsWith('#'))
-    if (lines.some((line) => /\bki repo conform\b/.test(line)))
-      add(
-        'FAIL',
-        'GATE-1',
-        '.githooks/pre-commit runs `ki repo conform`; the gate must be check-only.',
-        '.githooks/pre-commit'
-      )
-    else if (runsFocusedAudit(lines))
+    const offending = lines.find(heavy)
+    if (offending === undefined)
       add(
         'PASS',
         'GATE-1',
-        '.githooks/pre-commit runs the focused ki-repo-kb audit check-only on staged content.',
+        '.githooks/pre-commit runs only check-only staged lints; the full audit runs in CI.',
         '.githooks/pre-commit'
       )
     else
       add(
         'FAIL',
         'GATE-1',
-        '.githooks/pre-commit does not run `ki repo audit --skill ki-repo-kb --staged` check-only.',
+        `.githooks/pre-commit runs \`${offending}\`; the gate is check-only and runs no audit, conform, repair or fix.`,
         '.githooks/pre-commit'
       )
   }

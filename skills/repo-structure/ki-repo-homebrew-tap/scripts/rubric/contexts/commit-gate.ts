@@ -3,22 +3,9 @@ import { join } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
 
 const HOOK = '.githooks/pre-commit'
-const SKILL_FLAG = /--skill[=\s]+ki-repo-homebrew-tap(?![\w-])/
-
-const stagedAudit = (line: string): boolean =>
-  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
-
-/** The focused staged ki-repo-homebrew-tap audit, run directly or through the canonical `quiet_audit` helper. */
-const runsFocusedAudit = (lines: readonly string[]): boolean => {
-  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
-  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
-  return (
-    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
-    audits.length > 0 &&
-    audits.every(stagedAudit) &&
-    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
-  )
-}
+/** A line that audits, conforms, repairs or rewrites: none belongs at commit time; the full audit runs in CI. */
+const heavy = (line: string): boolean =>
+  /\bki repo (?:audit|conform|repair)\b|(?:^|\s)--(?:fix|write)(?=\s|$)|\bquiet_audit\b/.test(line)
 
 // A staged listing piped to `ruby -wc`, which checks syntax with warnings and never rewrites.
 const checksStagedRuby = (line: string): boolean => /\bgit diff --cached\b/.test(line) && /\bruby -wc\b/.test(line)
@@ -44,25 +31,22 @@ export const inspectCommitGate = (root: string): readonly AuditOutcome[] => {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line !== '' && !line.startsWith('#'))
-  if (lines.some((line) => /\bki repo conform\b/.test(line)))
+  const offending = lines.find(heavy)
+  if (offending !== undefined)
     return [
-      { status: 'VIOLATION', message: `${HOOK} runs \`ki repo conform\`; the gate must be check-only.`, subject: HOOK }
+      {
+        status: 'VIOLATION',
+        message: `${HOOK} runs \`${offending}\`; the gate is check-only and runs no audit, conform, repair or fix.`,
+        subject: HOOK
+      }
     ]
-  const missing = (
-    [
-      ['`ruby -wc` over the staged Ruby', lines.some(checksStagedRuby)],
-      ['`ki repo audit --skill ki-repo-homebrew-tap --staged`', runsFocusedAudit(lines)]
-    ] as const
-  )
-    .filter(([, present]) => !present)
-    .map(([name]) => name)
-  return missing.length === 0
+  return lines.some(checksStagedRuby)
     ? [
         {
           status: 'PASS',
-          message: `${HOOK} runs ruby -wc and the focused ki-repo-homebrew-tap audit check-only on staged content.`,
+          message: `${HOOK} runs ruby -wc over the staged Ruby and only check-only staged lints; the full audit runs in CI.`,
           subject: HOOK
         }
       ]
-    : [{ status: 'VIOLATION', message: `${HOOK} does not run ${missing.join(' or ')} check-only.`, subject: HOOK }]
+    : [{ status: 'VIOLATION', message: `${HOOK} does not run \`ruby -wc\` over the staged Ruby.`, subject: HOOK }]
 }

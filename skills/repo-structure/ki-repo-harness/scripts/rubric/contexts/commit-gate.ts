@@ -10,22 +10,9 @@ export type HarnessGateContext = {
   receipts: readonly AuditOutcome[]
 }
 
-const SKILL_FLAG = /--skill[=\s]+ki-repo-harness(?![\w-])/
-
-const stagedAudit = (line: string): boolean =>
-  /\bki repo audit\b/.test(line) && /(^|\s)--staged\b/.test(line) && !/(^|\s)--(fix|write)\b/.test(line)
-
-/** The focused staged ki-repo-harness audit, run directly or through the canonical `quiet_audit` helper. */
-const runsFocusedAudit = (lines: readonly string[]): boolean => {
-  if (lines.some((line) => stagedAudit(line) && SKILL_FLAG.test(line))) return true
-  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
-  return (
-    lines.some((line) => /^quiet_audit\(\)\s*\{/.test(line)) &&
-    audits.length > 0 &&
-    audits.every(stagedAudit) &&
-    lines.some((line) => /^quiet_audit\s/.test(line) && SKILL_FLAG.test(line))
-  )
-}
+/** A line that audits, conforms, repairs or rewrites: none belongs at commit time; the full audit runs in CI. */
+const heavy = (line: string): boolean =>
+  /\bki repo (?:audit|conform|repair)\b|(?:^|\s)--(?:fix|write)(?=\s|$)|\bquiet_audit\b/.test(line)
 
 /** What a harness commit gate runs; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. */
 const inspectHook = (root: string): Pick<HarnessGateContext, 'hook'> => {
@@ -55,22 +42,13 @@ const inspectHook = (root: string): Pick<HarnessGateContext, 'hook'> => {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line !== '' && !line.startsWith('#'))
-  if (lines.some((line) => /\bki repo conform\b/.test(line)))
-    return {
-      hook: [
-        {
-          status: 'VIOLATION',
-          message: `${HOOK} runs \`ki repo conform\`; the gate must be check-only.`,
-          subject: HOOK
-        }
-      ]
-    }
-  return runsFocusedAudit(lines)
+  const offending = lines.find(heavy)
+  return offending === undefined
     ? {
         hook: [
           {
             status: 'PASS',
-            message: `${HOOK} runs the focused ki-repo-harness audit check-only on staged content.`,
+            message: `${HOOK} runs only check-only staged lints; the full audit runs in CI.`,
             subject: HOOK
           }
         ]
@@ -79,14 +57,14 @@ const inspectHook = (root: string): Pick<HarnessGateContext, 'hook'> => {
         hook: [
           {
             status: 'VIOLATION',
-            message: `${HOOK} does not run \`ki repo audit --skill ki-repo-harness --staged\` check-only.`,
+            message: `${HOOK} runs \`${offending}\`; the gate is check-only and runs no audit, conform, repair or fix.`,
             subject: HOOK
           }
         ]
       }
 }
 
-/** The canonical focused hook audits receipt bytes from the index, independent of working files. */
+/** Receipt bytes are read from the index, independent of working files; in CI the index is the commit. */
 export const inspectCommitGate = (root: string): HarnessGateContext => {
   const snapshot = inspectStagedDiagramReceipts(root)
   const receipts: AuditOutcome[] = !snapshot.applicable

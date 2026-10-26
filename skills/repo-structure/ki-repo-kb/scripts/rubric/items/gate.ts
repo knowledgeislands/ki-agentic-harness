@@ -7,14 +7,13 @@ const GATE_1: RubricItem<KbGateContext> = {
   code: 'GATE-1',
   title: 'check-only commit gate',
   description:
-    'Where a committed `.githooks/pre-commit` exists, it runs the focused `ki repo audit --skill ki-repo-kb --staged`, directly or through the canonical `quiet_audit` helper, check-only and never `ki repo conform`; `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
+    'Where a committed `.githooks/pre-commit` exists, it runs only fast check-only staged lints: no `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`. The full `ki repo audit` runs in CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance:
-        'Copy the canonical pre-commit from `assets/githooks/`, which runs the focused staged audit, then rerun the audit.'
+      guidance: 'Copy the canonical pre-commit from `assets/githooks/`, then rerun the audit.'
     },
     audit: { phase: 'INSPECT', run: (context) => context.hook }
   }

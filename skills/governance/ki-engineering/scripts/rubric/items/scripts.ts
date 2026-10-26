@@ -146,7 +146,7 @@ export const SCRIPTS: RubricFamily<EngineeringRubricContext, ScriptsRubricContex
       code: 'SCR-11',
       title: 'Common Git hooks are bound',
       description:
-        'After its refusal frame, `.githooks/pre-commit` runs lint-staged then check-only Syncpack, and `.githooks/commit-msg` validates proposed messages against the `ki-git` Conventional Commit policy; content still in `.husky/` warns until the hooks rollout completes.',
+        'After its refusal frame, `.githooks/pre-commit` runs lint-staged then check-only Syncpack and never `ki repo audit`, conform, repair, `--fix` or `--write`, and `.githooks/commit-msg` validates proposed messages against the `ki-git` Conventional Commit policy; content still in `.husky/` warns until the hooks rollout completes.',
       sources: ['standards-engineering.md'],
       mechanical: {
         level: 'FAIL',

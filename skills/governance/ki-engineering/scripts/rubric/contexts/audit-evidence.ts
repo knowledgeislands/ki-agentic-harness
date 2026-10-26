@@ -528,7 +528,7 @@ export const inspectCommitGate = (repository: string, prepare: unknown): Enginee
     hasPreCommitBaseline,
     hasLegacyPreCommitBaseline,
     'pre-commit runs lint-staged then check-only Syncpack after the frame',
-    'pre-commit must run `lint-staged` then `syncpack format --check` straight after its node_modules/.bin PATH step'
+    'pre-commit must run `lint-staged` then `syncpack format --check` straight after its node_modules/.bin PATH step, and no audit, conform, repair, --fix or --write'
   )
   hookContent(
     'commit-msg',
@@ -1202,19 +1202,23 @@ export const inspectKiPin = ({ ci, pin, hasReceiver }: KiPinInspection): readonl
 }
 
 /**
- * PKG-6: the lint-staged block fans out to Biome over staged code and `rumdl check --fix` over staged Markdown, each
- * called directly. rumdl resolves its own scope from `.rumdl.toml`, so a staged invocation needs no flag to suppress
- * a repository-wide glob. Trade records are formatted like any other file: `ki-trades` AUTH-1 proves their integrity by
- * comparing meaning against the sender's copy.
+ * PKG-6: the lint-staged block fans out to `biome check` over staged code and `rumdl check` over staged Markdown,
+ * check-only and each called directly; a `--write` or `--fix` fails, because commit time never rewrites. rumdl
+ * resolves its own scope from `.rumdl.toml`, so a staged invocation needs no flag to suppress a repository-wide glob.
  */
 export const inspectLintStaged = (lintStaged: unknown): { level: Level; message: string } => {
   if (!lintStaged || typeof lintStaged !== 'object')
     return { level: 'FAIL', message: 'lint-staged block missing (the pre-commit fan-out)' }
   const ls = JSON.stringify(lintStaged)
-  if (!/\bbiome\b/.test(ls) || !ls.includes('rumdl check --fix'))
+  if (/(?:^|\s)--(?:write|fix)(?=\s|"|$)/.test(ls))
+    return {
+      level: 'FAIL',
+      message: 'lint-staged rewrites staged files; commit time is check-only, so drop --write and --fix'
+    }
+  if (!/\bbiome check\b/.test(ls) || !/\brumdl check\b/.test(ls))
     return {
       level: 'WARN',
-      message: 'lint-staged should run biome over staged code and rumdl check --fix over staged Markdown'
+      message: 'lint-staged should run biome check over staged code and rumdl check over staged Markdown'
     }
   // The hook frame puts node_modules/.bin on PATH, so a package runner only adds a resolution step that can fetch a
   // tool the clone has not installed.

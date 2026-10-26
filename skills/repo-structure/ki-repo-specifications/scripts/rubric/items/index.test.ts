@@ -92,7 +92,7 @@ test('detected authority directories without a declaration are not applicable', 
   expect(marker?.mechanical?.audit.run(subject?.context() as never)[0]?.status).toBe('NOT_APPLICABLE')
 })
 
-test('GATE-1 requires a committed gate to run the focused staged audit check-only', () => {
+test('GATE-1 requires a committed gate to be check-only, with no audit at commit time', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-repo-specifications-gate-'))
   temporaryDirectories.push(repository)
   writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\n[skills.ki-repo-specifications]\n')
@@ -107,11 +107,11 @@ test('GATE-1 requires a committed gate to run the focused staged audit check-onl
 
   mkdirSync(join(repository, '.githooks'))
   const hook = join(repository, '.githooks', 'pre-commit')
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --staged || exit 1\n')
+  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-specifications --staged || exit 1\n')
   expect(gate()?.status).toBe('VIOLATION')
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-specifications --staged --fix\n')
+  writeFileSync(hook, '#!/bin/sh\nrumdl check --fix\n')
   expect(gate()?.status).toBe('VIOLATION')
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-specifications --staged\nki repo conform\n')
+  writeFileSync(hook, '#!/bin/sh\nki repo conform\n')
   expect(gate()?.message).toContain('runs `ki repo conform`')
   writeFileSync(hook, readFileSync(join(import.meta.dir, '../../../assets/githooks/no-package/pre-commit'), 'utf8'))
   expect(gate()?.status).toBe('PASS')

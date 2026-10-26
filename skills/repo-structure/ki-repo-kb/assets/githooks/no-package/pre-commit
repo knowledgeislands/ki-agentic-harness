@@ -1,24 +1,12 @@
 #!/bin/sh
 # Canonical pre-commit for a ki-repo-kb repository without a package.json, composed by ki-repo.
 # Copied byte-exact from ki-repo-kb's assets/githooks/no-package/pre-commit; HOOK-4 compares it, so do not edit it here.
-root="$(git rev-parse --show-toplevel)" || exit 1
 git diff --cached --quiet && exit 0
-missing=''
-for tool in rumdl ki; do
-  if ! command -v "$tool" >/dev/null 2>&1; then missing="$missing $tool"; fi
-done
-if [ -n "$missing" ]; then
-  echo "pre-commit: the commit gate cannot run; not on PATH:$missing" >&2
-  echo "pre-commit: install them, then commit again." >&2
+if ! command -v rumdl >/dev/null 2>&1; then
+  echo "pre-commit: the commit gate cannot run; not on PATH: rumdl" >&2
+  echo "pre-commit: install it, then commit again." >&2
   echo "pre-commit: do not bypass with --no-verify; a gate that cannot run is unknown, not a pass." >&2
   exit 1
 fi
 # Staged Markdown, checked where it stands (ki-authoring MD-hook).
 git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1
-# The focused shape audit, check-only over the staged paths; on a failure it runs again in full.
-quiet_audit() {
-  ki repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0
-  ki repo audit --repo "$root" --staged "$@"
-  return 1
-}
-quiet_audit --skill ki-repo-kb || exit 1

@@ -124,7 +124,7 @@ Shell-specific CI and test requirements.
   - _Remediation:_ diagnostic — Add or correct the Bats suite and CI evidence through the repository’s maintained test workflow.
 - **SHELL-FATAL [M] — Fatal Bats assertions** — Every `[[ ]]` or `!` assertion in a shell entrypoint repository’s `tests/*.bats` suite ends `|| false`, because under macOS Bash 3.2 such an assertion failing in the middle of a test does not fail it. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Append `|| false` to each reported assertion, then run the suite and correct any latent failure it exposes.
-- **SHELL-HOOK [M] — Shell commit gate** — Where a shell entrypoint repository commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files, `mandoc -T lint` over the staged manual pages and the focused `ki repo audit --skill ki-repo-tools --staged`, all check-only, and runs no `bats` suite, which belongs to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-tool-repositories.md)
+- **SHELL-HOOK [M] — Shell commit gate** — Where a shell entrypoint repository commits `.githooks/pre-commit`, the hook runs `shellcheck` and `bash -n` over the staged shell files and `mandoc -T lint` over the staged manual pages, all check-only, and runs no `bats` suite, `ki repo audit`, conform, repair, `--fix` or `--write`, which belong to the manual gate and CI. `ki-repo` HOOK-1 owns whether the hook exists and HOOK-4 its canonical text. (standards-tool-repositories.md)
   - _Remediation:_ diagnostic — Copy the canonical pre-commit from the matching `assets/githooks/` package variant, then rerun the audit.
 
 ## LANG — language capabilities

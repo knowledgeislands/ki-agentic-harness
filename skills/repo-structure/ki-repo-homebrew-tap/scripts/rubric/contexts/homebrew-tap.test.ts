@@ -120,7 +120,7 @@ test('an unrelated repository is not applicable', async () => {
   expect(configItem().audit.run(CONFIG.selectContext(context))[0]?.status).toBe('NOT_APPLICABLE')
 })
 
-test('GATE-1 requires the committed gate to check staged Ruby and run the focused staged audit', async () => {
+test('GATE-1 requires the committed gate to check staged Ruby and otherwise stay check-only', async () => {
   const { repository } = fixture()
   const gate = async () => {
     const { context } = rootContext(await createHomebrewTapSession(options(repository, 'audit')))
@@ -132,8 +132,13 @@ test('GATE-1 requires the committed gate to check staged Ruby and run the focuse
 
   mkdirSync(join(repository, '.githooks'))
   const hook = join(repository, '.githooks', 'pre-commit')
-  writeFileSync(hook, '#!/bin/sh\nki repo audit --skill ki-repo-homebrew-tap --staged || exit 1\n')
+  writeFileSync(hook, '#!/bin/sh\nrumdl check --quiet || exit 1\n')
   expect((await gate())?.message).toContain('`ruby -wc` over the staged Ruby')
+  writeFileSync(
+    hook,
+    "#!/bin/sh\ngit diff --cached --name-only -z -- '*.rb' | xargs -0 -r -n 1 ruby -wc\nki repo audit --skill ki-repo-homebrew-tap --staged || exit 1\n"
+  )
+  expect((await gate())?.message).toContain('check-only')
   writeFileSync(hook, readFileSync(join(import.meta.dir, '../../../assets/githooks/no-package/pre-commit'), 'utf8'))
   expect((await gate())?.status).toBe('PASS')
 })

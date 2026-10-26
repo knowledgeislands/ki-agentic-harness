@@ -42,6 +42,10 @@ The block declarations live in `ki-repo` until each shape skill can declare its 
 
 The binding is a property of each clone, so `HOOK-2` is not applicable in CI when no local binding exists, and a linked worktree checked out at a revision without `.githooks/` still commits unchecked.
 
+## Amendment of 2026-10-26: no audit at commit time
+
+Kris chose COMMIT-VS-CI a) on 26 October 2026, of a repository audit or conform in pre-commit: "I don't see why we'd ever want to be doing that", and "I think we just need to keep them simple". From that day a hook runs only fast check-only staged lints: `rumdl check` without `--fix`, `biome check` without `--write`, the Syncpack check, `shellcheck`, `bash -n`, `mandoc -T lint` and `ruby -wc` where the shape calls for them, and the message check. No hook calls `ki`: the focused `ki repo audit --staged` and its quiet helper leave the composer and every canonical hook, the full `ki repo audit` runs in CI, and CI keeps `ki repo repair` as its setup step. The `lint-staged` block is check-only too, and `PKG-6` fails a `--write` or `--fix` in it. Each shape's content criterion now fails a hook that runs `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`, and `ki-repo-harness` `GATE-2` reads receipts from the index in CI. A repository-specific check that is fast and check-only becomes a line of the shape's block in the composer, never a local edit. The decision bullets above read with this amendment.
+
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-and-judgment-checker-split.md) separates what the checker proves from what the reviewer judges.

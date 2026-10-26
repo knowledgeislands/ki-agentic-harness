@@ -3,10 +3,11 @@ import { join } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
 
 const HOOK = '.githooks/pre-commit'
-const focused = /(?:^|\s)--skill(?:=|\s+)ki-repo(?=\s|$)/
-const staged = (line: string): boolean => /(?:^|\s)--staged(?=\s|$)/.test(line)
+/** A line that audits, conforms, repairs or rewrites: none belongs at commit time; the full audit runs in CI. */
+const heavy = (line: string): boolean =>
+  /\bki repo (?:audit|conform|repair)\b|(?:^|\s)--(?:fix|write)(?=\s|$)|\bquiet_audit\b/.test(line)
 
-/** Project owns the delegated content; ki-repo owns hook existence, binding and exact canonical text. */
+/** Project owns what the gate runs; ki-repo owns hook existence, binding and exact canonical text. */
 export const inspectProjectGate = (root: string): readonly AuditOutcome[] => {
   const outcome = (status: AuditOutcome['status'], message: string): readonly AuditOutcome[] => [
     { status, message, subject: HOOK }
@@ -43,15 +44,11 @@ export const inspectProjectGate = (root: string): readonly AuditOutcome[] => {
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('#'))
-  const audits = lines.filter((line) => /\bki repo audit\b/.test(line))
-  const direct = audits.some((line) => staged(line) && focused.test(line))
-  const helper =
-    lines.includes('quiet_audit() {') &&
-    audits.length > 0 &&
-    audits.every(staged) &&
-    lines.some((line) => line.startsWith('quiet_audit ') && focused.test(line))
-  const mutation = lines.some((line) => /\bki repo conform\b|(?:^|\s)--(?:write|fix)(?=\s|$)/.test(line))
-  return !mutation && audits.every(staged) && (direct || helper)
-    ? outcome('PASS', 'Project gate runs the focused staged ki-repo audit, check-only.')
-    : outcome('VIOLATION', 'Project gate must run ki repo audit --skill ki-repo --staged, check-only.')
+  const offending = lines.find(heavy)
+  return offending === undefined
+    ? outcome('PASS', 'Project gate runs only check-only staged lints; the full audit runs in CI.')
+    : outcome(
+        'VIOLATION',
+        `Project gate runs \`${offending}\`; the gate is check-only and runs no audit, conform, repair or fix.`
+      )
 }

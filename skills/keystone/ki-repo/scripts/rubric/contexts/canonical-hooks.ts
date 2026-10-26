@@ -4,10 +4,10 @@
  * this text byte for byte, and `ki dev skill generate ki-repo` publishes it as each shape skill's worked example under
  * `assets/githooks/`, so a repository copies it exactly and a later composer finds it already canonical.
  *
- * Content is lint, format and message checks over what is staged, quiet on success and offline: no test suite,
- * whole-project type check, full audit, build or network fetch, which belong to the manual gate and CI. There is no
- * extension point; a repository-specific check that is fast and check-only becomes a criterion of its shape skill and
- * runs through the focused staged audit.
+ * Content is fast check-only lint, format and message checks over what is staged, quiet on success and offline: no
+ * `ki repo audit`, conform, repair or fix, no `--fix` or `--write`, no test suite, whole-project type check, build or
+ * network fetch. The full `ki repo audit` runs in CI, as Kris chose COMMIT-VS-CI a) on 26 October 2026. There is no
+ * extension point; a repository-specific check that is fast and check-only becomes a line of its shape's block here.
  */
 import type { RepositoryShape } from './shapes.ts'
 
@@ -15,13 +15,11 @@ export type HookName = 'pre-commit' | 'commit-msg'
 export type HookVariant = 'package' | 'no-package'
 export type CanonicalHooks = Readonly<Record<HookName, string>>
 
-/** What a shape adds after the common staged lint: its own check-only lines and its focused audit. */
+/** What a shape adds after the common staged lint: its own check-only lines. */
 type ShapeBlock = {
   /** External tools the lines call, tested in the refusal. */
   readonly tools: readonly string[]
   readonly lines: readonly string[]
-  /** The skill whose focused `--staged` audit the shape delegates to. */
-  readonly audit?: string
 }
 
 type ShapeHooks = { readonly owner: string; readonly package: ShapeBlock; readonly 'no-package': ShapeBlock } | null
@@ -55,26 +53,18 @@ const RUBY_LINES = [
 
 /** Every repository shape's hooks; `null` is a shape that declares no hook. */
 export const SHAPE_HOOKS: Readonly<Record<RepositoryShape, ShapeHooks>> = {
-  'ki-repo-project': both('ki-repo-project', { ...NONE, audit: 'ki-repo' }),
+  'ki-repo-project': both('ki-repo-project', NONE),
   'ki-repo-mcp': both('ki-repo-mcp', NONE),
   'ki-repo-website': both('ki-repo-website', NONE),
-  'ki-repo-kb': both('ki-repo-kb', { ...NONE, audit: 'ki-repo-kb' }),
-  'ki-repo-harness': both('ki-repo-harness', { ...NONE, audit: 'ki-repo-harness' }),
-  'ki-repo-specifications': both('ki-repo-specifications', { ...NONE, audit: 'ki-repo-specifications' }),
-  'ki-repo-homebrew-tap': both('ki-repo-homebrew-tap', {
-    tools: ['ruby'],
-    lines: RUBY_LINES,
-    audit: 'ki-repo-homebrew-tap'
-  }),
-  'ki-repo-tools': both('ki-repo-tools', {
-    tools: ['shellcheck', 'bash', 'mandoc'],
-    lines: SHELL_LINES,
-    audit: 'ki-repo-tools'
-  }),
+  'ki-repo-kb': both('ki-repo-kb', NONE),
+  'ki-repo-harness': both('ki-repo-harness', NONE),
+  'ki-repo-specifications': both('ki-repo-specifications', NONE),
+  'ki-repo-homebrew-tap': both('ki-repo-homebrew-tap', { tools: ['ruby'], lines: RUBY_LINES }),
+  'ki-repo-tools': both('ki-repo-tools', { tools: ['shellcheck', 'bash', 'mandoc'], lines: SHELL_LINES }),
   'ki-repo-dotfiles-chezmoi': null
 }
 
-// `ki-engineering` SCR-11: staged formatters through lint-staged, then check-only Syncpack, then Commitlint.
+// `ki-engineering` SCR-11: check-only staged lints through lint-staged, then check-only Syncpack, then Commitlint.
 const PACKAGE_TOOLS = ['lint-staged', 'syncpack', 'biome', 'rumdl']
 const PACKAGE_LINES = ['lint-staged --quiet || exit 1', 'syncpack format --check || exit 1']
 // `ki-authoring` MD-hook: staged Markdown where no package runs lint-staged.
@@ -119,25 +109,13 @@ const refusal = (hook: HookName, tools: readonly string[], packaged: boolean): s
   ]
 }
 
-const quietAudit = (skill: string): string[] => {
-  const command = skill === 'ki-repo' ? 'KI_REPO_OFFLINE=1 ki' : 'ki'
-  return [
-    '# The focused shape audit, check-only over the staged paths; on a failure it runs again in full.',
-    'quiet_audit() {',
-    `  ${command} repo audit --repo "$root" --staged --concise --progress never --reporter-levels FAIL "$@" && return 0`,
-    `  ${command} repo audit --repo "$root" --staged "$@"`,
-    '  return 1',
-    '}'
-  ]
-}
-
 const header = (hook: HookName, shape: RepositoryShape, variant: HookVariant): string[] => [
   '#!/bin/sh',
   `# Canonical ${hook} for a ${shape} repository ${variant === 'package' ? 'with' : 'without'} a package.json, composed by ki-repo.`,
   `# Copied byte-exact from ${shape}'s assets/githooks/${variant}/${hook}; HOOK-4 compares it, so do not edit it here.`
 ]
 
-// The repository root, where the package tools or the audit need it.
+// The repository root, where the package tools need it.
 const ROOT = 'root="$(git rev-parse --show-toplevel)" || exit 1'
 
 const PATH_LINES = ['PATH="$root/node_modules/.bin:$PATH"', 'export PATH']
@@ -145,15 +123,13 @@ const PATH_LINES = ['PATH="$root/node_modules/.bin:$PATH"', 'export PATH']
 const preCommit = (shape: RepositoryShape, variant: HookVariant, block: ShapeBlock): string => {
   const packaged = variant === 'package'
   const lines = [...header('pre-commit', shape, variant)]
-  if (packaged || block.audit) lines.push(ROOT)
+  if (packaged) lines.push(ROOT)
   lines.push('git diff --cached --quiet && exit 0')
   if (packaged) {
     lines.push(...refusal('pre-commit', PACKAGE_TOOLS, true))
-    const external = [...block.tools, ...(block.audit ? ['ki'] : [])]
-    lines.push(...refusal('pre-commit', external, false), ...PATH_LINES)
-  } else lines.push(...refusal('pre-commit', ['rumdl', ...block.tools, ...(block.audit ? ['ki'] : [])], false))
+    lines.push(...refusal('pre-commit', block.tools, false), ...PATH_LINES)
+  } else lines.push(...refusal('pre-commit', ['rumdl', ...block.tools], false))
   lines.push(...(packaged ? PACKAGE_LINES : MARKDOWN_LINES), ...block.lines)
-  if (block.audit) lines.push(...quietAudit(block.audit), `quiet_audit --skill ${block.audit} || exit 1`)
   return `${lines.join('\n')}\n`
 }
 

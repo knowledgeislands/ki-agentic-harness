@@ -38,7 +38,7 @@ Adopting or upgrading a formatter or linter therefore means reading the diff, no
 
 The same caution applies to a rule-selection flag. Confirm the tool is running the rules being claimed, because the failure mode there is also a clean report rather than an error.
 
-Every canonical template must be stored already formatted to the house width, so that CONFORM's output is a fixed point of the formatter that governs that file type. A template the repository's own rumdl or Biome would rewrite makes CONFORM non-idempotent: the write lands, the next formatter pass — `lint-staged` on commit is enough — reformats it, and the following AUDIT reports drift again, in every repository the template reaches. Round-trip each template when adding or editing one: write it, run the governing formatter, and confirm the diff is empty.
+Every canonical template must be stored already formatted to the house width, so that CONFORM's output is a fixed point of the formatter that governs that file type. A template the repository's own rumdl or Biome would rewrite makes CONFORM non-idempotent: the write lands, the next formatter pass — a `rumdl check --fix` by hand or CONFORM's own NORMALISE — reformats it, and the following AUDIT reports drift again, in every repository the template reaches. Round-trip each template when adding or editing one: write it, run the governing formatter, and confirm the diff is empty.
 
 ## Markdown gate
 
@@ -50,7 +50,7 @@ The [Markdown authoring standard](standards-markdown.md) defines the judgment ch
 
 ## Commit gate
 
-A repository's committed `pre-commit` checks the Markdown it stages, check-only, so a commit never carries Markdown the audit would reject ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Where a package exists, lint-staged runs `rumdl check --fix --preflight` over the staged Markdown under `ki-engineering` `SCR-11`. Where none does, the canonical hook lists the staged Markdown and checks it where it stands:
+A repository's committed `pre-commit` checks the Markdown it stages, check-only, so a commit never carries Markdown the audit would reject ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Where a package exists, lint-staged runs `rumdl check` over the staged Markdown under `ki-engineering` `PKG-6`, check-only: a commit never rewrites, as Kris chose COMMIT-VS-CI a) on 26 October 2026, and `--fix` stays with CONFORM. Where none does, the canonical hook lists the staged Markdown and checks it where it stands:
 
 ```sh
 git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1

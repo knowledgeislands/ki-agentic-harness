@@ -29,8 +29,8 @@ test('each pre-commit exits on an empty index before refusing, and is check-only
       const refusal = lines.findIndex((line) => /command -v|node_modules\/\.bin\//.test(line))
       expect(empty, shape).toBeGreaterThan(0)
       expect(empty, shape).toBeLessThan(refusal)
-      expect(text).not.toMatch(/--(?:fix|write)\b|\bbunx\b|\btsc\b|\bbun test\b|\bbats\b|ki repo conform/)
-      expect(text).not.toMatch(/ki repo audit(?![^\n]*--staged)/)
+      expect(text).not.toMatch(/--(?:fix|write)\b|\bbunx\b|\btsc\b|\bbun test\b|\bbats\b/)
+      expect(text).not.toMatch(/\bki repo (?:audit|conform|repair)\b|quiet_audit/)
     }
 })
 
@@ -53,24 +53,20 @@ test('each shape skill publishes its canonical hooks as committed assets', () =>
 test('both tools package variants retain the shell checks after their common staged lint', () => {
   for (const variant of HOOK_VARIANTS) {
     const hook = canonicalHooks('ki-repo-tools', variant)?.['pre-commit'] ?? ''
-    for (const command of ['shellcheck', 'bash -n', 'mandoc -T lint', 'quiet_audit --skill ki-repo-tools'])
-      expect(hook, variant).toContain(command)
+    for (const command of ['shellcheck', 'bash -n', 'mandoc -T lint']) expect(hook, variant).toContain(command)
     const lint = variant === 'package' ? 'syncpack format --check' : 'rumdl check --quiet'
     expect(hook.indexOf(lint), variant).toBeLessThan(hook.indexOf('staged_shell()'))
   }
 })
 
-test('both general Project variants delegate only the staged ki-repo audit', () => {
-  for (const variant of HOOK_VARIANTS) {
-    const hook = canonicalHooks('ki-repo-project', variant)?.['pre-commit'] ?? ''
-    expect(hook).toContain('quiet_audit --skill ki-repo || exit 1')
-    expect(hook).not.toContain('quiet_audit --skill ki-repo-project')
-    const audits = hook.split('\n').filter((line) => line.includes('ki repo audit'))
-    expect(audits).toHaveLength(2)
-    for (const line of audits) {
-      expect(line).toContain('--staged')
-      expect(line.trim()).toStartWith('KI_REPO_OFFLINE=1 ki repo audit')
+test('no pre-commit calls ki, so the gate needs no ki on PATH and the full audit belongs to CI', () => {
+  for (const shape of SHAPES)
+    for (const variant of HOOK_VARIANTS) {
+      const hook = canonicalHooks(shape, variant)?.['pre-commit']
+      if (!hook) continue
+      expect(hook, `${shape} ${variant}`).not.toMatch(/(?<![-\w])ki(?![-\w])/)
     }
-    expect(hook).not.toMatch(/ki repo conform|--(?:fix|write)\b/)
-  }
+  const project = canonicalHooks('ki-repo-project', 'no-package')?.['pre-commit'] ?? ''
+  expect(project).toContain("'*.md' | xargs -0 -r rumdl check --quiet -- || exit 1")
+  expect(project).not.toContain('root=')
 })
