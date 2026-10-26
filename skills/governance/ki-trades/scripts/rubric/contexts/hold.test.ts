@@ -17,7 +17,7 @@ test('a hold past its review date warns', () => {
     {
       status: 'VIOLATION',
       message:
-        'the trades hold passed its review date 2026-10-14: re-enable trades and bring ki-trades up to date with the territory model, or renew the hold with a new date'
+        'the trades hold passed its fallback review date 2026-10-14: open the Trades revamp and bring ki-trades up to date with its trade policy, or renew the hold with a new date'
     }
   ])
 })

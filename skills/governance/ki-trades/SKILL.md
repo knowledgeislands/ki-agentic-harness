@@ -17,7 +17,9 @@ argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 
 This governance skill defines safe **trade preparation and submission**, not transfer: a sender may make evolving work or knowledge visible without asking a peer to act, then publish an immutable submission while the receiver alone decides receipt, disposition, and any local follow-on work or knowledge. Read [the trade standard](references/standards-trades.md) before creating or reviewing records; [the generated rubric](references/rubric.md) publishes the mechanical and judgment criteria, and [the source list](references/sources.md) records the contract's provenance.
 
-> **Trades are on hold, due for review by 2026-10-21.** Submit no new trade until the territory model is settled. Do the work directly, or record it as work in the receiving repository. Existing trades keep the full support described here, so they can still be received, decided and released.
+> **Trades are on hold, due for review by 2026-12-31 at the latest; opening the Trades revamp Project reviews it sooner.** Submit no new trade. Do the work directly, record it as work in the receiving repository, or send a handoff or rollout as a line in the receiving work's `messages.md` under `ki-coordination`. Existing trades keep the full support described here, so they can still be received, decided and released.
+
+This skill governs only the trade routes the Capital's declared trade policy grants, and nothing else between repositories is a trade. A handoff or a rollout to other work or another repository goes as a line in the receiving work's `messages.md`, never as a trade or a roadmap record, under the `ki-coordination` [messages between work](../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work) rule and HANDOFF-AS-MESSAGE, which Kris set on 2026-10-20: "Handoffs are not roadmap items". Kris narrowed the skill to this under TRADES-FATE on 26 October 2026: the routes the Capital's policy grants, a pointer to `messages.md` for handoffs and rollouts, full support for existing trades and no new submissions, with opening the Trades revamp as the next review trigger and a fixed date kept on `HOLD-1` as the fallback. While Knowledge Islands Principal's `[skills.ki-trades]` table stays bare, as it has since the territory policy was stripped on 2026-10-07, it grants no route.
 
 ## What this skill owns
 
@@ -49,7 +51,7 @@ Run `ki repo educate --skill ki-trades --repo <repo>` to render the concern and 
 
 REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the harness. Reconcile the standard, structured catalogue, generated rubric, sources, and GDR-KI-HARNESS-013 when the contract changes; confirm before changing the authority or lifecycle model.
 
-While the hold notice above stands, REFRESH reports that the hold is due for review by its date; `HOLD-1` warns in AUDIT once that date has passed. At the date the owner either re-enables trades, removing the notice and bringing this skill up to date with the territory model, or renews the hold by changing the date in the notice, which is the only place it is written.
+While the hold notice above stands, REFRESH reports that the hold is reviewed when the Trades revamp Project opens or by the notice's date, whichever comes first; `HOLD-1` warns in AUDIT once that date has passed. At the review the owner either re-enables trades, removing the notice and bringing this skill up to date with the Trades revamp's trade policy, or renews the hold by changing the date in the notice, which is the only place it is written.
 
 ## Notes
 

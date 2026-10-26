@@ -2,7 +2,9 @@
 
 This standard defines typed, directional trade routes between registered Knowledge Islands repositories. Routes are granted by the territory trade policy that the Capital owns; a member declares only that it participates. It grants no transport, peer-write, roadmap, priority, implementation, knowledge, or acceptance authority. The structured catalogue enforces the mechanical rules; the generated [rubric](rubric.md) publishes them.
 
-> **Trades are on hold.** Submit no new trade until the territory model is settled. Do the work directly, or record it as work in the receiving repository. Existing trades keep the full support described here, so they can still be received, decided and released.
+> **Trades are on hold.** Submit no new trade. Do the work directly, record it as work in the receiving repository, or send a handoff or rollout as a line in the receiving work's `messages.md`. Existing trades keep the full support described here, so they can still be received, decided and released. The skill's own notice carries the review date, and opening the Trades revamp Project reviews the hold sooner.
+
+This standard governs only the routes the Capital's declared trade policy grants; nothing else between repositories is a trade. A handoff or a rollout goes as a line in the receiving work's `messages.md` under `ki-coordination`'s [messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work), never as a trade or a roadmap record, as Kris set under HANDOFF-AS-MESSAGE on 2026-10-20 and narrowed this skill under TRADES-FATE on 26 October 2026.
 
 ## Contents
 

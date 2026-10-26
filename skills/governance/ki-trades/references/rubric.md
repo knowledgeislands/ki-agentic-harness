@@ -143,7 +143,7 @@ Human-confirmed disposition remains distinct from local work selection, acceptan
 
 → [standard](../SKILL.md)
 
-A hold on new trades carries a review date, so it is renewed or lifted rather than left standing.
+A hold on new trades is reviewed when the Trades revamp opens or by its fallback date, so it is renewed or lifted rather than left standing.
 
-- **HOLD-1 [M] — the trades hold is reviewed by its date** — While the skill carries its "Trades are on hold" notice, the notice names the date by which the hold is due for review, and that date has not passed. At the date the owner either re-enables trades and brings ki-trades up to date with the territory model, or renews the hold with a new date. (../SKILL.md)
-  - _Remediation:_ diagnostic — Ask the owner to review the hold: remove the notice and bring the trade standard up to date with the territory model, or renew the hold by changing its review date in SKILL.md.
+- **HOLD-1 [M] — the trades hold is reviewed by its date** — While the skill carries its "Trades are on hold" notice, the notice names the fallback date by which the hold is due for review, and that date has not passed. Opening the Trades revamp Project reviews the hold sooner; at the review the owner either re-enables trades and brings ki-trades up to date with the revamp's trade policy, or renews the hold with a new date. (../SKILL.md)
+  - _Remediation:_ diagnostic — Ask the owner to review the hold: open the Trades revamp, remove the notice and bring the trade standard up to date with its trade policy, or renew the hold by changing its fallback review date in SKILL.md.

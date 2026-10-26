@@ -12,6 +12,7 @@ The sources behind [the cross-repository trade standard](standards-trades.md) an
 
 ## Last review
 
+- 2026-10-26 - TRADES-FATE, decided by Kris on 26 October 2026 with the twenty-query "all": narrowed the skill to the routes the Capital's declared trade policy grants, pointed handoffs and rollouts to the receiving work's `messages.md` under HANDOFF-AS-MESSAGE, kept full support for existing trades and the ban on new submissions, and made opening the Trades revamp Project the next review trigger with a fallback date of 2026-12-31 on `HOLD-1`. GDR-KI-HARNESS-013 is unchanged: no authority or lifecycle moved.
 - 2026-10-06 - Moved route and standing authority from per-repository declarations to the Capital-owned territory trade policy (GDR-KI-HARNESS-013, governed by KI-ARCADIA-GOV-016); retired member `routes` and `subtypes` keys without a transition.
 - 2026-09-22 — Clarified standing knowledge-intake authority, the itemized observation-policy matrix, revocation evidence, and the separate authority required for future automation.
 - 2026-08-06 — Added committed preparations, silent Git observation, independent receipt and decision axes, sender observation policies, direct applied work, raw sender-projection equality, and policy-led release.

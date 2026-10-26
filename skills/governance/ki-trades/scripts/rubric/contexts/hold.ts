@@ -19,7 +19,7 @@ export const holdOutcomes = (skill: string, today: string): readonly AuditOutcom
     return [
       {
         status: 'VIOLATION',
-        message: `the trades hold passed its review date ${due}: re-enable trades and bring ki-trades up to date with the territory model, or renew the hold with a new date`
+        message: `the trades hold passed its fallback review date ${due}: open the Trades revamp and bring ki-trades up to date with its trade policy, or renew the hold with a new date`
       }
     ]
   return [{ status: 'PASS', message: `trades are on hold, due for review by ${due}` }]
