@@ -21,5 +21,6 @@
 
 ## Last review
 
+- 2026-10-26 - DIAGRAM-PRIVATE-CITATIONS, decided by Kris on 26 October 2026: a private repository's `traced` entry and source node metadata may cite `path:revision:lines` with no URL, Archify's URL citation object is used only where the remote is public, and the audit accepts either form, reading the path part for freshness. No audit failed before the change; Personal's two records follow by message.
 - 2026-10-08 - Created from the `apps-observatory` pilot. Confirmed against Archify 3.0.1 that the command line still has no SVG export and that the ported exporter reproduces a committed Observatory SVG byte for byte.
 - 2026-10-14 - `KI-HARNESS-GOV-181`: the exporter moved from Playwright to a port of the headless Chrome route Archify 3.0.1's `bin/visual-check.mjs` drives its browser gate through (`findChrome`, launch flags, pipe protocol). Three committed SVGs (this repository's `skill-graph` and `skill-map`, Knowledge Islands Principal's `change-management-skills`) re-exported byte-identical through the new route.

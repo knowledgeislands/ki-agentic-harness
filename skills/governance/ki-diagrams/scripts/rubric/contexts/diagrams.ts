@@ -20,6 +20,23 @@ const DIAGRAMS_DIRECTORY = 'docs/diagrams'
 const MANIFEST_FILE = 'diagrams.toml'
 const INDEX_FILE = 'README.md'
 const FIELDS = ['type', 'question', 'audience', 'traced', 'stale_when', 'regenerate', 'last_checked'] as const
+
+/**
+ * A `traced` entry is a repository-relative path or pathspec glob, or, in a private repository whose
+ * remote must not be cited by URL, that path with the revision and lines it was traced at:
+ * `path:revision` or `path:revision:lines`, the lines `N` or `N-M`. The audit accepts either form.
+ */
+const TRACED_CITATION = /^([^:]+):([0-9a-f]{7,40})(?::(\d+)(?:-(\d+))?)?$/
+
+/** Whether a `traced` entry is a plain path or glob, or a well-formed `path:revision:lines` citation. */
+export const tracedEntryValid = (entry: unknown): entry is string =>
+  typeof entry === 'string' &&
+  entry.length > 0 &&
+  !entry.startsWith('/') &&
+  (!entry.includes(':') || TRACED_CITATION.test(entry))
+
+/** The path part of a `traced` entry, with any `:revision:lines` citation removed. */
+export const tracedPath = (entry: string): string => entry.match(TRACED_CITATION)?.[1] ?? entry
 /**
  * Optional fields: `commit_html = true` opts a diagram into committing its interactive HTML, and `svg_form` names
  * the committed SVG's form, absent meaning `dual`.
@@ -150,12 +167,11 @@ export const parseManifest = (
       if (field in table && (typeof table[field] !== 'string' || !(table[field] as string).trim()))
         issues.push(`${slug}: ${field} must be a non-empty string`)
     const traced = table.traced
-    const tracedValid =
-      Array.isArray(traced) &&
-      traced.length > 0 &&
-      traced.every((path) => typeof path === 'string' && path.length > 0 && !path.startsWith('/'))
+    const tracedValid = Array.isArray(traced) && traced.length > 0 && traced.every(tracedEntryValid)
     if ('traced' in table && !tracedValid)
-      issues.push(`${slug}: traced must be a non-empty list of repository-relative paths`)
+      issues.push(
+        `${slug}: traced must be a non-empty list of repository-relative paths, each a path, a pathspec glob or path:revision:lines`
+      )
     const lastChecked = table.last_checked
     if ('last_checked' in table && (typeof lastChecked !== 'string' || !REVISION.test(lastChecked)))
       issues.push(`${slug}: last_checked must be a commit identifier`)
@@ -347,7 +363,7 @@ const staleDiagrams = (repository: string, entries: readonly DiagramEntry[]): st
     if (!lastChecked || traced.length === 0) return []
     if (!git(repository, ['cat-file', '-e', `${lastChecked}^{commit}`]).ok)
       return [`${slug}: last_checked ${lastChecked} is not in this repository's history`]
-    const changed = git(repository, ['diff', '--name-only', lastChecked, 'HEAD', '--', ...traced])
+    const changed = git(repository, ['diff', '--name-only', lastChecked, 'HEAD', '--', ...traced.map(tracedPath)])
       .stdout.split('\n')
       .filter(Boolean)
     return changed.length === 0 ? [] : [`${slug}: ${changed.join(', ')} changed since ${lastChecked.slice(0, 12)}`]

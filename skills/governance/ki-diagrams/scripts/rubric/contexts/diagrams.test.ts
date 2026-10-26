@@ -14,7 +14,9 @@ import {
   markIssues,
   mermaidFences,
   parseManifest,
-  privateFindings
+  privateFindings,
+  tracedEntryValid,
+  tracedPath
 } from './diagrams.ts'
 
 const SVG = '<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"><use href="#a"/></svg>\n'
@@ -168,9 +170,26 @@ test('DIAG-1 fails without a manifest or diagrams directory and reports every sc
     'Bad_Slug: missing last_checked',
     'Bad_Slug: unknown field extra',
     'Bad_Slug: type must be one of architecture, workflow, sequence, dataflow, lifecycle',
-    'Bad_Slug: traced must be a non-empty list of repository-relative paths'
+    'Bad_Slug: traced must be a non-empty list of repository-relative paths, each a path, a pathspec glob or path:revision:lines'
   ])
   expect(parseManifest('not = [toml').issues[0]).toStartWith('diagrams.toml is not valid TOML')
+})
+
+test('a traced entry may carry a private repository citation, path:revision:lines, with no URL', () => {
+  const cited = entry('beacon', 'sequence', 'a'.repeat(40), [
+    'src/beacon.ts:0123abc:12-40',
+    'src/api/*.ts:0123abcdef90',
+    'README.md'
+  ])
+  expect(parseManifest(cited).issues).toEqual([])
+  expect(parseManifest(entry('beacon', 'sequence', 'a'.repeat(40), ['src/beacon.ts:notarevision'])).issues).toEqual([
+    'beacon: traced must be a non-empty list of repository-relative paths, each a path, a pathspec glob or path:revision:lines'
+  ])
+  expect(tracedEntryValid('src/beacon.ts:0123abc:12')).toBe(true)
+  expect(tracedEntryValid('src/beacon.ts:0123abc:12-40:extra')).toBe(false)
+  expect(tracedPath('src/beacon.ts:0123abc:12-40')).toBe('src/beacon.ts')
+  expect(tracedPath('src/api/*.ts:0123abcdef90')).toBe('src/api/*.ts')
+  expect(tracedPath('src/beacon.ts')).toBe('src/beacon.ts')
 })
 
 test('DIAG-2 fails for a local absolute path, a file URL or an address, and leaves a Git remote alone', () => {

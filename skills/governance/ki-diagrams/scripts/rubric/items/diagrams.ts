@@ -12,7 +12,7 @@ const DIAG_1: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-1',
   title: 'the manifest and the committed files agree both ways',
   description:
-    '`docs/diagrams/diagrams.toml` is valid and complete; every listed diagram has its source, its SVG and an embed in `docs/diagrams/README.md`, and a diagram with `commit_html = true` also has its `<slug>.html`, linked from the README; and every file under `docs/diagrams/` belongs to a listed diagram, an HTML file and its `<slug>.receipt.json` only under that opt-in.',
+    "`docs/diagrams/diagrams.toml` is valid and complete, each `traced` entry a repository-relative path, a pathspec glob or a private repository's `path:revision:lines` citation; every listed diagram has its source, its SVG and an embed in `docs/diagrams/README.md`, and a diagram with `commit_html = true` also has its `<slug>.html`, linked from the README; and every file under `docs/diagrams/` belongs to a listed diagram, an HTML file and its `<slug>.receipt.json` only under that opt-in.",
   sources: [MANIFEST, COMMITTED],
   mechanical: {
     level: 'FAIL',
@@ -55,7 +55,7 @@ const DIAG_2: RubricItem<DiagramsRubricContext> = {
   code: 'DIAG-2',
   title: 'no committed diagram file carries private information',
   description:
-    'No committed diagram source, SVG or interactive HTML contains a local absolute path, a `file://` URL or an email address, and none names a private repository or a person.',
+    'No committed diagram source, SVG or interactive HTML contains a local absolute path, a `file://` URL or an email address, and none names a private repository or a person. A repository URL appears in a citation only where the remote is public; a private repository cites `path:revision:lines` with no URL, and the audit accepts either form.',
   sources: [PRIVACY],
   mechanical: {
     level: 'FAIL',
@@ -84,7 +84,7 @@ const DIAG_2: RubricItem<DiagramsRubricContext> = {
   judgment: {
     scope: 'Every committed diagram source, SVG and HTML under docs/diagrams.',
     prompt:
-      'Does any label, card, citation or repository URL name a private repository, a person, note content or a commit subject that a public reader of this repository should not see?',
+      'Does any label, card, citation or repository URL name a private repository, a person, note content or a commit subject that a public reader of this repository should not see, and does any citation carry a repository URL where the remote is private rather than the URL-free `path:revision:lines` form?',
     outcomes: ['conforming', 'gap', 'exclusion'],
     guidance: 'Record a gap naming the diagram and the label, and rewrite the label generically before the next export.'
   }

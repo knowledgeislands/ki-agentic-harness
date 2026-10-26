@@ -78,7 +78,7 @@ The slug is lower-case kebab-case and names the question's subject, not the type
 | `type`         | One of `architecture`, `workflow`, `sequence`, `dataflow`, `lifecycle`                                    |
 | `question`     | The one question the diagram answers                                                                       |
 | `audience`     | Who asks it                                                                                                |
-| `traced`       | Repository-relative paths or Git pathspec globs the diagram was traced from, one per entry - no brace sets |
+| `traced`       | Repository-relative paths or Git pathspec globs the diagram was traced from, one per entry - no brace sets; in a private repository an entry may carry its [citation](#privacy) as `path:revision:lines` |
 | `stale_when`   | The changes to those paths that would make the diagram untrue                                              |
 | `regenerate`   | The prompt an agent with the Archify skill is given to rebuild the diagram from repository evidence        |
 | `last_checked` | The commit the diagram was last traced or confirmed against                                                |
@@ -106,9 +106,11 @@ No committed source, SVG or HTML may carry:
 
 Sources cite repository-relative paths. A repository URL in a source's metadata is the repository's own public remote or is omitted. The audit checks the mechanical cases; naming a private repository or a person is a judgment it asks for.
 
+**Citations.** Where the remote is public, a diagram may cite the revision and lines it was traced from through Archify's own citation object, which carries the repository URL. Where the remote is private, the citation is URL-free: a `traced` entry in the manifest, and the node metadata in the source, carry `path:revision:lines`, the repository-relative path, the short revision and the line or line range, as in `src/beacon.ts:0123abc:12-40`, with no URL, no repository name and no commit subject. A source may also cite paths alone, as before. The audit accepts either form, reads the path part of a cited entry for the [freshness](#regeneration-and-freshness) check, and fails an entry whose suffix is neither a revision nor a revision and lines. Kris settled the form under DIAGRAM-PRIVATE-CITATIONS on 26 October 2026, extending the rule above without a new privacy exception.
+
 ## Regeneration and freshness
 
-A diagram goes **stale** when a path it was traced from changes in a way its `stale_when` names. The audit compares each diagram's `traced` paths between `last_checked` and `HEAD` in read-only Git history and warns on any change; whether the change matches `stale_when` is judgment.
+A diagram goes **stale** when a path it was traced from changes in a way its `stale_when` names. The audit compares each diagram's `traced` paths, the path part of a cited entry, between `last_checked` and `HEAD` in read-only Git history and warns on any change; whether the change matches `stale_when` is judgment.
 
 To refresh a stale diagram, or to confirm a warned one:
 
