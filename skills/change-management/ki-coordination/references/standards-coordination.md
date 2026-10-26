@@ -830,6 +830,8 @@ The one-line `Re-bootstrap as <id> under ki-coordination.` form under [Bootstrap
 
 ### Bootstrap
 
+**Before the opener.** On a fresh or changed machine the owner runs the `ki-bootstrap` [machine-readiness checklist](../../../keystone/ki-bootstrap/references/standards-bootstrap.md#machine-readiness-for-coordinating-work) to its "Ready to coordinate" result: tools and level checkouts, the chezmoi binding of the coordinator hook and the `ki-coordinator` output style, `ki bootstrap` and `ki skill add ki-work-design`, the Capital's declarations, the observable checks that the hook and the style work, and `ki agent prompts <territory>` for the opener with its `claude --name` command. That checklist owns the machine half and this standard begins at the opener and owns the session half, as Kris set under BOOT-HOME on 26 October 2026. A session that reaches the opener without the hook's line or the style's shape says so in one line and names the checklist rather than coordinating blind.
+
 A one-line opener brings a new or already-running session onto this contract, for example `Re-bootstrap as ki.ways-of-working under ki-coordination.` The thread-model openers, `Re-bootstrap as the <project> coordination thread under ki-coordination.` and `... as the state-of-play thread ...`, are accepted for the tolerance window and mean the same work. A coordinator also re-bootstraps on request, after a compaction under [Re-anchoring](#re-anchoring-after-compaction), after a model switch, and when picking work up under [Picking work up](#picking-work-up). It then:
 
 1. reads this standard and the Work Process note;

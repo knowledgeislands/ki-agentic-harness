@@ -11,6 +11,7 @@ This standard implements the architecture in [ADR-KI-HARNESS-012](../../../../do
 - [Skill access in delegated work](#skill-access-in-delegated-work)
 - [Native repository operations](#native-repository-operations)
 - [First-time bootstrap](#first-time-bootstrap)
+- [Machine readiness for coordinating work](#machine-readiness-for-coordinating-work)
 - [Local harness development](#local-harness-development)
 - [Managed-state recovery](#managed-state-recovery)
 - [Unowned repository state](#unowned-repository-state)
@@ -91,6 +92,26 @@ The host never executes `scripts/govern.ts`, `.ki/bin` wrappers, copied checkers
 Repeated bootstrap is idempotent over correctly managed state. `ki bootstrap --refresh` redetects runtimes and rebuilds the recorded installed-harness and managed user-skill inventory from current state.
 
 Bootstrap does not declare governance in any repository and does not activate every skill in the canonical harness.
+
+## Machine readiness for coordinating work
+
+This checklist is the one path from a fresh machine to a working coordinator. Kris homed it in this skill under BOOT-HOME on 26 October 2026, so that a hook or an output style that fails silently has one accountable place; `ki-coordination`'s Bootstrap begins at the opener and cites this as its "Before the opener" step. Run it on a fresh machine, after a chezmoi, harness or runtime change, and whenever a coordinator looks right but drifts. Each step says what to check and who repairs a failure; no step copies or edits files across the source, installed and runtime-discovery surfaces.
+
+1. **Tools and checkouts.** Workstation tooling has installed `ki`; the Capital and its repositories are cloned at the paths `ki registry` records; each checkout is fetched and level with its remote, because a work package behind its remote bootstraps on stale state. Repair: the workstation tooling for tools, `ki registry` for paths, a fast-forward pull for a checkout behind.
+2. **User environment.** `chezmoi apply` has placed the runtime files for Claude Code and Codex, registered the harness `hooks/coordinator-reminder.sh` at `SessionStart` and `UserPromptSubmit` for each runtime, and linked the Claude Code output style `~/.claude/output-styles/ki-coordinator.md` to the primary harness checkout's `output-styles/ki-coordinator.md`; Codex has no output style, so its binding is the hook alone. Check: `readlink ~/.claude/output-styles/ki-coordinator.md` resolves into that checkout and `chezmoi diff` shows nothing pending for those targets. Repair: chezmoi, never a hand edit under `~/.claude` or `~/.codex`.
+3. **Harness and process skills.** `ki bootstrap` has installed the canonical harness and activated the core skills, and `ki skill add ki-work-design` has added the design skill, which the core set does not carry. Check: `ki bootstrap --refresh` runs clean and `ki skill` lists `ki-work-design`. Repair: `ki`.
+4. **Capital declarations.** The Capital's `.ki.toml` declares `ki-work`, `ki-work-roadmap`, `ki-work-package`, `ki-delegation` and `ki-coordination`; `ki repo skill add` has projected them; and the Capital's tracked `.claude/settings.json` selects `"outputStyle": "ki-coordinator"`. Check: `ki repo audit --skill ki-coordination --repo <capital>` and `ki repo audit --skill ki-work-package --repo <capital>` pass. Repair: the Capital's own committed configuration.
+5. **The hook works.** From the Capital's checkout, outside any run, feed the hook a synthetic owner message and read its line back:
+
+   ```bash
+   printf '{"hook_event_name":"UserPromptSubmit","cwd":"%s"}' "$PWD" | env -u KI_AGENT_RUN <harness>/hooks/coordinator-reminder.sh
+   ```
+
+   It prints one JSON object whose `additionalContext` opens "In coordinating work only". Silence from the Capital means `jq` is missing, the checkout does not declare `ki-coordination`, or the script is not where chezmoi registered it; silence from a repository that does not declare `ki-coordination` is correct.
+6. **The style works.** Open a session in the Capital and send a message: the hook's line is present and the reply takes the `ki-coordinator` shape, the reply forms in a conversational session and the heading and banner after a coordinating opener. In an open Claude Code session, `/output-style` shows `ki-coordinator` selected; a Codex session has no style and shows readiness by the hook's line alone. A reply without heading and banner after a coordinating opener means the style link or the settings selection is wrong: return to steps 2 and 4.
+7. **The opener.** `ki agent prompts <territory>` prints each work's opener with its launch command, `claude --name "<label> (<id>)"`, read from `work.md`. Start the session in the Capital's primary checkout with that command and paste the opener; `ki-coordination`'s Bootstrap takes it from there.
+
+**Ready to coordinate** is the result when every step passes; the first reply after the opener is then the full re-bootstrap report, heading and banner exact. Any failing step is not ready: name it, repair it with its owner's tool, and run the checklist again. A later `ki doctor` check in `tools-ki` may carry steps 1 to 5; readiness never depends on it before it exists.
 
 ## Local harness development
 

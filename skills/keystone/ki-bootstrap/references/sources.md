@@ -13,6 +13,8 @@ Provenance only: the record of what changed lives in git, not a changelog here. 
 
 ## Last review
 
+A 2026-10-26 in-house review under `wow-harness-a` applied BOOT-HOME, which Kris decided that day: this skill owns the one machine-readiness checklist from a fresh machine to a working coordinator, ending in "Ready to coordinate" with observable hook and output-style checks, and `ki-coordination`'s Bootstrap cites it as its "Before the opener" step. A `ki doctor` readiness check was requested from `tools-ki` by message; readiness never depends on it before it exists. Command surfaces were confirmed against the installed `ki --help` (`ki agent prompts`, `ki registry`, `ki doctor`), not re-reviewed in full.
+
 REFRESH last ran **2026-08-12**.
 
 - [ADR] and [HC] confirm that verified installed compatible harnesses are authoritative, runtime links are projections, and repositories never carry an alternative executor.
@@ -26,3 +28,4 @@ REFRESH last ran **2026-08-12**.
 - Re-check bare-name ambiguity and qualified capability input when multi-harness activation evolves.
 - Re-check supported agent discovery and managed link locations when a runtime binding changes.
 - Re-check acquisition, replacement, and uninstall wording when harness version selection is introduced.
+- Re-check the machine-readiness checklist when the chezmoi hook registration, the output-style link, the Capital's declared skill set or `ki agent prompts` changes, and fold in `ki doctor` once it carries the readiness checks.

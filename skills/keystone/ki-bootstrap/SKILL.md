@@ -44,6 +44,10 @@ Managed activation is fail-closed. If a link, installed payload, or development 
 
 Missing, incompatible, undeclared, or ambiguous skills fail before an audit or conform operation runs. The CLI executes native rubric catalogues; it never uses repository-vendored runners or `.ki/bin` wrappers.
 
+## Machine readiness for coordinating work
+
+A coordinating session needs more than the skills `ki bootstrap` activates: the user environment must bind the coordinator hook and the coordinator output style, `output-styles/ki-coordinator.md` in the harness, the Capital must declare its governance skills, and the session must open in the Capital under the work's name. The [machine-readiness checklist](references/standards-bootstrap.md#machine-readiness-for-coordinating-work) is the one path from a fresh machine to a working coordinator. It ends in a **Ready to coordinate** result, given only when every check passes, with observable checks that the hook and the output style actually work; a failing check names the owner that repairs it, never a copy or edit across managed surfaces. `ki-coordination`'s Bootstrap begins at the opener and cites the checklist as its "Before the opener" step. Kris homed the checklist here under BOOT-HOME on 26 October 2026; a `ki doctor` readiness check in `tools-ki` may back it later, and readiness never depends on it before it exists.
+
 ## Development boundary
 
 An installed verified payload is the authoritative source of capabilities. Local development is explicit: `ki dev local set <harness-id> <local-harness-path>` validates and records a checkout, `ki dev local on [harness-id]` selects it, and `ki dev local off [harness-id]` restores the verified archive. A selected local checkout is a mutable development source, not a verified installed payload; activation and loaded runtime capability remain separate host evidence.
