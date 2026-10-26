@@ -18,7 +18,7 @@ _Evidence:_ `skills/change-management/ki-recap/scripts/recap-grounding.test.ts` 
 
 ### AHO-002 — Checkpoint-owned composition
 
-`ki-recap checkpoint <thread>` MUST invoke the existing `ki-work-package` update procedure only after the target repository declares a valid checkpoint capability and the user explicitly authorises the exact thread update.
+`ki-recap checkpoint <work id>`, the old `checkpoint <thread>` accepted through the tolerance window, MUST invoke the existing `ki-work-package` update procedure only after the target repository declares a valid checkpoint capability and the user explicitly authorises the exact work id update.
 
 _Conformance:_ conforming
 

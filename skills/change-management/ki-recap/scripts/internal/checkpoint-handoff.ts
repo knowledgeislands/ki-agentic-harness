@@ -3,8 +3,8 @@ export type CheckpointHandoffInput = {
   checkpoint: {
     declared: boolean
     valid: boolean
-    requestedThread: string | null
-    matchingThreads: readonly string[]
+    requestedWorkId: string | null
+    matchingWorkIds: readonly string[]
     updateState: 'not-started' | 'interrupted'
   }
   authority: { explicit: boolean; scope: string }
@@ -24,7 +24,7 @@ export type CheckpointHandoffDecision =
       writes: false
       handoff: {
         repository: string
-        thread: string
+        workId: string
         authorityScope: string
         resultDestination: string
         verification: readonly string[]
@@ -38,7 +38,7 @@ const COMMIT = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 const refused = (reason: string): CheckpointHandoffDecision => ({ kind: 'refused', writes: false, reason })
 
 /**
- * Models the fail-closed boundary before `ki-recap checkpoint <thread>` may
+ * Models the fail-closed boundary before `ki-recap checkpoint <work id>` may
  * invoke the separately owned `ki-work-package` update procedure. It reads no
  * repository or runtime state and performs no write.
  */
@@ -48,10 +48,10 @@ export const evaluateCheckpointHandoff = (input: CheckpointHandoffInput): Checkp
   if (!input.checkpoint.declared) return refused('target repository does not declare ki-work-package')
   if (!input.checkpoint.valid) return refused('target ki-work-package capability is invalid')
 
-  const thread = input.checkpoint.requestedThread
-  if (!thread) return refused('an exact human-selected thread is required')
-  if (input.checkpoint.matchingThreads.length !== 1 || input.checkpoint.matchingThreads[0] !== thread)
-    return refused('thread identity is missing or ambiguous')
+  const workId = input.checkpoint.requestedWorkId
+  if (!workId) return refused('an exact human-selected work id is required')
+  if (input.checkpoint.matchingWorkIds.length !== 1 || input.checkpoint.matchingWorkIds[0] !== workId)
+    return refused('work id identity is missing or ambiguous')
 
   if (!input.authority.explicit || input.authority.scope.trim().length === 0)
     return refused('explicit checkpoint write authority and scope are required')
@@ -66,7 +66,7 @@ export const evaluateCheckpointHandoff = (input: CheckpointHandoffInput): Checkp
 
   const common = {
     repository: input.repository.actual,
-    thread,
+    workId,
     authorityScope: input.authority.scope,
     resultDestination: input.resultDestination,
     verification: input.verification

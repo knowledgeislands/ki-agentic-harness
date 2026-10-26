@@ -173,7 +173,7 @@ Recap the live session by summarising changes, decisions, touched files, unfinis
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
-- **Arguments:** `checkpoint <thread> | help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
+- **Arguments:** `checkpoint <work id> | help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
 - **Dependencies:** `ki-authoring`
 - **Runtime:** Portable
 

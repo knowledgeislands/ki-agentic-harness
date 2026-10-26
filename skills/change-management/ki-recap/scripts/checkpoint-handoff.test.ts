@@ -9,8 +9,8 @@ const input = (overrides: Partial<CheckpointHandoffInput> = {}): CheckpointHando
   checkpoint: {
     declared: true,
     valid: true,
-    requestedThread: 'remote-agent-proof',
-    matchingThreads: ['remote-agent-proof'],
+    requestedWorkId: 'remote-agent-proof',
+    matchingWorkIds: ['remote-agent-proof'],
     updateState: 'not-started'
   },
   authority: { explicit: true, scope: 'Deliver the approved roadmap item only.' },
@@ -27,7 +27,7 @@ describe('portable checkpoint hand-off', () => {
       writes: false,
       handoff: {
         repository: '/work/repo',
-        thread: 'remote-agent-proof',
+        workId: 'remote-agent-proof',
         authorityScope: 'Deliver the approved roadmap item only.',
         resultDestination: 'docs/roadmap/ITEM.md review packet',
         verification: ['bun test', 'ki repo audit'],
@@ -61,11 +61,11 @@ describe('portable checkpoint hand-off', () => {
     const invalid = [
       input({ checkpoint: { ...input().checkpoint, declared: false } }),
       input({ checkpoint: { ...input().checkpoint, valid: false } }),
-      input({ checkpoint: { ...input().checkpoint, requestedThread: null, matchingThreads: [] } }),
+      input({ checkpoint: { ...input().checkpoint, requestedWorkId: null, matchingWorkIds: [] } }),
       input({
         checkpoint: {
           ...input().checkpoint,
-          matchingThreads: ['remote-agent-proof', 'remote-agent-proof-copy']
+          matchingWorkIds: ['remote-agent-proof', 'remote-agent-proof-copy']
         }
       })
     ]
