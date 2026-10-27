@@ -7,13 +7,12 @@ kind: deliver
 purpose: capability
 priority: medium
 size: s
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8
 created_at: 2026-10-16T21:51:55Z
-updated_at: 2026-10-27T05:45:46Z
+updated_at: 2026-10-27T06:46:01Z
 ---
 
 # KI-HARNESS-GOV-202: Skill-Area Stable Stats Badge
@@ -128,6 +127,10 @@ The stable stats goal is met through the existing tag field, with original conte
 ### Mini recap
 
 All ten area diagrams now carry stable source-backed metrics. Final source checks pass, local main contains the feature commit, and the owned candidate worktree and merged branch are retired. The record remains Awaiting review; publication and acceptance require their separate authority. No new policy or durable learning route is needed.
+
+## Done
+
+Accepted 27 October 2026 by Kris Brown under ACCEPT-PRUNE-CONFIDENT on the review packet above.
 
 ## Discussion
 
