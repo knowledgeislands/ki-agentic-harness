@@ -7,12 +7,12 @@ purpose: upkeep
 priority: high
 size: s
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 066fda2a5c87db8886243b188b79266578ccd4a0
 created_at: 2026-10-27T06:19:52Z
-updated_at: 2026-10-27T06:22:41Z
+updated_at: 2026-10-27T06:23:41Z
 ---
 
 # KI-HARNESS-GOV-231: Worker inbox boundary
@@ -41,7 +41,7 @@ Selected and planned Ready under the exact 27 October instruction before impleme
 - [x] Add the boundary rule once to the authoritative background-run contract and a short operational prompt instruction pointing to it.
 - [x] Prove the complete authored prompt survives report generation and every other generated surface remains byte-identical.
 - [x] Run focused evidence, then mandatory remaining gates once, with direct inbox reads at the stated boundaries.
-- [ ] Complete the six-part Review packet, commit explicit paths, fast-forward locally and retire the owned clean worktree.
+- [x] Complete the six-part Review packet, commit explicit paths, fast-forward locally and retire the owned clean worktree.
 
 ## Files touched
 
@@ -81,6 +81,38 @@ The existing common run-prompt instruction links to the authoritative contract; 
 ### Roadmap
 
 Only this new item and its ledger reservation change. GOV202 remains untouched and Awaiting review.
+
+## Review
+
+### Delivered
+
+Delivered the frozen boundary against immutable baseline `066fda2a5c87db8886243b188b79266578ccd4a0`. Implementation commit `def7f05537885cd09a2d3b1895ab651c9b1d9b32` is fast-forwarded into local main on sol.local. The owned worktree and merged branch are retired. No acceptance, runtime API, diagram, website or coordinator-package change.
+
+### Change Summary
+
+One authoritative worker-inbox rule in the background-run contract, one operational prompt instruction linked to it, a source-review annotation and a focused fixture. The existing pure coordination generator renders all surfaces without any derived byte change; no generator or generated report source changed. All original contract and prompt text, quotations, footers, tiers, bootstrap, full re-anchoring, mark and acceptance rules survive. The source annotation extends the existing final review paragraph without removing its text or crossing the long-reference threshold.
+
+### Verification
+
+The focused prompt/banner run passes 16 tests with 316 assertions; the one full aggregate passes 1,470 tests with zero failures and 6,379 assertions across 185 files. The existing local TypeScript binary passes. Isolated-home repair and focused ki-work, ki-work-roadmap, ki-authoring, ki-skills, ki-delegation and ki-coordination audits pass with no failures; ki-skills retains three pre-existing refresh-cadence warnings. Mandatory commit hooks pass and post-hook inspection confirms the exact intended paths.
+
+The initial roadmap audit found this record missing Documentation impact; that scoped record correction and retest pass. The initial skill audit rejected runtime-specific wording in the new portable rule; the runtime-neutral correction and focused two-test retest pass. Its additional source-length warning is removed by keeping the annotation within the existing paragraph. No unchanged aggregate was repeated. The generator fixture replaces a stale Report paragraph, proves recovery of the entire authored prompt, and compares every other output byte-for-byte. Direct baseline comparison confirms the rule and prompt contain only the intended insertion, and the source annotation preserves all prior text. Initial integration conservatively stopped on a persistent write-window file; taking its nonblocking advisory lock established exclusive ownership, with the unchanged destination then safely fast-forwarded.
+
+### Outstanding concerns
+
+Independent review and human acceptance remain. Confidence is high for the method and prompt preservation; live uptake by already-running workers is unproved. Existing launched prompts are not retroactively rewritten. The rule creates no injected active-Codex delivery, immediate acknowledgement, per-worker cursor, new field, schema or API, dependency retargeting, forced cancellation or false DONE. Messages do not expand authority or override higher instructions.
+
+Publication handoff: repository ki-agentic-harness, machine sol.local, branch main. This unit is local alongside preserved unpublished GOV202 code; the brief supplies no exact authority to publish that code stack. No fetch, push, provider call, installation, release or deployment was made.
+
+### Post-change review
+
+The cooperative boundary meets the requested outcome using the existing run-state inbox beside the launched prompt. Direct inbox reads occurred before broad verification and after long completion during this run; status was never used as acknowledgement. The shared CONFIDENT-UNATTENDED efficiency steering was applied by running one mandatory aggregate and only affected retests. Historical worker-specific messages for work-folder, mgit, rename, reference-followthrough, timeout-local, baseline-consolidation and final-acceptance were read and treated as irrelevant to this worker's edits; their generally applicable no-repeat and no-authority-expansion limits were respected. No line grants this worker another run's task.
+
+Regression risk is limited to wording and future brief uptake. Preservation fixtures cover report replacement and all other generated output. This is an evidence-backed Awaiting review handoff, not self-acceptance.
+
+### Mini recap
+
+Workers now have an explicit complete-inbox boundary and honest disposition requirement. Source ownership and generated-output preservation are proved; required local gates and integration are complete. The existing background-run contract is the durable learning home, with no new control design or broader reload policy.
 
 ## Discussion
 
