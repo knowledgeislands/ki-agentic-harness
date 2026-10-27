@@ -6,13 +6,12 @@ kind: deliver
 purpose: upkeep
 priority: high
 size: s
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 066fda2a5c87db8886243b188b79266578ccd4a0
 created_at: 2026-10-27T06:19:52Z
-updated_at: 2026-10-27T06:23:41Z
+updated_at: 2026-10-27T06:27:28Z
 ---
 
 # KI-HARNESS-GOV-231: Worker inbox boundary
@@ -114,6 +113,14 @@ Regression risk is limited to wording and future brief uptake. Preservation fixt
 
 Workers now have an explicit complete-inbox boundary and honest disposition requirement. Source ownership and generated-output preservation are proved; required local gates and integration are complete. The existing background-run contract is the durable learning home, with no new control design or broader reload policy.
 
+## Done
+
+Accepted 27 October 2026 by Kris under the quoted ACCEPT-PRUNE-CONFIDENT grant, applied independently by wow-inbox-accept on the review packet above.
+
 ## Discussion
 
 The correction is cooperative worker behaviour. It promises no injected active-Codex delivery, immediate acknowledgement, per-worker cursor, forced cancellation or false DONE. Messages cannot expand authority or override higher instructions.
+
+Independent closure review on 27 October 2026 froze this exact canonical record at SHA-256 `6528d268de9eec772ed37bbeca452ba84f8ace509bfa8b51d4e4c3a2f24179fe` before mutation. Kris's logged ACCEPT-PRUNE-CONFIDENT approval says: "things if are waiting with you, you've got high confidence, you can just accept them and then you can get things pruned out as well. Also, do that. Yeah, just make it happen." This exact qualifying record is independently accepted against the complete packet, committed source and original delivery logs; no aggregate or build was repeated and no mandatory evidence was waived. The original 1,470-test, TypeScript, focused generator and governing audit evidence covers the unchanged implementation. The ki-skills audit carries three existing refresh-cadence warnings; the isolated ki-coordination audit also carries two environment-binding warnings, with no failures. Live uptake remains unproved and cooperative; no injected delivery, immediate acknowledgement or authority expansion is accepted. The original baseline and Review evidence remain unchanged.
+
+Pruning is deferred: the selected record is retained Done under the cross-repository source-evidence guard. The local owning repository, accessible Knowledge Islands sibling repositories and chezmoi were searched for the identifier, filename and canonical path; surviving principal brief and decision mentions were identified, with no observed completion-observation trade. Relevant historical sources ki-techne-principal, ki-plugins and mcp-housekeeping-codex remain unavailable under the existing wow-reference-followthrough evidence, so their reference absence is unverified. No repeated archive probe, private fetch, peer repair, source change or deletion is authorised by this closure. This is no whole-fleet cleanliness claim.
