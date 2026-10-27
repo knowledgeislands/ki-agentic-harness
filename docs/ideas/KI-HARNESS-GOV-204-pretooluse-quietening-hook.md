@@ -20,6 +20,8 @@ created_at: 2026-10-17T22:06:58Z
 updated_at: 2026-10-20T02:39:00Z
 ---
 
+> **Idea, not on the roadmap.** A Claude Code hook that would quieten noisy tool output automatically; the quiet-tools rule in briefs covers this for now. Moved out of `docs/roadmap/` on 27 October 2026 under the roadmap sweep, with its record kept in full here so that it can return when Kris brings it back; it was `KI-HARNESS-GOV-204`.
+
 # KI-HARNESS-GOV-204: PreToolUse Quietening Hook
 
 ## Goal

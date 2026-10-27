@@ -16,6 +16,8 @@ created_at: 2026-10-17T21:42:09Z
 updated_at: 2026-10-22T02:15:47Z
 ---
 
+> **Idea, not on the roadmap.** Work out whether ChatGPT acquisition can stay current incrementally through the local cache and browser instead of full exports; the acquisition Project is finished and nothing waits on this. Moved out of `docs/roadmap/` on 27 October 2026 under the roadmap sweep, with its record kept in full here so that it can return when Kris brings it back; it was `KI-HARNESS-OPS-009`.
+
 # KI-HARNESS-OPS-009: Incremental ChatGPT Acquisition Path
 
 ## Goal

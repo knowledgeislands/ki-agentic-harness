@@ -18,6 +18,8 @@ updated_at: 2026-10-20T02:39:00Z
 transferred_from: ki-principal ki.observatory STORAGE-OWNER a), 2026-10-20
 ---
 
+> **Idea, not on the roadmap.** Let a repository declare in .ki.toml what its tool or app stores in the XDG config, data, cache and state folders and why; feeds only the Observatory's Machine instrument, itself an idea. Moved out of `docs/roadmap/` on 27 October 2026 under the roadmap sweep, with its record kept in full here so that it can return when Kris brings it back; it was `KI-HARNESS-GOV-227`.
+
 # KI-HARNESS-GOV-227: Repository Storage Declarations
 
 ## Goal

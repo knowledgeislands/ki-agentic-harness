@@ -16,6 +16,8 @@ updated_at: 2026-10-20T00:15:30Z
 transferred_from: ki-principal ki.portable-specifications HOMING-REVIEW a), 2026-10-20
 ---
 
+> **Idea, not on the roadmap.** Give the portable work-package specification a home in the ki-work-package skill, so people outside Knowledge Islands can read or write one; waits on the portable-specifications Project. Moved out of `docs/roadmap/` on 27 October 2026 under the roadmap sweep, with its record kept in full here so that it can return when Kris brings it back; it was `KI-HARNESS-GOV-228`.
+
 # KI-HARNESS-GOV-228: Home the Work Spec
 
 ## Goal

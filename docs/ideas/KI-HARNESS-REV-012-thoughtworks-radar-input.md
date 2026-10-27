@@ -13,6 +13,8 @@ created_at: 2026-10-24T11:38:31Z
 updated_at: 2026-10-24T11:38:31Z
 ---
 
+> **Idea, not on the roadmap.** Review each new ThoughtWorks Technology Radar volume as an input to the KI tool radar; the weekly model-radar review can carry this as a per-volume check. Moved out of `docs/roadmap/` on 27 October 2026 under the roadmap sweep, with its record kept in full here so that it can return when Kris brings it back; it was `KI-HARNESS-REV-012`.
+
 # KI-HARNESS-REV-012: Review ThoughtWorks Radar
 
 ## Goal
