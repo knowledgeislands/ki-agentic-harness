@@ -8,12 +8,12 @@ purpose: capability
 priority: medium
 size: s
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8
 created_at: 2026-10-16T21:51:55Z
-updated_at: 2026-10-27T05:35:10Z
+updated_at: 2026-10-27T05:45:46Z
 ---
 
 # KI-HARNESS-GOV-202: Skill-Area Stable Stats Badge
@@ -44,7 +44,7 @@ The old literal SRC-replacement premise was disproved by source and rendered DOM
 - [x] Verify metric boundaries, unavailable rubric handling and preservation with a meaningful fixture.
 - [x] Regenerate only the ten area artifacts and receipts through the supported APIs and build command.
 - [x] Verify schemas, receipt hashes, deterministic sources and one representative rendered tag fit.
-- [ ] Complete the aggregate gates and hooks, prepare six-part review evidence, commit, fast-forward locally and retire the worktree.
+- [x] Complete the aggregate gates and hooks, prepare six-part review evidence, commit, fast-forward locally and retire the worktree.
 
 ## Files touched
 
@@ -100,6 +100,34 @@ The future plan identifies any generator or diagram guidance that changes with t
 ### Roadmap
 
 This existing record is adopted to Next and remains draft; no new record is created.
+
+## Review
+
+### Delivered
+
+Delivered all ten functional-area stats tags against immutable baseline `1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8`, preserving concern/trigger labels, topology and source evidence. Feature commit: `3a03928747fe74dacf2e9d9e7f6e2c7e64a79d77`.
+
+### Change Summary
+
+Added physical-source metric collection and shared its snapshot through the generator, harness caller and existing committed-diagram test. Retained the prior supported fit correction and all ten artifact sets. The owner explicitly expanded scope on 27 October 2026 to include `skill-graph.test.ts`; no further direct caller needed expansion. No viewer, schema, public contract or dependency change.
+
+### Verification
+
+Final aggregate passes 1,468 tests, zero failures, 6,355 assertions across 184 files. The repaired diagram-test file passes 13 tests; the Knip-scaffold and commit-message retest passes three tests after dependency-link verification. TypeScript passes using the pre-existing primary binary. Metric boundary, missing-publication, physical-file and content/source preservation assertions survive.
+
+Focused isolated-home audits exit zero: `ki-work`, `ki-work-roadmap`, `ki-authoring`, `ki-skills`, `ki-repo-harness` and `ki-diagrams`. The latter three retain respectively three, sixteen and twelve warnings about existing refresh cadence, decision-record shape and traced-source freshness; none reports a failure. Prior all-ten build/schema, deterministic source, receipt hash/length and representative visible-fit evidence remains valid because finalization changed no artifact. Feature commit hooks pass, and post-hook inspection confirms exactly 48 intended paths. Final record correction receives its own focused roadmap/authoring checks and compulsory hooks; the assigned finalization report records their outcomes.
+
+### Outstanding concerns
+
+No unresolved feature concern or failing delivery gate. Independent review and human acceptance remain. New harness code lacks exact publication authority, so the finalization report carries the pending sol.local/main handoff. The predecessor's disclosed download violation was not repeated.
+
+### Post-change review
+
+The stable stats goal is met through the existing tag field, with original content and evidence preserved. The legitimate physical-source snapshot repairs the integration caller without weakening assertions or adding filesystem reads to pure generation. The configuration-only fit fix remains intact. This is delivery evidence for review, not acceptance.
+
+### Mini recap
+
+All ten area diagrams now carry stable source-backed metrics. Final source checks pass, local main contains the feature commit, and the owned candidate worktree and merged branch are retired. The record remains Awaiting review; publication and acceptance require their separate authority. No new policy or durable learning route is needed.
 
 ## Discussion
 
