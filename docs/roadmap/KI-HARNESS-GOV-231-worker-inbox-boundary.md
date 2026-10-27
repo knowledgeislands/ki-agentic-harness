@@ -7,12 +7,12 @@ purpose: upkeep
 priority: high
 size: s
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 066fda2a5c87db8886243b188b79266578ccd4a0
 created_at: 2026-10-27T06:19:52Z
-updated_at: 2026-10-27T06:19:52Z
+updated_at: 2026-10-27T06:22:41Z
 ---
 
 # KI-HARNESS-GOV-231: Worker inbox boundary
@@ -37,10 +37,10 @@ Selected and planned Ready under the exact 27 October instruction before impleme
 
 ## Steps
 
-- [ ] Freeze the plan and immutable baseline before implementation.
-- [ ] Add the boundary rule once to the authoritative background-run contract and a short operational prompt instruction pointing to it.
-- [ ] Prove the complete authored prompt survives report generation and every other generated surface remains byte-identical.
-- [ ] Run focused evidence, then mandatory remaining gates once, with direct inbox reads at the stated boundaries.
+- [x] Freeze the plan and immutable baseline before implementation.
+- [x] Add the boundary rule once to the authoritative background-run contract and a short operational prompt instruction pointing to it.
+- [x] Prove the complete authored prompt survives report generation and every other generated surface remains byte-identical.
+- [x] Run focused evidence, then mandatory remaining gates once, with direct inbox reads at the stated boundaries.
 - [ ] Complete the six-part Review packet, commit explicit paths, fast-forward locally and retire the owned clean worktree.
 
 ## Files touched
@@ -63,6 +63,24 @@ Run the focused prompt/generator fixture, including an alternate authored prompt
 ## Dependencies / blocks
 
 None. Use only existing local tools. Existing unpublished GOV202 code and records survive untouched. This task grants no exact publication authority for that code; retain a precise sol.local/main handoff rather than publishing the stack. No acceptance or pruning.
+
+## Documentation impact
+
+### Decision Records
+
+No new durable decision is introduced; the explicit owner instruction authorises this bounded method correction.
+
+### Specifications
+
+No Specification changes. The background-run contract owns the cooperative boundary.
+
+### Guides
+
+The existing common run-prompt instruction links to the authoritative contract; report generation remains unchanged.
+
+### Roadmap
+
+Only this new item and its ledger reservation change. GOV202 remains untouched and Awaiting review.
 
 ## Discussion
 
