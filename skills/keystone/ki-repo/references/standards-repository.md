@@ -9,6 +9,7 @@ The canonical configuration a Knowledge Islands repo should carry, so repos pres
 - [Layer 1 — repo files](#layer-1--repo-files)
 - [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
+- [Repository naming](#repository-naming)
 - [Working areas](#working-areas)
 - [Commit gate](#commit-gate)
 - [Repository kind and Knowledge Base stores](#repository-kind-and-knowledge-base-stores)
@@ -217,6 +218,12 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 | Actions `allowed_actions`           | `all` | All repos (CI pulls marketplace actions like setup-bun)        |
 
 Dependabot is a security signal, not an update channel. Every repository, knowledge bases included, keeps alerts and security updates on. Routine version updates come from the repository's `bun run ki:deps:update` run, which a human reviews like any other change, so a repository carries no Dependabot version-update configuration (`.github/dependabot.yml`). No repository carries a workflow that auto-merges dependency pull requests: an unreviewed merge would carry a compromised upstream release straight to `main`. DEP-1 fails a workflow named for Dependabot auto-merge and warns on a Dependabot configuration file, which may legitimately tune security updates only.
+
+## Repository naming
+
+A site repository is named `apps-` followed by its hostname's labels in reverse order, from the top-level domain inwards, so that a domain's repositories sort together under their top-level domain: `kris.me.uk` is `apps-uk.me.kris`, `rig.midnight.ninja` is `apps-ninja.midnight.rig` and `home.humansnotrobots.be` is `apps-be.humansnotrobots.home`. The rule reverses every label after `apps-`, multi-part public suffixes and nested subdomains included. It names the repository alone: the hostname, DNS, Cloudflare configuration, Worker names and work identifiers are untouched by it. Kris adopted it for new site repositories across the estate under NAMING-TO-KI on 27 October 2026, taking the recommended option, after Humans Not Robots had renamed its site repositories this way on 26 October 2026.
+
+An existing host-order name such as `apps-kris.me.uk` stays valid indefinitely. Whether and when to rename is the owning territory's decision, with no deadline and no audit against the old form. A rename needs its own assessment of the build connection and of every checkout and registry entry, and where the owner's site-safety limit cannot be met the current name is retained.
 
 ## Visibility
 
