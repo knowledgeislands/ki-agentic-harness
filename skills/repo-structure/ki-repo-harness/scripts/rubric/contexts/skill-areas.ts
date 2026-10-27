@@ -24,6 +24,7 @@ import {
   shapeLegend
 } from './skill-graph.ts'
 import { SHAPE_ORDER } from './skill-map.ts'
+import { statsTag } from './skill-stats.ts'
 
 export const skillAreaSlug = (area: string): string => `skill-area-${area}`
 export const skillAreaPath = (area: string): string => `docs/diagrams/${skillAreaSlug(area)}.architecture.json`
@@ -37,9 +38,10 @@ export const SKILL_AREAS: readonly FunctionalArea[] = FUNCTIONAL_AREAS
  * nodes, and tiers far enough apart for the lanes their edges need.
  */
 const NODE_WIDTH = 208
-const NODE_HEIGHT = 60
+// Reserve a separate baseline for the supported fine-detail tag; keep the 124-unit row pitch.
+const NODE_HEIGHT = 76
 const COLUMN_GAP = 48
-const ROW_GAP = 64
+const ROW_GAP = 48
 const REGION_PAD = 32
 const GROUP_PAD = 28
 const NESTED_PAD = 44
@@ -289,12 +291,14 @@ export const buildSkillArea =
     const place = (node: SkillGraphNode, pos: Point): void => {
       position.set(node.name, pos)
       const shape = SKILL_SHAPES[node.applicability]
+      const stats = options.stats?.get(node.path)
       components.push({
         id: componentId(node.name),
         type: shape.type,
         label: node.name,
         sublabel: `${domainLabel(node.domain)} · ${shape.word}`,
         sources: [{ path: node.path }],
+        ...(stats ? { tag: statsTag(stats) } : {}),
         pos,
         size: [NODE_WIDTH, NODE_HEIGHT]
       })
@@ -438,6 +442,11 @@ export const buildSkillArea =
           items: [
             `The middle region holds the skills that ${area.purpose}${blocks.length > 1 ? ', nested by the capability each brings' : ''}; each sublabel names the source concern the skill lives in.`,
             'Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.',
+            ...(options.stats
+              ? [
+                  'Stats: R = unique published rubric criteria (– = no publication); C = script-source bytes including tests/shared code: 0, S <10 KiB, M <100 KiB, L ≥100 KiB; F = reference files, including rubric. Recursive physical files only.'
+                ]
+              : []),
             'An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation.'
           ]
         },

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
     },
     "legend": {
       "mode": "auto",
@@ -39,13 +39,14 @@
           "path": "skills/change-management/ki-recap/SKILL.md"
         }
       ],
+      "tag": "R– · CM · F2",
       "pos": [
         44,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -58,13 +59,14 @@
           "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F3",
       "pos": [
         364,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -77,13 +79,14 @@
           "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
         }
       ],
+      "tag": "R17 · CM · F6",
       "pos": [
         684,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -96,13 +99,14 @@
           "path": "skills/governance/ki-authoring/SKILL.md"
         }
       ],
+      "tag": "R4 · CM · F9",
       "pos": [
         44,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -115,13 +119,14 @@
           "path": "skills/keystone/ki-bootstrap/SKILL.md"
         }
       ],
+      "tag": "R– · C0 · F3",
       "pos": [
         876,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -134,13 +139,14 @@
           "path": "skills/governance/ki-diagrams/SKILL.md"
         }
       ],
+      "tag": "R9 · CL · F8",
       "pos": [
         44,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -153,13 +159,14 @@
           "path": "skills/governance/ki-git/SKILL.md"
         }
       ],
+      "tag": "R15 · CM · F3",
       "pos": [
         300,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -172,13 +179,14 @@
           "path": "skills/keystone/ki-repo/SKILL.md"
         }
       ],
+      "tag": "R51 · CL · F7",
       "pos": [
         300,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -191,13 +199,14 @@
           "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
         }
       ],
+      "tag": "R27 · CL · F4",
       "pos": [
         588,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -210,13 +219,14 @@
           "path": "skills/keystone/ki-skills/SKILL.md"
         }
       ],
+      "tag": "R96 · CL · F9",
       "pos": [
         588,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -229,13 +239,14 @@
           "path": "skills/governance/ki-decision-records/SKILL.md"
         }
       ],
+      "tag": "R37 · CL · F9",
       "pos": [
         44,
-        564
+        596
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -248,13 +259,14 @@
           "path": "skills/change-management/ki-work-roadmap/SKILL.md"
         }
       ],
+      "tag": "R24 · CL · F4",
       "pos": [
         364,
-        564
+        596
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -267,13 +279,14 @@
           "path": "skills/agentic-systems/ki-subagents/SKILL.md"
         }
       ],
+      "tag": "R5 · CM · F3",
       "pos": [
         684,
-        564
+        596
       ],
       "size": [
         208,
-        60
+        76
       ]
     }
   ],
@@ -430,6 +443,7 @@
       "items": [
         "The middle region holds the skills that every repository and every skill builds on, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "Stats: R = unique published rubric criteria (– = no publication); C = script-source bytes including tests/shared code: 0, S <10 KiB, M <100 KiB, L ≥100 KiB; F = reference files, including rubric. Recursive physical files only.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

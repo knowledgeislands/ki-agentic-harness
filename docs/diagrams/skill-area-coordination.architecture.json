@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "3d50e252ed12b1f5ce842999631d1939ed562935"
+      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
     },
     "legend": {
       "mode": "auto",
@@ -39,13 +39,14 @@
           "path": "skills/change-management/ki-batch/SKILL.md"
         }
       ],
+      "tag": "R– · CM · F5",
       "pos": [
         44,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -58,13 +59,14 @@
           "path": "skills/change-management/ki-implement/SKILL.md"
         }
       ],
+      "tag": "R– · CS · F2",
       "pos": [
         300,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -77,13 +79,14 @@
           "path": "skills/change-management/ki-plan/SKILL.md"
         }
       ],
+      "tag": "R– · CS · F1",
       "pos": [
         556,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -96,13 +99,14 @@
           "path": "skills/change-management/ki-coordination/SKILL.md"
         }
       ],
+      "tag": "R13 · CL · F3",
       "pos": [
         300,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -115,13 +119,14 @@
           "path": "skills/governance/ki-delegation/SKILL.md"
         }
       ],
+      "tag": "R6 · CM · F4",
       "pos": [
         44,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -134,13 +139,14 @@
           "path": "skills/governance/ki-trade/SKILL.md"
         }
       ],
+      "tag": "R– · C0 · F1",
       "pos": [
         588,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -153,13 +159,14 @@
           "path": "skills/governance/ki-trades/SKILL.md"
         }
       ],
+      "tag": "R16 · CL · F3",
       "pos": [
         588,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -172,13 +179,14 @@
           "path": "skills/change-management/ki-work-design/SKILL.md"
         }
       ],
+      "tag": "R– · C0 · F2",
       "pos": [
         44,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -191,13 +199,14 @@
           "path": "skills/governance/ki-work-package/SKILL.md"
         }
       ],
+      "tag": "R19 · CL · F3",
       "pos": [
         300,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -210,13 +219,14 @@
           "path": "skills/governance/ki-decision-records/SKILL.md"
         }
       ],
+      "tag": "R37 · CL · F9",
       "pos": [
         44,
-        564
+        596
       ],
       "size": [
         208,
-        60
+        76
       ]
     }
   ],
@@ -330,6 +340,7 @@
       "items": [
         "The middle region holds the skills that hand work between agents, threads and repositories, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "Stats: R = unique published rubric criteria (– = no publication); C = script-source bytes including tests/shared code: 0, S <10 KiB, M <100 KiB, L ≥100 KiB; F = reference files, including rubric. Recursive physical files only.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

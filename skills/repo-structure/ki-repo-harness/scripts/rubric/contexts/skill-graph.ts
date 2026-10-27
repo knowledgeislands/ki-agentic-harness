@@ -5,6 +5,7 @@
  */
 import { type CapabilityApplicability, type CapabilitySource, parseCapabilitySource } from './capability-publication.ts'
 import type { FunctionalArea } from './skill-functions.ts'
+import type { SkillStats } from './skill-stats.ts'
 
 export type SkillGraphNode = {
   path: string
@@ -17,6 +18,8 @@ export type SkillGraphNode = {
 }
 
 export type SkillGraphOptions = {
+  /** Local stable stats keyed by canonical SKILL.md path; area diagrams only. */
+  stats?: ReadonlyMap<string, SkillStats>
   /** The repository's public remote, recorded in `meta.repository`; omitted when unknown. */
   repositoryUrl?: string
   /** The 40-character commit the graph was traced at; omitted when unknown. */

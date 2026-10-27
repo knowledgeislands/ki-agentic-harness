@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path'
 import { SKILL_AREAS, skillAreaPath } from './skill-areas.ts'
 import { prepareSkillDiagram, SKILL_DIAGRAMS } from './skill-diagrams.ts'
 import { readSkillGraphNodes } from './skill-graph.ts'
+import { readSkillStats } from './skill-stats.ts'
 
 const source = (path: string, frontmatter: string) => ({ path, content: `---\n${frontmatter}\n---\n\n# body\n` })
 
@@ -79,7 +80,8 @@ describe('the committed harness skill diagrams', () => {
       }
       const draft = prepareSkillDiagram(diagram, committed, sources, {
         repositoryUrl: 'https://github.com/knowledgeislands/ki-agentic-harness',
-        revision: '0'.repeat(40)
+        revision: '0'.repeat(40),
+        stats: readSkillStats(root, sources)
       })
       expect(draft.issues).toEqual([])
       expect(draft.state).toBe('in-sync')

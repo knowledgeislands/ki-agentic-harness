@@ -15,6 +15,7 @@ import {
 import { type HarnessGateContext, inspectCommitGate } from './commit-gate.ts'
 import { prepareRootCapabilitySummary, type RootCapabilitySummaryDraft } from './root-capability-summary.ts'
 import { prepareSkillDiagram, SKILL_DIAGRAMS, type SkillDiagramDraft } from './skill-diagrams.ts'
+import { readSkillStats } from './skill-stats.ts'
 
 export const HARNESS_PARTS = ['skills', 'subagents', 'evals', 'hooks'] as const
 export type HarnessPart = (typeof HARNESS_PARTS)[number]
@@ -284,7 +285,11 @@ export const createHarnessSession = ({
   let rootCapabilitySummaryRequested = false
   const diagramsDeclared = configContent !== null && hasTomlTable(configContent, 'ki-diagrams')
   const diagramOptions = diagramsDeclared
-    ? { repositoryUrl: repositoryUrl(configContent), revision: headRevision(root) }
+    ? {
+        repositoryUrl: repositoryUrl(configContent),
+        revision: headRevision(root),
+        stats: readSkillStats(root, capabilitySources)
+      }
     : {}
   const skillDiagramDrafts = SKILL_DIAGRAMS.map((diagram): SkillDiagramDraft | undefined => {
     if (!diagramsDeclared) return undefined

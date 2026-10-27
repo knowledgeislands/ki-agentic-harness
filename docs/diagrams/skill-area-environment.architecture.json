@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "76b6e5c51cee6c8a7f34c683b497ea1dc1fad817"
+      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
     },
     "legend": {
       "mode": "auto",
@@ -39,13 +39,14 @@
           "path": "skills/environment/ki-binding/SKILL.md"
         }
       ],
+      "tag": "R3 · CM · F3",
       "pos": [
         44,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -58,13 +59,14 @@
           "path": "skills/environment/ki-binding-chatgpt/SKILL.md"
         }
       ],
+      "tag": "R2 · CM · F3",
       "pos": [
         300,
         188
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -77,13 +79,14 @@
           "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F3",
       "pos": [
         44,
         188
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -96,13 +99,14 @@
           "path": "skills/environment/ki-binding-claude/SKILL.md"
         }
       ],
+      "tag": "R2 · CM · F3",
       "pos": [
         300,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -115,13 +119,14 @@
           "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F7",
       "pos": [
         876,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -134,13 +139,14 @@
           "path": "skills/environment/ki-housekeeping-claude/SKILL.md"
         }
       ],
+      "tag": "R22 · CM · F7",
       "pos": [
         876,
         188
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -153,13 +159,14 @@
           "path": "skills/environment/ki-tokenomics/SKILL.md"
         }
       ],
+      "tag": "R5 · CM · F8",
       "pos": [
         588,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -172,13 +179,14 @@
           "path": "skills/environment/ki-tokenomics-chatgpt/SKILL.md"
         }
       ],
+      "tag": "R3 · CM · F7",
       "pos": [
         588,
         188
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -191,13 +199,14 @@
           "path": "skills/environment/ki-tokenomics-claude/SKILL.md"
         }
       ],
+      "tag": "R3 · CM · F7",
       "pos": [
         588,
         312
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -210,13 +219,14 @@
           "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F3",
       "pos": [
         44,
-        500
+        516
       ],
       "size": [
         208,
-        60
+        76
       ]
     }
   ],
@@ -321,6 +331,7 @@
       "items": [
         "The middle region holds the skills that bind, budget and clean the agent runtimes, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "Stats: R = unique published rubric criteria (– = no publication); C = script-source bytes including tests/shared code: 0, S <10 KiB, M <100 KiB, L ≥100 KiB; F = reference files, including rubric. Recursive physical files only.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

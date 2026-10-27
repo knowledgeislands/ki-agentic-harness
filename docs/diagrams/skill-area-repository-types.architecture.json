@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
     },
     "legend": {
       "mode": "auto",
@@ -39,13 +39,14 @@
           "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F3",
       "pos": [
         44,
         64
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -58,13 +59,14 @@
           "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F3",
       "pos": [
         844,
-        548
+        580
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -77,13 +79,14 @@
           "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
         }
       ],
+      "tag": "R27 · CL · F4",
       "pos": [
         588,
-        920
+        952
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -96,13 +99,14 @@
           "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
         }
       ],
+      "tag": "R10 · CM · F7",
       "pos": [
         588,
-        548
+        580
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -115,13 +119,14 @@
           "path": "skills/repo-structure/ki-repo-kb/SKILL.md"
         }
       ],
+      "tag": "R25 · CL · F18",
       "pos": [
         44,
-        548
+        580
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -134,13 +139,14 @@
           "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
         }
       ],
+      "tag": "R19 · CM · F8",
       "pos": [
         44,
-        796
+        828
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -153,13 +159,14 @@
           "path": "skills/repo-structure/ki-repo-kb-live-artifacts/SKILL.md"
         }
       ],
+      "tag": "R13 · CM · F8",
       "pos": [
         300,
-        672
+        704
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -172,13 +179,14 @@
           "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
         }
       ],
+      "tag": "R6 · CM · F3",
       "pos": [
         300,
-        796
+        828
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -191,13 +199,14 @@
           "path": "skills/repo-structure/ki-repo-kb-streams/SKILL.md"
         }
       ],
+      "tag": "R19 · CL · F8",
       "pos": [
         44,
-        672
+        704
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -210,13 +219,14 @@
           "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
         }
       ],
+      "tag": "R14 · CL · F12",
       "pos": [
         588,
-        1044
+        1076
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -229,13 +239,14 @@
           "path": "skills/repo-structure/ki-repo-project/SKILL.md"
         }
       ],
+      "tag": "R2 · CM · F3",
       "pos": [
         588,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -248,13 +259,14 @@
           "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
         }
       ],
+      "tag": "R6 · CM · F3",
       "pos": [
         588,
-        672
+        704
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -267,13 +279,14 @@
           "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
         }
       ],
+      "tag": "R4 · CL · F11",
       "pos": [
         588,
-        796
+        828
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -286,13 +299,14 @@
           "path": "skills/repo-structure/ki-repo-website/SKILL.md"
         }
       ],
+      "tag": "R8 · CM · F7",
       "pos": [
         44,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -305,13 +319,14 @@
           "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
         }
       ],
+      "tag": "R12 · CM · F7",
       "pos": [
         44,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -324,13 +339,14 @@
           "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
         }
       ],
+      "tag": "R20 · CM · F8",
       "pos": [
         300,
-        376
+        392
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -343,13 +359,14 @@
           "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
         }
       ],
+      "tag": "R43 · CM · F8",
       "pos": [
         300,
-        252
+        268
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -362,13 +379,14 @@
           "path": "skills/change-management/ki-work-recurring/SKILL.md"
         }
       ],
+      "tag": "R2 · CM · F3",
       "pos": [
         44,
-        1232
+        1280
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -381,13 +399,14 @@
           "path": "skills/governance/ki-decision-records/SKILL.md"
         }
       ],
+      "tag": "R37 · CL · F9",
       "pos": [
         364,
-        1232
+        1280
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -400,13 +419,14 @@
           "path": "skills/governance/ki-engineering/SKILL.md"
         }
       ],
+      "tag": "R63 · CL · F4",
       "pos": [
         684,
-        1232
+        1280
       ],
       "size": [
         208,
-        60
+        76
       ]
     },
     {
@@ -419,13 +439,14 @@
           "path": "skills/governance/ki-authoring/SKILL.md"
         }
       ],
+      "tag": "R4 · CM · F9",
       "pos": [
         1004,
-        1232
+        1280
       ],
       "size": [
         208,
-        60
+        76
       ]
     }
   ],
@@ -619,6 +640,7 @@
       "items": [
         "The middle region holds the skills that shape one kind of repository each, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
+        "Stats: R = unique published rubric criteria (– = no publication); C = script-source bytes including tests/shared code: 0, S <10 KiB, M <100 KiB, L ≥100 KiB; F = reference files, including rubric. Recursive physical files only.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
       ]
     },

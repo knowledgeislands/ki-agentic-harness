@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 1168 712" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="width: 1168px; height: 712px; min-width: 0px;" width="1168" height="712" xmlns="http://www.w3.org/2000/svg"><style>
+<svg viewBox="0 0 1168 760" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 3.800s; width: 1168px; height: 760px; min-width: 0px;" width="1168" height="760" xmlns="http://www.w3.org/2000/svg"><style>
 /*
 JetBrains Mono variable WOFF2 subsets from Google Fonts service revision v24.
 These fixed bytes are shared by the viewer and its SVG/raster exports.
@@ -134,8 +134,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
   
 svg { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', 'Noto Sans Mono CJK SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace; }
-:root, [data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #64748b; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; }
-[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #d9dee5; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #94a3b8; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; }
+:root, [data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; }
+[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; }
 [data-preset="signal-flow"][data-theme="dark"] { --bg: #030711; --grid: #15233a; --panel: rgba(6, 14, 28, 0.78); --panel-border: #1d3350; --lane-fill: rgba(9, 22, 40, 0.5); --lane-stroke: #2c4564; --text: #f5fbff; --text-muted: #9eb0c7; --text-dim: #52667f; --text-faint: #7890ad; --mask: #07101e; --frontend-fill: rgba(6, 182, 212, 0.14); --frontend-stroke: #67e8f9; --backend-fill: rgba(16, 185, 129, 0.14); --backend-stroke: #5eead4; --database-fill: rgba(139, 92, 246, 0.16); --database-stroke: #c4b5fd; --cloud-fill: rgba(245, 158, 11, 0.13); --cloud-stroke: #fcd34d; --security-fill: rgba(244, 63, 94, 0.13); --security-stroke: #fda4af; --messagebus-fill: rgba(249, 115, 22, 0.13); --messagebus-stroke: #fdba74; --external-fill: rgba(71, 85, 105, 0.24); --external-stroke: #a5b4c7; --arrow: #7890ad; --arrow-emphasis: #2dd4bf; --toolbar-bg: rgba(7, 16, 30, 0.86); --toolbar-border: #29415f; --toolbar-menu-bg: #07101e; }
 [data-preset="signal-flow"][data-theme="light"] { --bg: #f4f9fc; --grid: #d4e5ee; --panel: rgba(255, 255, 255, 0.82); --panel-border: #bfd5e2; --lane-fill: rgba(232, 243, 248, 0.62); --lane-stroke: #a9c5d5; --text: #102638; --text-muted: #587287; --text-dim: #8aa2b4; --text-faint: #668397; --mask: #ffffff; --frontend-fill: rgba(6, 182, 212, 0.09); --frontend-stroke: #0789a1; --backend-fill: rgba(5, 150, 105, 0.09); --backend-stroke: #087f69; --database-fill: rgba(124, 58, 237, 0.09); --database-stroke: #7254c7; --cloud-fill: rgba(217, 119, 6, 0.08); --cloud-stroke: #b9670b; --security-fill: rgba(225, 29, 72, 0.08); --security-stroke: #c53a59; --messagebus-fill: rgba(234, 88, 12, 0.08); --messagebus-stroke: #c65f27; --external-fill: rgba(100, 116, 139, 0.1); --external-stroke: #607a8c; --arrow: #7b97aa; --arrow-emphasis: #0d9488; }
 [data-preset="blueprint"][data-theme="dark"] { --bg: #06131f; --grid: #17425a; --panel: rgba(7, 27, 43, 0.9); --panel-border: #27627f; --lane-fill: rgba(10, 43, 66, 0.36); --lane-stroke: #34799a; --text: #e3f6ff; --text-muted: #91b8ca; --text-dim: #557e92; --text-faint: #739caf; --mask: #0a2031; --frontend-fill: rgba(26, 157, 193, 0.14); --frontend-stroke: #66d9ef; --backend-fill: rgba(31, 155, 124, 0.13); --backend-stroke: #69dfbd; --database-fill: rgba(120, 105, 196, 0.14); --database-stroke: #b4a8ff; --cloud-fill: rgba(197, 145, 43, 0.13); --cloud-stroke: #ffd166; --security-fill: rgba(199, 76, 104, 0.13); --security-stroke: #ff8da1; --messagebus-fill: rgba(207, 112, 49, 0.13); --messagebus-stroke: #ffad66; --external-fill: rgba(84, 119, 139, 0.18); --external-stroke: #a7cad9; --arrow: #78a3b7; --arrow-emphasis: #64dfc1; --toolbar-bg: rgba(7, 28, 45, 0.92); --toolbar-border: #34799a; --toolbar-text: #d8f3ff; --toolbar-hover: rgba(18, 58, 83, 0.95); --toolbar-menu-bg: #0a2031; }
@@ -159,6 +159,10 @@ svg { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consol
 [data-theme="dark"] .toolbar .preset-menu, [data-theme="dark"] .toolbar .export-menu { border-color: rgba(148, 163, 184, 0.16); box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px, rgba(0, 0, 0, 0.6) 0px 18px 44px -12px; }
 [data-theme="light"] .preset-option-swatch.classic { background: radial-gradient(circle at 1px 1px, rgb(217, 222, 229) 0.6px, transparent 0.9px) 0px 0px / 5px 5px, rgb(255, 255, 255); }
 [data-theme="light"] .preset-option-swatch.classic::before { border-color: rgb(27, 135, 163); background: rgba(14, 116, 144, 0.08); box-shadow: rgba(17, 24, 39, 0.12) 0px 2px 4px; }
+@keyframes archify-motion-dot-breathe { 
+  0%, 100% { opacity: 1; transform: scale(1); }
+  46% { opacity: 0.55; transform: scale(0.72); }
+}
 .c-grid { stroke: var(--grid); fill: none; }
 .c-mask { fill: var(--mask); stroke: none; }
 .c-lane-rule { stroke: var(--lane-stroke); fill: none; opacity: 0.7; }
@@ -214,9 +218,6 @@ svg[data-focus-active] [data-focus-match] [data-detail-anchor], svg[data-reach-a
 svg [data-node-id] { cursor: pointer; transition: opacity 0.18s, fill-opacity 0.18s, stroke-opacity 0.18s, filter 0.18s; }
 svg [data-edge-from], svg [data-graph-role="automatic-crossover-underlay"] { transition: opacity 0.18s, filter 0.18s; }
 svg [data-node-id]:hover, svg [data-node-id]:focus-visible { filter: drop-shadow(0 0 7px var(--frontend-stroke)); outline: none; }
-svg [data-node-id]:hover .source-evidence-beacon, svg [data-node-id]:focus-visible .source-evidence-beacon, svg [data-node-id][data-focus-selected] .source-evidence-beacon { opacity: 1; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--backend-stroke) 72%, transparent)); }
-svg[data-preset="signal-flow"] .source-evidence-beacon { opacity: 0.9; }
-svg[data-preset="blueprint"] .source-evidence-beacon rect { rx: 0.8px; filter: none; }
 svg [data-legend-kind][role="button"] { cursor: pointer; }
 svg [data-legend-kind]:focus { outline: none; }
 svg [data-legend-hit] { fill: transparent; stroke: transparent; stroke-width: 1.4; pointer-events: all; vector-effect: non-scaling-stroke; transition: stroke 150ms, stroke-width 150ms, filter 150ms; }
@@ -328,20 +329,14 @@ svg[data-preset="blueprint"][data-relationship-preview-active] [data-relationshi
 .c-security-group { fill: transparent; stroke: var(--security-stroke); stroke-dasharray: 4, 4; }
 .c-region { fill: rgba(251, 191, 36, 0.05); stroke: var(--cloud-stroke); stroke-dasharray: 8, 4; }
 .c-lane { fill: var(--lane-fill); stroke: var(--lane-stroke); stroke-dasharray: 6, 6; }
-svg[data-preset="signal-flow"][data-animation="trace"] [data-animate="edge"] { stroke-linecap: round; filter: drop-shadow(0 0 3px var(--arrow-emphasis)); animation-duration: 1.75s; }
-svg[data-preset="signal-flow"][data-animation="trace"] [data-graph-role="automatic-crossover"]:has(&gt; [data-animate="edge"]) &gt; [data-graph-role="automatic-crossover-underlay"] { animation-duration: 1.75s; }
-svg[data-preset="signal-flow"][data-animation="trace"] [data-animate="node"] { animation-duration: 3.1s; }
-svg[data-preset="blueprint"][data-animation="trace"] [data-animate="edge"] { stroke-linecap: square; filter: none; animation-duration: 2.15s; }
-svg[data-preset="blueprint"][data-animation="trace"] [data-graph-role="automatic-crossover"]:has(&gt; [data-animate="edge"]) &gt; [data-graph-role="automatic-crossover-underlay"] { animation-duration: 2.15s; }
-svg[data-preset="blueprint"][data-animation="trace"] [data-animate="node"] { animation-name: archify-blueprint-node-pulse; animation-duration: 3.8s; }
-svg[data-preset="editorial"][data-animation="trace"] [data-animate="edge"] { filter: none; animation-duration: 2.2s; }
-svg[data-preset="editorial"][data-animation="trace"] [data-graph-role="automatic-crossover"]:has(&gt; [data-animate="edge"]) &gt; [data-graph-role="automatic-crossover-underlay"] { animation-duration: 2.2s; }
-svg[data-preset="editorial"][data-animation="trace"] [data-animate="node"] { animation-name: archify-editorial-node-pulse; animation-duration: 3.5s; }
-@keyframes archify-edge-flow { 
-  0% { stroke-dasharray: 10, 8; stroke-dashoffset: 54; opacity: 0.42; }
-  88% { stroke-dasharray: 10, 8; stroke-dashoffset: 0; opacity: 1; }
-  99.9% { stroke-dasharray: 10, 8; stroke-dashoffset: 0; opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 1; }
+svg[data-animation="trace"] { --flow-cycle: 6.4s; --flow-halo-peak: 0.17; --flow-glow-peak: 0.5; --flow-tail-peak: 0.42; --flow-head-peak: 0.95; --flow-wake-peak: 0.3; --flow-ripple-peak: 0.65; }
+svg[data-preset="editorial"] .ambient-flow-fill { --flow-peak: 0.2; }
+svg[data-preset="editorial"] .ambient-flow-playhead-glow { --flow-peak: 0.14; }
+svg[data-preset="blueprint"] .ambient-edge-flow { stroke-linecap: square; }
+svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; --flow-tail-peak: 0.2; --flow-head-peak: 0.7; --flow-wake-peak: 0.14; --flow-ripple-peak: 0.3; }
+@keyframes archify-node-enter { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 @keyframes archify-node-pulse { 
   0%, 72%, 100% { filter: none; stroke-width: 1.5; }
@@ -402,12 +397,217 @@ svg[data-preset="editorial"][data-animation="trace"] [data-animate="node"] { ani
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.48; transform: scale(0.78); }
 }
-:root, svg { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #64748b; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; }
-@media (prefers-color-scheme: light) { :root, svg { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #d9dee5; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #94a3b8; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; } }
-svg[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #d9dee5; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #94a3b8; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; }
-svg[data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #64748b; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; }
+@keyframes archify-relay-ripple { 
+  0% { r: 2px; opacity: var(--flow-peak, 0.6); }
+  19.737%, 100% { r: 20px; opacity: 0; }
+}
+@keyframes archify-relay-comet-0 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  3.158% { opacity: var(--flow-peak, 0.9); }
+  35.148% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  39.358%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-0 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  35.148% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  58.832%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-1 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  2.406% { opacity: var(--flow-peak, 0.9); }
+  12.03% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  16.241%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-1 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  12.03% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  35.714%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-2 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  2.988% { opacity: var(--flow-peak, 0.9); }
+  14.941% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  19.151%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-2 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  14.941% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  38.625%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-3 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  2.211% { opacity: var(--flow-peak, 0.9); }
+  11.053% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  15.263%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-3 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  11.053% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  34.737%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-4 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  3.158% { opacity: var(--flow-peak, 0.9); }
+  28.475% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  32.685%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-4 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  28.475% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  52.159%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-5 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  3.158% { opacity: var(--flow-peak, 0.9); }
+  39.474% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  43.684%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-5 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  39.474% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  63.158%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-6 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  3.158% { opacity: var(--flow-peak, 0.9); }
+  39.474% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  43.684%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-6 { 
+  0%, 11.842% { opacity: 0; }
+  39.474% { opacity: var(--flow-peak, 0.3); }
+  63.158%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-7 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  2.211% { opacity: var(--flow-peak, 0.9); }
+  11.053% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  15.263%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-7 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  11.053% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  34.737%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-8 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  2.406% { opacity: var(--flow-peak, 0.9); }
+  12.03% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  16.241%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-8 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  12.03% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  35.714%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-9 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  3.158% { opacity: var(--flow-peak, 0.9); }
+  32.516% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  36.727%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-9 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  32.516% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  56.2%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-node-0 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.158%, 11.053% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.579% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-1 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.158%, 11.053% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.579% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-2 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.158%, 11.053% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.579% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-3 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.158%, 11.053% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.579% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-4 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.158%, 11.053% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  31.579% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-5 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  11.053% { filter: var(--ambient-node-base-filter, none); }
+  14.211%, 22.105% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  42.632% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-6 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  12.03% { filter: var(--ambient-node-base-filter, none); }
+  15.188%, 23.083% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  43.609% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-7 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  39.474% { filter: var(--ambient-node-base-filter, none); }
+  42.632%, 50.526% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  71.053% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-8 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  39.474% { filter: var(--ambient-node-base-filter, none); }
+  42.632%, 50.526% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  71.053% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-9 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  11.053% { filter: var(--ambient-node-base-filter, none); }
+  14.211%, 22.105% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  42.632% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-10 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  12.03% { filter: var(--ambient-node-base-filter, none); }
+  15.188%, 23.083% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  43.609% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-11 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  32.516% { filter: var(--ambient-node-base-filter, none); }
+  35.674%, 43.569% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  64.095% { filter: var(--ambient-node-base-filter, none); }
+}
+svg[data-node-ui] [data-node-id] &gt; rect:not(.c-mask) { stroke-width: 1.25px; }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-frontend { fill: color-mix(in srgb, var(--frontend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--frontend-stroke) 72%, var(--mask)); }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-backend { fill: color-mix(in srgb, var(--backend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--backend-stroke) 72%, var(--mask)); }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-database { fill: color-mix(in srgb, var(--database-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--database-stroke) 72%, var(--mask)); }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-cloud { fill: color-mix(in srgb, var(--cloud-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--cloud-stroke) 72%, var(--mask)); }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-security { fill: color-mix(in srgb, var(--security-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--security-stroke) 72%, var(--mask)); }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-messagebus { fill: color-mix(in srgb, var(--messagebus-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--messagebus-stroke) 72%, var(--mask)); }
+:is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-external { fill: color-mix(in srgb, var(--external-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--external-stroke) 72%, var(--mask)); }
+svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-region { fill: color-mix(in srgb, var(--cloud-stroke) 3%, transparent); stroke: color-mix(in srgb, var(--cloud-stroke) 42%, var(--lane-stroke)); stroke-dasharray: none; }
+svg[data-node-ui] .c-security-group { stroke: color-mix(in srgb, var(--security-stroke) 58%, var(--lane-stroke)); }
+svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-security-group { stroke-dasharray: 4, 3; }
+svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-lane { stroke: var(--lane-stroke); stroke-dasharray: none; }
+svg[data-node-ui] [data-graph-role="structural-frame-label-mask"] { rx: 5px; fill: color-mix(in srgb, var(--cloud-stroke) 10%, var(--mask)); stroke: color-mix(in srgb, var(--cloud-stroke) 38%, var(--mask)); stroke-width: 0.8px; }
+svg[data-node-ui] [data-composition-frame-kind="security-group"] &gt; [data-graph-role="structural-frame-label-mask"] { fill: color-mix(in srgb, var(--security-stroke) 9%, var(--mask)); stroke: color-mix(in srgb, var(--security-stroke) 36%, var(--mask)); }
+svg[data-node-ui] .phase-rule { opacity: 0.5; stroke-dasharray: none; }
+svg[data-node-ui] .phase-chip { stroke: var(--lane-stroke); stroke-width: 0.75px; }
+svg[data-node-ui] g[data-edge-from] &gt; rect.c-mask { rx: 7px; stroke: var(--lane-stroke); stroke-width: 0.75px; }
+svg[data-node-ui][data-preset="blueprint"] :is([data-graph-role="structural-frame-label-mask"], g[data-edge-from] &gt; rect.c-mask, .phase-chip) { rx: 2px; }
+svg[data-node-ui][data-preset="editorial"] :is([data-graph-role="structural-frame-label-mask"], g[data-edge-from] &gt; rect.c-mask, .phase-chip) { rx: 3px; }
+:root, svg { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
+@media (prefers-color-scheme: light) { :root, svg { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; } }
+svg[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
+svg[data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 rect.c-bg-rect { fill: var(--bg); }
-</style><rect x="0" y="0" width="1168" height="712" class="c-bg-rect"/>
+</style><rect x="0" y="0" width="1168" height="760" class="c-bg-rect"/>
         <title id="archify-diagram-title">Knowledge Islands skills · Fundamentals</title>
         <desc id="archify-diagram-description">An architecture diagram generated by Archify.</desc>
         <!-- Definitions -->
@@ -428,227 +628,261 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5"/>
           </pattern>
         </defs>
+        <style>
+          svg[data-node-ui] [data-node-id] &gt; rect:not(.c-mask) { stroke-width: 1.25px; }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-frontend { fill: color-mix(in srgb, var(--frontend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--frontend-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-backend { fill: color-mix(in srgb, var(--backend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--backend-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-database { fill: color-mix(in srgb, var(--database-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--database-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-cloud { fill: color-mix(in srgb, var(--cloud-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--cloud-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-security { fill: color-mix(in srgb, var(--security-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--security-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-messagebus { fill: color-mix(in srgb, var(--messagebus-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--messagebus-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] &gt; rect:not(.c-mask).c-external { fill: color-mix(in srgb, var(--external-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--external-stroke) 72%, var(--mask)); }
+          svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-region { fill: color-mix(in srgb, var(--cloud-stroke) 3%, transparent); stroke: color-mix(in srgb, var(--cloud-stroke) 42%, var(--lane-stroke)); stroke-dasharray: none; }
+          svg[data-node-ui] .c-security-group { stroke: color-mix(in srgb, var(--security-stroke) 58%, var(--lane-stroke)); }
+          svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-security-group { stroke-dasharray: 4 3; }
+          svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-lane { stroke: var(--lane-stroke); stroke-dasharray: none; }
+          svg[data-node-ui] [data-graph-role="structural-frame-label-mask"] { rx: 5px; fill: color-mix(in srgb, var(--cloud-stroke) 10%, var(--mask)); stroke: color-mix(in srgb, var(--cloud-stroke) 38%, var(--mask)); stroke-width: .8px; }
+          svg[data-node-ui] [data-composition-frame-kind="security-group"] &gt; [data-graph-role="structural-frame-label-mask"] { fill: color-mix(in srgb, var(--security-stroke) 9%, var(--mask)); stroke: color-mix(in srgb, var(--security-stroke) 36%, var(--mask)); }
+          svg[data-node-ui] .phase-rule { opacity: .5; stroke-dasharray: none; }
+          svg[data-node-ui] .phase-chip { stroke: var(--lane-stroke); stroke-width: .75px; }
+          svg[data-node-ui] g[data-edge-from] &gt; rect.c-mask { rx: 7px; stroke: var(--lane-stroke); stroke-width: .75px; }
+          svg[data-node-ui][data-preset="blueprint"] :is([data-graph-role="structural-frame-label-mask"], g[data-edge-from] &gt; rect.c-mask, .phase-chip) { rx: 2px; }
+          svg[data-node-ui][data-preset="editorial"] :is([data-graph-role="structural-frame-label-mask"], g[data-edge-from] &gt; rect.c-mask, .phase-chip) { rx: 3px; }
+        </style>
 
         <!-- Background Grid -->
         <rect width="100%" height="100%" fill="url(#grid)"/>
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Work and delivery · Delivery cycle" x="12" y="32" width="272" height="112" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Work and delivery · Delivery cycle" x="12" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Repository types · Single-type repositories" x="332" y="32" width="272" height="112" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Repository types · Single-type repositories" x="332" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Agentic systems · 1 skill" x="652" y="32" width="272" height="112" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Agentic systems · 1 skill" x="652" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Records and code · Records" x="12" y="532" width="272" height="112" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Records and code · Records" x="12" y="564" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="4" data-composition-frame-label="Work and delivery · Work items" x="332" y="532" width="272" height="112" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="4" data-composition-frame-label="Work and delivery · Work items" x="332" y="564" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="5" data-composition-frame-label="Agentic systems · 1 skill" x="652" y="532" width="272" height="112" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="5" data-composition-frame-label="Agentic systems · 1 skill" x="652" y="564" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="6" data-composition-frame-label="Repository and writing" x="16" y="224" width="520" height="232" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="6" data-composition-frame-label="Repository and writing" x="16" y="240" width="520" height="248" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="7" data-composition-frame-label="Skills and harness" x="560" y="224" width="264" height="232" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="7" data-composition-frame-label="Skills and harness" x="560" y="240" width="264" height="248" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="8" data-composition-frame-label="Fundamentals · 7 skills" x="0" y="208" width="1128" height="248" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="8" data-composition-frame-label="Fundamentals · 7 skills" x="0" y="224" width="1128" height="264" rx="12" class="c-region" stroke-width="1"/>
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
-          <path data-graph-role="automatic-crossover-underlay" d="M 684 94 L 588 94 Q 580 94 580 102 L 580 274 Q 580 282 572 282 L 508 282" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-agent-coordination-paperclip" data-edge-to="ki-git" data-edge-key="0" data-edge-id="ki-agent-coordination-paperclip--ki-git" data-composition-points="684,94;580,94;580,282;508,282" data-composition-crossover="halo" data-composition-independent="true" d="M 684 94 L 588 94 Q 580 94 580 102 L 580 274 Q 580 282 572 282 L 508 282" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 684 102 L 588 102 Q 580 102 580 110 L 580 298 Q 580 306 572 306 L 508 306" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-agent-coordination-paperclip" data-edge-to="ki-git" data-edge-key="0" data-edge-id="ki-agent-coordination-paperclip--ki-git" data-composition-points="684,102;580,102;580,306;508,306" data-composition-crossover="halo" data-composition-independent="true" d="M 684 102 L 588 102 Q 580 102 580 110 L 580 298 Q 580 306 572 306 L 508 306" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
-          <path data-graph-role="automatic-crossover-underlay" d="M 148 124 L 148 252" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-recap" data-edge-to="ki-authoring" data-edge-key="1" data-edge-id="ki-recap--ki-authoring" data-composition-points="148,124;148,252" data-composition-crossover="halo" data-composition-independent="true" d="M 148 124 L 148 252" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 148 140 L 148 268" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-recap" data-edge-to="ki-authoring" data-edge-key="1" data-edge-id="ki-recap--ki-authoring" data-composition-points="148,140;148,268" data-composition-crossover="halo" data-composition-independent="true" d="M 148 140 L 148 268" class="a-default" data-animate="edge" style="--step: 1;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:2">
-          <path data-graph-role="automatic-crossover-underlay" d="M 300 406 L 284 406 Q 276 406 276 398 L 276 297 Q 276 289 268 289 L 252 289" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo" data-edge-to="ki-authoring" data-edge-key="2" data-edge-id="ki-repo--ki-authoring" data-composition-points="300,406;276,406;276,289;252,289" data-composition-crossover="halo" data-composition-independent="true" d="M 300 406 L 284 406 Q 276 406 276 398 L 276 297 Q 276 289 268 289 L 252 289" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 300 430 L 284 430 Q 276 430 276 422 L 276 321 Q 276 313 268 313 L 252 313" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo" data-edge-to="ki-authoring" data-edge-key="2" data-edge-id="ki-repo--ki-authoring" data-composition-points="300,430;276,430;276,313;252,313" data-composition-crossover="halo" data-composition-independent="true" d="M 300 430 L 284 430 Q 276 430 276 422 L 276 321 Q 276 313 268 313 L 252 313" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:3">
-          <path data-graph-role="automatic-crossover-underlay" d="M 404 376 L 404 312" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo" data-edge-to="ki-git" data-edge-key="3" data-edge-id="ki-repo--ki-git" data-composition-points="404,376;404,312" data-composition-crossover="halo" data-composition-independent="true" d="M 404 376 L 404 312" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 404 392 L 404 344" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo" data-edge-to="ki-git" data-edge-key="3" data-edge-id="ki-repo--ki-git" data-composition-points="404,392;404,344" data-composition-crossover="halo" data-composition-independent="true" d="M 404 392 L 404 344" class="a-default" data-animate="edge" style="--step: 3;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 364 94 L 284 94 Q 276 94 276 102 L 276 267 Q 276 275 268 275 L 252 275" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-dotfiles-chezmoi" data-edge-to="ki-authoring" data-edge-key="4" data-edge-id="ki-repo-dotfiles-chezmoi--ki-authoring" data-composition-points="364,94;276,94;276,275;252,275" data-composition-crossover="halo" data-composition-independent="true" d="M 364 94 L 284 94 Q 276 94 276 102 L 276 267 Q 276 275 268 275 L 252 275" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 364 102 L 284 102 Q 276 102 276 110 L 276 291 Q 276 299 268 299 L 252 299" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-dotfiles-chezmoi" data-edge-to="ki-authoring" data-edge-key="4" data-edge-id="ki-repo-dotfiles-chezmoi--ki-authoring" data-composition-points="364,102;276,102;276,299;252,299" data-composition-crossover="halo" data-composition-independent="true" d="M 364 102 L 284 102 Q 276 102 276 110 L 276 291 Q 276 299 268 299 L 252 299" class="a-default" data-animate="edge" style="--step: 4;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
-          <path data-graph-role="automatic-crossover-underlay" d="M 678 436 L 678 476 Q 678 484 670 484 L 156 484 Q 148 484 148 492 L 148 564" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-decision-records" data-edge-key="5" data-edge-id="ki-repo-harness--ki-decision-records" data-composition-points="678,436;678,484;148,484;148,564" data-composition-crossover="halo" data-composition-independent="true" d="M 678 436 L 678 476 Q 678 484 670 484 L 156 484 Q 148 484 148 492 L 148 564" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 678 468 L 678 508 Q 678 516 670 516 L 156 516 Q 148 516 148 524 L 148 596" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-decision-records" data-edge-key="5" data-edge-id="ki-repo-harness--ki-decision-records" data-composition-points="678,468;678,516;148,516;148,596" data-composition-crossover="halo" data-composition-independent="true" d="M 678 468 L 678 508 Q 678 516 670 516 L 156 516 Q 148 516 148 524 L 148 596" class="a-default" data-animate="edge" style="--step: 5;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:6">
-          <path data-graph-role="automatic-crossover-underlay" d="M 664 436 L 664 452 Q 664 460 656 460 L 284 460 Q 276 460 276 452 L 276 414 Q 276 406 268 406 L 252 406" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-diagrams" data-edge-key="6" data-edge-id="ki-repo-harness--ki-diagrams" data-composition-points="664,436;664,460;276,460;276,406;252,406" data-composition-crossover="halo" data-composition-independent="true" d="M 664 436 L 664 452 Q 664 460 656 460 L 284 460 Q 276 460 276 452 L 276 414 Q 276 406 268 406 L 252 406" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 664 468 L 664 484 Q 664 492 656 492 L 284 492 Q 276 492 276 484 L 276 438 Q 276 430 268 430 L 252 430" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-diagrams" data-edge-key="6" data-edge-id="ki-repo-harness--ki-diagrams" data-composition-points="664,468;664,492;276,492;276,430;252,430" data-composition-crossover="halo" data-composition-independent="true" d="M 664 468 L 664 484 Q 664 492 656 492 L 284 492 Q 276 492 276 484 L 276 438 Q 276 430 268 430 L 252 430" class="a-dashed" data-animate="edge" style="--step: 6;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:7">
-          <path data-graph-role="automatic-crossover-underlay" d="M 692 376 L 692 312" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-skills" data-edge-key="7" data-edge-id="ki-repo-harness--ki-skills" data-composition-points="692,376;692,312" data-composition-crossover="halo" data-composition-independent="true" d="M 692 376 L 692 312" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 692 392 L 692 344" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-skills" data-edge-key="7" data-edge-id="ki-repo-harness--ki-skills" data-composition-points="692,392;692,344" data-composition-crossover="halo" data-composition-independent="true" d="M 692 392 L 692 344" class="a-default" data-animate="edge" style="--step: 7;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:8">
-          <path data-graph-role="automatic-crossover-underlay" d="M 706 436 L 706 492 Q 706 500 714 500 L 780 500 Q 788 500 788 508 L 788 564" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-subagents" data-edge-key="8" data-edge-id="ki-repo-harness--ki-subagents" data-composition-points="706,436;706,500;788,500;788,564" data-composition-crossover="halo" data-composition-independent="true" d="M 706 436 L 706 492 Q 706 500 714 500 L 780 500 Q 788 500 788 508 L 788 564" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 706 468 L 706 596" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-subagents" data-edge-key="8" data-edge-id="ki-repo-harness--ki-subagents" data-composition-points="706,468;706,596" data-composition-crossover="halo" data-composition-independent="true" d="M 706 468 L 706 596" class="a-default" data-animate="edge" style="--step: 8;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:9">
-          <path data-graph-role="automatic-crossover-underlay" d="M 692 436 L 692 492 Q 692 500 684 500 L 476 500 Q 468 500 468 508 L 468 564" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-work-roadmap" data-edge-key="9" data-edge-id="ki-repo-harness--ki-work-roadmap" data-composition-points="692,436;692,500;468,500;468,564" data-composition-crossover="halo" data-composition-independent="true" d="M 692 436 L 692 492 Q 692 500 684 500 L 476 500 Q 468 500 468 508 L 468 564" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 692 468 L 692 524 Q 692 532 684 532 L 476 532 Q 468 532 468 540 L 468 596" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-work-roadmap" data-edge-key="9" data-edge-id="ki-repo-harness--ki-work-roadmap" data-composition-points="692,468;692,532;468,532;468,596" data-composition-crossover="halo" data-composition-independent="true" d="M 692 468 L 692 524 Q 692 532 684 532 L 476 532 Q 468 532 468 540 L 468 596" class="a-default" data-animate="edge" style="--step: 9;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
-        <g id="node-ki-recap" data-node-id="ki-recap" data-node-label="ki-recap" tabindex="0" role="button" aria-label="Focus ki-recap, change management · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-context="Work and delivery · Delivery cycle">
-          <title>ki-recap · change management · command · Work and delivery · Delivery cycle</title>
-          <rect x="44" y="64" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="44" y="64" width="208" height="60" rx="6" class="c-frontend" stroke-width="1.5"/>
+        <g id="node-ki-recap" data-node-id="ki-recap" data-node-label="ki-recap" tabindex="0" role="button" aria-label="Focus ki-recap, change management · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · CM · F2" data-node-context="Work and delivery · Delivery cycle">
+          <title>ki-recap · change management · command · Work and delivery · Delivery cycle · R– · CM · F2</title>
+          <rect x="44" y="64" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="44" y="64" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(50 70) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" x="148" y="92" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-recap</text>
-        <text x="148" y="108" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-recap</text>
+        <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="148" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · CM · F2</text>
         </g>
 
-        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository structure · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-context="Repository types · Single-type repositories">
-          <title>ki-repo-dotfiles-chezmoi · repository structure · opt-in · Repository types · Single-type repositories</title>
-          <rect x="364" y="64" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="364" y="64" width="208" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository structure · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R8 · CM · F3" data-node-context="Repository types · Single-type repositories">
+          <title>ki-repo-dotfiles-chezmoi · repository structure · opt-in · Repository types · Single-type repositories · R8 · CM · F3</title>
+          <rect x="364" y="64" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="364" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="468" y="92" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-dotfiles-chezmoi</text>
-        <text x="468" y="108" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+          <text data-node-label="" x="468" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-dotfiles-chezmoi</text>
+        <text x="468" y="116" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+        <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F3</text>
         </g>
 
-        <g id="node-ki-agent-coordination-paperclip" data-node-id="ki-agent-coordination-paperclip" data-node-label="ki-agent-coordination-paperclip" tabindex="0" role="button" aria-label="Focus ki-agent-coordination-paperclip, agentic systems · opt-in, Agentic systems · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-context="Agentic systems · 1 skill">
-          <title>ki-agent-coordination-paperclip · agentic systems · opt-in · Agentic systems · 1 skill</title>
-          <rect x="684" y="64" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="684" y="64" width="208" height="60" rx="6" class="c-database" stroke-width="1.5"/>
+        <g id="node-ki-agent-coordination-paperclip" data-node-id="ki-agent-coordination-paperclip" data-node-label="ki-agent-coordination-paperclip" tabindex="0" role="button" aria-label="Focus ki-agent-coordination-paperclip, agentic systems · opt-in, Agentic systems · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-tag="R17 · CM · F6" data-node-context="Agentic systems · 1 skill">
+          <title>ki-agent-coordination-paperclip · agentic systems · opt-in · Agentic systems · 1 skill · R17 · CM · F6</title>
+          <rect x="684" y="64" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="684" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(690 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="788" y="92" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">ki-agent-coordination-paperclip</text>
-        <text x="788" y="108" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
+          <text data-node-label="" x="788" y="100" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">ki-agent-coordination-paperclip</text>
+        <text x="788" y="116" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
+        <text x="788" y="132" class="t-database" font-size="7" text-anchor="middle">R17 · CM · F6</text>
         </g>
 
-        <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, governance · always on, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="governance · always on" data-node-context="Fundamentals · 7 skills › Repository and writing">
-          <title>ki-authoring · governance · always on · Fundamentals · 7 skills › Repository and writing</title>
-          <rect x="44" y="252" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="44" y="252" width="208" height="60" rx="6" class="c-security" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(50 258) scale(0.6875)">
+        <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, governance · always on, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="governance · always on" data-node-tag="R4 · CM · F9" data-node-context="Fundamentals · 7 skills › Repository and writing">
+          <title>ki-authoring · governance · always on · Fundamentals · 7 skills › Repository and writing · R4 · CM · F9</title>
+          <rect x="44" y="268" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="44" y="268" width="208" height="76" rx="8" class="c-security" data-animate="node" style="--step: 2; --flow-node-name: archify-relay-node-6;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(50 274) scale(0.6875)">
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" x="148" y="280" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-authoring</text>
-        <text x="148" y="296" class="t-muted" font-size="9" text-anchor="middle">governance · always on</text>
+          <text data-node-label="" x="148" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-authoring</text>
+        <text x="148" y="320" class="t-muted" font-size="9" text-anchor="middle">governance · always on</text>
+        <text x="148" y="336" class="t-security" font-size="7" text-anchor="middle">R4 · CM · F9</text>
         </g>
 
-        <g id="node-ki-bootstrap" data-node-id="ki-bootstrap" data-node-label="ki-bootstrap" tabindex="0" role="button" aria-label="Focus ki-bootstrap, keystone · command, Fundamentals · 7 skills" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="keystone · command" data-node-context="Fundamentals · 7 skills">
-          <title>ki-bootstrap · keystone · command · Fundamentals · 7 skills</title>
-          <rect x="876" y="252" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="876" y="252" width="208" height="60" rx="6" class="c-frontend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(882 258) scale(0.6875)">
+        <g id="node-ki-bootstrap" data-node-id="ki-bootstrap" data-node-label="ki-bootstrap" tabindex="0" role="button" aria-label="Focus ki-bootstrap, keystone · command, Fundamentals · 7 skills" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="keystone · command" data-node-tag="R– · C0 · F3" data-node-context="Fundamentals · 7 skills">
+          <title>ki-bootstrap · keystone · command · Fundamentals · 7 skills · R– · C0 · F3</title>
+          <rect x="876" y="268" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="876" y="268" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 4;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(882 274) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" x="980" y="280" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-bootstrap</text>
-        <text x="980" y="296" class="t-muted" font-size="9" text-anchor="middle">keystone · command</text>
+          <text data-node-label="" x="980" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-bootstrap</text>
+        <text x="980" y="320" class="t-muted" font-size="9" text-anchor="middle">keystone · command</text>
+        <text x="980" y="336" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F3</text>
         </g>
 
-        <g id="node-ki-diagrams" data-node-id="ki-diagrams" data-node-label="ki-diagrams" tabindex="0" role="button" aria-label="Focus ki-diagrams, governance · opt-in, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-context="Fundamentals · 7 skills › Repository and writing">
-          <title>ki-diagrams · governance · opt-in · Fundamentals · 7 skills › Repository and writing</title>
-          <rect x="44" y="376" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="44" y="376" width="208" height="60" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 382) scale(0.6875)">
+        <g id="node-ki-diagrams" data-node-id="ki-diagrams" data-node-label="ki-diagrams" tabindex="0" role="button" aria-label="Focus ki-diagrams, governance · opt-in, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R9 · CL · F8" data-node-context="Fundamentals · 7 skills › Repository and writing">
+          <title>ki-diagrams · governance · opt-in · Fundamentals · 7 skills › Repository and writing · R9 · CL · F8</title>
+          <rect x="44" y="392" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="44" y="392" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 7; --flow-node-name: archify-relay-node-8;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 398) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="148" y="404" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-diagrams</text>
-        <text x="148" y="420" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+          <text data-node-label="" x="148" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-diagrams</text>
+        <text x="148" y="444" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+        <text x="148" y="460" class="t-database" font-size="7" text-anchor="middle">R9 · CL · F8</text>
         </g>
 
-        <g id="node-ki-git" data-node-id="ki-git" data-node-label="ki-git" tabindex="0" role="button" aria-label="Focus ki-git, governance · opt-in, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-context="Fundamentals · 7 skills › Repository and writing">
-          <title>ki-git · governance · opt-in · Fundamentals · 7 skills › Repository and writing</title>
-          <rect x="300" y="252" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="300" y="252" width="208" height="60" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 258) scale(0.6875)">
+        <g id="node-ki-git" data-node-id="ki-git" data-node-label="ki-git" tabindex="0" role="button" aria-label="Focus ki-git, governance · opt-in, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R15 · CM · F3" data-node-context="Fundamentals · 7 skills › Repository and writing">
+          <title>ki-git · governance · opt-in · Fundamentals · 7 skills › Repository and writing · R15 · CM · F3</title>
+          <rect x="300" y="268" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="300" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 274) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="404" y="280" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-git</text>
-        <text x="404" y="296" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+          <text data-node-label="" x="404" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-git</text>
+        <text x="404" y="320" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+        <text x="404" y="336" class="t-database" font-size="7" text-anchor="middle">R15 · CM · F3</text>
         </g>
 
-        <g id="node-ki-repo" data-node-id="ki-repo" data-node-label="ki-repo" tabindex="0" role="button" aria-label="Focus ki-repo, keystone · always on, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-context="Fundamentals · 7 skills › Repository and writing">
-          <title>ki-repo · keystone · always on · Fundamentals · 7 skills › Repository and writing</title>
-          <rect x="300" y="376" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="300" y="376" width="208" height="60" rx="6" class="c-security" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(306 382) scale(0.6875)">
+        <g id="node-ki-repo" data-node-id="ki-repo" data-node-label="ki-repo" tabindex="0" role="button" aria-label="Focus ki-repo, keystone · always on, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R51 · CL · F7" data-node-context="Fundamentals · 7 skills › Repository and writing">
+          <title>ki-repo · keystone · always on · Fundamentals · 7 skills › Repository and writing · R51 · CL · F7</title>
+          <rect x="300" y="392" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="300" y="392" width="208" height="76" rx="8" class="c-security" data-animate="node" style="--step: 2; --flow-node-name: archify-relay-node-2;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(306 398) scale(0.6875)">
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" x="404" y="404" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo</text>
-        <text x="404" y="420" class="t-muted" font-size="9" text-anchor="middle">keystone · always on</text>
+          <text data-node-label="" x="404" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo</text>
+        <text x="404" y="444" class="t-muted" font-size="9" text-anchor="middle">keystone · always on</text>
+        <text x="404" y="460" class="t-security" font-size="7" text-anchor="middle">R51 · CL · F7</text>
         </g>
 
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository structure · opt-in, Fundamentals · 7 skills › Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-context="Fundamentals · 7 skills › Skills and harness">
-          <title>ki-repo-harness · repository structure · opt-in · Fundamentals · 7 skills › Skills and harness</title>
-          <rect x="588" y="376" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="588" y="376" width="208" height="60" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 382) scale(0.6875)">
+        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository structure · opt-in, Fundamentals · 7 skills › Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · 7 skills › Skills and harness">
+          <title>ki-repo-harness · repository structure · opt-in · Fundamentals · 7 skills › Skills and harness · R27 · CL · F4</title>
+          <rect x="588" y="392" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="588" y="392" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 398) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="692" y="404" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
-        <text x="692" y="420" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+          <text data-node-label="" x="692" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
+        <text x="692" y="444" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+        <text x="692" y="460" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
-        <g id="node-ki-skills" data-node-id="ki-skills" data-node-label="ki-skills" tabindex="0" role="button" aria-label="Focus ki-skills, keystone · automatic, Fundamentals · 7 skills › Skills and harness" aria-pressed="false" data-node-kind="backend" data-node-sublabel="keystone · automatic" data-node-context="Fundamentals · 7 skills › Skills and harness">
-          <title>ki-skills · keystone · automatic · Fundamentals · 7 skills › Skills and harness</title>
-          <rect x="588" y="252" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="588" y="252" width="208" height="60" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(594 258) scale(0.6875)">
+        <g id="node-ki-skills" data-node-id="ki-skills" data-node-label="ki-skills" tabindex="0" role="button" aria-label="Focus ki-skills, keystone · automatic, Fundamentals · 7 skills › Skills and harness" aria-pressed="false" data-node-kind="backend" data-node-sublabel="keystone · automatic" data-node-tag="R96 · CL · F9" data-node-context="Fundamentals · 7 skills › Skills and harness">
+          <title>ki-skills · keystone · automatic · Fundamentals · 7 skills › Skills and harness · R96 · CL · F9</title>
+          <rect x="588" y="268" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="588" y="268" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 8; --flow-node-name: archify-relay-node-9;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(594 274) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="692" y="280" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-skills</text>
-        <text x="692" y="296" class="t-muted" font-size="9" text-anchor="middle">keystone · automatic</text>
+          <text data-node-label="" x="692" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-skills</text>
+        <text x="692" y="320" class="t-muted" font-size="9" text-anchor="middle">keystone · automatic</text>
+        <text x="692" y="336" class="t-backend" font-size="7" text-anchor="middle">R96 · CL · F9</text>
         </g>
 
-        <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, governance · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="governance · automatic" data-node-context="Records and code · Records">
-          <title>ki-decision-records · governance · automatic · Records and code · Records</title>
-          <rect x="44" y="564" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="44" y="564" width="208" height="60" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 570) scale(0.6875)">
+        <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, governance · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="governance · automatic" data-node-tag="R37 · CL · F9" data-node-context="Records and code · Records">
+          <title>ki-decision-records · governance · automatic · Records and code · Records · R37 · CL · F9</title>
+          <rect x="44" y="596" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="44" y="596" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 6; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 602) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="148" y="592" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-decision-records</text>
-        <text x="148" y="608" class="t-muted" font-size="9" text-anchor="middle">governance · automatic</text>
+          <text data-node-label="" x="148" y="632" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-decision-records</text>
+        <text x="148" y="648" class="t-muted" font-size="9" text-anchor="middle">governance · automatic</text>
+        <text x="148" y="664" class="t-backend" font-size="7" text-anchor="middle">R37 · CL · F9</text>
         </g>
 
-        <g id="node-ki-work-roadmap" data-node-id="ki-work-roadmap" data-node-label="ki-work-roadmap" tabindex="0" role="button" aria-label="Focus ki-work-roadmap, change management · opt-in, Work and delivery · Work items" aria-pressed="false" data-node-kind="database" data-node-sublabel="change management · opt-in" data-node-context="Work and delivery · Work items">
-          <title>ki-work-roadmap · change management · opt-in · Work and delivery · Work items</title>
-          <rect x="364" y="564" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="364" y="564" width="208" height="60" rx="6" class="c-database" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 570) scale(0.6875)">
+        <g id="node-ki-work-roadmap" data-node-id="ki-work-roadmap" data-node-label="ki-work-roadmap" tabindex="0" role="button" aria-label="Focus ki-work-roadmap, change management · opt-in, Work and delivery · Work items" aria-pressed="false" data-node-kind="database" data-node-sublabel="change management · opt-in" data-node-tag="R24 · CL · F4" data-node-context="Work and delivery · Work items">
+          <title>ki-work-roadmap · change management · opt-in · Work and delivery · Work items · R24 · CL · F4</title>
+          <rect x="364" y="596" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="364" y="596" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 10; --flow-node-name: archify-relay-node-11;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 602) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="468" y="592" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-roadmap</text>
-        <text x="468" y="608" class="t-muted" font-size="9" text-anchor="middle">change management · opt-in</text>
+          <text data-node-label="" x="468" y="632" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-roadmap</text>
+        <text x="468" y="648" class="t-muted" font-size="9" text-anchor="middle">change management · opt-in</text>
+        <text x="468" y="664" class="t-database" font-size="7" text-anchor="middle">R24 · CL · F4</text>
         </g>
 
-        <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="ki-subagents" tabindex="0" role="button" aria-label="Focus ki-subagents, agentic systems · automatic, Agentic systems · 1 skill" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-context="Agentic systems · 1 skill">
-          <title>ki-subagents · agentic systems · automatic · Agentic systems · 1 skill</title>
-          <rect x="684" y="564" width="208" height="60" rx="6" class="c-mask"/>
-          <rect x="684" y="564" width="208" height="60" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(690 570) scale(0.6875)">
+        <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="ki-subagents" tabindex="0" role="button" aria-label="Focus ki-subagents, agentic systems · automatic, Agentic systems · 1 skill" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R5 · CM · F3" data-node-context="Agentic systems · 1 skill">
+          <title>ki-subagents · agentic systems · automatic · Agentic systems · 1 skill · R5 · CM · F3</title>
+          <rect x="684" y="596" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="684" y="596" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 9; --flow-node-name: archify-relay-node-10;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(690 602) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="788" y="592" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-subagents</text>
-        <text x="788" y="608" class="t-muted" font-size="9" text-anchor="middle">agentic systems · automatic</text>
+          <text data-node-label="" x="788" y="632" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-subagents</text>
+        <text x="788" y="648" class="t-muted" font-size="9" text-anchor="middle">agentic systems · automatic</text>
+        <text x="788" y="664" class="t-backend" font-size="7" text-anchor="middle">R5 · CM · F3</text>
         </g>
 
         <!-- Connection labels -->
@@ -680,53 +914,53 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="3" data-composition-frame-kind="region" data-composition-frame-label="Records and code · Records">
-          <rect data-graph-role="structural-frame-label-mask" x="16" y="544" width="150.4" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="20" y="557" class="t-cloud" font-size="9" font-weight="600">Records and code · Records</text>
+          <rect data-graph-role="structural-frame-label-mask" x="16" y="576" width="150.4" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="20" y="589" class="t-cloud" font-size="9" font-weight="600">Records and code · Records</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="4" data-composition-frame-kind="region" data-composition-frame-label="Work and delivery · Work items">
-          <rect data-graph-role="structural-frame-label-mask" x="336" y="544" width="172" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="340" y="557" class="t-cloud" font-size="9" font-weight="600">Work and delivery · Work items</text>
+          <rect data-graph-role="structural-frame-label-mask" x="336" y="576" width="172" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="340" y="589" class="t-cloud" font-size="9" font-weight="600">Work and delivery · Work items</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="5" data-composition-frame-kind="region" data-composition-frame-label="Agentic systems · 1 skill">
-          <rect data-graph-role="structural-frame-label-mask" x="656" y="544" width="145" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="660" y="557" class="t-cloud" font-size="9" font-weight="600">Agentic systems · 1 skill</text>
+          <rect data-graph-role="structural-frame-label-mask" x="714" y="576" width="145" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="718" y="589" class="t-cloud" font-size="9" font-weight="600">Agentic systems · 1 skill</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="6" data-composition-frame-kind="region" data-composition-frame-label="Repository and writing">
-          <rect data-graph-role="structural-frame-label-mask" x="20" y="232" width="128.8" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="24" y="245" class="t-cloud" font-size="9" font-weight="600">Repository and writing</text>
+          <rect data-graph-role="structural-frame-label-mask" x="284" y="248" width="128.8" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="288" y="261" class="t-cloud" font-size="9" font-weight="600">Repository and writing</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="7" data-composition-frame-kind="region" data-composition-frame-label="Skills and harness">
-          <rect data-graph-role="structural-frame-label-mask" x="564" y="232" width="107.2" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="568" y="245" class="t-cloud" font-size="9" font-weight="600">Skills and harness</text>
+          <rect data-graph-role="structural-frame-label-mask" x="588" y="248" width="107.2" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="592" y="261" class="t-cloud" font-size="9" font-weight="600">Skills and harness</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="8" data-composition-frame-kind="region" data-composition-frame-label="Fundamentals · 7 skills">
-          <rect data-graph-role="structural-frame-label-mask" x="4" y="214" width="134.2" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="8" y="227" class="t-cloud" font-size="9" font-weight="600">Fundamentals · 7 skills</text>
+          <rect data-graph-role="structural-frame-label-mask" x="4" y="248" width="134.2" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="8" y="261" class="t-cloud" font-size="9" font-weight="600">Fundamentals · 7 skills</text>
         </g>
 
         <!-- Legend -->
         <g data-legend="">
-          <text x="40" y="676" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="frontend" data-legend-x="40" data-legend-baseline="696" data-legend-width="128">
-            <rect x="40" y="687" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
-            <text x="62" y="696" class="t-muted" font-size="10" font-weight="500">Process · command</text>
+          <text x="40" y="724" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="frontend" data-legend-x="40" data-legend-baseline="744" data-legend-width="149">
+            <rect x="40" y="735" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
+            <text x="62" y="744" class="t-muted" font-size="10" font-weight="500">Process · command</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-x="190" data-legend-baseline="696" data-legend-width="153">
-            <rect x="190" y="687" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
-            <text x="212" y="696" class="t-muted" font-size="10" font-weight="500">Governance · automatic</text>
+          <g data-legend-semantic-kind="backend" data-legend-x="211" data-legend-baseline="744" data-legend-width="180">
+            <rect x="211" y="735" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
+            <text x="233" y="744" class="t-muted" font-size="10" font-weight="500">Governance · automatic</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-x="365" data-legend-baseline="696" data-legend-width="138">
-            <rect x="365" y="687" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
-            <text x="387" y="696" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
+          <g data-legend-semantic-kind="database" data-legend-x="413" data-legend-baseline="744" data-legend-width="161">
+            <rect x="413" y="735" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
+            <text x="435" y="744" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-x="525" data-legend-baseline="696" data-legend-width="153">
-            <rect x="525" y="687" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
-            <text x="547" y="696" class="t-muted" font-size="10" font-weight="500">Governance · always on</text>
+          <g data-legend-semantic-kind="security" data-legend-x="596" data-legend-baseline="744" data-legend-width="180">
+            <rect x="596" y="735" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
+            <text x="618" y="744" class="t-muted" font-size="10" font-weight="500">Governance · always on</text>
           </g>
         </g>
       </svg>

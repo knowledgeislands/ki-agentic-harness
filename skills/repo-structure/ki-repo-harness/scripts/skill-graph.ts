@@ -19,6 +19,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { prepareSkillDiagram, SKILL_DIAGRAMS } from './rubric/contexts/skill-diagrams.ts'
 
+import { readSkillStats } from './rubric/contexts/skill-stats.ts'
+
 const USAGE = 'usage: bun scripts/skill-graph.ts [--check | --write] [--repository <path>]'
 
 const parseArguments = (argv: readonly string[]): { mode: 'check' | 'write'; repository: string } | 'help' => {
@@ -76,7 +78,11 @@ const main = (): number => {
   }
   const { mode, repository } = parsed
   const sources = skillSources(repository)
-  const options = { repositoryUrl: repositoryUrl(repository), revision: revision(repository) }
+  const options = {
+    repositoryUrl: repositoryUrl(repository),
+    revision: revision(repository),
+    stats: readSkillStats(repository, sources)
+  }
   let status = 0
   for (const diagram of SKILL_DIAGRAMS) {
     const target = join(repository, diagram.path)
