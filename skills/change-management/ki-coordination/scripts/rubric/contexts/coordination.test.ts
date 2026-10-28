@@ -830,3 +830,10 @@ test('typed main is the Capital main and typed Project resolves its unchanged re
   expect(value.master.outcomes.some((outcome) => outcome.status === 'VIOLATION')).toBe(false)
   expect(value.labels.outcomes.some((outcome) => outcome.message.includes('prj'))).toBe(false)
 })
+
+test.each(['ki.reg.main', 'ki.reg.topic', 'ki.regular', 'ki.regular.main', 'ki.regular.topic', 'hnr.regular.intake'])(
+  'classifies %s as regular without requiring a coordinator',
+  (id) => {
+    expect(workLevel(id)).toBe('regular')
+  }
+)

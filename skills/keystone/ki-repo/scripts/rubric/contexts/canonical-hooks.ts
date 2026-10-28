@@ -70,7 +70,7 @@ const PACKAGE_LINES = ['lint-staged --quiet || exit 1', 'syncpack format --check
 // `ki-authoring` MD-hook: staged Markdown where no package runs lint-staged.
 const MARKDOWN_LINES = [
   '# Staged Markdown, checked where it stands (ki-authoring MD-hook).',
-  "git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1"
+  "git diff --cached --name-only --find-renames=100% --diff-filter=ACM -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1"
 ]
 
 const REFUSAL_TAIL = (hook: HookName): string[] => [

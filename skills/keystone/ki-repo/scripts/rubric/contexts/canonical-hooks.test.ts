@@ -67,6 +67,8 @@ test('no pre-commit calls ki, so the gate needs no ki on PATH and the full audit
       expect(hook, `${shape} ${variant}`).not.toMatch(/(?<![-\w])ki(?![-\w])/)
     }
   const project = canonicalHooks('ki-repo-project', 'no-package')?.['pre-commit'] ?? ''
-  expect(project).toContain("'*.md' | xargs -0 -r rumdl check --quiet -- || exit 1")
+  expect(project).toContain(
+    "--find-renames=100% --diff-filter=ACM -z -- '*.md' | xargs -0 -r rumdl check --quiet -- || exit 1"
+  )
   expect(project).not.toContain('root=')
 })

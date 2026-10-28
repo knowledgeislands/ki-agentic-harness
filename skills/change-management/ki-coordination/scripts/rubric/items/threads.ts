@@ -42,7 +42,7 @@ const COORD_10: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-10',
   title: 'work files declare a level that agrees with their id',
   description:
-    'Each work file declares its `level`, which agrees with its id: `sop` names territory work (`main` or a named secondary), `prj` names Project work and `regular` names regular work; legacy one- and two-part names stay readable indefinitely. For the tolerance window the `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint `role: coordination`, or `role: conversational`, and no other checkpoint declares `state-of-play`.',
+    'Each work file declares its `level`, which agrees with its id: `sop` names territory work (`main` or a named secondary), `prj` names Project work and `reg` names regular work (legacy `regular` stays readable); legacy one- and two-part names stay readable indefinitely. For the tolerance window the `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint `role: coordination`, or `role: conversational`, and no other checkpoint declares `state-of-play`.',
   sources: [`${SOURCE}#levels-and-forms`],
   mechanical: {
     level: 'WARN',

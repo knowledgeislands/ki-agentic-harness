@@ -134,7 +134,7 @@ export const isCapital = (identity: Identity): boolean =>
 export const workLevel = (id: string): WorkLevel => {
   const segments = id.split('.')
   if (segments.length === 1 || segments[1] === 'sop') return 'territory'
-  return segments[1] === 'regular' ? 'regular' : 'project'
+  return segments[1] === 'reg' || segments[1] === 'regular' ? 'regular' : 'project'
 }
 
 const frontMatter = (path: string): Readonly<Record<string, unknown>> | null => {

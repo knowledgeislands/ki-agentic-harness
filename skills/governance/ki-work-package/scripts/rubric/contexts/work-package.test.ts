@@ -946,12 +946,17 @@ test('typed main, secondary, Project and regular packages pass without changing 
     'ki.prj.ways-of-working',
     packageFiles('ki.prj.ways-of-working', { work: { parent: 'ki.sop.main' } })
   )
-  for (const id of ['ki.regular.main', 'ki.regular.topic']) {
+  for (const id of ['ki.reg.main', 'ki.reg.topic']) {
     writePackage(repository, id, packageFiles(id, { work: { level: 'regular', parent: 'ki.sop.main' } }))
     const file = join(repository, '+/_WORK', id, 'work.md')
     writeFileSync(file, readFileSync(file, 'utf8').replace(/^project:.*\n/gm, ''))
   }
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  writePackage(
+    repository,
+    'ki.regular.topic',
+    packageFiles('ki.regular.topic', { work: { level: 'regular', parent: 'ki.sop.main' } })
+  )
   writePackage(repository, 'ki.ways-of-working', packageFiles())
   expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
     expect.objectContaining({ message: expect.stringContaining('ambiguous work home') })

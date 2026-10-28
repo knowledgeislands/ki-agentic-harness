@@ -72,3 +72,18 @@ test('an empty Project index exits before any check', () => {
   expect(run.run().status).toBe(0)
   expect(existsSync(run.log)).toBe(false)
 })
+
+test.each([false, true])('no-package rename gate skips only byte-identical history (edited=%s)', (edited) => {
+  const run = fixture(true)
+  const root = join(run.log, '..')
+  const git = (...args: string[]) => spawnSync('git', args, { cwd: root, encoding: 'utf8' })
+  expect(git('-c', 'user.name=Test', '-c', 'user.email=test@example.test', 'commit', '-q', '-m', 'base').status).toBe(0)
+  expect(git('mv', 'README.md', 'MOVED.md').status).toBe(0)
+  if (edited) {
+    writeFileSync(join(root, 'MOVED.md'), '# Changed content\n')
+    expect(git('add', '--', 'MOVED.md').status).toBe(0)
+  }
+  expect(run.run().status).toBe(0)
+  if (edited) expect(read(run.log)).toEqual(['rumdl check --quiet -- MOVED.md'])
+  else expect(existsSync(run.log)).toBe(false)
+})

@@ -883,8 +883,11 @@ const relationshipEvidence = (works: readonly WorkFolder[], evidence: Evidence):
       return [`${territory}.sop.main`, territory as string]
     if (level === 'project' && (!name || kind === 'prj'))
       return [`${territory}.prj.${name ?? kind}`, `${territory}.${name ?? kind}`]
-    if (level === 'regular' && kind === 'regular' && (!name || name === 'main'))
-      return [`${territory}.regular.main`, `${territory}.regular`]
+    if (level === 'regular' && (kind === 'reg' || kind === 'regular')) {
+      if (!name || name === 'main')
+        return [`${territory}.reg.main`, `${territory}.regular.main`, `${territory}.regular`]
+      return [`${territory}.reg.${name}`, `${territory}.regular.${name}`]
+    }
     return [folder.stem]
   }
   const byId = new Map<string, WorkFolder>()
