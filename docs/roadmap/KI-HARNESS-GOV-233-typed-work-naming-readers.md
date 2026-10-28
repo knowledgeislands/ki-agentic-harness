@@ -13,7 +13,7 @@ blocks: []
 blocked_by: []
 baseline_ref: 380bc2d3a4f539abd006d1c0d28b60c51a634d5b
 created_at: 2026-10-28T22:02:19Z
-updated_at: 2026-10-28T22:02:19Z
+updated_at: 2026-10-28T22:12:15Z
 ---
 
 # Typed work naming readers
