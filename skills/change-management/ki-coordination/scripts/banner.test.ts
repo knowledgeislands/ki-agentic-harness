@@ -57,11 +57,9 @@ const ITEM =
   /^- \[(running|queued|with you|stuck|blocked|handoff|parked|on hold|release|committed|uncommitted|recovered|unlogged|finished)\] .+$/
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
-const PROJECT_THREAD_LINE = '🧵 Coordination thread · KI > Model > Ways of working (ki.ways-of-working)'
-const TERRITORY_THREAD_LINE = '🧵 State of play thread · KI > SoP (ki)'
-const THREAD_LINE =
-  /^🧵 (?:Coordination thread · .+ \([a-z0-9-]+\.(?!sop\.)[a-z0-9-]+(?:\.[a-z0-9-]+)?\)|State of play thread · .+ \([a-z0-9-]+(?:\.sop\.[a-z0-9-]+)?\))$/u
-
+const PROJECT_THREAD_LINE = '🧵 ki.prj.ways-of-working'
+const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
+const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
   text.replace(/<!-- ki-coordination:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
@@ -206,8 +204,7 @@ test('the output style carries the report heading and the live banners byte-iden
 test('every banner closes with its work identity and never emits a send or resume prompt', () => {
   for (const text of [standard, outputStyle]) {
     for (const lines of banners(text)) expect(lines.at(-1)).toBe(PROJECT_THREAD_LINE)
-    expect(text).toContain('`🧵 Coordination thread · <label> (<id>)` for Project, regular or ad hoc coordinating work')
-    expect(text).toContain('`🧵 State of play thread · <label> (<id>)` for territory work')
+    expect(text).toContain('`🧵 <work-id>` for every explicitly coordinating package')
     expect(text).not.toMatch(/^(?:Send|Resume) <label>/m)
     expect(text).not.toContain('To bring this work back and continue it, paste this:')
     expect(text).not.toContain('{{send-line}}')
@@ -226,8 +223,7 @@ test('every banner closes with its work identity and never emits a send or resum
   for (const surface of generate(harnessRoot)) {
     expect(surface.content).not.toMatch(/^(?:Send|Resume) <label>/m)
     if (surface.path.includes('ki-delegation/assets/')) {
-      expect(surface.content).toContain('🧵 Coordination thread · <label> (<id>)')
-      expect(surface.content).toContain('🧵 State of play thread · <label> (<id>)')
+      expect(surface.content).toContain('🧵 <work-id>')
       expect(surface.content).toContain('using the work you report to')
     }
   }
@@ -345,13 +341,23 @@ test('regular coordination is explicit, capability-checked and uses its real wor
   expect(standard).toContain('Bootstrap as <id> regular work under ki-coordination.')
   expect(standard).toContain('never fabricate a Project')
   expect(outputStyle).toContain('including regular or ad hoc work without a coordinating opener')
-  expect('🧵 Coordination thread · Personal Regular work (personal.regular)').toMatch(THREAD_LINE)
-  expect('🧵 Coordination thread · Personal Acquire intake (personal.regular.acquire-intake)').toMatch(THREAD_LINE)
+  for (const id of [
+    'ki.sop.main',
+    'ki.sop.topic',
+    'ki.prj.ways-of-working',
+    'personal.reg.main',
+    'personal.reg.acquire-intake',
+    'personal.regular.acquire-intake',
+    'ki.ways-of-working',
+    'ki'
+  ])
+    expect(`🧵 ${id}`).toMatch(THREAD_LINE)
+  expect(standard).toContain('Reports saved before this change retain their original closing line and remain readable')
   for (const surface of generate(harnessRoot).filter((surface) =>
     /(?:run-prompt|rules-[^/]+)\.md$/.test(surface.path)
   )) {
     expect(surface.content).toContain('# [<actual work label>](<actual local work page>) › <run name>')
-    expect(surface.content).toContain('regular or ad hoc coordinating work')
+    expect(surface.content).toContain('regular and ad hoc work')
     expect(surface.content).toContain('including regular or ad hoc work without coordination')
   }
 })
