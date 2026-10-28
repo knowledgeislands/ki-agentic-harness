@@ -58,6 +58,8 @@ git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumd
 
 `MD-hook` requires a non-comment line that pipes `git diff --cached` to `rumdl check` without `--fix`, and is not applicable without a committed hook or where a `package.json` exists. rumdl applies the `.rumdl.toml` exclusions to the files it is named, so a staged generated or vendored file is skipped as the full gate skips it. `ki-repo` owns the hook's existence, frame and canonical text.
 
+The direct frontmatter quote check and its conform proposals honour the repository-relative `global.exclude` patterns in `.rumdl.toml`, including directory descendants. This keeps byte-preserved capture and vendored material outside both Markdown repair paths while newly authored, non-excluded work-package and report Markdown remains checked.
+
 ## Hosted conform safety
 
 Rubric items change only operation-scoped drafts or request a bounded command. The session emits one final proposal: owned configuration writes first, then Markdown normalisation commands. The `ki` host validates and publishes writes transactionally, executes commands without a shell, and re-audits persistent state before deriving fixed findings.

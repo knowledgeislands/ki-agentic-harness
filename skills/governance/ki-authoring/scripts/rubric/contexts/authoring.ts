@@ -185,18 +185,52 @@ const FRONTMATTER_IGNORED_PATHS = [
 const YAML_SIGNIFICANT_SCALARS = /^(?:true|false|null|y|n|yes|no|on|off|\.nan|\.inf)$/i
 const BARE_SAFE_SCALAR = /^[A-Za-z_][A-Za-z0-9_-]*$/
 
-const frontmatterPathIsIgnored = (path: string): boolean =>
-  FRONTMATTER_IGNORED_PATHS.some((ignored) => path === ignored || path.startsWith(`${ignored}/`))
+/** Repository Markdown exclusions also protect the direct frontmatter proposals, not only rumdl commands. */
+const markdownExclusions = (repository: string): readonly { glob: Bun.Glob; component: boolean }[] => {
+  const config = join(repository, '.rumdl.toml')
+  if (!existsSync(config)) return []
+  const parsed = Bun.TOML.parse(readFileSync(config, 'utf8')) as { global?: { exclude?: unknown } }
+  const patterns = parsed.global?.exclude
+  if (patterns === undefined) return []
+  if (!Array.isArray(patterns) || patterns.some((pattern) => typeof pattern !== 'string'))
+    throw new Error('.rumdl.toml global.exclude must be an array of strings')
+  return patterns.map((pattern: string) => ({
+    glob: new Bun.Glob(pattern.replace(/\/$/, '')),
+    component: !pattern.includes('/')
+  }))
+}
+const frontmatterPathIsIgnored = (
+  path: string,
+  exclusions: readonly { glob: Bun.Glob; component: boolean }[]
+): boolean => {
+  if (FRONTMATTER_IGNORED_PATHS.some((ignored) => path === ignored || path.startsWith(`${ignored}/`))) return true
+  // Directory exclusions protect all descendants. A slash-free pattern matches a component at any depth,
+  // like rumdl's directory exclusions; path globs are evaluated against the repository-relative path.
+  const parts = path.split('/')
+  return exclusions.some(({ glob, component }) =>
+    parts.some((part, index) => glob.match(parts.slice(0, index + 1).join('/')) || (component && glob.match(part)))
+  )
+}
 
-const markdownFiles = (repository: string, directory = '', files: string[] = []): readonly string[] => {
+const markdownFiles = (
+  repository: string,
+  exclusions: readonly { glob: Bun.Glob; component: boolean }[],
+  directory = '',
+  files: string[] = []
+): readonly string[] => {
   for (const entry of readdirSync(join(repository, directory), { withFileTypes: true })) {
     const path = directory ? `${directory}/${entry.name}` : entry.name
     if (entry.isDirectory()) {
-      if (!FRONTMATTER_IGNORED_DIRECTORIES.has(entry.name) && !frontmatterPathIsIgnored(path))
-        markdownFiles(repository, path, files)
+      if (!FRONTMATTER_IGNORED_DIRECTORIES.has(entry.name) && !frontmatterPathIsIgnored(path, exclusions))
+        markdownFiles(repository, exclusions, path, files)
       continue
     }
-    if (entry.isFile() && !entry.isSymbolicLink() && path.endsWith('.md') && !frontmatterPathIsIgnored(path))
+    if (
+      entry.isFile() &&
+      !entry.isSymbolicLink() &&
+      path.endsWith('.md') &&
+      !frontmatterPathIsIgnored(path, exclusions)
+    )
       files.push(path)
   }
   return files.sort()
@@ -220,7 +254,7 @@ const normaliseFrontmatter = (content: string): { content: string; count: number
 }
 
 const createFrontmatterDrafts = (repository: string, mutable: boolean): readonly FrontmatterFileDraft[] =>
-  markdownFiles(repository).flatMap((path) => {
+  markdownFiles(repository, markdownExclusions(repository)).flatMap((path) => {
     const original = readFileSync(join(repository, path), 'utf8')
     const normalised = normaliseFrontmatter(original)
     if (normalised.count === 0) return []

@@ -481,3 +481,34 @@ test('MD-hook requires a package-less hook to check staged Markdown, check-only'
   writeFileSync(join(repository, 'package.json'), '{}\n')
   expect(outcome()?.message).toContain('SCR-11')
 })
+
+test('frontmatter honours repository Markdown exclusions and preserves capture bytes', () => {
+  const repository = temporaryRepository()
+  writeFileSync(
+    join(repository, '.rumdl.toml'),
+    '[global]\nexclude = ["captures/**", "**/vendor/**", "archive", "**/saved-*.md"]\n'
+  )
+  const capture = '---\nid: "capture"\n---\n\n# Verbatim capture\n'
+  for (const path of [
+    'captures/one/README.md',
+    'docs/vendor/note.md',
+    'archive/note.md',
+    'docs/saved-report.md',
+    'docs/new-report.md'
+  ]) {
+    mkdirSync(join(repository, path, '..'), { recursive: true })
+    writeFileSync(join(repository, path), capture)
+  }
+  const session = createAuthoringSession(
+    { mode: 'conform', repository, userHome: tmpdir(), configuration: {} },
+    () => ({ clean: true })
+  )
+  const context = session.subjects[1]?.context()
+  expect(context?.markdown.frontmatter.files.map((file) => file.path)).toEqual(['docs/new-report.md'])
+  const item = markdownModule.MARKDOWN.items.find((candidate) => candidate.code === 'MD-frontmatter')
+  item?.mechanical?.conform?.run(context?.markdown as NonNullable<typeof context>['markdown'])
+  expect(session.proposal().writes.filter((write) => write.path.endsWith('.md'))).toEqual([
+    { path: 'docs/new-report.md', content: capture.replace('"capture"', 'capture') }
+  ])
+  expect(readFileSync(join(repository, 'captures/one/README.md'), 'utf8')).toBe(capture)
+})

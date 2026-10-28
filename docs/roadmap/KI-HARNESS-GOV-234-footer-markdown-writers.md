@@ -8,12 +8,12 @@ component: change-management
 priority: high
 size: s
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 12f09a3b7f08f1c2dddae22261923857a10f04bb
-created_at: 2026-10-28T23:30:00Z
-updated_at: 2026-10-28T23:30:00Z
+created_at: 2026-10-28T23:11:49Z
+updated_at: 2026-10-28T23:17:44Z
 ---
 
 # Bare-ID footer and scoped Markdown writers
@@ -34,8 +34,8 @@ Only footer rule, generated consumers and affected tests first. Keep report head
 
 - [x] Freeze actual native baseline and enumerated source paths before each causal edit.
 - [x] Amend canonical footer, regenerate affected surfaces once and verify focused footer cases.
-- [ ] Prove scoped Markdown writer, gate and exclusion causes; repair only clear shared defects.
-- [ ] Run meaningful affected checks and normal hooks; integrate and publish verified units.
+- [x] Prove scoped Markdown writer, gate and exclusion causes; repair only clear shared defects.
+- [x] Run meaningful affected checks and normal hooks; integrate and publish verified units.
 
 ## Verify
 
@@ -43,4 +43,8 @@ Reuse unchanged naming and pure-rename evidence. Run focused affected tests and 
 
 ## Review
 
-Footer unit: 15 focused banner/generated-surface checks and installed TypeScript pass. Canonical generator rendered the affected assets once; hook reminder content remains unchanged because it delegates footer detail to the standard. Existing saved reports are not rewritten. Markdown causal pass remains in progress. Acceptance remains with the owner.
+Footer unit: 15 focused banner/generated-surface checks and installed TypeScript pass. Canonical generator rendered the affected assets once; hook reminder content remains unchanged because it delegates footer detail to the standard. Existing saved reports are not rewritten. Markdown causal pass: the corrected exclusion regression fails against the original walker and passes after the source repair. Two focused frontmatter tests and installed types pass. Direct proposals now honour repository `global.exclude`; new non-excluded reports remain checked. The representative Personal scoped KB audit passes while excluding unrelated findings. The current canonical hook rejects newly added invalid report Markdown, accepts the corrected report and preserves excluded capture bytes. No current scope or writer-copy defect is proven, so those paths remain unchanged. No unchanged naming, aggregate, build or estate checks were replayed. Acceptance remains with the owner.
+
+## Exact Markdown source scope
+
+`skills/governance/ki-authoring/scripts/rubric/contexts/authoring.ts`, its `items/index.test.ts`, authoring enforcement standard and source review. The runtime path/hash manifest was frozen before edits. No capture bytes or HNR content changed.
