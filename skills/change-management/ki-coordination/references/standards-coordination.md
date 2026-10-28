@@ -125,15 +125,15 @@ The note's Levels and forms of work table sets the three levels, the two forms a
 
 | | Territory work | Project work | Regular work and ad hoc work |
 | --- | --- | --- | --- |
-| Id | `<territory>`, such as `ki`; a secondary `<territory>.sop.<name>`, such as `hnr.sop.5ge` | `<territory>.<project>`, such as `ki.ways-of-working` | `<territory>.regular`; ad hoc `<territory>.regular.<slug>` |
-| Work file | `+/_WORK/<territory>/work.md` in the Capital, and `+/_WORK/<territory>.sop.<name>/work.md` for each secondary | `+/_WORK/<territory>.<project>/work.md` in the Capital | `+/_WORK/<territory>.regular/work.md`, and one folder per ad hoc piece |
+| Id | `<territory>.sop.main`, such as `ki.sop.main`; a secondary `<territory>.sop.<name>`, such as `hnr.sop.5ge` | `<territory>.prj.<project>`, such as `ki.prj.ways-of-working` | `<territory>.regular.main`; ad hoc `<territory>.regular.<slug>` |
+| Work file | `+/_WORK/<territory>.sop.main/work.md` in the Capital, and `+/_WORK/<territory>.sop.<name>/work.md` for each secondary | `+/_WORK/<territory>.prj.<project>/work.md` in the Capital | `+/_WORK/<territory>.regular.main/work.md`, and one folder per ad hoc piece |
 | Coordinates | Assigned packages: priorities, the queue and cross-cutting decisions; a secondary, only its `covers` subset; executes nothing | One Project's work items and runs when explicitly opened | Its own work, conversationally or through explicitly opened coordination |
 | Governed by | This standard | This standard while coordinating | Activity notes, `ki-work-recurring` and declared skills; this standard while coordinating |
 | Report forms | The coordinator forms, the report heading reading `› State of play` | The coordinator forms while coordinating, under the Project's heading | The coordinator forms while coordinating, under the real work label/page; otherwise the conversational reply forms |
 
 Coordination is an explicitly selected session role on any valid work package, independent of its level, id, home or continuing lifetime. State of play specialises that role across assigned packages. Regular and ad hoc work retain their identity and may remain conversational; neither a package nor a capability declaration opens a coordinator or requires a permanent one. An owner-approved opener names the exact package, its actual repository, scope and opening authority; a bounded episode also names its end condition. Ending that episode does not finish or hold the package, move its mark or abandon runs. A session working one bounded matter directly follows [Conversational bounded work](#conversational-bounded-work).
 
-The work file declares its level in its `level` field under the work-package standard: `territory`, `regular` or `project`, ad hoc work taking `regular`. The level follows from the id: one segment is territory work, the main State of play; a second segment `sop` is territory work too, a [secondary State of play](#secondary-states-of-play); a second segment `regular` is regular or ad hoc work; and any other second segment is Project work. A checkpoint in the old shape declares its type in `role` until it moves: `state-of-play` for territory work, `coordination` for Project work, and `conversational` or no field otherwise.
+The work file declares its level in its `level` field under the work-package standard: `territory`, `regular` or `project`, ad hoc work taking `regular`. The level follows from the id: one segment is territory work, the main State of play; a second segment `sop` is territory work, with `main` or a named [secondary State of play](#secondary-states-of-play); a second segment `regular` is regular or ad hoc work; and any other second segment is Project work. A checkpoint in the old shape declares its type in `role` until it moves: `state-of-play` for territory work, `coordination` for Project work, and `conversational` or no field otherwise.
 
 Kris set territory work's role on 2026-10-14 as "the coordination thread of coordination threads", in these words: "As the state of play thread, I think you are very much in a position where you can write directly into the projects and the checkpoints of the other coordination threads. And you're responsible for fundamentally dispatching that work around. So rather than building up more and more of your own context, the key thing is to understand mostly where that work goes first and foremost and get it dispatched out of this thread and then if I ask a similar question or an extension to something or even repeat myself you're the one who can understand all of this and then deal with that." So territory work sends direction down into Project work through the [message queue](#messages-between-work), the `messages.md` of each receiving work package, and its first concern with any new matter is where the work goes, not holding it in its own context.
 
@@ -143,22 +143,26 @@ Kris set the naming model on 2026-10-17, "I'd like to think of threads as having
 
 | Work | Id | Slug | Title |
 | --- | --- | --- | --- |
-| Territory work | `<territory>` | `<territory>` | `<Territory> > SoP` |
+| Territory work | `<territory>.sop.main` | `<territory>-sop-main` | `<Territory> > SoP` |
 | Secondary State of play | `<territory>.sop.<name>` | `<territory>-sop-<name>` | `<Territory> > SoP (<name>)` |
-| Project work | `<territory>.<project>` | `<territory>-<project>` | `<Territory> > <Theme title> > <Project title>`, or `<Territory> > <Project title>` with no theme |
-| Regular work | `<territory>.regular` | `<territory>-regular` | `<Territory> > Regular work` |
+| Project work | `<territory>.prj.<project>` | `<territory>-prj-<project>` | `<Territory> > <Theme title> > <Project title>`, or `<Territory> > <Project title>` with no theme |
+| Regular work | `<territory>.regular.main` | `<territory>-regular-main` | `<Territory> > Regular work` |
 | Ad hoc work | `<territory>.regular.<slug>` | `<territory>-regular-<slug>` | `<Territory> > <topic>` |
+
+Canonical stored names are `<territory>.sop.main`, `<territory>.prj.<project>`, `<territory>.regular.main` and `<territory>.regular.<topic>`; secondary States of play retain `<territory>.sop.<name>`. Legacy `<territory>`, `<territory>.<project>` and `<territory>.regular` remain readable indefinitely, including existing HNR inputs. The Project slug remains `<project>`. This naming transition changes no work level, state, mark, immutable native/run identity or history. Derive old/new resolution from actual valid definitions; two physical definitions for one work are ambiguous, never two independently opened packages.
+
+A member-repository Project thread is a session seat for its Capital package, not authority to relocate that package. Deliberate member-homed regular exceptions remain valid. A package's existence never selects coordination.
 
 **Id.**
 
 - **Segments:** joined by `.`, each a lower-case kebab name, `[a-z0-9]+(-[a-z0-9]+)*`, so a segment never holds a dot, an underscore, a host or a runtime session identifier.
 - **Territory:** the alias of the territory whose Capital holds the work file, as the estate's territory list in the principal Knowledge Base gives it: `ki`, `hnr`, `er`, `tmx`, `va`, `lgl`, `personal` or `si`. `personal` is the reserved handle for the owner's own territory under the `ki-repo` [territory selection](../../../keystone/ki-repo/references/standards-configuration.md#territory-selection) standard.
 - **Project:** the `slug` of the Project note under the `ki-work` [Project registry standard](../../ki-work/references/standards-project-registry.md), such as `tools-burndown`. No id carries a theme, so relabelling a Project's theme never renames anything.
-- **Secondary name:** the third segment of a [secondary State of play](#secondary-states-of-play), a short kebab name for what it covers, such as `5ge` or `sites`, chosen by the owner. `sop` is reserved as a second segment for secondaries, so no Project or ad hoc slug is `sop`.
+- **Secondary name:** the third segment of a [secondary State of play](#secondary-states-of-play), a short kebab name for what it covers, such as `5ge` or `sites`, chosen by the owner. `sop` is reserved as a second segment for States of play, so no Project or ad hoc slug is `sop`.
 - **Ad hoc slug:** chosen when the work first takes a folder, by the owner or proposed by the agent and confirmed: a short kebab name for the subject, led by the system it works on where the subject alone would be ambiguous, as in `acquire-intake` rather than `intake`. It is never `regular`, never a Project slug of the territory, and never carries a date or host.
 - **Unique and stable:** no two pieces of work in a territory share an id or a slug. The id is set once, when the work folder is created, and changes only through a rename the owner approves, when a Project's slug is renamed; then every derived name changes in the same commit.
 
-**Slug.** The id with each `.` written as `-`: one path component in the run-name alphabet `ki agent` accepts, `[A-Za-z0-9_-]`, which has no dot. It names the work's state folder, `~/.local/state/ki/agents/<slug>/`, its native-session binding, `~/.local/state/ki/threads/<repository>/<slug>.json`, and its coordinator run. The work folder itself is named by the dotted id, as the note sets. Runs keep their own hyphenated slugs. The slug is never parsed back into an id; the id is read from the work file.
+**Slug.** The id with each `.` written as `-`: one path component in the run-name alphabet `ki agent` accepts, `[A-Za-z0-9_-]`, which has no dot. It names the work's state folder, `~/.local/state/ki/agents/<slug>/`, its native-session binding, `~/.local/state/ki/threads/<repository>/<slug>.json`, and its coordinator run. The work folder itself is named by the dotted id, as the note sets. Existing runtime folder names and immutable run tokens stay unchanged through a package rename; only mutable current home pointers follow the actual package. Runs keep their own hyphenated slugs. The slug is never parsed back into an id; the id is read from the work file.
 
 **Title and label.** The title is the human name, built from display names and joined by ` > `, and it keeps the theme as display text while the id carries none, as Kris took under TITLE-THEME on 18 October, "the title theme, I go with your recommendation":
 
@@ -180,7 +184,7 @@ The work name is how a session names a piece of work wherever it names one: in r
 | Knowledge Islands regular work | `ki.regular` | `KI > Regular work` | recurring work in Initiative notes |
 | Registry removal | `ki.regular.registry-removal` | `KI > Registry removal` | a conversational thread |
 
-An old-shape checkpoint's id is read from its stem until it moves: `_state-of-play` gives `<territory>`, `<initiative>.<project>` gives `<territory>.<project>`, and any other stem gives `<territory>.regular.<stem>`.
+An old-shape checkpoint's id is read from its stem until it moves: `_state-of-play` gives `<territory>`, `<initiative>.<project>` gives `<territory>.prj.<project>`, and any other stem gives `<territory>.regular.<stem>`.
 
 ## Coordinator responsiveness
 
@@ -736,7 +740,7 @@ Sources are the work's decisions log, every report in the work folder and, for t
 
 Project work coordinates exactly one Project for the owner. It is always delegation-based: it runs its work as background agents through `ki agent` under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and keeps its own turns short under [Coordinator responsiveness](#coordinator-responsiveness).
 
-- **Work package:** the coordinator picks the work up from `+/_WORK/<territory>.<project>/`, whose `work.md` defines the work and whose `state.md` holds its current state only, and keeps both current under the work-package standard. The work file names its Project in front matter, and the Project note does not link down.
+- **Work package:** the coordinator picks the work up from `+/_WORK/<territory>.prj.<project>/`, whose `work.md` defines the work and whose `state.md` holds its current state only, and keeps both current under the work-package standard. The work file names its Project in front matter, and the Project note does not link down.
 - **Decisions:** it records each owner approval in `+/_WORK/<id>/decisions.md` before launching the work that approval authorises.
 - **Territory work:** [territory work](#territory-work) owns cross-Project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. Project work raises those there.
 - **Naming:** where the runtime can name a session, the session takes the work's label, such as `KI > Model > Ways of working`, under [Work naming](#work-naming), so territory work and the owner can find it.
@@ -746,7 +750,7 @@ Project work coordinates exactly one Project for the owner. It is always delegat
 
 ### Territory work
 
-Each territory Capital holds one main State of play, `+/_WORK/<territory>/work.md`, titled `<Territory> > SoP`: the coordination of the territory's coordinations. It may also hold [secondary States of play](#secondary-states-of-play), each coordinating a named part of the territory under the main. Each does project management and may coordinate explicitly assigned Project packages: delivery remains in those packages and their product repositories, never in the State of play package itself. No repository other than a Capital holds territory work. The main is never Finished while the territory is open. Where this standard says territory work without qualification, it means the main State of play; a secondary takes those duties only for the work it covers, as its section sets.
+Each territory Capital holds one main State of play, `+/_WORK/<territory>.sop.main/work.md`, titled `<Territory> > SoP`: the coordination of the territory's coordinations. It may also hold [secondary States of play](#secondary-states-of-play), each coordinating a named part of the territory under the main. Each does project management and may coordinate explicitly assigned Project packages: delivery remains in those packages and their product repositories, never in the State of play package itself. No repository other than a Capital holds territory work. The main is never Finished while the territory is open. Where this standard says territory work without qualification, it means the main State of play; a secondary takes those duties only for the work it covers, as its section sets.
 
 - **Registry:** the themes and Projects it manages are defined in the Capital's `Streams/` registry under the `ki-work` Project registry standard, and their work records live in the roadmaps of the territory's repositories.
 - **Owns:** cross-Project priorities, releases, decisions touching more than one Project, [messages](#messages-between-work) to Project work, written into their `messages.md` and Project notes, the Project-work queue, and a territory hold with the list of work to restart from it.
@@ -802,11 +806,11 @@ The owner opens a session in the actual package-home checkout, the Capital by de
 For territory work:
 
 ```text
-Bootstrap as <territory> territory work under ki-coordination.
+Bootstrap as <territory>.sop.main territory work under ki-coordination.
 Role: coordinator only. The coordinator never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
-Label: <Territory> > SoP (<territory>). Work package: +/_WORK/<territory>/ in <capital>.
+Label: <Territory> > SoP (<territory>). Work package: +/_WORK/<territory>.sop.main/ in <capital>.
 Project management only: priorities, the Project-work queue (cap three or four), decisions and releases; route real work to Project work.
-Background agents: run substantive work through `ki agent` in run `<territory>`; stay responsive.
+Background agents: run substantive work through `ki agent` in run `<territory>-sop-main`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.
 First step: follow the Bootstrap in ki-coordination, then give the full re-bootstrap report.
 ```
@@ -814,9 +818,9 @@ First step: follow the Bootstrap in ki-coordination, then give the full re-boots
 For Project work:
 
 ```text
-Bootstrap as <territory>.<project> Project work under ki-coordination.
+Bootstrap as <territory>.prj.<project> Project work under ki-coordination.
 Role: coordinator only. The coordinator never does substantive work itself; every unit of work goes to a detached background agent; an owner message never pre-empts work in flight. Dispatch, decide with me, report; stay responsive.
-Label: <Territory> > <Theme> > <Project> (<territory>.<project>). Work package: +/_WORK/<territory>.<project>/ in <capital>.
+Label: <Territory> > <Theme> > <Project> (<territory>.prj.<project>). Work package: +/_WORK/<territory>.prj.<project>/ in <capital>.
 Project: <project>; work only this Project's records.
 Background agents: run substantive work through `ki agent` in run `<run>`; stay responsive.
 Steering: my messages steer; stop or abort only when I expressly say so, naming the work.

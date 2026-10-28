@@ -8,7 +8,7 @@ component: change-management
 priority: high
 size: s
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 380bc2d3a4f539abd006d1c0d28b60c51a634d5b
@@ -36,9 +36,9 @@ Ready under the explicit owner-approved plan. Immutable source baseline `380bc2d
 
 ## Plan
 
-- [ ] Update actual typed naming blockers and derived old/new home resolution.
-- [ ] Exercise changed identities, continuity and ambiguous definitions with focused existing tests.
-- [ ] Run required type checks and hooks, inspect exact commit paths and integrate verified support.
+- [x] Update actual typed naming blockers and derived old/new home resolution.
+- [x] Exercise changed identities, continuity and ambiguous definitions with focused existing tests.
+- [x] Run required type checks and hooks, inspect exact commit paths and integrate verified support.
 
 ## Files touched
 
@@ -62,6 +62,32 @@ Folder worker owns physical moves. Home resolution must prevent old-folder recre
 ## Documentation impact
 
 Shared naming wording only as needed; no Principal canonical edit unless demonstrated necessary.
+
+## Review
+
+### Delivered
+
+Typed main and Project identities are accepted by current coordination and package validators, retaining legacy forms indefinitely. The frozen source baseline remains recorded above.
+
+### Change Summary
+
+Main SoP discovery excludes typed main from secondaries. Project registry and queue lookups retain the Project slug. Package covers accepts typed Project and regular work; actual definitions derive old/new relationship resolution, rejecting ambiguous homes. Canonical naming tables and openers describe the typed target; existing runtime/run identities remain unchanged.
+
+### Verification
+
+126 focused validator tests pass. Installed TypeScript check passes. Canonical coordination generator invoked once; rendered surfaces are unchanged. Mandatory hooks and generated-surface tests complete at delivery. An initial package test invocation widened its scope because the script includes all directories; stopped promptly and replaced with exact two-file execution, with no broad rerun.
+
+### Outstanding concerns
+
+Exact-session hook identity is unavailable in current source: bindings are explicitly unshipped, so no new marker or store was invented. Member session seat remains separate from authoritative package home.
+
+### Post-change review
+
+Naming gates retain old inputs, seven states and optional roles. No Principal canonical content or HNR checkout mutation. Ready for owner review; acceptance remains with owner.
+
+### Mini recap
+
+Bounded typed-name support unblocks physical folder publication; no MOD011 merge, locator schema or release.
 
 ## Discussion
 

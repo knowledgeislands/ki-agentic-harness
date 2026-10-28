@@ -539,11 +539,11 @@ const placementFailures = (
       return 'parent' in fields || 'covers' in fields
         ? ['parent and covers belong to a secondary State of play in the single-file shape']
         : []
-    if (segments.length === 1)
+    if (segments.length === 1 || id.endsWith('.sop.main'))
       return 'parent' in fields || 'covers' in fields ? ['the single-file main carries no parent or covers'] : []
   }
   const failures: string[] = []
-  const main = fields.level === 'territory' && segments.length === 1
+  const main = fields.level === 'territory' && (segments.length === 1 || id.endsWith('.sop.main'))
   if (fields.level === 'territory' && !main && (segments.length !== 3 || !secondary))
     failures.push(`territory work id must be <territory> or <territory>.${SECONDARY_SEGMENT}.<name>`)
   if (fields.level !== 'territory' && secondary)
@@ -558,7 +558,8 @@ const placementFailures = (
     failures.push(
       main ? 'the main State of play carries no parent' : 'parent must name a different same-territory State of play'
     )
-  if (secondary && parent !== territory) failures.push(`parent must name the main State of play, ${territory}`)
+  if (secondary && !main && parent !== territory && parent !== `${territory}.sop.main`)
+    failures.push(`parent must name the main State of play, ${territory}`)
   if (fields.level !== 'territory') {
     if ('covers' in fields) failures.push('covers belongs only to States of play')
     return failures
@@ -875,36 +876,60 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
 /** Validates each work folder under `+/_WORK/`, in the package shape or, for the tolerance window, the single-file shape. */
 const relationshipEvidence = (works: readonly WorkFolder[], evidence: Evidence): void => {
   const packages = works.filter((folder) => folder.package && folder.work.fields)
-  const byId = new Map(packages.map((folder) => [folder.stem, folder]))
+  const names = (folder: WorkFolder): readonly string[] => {
+    const [territory, kind, name] = folder.stem.split('.')
+    const level = folder.work.fields?.level
+    if (level === 'territory' && (!kind || (kind === 'sop' && name === 'main')))
+      return [`${territory}.sop.main`, territory as string]
+    if (level === 'project' && (!name || kind === 'prj'))
+      return [`${territory}.prj.${name ?? kind}`, `${territory}.${name ?? kind}`]
+    if (level === 'regular' && kind === 'regular' && (!name || name === 'main'))
+      return [`${territory}.regular.main`, `${territory}.regular`]
+    return [folder.stem]
+  }
+  const byId = new Map<string, WorkFolder>()
   const fail = (folder: WorkFolder, message: string): void => {
     evidence.schema.push({ status: 'VIOLATION', message, subject: folder.work.path })
   }
+  for (const folder of packages)
+    for (const name of names(folder)) {
+      const existing = byId.get(name)
+      if (existing && existing !== folder)
+        fail(folder, `ambiguous work home ${name}: ${existing.stem} and ${folder.stem}`)
+      else byId.set(name, folder)
+    }
+  const includes = (values: unknown, id: string): boolean =>
+    Array.isArray(values) &&
+    values.some(
+      (value) =>
+        value === id || (typeof value === 'string' && byId.get(value) !== undefined && byId.get(value) === byId.get(id))
+    )
   const secondaryOwners = new Map<string, string>()
   for (const folder of packages) {
     const fields = folder.work.fields
     if (!fields) continue
     const territory = folder.stem.split('.')[0] ?? ''
-    const main = byId.get(territory)
+    const main = byId.get(`${territory}.sop.main`) ?? byId.get(territory)
     const parent = typeof fields.parent === 'string' ? byId.get(fields.parent) : undefined
     const covers = Array.isArray(fields.covers) ? fields.covers : []
     if (main && typeof fields.parent === 'string' && !parent)
       fail(folder, 'parent does not resolve to a State of play in the Capital')
-    if (fields.level === 'territory' && folder.stem !== territory)
+    if (fields.level === 'territory' && folder !== main)
       for (const covered of covers) {
         if (typeof covered !== 'string') continue
-        const previous = secondaryOwners.get(covered)
+        const previous = secondaryOwners.get(byId.get(covered)?.stem ?? covered)
         if (previous && previous !== folder.stem) fail(folder, `covers duplicates ${covered} in ${previous}`)
-        secondaryOwners.set(covered, folder.stem)
-        if (main && Array.isArray(main.work.fields?.covers) && !main.work.fields.covers.includes(covered))
+        secondaryOwners.set(byId.get(covered)?.stem ?? covered, folder.stem)
+        if (main && Array.isArray(main.work.fields?.covers) && !includes(main.work.fields.covers, covered))
           fail(folder, `covers names ${covered}, absent from the main register`)
         const child = byId.get(covered)
-        if (child && child.work.fields?.parent !== folder.stem)
+        if (child && byId.get(String(child.work.fields?.parent)) !== folder)
           fail(child, `parent disagrees with ${folder.stem} coverage`)
       }
     if (fields.level !== 'territory') {
-      if (main && Array.isArray(main.work.fields?.covers) && !main.work.fields.covers.includes(folder.stem))
+      if (main && Array.isArray(main.work.fields?.covers) && !includes(main.work.fields.covers, folder.stem))
         fail(folder, 'work is absent from the main covers register')
-      if (parent && Array.isArray(parent.work.fields?.covers) && !parent.work.fields.covers.includes(folder.stem))
+      if (parent && Array.isArray(parent.work.fields?.covers) && !includes(parent.work.fields.covers, folder.stem))
         fail(folder, 'parent covers does not include this work')
     }
   }

@@ -815,3 +815,18 @@ test('member regular umbrella and children are discovered and declare their actu
     expect.objectContaining({ status: 'VIOLATION', subject: '+/_WORK/personal.regular/work.md' })
   ])
 })
+
+test('typed main is the Capital main and typed Project resolves its unchanged registry slug', () => {
+  const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+  work(root, 'ki.sop.main', { id: 'ki.sop.main', level: 'territory', title: 'KI > SoP' })
+  work(root, 'ki.prj.ways-of-working', {
+    id: 'ki.prj.ways-of-working',
+    level: 'project',
+    project: 'ways-of-working',
+    title: 'KI > Ways of working'
+  })
+  page(root, 'Projects', 'ways-of-working')
+  const value = context(root)
+  expect(value.master.outcomes.some((outcome) => outcome.status === 'VIOLATION')).toBe(false)
+  expect(value.labels.outcomes.some((outcome) => outcome.message.includes('prj'))).toBe(false)
+})

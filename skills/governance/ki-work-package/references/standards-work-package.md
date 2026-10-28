@@ -193,7 +193,7 @@ The field set is closed:
 | `level` | required | `territory`, `regular` or `project` |
 | `title` | required | the work's title under Work naming, a non-empty single-line string |
 | `label` | optional | title with an inventory host or category requirement suffix; never a session seat |
-| `project` | required at `project` level, else absent | the Project note's slug, the id's second segment |
+| `project` | required at `project` level, else absent | the Project note's slug, typed id's third segment |
 | `theme` | optional | a theme page's slug, or `null` |
 | `parent` | required below the main, absent on the main | coordinating State of play id |
 | `covers` | required on States of play, absent otherwise | main register or secondary non-empty subset |
@@ -201,7 +201,7 @@ The field set is closed:
 | `worker`, `supervisor` | required | each a holder |
 | `created_at` | optional | UTC time the work folder was created, no later than `state.md`'s `since` |
 
-Territory work is the main State of play, id `<territory>`, or a secondary State of play, id `<territory>.sop.<name>`, under the `ki-coordination` [secondary States of play](../../../change-management/ki-coordination/references/standards-coordination.md#secondary-states-of-play); `sop` is never a second segment at another level. A secondary may keep a `## Queue` in its state file as the main does.
+Territory work is the main State of play, id `<territory>.sop.main` (legacy `<territory>` remains readable), or a secondary State of play, id `<territory>.sop.<name>`, under the `ki-coordination` [secondary States of play](../../../change-management/ki-coordination/references/standards-coordination.md#secondary-states-of-play); `sop` is never a second segment at another level. A secondary may keep a `## Queue` in its state file as the main does.
 
 The `description` is written for routing, in a skill description's voice, as Kris answered DESCRIPTION-SHAPE: third person, what the work does, then "Takes ..." naming the kinds of unit it accepts, then "Not for ..." naming the neighbouring works by id, one to three sentences, tested against a handful of ambiguous routing examples. There is no `active` or `accepts` field: every state except `finished` can receive, and a work winding down says "Not taking new units" in its description.
 

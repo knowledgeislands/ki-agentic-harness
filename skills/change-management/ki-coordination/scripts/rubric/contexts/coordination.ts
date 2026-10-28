@@ -242,8 +242,11 @@ const masterOutcomes = (
   works: readonly Work[] | undefined,
   capital: boolean
 ): AuditOutcome[] => {
-  const territory = works?.find((work) => !work.id.includes('.'))
-  const secondaries = works?.filter((work) => work.id.includes('.') && workLevel(work.id) === 'territory') ?? []
+  const territory = works?.find((work) => !work.id.includes('.') || work.id.endsWith('.sop.main'))
+  const secondaries =
+    works?.filter(
+      (work) => work.id.includes('.') && !work.id.endsWith('.sop.main') && workLevel(work.id) === 'territory'
+    ) ?? []
   const master = records?.find((record) => record.thread === MASTER_THREAD)
   if (capital && !territory && !master)
     return [
@@ -375,7 +378,7 @@ const labelOutcomes = (
   const initiatives = capital ? registrySlugs(join(root, INITIATIVES_DIRECTORY)) : undefined
   for (const work of works) {
     if (workLevel(work.id) !== 'project') continue
-    const slug = work.id.split('.')[1] ?? ''
+    const slug = work.id.split('.')[work.id.split('.')[1] === 'prj' ? 2 : 1] ?? ''
     const project = work.fields?.project
     const title = work.fields?.title
     const projectTitle = registeredProjectTitle(root, projects, slug)
@@ -770,7 +773,8 @@ const queueOutcomes = (root: string, work: readonly string[]): AuditOutcome[] =>
   if (projects.length === 0) return []
   const awaiting = awaitingAcceptanceCounts(territoryCheckouts(root))
   return projects.flatMap((folder): AuditOutcome[] => {
-    const project = basename(folder).split('.')[1] ?? ''
+    const parts = basename(folder).split('.')
+    const project = parts[parts[1] === 'prj' ? 2 : 1] ?? ''
     const count = awaiting.get(project) ?? 0
     return count > AWAITING_ACCEPTANCE_LIMIT
       ? [
