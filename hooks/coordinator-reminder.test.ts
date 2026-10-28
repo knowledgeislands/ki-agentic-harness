@@ -198,6 +198,7 @@ test.each([
   expect(outcome.context?.split('\n')[0]).toBe(line)
   expect(outcome.context?.split('\n').slice(1).sort()).toEqual([
     `METHOD-NUDGE: ki method_read ${old}; current method ${current}. Follow Refreshing this guidance.`,
+    `METHOD-NUDGE: ki.regular method_read ${old}; current method ${current}. Follow Refreshing this guidance.`,
     `METHOD-NUDGE: ki.stale method_read ${old}; current method ${current}. Follow Refreshing this guidance.`
   ])
   expect(outcome.context).not.toContain(unrelated)

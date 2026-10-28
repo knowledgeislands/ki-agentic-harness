@@ -578,10 +578,11 @@ const placementFailures = (
         !WORK_ID.test(covered) ||
         !covered.startsWith(`${territory}.`) ||
         covered.split('.')[1] === SECONDARY_SEGMENT ||
-        covered.split('.').length < 2 ||
-        (covered.split('.')[1] === 'regular' && covered.split('.').length < 3)
+        covered.split('.').length < 2
       )
-        failures.push(`covers names ${String(covered)}, which is not Project or ad hoc work of territory ${territory}`)
+        failures.push(
+          `covers names ${String(covered)}, which is not Project, regular or ad hoc work of territory ${territory}`
+        )
   }
   return failures
 }
@@ -900,7 +901,7 @@ const relationshipEvidence = (works: readonly WorkFolder[], evidence: Evidence):
         if (child && child.work.fields?.parent !== folder.stem)
           fail(child, `parent disagrees with ${folder.stem} coverage`)
       }
-    if (fields.level !== 'territory' && (fields.level === 'project' || folder.stem.split('.').length > 2)) {
+    if (fields.level !== 'territory') {
       if (main && Array.isArray(main.work.fields?.covers) && !main.work.fields.covers.includes(folder.stem))
         fail(folder, 'work is absent from the main covers register')
       if (parent && Array.isArray(parent.work.fields?.covers) && !parent.work.fields.covers.includes(folder.stem))

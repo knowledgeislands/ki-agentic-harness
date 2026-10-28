@@ -890,3 +890,31 @@ test('ad hoc parent names a State of play and host requirements preserve queue s
   writePackage(repository, id, files)
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
 })
+
+test('regular umbrella and child packages are assigned through covers without requiring coordination capability', () => {
+  const repository = workFixture()
+  territoryPackage(repository, 'ki', ['covers: [ki.regular, ki.regular.intake]'])
+  territoryPackage(repository, 'ki.sop.operations', ['parent: ki', 'covers: [ki.regular, ki.regular.intake]'])
+  for (const id of ['ki.regular', 'ki.regular.intake']) {
+    const files = packageFiles(id, { work: { level: 'regular', parent: 'ki.sop.operations' } })
+    files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
+    writePackage(repository, id, files)
+  }
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  // Capability belongs to an explicit opening, not every regular package.
+  const ordinary = workFixture()
+  writeFileSync(join(ordinary, '.ki.toml'), '[skills.ki-work-package]\n')
+  const files = packageFiles('ki.regular', { work: { level: 'regular', parent: 'ki' } })
+  files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
+  writePackage(ordinary, 'ki.regular', files)
+  expect(statuses(context(ordinary))['RECORD-4']).toBe('PASS')
+  // Existing main and secondary coverage must both retain the umbrella.
+  territoryPackage(repository, 'ki.sop.operations', ['parent: ki', 'covers: [ki.regular.intake]'])
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({
+      status: 'VIOLATION',
+      subject: '+/_WORK/ki.regular/work.md',
+      message: 'parent covers does not include this work'
+    })
+  )
+})

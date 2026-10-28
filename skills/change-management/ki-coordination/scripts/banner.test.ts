@@ -60,7 +60,7 @@ const HOLDER_ITEM =
 const PROJECT_THREAD_LINE = '🧵 Coordination thread · KI > Model > Ways of working (ki.ways-of-working)'
 const TERRITORY_THREAD_LINE = '🧵 State of play thread · KI > SoP (ki)'
 const THREAD_LINE =
-  /^🧵 (?:Coordination thread · .+ \([a-z0-9-]+\.(?!regular(?:\.|\)))[a-z0-9-]+\)|State of play thread · .+ \([a-z0-9-]+\))$/u
+  /^🧵 (?:Coordination thread · .+ \([a-z0-9-]+\.(?!sop\.)[a-z0-9-]+(?:\.[a-z0-9-]+)?\)|State of play thread · .+ \([a-z0-9-]+(?:\.sop\.[a-z0-9-]+)?\))$/u
 
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
@@ -206,7 +206,7 @@ test('the output style carries the report heading and the live banners byte-iden
 test('every banner closes with its work identity and never emits a send or resume prompt', () => {
   for (const text of [standard, outputStyle]) {
     for (const lines of banners(text)) expect(lines.at(-1)).toBe(PROJECT_THREAD_LINE)
-    expect(text).toContain('`🧵 Coordination thread · <label> (<id>)` for Project work')
+    expect(text).toContain('`🧵 Coordination thread · <label> (<id>)` for Project, regular or ad hoc coordinating work')
     expect(text).toContain('`🧵 State of play thread · <label> (<id>)` for territory work')
     expect(text).not.toMatch(/^(?:Send|Resume) <label>/m)
     expect(text).not.toContain('To bring this work back and continue it, paste this:')
@@ -219,7 +219,7 @@ test('every banner closes with its work identity and never emits a send or resum
   for (const invalid of [
     '🧵 State of play thread · Ways of working (ki.ways-of-working)',
     '🧵 Coordination thread · KI > SoP (ki)',
-    '🧵 Coordination thread · Regular work (ki.regular)',
+    '🧵 Coordination thread · Too many segments (ki.regular.intake.extra)',
     '🧵 Coordination thread · Missing id'
   ])
     expect(invalid).not.toMatch(THREAD_LINE)
@@ -303,7 +303,7 @@ test('the hook line, the pointer and the output style confine the coordinator fo
   expect(hook).toContain("line='In coordinating work only,")
   expect(hook).toContain('elsewhere ignore this line and use the ki-coordination Reply forms')
   expect(hook).toContain('In a conversational session, re-read your work package if you have one')
-  expect(outputStyle).toContain('This style applies only while a session coordinates work')
+  expect(outputStyle).toContain('This style applies only while the owner explicitly opens or resumes coordination')
   expect(standard).toContain('## Reply forms')
 })
 
@@ -335,4 +335,23 @@ test('active banner guidance carries behind findings and all level-check trigger
   expect(outputStyle).toContain('`[behind]` naming no holder')
   expect(outputStyle).toContain('before a cross-host resume, at every mark and before leaving a host')
   expect(outputStyle).toContain('A failed check remains unknown')
+})
+
+test('regular coordination is explicit, capability-checked and uses its real work heading', () => {
+  expect(standard).toContain('`territory`, `project` and `regular` are all eligible')
+  expect(standard).toContain('A package, id, level, binding or capability declaration alone never selects the role')
+  expect(standard).toContain("Acquire's already-approved intake exception remains usable")
+  expect(standard).toContain('Ending that episode does not finish or hold the package, move its mark or abandon runs')
+  expect(standard).toContain('Bootstrap as <id> regular work under ki-coordination.')
+  expect(standard).toContain('never fabricate a Project')
+  expect(outputStyle).toContain('including regular or ad hoc work without a coordinating opener')
+  expect('🧵 Coordination thread · Personal Regular work (personal.regular)').toMatch(THREAD_LINE)
+  expect('🧵 Coordination thread · Personal Acquire intake (personal.regular.acquire-intake)').toMatch(THREAD_LINE)
+  for (const surface of generate(harnessRoot).filter((surface) =>
+    /(?:run-prompt|rules-[^/]+)\.md$/.test(surface.path)
+  )) {
+    expect(surface.content).toContain('# [<actual work label>](<actual local work page>) › <run name>')
+    expect(surface.content).toContain('regular or ad hoc coordinating work')
+    expect(surface.content).toContain('including regular or ad hoc work without coordination')
+  }
 })

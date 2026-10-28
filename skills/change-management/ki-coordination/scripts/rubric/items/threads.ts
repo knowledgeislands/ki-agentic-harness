@@ -7,7 +7,7 @@ const COORD_1: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-1',
   title: 'territory work belongs to the Capital',
   description:
-    'A territory Capital, a repository whose declared `capital` is itself, holds its territory work, `+/_WORK/<territory>/work.md` with an id of one segment, titled `<Territory> > SoP`, and no other repository holds territory or Project packages; member regular work declares its package home in work.md. For the tolerance window a Capital whose territory work is still the state-of-play checkpoint `+/_CHECKPOINTS/_state-of-play.md` passes with a warning naming its new home.',
+    'A territory Capital, a repository whose declared `capital` is itself, holds its territory work, `+/_WORK/<territory>/work.md` with an id of one segment, titled `<Territory> > SoP`, and no other repository holds territory or Project packages; deliberately owner-approved regular/ad hoc member work declares Home: in work.md Scope, and its parent maintains the existing covers/home reference without a second package. Regular umbrella and child packages remain eligible; coverage never opens coordination. For the tolerance window a Capital whose territory work is still the state-of-play checkpoint `+/_CHECKPOINTS/_state-of-play.md` passes with a warning naming its new home.',
   sources: [`${SOURCE}#territory-work`, `${SOURCE}#the-work-model`],
   mechanical: {
     level: 'FAIL',

@@ -237,6 +237,7 @@ const legacy = (message: string, subject: string): AuditOutcome => ({
 })
 
 const masterOutcomes = (
+  root: string,
   records: readonly Checkpoint[] | undefined,
   works: readonly Work[] | undefined,
   capital: boolean
@@ -269,6 +270,19 @@ const masterOutcomes = (
           message: 'a Project package lives in its territory Capital',
           subject: work.path
         })
+  // A declared member home is an existing exception, not a second package or role assignment.
+  if (!capital && repositoryIdentity(root).capital)
+    for (const work of works ?? []) {
+      if (workLevel(work.id) !== 'regular') continue
+      const text = readFileSync(join(work.folder, WORK_FILE), 'utf8')
+      const scope = /^## Scope[ \t]*\r?\n([\s\S]*?)(?=^## |$(?![\s\S]))/m.exec(text)?.[1] ?? ''
+      if (!/^(?:- )?Home:[ \t]*\S/m.test(scope))
+        outcomes.push({
+          status: 'VIOLATION',
+          message: 'a regular or ad hoc member package declares its deliberate Home: in work.md Scope',
+          subject: work.path
+        })
+    }
   if (territory && !MASTER_LABEL.test(String(territory.fields?.title ?? '')))
     outcomes.push({
       status: 'VIOLATION',
@@ -867,7 +881,7 @@ export const createCoordinationSession = ({
     rubric: { publication },
     master: {
       outcomes: one(
-        masterOutcomes(records, works, capital),
+        masterOutcomes(root, records, works, capital),
         capital ? 'The Capital holds its territory work.' : 'No territory work is present outside a Capital.',
         !capital && absent ? absent : undefined
       )

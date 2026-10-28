@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
@@ -791,6 +791,27 @@ test('Project packages live in the Capital while member regular packages remain 
     expect.objectContaining({ status: 'VIOLATION', message: 'a Project package lives in its territory Capital' })
   )
   const regular = fixture({ repository: 'member', capital: 'ki-principal' })
-  work(regular, 'ki.regular', { level: 'regular', title: 'KI > Regular work' })
+  const folder = work(regular, 'ki.regular', { level: 'regular', title: 'KI > Regular work' })
+  const path = join(folder, 'work.md')
+  writeFileSync(path, `${readFileSync(path, 'utf8')}\n## Scope\n\nHome: member, deliberately approved.\n`)
   expect(context(regular).master.outcomes.some((outcome) => outcome.status === 'VIOLATION')).toBe(false)
+})
+
+test('member regular umbrella and children are discovered and declare their actual home in Scope', () => {
+  const root = fixture({ repository: 'acquire', capital: 'personal-principal' })
+  for (const id of ['personal.regular', 'personal.regular.acquire-intake']) {
+    const folder = work(root, id, { id, level: 'regular', title: "'Personal > Intake'" })
+    const path = join(folder, 'work.md')
+    const definition = readFileSync(path, 'utf8')
+    writeFileSync(
+      path,
+      `${definition}\n## Scope\n\nHome: this package lives in Acquire by deliberate owner approval.\n`
+    )
+  }
+  expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
+  const path = join(root, '+/_WORK/personal.regular/work.md')
+  writeFileSync(path, readFileSync(path, 'utf8').replace('Home:', 'Elsewhere:'))
+  expect(context(root).master.outcomes).toEqual([
+    expect.objectContaining({ status: 'VIOLATION', subject: '+/_WORK/personal.regular/work.md' })
+  ])
 })

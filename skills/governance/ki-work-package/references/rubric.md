@@ -73,12 +73,12 @@ Closed metadata and document shape make one work package portable and determinis
   - _Review prompt:_ Does each label match the name the human uses for the thread in their client?
   - _Outcomes:_ conforming; explicit update required; escalate to user
   - _Conforming guidance:_ Take the label from the human; never derive identity or resolution from it.
-- **RECORD-4 [M + J] — coordinating work lives only where ki-coordination is declared** — A work package at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate. (standards-work-package.md#state-file)
+- **RECORD-4 [M + J] — coordinating work lives only where ki-coordination is declared** — A territory or Project package, or old coordination/state-of-play checkpoint, needs [skills.ki-coordination] capability. This never assigns an active session role. A regular package needs no coordination capability merely by existing. Explicitly owner-opened regular coordination checks capability at bootstrap, unless a specific owner-approved exception covers that opening. No stored coordinator field is added. (standards-work-package.md#state-file)
   - _Remediation:_ guarded — Declare `[skills.ki-coordination]` where the repository coordinates, or correct the level through an explicit work-file update.
-  - _Evidence scope:_ Every work file level and old checkpoint role.
-  - _Review prompt:_ Does each declared level or role match how the owner runs the work?
+  - _Evidence scope:_ Work levels, legacy roles and explicitly owner-opened coordinating sessions.
+  - _Review prompt:_ Does the explicit opener check authority and coordination capability or its specific owner-approved exception, while regular packages remain usable conversationally?
   - _Outcomes:_ conforming; explicit update required; escalate to user
-  - _Conforming guidance:_ Take the level from the owner; never infer it from the title, folder name or repository declaration.
+  - _Conforming guidance:_ Preserve the actual level; package, id, binding and capability never select coordination. Check the opener under ki-coordination Session kinds, preserving the specific Acquire intake exception.
 
 ## LIFECYCLE — Work-package lifecycle
 

@@ -75,7 +75,7 @@ const RECORD_4: RubricItem<RecordContext> = {
   code: 'RECORD-4',
   title: 'coordinating work lives only where ki-coordination is declared',
   description:
-    'A work package at `territory` or `project` level, or an old checkpoint whose `role` is `coordination` or `state-of-play`, lives in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. The level, or for an old checkpoint the role, is the one authority for the kind of work; the repository declaration is only the capability gate.',
+    'A territory or Project package, or old coordination/state-of-play checkpoint, needs [skills.ki-coordination] capability. This never assigns an active session role. A regular package needs no coordination capability merely by existing. Explicitly owner-opened regular coordination checks capability at bootstrap, unless a specific owner-approved exception covers that opening. No stored coordinator field is added.',
   sources: [`${SOURCE}#state-file`],
   mechanical: {
     level: 'FAIL',
@@ -87,13 +87,14 @@ const RECORD_4: RubricItem<RecordContext> = {
     audit: { phase: 'INSPECT', run: (context) => context.role }
   },
   judgment: {
-    scope: 'Every work file level and old checkpoint role.',
-    prompt: 'Does each declared level or role match how the owner runs the work?',
+    scope: 'Work levels, legacy roles and explicitly owner-opened coordinating sessions.',
+    prompt:
+      'Does the explicit opener check authority and coordination capability or its specific owner-approved exception, while regular packages remain usable conversationally?',
     outcomes: ['conforming', 'explicit update required', 'escalate to user'],
-    guidance: 'Take the level from the owner; never infer it from the title, folder name or repository declaration.'
+    guidance:
+      'Preserve the actual level; package, id, binding and capability never select coordination. Check the opener under ki-coordination Session kinds, preserving the specific Acquire intake exception.'
   }
 }
-
 export const RECORD: RubricFamily<WorkPackageRubricContext, RecordContext> = {
   code: 'RECORD',
   title: 'Work-package record',
