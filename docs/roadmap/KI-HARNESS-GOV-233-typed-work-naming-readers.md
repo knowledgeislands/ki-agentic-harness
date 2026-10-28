@@ -42,6 +42,8 @@ Ready under the explicit owner-approved plan. Immutable source baseline `380bc2d
 
 ## Files touched
 
+The canonical COORD rubric item descriptions and their generated `references/rubric.md` are also owned so published naming wording does not contradict the new canonical table.
+
 - `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.ts`
 - `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.test.ts`
 - `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.ts`
@@ -75,7 +77,7 @@ Main SoP discovery excludes typed main from secondaries. Project registry and qu
 
 ### Verification
 
-126 focused validator tests pass. Installed TypeScript check passes. Canonical coordination generator invoked once; rendered surfaces are unchanged. Mandatory hooks and generated-surface tests complete at delivery. An initial package test invocation widened its scope because the script includes all directories; stopped promptly and replaced with exact two-file execution, with no broad rerun.
+126 focused validator tests pass. Installed TypeScript check passes. Canonical coordination generator invoked once; rendered surfaces are unchanged. 15 generated-surface tests and mandatory hooks pass. Primary focused ki-coordination and ki-work-package native audits both pass. An initial package test invocation widened its scope because the script includes all directories; stopped promptly and replaced with exact two-file execution, with no broad rerun.
 
 ### Outstanding concerns
 

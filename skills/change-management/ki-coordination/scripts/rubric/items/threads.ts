@@ -7,7 +7,7 @@ const COORD_1: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-1',
   title: 'territory work belongs to the Capital',
   description:
-    'A territory Capital, a repository whose declared `capital` is itself, holds its territory work, `+/_WORK/<territory>/work.md` with an id of one segment, titled `<Territory> > SoP`, and no other repository holds territory or Project packages; deliberately owner-approved regular/ad hoc member work declares Home: in work.md Scope, and its parent maintains the existing covers/home reference without a second package. Regular umbrella and child packages remain eligible; coverage never opens coordination. For the tolerance window a Capital whose territory work is still the state-of-play checkpoint `+/_CHECKPOINTS/_state-of-play.md` passes with a warning naming its new home.',
+    'A territory Capital, a repository whose declared `capital` is itself, holds its territory work, `+/_WORK/<territory>.sop.main/work.md`, retaining legacy `<territory>` input indefinitely, titled `<Territory> > SoP`, and no other repository holds territory or Project packages; deliberately owner-approved regular/ad hoc member work declares Home: in work.md Scope, and its parent maintains the existing covers/home reference without a second package. Regular umbrella and child packages remain eligible; coverage never opens coordination. For the tolerance window a Capital whose territory work is still the state-of-play checkpoint `+/_CHECKPOINTS/_state-of-play.md` passes with a warning naming its new home.',
   sources: [`${SOURCE}#territory-work`, `${SOURCE}#the-work-model`],
   mechanical: {
     level: 'FAIL',
@@ -25,7 +25,7 @@ const COORD_2: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-2',
   title: 'Project work resolves in the registry',
   description:
-    "Each Project work file `+/_WORK/<territory>.<project>/work.md` names its `project`, its title ends in that Project's title, as in `KI > Model > Ways of working`, and on a Capital its Project resolves in `Streams/Projects/` and any `theme` in `Streams/Themes/`; a theme resolving only in the legacy `Streams/Initiatives/` warns, naming its new page, until 2026-11-07 and fails from that day. For the tolerance window an `<initiative>.<project>.md` checkpoint is checked as before, its label ending in its Project's title, or its slug in words where the Project note has no title, and its Initiative resolving in `Streams/Initiatives/`, with a warning naming its new home.",
+    "Each Project work file `+/_WORK/<territory>.prj.<project>/work.md` names its `project`, its title ends in that Project's title, as in `KI > Model > Ways of working`, and on a Capital its Project resolves in `Streams/Projects/` and any `theme` in `Streams/Themes/`; a theme resolving only in the legacy `Streams/Initiatives/` warns, naming its new page, until 2026-11-07 and fails from that day. For the tolerance window an `<initiative>.<project>.md` checkpoint is checked as before, its label ending in its Project's title, or its slug in words where the Project note has no title, and its Initiative resolving in `Streams/Initiatives/`, with a warning naming its new home.",
   sources: [`${SOURCE}#work-naming`, `${SOURCE}#coordinating-work`],
   mechanical: {
     level: 'WARN',
@@ -42,7 +42,7 @@ const COORD_10: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-10',
   title: 'work files declare a level that agrees with their id',
   description:
-    'Each work file declares its `level`, which agrees with its id: one segment is `territory`, a second segment `regular` is `regular`, and any other second segment is `project`. For the tolerance window the `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint `role: coordination`, or `role: conversational`, and no other checkpoint declares `state-of-play`.',
+    'Each work file declares its `level`, which agrees with its id: `sop` names territory work (`main` or a named secondary), `prj` names Project work and `regular` names regular work; legacy one- and two-part names stay readable indefinitely. For the tolerance window the `_state-of-play.md` checkpoint carries `role: state-of-play` and each `<initiative>.<project>.md` checkpoint `role: coordination`, or `role: conversational`, and no other checkpoint declares `state-of-play`.',
   sources: [`${SOURCE}#levels-and-forms`],
   mechanical: {
     level: 'WARN',
