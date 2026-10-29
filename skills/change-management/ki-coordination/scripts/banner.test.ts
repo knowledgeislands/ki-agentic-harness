@@ -252,8 +252,8 @@ test('a coordinator reply that moves the mark, changes the state or answers wher
   }
 })
 
-test('the hook line points at the standard and carries only its five hard rules', () => {
-  const line = /^line='(.*)'$/m.exec(hook)?.[1] ?? ''
+test('the authoritative standard retains all five hard rules', () => {
+  const line = standard
   expect(line).toContain(
     'Follow the coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md) and the Work Process note it cites'
   )
@@ -279,10 +279,23 @@ test('the hook line points at the standard and carries only its five hard rules'
   )
   expect(line).toContain('5) commit your own work and the work package by explicit path after every finished change')
   expect(line).not.toContain('6)')
-  // The shape itself lives in the standard and the output style; the line does not restate it.
-  expect(line).not.toContain('Hold report at')
-  expect(line).not.toContain('checkpoint')
-  expect(line.length).toBeLessThan(1800)
+})
+
+test('unknown-session hook sources stay short and conditional while the style retains refresh and re-anchoring', () => {
+  const line = /^line='(.*)'$/m.exec(hook)?.[1] ?? ''
+  const pointer = /^pointer='(.*)'$/m.exec(hook)?.[1] ?? ''
+  expect(line).toContain('Only if the owner explicitly opened or resumed coordination')
+  expect(line).toContain('Otherwise use its conversational Reply forms')
+  expect(line.length).toBeLessThan(300)
+  expect(pointer).toContain('Only if explicitly coordinating')
+  expect(pointer).toContain('Re-anchoring after compaction')
+  expect(pointer.length).toBeLessThan(350)
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('before each state-file update')
+    expect(text).toContain('method_read')
+    expect(text).toContain('all five files of your work package in full')
+    expect(text).toContain('one blind review')
+  }
 })
 
 test('the run-report and footer-report sources carry the quiet-tools rule and no reply block', () => {
@@ -296,9 +309,9 @@ test('the run-report and footer-report sources carry the quiet-tools rule and no
 })
 
 test('the hook line, the pointer and the output style confine the coordinator forms to coordinating work', () => {
-  expect(hook).toContain("line='In coordinating work only,")
-  expect(hook).toContain('elsewhere ignore this line and use the ki-coordination Reply forms')
-  expect(hook).toContain('In a conversational session, re-read your work package if you have one')
+  expect(hook).toContain("line='Only if the owner explicitly opened or resumed coordination")
+  expect(hook).toContain('Otherwise use its conversational Reply forms')
+  expect(hook).toContain('Only if explicitly coordinating, follow Re-anchoring after compaction')
   expect(outputStyle).toContain('This style applies only while the owner explicitly opens or resumes coordination')
   expect(standard).toContain('## Reply forms')
 })

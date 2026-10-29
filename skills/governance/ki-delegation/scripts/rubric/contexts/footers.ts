@@ -8,6 +8,15 @@ export const AUTHORITY_TIERS = ['none', 'push', 'prune', 'release'] as const
 
 const SHARED_PROHIBITIONS = [
   '## Rules',
+  'Never approve your own delivery or accept work at your discretion',
+  'only as an independent actor',
+  'exact explicit human-approved closure',
+  'repository-local `ki-batch`',
+  'frozen payload/set',
+  '`completion_target: done`',
+  'recheck all review and evidence requirements',
+  'This footer supplies no human approval',
+  'Cancellation needs separate exact human approval',
   'explicit paths only',
   '`--no-verify`',
   'force-push',

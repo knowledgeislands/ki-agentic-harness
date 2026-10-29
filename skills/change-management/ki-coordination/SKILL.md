@@ -24,7 +24,7 @@ The standard holds coordinator responsiveness with the counted turn budget and s
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
 
-A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-work-package`. The declaration is the signal the harness `hooks/coordinator-reminder.sh` reminder and the ki-coordinator output style key on: a repository that does not delegate never gets them, and removing the declaration disables them.
+A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-work-package`. The declaration enables the harness `hooks/coordinator-reminder.sh` conditional pointer and the ki-coordinator output-style binding; it proves checkout capability, never session selection or role. Removing it disables those surfaces. Full session-sensitive hook detection remains deferred, and the coordinator performs its own method revision check.
 
 It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work package or its files, which `ki-work-package` owns; and it does not summarise a single ordinary session, which `ki-recap` owns and which keeps the ordinary session recap only.
 

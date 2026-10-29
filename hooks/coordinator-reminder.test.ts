@@ -1,8 +1,8 @@
 import { expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 import { markedBlock } from '../skills/change-management/ki-coordination/scripts/generate/index.ts'
 
 const script = resolve(import.meta.dir, 'coordinator-reminder.sh')
@@ -11,9 +11,11 @@ const line = markedBlock(
   'source',
   'hook-line'
 ).body
-const pointer =
-  'Context was compacted. While coordinating work, before replying, follow "Re-anchoring after compaction" in the ki-coordination coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md): re-read the standard, the harness output style output-styles/ki-coordinator.md from disk and all five files of your work package in full, and follow the style file wherever it differs from the loaded style; run ki agent status and read its messages.md queue, IMPORTANT lines first, then confirm in one line and answer in owner-report form with the report heading and the glyph banner and its closing thread line, with no send or resume line. Re-anchoring moves no mark. In a conversational session, re-read your work package if you have one and carry on with a conversational reply.'
-
+const pointer = markedBlock(
+  readFileSync(resolve(import.meta.dir, '../skills/change-management/ki-coordination/references/standards-coordination.md'), 'utf8'),
+  'source',
+  'hook-pointer'
+).body
 const root = mkdtempSync(join(tmpdir(), 'ki-coordinator-reminder-'))
 const coordinating = join(root, 'capital')
 const undeclared = join(root, 'undeclared')
@@ -149,61 +151,33 @@ test('malformed, empty or cwd-less input fails open without blocking', () => {
   expect(run(missingCwd)).toEqual({ status: 0, stdout: '' })
 })
 
-test.each([
-  'skills/change-management/ki-coordination/method.md',
-  'skills/governance/ki-work-package/method.md',
-  'skills/governance/ki-delegation/method.md',
-  'output-styles/ki-coordinator.md'
-])('method warnings track %s independently of unrelated harness changes', (methodPath) => {
-  const suffix = methodPath.replaceAll('/', '-')
-  const harness = join(root, `method-harness-${suffix}`)
-  const hook = join(harness, 'hooks/coordinator-reminder.sh')
-  mkdirSync(join(harness, 'hooks'), { recursive: true })
-  mkdirSync(join(harness, dirname(methodPath)), { recursive: true })
-  copyFileSync(script, hook)
-  const git = (...args: string[]): string => {
-    const result = spawnSync('git', args, { cwd: harness, encoding: 'utf8' })
-    expect(result.status).toBe(0)
-    return result.stdout.trim()
-  }
-  git('init', '--quiet')
-  const commit = (path: string, content: string): string => {
-    writeFileSync(join(harness, path), content)
-    git('add', '--', path)
-    git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '--quiet', '-m', 'test: fixture')
-    return git('rev-parse', '--short', 'HEAD')
-  }
-  const old = commit(methodPath, 'old\n')
-  const current = commit(methodPath, 'current\n')
-  const unrelated = commit('unrelated.md', 'unrelated\n')
-  const checkout = join(root, `method-capital-${suffix}`)
+test.each([0, 1, 6])('unknown selection ignores %s stale packages and reads no package or method history', (count) => {
+  const checkout = join(root, `unknown-${count}`)
   mkdirSync(checkout)
   writeFileSync(join(checkout, '.ki.toml'), '[skills.ki-coordination]\n')
-  const packageState = (id: string, level: string, state: string, revision: string): void => {
-    const folder = join(checkout, '+/_WORK', id)
+  const states = ['with-worker', 'with-supervisor', 'on-hold', 'finished', 'with-worker', 'with-worker']
+  for (let index = 0; index < count; index++) {
+    const folder = join(checkout, '+/_WORK', `ki.reg.stale-${index}`)
     mkdirSync(folder, { recursive: true })
-    writeFileSync(join(folder, 'work.md'), `---\nlevel: ${level}\n---\n`)
-    writeFileSync(join(folder, 'state.md'), `---\nstate: ${state}\nmethod_read: ${revision}\n---\n`)
+    writeFileSync(join(folder, 'work.md'), `---\nlevel: ${index ? 'project' : 'regular'}\n---\n`)
+    writeFileSync(join(folder, 'state.md'), `---\nstate: ${states[index]}\nmethod_read: stale\n---\n`)
   }
-  packageState('ki.stale', 'project', 'with-worker', old)
-  packageState('ki', 'territory', 'with-supervisor', old)
-  packageState('ki.current', 'project', 'with-worker', `"${current}" # checked`)
-  packageState('ki.held', 'project', 'on-hold', old)
-  packageState('ki.finished', 'project', 'finished', old)
-  packageState('ki.regular', 'regular', 'with-worker', old)
-  packageState('ki.unreadable', 'project', 'with-worker', 'not-a-revision')
-  symlinkSync(join(checkout, '+/_WORK/ki.stale'), join(checkout, '+/_WORK/ki.link'))
-  const outcome = run(claudePrompt(checkout), {}, hook)
-  expect(outcome.status).toBe(0)
-  expect(outcome.context?.split('\n')[0]).toBe(line)
-  expect(outcome.context?.split('\n').slice(1).sort()).toEqual([
-    `METHOD-NUDGE: ki method_read ${old}; current method ${current}. Follow Refreshing this guidance.`,
-    `METHOD-NUDGE: ki.regular method_read ${old}; current method ${current}. Follow Refreshing this guidance.`,
-    `METHOD-NUDGE: ki.stale method_read ${old}; current method ${current}. Follow Refreshing this guidance.`
-  ])
-  expect(outcome.context).not.toContain(unrelated)
-  expect(run(sessionStart(checkout, 'compact'), {}, hook).context).toBe(pointer)
-  expect(run(claudePrompt(checkout), { KI_AGENT_RUN: 'run' }, hook).stdout).toBe('')
-  rmSync(join(harness, '.git'), { recursive: true })
-  expect(run(claudePrompt(checkout), {}, hook).context).toBe(line)
+  // Bash records executed commands, including substitutions and expanded globs.
+  // No command may enumerate/read packages or inspect method Git history.
+  const trace = join(root, `unknown-${count}.trace`)
+  const bashEnv = join(root, `unknown-${count}.bash-env`)
+  writeFileSync(bashEnv, `set -T\ntrap 'printf "%s\\n" "$BASH_COMMAND" >> "$HOOK_TRACE"' DEBUG\n`)
+  const env = { BASH_ENV: bashEnv, HOOK_TRACE: trace }
+  for (const input of [claudePrompt(checkout), codexPrompt(checkout)]) {
+    expect(run(input, env)).toEqual({ status: 0, stdout: `${JSON.stringify({hookSpecificOutput: {hookEventName: 'UserPromptSubmit', additionalContext: line}})}\n`, context: line, event: 'UserPromptSubmit' })
+  }
+  expect(run(sessionStart(checkout, 'compact'), env).context).toBe(pointer)
+  expect(readFileSync(trace, 'utf8')).not.toMatch(/_WORK|method_read|git .*log|rev-parse --verify|awk/)
+  expect(line.length).toBeLessThan(300)
+  expect(pointer.length).toBeLessThan(350)
+  expect(run(claudePrompt(checkout), { KI_AGENT_RUN: 'run' }).stdout).toBe('')
+})
+
+test.each(['null', '[]', '42', '"text"', '{"hook_event_name":{}}', '{"hook_event_name":"UserPromptSubmit","cwd":{}}'])('unusable payload %s stays silent', (input) => {
+  expect(run(input)).toEqual({ status: 0, stdout: '' })
 })

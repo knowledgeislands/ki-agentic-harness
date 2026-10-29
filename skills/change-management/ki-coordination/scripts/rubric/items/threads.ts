@@ -66,7 +66,7 @@ const COORD_3: RubricItem<CoordinationRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Have territory work put Project work on hold or queue it until the active list is within the cap; over eight records awaiting acceptance, launch no new build or planning run until acceptance catches up, keeping acceptance fixes and backlog-clearing work.'
+        'Have territory work put Project work on hold or queue it until the active list is within the cap; exceeding that active Project cap requires explicit owner agreement beforehand, never a unilateral increase; over eight records awaiting acceptance, launch no new build or planning run until acceptance catches up, keeping acceptance fixes and backlog-clearing work.'
     },
     audit: { phase: 'INSPECT', run: ({ cap }) => cap.outcomes }
   }

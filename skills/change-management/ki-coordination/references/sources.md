@@ -17,6 +17,8 @@
 
 ## Last review
 
+The bounded in-house review of 29 October 2026 applies the reviewed quiet-hook partial: supported unknown-session events receive a short conditional pointer, without package reads or method-history scans. Checkout capability does not prove owner-opened selection and coordinator role; full session-sensitive detection remains deferred. Full rules, re-anchoring, reporting and per-coordinator method revision checks remain authoritative here and in the generated style. RELEASE-NOTICE routes released-version/change/compatibility/adoption/reply information to affected owning work or receiving State of play. CAP-RAISE requires explicit owner agreement before exceeding the existing active Project cap; queue defaults, cap numbers and eight-record/eight-query diagnostics remain unchanged. No external sources were re-fetched.
+
 2026-10-25 - Reviewed Kris's FINDINGS-SECTION answer in `ki.ways-of-working/decisions.md` and the coordination standard's owner-report Findings retention. The existing `findings/<tag>.md` form is admitted by the work-package closed list and FOLDER-1, read with the package, retained while open and settled before tidy or close-out. This is an in-house contract review; no external source refreshed.
 
 - 2026-10-25 - Reviewed Kris's 24 and 25 October answers in the `ki.ways-of-working` decisions log and the `model-shape-report.md`, `overview.md` and `unattended-work.md` designs under `wow-harness-model-2`. Assigned-package cascade, work-qualified queries in one Summary, independent package states and marks, one package per turn, inventory-based execution requirements and package creation within the cap. This is an in-house decision review; no external source was refreshed.

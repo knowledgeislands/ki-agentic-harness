@@ -16,6 +16,10 @@ This is the one release-timing policy for every Knowledge Islands tooling projec
 - **Pins move only where needed.** A repository's CI `KI_VERSION` pin, held in `.github/ki-version` under `ki-engineering`, moves only when that repository needs the new version. A repository without the `ki-engineering` pin receiver moves its pin by a reviewed change when it needs the new version, and an older pin is not a failure. Adopting the receiver is that repository's opt-in to track every release: under XDR-KI-HARNESS-001 it auto-merges a pin-only bump behind required checks, in the `knowledgeislands` organisation only.
 - **Fewer releases cost less downstream.** Consolidated releases keep the tap, website and pin proposals that each release triggers infrequent; the release automation removes the per-release handling cost, not the reason to hold.
 
+## Release notice
+
+After an authorised release, the releasing territory owner or coordinator sends affected owning work a release notice in its `messages.md`, or the receiving State of play's queue where no clear work owner exists. Name the released version, relevant change, compatibility, adoption steps and any reply needed. Follow the existing sender and cross-territory authority boundaries; the receiver owns adoption and any genuinely deferred record. This is a notice obligation, not release authority, consumer selection, rollout execution or foreign-record creation. Follow the `ki-coordination` [message procedure](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work).
+
 ## 1. Establish the candidate
 
 - Complete [the change-readiness checklist](standards-change-readiness.md), then read the repository's `docs/guides/developer/definition-of-done.md` and `docs/guides/developer/releasing.md` for its exact gates and publication procedure. The local guides name this shared policy and retain executable local steps rather than duplicate common obligations.

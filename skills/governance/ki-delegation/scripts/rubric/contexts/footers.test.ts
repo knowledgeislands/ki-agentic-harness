@@ -87,3 +87,31 @@ test('a machine grant that drops the new-software ban or the dotfile judgement c
     rmSync(directory, { recursive: true })
   }
 })
+
+test('every tier retains the independent approval-bound closure boundary', () => {
+  const directory = copy()
+  try {
+    for (const tier of ['none', 'push', 'prune', 'release']) {
+      const path = join(directory, `rules-${tier}.md`)
+      const original = readFileSync(path, 'utf8')
+      for (const phrase of [
+        'only as an independent actor',
+        'exact explicit human-approved closure',
+        'frozen payload/set',
+        '`completion_target: done`',
+        'This footer supplies no human approval',
+        'Cancellation needs separate exact human approval'
+      ]) {
+        writeFileSync(path, original.replace(phrase, 'missing-boundary'))
+        expect(
+          footerOutcomes(directory).some(
+            (outcome) => outcome.subject === `assets/rules-${tier}.md` && outcome.status === 'VIOLATION'
+          )
+        ).toBe(true)
+      }
+      writeFileSync(path, original)
+    }
+  } finally {
+    rmSync(directory, { recursive: true })
+  }
+})

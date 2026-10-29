@@ -33,7 +33,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       judgment: {
         scope: 'Background-run prompts, decisions logs and run reports the delegating owner selects for review.',
         prompt:
-          'Does each prompt cite a real owner decision by its words and date, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report?',
+          'Does each prompt cite a real owner decision by its words and date, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report? Was the complete current concrete brief written and checked for unresolved templates before launch in one checked process, using immutable prompt.md for already-launched evidence rather than a consumed draft?',
         outcomes: ['conforming', 'revise prompt', 'escalate to owner'],
         guidance:
           'Revise a prompt only within the authority its cited decision grants; escalate to the owner when the work needs a higher tier or a decision that does not exist yet.'
