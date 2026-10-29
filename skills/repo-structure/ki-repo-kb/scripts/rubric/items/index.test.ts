@@ -5,6 +5,7 @@ import {
   mkdtempSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync
@@ -605,6 +606,46 @@ test('LINK-1 resolves both link forms in exact case without global percent-decod
     '![[missing.png]]'
   ])
     expect(audit(body)).toMatchObject({ level: 'WARN' })
+})
+
+test('LINK-1 resolves contained absolute targets and aliases without losing exact case or cycle protection', () => {
+  const repository = createBase()
+  mkdirSync(join(repository, 'Resources', 'Folder'))
+  for (const name of ['Some Note.md', 'Literal%23.md', '100%.md'])
+    writeFileSync(join(repository, 'Resources', 'Folder', name), '# Note\n')
+  symlinkSync('Folder', join(repository, 'Resources', 'Alias'))
+  symlinkSync('Folder/Some Note.md', join(repository, 'Resources', 'Linked.md'))
+  symlinkSync('..', join(repository, 'Resources', 'Folder', 'Cycle'))
+  symlinkSync('Missing.md', join(repository, 'Resources', 'Dangling.md'))
+  symlinkSync('Self.md', join(repository, 'Resources', 'Self.md'))
+  const audit = (body: string) => {
+    writeFileSync(join(repository, 'Pillars', 'Source.md'), `# Source\n\n${body}\n`)
+    return collectKbAuditEvidence(repository).find((finding) => finding.code === 'LINK-1')
+  }
+  for (const body of [
+    `[absolute](<${repository}/Resources/Folder/Some Note.md>)`,
+    `![[${repository}/Resources/Alias/Some Note]]`,
+    `[absolute](<${realpathSync(repository)}/Resources/Folder/Some Note.md>)`,
+    `[reference][note]\n\n[note]: ${repository}/Resources/Folder/Some%20Note.md`,
+    `![embed](<${repository}/Resources/Alias/Some Note.md>)`,
+    `[reserved](${repository}/Resources/Folder/Literal%23.md) and [percent](${repository}/Resources/Folder/100%.md)`,
+    '[vault](</Resources/Folder/Some Note.md>)',
+    '[alias](<../Resources/Alias/Some Note.md>) and [[Resources/Linked]]',
+    '[[Resources/Alias/Some Note]] and ![[Resources/Folder/100%]]',
+    '[cycle directory](../Resources/Folder/Cycle)'
+  ])
+    expect(audit(body), body).toMatchObject({ level: 'PASS' })
+  for (const body of [
+    `[case](<${repository}/resources/Folder/Some Note.md>)`,
+    `[[${repository}/Resources/alias/Some Note]]`,
+    `[reference][note]\n\n[note]: ${repository}/Resources/Folder/some%20Note.md`,
+    `![embed](<${repository}/Resources/alias/Some Note.md>)`,
+    '[case](<../Resources/Alias/some Note.md>)',
+    '[[Resources/alias/Some Note]]',
+    '[dangling](../Resources/Dangling.md) and [self](../Resources/Self.md)',
+    '[missing through cycle](../Resources/Folder/Cycle/Resources/Missing.md)'
+  ])
+    expect(audit(body), body).toMatchObject({ level: 'WARN' })
 })
 
 test('LINK-1 strict resolution is a typed repository opt-in and reaches hosted outcomes', async () => {

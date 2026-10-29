@@ -1,5 +1,5 @@
-import { readdirSync, readFileSync } from 'node:fs'
-import { dirname, join, posix } from 'node:path'
+import { readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
+import { dirname, isAbsolute, join, posix, relative, resolve, sep } from 'node:path'
 
 const prose = (text: string): string =>
   text.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '').replace(/`[^`\n]*`|<!--[\s\S]*?-->/g, '')
@@ -23,20 +23,44 @@ const destinations = (text: string): string[] => [
 export const unresolvedInternalLinks = (root: string, notes: readonly string[]): string[] => {
   const paths = new Set<string>(['.'])
   const files: string[] = []
-  const walk = (folder: string): void => {
+  const canonicalRoot = realpathSync(root)
+  const contained = (base: string, target: string): boolean => {
+    const path = relative(base, target)
+    return path !== '..' && !path.startsWith(`..${sep}`) && !isAbsolute(path)
+  }
+  const walk = (folder: string, ancestors: ReadonlySet<string>): void => {
+    const directory = realpathSync(join(root, folder))
+    if (!contained(canonicalRoot, directory) || ancestors.has(directory)) return
+    const visited = new Set([...ancestors, directory])
     for (const entry of readdirSync(join(root, folder), { withFileTypes: true })) {
       if (entry.name === '.git' || entry.name === 'node_modules') continue
       const path = posix.join(folder, entry.name)
-      if (entry.isDirectory()) {
+      let kind: { isDirectory(): boolean; isFile(): boolean } = entry
+      if (entry.isSymbolicLink()) {
+        try {
+          // Inspect identity only, never traverse an alias into another audit root.
+          if (!contained(canonicalRoot, realpathSync(join(root, path)))) continue
+          kind = statSync(join(root, path))
+        } catch (error) {
+          if (['ENOENT', 'ELOOP'].includes((error as NodeJS.ErrnoException).code ?? '')) continue
+          throw error
+        }
+      }
+      if (kind.isDirectory()) {
         paths.add(path)
-        walk(path)
-      } else if (entry.isFile()) {
+        walk(path, visited)
+      } else if (kind.isFile()) {
         paths.add(path)
         files.push(path)
       }
     }
   }
-  walk('')
+  walk('', new Set())
+  const rootRelative = (target: string): string => {
+    // Keep literal case: realpath would conceal wrong-case destinations on macOS.
+    const base = [resolve(root), canonicalRoot].find((base) => isAbsolute(target) && contained(base, target))
+    return base === undefined ? target : `/${relative(base, target)}`
+  }
   const wikiPaths = files.map((path) => ({ path, name: path.replace(/\.md$/i, '') }))
   const failures: string[] = []
   for (const note of notes) {
@@ -44,14 +68,17 @@ export const unresolvedInternalLinks = (root: string, notes: readonly string[]):
     for (const raw of destinations(text)) {
       const target = localTarget(raw)
       if (target === null || !target) continue
-      const path = target.startsWith('/') ? posix.normalize(target.slice(1)) : posix.join(dirname(note), target)
+      const destination = rootRelative(target)
+      const path = destination.startsWith('/')
+        ? posix.normalize(destination.slice(1))
+        : posix.join(dirname(note), destination)
       if (!paths.has(path)) failures.push(`${note}: ${raw} (missing or wrong case)`)
     }
     for (const match of text.matchAll(/!?\[\[([^\]\n]+)\]\]/g)) {
       const raw = match[1]!.split(/\\?\|/, 1)[0]!.split(/[#^]/, 1)[0]!.trim()
       const target = localTarget(raw)
       if (target === null || !target) continue
-      const name = target.replace(/^\//, '').replace(/\.md$/i, '')
+      const name = rootRelative(target).replace(/^\//, '').replace(/\.md$/i, '')
       const beside = posix.join(dirname(note), name)
       const equals = (value: string, other: string): boolean => value.toLowerCase() === other.toLowerCase()
       let candidates = wikiPaths.filter((entry) => equals(entry.name, beside))
