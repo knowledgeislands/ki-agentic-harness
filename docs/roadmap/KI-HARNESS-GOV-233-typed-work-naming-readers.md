@@ -7,13 +7,12 @@ purpose: corrective
 component: change-management
 priority: high
 size: s
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 380bc2d3a4f539abd006d1c0d28b60c51a634d5b
 created_at: 2026-10-28T22:02:19Z
-updated_at: 2026-10-29T01:29:35Z
+updated_at: 2026-10-29T02:07:12Z
 ---
 
 # Typed work naming readers
@@ -116,6 +115,10 @@ Naming gates retain old inputs, seven states and optional roles. No Principal ca
 ### Mini recap
 
 Bounded typed-name support unblocks physical folder publication; no MOD011 merge, locator schema or release.
+
+## Done
+
+Accepted 29 October 2026 by Kris under the still-live 27 October ACCEPT-PRUNE-CONFIDENT grant and explicit 29 October continuation, executed independently by wow-sleep-final-review on the review packet above.
 
 ## Discussion
 

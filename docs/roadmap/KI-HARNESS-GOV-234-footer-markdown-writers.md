@@ -7,13 +7,12 @@ purpose: corrective
 component: change-management
 priority: high
 size: s
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 12f09a3b7f08f1c2dddae22261923857a10f04bb
 created_at: 2026-10-28T23:11:49Z
-updated_at: 2026-10-29T01:34:30Z
+updated_at: 2026-10-29T02:07:12Z
 ---
 
 # Footer and Markdown writers
@@ -101,6 +100,10 @@ The committed footer and exclusion changes address the scoped goal without weake
 ### Mini recap
 
 Harness delivered the bare-ID footer and repository-aware frontmatter exclusions, supported by 15 footer checks, two repaired frontmatter checks, TypeScript and scoped gate evidence. The 29 October causal follow-through also leaves the authoring regressions and the required combined source gate green without weakening the unsafe-path case. The limitations above remain explicit. Learning route: retain the footer rule in coordination and exclusion semantics in authoring, where the delivery already placed them; no further knowledge promotion or new work is proposed here.
+
+## Done
+
+Accepted 29 October 2026 by Kris under the still-live 27 October ACCEPT-PRUNE-CONFIDENT grant and explicit 29 October continuation, executed independently by wow-sleep-final-review on the review packet above.
 
 ## Discussion
 
