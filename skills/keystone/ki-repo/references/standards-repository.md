@@ -223,7 +223,17 @@ Dependabot is a security signal, not an update channel. Every repository, knowle
 
 A site repository is named `apps-` followed by its hostname's labels in reverse order, from the top-level domain inwards, so that a domain's repositories sort together under their top-level domain: `kris.me.uk` is `apps-uk.me.kris`, `rig.midnight.ninja` is `apps-ninja.midnight.rig` and `home.humansnotrobots.be` is `apps-be.humansnotrobots.home`. The rule reverses every label after `apps-`, multi-part public suffixes and nested subdomains included. It names the repository alone: the hostname, DNS, Cloudflare configuration, Worker names and work identifiers are untouched by it. Kris adopted it for new site repositories across the estate under NAMING-TO-KI on 27 October 2026, taking the recommended option, after Humans Not Robots had renamed its site repositories this way on 26 October 2026.
 
-An existing host-order name such as `apps-kris.me.uk` stays valid indefinitely. Whether and when to rename is the owning territory's decision, with no deadline and no audit against the old form. A rename needs its own assessment of the build connection and of every checkout and registry entry, and where the owner's site-safety limit cannot be met the current name is retained.
+The rule applies uniformly to existing site repositories too. Kris widened NAMING-TO-KI on 29 October 2026 to rename every Personal and Legal site repository at once, "don't change domain, just change ordering", and `apps-kris.me.uk` became `apps-uk.me.kris` that day. A host-order name still in place is a rename waiting to happen, not a valid alternative form. Before a rename, the repository is clean and level with its remote and no live run, session or worktree is working in it; a busy repository is skipped and renamed later. A rename covers, in order:
+
+1. **GitHub.** Rename the repository under its owner. GitHub redirects the old URL, but nothing relies on the redirect.
+2. **Checkouts on every machine.** Move each local checkout to the new directory name and set its `origin` URL. On each other machine, an idempotent script makes the same move, skipping a dirty checkout, and is run by Kris there.
+3. **mgit configuration.** Update the territory's mgit configuration, together with any generated workspace or trusted-folder entry naming the checkout, in its chezmoi source, then apply only the affected targets after reviewing `chezmoi diff`.
+4. **KI registry.** Remove the old registry key and register the new checkout with `ki registry`.
+5. **Repository contents and references.** Update `.ki.toml`, `package.json` repository URLs, README, AGENTS and guides in the renamed repository, and current references in other repositories. A package `name` that is not the repository name is left alone, and dated history such as decisions, reports and verification evidence keeps the name it used.
+6. **Drift-check paths.** Repoint every vendored-copy drift check that names the renamed repository as its canonical source, and run each one.
+7. **Workers Builds check.** Confirm that each Worker's Workers Builds connection, under Settings → Build, shows the new repository name, then push or retry a build. The GitHub App connection is normally bound to the repository identifier and survives the rename, but a stale connection fails silently.
+
+A rename names the repository alone, so the hostname, DNS, Worker names and Cloudflare configuration do not change. Where the owner's site-safety limit cannot be met, the rename waits and the current name is retained until it can.
 
 ## Visibility
 

@@ -127,6 +127,8 @@ The prefix is provider-authored metadata in the existing Harness-governance tabl
 
 `ki-repo` separately owns the Capital's optional `territory_prefix` and territory-selection handle. The main KI Harness keeps its capability prefix `ki`, aligned with the Knowledge Islands territory handle. Specialist Harnesses retain their own provider prefix: sharing the Knowledge Islands territory does not require a Techné Harness to rename its capabilities to `ki`. Territory selection resolves a Capital and its declared members, never capability-name prefixes.
 
+The prefix `personal` is reserved for the owner's own personal Harness, which only that owner installs, so it never meets a competing provider. Other Harnesses never declare it. A KI skill may refer to a `personal-*` skill, such as one that says who the owner is, as an optional augmentation under the `ki-skills` contract, used only when it is installed. Kris set this on 29 October 2026 under PERSONAL-SPECIAL.
+
 If a physical readable `.ki.toml` exists without `[skills.ki-repo-harness]`, CONFORM may append exactly one keyless marker while preserving all existing bytes apart from normalising the trailing newline before the append:
 
 ```toml

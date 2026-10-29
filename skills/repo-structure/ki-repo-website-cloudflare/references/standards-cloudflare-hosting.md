@@ -9,6 +9,7 @@ This skill owns the **deploy/serve delta for the site Worker**. The `dist/` it s
 ## Contents
 
 - [Credential access](#credential-access)
+- [Zero Trust team naming](#zero-trust-team-naming)
 - [1. Model — Workers Static Assets, not Pages](#1-model--workers-static-assets-not-pages)
 - [2. The `dist/` seam](#2-the-dist-seam)
 - [3. The site `wrangler.jsonc` shape](#3-the-site-wranglerjsonc-shape)
@@ -95,6 +96,18 @@ The root `ki:site:build` / `ki:site:dev` aliases and local build/dev operations 
 ## Credential access
 
 When a run is separately authorised to read Cloudflare credentials, it reads them only through `~/bin/cf_token`. No territory's notes record credential item or token ids, and credential values never enter output or tracked files. Kris adopted the Cloudflare half of RUN-SECRETS on 25 October 2026; this is an access rule, not authority for a credential read or a Cloudflare operation. The background-run [authority limits](../../../governance/ki-delegation/references/standards-background-runs.md#authority-tiers) still apply.
+
+## Zero Trust team naming
+
+Each Cloudflare account's Zero Trust team, which gives the Access login its `<team>.cloudflareaccess.com` domain, is named for that account's own identity in kebab case: the personal account's team is `midnight-ninja` and the 5G Emerge account's is `5g-emerge`. A team never keeps the name of another territory or of a project it once hosted, and carries no stale suffix such as `-io`. The organisation name equals the team domain, as in the Valle Armonia and 5G Emerge accounts, and the login page's text belongs to the account, with no other territory's header or footer. Kris set this on 29 October 2026 when renaming both teams, asking that it be "rolled out uniformly ... following conventions".
+
+A team rename is a change to the Access organisation, which makes it connection-critical under the background-run [connection-critical rule](../../../governance/ki-delegation/references/standards-background-runs.md#connection-critical-changes):
+
+1. **Restore path first.** Save the current team domain, organisation name and login text, and the identity providers' redirect URLs. To undo a rename while the old name is still unclaimed, put those values back on the account's Access organisation.
+2. **Rename, never delete.** Deleting an organisation locks its name permanently; a rename frees the old name for any account to claim. To move a name between two accounts, free it in one and claim it in the other straight away.
+3. **Dependants.** A team rename is blocked while dashboard SSO is on. Identity providers outside Cloudflare need the new redirect URL; WARP clients must be enrolled again under the new team name; anyone signed in under the old issuer signs in again.
+4. **Confirm.** Re-read the organisation and each identity provider's redirect URL, check that the login endpoint answers, and check that every Access application is intact.
+5. **References.** The territory that owns any document or configuration naming the old team domain updates it there.
 
 ## 6. Branch previews behind Access
 
