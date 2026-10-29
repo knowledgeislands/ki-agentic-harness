@@ -1,28 +1,28 @@
 ---
 id: KI-HARNESS-GOV-234
 area: GOV
-title: Bare-ID footer and scoped Markdown writers
+title: Footer and Markdown writers
 kind: deliver
 purpose: corrective
 component: change-management
 priority: high
 size: s
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 12f09a3b7f08f1c2dddae22261923857a10f04bb
 created_at: 2026-10-28T23:11:49Z
-updated_at: 2026-10-29T01:19:10Z
+updated_at: 2026-10-29T01:29:35Z
 ---
 
-# Bare-ID footer and scoped Markdown writers
+# Footer and Markdown writers
 
 ## Goal
 
 Land the owner-approved bare-ID closing line for every explicitly coordinating work package, then repair the shared causal Markdown writer, exclusion and scoped-gate paths.
 
-## Authority
+## Context
 
 Principal Ways of working decisions, "Finish Ways, major tidy and ID-only footer - 28 October 2026", and the bounded wow-footer-md-finish brief. Naming records retain their completed evidence and ownership.
 
@@ -30,16 +30,46 @@ Principal Ways of working decisions, "Finish Ways, major tidy and ID-only footer
 
 Only footer rule, generated consumers and affected tests first. Keep report heading, labels, state and banner otherwise unchanged. Old saved reports remain readable. Then prove actual new-content writer or gate defects with scoped cases, honour repository Markdown exclusions and capture bytes, and retain enforcement for new content. HNR stays read-only. No schema, marker, transport, dependency installation, release, provider action or weakened control guard.
 
-## Plan
+## Current state
+
+Immutable source baseline: `12f09a3b7f08f1c2dddae22261923857a10f04bb`. It precedes this record's creation; no committed Ready-record snapshot is asserted. Independent review returned this record for structural repair. Footer and repository-exclusion delivery are complete in Harness commits `afb126f228c41286f1903ec7273b9eb8896af8e9` and `79c9e4cc13b2a26d927ad132929cf65ab2b0d2e9`; this repair changes authored structure only and returns the record to independent review.
+
+## Steps
 
 - [x] Freeze actual native baseline and enumerated source paths before each causal edit.
 - [x] Amend canonical footer, regenerate affected surfaces once and verify focused footer cases.
 - [x] Prove scoped Markdown writer, gate and exclusion causes; repair only clear shared defects.
 - [x] Run meaningful affected checks and normal hooks; integrate and publish verified units.
 
+## Files touched
+
+The actual committed delivery paths are enumerated under Review / Change Summary. Both product units were authored in this Harness repository. This repair touches only this native record.
+
 ## Verify
 
 Reuse unchanged naming and pure-rename evidence. Run focused affected tests and installed types when relevant, plus normal mandatory commit hooks. No unchanged aggregate, build or estate audit replay.
+
+## Dependencies / blocks
+
+The compatible Harness owns shared footer assets and repository authoring semantics. Its delivered fixes already exist; their acceptance state is not a build-order blocker. This record does not assert cross-host freshness or estate-wide rollout.
+
+## Documentation impact
+
+### Decision Records
+
+No new decision: this delivery implements the existing owner-approved boundary.
+
+### Specifications
+
+No separate specification change; the preserved Goal and Boundary remain the delivery contract.
+
+### Guides
+
+The shared footer rule and generated delegation assets were authored in Harness, alongside the authoring exclusion rule. Tools consumes those assets through its resolved Harness; no Tools-authored copy or Principal canonical change is claimed.
+
+### Roadmap
+
+Repair this existing record only; preserve its identity, immutable baseline and original Goal. No new record, acceptance, cancellation or pruning.
 
 ## Review
 
@@ -61,7 +91,7 @@ One representative Personal rig-terra scoped KB verdict passed with zero in-scop
 
 ### Outstanding concerns
 
-The evidence establishes the bounded footer and exclusion outcomes only. It does not establish estate-wide Markdown cleanliness, HNR behaviour or any historical hook bypass. Principal canonical wording, downstream refresh and Personal publication were outside this native delivery; their coordination remains with the reporting project. This evidence repair does not certify those external outcomes or perform acceptance. Independent review remains pending; status stays `awaiting-review`.
+The evidence establishes the bounded footer and exclusion outcomes only. It does not establish estate-wide Markdown cleanliness, HNR behaviour or any historical hook bypass. Principal canonical wording, downstream refresh and Personal publication were outside this native delivery; their coordination remains with the reporting project. This evidence repair does not certify those external outcomes or perform acceptance. Independent review remains pending after this structural repair; status is `awaiting-review`.
 
 ### Post-change review
 
@@ -84,3 +114,7 @@ The 29 October owner instruction authorises evidence authoring for this exact un
 ### Independent review - 29 October 2026
 
 Independent review returns this record to In progress: the current roadmap audit fails ITEM-1 because the title exceeds four words and ITEM-3 because required body sections are absent. The repaired six-part packet does not waive these governing failures. Repair requires a separately briefed unit.
+
+### Structural return repair - 29 October 2026
+
+Owner-authorised record-only repair restores the current ITEM-1/ITEM-3/EXEC-4 contract as applicable. The independent return above remains historical evidence. Actual delivery objects, not the four stale runtime authoring-path hashes, ground the retained packet. Original Goal, creation time and immutable baseline are preserved; no Ready snapshot or newly run product tests are asserted. Required document and roadmap verdicts and normal hooks must pass before this return to Awaiting review is committed; acceptance remains separate.
