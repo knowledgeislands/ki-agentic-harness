@@ -2,6 +2,11 @@
 
 **Refresh:** external-spec · quarterly
 
+## Contents
+
+- [Last review](#last-review)
+- [Owner decisions reviewed on 25 October 2026](#owner-decisions-reviewed-on-25-october-2026)
+
 | Source | Last reviewed | Governs |
 | --- | --- | --- |
 | Knowledge Islands delegation practice | 2026-10-18 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet and run events, authority tiers and grants, decisions log and its tracked thread-folder home, coordination, worktree placement, run-folder retention, monitoring, and the owner report with its Needs tags and reply block; coordinating threads are `ki-coordination`'s |
