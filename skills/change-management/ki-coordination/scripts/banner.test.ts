@@ -201,6 +201,24 @@ test('the output style carries the report heading and the live banners byte-iden
   expect(styled).toEqual(banners(standard).slice(0, 3))
 })
 
+// Kris, 29 October 2026: "There becomes a point when the agents should suggest that this thread would be better off
+// being restarted. ... but only when it's necessary." The restart suggestion is the second named exception to the
+// no-paste rule, beside the bootstrap rename line, and both the standard and the output style carry its triggers.
+test('the restart suggestion is a named exception with narrow triggers, placed before the banner', () => {
+  expect(standard).toContain('**Restart suggestion.**')
+  expect(standard).toContain(
+    'It is the second named exception to the rule that a report carries no send, resume or paste line'
+  )
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('**Restart suggested:**')
+    expect(text).toContain('compacted twice or more')
+    expect(text).toContain('`ki agent prompts <territory>`')
+    expect(text).toContain('not for length, age, a change of state, a hold or a model switch alone')
+  }
+  expect(outputStyle).toContain('with two named exceptions')
+  expect(outputStyle).toContain('never in a hold report, a run report or a conversational reply')
+})
+
 test('every banner closes with its work identity and never emits a send or resume prompt', () => {
   for (const text of [standard, outputStyle]) {
     for (const lines of banners(text)) expect(lines.at(-1)).toBe(PROJECT_THREAD_LINE)
