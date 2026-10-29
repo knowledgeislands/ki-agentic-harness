@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { chmod, cp, mkdir, mkdtemp, readdir, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises'
+import { chmod, cp, lstat, mkdir, mkdtemp, readdir, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -8,7 +8,7 @@ import type { RubricEmitter } from '../../shared/rubric.ts'
 import type { EngineeringEvidenceFinding } from './audit-evidence.ts'
 
 const execute = promisify(execFile)
-const configuration = '.dependency-cruiser.ts'
+const configurations = ['.dependency-cruiser.ts', '.dependency-cruiser.mjs'] as const
 const tooling = 'tooling/depcruise'
 const toolingManifest = 'tooling/depcruise/package.json'
 const installedChecker = `${tooling}/node_modules/dependency-cruiser`
@@ -180,6 +180,7 @@ export const inspectBoundaries = async (
   emit?: RubricEmitter,
   run: Command = command
 ): Promise<readonly EngineeringEvidenceFinding[]> => {
+  let configuration: string = configurations[0]
   const finding = (level: EngineeringEvidenceFinding['level'], message: string): EngineeringEvidenceFinding => ({
     code: 'DESIGN-2',
     level,
@@ -204,10 +205,19 @@ export const inspectBoundaries = async (
     const sourceRoots = roots.filter((_, index) => inventory[index]?.length)
     const sources = inventory.flat().filter((path) => /\.[cm]?[jt]sx?$/.test(path))
     let configExists = false
-    try {
-      configExists = contained(root, await realpath(join(root, configuration)))
-    } catch {
-      /* Missing is diagnosed below. */
+    for (const candidate of configurations) {
+      try {
+        // Select by presence before resolving: an invalid preferred file must never fall back.
+        await lstat(join(root, candidate))
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue
+        throw error
+      }
+      configuration = candidate
+      if (!contained(root, await realpath(join(root, configuration))))
+        return [finding('FAIL', `Boundary evidence escapes repository: ${configuration}.`)]
+      configExists = true
+      break
     }
     const productSurface =
       ['main', 'module', 'bin', 'exports'].some((field) => pkg[field] !== undefined) ||

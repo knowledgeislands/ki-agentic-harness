@@ -1,4 +1,5 @@
 import { afterEach, expect, test } from 'bun:test'
+import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -149,6 +150,57 @@ test('an escaping configuration cannot supply active enforcement evidence', asyn
   rmSync(join(root, '.dependency-cruiser.ts'))
   symlinkSync(join(outside, '.dependency-cruiser.ts'), join(root, '.dependency-cruiser.ts'))
   expect((await inspectBoundaries(root, undefined, runner()))[0]?.level).toBe('FAIL')
+})
+
+test('selects mjs only when ts is absent and uses it for import, cruise and mutation', async () => {
+  for (const preferred of [false, true]) {
+    const root = fixture()
+    const selected = preferred ? '.dependency-cruiser.ts' : '.dependency-cruiser.mjs'
+    writeFileSync(join(root, '.dependency-cruiser.mjs'), 'export default {}\n')
+    if (!preferred) rmSync(join(root, '.dependency-cruiser.ts'))
+    const original = `export default ${JSON.stringify(configuration())}\n`
+    writeFileSync(join(root, selected), original)
+    const calls: { args: readonly string[]; cwd: string }[] = []
+    const run = runner({ calls })
+    const findings = await inspectBoundaries(root, undefined, async (program, args, cwd) => {
+      if (args[0] === 'run') {
+        const source = readFileSync(join(cwd, selected), 'utf8')
+        if (calls.filter((call) => call.args[0] === 'run').length === 1) {
+          expect(source).toContain('no-circular')
+          expect(source).not.toContain('domain-does-not-import-cli')
+        }
+      }
+      if (args[0] === '--eval') {
+        calls.push({ args, cwd })
+        return { status: 0, stdout: execFileSync(program, [...args], { cwd, encoding: 'utf8' }), stderr: '' }
+      }
+      return run(program, args, cwd)
+    })
+    expect(findings[0]).toMatchObject({ level: 'PASS', subject: selected })
+    expect(calls.find((call) => call.args[0] === '--eval')?.args.at(-1)).toEndWith(selected)
+    const cruise = required(calls.find((call) => call.args.includes('--config')))
+    expect(cruise.args[cruise.args.indexOf('--config') + 1]).toBe(selected)
+    expect(readFileSync(join(root, selected), 'utf8')).toBe(original)
+  }
+})
+
+test('escaping or dangling preferred ts cannot fall back to a contained mjs', async () => {
+  for (const dangling of [false, true]) {
+    const root = fixture()
+    const outside = fixture()
+    rmSync(join(root, '.dependency-cruiser.ts'))
+    symlinkSync(join(outside, dangling ? 'missing.ts' : '.dependency-cruiser.ts'), join(root, '.dependency-cruiser.ts'))
+    writeFileSync(join(root, '.dependency-cruiser.mjs'), 'export default {}\n')
+    const calls: { args: readonly string[]; cwd: string }[] = []
+    expect((await inspectBoundaries(root, undefined, runner({ calls })))[0]?.level).toBe('FAIL')
+    expect(calls).toHaveLength(0)
+  }
+  const root = fixture()
+  rmSync(join(root, '.dependency-cruiser.ts'))
+  symlinkSync(join(fixture(), '.dependency-cruiser.ts'), join(root, '.dependency-cruiser.mjs'))
+  const calls: { args: readonly string[]; cwd: string }[] = []
+  expect((await inspectBoundaries(root, undefined, runner({ calls })))[0]?.level).toBe('FAIL')
+  expect(calls).toHaveLength(0)
 })
 
 test('isolated tooling must be private, development-only and limited to its two dependencies', async () => {

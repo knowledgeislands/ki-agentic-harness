@@ -41,7 +41,7 @@ export const DESIGN: RubricFamily<EngineeringRubricContext, DesignRubricContext>
       },
       judgment: {
         scope:
-          'Declared module boundaries, `.dependency-cruiser.ts` rules and the roots they cruise, its resolution and transpiler configuration, the script that runs them, and the test that proves the checker still reports violations.',
+          'Declared module boundaries, selected `.dependency-cruiser.ts` or `.dependency-cruiser.mjs` rules and the roots they cruise, its resolution and transpiler configuration, the script that runs them, and the test that proves the checker still reports violations.',
         prompt:
           'Does every boundary the design depends on have a forbidden rule that a violating import would actually trip, does the cruise cover each root those rules name and resolve the imports they match on, and does a test prove the checker fails on a deliberate violation rather than reporting a clean graph it never read?',
         outcomes: ['conforming', 'gap', 'exception'],

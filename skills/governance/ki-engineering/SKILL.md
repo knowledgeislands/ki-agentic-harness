@@ -6,7 +6,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json, commitlint.config.ts]
 contributes: ['.ki.toml', '.gitignore', package.json, '.githooks/pre-commit', '.githooks/commit-msg']
-requires: ['.dependency-cruiser.ts', 'tooling/depcruise/package.json']
+requires: ['tooling/depcruise/package.json']
 description: >
   Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts,
   tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for
@@ -19,6 +19,8 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 You are applying the **Knowledge Islands engineering standard** — the shared code-design and software-engineering toolchain every TypeScript/Bun repo in this work builds on. It is the build/test twin of `ki-authoring`: that skill owns _how we write_ (Markdown/TOML style); this one owns _how we structure, build, lint, and test_. `ki-skills` owns the governance-skill enforcement framework that this skill follows.
 
 This is a **standard, base-agnostic governance skill**. It hard-codes no single repo; it applies to any repo carrying a `[skills.ki-engineering]` table in its `.ki.toml`. The active repository set is local supporting evidence, not a normative count: derive it from the current configured collection during REFRESH. How this skill sits alongside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
+
+The boundary ruleset is selected conditionally by DESIGN-2: prefer `.dependency-cruiser.ts` when present, otherwise `.dependency-cruiser.mjs`. These are alternatives, so neither filename is an unconditional `requires:` entry. The selected path must remain contained in the repository and load under native Node.
 
 ## What this skill owns
 
