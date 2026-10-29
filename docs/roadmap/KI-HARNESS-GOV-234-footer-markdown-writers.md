@@ -8,12 +8,12 @@ component: change-management
 priority: high
 size: s
 horizon: now
-status: awaiting-review
+status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 12f09a3b7f08f1c2dddae22261923857a10f04bb
 created_at: 2026-10-28T23:11:49Z
-updated_at: 2026-10-29T01:10:03Z
+updated_at: 2026-10-29T01:19:10Z
 ---
 
 # Bare-ID footer and scoped Markdown writers
@@ -80,3 +80,7 @@ The direct frontmatter walker used a fixed internal ignored-path list while rumd
 ### Review packet repair
 
 The 29 October owner instruction authorises evidence authoring for this exact unfinished record under the original 28 October delivery and sleep continuation. The earlier review prose lacked the six mandatory Review subheadings and final Discussion. This repair restores those sections from actual delivery evidence, preserves identity, creation provenance and `baseline_ref`, and leaves lifecycle and acceptance with the owner and independent reviewer.
+
+### Independent review - 29 October 2026
+
+Independent review returns this record to In progress: the current roadmap audit fails ITEM-1 because the title exceeds four words and ITEM-3 because required body sections are absent. The repaired six-part packet does not waive these governing failures. Repair requires a separately briefed unit.

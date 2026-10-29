@@ -7,13 +7,12 @@ purpose: capability
 component: change-management
 priority: high
 size: m
-horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: dad6a123ae252443bfaa221149d4a33277bb26cc
 created_at: 2026-10-28T15:43:24Z
-updated_at: 2026-10-28T15:55:54Z
+updated_at: 2026-10-29T01:19:10Z
 ---
 
 # Any package coordination
@@ -132,8 +131,16 @@ Goal met within the frozen paths and owner-approved scope. Existing seven states
 
 Explicit coordination now works as a method on any valid package without turning regular work into a Project or making every regular package coordinate. Regular umbrella coverage, member-home declarations and local reminders match that method. Receiver adoption, compatible discovery and separately authorised publication remain with their owners; durable method learning is already homed in the source standards.
 
+## Done
+
+Accepted 2026-10-29 by Kris on the review packet above, under the 27 October ACCEPT-PRUNE-CONFIDENT instruction reaffirmed by the 29 October sleep continuation and independently verified in wow-sleep-review-3.
+
 ## Discussion
 
 ### Approved scope
 
 The explicit bounded owner instruction authorises capture, adoption, planning and implementation together. Coordination is a session role, independent of package type; capability and package existence are never activation. The main and secondary State of play register regular umbrellas and children through existing parent/covers. Homes default to the Capital; deliberate regular/ad hoc member exceptions remain declared in Scope, with one real package/state/inbox. No Project exception is added.
+
+### Independent review - 29 October 2026
+
+Independent review checked the delivery commit and current affected readers, the immutable execution baseline, the ordered six-part packet and the exact-record roadmap verdict. Current affected regressions pass; the repository authoring audit passes its mechanical checks. Automatic Capital-to-member discovery remains explicitly undelivered and outside this accepted bounded eligibility and placement outcome. No cross-host freshness or real first-send evidence is asserted.
