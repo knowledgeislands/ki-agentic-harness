@@ -314,7 +314,7 @@ test('owned-file exceptions do not suppress missing or unsafe paths', () => {
   const unsafeRepository = temporaryRepository()
   const outside = join(temporaryRepository(), 'outside')
   writeFileSync(join(unsafeRepository, '.editorconfig'), EDITORCONFIG_DEFAULT)
-  writeFileSync(outside, 'do not replace\n')
+  writeFileSync(outside, '# do not replace\n')
   symlinkSync(outside, join(unsafeRepository, '.rumdl.toml'))
   const unsafe = createAuthoringSession(
     {
@@ -330,7 +330,7 @@ test('owned-file exceptions do not suppress missing or unsafe paths', () => {
     unsafeContext?.owned as NonNullable<typeof unsafeContext>['owned']
   )
   expect(unsafe.proposal().writes).toEqual([])
-  expect(readFileSync(outside, 'utf8')).toBe('do not replace\n')
+  expect(readFileSync(outside, 'utf8')).toBe('# do not replace\n')
 })
 
 test('owned-file exception declarations reject unknown, unexplained, stale, and table-form entries', () => {
