@@ -22,6 +22,7 @@ const SHARED_PROHIBITIONS = [
   'force-push',
   'Never touch, stage or revert other uncommitted changes',
   'Do not read or print secrets',
+  '~/bin/chezmoi/op_cache',
   'marked confidential is never made public',
   'stop and report rather than guess'
 ]

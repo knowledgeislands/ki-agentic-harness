@@ -38,13 +38,17 @@ test('a footer that grants above its tier, omits a grant or drops a prohibition 
     const release = readFileSync(join(directory, 'rules-release.md'), 'utf8')
     writeFileSync(join(directory, 'rules-push.md'), release)
     writeFileSync(join(directory, 'rules-prune.md'), '## Rules\n')
-    writeFileSync(join(directory, 'rules-none.md'), release.replace('force-push', 'rewrite history'))
+    writeFileSync(
+      join(directory, 'rules-none.md'),
+      release.replace('force-push', 'rewrite history').replaceAll('~/bin/chezmoi/op_cache', '`op`')
+    )
     const messages = footerOutcomes(directory).map((outcome) => `${outcome.subject}: ${outcome.message}`)
     expect(messages).toContain('assets/rules-push.md: Footer grants `prune`, which is above its tier.')
     expect(messages).toContain('assets/rules-push.md: Footer grants `release`, which is above its tier.')
     expect(messages).toContain('assets/rules-prune.md: Footer omits the `push` grant its tier includes.')
     expect(messages).toContain('assets/rules-none.md: Footer lacks the required wording `force-push`.')
     expect(messages).toContain('assets/rules-none.md: Footer lacks the required wording `No remote call of any kind`.')
+    expect(messages).toContain('assets/rules-none.md: Footer lacks the required wording `~/bin/chezmoi/op_cache`.')
   } finally {
     rmSync(directory, { recursive: true })
   }
