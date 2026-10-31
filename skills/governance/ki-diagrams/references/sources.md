@@ -18,12 +18,19 @@
 | [dependency-cruiser CLI](https://github.com/sverweij/dependency-cruiser/blob/main/doc/cli.md)           | `-T d2` reporter for generated dependency maps                 | 2026-10-03    |
 | [react-scanner](https://github.com/moroshko/react-scanner)                                              | Usage statistics, a category mismatch                          | 2026-10-03    |
 | [Storybook Composition](https://storybook.js.org/docs/sharing/storybook-composition/)                   | Storybook merging, a category mismatch                         | 2026-10-03    |
-| [Mermaid state diagrams](https://mermaid.js.org/syntax/stateDiagram.html) and [Sankey](https://mermaid.js.org/syntax/sankey.html) | Mermaid's re-evaluation on its current rendering; the sketch step | listed 2026-10-31, not yet reviewed |
-| [Isoflow](https://isoflow.io/) and [FossFLOW](https://github.com/stan-smith/FossFLOW)                   | Isometric infrastructure pictures, liked                       | listed 2026-10-31, not yet reviewed |
-| [D3](https://d3js.org/)                                                                                 | Bespoke and quantitative diagrams drawn directly               | listed 2026-10-31, not yet reviewed |
-| [fletcher](https://typst.app/universe/package/fletcher) and [TikZ](https://tikz.dev/)                   | Figures inside typeset documents                               | listed 2026-10-31, not yet reviewed |
-| [IcePanel](https://icepanel.io/) and [Napkin](https://www.napkin.ai/)                                   | Paid or SaaS, inspiration only                                 | listed 2026-10-31, not yet reviewed |
-| [infoschematics](https://infoschematics.info/)                                                          | Knowledge Islands' own diagramming tool, to grow               | listed 2026-10-31, not yet reviewed |
+| [Mermaid state][mmd-state] and [Sankey][mmd-sankey]                                                    | Mermaid's re-evaluation; the sketch step                       | listed 2026-10-31 |
+| [Isoflow](https://isoflow.io/) and [FossFLOW][fossflow]                                                 | Isometric infrastructure pictures, liked                       | listed 2026-10-31 |
+| [D3](https://d3js.org/)                                                                                 | Bespoke and quantitative diagrams drawn directly               | listed 2026-10-31 |
+| [fletcher][fletcher] and [TikZ](https://tikz.dev/)                                                      | Figures inside typeset documents                               | listed 2026-10-31 |
+| [IcePanel](https://icepanel.io/) and [Napkin](https://www.napkin.ai/)                                   | Paid or SaaS, inspiration only                                 | listed 2026-10-31 |
+| [infoschematics](https://infoschematics.info/)                                                          | Knowledge Islands' own diagramming tool, to grow               | listed 2026-10-31 |
+
+Rows marked "listed" were added without fetching their pages; the next REFRESH reviews them and gives each a `last reviewed` date.
+
+[mmd-state]: https://mermaid.js.org/syntax/stateDiagram.html
+[mmd-sankey]: https://mermaid.js.org/syntax/sankey.html
+[fossflow]: https://github.com/stan-smith/FossFLOW
+[fletcher]: https://typst.app/universe/package/fletcher
 
 ## Last review
 

@@ -51,7 +51,7 @@ For each kind of diagram, reach for the first tool in that order that can draw i
 | Data flow                                     | `dataflow`     | Archify, Mermaid‡, D2/TALA, D3                |
 | State machine                                 | `lifecycle`    | Archify, Stately/XState§, Mermaid‡            |
 | Quantities flowing between stages (Sankey)    | none           | Mermaid‡, D3                                  |
-| Tree or hierarchy                             | none           | Mermaid‡, D2/TALA, D3                         |
+| Tree or hierarchy                             | `tree`¶        | Archify, Mermaid‡, D2/TALA, D3                |
 | Map generated from code: routes, dependencies | none           | D2/TALA, D3                                   |
 | Isometric picture of infrastructure           | none           | Isoflow/FossFLOW                              |
 | Figure inside a typeset document              | none           | Typst/fletcher, TikZ                          |
@@ -61,6 +61,8 @@ For each kind of diagram, reach for the first tool in that order that can draw i
 ‡ Pending re-evaluation on its current rendering (state, Sankey). Until then a committed Mermaid block draws the audit's warning and stays only by the owner's `keep mermaid` decision.
 
 § Where the machine is an XState machine.
+
+¶ Archify 3.2 draws single-parent trees as its `tree` type, which the 3.0.1 limits above predate. The manifest's `type` field still takes only the five types below, so committing a tree under this standard waits until the standard adds the type.
 
 The order says which tool to reach for. It widens nothing about what is committed: a committed diagram under this standard is still an Archify source and SVG listed in the manifest, D2 keeps its allowance for maps generated from code, and committing another tool's output in its own right waits until this standard adopts that tool.
 
