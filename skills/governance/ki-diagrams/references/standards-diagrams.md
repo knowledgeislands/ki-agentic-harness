@@ -5,6 +5,10 @@ This standard defines how a Knowledge Islands repository or knowledge-base islan
 ## Contents
 
 - [The tool: Archify](#the-tool-archify)
+- [Tool preference by diagram kind](#tool-preference-by-diagram-kind)
+  - [Sketch, then beautify](#sketch-then-beautify)
+  - [Inspiration only](#inspiration-only)
+  - [KI's own tool](#kis-own-tool)
 - [Choosing a diagram type](#choosing-a-diagram-type)
 - [Committed forms](#committed-forms)
 - [The manifest](#the-manifest)
@@ -24,9 +28,53 @@ Archify was chosen on 2026-10-03 against six criteria: visual quality, a committ
 - it has no route or import-graph importer;
 - its command line has no SVG export, which [the exporter](#the-svg-exporter) supplies.
 
-Mermaid and Graphviz were excluded at the owner's direction as not good enough to look at. The audit warns on each fenced `mermaid` block left in the repository's tracked Markdown, naming its file and line, until it is replaced by an Archify diagram or the owner decides to keep it, as Kris set on 19 October 2026 under DIAGRAM-REPLACE: "Re mermaid diagrams, if they can be replaced with archify they should be, e.g. activity diagrams. Flag any others that don't and I'll decide about them too". A kept diagram carries `<!-- ki-diagrams: keep mermaid -->` on the line before its fence, so the decision sits beside it: Mermaid diagrams found in a repository are replaced by Archify diagrams wherever Archify can carry them, and the rest are flagged to the owner. D2 is allowed only for maps generated mechanically from code, such as a route manifest or a dependency graph, styled from the `ki-design` tokens; it has no interactive HTML. LikeC4 models C4 architecture only; Structurizr looks dated; Stately suits state charts only where XState is adopted; SlickMap has no dark theme; Ilograph, Eraser and IcePanel need payment or SaaS, which fails the private-repository rule; tldraw and Excalidraw are hand-drawn rather than generated; react-scanner, Storybook Composition and framework route visualisers are category mismatches. [Sources](sources.md) lists the evidence for each.
+Mermaid and Graphviz were excluded at the owner's direction as not good enough to look at. Mermaid's place is now pending re-evaluation on its current rendering (state, Sankey), since Kris noted on 29 October 2026 that it "looks like it has massively improved its rendering recently"; until that re-evaluation settles it, the exclusion and the audit warning below stand. The audit warns on each fenced `mermaid` block left in the repository's tracked Markdown, naming its file and line, until it is replaced by an Archify diagram or the owner decides to keep it, as Kris set on 19 October 2026 under DIAGRAM-REPLACE: "Re mermaid diagrams, if they can be replaced with archify they should be, e.g. activity diagrams. Flag any others that don't and I'll decide about them too". A kept diagram carries `<!-- ki-diagrams: keep mermaid -->` on the line before its fence, so the decision sits beside it: Mermaid diagrams found in a repository are replaced by Archify diagrams wherever Archify can carry them, and the rest are flagged to the owner. D2 is allowed only for maps generated mechanically from code, such as a route manifest or a dependency graph, styled from the `ki-design` tokens; it has no interactive HTML. LikeC4 models C4 architecture only; Structurizr looks dated; Stately suits state charts only where XState is adopted; SlickMap has no dark theme; Ilograph, Eraser and IcePanel need payment or SaaS, which fails the private-repository rule; tldraw and Excalidraw are hand-drawn rather than generated; react-scanner, Storybook Composition and framework route visualisers are category mismatches. [Sources](sources.md) lists the evidence for each, and [tool preference by diagram kind](#tool-preference-by-diagram-kind) ranks the candidates in the owner's order.
 
 The tool choice is recorded here rather than in a Decision Record. `ADR-KI-HARNESS-TOOLCHAIN-002` lists Archify among the harness's adopted complementary tools and links back to this section.
+
+## Tool preference by diagram kind
+
+Kris asked on 29 October 2026, under DIAGRAM-TOOLS, for the diagram tools to be ranked "as candidates for those [kinds of diagram] ... in a preference order", so that "we can make the best use of them". The order is built only from his stated likes:
+
+1. **Archify** first: "I really like Archify".
+2. **Liked:** Stately/XState ("Stately might be pretty decent"), LikeC4 for C4 architecture ("the C4 ones, they're really good") and Isoflow/FossFLOW ("I love Isoflow as well").
+3. **Then**, in this order: Mermaid, D2/TALA, D3 used directly ("we shouldn't rule out using D3 directly"), Typst/fletcher and TikZ.
+
+For each kind of diagram, reach for the first tool in that order that can draw it:
+
+| Kind                                          | Archify type   | Preference order                              |
+| --------------------------------------------- | -------------- | --------------------------------------------- |
+| Architecture: parts and how they connect      | `architecture` | Archify, Isoflow/FossFLOW†, Mermaid‡, D2/TALA |
+| C4 views: context, container, component       | `architecture` | Archify, LikeC4, Mermaid‡, D2/TALA            |
+| Workflow                                      | `workflow`     | Archify, Mermaid‡, D2/TALA                    |
+| Sequence                                      | `sequence`     | Archify, Mermaid‡, D2/TALA                    |
+| Data flow                                     | `dataflow`     | Archify, Mermaid‡, D2/TALA, D3                |
+| State machine                                 | `lifecycle`    | Archify, Stately/XState§, Mermaid‡            |
+| Quantities flowing between stages (Sankey)    | none           | Mermaid‡, D3                                  |
+| Tree or hierarchy                             | none           | Mermaid‡, D2/TALA, D3                         |
+| Map generated from code: routes, dependencies | none           | D2/TALA, D3                                   |
+| Isometric picture of infrastructure           | none           | Isoflow/FossFLOW                              |
+| Figure inside a typeset document              | none           | Typst/fletcher, TikZ                          |
+
+† Where an isometric picture of the infrastructure reads better than a flat diagram.
+
+‡ Pending re-evaluation on its current rendering (state, Sankey). Until then a committed Mermaid block draws the audit's warning and stays only by the owner's `keep mermaid` decision.
+
+§ Where the machine is an XState machine.
+
+The order says which tool to reach for. It widens nothing about what is committed: a committed diagram under this standard is still an Archify source and SVG listed in the manifest, D2 keeps its allowance for maps generated from code, and committing another tool's output in its own right waits until this standard adopts that tool.
+
+### Sketch, then beautify
+
+To find a diagram's shape quickly, sketch it in Mermaid and iterate on the simplified output; once the shape settles, beautify it in Archify, which gives the committed form. Kris put it this way on 29 October 2026: "perhaps it's okay to do this using mermaid just to get some quick output ... iterate with a simplified output and then beautify that with another one". Ways of working took Archify for the beautify step, and the work state machine Kris agreed on 29 October 2026 under DIAGRAM-AGREED was drawn that way. A sketch is a working draft: keep it in the conversation or a temporary folder, out of the committed diagram set, since a Mermaid block left in tracked Markdown draws the audit's warning like any other.
+
+### Inspiration only
+
+Ilograph, Eraser, IcePanel and Napkin are paid or software-as-a-service tools, which fails the private-repository rule. They are inspiration only: study what they do well and carry the parts KI likes into its own tools, as Kris said: "the SaaS ones can inform what we're doing. We can always reverse engineer aspects that we like".
+
+### KI's own tool
+
+[infoschematics](https://infoschematics.info/) is Knowledge Islands' own diagramming tool, to grow: "we should probably end up coming up with things that are our own diagramming tools as part of knowledge islands ... infoschematics is a Knowledge Islands tool". It is not yet ranked; where it carries a kind of diagram well, propose it for the order above by a change to this standard.
 
 ## Choosing a diagram type
 

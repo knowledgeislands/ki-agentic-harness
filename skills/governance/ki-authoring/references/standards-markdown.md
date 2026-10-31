@@ -25,6 +25,8 @@ The one place column width _is_ your job is **tables**, and it is now wholly you
 
 ## Markdown flavour
 
+Markdown stays the Knowledge Islands authoring format. Typst is noted as a possible authoring alternative, not adopted: Kris said on 29 October 2026, under DIAGRAM-TOOLS, "Typst is definitely more about authoring and is possibly an alternative to Markdown. But right now, Markdown is what we use." Nothing here authors in Typst until a later decision says so; its diagramming package, fletcher, is ranked in the `ki-diagrams` [tool preference order](../../ki-diagrams/references/standards-diagrams.md#tool-preference-by-diagram-kind).
+
 Knowledge Islands prefers GitHub-flavoured Markdown (GFM). Other flavours, chiefly Obsidian's wikilinks, embeds and custom callouts, remain supported: a reader, audit or tool must never fail merely because a file uses another flavour, and no one need convert a file just to read or cite it. Do not add a per-note flavour field.
 
 A file you edit is converted as a whole to GFM in the same change, through the converter once it exists, with the conversion visible for review; if the converter refuses the file, flag it for a decision or record an approved exception.

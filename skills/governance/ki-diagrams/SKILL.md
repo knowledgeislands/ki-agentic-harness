@@ -22,7 +22,7 @@ You are applying the **Knowledge Islands Diagrams standard** - one consistent wa
 ## What this skill owns
 
 1. **The diagram standard** - Archify as the tool, the committed forms under `docs/diagrams/`, the `diagrams.toml` manifest and its reader-facing `README.md`, naming, and the privacy rules.
-2. **The choice of diagram type** - which of Archify's five types answers a given question.
+2. **The choice of diagram type and tool** - which of Archify's five types answers a given question, the owner's tool preference order for each kind of diagram, and the sketch-in-Mermaid, beautify-in-Archify step.
 3. **Regeneration and freshness** - how a diagram is rebuilt from its source and re-exported, and when it is stale.
 4. **The SVG exporter** - [`scripts/export-svg.ts`](scripts/export-svg.ts) drives the Archify viewer's own Export > SVG action in the system Chrome, headless, over the same route Archify's browser gate uses, and refuses a non-canonical or non-self-contained export. Its `--form` option flattens the export into a static light, KI-theme or KI-night SVG with no stylesheet, variables or embedded fonts, the KI forms painted from vendored Knowledge Islands design tokens and drawn with KI glyphs, for design reports and plain previewers.
 5. **The build command** - [`scripts/build-html.ts`](scripts/build-html.ts) finalizes every listed diagram's interactive HTML in one local command, copies it to `docs/diagrams/` with its receipt for a diagram with `commit_html = true`, and with `--svg` re-exports each SVG; `--check` verifies every committed viewer's receipt without rendering.
