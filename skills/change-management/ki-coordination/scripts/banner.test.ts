@@ -233,6 +233,21 @@ test('a thread listens only when the owner asks it to, and a Rig host sync threa
   expect(standard).not.toContain('keep one inbox watcher armed whenever')
 })
 
+// Kris, 31 October 2026, under THREAD-CAPABILITIES and SYNC-UNTIL-CLEAN: "a resync doesn't finish until it's got to a
+// point of being clean". A thread may hold listening and host sync, each switched on only by express word or an agreed
+// role; host sync repeats each pass until clean and level, stays quiet on quiet passes and implies listening.
+test('a thread may hold listening and host sync, and the listening line shows both', () => {
+  expect(standard).toContain('### Thread capabilities')
+  expect(standard).toContain('[Thread capabilities](#thread-capabilities)')
+  for (const name of ['THREAD-CAPABILITIES', 'SYNC-UNTIL-CLEAN', 'SYNC-QUIET', 'Host sync implies listening.'])
+    expect(standard).toContain(name)
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('until the Mac and GitHub are clean and level')
+    expect(text).toContain('`👂 listening · sync thread for sol`')
+  }
+  expect('👂 listening · sync thread for sol').toMatch(LISTEN_LINE)
+})
+
 // Kris, 31 October 2026, under UNATTENDED-AWAKE: "a key part of unattended mode is that you do keep the chat session
 // alive ... and therefore you try to keep the machine awake that is then leading that chat session".
 test('an unattended window keeps its session and machine awake and says so at entry, on top of normal coordination', () => {
