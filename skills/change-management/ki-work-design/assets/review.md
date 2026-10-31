@@ -17,3 +17,9 @@
 | 1 | Agree | <...> |
 | 2 | Differ | <...> |
 | - | Add | <A point the brief missed.> |
+
+## Challenges
+
+- <An earlier decision, by its words and date> - <why the evidence suggests revisiting it, with source>
+
+<Or `None`.>

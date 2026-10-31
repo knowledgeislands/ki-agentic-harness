@@ -1,7 +1,8 @@
 /**
  * Renders the runtime surfaces that carry the owner-report shape from the `ki-coordination` standard's Generated surfaces
  * section, so the standard is their one source: the coordinator hook's `line` and `pointer`, the whole
- * `ki-coordinator` output style, the run-prompt skeleton's Report paragraph and each authority footer's report rule.
+ * `ki-coordinator` output style, the run-prompt skeleton's Report paragraph and each authority footer's report rule, and
+ * the review-independence line of the run-prompt skeleton and the `ki-work-design` brief template.
  *
  * Boundary: reads the standard and the current surfaces under the harness root and returns each surface's rendered
  * bytes; it never writes. `ki dev skill generate ki-coordination` compares or publishes them, and the banner test checks the
@@ -23,6 +24,7 @@ const HOOK = 'hooks/coordinator-reminder.sh'
 const OUTPUT_STYLE = 'output-styles/ki-coordinator.md'
 const DELEGATION_ASSETS = 'skills/governance/ki-delegation/assets'
 const RUN_PROMPT = `${DELEGATION_ASSETS}/run-prompt.md`
+const DESIGN_BRIEF = 'skills/change-management/ki-work-design/assets/brief.md'
 const FOOTERS = ['none', 'push', 'prune', 'release'].map((tier) => `${DELEGATION_ASSETS}/rules-${tier}.md`)
 /** The Banner examples the output style source names by token, each written once in the standard. */
 const BANNER_BLOCKS = ['heading-example', 'with-worker-banner', 'handoff-banner', 'hold-banner'] as const
@@ -75,7 +77,10 @@ export const generate = (harnessRoot: string): readonly GeneratedSurface[] => {
     style = style.replace(token, () => markedBlock(standard, 'block', name).block)
   }
 
-  const prompt = spliceLine(read(RUN_PROMPT), RUN_PROMPT, /^\*\*Report\*\* to .*$/, source('run-report'))
+  const independence = source('review-independence')
+  let prompt = spliceLine(read(RUN_PROMPT), RUN_PROMPT, /^\*\*Report\*\* to .*$/, source('run-report'))
+  prompt = spliceLine(prompt, RUN_PROMPT, /^\*\*Independence\*\*.*$/, independence)
+  const brief = spliceLine(read(DESIGN_BRIEF), DESIGN_BRIEF, /^\*\*Independence\*\*.*$/, independence)
   const footers = FOOTERS.map((path) => ({
     path,
     content: spliceLine(read(path), path, /^- Write the report .*$/, source('footer-report'))
@@ -85,6 +90,7 @@ export const generate = (harnessRoot: string): readonly GeneratedSurface[] => {
     { path: HOOK, content: hook },
     { path: OUTPUT_STYLE, content: style },
     { path: RUN_PROMPT, content: prompt },
+    { path: DESIGN_BRIEF, content: brief },
     ...footers
   ]
 }
