@@ -482,18 +482,23 @@ test('regular coordination is explicit, capability-checked and uses its real wor
   }
 })
 
-test('an interactive pass gives its context in the chat, then a short question card, and asks the next query in the following reply', () => {
+test('an interactive pass ends a timed first reply with the read-back and context, then shows only the card in the reply the timer wakes', () => {
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('Query <n> of <total>')
     expect(text).toContain('## <TAG>: <plain title>')
     expect(text).toContain('**Where things stand**')
     expect(text).toContain('(recommended, <confidence> confidence)')
     expect(text).toContain("Orca's card drops line breaks in its title")
-    expect(text).toContain('never in the same one')
+    expect(text).toContain('a short background timer, about 5 seconds')
+    expect(text).toContain('Second reply, woken by the timer')
+    expect(text).toContain('holds only the card')
+    expect(text).toContain('no card or no wake')
+    expect(text).not.toContain('never in the same one')
     expect(text).toContain('Reply with 1, 2 or 3, or your own words.')
     expect(text).not.toContain('Never ask through a question tool')
   }
   expect(standard).not.toContain('The coordinator never asks through')
-  expect(standard).toContain('Where the runtime has no question card')
+  expect(standard).toContain('Where the runtime has no question card, or no way for a timer to wake the coordinator')
+  expect(standard).toContain('Orca folds everything in a reply under "Worked for" except its last text')
   expect(standard).toContain('**Pairs:** two related questions may share one card, each with a short header')
 })
