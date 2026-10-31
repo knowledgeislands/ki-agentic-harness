@@ -217,6 +217,22 @@ test('every banner shows whether the thread is listening and whether it is its h
   )
 })
 
+// Kris, 31 October 2026, under LISTEN-OPT-IN: "any of the coordination [threads] can be set up in this mode, but we've
+// got to expressly ask them to be". Listening is opt-in, recorded in the decisions log; the Rig host sync threads listen
+// by their role; "stop listening" ends it; the heartbeat while runs go is separate.
+test('a thread listens only when the owner asks it to, and a Rig host sync thread by its role', () => {
+  expect(standard).toContain('LISTEN-OPT-IN')
+  expect(standard).toContain('heartbeat while runs go is separate and stays, listening or not')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('"listen for messages" or "keep listening"')
+    expect(text).toContain('"stop the wake" or "stop listening"')
+    expect(text).toContain('Rig host sync thread')
+  }
+  expect(standard).toContain('`🔇 not listening` where the owner has not asked the thread to listen')
+  expect(outputStyle).toContain('`🔇 not listening` where Kris has not asked the thread to listen')
+  expect(standard).not.toContain('keep one inbox watcher armed whenever')
+})
+
 // Kris, 31 October 2026, under UNATTENDED-AWAKE: "a key part of unattended mode is that you do keep the chat session
 // alive ... and therefore you try to keep the machine awake that is then leading that chat session".
 test('an unattended window keeps its session and machine awake and says so at entry, on top of normal coordination', () => {
