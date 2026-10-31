@@ -481,3 +481,19 @@ test('regular coordination is explicit, capability-checked and uses its real wor
     expect(surface.content).toContain('including regular or ad hoc work without coordination')
   }
 })
+
+test('an interactive pass gives its context in the chat, then a short question card, and asks the next query in the following reply', () => {
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('Query <n> of <total>')
+    expect(text).toContain('## <TAG>: <plain title>')
+    expect(text).toContain('**Where things stand**')
+    expect(text).toContain('(recommended, <confidence> confidence)')
+    expect(text).toContain("Orca's card drops line breaks in its title")
+    expect(text).toContain('never in the same one')
+    expect(text).toContain('Reply with 1, 2 or 3, or your own words.')
+    expect(text).not.toContain('Never ask through a question tool')
+  }
+  expect(standard).not.toContain('The coordinator never asks through')
+  expect(standard).toContain('Where the runtime has no question card')
+  expect(standard).toContain('**Pairs:** two related questions may share one card, each with a short header')
+})
