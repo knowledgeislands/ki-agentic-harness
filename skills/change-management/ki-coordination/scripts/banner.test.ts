@@ -533,3 +533,15 @@ test('an interactive pass ends a timed first reply with the read-back and contex
   expect(standard).toContain('Orca folds everything in a reply under "Worked for" except its last text')
   expect(standard).toContain('**Pairs:** two related questions may share one card, each with a short header')
 })
+
+// Kris, 31 October 2026, under LISTEN-TENDS-PACKAGE: "if a thread is listening, it's important that it is also helping
+// to manage and refine the work packages and make sure they're in good state". A listening thread makes at most one
+// small, silent tidy of its own package on a quiet wake and only points out problems in another's.
+test('a listening thread tends its own work package on quiet wakes', () => {
+  expect(standard).toContain('LISTEN-TENDS-PACKAGE')
+  expect(standard).toContain('#tidying-the-work-folder')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('at most one small tidy')
+    expect(text).toMatch(/another work's package/)
+  }
+})
