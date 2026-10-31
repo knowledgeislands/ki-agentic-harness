@@ -2,9 +2,9 @@
 
 ## Scope
 
-Acquisition faithfully preserves an authorised source scope as a temporary capture package. Evaluation, dispatch and source retirement are separate operations. The receiving repository supplies its capture entry point, paths and publication authority. This skill accepts no configuration keys and defines no storage layout or source adapter.
+Acquisition faithfully preserves an authorised source scope as a transient capture package: a quick dumping point, not lasting provenance. Curation, evaluation, dispatch and source retirement are separate operations. The receiving repository supplies its capture entry point, paths and publication authority. This skill accepts no configuration keys and defines no storage layout or source adapter.
 
-The capture package is the only record of what was acquired. Keep no ledger, checkpoint, journal, intake receipt or per-capture ticket beside it; Git history holds earlier bytes. A provider skill may add a source-side marker, such as Granola's Acquired folder, under its own separately authorised contract.
+The capture package is the only record of what was acquired until curation empties it. Keep no ledger, checkpoint, journal, intake receipt or per-capture ticket beside it; Git history holds earlier bytes. A provider skill may add a source-side marker, such as Granola's Acquired folder, under its own separately authorised contract.
 
 ## Scope and coverage
 
@@ -20,15 +20,25 @@ Route from owner and source evidence and the relevant territory context. An unkn
 
 ## Preservation and originals
 
-Preserve the material the source route promises, with provenance and explicit omissions, keeping source statements, digest and interpretation distinguishable. Preserve required originals as exact bytes with filename, size and checksum. A preview, resized rendition or offered download does not establish receipt of an original. Optional originals awaiting consent may follow later; essential originals remain an explicit incomplete obligation.
+Preserve the material the source route promises, with provenance and explicit omissions, keeping source statements, digest and interpretation distinguishable. Keep a capture lean: a short note goes in the capture's README rather than a separate verbatim text file, such as Acquire's `original.txt`, where the README note will do, as Kris decided in Acquire on 30 October 2026. Preserve required originals as exact bytes with filename, size and checksum. A preview, resized rendition or offered download does not establish receipt of an original. Optional originals awaiting consent may follow later; essential originals remain an explicit incomplete obligation.
 
 ## Verification and reporting
 
 Read the destination back and compare the preserved text or byte hashes. Distinguish offered, received, locally committed and remotely verified results, and claim only what was verified. A source-side marker does not prove preservation. Report the preserved scope, destination, coverage and anything missing or blocked; keep process improvements from delaying a useful capture.
 
+## Staging and curation
+
+A port is a capture point and may also be a knowledge-graph staging area, where captured meaning is curated into knowledge cards that define each concept once and link to related cards. Acquire is such a port and, for now, a holding area: nothing migrates out of it, neither captures nor cards, as Kris decided in Acquire on 31 October 2026 (ACQ020-MODEL, ACQ020-KNOWLEDGE, GOAL-HOLDING-AREA). The port's own entry points must still work without its staged cards, and a card never stands in for an unprocessed capture.
+
+Curation is incremental (ACQ020-RETIRE). Delete each curated item from its capture in the same commit that curates it into the graph. Delete an item judged not worth keeping in its own commit, saying it was considered and dropped. Delete a capture once it is empty. Git history keeps every deleted byte. This deletion inside the port is curation, not source retirement: it leaves the provider untouched and needs no further grant.
+
+A card carries its origin in plain words, such as a discussion with Kris and when, or a named document, and never links to a capture, because the capture is transient (CARDS-NO-SOURCE-LINKS, ACQ020-PROVENANCE). A future idea curated from a capture goes into the graph as a future concept, kept distinct from what is being done now, and not onto a roadmap; only an idea being enacted now becomes work (ACQ020-FUTURE, IDEAS-IN-GRAPH).
+
+A port may hold older captures for review, worked back one day at a time, newest first, without bulk moves to classify them. Acquire holds captures older than 31 October 2026 in `captures/_review/` and works them back that way, with dispatch on hold (ACQ020-HISTORY).
+
 ## Dispatch and authority
 
-Dispatch moves each package from the capture area into the receiving island's `+/_ACQUIRED/`, as its own folder holding a single capture or a chosen roll-up. The Git move is the record; keep no dispatch ledger or return route, and handle misdeliveries case by case.
+Dispatch moves each package from the capture area into the receiving island's `+/_ACQUIRED/`, as its own folder holding a single capture or a chosen roll-up. The Git move is the record; keep no dispatch ledger or return route, and handle misdeliveries case by case. A port declared a holding area dispatches nothing while the declaration stands; Acquire's dispatch is on hold for now.
 
 Capture authority does not grant provider mutation, receiver reconciliation, source deletion or history compaction; each needs its own grant. Do not reset or rewrite history to hide a verification failure.
 

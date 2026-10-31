@@ -25,7 +25,7 @@ This source harness publishes 64 skills: 53 governance skills and 11 process ski
 
 #### `ki-acquire`
 
-Govern source-independent knowledge capture: supplied scope, honest coverage, faithful preservation, exact required originals, verified destinations and dispatch by Git move, with the capture package as the only record. Use for common acquisition rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
+Govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation, exact required originals, verified destinations, incremental curation into a staging knowledge graph and dispatch by Git move, with the transient capture package as the only record. Use for common acquisition or curation rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

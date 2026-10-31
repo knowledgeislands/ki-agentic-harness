@@ -62,6 +62,16 @@ export const ACQUIRE = {
       judgment: judgment(
         'Is the capture package the only acquisition record, does each complete received session carry an evidenced local disposition with gaps visible, and did every dispatch, reconciliation, provider mutation or destructive operation stay within its own authority?'
       )
+    },
+    {
+      code: 'ACQUIRE-6',
+      title: 'curation is incremental and cards stand alone',
+      description:
+        'Each curated item leaves its capture in the commit that curates it, each dropped item in its own considered-and-dropped commit, and an empty capture is deleted. Cards state their origin in plain words and never link to a capture; future ideas become future concepts, not roadmap work; a holding port dispatches nothing.',
+      sources: ['standards-acquisition.md#staging-and-curation', 'standards-acquisition.md#dispatch-and-authority'],
+      judgment: judgment(
+        'Does every curation commit remove exactly the items it curated or dropped, are empty captures gone, does each card give a plain-words origin with no capture link, and has nothing left a port declared a holding area?'
+      )
     }
   ]
 } satisfies RubricFamily<AcquisitionContext, AcquisitionContext>

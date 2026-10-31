@@ -5,15 +5,16 @@ ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern source-independent knowledge capture: supplied scope, honest coverage, faithful preservation, exact required
-  originals, verified destinations and dispatch by Git move, with the capture package as the only record. Use for common
-  acquisition rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
+  Govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation,
+  exact required originals, verified destinations, incremental curation into a staging knowledge graph and dispatch by
+  Git move, with the transient capture package as the only record. Use for common acquisition or curation rules;
+  ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
 # Knowledge acquisition
 
-Read [the common acquisition standard](references/standards-acquisition.md), then the receiving repository's capture entry point and only the applicable source route. Keep capture simple: establish scope, find any existing capture, route, preserve, verify and report.
+Read [the common acquisition standard](references/standards-acquisition.md), then the receiving repository's capture entry point and only the applicable source route. Keep capture simple: establish scope, find any existing capture, route, preserve, verify and report. Where the port stages knowledge, curate incrementally: each curated or dropped item leaves its capture in its own commit, and each card states its origin in plain words rather than linking to a capture.
 
 This skill owns the common capture contract; provider skills add source completeness and capability rules. Repository guides supply local paths, publication authority and environment steps. Knowledge Islands owns the durable lifecycle and rationale; tools-ki owns executable importers. The [generated rubric](references/rubric.md) holds the review criteria. This skill accepts no repository configuration properties.
 
