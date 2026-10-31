@@ -215,6 +215,8 @@ test('the restart suggestion is a named exception with narrow triggers, placed b
     expect(text).toContain('`ki agent prompts <territory>`')
     expect(text).toContain('not for length, age, a change of state, a hold or a model switch alone')
   }
+  expect(standard).not.toContain("hook's stale-method advisory")
+  expect(outputStyle).toContain('beyond a warranted restart suggestion after a second compaction')
   expect(outputStyle).toContain('with two named exceptions')
   expect(outputStyle).toContain('never in a hold report, a run report or a conversational reply')
 })
