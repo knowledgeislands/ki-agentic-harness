@@ -123,7 +123,7 @@ A run prompt is cold-agent ready. It contains, in order:
 2. numbered steps;
 3. a verification step;
 4. the report path, in the run's state folder; the launcher homes the report in the work folder;
-5. the instructions "Do not use background subagents." and "Never end your session while waiting.", and, in a review run, the skeleton's **Independence** line;
+5. the instructions "Do not use background subagents." and "Never end your session while waiting.", and the skeleton's **Independence** line, kept in every run prompt because it binds only a review run;
 6. one authority footer, appended last, followed only by any [grant](#grants) sections the task needs.
 
 Before launch, verify the complete current brief contains the concrete authorised task and no unresolved template, and make launch conditional on successful writing and that check in the same checked process. A prior draft filename may have been consumed by the launcher: for an already-launched run read `<name>.prompt.md` as immutable evidence, never edit it or assume the draft remains. This is a preparation check, not a claim of perfect semantic validation.

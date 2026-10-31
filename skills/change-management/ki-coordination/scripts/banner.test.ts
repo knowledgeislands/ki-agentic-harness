@@ -348,6 +348,9 @@ test('every generated surface matches what the standard renders, so none is edit
   }
   const prompt = surfaces.find((surface) => surface.path.endsWith('run-prompt.md'))
   expect(prompt?.content).toContain('Owner reports, run reports and banners omit routine push state')
+  const brief = surfaces.find((surface) => surface.path.endsWith('ki-work-design/assets/brief.md'))
+  for (const surface of [prompt, brief])
+    expect(surface?.content).toContain('**Independence**, in a review run: form your own view from the evidence')
   expect(prompt?.content).toContain('own unit could not be published because its push failed')
   for (const surface of surfaces)
     expect({

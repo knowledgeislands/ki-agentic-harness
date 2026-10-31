@@ -24,6 +24,8 @@
 
 - <An earlier decision, by its words and date> - <which review challenged it and why; the decision tag that puts it to the owner>
 
+<Or `None`.>
+
 ## Rollout plan
 
 <The records to capture, the pilot, and the waves that follow it.>
