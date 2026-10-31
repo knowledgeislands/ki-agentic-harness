@@ -205,10 +205,10 @@ const COORD_13: RubricItem<CoordinationRubricContext> = {
   judgment: {
     scope: 'Coordinator summaries, recaps, queries.md files and review-run reports the owner selects for review.',
     prompt:
-      'Did every medium- or low-confidence query, and every high-confidence query with a destructive course, pass one blind review run before it reached the owner, did the run see the query without its recommendation or confidence, does each agreed query show its lifted confidence with a reason beginning `reviewed`, and does each disputed one keep its confidence and show both views?',
+      'Did every medium- or low-confidence query, and every high-confidence query with a destructive course, pass one blind review run before it reached the owner, did the run see the query without its recommendation or confidence, does each agreed query show its lifted confidence with a reason beginning `reviewed`, or, where the agreement rests only on precedent, its unchanged confidence with a reason beginning `reviewed, precedent only`, and does each disputed one keep its confidence and show both views?',
     outcomes: ['conforming', 'review the query', 'show both views', 'escalate to owner'],
     guidance:
-      'Hold an unreviewed query back from the owner until one blind review run has seen it, then mark it reviewed with its lifted confidence or show both views; never raise a destructive course resting on claims not verified directly to high.'
+      'Hold an unreviewed query back from the owner until one blind review run has seen it, then mark it reviewed with its lifted confidence, or with its unchanged confidence and `reviewed, precedent only` where the agreement rests only on precedent, or show both views; never raise a destructive course resting on claims not verified directly to high.'
   }
 }
 
