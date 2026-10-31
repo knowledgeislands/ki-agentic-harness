@@ -40,8 +40,8 @@ const HEADING_EXAMPLE = [
 const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a-z0-9-]+)?$/
 /** Territory work's heading: a linked territory or theme, then ` › State of play`. */
 const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
-/** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason. */
-const GLYPH_STATE = String.raw`(?:🤖 With worker|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
+/** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason; With worker may add the hold or handoff it is heading for. */
+const GLYPH_STATE = String.raw`(?:🤖 With worker(?: \((?:draining → ⏸️ On hold|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^()·*]+)\))?|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
 /** The form line: the glyph state, the form, the local issued time and the last mark, bold; a hold report names the hold's mark. */
 const FORM_LINE = new RegExp(
   String.raw`^\*\*${GLYPH_STATE} · (?:(?:Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
@@ -148,6 +148,32 @@ test('the glyph banner shows a settled holder alone and an arrow only in a hando
   expect('### 👤 → 👤 With supervisor · since 07:40 BST').not.toMatch(BANNER_HEADING)
   expect('### 🤖 Handoff to supervisor · since 07:40 BST').not.toMatch(BANNER_HEADING)
   expect('### 🏁 Finished · Ways of working closed at 18:00 BST').toMatch(BANNER_HEADING)
+})
+
+// Kris, 31 October 2026, under DRAIN-TARGET: while work is With worker but deliberately moving towards a hold or a
+// handoff, the banner says so, `🤖 With worker (draining → ⏸️ On hold)`. The bracket is not a state or a move, so the
+// counts and items keep their shape and the target is never a count or an item.
+test('With worker names the hold or handoff it is heading for in brackets, and nothing else changes', () => {
+  const targets = [
+    '🤖 With worker (draining → ⏸️ On hold)',
+    '🤖 With worker (draining → 👤 Handoff to supervisor)',
+    '🤖 With worker (finishing → 👤 Handoff to supervisor)',
+    '🤖 With worker (finishing → 🎯 Handoff to <target>)'
+  ]
+  for (const target of targets) {
+    expect(`### ${target} · since 13:05 GMT`).toMatch(BANNER_HEADING)
+    expect(`**${target} · Summary at 13:05 GMT · last mark 12:40 GMT**`).toMatch(FORM_LINE)
+    for (const text of [standard, outputStyle]) expect(text).toContain(`\`${target}\``)
+  }
+  expect('### 🤖 With worker (draining) · since 13:05 GMT').not.toMatch(BANNER_HEADING)
+  expect('### 🤖 With worker (finishing → ⏸️ On hold) · since 13:05 GMT').not.toMatch(BANNER_HEADING)
+  expect('### 👤 With supervisor (draining → ⏸️ On hold) · since 13:05 GMT').not.toMatch(BANNER_HEADING)
+  expect(standard).toContain('**Heading for a hold or a handoff.**')
+  expect(standard).toContain('DRAIN-TARGET')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('the target is never a count or an item')
+    expect(text).toMatch(/runs still finishing count and list as `\[running\]`/)
+  }
 })
 
 test('the standard carries the With worker, handoff, On hold and Finished banners, in that order', () => {
