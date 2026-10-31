@@ -64,8 +64,8 @@ const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
 /** The heading-for line: what the worker is doing, an arrow and the hold or handoff it is heading for. */
 const HEADING_FOR_LINE =
   /^↪️ (?:draining → ⏸️ On hold|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
-/** The listening line, which every coordinator banner carries. */
-const LISTEN_LINE = /^(?:👂 listening|🔇 not listening while draining|🔇 not listening)$/u
+/** The listening line, which a coordinator banner carries only while the thread listens. */
+const LISTEN_LINE = /^👂 listening$/u
 /** The sync line, only on a host sync thread. */
 const SYNC_LINE = /^🔄 syncing for [a-z0-9<>-]+$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
@@ -119,11 +119,11 @@ const expectBanner = (lines: string[]): void => {
     end -= 2
   }
   expect(lines[end - 1]).toBe('')
-  const listen = closing.findIndex((line) => LISTEN_LINE.test(line))
-  expect(listen).toBeGreaterThanOrEqual(0)
-  expect(closing.slice(0, listen).every((line) => HEADING_FOR_LINE.test(line))).toBe(true)
-  expect(closing.slice(0, listen).length).toBeLessThanOrEqual(1)
-  expect(closing.slice(listen + 1).every((line) => SYNC_LINE.test(line))).toBe(true)
+  let at = 0
+  for (const line of [HEADING_FOR_LINE, LISTEN_LINE]) if (line.test(closing[at] ?? '')) at += 1
+  while (SYNC_LINE.test(closing[at] ?? '')) at += 1
+  expect(at).toBe(closing.length)
+  expect(closing.some((line) => line.startsWith('🔇'))).toBe(false)
   const items = lines.slice(finished ? 2 : 4, end - 1)
   if (!finished) {
     expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
@@ -195,9 +195,9 @@ test('With worker names the hold or handoff it is heading for in its own line be
   const draining = banners(standard).find((lines) => lines.some((line) => HEADING_FOR_LINE.test(line)))
   expect(draining?.[0]).toBe('### 🤖 With worker · since 23:41 BST')
   expect(draining?.slice(-5)).toEqual([
-    '↪️ draining → ⏸️ On hold',
+    '- [with you] WORK-HOME · owner · since 22:58',
     '',
-    '🔇 not listening while draining',
+    '↪️ draining → ⏸️ On hold',
     '',
     PROJECT_THREAD_LINE
   ])
@@ -212,11 +212,13 @@ test('With worker names the hold or handoff it is heading for in its own line be
 // Kris, 31 October 2026, under LISTEN-STATUS: "that should be something that comes out in the summary mode, which is
 // whether or not the thread is listening to messages or not, whether it's draining ... And also if it's a sync-based
 // thread", laid out under FOOTER-LAYOUT the same afternoon: "the modes switched on should happen like that [as their
-// own lines] ... syncing should be a different line alongside listening". A drain and a hold stop listening.
-test('every banner shows its modes one per line, the listening line always and the sync line on a host sync thread', () => {
-  for (const line of ['👂 listening', '🔇 not listening while draining', '🔇 not listening'])
-    expect(line).toMatch(LISTEN_LINE)
+// own lines] ... syncing should be a different line alongside listening". A drain and a hold stop listening. Under
+// FOOTER-NOT-LISTENING the same day: "no need to put in the footer `🔇 not listening`".
+test('every banner shows only the modes switched on, one per line: listening while armed, sync on a host sync thread', () => {
+  expect('👂 listening').toMatch(LISTEN_LINE)
   for (const line of [
+    '🔇 not listening while draining',
+    '🔇 not listening',
     '👂 listening · sync thread for terra',
     '🔇 draining, so not listening',
     '🔇 not listening · not the sync thread for terra',
@@ -243,15 +245,18 @@ test('every banner shows its modes one per line, the listening line always and t
   const [withWorker, handoff, , hold, finished] = banners(standard)
   expect(withWorker?.at(-3)).toBe('👂 listening')
   expect(handoff?.at(-3)).toBe('👂 listening')
-  for (const quiet of [hold, finished]) expect(quiet?.at(-3)).toBe('🔇 not listening')
+  for (const quiet of [hold, finished]) expect(quiet?.at(-3)).toMatch(/^- \[/)
+  for (const lines of banners(standard)) expect(lines.some((line) => line.startsWith('🔇'))).toBe(false)
   for (const lines of banners(standard))
     expect(lines.some((line) => / · (?:not the )?sync thread for /u.test(line))).toBe(false)
   expect(standard).toContain('**Mode lines.**')
   expect(standard).toContain('LISTEN-STATUS')
+  expect(standard).toContain('FOOTER-NOT-LISTENING')
   expect(standard).toContain('- **Inbox watch:**')
   for (const text of [standard, outputStyle]) {
-    for (const state of ['`👂 listening`', '`🔇 not listening while draining`', '`🔇 not listening`'])
-      expect(text).toContain(state)
+    expect(text).toContain('`👂 listening`')
+    expect(withoutSources(text)).not.toMatch(/`🔇 not listening(?: while draining)?` (?:from|where)/u)
+    expect(text).not.toContain('always the listening line')
     expect(text).toContain('`🔄 syncing for <host>`')
     expect(text).not.toContain('draining, so not listening')
     expect(text).not.toContain('not the sync thread for <host>')
@@ -273,8 +278,8 @@ test('a thread listens only when the owner asks it to, and a Rig host sync threa
     expect(text).toContain('"stop the wake" or "stop listening"')
     expect(text).toContain('Rig host sync thread')
   }
-  expect(standard).toContain('`🔇 not listening` where the owner has not asked the thread to listen')
-  expect(outputStyle).toContain('`🔇 not listening` where Kris has not asked the thread to listen')
+  expect(standard).toContain('not where the owner has not asked it to listen')
+  expect(outputStyle).toContain('nor where Kris has not asked the thread to listen')
   expect(standard).not.toContain('keep one inbox watcher armed whenever')
 })
 
@@ -612,4 +617,14 @@ test('the inbox watcher wakes only on news, with no timed bound or timed heartbe
   }
   expect(outputStyle).toContain('a run finishing is itself the wake')
   expect(standard).toContain('a run finishing is itself the wake')
+})
+
+// Kris, 31 October 2026, under RENAME-THREAD-FORM: "we name them like: `🧵 personal.reg.rig-terra`". The bootstrap and
+// re-bootstrap Done line renames the thread to its thread line.
+test('the bootstrap rename line names the thread by its thread line', () => {
+  expect(standard).toContain('RENAME-THREAD-FORM')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('`Rename thread: /rename 🧵 <work-id>`')
+    expect(text).not.toContain('/rename <label> (<id>)')
+  }
 })
