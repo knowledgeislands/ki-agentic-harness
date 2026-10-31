@@ -61,6 +61,9 @@ const HOLDER_ITEM =
 const PROJECT_THREAD_LINE = '🧵 ki.prj.ways-of-working'
 const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
 const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
+/** The listening line: the thread's listening state, then its sync role on its host. */
+const LISTEN_LINE =
+  /^(?:👂 listening|🔇 draining, so not listening|🔇 not listening) · (?:sync thread|not the sync thread) for [a-z0-9<>-]+$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
   text.replace(/<!-- ki-coordination:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
@@ -94,7 +97,7 @@ const expectReportHeading = (lines: string[] | undefined): void => {
   expect(lines.slice(7).filter((line) => line !== '')).toEqual([])
 }
 
-/** A banner: the heading, a blank line, a counts line where live, a blank line, then bracketed-state items only. */
+/** A banner: the heading, a blank line, a counts line where live, a blank line, bracketed-state items, then the listening line. */
 const expectBanner = (lines: string[]): void => {
   expect(lines[0]).toMatch(BANNER_HEADING)
   expect(lines[1]).toBe('')
@@ -102,7 +105,9 @@ const expectBanner = (lines: string[]): void => {
   expect(lines.at(-1)).toMatch(THREAD_LINE)
   expect(lines.filter((line) => line.startsWith('🧵 '))).toHaveLength(1)
   expect(lines.at(-2)).toBe('')
-  const items = lines.slice(finished ? 2 : 4, -2)
+  expect(lines.at(-3)).toMatch(LISTEN_LINE)
+  expect(lines.at(-4)).toBe('')
+  const items = lines.slice(finished ? 2 : 4, -4)
   if (!finished) {
     expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
     expect(lines[3]).toBe('')
@@ -176,6 +181,54 @@ test('With worker names the hold or handoff it is heading for in brackets, and n
   }
 })
 
+// Kris, 31 October 2026, under LISTEN-STATUS: "that should be something that comes out in the summary mode, which is
+// whether or not the thread is listening to messages or not, whether it's draining ... And also if it's a sync-based
+// thread". One short line before the thread line; a drain and a hold stop listening.
+test('every banner shows whether the thread is listening and whether it is its host sync thread, in one line', () => {
+  for (const line of [
+    '👂 listening · sync thread for terra',
+    '👂 listening · not the sync thread for sol',
+    '🔇 draining, so not listening · not the sync thread for terra',
+    '🔇 not listening · not the sync thread for <host>'
+  ])
+    expect(line).toMatch(LISTEN_LINE)
+  for (const line of [
+    '👂 listening',
+    '🔇 draining · sync thread for terra',
+    '👂 listening · sync thread',
+    '🧵 ki.sop.main'
+  ])
+    expect(line).not.toMatch(LISTEN_LINE)
+  const [withWorker, handoff, hold, finished] = banners(standard)
+  expect(withWorker?.at(-3)).toBe('👂 listening · not the sync thread for terra')
+  expect(handoff?.at(-3)).toBe('👂 listening · not the sync thread for terra')
+  for (const quiet of [hold, finished]) expect(quiet?.at(-3)).toMatch(/^🔇 not listening · /u)
+  expect(standard).toContain('**Listening line.**')
+  expect(standard).toContain('LISTEN-STATUS')
+  expect(standard).toContain('- **Inbox watch:**')
+  for (const text of [standard, outputStyle]) {
+    for (const state of ['`👂 listening`', '`🔇 draining, so not listening`', '`🔇 not listening`'])
+      expect(text).toContain(state)
+    expect(text).toContain('sync thread for <host>')
+    expect(text).toContain('the inbox watcher')
+  }
+  expect(outputStyle).toContain(
+    'after a blank line following its listening line, with exactly one plain Markdown thread line'
+  )
+})
+
+// Kris, 31 October 2026, under UNATTENDED-AWAKE: "a key part of unattended mode is that you do keep the chat session
+// alive ... and therefore you try to keep the machine awake that is then leading that chat session".
+test('an unattended window keeps its session and machine awake and says so at entry, on top of normal coordination', () => {
+  expect(standard).toContain('- **Awake:**')
+  expect(standard).toContain('UNATTENDED-AWAKE')
+  expect(standard).toContain('says how the session and its machine are kept awake')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('`caffeinate -dims -w <session pid>`')
+    expect(text).toMatch(/mode on top of normal coordination/)
+  }
+})
+
 test('the standard carries the With worker, handoff, On hold and Finished banners, in that order', () => {
   const found = banners(standard)
   expect(found.map((lines) => lines[0]?.split(' · ')[0])).toEqual([
@@ -194,7 +247,7 @@ test('the standard carries the With worker, handoff, On hold and Finished banner
   expect(hold?.[0]).toBe('### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST')
   expect(hold).toContain('- [release] after the harness migration lands, or `resume`')
   expect(hold?.[2]).toBe('⏸️ drained · 🅿️ 9 queries parked')
-  expect(hold?.slice(4, -2).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(true)
+  expect(hold?.slice(4, -4).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(true)
 })
 
 test('reports omit routine push state, and an On hold banner lists nothing waiting', () => {
