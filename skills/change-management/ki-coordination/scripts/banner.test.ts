@@ -441,7 +441,7 @@ test('the authoritative standard retains all five hard rules', () => {
     '2) an owner message never pre-empts work in flight: stop an agent only when the owner names it and says stop'
   )
   expect(line).toContain(
-    '3) while work lies with a worker, give timed one-to-two-line updates and keep a background check armed that wakes you at least every 5 minutes, and no heartbeat otherwise'
+    '3) while work lies with a worker, give a timed one-to-two-line update when you launch work and when a run finishes, keeping one background check armed that wakes you only when a run finishes, with no timed bound, and no heartbeat otherwise'
   )
   expect(line).toContain(
     '4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner'
@@ -581,12 +581,35 @@ test('an interactive pass ends a timed first reply with the read-back and contex
 
 // Kris, 31 October 2026, under LISTEN-TENDS-PACKAGE: "if a thread is listening, it's important that it is also helping
 // to manage and refine the work packages and make sure they're in good state". A listening thread makes at most one
-// small, silent tidy of its own package on a quiet wake and only points out problems in another's.
-test('a listening thread tends its own work package on quiet wakes', () => {
+// small, silent tidy of its own package at a wake and only points out problems in another's.
+test('a listening thread tends its own work package at its wakes', () => {
   expect(standard).toContain('LISTEN-TENDS-PACKAGE')
   expect(standard).toContain('#tidying-the-work-folder')
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('at most one small tidy')
     expect(text).toMatch(/another work's package/)
   }
+})
+
+// Kris, 31 October 2026, under QUIET-LISTEN: "for a thread which is listening ... we don't need it to give an update
+// unless it actually gets new information that's landed". The watcher is one long-running loop that fetches and
+// fast-forwards silently and exits only on news; a run finishing is itself the wake, and nothing is timed while idle.
+test('the inbox watcher wakes only on news, with no timed bound or timed heartbeat', () => {
+  expect(standard).toContain('QUIET-LISTEN')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('fetches and fast-forwards')
+    expect(text).toContain("a run in this thread's group finishing")
+    expect(text).toContain('so a quiet period')
+    expect(text).toContain('"stop the wake" or "stop listening"')
+    for (const gone of [
+      'fifteen otherwise',
+      'five minutes while runs go',
+      'after 5 minutes',
+      'bare timeout',
+      'quiet wake'
+    ])
+      expect(text).not.toContain(gone)
+  }
+  expect(outputStyle).toContain('a run finishing is itself the wake')
+  expect(standard).toContain('a run finishing is itself the wake')
 })
