@@ -27,7 +27,13 @@ const RUN_PROMPT = `${DELEGATION_ASSETS}/run-prompt.md`
 const DESIGN_BRIEF = 'skills/change-management/ki-work-design/assets/brief.md'
 const FOOTERS = ['none', 'push', 'prune', 'release'].map((tier) => `${DELEGATION_ASSETS}/rules-${tier}.md`)
 /** The Banner examples the output style source names by token, each written once in the standard. */
-const BANNER_BLOCKS = ['heading-example', 'with-worker-banner', 'handoff-banner', 'hold-banner'] as const
+const BANNER_BLOCKS = [
+  'heading-example',
+  'with-worker-banner',
+  'handoff-banner',
+  'draining-banner',
+  'hold-banner'
+] as const
 
 type Marked = { readonly block: string; readonly body: string }
 

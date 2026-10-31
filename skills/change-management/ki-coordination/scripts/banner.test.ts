@@ -40,8 +40,8 @@ const HEADING_EXAMPLE = [
 const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a-z0-9-]+)?$/
 /** Territory work's heading: a linked territory or theme, then ` › State of play`. */
 const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
-/** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason; With worker may add the hold or handoff it is heading for. */
-const GLYPH_STATE = String.raw`(?:🤖 With worker(?: \((?:draining → ⏸️ On hold|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^()·*]+)\))?|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
+/** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason; never a target in brackets. */
+const GLYPH_STATE = `(?:🤖 With worker|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
 /** The form line: the glyph state, the form, the local issued time and the last mark, bold; a hold report names the hold's mark. */
 const FORM_LINE = new RegExp(
   String.raw`^\*\*${GLYPH_STATE} · (?:(?:Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
@@ -61,9 +61,13 @@ const HOLDER_ITEM =
 const PROJECT_THREAD_LINE = '🧵 ki.prj.ways-of-working'
 const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
 const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
-/** The listening line: the thread's listening state, then its sync role on its host. */
-const LISTEN_LINE =
-  /^(?:👂 listening|🔇 draining, so not listening|🔇 not listening) · (?:sync thread|not the sync thread) for [a-z0-9<>-]+$/u
+/** The heading-for line: what the worker is doing, an arrow and the hold or handoff it is heading for. */
+const HEADING_FOR_LINE =
+  /^↪️ (?:draining → ⏸️ On hold|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
+/** The listening line, which every coordinator banner carries. */
+const LISTEN_LINE = /^(?:👂 listening|🔇 not listening while draining|🔇 not listening)$/u
+/** The sync line, only on a host sync thread. */
+const SYNC_LINE = /^🔄 syncing for [a-z0-9<>-]+$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
   text.replace(/<!-- ki-coordination:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
@@ -97,17 +101,30 @@ const expectReportHeading = (lines: string[] | undefined): void => {
   expect(lines.slice(7).filter((line) => line !== '')).toEqual([])
 }
 
-/** A banner: the heading, a blank line, a counts line where live, a blank line, bracketed-state items, then the listening line. */
+/**
+ * A banner, top to bottom under FOOTER-LAYOUT: the heading, a blank line, a counts line where live, a blank line, the
+ * items, then each closing line after a blank line: the heading-for line where one stands, the listening line, the sync
+ * line on a host sync thread, and the thread line last.
+ */
 const expectBanner = (lines: string[]): void => {
   expect(lines[0]).toMatch(BANNER_HEADING)
   expect(lines[1]).toBe('')
   const finished = lines[0]?.startsWith('### 🏁') ?? false
   expect(lines.at(-1)).toMatch(THREAD_LINE)
   expect(lines.filter((line) => line.startsWith('🧵 '))).toHaveLength(1)
-  expect(lines.at(-2)).toBe('')
-  expect(lines.at(-3)).toMatch(LISTEN_LINE)
-  expect(lines.at(-4)).toBe('')
-  const items = lines.slice(finished ? 2 : 4, -4)
+  let end = lines.length - 1
+  const closing: string[] = []
+  while (end > 1 && lines[end - 1] === '' && !lines[end - 2]?.startsWith('- [')) {
+    closing.unshift(lines[end - 2] ?? '')
+    end -= 2
+  }
+  expect(lines[end - 1]).toBe('')
+  const listen = closing.findIndex((line) => LISTEN_LINE.test(line))
+  expect(listen).toBeGreaterThanOrEqual(0)
+  expect(closing.slice(0, listen).every((line) => HEADING_FOR_LINE.test(line))).toBe(true)
+  expect(closing.slice(0, listen).length).toBeLessThanOrEqual(1)
+  expect(closing.slice(listen + 1).every((line) => SYNC_LINE.test(line))).toBe(true)
+  const items = lines.slice(finished ? 2 : 4, end - 1)
   if (!finished) {
     expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
     expect(lines[3]).toBe('')
@@ -156,25 +173,36 @@ test('the glyph banner shows a settled holder alone and an arrow only in a hando
 })
 
 // Kris, 31 October 2026, under DRAIN-TARGET: while work is With worker but deliberately moving towards a hold or a
-// handoff, the banner says so, `🤖 With worker (draining → ⏸️ On hold)`. The bracket is not a state or a move, so the
-// counts and items keep their shape and the target is never a count or an item.
-test('With worker names the hold or handoff it is heading for in brackets, and nothing else changes', () => {
+// handoff, the banner says so. Under FOOTER-LAYOUT the same afternoon the target left the heading for a line of its own
+// below the list: "the point at the top in the header is who it's with, from a state perspective". The line is not a
+// state or a move, so the counts and items keep their shape and the target is never a count or an item.
+test('With worker names the hold or handoff it is heading for in its own line below the list, never in brackets', () => {
   const targets = [
-    '🤖 With worker (draining → ⏸️ On hold)',
-    '🤖 With worker (draining → 👤 Handoff to supervisor)',
-    '🤖 With worker (finishing → 👤 Handoff to supervisor)',
-    '🤖 With worker (finishing → 🎯 Handoff to <target>)'
+    'draining → ⏸️ On hold',
+    'draining → 👤 Handoff to supervisor',
+    'finishing → 👤 Handoff to supervisor',
+    'finishing → 🎯 Handoff to <target>'
   ]
   for (const target of targets) {
-    expect(`### ${target} · since 13:05 GMT`).toMatch(BANNER_HEADING)
-    expect(`**${target} · Summary at 13:05 GMT · last mark 12:40 GMT**`).toMatch(FORM_LINE)
-    for (const text of [standard, outputStyle]) expect(text).toContain(`\`${target}\``)
+    expect(`↪️ ${target}`).toMatch(HEADING_FOR_LINE)
+    expect(`### 🤖 With worker (${target}) · since 13:05 GMT`).not.toMatch(BANNER_HEADING)
+    expect(`**🤖 With worker (${target}) · Summary at 13:05 GMT · last mark 12:40 GMT**`).not.toMatch(FORM_LINE)
+    for (const text of [standard, outputStyle]) expect(text).toContain(`\`↪️ ${target}\``)
   }
-  expect('### 🤖 With worker (draining) · since 13:05 GMT').not.toMatch(BANNER_HEADING)
-  expect('### 🤖 With worker (finishing → ⏸️ On hold) · since 13:05 GMT').not.toMatch(BANNER_HEADING)
-  expect('### 👤 With supervisor (draining → ⏸️ On hold) · since 13:05 GMT').not.toMatch(BANNER_HEADING)
+  expect('↪️ draining').not.toMatch(HEADING_FOR_LINE)
+  expect('↪️ finishing → ⏸️ On hold').not.toMatch(HEADING_FOR_LINE)
+  expect('(draining → ⏸️ On hold)').not.toMatch(HEADING_FOR_LINE)
+  const draining = banners(standard).find((lines) => lines.some((line) => HEADING_FOR_LINE.test(line)))
+  expect(draining?.[0]).toBe('### 🤖 With worker · since 23:41 BST')
+  expect(draining?.slice(-5)).toEqual([
+    '↪️ draining → ⏸️ On hold',
+    '',
+    '🔇 not listening while draining',
+    '',
+    PROJECT_THREAD_LINE
+  ])
   expect(standard).toContain('**Heading for a hold or a handoff.**')
-  expect(standard).toContain('DRAIN-TARGET')
+  for (const name of ['DRAIN-TARGET', 'FOOTER-LAYOUT']) expect(standard).toContain(name)
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('the target is never a count or an item')
     expect(text).toMatch(/runs still finishing count and list as `\[running\]`/)
@@ -183,37 +211,54 @@ test('With worker names the hold or handoff it is heading for in brackets, and n
 
 // Kris, 31 October 2026, under LISTEN-STATUS: "that should be something that comes out in the summary mode, which is
 // whether or not the thread is listening to messages or not, whether it's draining ... And also if it's a sync-based
-// thread". One short line before the thread line; a drain and a hold stop listening.
-test('every banner shows whether the thread is listening and whether it is its host sync thread, in one line', () => {
-  for (const line of [
-    '👂 listening · sync thread for terra',
-    '👂 listening · not the sync thread for sol',
-    '🔇 draining, so not listening · not the sync thread for terra',
-    '🔇 not listening · not the sync thread for <host>'
-  ])
+// thread", laid out under FOOTER-LAYOUT the same afternoon: "the modes switched on should happen like that [as their
+// own lines] ... syncing should be a different line alongside listening". A drain and a hold stop listening.
+test('every banner shows its modes one per line, the listening line always and the sync line on a host sync thread', () => {
+  for (const line of ['👂 listening', '🔇 not listening while draining', '🔇 not listening'])
     expect(line).toMatch(LISTEN_LINE)
   for (const line of [
-    '👂 listening',
-    '🔇 draining · sync thread for terra',
-    '👂 listening · sync thread',
+    '👂 listening · sync thread for terra',
+    '🔇 draining, so not listening',
+    '🔇 not listening · not the sync thread for terra',
     '🧵 ki.sop.main'
   ])
     expect(line).not.toMatch(LISTEN_LINE)
-  const [withWorker, handoff, hold, finished] = banners(standard)
-  expect(withWorker?.at(-3)).toBe('👂 listening · not the sync thread for terra')
-  expect(handoff?.at(-3)).toBe('👂 listening · not the sync thread for terra')
-  for (const quiet of [hold, finished]) expect(quiet?.at(-3)).toMatch(/^🔇 not listening · /u)
-  expect(standard).toContain('**Listening line.**')
+  expect('🔄 syncing for sol').toMatch(SYNC_LINE)
+  expect('🔄 syncing for <host>').toMatch(SYNC_LINE)
+  for (const line of ['🔄 syncing', 'sync thread for sol', '🔄 not syncing for sol'])
+    expect(line).not.toMatch(SYNC_LINE)
+  expectBanner([
+    '### 🤖 With worker · since 09:00 GMT',
+    '',
+    '🤖 1 running',
+    '',
+    '- [running] host pass · run/host-pass · since 08:58',
+    '',
+    '👂 listening',
+    '',
+    '🔄 syncing for sol',
+    '',
+    '🧵 personal.reg.rig-sol'
+  ])
+  const [withWorker, handoff, , hold, finished] = banners(standard)
+  expect(withWorker?.at(-3)).toBe('👂 listening')
+  expect(handoff?.at(-3)).toBe('👂 listening')
+  for (const quiet of [hold, finished]) expect(quiet?.at(-3)).toBe('🔇 not listening')
+  for (const lines of banners(standard))
+    expect(lines.some((line) => / · (?:not the )?sync thread for /u.test(line))).toBe(false)
+  expect(standard).toContain('**Mode lines.**')
   expect(standard).toContain('LISTEN-STATUS')
   expect(standard).toContain('- **Inbox watch:**')
   for (const text of [standard, outputStyle]) {
-    for (const state of ['`👂 listening`', '`🔇 draining, so not listening`', '`🔇 not listening`'])
+    for (const state of ['`👂 listening`', '`🔇 not listening while draining`', '`🔇 not listening`'])
       expect(text).toContain(state)
-    expect(text).toContain('sync thread for <host>')
+    expect(text).toContain('`🔄 syncing for <host>`')
+    expect(text).not.toContain('draining, so not listening')
+    expect(text).not.toContain('not the sync thread for <host>')
     expect(text).toContain('the inbox watcher')
   }
   expect(outputStyle).toContain(
-    'after a blank line following its listening line, with exactly one plain Markdown thread line'
+    'after a blank line following its last mode line, with exactly one plain Markdown thread line'
   )
 })
 
@@ -243,9 +288,8 @@ test('a thread may hold listening and host sync, and the listening line shows bo
     expect(standard).toContain(name)
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('until the Mac and GitHub are clean and level')
-    expect(text).toContain('`👂 listening · sync thread for sol`')
+    expect(text).toContain('`🔄 syncing for sol`')
   }
-  expect('👂 listening · sync thread for sol').toMatch(LISTEN_LINE)
 })
 
 // Kris, 31 October 2026, under UNATTENDED-AWAKE: "a key part of unattended mode is that you do keep the chat session
@@ -260,16 +304,17 @@ test('an unattended window keeps its session and machine awake and says so at en
   }
 })
 
-test('the standard carries the With worker, handoff, On hold and Finished banners, in that order', () => {
+test('the standard carries the With worker, handoff, draining, On hold and Finished banners, in that order', () => {
   const found = banners(standard)
   expect(found.map((lines) => lines[0]?.split(' · ')[0])).toEqual([
     '### 🤖 With worker',
     '### 🤖 → 👤 Handoff to supervisor',
+    '### 🤖 With worker',
     '### ⏸️ On hold',
     '### 🏁 Finished'
   ])
   for (const lines of found) expectBanner(lines)
-  const [withWorker, handoff, hold] = found
+  const [withWorker, handoff, , hold] = found
   expect(withWorker?.[2]).toBe('🤖 2 running · 👤 1 with you · ⛔ 1 blocked')
   expect(withWorker).toContain('- [running] work-model · run/work-model · since 23:20')
   expect(handoff).toContain('- [parked] 1')
@@ -310,7 +355,7 @@ test('the output style carries the report heading and the live banners byte-iden
   expect(styledHeadings).toHaveLength(1)
   expect(styledHeadings[0]?.join('\n')).toBe(HEADING_EXAMPLE)
   const styled = banners(outputStyle)
-  expect(styled).toEqual(banners(standard).slice(0, 3))
+  expect(styled).toEqual(banners(standard).slice(0, 4))
 })
 
 // Kris, 29 October 2026: "There becomes a point when the agents should suggest that this thread would be better off
