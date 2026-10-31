@@ -72,7 +72,7 @@ While coordinating, `/ki-coordination hold` drains and puts the work On hold und
 
 ### Mode MARK
 
-While coordinating, `/ki-coordination mark` strikes [the mark](references/standards-coordination.md#recap-since-the-mark): it writes `mark: <UTC timestamp>` into the state file's front matter, `state.md`, works the decisions life cycle, prunes the work folder, keeps every open Needs-tagged query, commits the work folder and confirms in one line. Only the owner's instruction, or a hold, moves the mark; "recap and mark" gives the recap first.
+While coordinating, `/ki-coordination mark` strikes [the mark](references/standards-coordination.md#recap-since-the-mark): it writes `mark: <UTC timestamp>` into the state file's front matter, `state.md`, works the decisions life cycle, prunes the work folder, keeps every open Needs-tagged query, commits the work folder and confirms in one line. Only the owner's instruction, or a hold, moves the mark; "recap and mark" gives the recap first. Every mark, whether struck at Kris's word, at the end of a query set or at a hold, is followed at once, in the same reply, by the full Summary of everything since the previous mark; a hold report stays the exception.
 
 ### Mode RECAP
 
