@@ -35,7 +35,7 @@ Every report to the owner is an **owner report**. It opens with the `ki-coordina
 
 When Kris has asked for findings, `## Findings` sits between In Progress and Queries while one is open: each a `### <TAG> - <title>` heading opening with **Goal**, **Scope** and **As of** lines before its table, carried in full until a mark or until Kris is content, a prompt for Kris to hand on carried the same way in one fenced block, and each settled with one disposition in the decisions log, homed in a record, a design note or the log, or dropped.
 
-There is no reply block, as Kris set on 18 October under REPLY-BLOCK: Kris answers in speech, by tag or in order, and may answer with a bare letter. Read each answer back as taken in the decisions log, in the turn it arrives, and ask one line where an answer is unclear. A full summary adds `## Decided` before the three sections, every owner decision linked. A re-bootstrap report is a full owner report: `## Done` gives your coordinator role and where the work stands, `## In Progress` what is running, and `## Queries` every open query in full. Every record, work file, Project, theme and decision is cited by its full identifier and linked to its local file by absolute path; a roadmap record that has been pruned is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed; a link is never invented, and the `ki-coordination` rubric flags any record identifier a report leaves unlinked. No report says "see earlier" or "as before": what is still running and still open is restated in full each time.
+There is no reply block, as Kris set on 18 October under REPLY-BLOCK: Kris answers in speech, by tag or in order, and may answer with a bare letter. Read each answer back as taken in the decisions log, in the turn it arrives, and ask one line where an answer is unclear. Every suggestion in any reply, not only a query's options, is a recommendation with a confidence and a one-line reason. A full summary adds `## Decided` before the three sections, every owner decision linked. A re-bootstrap report is a full owner report: `## Done` gives your coordinator role and where the work stands, `## In Progress` what is running, and `## Queries` every open query in full. Every record, work file, Project, theme and decision is cited by its full identifier and linked to its local file by absolute path; a roadmap record that has been pruned is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`, the last revision being the last commit in which the file existed; a link is never invented, and the `ki-coordination` rubric flags any record identifier a report leaves unlinked. No report says "see earlier" or "as before": what is still running and still open is restated in full each time.
 
 Act in one assigned package per turn. One territory Summary names each package and qualifies queries by `(work id, tag)`; queries and answers remain in their own package, and each package keeps its own state, mark and beat. Stewardship changes only by committed, acknowledged handover with runs in flight; no timeout takeover, and STEWARD-FIELD remains undecided. Host requirements restrict device-dependent execution, preserving IMPORTANT and queue order.
 
@@ -57,7 +57,7 @@ The report heading, opening a Summary:
 ## Done
 ```
 
-The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`, ending `· 📥 <n> to accept` in Project work with records awaiting acceptance; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, the housekeeping items `[committed]`, `[uncommitted]`, `[recovered]`, `[unlogged]` and `[behind]` naming no holder, and territory work adds its worktree sweep's `[stranded]`, `[branch]` and `[stash]` findings at each mark. Check the work’s repositories against their remotes before a cross-host resume, at every mark and before leaving a host; carry unresolved behind findings as `- [behind] <repository>: <count> commits` until a fresh check proves level. A failed check remains unknown. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. Owner reports, run reports and banners omit routine push state and other sessions' stacked commits. A push of stacked commits is never "with you", a count or a query. If a run's own unit could not be published because its push failed, Done names the affected unit and reason. With worker:
+The banner is one `###` heading, the glyph state and `· since <local time>`; a blank line; one line of counts, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`, ending `· 📥 <n> to accept` in Project work with records awaiting acceptance; a blank line; and one list of `- [<state>] <what> · <holder> · since <time>` items, and territory work adds its worktree sweep's `[stranded]`, `[branch]` and `[stash]` findings at each mark, naming no holder. The banner carries no `[handoff]` or housekeeping item: commits and a recovered session go in Done; uncommitted work, unlogged decisions and repositories behind their remote go in In Progress; an item with other work, a run or a person is a waiting line in In Progress with its holder. Check the work’s repositories against their remotes before a cross-host resume, at every mark and before leaving a host; carry each unresolved behind finding in In Progress as `<repository>: <count> commits behind` until a fresh check proves level. A failed check remains unknown. The counts and the list say "with you"; the heading says the state in role words. Nothing in the banner cites a decision number. Owner reports, run reports and banners omit routine push state and other sessions' stacked commits. A push of stacked commits is never "with you", a count or a query. If a run's own unit could not be published because its push failed, Done names the affected unit and reason. With worker:
 
 ```markdown
 ### 🤖 With worker · since 23:41 BST
@@ -68,7 +68,6 @@ The banner is one `###` heading, the glyph state and `· since <local time>`; a 
 - [running] tools-burndown fix · work/ki.tools-burndown · since 23:05
 - [with you] WORK-HOME · owner · since 22:58
 - [blocked] work folder commit · repo/ki-principal · since 22:40
-- [uncommitted] work folder
 
 🧵 ki.prj.ways-of-working
 ```
@@ -83,7 +82,6 @@ Handoff to supervisor, when you send the work to Kris:
 - [with you] WORK-MODEL · owner · since 23:52
 - [with you] WORK-HOME · owner · since 22:58
 - [parked] 1
-- [committed] work folder
 
 🧵 ki.prj.ways-of-working
 ```

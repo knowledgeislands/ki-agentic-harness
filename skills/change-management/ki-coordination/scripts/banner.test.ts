@@ -52,11 +52,12 @@ const BANNER_HEADING = new RegExp(
   String.raw`^### (?:${GLYPH_STATE} · since \d{2}:\d{2} [A-Z]{3,4}|🏁 Finished · .+ closed at \d{2}:\d{2} [A-Z]{3,4})$`,
   'u'
 )
-/** A banner item: `- [<state>] <what>`, the live items naming a holder and a since. */
-const ITEM =
-  /^- \[(running|queued|with you|stuck|blocked|handoff|parked|on hold|release|committed|uncommitted|recovered|unlogged|finished)\] .+$/
+/** A banner item: `- [<state>] <what>`, the live items naming a holder and a since; housekeeping lives in the report body. */
+const ITEM = /^- \[(running|queued|with you|stuck|blocked|parked|on hold|release|finished)\] .+$/
+/** The items BANNER-TRIM moved out of the banner and into the report body. */
+const BODY_ITEM = /^- \[(handoff|committed|uncommitted|recovered|unlogged|behind)\]/
 const HOLDER_ITEM =
-  /^- \[(running|queued|with you|stuck|handoff)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
+  /^- \[(running|queued|with you|stuck)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
 const PROJECT_THREAD_LINE = '🧵 ki.prj.ways-of-working'
 const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
 const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
@@ -108,7 +109,7 @@ const expectBanner = (lines: string[]): void => {
   }
   expect(items.length).toBeGreaterThan(0)
   for (const item of items) expect(item).toMatch(ITEM)
-  for (const item of items.filter((line) => /^- \[(running|queued|with you|stuck|handoff)\]/.test(line)))
+  for (const item of items.filter((line) => /^- \[(running|queued|with you|stuck)\]/.test(line)))
     expect(item).toMatch(HOLDER_ITEM)
   for (const item of items) expect(item).not.toMatch(/decision \d|#\d/)
 }
@@ -161,7 +162,8 @@ test('the standard carries the With worker, handoff, On hold and Finished banner
   const [withWorker, handoff, hold] = found
   expect(withWorker?.[2]).toBe('🤖 2 running · 👤 1 with you · ⛔ 1 blocked')
   expect(withWorker).toContain('- [running] work-model · run/work-model · since 23:20')
-  expect(handoff).toContain('- [committed] work folder')
+  expect(handoff).toContain('- [parked] 1')
+  expect(found.flat().some((line) => BODY_ITEM.test(line))).toBe(false)
   expect(handoff?.some((line) => line.startsWith('- [running]'))).toBe(false)
   expect(hold?.[0]).toBe('### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST')
   expect(hold).toContain('- [release] after the harness migration lands, or `resume`')
@@ -357,11 +359,14 @@ test('every generated surface matches what the standard renders, so none is edit
     })
 })
 
-test('active banner guidance carries behind findings and all level-check triggers', () => {
+test('housekeeping and behind findings go in the report body, with all level-check triggers', () => {
   const orderedBanner = standard.split('**Glyph banner.**')[1]?.split('\n')[0] ?? ''
-  expect(orderedBanner).toContain('`- [behind] <repository>: <count> commits`')
-  expect(orderedBanner.indexOf('[behind]')).toBeGreaterThan(orderedBanner.indexOf('[unlogged]'))
-  expect(outputStyle).toContain('`[behind]` naming no holder')
+  for (const item of ['[handoff]', '[committed]', '[uncommitted]', '[recovered]', '[unlogged]', '[behind]'])
+    expect(orderedBanner).not.toContain(item)
+  expect(standard).toContain('under BANNER-TRIM')
+  expect(standard).toContain('`<repository>: <count> commits behind`')
+  expect(outputStyle).toContain('The banner carries no `[handoff]` or housekeeping item')
+  expect(outputStyle).toContain('carry each unresolved behind finding in In Progress')
   expect(outputStyle).toContain('before a cross-host resume, at every mark and before leaving a host')
   expect(outputStyle).toContain('A failed check remains unknown')
 })
