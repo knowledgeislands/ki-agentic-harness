@@ -74,19 +74,23 @@ test('a missing grant, or one that lifts another ban, grants a tier, drops a lim
   }
 })
 
-test('a machine grant that drops the new-software ban or the dotfile judgement check is a violation', () => {
+test('a machine grant that drops the new-software ban, the dotfile judgement check or its direct-approval route is a violation', () => {
   const directory = copy()
   try {
     const machine = readFileSync(join(directory, 'grant-machine.md'), 'utf8')
     writeFileSync(
       join(directory, 'grant-machine.md'),
-      machine.replace('Never install new software', 'Install what the task names').replace('judgement check', 'review')
+      machine
+        .replace('Never install new software', 'Install what the task names')
+        .replace('judgement check', 'review')
+        .replace('direct approval', 'approval')
     )
     const messages = footerOutcomes(directory).map((outcome) => `${outcome.subject}: ${outcome.message}`)
     expect(messages).toContain(
       'assets/grant-machine.md: Grant lacks the required wording `Never install new software`.'
     )
     expect(messages).toContain('assets/grant-machine.md: Grant lacks the required wording `judgement check`.')
+    expect(messages).toContain('assets/grant-machine.md: Grant lacks the required wording `direct approval`.')
   } finally {
     rmSync(directory, { recursive: true })
   }

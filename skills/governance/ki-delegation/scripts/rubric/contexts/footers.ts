@@ -46,7 +46,8 @@ const GRANT_WORDING: Record<(typeof GRANT_NAMES)[number], readonly [string, ...s
     'Credentials stay banned',
     'connection-critical',
     'Never install new software',
-    'judgement check'
+    'judgement check',
+    'direct approval'
   ]
 }
 
