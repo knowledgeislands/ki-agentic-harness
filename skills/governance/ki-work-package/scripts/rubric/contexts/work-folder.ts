@@ -175,16 +175,13 @@ const frontField = (path: string, field: string): string | undefined => {
 }
 
 /**
- * Whether finished work's folder has outlived the mark that closes it: the work is `finished` and its mark falls at or
- * after the moment it finished, so the close-out commit is due. The state comes from `state.md` where the package has
- * one, otherwise from the single-file `work.md`.
+ * Whether a finished work's folder is still standing and so awaits its close-out, whatever its mark: no coordinator
+ * reads a Finished work's folder, so territory work closes it under the `ki-work-package` close-out. The state comes from
+ * `state.md` where the package has one, otherwise from the single-file `work.md`.
  */
-export const outlivesClosingMark = (folder: string): boolean => {
+export const awaitsCloseOut = (folder: string): boolean => {
   const file = existsSync(join(folder, STATE_FILE)) ? join(folder, STATE_FILE) : join(folder, WORK_FILE)
-  if (frontField(file, 'state') !== 'finished') return false
-  const since = Date.parse(frontField(file, 'since') ?? '')
-  const mark = Date.parse(frontField(file, 'mark') ?? '')
-  return !Number.isNaN(since) && !Number.isNaN(mark) && mark >= since
+  return frontField(file, 'state') === 'finished'
 }
 
 /**
@@ -301,11 +298,11 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
         message: `each of these briefs has its run's report in the folder, so it is due for the tidy: ${received.join(', ')}`,
         subject: subject(folder)
       })
-    if (outlivesClosingMark(folder))
+    if (awaitsCloseOut(folder))
       finished.push({
         status: 'VIOLATION',
         message:
-          "finished work's folder outlives the mark that closes it; once its decisions are homed and `design/` resolved, delete the folder in one commit",
+          "finished work's folder is still standing; territory work closes it at an owner-authorised mark whose report names it, deleting it in one commit once the close-out checks hold, and otherwise asks the owner",
         subject: subject(folder)
       })
     const open = openQueryCount(folder)
@@ -363,7 +360,7 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
     closed: one(closed, `The ${count} work folder(s) hold only their closed list.`, absent),
     answered: one(answered, 'No folder keeps a report whose every query is answered.', absent),
     briefs: one(briefs, "No folder keeps a brief whose run's report it has received.", noWork),
-    finished: one(finished, "No finished work's folder outlives its closing mark.", noWork),
+    finished: one(finished, "No finished work's folder is left standing.", noWork),
     review: one(
       review,
       'Every folder awaiting review has its index line, and every index line its folder.',

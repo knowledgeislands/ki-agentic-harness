@@ -69,16 +69,16 @@ const FOLDER_3: RubricItem<FolderOutcomes> = {
 
 const FOLDER_4: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-4',
-  title: "no finished work's folder outlives its closing mark",
+  title: "no finished work's folder is left standing",
   description:
-    'Finished work keeps its package with `state: finished` only until the mark that closes it; a folder whose state is `finished` and whose `mark` falls at or after its `since` is due for the close-out.',
-  sources: [`${SOURCE}#removal-lifecycle`],
+    "Finished work keeps its package with `state: finished` only until its close-out; no coordinator reads a Finished work's folder, so every folder whose state is `finished` is due for close-out, whatever its mark.",
+  sources: [`${SOURCE}#tidying-the-work-folder`, `${SOURCE}#removal-lifecycle`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Once its decisions are homed, every finding settled with its disposition recorded, and `design/` resolved, delete the finished work folder in one commit, with Git keeping it.'
+        "The finishing coordinator deletes the folder at the mark that closes it; where the folder outlives the finishing thread, territory work closes it at an owner-authorised mark whose report names it: once every close-out check holds, it archives the work's runs with `ki agent close` under its strict gate and deletes the folder in one commit, Git keeping it, and otherwise deletes nothing and asks the owner in its own `queries.md`."
     },
     audit: { phase: 'INSPECT', run: ({ finished }) => finished }
   }

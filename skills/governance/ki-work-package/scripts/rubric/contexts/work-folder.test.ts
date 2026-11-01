@@ -142,12 +142,14 @@ describe('work folder tidy', () => {
     expect(outcomes[0]?.message).toEndWith(': briefs/done.md, briefs/old.md')
   })
 
-  test('finished work outliving its closing mark is listed', () => {
+  test('every finished work folder is listed, whatever its mark', () => {
     const root = fixture()
     pkg(root)
     const state = (fields: string): string => write(root, join(WORK, 'state.md'), `---\n${fields}\n---\n\n# State\n`)
     state("state: 'finished'\nsince: '2026-10-19T10:00'\nmark: '2026-10-19T09:00'")
-    expect(statuses(folderOutcomes(root).finished)).toEqual(['PASS'])
+    expect(statuses(folderOutcomes(root).finished)).toEqual(['VIOLATION'])
+    state("state: 'finished'\nsince: '2026-10-19T10:00'")
+    expect(statuses(folderOutcomes(root).finished)).toEqual(['VIOLATION'])
     state("state: 'finished'\nsince: '2026-10-19T10:00'\nmark: '2026-10-19T11:00'")
     expect(statuses(folderOutcomes(root).finished)).toEqual(['VIOLATION'])
     state("state: 'with-worker'\nsince: '2026-10-19T10:00'\nmark: '2026-10-19T11:00'")
