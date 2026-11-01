@@ -116,6 +116,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
           'ki-subagents',
           'ki-subagents-claude',
           'ki-subagents-chatgpt',
+          'ki-delegation-orca',
           'ki-delegation-paperclip',
           'ki-agent-coordination-paperclip'
         ]

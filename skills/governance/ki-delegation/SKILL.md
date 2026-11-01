@@ -67,7 +67,7 @@ Read [the sources](references/sources.md), compare delegation practice and its s
 
 ### Mode HELP
 
-Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Paperclip delegation in `ki-delegation-paperclip`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Paperclip delegation in `ki-delegation-paperclip`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
 
 ## Notes
 
