@@ -9,7 +9,7 @@ const FOLDER_1: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-1',
   title: 'every work folder holds only its closed list',
   description:
-    'Each work folder `+/_WORK/<id>/` holds only the five package files, per-tag Markdown findings `findings/<tag>.md`, `<name>.report.md`, Markdown briefs under `briefs/`, Markdown feedback packages under `feedback/`, and under `design/` only design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders. Scripts, screenshots, scratch folders and tool output fail. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
+    'Each work folder `+/_WORK/<id>/` holds only the five package files, per-tag Markdown findings `findings/<tag>.md`, run reports `reports/<name>.report.md` and nothing else in `reports/`, Markdown briefs under `briefs/`, Markdown feedback packages under `feedback/`, and under `design/` only design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders. Scripts, screenshots, scratch folders and tool output fail. For the tolerance window until the sweep is done, a `<name>.report.md` still at the top level is a stray file warned on rather than failed. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
   sources: [`${SOURCE}#closed-list`],
   mechanical: {
     level: 'FAIL',
@@ -53,7 +53,7 @@ const FOLDER_3: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-3',
   title: "no work folder keeps a brief whose run's report it has received",
   description:
-    "A brief `briefs/<run>.md` goes once its run's report has been received, which the folder shows by holding `<run>.report.md`.",
+    "A brief `briefs/<run>.md` goes once its run's report has been received, which the folder shows by holding `reports/<run>.report.md`, or for the tolerance window `<run>.report.md` at the top level.",
   sources: [TIDY],
   mechanical: {
     level: 'WARN',

@@ -23,6 +23,8 @@ const PACKAGE_FILES: ReadonlySet<string> = new Set([WORK_FILE, STATE_FILE, QUERI
 /** Findings, briefs and feedback packages are Markdown files directly under their folder. */
 const MARKDOWN_FOLDERS: ReadonlySet<string> = new Set(['findings', 'briefs', 'feedback'])
 const DESIGN_FOLDER = 'design'
+/** Run reports, `reports/<name>.report.md`, under TOP-LEVEL-NOW (1 November 2026). */
+const REPORTS_FOLDER = 'reports'
 /** Design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
 const DESIGN_EXTENSIONS: ReadonlySet<string> = new Set(['.md', '.json', '.mmd', '.svg', '.html'])
 /** More open queries than this in `queries.md` is a coordination smell, warned on rather than failed. */
@@ -78,17 +80,43 @@ const strayDesign = (folder: string, prefix: string): string[] =>
     return plainFile(entry) && DESIGN_EXTENSIONS.has(extname(entry.name)) ? [] : [path]
   })
 
-/** Entries of a work folder outside its closed list, `design/`, `findings/`, `briefs/` and `feedback/` read one level down. */
+/**
+ * Entries of a work folder outside its closed list, `design/`, `findings/`, `briefs/`, `feedback/` and `reports/` read
+ * one level down. A top-level `<name>.report.md` is left to {@link topLevelReports} for the tolerance window.
+ */
 export const workFolderStray = (folder: string): readonly string[] =>
   entries(folder).flatMap((entry) => {
     if (plainFile(entry) && (PACKAGE_FILES.has(entry.name) || entry.name.endsWith(REPORT_SUFFIX))) return []
     if (!entry.isDirectory() || entry.isSymbolicLink()) return [entry.name]
     if (entry.name === DESIGN_FOLDER) return strayDesign(join(folder, entry.name), entry.name)
+    if (entry.name === REPORTS_FOLDER)
+      return entries(join(folder, entry.name))
+        .filter((inner) => !report(inner))
+        .map((inner) => `${entry.name}/${inner.name}${inner.isDirectory() ? '/' : ''}`)
     if (!MARKDOWN_FOLDERS.has(entry.name)) return [`${entry.name}/`]
     return entries(join(folder, entry.name))
       .filter((inner) => !(plainFile(inner) && extname(inner.name) === '.md'))
       .map((inner) => `${entry.name}/${inner.name}${inner.isDirectory() ? '/' : ''}`)
   })
+
+/** Reports still at a work folder's top level, stray files warned on until the sweep into `reports/` is done. */
+export const topLevelReports = (folder: string): readonly string[] =>
+  entries(folder)
+    .filter(report)
+    .map((entry) => entry.name)
+
+/** A folder's run reports, relative to it: `reports/<name>.report.md` first, then any still at the top level. */
+const runReports = (folder: string): readonly string[] => {
+  const reports = join(folder, REPORTS_FOLDER)
+  return [
+    ...(physicalDirectory(reports)
+      ? entries(reports)
+          .filter(report)
+          .map((entry) => `${REPORTS_FOLDER}/${entry.name}`)
+      : []),
+    ...topLevelReports(folder)
+  ]
+}
 
 /** Entries of a thread folder outside its old closed list, `decisions.md` and `<name>.report.md`. */
 export const threadFolderStray = (folder: string): readonly string[] =>
@@ -112,19 +140,22 @@ export const answeredReports = (folder: string): readonly string[] => {
   const path = join(folder, DECISIONS_LOG)
   const log = existsSync(path) ? readFileSync(path, 'utf8') : ''
   const named = (tag: string): boolean => new RegExp(`(?<![A-Z0-9-])${tag}(?![A-Z0-9-])`).test(log)
-  return entries(folder)
-    .filter(report)
-    .filter((entry) => reportQueryTags(readFileSync(join(folder, entry.name), 'utf8')).every(named))
-    .map((entry) => entry.name)
+  return runReports(folder).filter((name) => reportQueryTags(readFileSync(join(folder, name), 'utf8')).every(named))
 }
 
-/** The briefs `briefs/<run>.md` whose run's report `<run>.report.md` the folder has received. */
+/**
+ * The briefs `briefs/<run>.md` whose run's report the folder has received, in `reports/<run>.report.md` or, for the
+ * tolerance window, at the top level.
+ */
 export const receivedBriefs = (folder: string): readonly string[] => {
   const briefs = join(folder, 'briefs')
   if (!physicalDirectory(briefs)) return []
   return entries(briefs)
     .filter((entry) => plainFile(entry) && extname(entry.name) === '.md')
-    .filter((entry) => existsSync(join(folder, `${entry.name.slice(0, -'.md'.length)}${REPORT_SUFFIX}`)))
+    .filter((entry) => {
+      const name = `${entry.name.slice(0, -'.md'.length)}${REPORT_SUFFIX}`
+      return existsSync(join(folder, REPORTS_FOLDER, name)) || existsSync(join(folder, name))
+    })
     .map((entry) => `briefs/${entry.name}`)
 }
 
@@ -245,7 +276,15 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
     if (stray.length > 0)
       closed.push({
         status: 'VIOLATION',
-        message: `a work folder holds only the five package files, \`<name>${REPORT_SUFFIX}\`, \`briefs/\`, \`feedback/\` and \`design/\` notes with their diagram sources and renders; outside the closed list: ${stray.join(', ')}`,
+        message: `a work folder holds only the five package files, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\`, \`feedback/\` and \`design/\` notes with their diagram sources and renders; outside the closed list: ${stray.join(', ')}`,
+        subject: subject(folder)
+      })
+    const loose = topLevelReports(folder)
+    if (loose.length > 0)
+      closed.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `tolerance: run reports belong in \`${REPORTS_FOLDER}/\`, leaving only the five package files at the top level; stray until the sweep: ${loose.join(', ')}`,
         subject: subject(folder)
       })
     const due = answeredReports(folder)

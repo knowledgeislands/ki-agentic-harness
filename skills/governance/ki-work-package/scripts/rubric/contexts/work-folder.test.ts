@@ -43,12 +43,28 @@ describe('work folder closed list', () => {
   test('a folder holding only its closed list passes', () => {
     const root = fixture()
     pkg(root)
-    write(root, join(WORK, 'run.report.md'), '# Run\n')
+    write(root, join(WORK, 'reports', 'run.report.md'), '# Run\n')
     write(root, join(WORK, 'briefs', 'run.md'), '# Brief\n')
     write(root, join(WORK, 'feedback', 'review.md'), '# Feedback\n')
     write(root, join(WORK, 'design', 'model', 'model.architecture.json'), '{}\n')
     write(root, join(WORK, 'design', 'model', 'model.svg'), '<svg/>\n')
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+  })
+
+  test('reports/ holds only run reports, and a top-level report warns during the tolerance window', () => {
+    const root = fixture()
+    const folder = pkg(root)
+    write(root, join(WORK, 'reports', 'run.report.md'), '# Run\n')
+    write(root, join(WORK, 'reports', 'notes.md'), 'notes\n')
+    expect(workFolderStray(folder)).toEqual(['reports/notes.md'])
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['VIOLATION'])
+
+    const loose = fixture()
+    pkg(loose)
+    write(loose, join(WORK, 'old.report.md'), '# Run\n')
+    const outcomes = folderOutcomes(loose).closed
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toEndWith('stray until the sweep: old.report.md')
   })
 
   test('per-tag findings pass FOLDER-1 while nested and non-Markdown findings fail', () => {
@@ -105,12 +121,12 @@ describe('work folder tidy', () => {
     const root = fixture()
     pkg(root)
     write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI and THREADS-TRIM answered\n')
-    write(root, join(WORK, 'answered.report.md'), queries('PMO-CI', 'THREADS-TRIM'))
+    write(root, join(WORK, 'reports', 'answered.report.md'), queries('PMO-CI', 'THREADS-TRIM'))
     write(root, join(WORK, 'quiet.report.md'), '# Run\n\n## Queries\n\nNo outstanding queries\n')
-    write(root, join(WORK, 'partial.report.md'), queries('PMO-CI', 'PMO-CIX'))
+    write(root, join(WORK, 'reports', 'partial.report.md'), queries('PMO-CI', 'PMO-CIX'))
     const outcomes = folderOutcomes(root).answered
     expect(statuses(outcomes)).toEqual(['VIOLATION'])
-    expect(outcomes[0]?.message).toEndWith(': answered.report.md, quiet.report.md')
+    expect(outcomes[0]?.message).toEndWith(': reports/answered.report.md, quiet.report.md')
   })
 
   test("a brief whose run's report is received is listed", () => {
@@ -118,10 +134,12 @@ describe('work folder tidy', () => {
     pkg(root)
     write(root, join(WORK, 'briefs', 'done.md'), '# Brief\n')
     write(root, join(WORK, 'briefs', 'open.md'), '# Brief\n')
-    write(root, join(WORK, 'done.report.md'), queries('OPEN-ONE'))
+    write(root, join(WORK, 'briefs', 'old.md'), '# Brief\n')
+    write(root, join(WORK, 'reports', 'done.report.md'), queries('OPEN-ONE'))
+    write(root, join(WORK, 'old.report.md'), queries('OPEN-ONE'))
     const outcomes = folderOutcomes(root).briefs
     expect(statuses(outcomes)).toEqual(['VIOLATION'])
-    expect(outcomes[0]?.message).toEndWith(': briefs/done.md')
+    expect(outcomes[0]?.message).toEndWith(': briefs/done.md, briefs/old.md')
   })
 
   test('finished work outliving its closing mark is listed', () => {
