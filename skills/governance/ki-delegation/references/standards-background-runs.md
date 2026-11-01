@@ -11,6 +11,7 @@
 - [Prompt shape](#prompt-shape)
 - [Authority tiers](#authority-tiers)
   - [Grants](#grants)
+  - [Provider tokens](#provider-tokens)
   - [Unattended deny list](#unattended-deny-list)
   - [Criticality test](#criticality-test)
   - [External systems](#external-systems)
@@ -168,9 +169,19 @@ A grant is a section appended after the tier footer that lifts exactly one of th
 | Grant | Section | Lifts |
 | --- | --- | --- |
 | fetch | [grant-fetch.md](../assets/grant-fetch.md) | Only the ban on a Git fetch: `git fetch` and a rebase or fast-forward pull from the remotes the task names; adds nothing under `push` or above |
-| machine | [grant-machine.md](../assets/grant-machine.md) | Only the ban on an environment or scheduler change: the local changes the task names, on this machine, each with its undo; an upgrade of installed software but never a new install, and a dotfile edit only after Kris's direct approval of its diff or, absent that, its judgement check, under [Dotfiles and software](#dotfiles-and-software); credentials stay banned and the [connection-critical rule](#connection-critical-changes) still applies |
+| machine | [grant-machine.md](../assets/grant-machine.md) | Only the ban on an environment or scheduler change: the local changes the task names, on this machine, each with its undo; an upgrade of installed software but never a new install, and a dotfile edit only after Kris's direct approval of its diff or, absent that, its judgement check, under [Dotfiles and software](#dotfiles-and-software); credentials stay banned beyond a [provider-token](#provider-tokens) permission Kris has approved, and the [connection-critical rule](#connection-critical-changes) still applies |
 
 `ki agent launch --allow <grant>` appends a grant section from its `## Grant: <name>` heading, after the tier footer; until the launcher offers that option, a brief appends the section by hand after its footer. Kris approved both texts as drafted on 2026-10-18, taking the recommended option: "you've got my approval for all those things that were recommended".
+
+### Provider tokens
+
+Provider tokens, Cloudflare first, set up per profile and per account, stay least-privilege. Kris set this on 1 November 2026 under CF-TOKEN-APPROVAL: "leave them in a situation where they're not open to too much abuse. It's better to actually actively think about needing a permission and then considering it and then using the token to do it. But rather than asking me to do it, what you could do is you could seek advice from me, or you could seek approval from me, and then I'll approve it for you. And then you can go ahead and do it. And I think that just puts a bit of a check and balance in place".
+
+- **Missing permission:** a run that needs a permission its token lacks stops and reports. Its coordinator raises one query naming the exact permission, the token and the account, never a manual task for Kris.
+- **Approved permission:** once Kris approves that permission, a run whose task cites the approval grants it through the token, saving the token's policy before the change and verifying the policy after it, then does the work. The task names the provider calls, since no grant is implied.
+- **No manual change:** never ask Kris to make the change by hand when a token can.
+
+The rule grants nothing by itself. Each approved permission is the named exception to the footers' ban on a credential change, scoped to that permission, token and account, and each further permission needs Kris's approval again. Credential values stay out of output and tracked files under the cached-reader rule above. In an unattended window the [criticality test](#criticality-test) still keeps credentials out, so the query is parked for the return report.
 
 ### Unattended deny list
 
