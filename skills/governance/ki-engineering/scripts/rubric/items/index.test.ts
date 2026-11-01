@@ -894,7 +894,7 @@ test('PKG-7 reports a conformed but uninstalled toolchain until its packages are
   }
   writeFileSync(
     join(repository, 'package.json'),
-    `${JSON.stringify({ type: 'module', packageManager: 'bun@1.4.2', devDependencies: declared })}\n`
+    `${JSON.stringify({ type: 'module', packageManager: 'bun@1.4.3', devDependencies: declared })}\n`
   )
   writeHooks(repository, {
     '.githooks/pre-commit': `${FRAME}bunx lint-staged\n`,
