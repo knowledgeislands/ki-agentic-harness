@@ -14,7 +14,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 # Knowledge acquisition
 
-Read [the common acquisition standard](references/standards-acquisition.md), then the receiving repository's capture entry point and only the applicable source route. Keep capture simple: establish scope, find any existing capture, route, preserve, verify and report. Where the port stages knowledge, curate incrementally: each curated or dropped item leaves its capture in its own commit, and each card states its origin in plain words rather than linking to a capture.
+Read [the common acquisition standard](references/standards-acquisition.md), then the receiving repository's capture entry point and only the applicable source route. Keep capture simple: establish scope, find any existing capture, route, preserve, verify and report. Where the port stages knowledge, curate incrementally: each curated or dropped item leaves its capture in its own commit, a card never links to a capture and gives its origin in one front-matter line only where that helps a later check, and a meeting is a source rather than a card.
 
 This skill owns the common capture contract; provider skills add source completeness and capability rules. Repository guides supply local paths, publication authority and environment steps. Knowledge Islands owns the durable lifecycle and rationale; tools-ki owns executable importers. The [generated rubric](references/rubric.md) holds the review criteria. This skill accepts no repository configuration properties.
 

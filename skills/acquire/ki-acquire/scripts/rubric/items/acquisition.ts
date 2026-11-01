@@ -67,10 +67,10 @@ export const ACQUIRE = {
       code: 'ACQUIRE-6',
       title: 'curation is incremental and cards stand alone',
       description:
-        'Each curated item leaves its capture in the commit that curates it, each dropped item in its own considered-and-dropped commit, and an empty capture is deleted. Cards state their origin in plain words and never link to a capture; future ideas become future concepts, not roadmap work; a holding port dispatches nothing.',
+        'Each curated item leaves its capture in the commit that curates it, each dropped item in its own considered-and-dropped commit, and an empty capture is deleted. Cards never link to a capture and carry no origin section in their body, giving an origin only as one plain front-matter line where it helps a later check; a meeting is a source, not a card; future ideas become future concepts, not roadmap work; a holding port dispatches nothing.',
       sources: ['standards-acquisition.md#staging-and-curation', 'standards-acquisition.md#dispatch-and-authority'],
       judgment: judgment(
-        'Does every curation commit remove exactly the items it curated or dropped, are empty captures gone, does each card give a plain-words origin with no capture link, and has no capture been dispatched from a port declared a holding area?'
+        'Does every curation commit remove exactly the items it curated or dropped, are empty captures gone, does every card avoid capture links and body origin sections, keeping any origin to one plain front-matter line, are meetings curated as sources rather than cards, and has no capture been dispatched from a port declared a holding area?'
       )
     }
   ]
