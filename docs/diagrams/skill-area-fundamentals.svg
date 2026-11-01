@@ -675,7 +675,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
           <path data-graph-role="automatic-crossover-underlay" d="M 684 102 L 588 102 Q 580 102 580 110 L 580 298 Q 580 306 572 306 L 508 306" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-agent-coordination-paperclip" data-edge-to="ki-git" data-edge-key="0" data-edge-id="ki-agent-coordination-paperclip--ki-git" data-composition-points="684,102;580,102;580,306;508,306" data-composition-crossover="halo" data-composition-independent="true" d="M 684 102 L 588 102 Q 580 102 580 110 L 580 298 Q 580 306 572 306 L 508 306" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-delegation-paperclip" data-edge-to="ki-git" data-edge-key="0" data-edge-id="ki-delegation-paperclip--ki-git" data-composition-points="684,102;580,102;580,306;508,306" data-composition-crossover="halo" data-composition-independent="true" d="M 684 102 L 588 102 Q 580 102 580 110 L 580 298 Q 580 306 572 306 L 508 306" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
           <path data-graph-role="automatic-crossover-underlay" d="M 148 140 L 148 268" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -743,15 +743,15 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F3</text>
         </g>
 
-        <g id="node-ki-agent-coordination-paperclip" data-node-id="ki-agent-coordination-paperclip" data-node-label="ki-agent-coordination-paperclip" tabindex="0" role="button" aria-label="Focus ki-agent-coordination-paperclip, agentic systems · opt-in, Agentic systems · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-tag="R17 · CM · F6" data-node-context="Agentic systems · 1 skill">
-          <title>ki-agent-coordination-paperclip · agentic systems · opt-in · Agentic systems · 1 skill · R17 · CM · F6</title>
+        <g id="node-ki-delegation-paperclip" data-node-id="ki-delegation-paperclip" data-node-label="ki-delegation-paperclip" tabindex="0" role="button" aria-label="Focus ki-delegation-paperclip, agentic systems · opt-in, Agentic systems · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-tag="R17 · CM · F6" data-node-context="Agentic systems · 1 skill">
+          <title>ki-delegation-paperclip · agentic systems · opt-in · Agentic systems · 1 skill · R17 · CM · F6</title>
           <rect x="684" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="684" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(690 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="788" y="100" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">ki-agent-coordination-paperclip</text>
+          <text data-node-label="" x="788" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-delegation-paperclip</text>
         <text x="788" y="116" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
         <text x="788" y="132" class="t-database" font-size="7" text-anchor="middle">R17 · CM · F6</text>
         </g>
