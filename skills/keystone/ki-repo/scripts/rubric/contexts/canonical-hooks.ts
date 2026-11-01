@@ -66,7 +66,7 @@ export const SHAPE_HOOKS: Readonly<Record<RepositoryShape, ShapeHooks>> = {
 
 // `ki-engineering` SCR-11: check-only staged lints through lint-staged, then check-only Syncpack, then Commitlint.
 const PACKAGE_TOOLS = ['lint-staged', 'syncpack', 'biome', 'rumdl']
-const PACKAGE_LINES = ['lint-staged --quiet || exit 1', 'syncpack format --check || exit 1']
+const PACKAGE_LINES = ['lint-staged --quiet --no-stash || exit 1', 'syncpack format --check || exit 1']
 // `ki-authoring` MD-hook: staged Markdown where no package runs lint-staged.
 const MARKDOWN_LINES = [
   '# Staged Markdown, checked where it stands (ki-authoring MD-hook).',

@@ -120,7 +120,7 @@ test('commit-msg refuses on its own missing tool once pre-commit can run', () =>
 test('with the tooling installed the committed hooks run their gate and the commit lands', () => {
   const { worktree } = repositoryWithWorktree()
   install(worktree, [...PACKAGE_TOOLS, 'commitlint'], {
-    'lint-staged': '[ "$1" = --quiet ] || exit 1',
+    'lint-staged': '[ "$1" = --quiet ] && [ "$2" = --no-stash ] || exit 1',
     commitlint: '[ "$1" = --edit ] && grep -q "^chore: change$" "$2" || exit 1'
   })
   const before = head(worktree)

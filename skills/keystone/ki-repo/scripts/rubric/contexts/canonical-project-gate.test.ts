@@ -56,7 +56,7 @@ test('the package Project gate runs lint-staged and the Syncpack check and calls
   const run = fixture(true, 'package')
   const result = run.run()
   expect(result.status, result.stderr).toBe(0)
-  expect(read(run.log)).toEqual(['lint-staged --quiet', 'syncpack format --check'])
+  expect(read(run.log)).toEqual(['lint-staged --quiet --no-stash', 'syncpack format --check'])
 })
 
 test('a failing staged lint fails the gate closed without reaching ki or the network', () => {

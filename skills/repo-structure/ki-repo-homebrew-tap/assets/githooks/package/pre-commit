@@ -21,7 +21,7 @@ if ! command -v ruby >/dev/null 2>&1; then
 fi
 PATH="$root/node_modules/.bin:$PATH"
 export PATH
-lint-staged --quiet || exit 1
+lint-staged --quiet --no-stash || exit 1
 syncpack format --check || exit 1
 # Staged Ruby, syntax-checked with warnings (ki-repo-homebrew-tap GATE-1).
 git diff --cached --name-only --diff-filter=ACMR -z -- '*.rb' | xargs -0 -r -n 1 ruby -wc >/dev/null || exit 1

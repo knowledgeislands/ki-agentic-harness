@@ -48,13 +48,13 @@ const fixture = (lintExit = 0) => {
 test('the hook runs only the staged lint and the Syncpack check, with ki absent from PATH', () => {
   const { run, calls } = fixture()
   expect(run().status).toBe(0)
-  expect(calls()).toEqual(['lint-staged --quiet', 'syncpack format --check'])
+  expect(calls()).toEqual(['lint-staged --quiet --no-stash', 'syncpack format --check'])
 })
 
 test('a failing staged lint stops the commit before the Syncpack check', () => {
   const { run, calls } = fixture(1)
   expect(run().status).not.toBe(0)
-  expect(calls()).toEqual(['lint-staged --quiet'])
+  expect(calls()).toEqual(['lint-staged --quiet --no-stash'])
 })
 
 test('the committed hook is check-only: no audit, conform, repair, fix or write', () => {

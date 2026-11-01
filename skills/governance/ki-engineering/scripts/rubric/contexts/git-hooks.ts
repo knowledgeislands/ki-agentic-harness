@@ -9,10 +9,11 @@ export const HOOKS = [PRE_COMMIT_HOOK, COMMIT_MSG_HOOK] as const
 export const HOOK_BINDING = `git config core.hooksPath ${HOOK_DIRECTORY}`
 
 // The frame puts `node_modules/.bin` on PATH, so the content calls each tool without `bunx`.
-export const PRE_COMMIT_COMMANDS = ['lint-staged || exit 1', 'syncpack format --check || exit 1'] as const
+// `--no-stash` keeps lint-staged from taking its automatic backup stash, under the never-stash rule.
+export const PRE_COMMIT_COMMANDS = ['lint-staged --no-stash || exit 1', 'syncpack format --check || exit 1'] as const
 
 /** The quiet lint-staged form a repository may choose, silent on success under the quiet-tools rule. */
-const QUIET_PRE_COMMIT_COMMANDS = ['lint-staged --quiet || exit 1', PRE_COMMIT_COMMANDS[1]] as const
+const QUIET_PRE_COMMIT_COMMANDS = ['lint-staged --quiet --no-stash || exit 1', PRE_COMMIT_COMMANDS[1]] as const
 
 export const COMMIT_MSG_COMMAND = 'commitlint --edit "$1" || exit 1'
 
@@ -85,8 +86,9 @@ export const normaliseCommitMessage = (source: string): string | undefined =>
   hasCommitMessageBaseline(source) ? source : normalise(source, [COMMIT_MSG_COMMAND])
 
 // Until the hooks rollout raises SCR-11 to failure, content still in `.husky/` warns rather than fails.
-const LEGACY_PRE_COMMIT = PRE_COMMIT_COMMANDS.map((command) => `bunx ${command}`)
-const LEGACY_QUIET_PRE_COMMIT = QUIET_PRE_COMMIT_COMMANDS.map((command) => `bunx ${command}`)
+// Husky content predates `--no-stash`, so it keeps the forms it was written in.
+const LEGACY_PRE_COMMIT = ['bunx lint-staged || exit 1', `bunx ${PRE_COMMIT_COMMANDS[1]}`]
+const LEGACY_QUIET_PRE_COMMIT = ['bunx lint-staged --quiet || exit 1', `bunx ${PRE_COMMIT_COMMANDS[1]}`]
 
 export const hasLegacyPreCommitBaseline = (source: string): boolean =>
   [LEGACY_PRE_COMMIT, LEGACY_QUIET_PRE_COMMIT].some((required) => source.startsWith(`${required.join('\n')}\n`))

@@ -692,7 +692,7 @@ PATH="$root/node_modules/.bin:$PATH"
 export PATH
 `
 
-const PRE_COMMIT = `${FRAME}lint-staged || exit 1\nsyncpack format --check || exit 1\n`
+const PRE_COMMIT = `${FRAME}lint-staged --no-stash || exit 1\nsyncpack format --check || exit 1\n`
 const COMMIT_MSG = `${FRAME}commitlint --edit "$1" || exit 1\n`
 
 const writeHooks = (repository: string, hooks: Readonly<Record<string, string>>): void => {
@@ -812,7 +812,7 @@ test('the common hook contract requires the frame and the ordered baselines', ()
 })
 
 test('the pre-commit baseline accepts lint-staged run quietly, and conform keeps that choice', () => {
-  const quiet = `${FRAME}lint-staged --quiet || exit 1\nsyncpack format --check || exit 1\n`
+  const quiet = `${FRAME}lint-staged --quiet --no-stash || exit 1\nsyncpack format --check || exit 1\n`
   expect(hasPreCommitBaseline(quiet)).toBe(true)
   expect(hasPreCommitBaseline(`${FRAME}lint-staged --verbose || exit 1\nsyncpack format --check || exit 1\n`)).toBe(
     false
@@ -821,6 +821,15 @@ test('the pre-commit baseline accepts lint-staged run quietly, and conform keeps
     `${quiet}custom-check\n`
   )
   expect(normalisePreCommit(`${FRAME}bunx lint-staged\n`)).toBe(PRE_COMMIT)
+})
+
+test('the pre-commit baseline refuses lint-staged with its backup stash, and conform adds --no-stash', () => {
+  const stashing = `${FRAME}lint-staged --quiet || exit 1\nsyncpack format --check || exit 1\n`
+  expect(hasPreCommitBaseline(stashing)).toBe(false)
+  expect(hasPreCommitBaseline(`${FRAME}lint-staged || exit 1\nsyncpack format --check || exit 1\n`)).toBe(false)
+  expect(normalisePreCommit(stashing)).toBe(
+    `${FRAME}lint-staged --quiet --no-stash || exit 1\nsyncpack format --check || exit 1\n`
+  )
 })
 
 test('SCR-11 conform repairs committed hook content while preserving repository checks', async () => {
