@@ -1,4 +1,8 @@
 import { describe, expect, test } from 'bun:test'
+import { spawnSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { gitignoreUnmanagedHeader, inspectGitignore, managedGitignoreBlocks } from './gitignore.ts'
 
 const runtimeRules = ['.claude/skills/*', '.agents/skills/*', '!.agents/skills/ki-self/', '!.agents/skills/ki-self/**']
@@ -58,6 +62,29 @@ custom-output/
     expect(blocks.find(({ owner }) => owner === 'ki-repo')?.rules).toContain('tmp/')
     expect(inspection.unmanagedRules).toEqual(['.vscode/'])
     expect(inspection.content.match(/^\/?tmp\/?$/gm)).toEqual(['tmp/'])
+  })
+
+  test("tracks a work package's reports/ while other reports/ folders stay ignored", () => {
+    const root = mkdtempSync(join(tmpdir(), 'ki-gitignore-'))
+    try {
+      const { content } = inspectGitignore('', managedGitignoreBlocks(['ki-repo'], runtimeRules))
+      writeFileSync(join(root, '.gitignore'), content)
+      const files = [
+        join('+', '_WORK', 'ki.prj.example', 'reports', 'x.report.md'),
+        join('+', '_WORK_REVIEW', 'ki.prj.example', 'reports', 'x.report.md'),
+        join('x', 'reports', 'x.report.md')
+      ]
+      for (const file of files) {
+        mkdirSync(join(root, file, '..'), { recursive: true })
+        writeFileSync(join(root, file), '# Report\n')
+      }
+      expect(spawnSync('git', ['init', '-q'], { cwd: root }).status).toBe(0)
+      const ignored = (file: string): boolean =>
+        spawnSync('git', ['check-ignore', '-q', '--no-index', file], { cwd: root }).status === 0
+      expect(files.map(ignored)).toEqual([false, false, true])
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
   })
 
   test('is idempotent after reconciliation', () => {
