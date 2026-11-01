@@ -628,3 +628,11 @@ test('the bootstrap rename line names the thread by its thread line', () => {
     expect(text).not.toContain('/rename <label> (<id>)')
   }
 })
+
+// Kris, 1 November 2026, under RENAME-NAME a): a session opened from its opener starts with the thread name
+// `🧵 <work-id>`, the same as the rename line and every report's thread line.
+test('the opener launches the session under its thread line', () => {
+  expect(standard).toContain('RENAME-NAME')
+  expect(standard).toContain('`claude --name "🧵 <work-id>"`')
+  expect(standard).not.toContain('claude --name "<label> (<id>)"')
+})
