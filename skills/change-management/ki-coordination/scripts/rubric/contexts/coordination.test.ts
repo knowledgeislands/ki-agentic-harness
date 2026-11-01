@@ -505,9 +505,14 @@ describe('report heading', () => {
     const folder = work(root, 'ki.ways-of-working', { id: 'ki.ways-of-working' })
     writeFileSync(join(folder, 'framed.report.md'), '---\n\n**Run report at 00:50 BST**\n\n---\n\n## Done\n')
     writeFileSync(join(folder, 'headed.report.md'), '# Report\n\n## Done\n')
+    mkdirSync(join(folder, 'reports'))
+    writeFileSync(join(folder, 'reports', 'boxed.report.md'), '**Run report at 00:50 BST**\n\n# Report\n')
     const outcomes = context(root).headings.outcomes
-    expect(statuses(outcomes)).toEqual(['VIOLATION'])
-    expect(outcomes[0]?.subject).toBe(join('+', '_WORK', 'ki.ways-of-working', 'framed.report.md'))
+    expect(statuses(outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
+    expect(outcomes.map((outcome) => outcome.subject)).toEqual([
+      join('+', '_WORK', 'ki.ways-of-working', 'framed.report.md'),
+      join('+', '_WORK', 'ki.ways-of-working', 'reports', 'boxed.report.md')
+    ])
   })
 
   test('headed reports pass, and no work or thread folder is not applicable', () => {

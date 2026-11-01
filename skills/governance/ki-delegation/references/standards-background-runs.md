@@ -74,7 +74,7 @@ Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 | `queue.jsonl`, `dispatch.*` | The run queue and the dispatcher's own files |
 | `worktrees/` | The run's Git worktrees, placed under [Coordination](#coordination) |
 
-An agent writes its report to the run's state folder and nowhere else; the launcher copies it into the owning work folder, `+/_WORK/<id>/`, once it sees `DONE`, and replaces only a copy Git already holds. The brief sits in the same folder as `briefs/<name>.md` while the run's handoff is open, so that it survives the loss of a state folder. The folder's closed list, what each entry point may write there and when each kind goes are the `ki-work-package` [work-package standard](../../ki-work-package/references/standards-work-package.md#the-work-folder)'s. When the coordinator receives a report it copies each of the report's queries, whole, into the package's `queries.md`, under QUERIES-FILE, so that the report can go once its outcome is homed.
+An agent writes its report to the run's state folder and nowhere else; the launcher copies it into the owning work folder's `reports/`, as `+/_WORK/<id>/reports/<name>.report.md`, once it sees `DONE`, and replaces only a copy Git already holds. The brief sits in the same folder as `briefs/<name>.md` while the run's handoff is open, so that it survives the loss of a state folder. The folder's closed list, what each entry point may write there and when each kind goes are the `ki-work-package` [work-package standard](../../ki-work-package/references/standards-work-package.md#the-work-folder)'s. When the coordinator receives a report it copies each of the report's queries, whole, into the package's `queries.md`, under QUERIES-FILE, so that the report can go once its outcome is homed.
 
 The owning repository is the one that holds the work file, and the work folder takes the work's two-part id, which the `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming) section sets, so work whose runs span repositories commits its log in one place and agents working in other repositories report into it. The launcher is the only writer of report files there, as Kris decided on 2026-10-14 for the thread folder: "make the launcher the only writer of the thread folder's log and report files". The coordinator writes the decisions log, by hand or through `ki agent decide`, writes the brief and commits the folder.
 
@@ -122,7 +122,7 @@ A run prompt is cold-agent ready. It contains, in order:
 1. the task, quoting the owner decision that authorises it, in the owner's words and dated;
 2. numbered steps;
 3. a verification step;
-4. the report path, in the run's state folder; the launcher homes the report in the work folder;
+4. the report path, in the run's state folder; the launcher homes the report in the work folder's `reports/`;
 5. the instructions "Do not use background subagents." and "Never end your session while waiting.", and the skeleton's **Independence** line, kept in every run prompt because it binds only a review run;
 6. one authority footer, appended last, followed only by any [grant](#grants) sections the task needs.
 

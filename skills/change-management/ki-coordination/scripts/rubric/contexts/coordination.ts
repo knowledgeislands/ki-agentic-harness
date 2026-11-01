@@ -530,15 +530,19 @@ const reviewOutcomes = (root: string): AuditOutcome[] => {
 }
 
 /**
- * Reports in work folders, `+/_WORK/<id>/*.report.md`, and for the tolerance window in thread folders,
- * `+/_THREADS/<run>/*.report.md`; undefined when neither subarea exists. Work awaiting review is not read.
+ * Reports in work folders, `+/_WORK/<id>/reports/*.report.md`, and for the tolerance windows those still at a work
+ * folder's top level and in thread folders, `+/_THREADS/<run>/*.report.md`; undefined when neither subarea exists.
+ * Work awaiting review is not read.
  */
 const workReports = (root: string): readonly string[] | undefined => {
   const work = folders(join(root, WORK_DIRECTORY))
   const threads = folders(join(root, THREADS_DIRECTORY))
   if (!work && !threads) return undefined
   const reports: string[] = []
-  for (const folder of [...(work ?? []), ...(threads ?? [])])
+  const reportFolders = (work ?? [])
+    .map((folder) => join(folder, 'reports'))
+    .filter((folder) => existsSync(folder) && lstatSync(folder).isDirectory())
+  for (const folder of [...reportFolders, ...(work ?? []), ...(threads ?? [])])
     for (const entry of readdirSync(folder, { withFileTypes: true }))
       if (entry.isFile() && !entry.isSymbolicLink() && entry.name.endsWith(REPORT_SUFFIX))
         reports.push(join(folder, entry.name))
