@@ -65,6 +65,10 @@ const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
 ])
 const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
 const STATE_REQUIRED = ['id', 'state', 'since'] as const
+/** The thread capability fields Kris set under FOOTER-CAPABILITY-STATUS-2 on 1 November 2026. */
+const CAPABILITIES = ['listening', 'syncing'] as const
+const CAPABILITY_FIELDS = CAPABILITIES.flatMap((capability) => [`${capability}_enabled`, `${capability}_status`])
+const CAPABILITY_STATUSES: readonly unknown[] = ['on', 'off']
 const STATE_FIELDS: ReadonlySet<string> = new Set([
   ...STATE_REQUIRED,
   'target',
@@ -73,7 +77,8 @@ const STATE_FIELDS: ReadonlySet<string> = new Set([
   'received',
   'beat',
   'mark',
-  'method_read'
+  'method_read',
+  ...CAPABILITY_FIELDS
 ])
 const QUERY_HEADINGS = ['Open', 'Parked'] as const
 /** The discussion file's H1 word, by file name, each accepted for the tolerance window. */
@@ -664,6 +669,30 @@ const stateChecks = (record: ParsedRecord, fields: Readonly<Record<string, unkno
       fail(`${field} must be a UTC RFC 3339 timestamp or null`)
 }
 
+/**
+ * The thread capability fields: each `_enabled` a boolean, absent reading false; each `_status` `on` or `off`, present
+ * exactly when its capability is enabled; and a syncing thread is always a listening thread.
+ */
+const capabilityChecks = (
+  record: ParsedRecord,
+  fields: Readonly<Record<string, unknown>>,
+  evidence: Evidence
+): void => {
+  const fail = (message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: record.path })
+  }
+  for (const capability of CAPABILITIES) {
+    const enabled = fields[`${capability}_enabled`]
+    const status = `${capability}_status`
+    if (`${capability}_enabled` in fields && typeof enabled !== 'boolean')
+      fail(`${capability}_enabled must be true or false`)
+    if (enabled === true ? !CAPABILITY_STATUSES.includes(fields[status]) : status in fields)
+      fail(`${status} is on or off while ${capability}_enabled is true, and absent otherwise`)
+  }
+  if (fields.syncing_enabled === true && fields.listening_enabled !== true)
+    fail('syncing_enabled true requires listening_enabled true: a syncing thread is always a listening thread')
+}
+
 const chronology = (record: ParsedRecord, created: unknown, since: unknown, evidence: Evidence): void => {
   if (validTimestamp(created) && validTimestamp(since) && Date.parse(created) > Date.parse(since))
     evidence.lifecycle.push({
@@ -862,6 +891,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
         (typeof stateFields.method_read !== 'string' || !REVISION.test(stateFields.method_read))
       )
         fail(state, 'method_read must be a short harness revision or null')
+      capabilityChecks(state, stateFields, evidence)
       chronology(state, fields.created_at, stateFields.since, evidence)
       evidence.boundary.push(...boundaryOutcomes(state, stateFields))
     }

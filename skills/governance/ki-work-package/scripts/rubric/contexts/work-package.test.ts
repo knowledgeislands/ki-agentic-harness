@@ -712,6 +712,15 @@ for (const [name, change] of [
   ['a numeric method_read instead of a revision string', { state: { method_read: '1234567' } }],
   ['a timestamp method_read instead of a revision', { state: { method_read: '2026-10-19T21:00:00Z' } }],
   ['a state field it does not know', { state: { updated_at: '2026-10-19T11:25:41Z' } }],
+  ['a syncing thread that does not listen', { state: { syncing_enabled: 'true', syncing_status: 'on' } }],
+  [
+    'a syncing thread with listening switched off',
+    { state: { listening_enabled: 'false', syncing_enabled: 'true', syncing_status: 'on' } }
+  ],
+  ['an enabled capability without its status', { state: { listening_enabled: 'true' } }],
+  ['a status without its capability enabled', { state: { listening_enabled: 'false', listening_status: 'off' } }],
+  ['a capability status other than on or off', { state: { listening_enabled: 'true', listening_status: 'armed' } }],
+  ['a capability flag that is not a boolean', { state: { listening_enabled: 'yes', listening_status: 'on' } }],
   [
     'a Queue outside territory work',
     {
@@ -734,6 +743,22 @@ for (const [name, change] of [
     const value = statuses(context(repository))
 
     expect([value['RECORD-1'], value['RECORD-2']]).toContain('VIOLATION')
+  })
+
+for (const [name, state] of [
+  ['a listening thread with listening on', { listening_enabled: 'true', listening_status: 'on' }],
+  ['a listening thread with listening off', { listening_enabled: 'true', listening_status: 'off' }],
+  [
+    'a host sync thread with both capabilities',
+    { listening_enabled: 'true', listening_status: 'on', syncing_enabled: 'true', syncing_status: 'off' }
+  ],
+  ['capabilities recorded as disabled', { listening_enabled: 'false', syncing_enabled: 'false' }]
+] as const)
+  test(`the package schema accepts ${name}`, () => {
+    const repository = workFixture()
+    writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { state }))
+
+    expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
   })
 
 test('territory work may keep a Queue after Now', () => {

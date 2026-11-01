@@ -64,10 +64,14 @@ const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
 /** The heading-for line: what the worker is doing, an arrow and the hold or handoff it is heading for. */
 const HEADING_FOR_LINE =
   /^↪️ (?:draining → ⏸️ On hold|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
-/** The listening line, which a coordinator banner carries only while the thread listens. */
+/** The listening line while the inbox watcher is armed, on a thread with the listening capability. */
 const LISTEN_LINE = /^👂 listening$/u
-/** The sync line, only on a host sync thread. */
+/** The listening line while that capability is off. */
+const LISTEN_OFF_LINE = /^🔇 not listening$/u
+/** The sync line while host sync runs, only on a host sync thread. */
 const SYNC_LINE = /^🔄 syncing for [a-z0-9<>-]+$/u
+/** The sync line while host sync is off. */
+const SYNC_OFF_LINE = /^🔄 not syncing for [a-z0-9<>-]+$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
   text.replace(/<!-- ki-coordination:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
@@ -103,8 +107,8 @@ const expectReportHeading = (lines: string[] | undefined): void => {
 
 /**
  * A banner, top to bottom under FOOTER-LAYOUT: the heading, a blank line, a counts line where live, a blank line, the
- * items, then each closing line after a blank line: the heading-for line where one stands, the listening line, the sync
- * line on a host sync thread, and the thread line last.
+ * items, then each closing line after a blank line: the heading-for line where one stands, the listening line on a
+ * thread with that capability, the sync line on a host sync thread, each on or off, and the thread line last.
  */
 const expectBanner = (lines: string[]): void => {
   expect(lines[0]).toMatch(BANNER_HEADING)
@@ -120,10 +124,14 @@ const expectBanner = (lines: string[]): void => {
   }
   expect(lines[end - 1]).toBe('')
   let at = 0
-  for (const line of [HEADING_FOR_LINE, LISTEN_LINE]) if (line.test(closing[at] ?? '')) at += 1
-  while (SYNC_LINE.test(closing[at] ?? '')) at += 1
+  if (HEADING_FOR_LINE.test(closing[at] ?? '')) at += 1
+  const listening = LISTEN_LINE.test(closing[at] ?? '') || LISTEN_OFF_LINE.test(closing[at] ?? '')
+  if (listening) at += 1
+  if (SYNC_LINE.test(closing[at] ?? '') || SYNC_OFF_LINE.test(closing[at] ?? '')) {
+    expect(listening).toBe(true)
+    at += 1
+  }
   expect(at).toBe(closing.length)
-  expect(closing.some((line) => line.startsWith('🔇'))).toBe(false)
   const items = lines.slice(finished ? 2 : 4, end - 1)
   if (!finished) {
     expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
@@ -194,10 +202,12 @@ test('With worker names the hold or handoff it is heading for in its own line be
   expect('(draining → ⏸️ On hold)').not.toMatch(HEADING_FOR_LINE)
   const draining = banners(standard).find((lines) => lines.some((line) => HEADING_FOR_LINE.test(line)))
   expect(draining?.[0]).toBe('### 🤖 With worker · since 23:41 BST')
-  expect(draining?.slice(-5)).toEqual([
+  expect(draining?.slice(-7)).toEqual([
     '- [with you] WORK-HOME · owner · since 22:58',
     '',
     '↪️ draining → ⏸️ On hold',
+    '',
+    '🔇 not listening',
     '',
     PROJECT_THREAD_LINE
   ])
@@ -213,9 +223,14 @@ test('With worker names the hold or handoff it is heading for in its own line be
 // whether or not the thread is listening to messages or not, whether it's draining ... And also if it's a sync-based
 // thread", laid out under FOOTER-LAYOUT the same afternoon: "the modes switched on should happen like that [as their
 // own lines] ... syncing should be a different line alongside listening". A drain and a hold stop listening. Under
-// FOOTER-NOT-LISTENING the same day: "no need to put in the footer `🔇 not listening`".
-test('every banner shows only the modes switched on, one per line: listening while armed, sync on a host sync thread', () => {
+// FOOTER-NOT-LISTENING the same day: "no need to put in the footer `🔇 not listening`". Refined under
+// FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: the footer shows a capability's line only when its `_enabled`
+// field is true, and the line shows its status, `👂 listening` or `🔇 not listening`, with a matching syncing pair.
+test('every banner shows a line for each capability the thread has, on or off, and none for one it lacks', () => {
   expect('👂 listening').toMatch(LISTEN_LINE)
+  expect('🔇 not listening').toMatch(LISTEN_OFF_LINE)
+  for (const line of ['🔇 not listening while draining', '👂 listening off', '🔇 draining, so not listening'])
+    expect(line).not.toMatch(LISTEN_OFF_LINE)
   for (const line of [
     '🔇 not listening while draining',
     '🔇 not listening',
@@ -229,6 +244,37 @@ test('every banner shows only the modes switched on, one per line: listening whi
   expect('🔄 syncing for <host>').toMatch(SYNC_LINE)
   for (const line of ['🔄 syncing', 'sync thread for sol', '🔄 not syncing for sol'])
     expect(line).not.toMatch(SYNC_LINE)
+  expect('🔄 not syncing for sol').toMatch(SYNC_OFF_LINE)
+  for (const line of ['🔄 syncing off', '🔄 not syncing', '⏸️ not syncing for sol'])
+    expect(line).not.toMatch(SYNC_OFF_LINE)
+  expectBanner([
+    '### 🤖 With worker · since 09:00 GMT',
+    '',
+    '🤖 1 running',
+    '',
+    '- [running] host pass · run/host-pass · since 08:58',
+    '',
+    '↪️ draining → ⏸️ On hold',
+    '',
+    '🔇 not listening',
+    '',
+    '🔄 not syncing for sol',
+    '',
+    '🧵 personal.reg.rig-sol'
+  ])
+  expect(() =>
+    expectBanner([
+      '### 🤖 With worker · since 09:00 GMT',
+      '',
+      '🤖 1 running',
+      '',
+      '- [running] host pass · run/host-pass · since 08:58',
+      '',
+      '🔄 syncing for sol',
+      '',
+      '🧵 personal.reg.rig-sol'
+    ])
+  ).toThrow()
   expectBanner([
     '### 🤖 With worker · since 09:00 GMT',
     '',
@@ -245,19 +291,26 @@ test('every banner shows only the modes switched on, one per line: listening whi
   const [withWorker, handoff, , hold, finished] = banners(standard)
   expect(withWorker?.at(-3)).toBe('👂 listening')
   expect(handoff?.at(-3)).toBe('👂 listening')
-  for (const quiet of [hold, finished]) expect(quiet?.at(-3)).toMatch(/^- \[/)
-  for (const lines of banners(standard)) expect(lines.some((line) => line.startsWith('🔇'))).toBe(false)
+  expect(hold?.at(-3)).toBe('🔇 not listening')
+  expect(finished?.at(-3)).toMatch(/^- \[/)
+  for (const lines of banners(standard))
+    for (const line of lines.filter((line) => line.startsWith('🔇'))) expect(line).toMatch(LISTEN_OFF_LINE)
   for (const lines of banners(standard))
     expect(lines.some((line) => / · (?:not the )?sync thread for /u.test(line))).toBe(false)
   expect(standard).toContain('**Mode lines.**')
   expect(standard).toContain('LISTEN-STATUS')
   expect(standard).toContain('FOOTER-NOT-LISTENING')
+  expect(standard).toContain('FOOTER-CAPABILITY-STATUS-2')
   expect(standard).toContain('- **Inbox watch:**')
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('`👂 listening`')
     expect(withoutSources(text)).not.toMatch(/`🔇 not listening(?: while draining)?` (?:from|where)/u)
     expect(text).not.toContain('always the listening line')
     expect(text).toContain('`🔄 syncing for <host>`')
+    expect(text).toContain('`🔇 not listening`')
+    expect(text).toContain('`🔄 not syncing for <host>`')
+    for (const field of ['listening_enabled', 'listening_status', 'syncing_enabled', 'syncing_status'])
+      expect(text).toContain(field)
     expect(text).not.toContain('draining, so not listening')
     expect(text).not.toContain('not the sync thread for <host>')
     expect(text).toContain('the inbox watcher')
@@ -278,8 +331,8 @@ test('a thread listens only when the owner asks it to, and a Rig host sync threa
     expect(text).toContain('"stop the wake" or "stop listening"')
     expect(text).toContain('Rig host sync thread')
   }
-  expect(standard).toContain('not where the owner has not asked it to listen')
-  expect(outputStyle).toContain('nor where Kris has not asked the thread to listen')
+  expect(standard).toContain('A thread without the capability shows no listening line at all.')
+  expect(outputStyle).toContain('no listening line at all where Kris has not asked the thread to listen')
   expect(standard).not.toContain('keep one inbox watcher armed whenever')
 })
 
