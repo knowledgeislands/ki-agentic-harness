@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
+      "revision": "8a9f740965a43b84b8ac929416bf1aa61c91751e"
     },
     "legend": {
       "mode": "auto",
@@ -70,13 +70,13 @@
       ]
     },
     {
-      "id": "ki-agent-coordination-paperclip",
+      "id": "ki-delegation-paperclip",
       "type": "database",
-      "label": "ki-agent-coordination-paperclip",
+      "label": "ki-delegation-paperclip",
       "sublabel": "agentic systems · opt-in",
       "sources": [
         {
-          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
+          "path": "skills/agentic-systems/ki-delegation-paperclip/SKILL.md"
         }
       ],
       "tag": "R17 · CM · F6",
@@ -311,7 +311,7 @@
       "kind": "region",
       "label": "Agentic systems · 1 skill",
       "wraps": [
-        "ki-agent-coordination-paperclip"
+        "ki-delegation-paperclip"
       ],
       "pad": 32
     },
@@ -376,8 +376,8 @@
   ],
   "connections": [
     {
-      "id": "ki-agent-coordination-paperclip--ki-git",
-      "from": "ki-agent-coordination-paperclip",
+      "id": "ki-delegation-paperclip--ki-git",
+      "from": "ki-delegation-paperclip",
       "to": "ki-git",
       "variant": "default"
     },

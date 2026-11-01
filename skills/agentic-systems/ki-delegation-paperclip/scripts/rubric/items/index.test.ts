@@ -5,7 +5,7 @@ import catalogue from './index.ts'
 const items = catalogue.families.flatMap((family) => family.items as readonly RubricItem<unknown>[])
 
 test('Paperclip coordination keeps relationship criteria judgment-led beside local-evidence checks', () => {
-  expect(catalogue.name).toBe('ki-agent-coordination-paperclip')
+  expect(catalogue.name).toBe('ki-delegation-paperclip')
   expect(items.map((item) => item.code)).toEqual([
     'COORD-1',
     'COORD-2',

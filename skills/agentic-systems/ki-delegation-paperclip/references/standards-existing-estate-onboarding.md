@@ -87,7 +87,7 @@ Classify each retained branch or workspace as integrated, awaiting review, await
 
 ## 2. Establish ownership boundaries
 
-Register `ki-agent-coordination-paperclip` in every admitted repository's `.ki.toml` with its required `organisation_code` before relying on that repository's company binding.
+Register `ki-delegation-paperclip` in every admitted repository's `.ki.toml` with its required `organisation_code` before relying on that repository's company binding.
 
 Use one Paperclip company for the intended KI group. Give every admitted repository exactly one active repository project, including repositories with no current delivery or with work on hold. Bind the project to the canonical repository identity and designated primary checkout. Reconcile an existing project rather than creating a replacement solely because its display name or issue code changed. Project colour and icon help navigation; they are not authority signals.
 

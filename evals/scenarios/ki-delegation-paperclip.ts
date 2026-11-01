@@ -3,7 +3,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-agent-coordination-paperclip',
+    skill: 'ki-delegation-paperclip',
     id: 'paperclip-agent-session-workspace-separation',
     prompt:
       'Rita and Sue are two durable workers in our Paperclip company. Both need to change tools-rig concurrently from the same accepted commit. Is each agent simply a harness thread grounded in the same working directory?',
@@ -17,7 +17,7 @@ export const scenarios: Scenario[] = [
       'KI contract: agent role, run/session, workspace, and worker are separate identities. Rita and Sue may share the logical island and admitted revision, but concurrent mutation uses separate worktrees or equivalent isolated writable checkouts.'
   },
   {
-    skill: 'ki-agent-coordination-paperclip',
+    skill: 'ki-delegation-paperclip',
     id: 'paperclip-task-roadmap-lifecycle',
     prompt:
       'A Paperclip task linked to KI-HARNESS-GOV-123 has finished, and it discovered another substantial change. Should Paperclip close the KI roadmap item and keep the follow-up only in a task comment?',
@@ -31,7 +31,7 @@ export const scenarios: Scenario[] = [
       'KI contract: Paperclip task completion is independent from KI acceptance. The governing KI work record follows its normal human review and evidence gate, while newly discovered substantive work is captured through the active KI work adapter, normally as unadopted Triage.'
   },
   {
-    skill: 'ki-agent-coordination-paperclip',
+    skill: 'ki-delegation-paperclip',
     id: 'paperclip-direct-agent-and-knowledge-authority',
     prompt:
       'Can I keep talking directly to an agent and have it coordinate through Paperclip? Where should the durable knowledge live, and which skill owns Paperclip API calls?',

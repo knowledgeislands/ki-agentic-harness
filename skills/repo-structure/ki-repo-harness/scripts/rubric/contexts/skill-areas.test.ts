@@ -145,7 +145,7 @@ describe('buildSkillArea', () => {
     const areas = [
       functional('agentic', 'Agentic', [
         {
-          skills: ['ki-subagents', 'ki-subagents-claude', 'ki-subagents-chatgpt', 'ki-agent-coordination-paperclip']
+          skills: ['ki-subagents', 'ki-subagents-claude', 'ki-subagents-chatgpt', 'ki-delegation-paperclip']
         }
       ]),
       functional('base', 'Base', [{ skills: ['ki-git', 'ki-repo-harness'] }])
@@ -155,7 +155,7 @@ describe('buildSkillArea', () => {
         skill('agentic-systems', 'ki-subagents'),
         skill('agentic-systems', 'ki-subagents-claude', 'ki-depends-on: [ki-subagents]\n'),
         skill('agentic-systems', 'ki-subagents-chatgpt', 'ki-depends-on: [ki-subagents]\n'),
-        skill('agentic-systems', 'ki-agent-coordination-paperclip', 'ki-depends-on: [ki-git]\n'),
+        skill('agentic-systems', 'ki-delegation-paperclip', 'ki-depends-on: [ki-git]\n'),
         skill('governance', 'ki-git'),
         skill('repo-structure', 'ki-repo-harness', 'ki-depends-on: [ki-subagents]\n')
       ]).nodes,
@@ -164,11 +164,11 @@ describe('buildSkillArea', () => {
     expect(grid(agentic)).toEqual([
       ['ki-repo-harness'],
       ['ki-subagents', 'ki-subagents-claude'],
-      ['ki-agent-coordination-paperclip', 'ki-subagents-chatgpt'],
+      ['ki-delegation-paperclip', 'ki-subagents-chatgpt'],
       ['ki-git']
     ])
     const x = new Map(agentic.components.map((c) => [c.id, c.pos[0]]))
-    for (const id of ['ki-repo-harness', 'ki-agent-coordination-paperclip', 'ki-git'])
+    for (const id of ['ki-repo-harness', 'ki-delegation-paperclip', 'ki-git'])
       expect(x.get(id)).toBe(x.get('ki-subagents'))
     expect(x.get('ki-subagents-chatgpt')).toBe(x.get('ki-subagents-claude'))
   })

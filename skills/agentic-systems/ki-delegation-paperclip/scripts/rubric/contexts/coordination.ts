@@ -27,7 +27,7 @@ export const createPaperclipCoordinationSession = ({
     if (key !== 'organisation_code')
       outcomes.push({
         status: 'VIOLATION',
-        message: `unrecognised ki-agent-coordination-paperclip configuration key ${key}`,
+        message: `unrecognised ki-delegation-paperclip configuration key ${key}`,
         subject: '.ki.toml'
       })
   if (typeof configuration.organisation_code !== 'string' || !/^[A-Z][A-Z0-9]*$/.test(configuration.organisation_code))
@@ -54,7 +54,7 @@ export const createPaperclipCoordinationSession = ({
         context: () => context,
         subject: 'KI–Paperclip coordination arrangement'
       },
-      { families: ['RUBRIC'], context: () => context, subject: 'ki-agent-coordination-paperclip' }
+      { families: ['RUBRIC'], context: () => context, subject: 'ki-delegation-paperclip' }
     ],
     proposal: () => ({ writes: [] })
   }

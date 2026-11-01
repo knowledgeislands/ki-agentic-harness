@@ -25,9 +25,9 @@ The `ki-skills` skill and its cited decisions own the dependency, optional-augme
 
 The cross-company operational programme and [recovery Project note](../ki-principal/Streams/Projects/paperclip-bootstrap-and-recovery.md) are owned by Knowledge Islands Principal. This harness retains reusable coordination capabilities and its own delivery policy.
 
-This repository currently delivers to the principal's laptop, in its designated primary checkout on local `main`. The `ki-agent-coordination-paperclip` skill owns the shared local-delivery semantics, worktree naming and prerequisite for a reviewed remote-delivery policy; this file supplies only the repository's operating choice and authority grant.
+This repository currently delivers to the principal's laptop, in its designated primary checkout on local `main`. The `ki-delegation-paperclip` skill owns the shared local-delivery semantics, worktree naming and prerequisite for a reviewed remote-delivery policy; this file supplies only the repository's operating choice and authority grant.
 
-Use `ki-agent-coordination-paperclip` for task-to-repository delivery and recovery. This repository selects `worktrees-with-local-integration`: Wright implements in isolation, Steward reviews the exact commit, and Convenor owns local integration and the visible result.
+Use `ki-delegation-paperclip` for task-to-repository delivery and recovery. This repository selects `worktrees-with-local-integration`: Wright implements in isolation, Steward reviews the exact commit, and Convenor owns local integration and the visible result.
 
 The Knowledge Islands Convenor (`4b312799-a51c-43c4-876e-161b1f6ce4c2`, company `558dd49e-7615-409f-b7b2-7f19e22171d9`) may merge approved, verified harness deliveries into this repository's local `main`. Eligible work is an approved Ready item or explicitly scoped direct user instruction. The grant covers local non-force integration only, using a fast-forward or `--no-ff` merge; it grants no push, release, deployment, KI acceptance or deletion of retained work.
 

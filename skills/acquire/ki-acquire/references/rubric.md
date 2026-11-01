@@ -54,7 +54,7 @@ Policy judgments require source and destination evidence; mechanical success doe
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **ACQUIRE-6 [J] — curation is incremental and cards stand alone** — Each curated item leaves its capture in the commit that curates it, each dropped item in its own considered-and-dropped commit, and an empty capture is deleted. Cards state their origin in plain words and never link to a capture; future ideas become future concepts, not roadmap work; a holding port dispatches nothing. (standards-acquisition.md#staging-and-curation, standards-acquisition.md#dispatch-and-authority)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does every curation commit remove exactly the items it curated or dropped, are empty captures gone, does each card give a plain-words origin with no capture link, and has nothing left a port declared a holding area?
+  - _Review prompt:_ Does every curation commit remove exactly the items it curated or dropped, are empty captures gone, does each card give a plain-words origin with no capture link, and has no capture been dispatched from a port declared a holding area?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

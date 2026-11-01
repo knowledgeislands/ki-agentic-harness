@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 64 skills: 53 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 65 skills: 54 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -67,7 +67,17 @@ Capture a submitted link or scan bounded public sources, then triage current sig
 
 #### `ki-agent-coordination-paperclip`
 
-Govern how Paperclip coordinates agents around a Knowledge Island group or archipelago while repositories remain knowledge and work authority. Use for Company Operational Review, bootstrap/rebootstrap, or designing and auditing Paperclip projects, agents, tasks, direct sessions, or execution workspaces for KI; not for Paperclip API mechanics.
+Deprecated alias of `ki-delegation-paperclip`, kept only so a repository still declaring `[skills.ki-agent-coordination-paperclip]` resolves during the rename's tolerance window. Its audit warns and names the replacement declaration; it owns no standard or procedure. Use `ki-delegation-paperclip` for Paperclip delegation.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | help | conform | educate | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-delegation-paperclip`
+
+Govern Paperclip as the KI delegation adapter: company and repository boundaries, Company Operational Review (bootstrap/rebootstrap) readiness, agent memory and knowledge return, and each repository's delivery and integration policy, while repositories remain knowledge and work authority. Use for designing or auditing Paperclip companies, projects, agents, tasks, direct sessions or execution workspaces for KI; not for Paperclip API mechanics or the portable background-run contract, which `ki-delegation` owns.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
