@@ -37,7 +37,7 @@ A receiver declares `folder_ids` and its `unfoldered` and `residual` policies. E
 
 ## Capture packages
 
-With `capture_root` and `folder_territories`, each meeting has one package at `<capture_root>/<territory>/granola/<date>--<title>--<uuid>/meeting.md`, with screenshots and their checksum manifest beside it. A meeting whose folders map to several territories, or to an unmapped folder, goes under `<capture_root>/_review/granola/` for owner routing. Without `capture_root`, documents land beneath `+/_ACQUIRE/granola/`. Front matter carries identity, provenance, every folder membership, territory routes, hashes and omissions; the body has the title, attendees, normalised notes and a readable transcript, and stays lint-clean.
+With `capture_root` and `folder_territories`, each meeting has one package at `<capture_root>/<territory>/granola/<date>--<title>--<uuid>/meeting.md`, with screenshots and their checksum manifest beside it. A meeting whose folders map to several territories, or to an unmapped folder, goes under `<capture_root>/_held/granola/` for owner routing. Without `capture_root`, documents land beneath `+/_ACQUIRE/granola/`. Front matter carries identity, provenance, every folder membership, territory routes, hashes and omissions; the body has the title, attendees, normalised notes and a readable transcript, and stays lint-clean.
 
 ## Repeat runs and amendments
 
