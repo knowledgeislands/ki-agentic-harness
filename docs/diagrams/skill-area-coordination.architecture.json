@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
+      "revision": "4fe2c363bc9fc2b5ddbfa8ea4093ea0aae7b3fc0"
     },
     "legend": {
       "mode": "auto",
@@ -90,6 +90,26 @@
       ]
     },
     {
+      "id": "ki-delegation-orca",
+      "type": "frontend",
+      "label": "ki-delegation-orca",
+      "sublabel": "agentic systems · command",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-delegation-orca/SKILL.md"
+        }
+      ],
+      "tag": "R– · C0 · F2",
+      "pos": [
+        876,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-coordination",
       "type": "database",
       "label": "ki-coordination",
@@ -102,7 +122,7 @@
       "tag": "R13 · CL · F3",
       "pos": [
         300,
-        392
+        268
       ],
       "size": [
         208,
@@ -202,7 +222,7 @@
       "tag": "R19 · CL · F3",
       "pos": [
         300,
-        268
+        392
       ],
       "size": [
         208,
@@ -238,6 +258,14 @@
         "ki-batch",
         "ki-implement",
         "ki-plan"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Agentic systems · 1 skill",
+      "wraps": [
+        "ki-delegation-orca"
       ],
       "pad": 32
     },
@@ -303,6 +331,18 @@
       "variant": "default"
     },
     {
+      "id": "ki-delegation-orca--ki-coordination",
+      "from": "ki-delegation-orca",
+      "to": "ki-coordination",
+      "variant": "default"
+    },
+    {
+      "id": "ki-delegation-orca--ki-delegation",
+      "from": "ki-delegation-orca",
+      "to": "ki-delegation",
+      "variant": "default"
+    },
+    {
       "id": "ki-implement--ki-delegation",
       "from": "ki-implement",
       "to": "ki-delegation",
@@ -348,7 +388,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "6 skills, 1 outside prerequisite, 3 outside dependents, 3 composition and 5 optional edges, read from SKILL.md frontmatter.",
+        "6 skills, 1 outside prerequisite, 4 outside dependents, 5 composition and 5 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8a9f740965a43b84b8ac929416bf1aa61c91751e"
+      "revision": "4fe2c363bc9fc2b5ddbfa8ea4093ea0aae7b3fc0"
     },
     "legend": {
       "mode": "auto",
@@ -62,7 +62,27 @@
       "tag": "R2 · CM · F2",
       "pos": [
         544,
-        268
+        392
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-delegation-orca",
+      "type": "frontend",
+      "label": "ki-delegation-orca",
+      "sublabel": "agentic systems · command",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-delegation-orca/SKILL.md"
+        }
+      ],
+      "tag": "R– · C0 · F2",
+      "pos": [
+        288,
+        392
       ],
       "size": [
         208,
@@ -122,7 +142,7 @@
       "tag": "R5 · CM · F3",
       "pos": [
         288,
-        392
+        268
       ],
       "size": [
         208,
@@ -141,7 +161,7 @@
       ],
       "tag": "R6 · CM · F4",
       "pos": [
-        288,
+        544,
         268
       ],
       "size": [
@@ -162,6 +182,46 @@
       "tag": "R15 · CM · F3",
       "pos": [
         32,
+        596
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-coordination",
+      "type": "database",
+      "label": "ki-coordination",
+      "sublabel": "change management · opt-in",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-coordination/SKILL.md"
+        }
+      ],
+      "tag": "R13 · CL · F3",
+      "pos": [
+        352,
+        596
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-delegation",
+      "type": "database",
+      "label": "ki-delegation",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/SKILL.md"
+        }
+      ],
+      "tag": "R6 · CM · F4",
+      "pos": [
+        608,
         596
       ],
       "size": [
@@ -189,11 +249,21 @@
     },
     {
       "kind": "region",
-      "label": "Agentic systems · 5 skills",
+      "label": "Coordination · Delegation and programme",
+      "wraps": [
+        "ki-coordination",
+        "ki-delegation"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Agentic systems · 6 skills",
       "wraps": [
         "ki-subagents",
         "ki-subagents-claude",
         "ki-subagents-chatgpt",
+        "ki-delegation-orca",
         "ki-delegation-paperclip",
         "ki-agent-coordination-paperclip"
       ],
@@ -201,6 +271,18 @@
     }
   ],
   "connections": [
+    {
+      "id": "ki-delegation-orca--ki-coordination",
+      "from": "ki-delegation-orca",
+      "to": "ki-coordination",
+      "variant": "default"
+    },
+    {
+      "id": "ki-delegation-orca--ki-delegation",
+      "from": "ki-delegation-orca",
+      "to": "ki-delegation",
+      "variant": "default"
+    },
     {
       "id": "ki-delegation-paperclip--ki-git",
       "from": "ki-delegation-paperclip",
@@ -241,7 +323,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "5 skills, 1 outside prerequisite, 1 outside dependent, 4 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "6 skills, 3 outside prerequisites, 1 outside dependent, 6 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

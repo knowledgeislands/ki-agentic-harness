@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8a9f740965a43b84b8ac929416bf1aa61c91751e"
+      "revision": "4fe2c363bc9fc2b5ddbfa8ea4093ea0aae7b3fc0"
     },
     "legend": {
       "mode": "auto",
@@ -980,6 +980,25 @@
       ]
     },
     {
+      "id": "ki-delegation-orca",
+      "type": "frontend",
+      "label": "ki-delegation-orca",
+      "sublabel": "agentic · command",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-delegation-orca/SKILL.md"
+        }
+      ],
+      "pos": [
+        448,
+        1220
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
       "id": "ki-binding",
       "type": "database",
       "label": "ki-binding",
@@ -1505,13 +1524,14 @@
     },
     {
       "kind": "region",
-      "label": "Agentic Systems · 5 skills",
+      "label": "Agentic Systems · 6 skills",
       "wraps": [
         "ki-subagents",
         "ki-subagents-chatgpt",
         "ki-subagents-claude",
         "ki-agent-coordination-paperclip",
-        "ki-delegation-paperclip"
+        "ki-delegation-paperclip",
+        "ki-delegation-orca"
       ],
       "pad": 24
     },
@@ -1616,7 +1636,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "65 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 33 opt-in, 11 commands.",
+        "66 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 33 opt-in, 12 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

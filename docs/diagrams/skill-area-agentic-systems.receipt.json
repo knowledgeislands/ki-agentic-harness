@@ -4,13 +4,13 @@
   "type": "architecture",
   "source": {
     "file": "skill-area-agentic-systems.architecture.json",
-    "sha256": "0b11f114bd8531e8487e031ec8bfc00d7bc5e36768fb0c9a67d20d176afb9da3",
-    "bytes": 6123
+    "sha256": "12bb8eba09220342e468425951c4c2a83b1998ee614bfa03f409898ebb08a773",
+    "bytes": 7841
   },
   "html": {
     "file": "skill-area-agentic-systems.html",
-    "sha256": "dcdcffaa265ed772ed6a161e807f062e206995f0e7c65b0f9c86700d7a8a7864",
-    "bytes": 821220
+    "sha256": "0f9d1742eb18f26a20be5fd02752691a456382efd3f991646c950c8adcab7e8e",
+    "bytes": 829317
   },
   "renderer": {
     "name": "archify",
