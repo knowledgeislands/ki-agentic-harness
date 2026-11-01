@@ -21,6 +21,7 @@ const TRADE_RECORD = /^TRD-[0-9a-f]{8}\.md$/
 const WORK_PACKAGE_FILES: ReadonlySet<string> = new Set([
   'work.md',
   'state.md',
+  'discussions.md',
   'queries.md',
   'messages.md',
   'decisions.md'

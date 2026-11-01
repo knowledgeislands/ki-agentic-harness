@@ -398,6 +398,7 @@ test('adapter and protocol records delegate note-type metadata to their owning s
     '+/_WORK/ki.ways-of-working/work.md',
     '+/_WORK/ki.ways-of-working/state.md',
     '+/_WORK/ki.ways-of-working/queries.md',
+    '+/_WORK/ki.other/discussions.md',
     '+/_WORK/ki.ways-of-working/messages.md',
     '+/_WORK/ki.ways-of-working/decisions.md',
     '+/_WORK_REVIEW/ki.unsure/work.md',

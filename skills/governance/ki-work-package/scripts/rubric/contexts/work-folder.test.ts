@@ -49,6 +49,8 @@ describe('work folder closed list', () => {
     write(root, join(WORK, 'design', 'model', 'model.architecture.json'), '{}\n')
     write(root, join(WORK, 'design', 'model', 'model.svg'), '<svg/>\n')
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+    write(root, join(WORK, 'discussions.md'), '# discussions.md\n')
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
   })
 
   test('reports/ holds only run reports, and a top-level report warns during the tolerance window', () => {
@@ -115,6 +117,7 @@ describe('work folder tidy', () => {
   test('query tags come from Queries headings, linked or not, never fenced', () => {
     expect(reportQueryTags(queries('PMO-CI', '[THREADS-TRIM](/x.md)'))).toEqual(['PMO-CI', 'THREADS-TRIM'])
     expect(reportQueryTags('# Run\n\n## Done\n\n### NOT-A-QUERY - x\n')).toEqual([])
+    expect(reportQueryTags(queries('PMO-CI').replace('## Queries', '## Discussion'))).toEqual(['PMO-CI'])
   })
 
   test('a report whose queries the log answers, or which has none, is listed', () => {
@@ -178,6 +181,11 @@ describe('work folder tidy', () => {
     expect(statuses(folderOutcomes(root).queries)).toEqual(['PASS'])
     write(root, join(WORK, 'queries.md'), open(9))
     expect(statuses(folderOutcomes(root).queries)).toEqual(['VIOLATION'])
+    write(root, join(WORK, 'discussions.md'), open(8))
+    expect(openQueryCount(folder)).toBe(8)
+    expect(statuses(folderOutcomes(root).queries)).toEqual(['PASS'])
+    write(root, join(WORK, 'discussions.md'), open(9))
+    expect(folderOutcomes(root).queries[0]?.message).toContain('`discussions.md`')
   })
 })
 

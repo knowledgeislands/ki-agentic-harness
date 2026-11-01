@@ -47,7 +47,12 @@ const SLUG = new RegExp(`^${KEBAB}$`)
 const HOLDER = new RegExp(`^(?:owner|agent|(?:run|person|repo)/[A-Za-z0-9_.-]+|work/${KEBAB}(?:\\.${KEBAB})*)$`)
 const WORK_HEADINGS = ['Next steps', 'Messages', 'Parked'] as const
 const STATE_FILE = 'state.md'
-const PACKAGE_FILES = ['queries.md', 'messages.md', 'decisions.md'] as const
+const PACKAGE_FILES = ['messages.md', 'decisions.md'] as const
+/**
+ * The discussion file under DISCUSSIONS (Kris, 1 November 2026): `discussions.md`, or `queries.md` for the tolerance
+ * window, read in that order. A package holding both fails.
+ */
+const DISCUSSION_FILES = ['discussions.md', 'queries.md'] as const
 const DEFINITION_REQUIRED = ['id', 'level', 'title', 'description', 'worker', 'supervisor'] as const
 const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
   ...DEFINITION_REQUIRED,
@@ -71,6 +76,8 @@ const STATE_FIELDS: ReadonlySet<string> = new Set([
   'method_read'
 ])
 const QUERY_HEADINGS = ['Open', 'Parked'] as const
+/** The discussion file's H1 word, by file name, each accepted for the tolerance window. */
+const DISCUSSION_TITLES: Readonly<Record<string, string>> = { 'discussions.md': 'discussions', 'queries.md': 'queries' }
 const QUERY_HEADING = /^[A-Z0-9][A-Z0-9-]* - \S/
 const QUERY_PARTS = ['**Context:**', '**Query:**', '**Options:**'] as const
 const MESSAGE_LINE =
@@ -460,7 +467,15 @@ const inspectWork = (directory: string, root: string): { works: WorkFolder[]; vi
       continue
     }
     const files: Partial<Record<string, ParsedRecord>> = {}
-    for (const name of [STATE_FILE, ...PACKAGE_FILES]) {
+    const discussionFiles = DISCUSSION_FILES.filter((name) => existsSync(join(folder, name)))
+    if (discussionFiles.length > 1)
+      violations.push({
+        status: 'VIOLATION',
+        message: 'a work package holds one discussion file, discussions.md or queries.md, never both',
+        subject: relative(root, folder)
+      })
+    const discussionFile = discussionFiles[0] ?? 'queries.md'
+    for (const name of [STATE_FILE, discussionFile, ...PACKAGE_FILES]) {
       const file = join(folder, name)
       if (physicalFile(file)) files[name] = { ...parseCheckpoint(file, root), stem: entry.name }
       else
@@ -475,7 +490,7 @@ const inspectWork = (directory: string, root: string): { works: WorkFolder[]; vi
       package: true,
       work,
       ...(files[STATE_FILE] ? { state: files[STATE_FILE] } : {}),
-      ...(files['queries.md'] ? { queries: files['queries.md'] } : {}),
+      ...(files[discussionFile] ? { queries: files[discussionFile] } : {}),
       ...(files['messages.md'] ? { messages: files['messages.md'] } : {}),
       ...(physicalFile(join(folder, 'decisions.md'))
         ? { decisions: readFileSync(join(folder, 'decisions.md'), 'utf8') }
@@ -739,13 +754,18 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
   }
 }
 
-/** The queries file: its H1, Open and Parked, each query a tagged block with Context, Query and Options. */
+/**
+ * The discussion file, `discussions.md` or `queries.md`: its H1 naming the file, Open and Parked, each point a tagged
+ * block with Context, Query and Options.
+ */
 const queryEvidence = (queries: ParsedRecord, evidence: Evidence): void => {
   const fail = (message: string): void => {
     evidence.schema.push({ status: 'VIOLATION', message, subject: queries.path })
   }
-  if (!sameOutline(queries.body, `${queries.stem} queries`, QUERY_HEADINGS))
-    fail(`queries.md headings must be the H1 "# ${queries.stem} queries", then Open and Parked`)
+  const file = basename(queries.path)
+  const title = `${queries.stem} ${DISCUSSION_TITLES[file] ?? 'queries'}`
+  if (!sameOutline(queries.body, title, QUERY_HEADINGS))
+    fail(`${file} headings must be the H1 "# ${title}", then Open and Parked`)
   const sections = h2Sections(queries.body)
   for (const heading of QUERY_HEADINGS)
     if ((sections.get(heading)?.trim().length ?? 0) === 0) fail(`${heading} must say something, if only None`)

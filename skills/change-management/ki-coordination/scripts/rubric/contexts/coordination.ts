@@ -630,9 +630,9 @@ const linkOutcomes = (root: string, reports: readonly string[]): AuditOutcome[] 
   return outcomes
 }
 
-/** The prose of a report's `## Queries` section, fenced blocks blanked, or empty when it has none. */
+/** The prose of a report's `## Discussion` or `## Queries` section, fenced blocks blanked, or empty when it has none. */
 const querySection = (text: string): string =>
-  /^## Queries[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(text.replace(FENCED_BLOCK, ' '))?.[1] ?? ''
+  /^## (?:Discussion|Queries)[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(text.replace(FENCED_BLOCK, ' '))?.[1] ?? ''
 
 /** The first UTC day on which a report's recommended option must carry a confidence, set by KI-HARNESS-GOV-207. */
 export const CONFIDENCE_SINCE = '2026-10-18'

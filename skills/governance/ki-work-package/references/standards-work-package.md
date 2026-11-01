@@ -308,6 +308,8 @@ a) (recommended, confidence medium - ...) ...
 
 Each query is a `### <TAG> - <title>` block carrying **Context**, **Query** and **Options** exactly as the owner report renders them, with one line beneath the heading giving `since <date>` and its source report, if any. The owner report's `## Queries` section is rendered from `## Open`, so the two cannot diverge. Parking moves the whole block from `## Open` to `## Parked` with its reason and release; putting back moves it again. A parked tangent, an owner side topic not yet shaped as a query, is a one-line entry under `## Parked`. When the owner answers, the read-back goes into `decisions.md` and the block is deleted in the same commit, Git keeping it. Each section says something, if only `None`.
 
+Readers accept both names through the DISCUSSIONS tolerance window, Kris having decided DISCUSSIONS - b on 1 November 2026: "Files too". A package's discussion file is `discussions.md` with the H1 `# <id> discussions`, or `queries.md` with the H1 `# <id> queries`, each keeping `## Open` and `## Parked`; readers look for `discussions.md` first, and a package holding both fails. A report's open points sit under `## Discussion` or `## Queries`. Writers keep producing `queries.md` and `## Queries` until the writer change, and the window closes once the rename sweep has reached every package.
+
 ### Messages file
 
 `messages.md` holds the H1 `# <id> messages` and then the queue's lines in [the Messages line shape](#messages-lines), important lines first, or `None`. Nothing else belongs in it.

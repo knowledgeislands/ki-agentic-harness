@@ -103,7 +103,8 @@ const FOLDER_5: RubricItem<FolderOutcomes> = {
 const FOLDER_6: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-6',
   title: 'no work package holds more than eight open queries',
-  description: "More than eight queries under `queries.md`'s `## Open` is a coordination smell and warns.",
+  description:
+    "More than eight queries under the discussion file's `## Open`, in `discussions.md` or `queries.md`, is a coordination smell and warns.",
   sources: [`${SOURCE}#queries-file`],
   mechanical: {
     level: 'WARN',

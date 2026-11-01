@@ -667,6 +667,24 @@ test('a package missing one of its five files fails the structure', () => {
   ])
 })
 
+test('under DISCUSSIONS a package may keep discussions.md or queries.md, its H1 naming the file, never both', () => {
+  const repository = workFixture()
+  const { 'queries.md': queries = '', ...files } = packageFiles()
+  const discussions = queries.replace('# ki.ways-of-working queries', '# ki.ways-of-working discussions')
+  writePackage(repository, 'ki.ways-of-working', { ...files, 'discussions.md': discussions })
+  expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
+
+  writePackage(repository, 'ki.ways-of-working', { 'discussions.md': queries })
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('discussions.md headings must be the H1') })
+  )
+
+  writePackage(repository, 'ki.ways-of-working', { 'discussions.md': discussions, 'queries.md': queries })
+  expect(run(STRUCTURE, 'STRUCTURE-1', context(repository))).toEqual([
+    expect.objectContaining({ message: expect.stringContaining('never both') })
+  ])
+})
+
 test('an empty message queue may say None with or without a full stop', () => {
   for (const messages of ['None', 'None.']) {
     const repository = workFixture()

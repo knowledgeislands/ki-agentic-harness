@@ -439,6 +439,7 @@ describe('recommendation confidence', () => {
       '**Options:** a) (recommended, confidence) push it'
     ])
     expect(reportConfidenceFindings('# Report\n\n## Done\n\na) (recommended) outside Queries\n')).toEqual([])
+    expect(reportConfidenceFindings(text.replace('## Queries', '## Discussion'))).toHaveLength(2)
   })
 
   test('a report issued on or after 18 October with a bare recommendation is a violation naming it', () => {

@@ -15,11 +15,18 @@ const REVIEW_DIRECTORY = join('+', '_WORK_REVIEW')
 const REVIEW_INDEX = 'README.md'
 const REPORT_SUFFIX = '.report.md'
 const DECISIONS_LOG = 'decisions.md'
-const QUERIES_FILE = 'queries.md'
+/** The discussion file, `discussions.md`, or `queries.md` for the DISCUSSIONS tolerance window, read in that order. */
+const DISCUSSION_FILES = ['discussions.md', 'queries.md'] as const
 const STATE_FILE = 'state.md'
 const WORK_FILE = 'work.md'
 /** The five package files; a single-file work folder holds only `work.md` of them. */
-const PACKAGE_FILES: ReadonlySet<string> = new Set([WORK_FILE, STATE_FILE, QUERIES_FILE, 'messages.md', DECISIONS_LOG])
+const PACKAGE_FILES: ReadonlySet<string> = new Set([
+  WORK_FILE,
+  STATE_FILE,
+  ...DISCUSSION_FILES,
+  'messages.md',
+  DECISIONS_LOG
+])
 /** Findings, briefs and feedback packages are Markdown files directly under their folder. */
 const MARKDOWN_FOLDERS: ReadonlySet<string> = new Set(['findings', 'briefs', 'feedback'])
 const DESIGN_FOLDER = 'design'
@@ -27,7 +34,7 @@ const DESIGN_FOLDER = 'design'
 const REPORTS_FOLDER = 'reports'
 /** Design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
 const DESIGN_EXTENSIONS: ReadonlySet<string> = new Set(['.md', '.json', '.mmd', '.svg', '.html'])
-/** More open queries than this in `queries.md` is a coordination smell, warned on rather than failed. */
+/** More open queries than this in the discussion file is a coordination smell, warned on rather than failed. */
 export const OPEN_QUERY_LIMIT = 8
 /** A query heading, `### <TAG> - <title>` or `### [<TAG>](<record>) - <title>`, capturing the Needs tag. */
 const NEEDS_TAG = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*'
@@ -124,13 +131,13 @@ export const threadFolderStray = (folder: string): readonly string[] =>
     .filter((entry) => !(report(entry) || (plainFile(entry) && entry.name === DECISIONS_LOG)))
     .map((entry) => (entry.isDirectory() ? `${entry.name}/` : entry.name))
 
-/** The prose of a report's `## Queries` section, fenced blocks blanked, or empty when it has none. */
+/** The prose of a report's `## Discussion` or `## Queries` section, fenced blocks blanked, or empty when it has none. */
 const querySection = (text: string): string =>
-  /^## Queries[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(text.replace(FENCED_BLOCK, ' '))?.[1] ?? ''
+  /^## (?:Discussion|Queries)[ \t]*$([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(text.replace(FENCED_BLOCK, ' '))?.[1] ?? ''
 
 /**
- * The Needs tags of a report's open queries: the `###` headings under its `## Queries` section, each
- * `<TAG> - <title>`, the tag optionally linked to its record. A report with no Queries section names none.
+ * The Needs tags of a report's open queries: the `###` headings under its `## Discussion` or `## Queries` section, each
+ * `<TAG> - <title>`, the tag optionally linked to its record. A report with neither section names none.
  */
 export const reportQueryTags = (text: string): readonly string[] =>
   Array.from(querySection(text).matchAll(QUERY_HEADING), (match) => match[1] ?? match[2] ?? '').filter(Boolean)
@@ -159,10 +166,15 @@ export const receivedBriefs = (folder: string): readonly string[] => {
     .map((entry) => `briefs/${entry.name}`)
 }
 
-/** The open queries in a work package's `queries.md`: the `###` query headings under its `## Open` section. */
+/** A work package's discussion file, `discussions.md` before `queries.md`, or undefined when it has neither. */
+export const discussionFile = (folder: string): string | undefined =>
+  DISCUSSION_FILES.find((name) => existsSync(join(folder, name)))
+
+/** The open queries in a work package's discussion file: the `###` query headings under its `## Open` section. */
 export const openQueryCount = (folder: string): number => {
-  const path = join(folder, QUERIES_FILE)
-  if (!existsSync(path)) return 0
+  const file = discussionFile(folder)
+  if (!file) return 0
+  const path = join(folder, file)
   const open = /^## Open[ \t]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? ''
   return Array.from(open.matchAll(QUERY_HEADING)).length
 }
@@ -306,11 +318,12 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
         subject: subject(folder)
       })
     const open = openQueryCount(folder)
+    const file = discussionFile(folder) ?? DISCUSSION_FILES[1]
     if (open > OPEN_QUERY_LIMIT)
       queries.push({
         status: 'VIOLATION',
-        message: `${open} open queries in \`${QUERIES_FILE}\`, more than ${OPEN_QUERY_LIMIT}: a coordination smell; answer, park or merge them`,
-        subject: subject(join(folder, QUERIES_FILE))
+        message: `${open} open queries in \`${file}\`, more than ${OPEN_QUERY_LIMIT}: a coordination smell; answer, park or merge them`,
+        subject: subject(join(folder, file))
       })
   }
   for (const folder of threads ?? []) {
