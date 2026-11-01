@@ -43,7 +43,7 @@ Seven rules govern the Knowledge Islands-Paperclip boundary. Each has one normat
 Every repository using this skill declares its owning Paperclip company code in its own `.ki.toml`:
 
 ```toml
-[skills.ki-agent-coordination-paperclip]
+[skills.ki-delegation-paperclip]
 organisation_code = "KIS"
 ```
 

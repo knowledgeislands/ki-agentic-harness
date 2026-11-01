@@ -20,6 +20,6 @@ test('organisation code is mandatory and accepts two-letter codes', () => {
 
 test('unknown organisation configuration is rejected', () => {
   expect(outcomes({ organisation_code: 'KIS', agora: 'ki-all' })?.map((item) => item.message)).toEqual([
-    'unrecognised ki-agent-coordination-paperclip configuration key agora'
+    'unrecognised ki-delegation-paperclip configuration key agora'
   ])
 })

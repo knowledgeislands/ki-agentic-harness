@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
+      "revision": "a2ea2b0523cc2206796d0343c304f4b15e8ff217"
     },
     "legend": {
       "mode": "auto",
@@ -57,6 +57,26 @@
       "sources": [
         {
           "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
+        }
+      ],
+      "tag": "R2 · CM · F2",
+      "pos": [
+        544,
+        268
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-delegation-paperclip",
+      "type": "database",
+      "label": "ki-delegation-paperclip",
+      "sublabel": "agentic systems · opt-in",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-delegation-paperclip/SKILL.md"
         }
       ],
       "tag": "R17 · CM · F6",
@@ -169,11 +189,12 @@
     },
     {
       "kind": "region",
-      "label": "Agentic systems · 4 skills",
+      "label": "Agentic systems · 5 skills",
       "wraps": [
         "ki-subagents",
         "ki-subagents-claude",
         "ki-subagents-chatgpt",
+        "ki-delegation-paperclip",
         "ki-agent-coordination-paperclip"
       ],
       "pad": 32
@@ -181,8 +202,8 @@
   ],
   "connections": [
     {
-      "id": "ki-agent-coordination-paperclip--ki-git",
-      "from": "ki-agent-coordination-paperclip",
+      "id": "ki-delegation-paperclip--ki-git",
+      "from": "ki-delegation-paperclip",
       "to": "ki-git",
       "variant": "default"
     },
@@ -220,7 +241,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "4 skills, 1 outside prerequisite, 1 outside dependent, 4 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "5 skills, 1 outside prerequisite, 1 outside dependent, 4 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

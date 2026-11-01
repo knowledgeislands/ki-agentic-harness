@@ -37,7 +37,7 @@ A **background agent** is a worker launched detached through `ki agent` under th
 
 It complements the [delegation-packet standard](standards-delegation-packets.md): a packet makes an approved high-risk handoff durable inside a work record, while a background run governs how any delegated agent is launched, reports, coordinates and is watched. A high-risk run carries both.
 
-Process skills still select, authorise, plan and accept work. Paperclip-coordinated delegation follows `ki-agent-coordination-paperclip`; subagent role definitions follow `ki-subagents`.
+Process skills still select, authorise, plan and accept work. Paperclip-coordinated delegation follows `ki-delegation-paperclip`; subagent role definitions follow `ki-subagents`.
 
 ## Detachment
 
@@ -159,7 +159,7 @@ A site, repository or note marked confidential is never made public without Kris
 
 In Kris's managed environment, when a task separately authorises a 1Password read, read only through the managed cached reader, `~/bin/chezmoi/op_cache "op://<vault>/<item>/<field>"`, with `OP_CACHE_SERVICE_ACCOUNT_ONLY=1`, and use `~/bin/chezmoi/op_cache --tag <tag> [--vault <vault>]` for discovery. Never call `op` directly or repeatedly: the reader caches each item for a day, so a run costs at most one read per item per day. Leave `chezmoi_op`, which manages the cache, to Kris. Kris set this on 30 October 2026 under OP-CACHE: "agents should be using cached_op". If the helper cannot read without a desktop prompt, stop and report; do not fall back to interactive access. Keep credential values out of output and tracked files. This condition grants no credential authority. When a task separately authorises a Cloudflare credential read, use only `~/bin/cf_token`. No territory's notes record credential item or token ids. Keep credential values out of output and tracked files; this rule grants no Cloudflare operation or credential authority. Kris adopted this Cloudflare half of RUN-SECRETS on 25 October 2026.
 
-Authority limits stay consistent with `ki-agent-coordination-paperclip`, which owns Paperclip delivery and integration grants.
+Authority limits stay consistent with `ki-delegation-paperclip`, which owns Paperclip delivery and integration grants.
 
 ### Grants
 
