@@ -1,6 +1,6 @@
 # Work-package standard
 
-A work package is one piece of work above a work item, packaged as a skill is: a definition read first and changed rarely, and detail files read only when a reader needs them. It lives in its work folder, `+/_WORK/<id>/`, which holds its five files - the work file `work.md`, the state file `state.md`, `queries.md`, `messages.md` and the decisions log `decisions.md` - beside its runs' reports in `reports/`, their briefs and its design notes. Together they let a fresh agent, or State of play routing new work, understand the work and pick it up without relying on a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the package keeps no moves list and no history.
+A work package is one piece of work above a work item, packaged as a skill is: a definition read first and changed rarely, and detail files read only when a reader needs them. It lives in its work folder, `+/_WORK/<id>/`, which holds its five files - the work file `work.md`, the state file `state.md`, the discussion file `discussions.md`, `messages.md` and the decisions log `decisions.md` - beside one folder per focus area holding its runs' briefs and reports and its design notes. Together they let a fresh agent, or State of play routing new work, understand the work and pick it up without relying on a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the package keeps no moves list and no history.
 
 The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md). The skill was `ki-checkpoint` until Kris answered WORK-FOLDER-NAME on 18 October 2026, read back as `ki-work-folder`, and became `ki-work-package` when Kris answered on 19 October 2026, "I want `ki-work-package` please, where it lives is a folder", read back as PACKAGE-NAME: "the idea and its skill are the work package, `ki-work-package` (renamed from `ki-work-folder`); the place it lives is still called the work folder, `+/_WORK/<id>/`". Under STATE-FILE the same day a package has five files, and under FILES-AT-CREATION all five exist from creation, "so others can queue work into `messages.md` at once". The session-level checkpoint remains the conversational word for writing the package's state before a pause.
 
@@ -18,6 +18,7 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 - [Exact package form](#exact-package-form)
   - [Work file](#work-file)
   - [State file](#state-file)
+  - [Focus areas](#focus-areas)
   - [Queries file](#queries-file)
   - [Messages file](#messages-file)
   - [Decisions log](#decisions-log)
@@ -67,21 +68,24 @@ A work folder holds these kinds and nothing else:
 | --- | --- | --- |
 | Work file | `work.md` | The mark that closes finished work |
 | State file | `state.md` | The mark that closes finished work |
-| Queries file | `queries.md` | The mark that closes finished work |
+| Discussion file | `discussions.md`, or `queries.md` for the DISCUSSIONS tolerance window | The mark that closes finished work |
 | Messages file | `messages.md` | The mark that closes finished work |
 | Decisions log | `decisions.md` | The mark that closes finished work |
+| Focus folder | `<focus-id>/`, one per focus area `work.md` declares under [Focus areas](#focus-areas), holding the kinds below | The mark that closes finished work |
+| Run report | `<focus-id>/<run>.report.md` | A tidy finds its outcome homed, its queries having been copied into `discussions.md` at receive |
+| Brief | `<focus-id>/<run>.brief.md` | Its run's report is received |
+| Design note | `<focus-id>/<slug>.md`, or `<focus-id>/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
+| Design artefact | `<focus-id>/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its note goes |
 | Finding | `findings/<tag>.md` | Settlement under the owner-report Findings rule† |
-| Run report | `reports/<name>.report.md`, holding run reports only | A tidy finds its outcome homed, its queries having been copied into `queries.md` at receive |
-| Brief | `briefs/<run>.md` | Its run's report is received |
 | Feedback package | `feedback/<date>-<slug>.md`, the owner's consolidated feedback on a document the work produced, written by the Observatory for the tolerance window | A tidy finds every point in it homed |
-| Design note | `design/<slug>.md`, or `design/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
-| Design artefact | `design/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its note goes |
 
 † Findings follow `ki-coordination`'s [owner-report Findings rule](../../../change-management/ki-coordination/references/standards-coordination.md#owner-report).
 
-The five package files exist from the work's creation, `queries.md`, `messages.md` and `decisions.md` starting as `None`, so a reader never meets a missing file and a sender never creates one. Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs in the run's temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, outside every repository, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). The rubric's FOLDER family fails a file outside this list and warns on each tidy that is due. A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
+For the layout tolerance window the type folders stay readable beside or instead of focus folders: run reports in `reports/<name>.report.md`, holding run reports only; briefs in `briefs/<run>.md`; and design notes and artefacts in `design/`, holding what a focus folder holds. A package without a `## Focus` section keeps using them; one that declares its focus areas is warned on for each type folder it still holds. The window closes when the layout sweep has reached every package.
 
-Run reports live in `reports/`, so that the top level holds only the five package files, as Kris directed under PACKAGE-LAYOUT on 30 October 2026 and applied ahead of the grouping layout under TOP-LEVEL-NOW on 1 November 2026: "run reports go into a `reports/` folder inside each work package now", with LAYOUT-SHAPE still open. The `ki-repo` managed ignore block re-includes `+/_WORK/*/reports/` and `+/_WORK_REVIEW/*/reports/`, so Git tracks them. For a tolerance window, until the sweep of reports already at the top level is done, a top-level `<name>.report.md` is a stray file the rubric warns on rather than fails, and readers look for a report in `reports/` first and at the top level second.
+The five package files exist from the work's creation, `discussions.md`, `messages.md` and `decisions.md` starting as `None`, so a reader never meets a missing file and a sender never creates one. Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs in the run's temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, outside every repository, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). The rubric's FOLDER family fails a file outside this list and warns on each tidy that is due. A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
+
+The top level holds only the five package files, as Kris directed under PACKAGE-LAYOUT on 30 October 2026. Everything else sits in the folder of the focus area it belongs to, so that a reader opening one focus folder finds that area's briefs, reports and designs together. Kris set this layout under LAYOUT-PILLARS, relayed on 2 November 2026 after the pilot on the four Personal pillars: five top-level files with `discussions.md`, a `## Focus` section in `work.md` listing focus areas with ids, always including `aside`, and "one flat folder per focus area holding briefs (`<run>.brief.md`), reports (`<run>.report.md`) and designs; no `briefs/`, `design/` or `reports/`". It answers LAYOUT-SHAPE and supersedes the `reports/` folder TOP-LEVEL-NOW applied on 1 November 2026. A run's report sits in the focus folder its brief sits in, the launcher homing it there once its focus-folder change ships; readers look for a report in its brief's focus folder first, then in `reports/`, then at the top level. For a tolerance window, until the sweep of reports already at the top level is done, a top-level `<name>.report.md` is a stray file the rubric warns on rather than fails.
 
 ### Entry points
 
@@ -96,15 +100,15 @@ Every writer is a named entry point with its permitted kinds, and every other pa
 
 | Entry point | Writes | Never |
 | --- | --- | --- |
-| Own steward† | Package files, findings, briefs, a `messages.md` line written word for word from the owner's feedback, and tidy deletions† | Other work's folder, except a message |
-| The launcher, `ki agent` | `reports/<name>.report.md`, copied in from the run's state folder; a state-folder `decisions.md` adopted where the folder has none; entries `decide` and `reconcile` append to `decisions.md` on the steward's instruction | Deletes anything, or replaces a report Git does not already hold |
-| A background run | Its work product in its owning home, and `design/` where its brief names a design note | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
-| `ki-work-design` and design runs | `design/` | Other kinds |
+| Own steward† | Package files, focus folders, findings, briefs, a `messages.md` line written word for word from the owner's feedback, and tidy deletions† | Other work's folder, except a message |
+| The launcher, `ki agent` | `<focus-id>/<run>.report.md` beside the run's brief, copied in from the run's state folder, or `reports/<name>.report.md` where the brief sits in no focus folder; until the launcher's focus-folder change ships it homes every report in `reports/`, and the steward moves it beside its brief at receive; a state-folder `decisions.md` adopted where the folder has none; entries `decide` and `reconcile` append to `decisions.md` on the steward's instruction | Deletes anything, or replaces a report Git does not already hold |
+| A background run | Its work product in its owning home, and a design note in the focus folder, or `design/`, where its brief names one | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
+| `ki-work-design` and design runs | Design notes and artefacts in the focus folder their brief names, or `design/` in a package without focus areas | Other kinds |
 | Other work and State of play | One line in `messages.md`, added or replacing its own line not yet acted on, committed alone | Any other edit |
 | The owner, by hand | One `messages.md` line carrying feedback on a document, committed alone | Any other edit |
 | The owner, through the Observatory | One `feedback/<date>-<slug>.md` package and one `messages.md` line linking it, committed together, for the tolerance window below | Any other edit |
 
-† The work's own steward includes its explicitly assigned State of play. It may write `work.md`, `state.md`, `queries.md` and `decisions.md`, remove disposed lines from `messages.md`, write `findings/<tag>.md` and `briefs/`, write one `messages.md` line word for word from the owner's feedback, and make tidy deletions.
+† The work's own steward includes its explicitly assigned State of play. It may write `work.md`, `state.md`, `discussions.md` and `decisions.md`, remove disposed lines from `messages.md`, write `findings/<tag>.md` and briefs, write one `messages.md` line word for word from the owner's feedback, and make tidy deletions.
 
 Findings use `findings/<tag>.md`, one file per tag, holding exactly the text the report carries under the owner-report Findings rule. The work's own steward writes and settles them; package pick-up reads every open finding with the five package files. A background run never writes `findings/<tag>.md`, even when its brief names the finding: it puts the finding in its run report, goal first, and the steward copies it into the file at receive, as it copies queries, so the report-to-steward path is the only route a finding takes into a package. Kris settled this under INTERIM-FINDING-WRITER on 26 October 2026, taking the recommended option, "Keep the standard's steward-only package writer", and declining the design note's proposal of a run writing the file its brief names.
 
@@ -130,12 +134,12 @@ A run brief names its reporting package separately from the product repository. 
 
 A tidy keeps the folder to what is still open, with Git history holding the rest, as Kris set under THREAD-TIDY on 2026-10-14, as received: "at each mark the thread deletes every report whose queries are all answered and whose outcome has a durable home, keeping only reports with open queries and decisions.md, with Git history holding the rest", and made regular on 2026-10-16 with THREADS-TRIM. `ki-coordination` says when a coordinator tidies, at every send and each mark; regular and ad hoc work tidies at its own next update.
 
-- **Queries leave reports at receive:** when the steward receives a run report it copies each of its queries, whole, into `queries.md` under QUERIES-FILE, so a report is kept only until its outcome is homed, not until its queries are answered.
-- **What goes:** each `findings/<tag>.md` settled under `ki-coordination`'s owner-report Findings rule, with its disposition recorded in `decisions.md`; every `reports/<name>.report.md` whose outcome has a durable home, a work record, the decisions log, the package or a commit, its queries already in `queries.md`; every `briefs/<run>.md` once its run's report has been received; every `feedback/<date>-<slug>.md` once every point in it has a durable home; and, at a mark, each design note the steward's review finds graduated or superseded, under the `ki-coordination` [design-note guards](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). In a folder still in [the single-file shape](#the-single-file-shape), a report also waits until its queries are all answered and read back in the log.
+- **Queries leave reports at receive:** when the steward receives a run report it copies each of its queries, whole, into `discussions.md` under QUERIES-FILE, naming the focus area the report's folder gives it, so a report is kept only until its outcome is homed, not until its queries are answered.
+- **What goes:** each `findings/<tag>.md` settled under `ki-coordination`'s owner-report Findings rule, with its disposition recorded in `decisions.md`; every run report, `<focus-id>/<run>.report.md` or for the tolerance window in `reports/`, whose outcome has a durable home, a work record, the decisions log, the package or a commit, its queries already in `discussions.md`; every brief, `<focus-id>/<run>.brief.md` or `briefs/<run>.md`, once its run's report has been received; every `feedback/<date>-<slug>.md` once every point in it has a durable home; and, at a mark, each design note the steward's review finds graduated or superseded, under the `ki-coordination` [design-note guards](../../../change-management/ki-coordination/references/standards-coordination.md#pruning-the-work-folder). In a folder still in [the single-file shape](#the-single-file-shape), a report also waits until its queries are all answered and read back in the log.
 - **What stays:** the five package files, always; every open `findings/<tag>.md`, including one the owner keeps open at a mark, with no age limit and no age warning, since an open finding is settled by the owner-report Findings rule and not by time, as Kris deferred under INTERIM-FINDING-AGE on 26 October 2026 until territory evidence shows an age useful; every report whose outcome is not yet homed; every brief whose handoff is open; every feedback package with a point not yet homed; and each design note until it graduates or is recorded as superseded.
 - **How:** in one commit by explicit path, `git rm` of each file named and nothing else, never a folder-wide delete, so that Git history holds every report and a later recap or full summary reads a deleted one from its last revision. The deletion is operational work and opens no record.
 - **Who:** each piece of work tidies only its own folder. Territory work never tidies another work folder; it names each folder the rubric flags in a line in that work's `messages.md`, and the owning work tidies at its next send. The one exception is a finished work's folder, which no coordinator reads once the work is Finished: territory work closes it itself under Close-out.
-- **Close-out:** finished work's folder is deleted at the mark that closes it, in one commit, once its decisions are homed, every finding settled with its disposition recorded, and `design/` is resolved, under [Removal lifecycle](#removal-lifecycle). Where the folder outlives the finishing thread, territory work closes it at an owner-authorised mark of its own whose report names the folder, so that the folder is deleted rather than flagged, as Kris asked under FINISHED-TIDY-KICK on 30 October 2026, "Sort out the method so that the kick actually gets the folder deleted", and adopted on 1 November 2026. This is administrative close-out only: it reopens nothing, accepts nothing and settles nothing on the owner's behalf. It first checks that the state is `finished`, every decision is homed and other durable information has reached its owners, `design/` is resolved, every finding is settled with its disposition recorded, `queries.md` holds no open query, `messages.md` holds no line, and no run of the work is running or queued. If all hold, it archives the work's runs with `ki agent close` under its strict gate first, never supplying `--reconciled`, which stays the owner's waiver, so that a gate refusal leaves the package intact, and then deletes the folder in one commit by explicit path, `docs(work): <id> close-out`. If any check fails, it deletes nothing and puts one query to the owner in its own `queries.md`, never a line in the finished work's `messages.md`.
+- **Close-out:** finished work's folder is deleted at the mark that closes it, in one commit, once its decisions are homed, every finding settled with its disposition recorded, and its design notes, in focus folders or `design/`, are resolved, under [Removal lifecycle](#removal-lifecycle). Where the folder outlives the finishing thread, territory work closes it at an owner-authorised mark of its own whose report names the folder, so that the folder is deleted rather than flagged, as Kris asked under FINISHED-TIDY-KICK on 30 October 2026, "Sort out the method so that the kick actually gets the folder deleted", and adopted on 1 November 2026. This is administrative close-out only: it reopens nothing, accepts nothing and settles nothing on the owner's behalf. It first checks that the state is `finished`, every decision is homed and other durable information has reached its owners, its design notes are resolved, every finding is settled with its disposition recorded, the discussion file holds no open query, `messages.md` holds no line, and no run of the work is running or queued. If all hold, it archives the work's runs with `ki agent close` under its strict gate first, never supplying `--reconciled`, which stays the owner's waiver, so that a gate refusal leaves the package intact, and then deletes the folder in one commit by explicit path, `docs(work): <id> close-out`. If any check fails, it deletes nothing and puts one query to the owner in its own `discussions.md`, never a line in the finished work's `messages.md`.
 
 A report whose outcome has no durable home yet is kept, not homed in haste. The rubric lists candidates; a listing is never permission to delete.
 
@@ -145,8 +149,11 @@ A report whose outcome has no durable home yet is kept, not homed in haste. The 
 
 ```markdown
 - <YYYY-MM-DD> · <TAG> · <sender label> (<sender id>): <the owner's words or the instruction, with links>
+- <YYYY-MM-DD> · focus: <id> · <TAG> · <sender label> (<sender id>): <the instruction, with links>
 - IMPORTANT · <YYYY-MM-DD> · <TAG> · <sender label> (<sender id>): <the instruction, with links>
 ```
+
+The optional `focus: <id> ·` slot before the tag names the focus area the line belongs to, under [Focus areas](#focus-areas).
 
 The sender is named by its work name under `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), the label with the id in brackets, as in `KI > Model > Ways of working (ki.ways-of-working):` or `KI > SoP (ki):`, which Kris adopted under WORK-LABEL on 25 October 2026: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?" A line whose sender carries the label alone, as lines written before that date do, is read as the same sender through the tolerance window, and the checker accepts both.
 
@@ -212,7 +219,7 @@ Territory work is the main State of play, id `<territory>.sop.main` (legacy `<te
 
 The `description` is written for routing, in a skill description's voice, as Kris answered DESCRIPTION-SHAPE: third person, what the work does, then "Takes ..." naming the kinds of unit it accepts, then "Not for ..." naming the neighbouring works by id, one to three sentences, tested against a handful of ambiguous routing examples. There is no `active` or `accepts` field: every state except `finished` can receive, and a work winding down says "Not taking new units" in its description.
 
-The body has exactly this heading sequence:
+The body has exactly this heading sequence, with `## Focus` after Scope where the work declares its focus areas:
 
 ```markdown
 # ki.observatory
@@ -220,12 +227,32 @@ The body has exactly this heading sequence:
 ## Goals
 
 ## Scope
+
+## Focus
 ```
 
 - **Goals** - the standing goals of the work, stable across its waves, as few as it needs. For Project work the first line links the Project note's `outcome` and never restates it; for regular work it links the Activity note; for territory work, the Charter. Links point upward: the package names its Project, and the Project note never links down.
 - **Scope** - `In:` and `Out:` lines naming what the work takes and what belongs to which other work, by id. This is what State of play reads when two descriptions both match.
+- **Focus** - optional: the work's focus areas under [Focus areas](#focus-areas), left out of the body's word limit.
 
 Nothing else belongs in the work file: no state, next steps, evidence or history.
+
+### Focus areas
+
+A focus area is one strand of the work's attention, and the unit its work folder is grouped by, as Kris set under LAYOUT-PILLARS and FOCUS-IN-WORK, "one of the key things in work is knowing what your focus is. So I think focus should be a key thing in work.md". `work.md`'s `## Focus` lists them, one list item each, in order, the item leading with the area's id as a code span and then a line saying what it holds:
+
+```markdown
+## Focus
+
+1. `layout` — work package layout: five top-level files and one folder per focus area (in progress).
+2. `aside` — anything outside the others.
+```
+
+- **Ids:** each id is lower-case kebab-case, listed once, and is also the name of its focus folder, `+/_WORK/<id>/<focus-id>/`, so it never takes a type folder's name, `briefs`, `design`, `reports`, `findings` or `feedback`. Every Focus section lists `aside`, the home of whatever fits no other area.
+- **Assignment:** only the work's own steward assigns an item to a focus area, adds, renames or retires an area, and moves a file between focus folders. Other work sends a line to `messages.md` and the steward routes it.
+- **Naming the area:** a discussion point, a decisions-log entry and a message line each name their area with a `focus: <id> ·` slot: at the head of a discussion point's since line, under [Queries file](#queries-file); at the head of a decisions-log entry's first line, under `ki-coordination`'s [decisions log](../../../change-management/ki-coordination/references/standards-coordination.md#decisions-log); and before a message line's tag, under [Messages lines](#messages-lines). An item written before its work declared focus areas carries no slot and is not rewritten for one.
+- **Folders:** a focus folder holds the area's briefs, run reports and design notes under the [closed list](#closed-list), and exists only while it holds a file. A brief goes into the focus folder of the area its run serves, and the launcher homes the run's report beside it. Retiring an area moves or tidies its folder's files first.
+- **Placement:** `## Focus` stands after Scope. For the tolerance window a Focus section above Goals, the position FOCUS-IN-WORK piloted, is warned on rather than failed.
 
 ### State file
 
@@ -288,16 +315,16 @@ Each section says something, if only `None`. History stays out, as Kris answered
 
 ### Queries file
 
-`queries.md` holds every open and parked query in full, as Kris answered QUERIES-FILE and PARKED-HOME:
+The discussion file, `discussions.md`, holds every open and parked query in full, as Kris answered QUERIES-FILE and PARKED-HOME:
 
 ```markdown
-# ki.observatory queries
+# ki.observatory discussions
 
 ## Open
 
 ### WORK-INSTRUMENT - Whether the Work Instrument shows a split folder unchanged
 
-since 2026-10-19 · from [reader-check](reader-check.report.md)
+focus: observatory · since 2026-10-19 · from [reader-check](observatory/reader-check.report.md)
 
 **Context:** ...
 
@@ -310,9 +337,9 @@ a) (recommended, confidence medium - ...) ...
 ## Parked
 ```
 
-Each query is a `### <TAG> - <title>` block carrying **Context**, **Query** and **Options** exactly as the owner report renders them, with one line beneath the heading giving `since <date>` and its source report, if any. The owner report's `## Queries` section is rendered from `## Open`, so the two cannot diverge. Parking moves the whole block from `## Open` to `## Parked` with its reason and release; putting back moves it again. A parked tangent, an owner side topic not yet shaped as a query, is a one-line entry under `## Parked`. When the owner answers, the read-back goes into `decisions.md` and the block is deleted in the same commit, Git keeping it. Each section says something, if only `None`.
+Each query is a `### <TAG> - <title>` block carrying **Context**, **Query** and **Options** exactly as the owner report renders them, with one line beneath the heading giving its focus area as `focus: <id> ·` where the work declares focus areas, `since <date>` and its source report, if any. The owner report's `## Queries` section is rendered from `## Open`, so the two cannot diverge. Parking moves the whole block from `## Open` to `## Parked` with its reason and release; putting back moves it again. A parked tangent, an owner side topic not yet shaped as a query, is a one-line entry under `## Parked`. When the owner answers, the read-back goes into `decisions.md` and the block is deleted in the same commit, Git keeping it. Each section says something, if only `None`.
 
-Readers accept both names through the DISCUSSIONS tolerance window, Kris having decided DISCUSSIONS - b on 1 November 2026: "Files too". A package's discussion file is `discussions.md` with the H1 `# <id> discussions`, or `queries.md` with the H1 `# <id> queries`, each keeping `## Open` and `## Parked`; readers look for `discussions.md` first, and a package holding both fails. A report's open points sit under `## Discussion` or `## Queries`. Writers keep producing `queries.md` and `## Queries` until the writer change, and the window closes once the rename sweep has reached every package.
+Readers accept both names through the DISCUSSIONS tolerance window, Kris having decided DISCUSSIONS - b on 1 November 2026: "Files too". A package's discussion file is `discussions.md` with the H1 `# <id> discussions`, or `queries.md` with the H1 `# <id> queries`, each keeping `## Open` and `## Parked`; readers look for `discussions.md` first, and a package holding both fails. A report's open points sit under `## Discussion` or `## Queries`. Under LAYOUT-PILLARS, where Kris kept the `discussions.md` name, every writer creates `discussions.md` for a new package and keeps writing the file a package already holds; reports keep `## Queries` until that writer change. The window closes once the rename sweep has reached every package.
 
 ### Messages file
 
@@ -331,7 +358,7 @@ The limits are soft, warned and never failed, like a skill's budgets:
 | File | Limit |
 | --- | --- |
 | `description` | at most 500 characters |
-| `work.md` body | at most 300 words |
+| `work.md` body | at most 300 words, its `## Focus` section aside |
 | `state.md` body | at most 400 words; `## Now` at most five lines; no bulk history |
 | `messages.md` | each line at most 60 words; no line older than 7 days on work that is not on hold |
 | `decisions.md` | at most 400 lines |
@@ -347,9 +374,9 @@ The package reads in four levels, by analogy with a skill's metadata, body and r
 | 1. Register | `work.md` and `state.md` front matter | State of play at each routing; `ki work status`, the Observatory and `ki work` views; an opener |
 | 2. Definition | `work.md` body | State of play when two descriptions match; the owner checking a routing; a new session before it reads state |
 | 3. Pick-up | Package detail and open findings† | The work's own worker at each pick-up |
-| 4. On demand | reports, briefs, `design/` | only when `state.md` or `queries.md` names one |
+| 4. On demand | focus folders: reports, briefs and design notes | only when `state.md` or `discussions.md` names one |
 
-† Pick-up reads `state.md`, `messages.md`, `queries.md`, `decisions.md` and every open `findings/<tag>.md` at bootstrap, re-anchoring, each owner message, each wake and each move.
+† Pick-up reads `state.md`, `messages.md`, `discussions.md` or `queries.md`, `decisions.md` and every open `findings/<tag>.md` at bootstrap, re-anchoring, each owner message, each wake and each move.
 
 Routing reads level 1 only, and a sender reads nothing in the receiver's folder: it adds a line to `messages.md`. A run reads its brief and what the brief names. How a coordinator's turn budget counts the pick-up reads is `ki-coordination`'s.
 
@@ -360,7 +387,7 @@ Until the migration pass moves each live folder, a work folder may still be in t
 A folder is in one shape at a time, told apart by whether `state.md` exists:
 
 - **Single-file:** no `state.md`. Its state lives in `work.md`, and senders write to its `## Messages` section. The rubric reads it under its old form and warns, naming the package as its new shape.
-- **Package:** `state.md` exists, and so do `queries.md`, `messages.md` and `decisions.md`. The rubric fails a package whose `work.md` still carries a state field, or a `## Next steps`, `## Messages` or `## Parked` section, so a session that rewrites `work.md` from memory is caught at its next gate rather than silently forking the state.
+- **Package:** `state.md` exists, and so do the discussion file, `messages.md` and `decisions.md`. The rubric fails a package whose `work.md` still carries a state field, or a `## Next steps`, `## Messages` or `## Parked` section, so a session that rewrites `work.md` from memory is caught at its next gate rather than silently forking the state.
 
 Every reader, `ki work status` and the Observatory included, accepts both shapes before any folder moves; the pass waits for that. The window closes for live folders at the pass, and for the rest when an inventory of live, review-held and old-shape folders shows none left.
 

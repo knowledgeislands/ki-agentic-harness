@@ -9,7 +9,7 @@ const FOLDER_1: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-1',
   title: 'every work folder holds only its closed list',
   description:
-    'Each work folder `+/_WORK/<id>/` holds only the five package files, per-tag Markdown findings `findings/<tag>.md`, run reports `reports/<name>.report.md` and nothing else in `reports/`, Markdown briefs under `briefs/`, Markdown feedback packages under `feedback/`, and under `design/` only design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders. Scripts, screenshots, scratch folders and tool output fail. For the tolerance window until the sweep is done, a `<name>.report.md` still at the top level is a stray file warned on rather than failed. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
+    'Each work folder `+/_WORK/<id>/` holds only the five package files, one folder `<focus-id>/` per focus area its `work.md` declares under `## Focus`, holding its briefs `<run>.brief.md`, run reports `<run>.report.md` and design notes, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders, per-tag Markdown findings `findings/<tag>.md` and Markdown feedback packages under `feedback/`. Scripts, screenshots, scratch folders, undeclared folders and tool output fail. For the tolerance window until the layout sweep is done, the type folders stay readable: run reports `reports/<name>.report.md` and nothing else in `reports/`, Markdown briefs under `briefs/`, and under `design/` what a focus folder may hold, each warned on in a package that declares its focus areas; and a `<name>.report.md` still at the top level is a stray file warned on rather than failed. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
   sources: [`${SOURCE}#closed-list`],
   mechanical: {
     level: 'FAIL',
@@ -27,7 +27,7 @@ const FOLDER_2: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-2',
   title: 'no work folder keeps a report whose queries are all answered',
   description:
-    "A run report whose every Needs tag the folder's decisions log names, or which has no queries, is a candidate for the tidy once its outcome has a durable home. Whether it has one stays the steward's judgement; the listing is never permission to delete.",
+    "A run report, in a focus folder, in `reports/` or at the top level, whose every Needs tag the folder's decisions log names, or which has no queries, is a candidate for the tidy once its outcome has a durable home. Whether it has one stays the steward's judgement; the listing is never permission to delete.",
   sources: [TIDY],
   mechanical: {
     level: 'WARN',
@@ -53,7 +53,7 @@ const FOLDER_3: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-3',
   title: "no work folder keeps a brief whose run's report it has received",
   description:
-    "A brief `briefs/<run>.md` goes once its run's report has been received, which the folder shows by holding `reports/<run>.report.md`, or for the tolerance window `<run>.report.md` at the top level.",
+    "A brief `<focus-id>/<run>.brief.md`, or for the tolerance window `briefs/<run>.md`, goes once its run's report has been received, which the folder shows by holding `<run>.report.md` in a focus folder, in `reports/` or, for the tolerance window, at the top level.",
   sources: [TIDY],
   mechanical: {
     level: 'WARN',

@@ -32,6 +32,8 @@ const THEMES_DIRECTORY = join('Streams', 'Themes')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
 const THREADS_DIRECTORY = join('+', '_THREADS')
 const REPORT_SUFFIX = '.report.md'
+/** A focus area's list item under `work.md`'s `## Focus`: its kebab-case id leading as a code span. */
+const FOCUS_ITEM = /^(?:\d+[.)]|[-*+])[ \t]+`([a-z0-9]+(?:-[a-z0-9]+)*)`/
 const WORK_FILE = 'work.md'
 /** The work package's state file; a folder holding one is in the five-file package shape. */
 const STATE_FILE = 'state.md'
@@ -530,9 +532,24 @@ const reviewOutcomes = (root: string): AuditOutcome[] => {
 }
 
 /**
- * Reports in work folders, `+/_WORK/<id>/reports/*.report.md`, and for the tolerance windows those still at a work
- * folder's top level and in thread folders, `+/_THREADS/<run>/*.report.md`; undefined when neither subarea exists.
- * Work awaiting review is not read.
+ * The focus folders a work folder's `work.md` declares under `## Focus`, LAYOUT-PILLARS (2 November 2026): each list
+ * item leading with its kebab-case id as a code span, under the `ki-work-package` focus areas.
+ */
+const focusFolders = (folder: string): readonly string[] => {
+  const path = join(folder, WORK_FILE)
+  if (!existsSync(path) || !lstatSync(path).isFile()) return []
+  const focus = /^## Focus[ \t]*$([\s\S]*?)(?=^#{1,2} |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? ''
+  return focus
+    .split(/\r?\n/)
+    .flatMap((line) => FOCUS_ITEM.exec(line)?.[1] ?? [])
+    .map((id) => join(folder, id))
+}
+
+/**
+ * Reports in work folders, in each declared focus folder `+/_WORK/<id>/<focus-id>/*.report.md` and in
+ * `+/_WORK/<id>/reports/*.report.md`, and for the tolerance windows those still at a work folder's top level and in
+ * thread folders, `+/_THREADS/<run>/*.report.md`; undefined when neither subarea exists. Work awaiting review is not
+ * read.
  */
 const workReports = (root: string): readonly string[] | undefined => {
   const work = folders(join(root, WORK_DIRECTORY))
@@ -540,8 +557,8 @@ const workReports = (root: string): readonly string[] | undefined => {
   if (!work && !threads) return undefined
   const reports: string[] = []
   const reportFolders = (work ?? [])
-    .map((folder) => join(folder, 'reports'))
-    .filter((folder) => existsSync(folder) && lstatSync(folder).isDirectory())
+    .flatMap((folder) => [join(folder, 'reports'), ...focusFolders(folder)])
+    .filter((folder) => existsSync(folder) && !lstatSync(folder).isSymbolicLink() && lstatSync(folder).isDirectory())
   for (const folder of [...reportFolders, ...(work ?? []), ...(threads ?? [])])
     for (const entry of readdirSync(folder, { withFileTypes: true }))
       if (entry.isFile() && !entry.isSymbolicLink() && entry.name.endsWith(REPORT_SUFFIX))

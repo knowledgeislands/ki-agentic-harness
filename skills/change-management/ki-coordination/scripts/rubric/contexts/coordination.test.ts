@@ -682,6 +682,23 @@ describe('work files', () => {
     expect(outcomes[0]?.message).toContain('KI-HARNESS-GOV-210')
   })
 
+  test('a report in a declared focus folder has its links checked, and an undeclared folder is not read', () => {
+    const root = fixture(capital)
+    const folder = work(root, 'ki.ways-of-working', project())
+    const definition = readFileSync(join(folder, 'work.md'), 'utf8')
+    writeFileSync(
+      join(folder, 'work.md'),
+      `${definition}\n## Focus\n\n1. \`layout\` — the layout.\n2. \`aside\` — the rest.\n`
+    )
+    mkdirSync(join(folder, 'layout'))
+    writeFileSync(join(folder, 'layout', 'pilot.report.md'), '# Run\n\nDelivered KI-HARNESS-GOV-210.\n')
+    mkdirSync(join(folder, 'scratch'))
+    writeFileSync(join(folder, 'scratch', 'old.report.md'), '# Run\n\nDelivered KI-HARNESS-GOV-211.\n')
+    const outcomes = context(root).links.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.subject).toBe(join('+', '_WORK', 'ki.ways-of-working', 'layout', 'pilot.report.md'))
+  })
+
   test('a report with a glyph form line has its confidence checked whatever its date', () => {
     expect(
       reportHasGlyphForm('**🤖 → 👤 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**')

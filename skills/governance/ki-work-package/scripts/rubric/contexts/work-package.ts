@@ -7,7 +7,7 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
-import { type FolderOutcomes, folderOutcomes } from './work-folder.ts'
+import { FOCUS_ID, type FolderOutcomes, focusIdsIn, folderOutcomes, RESERVED_FOLDERS } from './work-folder.ts'
 
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
 const WORK_FILE = 'work.md'
@@ -64,6 +64,9 @@ const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
   'created_at'
 ])
 const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
+/** The optional Focus section LAYOUT-PILLARS (2 November 2026) admits after Scope, always listing `aside`. */
+const FOCUS_HEADING = 'Focus'
+const ALWAYS_FOCUS = 'aside'
 const STATE_REQUIRED = ['id', 'state', 'since'] as const
 /** The thread capability fields Kris set under FOOTER-CAPABILITY-STATUS-2 on 1 November 2026. */
 const CAPABILITIES = ['listening', 'syncing'] as const
@@ -85,8 +88,9 @@ const QUERY_HEADINGS = ['Open', 'Parked'] as const
 const DISCUSSION_TITLES: Readonly<Record<string, string>> = { 'discussions.md': 'discussions', 'queries.md': 'queries' }
 const QUERY_HEADING = /^[A-Z0-9][A-Z0-9-]* - \S/
 const QUERY_PARTS = ['**Context:**', '**Query:**', '**Options:**'] as const
+/** A message line, with its optional host requirement and, under LAYOUT-PILLARS, its optional `focus: <id>` slot. */
 const MESSAGE_LINE =
-  /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)? · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
+  /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · focus: [a-z0-9]+(?:-[a-z0-9]+)*)? · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
 const REVISION = /^[0-9a-f]{7,40}$/
 // Soft limits under the standard's Size limits, warned and never failed.
 const LIMITS = {
@@ -479,7 +483,7 @@ const inspectWork = (directory: string, root: string): { works: WorkFolder[]; vi
         message: 'a work package holds one discussion file, discussions.md or queries.md, never both',
         subject: relative(root, folder)
       })
-    const discussionFile = discussionFiles[0] ?? 'queries.md'
+    const discussionFile = discussionFiles[0] ?? 'discussions.md'
     for (const name of [STATE_FILE, discussionFile, ...PACKAGE_FILES]) {
       const file = join(folder, name)
       if (physicalFile(file)) files[name] = { ...parseCheckpoint(file, root), stem: entry.name }
@@ -718,7 +722,7 @@ const singleFileEvidence = (work: ParsedRecord, coordinationDeclared: boolean, e
   }
   evidence.legacy.push({
     status: 'VIOLATION',
-    message: `legacy: a single-file work folder, read for the tolerance window; it moves to the five-file package, adding ${STATE_FILE}, queries.md and messages.md, at the territory's migration`,
+    message: `legacy: a single-file work folder, read for the tolerance window; it moves to the five-file package, adding ${STATE_FILE}, discussions.md and messages.md, at the territory's migration`,
     subject: work.path
   })
   if (!sameOutline(work.body, work.stem, WORK_HEADINGS))
@@ -767,7 +771,9 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
   for (const line of lines) {
     const match = MESSAGE_LINE.exec(line)
     if (!match) {
-      fail('each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", or begins "- IMPORTANT · "')
+      fail(
+        'each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", with an optional "focus: <id> · " before the tag, or begins "- IMPORTANT · "'
+      )
       continue
     }
     if (match[1]) {
@@ -854,16 +860,46 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
     keys.some((field) => !DEFINITION_FIELDS.has(field))
   )
     fail(work, 'work.md front matter must use only its closed definition field set')
-  if (!sameOutline(work.body, work.stem, DEFINITION_HEADINGS))
-    fail(work, `a package's work.md headings must be the id H1, Goals and Scope; its state lives in ${STATE_FILE}`)
+  const focusFirst = sameOutline(work.body, work.stem, [FOCUS_HEADING, ...DEFINITION_HEADINGS])
+  if (focusFirst)
+    evidence.schema.push({
+      status: 'VIOLATION',
+      level: 'WARN',
+      message: `tolerance: work.md's ## ${FOCUS_HEADING} stands after Goals and Scope, not above them`,
+      subject: work.path
+    })
+  else if (
+    !sameOutline(work.body, work.stem, DEFINITION_HEADINGS) &&
+    !sameOutline(work.body, work.stem, [...DEFINITION_HEADINGS, FOCUS_HEADING])
+  )
+    fail(
+      work,
+      `a package's work.md headings must be the id H1, Goals, Scope and an optional Focus; its state lives in ${STATE_FILE}`
+    )
   const definition = h2Sections(work.body)
   for (const heading of DEFINITION_HEADINGS)
     if ((definition.get(heading)?.trim().length ?? 0) === 0) fail(work, `${heading} must say something`)
+  if (definition.has(FOCUS_HEADING)) {
+    const ids = focusIdsIn(definition.get(FOCUS_HEADING) ?? '')
+    const invalid = ids.filter((id) => !FOCUS_ID.test(id) || RESERVED_FOLDERS.has(id))
+    const repeated = ids.filter((id, index) => ids.indexOf(id) !== index)
+    if (!ids.includes(ALWAYS_FOCUS))
+      fail(
+        work,
+        `## ${FOCUS_HEADING} lists each focus area by its id as a code span, always including \`${ALWAYS_FOCUS}\``
+      )
+    if (invalid.length > 0)
+      fail(work, `a focus id is a kebab-case folder name, never a type folder's; invalid: ${invalid.join(', ')}`)
+    if (repeated.length > 0) fail(work, `each focus id is listed once; repeated: ${[...new Set(repeated)].join(', ')}`)
+  }
   if (typeof fields.description !== 'string' || fields.description.trim().length === 0)
     fail(work, 'description must be a non-empty routing description')
   else if (fields.description.trim().length > LIMITS.description)
     warn(work, `description runs past ${LIMITS.description} characters`)
-  if (words(work.body) > LIMITS.definitionWords) warn(work, `work.md body runs past ${LIMITS.definitionWords} words`)
+  // The Focus section stays outside the definition's word limit.
+  const focus = definition.get(FOCUS_HEADING) ?? ''
+  if (words(work.body) - words(focus) > LIMITS.definitionWords)
+    warn(work, `work.md body runs past ${LIMITS.definitionWords} words, its Focus section aside`)
   definitionChecks(work, fields, coordinationDeclared, evidence, true)
   evidence.boundary.push(...boundaryOutcomes(work, fields))
 

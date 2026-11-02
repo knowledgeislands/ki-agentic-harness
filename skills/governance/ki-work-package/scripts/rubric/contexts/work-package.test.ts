@@ -685,6 +685,87 @@ test('under DISCUSSIONS a package may keep discussions.md or queries.md, its H1 
   ])
 })
 
+const FOCUS = ['## Focus', '', '1. `layout` — the package layout.', '2. `aside` — anything else.', ''].join('\n')
+const DEFINITION = [
+  '# ki.ways-of-working',
+  '',
+  '## Goals',
+  '',
+  'Deliver the outcome in the Project note.',
+  '',
+  '## Scope',
+  '',
+  'In: the work model. Out: the Observatory (ki.observatory).',
+  ''
+].join('\n')
+
+test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, always listing aside', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS}` })
+  )
+  expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
+
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace('`aside`', '`reports`')}` })
+  )
+  const outcomes = run(RECORD, 'RECORD-2', context(repository))
+  expect(outcomes).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('always including `aside`') })
+  )
+  expect(outcomes).toContainEqual(expect.objectContaining({ message: expect.stringContaining('invalid: reports') }))
+})
+
+test('a Focus section above Goals warns for the tolerance window, and anywhere else fails', () => {
+  const repository = workFixture()
+  const [h1 = '', ...rest] = DEFINITION.split('\n\n')
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: [h1, FOCUS, ...rest].join('\n\n') })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
+    expect.objectContaining({ level: 'WARN', message: expect.stringContaining('after Goals and Scope') })
+  ])
+
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: [h1, rest[0], FOCUS, ...rest.slice(1)].join('\n\n') })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('an optional Focus') })
+  )
+})
+
+test("the Focus section stays outside work.md's word limit", () => {
+  const repository = workFixture()
+  const long = `${FOCUS}\n${Array(320).fill('word').join(' ')}\n`
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${long}` })
+  )
+  expect(run(LIFECYCLE, 'LIFECYCLE-3', context(repository))[0]?.status).toBe('PASS')
+})
+
+test('a message line may name its focus area before its tag', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', {
+      messages:
+        '# ki.ways-of-working messages\n\n- 2099-01-01 · focus: layout · LAYOUT · KI > SoP (ki.sop.main): move the reports.\n'
+    })
+  )
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+})
+
 test('an empty message queue may say None with or without a full stop', () => {
   for (const messages of ['None', 'None.']) {
     const repository = workFixture()

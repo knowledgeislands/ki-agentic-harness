@@ -3,7 +3,14 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
-import { decisionLogFindings, folderOutcomes, openQueryCount, reportQueryTags, workFolderStray } from './work-folder.ts'
+import {
+  decisionLogFindings,
+  focusIds,
+  folderOutcomes,
+  openQueryCount,
+  reportQueryTags,
+  workFolderStray
+} from './work-folder.ts'
 
 const roots: string[] = []
 
@@ -110,6 +117,80 @@ describe('work folder closed list', () => {
     expect(statuses(outcomes.closed)).toEqual(['NOT_APPLICABLE'])
     expect(statuses(outcomes.briefs)).toEqual(['NOT_APPLICABLE'])
     expect(statuses(outcomes.review)).toEqual(['NOT_APPLICABLE'])
+  })
+})
+
+const FOCUS_WORK = `# ki.ways-of-working
+
+## Goals
+
+Goals.
+
+## Scope
+
+Scope.
+
+## Focus
+
+Each focus area has an id, which is also its folder.
+
+1. \`layout\` — work package layout.
+2. \`aside\` — anything else.
+`
+
+describe('focus folders', () => {
+  test("work.md's Focus section declares its ids, each leading its list item as a code span", () => {
+    const root = fixture()
+    const folder = pkg(root)
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    expect(focusIds(folder)).toEqual(['layout', 'aside'])
+    write(root, join(WORK, 'work.md'), '# ki.ways-of-working\n\n## Goals\n\n- `layout` is not a focus\n')
+    expect(focusIds(folder)).toEqual([])
+  })
+
+  test('a declared focus folder holds briefs, reports and design notes; an undeclared folder fails', () => {
+    const root = fixture()
+    const folder = pkg(root)
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
+    write(root, join(WORK, 'layout', 'pilot.report.md'), '# Run\n')
+    write(root, join(WORK, 'layout', 'options.md'), '# Options\n')
+    write(root, join(WORK, 'layout', 'model', 'model.svg'), '<svg/>\n')
+    write(root, join(WORK, 'aside', 'notes.md'), '# Notes\n')
+    expect(workFolderStray(folder)).toEqual([])
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+
+    write(root, join(WORK, 'layout', 'probe.ts'), 'code\n')
+    write(root, join(WORK, 'async', 'notes.md'), '# Notes\n')
+    expect(workFolderStray(folder)).toEqual(['async/', 'layout/probe.ts'])
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['VIOLATION'])
+  })
+
+  test('type folders beside declared focus areas warn for the tolerance window, and pass without them', () => {
+    const root = fixture()
+    pkg(root)
+    write(root, join(WORK, 'reports', 'run.report.md'), '# Run\n')
+    write(root, join(WORK, 'design', 'note.md'), '# Note\n')
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    const outcomes = folderOutcomes(root).closed
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toContain('`design/`, `reports/`')
+  })
+
+  test('FOLDER-2 and FOLDER-3 look inside focus folders', () => {
+    const root = fixture()
+    pkg(root)
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
+    write(root, join(WORK, 'layout', 'pilot.report.md'), queries('PMO-CI'))
+    write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
+    write(root, join(WORK, 'aside', 'early.brief.md'), '# Brief\n')
+    write(root, join(WORK, 'reports', 'early.report.md'), queries('OPEN-ONE'))
+    write(root, join(WORK, 'aside', 'open.brief.md'), '# Brief\n')
+    const outcomes = folderOutcomes(root)
+    expect(outcomes.answered[0]?.message).toEndWith(': layout/pilot.report.md')
+    expect(outcomes.briefs[0]?.message).toEndWith(': layout/pilot.brief.md, aside/early.brief.md')
   })
 })
 

@@ -485,7 +485,7 @@ Govern directional work and knowledge trades between KI repositories: routes, re
 
 #### `ki-work-package`
 
-Own the work package of one piece of work, its five files in its work folder `+/_WORK/<id>/`: the definition `work.md` with its routing description, goals and scope, `state.md`, `queries.md`, the `messages.md` queue and `decisions.md`, plus the folder's closed list, entry points, tidy and close-out rules and the `+/_WORK_REVIEW/` holding area. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, durable knowledge stays with its owners, and single-file work folders and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
+Own the work package of one piece of work, its five files in its work folder `+/_WORK/<id>/`: the definition `work.md` with its routing description, goals and scope, `state.md`, `discussions.md`, the `messages.md` queue and `decisions.md`, plus the folder's closed list, entry points, tidy and close-out rules and the `+/_WORK_REVIEW/` holding area. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, durable knowledge stays with its owners, and single-file work folders and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
 
 - **Kind:** Governance
 - **Applicability:** Detected

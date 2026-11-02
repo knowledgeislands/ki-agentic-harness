@@ -1,12 +1,12 @@
 /**
  * The work folder's closed list and tidy, read for the `ki-work-package` FOLDER family: each `+/_WORK/<id>/` against
- * its closed list, the tidy candidates (answered reports, received briefs, finished folders outliving their closing
+ * its closed list, the focus folders its `work.md` declares included, the tidy candidates (answered reports, received briefs, finished folders outliving their closing
  * mark, open queries beyond the limit), decisions-log text the `ki agent close` gate cannot read as an entry, the
  * `+/_WORK_REVIEW/` index, and for the tolerance window each thread folder `+/_THREADS/<run>/` against its old closed
  * list. The listings name candidates; they are never permission to delete.
  */
 import { type Dirent, existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { extname, join, relative } from 'node:path'
+import { basename, extname, join, relative } from 'node:path'
 import type { AuditOutcome } from '../../shared/rubric.ts'
 
 const WORK_DIRECTORY = join('+', '_WORK')
@@ -32,6 +32,16 @@ const MARKDOWN_FOLDERS: ReadonlySet<string> = new Set(['findings', 'briefs', 'fe
 const DESIGN_FOLDER = 'design'
 /** Run reports, `reports/<name>.report.md`, under TOP-LEVEL-NOW (1 November 2026). */
 const REPORTS_FOLDER = 'reports'
+const BRIEFS_FOLDER = 'briefs'
+/** The type folders LAYOUT-PILLARS (2 November 2026) replaces with focus folders, read for the tolerance window. */
+const TYPE_FOLDERS = [BRIEFS_FOLDER, DESIGN_FOLDER, REPORTS_FOLDER] as const
+/** Folder names a focus id never takes: the type folders and the kinds that keep their own folder. */
+export const RESERVED_FOLDERS: ReadonlySet<string> = new Set([...TYPE_FOLDERS, ...MARKDOWN_FOLDERS])
+/** A brief in a focus folder, `<focus-id>/<run>.brief.md`. */
+const BRIEF_SUFFIX = '.brief.md'
+/** A focus area's id, leading its list item under `work.md`'s `## Focus` as a code span. */
+const FOCUS_ITEM = /^(?:\d+[.)]|[-*+])[ \t]+`([^`\n]+)`/
+export const FOCUS_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 /** Design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
 const DESIGN_EXTENSIONS: ReadonlySet<string> = new Set(['.md', '.json', '.mmd', '.svg', '.html'])
 /** More open queries than this in the discussion file is a coordination smell, warned on rather than failed. */
@@ -87,15 +97,39 @@ const strayDesign = (folder: string, prefix: string): string[] =>
     return plainFile(entry) && DESIGN_EXTENSIONS.has(extname(entry.name)) ? [] : [path]
   })
 
+/** The focus ids a Focus section's text lists, each leading its list item as a code span, in order. */
+export const focusIdsIn = (focus: string): readonly string[] =>
+  focus.split(/\r?\n/).flatMap((line) => {
+    const id = FOCUS_ITEM.exec(line)?.[1]?.trim()
+    return id ? [id] : []
+  })
+
 /**
- * Entries of a work folder outside its closed list, `design/`, `findings/`, `briefs/`, `feedback/` and `reports/` read
- * one level down. A top-level `<name>.report.md` is left to {@link topLevelReports} for the tolerance window.
+ * The focus ids a work folder's `work.md` declares under `## Focus` under LAYOUT-PILLARS, in order: each list item
+ * leading with its id as a code span. A folder whose work file has no Focus section declares none.
  */
-export const workFolderStray = (folder: string): readonly string[] =>
-  entries(folder).flatMap((entry) => {
+export const focusIds = (folder: string): readonly string[] => {
+  const path = join(folder, WORK_FILE)
+  if (!existsSync(path) || !lstatSync(path).isFile()) return []
+  return focusIdsIn(/^## Focus[ \t]*$([\s\S]*?)(?=^#{1,2} |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? '')
+}
+
+/** The declared focus ids that name a folder, a valid id and no reserved folder name. */
+const focusFolders = (folder: string): readonly string[] =>
+  focusIds(folder).filter((id) => FOCUS_ID.test(id) && !RESERVED_FOLDERS.has(id))
+
+/**
+ * Entries of a work folder outside its closed list: each declared focus folder read as `design/` is, its briefs,
+ * reports and design notes with their diagram sources and renders, and `design/`, `findings/`, `briefs/`, `feedback/`
+ * and `reports/` read one level down. A top-level `<name>.report.md` is left to {@link topLevelReports} for the
+ * tolerance window.
+ */
+export const workFolderStray = (folder: string): readonly string[] => {
+  const focus = new Set(focusFolders(folder))
+  return entries(folder).flatMap((entry) => {
     if (plainFile(entry) && (PACKAGE_FILES.has(entry.name) || entry.name.endsWith(REPORT_SUFFIX))) return []
     if (!entry.isDirectory() || entry.isSymbolicLink()) return [entry.name]
-    if (entry.name === DESIGN_FOLDER) return strayDesign(join(folder, entry.name), entry.name)
+    if (entry.name === DESIGN_FOLDER || focus.has(entry.name)) return strayDesign(join(folder, entry.name), entry.name)
     if (entry.name === REPORTS_FOLDER)
       return entries(join(folder, entry.name))
         .filter((inner) => !report(inner))
@@ -105,6 +139,11 @@ export const workFolderStray = (folder: string): readonly string[] =>
       .filter((inner) => !(plainFile(inner) && extname(inner.name) === '.md'))
       .map((inner) => `${entry.name}/${inner.name}${inner.isDirectory() ? '/' : ''}`)
   })
+}
+
+/** The type folders, `briefs/`, `design/` and `reports/`, still held by a package that declares its focus areas. */
+export const typeFoldersBesideFocus = (folder: string): readonly string[] =>
+  focusIds(folder).length === 0 ? [] : TYPE_FOLDERS.filter((name) => physicalDirectory(join(folder, name)))
 
 /** Reports still at a work folder's top level, stray files warned on until the sweep into `reports/` is done. */
 export const topLevelReports = (folder: string): readonly string[] =>
@@ -112,18 +151,23 @@ export const topLevelReports = (folder: string): readonly string[] =>
     .filter(report)
     .map((entry) => entry.name)
 
-/** A folder's run reports, relative to it: `reports/<name>.report.md` first, then any still at the top level. */
-const runReports = (folder: string): readonly string[] => {
-  const reports = join(folder, REPORTS_FOLDER)
-  return [
-    ...(physicalDirectory(reports)
-      ? entries(reports)
-          .filter(report)
-          .map((entry) => `${REPORTS_FOLDER}/${entry.name}`)
-      : []),
-    ...topLevelReports(folder)
-  ]
-}
+/** The `<suffix>` files directly under one subfolder of a work folder, relative to it, or none when it is absent. */
+const filesIn = (folder: string, name: string, suffix: string): readonly string[] =>
+  physicalDirectory(join(folder, name))
+    ? entries(join(folder, name))
+        .filter((entry) => plainFile(entry) && entry.name.endsWith(suffix))
+        .map((entry) => `${name}/${entry.name}`)
+    : []
+
+/**
+ * A folder's run reports, relative to it: `reports/<name>.report.md`, then those in each declared focus folder, then any
+ * still at the top level.
+ */
+const runReports = (folder: string): readonly string[] => [
+  ...filesIn(folder, REPORTS_FOLDER, REPORT_SUFFIX),
+  ...focusFolders(folder).flatMap((id) => filesIn(folder, id, REPORT_SUFFIX)),
+  ...topLevelReports(folder)
+]
 
 /** Entries of a thread folder outside its old closed list, `decisions.md` and `<name>.report.md`. */
 export const threadFolderStray = (folder: string): readonly string[] =>
@@ -151,19 +195,15 @@ export const answeredReports = (folder: string): readonly string[] => {
 }
 
 /**
- * The briefs `briefs/<run>.md` whose run's report the folder has received, in `reports/<run>.report.md` or, for the
- * tolerance window, at the top level.
+ * The briefs whose run's report the folder has received: each `<focus-id>/<run>.brief.md`, and for the tolerance window
+ * each `briefs/<run>.md`, whose `<run>.report.md` sits in any focus folder, in `reports/` or at the top level.
  */
 export const receivedBriefs = (folder: string): readonly string[] => {
-  const briefs = join(folder, 'briefs')
-  if (!physicalDirectory(briefs)) return []
-  return entries(briefs)
-    .filter((entry) => plainFile(entry) && extname(entry.name) === '.md')
-    .filter((entry) => {
-      const name = `${entry.name.slice(0, -'.md'.length)}${REPORT_SUFFIX}`
-      return existsSync(join(folder, REPORTS_FOLDER, name)) || existsSync(join(folder, name))
-    })
-    .map((entry) => `briefs/${entry.name}`)
+  const received = new Set(runReports(folder).map((path) => basename(path, REPORT_SUFFIX)))
+  return [
+    ...focusFolders(folder).flatMap((id) => filesIn(folder, id, BRIEF_SUFFIX)),
+    ...filesIn(folder, BRIEFS_FOLDER, '.md')
+  ].filter((path) => received.has(basename(path, path.endsWith(BRIEF_SUFFIX) ? BRIEF_SUFFIX : '.md')))
 }
 
 /** A work package's discussion file, `discussions.md` before `queries.md`, or undefined when it has neither. */
@@ -285,7 +325,15 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
     if (stray.length > 0)
       closed.push({
         status: 'VIOLATION',
-        message: `a work folder holds only the five package files, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\`, \`feedback/\` and \`design/\` notes with their diagram sources and renders; outside the closed list: ${stray.join(', ')}`,
+        message: `a work folder holds only the five package files, one folder per focus area its \`work.md\` declares under \`## Focus\` holding briefs, reports and design notes with their diagram sources and renders, \`findings/\`, \`feedback/\` and, for the tolerance window, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\`; outside the closed list: ${stray.join(', ')}`,
+        subject: subject(folder)
+      })
+    const typed = typeFoldersBesideFocus(folder)
+    if (typed.length > 0)
+      closed.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `tolerance: a package that declares its focus areas keeps briefs, reports and design notes in their focus folders, not in type folders; move the contents of ${typed.map((name) => `\`${name}/\``).join(', ')} into the focus folder each belongs to`,
         subject: subject(folder)
       })
     const loose = topLevelReports(folder)
