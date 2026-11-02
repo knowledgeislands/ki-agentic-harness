@@ -11,7 +11,9 @@ Review additionally alongside material changes to the common capture contract.
 
 ## Last review
 
-On 2 November 2026, under an ACQUIRE-HELD-RENAME update from `personal.reg.assistant-terra`, held material moved from `captured/_held/` to a top-level `_held/`, which the `sources-acquire` store mirrors, and the Granola route for mixed-territory and unmapped meetings moved to `_held/granola/` or `_held/<territory>/granola/`. The tools-ki importer was asked to write there; until it does, the assistant moves its `_review` packages by hand.
+On 2 November 2026, under STORE-RENAME relayed by `personal.reg.assistant-terra`, Kris renamed the assistant's OneDrive store from `sources-acquire` to `sources-assistant`, and the store's name was updated throughout.
+
+On 2 November 2026, under an ACQUIRE-HELD-RENAME update from `personal.reg.assistant-terra`, held material moved from `captured/_held/` to a top-level `_held/`, which the `sources-assistant` store mirrors, and the Granola route for mixed-territory and unmapped meetings moved to `_held/granola/` or `_held/<territory>/granola/`. The tools-ki importer was asked to write there; until it does, the assistant moves its `_review` packages by hand.
 
 On 1 November 2026, under ACQUIRE-STRUCTURE-ALIGN-FINDINGS and ACQUIRE-HELD-RENAME from Acquire intake, now `personal.reg.assistant-terra`, the names were brought to Acquire's final structure: `processed/` became `curated/`, `captures/_review/` became `captured/_held/`, holding material awaiting incorporation, and `context/` was described as the routing graph with its one-way link rule. The Granola standard's mixed-territory and unmapped route moved to `<capture_root>/_held/granola/`; tools-ki still writes `_review` until its importer changes, and Acquire moves any such package by hand meanwhile.
 
