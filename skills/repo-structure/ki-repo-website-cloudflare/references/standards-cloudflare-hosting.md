@@ -95,7 +95,7 @@ The root `ki:site:build` / `ki:site:dev` aliases and local build/dev operations 
 
 ## Credential access
 
-When a run is separately authorised to read Cloudflare credentials, it reads them only through `~/bin/cf_token`. No territory's notes record credential item or token ids, and credential values never enter output or tracked files. Kris adopted the Cloudflare half of RUN-SECRETS on 25 October 2026; this is an access rule, not authority for a credential read or a Cloudflare operation. The background-run [authority limits](../../../governance/ki-delegation/references/standards-background-runs.md#authority-tiers) still apply.
+When a run is separately authorised to read Cloudflare credentials, it reads them only through `~/bin/cf-token`. No territory's notes record credential item or token ids, and credential values never enter output or tracked files. Kris adopted the Cloudflare half of RUN-SECRETS on 25 October 2026; this is an access rule, not authority for a credential read or a Cloudflare operation. The background-run [authority limits](../../../governance/ki-delegation/references/standards-background-runs.md#authority-tiers) still apply.
 
 ## Zero Trust team naming
 
