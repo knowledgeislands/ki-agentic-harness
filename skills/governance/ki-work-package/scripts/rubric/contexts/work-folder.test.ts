@@ -135,7 +135,7 @@ Scope.
 Each focus area has an id, which is also its folder.
 
 1. \`layout\` — work package layout.
-2. \`aside\` — anything else.
+2. \`_emerging\` — anything else.
 `
 
 describe('focus folders', () => {
@@ -143,7 +143,7 @@ describe('focus folders', () => {
     const root = fixture()
     const folder = pkg(root)
     write(root, join(WORK, 'work.md'), FOCUS_WORK)
-    expect(focusIds(folder)).toEqual(['layout', 'aside'])
+    expect(focusIds(folder)).toEqual(['layout', '_emerging'])
     write(root, join(WORK, 'work.md'), '# ki.ways-of-working\n\n## Goals\n\n- `layout` is not a focus\n')
     expect(focusIds(folder)).toEqual([])
   })
@@ -156,7 +156,7 @@ describe('focus folders', () => {
     write(root, join(WORK, 'layout', 'pilot.report.md'), '# Run\n')
     write(root, join(WORK, 'layout', 'options.md'), '# Options\n')
     write(root, join(WORK, 'layout', 'model', 'model.svg'), '<svg/>\n')
-    write(root, join(WORK, 'aside', 'notes.md'), '# Notes\n')
+    write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
     expect(workFolderStray(folder)).toEqual([])
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
 
@@ -185,12 +185,12 @@ describe('focus folders', () => {
     write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
     write(root, join(WORK, 'layout', 'pilot.report.md'), queries('PMO-CI'))
     write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
-    write(root, join(WORK, 'aside', 'early.brief.md'), '# Brief\n')
+    write(root, join(WORK, '_emerging', 'early.brief.md'), '# Brief\n')
     write(root, join(WORK, 'reports', 'early.report.md'), queries('OPEN-ONE'))
-    write(root, join(WORK, 'aside', 'open.brief.md'), '# Brief\n')
+    write(root, join(WORK, '_emerging', 'open.brief.md'), '# Brief\n')
     const outcomes = folderOutcomes(root)
     expect(outcomes.answered[0]?.message).toEndWith(': layout/pilot.report.md')
-    expect(outcomes.briefs[0]?.message).toEndWith(': layout/pilot.brief.md, aside/early.brief.md')
+    expect(outcomes.briefs[0]?.message).toEndWith(': layout/pilot.brief.md, _emerging/early.brief.md')
   })
 })
 

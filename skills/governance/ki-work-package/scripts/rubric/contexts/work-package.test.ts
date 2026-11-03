@@ -685,7 +685,7 @@ test('under DISCUSSIONS a package may keep discussions.md or queries.md, its H1 
   ])
 })
 
-const FOCUS = ['## Focus', '', '1. `layout` — the package layout.', '2. `aside` — anything else.', ''].join('\n')
+const FOCUS = ['## Focus', '', '1. `layout` — the package layout.', '2. `_emerging` — anything else.', ''].join('\n')
 const DEFINITION = [
   '# ki.ways-of-working',
   '',
@@ -699,7 +699,7 @@ const DEFINITION = [
   ''
 ].join('\n')
 
-test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, always listing aside', () => {
+test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, always listing _emerging', () => {
   const repository = workFixture()
   writePackage(
     repository,
@@ -711,13 +711,34 @@ test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, always li
   writePackage(
     repository,
     'ki.ways-of-working',
-    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace('`aside`', '`reports`')}` })
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace('`_emerging`', '`reports`')}` })
   )
   const outcomes = run(RECORD, 'RECORD-2', context(repository))
   expect(outcomes).toContainEqual(
-    expect.objectContaining({ message: expect.stringContaining('always including `aside`') })
+    expect.objectContaining({ message: expect.stringContaining('always including `_emerging`') })
   )
   expect(outcomes).toContainEqual(expect.objectContaining({ message: expect.stringContaining('invalid: reports') }))
+})
+
+test('under EMERGING-FOCUS a Focus section still listing aside warns for the tolerance window', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace('`_emerging`', '`aside`')}` })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
+    expect.objectContaining({ level: 'WARN', message: expect.stringContaining('rename it and its folder `_emerging`') })
+  ])
+
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace('`_emerging`', '`_other`')}` })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('invalid: _other') })
+  )
 })
 
 test('a Focus section above Goals warns for the tolerance window, and anywhere else fails', () => {

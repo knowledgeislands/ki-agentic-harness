@@ -42,6 +42,16 @@ const BRIEF_SUFFIX = '.brief.md'
 /** A focus area's id, leading its list item under `work.md`'s `## Focus` as a code span. */
 const FOCUS_ITEM = /^(?:\d+[.)]|[-*+])[ \t]+`([^`\n]+)`/
 export const FOCUS_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+/**
+ * The holding area every Focus section lists under EMERGING-FOCUS (3 November 2026): its leading underscore sorts it
+ * first and marks it as no theme, the one exception to the kebab-case id rule.
+ */
+export const EMERGING_FOCUS = '_emerging'
+/** The holding area's name before EMERGING-FOCUS, still read for the tolerance window. */
+export const LEGACY_EMERGING_FOCUS = 'aside'
+/** A focus id names its folder: kebab-case, or the holding area, and never a reserved folder's name. */
+export const focusIdNamesFolder = (id: string): boolean =>
+  (FOCUS_ID.test(id) || id === EMERGING_FOCUS) && !RESERVED_FOLDERS.has(id)
 /** Design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
 const DESIGN_EXTENSIONS: ReadonlySet<string> = new Set(['.md', '.json', '.mmd', '.svg', '.html'])
 /** More open queries than this in the discussion file is a coordination smell, warned on rather than failed. */
@@ -115,8 +125,7 @@ export const focusIds = (folder: string): readonly string[] => {
 }
 
 /** The declared focus ids that name a folder, a valid id and no reserved folder name. */
-const focusFolders = (folder: string): readonly string[] =>
-  focusIds(folder).filter((id) => FOCUS_ID.test(id) && !RESERVED_FOLDERS.has(id))
+const focusFolders = (folder: string): readonly string[] => focusIds(folder).filter(focusIdNamesFolder)
 
 /**
  * Entries of a work folder outside its closed list: each declared focus folder read as `design/` is, its briefs,

@@ -688,7 +688,7 @@ describe('work files', () => {
     const definition = readFileSync(join(folder, 'work.md'), 'utf8')
     writeFileSync(
       join(folder, 'work.md'),
-      `${definition}\n## Focus\n\n1. \`layout\` — the layout.\n2. \`aside\` — the rest.\n`
+      `${definition}\n## Focus\n\n1. \`layout\` — the layout.\n2. \`_emerging\` — the rest.\n`
     )
     mkdirSync(join(folder, 'layout'))
     writeFileSync(join(folder, 'layout', 'pilot.report.md'), '# Run\n\nDelivered KI-HARNESS-GOV-210.\n')

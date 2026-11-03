@@ -7,7 +7,14 @@ import type {
   RubricPublicationContext,
   RubricSession
 } from '../../shared/rubric.ts'
-import { FOCUS_ID, type FolderOutcomes, focusIdsIn, folderOutcomes, RESERVED_FOLDERS } from './work-folder.ts'
+import {
+  EMERGING_FOCUS,
+  type FolderOutcomes,
+  focusIdNamesFolder,
+  focusIdsIn,
+  folderOutcomes,
+  LEGACY_EMERGING_FOCUS
+} from './work-folder.ts'
 
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
 const WORK_FILE = 'work.md'
@@ -64,9 +71,11 @@ const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
   'created_at'
 ])
 const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
-/** The optional Focus section LAYOUT-PILLARS (2 November 2026) admits after Scope, always listing `aside`. */
+/**
+ * The optional Focus section LAYOUT-PILLARS (2 November 2026) admits after Scope, always listing the holding area,
+ * `_emerging` under EMERGING-FOCUS (3 November 2026) and `aside` for its tolerance window.
+ */
 const FOCUS_HEADING = 'Focus'
-const ALWAYS_FOCUS = 'aside'
 const STATE_REQUIRED = ['id', 'state', 'since'] as const
 /** The thread capability fields Kris set under FOOTER-CAPABILITY-STATUS-2 on 1 November 2026. */
 const CAPABILITIES = ['listening', 'syncing'] as const
@@ -881,15 +890,25 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
     if ((definition.get(heading)?.trim().length ?? 0) === 0) fail(work, `${heading} must say something`)
   if (definition.has(FOCUS_HEADING)) {
     const ids = focusIdsIn(definition.get(FOCUS_HEADING) ?? '')
-    const invalid = ids.filter((id) => !FOCUS_ID.test(id) || RESERVED_FOLDERS.has(id))
+    const invalid = ids.filter((id) => !focusIdNamesFolder(id))
     const repeated = ids.filter((id, index) => ids.indexOf(id) !== index)
-    if (!ids.includes(ALWAYS_FOCUS))
+    if (ids.includes(LEGACY_EMERGING_FOCUS) && !ids.includes(EMERGING_FOCUS))
+      evidence.schema.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `tolerance: ## ${FOCUS_HEADING} lists \`${LEGACY_EMERGING_FOCUS}\`; rename it and its folder \`${EMERGING_FOCUS}\``,
+        subject: work.path
+      })
+    else if (!ids.includes(EMERGING_FOCUS))
       fail(
         work,
-        `## ${FOCUS_HEADING} lists each focus area by its id as a code span, always including \`${ALWAYS_FOCUS}\``
+        `## ${FOCUS_HEADING} lists each focus area by its id as a code span, always including \`${EMERGING_FOCUS}\``
       )
     if (invalid.length > 0)
-      fail(work, `a focus id is a kebab-case folder name, never a type folder's; invalid: ${invalid.join(', ')}`)
+      fail(
+        work,
+        `a focus id is a kebab-case folder name or \`${EMERGING_FOCUS}\`, never a type folder's; invalid: ${invalid.join(', ')}`
+      )
     if (repeated.length > 0) fail(work, `each focus id is listed once; repeated: ${[...new Set(repeated)].join(', ')}`)
   }
   if (typeof fields.description !== 'string' || fields.description.trim().length === 0)
