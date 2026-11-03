@@ -487,6 +487,29 @@ test('a coordinator reply that moves the mark, changes the state or answers wher
   }
 })
 
+// MARK-STATUS, Kris on 3 November 2026: "when we take a mark, yes, we should
+// do a summary, and also the summary should include the status table."
+test('the Summary after a mark closes with the status table before the banner, its open points marked pending', () => {
+  const status = standard.slice(standard.indexOf('- **Status:**'), standard.indexOf('- **Plain English:**'))
+  expect(status).toContain('MARK-STATUS')
+  const parts = [
+    '1. **The table**',
+    '2. **Out of scope, with other workers**',
+    '3. **Waiting on you**',
+    '4. **What I heard**'
+  ]
+  const at = parts.map((part) => status.indexOf(part))
+  expect(at.every((index) => index > 0)).toBe(true)
+  expect([...at].sort((a, b) => a - b)).toEqual(at)
+  for (const tag of ['GOAL-SETTING', 'STATUS-DETAIL', 'WHAT-I-HEARD']) {
+    expect(status).toContain(`<!-- pending Kris: ${tag}, held at option a)`)
+  }
+  expect(status).toContain('| Focus | Where it stands | Waiting on you |')
+  expect(status.indexOf('## Status')).toBeGreaterThan(0)
+  expect(standard).toContain('after `## Queries` and before the [glyph banner](#banner)')
+  expect(outputStyle).toContain('closing after Queries and before the banner with `## Status`')
+})
+
 test('the authoritative standard retains all five hard rules', () => {
   const line = standard
   expect(line).toContain(
