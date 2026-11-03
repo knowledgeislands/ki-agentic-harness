@@ -39,6 +39,11 @@ Complete enumeration, faithful source projections, the capture as the only recor
   - _Review prompt:_ Was each marker explicitly confirmed, checked against its single committed capture, and read back with every original membership intact?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **ACQUIRE-5 [J] — Triaged-to-Captured move never strands a note** — Declared capture_moves pair same-territory selected folders by ID, never alongside acquired_folder_id, and a confirmed move adds Captured and reads it back before removing Triaged and reading back again. (standards-granola-acquisition.md#triaged-to-captured-moves)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Was each move confirmed from exactly one Triaged folder into its private Captured pair, with both read-backs exact and no note left in neither folder?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
 ## ROUTING — Granola receiver routing
 

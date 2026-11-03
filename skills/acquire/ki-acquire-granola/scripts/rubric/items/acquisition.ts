@@ -47,6 +47,16 @@ export const ACQUIRE = {
       judgment: judgment(
         'Was each marker explicitly confirmed, checked against its single committed capture, and read back with every original membership intact?'
       )
+    },
+    {
+      code: 'ACQUIRE-5',
+      title: 'Triaged-to-Captured move never strands a note',
+      description:
+        'Declared capture_moves pair same-territory selected folders by ID, never alongside acquired_folder_id, and a confirmed move adds Captured and reads it back before removing Triaged and reading back again.',
+      sources: ['standards-granola-acquisition.md#triaged-to-captured-moves'],
+      judgment: judgment(
+        'Was each move confirmed from exactly one Triaged folder into its private Captured pair, with both read-backs exact and no note left in neither folder?'
+      )
     }
   ]
 } satisfies RubricFamily<GranolaRubricContext, GranolaRubricContext>

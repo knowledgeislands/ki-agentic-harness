@@ -45,7 +45,7 @@ Govern ChatGPT conversation capture: honest digest or full-thread coverage, rout
 
 #### `ki-acquire-granola`
 
-Acquire Granola meetings through read-only MCP calls: complete date windows, folder routing, transcripts and screenshots, one capture per meeting UUID, skipping on Acquired-folder membership. Use for Granola import or audit; `ki-acquire` owns the common contract, tools-ki owns CLI execution, and marking or retirement needs separate approval.
+Acquire Granola meetings through read-only MCP calls: complete date windows, folder routing, transcripts and screenshots, one capture per meeting UUID, skipping on Acquired or Captured membership. Use for Granola import or audit; `ki-acquire` owns the common contract, tools-ki owns CLI execution, and marking or retirement needs separate approval.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

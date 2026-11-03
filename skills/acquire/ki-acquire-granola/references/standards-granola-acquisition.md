@@ -2,7 +2,7 @@
 
 ## Scope
 
-This standard adds Granola's completeness and capability rules to the `ki-acquire` common contract. It governs read-only import through `ki acquire import --adapter granola` and the separately confirmed additive Acquired marker. `tools-ki` owns execution; Knowledge Islands Principal owns the provider-neutral lifecycle.
+This standard adds Granola's completeness and capability rules to the `ki-acquire` common contract. It governs read-only import through `ki acquire import --adapter granola`, the separately confirmed additive Acquired marker and the separately confirmed Triaged-to-Captured move. `tools-ki` owns execution; Knowledge Islands Principal owns the provider-neutral lifecycle.
 
 Acquisition keeps no ledger, checkpoint, journal or flagged-identity file. The committed capture is the only record: its front matter carries the source identity, account binding, hashes and folder memberships, and Git history holds earlier bytes. An interrupted run is simply repeated.
 
@@ -15,6 +15,7 @@ Acquisition keeps no ledger, checkpoint, journal or flagged-identity file. The c
 - [Repeat runs and amendments](#repeat-runs-and-amendments)
 - [Acquisition fidelity](#acquisition-fidelity)
 - [Acquired marker](#acquired-marker)
+- [Triaged-to-Captured moves](#triaged-to-captured-moves)
 - [Source retirement](#source-retirement)
 
 ## Owned notes and source boundary
@@ -41,7 +42,7 @@ With `capture_root` and `folder_territories`, each meeting has one package at `<
 
 ## Repeat runs and amendments
 
-Members of the Acquired folder are skipped on membership alone, before any content read. For other meetings, an existing capture is found by UUID wherever it is filed beneath the capture directory and kept, not overwritten. `--refresh` rewrites it in place at its existing path and keeps a transcript the provider no longer returns; `--refresh-acquired`, which implies `--refresh`, re-reads Acquired members too. Several captures of one meeting, or a capture bound to another account, are always kept and reported. A skip claims nothing about unchanged source content, and a missing identity or changed entitlement never authorises deletion.
+Members of the Acquired folder, or of any declared Captured folder, are skipped on membership alone, before any content read. For other meetings, an existing capture is found by UUID wherever it is filed beneath the capture directory and kept, not overwritten. `--refresh` rewrites it in place at its existing path and keeps a transcript the provider no longer returns; `--refresh-acquired`, which implies `--refresh`, re-reads Acquired and Captured members too. Several captures of one meeting, or a capture bound to another account, are always kept and reported. A skip claims nothing about unchanged source content, and a missing identity or changed entitlement never authorises deletion.
 
 ## Acquisition fidelity
 
@@ -51,9 +52,26 @@ Screenshots are attachments. Reconcile the listing count with distinct attachmen
 
 ## Acquired marker
 
-The optional `acquired_folder_id` names an owner-controlled private folder, distinct from every territory selector. Its membership marks a meeting as dealt with. No import marks implicitly.
+The optional `acquired_folder_id` names an owner-controlled private folder, distinct from every territory selector. Its membership marks a meeting as dealt with. A repository declares either `acquired_folder_id` or [`capture_moves`](#triaged-to-captured-moves), never both. No import marks implicitly.
 
 `ki acquire mark --adapter granola` previews an exact window and optional UUID set; only `--confirm` invokes `add_note_to_folder`. Before adding, verify the account, the folder's privacy, a single committed capture and its files, an available transcript, fresh hashes matching the capture's front matter, screenshot UUIDs and bytes, and unchanged original memberships; then read back the original memberships plus Acquired. Failures stay visible without blocking independent successes. The marker removes no membership and grants neither reconciliation nor retirement.
+
+## Triaged-to-Captured moves
+
+Instead of `acquired_folder_id`, a repository may declare `capture_moves`, a table pairing each territory's Triaged folder ID with that territory's private Captured folder ID:
+
+```toml
+[skills.ki-acquire-granola.capture_moves]
+"<triaged-folder-id>" = "<captured-folder-id>"
+```
+
+Pairs are declared by ID, because a renamed folder keeps its ID but changes its title. The table requires `capture_root` and `folder_territories`. Both folders of a pair must be in `folder_ids` and map to the same territory, and each folder appears once across the table, so Triaged and Captured are always distinct. Every Captured folder must be owner-controlled and private with audience `only you`, checked at import, at marking and again before each move. A repository uses `capture_moves` or `acquired_folder_id`, never both; declaring both is refused.
+
+Captured membership counts as done, as Acquired membership does: import skips the meeting on membership alone, and `ki acquire mark` reports it as already captured. A meeting is moved only from exactly one declared Triaged folder. A meeting in several Triaged folders, in Triaged and Captured together, or in no declared Triaged folder stays an exception with its reason.
+
+`ki acquire mark --adapter granola` previews; only `--confirm` writes. Before any write, Granola must advertise both `add_note_to_folder` and `remove_note_from_folder`. Each meeting first passes the same verification as the [Acquired marker](#acquired-marker). The move then adds the meeting to Captured and reads back exactly its original memberships plus Captured; only then does it remove the meeting from Triaged and read back exactly its original memberships without Triaged and with Captured. If the addition fails or does not show, the meeting stays in Triaged. If the removal fails or does not show, the meeting stays in both folders. Either way it is reported, never left in neither folder, and independent successes continue.
+
+Marking never rewrites captures, so a capture's front matter keeps the Triaged folder until it is refreshed. The move deletes nothing from Granola and grants neither reconciliation nor retirement.
 
 ## Source retirement
 

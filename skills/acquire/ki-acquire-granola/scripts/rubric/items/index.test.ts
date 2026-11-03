@@ -8,6 +8,7 @@ describe('Granola acquisition catalogue', () => {
       'ACQUIRE-2',
       'ACQUIRE-3',
       'ACQUIRE-4',
+      'ACQUIRE-5',
       'ROUTING-1',
       'ROUTING-2',
       'ROUTING-3',
