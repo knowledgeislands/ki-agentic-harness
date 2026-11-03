@@ -25,6 +25,8 @@ test('the Git catalogue exposes the complete session contract', () => {
     'BRANCH-2',
     'BRANCH-3',
     'HYGIENE-1',
+    'HYGIENE-2',
+    'HYGIENE-3',
     'CLEAN-1',
     'CLEAN-2',
     'CLEAN-3',
@@ -58,7 +60,7 @@ test('judgment criteria expose complete v1 review metadata', () => {
     }[]
   ).flatMap((family) => family.items.map((item) => item.judgment))
 
-  expect(judgmentItems).toHaveLength(14)
+  expect(judgmentItems).toHaveLength(16)
   for (const judgment of judgmentItems) {
     expect(judgment?.scope).not.toBeEmpty()
     expect(judgment?.prompt).not.toBeEmpty()

@@ -4,12 +4,12 @@
   "type": "architecture",
   "source": {
     "file": "skill-area-agentic-systems.architecture.json",
-    "sha256": "0b11f114bd8531e8487e031ec8bfc00d7bc5e36768fb0c9a67d20d176afb9da3",
+    "sha256": "c2185dd824b6bee388df1e09f0db38b6bd8ad70f871bc2b4992a3f669e4e4d6f",
     "bytes": 6123
   },
   "html": {
     "file": "skill-area-agentic-systems.html",
-    "sha256": "dcdcffaa265ed772ed6a161e807f062e206995f0e7c65b0f9c86700d7a8a7864",
+    "sha256": "e4ff771d757d4526c8a7c21b8483cb2710ff3d7269938c713a0259daf97fedd1",
     "bytes": 821220
   },
   "renderer": {
