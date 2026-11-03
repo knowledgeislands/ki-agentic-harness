@@ -489,8 +489,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="392" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F1</text>
         </g>
 
-        <g id="node-ki-design-system" data-node-id="ki-design-system" data-node-label="ki-design-system" tabindex="0" role="button" aria-label="Focus ki-design-system, design · opt-in, Design · 2 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="design · opt-in" data-node-tag="R9 · CM · F8" data-node-context="Design · 2 skills">
-          <title>ki-design-system · design · opt-in · Design · 2 skills · R9 · CM · F8</title>
+        <g id="node-ki-design-system" data-node-id="ki-design-system" data-node-label="ki-design-system" tabindex="0" role="button" aria-label="Focus ki-design-system, design · opt-in, Design · 2 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="design · opt-in" data-node-tag="R9 · CM · F9" data-node-context="Design · 2 skills">
+          <title>ki-design-system · design · opt-in · Design · 2 skills · R9 · CM · F9</title>
           <rect x="32" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="32" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 70) scale(0.6875)">
@@ -499,7 +499,7 @@ rect.c-bg-rect { fill: var(--bg); }
           </g>
           <text data-node-label="" x="136" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-design-system</text>
         <text x="136" y="116" class="t-muted" font-size="9" text-anchor="middle">design · opt-in</text>
-        <text x="136" y="132" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F8</text>
+        <text x="136" y="132" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F9</text>
         </g>
 
         <!-- Connection labels -->

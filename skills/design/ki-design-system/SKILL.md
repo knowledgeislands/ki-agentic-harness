@@ -14,14 +14,15 @@ argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | refresh'
 
 # Knowledge Islands Design System standard
 
-You are applying the **Knowledge Islands Design System standard** - one way to keep the knowledge behind a user interface: values in the token source, the practical how in a design guide, stable behaviour in Specifications, the why in Decision Records, and checks that keep them true. Read [the Design System standard](references/standards-design-system.md) before establishing, auditing or changing a design system; [the rubric](references/rubric.md) publishes its checkable criteria, [exemplars](references/exemplars.md) point at a conforming repository, and [sources](references/sources.md) records its provenance.
+You are applying the **Knowledge Islands Design System standard** - one way to keep the knowledge behind a user interface: values in the token source, the practical how in a design guide, stable behaviour in Specifications, the why in Decision Records, and checks that keep them true. Read [the Design System standard](references/standards-design-system.md) before establishing, auditing or changing a design system; [the rubric](references/rubric.md) publishes its checkable criteria, [the annotated board](references/standards-annotated-board.md) gives the method for the interface's standing review board, [exemplars](references/exemplars.md) point at a conforming repository, and [sources](references/sources.md) records its provenance.
 
 ## What this skill owns
 
 1. **The placement model** - which home holds each kind of design knowledge: values, how, what, why, when and proof.
-2. **The design work method** - brief, options, decision, build, consolidate and retire, and what each stage leaves behind.
-3. **The floor** - four requirements every adopting design system meets: one home for values, readable contrast, meaning never by colour alone, and keyboard parity.
-4. **The mechanical checker** - `ki repo audit --skill ki-design-system` checks the `.ki.toml` declaration, that the token sources, design guide and design checks exist, that the guide names its token sources, and that the guide repeats no literal colour value.
+2. **The design work method** - review, brief, options, decision, build, consolidate and retire, and what each stage leaves behind.
+3. **The annotated board** - the standing projection of the built interface, with numbered pages and coded regions the owner quotes, and [`scripts/annotate-board.ts`](scripts/annotate-board.ts), which prints the in-page region collector and builds the coded overlays and their local previews from a site's board plan and screenshots.
+4. **The floor** - four requirements every adopting design system meets: one home for values, readable contrast, meaning never by colour alone, and keyboard parity.
+5. **The mechanical checker** - `ki repo audit --skill ki-design-system` checks the `.ki.toml` declaration, that the token sources, design guide and design checks exist, that the guide names its token sources, and that the guide repeats no literal colour value.
 
 A repository's own design guide, tokens and decisions stay with that repository. The formats of guides, Specifications, Decision Records and work records stay with `ki-guides`, `ki-specs`, `ki-decision-records` and `ki-work-roadmap`; token build mechanics for content sites stay with `ki-repo-website-content`.
 
@@ -48,6 +49,6 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 ## Notes
 
 - **Method, not content** - this skill never prescribes how an interface looks. A repository's guide, tokens and decisions do that; the skill says where they live and how they stay true.
-- **Design work** - when a request changes what readers see, follow the stages in [Design work, from brief to rule](references/standards-design-system.md#design-work-from-brief-to-rule): brief, options and an owner's decision come before the build, and consolidation into the guide, Specifications, Decision Records and checks comes after it.
-- **Projections** - a design tool outside the repository, such as a design-system artifact or a canvas, is refreshed from the token source and the guide and is never edited as the source.
+- **Design work** - when a request changes what readers see, follow the stages in [Design work, from brief to rule](references/standards-design-system.md#design-work-from-brief-to-rule): review on the annotated board, then brief, options and an owner's decision come before the build, and consolidation into the guide, Specifications, Decision Records and checks comes after it.
+- **Projections** - a design tool outside the repository, such as a design-system artifact or a canvas, is refreshed from the token source and the guide and is never edited as the source; the annotated board is refreshed from the running interface.
 - The `ki` host owns findings, dry-run publication, reporting, and post-conform verification; judgment aspects are counted as unevaluated rather than emitted as synthetic mechanical findings.

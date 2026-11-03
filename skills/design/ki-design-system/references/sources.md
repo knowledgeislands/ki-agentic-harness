@@ -12,7 +12,9 @@
 | [The Decision Records standard](../../../governance/ki-decision-records/references/standards-decision-records.md) | Prefix choice and the living-record rule for design decisions | 2026-10-11    |
 | [The design-loop standard](../../../change-management/ki-work-design/references/standards-work-design.md) | The boundary with shape-level design, and temporary artefacts | 2026-10-11    |
 | `5g-emerge-phase3` at `ceaf95344da3564693302a359d3a20959f0b0a19`                             | The pilot: tokens, guide, decision record and checks       | 2026-10-11    |
+| An annotated design board for a knowledge-base viewer, 2 and 3 November 2026                | The annotated board: numbering, shells and components, region codes, measuring, and the first board tooling | 2026-11-03    |
 
 ## Last review
 
+- 2026-11-03 - Added the annotated board from its first use: Review as stage 0 of design work, the board as a projection of the running interface, DSYS-8 asking whether it was refreshed, and `scripts/annotate-board.ts`, generalised from the first board's tooling, with its pages, selectors and canvas format left to each site.
 - 2026-10-11 - Created from the 5G-EMERGE Phase 3 pilot. Confirmed the placement model against the current Guides, Specifications, Decision Records and design-loop standards, and the floor against WCAG 2.2.

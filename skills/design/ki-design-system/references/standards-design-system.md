@@ -94,14 +94,15 @@ A design decision gets a Decision Record when a future maintainer could reasonab
 
 ## Design work, from brief to rule
 
-A design question that changes what readers see moves through six stages. Each produces something, and only the last two leave anything durable.
+A design question that changes what readers see starts from a review of the interface as built and moves through six stages. Each produces something, and only the last two leave anything durable besides the board the review reads from.
 
+0. **Review.** The owner reviews the interface on its [annotated board](standards-annotated-board.md), a projection refreshed from the running interface, and quotes its labelled regions. The findings become the brief.
 1. **Brief.** The purpose, the audience and their devices, the real data the design must hold (including its awkward cases: empty, provisional, imprecise), the constraints, what success looks like, and the open questions. The owner writes or approves it.
-2. **Options.** Two or three directions that differ in their trade-offs, not only in style, drawn on the real tokens and the real data. Each names what it gains and what it costs against the brief. `ki-design-inspiration` may supply references.
+2. **Options.** Two or three directions that differ in their trade-offs, not only in style, drawn on the real tokens and the real data, and placed on the board beside the screenshot they answer. Each names what it gains and what it costs against the brief. `ki-design-inspiration` may supply references.
 3. **Decision.** The owner chooses, combines or rejects. The choice and its reasons are recorded in the work record's Discussion.
 4. **Build.** The chosen design is built in the repository against the guide and checks.
 5. **Consolidate.** The outcome moves to its homes: new values to the token source, new rules to the design guide, new stable behaviour to a Specification, a new or changed decision to a Decision Record, and every new checkable rule to a check.
-6. **Retire.** The brief, option boards, canvases and screenshots are working material. Once consolidated, they are not kept as documents: the work record that summarised them is pruned with the rest of the roadmap, and Git history keeps what was considered.
+6. **Retire.** The brief, option boards, canvases and screenshots are working material. Once consolidated, they are not kept as documents: the work record that summarised them is pruned with the rest of the roadmap, and Git history keeps what was considered. The annotated board itself stays, because it is a projection rather than working material; its next refresh shows the built design, and the mock-ups leave it.
 
 A design question about the shape of a Project or a model that several repositories share follows `ki-work-design` instead. A small change that needs no options, such as applying an existing component, goes straight to build and consolidate.
 
@@ -127,7 +128,12 @@ Every design system that adopts this standard meets four requirements, whatever 
 
 ## Projections
 
-A design tool outside the repository, such as a design-system artifact, a Figma library or a design canvas, is a projection of the token source and the guide. It is refreshed from them and never edited as the source. The guide names each projection and where it lives; the projection carries the date and source revision it was last refreshed from, so the guide holds no state that dates. A projection that disagrees with the token source is stale, whatever its date.
+A design tool outside the repository is a projection, refreshed from its source and never edited as the source. There are two kinds:
+
+- **Projections of the system** - a design-system artifact, a Figma library or a design canvas of components is refreshed from the token source and the guide.
+- **The annotated board** - an interface with readers keeps an [annotated board](standards-annotated-board.md): screenshots of each view and shell state as built, with labelled regions. Its source is the running interface, and it is refreshed from it whenever the interface's code changes.
+
+The guide names each projection and where it lives; the projection carries the date and source revision it was last refreshed from, so the guide holds no state that dates. A projection that disagrees with its source, the token source or what the interface draws, is stale, whatever its date.
 
 ## Configuration
 
@@ -150,4 +156,4 @@ All three keys are required, and no other key is recognised.
 
 ## Judgment boundary
 
-The checker can prove that the declared files exist, that the guide names its token sources, and that the guide repeats no literal colour value. It cannot prove that knowledge sits in its right home, that the floor holds on every page, that every checkable rule has a check, or that working material has been consolidated and retired. Review asks those questions, page by page and rule by rule.
+The checker can prove that the declared files exist, that the guide names its token sources, and that the guide repeats no literal colour value. It cannot prove that knowledge sits in its right home, that the floor holds on every page, that every checkable rule has a check, that working material has been consolidated and retired, or that the annotated board shows the interface as it now draws. Review asks those questions, page by page and rule by rule.
