@@ -699,12 +699,12 @@ const DEFINITION = [
   ''
 ].join('\n')
 
-test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, always listing _emerging', () => {
+test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, listing _emerging only while used', () => {
   const repository = workFixture()
   writePackage(
     repository,
     'ki.ways-of-working',
-    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS}` })
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace(/^2\. .*\n/m, '')}` })
   )
   expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
 
@@ -713,11 +713,9 @@ test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, always li
     'ki.ways-of-working',
     packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${FOCUS.replace('`_emerging`', '`reports`')}` })
   )
-  const outcomes = run(RECORD, 'RECORD-2', context(repository))
-  expect(outcomes).toContainEqual(
-    expect.objectContaining({ message: expect.stringContaining('always including `_emerging`') })
-  )
-  expect(outcomes).toContainEqual(expect.objectContaining({ message: expect.stringContaining('invalid: reports') }))
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
+    expect.objectContaining({ message: expect.stringContaining('invalid: reports') })
+  ])
 })
 
 test('under EMERGING-FOCUS a Focus section still listing aside warns for the tolerance window', () => {

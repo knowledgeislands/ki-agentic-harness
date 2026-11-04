@@ -19,12 +19,13 @@ const DECISIONS_LOG = 'decisions.md'
 const DISCUSSION_FILES = ['discussions.md', 'queries.md'] as const
 const STATE_FILE = 'state.md'
 const WORK_FILE = 'work.md'
+const MESSAGES_FILE = 'messages.md'
 /** The five package files; a single-file work folder holds only `work.md` of them. */
 const PACKAGE_FILES: ReadonlySet<string> = new Set([
   WORK_FILE,
   STATE_FILE,
   ...DISCUSSION_FILES,
-  'messages.md',
+  MESSAGES_FILE,
   DECISIONS_LOG
 ])
 /** Findings, briefs and feedback packages are Markdown files directly under their folder. */
@@ -43,8 +44,8 @@ const BRIEF_SUFFIX = '.brief.md'
 const FOCUS_ITEM = /^(?:\d+[.)]|[-*+])[ \t]+`([^`\n]+)`/
 export const FOCUS_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 /**
- * The holding area every Focus section lists under EMERGING-FOCUS (3 November 2026): its leading underscore sorts it
- * first and marks it as no theme, the one exception to the kebab-case id rule.
+ * The holding area of EMERGING-FOCUS (3 November 2026): its leading underscore sorts it first and marks it as no theme,
+ * the one exception to the kebab-case id rule. Under EMERGING-ONLY-WHEN-USED it is listed only while it holds something.
  */
 export const EMERGING_FOCUS = '_emerging'
 /** The holding area's name before EMERGING-FOCUS, still read for the tolerance window. */
@@ -147,6 +148,23 @@ export const workFolderStray = (folder: string): readonly string[] => {
     return entries(join(folder, entry.name))
       .filter((inner) => !(plainFile(inner) && extname(inner.name) === '.md'))
       .map((inner) => `${entry.name}/${inner.name}${inner.isDirectory() ? '/' : ''}`)
+  })
+}
+
+/** A discussion point or message line naming `_emerging` in its `focus:` slot. */
+const EMERGING_SLOT = new RegExp(`\\bfocus:[ \\t]*\`?${EMERGING_FOCUS}\\b`)
+
+/**
+ * Whether a work folder lists `_emerging` while it holds nothing, under EMERGING-ONLY-WHEN-USED: no file in its
+ * folder and no discussion point or message line naming it.
+ */
+export const idleEmerging = (folder: string): boolean => {
+  if (!focusIds(folder).includes(EMERGING_FOCUS)) return false
+  const area = join(folder, EMERGING_FOCUS)
+  if (physicalDirectory(area) && entries(area).length > 0) return false
+  return ![...DISCUSSION_FILES, MESSAGES_FILE].some((name) => {
+    const path = join(folder, name)
+    return existsSync(path) && lstatSync(path).isFile() && EMERGING_SLOT.test(readFileSync(path, 'utf8'))
   })
 }
 
@@ -343,6 +361,13 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
         status: 'VIOLATION',
         level: 'WARN',
         message: `tolerance: a package that declares its focus areas keeps briefs, reports and design notes in their focus folders, not in type folders; move the contents of ${typed.map((name) => `\`${name}/\``).join(', ')} into the focus folder each belongs to`,
+        subject: subject(folder)
+      })
+    if (idleEmerging(folder))
+      closed.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `\`## Focus\` lists \`${EMERGING_FOCUS}\` while it holds nothing; drop it from the list and remove its folder until something new fits no named focus`,
         subject: subject(folder)
       })
     const loose = topLevelReports(folder)

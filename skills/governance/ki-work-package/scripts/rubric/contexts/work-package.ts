@@ -72,8 +72,9 @@ const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
 ])
 const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
 /**
- * The optional Focus section LAYOUT-PILLARS (2 November 2026) admits after Scope, always listing the holding area,
- * `_emerging` under EMERGING-FOCUS (3 November 2026) and `aside` for its tolerance window.
+ * The optional Focus section LAYOUT-PILLARS (2 November 2026) admits after Scope. It lists the holding area `_emerging`
+ * of EMERGING-FOCUS (3 November 2026) only while it holds something, under EMERGING-ONLY-WHEN-USED, and `aside` is
+ * warned on for its tolerance window.
  */
 const FOCUS_HEADING = 'Focus'
 const STATE_REQUIRED = ['id', 'state', 'since'] as const
@@ -899,11 +900,6 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
         message: `tolerance: ## ${FOCUS_HEADING} lists \`${LEGACY_EMERGING_FOCUS}\`; rename it and its folder \`${EMERGING_FOCUS}\``,
         subject: work.path
       })
-    else if (!ids.includes(EMERGING_FOCUS))
-      fail(
-        work,
-        `## ${FOCUS_HEADING} lists each focus area by its id as a code span, always including \`${EMERGING_FOCUS}\``
-      )
     if (invalid.length > 0)
       fail(
         work,

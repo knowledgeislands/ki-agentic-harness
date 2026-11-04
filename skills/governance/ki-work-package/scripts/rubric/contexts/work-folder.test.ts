@@ -7,6 +7,7 @@ import {
   decisionLogFindings,
   focusIds,
   folderOutcomes,
+  idleEmerging,
   openQueryCount,
   reportQueryTags,
   workFolderStray
@@ -173,9 +174,26 @@ describe('focus folders', () => {
     write(root, join(WORK, 'design', 'note.md'), '# Note\n')
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
     write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
     const outcomes = folderOutcomes(root).closed
     expect(statuses(outcomes)).toEqual(['WARN'])
     expect(outcomes[0]?.message).toContain('`design/`, `reports/`')
+  })
+
+  test('under EMERGING-ONLY-WHEN-USED a listed _emerging warns while it holds nothing', () => {
+    const root = fixture()
+    const folder = pkg(root)
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    expect(idleEmerging(folder)).toBe(true)
+    const outcomes = folderOutcomes(root).closed
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toContain('lists `_emerging` while it holds nothing')
+    write(root, join(WORK, 'messages.md'), '# Messages\n\n- focus: _emerging · ASK · a side ask\n')
+    expect(idleEmerging(folder)).toBe(false)
+    write(root, join(WORK, 'messages.md'), '# Messages\n\nNone.\n')
+    write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
+    expect(idleEmerging(folder)).toBe(false)
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
   })
 
   test('FOLDER-2 and FOLDER-3 look inside focus folders', () => {
