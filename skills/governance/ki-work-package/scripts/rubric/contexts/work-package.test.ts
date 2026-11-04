@@ -1105,3 +1105,40 @@ test('typed main, secondary, Project and regular packages pass without changing 
     expect.objectContaining({ message: expect.stringContaining('ambiguous work home') })
   )
 })
+
+test('a sub-package names its parent package, stays off the main register and aliases no other work', () => {
+  const { repository } = fixture()
+  writePackage(
+    repository,
+    'ki.sop.main',
+    packageFiles('ki.sop.main', {
+      work: { level: 'territory', project: '', parent: '', covers: '[ki.reg.topic]', title: "'KI > SoP'" }
+    })
+  )
+  const mainPath = join(repository, '+/_WORK/ki.sop.main/work.md')
+  writeFileSync(
+    mainPath,
+    readFileSync(mainPath, 'utf8')
+      .replace(/^parent:.*\n/gm, '')
+      .replace(/^project:.*\n/gm, '')
+  )
+  for (const [id, parent] of [
+    ['ki.reg.topic', 'ki.sop.main'],
+    ['ki.reg.topic.viewer', 'ki.reg.topic']
+  ] as const) {
+    writePackage(repository, id, packageFiles(id, { work: { level: 'regular', parent } }))
+    const file = join(repository, '+/_WORK', id, 'work.md')
+    writeFileSync(file, readFileSync(file, 'utf8').replace(/^project:.*\n/gm, ''))
+  }
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([expect.objectContaining({ status: 'PASS' })])
+  writePackage(
+    repository,
+    'ki.reg.topic.stray',
+    packageFiles('ki.reg.topic.stray', { work: { level: 'regular', parent: 'ki.sop.main' } })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({
+      message: expect.stringContaining("parent must name the sub-package's parent package, ki.reg.topic")
+    })
+  )
+})

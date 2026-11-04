@@ -556,12 +556,28 @@ const h2Sections = (body: string): Map<string, string> => {
 
 const words = (text: string): number => text.split(/\s+/).filter(Boolean).length
 
+/**
+ * The parent package of a sub-package, `<parent id>.<parent focus id>` under a typed regular or Project package, as in
+ * `ex.reg.intake.viewer`; undefined for every other id.
+ */
+const subPackageParent = (id: string): string | undefined => {
+  const segments = id.split('.')
+  return segments.length === 4 && (segments[1] === 'reg' || segments[1] === 'prj')
+    ? segments.slice(0, 3).join('.')
+    : undefined
+}
+
 /** Package parents name coordinating work, while State-of-play covers registers survive absent packages. */
 const placementFailures = (
   id: string,
   fields: Readonly<Record<string, unknown>>,
   packageShape: boolean
 ): readonly string[] => {
+  const owner = subPackageParent(id)
+  if (owner !== undefined) {
+    const failures = fields.parent === owner ? [] : [`parent must name the sub-package's parent package, ${owner}`]
+    return 'covers' in fields ? [...failures, 'covers belongs only to States of play'] : failures
+  }
   const segments = id.split('.')
   const territory = segments[0] ?? ''
   const secondary = segments[1] === SECONDARY_SEGMENT
@@ -978,6 +994,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
 const relationshipEvidence = (works: readonly WorkFolder[], evidence: Evidence): void => {
   const packages = works.filter((folder) => folder.package && folder.work.fields)
   const names = (folder: WorkFolder): readonly string[] => {
+    if (subPackageParent(folder.stem) !== undefined) return [folder.stem]
     const [territory, kind, name] = folder.stem.split('.')
     const level = folder.work.fields?.level
     if (level === 'territory' && (!kind || (kind === 'sop' && name === 'main')))
@@ -1016,6 +1033,10 @@ const relationshipEvidence = (works: readonly WorkFolder[], evidence: Evidence):
     const main = byId.get(`${territory}.sop.main`) ?? byId.get(territory)
     const parent = typeof fields.parent === 'string' ? byId.get(fields.parent) : undefined
     const covers = Array.isArray(fields.covers) ? fields.covers : []
+    if (subPackageParent(folder.stem) !== undefined) {
+      if (typeof fields.parent === 'string' && !parent) fail(folder, 'parent does not resolve to a package beside it')
+      continue
+    }
     if (main && typeof fields.parent === 'string' && !parent)
       fail(folder, 'parent does not resolve to a State of play in the Capital')
     if (fields.level === 'territory' && folder !== main)

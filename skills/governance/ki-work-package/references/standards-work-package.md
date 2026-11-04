@@ -8,6 +8,7 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 
 - [Activation and ownership](#activation-and-ownership)
 - [Location and identity](#location-and-identity)
+  - [Sub-packages](#sub-packages)
 - [The work folder](#the-work-folder)
   - [Closed list](#closed-list)
   - [Entry points](#entry-points)
@@ -56,7 +57,15 @@ A work package lives in one work folder, `+/_WORK/<id>/`, one per piece of work 
 
 Every package defaults to its territory's Capital. Every Project package remains Capital-homed; this rule adds no Project-home exception. Regular or ad hoc work may deliberately retain an owner-approved member-repository home, declared as `Home:` in `work.md`'s Scope and referenced in its parent State of play's existing Scope, with the id in `covers`. Preserve existing deliberate exceptions such as Acquire intake; no package is moved by this rule. One physical home holds the authoritative package, state and incoming queue; a Capital home reference is not a second package or inbox. Records remain in the repositories that own their plans, priority and acceptance; a record's `project` resolves through the Capital's registry without execution authority. A record without `project` goes first to its regular or ad hoc owner, then to State of play only when unresolved.
 
-Every package below the main State of play names its coordinating State of play as `parent`, including a secondary, a Project, regular work and ad hoc work. For ad hoc work this is the coordinating State of play, not the regular-work prefix in its id. The main keeps `covers` as the register of the Project, regular umbrella and ad hoc work it coordinates, including work covered through a secondary, before a package exists and after it is pruned. Secondary `covers` lists remain its assigned subset. Check package parents against that register, same-territory membership, unique coverage by secondaries and absence of cycles; never infer coverage from the presence of a package.
+Every package below the main State of play names its coordinating State of play as `parent`, including a secondary, a Project, regular work and ad hoc work; a [sub-package](#sub-packages) names its parent package instead. For ad hoc work this is the coordinating State of play, not the regular-work prefix in its id. The main keeps `covers` as the register of the Project, regular umbrella and ad hoc work it coordinates, including work covered through a secondary, before a package exists and after it is pruned. Secondary `covers` lists remain its assigned subset. Check package parents against that register, same-territory membership, unique coverage by secondaries and absence of cycles; never infer coverage from the presence of a package.
+
+### Sub-packages
+
+A sub-package is a grounded doer's own short-lived work package, beside the others under `+/_WORK/`, for one focus area of a regular, ad hoc or Project package, its id `<parent id>.<parent focus id>` under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), as in `personal.reg.assistant-terra.kiv`. Kris set it about 00:00 GMT on 2 November 2026, relayed as SUB-PACKAGE, so that each package has one worker and one inbox and a message to a package always reaches exactly one worker.
+
+- **Form:** the five-file package, its `level` the parent's. Its `parent` names the parent package, not a State of play, and it stays out of every State of play's `covers`, since its parent is already there.
+- **Writers:** only the parent's keyholder and the doer working in the sub-package write to it, a private channel between the two. Other work sends lines to the parent's `messages.md`, and the parent's steward routes them.
+- **Fold-back:** when the doer finishes, its decisions and run reports fold back into the parent's focus folder and the sub-package is removed in one commit under the [Removal lifecycle](#removal-lifecycle); Git keeps its history.
 
 ## The work folder
 

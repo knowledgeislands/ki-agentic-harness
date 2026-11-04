@@ -232,6 +232,26 @@ describe('coordinating thread roles', () => {
   })
 })
 
+describe('sub-packages', () => {
+  test('a four-part sub-package id passes the level check and leaves the Project checks and cap', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    work(root, 'ki.reg.topic.viewer', { level: 'regular' })
+    work(root, 'ki.prj.alpha.site', { level: 'project', state: 'with-worker' })
+    expect(statuses(context(root).roles.outcomes)).toEqual(['PASS'])
+    expect(context(root).labels.outcomes.map((outcome) => outcome.subject)).not.toContain(
+      '+/_WORK/ki.prj.alpha.site/work.md'
+    )
+  })
+
+  test('any other four-part id is not a work folder name', () => {
+    const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
+    work(root, 'ki.sop.topic.viewer', { level: 'territory' })
+    const outcomes = context(root).roles.outcomes
+    expect(statuses(outcomes)).toEqual(['VIOLATION'])
+    expect(outcomes[0]?.message).toContain('four for a sub-package')
+  })
+})
+
 describe('active thread cap', () => {
   test('four active coordination threads are within the cap', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })

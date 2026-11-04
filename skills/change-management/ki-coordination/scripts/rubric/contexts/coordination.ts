@@ -46,6 +46,8 @@ const AWAITING_ACCEPTANCE = 'awaiting-review'
 const WORK_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*'
 /** A work id: the territory, then a Project slug or `regular`, then for ad hoc work its slug. */
 const WORK_ID = new RegExp(`^${WORK_SEGMENT}(?:\\.${WORK_SEGMENT}){0,2}$`)
+/** A sub-package's id, `<parent id>.<parent focus id>` under a typed regular or Project package. */
+const SUB_PACKAGE_ID = new RegExp(`^${WORK_SEGMENT}\\.(?:reg|prj)(?:\\.${WORK_SEGMENT}){2}$`)
 /** The work states a work file's `state` takes, as the Work Process note's observatory fields name them. */
 const SETTLED_STATES: ReadonlySet<string> = new Set(['on-hold', 'finished'])
 /**
@@ -379,7 +381,7 @@ const labelOutcomes = (
   const themes = capital ? registrySlugs(join(root, THEMES_DIRECTORY)) : undefined
   const initiatives = capital ? registrySlugs(join(root, INITIATIVES_DIRECTORY)) : undefined
   for (const work of works) {
-    if (workLevel(work.id) !== 'project') continue
+    if (workLevel(work.id) !== 'project' || SUB_PACKAGE_ID.test(work.id)) continue
     const slug = work.id.split('.')[work.id.split('.')[1] === 'prj' ? 2 : 1] ?? ''
     const project = work.fields?.project
     const title = work.fields?.title
@@ -447,10 +449,11 @@ const labelOutcomes = (
 const roleOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): AuditOutcome[] => {
   const outcomes: AuditOutcome[] = []
   for (const work of works) {
-    if (!WORK_ID.test(work.id)) {
+    if (!WORK_ID.test(work.id) && !SUB_PACKAGE_ID.test(work.id)) {
       outcomes.push({
         status: 'VIOLATION',
-        message: 'a work folder is named by its id: lower-case kebab segments joined by `.`, at most three',
+        message:
+          'a work folder is named by its id: lower-case kebab segments joined by `.`, at most three, or four for a sub-package',
         subject: work.path
       })
       continue
@@ -498,7 +501,10 @@ const roleOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): A
 
 const capOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): AuditOutcome[] => {
   const activeWork = works.filter(
-    (work) => workLevel(work.id) === 'project' && !SETTLED_STATES.has(String(work.fields?.state ?? ''))
+    (work) =>
+      workLevel(work.id) === 'project' &&
+      !SUB_PACKAGE_ID.test(work.id) &&
+      !SETTLED_STATES.has(String(work.fields?.state ?? ''))
   )
   const activeThreads = records.filter(
     (record) => PROJECT_THREAD.test(record.thread) && (record.fields?.state ?? 'active') === 'active'
@@ -790,7 +796,9 @@ export const awaitingAcceptanceCounts = (checkouts: readonly string[]): Readonly
  * The work folder's closed list and tidy are the `ki-work-package` FOLDER items.
  */
 const queueOutcomes = (root: string, work: readonly string[]): AuditOutcome[] => {
-  const projects = work.filter((folder) => workLevel(basename(folder)) === 'project')
+  const projects = work.filter(
+    (folder) => workLevel(basename(folder)) === 'project' && !SUB_PACKAGE_ID.test(basename(folder))
+  )
   if (projects.length === 0) return []
   const awaiting = awaitingAcceptanceCounts(territoryCheckouts(root))
   return projects.flatMap((folder): AuditOutcome[] => {
