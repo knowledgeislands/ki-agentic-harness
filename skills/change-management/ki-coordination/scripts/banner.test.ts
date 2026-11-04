@@ -34,7 +34,7 @@ const HEADING_EXAMPLE = [
   '',
   '---',
   '',
-  '## Done'
+  '## Summary since 22:34 BST'
 ].join('\n')
 /** The `#` heading: a linked theme, ` › `, a linked Project, and for a run report ` › <run name>`. */
 const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a-z0-9-]+)?$/
@@ -44,7 +44,7 @@ const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
 const GLYPH_STATE = `(?:🤖 With worker|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
 /** The form line: the glyph state, the form, the local issued time and the last mark, bold; a hold report names the hold's mark. */
 const FORM_LINE = new RegExp(
-  String.raw`^\*\*${GLYPH_STATE} · (?:(?:Summary|Recap|Full summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
+  String.raw`^\*\*${GLYPH_STATE} · (?:(?:Summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
   'u'
 )
 /** The banner heading: `### <glyph state> · since <time>`, or Finished's close line. */
@@ -101,7 +101,7 @@ const expectReportHeading = (lines: string[] | undefined): void => {
   expect(lines[3]).toBe('')
   expect(lines[4]).toBe('---')
   expect(lines[5]).toBe('')
-  expect(lines[6]).toMatch(/^## (Done|Decided)$/)
+  expect(lines[6]).toMatch(/^## (Done|Summary since \d{2}:\d{2} [A-Z]{3,4})$/)
   expect(lines.slice(7).filter((line) => line !== '')).toEqual([])
 }
 
@@ -151,7 +151,8 @@ test('the standard carries the report heading as a linked theme › Project head
   expect(summary?.join('\n')).toBe(HEADING_EXAMPLE)
   expectReportHeading(summary)
   expect(territory?.[0]).toBe('# [<territory or theme>](<its local note>) › State of play')
-  expect(territory?.[2]).toBe('**👤 With supervisor · Full summary at 19:13 BST · last mark 14:54 BST**')
+  expect(territory?.[2]).toBe('**👤 With supervisor · Summary at 19:13 BST · last mark 14:54 BST**')
+  expect(territory?.[6]).toBe('## Summary since 09:00 BST')
   expectReportHeading(territory)
   expect(runReport?.[0]).toBe(`# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE}) › migrate-phase1`)
   expect(runReport?.[2]).toBe('**🤖 → 👤 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**')
@@ -160,7 +161,9 @@ test('the standard carries the report heading as a linked theme › Project head
 
 test('the form line leads with the glyph state, then the form, the local issued time and the last mark', () => {
   expect('**🤖 With worker · Summary at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**🤖 → 👤 Handoff to supervisor · blocked · Recap at 09:05 GMT · last mark 14:54 BST**').toMatch(FORM_LINE)
+  expect('**🤖 → 👤 Handoff to supervisor · blocked · Summary at 09:05 GMT · last mark 14:54 BST**').toMatch(FORM_LINE)
+  expect('**👤 With supervisor · Recap at 09:05 GMT · last mark 14:54 BST**').not.toMatch(FORM_LINE)
+  expect('**👤 With supervisor · Full summary at 09:05 GMT · last mark 14:54 BST**').not.toMatch(FORM_LINE)
   expect('**→ 🎯 Handoff to KI > Tools burndown · Summary at 23:10 BST · last mark 22:00 BST**').toMatch(FORM_LINE)
   expect('**⏸️ On hold · Hold report at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
   expect('**⏸️ On hold · Hold report at 15:02 BST · last mark 14:58 BST**').not.toMatch(FORM_LINE)
@@ -487,27 +490,40 @@ test('a coordinator reply that moves the mark, changes the state or answers wher
   }
 })
 
-// MARK-STATUS, Kris on 3 November 2026: "when we take a mark, yes, we should
-// do a summary, and also the summary should include the status table."
-test('the Summary after a mark closes with the status table before the banner, its open points marked pending', () => {
-  const status = standard.slice(standard.indexOf('- **Status:**'), standard.indexOf('- **Plain English:**'))
-  expect(status).toContain('MARK-STATUS')
+// SUMMARY-MODEL, approved by Kris with immediate effect on 4 November 2026 and
+// relayed as SUMMARY-NOW: the mark is only a timestamp, and one Summary form
+// replaces the Summary, recap and full summary, superseding MARK-STATUS's
+// table after the queries. Its footer's art and lines are Agora's (FOOTER-AGORA).
+test('the Summary runs Summary since, the two-column status table, the queries in full, then the footer', () => {
+  const summary = standard.slice(standard.indexOf('### The Summary'), standard.indexOf('## Coordinating work'))
   const parts = [
-    '1. **The table**',
-    '2. **Out of scope, with other workers**',
-    '3. **Waiting on you**',
-    '4. **What I heard**'
+    '1. **`## Summary since <time>`**',
+    '2. **`## Status`**',
+    '3. **`## Findings`**',
+    '4. **`## Queries`**',
+    '5. **The footer**'
   ]
-  const at = parts.map((part) => status.indexOf(part))
+  const at = parts.map((part) => summary.indexOf(part))
   expect(at.every((index) => index > 0)).toBe(true)
   expect([...at].sort((a, b) => a - b)).toEqual(at)
-  for (const tag of ['GOAL-SETTING', 'STATUS-DETAIL', 'WHAT-I-HEARD']) {
-    expect(status).toContain(`<!-- pending Kris: ${tag}, held at option a)`)
+  expect(summary).toContain('| Focus | Where it stands |')
+  expect(summary).not.toContain('Waiting on you |')
+  for (const glyph of ['👤 Kris', '🤖 a worker', '🧵 another thread', '⏳ the outside world']) {
+    expect(summary).toContain(glyph)
   }
-  expect(status).toContain('| Focus | Where it stands | Waiting on you |')
-  expect(status.indexOf('## Status')).toBeGreaterThan(0)
-  expect(standard).toContain('after `## Queries` and before the [glyph banner](#banner)')
-  expect(outputStyle).toContain('closing after Queries and before the banner with `## Status`')
+  expect(summary).toContain('`**\\_emerging**`')
+  expect(summary).toContain('FOOTER-AGORA')
+  expect(summary).toContain('TABLE-ALIGN')
+  for (const verb of ['mark', 'mark only', 'summary', 'summary since 14:00']) {
+    expect(standard).toContain(`/ki-coordination ${verb} `)
+  }
+  expect(standard).toContain('Adding `no art` to any of them leaves the art out of the footer.')
+  expect(standard).toContain('The mark is only a timestamp')
+  expect(standard).not.toContain('### Full summary')
+  expect(standard).not.toContain('### Recap since the mark')
+  expect(standard).not.toContain('- **Status:** the Summary that follows a mark')
+  expect(outputStyle).toContain('The Summary is the one summary form, replacing the Summary, recap and full summary')
+  expect(outputStyle).not.toContain('What I heard')
 })
 
 test('the authoritative standard retains all five hard rules', () => {
@@ -525,10 +541,10 @@ test('the authoritative standard retains all five hard rules', () => {
     '3) while work lies with a worker, give a timed one-to-two-line update when you launch work and when a run finishes, keeping one background check armed that wakes you only when a run finishes, with no timed bound, and no heartbeat otherwise'
   )
   expect(line).toContain(
-    '4) give every Summary, recap, full summary, re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner'
+    '4) give every Summary in its summary shape and every re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner'
   )
   expect(line).toContain('with no reply block')
-  expect(line).toContain('a re-bootstrap report and a full summary restating every open query in full')
+  expect(line).toContain('a Summary and a re-bootstrap report restating every open query in full')
   expect(line).toContain(
     'end any other reply that moves the mark, changes the state or answers where the work stands with the banner'
   )
@@ -605,7 +621,7 @@ test('housekeeping and behind findings go in the report body, with all level-che
   expect(standard).toContain('under BANNER-TRIM')
   expect(standard).toContain('`<repository>: <count> commits behind`')
   expect(outputStyle).toContain('The banner carries no `[handoff]` or housekeeping item')
-  expect(outputStyle).toContain('carry each unresolved behind finding in In Progress')
+  expect(outputStyle).toContain('carry each unresolved behind finding in the status table or In Progress')
   expect(outputStyle).toContain('before a cross-host resume, at every mark and before leaving a host')
   expect(outputStyle).toContain('A failed check remains unknown')
 })
