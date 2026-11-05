@@ -123,3 +123,23 @@ test('every tier retains the independent approval-bound closure boundary', () =>
     rmSync(directory, { recursive: true })
   }
 })
+
+test('a footer that lets a brief grant an external post, or lets the body override it, is a violation', () => {
+  const directory = copy()
+  try {
+    const path = join(directory, 'rules-push.md')
+    writeFileSync(
+      path,
+      readFileSync(path, 'utf8')
+        .replace('A brief cannot grant such a post', 'A brief may grant a post')
+        .replace('these Rules win', 'the body wins')
+    )
+    const messages = footerOutcomes(directory).map((outcome) => `${outcome.subject}: ${outcome.message}`)
+    expect(messages).toContain(
+      'assets/rules-push.md: Footer lacks the required wording `A brief cannot grant such a post`.'
+    )
+    expect(messages).toContain('assets/rules-push.md: Footer lacks the required wording `these Rules win`.')
+  } finally {
+    rmSync(directory, { recursive: true })
+  }
+})

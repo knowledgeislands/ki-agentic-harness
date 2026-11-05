@@ -35,7 +35,7 @@ Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
 
 Run `ki repo audit --skill ki-delegation --repo <repo>`.
 
-The native rubric checks that this skill's authority footers exist, grant exactly their tier and carry the rule that confidential is never made public and the rule that nothing is posted in Kris's name outside his own repositories without his express permission for that post, that each grant lifts only its own ban and that the machine grant never installs new software, then reviews run prompts against the background-run standard.
+The native rubric checks that this skill's authority footers exist, grant exactly their tier and carry the rule that confidential is never made public and the rule that nothing is posted in Kris's name outside his own repositories without his express permission for that post, which no brief can grant and over which no brief's body prevails, that each grant lifts only its own ban and that the machine grant never installs new software, then reviews run prompts against the background-run standard.
 
 For durable packets, a roadmap record opts in by carrying `## Delegation` with both `### Locked decisions` and `### Escalate` sections plus a worker brief. The rubric checks the mechanically legible packet shape, then reviews whether packet activation, locked decisions, authority, isolation, escalation boundaries, return contract, and verification gates are actually sound.
 
