@@ -5,6 +5,7 @@
 - [Placement and identity](#placement-and-identity)
 - [Frontmatter](#frontmatter)
 - [Priority and size](#priority-and-size)
+- [Assignee](#assignee)
 - [Classification](#classification)
 - [Target dates](#target-dates)
 - [Hold](#hold)
@@ -36,6 +37,7 @@ area: FND
 title: Compact descriptive title
 priority: medium
 size: m
+assignee: owner
 status: triage
 blocks: []
 blocked_by: []
@@ -45,7 +47,7 @@ updated_at: 2026-08-12T09:30:00Z
 ---
 ```
 
-`id`, `title`, `status`, `blocks`, `blocked_by`, and `baseline_ref` are required. `size` is required on every open record from capture, whatever the horizon, under [Priority and size](#priority-and-size); during the [migration window](standards-repository-roadmaps.md#migration-tolerance) a missing `size` warns, and a closed record never needs one. `priority` is written at capture, and an absent `priority` reads as `medium`. `horizon` is required exactly when the record is adopted and open. `area` is required only when the repository configures fixed issuing areas, and prohibited otherwise. An adopted record also carries `kind`.
+`id`, `title`, `status`, `blocks`, `blocked_by`, and `baseline_ref` are required. `size` is required on every open record from capture, whatever the horizon, under [Priority and size](#priority-and-size); during the [migration window](standards-repository-roadmaps.md#migration-tolerance) a missing `size` warns, and a closed record never needs one. `assignee` is required on every open record under [Assignee](#assignee); during the [assignee window](standards-repository-roadmaps.md#migration-tolerance) a missing one warns. `priority` is written at capture, and an absent `priority` reads as `medium`. `horizon` is required exactly when the record is adopted and open. `area` is required only when the repository configures fixed issuing areas, and prohibited otherwise. An adopted record also carries `kind`.
 
 An adopted record looks like this:
 
@@ -60,6 +62,7 @@ project: baseline-rollout
 component: checker
 priority: high
 size: l
+assignee: work/ki.prj.baseline-rollout
 horizon: next
 status: draft
 blocks: []
@@ -112,6 +115,20 @@ Reports and messages display a size as a T-shirt label, 👕 and the letter in c
 A size set at capture is provisional, set by judgement, and is revisited before the record becomes Ready; a record whose size is uncertain warrants investigation rather than an invented estimate. A `ready` record with `size: xl` fails. During the [migration window](standards-repository-roadmaps.md#migration-tolerance) the checker warns on an open record without `size`; once the window closes it fails. A closed record, done or cancelled, never needs a retrospective `size` or `kind`. A value outside either vocabulary fails at once.
 
 Selection orders work in one sequence, which [`ki-next`](../../ki-next/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then the nearer target date within that horizon and priority, then size, smallest first. An absent target has no date urgency. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
+
+### Assignee
+
+`assignee` names who holds the record: whose it is to take forward. It takes one of the work model's holder values, under the `ki-work-package` [state fields](../../../governance/ki-work-package/references/standards-work-package.md#state-file):
+
+- `owner` - Kris, the supervisor;
+- `work/<id>` - a piece of work, by its work id, such as `work/personal.reg.household-terra`;
+- `run/<name>` - a background run;
+- `person/<handle>` - a named person;
+- `repo/<name>` - a repository, for work its own sessions pick up.
+
+Every open record carries one from capture, whatever its status or horizon; a closed record, done or cancelled, never needs a retrospective one. Kris asked for it on 5 November 2026 under ROADMAP-ASSIGNEE: "good to give it an assignee. We can always change the assignee if we run out of work, but it's good that someone has it." A value outside the vocabulary fails at once; during the [assignee window](standards-repository-roadmaps.md#migration-tolerance) an open record without one warns.
+
+Until work starts the assignee changes freely: whoever runs out of work may take a record, and a handover is an assignee change, with no other ceremony. Once a record is `in-progress`, which `ki-implement` sets together with `baseline_ref`, its assignee is fixed: marking work in progress is what locks who holds it, as Kris set under ASSIGNEE-LOCK the same morning. The lock takes the assignee named in the earliest committed version of the record's current in-progress run, so a record that started with none may have one filled in once. The audit reads the record's Git history and fails an in-progress record whose assignee differs from that; where the history is unavailable it cannot check, and says nothing. The assignee grants no authority: delivery still follows the record's lifecycle and the repository's gates.
 
 ### Retired fields and values
 

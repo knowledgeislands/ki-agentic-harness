@@ -176,6 +176,7 @@ export const RECORD_FIELDS: ReadonlySet<string> = new Set([
   'component',
   'priority',
   'size',
+  'assignee',
   'horizon',
   'hold',
   'target',
@@ -203,10 +204,11 @@ type RoadmapRecord = {
   defect?: string
   unknown?: readonly string[]
   sizeless?: boolean
+  unassigned?: boolean
   oversized?: boolean
 }
 
-// A closed record never needs a retrospective size.
+// A closed record never needs a retrospective size or assignee.
 const CLOSED_STATUSES: ReadonlySet<string> = new Set(['done', 'cancelled'])
 
 const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord => {
@@ -228,6 +230,9 @@ const roadmapRecord = (root: string, path: string, name: string): RoadmapRecord 
     ...(typeof fields.area === 'string' ? { area: fields.area } : {}),
     ...(unknownFields.length ? { unknown: unknownFields } : {}),
     ...('size' in values || CLOSED_STATUSES.has(String(fields.status)) ? {} : { sizeless: true }),
+    ...((typeof fields.assignee === 'string' && fields.assignee.trim()) || CLOSED_STATUSES.has(String(fields.status))
+      ? {}
+      : { unassigned: true }),
     ...(fields.size === 'xl' && fields.status === 'ready' ? { oversized: true } : {})
   }
   const id = typeof raw === 'string' ? raw.trim() : ''
@@ -374,11 +379,13 @@ const roadmapFieldEvidence = (
   if (records.length === 0) return [{ level: 'NOT_APPLICABLE', message: 'No roadmap records are present.' }]
   const unknown = records.filter((record) => record.unknown?.length)
   const sizeless = records.filter((record) => record.sizeless)
-  if (unknown.length === 0 && sizeless.length === 0)
+  const unassigned = records.filter((record) => record.unassigned)
+  if (unknown.length === 0 && sizeless.length === 0 && unassigned.length === 0)
     return [
       {
         level: 'PASS',
-        message: 'Every roadmap record carries a size and only work-item fields the roadmap adapter defines.',
+        message:
+          'Every open roadmap record carries a size and an assignee, and only work-item fields the roadmap adapter defines.',
         subject: relative(root, roadmapPath)
       }
     ]
@@ -391,6 +398,11 @@ const roadmapFieldEvidence = (
     ...sizeless.map((record) => ({
       level: 'WARN' as const,
       message: `Roadmap record ${record.path} has no size; give it s, m, l or xl.`,
+      subject: record.path
+    })),
+    ...unassigned.map((record) => ({
+      level: 'WARN' as const,
+      message: `Roadmap record ${record.path} has no assignee; name its holder, such as owner or work/<id>.`,
       subject: record.path
     }))
   ]

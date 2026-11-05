@@ -4,6 +4,7 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import { inspectRoadmapAreas, matchesRoadmapArea } from '../../shared/roadmap-areas.ts'
 import { isRepositoryCode, SCOPE_SEGMENT, workIdentifier, workIdentifierSource } from '../../shared/work-identifiers.ts'
+import { ASSIGNEE_RE, lockedAssignee } from './assignee-lock.ts'
 import {
   isEnforcingTerritoryRepository,
   loadProjectRegistry,
@@ -25,6 +26,7 @@ export type WorkItem = {
   readonly theme: string | null
   readonly horizon: Horizon | null
   readonly status: string
+  readonly assignee: string | undefined
   readonly kind: string | undefined
   readonly purpose: string | undefined
   readonly project: string | undefined
@@ -107,6 +109,7 @@ const RECORD_FIELDS = new Set([
   'component',
   'priority',
   'size',
+  'assignee',
   'horizon',
   'hold',
   'target',
@@ -538,6 +541,26 @@ const tolerate = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): vo
 const migrate = (msg: string, file?: string, area = 'ITEM-2'): void =>
   add('WARN', area, `migration window: ${msg}`, STANDARD, file)
 
+/** The assignee tolerance window, opened on 2026-11-05: an open record without an assignee warns until it closes. */
+const assigneeWindow = (msg: string, file?: string): void =>
+  add('WARN', 'ITEM-2', `assignee window: ${msg}`, STANDARD, file)
+
+/** Once a record is in progress its assignee is fixed; a change since it started fails. */
+const validateAssigneeLock = (root: string, items: readonly WorkItem[]): void => {
+  for (const item of items) {
+    if (item.status !== 'in-progress') continue
+    const locked = lockedAssignee(root, item.file)
+    if (locked !== undefined && locked !== item.assignee)
+      add(
+        'FAIL',
+        'ITEM-2',
+        `an in-progress record's assignee is fixed: it started with '${locked}', not '${item.assignee ?? 'none'}'`,
+        FORMAT,
+        item.file
+      )
+  }
+}
+
 /** Retired pre-v1 shapes (KI-HARNESS-GOV-150): the migration window has closed, so each one fails. */
 const retire = (msg: string, file?: string, area = 'ITEM-2', ref = FORMAT): void =>
   add('FAIL', area, `retired: ${msg}`, ref, file)
@@ -740,6 +763,7 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
   const purpose = value('purpose')
   const priority = value('priority')
   const size = value('size')
+  const assignee = value('assignee')
   const project = value('project')
   const initiative = value('initiative')
   const component = value('component')
@@ -799,6 +823,20 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     add('FAIL', 'ITEM-2', 'size must be s, m, l or xl', FORMAT, display)
   else if (size === 'xl' && status === 'ready')
     add('FAIL', 'ITEM-2', 'a ready record must not be size xl; split it before Ready', FORMAT, display)
+  if (!('assignee' in parsed.values) || parsed.values.assignee === null) {
+    if (!status || !TERMINAL_STATUSES.has(status))
+      assigneeWindow(
+        'an open record should declare an assignee: owner, work/<id>, run/<name>, person/<handle> or repo/<name>',
+        display
+      )
+  } else if (assignee === undefined || !ASSIGNEE_RE.test(assignee))
+    add(
+      'FAIL',
+      'ITEM-2',
+      'assignee must be owner, work/<id>, run/<name>, person/<handle> or repo/<name>',
+      FORMAT,
+      display
+    )
   for (const [key, slug] of [
     ['project', project],
     ['theme', theme],
@@ -857,6 +895,7 @@ const parseItem = (repository: string, name: string, configuration?: RoadmapConf
     theme: theme ?? null,
     horizon: horizon ?? null,
     status,
+    assignee,
     kind,
     purpose,
     project,
@@ -1121,6 +1160,7 @@ export const inspectRoadmap = (repository: string): readonly Finding[] => {
     ids.add(item.id)
   }
   validateDependencies(items, configuration)
+  validateAssigneeLock(root, items)
   validateClassification(root, items)
   const ledgerPath = join(roadmap, ISSUE_LEDGER)
   if (!existsSync(ledgerPath) || lstatSync(ledgerPath).isSymbolicLink() || !lstatSync(ledgerPath).isFile())

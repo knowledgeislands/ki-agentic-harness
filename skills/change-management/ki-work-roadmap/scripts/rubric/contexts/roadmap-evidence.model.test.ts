@@ -1,4 +1,5 @@
 import { afterEach, expect, test } from 'bun:test'
+import { spawnSync } from 'node:child_process'
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -80,7 +81,7 @@ const createRepository = (frontmatter: string, body: string, config = 'component
   )
   writeFileSync(
     join(repository, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md'),
-    `---\nid: TEST-001\ntitle: Deliver the slice\n${/^size:/m.test(frontmatter) ? '' : 'size: m\n'}${frontmatter}\nblocks: []\nblocked_by: []\ncreated_at: 2026-10-07T12:00:00Z\nupdated_at: 2026-10-07T12:00:00Z\n---\n\n## Goal\n\nDeliver the slice.\n\n## Context\n\nThe slice is needed.\n\n## Boundary\n\nOnly the slice.\n\n${body}## Discussion\n\nNone.\n`
+    `---\nid: TEST-001\ntitle: Deliver the slice\n${/^size:/m.test(frontmatter) ? '' : 'size: m\n'}${/^assignee:/m.test(frontmatter) ? '' : 'assignee: owner\n'}${frontmatter}\nblocks: []\nblocked_by: []\ncreated_at: 2026-10-07T12:00:00Z\nupdated_at: 2026-10-07T12:00:00Z\n---\n\n## Goal\n\nDeliver the slice.\n\n## Context\n\nThe slice is needed.\n\n## Boundary\n\nOnly the slice.\n\n${body}## Discussion\n\nNone.\n`
   )
   writeFileSync(join(repository, 'docs', 'roadmap', ISSUE_LEDGER), issueLedger(1))
   writeFileSync(join(repository, 'ROADMAP.md'), rootRoadmap())
@@ -136,6 +137,83 @@ test('priority and size take their vocabularies; a missing size warns and a miss
   writeFileSync(item, readFileSync(item, 'utf8').replace('size: m\n', ''))
   expect(failures(sizeless)).toEqual([])
   expect(warnings(sizeless)).toEqual(['migration window: a record should declare size: s, m, l or xl'])
+})
+
+test('an assignee takes a holder value; an open record without one warns and a closed one needs none', () => {
+  const assigned = (fields: string) =>
+    createRepository(`kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null\n${fields}`, '')
+  for (const holder of [
+    'owner',
+    'work/personal.reg.household-terra',
+    'run/roadmap-assignee',
+    'person/krisb',
+    'repo/tools-ki'
+  ])
+    expect(failures(assigned(`assignee: ${holder}`))).toEqual([])
+  expect(failures(assigned('assignee: Kris'))).toContainEqual(
+    expect.objectContaining({
+      area: 'ITEM-2',
+      msg: 'assignee must be owner, work/<id>, run/<name>, person/<handle> or repo/<name>'
+    })
+  )
+  const unassigned = (frontmatter: string) => {
+    const repository = createRepository(frontmatter, '')
+    const item = join(repository, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md')
+    writeFileSync(item, readFileSync(item, 'utf8').replace('assignee: owner\n', ''))
+    return repository
+  }
+  const open = unassigned('kind: deliver\nhorizon: future\nstatus: draft\nbaseline_ref: null')
+  expect(failures(open)).toEqual([])
+  expect(warnings(open)).toEqual([
+    'assignee window: an open record should declare an assignee: owner, work/<id>, run/<name>, person/<handle> or repo/<name>'
+  ])
+  expect(warnings(unassigned('status: triage\nbaseline_ref: null'))).toHaveLength(1)
+  expect(warnings(unassigned('kind: deliver\nstatus: cancelled\nresolution: obsolete\nbaseline_ref: null'))).toEqual([])
+})
+
+test("an in-progress record's assignee is fixed from the commit that started it", () => {
+  const git = (repository: string, ...args: string[]) =>
+    expect(
+      spawnSync('git', ['-C', repository, '-c', 'user.name=Test', '-c', 'user.email=test@example.com', ...args]).status
+    ).toBe(0)
+  const started = (assignee: string) =>
+    `kind: deliver\nhorizon: now\nstatus: in-progress\nbaseline_ref: ${BASE}\nassignee: ${assignee}`
+  const repository = createRepository(started('run/first'), EXECUTION)
+  const item = join(repository, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md')
+  const lockFailure = expect.objectContaining({
+    area: 'ITEM-2',
+    msg: "an in-progress record's assignee is fixed: it started with 'run/first', not 'run/second'"
+  })
+  git(repository, 'init', '-q')
+  git(repository, 'add', '.')
+  git(repository, 'commit', '-q', '-m', 'start')
+  expect(failures(repository)).toEqual([])
+
+  const reassign = (to: string) =>
+    writeFileSync(item, readFileSync(item, 'utf8').replace(/^assignee: .*$/m, `assignee: ${to}`))
+  reassign('run/second')
+  expect(failures(repository)).toContainEqual(lockFailure)
+  git(repository, 'commit', '-q', '-am', 'hand over')
+  expect(failures(repository)).toContainEqual(lockFailure)
+  reassign('run/first')
+  expect(failures(repository)).toEqual([])
+
+  const ready = createRepository(
+    'kind: deliver\nhorizon: now\nstatus: ready\nbaseline_ref: null\nassignee: owner',
+    EXECUTION
+  )
+  git(ready, 'init', '-q')
+  git(ready, 'add', '.')
+  git(ready, 'commit', '-q', '-m', 'ready')
+  const readyItem = join(ready, 'docs', 'roadmap', 'TEST-001-deliver-the-slice.md')
+  writeFileSync(
+    readyItem,
+    readFileSync(readyItem, 'utf8')
+      .replace('status: ready', 'status: in-progress')
+      .replace('baseline_ref: null', `baseline_ref: ${BASE}`)
+      .replace('assignee: owner', 'assignee: run/first')
+  )
+  expect(failures(ready)).toEqual([])
 })
 
 test('a closed record needs no size and a ready record must not be xl', () => {

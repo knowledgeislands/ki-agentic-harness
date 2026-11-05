@@ -40,6 +40,7 @@ const createFixture = (): string => {
 id: TEST-001
 title: Build the foundation
 size: m
+assignee: owner
 kind: deliver
 horizon: next
 status: draft

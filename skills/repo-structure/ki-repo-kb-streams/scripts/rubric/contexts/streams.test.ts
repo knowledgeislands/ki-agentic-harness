@@ -381,12 +381,12 @@ describe('ki-repo-kb-streams session', () => {
     expect(evaluate().roadmapFrontmatter.map((evidence) => evidence.level)).toEqual(['PASS'])
   })
 
-  test('warns on each Streams roadmap record carrying an undefined field or lacking a size', () => {
+  test('warns on each Streams roadmap record carrying an undefined field or lacking a size or an assignee', () => {
     const root = targetFixture()
     const roadmap = join(root, 'Streams', 'Roadmap')
     writeFileSync(
       join(roadmap, 'KB-OPS-001-known.md'),
-      '---\nnote_type: stream-roadmap\nid: KB-OPS-001\ntitle: Known\npriority: high\nsize: m\nhorizon: next\ntags:\n  - topic/ops\n---\n'
+      '---\nnote_type: stream-roadmap\nid: KB-OPS-001\ntitle: Known\npriority: high\nsize: m\nassignee: owner\nhorizon: next\ntags:\n  - topic/ops\n---\n'
     )
     const item = STREAM.items.find((candidate) => candidate.code === 'STREAM-12')
     const evaluate = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
@@ -402,13 +402,18 @@ describe('ki-repo-kb-streams session', () => {
 
     expect(unknown.roadmapFields).toEqual([
       { level: 'WARN', message: `Roadmap record ${subject} has unknown field(s): owner.`, subject },
-      { level: 'WARN', message: `Roadmap record ${subject} has no size; give it s, m, l or xl.`, subject }
+      { level: 'WARN', message: `Roadmap record ${subject} has no size; give it s, m, l or xl.`, subject },
+      {
+        level: 'WARN',
+        message: `Roadmap record ${subject} has no assignee; name its holder, such as owner or work/<id>.`,
+        subject
+      }
     ])
     expect(item?.mechanical?.level).toBe('WARN')
-    expect(item?.mechanical?.audit.run(unknown).map((outcome) => outcome.status)).toEqual(['VIOLATION', 'VIOLATION'])
+    expect(item?.mechanical?.audit.run(unknown).map((outcome) => outcome.status)).toEqual(Array(3).fill('VIOLATION'))
   })
 
-  test('exempts a closed record from size and fails a ready record of size xl', () => {
+  test('exempts a closed record from size and assignee, and fails a ready record of size xl', () => {
     const root = targetFixture()
     const roadmap = join(root, 'Streams', 'Roadmap')
     const evaluate = () => STREAM.selectContext(rootContext(createStreamsSession(options(root, 'audit'))))
