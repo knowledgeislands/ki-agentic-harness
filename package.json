@@ -39,7 +39,7 @@
       "rumdl check"
     ]
   },
-  "packageManager": "bun@1.4.3",
+  "packageManager": "bun@1.4.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/knowledgeislands/ki-agentic-harness.git"
