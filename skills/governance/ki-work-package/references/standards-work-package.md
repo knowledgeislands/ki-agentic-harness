@@ -80,7 +80,7 @@ A work folder holds these kinds and nothing else:
 | Discussion file | `discussions.md`, or `queries.md` for the DISCUSSIONS tolerance window | The mark that closes finished work |
 | Messages file | `messages.md` | The mark that closes finished work |
 | Decisions log | `decisions.md` | The mark that closes finished work |
-| Focus folder | `<focus-id>/`, one per focus area `work.md` declares under [Focus areas](#focus-areas), holding the kinds below | The mark that closes finished work |
+| Focus folder | `<focus-id>/`, one per focus area `work.md` declares under [Focus areas](#focus-areas), starting with `_index.md` and holding the kinds below | It holds nothing but its `_index.md`, or the mark that closes finished work |
 | Run report | `<focus-id>/<run>.report.md` | A tidy finds its outcome homed, its queries having been copied into `discussions.md` at receive |
 | Brief | `<focus-id>/<run>.brief.md` | Its run's report is received |
 | Design note | `<focus-id>/<slug>.md`, or `<focus-id>/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
@@ -154,25 +154,36 @@ A report whose outcome has no durable home yet is kept, not homed in haste. The 
 
 ### Messages lines
 
-`messages.md` is the work's incoming queue: one list item per message sent to the work, in this shape:
+`messages.md` keeps two sections, as Kris set under MSG-SECTIONS on 4 November 2026, "standard first, then roll out": `## Inbound`, the work's incoming queue, and `## Outbound`, what it has sent and not yet seen acknowledged. Inbound holds one list item per message sent to the work, ACK lines at its top:
 
 ```markdown
-- <YYYY-MM-DD> · <TAG> · <sender label> (<sender id>): <the owner's words or the instruction, with links>
-- <YYYY-MM-DD> · focus: <id> · <TAG> · <sender label> (<sender id>): <the instruction, with links>
-- IMPORTANT · <YYYY-MM-DD> · <TAG> · <sender label> (<sender id>): <the instruction, with links>
+## Inbound
+
+- <YYYY-MM-DD> · ACK <id> · from <receiver id> · <time>
+- IMPORTANT · <YYYY-MM-DD> · <id> · <sender label> (<sender id>): <the instruction, with links>
+- <YYYY-MM-DD> · <id> · <sender label> (<sender id>): <the owner's words or the instruction, with links>
+- <YYYY-MM-DD> · focus: <id> · <id> · <sender label> (<sender id>): <the instruction, with links>
+
+## Outbound
+
+- <YYYY-MM-DD> · <id> · to <receiver id> · <time> · <what was sent> · awaiting ACK
 ```
 
-The optional `focus: <id> ·` slot before the tag names the focus area the line belongs to, under [Focus areas](#focus-areas).
+The `<id>` is a short message id, `MSG-` and eight lower-case hex characters from a random UUID, as trades use `TRD-`, then a short readable tag, as in `MSG-8029f0fa NO-LINK-MARK`, Kris having set MESSAGE-IDS on 4 November 2026; for the tolerance window a bare `<TAG>` is read as the id. The optional `focus: <id> ·` slot before the id names the focus area the line belongs to, under [Focus areas](#focus-areas).
+
+- **Send:** the sender writes the line at its place in the receiver's Inbound and keeps the same line, with `to <receiver id>`, in its own Outbound.
+- **ACK:** on taking a line, the receiver puts one ACK line naming its id at the top of the sender's Inbound, then deals with the message as below. The ACK says only that the message arrived; any reply is a separate message, sent the same way.
+- **Prune:** the sender, reading an ACK, removes the ACK line and the matching Outbound line together; an ACK for an id no longer in Outbound is simply removed. Anything left in Outbound is unacknowledged, and the banner lists it as `- [awaiting ACK] <id> · to <receiver id> · since <time>` under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
 
 The sender is named by its work name under `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), the label with the id in brackets, as in `KI > Model > Ways of working (ki.ways-of-working):` or `KI > SoP (ki):`, which Kris adopted under WORK-LABEL on 25 October 2026: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?" A line whose sender carries the label alone, as lines written before that date do, is read as the same sender through the tolerance window, and the checker accepts both.
 
 A line is about 60 words at most with the detail linked, and a message citing an owner decision quotes its words. The queue is taken in priority order, as Kris set under WORK-QUEUE-PRIORITY on 19 October 2026, read back as "a work package's incoming work is a queue taken in priority order; the worker may group similar items; a line added at the top with an important flag must be taken first, in that order, which lets State of play change how a work works":
 
 - **Order:** lines stand in the order of their priority, top first. An ordinary line is added at the end; State of play, dispatching, may place a line at the position its priority warrants.
-- **Important lines:** a line flagged `IMPORTANT` is added at the top, below any important lines already there, and every important line stands above every ordinary line. The worker takes the important lines first, in their order, one at a time, never grouping or reordering them. `FIRST-STEP` and `REFRESH` lines are important lines; the flag is how State of play changes how a work works.
+- **Important lines:** a line flagged `IMPORTANT` is added at the top of Inbound, below any ACK lines and important lines already there, and every important line stands above every ordinary line. The worker takes the important lines first, in their order, one at a time, never grouping or reordering them. `FIRST-STEP` and `REFRESH` lines are important lines; the flag is how State of play changes how a work works.
 - **Grouping:** below the important lines, the worker takes the queue from the top and may group similar lines into one unit of work where that makes sense, naming every grouped line in the commit that removes them.
 
-The sender adds or replaces only its own line and edits nothing else in the receiver's folder, committing that path alone with the subject `docs(work): <receiver id> message from <sender id>`. The receiver records each line's disposition where it lands, under `ki-coordination`'s route receipt, names it in the commit that removes the line, and only then removes it. Who may send, how a coordinator acts on a line, route receipt and the inbox check at each wake are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work). A folder still in [the single-file shape](#the-single-file-shape) carries the same lines in its work file's `## Messages` section.
+The sender adds or replaces only its own line, or its ACK line, and edits nothing else in the receiver's folder, committing that path alone with the subject `docs(work): <receiver id> message from <sender id>`. The receiver records each line's disposition where it lands, under `ki-coordination`'s route receipt, names it in the commit that removes the line, and only then removes it. Who may send, how a coordinator acts on a line, route receipt and the inbox check at each wake are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work). A folder still in [the single-file shape](#the-single-file-shape) carries the same lines in its work file's `## Messages` section.
 
 A message may carry an optional `@<host-or-category>` requirement immediately after its date, using a name resolved through the territory's machine inventory. It restricts device-dependent execution only. Any coordinator may acknowledge, plan, ask about or dispatch the line to an eligible host, preserving IMPORTANT and queue order. An unfulfilled requirement stays queued and counted; flag its age when no eligible host has taken it, without using age as takeover authority. A concrete host matches that inventory entry; a category matches inventory membership, never a guessed alias. Unknown or renamed names need resolution before execution.
 
@@ -262,7 +273,7 @@ A focus area is one strand of the work's attention, and the unit its work folder
 - **Short lists:** keep the Focus list short, a handful of live strands; retire an area once its work is done rather than keeping it listed.
 - **Assignment:** only the work's own steward assigns an item to a focus area, adds, renames or retires an area, and moves a file between focus folders. Other work sends a line to `messages.md` and the steward routes it.
 - **Naming the area:** a discussion point, a decisions-log entry and a message line each name their area with a `focus: <id> ·` slot: at the head of a discussion point's since line, under [Queries file](#queries-file); at the head of a decisions-log entry's first line, under `ki-coordination`'s [decisions log](../../../change-management/ki-coordination/references/standards-coordination.md#decisions-log); and before a message line's tag, under [Messages lines](#messages-lines). An item written before its work declared focus areas carries no slot and is not rewritten for one.
-- **Folders:** a focus folder holds the area's briefs, run reports and design notes under the [closed list](#closed-list), and exists only while it holds a file. A brief goes into the focus folder of the area its run serves, and the launcher homes the run's report beside it. Retiring an area moves or tidies its folder's files first.
+- **Folders:** a focus folder holds the area's briefs, run reports and design notes under the [closed list](#closed-list), and exists only while it holds a file other than its index. It starts with `_index.md`, giving the area's goal, its contents and what it sends out, the name State of play settled under INDEX-NAME on 4 November 2026 to match each `knowledge/` folder's map of its content; a folder left holding only its `_index.md` goes. For the tolerance window a focus folder without `_index.md`, or still using `index.md`, is warned on rather than failed. A brief goes into the focus folder of the area its run serves, and the launcher homes the run's report beside it. Retiring an area moves or tidies its folder's files first.
 - **Placement:** `## Focus` stands after Scope. For the tolerance window a Focus section above Goals, the position FOCUS-IN-WORK piloted, is warned on rather than failed.
 
 ### State file
@@ -354,7 +365,7 @@ Readers accept both names through the DISCUSSIONS tolerance window, Kris having 
 
 ### Messages file
 
-`messages.md` holds the H1 `# <id> messages` and then the queue's lines in [the Messages line shape](#messages-lines), important lines first, or `None`. Nothing else belongs in it.
+`messages.md` holds the H1 `# <id> messages`, then `## Inbound`, the queue's lines in [the Messages line shape](#messages-lines) with ACK lines first and important lines above ordinary ones, and `## Outbound`, each line this work has sent and still awaits an ACK for; each section says something, if only `None`. Nothing else belongs in it. For the MSG-SECTIONS tolerance window an H1-only `messages.md` holding the queue's lines is warned on rather than failed; the housekeepers move its lines into `## Inbound` as they roll the step out.
 
 ### Decisions log
 

@@ -53,7 +53,10 @@ const BANNER_HEADING = new RegExp(
   'u'
 )
 /** A banner item: `- [<state>] <what>`, the live items naming a holder and a since; housekeeping lives in the report body. */
-const ITEM = /^- \[(running|queued|with you|stuck|blocked|parked|on hold|release|finished)\] .+$/
+const ITEM = /^- \[(running|queued|with you|stuck|blocked|parked|awaiting ACK|on hold|release|finished)\] .+$/
+/** A sent line awaiting its ACK, under NO-LINK-MARK: `- [awaiting ACK] <id> · to <package id> · since <time>`. */
+const AWAITING_ACK_ITEM =
+  /^- \[awaiting ACK\] MSG-[0-9a-f]{8}(?: [A-Z0-9][A-Z0-9-]*)? · to [a-z0-9]+(?:[.-][a-z0-9]+)* · since \d{2}:\d{2}$/
 /** The items BANNER-TRIM moved out of the banner and into the report body. */
 const BODY_ITEM = /^- \[(handoff|committed|uncommitted|recovered|unlogged|behind)\]/
 const HOLDER_ITEM =
@@ -68,10 +71,8 @@ const HEADING_FOR_LINE =
 const LISTEN_LINE = /^👂 listening$/u
 /** The listening line while that capability is off. */
 const LISTEN_OFF_LINE = /^🔇 not listening$/u
-/** The sync line while host sync runs, only on a host sync thread. */
-const SYNC_LINE = /^🔄 syncing for [a-z0-9<>-]+$/u
-/** The sync line while host sync is off. */
-const SYNC_OFF_LINE = /^🔄 not syncing for [a-z0-9<>-]+$/u
+/** The sync line SYNC-LINE-OFF removed from every banner, read only in past reports. */
+const SYNC_LINE = /^🔄 (?:not )?syncing for [a-z0-9<>-]+$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
 const withoutSources = (text: string): string =>
   text.replace(/<!-- ki-coordination:source [\w-]+ -->\n\n(`{3,})[a-z]*\n[\s\S]*?\n\1\n/g, '')
@@ -127,10 +128,6 @@ const expectBanner = (lines: string[]): void => {
   if (HEADING_FOR_LINE.test(closing[at] ?? '')) at += 1
   const listening = LISTEN_LINE.test(closing[at] ?? '') || LISTEN_OFF_LINE.test(closing[at] ?? '')
   if (listening) at += 1
-  if (SYNC_LINE.test(closing[at] ?? '') || SYNC_OFF_LINE.test(closing[at] ?? '')) {
-    expect(listening).toBe(true)
-    at += 1
-  }
   expect(at).toBe(closing.length)
   const items = lines.slice(finished ? 2 : 4, end - 1)
   if (!finished) {
@@ -141,6 +138,8 @@ const expectBanner = (lines: string[]): void => {
   for (const item of items) expect(item).toMatch(ITEM)
   for (const item of items.filter((line) => /^- \[(running|queued|with you|stuck)\]/.test(line)))
     expect(item).toMatch(HOLDER_ITEM)
+  for (const item of items.filter((line) => line.startsWith('- [awaiting ACK]')))
+    expect(item).toMatch(AWAITING_ACK_ITEM)
   for (const item of items) expect(item).not.toMatch(/decision \d|#\d/)
 }
 
@@ -223,13 +222,11 @@ test('With worker names the hold or handoff it is heading for in its own line be
 })
 
 // Kris, 31 October 2026, under LISTEN-STATUS: "that should be something that comes out in the summary mode, which is
-// whether or not the thread is listening to messages or not, whether it's draining ... And also if it's a sync-based
-// thread", laid out under FOOTER-LAYOUT the same afternoon: "the modes switched on should happen like that [as their
-// own lines] ... syncing should be a different line alongside listening". A drain and a hold stop listening. Under
-// FOOTER-NOT-LISTENING the same day: "no need to put in the footer `🔇 not listening`". Refined under
-// FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: the footer shows a capability's line only when its `_enabled`
-// field is true, and the line shows its status, `👂 listening` or `🔇 not listening`, with a matching syncing pair.
-test('every banner shows a line for each capability the thread has, on or off, and none for one it lacks', () => {
+// whether or not the thread is listening to messages or not, whether it's draining". A drain and a hold stop listening.
+// Refined under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: the footer shows the listening line only when
+// `listening_enabled` is true, and the line shows its status. Kris removed the sync line under SYNC-LINE-OFF, about
+// 18:00 GMT on 4 November 2026: "remove the sync mode line from the banner entirely", as Agora keeps machines in sync.
+test('every banner shows the listening line where the thread has it, on or off, and never a sync line', () => {
   expect('👂 listening').toMatch(LISTEN_LINE)
   expect('🔇 not listening').toMatch(LISTEN_OFF_LINE)
   for (const line of ['🔇 not listening while draining', '👂 listening off', '🔇 draining, so not listening'])
@@ -243,13 +240,6 @@ test('every banner shows a line for each capability the thread has, on or off, a
     '🧵 ki.sop.main'
   ])
     expect(line).not.toMatch(LISTEN_LINE)
-  expect('🔄 syncing for sol').toMatch(SYNC_LINE)
-  expect('🔄 syncing for <host>').toMatch(SYNC_LINE)
-  for (const line of ['🔄 syncing', 'sync thread for sol', '🔄 not syncing for sol'])
-    expect(line).not.toMatch(SYNC_LINE)
-  expect('🔄 not syncing for sol').toMatch(SYNC_OFF_LINE)
-  for (const line of ['🔄 syncing off', '🔄 not syncing', '⏸️ not syncing for sol'])
-    expect(line).not.toMatch(SYNC_OFF_LINE)
   expectBanner([
     '### 🤖 With worker · since 09:00 GMT',
     '',
@@ -261,36 +251,25 @@ test('every banner shows a line for each capability the thread has, on or off, a
     '',
     '🔇 not listening',
     '',
-    '🔄 not syncing for sol',
-    '',
     '🧵 personal.reg.rig-sol'
   ])
-  expect(() =>
-    expectBanner([
-      '### 🤖 With worker · since 09:00 GMT',
-      '',
-      '🤖 1 running',
-      '',
-      '- [running] host pass · run/host-pass · since 08:58',
-      '',
-      '🔄 syncing for sol',
-      '',
-      '🧵 personal.reg.rig-sol'
-    ])
-  ).toThrow()
-  expectBanner([
-    '### 🤖 With worker · since 09:00 GMT',
-    '',
-    '🤖 1 running',
-    '',
-    '- [running] host pass · run/host-pass · since 08:58',
-    '',
-    '👂 listening',
-    '',
-    '🔄 syncing for sol',
-    '',
-    '🧵 personal.reg.rig-sol'
-  ])
+  for (const sync of ['🔄 syncing for sol', '🔄 not syncing for sol'])
+    expect(() =>
+      expectBanner([
+        '### 🤖 With worker · since 09:00 GMT',
+        '',
+        '🤖 1 running',
+        '',
+        '- [running] host pass · run/host-pass · since 08:58',
+        '',
+        '👂 listening',
+        '',
+        sync,
+        '',
+        '🧵 personal.reg.rig-sol'
+      ])
+    ).toThrow()
+  for (const lines of banners(standard)) expect(lines.some((line) => SYNC_LINE.test(line))).toBe(false)
   const [withWorker, handoff, , hold, finished] = banners(standard)
   expect(withWorker?.at(-3)).toBe('👂 listening')
   expect(handoff?.at(-3)).toBe('👂 listening')
@@ -309,9 +288,9 @@ test('every banner shows a line for each capability the thread has, on or off, a
     expect(text).toContain('`👂 listening`')
     expect(withoutSources(text)).not.toMatch(/`🔇 not listening(?: while draining)?` (?:from|where)/u)
     expect(text).not.toContain('always the listening line')
-    expect(text).toContain('`🔄 syncing for <host>`')
     expect(text).toContain('`🔇 not listening`')
-    expect(text).toContain('`🔄 not syncing for <host>`')
+    expect(text).toContain('SYNC-LINE-OFF')
+    expect(withoutSources(text)).not.toMatch(/^🔄 /mu)
     for (const field of ['listening_enabled', 'listening_status', 'syncing_enabled', 'syncing_status'])
       expect(text).toContain(field)
     expect(text).not.toContain('draining, so not listening')
@@ -342,14 +321,14 @@ test('a thread listens only when the owner asks it to, and a Rig host sync threa
 // Kris, 31 October 2026, under THREAD-CAPABILITIES and SYNC-UNTIL-CLEAN: "a resync doesn't finish until it's got to a
 // point of being clean". A thread may hold listening and host sync, each switched on only by express word or an agreed
 // role; host sync repeats each pass until clean and level, stays quiet on quiet passes and implies listening.
-test('a thread may hold listening and host sync, and the listening line shows both', () => {
+test('a thread may hold listening and host sync, and the banner shows only the listening line', () => {
   expect(standard).toContain('### Thread capabilities')
   expect(standard).toContain('[Thread capabilities](#thread-capabilities)')
   for (const name of ['THREAD-CAPABILITIES', 'SYNC-UNTIL-CLEAN', 'SYNC-QUIET', 'Host sync implies listening.'])
     expect(standard).toContain(name)
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('until the Mac and GitHub are clean and level')
-    expect(text).toContain('`🔄 syncing for sol`')
+    expect(text).not.toContain('`🔄 syncing for sol`')
   }
 })
 
@@ -727,4 +706,27 @@ test('the opener launches the session under its thread line', () => {
   expect(standard).toContain('RENAME-NAME')
   expect(standard).toContain('`claude --name "🧵 <work-id>"`')
   expect(standard).not.toContain('claude --name "<label> (<id>)"')
+})
+
+// Kris, via personal.reg.assistant-terra ATER-004 at 22:26 GMT on 4 November 2026, under NO-LINK-MARK: anything sent
+// and awaiting its ACK goes in the banner's list as `- [awaiting ACK] <id> · to <pkg> · since <time>`.
+test('a sent line awaiting its ACK is a banner item naming its id, receiver and since', () => {
+  expect('- [awaiting ACK] MSG-8029f0fa · to personal.reg.assistant-sol · since 22:27').toMatch(AWAITING_ACK_ITEM)
+  expect('- [awaiting ACK] MSG-8029f0fa NO-LINK-MARK · to ki.sop.main · since 22:27').toMatch(AWAITING_ACK_ITEM)
+  for (const line of ['- [awaiting ACK] MSG-8029f0fa · since 22:27', '- [awaiting ACK] NO-LINK-MARK · to ki.sop.main'])
+    expect(line).not.toMatch(AWAITING_ACK_ITEM)
+  expectBanner([
+    '### 👤 With supervisor · since 23:52 GMT',
+    '',
+    '👤 1 with you',
+    '',
+    '- [with you] WORK-HOME · owner · since 22:58',
+    '- [awaiting ACK] MSG-8029f0fa · to personal.reg.assistant-sol · since 22:27',
+    '',
+    '🧵 ki.sop.main'
+  ])
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('`- [awaiting ACK] <id> · to <package id> · since <time>`')
+  }
+  expect(standard).toContain('NO-LINK-MARK')
 })

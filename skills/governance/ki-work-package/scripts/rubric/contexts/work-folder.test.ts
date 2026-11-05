@@ -6,6 +6,7 @@ import type { AuditOutcome } from '../../shared/rubric.ts'
 import {
   decisionLogFindings,
   focusIds,
+  focusIndexFindings,
   folderOutcomes,
   idleEmerging,
   openQueryCount,
@@ -157,7 +158,9 @@ describe('focus folders', () => {
     write(root, join(WORK, 'layout', 'pilot.report.md'), '# Run\n')
     write(root, join(WORK, 'layout', 'options.md'), '# Options\n')
     write(root, join(WORK, 'layout', 'model', 'model.svg'), '<svg/>\n')
+    write(root, join(WORK, 'layout', '_index.md'), '# Layout\n')
     write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
+    write(root, join(WORK, '_emerging', '_index.md'), '# Emerging\n')
     expect(workFolderStray(folder)).toEqual([])
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
 
@@ -175,6 +178,7 @@ describe('focus folders', () => {
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
     write(root, join(WORK, 'work.md'), FOCUS_WORK)
     write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
+    write(root, join(WORK, '_emerging', '_index.md'), '# Emerging\n')
     const outcomes = folderOutcomes(root).closed
     expect(statuses(outcomes)).toEqual(['WARN'])
     expect(outcomes[0]?.message).toContain('`design/`, `reports/`')
@@ -191,9 +195,26 @@ describe('focus folders', () => {
     write(root, join(WORK, 'messages.md'), '# Messages\n\n- focus: _emerging · ASK · a side ask\n')
     expect(idleEmerging(folder)).toBe(false)
     write(root, join(WORK, 'messages.md'), '# Messages\n\nNone.\n')
+    write(root, join(WORK, '_emerging', '_index.md'), '# Emerging\n')
+    expect(idleEmerging(folder)).toBe(true)
     write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
     expect(idleEmerging(folder)).toBe(false)
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+  })
+
+  test('under INDEX-NAME a focus folder holding something without _index.md warns, index.md named', () => {
+    const root = fixture()
+    const folder = pkg(root)
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, 'layout', 'index.md'), '# Layout\n')
+    write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
+    expect(focusIndexFindings(folder)).toEqual(['layout/index.md', '_emerging/'])
+    const outcomes = folderOutcomes(root).closed
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toContain('starts with `_index.md`')
+    write(root, join(WORK, 'layout', '_index.md'), '# Layout\n')
+    write(root, join(WORK, '_emerging', '_index.md'), '# Emerging\n')
+    expect(focusIndexFindings(folder)).toEqual([])
   })
 
   test('FOLDER-2 and FOLDER-3 look inside focus folders', () => {

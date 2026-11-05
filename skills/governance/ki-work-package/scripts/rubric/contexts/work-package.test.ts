@@ -607,8 +607,15 @@ const packageFiles = (
     [
       `# ${id} messages`,
       '',
+      '## Inbound',
+      '',
+      `- ${new Date().toISOString().slice(0, 10)} · ACK MSG-1daf57ac · from personal.reg.assistant-sol · 23:40 GMT`,
       `- IMPORTANT · ${new Date().toISOString().slice(0, 10)} · REFRESH · KI > State of play: re-read ki-coordination.`,
       `- ${new Date().toISOString().slice(0, 10)} · ROUTE · KI > State of play: take the timeline unit.`,
+      '',
+      '## Outbound',
+      '',
+      `- ${new Date().toISOString().slice(0, 10)} · MSG-8029f0fa NO-LINK-MARK · to personal.reg.assistant-sol · 22:27 GMT · awaiting ACK`,
       ''
     ].join('\n'),
   'decisions.md': '# ki.ways-of-working decisions\n\nNone\n'
@@ -779,7 +786,7 @@ test('a message line may name its focus area before its tag', () => {
     'ki.ways-of-working',
     packageFiles('ki.ways-of-working', {
       messages:
-        '# ki.ways-of-working messages\n\n- 2099-01-01 · focus: layout · LAYOUT · KI > SoP (ki.sop.main): move the reports.\n'
+        '# ki.ways-of-working messages\n\n## Inbound\n\n- 2099-01-01 · focus: layout · LAYOUT · KI > SoP (ki.sop.main): move the reports.\n\n## Outbound\n\nNone.\n'
     })
   )
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
@@ -791,11 +798,27 @@ test('an empty message queue may say None with or without a full stop', () => {
     writePackage(
       repository,
       'ki.ways-of-working',
-      packageFiles('ki.ways-of-working', { messages: `# ki.ways-of-working messages\n\n${messages}\n` })
+      packageFiles('ki.ways-of-working', {
+        messages: `# ki.ways-of-working messages\n\n## Inbound\n\n${messages}\n\n## Outbound\n\nNone.\n`
+      })
     )
 
     expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
   }
+})
+
+test('a messages.md with only its H1 warns for the MSG-SECTIONS tolerance window', () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', {
+      messages: '# ki.ways-of-working messages\n\n- 2099-01-01 · ROUTE · KI > SoP (ki.sop.main): take it.\n'
+    })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
+    expect.objectContaining({ level: 'WARN', message: expect.stringContaining('## Inbound and ## Outbound') })
+  ])
 })
 
 const today = new Date().toISOString().slice(0, 10)
@@ -803,10 +826,29 @@ for (const [name, change] of [
   [
     'an important line below an ordinary one',
     {
-      messages: `# ki.ways-of-working messages\n\n- ${today} · ROUTE · Sender: take it.\n- IMPORTANT · ${today} · REFRESH · Sender: re-read.\n`
+      messages: `# ki.ways-of-working messages\n\n## Inbound\n\n- ${today} · ROUTE · Sender: take it.\n- IMPORTANT · ${today} · REFRESH · Sender: re-read.\n\n## Outbound\n\nNone.\n`
     }
   ],
-  ['a message line out of shape', { messages: '# ki.ways-of-working messages\n\n- take the timeline unit\n' }],
+  [
+    'an ACK line below a message line',
+    {
+      messages: `# ki.ways-of-working messages\n\n## Inbound\n\n- ${today} · MSG-c3205327 RECORD-2-HEADINGS · Sender: take it.\n- ${today} · ACK MSG-8029f0fa · from personal.reg.assistant-sol\n\n## Outbound\n\nNone.\n`
+    }
+  ],
+  [
+    'an Outbound line that names no receiver',
+    {
+      messages: `# ki.ways-of-working messages\n\n## Inbound\n\nNone.\n\n## Outbound\n\n- ${today} · MSG-8029f0fa · awaiting ACK\n`
+    }
+  ],
+  [
+    'Outbound above Inbound',
+    { messages: '# ki.ways-of-working messages\n\n## Outbound\n\nNone.\n\n## Inbound\n\nNone.\n' }
+  ],
+  [
+    'a message line out of shape',
+    { messages: '# ki.ways-of-working messages\n\n## Inbound\n\n- take the timeline unit\n\n## Outbound\n\nNone.\n' }
+  ],
   ['a missing description', { work: { description: "''" } }],
   ['a method_read that is not a revision', { state: { method_read: 'latest' } }],
   ['a numeric method_read instead of a revision string', { state: { method_read: '1234567' } }],
@@ -947,7 +989,8 @@ test('size limits and history warn without failing', () => {
         'None',
         ''
       ].join('\n'),
-      messages: '# ki.ways-of-working messages\n\n- 2026-09-01 · ROUTE · Sender: take the old unit.\n'
+      messages:
+        '# ki.ways-of-working messages\n\n## Inbound\n\n- 2026-09-01 · ROUTE · Sender: take the old unit.\n\n## Outbound\n\nNone.\n'
     })
   )
   const value = context(repository)
@@ -969,7 +1012,8 @@ test('a message line on work that is on hold may wait', () => {
     'ki.ways-of-working',
     packageFiles('ki.ways-of-working', {
       state: { state: 'on-hold', hold: '{ reason: paused, release: after the migration }' },
-      messages: '# ki.ways-of-working messages\n\n- 2026-09-01 · ROUTE · Sender: take the old unit.\n'
+      messages:
+        '# ki.ways-of-working messages\n\n## Inbound\n\n- 2026-09-01 · ROUTE · Sender: take the old unit.\n\n## Outbound\n\nNone.\n'
     })
   )
 
@@ -987,7 +1031,7 @@ test('a message line names its sender by work name, and the label alone stays re
       repository,
       'ki.ways-of-working',
       packageFiles('ki.ways-of-working', {
-        messages: `# ki.ways-of-working messages\n\n- ${today} · ROUTE · ${sender}: take the timeline unit.\n`
+        messages: `# ki.ways-of-working messages\n\n## Inbound\n\n- ${today} · ROUTE · ${sender}: take the timeline unit.\n\n## Outbound\n\nNone.\n`
       })
     )
     expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
@@ -1027,7 +1071,7 @@ test('ad hoc parent names a State of play and host requirements preserve queue s
   const id = 'ki.regular.intake'
   const files = packageFiles(id, {
     work: { level: 'regular', parent: 'ki.sop.operations' },
-    messages: `# ${id} messages\n\n- IMPORTANT · 2026-10-25 @terra · HOST-WORK · KI State of play: plan intake.\n- 2026-10-25 @macos · HOST-NEXT · KI State of play: receive evidence.\n`
+    messages: `# ${id} messages\n\n## Inbound\n\n- IMPORTANT · 2026-10-25 @terra · HOST-WORK · KI State of play: plan intake.\n- 2026-10-25 @macos · HOST-NEXT · KI State of play: receive evidence.\n\n## Outbound\n\nNone.\n`
   })
   files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
   writePackage(repository, id, files)

@@ -101,6 +101,19 @@ const QUERY_PARTS = ['**Context:**', '**Query:**', '**Options:**'] as const
 /** A message line, with its optional host requirement and, under LAYOUT-PILLARS, its optional `focus: <id>` slot. */
 const MESSAGE_LINE =
   /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · focus: [a-z0-9]+(?:-[a-z0-9]+)*)? · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
+/** The two sections of `messages.md` under MSG-SECTIONS (Kris, 4 November 2026), the H1-only file warned on until then. */
+const MESSAGE_HEADINGS = ['Inbound', 'Outbound'] as const
+/** A message id: `MSG-` and eight hex characters with an optional readable tag, or, for the tolerance window, a tag. */
+const MESSAGE_ID = String.raw`(?:MSG-[0-9a-f]{8}(?: [A-Z0-9][A-Z0-9-]*)?|[A-Z0-9][A-Z0-9-]*)`
+const PACKAGE_ID = String.raw`[a-z0-9]+(?:[.-][a-z0-9]+)*`
+/** An inbound message line in the sectioned file: date, optional host and focus slot, id, then the message. */
+const INBOUND_LINE = new RegExp(
+  String.raw`^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · focus: [a-z0-9_]+(?:-[a-z0-9]+)*)? · ${MESSAGE_ID} · \S`
+)
+/** An acknowledgement at the top of Inbound: `- <date> · ACK <id> · from <package id>`, with an optional time. */
+const ACK_LINE = new RegExp(String.raw`^- \d{4}-\d{2}-\d{2} · ACK ${MESSAGE_ID} · from ${PACKAGE_ID}(?: · \S.*)?$`)
+/** A sent line kept in Outbound until its ACK arrives: `- <date> · <id> · to <package id> · ...`. */
+const OUTBOUND_LINE = new RegExp(String.raw`^- \d{4}-\d{2}-\d{2} · ${MESSAGE_ID} · to ${PACKAGE_ID}(?: · \S.*)?$`)
 const REVISION = /^[0-9a-f]{7,40}$/
 // Soft limits under the standard's Size limits, warned and never failed.
 const LIMITS = {
@@ -765,7 +778,26 @@ const singleFileEvidence = (work: ParsedRecord, coordinationDeclared: boolean, e
   evidence.boundary.push(...boundaryOutcomes(work, fields))
 }
 
-/** The message queue: its H1, then lines in the Messages line shape, important lines first, or None. */
+/** List items of a messages section, a continuation line folded into its item; undefined where other text stands. */
+const messageItems = (content: string): string[] | undefined => {
+  const lines: string[] = []
+  for (const line of content.split(/\r?\n/)) {
+    if (line.trim().length === 0) continue
+    if (line.startsWith('- ')) lines.push(line)
+    else if (/^\s/.test(line) && lines.length > 0) lines[lines.length - 1] += ` ${line.trim()}`
+    else return undefined
+  }
+  return lines
+}
+
+/** Whether a section says it is empty, `None` or a `None ...` sentence such as `None awaiting ACK.`. */
+const noneSaid = (content: string): boolean => /^None\b[^\n]*$/.test(content)
+
+/**
+ * The message queue under MSG-SECTIONS: its H1, `## Inbound` with ACK lines first, then important lines, then
+ * ordinary lines, and `## Outbound` with each sent line awaiting its ACK, each section a list or None. The H1-only
+ * queue is warned on for the tolerance window and its lines read in the Messages line shape.
+ */
 const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, evidence: Evidence): void => {
   const fail = (message: string): void => {
     evidence.schema.push({ status: 'VIOLATION', message, subject: messages.path })
@@ -773,45 +805,85 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
   const warn = (message: string): void => {
     evidence.size.push({ status: 'VIOLATION', message, subject: messages.path })
   }
-  if (JSON.stringify(outline(messages.body)) !== JSON.stringify([{ level: 1, title: `${messages.stem} messages` }])) {
-    fail(`messages.md holds the H1 "# ${messages.stem} messages" and no other heading`)
+  const title = `${messages.stem} messages`
+  const sectioned = sameOutline(messages.body, title, MESSAGE_HEADINGS)
+  const legacy = JSON.stringify(outline(messages.body)) === JSON.stringify([{ level: 1, title }])
+  if (!sectioned && !legacy) {
+    fail(`messages.md holds the H1 "# ${title}", then ## Inbound and ## Outbound`)
     return
   }
-  const content = messages.body.replace(/^#\s+.+$/m, '').trim()
-  if (content === 'None' || content === 'None.') return
-  if (content.length === 0) {
-    fail('messages.md must say something, if only None')
-    return
+  const inbound = (lines: readonly string[], pattern: RegExp, shape: string): void => {
+    let ordinarySeen = false
+    for (const line of lines) {
+      const match = pattern.exec(line)
+      if (!match) {
+        fail(shape)
+        continue
+      }
+      if (match[1]) {
+        if (ordinarySeen) fail('important message lines stand above every ordinary line')
+      } else ordinarySeen = true
+      if (words(line) > LIMITS.messageWords)
+        warn(`a message line runs past about ${LIMITS.messageWords} words; link the detail`)
+      const sent = Date.parse(`${match[2]}T00:00:00Z`)
+      if (!onHold && !Number.isNaN(sent) && now - sent > LIMITS.messageDays * 86_400_000)
+        warn(
+          `a message line dated ${match[2]} has waited more than ${LIMITS.messageDays} days on work that is not on hold`
+        )
+    }
   }
-  const lines: string[] = []
-  for (const line of content.split(/\r?\n/)) {
-    if (line.trim().length === 0) continue
-    if (line.startsWith('- ')) lines.push(line)
-    else if (/^\s/.test(line) && lines.length > 0) lines[lines.length - 1] += ` ${line.trim()}`
-    else {
+  if (legacy) {
+    evidence.schema.push({
+      status: 'VIOLATION',
+      level: 'WARN',
+      message: `tolerance: messages.md carries ## Inbound and ## Outbound under the H1; move its lines into Inbound`,
+      subject: messages.path
+    })
+    const content = messages.body.replace(/^#\s+.+$/m, '').trim()
+    if (noneSaid(content)) return
+    if (content.length === 0) {
+      fail('messages.md must say something, if only None')
+      return
+    }
+    const lines = messageItems(content)
+    if (!lines) {
       fail('messages.md holds only message lines, one list item each, or None')
       return
     }
+    inbound(
+      lines,
+      MESSAGE_LINE,
+      'each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", with an optional "focus: <id> · " before the tag, or begins "- IMPORTANT · "'
+    )
+    return
   }
-  let ordinarySeen = false
-  for (const line of lines) {
-    const match = MESSAGE_LINE.exec(line)
-    if (!match) {
-      fail(
-        'each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", with an optional "focus: <id> · " before the tag, or begins "- IMPORTANT · "'
-      )
+  const sections = h2Sections(messages.body)
+  for (const heading of MESSAGE_HEADINGS) {
+    const content = sections.get(heading)?.trim() ?? ''
+    if (content.length === 0) {
+      fail(`${heading} must say something, if only None`)
       continue
     }
-    if (match[1]) {
-      if (ordinarySeen) fail('important message lines stand above every ordinary line')
-    } else ordinarySeen = true
-    if (words(line) > LIMITS.messageWords)
-      warn(`a message line runs past about ${LIMITS.messageWords} words; link the detail`)
-    const sent = Date.parse(`${match[2]}T00:00:00Z`)
-    if (!onHold && !Number.isNaN(sent) && now - sent > LIMITS.messageDays * 86_400_000)
-      warn(
-        `a message line dated ${match[2]} has waited more than ${LIMITS.messageDays} days on work that is not on hold`
-      )
+    if (noneSaid(content)) continue
+    const lines = messageItems(content)
+    if (!lines) {
+      fail(`${heading} holds only its lines, one list item each, or None`)
+      continue
+    }
+    if (heading === 'Outbound') {
+      if (lines.some((line) => !OUTBOUND_LINE.test(line)))
+        fail('each Outbound line reads "- <date> · <id> · to <package id> · ...", kept until its ACK arrives')
+      continue
+    }
+    const leading = lines.findIndex((line) => !ACK_LINE.test(line))
+    const rest = leading < 0 ? [] : lines.slice(leading)
+    if (rest.some((line) => ACK_LINE.test(line)))
+      fail('ACK lines stand at the top of Inbound, above every message line')
+    inbound(
+      rest.filter((line) => !ACK_LINE.test(line)),
+      INBOUND_LINE,
+      'each Inbound line reads "- <date> · <id> · ...", with an optional "focus: <id> · " before the id, begins "- IMPORTANT · ", or is an ACK line "- <date> · ACK <id> · from <package id>"'
+    )
   }
 }
 

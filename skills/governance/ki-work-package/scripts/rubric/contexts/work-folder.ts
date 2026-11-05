@@ -151,6 +151,23 @@ export const workFolderStray = (folder: string): readonly string[] => {
   })
 }
 
+/** A focus folder's entry file under INDEX-NAME (4 November 2026), and its earlier name read for the tolerance window. */
+export const FOCUS_INDEX = '_index.md'
+const LEGACY_FOCUS_INDEX = 'index.md'
+
+/**
+ * The declared focus folders holding something without their `_index.md`, each named with `index.md` where it still
+ * uses the earlier name, warned on for the INDEX-NAME tolerance window.
+ */
+export const focusIndexFindings = (folder: string): readonly string[] =>
+  focusFolders(folder).flatMap((id) => {
+    const area = join(folder, id)
+    if (!physicalDirectory(area)) return []
+    const names = entries(area).map((entry) => entry.name)
+    if (names.includes(FOCUS_INDEX) || names.length === 0) return []
+    return [names.includes(LEGACY_FOCUS_INDEX) ? `${id}/${LEGACY_FOCUS_INDEX}` : `${id}/`]
+  })
+
 /** A discussion point or message line naming `_emerging` in its `focus:` slot. */
 const EMERGING_SLOT = new RegExp(`\\bfocus:[ \\t]*\`?${EMERGING_FOCUS}\\b`)
 
@@ -161,7 +178,10 @@ const EMERGING_SLOT = new RegExp(`\\bfocus:[ \\t]*\`?${EMERGING_FOCUS}\\b`)
 export const idleEmerging = (folder: string): boolean => {
   if (!focusIds(folder).includes(EMERGING_FOCUS)) return false
   const area = join(folder, EMERGING_FOCUS)
-  if (physicalDirectory(area) && entries(area).length > 0) return false
+  const held = physicalDirectory(area)
+    ? entries(area).filter((entry) => entry.name !== FOCUS_INDEX && entry.name !== LEGACY_FOCUS_INDEX)
+    : []
+  if (held.length > 0) return false
   return ![...DISCUSSION_FILES, MESSAGES_FILE].some((name) => {
     const path = join(folder, name)
     return existsSync(path) && lstatSync(path).isFile() && EMERGING_SLOT.test(readFileSync(path, 'utf8'))
@@ -361,6 +381,14 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
         status: 'VIOLATION',
         level: 'WARN',
         message: `tolerance: a package that declares its focus areas keeps briefs, reports and design notes in their focus folders, not in type folders; move the contents of ${typed.map((name) => `\`${name}/\``).join(', ')} into the focus folder each belongs to`,
+        subject: subject(folder)
+      })
+    const unindexed = focusIndexFindings(folder)
+    if (unindexed.length > 0)
+      closed.push({
+        status: 'VIOLATION',
+        level: 'WARN',
+        message: `tolerance: each focus folder starts with \`${FOCUS_INDEX}\`, giving its goal, contents and what it sends out; rename \`index.md\` or add one: ${unindexed.join(', ')}`,
         subject: subject(folder)
       })
     if (idleEmerging(folder))
