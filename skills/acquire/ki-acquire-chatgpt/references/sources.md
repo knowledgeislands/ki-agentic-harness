@@ -10,6 +10,8 @@
 
 ## Last review
 
+On 2026-11-05, under ATER-027, the executable bridge was pointed at the assistant's `ki-muninn chatgpt import` and `export` after tools-ki `4faf9724` removed `ki acquire`, and the `ki-acquire-*` adapter front matter, which only tools-ki read, was removed. The provider method is unchanged; no external source was re-fetched.
+
 On 2026-10-20, the skill was cut to the owner's simplified capture model: the end point lives in the digest's README front matter, with no `capture-mark.json`, checkpoint or intake receipt, and the incremental project-acquisition design and opaque-store pairing were removed. No external source was re-fetched; the entries below stand as reviewed on 2026-09-22.
 
 On 2026-09-22, official ChatGPT documentation confirmed that an eligible signed-in account can request an export whose ZIP includes chat history and other account data. Delivery may take up to seven days and the download link expires after 24 hours. The documentation does not establish a supported incremental conversation-read interface or guarantee that the archive exposes complete project membership, write-ups, assets, and stable project identifiers. The acquisition standard therefore selects the export as an authorised bootstrap snapshot while retaining the local store as content-minimised evidence, prepared capture as the bounded executable bridge, and incremental readable acquisition as an unresolved dependency.

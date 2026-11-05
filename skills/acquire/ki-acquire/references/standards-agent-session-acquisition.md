@@ -12,7 +12,7 @@ Use the existing `mcp-housekeeping-claude` and `mcp-housekeeping-chatgpt` sessio
 
 For an authorised full-session exception, read the selected complete payload through a proven provider route. Preserve the selected scope faithfully under the common acquisition contract; do not silently substitute a preview, a digest, another provider or an unrelated repository. Include required descendants and material assets where the selected provider contract requires them, or retain an explicit incomplete obligation. Unavailable or unreadable source stays unavailable; it is not an empty successful capture.
 
-The read-only adapter does not write capture packages or KI checkpoints. Executable importer support belongs to `tools-ki`: establish the current supported adapter and coverage before advertising or invoking it. Where no complete route is proven, report the limitation rather than inventing an importer or weakening the promised scope.
+The read-only adapter does not write capture packages or KI checkpoints. Executable importers live in their owning repository, such as the assistant's `ki-muninn` for the `ki-acquire-granola` and `ki-acquire-chatgpt` routes, none of them in the harness: establish the current supported adapter and coverage before advertising or invoking it. Where no complete route is proven, report the limitation rather than inventing an importer or weakening the promised scope.
 
 ## Runtime binding: Claude session reads
 

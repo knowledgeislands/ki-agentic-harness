@@ -8,8 +8,11 @@ Review additionally alongside material changes to the common capture contract.
 - The `ki-acquire-chatgpt` and `ki-acquire-granola` standards own provider fidelity, capability limits and separately authorised mutations.
 - Acquire's README, AGENTS.md and CAPTURE.md, its intake work `personal.reg.assistant-terra`, formerly `personal.reg.acquire-intake`, and that package's design note `design/acquire-structure.md` publish Kris's decisions of 30 October to 1 November 2026 on the port and staging model, the `captured/`, `context/` and `curated/<territory>/<island>/` layout, incremental curation, front-matter card origins, cross-territory copies, meetings as sources, lean captures, held historical captures and future ideas. Acquire's own text is the authority for them for now (ACQ020-OWNER), and Acquire intake is the primary source for the acquisition structure (ACQUIRE-STRUCTURE-SOURCE).
 - tools-ki commit `26c754f3` removed the Granola ledger, and its acquisition specification records the capture as the only record under ACQUIRE-019.
+- tools-ki commit `4faf9724` removed `ki acquire` on 5 November 2026; the assistant's `ki-muninn` README in krisb/assistant now owns executable Granola and ChatGPT acquisition.
 
 ## Last review
+
+On 5 November 2026, under ATER-027 from `personal.reg.assistant-terra`, at Kris's word, `ki acquire` left tools-ki in `4faf9724` and acquisition moved to the assistant's `ki-muninn` (krisb/assistant, `packages/ki-muninn/`), which reads `[muninn.<source>]` settings and refuses settings left in `[skills.ki-acquire-<source>]`. The common method stays here; the provider skills now point their how-to at `ki-muninn`, and no skill was retired or reduced to a pointer. `ki muninn` will run it once tools-ki's extension mechanism, KI-TOOL-KI-CLI-176, lands.
 
 On 2 November 2026, under STORE-RENAME relayed by `personal.reg.assistant-terra`, Kris renamed the assistant's OneDrive store from `sources-acquire` to `sources-assistant`, and the store's name was updated throughout.
 

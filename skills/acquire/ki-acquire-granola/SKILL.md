@@ -4,19 +4,10 @@ ki-kind: governance
 ki-applicability: declaration-only
 ki-depends-on: [ki-acquire]
 ki-shared-dependencies: [ki-skills:rubric]
-ki-acquire-adapter: granola
-ki-acquire-actions: [import, mark]
-ki-acquire-repository-properties: [folder_ids, duplicate_folder_ids, unfoldered, residual, capture_root, folder_territories, acquired_folder_id, capture_moves]
-ki-acquire-invocation-properties: [refresh, refresh-acquired]
-ki-acquire-capabilities: [account, folders, meetings, details, transcripts, attachments]
-ki-acquire-omissions: [source-url, source-timestamps, tags, media, source-version, deletion-tombstone]
-ki-acquire-mutation-boundary: explicit-marker
-ki-acquire-checkpoint: capture-front-matter
-ki-acquire-reset-scopes: []
 description: >
   Acquire Granola meetings through read-only MCP calls: complete date windows, folder routing, transcripts and
   screenshots, one capture per meeting UUID, skipping on Acquired or Captured membership. Use for Granola import or audit;
-  `ki-acquire` owns the common contract, tools-ki owns CLI execution, and marking or retirement needs separate approval.
+  `ki-acquire` owns the common contract, the assistant's `ki-muninn` owns CLI execution, and marking or retirement needs separate approval.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
 
@@ -24,7 +15,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 Apply `ki-acquire` for the common contract, then [the Granola acquisition standard](references/standards-granola-acquisition.md). The generated [rubric](references/rubric.md) holds the review criteria, and [sources](references/sources.md) tracks the volatile official MCP surface.
 
-Granola's official remote MCP is the source adapter; `tools-ki` owns `ki acquire import` and `ki acquire mark` for `--adapter granola`. The `ki-acquire-*` front matter is the adapter declaration `tools-ki` reads. Import keeps no ledger: a meeting in the configured Acquired folder, or in a territory's Captured folder when the repository declares `capture_moves`, is skipped on membership alone, and an existing capture is found by its meeting UUID and kept unless `--refresh` is given. The committed capture is the only record.
+Granola's official remote MCP is the source adapter. The how-to has moved out of the harness: the assistant's `ki-muninn` (krisb/assistant, `packages/ki-muninn/`) runs `granola import`, `mark` and `images` from the receiving repository's `[muninn.granola]` settings, and its README and the assistant's Granola operator guide own the commands, flags, defaults and settings. `ki acquire` in tools-ki ran them until 5 November 2026; `ki muninn` will run them once tools-ki's extension mechanism, KI-TOOL-KI-CLI-176, lands. This skill keeps the provider method. Import keeps no ledger: a meeting in the configured Acquired folder, or in a territory's Captured folder when the repository declares `capture_moves`, is skipped on membership alone over an explicit window, and an existing capture is found by its meeting UUID and kept unless deliberately refreshed in place. The committed capture is the only record.
 
 ## Operating modes
 
@@ -42,7 +33,7 @@ Run AUDIT, then `ki repo conform --skill ki-acquire-granola --repo <repo> --dry-
 
 ### Mode EDUCATE
 
-Explain window splitting, folder routing and flags, one capture per UUID, the Acquired marker or Triaged-to-Captured move and `--refresh`, explicit omissions and the manual retirement gate. Do not acquire or mutate anything.
+Explain window splitting, folder routing and flags, one capture per UUID, the Acquired marker or Triaged-to-Captured move and in-place refresh, explicit omissions and the manual retirement gate, and point to `ki-muninn` for the commands. Do not acquire or mutate anything.
 
 ### Mode REFRESH
 
@@ -50,6 +41,6 @@ Run only in the canonical `ki-agentic-harness`; from an installed copy, stop and
 
 ## Off-ramps
 
-- `tools-ki` owns the commands, routing execution and capture writes.
+- The assistant's `ki-muninn` owns the commands, settings, routing execution and capture writes.
 - Knowledge Islands Principal owns the provider-neutral acquisition lifecycle.
 - Granola account administration and connector management stay outside this skill.
