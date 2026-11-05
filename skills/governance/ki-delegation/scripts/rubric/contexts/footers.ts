@@ -24,6 +24,8 @@ const SHARED_PROHIBITIONS = [
   'Do not read or print secrets',
   '~/bin/chezmoi/op-cache',
   'marked confidential is never made public',
+  "Nothing is posted in Kris's name outside his own repositories and services",
+  'express permission for that specific post',
   'stop and report rather than guess'
 ]
 
