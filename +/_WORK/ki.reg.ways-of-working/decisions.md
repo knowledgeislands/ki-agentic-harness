@@ -23,3 +23,7 @@ Operational: the read-only stock-take found about 60 guild items, mostly ki.prj.
 ## 2026-11-06 17:08 GMT - blind reviews received
 
 Operational: two blind reviews (Codex) returned. Agreement lifted RIG-SPENT, LANDED-COPIES, OLD-DIAGRAMS, WOW-RELATIONSHIP, TRANSFER-SOP-QUERIES, TRANSFER-WOW-PARKED, ORCA-HOME, COORD-OVERLAP and ACQUIRE-ROUTE to high. Disagreement turned SUPERSEDED-FIXES (a unique link correction in KI-TOOL-KI-CLI-145 would be lost) and HARNESS-SCOPE (a shared repository does not widen the remit) to the reviewers' options, with the runs' views shown beside them. The first review never saw option a) text, its brief having been malformed and the correction sent late; it judged the affirmative course instead. OLD-DIAGRAMS' premise that the area names are retired is false; removal rests on the committed copies.
+
+## 2026-11-06 18:40 GMT - ROLE-CATALOGUE received
+
+Operational: personal.reg.household-terra's IMPORTANT MSG-0624c1a4 delivered the role catalogue and the ethical-guilds prime directive, "at Kris's word, all settled with him in conversation today", in one brief at dotfiles `2fe13be` (`+/_WORK/personal.reg.household-terra/housekeeping/role-catalogue.brief.md`). It names this package's first jobs as renaming to `ki.reg.guilds` and absorbing ki.prj.ways-of-working, and withdraws MSG-09e75f90 at ki.sop.main. ACKed in household-terra's Inbound. A read-only planning run reads the brief and stages the rename, the absorption and the skills work against the open queries before anything changes.

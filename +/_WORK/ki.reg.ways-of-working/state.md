@@ -16,7 +16,7 @@ listening_status: on
 
 - Sent to Kris at 17:08 GMT on 6 November 2026 with twelve queries: five on the remaining worktrees, seven on routing the guild backlog.
 - Worktree tidy on sol removed five worktrees; thirteen remain under the queries.
-- Waiting on personal.reg.household-terra for the role catalogue design, and on ki.sop.main's ACK of GUILD-ROUTE.
+- Role catalogue design received from personal.reg.household-terra; planning run staging it. Waiting on ki.sop.main's ACK of GUILD-ROUTE.
 - Listening.
 
 ## Next steps
