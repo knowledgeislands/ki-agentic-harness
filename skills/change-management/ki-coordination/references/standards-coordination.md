@@ -736,6 +736,8 @@ This section is the one source of the owner-report text the runtime surfaces car
 
 Edit the text here and never in a rendered file. A hook source holds no single quote, because the hook assigns it in single quotes.
 
+**Footer check.** The harness `hooks/coordinator-footer.sh`, shipped in the installed hook payload beside the reminder hook and registered at the end-of-turn `Stop` event of each runtime the hooks README lists, holds back a coordinating reply whose footer lacks a part [Banner](#banner) or [The Summary](#the-summary) sets and names what is missing, so the session gives the reply again in full before its turn ends. Kris asked for it under FOOTER-HOOK on 6 November 2026, that the footer be enforced by a harness hook that "fires whatever the case. And most optimally". It renders nothing from this section: its checks read the shape those two sections set, so a change to the footer's parts there changes the hook and its test in the same commit. It checks every Summary, re-bootstrap and hold report and every reply that opens a banner, and the reply to an owner's mark or state word in a session that has already closed a reply with its thread line; it cannot tell that some other reply answers where the work stands, which stays the coordinator's own judgement. The [hooks README](../../../../hooks/README.md) gives its decision rules and the payload's registrations.
+
 <!-- ki-coordination:source hook-line -->
 
 ```text
