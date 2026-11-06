@@ -141,3 +141,7 @@ Guildmaster's decision, under Kris's TOOLS-STEWARD words ("you should go to the 
 - **Catalogue:** the entry and its glyph land in Stage C.
 
 Sent to ki.sop.main as MSG-25ab9064 TOOLS-ROLE, copied to personal.reg.household-terra as MSG-0438dd95.
+
+## 2026-11-06 22:45 GMT - HOOKS-APPROACH landed; TOOLS-ROLE taken
+
+Operational: harness `b2218fdc` opens `hooks/README.md` with "How hooks are expected to work". It sets out the three parts and their owners, marks the `ki` part as expected but not yet shipped, and names the forwarding stubs. The ki-repo-harness and ki-bootstrap standards now point to it, and the bootstrap checklist now binds the reminder hook from the installed path rather than a checkout. 1,607 tests pass. The only audit failure is the known CAP-2 fleet finding. The gap in `ki`: `ki doctor` checks only harness installation and `ki repair` only skill links, so neither looks at runtime hooks; that now belongs to the quartermaster. The ki-coordination SKILL.md still names the old flat hook paths, a wording fix for the next edit of that skill. TOOLS-ROLE: ki.sop.main raised it to Kris as QUARTERMASTER, folding in RIG-LANE and MAIL-OWNER with the quartermaster as recommended owner, and household-terra noted it.
