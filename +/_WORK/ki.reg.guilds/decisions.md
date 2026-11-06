@@ -87,3 +87,7 @@ Operational: ki-agentic-harness `8ec15e63` adds `hooks/coordinator-footer.sh`, a
 ## 2026-11-06 20:56 GMT - FOOTER-HOOK registered
 
 Operational: both households ACKed FOOTER-HOOK-OUT. household-terra (MSG-a6c649d5) registered `coordinator-footer.sh` at `Stop` on terra at dotfiles `dc20ab7`, smoke-tested quiet on bad input; household-sol (MSG-fc5b4e86) applies the same dotfiles change on sol. household-terra takes the reminder's repoint to the installed path and the HOOK-BINDING retirement to Kris itself, since the repoint changes Codex's trusted hashes.
+
+## 2026-11-06 21:50 GMT - Agora health check answered
+
+Operational: ki.prj.agora's HEALTH (MSG-b2a0436f) asked the listener to re-arm on Agora's call. The watcher now also wakes on `~/.local/state/ki/agora/call/ki.reg.guilds` and the old `doorbell/ki.reg.guilds` path, for 120 minutes per arm; ACKed in ki.prj.agora's Inbound at ki-principal `55077336`.
