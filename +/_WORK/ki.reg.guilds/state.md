@@ -1,7 +1,7 @@
 ---
 id: ki.reg.guilds
 state: handoff-to-supervisor
-since: 2026-11-06T17:08:57Z
+since: 2026-11-06T18:54:52Z
 received: 2026-11-06T16:54:00Z
 beat: null
 mark: null
@@ -14,16 +14,15 @@ listening_status: on
 
 ## Now
 
-- Sent to Kris at 17:08 GMT on 6 November 2026 with twelve queries: five on the remaining worktrees, seven on routing the guild backlog.
-- Worktree tidy on sol removed five worktrees; thirteen remain under the queries.
-- Role catalogue design received from personal.reg.household-terra; planning run staging it. Waiting on ki.sop.main's ACK of GUILD-ROUTE.
+- Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
+- Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
+- Waiting on ki.sop.main's ACKs of GUILD-ROUTE and RENAME-GUILDS.
 - Listening.
 
 ## Next steps
 
-1. Take Kris's answers; launch the worktree disposal and routing runs they authorise.
+1. Take Kris's answers; launch the worktree disposal, Stage B (absorb ki.prj.ways-of-working) and Stage C (catalogue skills) as authorised.
 2. Take the routed guild lines from ki.sop.main as they land.
-3. Take the role catalogue design from personal.reg.household-terra into `roles`.
 
 ## Held
 

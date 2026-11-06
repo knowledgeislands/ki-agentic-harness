@@ -35,3 +35,7 @@ Owner, relayed in the role catalogue brief at dotfiles `2fe13be` ("Everything un
 ## 2026-11-06 18:51 GMT - RENAME-GUILDS
 
 Owner, relayed in the role catalogue brief at dotfiles `2fe13be`, rule 13: "The guildmaster's package is renamed from `ki.reg.ways-of-working` to `ki.reg.guilds`, seat `ki.reg.guilds+guildmaster`, as its first job." Done as Stage A of the guild plan: the folder moved to `+/_WORK/ki.reg.guilds/`, the ids and H1s changed, the title is `KI > Guilds`, the manager tier replaces the enabler tier the brief does not have, and Scope gains its `Home: ki-agentic-harness` line. The run group `wow-open` keeps its name and now homes here. Lines went to personal.reg.household-sol (Agora watch, replacing AGORA-WATCH-WOW), ki.prj.agora, ki.sop.main (`covers`, GUILD-ROUTE and its description) and personal.reg.household-terra. Old lines elsewhere naming `ki.reg.ways-of-working` stay as history.
+
+## 2026-11-06 18:54 GMT - rename landed; ACKs; catalogue queries reviewed
+
+Operational: Stage A landed (ki-agentic-harness `30d1a32d`, ki-principal `38010704`, dotfiles `2b8d994`). household-sol ACKed MSG-02d1f29f: sol's Agora watches `ki.reg.guilds` and was restarted. household-terra ACKed MSG-280bd6ab: no live reference to the old id remains there. ki.prj.agora ACKed MSG-bf5f68b8: AGORA-WATCH-WOW superseded; terra will watch it too (AGORA-WATCH-GUILDS to household-terra). The blind review agreed with all seven catalogue queries, lifting each to high. Spent reports pruned from `reports/`.

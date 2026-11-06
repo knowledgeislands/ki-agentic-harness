@@ -134,7 +134,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - this matches rule 14's words with the smallest rule change, but it widens a stewardship rule, which the directive's purpose review watches for) The guild becomes the Project's assigned steward for the absorption only, by a committed and acknowledged handover in both decisions logs. `ki-work-package`'s stewardship rule gains one sentence admitting "a package the owner names as absorbing it". The guild's runs then transfer, home and finish the Project, with rule 14 as Kris's `finish`, and close it out.
+a) (recommended, confidence high - reviewed: Kris assigned absorption and closure to the guild, and a narrow, acknowledged stewardship exception carries that out without making the convening governor the delivery owner) The guild becomes the Project's assigned steward for the absorption only, by a committed and acknowledged handover in both decisions logs. `ki-work-package`'s stewardship rule gains one sentence admitting "a package the owner names as absorbing it". The guild's runs then transfer, home and finish the Project, with rule 14 as Kris's `finish`, and close it out.
 
 b) Kris opens ki.prj.ways-of-working once more, for one close-out session in ki-principal. That session sends its transfers to the guild as message lines and finishes itself. No rule changes, but it costs a session of Kris's attention.
 
@@ -150,7 +150,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - the two shapes do the same job, and keeping both fails the simplicity part, but the brief does not say so outright) Yes. The sub-package rules retire into the seat rules, and `personal.reg.inbox-terra.kiv` becomes a seat of inbox-terra the next time it takes up its role, under rule 6.
+a) (recommended, confidence high - reviewed: one seat model removes overlapping sibling-folder machinery while keeping the doer's link to its parent) Yes. The sub-package rules retire into the seat rules, and `personal.reg.inbox-terra.kiv` becomes a seat of inbox-terra the next time it takes up its role, under rule 6.
 
 b) Keep both: a sub-package for a focus area's short-lived doer, and a seat for a role in the package.
 
@@ -164,7 +164,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - this follows the brief's Guild and Reserved wording, which overturns a reviewed recommendation made before the brief) Yes. Each skill area is a guild kept here: change management, governance, engineering, repository, design, acquisition and environment. The work page says so. ACQUIRE-ROUTE takes b), and the idle harness asks come here.
+a) (recommended, confidence high - reviewed: one keeper for the harness's skill sets gives the new guild model a clear owner, with specialist guildmasters reserved until needed) Yes. Each skill area is a guild kept here: change management, governance, engineering, repository, design, acquisition and environment. The work page says so. ACQUIRE-ROUTE takes b), and the idle harness asks come here.
 
 b) No. The guild keeps only the change-management and coordination skills and the role catalogue. The other asks wait for ki.prj.baseline-rollout or go to ki.reg.main.
 
@@ -178,7 +178,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - rules 12 and 14 make the guild the one method owner, and moving unanswered queries costs Kris nothing; this changes a reviewed recommendation) Yes. State of play sends both bundles and their two design notes here by message line. The guild asks them and lands the harness run.
+a) (recommended, confidence high - reviewed: unanswered method decisions belong with the package that now owns the method, and moving them before asking costs you nothing) Yes. State of play sends both bundles and their two design notes here by message line. The guild asks them and lands the harness run.
 
 b) Kris answers them in State of play's pass, and State of play sends each answer here for the guild to land.
 
@@ -192,7 +192,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - this covers both places the role word lives and keeps Kris's own phrase, but the brief names only "the capture skill") Rename the role word, not the skill. The harness acquire skills say "the gatekeeper" where they mean the Inbox's role. The guild sends one line asking personal.reg.inbox-terra to do the same in its capture guide and AGENTS.md, keeping "give it to my assistant" as Kris's words. `ki-acquire` keeps its name under TOOLING-STAYS.
+a) (recommended, confidence high - reviewed: gatekeeper replaces a role, TOOLING-STAYS keeps the skill's name, and your spoken phrase stays ordinary speech) Rename the role word, not the skill. The harness acquire skills say "the gatekeeper" where they mean the Inbox's role. The guild sends one line asking personal.reg.inbox-terra to do the same in its capture guide and AGENTS.md, keeping "give it to my assistant" as Kris's words. `ki-acquire` keeps its name under TOOLING-STAYS.
 
 b) Rename the skill too, `ki-acquire` to a gatekeeper name with deprecated aliases, revisiting TOOLING-STAYS.
 
@@ -206,7 +206,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - the grant names only roles the brief deletes, and Paperclip was retired on 31 October by the stock-take's account, which I did not verify directly) Delete all four subagents and the AGENTS.md "Paperclip local delivery" section with its grant. The `ki-delegation-paperclip` skill and its declarations stay for PAPERCLIP-RETIRE.
+a) (recommended, confidence high - reviewed: keeping a standing grant for a deleted role would leave contradictory authority in the repository's guidance) Delete all four subagents and the AGENTS.md "Paperclip local delivery" section with its grant. The `ki-delegation-paperclip` skill and its declarations stay for PAPERCLIP-RETIRE.
 
 b) Delete only `ki-convenor`, `ki-steward` and `ki-wright`. Keep `ki-ferryman` and the AGENTS.md grant until PAPERCLIP-GRANT is answered.
 
@@ -220,7 +220,7 @@ focus: roles
 
 **Options:**
 
-a) (recommended, confidence medium - the concept update is the first work that needs a librarian, and opening earlier would leave an idle seat, which is a capture sign) Open it in ki-principal, the Knowledge Base Capital, when Stage C reaches its concept step. ki.sop.main seeds it at Kris's word.
+a) (recommended, confidence high - reviewed: opening it at the concept step gives the guild its partner without an idle package) Open it in ki-principal, the Knowledge Base Capital, when Stage C reaches its concept step. ki.sop.main seeds it at Kris's word.
 
 b) Open it now in ki-principal, so that it can take the role catalogue's terminology into the Knowledge Base alongside the guild.
 
