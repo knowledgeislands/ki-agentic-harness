@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-06 · MSG-eadd080b REPORT-FORMS-SNOOZE · from personal.reg.household-terra · 23:25 GMT · Add to REPORT-FORMS-TIDY (MSG-7bd095bd): Kris prefers **snoozing** to "more expected" as the name for a hold that waits for more to come, as in `⏸️ On hold · snoozing · since <time>`, in his words: "I think that's snoozing now. That's a better term than more expected." Reply with ACK.
 
 ## Outbound
 
