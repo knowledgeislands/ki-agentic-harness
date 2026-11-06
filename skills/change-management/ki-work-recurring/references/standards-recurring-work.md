@@ -114,7 +114,7 @@ Use the normal Activity body plus the four recurring-work sections above. The ex
 
 Recurring definitions are repository-owned and remain usable by a person or another execution environment with the declared skills and tooling. A scheduler may trigger evaluation and coordinate a run, but does not own another backlog or successful-run state. Before spawning, every caller re-reads the same definition and uses the same serialised reservation; an existing active run is reused or reported, never duplicated. Schedule activation, repairs, acceptance, and pruning retain their separate authority gates. Capture durable outcomes and learning in their repository-owned destinations rather than only in scheduler history.
 
-Recurring work is self-coordinating. It needs no coordinating session: an occurrence starts by its schedule or by whoever needs it, and rests on hold, more expected, between occurrences. The territory's state of play may discuss regular work but does not necessarily dispatch it.
+Recurring work is self-coordinating. It needs no coordinating session: an occurrence starts by its schedule or by whoever needs it, and rests Snoozing, on hold, between occurrences. The territory's state of play may discuss regular work but does not necessarily dispatch it.
 
 ## Due-run procedure
 

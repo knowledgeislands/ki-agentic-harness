@@ -27,7 +27,7 @@ const art = [
   '|======================================================================================|',
   '```'
 ].join('\n')
-const heading = '### 🤖 → 👤 Handoff to supervisor · since 21:10 GMT'
+const heading = '### 🤖 → 👤 Handoff to supervisor · at 21:10 GMT'
 const counts = '👤 1 with you'
 const roadmap = '🗺️ roadmap · 6 records · 3 open · 2 done awaiting prune · 1 idea'
 const pkg = '📦 package · inbox 0 · outbox 1 · held 0 · awaiting ACK 1'
@@ -207,7 +207,7 @@ test('a hold report and a Finished banner pass in their own shapes', () => {
   const hold = [
     '**⏸️ On hold · Hold report at 21:10 GMT · mark 21:10 GMT**',
     '## Done',
-    '### ⏸️ On hold · paused until Monday · since 21:10 GMT',
+    '### ⏸️ On hold · paused until Monday · at 21:10 GMT',
     '⏸️ drained · 🅿️ 2 queries parked',
     '- [parked] 2 queries in `discussions.md`',
     thread
@@ -216,6 +216,20 @@ test('a hold report and a Finished banner pass in their own shapes', () => {
   // A Finished banner carries no counts line.
   expect(run(stop(['### 🏁 Finished · Demo closed at 18:00 GMT', '- [finished] 3 work items accepted', thread].join('\n\n'), plain))).toEqual(silent)
   expect(run(stop(hold.replace('⏸️ drained · 🅿️ 2 queries parked\n\n', ''), plain)).reason).toContain('the counts line')
+  // Snoozing, under SNOOZE, keeps listening, so its counts line waits for a message rather than saying drained.
+  const snoozing = [
+    '**💤 Snoozing (on hold) · Hold report at 21:10 GMT · mark 21:10 GMT**',
+    '## Done',
+    '### 💤 Snoozing (on hold) · at 21:10 GMT',
+    '💤 waiting for a message · 🅿️ 2 queries parked',
+    '- [parked] 2 queries in `discussions.md`\n- [release] a message arrives, or `resume`',
+    '👂 listening',
+    thread
+  ].join('\n\n')
+  expect(run(stop(snoozing, plain))).toEqual(silent)
+  expect(run(stop(snoozing.replace('### 💤 Snoozing (on hold) · at 21:10 GMT\n\n', ''), plain)).reason).toContain(
+    'the ### state heading'
+  )
 })
 
 test('a reply that opens a banner but leaves it unfinished is held back', () => {

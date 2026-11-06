@@ -62,7 +62,7 @@ form=$(printf '%s\n' "$reply" | awk '
   /^(```|~~~)/ { fence = !fence; next }
   fence { next }
   /^## Summary since / || /^\*\*.* · (Summary|Status) at / { print "summary"; exit }
-  /^\*\*.* · (Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Finished)/ || /^🧵 [^ ]+ *$/ { other = 1 }
+  /^\*\*.* · (Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^🧵 [^ ]+ *$/ { other = 1 }
   END { if (other) print "banner" }')
 
 if [ -z "$form" ]; then
@@ -107,7 +107,7 @@ missing=$(printf '%s\n' "$reply" | awk -v long="$([ "$form" = summary ] && echo 
   fence { last = NR; next }
   {
     last = NR
-    if ($0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Finished)/) { heading = NR; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; road = 0; pack = 0; next }
+    if ($0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/) { heading = NR; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; road = 0; pack = 0; next }
     if (heading && !counts_seen) { counts_seen = 1; if ($0 !~ /^(- \[|🧵|🗺|📦|👂|🔇|↪)/) counts = 1 }
     if (heading && $0 ~ /^🗺/ && index($0, "roadmap")) road = 1
     if (heading && $0 ~ /^📦/ && index($0, "package")) pack = 1

@@ -300,7 +300,7 @@ The field set is closed:
 | `id` | required | the work's id, agreeing with `work.md` and the folder, so the file read alone identifies itself |
 | `state` | required | `with-worker`, `handoff-to-supervisor`, `with-supervisor`, `handoff-to-worker`, `handoff`, `on-hold` or `finished` |
 | `target` | required in `handoff`, else absent | the holder the work is in transit to |
-| `hold` | required in `on-hold`, else absent | a mapping of `reason`, `paused` or `more-expected`, and `release`, the condition in words |
+| `hold` | required in `on-hold`, else absent | a mapping of `reason`, `paused`, or `more-expected` for Snoozing until `ki` accepts `snoozing`, and `release`, the condition in words |
 | `blocking` | optional | `true` only in `handoff-to-supervisor`, when the worker sent back with a blocking query |
 | `since` | required | UTC time of the last move |
 | `received` | optional | UTC time of the supervisor's receive, or `null` |

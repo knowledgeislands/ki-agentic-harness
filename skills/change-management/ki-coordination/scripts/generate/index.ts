@@ -32,7 +32,8 @@ const BANNER_BLOCKS = [
   'with-worker-banner',
   'handoff-banner',
   'draining-banner',
-  'hold-banner'
+  'hold-banner',
+  'snoozing-banner'
 ] as const
 
 type Marked = { readonly block: string; readonly body: string }
