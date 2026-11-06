@@ -11,6 +11,7 @@ description: >-
 worker: agent
 supervisor: owner
 created_at: 2026-11-06T16:54:02Z
+role: guildmaster
 ---
 
 # ki.reg.guilds
