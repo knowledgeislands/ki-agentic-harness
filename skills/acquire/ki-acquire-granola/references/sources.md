@@ -11,6 +11,8 @@
 
 ## Last review
 
+On 6 November 2026, under INBOX-RENAME from `personal.reg.inbox-terra`, at Kris's word ("Do full rename to inbox now and coordinate that"), the assistant repository became the Inbox: `krisb/assistant` is now `krisb/inbox`, its packages `personal.reg.inbox-terra` and `personal.reg.inbox-sol`, and its store `sources-inbox`. Live wording here follows; older lines below keep the names they had.
+
 On 2026-11-05, under ATER-027, the how-to was pointed at the assistant's `ki-muninn` after tools-ki `4faf9724` removed `ki acquire`: the `ki-acquire-*` adapter front matter, which only tools-ki read, was removed, `capture_moves` is now shown in `[muninn.granola]`, and repeat runs name the recent-changes window `ki-muninn` runs by default. The provider method is otherwise unchanged; no external source was re-fetched and no live schema was inspected.
 
 On 2026-11-03, the skill took up tools-ki `e4fbd81c` and `d85feb4a` (GRANOLA-MOVE): a repository may declare `capture_moves` instead of `acquired_folder_id`, and the confirmed move adds Captured and reads it back before invoking `remove_note_from_folder` on Triaged and reading back again. The removal tool was among the thirteen seen on 2026-10-16; no external source was re-fetched and no live schema was inspected for this change.

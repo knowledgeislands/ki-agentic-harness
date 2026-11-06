@@ -10,6 +10,8 @@
 
 ## Last review
 
+On 6 November 2026, under INBOX-RENAME from `personal.reg.inbox-terra`, at Kris's word ("Do full rename to inbox now and coordinate that"), the assistant repository became the Inbox: `krisb/assistant` is now `krisb/inbox`, its packages `personal.reg.inbox-terra` and `personal.reg.inbox-sol`, and its store `sources-inbox`. Live wording here follows; older lines below keep the names they had.
+
 On 2026-11-05, under ATER-027, the executable bridge was pointed at the assistant's `ki-muninn chatgpt import` and `export` after tools-ki `4faf9724` removed `ki acquire`, and the `ki-acquire-*` adapter front matter, which only tools-ki read, was removed. The provider method is unchanged; no external source was re-fetched.
 
 On 2026-10-20, the skill was cut to the owner's simplified capture model: the end point lives in the digest's README front matter, with no `capture-mark.json`, checkpoint or intake receipt, and the incremental project-acquisition design and opaque-store pairing were removed. No external source was re-fetched; the entries below stand as reviewed on 2026-09-22.

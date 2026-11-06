@@ -23,7 +23,7 @@ Use the provider-neutral lifecycle: **acquire → stage → harvest → durable 
 
 Repository staging records the opaque source locator, timestamp, byte count, and hash but does not commit the opaque payload bytes by default. Those bytes contain no readable knowledge and remain permanently recoverable from Git after a later deletion; retain them only outside Git in an explicitly approved source store when the receiver has a justified need.
 
-The assistant's `ki-muninn chatgpt` commands own repository-context staging of a prepared capture. The MCP never writes KI state, changes the ChatGPT store, decrypts a private format, archives, or deletes a source session.
+The Inbox's `ki-muninn chatgpt` commands own repository-context staging of a prepared capture. The MCP never writes KI state, changes the ChatGPT store, decrypts a private format, archives, or deletes a source session.
 
 The `ki-acquire-chatgpt` skill owns readable project routing, complete-conversation fidelity, incremental content versions, receiver staging, and later retirement evidence. Opaque local-store records may support its identity and change-detection layer, but never substitute for readable content.
 
@@ -56,5 +56,5 @@ REFRESH writes only the canonical `ki-housekeeping-chatgpt` source in `ki-agenti
 ## Off-ramps
 
 - Durable knowledge promotion belongs to Knowledge Islands Principal's acquisition lifecycle.
-- Repository staging belongs to the assistant's `ki-muninn chatgpt` commands, in krisb/assistant.
+- Repository staging belongs to the Inbox's `ki-muninn chatgpt` commands, in krisb/inbox.
 - Archive or delete requires a later verified acquisition and harvest decision.

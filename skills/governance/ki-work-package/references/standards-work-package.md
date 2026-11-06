@@ -61,7 +61,7 @@ Every package below the main State of play names its coordinating State of play 
 
 ### Sub-packages
 
-A sub-package is a grounded doer's own short-lived work package, beside the others under `+/_WORK/`, for one focus area of a regular, ad hoc or Project package, its id `<parent id>.<parent focus id>` under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), as in `personal.reg.assistant-terra.kiv`. Kris set it about 00:00 GMT on 2 November 2026, relayed as SUB-PACKAGE, so that each package has one worker and one inbox and a message to a package always reaches exactly one worker.
+A sub-package is a grounded doer's own short-lived work package, beside the others under `+/_WORK/`, for one focus area of a regular, ad hoc or Project package, its id `<parent id>.<parent focus id>` under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), as in `personal.reg.inbox-terra.kiv`. Kris set it about 00:00 GMT on 2 November 2026, relayed as SUB-PACKAGE, so that each package has one worker and one inbox and a message to a package always reaches exactly one worker.
 
 - **Form:** the five-file package, its `level` the parent's. Its `parent` names the parent package, not a State of play, and it stays out of every State of play's `covers`, since its parent is already there.
 - **Writers:** only the parent's keyholder and the doer working in the sub-package write to it, a private channel between the two. Other work sends lines to the parent's `messages.md`, and the parent's steward routes them.

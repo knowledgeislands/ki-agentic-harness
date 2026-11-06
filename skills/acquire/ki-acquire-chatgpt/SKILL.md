@@ -17,7 +17,7 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 Apply `ki-acquire` for the common contract, then [the ChatGPT acquisition standard](references/standards-chatgpt-acquisition.md). The generated [rubric](references/rubric.md) holds the review criteria; read [the sources](references/sources.md) only during REFRESH or when current provider capability matters.
 
-A ChatGPT capture is a digest or full-thread snapshot written by the receiving repository's capture route, with its end point in the digest's README front matter. The how-to has moved out of the harness: the assistant's `ki-muninn` (krisb/assistant, `packages/ki-muninn/`) checks one user-prepared readable capture with `chatgpt import` and writes it as a Knowledge Export Package with `chatgpt export`, and its README and the assistant's ChatGPT guide own the commands and `[muninn.chatgpt]` settings. `ki acquire` in tools-ki ran this bridge until 5 November 2026; `ki muninn` will run it once tools-ki's extension mechanism, KI-TOOL-KI-CLI-176, lands. This skill keeps the provider method. Acquisition never mutates ChatGPT.
+A ChatGPT capture is a digest or full-thread snapshot written by the receiving repository's capture route, with its end point in the digest's README front matter. The how-to has moved out of the harness: the Inbox's `ki-muninn` (krisb/inbox, `packages/ki-muninn/`) checks one user-prepared readable capture with `chatgpt import` and writes it as a Knowledge Export Package with `chatgpt export`, and its README and the assistant's ChatGPT guide own the commands and `[muninn.chatgpt]` settings. `ki acquire` in tools-ki ran this bridge until 5 November 2026; `ki muninn` will run it once tools-ki's extension mechanism, KI-TOOL-KI-CLI-176, lands. This skill keeps the provider method. Acquisition never mutates ChatGPT.
 
 ## Operating modes
 
@@ -41,6 +41,6 @@ Run only in the canonical `ki-agentic-harness`; from an installed copy, stop and
 
 ## Off-ramps
 
-- The assistant's `ki-muninn` owns execution.
+- The Inbox's `ki-muninn` owns execution.
 - `ki-housekeeping-chatgpt` owns opaque local-store evidence, which is never conversation content.
 - ChatGPT account administration, project renaming, archiving and deletion stay outside acquisition authority.
