@@ -71,6 +71,11 @@ const HEADING_FOR_LINE =
 const LISTEN_LINE = /^👂 listening$/u
 /** The listening line while that capability is off. */
 const LISTEN_OFF_LINE = /^🔇 not listening$/u
+/** The roadmap line under FOOTER-COUNTS, in a Summary's footer where the work's repository has a roadmap. */
+const ROADMAP_LINE =
+  /^🗺️ roadmap · (?:1 record|(?!1 )\d+ records) · \d+ open · \d+ done awaiting prune · (?:1 idea|(?!1 )\d+ ideas)$/u
+/** The package line under FOOTER-COUNTS, beside the roadmap line in a Summary's footer. */
+const PACKAGE_LINE = /^📦 package · inbox (\d+) · outbox (\d+) · held \d+ · awaiting ACK (\d+)$/u
 /** The sync line SYNC-LINE-OFF removed from every banner, read only in past reports. */
 const SYNC_LINE = /^🔄 (?:not )?syncing for [a-z0-9<>-]+$/u
 /** The standard less its Generated surfaces sources, whose text is checked through what they render. */
@@ -107,9 +112,11 @@ const expectReportHeading = (lines: string[] | undefined): void => {
 }
 
 /**
- * A banner, top to bottom under FOOTER-LAYOUT: the heading, a blank line, a counts line where live, a blank line, the
+ * A banner, top to bottom under FOOTER-LAYOUT: the heading, a blank line, a counts line where live, a blank line, then
+ * in a Summary's footer under FOOTER-COUNTS the roadmap line where there is a roadmap and the package line, each followed
+ * by a blank line, the
  * items, then each closing line after a blank line: the heading-for line where one stands, the listening line on a
- * thread with that capability, the sync line on a host sync thread, each on or off, and the thread line last.
+ * thread with that capability, each on or off, and the thread line last.
  */
 const expectBanner = (lines: string[]): void => {
   expect(lines[0]).toMatch(BANNER_HEADING)
@@ -129,12 +136,29 @@ const expectBanner = (lines: string[]): void => {
   const listening = LISTEN_LINE.test(closing[at] ?? '') || LISTEN_OFF_LINE.test(closing[at] ?? '')
   if (listening) at += 1
   expect(at).toBe(closing.length)
-  const items = lines.slice(finished ? 2 : 4, end - 1)
+  let first = 2
+  let awaitingAck: number | undefined
   if (!finished) {
     expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
     expect(lines[3]).toBe('')
+    first = 4
+    if (ROADMAP_LINE.test(lines[first] ?? '')) {
+      expect(lines[first + 1]).toBe('')
+      expect(lines[first + 2]).toMatch(PACKAGE_LINE)
+      first += 2
+    }
+    const [, , outbox, awaiting] = lines[first]?.match(PACKAGE_LINE) ?? []
+    if (awaiting !== undefined) {
+      expect(Number(outbox)).toBeGreaterThanOrEqual(Number(awaiting))
+      awaitingAck = Number(awaiting)
+      expect(lines[first + 1]).toBe('')
+      first += 2
+    }
   }
+  const items = lines.slice(first, end - 1)
   expect(items.length).toBeGreaterThan(0)
+  if (awaitingAck !== undefined)
+    expect(items.filter((line) => line.startsWith('- [awaiting ACK]'))).toHaveLength(awaitingAck)
   for (const item of items) expect(item).toMatch(ITEM)
   for (const item of items.filter((line) => /^- \[(running|queued|with you|stuck)\]/.test(line)))
     expect(item).toMatch(HOLDER_ITEM)
@@ -363,7 +387,9 @@ test('the standard carries the With worker, handoff, draining, On hold and Finis
   expect(hold?.[0]).toBe('### ⏸️ On hold · paused until the harness migration lands · since 00:10 BST')
   expect(hold).toContain('- [release] after the harness migration lands, or `resume`')
   expect(hold?.[2]).toBe('⏸️ drained · 🅿️ 9 queries parked')
-  expect(hold?.slice(4, -4).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(true)
+  expect(hold?.filter((line) => line.startsWith('- [')).every((line) => /^- \[(parked|release)\] /.test(line))).toBe(
+    true
+  )
 })
 
 test('reports omit routine push state, and an On hold banner lists nothing waiting', () => {
@@ -720,6 +746,8 @@ test('a sent line awaiting its ACK is a banner item naming its id, receiver and 
     '',
     '👤 1 with you',
     '',
+    '📦 package · inbox 0 · outbox 1 · held 0 · awaiting ACK 1',
+    '',
     '- [with you] WORK-HOME · owner · since 22:58',
     '- [awaiting ACK] MSG-8029f0fa · to personal.reg.assistant-sol · since 22:27',
     '',
@@ -729,4 +757,54 @@ test('a sent line awaiting its ACK is a banner item naming its id, receiver and 
     expect(text).toContain('`- [awaiting ACK] <id> · to <package id> · since <time>`')
   }
   expect(standard).toContain('NO-LINK-MARK')
+})
+
+// Kris, about 20:40 GMT on 6 November 2026, of the footer personal.reg.household-terra trialled, under FOOTER-COUNTS:
+// "I absolutely love that footer. Can you make that the case, please, and get that to be rolled out?" Beneath the
+// counts line, the hold line on hold, a Summary's footer carries one roadmap line and one package line; the banner
+// alone, the footer's short form, carries neither, and the thread line stays last.
+test("a Summary's footer carries the roadmap and package lines beneath its counts line, and the short form neither", () => {
+  expect('🗺️ roadmap · 1 record · 0 open · 1 done awaiting prune · 0 ideas').toMatch(ROADMAP_LINE)
+  expect('📦 package · inbox 0 · outbox 0 · held 0 · awaiting ACK 0').toMatch(PACKAGE_LINE)
+  for (const line of [
+    '🗺️ roadmap · 1 records · 0 open · 0 done awaiting prune · 0 ideas',
+    '🗺️ roadmap · 2 records · 1 open · 0 done awaiting prune · 1 ideas'
+  ])
+    expect(line).not.toMatch(ROADMAP_LINE)
+  expect('📦 package · inbox 0').not.toMatch(PACKAGE_LINE)
+  expect(() =>
+    expectBanner([
+      '### 👤 With supervisor · since 23:52 GMT',
+      '',
+      '👤 1 with you',
+      '',
+      '🗺️ roadmap · 1 record · 0 open · 1 done awaiting prune · 0 ideas',
+      '',
+      '- [with you] WORK-HOME · owner · since 22:58',
+      '',
+      '🧵 ki.sop.main'
+    ])
+  ).toThrow()
+  const [withWorker, handoff, draining, hold, finished] = banners(standard)
+  expect(withWorker?.slice(2, 7)).toEqual([
+    '🤖 2 running · 👤 1 with you · ⛔ 1 blocked',
+    '',
+    '🗺️ roadmap · 6 records · 4 open · 1 done awaiting prune · 1 idea',
+    '',
+    '📦 package · inbox 1 · outbox 0 · held 0 · awaiting ACK 0'
+  ])
+  expect(handoff?.[4]).toMatch(ROADMAP_LINE)
+  expect(handoff?.[6]).toMatch(PACKAGE_LINE)
+  for (const lines of [draining, hold, finished])
+    expect(lines?.some((line) => PACKAGE_LINE.test(line) || ROADMAP_LINE.test(line))).toBe(false)
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain('`🗺️ roadmap · <n> records · <n> open · <n> done awaiting prune · <n> ideas`')
+    expect(text).toContain('`📦 package · inbox <n> · outbox <n> · held <n> · awaiting ACK <n>`')
+    expect(text).toContain('`ki repo roadmap summary`')
+    expect(text).toContain('FOOTER-COUNTS')
+    expect(text).toContain('long form')
+    expect(text).toContain('short form')
+  }
+  expect(standard).toContain('**Roadmap and package lines.**')
+  expect(standard).toContain('In a Summary of work On hold the counts line is the hold line')
 })
