@@ -99,3 +99,7 @@ Owner, relayed by personal.reg.household-terra (MSG-1fa32fa1), Kris's Q2 a at ab
 ## 2026-11-06 22:13 GMT - SKILL-HARVEST
 
 Owner, Kris: "I'm wondering if you could ask out across the rest of the repos if they've got any things that need to be captured and put into skills. As the guildmaster, you're the one who's managing the durable knowledge of all these things." Taken as: one call, MSG-c6fa7c81, to every live work package in every repository on sol, across all territories, asking each to reply here with practice, method, rules or lessons that are missing from the skills or wrong in them. Replies are gathered into a harvest list in this package; what lands in which skill follows HARNESS-SCOPE. Sent by run `skill-harvest`.
+
+## 2026-11-06 22:15 GMT - HOOKS-FOLDERS
+
+Owner, Kris: "Can you tidy up the hooks folders so each hook is in its own folder?" Taken as: in ki-agentic-harness `hooks/`, each hook gets its own folder holding its script and tests, with the README as the index. Under CHECK-CONSUMERS, every consumer is listed first: the `ki` payload install and generator, skill standards, dotfiles bindings on both Macs, and Codex trusted hashes. Old paths stay as thin forwarding stubs until every binding has been repointed. Done in a linked worktree by run `hooks-folders`.
