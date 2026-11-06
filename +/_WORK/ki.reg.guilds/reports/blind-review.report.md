@@ -1,4 +1,4 @@
-# [KI Regular Ways working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md) › blind-review
+# [KI Regular Ways working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md) › blind-review
 
 **🤖 → 👤 Handoff to supervisor · Run report at 17:06 GMT · last mark none recorded**
 

@@ -1,5 +1,5 @@
 ---
-id: ki.reg.ways-of-working
+id: ki.reg.guilds
 state: handoff-to-supervisor
 since: 2026-11-06T17:08:57Z
 received: 2026-11-06T16:54:00Z
@@ -10,7 +10,7 @@ listening_enabled: true
 listening_status: on
 ---
 
-# ki.reg.ways-of-working state
+# ki.reg.guilds state
 
 ## Now
 

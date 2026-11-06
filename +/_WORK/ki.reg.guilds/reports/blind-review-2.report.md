@@ -1,4 +1,4 @@
-# [KI > Regular > Ways of working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md) › blind-review-2
+# [KI > Regular > Ways of working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md) › blind-review-2
 
 **🤖 → 👤 Handoff to supervisor · Run report at 17:06 GMT · last mark none recorded**
 
@@ -36,7 +36,7 @@ Nothing running. The supervisor holds these recommendations for reconciliation w
 
 **Reason:** The new standing package is a clear continuing home for method stewardship, while the finite Project already anticipates handing stewardship on.
 
-**Verified:** [ki.reg.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md) owns roles, ways-of-working skills and guild management. [ki.prj.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/work.md) owns the overlapping method, explicitly excludes tools, Observatory and territory dispatch, and anticipates a later stewardship handoff. Its [state](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/state.md) records the 3 November drain to State of play and preserves unresolved design stages. There are 14 declared focus areas; that does not establish 14 existing folders.
+**Verified:** [ki.reg.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md) owns roles, ways-of-working skills and guild management. [ki.prj.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/work.md) owns the overlapping method, explicitly excludes tools, Observatory and territory dispatch, and anticipates a later stewardship handoff. Its [state](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/state.md) records the 3 November drain to State of play and preserves unresolved design stages. There are 14 declared focus areas; that does not establish 14 existing folders.
 
 **Not verified:** The 95-query total, the estimate of 60 guild items and each note's live status. The current [Project note](/Users/krisbrown/kis/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md) still says `lifecycle: active`; handover is proposed, not completed.
 
@@ -102,7 +102,7 @@ Nothing running. The supervisor holds these recommendations for reconciliation w
 
 **Reason:** A shared repository and an idle carrier do not turn engineering, website and acquisition responsibilities into ways-of-working stewardship.
 
-**Verified:** The [guild definition](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md) explicitly limits its skills remit to how we work and excludes other regular work and Project delivery. Its branch/worktree custody is an additional housekeeping responsibility. [ki.prj.baseline-rollout](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/work.md) covers rollout and explicitly excludes work-model standards; its [state](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/state.md) is on hold. Its [messages](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/messages.md) retain engineering and website requests. [ki.reg.main](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.reg.main/work.md) can carry small ad hoc work without a Project.
+**Verified:** The [guild definition](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md) explicitly limits its skills remit to how we work and excludes other regular work and Project delivery. Its branch/worktree custody is an additional housekeeping responsibility. [ki.prj.baseline-rollout](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/work.md) covers rollout and explicitly excludes work-model standards; its [state](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/state.md) is on hold. Its [messages](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/messages.md) retain engineering and website requests. [ki.reg.main](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.reg.main/work.md) can carry small ad hoc work without a Project.
 
 **Not verified:** The live status of every enumerated harness ask, whether all remain defects, or the unmerged status of `ki-e2e`; only the local branch's existence was checked.
 

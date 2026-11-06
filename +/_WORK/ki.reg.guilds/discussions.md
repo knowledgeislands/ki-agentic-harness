@@ -1,4 +1,4 @@
-# ki.reg.ways-of-working discussions
+# ki.reg.guilds discussions
 
 ## Open
 

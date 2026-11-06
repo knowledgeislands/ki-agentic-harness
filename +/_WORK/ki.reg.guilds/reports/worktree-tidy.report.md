@@ -1,4 +1,4 @@
-# [KI > Regular > Ways of working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md) › worktree-tidy
+# [KI > Regular > Ways of working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md) › worktree-tidy
 
 **🤖 → 👤 Handoff to supervisor · Run report at 17:01 GMT · last mark none yet**
 

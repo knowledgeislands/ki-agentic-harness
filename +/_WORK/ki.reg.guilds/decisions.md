@@ -1,4 +1,4 @@
-# ki.reg.ways-of-working decisions
+# ki.reg.guilds decisions
 
 ## 2026-11-06 16:54 GMT - OPEN-GUILD
 
@@ -31,3 +31,7 @@ Operational: personal.reg.household-terra's IMPORTANT MSG-0624c1a4 delivered the
 ## 2026-11-06 18:50 GMT - guild-plan received; WOW-RELATIONSHIP and TRANSFER-WOW-PARKED answered by the brief
 
 Owner, relayed in the role catalogue brief at dotfiles `2fe13be` ("Everything under "Decided" is Kris's word"): rule 13, "The guildmaster's package is renamed from `ki.reg.ways-of-working` to `ki.reg.guilds`, seat `ki.reg.guilds+guildmaster`, as its first job"; rule 14, "`ki.reg.guilds` absorbs `ki.prj.ways-of-working` in ki-principal (its unread messages and focus areas) and closes it, so one package owns the method". Read as WOW-RELATIONSHIP a) and TRANSFER-WOW-PARKED a); both leave the open queries. The brief has no enabler tier, so the guildmaster sits in the manager tier. HARNESS-SCOPE and TRANSFER-SOP-QUERIES are replaced by the plan's refreshed versions; ABSORB-STEWARD, SEATS-VS-SUBPACKAGES, CAPTURE-ASSISTANT, PAPERCLIP-NAMES and LIBRARY-OPEN are added. All seven go to one blind review. Stage A, the rename, launches under rule 13.
+
+## 2026-11-06 18:51 GMT - RENAME-GUILDS
+
+Owner, relayed in the role catalogue brief at dotfiles `2fe13be`, rule 13: "The guildmaster's package is renamed from `ki.reg.ways-of-working` to `ki.reg.guilds`, seat `ki.reg.guilds+guildmaster`, as its first job." Done as Stage A of the guild plan: the folder moved to `+/_WORK/ki.reg.guilds/`, the ids and H1s changed, the title is `KI > Guilds`, the manager tier replaces the enabler tier the brief does not have, and Scope gains its `Home: ki-agentic-harness` line. The run group `wow-open` keeps its name and now homes here. Lines went to personal.reg.household-sol (Agora watch, replacing AGORA-WATCH-WOW), ki.prj.agora, ki.sop.main (`covers`, GUILD-ROUTE and its description) and personal.reg.household-terra. Old lines elsewhere naming `ki.reg.ways-of-working` stay as history.

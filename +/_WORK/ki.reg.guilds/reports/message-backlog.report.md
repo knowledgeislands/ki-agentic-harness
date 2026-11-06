@@ -1,4 +1,4 @@
-# [KI > Regular > Ways of working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md) › message-backlog
+# [KI > Regular > Ways of working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md) › message-backlog
 
 **🤖 → 👤 Handoff to supervisor · Run report at 17:05 GMT · last mark none**
 
@@ -176,7 +176,7 @@ Dispositions: **transfer** means it moves to ki.reg.ways-of-working; **leave** m
 
 ### WOW-RELATIONSHIP - How the Ways of working Project relates to the new guild
 
-**Context:** [ki.prj.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/work.md) is a Project in Knowledge Islands Principal. Its remit is the work model, the work package, coordination, delegation and their rollout, which is the same ground as [ki.reg.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md)'s skills focus. The new package adds the role catalogue and guild management. The Project has been on hold since you drained it to State of play on 3 November ("move all of the work to be coordinated through the SOP main"). It holds 95 parked queries, about 60 of them in the guild remit, and 14 focus folders of design notes and reports. Its own goal already said that method stewardship passes on once the method is defined (WOW-REFRESH, STEWARD-HOME). Keeping both alive means two homes for the same method.
+**Context:** [ki.prj.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/work.md) is a Project in Knowledge Islands Principal. Its remit is the work model, the work package, coordination, delegation and their rollout, which is the same ground as [ki.reg.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/work.md)'s skills focus. The new package adds the role catalogue and guild management. The Project has been on hold since you drained it to State of play on 3 November ("move all of the work to be coordinated through the SOP main"). It holds 95 parked queries, about 60 of them in the guild remit, and 14 focus folders of design notes and reports. Its own goal already said that method stewardship passes on once the method is defined (WOW-REFRESH, STEWARD-HOME). Keeping both alive means two homes for the same method.
 
 **Query:** Should the guild take over the Project's live remit, with the Project closed once what it holds has homes?
 

@@ -1,11 +1,11 @@
 ---
-id: ki.reg.ways-of-working
+id: ki.reg.guilds
 parent: ki.sop.main
 level: regular
-title: 'KI > Regular > Ways of working'
+title: 'KI > Guilds'
 theme: null
 description: >-
-  The guildmaster, in the enabler tier: owns the role catalogue and keeps the skills in ki-agentic-harness that
+  The guildmaster, in the manager tier: owns the role catalogue and keeps the skills in ki-agentic-harness that
   capture how we work, and takes all guild-management work routed to it. Standing regular work. Not for territory
   dispatch (ki.sop.main), other regular work (ki.reg.main) or Project delivery.
 worker: agent
@@ -13,11 +13,11 @@ supervisor: owner
 created_at: 2026-11-06T16:54:02Z
 ---
 
-# ki.reg.ways-of-working
+# ki.reg.guilds
 
 ## Goals
 
-- Act as guildmaster, in the enabler tier: own the role catalogue, the roles every work package and agent takes.
+- Act as guildmaster, in the manager tier: own the role catalogue, the roles every work package and agent takes.
 - Keep the harness skills that capture how we work current, coherent and adopted.
 - Take every guild-management line routed to this package and settle it or send it on.
 
@@ -25,6 +25,7 @@ created_at: 2026-11-06T16:54:02Z
 
 - In: the role catalogue and its design; the ways-of-working skills in ki-agentic-harness; guild management; the harness's linked worktrees and branches.
 - Out: territory dispatch and the Project queue (ki.sop.main); other regular work (ki.reg.main); Project delivery in other packages.
+- Home: ki-agentic-harness, the repository whose skills it keeps, where Kris opened it under OPEN-GUILD on 6 November 2026; [ki.sop.main](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.sop.main/work.md) is asked to name it in its Scope and `covers`.
 
 ## Focus
 
