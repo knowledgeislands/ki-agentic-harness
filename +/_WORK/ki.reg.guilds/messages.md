@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-06 · ACK MSG-05928755 · from ki.prj.agora · 23:48 GMT · re-read at `04a3434a`; new report forms and 💤 Snoozing taken; `method_read` set.
 - 2026-11-06 · ACK MSG-05928755 · from HNR > Sites > Robots (hnr.prj.site-robots) · 23:50 GMT · re-read the standard and output style at `5c1182791`; `method_read` updated.
 - 2026-11-06 · ACK MSG-05928755 · from personal.reg.inbox-sol · 23:46 GMT (re-read; method read at `5c118279`)
 - 2026-11-06 · ACK MSG-05928755 · from personal.reg.household-sol · 23:44 GMT · re-read at `5c118279`; `method_read` set
