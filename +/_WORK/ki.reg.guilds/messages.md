@@ -7,6 +7,8 @@
 
 None.
 
+- 2026-11-06 · ACK MSG-9073ee49 · from personal.reg.household-sol · 23:05 GMT · tier recorded as `managers`
+
 ## Outbound
 
 - 2026-11-06 · MSG-c6fa7c81 SKILL-HARVEST · to 41 live packages on sol · 22:15 GMT · 8 replies in · awaiting ACK
