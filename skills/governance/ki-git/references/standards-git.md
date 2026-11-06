@@ -7,6 +7,7 @@
 - [Commit, publication, and integration authority](#commit-publication-and-integration-authority)
 - [Working-copy and review approaches](#working-copy-and-review-approaches)
 - [Safe Git hygiene](#safe-git-hygiene)
+  - [Checks before committing](#checks-before-committing)
 - [Clean-down state](#clean-down-state)
 - [Stale-lock guard](#stale-lock-guard)
 - [Runtime binding and enforcement](#runtime-binding-and-enforcement)
@@ -140,6 +141,10 @@ Do not remove a lock merely because it exists, interrupt a live Git process to c
 Separate pathspecs with `--` whenever a path begins with `-`, because Git parses a leading `-` as an option: `git add '-/README.md'` fails with `unknown switch`, while `git add -- '-/README.md'` succeeds.
 
 This affects every KI-conformant repository, not an unusual corner case: the repo standard scaffolds a top-level `-/` working area (`ki-repo` WORK-1), so any `add`, `restore`, `checkout`, `diff`, `log`, or `rm` naming a path inside it needs the separator.
+
+### Checks before committing
+
+Every session and run, a coordinator's own commits and every line written into another work package's `messages.md` included, runs the repository's own checks on each file it is about to commit before committing it, so that the commit hook finds nothing to refuse. For Markdown that is `rumdl fmt` then `rumdl check` on the file; other files take the formatter and linter the repository's hook or `lint-staged` configuration names for them. A refused commit is a failure to report with its cause, never a step to retry around and never a reason for `--no-verify`. Before pushing, confirm with `git status --short -- <path>...` that each committed path is clean, so that no file a refused commit left modified or staged travels unnoticed or blocks the next pull. Kris set this on 6 November 2026, after commits had been made that their hooks then failed: "It's really important that we make sure that things do pass the linting before we push them."
 
 ## Clean-down state
 

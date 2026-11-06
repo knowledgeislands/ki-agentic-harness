@@ -17,6 +17,8 @@
 
 ## Last review
 
+A 2026-11-06 in-house review under `ki.reg.guilds` lands two method lessons. CHECK-CONSUMERS, which Kris lifted on 3 November 2026 under LEARN-LOOP after a build token still named by Valle Armonia's ingress receiver was deleted on a check of only the markhowarth.com Worker, becomes [Retiring shared things](standards-background-runs.md#retiring-shared-things): list every consumer in every place that can name a shared thing before deleting or retiring it. LINT-BEFORE-PUSH, Kris's words of 6 November 2026, is owned by `ki-git`'s checks-before-committing rule, and the Commits line points to it. No external source was refreshed.
+
 The bounded in-house review of 29 October 2026 reconciles the four authority assets with existing `ki-accept` and approval-bound `ki-batch` closure: a footer never supplies approval, an independent actor may execute only the exact human-approved closure, and self-approval, cancellation discretion, pruning and tier expansion remain excluded. It also clarifies checked concrete-brief preparation before launch and immutable prompt evidence, and documents existing uniquely named fresh-group recovery against the Tools CLI-174 regression and background-agent guide. No external source refresh, control-store mutation or new API is claimed.
 
 - 2026-10-25 - Reviewed Kris's 24 and 25 October answers in the `ki.ways-of-working` decisions log and the `model-shape-report.md`, `overview.md` and `unattended-work.md` designs under `wow-harness-model-2`. Report homing follows the reporting package named in the brief, whoever launched the run; delivery repositories remain separate. This is an in-house decision review; no external source was refreshed.

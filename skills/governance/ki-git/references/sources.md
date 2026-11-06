@@ -27,6 +27,8 @@
 
 ## Last review
 
+A 2026-11-06 review under `ki.reg.guilds` applies LINT-BEFORE-PUSH, Kris's words of 6 November 2026, "It's really important that we make sure that things do pass the linting before we push them", proposed by `ki.prj.agora`: the new [checks before committing](standards-git.md#checks-before-committing) rule runs the repository's own checks on each file before committing, treats a refused commit as a failure to report and confirms each committed path clean before pushing. `ki-coordination` and `ki-delegation` point to it rather than restating it. This is an in-house policy review; external sources were not re-fetched.
+
 A 2026-10-21 review under `wow-day-push-reporting` applies Kris's "push state out of reports" instruction in `ki.ways-of-working`: owner reports, run reports and banners omit routine push state and other sessions' stacked commits; a run still reports a failed push that prevented publication of its own unit, naming the unit and reason. A hold report keeps nothing about pushes beyond a failure. Fast-forward, own-commits-only and no-force safeguards remain. This is an in-house policy review; external sources were not re-fetched. Implementation history is in Git.
 
 The targeted in-house review on 2026-10-04 promoted actual committed-path inspection after hooks from Rig's delivery guidance into the shared hygiene standard and rubric. The external sources were not re-fetched during this consolidation.
