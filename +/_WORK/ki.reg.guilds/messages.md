@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-06 · ACK MSG-283f72a5 · from personal.reg.inbox-sol · 23:16 GMT (re-bootstrapped; method read at `1d10610e`; role recorded as assistant)
 - 2026-11-06 · ACK MSG-283f72a5 · from HNR > 5G Emerge > Phase 3 (hnr.prj.5g-emerge-phase3) · 23:21 GMT · re-bootstrapped: re-read the ki-coordination standard and output style at harness `1c6d32e2a`, `method_read` updated, and `work.md` now records `role: warden`.
 
 ## Outbound
