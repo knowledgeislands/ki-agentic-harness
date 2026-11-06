@@ -191,3 +191,7 @@ Operational: harness `5c118279` landed with 1,601 tests passing. Snoozing replac
 ## 2026-11-06 23:48 GMT - refresh-forms received
 
 Operational: REFRESH MSG-05928755 reached the same 15 live packages in 6 repositories, and 3 have already re-bootstrapped. The run's PUSH-DIVERGE query is spent. Another session merged origin into ki-principal (`c5b829ea`), so the refresh commit `940f4cf8` is now published and the checkout matches GitHub. ki.sop.main took SNOOZE-ROUTE (MSG-9c965bc0): the Work Process note adopted Snoozing, 💤 and `· at` in ki-principal `17e56a25`, and the tools-ki hold value was routed to ki.prj.tools-burndown as MSG-29a787dc.
+
+## 2026-11-06 23:53 GMT - standard-split plan received
+
+Operational: the design plan is in `skills/standard-split-plan.md`. It proposes one core file of about 3,500 words and fourteen purpose files, with a reserved roles slot for Stage C, taking the standard from about 45,600 words to about 21,000 and the output style from about 6,700 to about 3,900. Its two sample rewrites are 41% and 46% shorter with no rule dropped. It found nine places where the rubric, `SKILL.md` or the examples have drifted from the standard. It raises eight queries: STAGING, STYLE-FROM-CORE, OWNER-WORD, LINK-STUBS, LEGACY-FILE, ROLES-SLOT, DRIFT-FIRST and CORE-BUDGET. Seven are medium confidence, so they go to one blind `split-review` run before reaching Kris. Nothing moves until Kris answers.
