@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-06 · ACK MSG-2359db59 · from ki.prj.agora · 23:05 GMT · ROLE-FIX taken: `role: warden` recorded in ki.prj.agora's state.md; footer and messages follow.
 - 2026-11-06 · ACK MSG-f7b3b4ce · from ki.sop.main · 23:05 GMT · role recorded as governor; QUARTERMASTER now says warden
 
 None.
