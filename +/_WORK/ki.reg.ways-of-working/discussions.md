@@ -78,68 +78,6 @@ a) (recommended, confidence high - reviewed: an independent check found all thre
 
 b) Copy the diagram folder somewhere first, then remove the worktree.
 
-### WOW-RELATIONSHIP - How the Ways of working Project relates to the new guild
-
-focus: _emerging
-
-**Context:** [ki.prj.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.ways-of-working/work.md) is a Project in Knowledge Islands Principal. Its remit is the work model, the work package, coordination, delegation and their rollout, which is the same ground as [ki.reg.ways-of-working](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.ways-of-working/work.md)'s skills focus. The new package adds the role catalogue and guild management. The Project has been on hold since you drained it to State of play on 3 November ("move all of the work to be coordinated through the SOP main"). It holds 95 parked queries, about 60 of them in the guild remit, and 14 focus folders of design notes and reports. Its own goal already said that method stewardship passes on once the method is defined (WOW-REFRESH, STEWARD-HOME). Keeping both alive means two homes for the same method.
-
-**Query:** Should the guild take over the Project's live remit, with the Project closed once what it holds has homes?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the new standing package is the natural continuing home, and the Project's own goal expected to hand stewardship on) Yes. Transfer the guild-remit queries and live design notes to ki.reg.ways-of-working, leave its territory and tools items with their owners, let it tidy and close through the normal finished close-out, and mark the [Ways of working Project](/Users/krisbrown/kis/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md) as handed to the regular work.
-
-b) Keep the Project on hold as the design home for large method changes, with the guild only maintaining the skills and the role catalogue.
-
-c) Reopen the Project and treat the guild as its harness-side worker.
-
-### TRANSFER-SOP-QUERIES - HOLD-STATES and METHOD-BATCH
-
-focus: _emerging
-
-**Context:** State of play's consolidated set for your return holds two method bundles, both recommended at high after review. [HOLD-STATES](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.sop.main/discussions.md) covers seven hold-state choices plus HOLD-TIDY, and METHOD-BATCH covers fifteen method choices with an ADR-007 update. Each plans one harness run that changes the coordination and work-package standards, which is now guild ground. Moving the queries themselves would mean asking them again.
-
-**Query:** Should you answer them where they are, with the run that lands them launched by the guild?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: avoids asking you twice while the harness change goes to its new owner) Yes. You answer them in State of play's pass; State of play sends each answer to the guild as a message line, and the guild lands it in the harness with the design notes as its brief.
-
-b) Move both queries and their two design notes into the guild package now, and ask them there.
-
-c) Leave both, including the landing run, with State of play.
-
-### TRANSFER-WOW-PARKED - The Project's parked method queries
-
-focus: _emerging
-
-**Context:** The Project's 95 parked queries were never packed into State of play's consolidated set. About 60 fall to the guild: standards wording (HOOK-PATCH, WP-HEARTBEAT, RESTART-POLICY, RESTART-EVIDENCE, OPTION-CONFIDENCE, GIT-REBASE, PUSH-RETRY, FOCUS-SLOT-OWNER, FOCUS-TOP), flow and work in progress (WIP-PACKAGE, WIP-TERRITORY, GATES, GATES-SIZE, ROADMAP-UPCOMING and its two parts, PARKED-TO-IDEAS and its part, HOLD-CLOSE, IDEAS-REVISIT, DUE-FIELD), the package-definition fields (HOMES, EXECUTION, HOST, DISPLAY, THEME, ROUTING, SIGNAL, RESTART, THREAD-DEFAULTS), Paperclip (PAPERCLIP-RETIRE, PAPERCLIP-GRANT), harness checks (HNR-CAP, HNR-EMPTY-PROJECT, CITED-NOTES, DONE-PRUNE, OLD-PROPOSALS) and the Orca adapter group (ORCA-HOME). About ten are stale, for example HOLD-ROUTE, which SOP-ACTS-FOR-IDLE now covers. The rest belong to State of play, tools-ki, the Observatory, Rig or acquisition. An audit on 3 November already flagged 91 open queries against a warning level of eight.
-
-**Query:** Should the guild take the guild-remit queries and triage them before anything reaches you?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the new method owner should check the old questions against today's method before spending your attention; each keeps its original options and evidence until settled) Yes. The guild copies them in, drops each stale one with its evidence in the decisions log, re-checks the rest against the current method, packs them into a few bundles and blind-reviews the medium ones before they reach you. State of play sends each non-guild item to its owner.
-
-b) Transfer them as they stand and take them one at a time in an interactive pass.
-
-c) Leave them parked with the Project until it is reopened or closed.
-
-### HARNESS-SCOPE - Does the guild take every harness change, or only the ways-of-working skills?
-
-focus: _emerging
-
-**Context:** ki.reg.ways-of-working lives in ki-agentic-harness. Its work page says it keeps "the skills ... that capture how we work" and the harness's worktrees and branches. Many open harness asks concern engineering, website and repository skills instead: the HNR conform conflicts (HNR-OFFLINE, HNR-MJS, HNR-PROOF, HNR-TOOLROOT, HNR-SITE-SHAPE, HNR-DR-LINKS), the unmerged `ki-e2e` branch (E2E-ADOPT, E2E-KIND, E2E-OFFRAMP, E2E-HELPERS), DRYRUN-SCOPE, AREA-COLUMN, STREAMS-CHECKER-GAP, STREAM9-SHA, GATE-BASELINE-COMPARATOR, LINK-EXTERNAL, SITE-LINT, and the Baseline rollout lines HARNESS-DEFECTS, HARNESS-FEEDBACK, HARNESS-FEEDBACK-2, WEBSITE-SKILL, PRODUCT-RECORDS, REPO-METADATA and REPO-CODE-CAP. Their natural carrier, [ki.prj.baseline-rollout](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.baseline-rollout/work.md), is paused, so nobody acts on them.
-
-**Query:** Should the guild steward every ki-agentic-harness change, not only the ways-of-working skills?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: sharing a repository and an idle carrier do not make engineering, website and repository skills part of how we work; the backlog run recommended the opposite at medium) No. The guild keeps to ways-of-working skills and roles; the other asks stay with ki.prj.baseline-rollout until you resume it, or go to ki.reg.main as ad hoc work.
-
-b) Yes, the backlog run's recommendation, because the harness has no other active steward: the guild adds a `harness` focus area for engineering, website and repository skill asks, and its work page says so.
-
 ### ORCA-HOME - Who holds the Orca adapter's rules
 
 focus: _emerging
@@ -185,6 +123,106 @@ focus: _emerging
 a) (recommended, confidence high - reviewed: acquisition has its own method and owner; a file living in the harness does not make it guild work) Yes. State of play routes them to ki.reg.main, and the Granola reply goes to hnr.sop.main from there.
 
 b) The guild takes them under HARNESS-SCOPE b), because the acquisition skills live in the harness.
+
+### ABSORB-STEWARD - Who carries out the Project's transfer and close-out in ki-principal
+
+focus: roles
+
+**Context:** Rule 14 says `ki.reg.guilds` "absorbs `ki.prj.ways-of-working` in ki-principal ... and closes it". The Project's package sits in ki-principal and has had no session since 3 November. The work-package standard lets other work write only one line in its `messages.md`. Only the folder's own work, or territory work once the folder is finished, may delete it. Only a State of play can become a package's assigned steward, by an acknowledged handover. Rule 12 now says ki.sop.main's governor "only convenes and records". The close-out means homing a 1,307-line decisions log, transferring about 95 parked queries and 14 focus folders, and finishing the Project.
+
+**Query:** How should the guild get the authority to work inside the Project's package and close it?
+
+**Options:**
+
+a) (recommended, confidence medium - this matches rule 14's words with the smallest rule change, but it widens a stewardship rule, which the directive's purpose review watches for) The guild becomes the Project's assigned steward for the absorption only, by a committed and acknowledged handover in both decisions logs. `ki-work-package`'s stewardship rule gains one sentence admitting "a package the owner names as absorbing it". The guild's runs then transfer, home and finish the Project, with rule 14 as Kris's `finish`, and close it out.
+
+b) Kris opens ki.prj.ways-of-working once more, for one close-out session in ki-principal. That session sends its transfers to the guild as message lines and finishes itself. No rule changes, but it costs a session of Kris's attention.
+
+c) ki.sop.main takes assigned stewardship and runs the close-out, as the standard allows today, although rule 12 limits its governor to convening and recording.
+
+### SEATS-VS-SUBPACKAGES - Whether seats replace sub-packages
+
+focus: roles
+
+**Context:** On 2 November Kris set SUB-PACKAGE: a doer's short-lived package for one focus area, id `<parent>.<focus>`, a sibling folder, one worker and one inbox. `personal.reg.inbox-terra.kiv` is the live example. The brief's seat is "a role taking part in a package, addressed `package+role` ... its folder is a sibling ... and lives and dies with its package". Rule 6 has naming migrate incrementally. The directive's first part counts complexity as a defect. Two sibling-folder shapes for one doer would be that kind of complexity.
+
+**Query:** Should the seat replace the sub-package?
+
+**Options:**
+
+a) (recommended, confidence medium - the two shapes do the same job, and keeping both fails the simplicity part, but the brief does not say so outright) Yes. The sub-package rules retire into the seat rules, and `personal.reg.inbox-terra.kiv` becomes a seat of inbox-terra the next time it takes up its role, under rule 6.
+
+b) Keep both: a sub-package for a focus area's short-lived doer, and a seat for a role in the package.
+
+### HARNESS-SCOPE - Does the guildmaster keep every skill set, as the brief's "guild" term implies?
+
+focus: roles
+
+**Context:** On 6 November the guild's blind review recommended keeping the guild to the ways-of-working skills, with engineering, website and repository asks staying with the paused ki.prj.baseline-rollout or going to ki.reg.main. That review came before the brief. The brief defines Guild as "A set of skills, such as change management, kept by the guildmaster", and reserves "a guildmaster per guild" until "the work calls for them". So today's one guildmaster keeps every guild. Engineering, website, repository and acquisition are each a set of skills, and acquisition follows this answer under ACQUIRE-ROUTE. About 25 harness asks wait with no active carrier, among them the HNR conform conflicts, `ki-e2e`, DRYRUN-SCOPE, AREA-COLUMN, the checker boundaries and the Baseline rollout's harness lines.
+
+**Query:** Should the guild keep every skill set in ki-agentic-harness as guilds, until the work calls for a second guildmaster?
+
+**Options:**
+
+a) (recommended, confidence medium - this follows the brief's Guild and Reserved wording, which overturns a reviewed recommendation made before the brief) Yes. Each skill area is a guild kept here: change management, governance, engineering, repository, design, acquisition and environment. The work page says so. ACQUIRE-ROUTE takes b), and the idle harness asks come here.
+
+b) No. The guild keeps only the change-management and coordination skills and the role catalogue. The other asks wait for ki.prj.baseline-rollout or go to ki.reg.main.
+
+### TRANSFER-SOP-QUERIES - Move HOLD-STATES and METHOD-BATCH to the guild
+
+focus: roles
+
+**Context:** State of play holds two method bundles for Kris's return: [HOLD-STATES](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.sop.main/discussions.md), seven hold-state choices plus HOLD-TIDY, and METHOD-BATCH, fifteen method choices with an ADR-007 update. Both are recommended at high and both are unanswered. The guild's earlier recommendation, made before the brief, was for Kris to answer them in State of play's pass "to avoid asking twice". Because they have not been asked, moving them asks nothing twice. Rule 14 says "one package owns the method", and rule 12 says ki.sop.main's governor "only convenes and records".
+
+**Query:** Should both bundles and their design notes move to the guild and be asked there?
+
+**Options:**
+
+a) (recommended, confidence medium - rules 12 and 14 make the guild the one method owner, and moving unanswered queries costs Kris nothing; this changes a reviewed recommendation) Yes. State of play sends both bundles and their two design notes here by message line. The guild asks them and lands the harness run.
+
+b) Kris answers them in State of play's pass, and State of play sends each answer here for the guild to land.
+
+### CAPTURE-ASSISTANT - Which "assistant" becomes gatekeeper
+
+focus: roles
+
+**Context:** The brief says: "Rename the capture skill's "assistant" to match gatekeeper", and "gatekeeper (replaces assistant; owns what comes in and goes out)". Under TOOLING-STAYS on 1 November, Kris kept `ki-acquire` and its provider skills' names ("acquiring goes to the assistant"), which reversed SKILL-NAME's `ki-assistant` rename. "The assistant" survives in two places. One is the harness acquire skills' wording, which calls the Inbox's executable route "the assistant's `ki-muninn`". The other is the Inbox's own capture guide and AGENTS.md, whose trigger is Kris's **"give it to my assistant"** and which sit in the Personal territory. The brief also says "whatever Kris is talking to is his point of contact in that capacity", so his spoken phrase is not a role name.
+
+**Query:** What does the rename cover?
+
+**Options:**
+
+a) (recommended, confidence medium - this covers both places the role word lives and keeps Kris's own phrase, but the brief names only "the capture skill") Rename the role word, not the skill. The harness acquire skills say "the gatekeeper" where they mean the Inbox's role. The guild sends one line asking personal.reg.inbox-terra to do the same in its capture guide and AGENTS.md, keeping "give it to my assistant" as Kris's words. `ki-acquire` keeps its name under TOOLING-STAYS.
+
+b) Rename the skill too, `ki-acquire` to a gatekeeper name with deprecated aliases, revisiting TOOLING-STAYS.
+
+### PAPERCLIP-NAMES - How far "Paperclip-era role names are deleted" reaches
+
+focus: roles
+
+**Context:** The brief: "Paperclip-era role names are deleted (no confirmation needed)." On 26 September `subagents/coordination/` gained four "coordination lane" roles: `ki-convenor`, `ki-steward`, `ki-wright` and `ki-ferryman`, which covers remote execution and is not a Paperclip delivery role as such. The harness AGENTS.md section "Paperclip local delivery" names Wright, Steward and Convenor, and holds Kris's standing grant for the Convenor to merge into local `main`. The parked PAPERCLIP-RETIRE and PAPERCLIP-GRANT ask about retiring the Paperclip skill and its 54 declarations, and about suspending that grant. "Steward" lives on as a manager role.
+
+**Query:** Does the deletion take in the AGENTS.md Paperclip section and its merge grant, as well as the four subagents?
+
+**Options:**
+
+a) (recommended, confidence medium - the grant names only roles the brief deletes, and Paperclip was retired on 31 October by the stock-take's account, which I did not verify directly) Delete all four subagents and the AGENTS.md "Paperclip local delivery" section with its grant. The `ki-delegation-paperclip` skill and its declarations stay for PAPERCLIP-RETIRE.
+
+b) Delete only `ki-convenor`, `ki-steward` and `ki-wright`. Keep `ki-ferryman` and the AGENTS.md grant until PAPERCLIP-GRANT is answered.
+
+### LIBRARY-OPEN - When to open `ki.reg.library`
+
+focus: roles
+
+**Context:** Rule 10 says "One library, `ki.reg.library`". Rule 9 says "the guildmaster and the librarian together carry islands, guilds and library into the Knowledge Islands concept". No `ki.reg.library` package exists. The concept, the Work Process note and GDR-KI-PRINCIPAL-009, lives in ki-principal, where the guild may only send message lines. The directive says "Reserved roles stay reserved until the work calls for them". The librarian is not reserved, but opening a package still needs Kris's word, as OPEN-GUILD did.
+
+**Query:** When should `ki.reg.library` open, and where?
+
+**Options:**
+
+a) (recommended, confidence medium - the concept update is the first work that needs a librarian, and opening earlier would leave an idle seat, which is a capture sign) Open it in ki-principal, the Knowledge Base Capital, when Stage C reaches its concept step. ki.sop.main seeds it at Kris's word.
+
+b) Open it now in ki-principal, so that it can take the role catalogue's terminology into the Knowledge Base alongside the guild.
 
 ## Parked
 
