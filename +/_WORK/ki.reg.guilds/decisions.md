@@ -127,3 +127,17 @@ Owner, relayed by personal.reg.household-terra (MSG-7c3e91a2), Kris: "Yes, I thi
 ## 2026-11-06 22:34 GMT - TOOLS-STEWARD
 
 Owner, relayed by personal.reg.household-terra (MSG-e4a6c0d9, copied to ki.sop.main as MSG-5f19b3e7), Kris: "you should go to the guild master first to make a decision", and "I'm happy to create a new agent that looks after all the tools and MCPs ... I probably think that's a good idea". This makes four in the KI island: the guildmaster, Agora's keeper, the governor (ki.sop.main), and a "manager of makers responsible for tools and MCPs". The guild decides the new role and its seat in the catalogue, then tells ki.sop.main, which coordinates the tooling audit (MSG-cd4a3d6d with ki.prj.tools-burndown) and raises creating the agent with Kris. Disposition: read-only run `tools-steward-role` drafts the role and seat against the role catalogue brief, then the guild decides and tells ki.sop.main. ACKed.
+
+## 2026-11-06 22:40 GMT - TOOLS-STEWARD decided
+
+Guildmaster's decision, under Kris's TOOLS-STEWARD words ("you should go to the guild master first to make a decision"), from the `tools-steward-role` draft. Kris can revisit any of it when ki.sop.main raises creating the agent.
+
+- **Role:** quartermaster 🧰, manager tier: "keeps the island's tools and MCP servers working, released and accounted for, and hands their building to makers". The name keeps "manager of makers" and stays clear of "steward".
+- **Seat:** `ki.reg.tools+quartermaster`, regular level, parent ki.sop.main, package `ki.reg.tools` in tools-ki `+/_WORK/`, thread line `🧰 🔑 ki.reg.tools`.
+- **Owns:** tools-ki, tools-mgit, tools-git-almanac, tools-rig and homebrew-tap; the seven `mcp-*` servers; their roadmaps and releases, every release ask-first with Kris; the live MCP inventory and mcporter health; `ki doctor` and `ki repair` for hooks; and the tooling audit.
+- **Does not own:** every skill stays with the guild (the guild says how a tool must behave; the quartermaster makes it behave so). The Agora app stays with Agora's keeper. Dispatch, priority and admission stay with the governor. tools-techne, packages-stoa, the chezmoi templates and workstation steps are left out.
+- **ki.prj.tools-burndown:** stays a Project, reparented to `ki.reg.tools`, and closes at zero. It stays the single tools-ki writer until then.
+- **tools-rig** and the mail servers (mcp-m365, mcp-gsuite) come under the seat, so ki.sop.main re-asks RIG-LANE and MAIL-OWNER.
+- **Catalogue:** the entry and its glyph land in Stage C.
+
+Sent to ki.sop.main as MSG-25ab9064 TOOLS-ROLE, copied to personal.reg.household-terra as MSG-0438dd95.
