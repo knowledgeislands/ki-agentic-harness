@@ -777,7 +777,9 @@ describe('coordinator binding', () => {
   const hooked = (command: string) => ({ hooks: [{ type: 'command', command }] })
   const userSettings = (events: readonly string[]): string =>
     JSON.stringify({
-      hooks: Object.fromEntries(events.map((event) => [event, [hooked('$HOME/ki/hooks/coordinator-reminder.sh')]]))
+      hooks: Object.fromEntries(
+        events.map((event) => [event, [hooked('$HOME/ki/hooks/coordinator-reminder/coordinator-reminder.sh')]])
+      )
     })
 
   test('a repository that does not select the output style is a violation', () => {
