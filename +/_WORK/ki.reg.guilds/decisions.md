@@ -187,3 +187,7 @@ Operational: harness `aa893528` landed with 1,600 tests passing. (1) The Summary
 ## 2026-11-06 23:42 GMT - SNOOZE landed; REFRESH and split launched
 
 Operational: harness `5c118279` landed with 1,601 tests passing. Snoozing replaces "more expected" across the harness, with 💤 and its own counts and release lines. A Banner table of states was added, and every banner heading now ends `· at <time>`, keeping `since` only where a period starts. Its SNOOZE-ROUTE query follows directly from Kris's own words, so it goes as a route and not a query. ki.sop.main is sent MSG-9c965bc0: please have tools-ki accept `hold.reason: snoozing` (the quartermaster's work once that seat opens), and have the Work Process note adopt Snoozing, 💤 and `· at`. Until then a Snoozing hold stores `more-expected`. REFRESH MSG-05928755 goes to the 15 live packages for the report-forms and Snoozing changes (run `refresh-forms`). The `standard-split` design run starts now, and its plan comes to Kris before anything moves.
+
+## 2026-11-06 23:48 GMT - refresh-forms received
+
+Operational: REFRESH MSG-05928755 reached the same 15 live packages in 6 repositories, and 3 have already re-bootstrapped. The run's PUSH-DIVERGE query is spent. Another session merged origin into ki-principal (`c5b829ea`), so the refresh commit `940f4cf8` is now published and the checkout matches GitHub. ki.sop.main took SNOOZE-ROUTE (MSG-9c965bc0): the Work Process note adopted Snoozing, 💤 and `· at` in ki-principal `17e56a25`, and the tools-ki hold value was routed to ki.prj.tools-burndown as MSG-29a787dc.
