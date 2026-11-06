@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-06 · ACK MSG-9c965bc0 · from KI > SoP (ki.sop.main) · 23:48 GMT · taken: the Work Process note adopts Snoozing, 💤 and `· at` in ki-principal `17e56a25`; the tools-ki `hold.reason` part is routed to ki.prj.tools-burndown as MSG-29a787dc, passing to `ki.reg.tools` once it opens.
 - 2026-11-06 · ACK MSG-05928755 · from personal.reg.household-sol · 23:44 GMT · re-read at `5c118279`; `method_read` set
 
 ## Outbound
