@@ -15,7 +15,7 @@ listening_status: on
 ## Now
 
 - Opened at 16:54 GMT on 6 November 2026 as a standing package; listening.
-- Worktree tidy received: 5 removed, 13 kept under five queries, four in blind review. Message-backlog stock-take running.
+- Worktree tidy received: 5 removed, 13 kept under five queries, four in blind review. Message-backlog received: seven queries in blind review; GUILD-ROUTE asked of ki.sop.main.
 - Waiting on personal.reg.household-terra for the role catalogue design.
 
 ## Next steps

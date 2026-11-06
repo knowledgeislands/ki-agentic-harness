@@ -15,3 +15,7 @@ Operational: ki.prj.agora ACKed MSG-ec65a132 (AGORA-WATCH), forwarding it to per
 ## 2026-11-06 17:03 GMT - worktree-tidy received
 
 Operational: the worktree-tidy run on sol removed five clean, fully merged worktrees and their branches (ki-agentic-harness `roadmap-assignee`, `finished-tidy`, `quiet-listen`; tools-ki `wow-rel-0141`, `roadmap-assignee`) and kept thirteen. Its five queries are copied into discussions.md: RIG-SPENT, LANDED-COPIES, SUPERSEDED-FIXES, DRAFT-SKILLS and OLD-DIAGRAMS. The four destructive or medium-confidence ones go to one blind review before Kris sees them. They overlap ki.sop.main's packed BRANCH-SWEEP and UNMERGED-STRAYS.
+
+## 2026-11-06 17:03 GMT - message-backlog received
+
+Operational: the read-only stock-take found about 60 guild items, mostly ki.prj.ways-of-working's 95 parked queries, plus seven State of play Inbound lines, two State of play method bundles and harness asks queued on the paused Baseline rollout. Under FIRST-TIDY ("you'll take on all the work to do with the guild management") the eight State of play lines that are plainly guild work were asked for directly as GUILD-ROUTE (MSG-958bb583), so the run's TRANSFER-SOP-INBOUND query is not put to Kris. Its seven other queries are copied into discussions.md and go to one blind review, all being medium confidence: WOW-RELATIONSHIP, TRANSFER-SOP-QUERIES, TRANSFER-WOW-PARKED, HARNESS-SCOPE, ORCA-HOME, COORD-OVERLAP and ACQUIRE-ROUTE.
