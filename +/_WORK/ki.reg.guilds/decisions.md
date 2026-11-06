@@ -83,3 +83,7 @@ Operational: ki.sop.main ACKed MSG-7377d2fc, having broadcast the FOOTER-COUNTS 
 ## 2026-11-06 20:52 GMT - FOOTER-HOOK landed
 
 Operational: ki-agentic-harness `8ec15e63` adds `hooks/coordinator-footer.sh`, a Claude Code `Stop` hook that blocks a coordinating reply missing its Summary footer or banner, quiet otherwise and failing open, with 40 new tests (1597 pass), and a payload table in the hooks README listing all five hooks with `coordinator-reminder.sh`. No reinstall on sol (development link). The run's HOOK-BINDING query, whether to retire the dotfiles' three-hook manifest binding, is the dotfiles owners' call, so it went with the registration lines to household-terra and household-sol rather than to Kris. Fleet finding: `skills/README.md` catalogue is stale after another session's ki-acquire-granola description change (CAP-2).
+
+## 2026-11-06 20:56 GMT - FOOTER-HOOK registered
+
+Operational: both households ACKed FOOTER-HOOK-OUT. household-terra (MSG-a6c649d5) registered `coordinator-footer.sh` at `Stop` on terra at dotfiles `dc20ab7`, smoke-tested quiet on bad input; household-sol (MSG-fc5b4e86) applies the same dotfiles change on sol. household-terra takes the reminder's repoint to the installed path and the HOOK-BINDING retirement to Kris itself, since the repoint changes Codex's trusted hashes.
