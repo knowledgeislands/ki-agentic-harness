@@ -7,3 +7,7 @@ Owner: Kris, 6 November 2026: "Open a new standing work package, ki.reg.ways-of-
 ## 2026-11-06 16:54 GMT - FIRST-TIDY
 
 Owner: Kris, same message: "one of the things that's first is to tidy up all of those additional work trees ... take stock of that ... there's probably a substantial backlog of messages that might have come your way. Also you should check in with the counselor, which is ki-sop.main, to let it know that you're now around and that you'll take on all the work to do with the guild management." Taken as: a run removes only worktrees that are clean, carry no unique commits and belong to no live run, keeping their branches unless fully merged; everything else comes back as a query. The message backlog is a read-only stock-take; any transfer waits on Kris.
+
+## 2026-11-06 17:01 GMT - ACKs received
+
+Operational: ki.prj.agora ACKed MSG-ec65a132 (AGORA-WATCH), forwarding it to personal.reg.household-sol as AGORA-WATCH-WOW because that package keeps sol's `~/.config/agora/config.toml`; Agora's call will land at `~/.local/state/ki/agora/call/ki.reg.ways-of-working`. MSG-99cc0cec (GUILD-OPEN) was ACKed from ki.prj.agora on ki.sop.main's behalf: guild-management lines will route here. Both lines removed.
