@@ -195,3 +195,7 @@ Operational: REFRESH MSG-05928755 reached the same 15 live packages in 6 reposit
 ## 2026-11-06 23:53 GMT - standard-split plan received
 
 Operational: the design plan is in `skills/standard-split-plan.md`. It proposes one core file of about 3,500 words and fourteen purpose files, with a reserved roles slot for Stage C, taking the standard from about 45,600 words to about 21,000 and the output style from about 6,700 to about 3,900. Its two sample rewrites are 41% and 46% shorter with no rule dropped. It found nine places where the rubric, `SKILL.md` or the examples have drifted from the standard. It raises eight queries: STAGING, STYLE-FROM-CORE, OWNER-WORD, LINK-STUBS, LEGACY-FILE, ROLES-SLOT, DRIFT-FIRST and CORE-BUDGET. Seven are medium confidence, so they go to one blind `split-review` run before reaching Kris. Nothing moves until Kris answers.
+
+## 2026-11-06 23:56 GMT - split-review received
+
+Operational: the blind reviewer agreed with seven of the plan's eight recommendations, lifting each to high, and added three refinements. The style gets a short hand-written opening above the generated core. The rubric's tolerance checks repoint to the past-shapes file. The reserved roles row is plain text. On CORE-BUDGET the reviewer disagreed: warn above 3,500 and fail above about 4,000, against the plan's warning only. Both views are shown, and it stays medium. All eight are copied to `discussions.md`. Nothing is running, so the full Summary goes to Kris.

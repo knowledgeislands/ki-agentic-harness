@@ -236,6 +236,104 @@ a) (recommended, confidence high - reviewed: opening it at the concept step give
 
 b) Open it now in ki-principal, so that it can take the role catalogue's terminology into the Knowledge Base alongside the guild.
 
+### DRIFT-FIRST - Fix the nine mismatches before the split
+
+**Context:** While mapping the standard for the split, the design run found nine places where the rubric, `SKILL.md` or the examples disagree with the standard. The worst is the rubric's COORD-13, which says the interactive query pass takes "one or two blocks at a time" when the rule is one at a time. Fixing them inside the split would mix rule changes into what should be a pure move of text, which makes it harder to prove no rule was lost.
+
+**Query:** Should the nine mismatches be fixed in one small delivery before the split begins?
+
+**Options:**
+
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as rule changes then sit in their own small change) Fix all nine first in one small delivery, then start the split.
+
+b) Fix them during the terse rewrite of each unit.
+
+### STAGING - Deliver the split in stages or all at once
+
+**Context:** The split touches the standard, its generator, the banner test, the rubric, the hooks and about 35 files that link into it. The plan stages it: fix the drift, take a rule inventory, move the text without rewording it, move the history out, reword one unit at a time, then build the output style from the core. Each stage can prove no rule was lost before the next starts. The reviewer noted the plan should say plainly how many stages there are.
+
+**Query:** Should the split land in stages, each with its own checks, or as one delivery?
+
+**Options:**
+
+a) (recommended, confidence high - reviewed: the blind reviewer chose stages, as a single 45,600-word review cannot prove nothing was lost) Land it in the plan's stages, each a separate delivery with its own checks, and number the stages plainly.
+
+b) Land the split, the history move and the terse rewrite as one delivery with one large review.
+
+### STYLE-FROM-CORE - Build the always-loaded output style from the core
+
+**Context:** Today the output style is a 6,450-word second copy of the rules, kept in a block inside the standard, and it drifts from the standard. The plan builds the style from the core file itself, at about 3,900 words, so it cannot drift. The reviewer agreed and added a short hand-written opening of about 200 words above the generated part, to keep the style's direct tone without a second copy of the rules.
+
+**Query:** Should the output style be generated from the core rather than kept as a separate source?
+
+**Options:**
+
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same and proposed the short opening) Generate the style from the core between two markers, with a short hand-written opening of about 200 words above them.
+
+b) Keep a separate, shorter hand-written style of about 2,500 words, tested against the core's commands, fields and values.
+
+### OWNER-WORD - Call Kris "the owner" in the rules
+
+**Context:** The standard uses "the owner", "Kris" and "the supervisor" for the same person. The terse rewrite needs one fixed word. "The owner" is the standard's most common choice (159 uses against 145 for "Kris"), matches the reply forms, and works in other principals' territories. State names such as "With supervisor" stay either way, because they are the Work Process note's words.
+
+**Query:** Which word should the rules use for you?
+
+**Options:**
+
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, for portability and because it is already the majority word) "The owner" in every rule, with your name kept only in quotations in `sources.md`.
+
+b) "Kris" everywhere outside state names.
+
+### LINK-STUBS - Keep old section links working after the move
+
+**Context:** About 35 harness files link to sections of the standard, and the plan rewrites those in the same change. Outside the harness about 70 files link to it, 51 of them in Knowledge Islands Principal, mostly in work packages. 78 of those links are pinned to a revision and keep working. 109 would land at the top of the core instead of their section. A temporary "moved sections" table in the core, about 400 words and kept outside the part the style loads, would catch them until they are rewritten.
+
+**Query:** Should the core carry a temporary table of anchors for moved sections?
+
+**Options:**
+
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as it never reaches the always-loaded style and has a clear exit) Add the anchor table outside the style's markers, ask ki.sop.main to rewrite live links in Knowledge Islands Principal, and remove the table when a scan finds none left.
+
+b) Add no anchors: rewrite harness links only, and let other repositories' unpinned links open the core at the top.
+
+### LEGACY-FILE - Give past report shapes one file of their own
+
+**Context:** The standard holds about 25 clauses saying an older report keeps an older shape and readers accept both, plus the old thread-to-work mapping table. Only readers of old reports, the rubric's tolerance checks and migrations need them, yet every coordinator loads them now. Some cover windows that have already closed.
+
+**Query:** Should all past-shape rules move into one file that working coordinators never load?
+
+**Options:**
+
+a) (recommended, confidence high - no working coordinator needs them; the blind reviewer agreed and added that the rubric's tolerance checks repoint to the new file in the same delivery) Move them into `standards-past-shapes.md` as one table, repoint the rubric's tolerance checks there, and drop a row only when its window has closed and the rubric already fails the old shape.
+
+b) Keep each clause beside the rule it qualifies, cut to one line.
+
+### ROLES-SLOT - When the role catalogue file appears
+
+**Context:** Stage C adds the role catalogue and the `role` field, and this package already records `role: guildmaster`. The skills standard does not allow a reference file that is only an empty placeholder.
+
+**Query:** Should the roles file be created now as a placeholder, or at Stage C?
+
+**Options:**
+
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, and added that the reserved row should name the file in plain text so link checks do not fail) Reserve the name `standards-roles.md` as a plain-text row in the core's load table now, marked "Stage C", and create the file at Stage C.
+
+b) Create `standards-roles.md` now with only the role names and the `role` field definition.
+
+### CORE-BUDGET - How strictly to hold the core to its size
+
+**Context:** The core loads on every coordinating turn through the output style. The plan sets about 3,500 words. A 3,000-word core would push the listening and message-acting summaries out to purpose files and add reads at each wake. The plan recommended a warning only; the blind reviewer disagreed, since a warning alone lets the core creep back up, and proposed a warning above 3,500 and a failure above about 4,000.
+
+**Query:** What size limit should the core keep, and how is it enforced?
+
+**Options:**
+
+a) (recommended, confidence medium - the reviewer's middle course; the plan preferred a warning only, as `ki-skills` treats size) Aim for 3,500 words: the test warns above 3,500 and fails above about 4,000.
+
+b) 3,500 words, with a warning only and never a failure.
+
+c) 3,000 words, with a failure above it.
+
 ## Parked
 
 None.
