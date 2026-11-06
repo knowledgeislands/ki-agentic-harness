@@ -71,3 +71,7 @@ Owner, relayed by household-terra in IMPORTANT MSG-e7b839ee: Kris, about 20:40 G
 ## 2026-11-06 20:38 GMT - FOOTER-COUNTS landed
 
 Operational: FOOTER-COUNTS landed in ki-agentic-harness `27833e5b`: the roadmap and package lines sit beneath the banner's counts line in the Summary footer only, counts from `ki repo roadmap summary`; tests 1557 pass. `method_read` moves to 27833e5b. ki.sop.main asked to broadcast the REFRESH (MSG-7377d2fc); household-terra told.
+
+## 2026-11-06 20:40 GMT - FOOTER-COUNTS confirmed on terra
+
+Operational: personal.reg.household-terra ACKed FOOTER-COUNTS-OUT: its Summary footer carries both lines; inbox-terra and terra's HNR packages take it from ki.sop.main's REFRESH.
