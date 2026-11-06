@@ -12,7 +12,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence high - I checked on `main` directly that both records were accepted and pruned, so nothing here can still land) Yes: force-remove all four worktrees and force-delete their branches.
+a) (recommended, confidence high - reviewed: an independent check confirmed both records were accepted on main and later pruned, so the leftovers are outdated drafts) Yes: force-remove all four worktrees and force-delete their branches.
 
 b) Keep them for now and have a read-only run show you each leftover edit first.
 
@@ -26,7 +26,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence high - `git cherry` shows each change byte-identical on `main`, checked directly) Yes: remove both worktrees and force-delete both branches.
+a) (recommended, confidence high - reviewed: an independent check confirmed every change on both branches is already on main) Yes: remove both worktrees and force-delete both branches.
 
 b) Keep them.
 
@@ -46,9 +46,9 @@ Most of the unpublished commits are already on `main` in identical form. The res
 
 **Options:**
 
-a) (recommended, confidence medium - the fixes landed on `main` under the same titles, but I did not compare the code line by line) Yes: discard all four.
+a) (recommended, confidence high - reviewed: the independent review found a link correction to KI-TOOL-KI-CLI-145 that exists nowhere else, and test edits that still need a keep-or-drop decision) First a read-only run compares the two unmatched commits and the leftover test edits with `main` and brings you a keep-or-drop list, landing the link correction if kept; then discard all four.
 
-b) First let a read-only run compare the two unmatched commits and the leftover test edits with `main` and bring you a keep-or-drop list, as UNMERGED-STRAYS in ki.sop.main proposes. Then discard.
+b) Discard all four now, the worktree run's own recommendation at medium confidence, because the fixes landed on `main` under the same titles.
 
 ### DRAFT-SKILLS - Keep the ki-e2e and Orca adapter draft worktrees until their queries are answered
 
@@ -74,7 +74,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - they are derived working output from committed sources, but I did not prove they can be regenerated) Yes: remove it and delete the `rename-paperclip` branch with `git branch -d`.
+a) (recommended, confidence high - reviewed: an independent check found all three pages byte-identical to copies committed in Git, so nothing is lost) Yes: remove it and delete the `rename-paperclip` branch with `git branch -d`.
 
 b) Copy the diagram folder somewhere first, then remove the worktree.
 
@@ -88,7 +88,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - the remits coincide and the Project's own goal anticipated the hand-on; unreviewed) Yes. Transfer the guild-remit queries and live design notes to ki.reg.ways-of-working, leave its territory and tools items with their owners, let it tidy and close through the normal finished close-out, and mark the [Ways of working Project](/Users/krisbrown/kis/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md) as handed to the regular work.
+a) (recommended, confidence high - reviewed: the new standing package is the natural continuing home, and the Project's own goal expected to hand stewardship on) Yes. Transfer the guild-remit queries and live design notes to ki.reg.ways-of-working, leave its territory and tools items with their owners, let it tidy and close through the normal finished close-out, and mark the [Ways of working Project](/Users/krisbrown/kis/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md) as handed to the regular work.
 
 b) Keep the Project on hold as the design home for large method changes, with the guild only maintaining the skills and the role catalogue.
 
@@ -104,7 +104,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - avoids asking twice while putting the harness change with its new owner; unreviewed) Yes. You answer them in State of play's pass; State of play sends each answer to the guild as a message line, and the guild lands it in the harness with the design notes as its brief.
+a) (recommended, confidence high - reviewed: avoids asking you twice while the harness change goes to its new owner) Yes. You answer them in State of play's pass; State of play sends each answer to the guild as a message line, and the guild lands it in the harness with the design notes as its brief.
 
 b) Move both queries and their two design notes into the guild package now, and ask them there.
 
@@ -120,7 +120,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - most were recommended before 3 November, but the method has moved since, so a triage pass avoids re-asking stale ones; unreviewed) Yes. The guild copies them in, drops each stale one with its evidence in the decisions log, re-checks the rest against the current method, packs them into a few bundles and blind-reviews the medium ones before they reach you. State of play sends each non-guild item to its owner.
+a) (recommended, confidence high - reviewed: the new method owner should check the old questions against today's method before spending your attention; each keeps its original options and evidence until settled) Yes. The guild copies them in, drops each stale one with its evidence in the decisions log, re-checks the rest against the current method, packs them into a few bundles and blind-reviews the medium ones before they reach you. State of play sends each non-guild item to its owner.
 
 b) Transfer them as they stand and take them one at a time in an interactive pass.
 
@@ -136,9 +136,9 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - the harness has no other active steward, and the guild already holds its branches; this widens the work page beyond "how we work"; unreviewed) Yes. The guild adds a `harness` focus area for engineering, website and repository skill asks, kept apart from `skills`, and its work page says so.
+a) (recommended, confidence high - reviewed: sharing a repository and an idle carrier do not make engineering, website and repository skills part of how we work; the backlog run recommended the opposite at medium) No. The guild keeps to ways-of-working skills and roles; the other asks stay with ki.prj.baseline-rollout until you resume it, or go to ki.reg.main as ad hoc work.
 
-b) No. The guild keeps to ways-of-working skills and roles; the other asks stay with ki.prj.baseline-rollout until you resume it, or go to ki.reg.main as ad hoc work.
+b) Yes, the backlog run's recommendation, because the harness has no other active steward: the guild adds a `harness` focus area for engineering, website and repository skill asks, and its work page says so.
 
 ### ORCA-HOME - Who holds the Orca adapter's rules
 
@@ -150,7 +150,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - the adapter is a delegation skill in the harness, while trial evidence and upstream feedback are about using Orca; unreviewed) Yes. The guild takes the sixteen adapter queries, SCOPE-SPLIT's four method questions and the `orca-adapter` branch; the Inbox takes Orca usage and upstream feedback under ORCA-CLOSE-HOME.
+a) (recommended, confidence high - reviewed: the reusable adapter is a delegation skill, while trials and feedback are about using Orca) Yes. The guild takes the sixteen adapter queries, SCOPE-SPLIT's four method questions and the `orca-adapter` branch; the Inbox takes Orca usage and upstream feedback under ORCA-CLOSE-HOME.
 
 b) Send everything Orca-related to the Inbox, including the adapter.
 
@@ -166,7 +166,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - keeps the live design conversation where it is, while the guild lands the agreed parts in the skills; unreviewed) Yes. The guild sends inbox-sol one line asking it to address its agreed coordination and method sends to ki.reg.ways-of-working, and to hand the planning method here when it is done.
+a) (recommended, confidence high - reviewed: sending agreed parts straight to the guild removes a routing hop without interrupting your design conversation with the Inbox) Yes. The guild sends inbox-sol one line asking it to address its agreed coordination and method sends to ki.reg.ways-of-working, and to hand the planning method here when it is done.
 
 b) Move the `coordination` and `method` focus areas into the guild now.
 
@@ -182,7 +182,7 @@ focus: _emerging
 
 **Options:**
 
-a) (recommended, confidence medium - consistent with SKILL-HOMES; leaves the guild to method and roles; unreviewed) Yes. State of play routes them to ki.reg.main, and the Granola reply goes to hnr.sop.main from there.
+a) (recommended, confidence high - reviewed: acquisition has its own method and owner; a file living in the harness does not make it guild work) Yes. State of play routes them to ki.reg.main, and the Granola reply goes to hnr.sop.main from there.
 
 b) The guild takes them under HARNESS-SCOPE b), because the acquisition skills live in the harness.
 
