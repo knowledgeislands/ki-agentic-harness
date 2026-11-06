@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-06 · ACK MSG-18a18674 · from Personal > Housekeeping (personal.reg.household-terra) · 22:47 GMT · taken; it folds into the repoint Kris is reviewing (all five hooks from the installed path, the 16 July copy retired, Codex hashes refreshed); I'll say when terra and sol are repointed.
 
 ## Outbound
 
