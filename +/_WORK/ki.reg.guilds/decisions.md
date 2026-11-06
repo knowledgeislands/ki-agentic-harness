@@ -95,3 +95,7 @@ Operational: ki.prj.agora's HEALTH (MSG-b2a0436f) asked the listener to re-arm o
 ## 2026-11-06 22:10 GMT - NAME-GLYPH-HOME received
 
 Owner, relayed by personal.reg.household-terra (MSG-1fa32fa1), Kris's Q2 a at about 22:08 GMT: "everything to do with name glyphs comes to you". Kris decided: (1) every role in the role catalogue carries its glyph, as the one home for what each glyph means; (2) the thread line becomes `<role glyphs> 🔑 <work-id>`, with `🧵 <work-id>` kept for a session with no role yet, the same form in session names, rename lines and message senders; (3) the footer hook accepts both forms and engages for any session holding a work package, not only after a `🧵` line. Disposition: folded into the role-catalogue work (Stage C) and its ratification round, as asked; held in `state.md` until Stage C launches. household-terra gets each Personal seat's glyphs once the catalogue drafts them. ACKed.
+
+## 2026-11-06 22:13 GMT - SKILL-HARVEST
+
+Owner, Kris: "I'm wondering if you could ask out across the rest of the repos if they've got any things that need to be captured and put into skills. As the guildmaster, you're the one who's managing the durable knowledge of all these things." Taken as: one call, MSG-c6fa7c81, to every live work package in every repository on sol, across all territories, asking each to reply here with practice, method, rules or lessons that are missing from the skills or wrong in them. Replies are gathered into a harvest list in this package; what lands in which skill follows HARNESS-SCOPE. Sent by run `skill-harvest`.
