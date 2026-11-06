@@ -16,7 +16,7 @@ listening_status: on
 
 - Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
 - Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
-- Waiting on ki.sop.main's ACKs of GUILD-ROUTE and RENAME-GUILDS.
+- LINT-BEFORE-PUSH and CHECK-CONSUMERS landing in the commit rules.
 - Listening.
 
 ## Next steps
@@ -26,4 +26,6 @@ listening_status: on
 
 ## Held
 
-None.
+- HOLD-TIDY: waits on TRANSFER-SOP-QUERIES, with HOLD-STATES.
+- SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis`, (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.
+- KNW-005 (where ideas live, work-in-progress reset): with the parked flow questions.

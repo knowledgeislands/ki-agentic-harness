@@ -39,3 +39,7 @@ Owner, relayed in the role catalogue brief at dotfiles `2fe13be`, rule 13: "The 
 ## 2026-11-06 18:54 GMT - rename landed; ACKs; catalogue queries reviewed
 
 Operational: Stage A landed (ki-agentic-harness `30d1a32d`, ki-principal `38010704`, dotfiles `2b8d994`). household-sol ACKed MSG-02d1f29f: sol's Agora watches `ki.reg.guilds` and was restarted. household-terra ACKed MSG-280bd6ab: no live reference to the old id remains there. ki.prj.agora ACKed MSG-bf5f68b8: AGORA-WATCH-WOW superseded; terra will watch it too (AGORA-WATCH-GUILDS to household-terra). The blind review agreed with all seven catalogue queries, lifting each to high. Spent reports pruned from `reports/`.
+
+## 2026-11-06 20:00 GMT - ki.sop.main ACKs and eight routed lines
+
+Operational: ki.sop.main ACKed GUILD-OPEN, GUILD-ROUTE and RENAME-GUILDS (`ki.reg.guilds` in `covers`, method lines route here) and routed eight lines, all ACKed and none returned. LINT-BEFORE-PUSH (Kris, about 04:40 GMT: "It's really important that we make sure that things do pass the linting before we push them") and CHECK-CONSUMERS (LEARN-LOOP, LIFT a, Kris 3 November) land now in one run under those words. HOLD-TIDY waits on TRANSFER-SOP-QUERIES with HOLD-STATES. SKILL-SPECS, SKILLS-OVER-GRAPH (1)-(4) and SITE-LINT wait on HARNESS-SCOPE and Stage C. KNW-005 joins the parked flow questions under TRANSFER-WOW-PARKED. ki.prj.agora's HEALTH line answered: the watcher also waits on Agora's call file.
