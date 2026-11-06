@@ -169,3 +169,13 @@ Owner, in this thread: "There's no reason you have to have everything in one sin
 ## 2026-11-06 23:25 GMT - STANDARD-TERSE
 
 Owner, in this thread: "Also, you can use something to kind of make it a little bit more terse without losing meaning or function. I don't know if something like Caveman can help with that on a very simple level. So there's uniform kind of language and ways of working. That alone might get you down to half the size of the file." Folded into STANDARD-SPLIT. The design run takes the Caveman approach: drop filler, use one fixed term for each idea throughout, and turn long sentences into lists and tables. Dated history and Kris's quoted words move to `sources.md`, and the rules themselves stay. It keeps the full sentences `ki-authoring` requires for committed text rather than Caveman's clipped voice. It also measures the size before and after, and proves no rule was lost by checking each rubric criterion and the banner test still match.
+
+## 2026-11-06 23:26 GMT - SNOOZE
+
+Owner, relayed by personal.reg.household-terra in three lines added to REPORT-FORMS-TIDY.
+
+- MSG-eadd080b: "I think that's snoozing now. That's a better term than more expected."
+- MSG-1e48b129: "maybe on-hold snoozing should just be the Z thing ... and then it's not drained, is it underneath? So that's the wrong indication, really. This needs to have some kind of consolidation and consistency of what's expected here."
+- MSG-3350a79b: "I'd have the glyph, which is the z's, snoozing in brackets on hold, and then it's not since, I'd say at. The word since isn't useful."
+
+Taken as follows. A hold that waits for more to come is Snoozing, replacing "more expected". Its heading is `### 💤 Snoozing (on hold) · at <time>`. It keeps listening, so its counts line does not say drained, and its release is a message arriving or `resume`. One table of states gives each state's glyph, heading, counts line, allowed items, listening line and report form. Using "at" instead of "since" in banner headings generally is weighed with the two-since-times point. The `report-forms` run was already running when these arrived, so a chained `report-snooze` run takes them as soon as it lands, before STANDARD-SPLIT. All three are ACKed.
