@@ -4,6 +4,18 @@ Knowledge Islands **agent runtime hooks**.
 
 This directory is where the harness's hook scripts consolidate — the `PreToolUse`, `PostToolUse`, `Stop`, `SessionStart`, `PreCompact`, and similar handlers a consuming repo (or the personal `~/.claude/` environment) wires into a `settings.json`. The current surface has four concerns: the `plan-stamp.sh` / `plan-sync.sh` Plan Mode lifecycle pair, the `git-lock-check.sh` stale-lock guard, the `coordinator-reminder.sh` responsive-coordinator reminder and the `coordinator-footer.sh` footer check.
 
+## How hooks are expected to work
+
+A hook reaches a runtime in three parts, each with one owner, as Kris set on 6 November 2026: "I think that's the 3 aspects of how it works".
+
+1. **Harness.** The harness ships each hook as `hooks/<hook>/<hook>.sh` and lists it in the [payload table](#payload) below, with its runtime, event, matcher and timeout.
+2. **`ki`.** `ki` installs the payload to `~/.local/share/ki/harnesses/<org>/<harness>/hooks/`. For each registered harness, `ki doctor` reports each hook that is missing, unregistered in Claude Code or Codex, or lacking its current Codex trusted hash, and `ki repair` registers the missing ones. Where a dotfiles manager owns the settings, both report "managed by chezmoi, run chezmoi apply" instead of writing them.
+3. **User-environment manager.** The user-environment manager, such as chezmoi, registers each hook from the installed path, never from a checkout.
+
+Part 2 is the expected behaviour, not shipped behaviour. Its `ki` implementation is tracked with tools-ki through `ki.sop.main`'s tooling audit. Today `ki doctor` checks only that each harness is installed, and `ki repair` repairs only skill links and legacy configuration metadata; neither inspects or registers runtime hooks.
+
+The five forwarding stubs at the old flat paths, `hooks/<hook>.sh`, are a transition aid for bindings written before the per-hook folders, not a fourth way to bind; each retires once no Claude Code or Codex binding on either Mac names it, as [Payload](#payload) sets out.
+
 ## Payload
 
 `ki` installs every hook below with the harness, under `<installed harness>/hooks/`, which on a Mac is `~/.local/share/ki/harnesses/knowledgeislands/ki-agentic-harness/hooks/`. A user-environment manager registers each from that installed path, never from a source checkout; `payload.test.ts` keeps this table and the shipped executables in step.
