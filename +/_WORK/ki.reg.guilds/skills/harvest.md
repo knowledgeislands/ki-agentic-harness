@@ -59,6 +59,12 @@ Replies to MSG-c6fa7c81, sent on 6 November 2026 at about 22:15 GMT to 41 live p
 - Publication-boundary build gate: a private site's smoke suite fails on any email address or finance marker in its output. Owner: ki-repo-website-content. From hnr.prj.5g-emerge-phase3.
 - Agent access for a static site: `llms.txt`, a versioned data index and read-only WebMCP tools. No skill covers it. Owner: ki-repo-website-content. From hnr.prj.5g-emerge-phase3.
 - Incremental document-library sync: a manifest-first check, changed files only, one previous copy kept, allowlisted columns only. Owner: ki-acquire. From hnr.prj.5g-emerge-phase3.
+- Image slots: every site image gets a fixed slot (path, pixel size, transparency) holding a plain placeholder until art exists, with a slot guide and a reusable image prompt, so files land under slot names with no code change; generated images carry no text. Owner: ki-repo-website-content. From hnr.prj.site-robots.
+- No version labels: V1, V2 and the like never appear in code, file names, routes, alt text, copy or record titles; source-store file names are exempt. Owner: ki-engineering. From hnr.prj.site-robots.
+- Confirm the deploy: a site agent confirms its Cloudflare Workers Build succeeded after pushing `main`, through read-only GitHub check-run and status calls named in its brief. Owner: ki-repo-website-cloudflare, grant wording in ki-delegation. From hnr.prj.site-robots.
+- Prove locally, feed upstream: a cross-site improvement may be proven in one site, then moved into the shared Stoa library and the local copy dropped; a vendored copy is never edited locally, and the build fails on a local edit. Owner: ki-repo-website-content for Stoa, ki-engineering for the general vendoring rule. From hnr.prj.site-robots.
+- Work-in-progress limit: a Project package pulls at most three roadmap records at a time and leaves the rest on the roadmap; ki-coordination caps only active Projects. Owner: ki-coordination. From hnr.prj.site-robots.
+- Motion and scale: pointer parallax moves only the far and middle layers, keeps the foreground and standing figures fixed together, and respects reduced motion; characters keep a consistent scale. Owner: ki-design-system. From hnr.prj.site-robots.
 
 ## Wrongly held
 
