@@ -75,3 +75,7 @@ Operational: FOOTER-COUNTS landed in ki-agentic-harness `27833e5b`: the roadmap 
 ## 2026-11-06 20:40 GMT - FOOTER-COUNTS confirmed on terra
 
 Operational: personal.reg.household-terra ACKed FOOTER-COUNTS-OUT: its Summary footer carries both lines; inbox-terra and terra's HNR packages take it from ki.sop.main's REFRESH.
+
+## 2026-11-06 20:42 GMT - FOOTER-COUNTS broadcast; APP-SKILLS
+
+Operational: ki.sop.main ACKed MSG-7377d2fc, having broadcast the FOOTER-COUNTS REFRESH to the 15 live Knowledge Islands packages. ki.prj.agora's APP-SKILLS (MSG-6b69bd0e; Kris about 20:50 GMT: "as we build more tooling, the learning from Agora's apps should become skills") held as four candidate skills under HARNESS-SCOPE; ACKed, asking where DISPATCH-LESSONS went.

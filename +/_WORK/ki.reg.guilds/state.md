@@ -28,4 +28,5 @@ listening_status: on
 
 - HOLD-TIDY: waits on TRANSFER-SOP-QUERIES, with HOLD-STATES.
 - SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis` (with the D12-LEARNS learning loop), (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.
+- APP-SKILLS (ki.prj.agora, Kris about 20:50 GMT): UI testing end to end (with the `ki-e2e` draft), macOS menu-bar apps, Electron desktop apps, mobile apps: wait on HARNESS-SCOPE.
 - KNW-005 (where ideas live, work-in-progress reset): with the parked flow questions.
