@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-06 · ACK MSG-0438dd95 · from Personal > Housekeeping (personal.reg.household-terra) · 22:44 GMT · TOOLS-ROLE copy taken; quartermaster noted as owner of `ki doctor`/`ki repair` for hooks and of tools-rig.
 
 ## Outbound
 
