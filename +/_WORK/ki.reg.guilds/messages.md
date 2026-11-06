@@ -2,6 +2,8 @@
 
 ## Inbound
 
+- 2026-11-06 · ACK MSG-f7b3b4ce · from ki.sop.main · 23:05 GMT · role recorded as governor; QUARTERMASTER now says warden
+
 None.
 
 ## Outbound
