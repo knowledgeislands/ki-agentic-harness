@@ -55,3 +55,7 @@ Operational: ki.sop.main ACKed MSG-63625521, taking the `056996c0` commit-rules 
 ## 2026-11-06 20:28 GMT - FOOTER-COUNTS
 
 Owner, relayed by personal.reg.household-terra in IMPORTANT MSG-1fe66251: Kris, about 20:40 GMT, "I absolutely love that footer. Can you make that the case, please, and get that to be rolled out? ... make sure it happens." The Summary footer gains two succinct count lines, after the hold line: `🗺️ roadmap · <n> record(s) · <n> open · <n> done awaiting prune · <n> ideas` and `📦 package · inbox <n> · outbox <n> · held <n> · awaiting ACK <n>`, the first omitted where the repository has no roadmap. A run sets it in the ki-coordination standard and its generated surfaces; ki.sop.main is then asked to broadcast the REFRESH, and household-terra told. ACKed.
+
+## 2026-11-06 20:31 GMT - FOOTER-NAMES answered; Agora HEALTH
+
+Operational: answered household-terra's MSG-7f329b54 for Kris: the long form is the Summary footer (art, then the glyph banner), the short form the banner alone; recommended at high that FOOTER-COUNTS' lines sit in the Summary footer only; the footer-counts run told to make both names plain in the standard. ACKed ki.prj.agora's HEALTH MSG-0c729513, re-armed for 120 minutes.
