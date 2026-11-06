@@ -23,7 +23,7 @@ listening_status: on
 
 ## Next steps
 
-1. When `report-forms` lands: launch `report-snooze` (SNOOZE, brief ready); when that lands, REFRESH the live packages, then launch the `standard-split` design run (STANDARD-SPLIT) and bring Kris its plan of core and purpose files before implementing.
+1. `report-forms` landed (`aa893528`); `report-snooze` is running. When it lands, REFRESH the live packages, then launch the `standard-split` design run (STANDARD-SPLIT) and bring Kris its plan of core and purpose files before implementing.
 2. Take Kris's answers; launch the worktree disposal, Stage B (absorb ki.prj.ways-of-working) and Stage C (catalogue skills) as authorised.
 3. Take the routed guild lines from ki.sop.main as they land.
 
