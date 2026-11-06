@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 
 const temporaryDirectories: string[] = []
-const repositoryRoot = resolve(import.meta.dir, '..')
+const repositoryRoot = resolve(import.meta.dir, '..', '..')
 const hook = join(repositoryRoot, '.githooks', 'pre-commit')
 
 afterEach(() => {

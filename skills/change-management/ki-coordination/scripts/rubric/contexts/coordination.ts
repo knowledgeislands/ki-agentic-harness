@@ -872,7 +872,7 @@ export const bindingOutcomes = (root: string, userHome: string): AuditOutcome[] 
   if (missing.length > 0)
     outcomes.push({
       status: 'VIOLATION',
-      message: `the user's Claude Code settings run \`hooks/${COORDINATOR_HOOK}\` at ${missing.map((event) => `\`${event}\``).join(' and ')}; the user-environment manager binds it`,
+      message: `the user's Claude Code settings run \`hooks/coordinator-reminder/${COORDINATOR_HOOK}\` at ${missing.map((event) => `\`${event}\``).join(' and ')}; the user-environment manager binds it`,
       subject: join('~', '.claude', 'settings.json')
     })
   const deployed = join('.claude', 'output-styles', `${OUTPUT_STYLE}.md`)

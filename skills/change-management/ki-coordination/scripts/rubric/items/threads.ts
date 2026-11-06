@@ -127,7 +127,7 @@ const COORD_8: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-8',
   title: 'the coordinator hook and output style are bound where ki-coordination is declared',
   description:
-    'In the runtime-specific Claude Code binding, a repository that declares `[skills.ki-coordination]` selects `"outputStyle": "ki-coordinator"` in its tracked `.claude/settings.json`, and, where the user\'s Claude Code settings are present, they run the harness `hooks/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart` and the style is deployed as `~/.claude/output-styles/ki-coordinator.md`. The user-environment manager, chezmoi, stays the binder; the rubric only checks that the binding is present.',
+    'In the runtime-specific Claude Code binding, a repository that declares `[skills.ki-coordination]` selects `"outputStyle": "ki-coordinator"` in its tracked `.claude/settings.json`, and, where the user\'s Claude Code settings are present, they run the harness `hooks/coordinator-reminder/coordinator-reminder.sh` at `UserPromptSubmit` and `SessionStart` and the style is deployed as `~/.claude/output-styles/ki-coordinator.md`. The user-environment manager, chezmoi, stays the binder; the rubric only checks that the binding is present.',
   sources: [`${SOURCE}#coordinator-responsiveness`],
   mechanical: {
     level: 'WARN',

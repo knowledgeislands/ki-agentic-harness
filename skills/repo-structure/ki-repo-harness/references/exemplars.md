@@ -21,7 +21,9 @@ evals/
   scenarios/
 hooks/
   README.md
-  plan-stamp.sh
+  plan-stamp/
+    plan-stamp.sh
+    plan-stamp.test.ts
 CLAUDE.md
 ROADMAP.md
 .ki.toml

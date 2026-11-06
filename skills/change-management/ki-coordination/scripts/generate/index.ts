@@ -20,7 +20,7 @@ export type SkillGeneration = {
 }
 
 const STANDARD = 'skills/change-management/ki-coordination/references/standards-coordination.md'
-const HOOK = 'hooks/coordinator-reminder.sh'
+const HOOK = 'hooks/coordinator-reminder/coordinator-reminder.sh'
 const OUTPUT_STYLE = 'output-styles/ki-coordinator.md'
 const DELEGATION_ASSETS = 'skills/governance/ki-delegation/assets'
 const RUN_PROMPT = `${DELEGATION_ASSETS}/run-prompt.md`

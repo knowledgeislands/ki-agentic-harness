@@ -22,7 +22,7 @@ const skillRoot = resolve(import.meta.dir, '..')
 const harnessRoot = resolve(skillRoot, '..', '..', '..')
 const standard = readFileSync(resolve(skillRoot, 'references', 'standards-coordination.md'), 'utf8')
 const outputStyle = readFileSync(resolve(harnessRoot, 'output-styles', 'ki-coordinator.md'), 'utf8')
-const hook = readFileSync(resolve(harnessRoot, 'hooks', 'coordinator-reminder.sh'), 'utf8')
+const hook = readFileSync(resolve(harnessRoot, 'hooks', 'coordinator-reminder', 'coordinator-reminder.sh'), 'utf8')
 
 const THEME_PAGE = '/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Themes/model.md'
 const PROJECT_NOTE = '/Users/krisbrown/workspaces/knowledge-islands/ki-principal/Streams/Projects/ways-of-working.md'

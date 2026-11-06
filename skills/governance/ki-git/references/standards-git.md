@@ -168,7 +168,7 @@ Clean-down never destroys work on inference. Deleting a local branch is proposab
 
 ## Stale-lock guard
 
-`hooks/git-lock-check.sh` is a best-effort recovery guard for a trusted user account, not a general cleanup command.
+`hooks/git-lock-check/git-lock-check.sh` is a best-effort recovery guard for a trusted user account, not a general cleanup command.
 
 It may remove a real `*.lock` file only from the current worktree's physical Git directory, only after it has found no relevant Git process, and only after rechecking containment and file type immediately before removal.
 

@@ -21,7 +21,7 @@
 | Source                                     | Governs                                          | Last reviewed |
 | ------------------------------------------ | ------------------------------------------------ | ------------- |
 | Harness commit history                     | current type vocabulary and direct-main practice | 2026-08-12    |
-| `hooks/git-lock-check.sh` and its run test | stale-lock guard semantics and safety boundary   | 2026-08-12    |
+| `hooks/git-lock-check/git-lock-check.sh` and its run test | stale-lock guard semantics and safety boundary   | 2026-08-12    |
 | GDR-KI-HARNESS-003                         | portable ownership boundaries                    | 2026-08-12    |
 | Rig delivery guidance and shared-tree practice | post-hook committed-path inspection and bounded recovery | 2026-10-04 |
 

@@ -3,16 +3,16 @@ import { spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { markedBlock } from '../skills/change-management/ki-coordination/scripts/generate/index.ts'
+import { markedBlock } from '../../skills/change-management/ki-coordination/scripts/generate/index.ts'
 
 const script = resolve(import.meta.dir, 'coordinator-reminder.sh')
 const line = markedBlock(
-  readFileSync(resolve(import.meta.dir, '../skills/change-management/ki-coordination/references/standards-coordination.md'), 'utf8'),
+  readFileSync(resolve(import.meta.dir, '../../skills/change-management/ki-coordination/references/standards-coordination.md'), 'utf8'),
   'source',
   'hook-line'
 ).body
 const pointer = markedBlock(
-  readFileSync(resolve(import.meta.dir, '../skills/change-management/ki-coordination/references/standards-coordination.md'), 'utf8'),
+  readFileSync(resolve(import.meta.dir, '../../skills/change-management/ki-coordination/references/standards-coordination.md'), 'utf8'),
   'source',
   'hook-pointer'
 ).body

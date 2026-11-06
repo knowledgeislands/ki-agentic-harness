@@ -4,7 +4,7 @@ import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync 
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
-const repositoryRoot = resolve(import.meta.dir, '..')
+const repositoryRoot = resolve(import.meta.dir, '..', '..')
 const temporaryDirectories: string[] = []
 const identity = {
   GIT_AUTHOR_NAME: 'Hook Test',

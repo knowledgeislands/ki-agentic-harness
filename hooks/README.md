@@ -8,15 +8,19 @@ This directory is where the harness's hook scripts consolidate — the `PreToolU
 
 `ki` installs every hook below with the harness, under `<installed harness>/hooks/`, which on a Mac is `~/.local/share/ki/harnesses/knowledgeislands/ki-agentic-harness/hooks/`. A user-environment manager registers each from that installed path, never from a source checkout; `payload.test.ts` keeps this table and the shipped executables in step.
 
+Each hook has its own folder, `hooks/<hook>/`, holding its script `<hook>.sh` and its test `<hook>.test.ts`. The table gives each script's path under `hooks/`. `git-hooks/` holds no runtime hook: it carries the tests of the repository's own `.githooks/` `commit-msg` and `pre-commit` and of the stub a linked worktree runs in their place.
+
+Each hook's earlier flat path, `hooks/<hook>.sh`, remains as a forwarding stub that hands its arguments, input, output and exit code unchanged to `hooks/<hook>/<hook>.sh`, so a binding written before the move keeps working. A stub retires once no Claude Code or Codex binding on either Mac names it; `payload.test.ts` holds each stub to that one forwarding line.
+
 <!-- hooks:payload:start -->
 
 | Hook | Runtime | Event | Matcher | Timeout |
 | --- | --- | --- | --- | --- |
-| `plan-stamp.sh` | Claude Code | `PostToolUse` | `ExitPlanMode` | 5 s |
-| `plan-sync.sh` | Claude Code | `PostToolUse` | `TodoWrite` | 5 s |
-| `git-lock-check.sh` | Claude Code | `Stop` | `*` | 10 s |
-| `coordinator-reminder.sh` | Claude Code and Codex | `UserPromptSubmit`; `SessionStart` | none; `compact` | 5 s |
-| `coordinator-footer.sh` | Claude Code | `Stop` | `*` | 10 s |
+| `plan-stamp/plan-stamp.sh` | Claude Code | `PostToolUse` | `ExitPlanMode` | 5 s |
+| `plan-sync/plan-sync.sh` | Claude Code | `PostToolUse` | `TodoWrite` | 5 s |
+| `git-lock-check/git-lock-check.sh` | Claude Code | `Stop` | `*` | 10 s |
+| `coordinator-reminder/coordinator-reminder.sh` | Claude Code and Codex | `UserPromptSubmit`; `SessionStart` | none; `compact` | 5 s |
+| `coordinator-footer/coordinator-footer.sh` | Claude Code | `Stop` | `*` | 10 s |
 
 <!-- hooks:payload:end -->
 
