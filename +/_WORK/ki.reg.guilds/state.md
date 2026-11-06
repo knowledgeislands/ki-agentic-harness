@@ -16,7 +16,7 @@ listening_status: on
 
 - Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
 - Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
-- LINT-BEFORE-PUSH and CHECK-CONSUMERS landed (harness `056996c0`).
+- Landed today: LINT-BEFORE-PUSH and CHECK-CONSUMERS (`056996c0`), FOOTER-COUNTS (`27833e5b`), FOOTER-HOOK (`8ec15e63`).
 - Listening.
 
 ## Next steps

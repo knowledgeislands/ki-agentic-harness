@@ -79,3 +79,7 @@ Operational: personal.reg.household-terra ACKed FOOTER-COUNTS-OUT: its Summary f
 ## 2026-11-06 20:42 GMT - FOOTER-COUNTS broadcast; APP-SKILLS
 
 Operational: ki.sop.main ACKed MSG-7377d2fc, having broadcast the FOOTER-COUNTS REFRESH to the 15 live Knowledge Islands packages. ki.prj.agora's APP-SKILLS (MSG-6b69bd0e; Kris about 20:50 GMT: "as we build more tooling, the learning from Agora's apps should become skills") held as four candidate skills under HARNESS-SCOPE; ACKed, asking where DISPATCH-LESSONS went.
+
+## 2026-11-06 20:52 GMT - FOOTER-HOOK landed
+
+Operational: ki-agentic-harness `8ec15e63` adds `hooks/coordinator-footer.sh`, a Claude Code `Stop` hook that blocks a coordinating reply missing its Summary footer or banner, quiet otherwise and failing open, with 40 new tests (1597 pass), and a payload table in the hooks README listing all five hooks with `coordinator-reminder.sh`. No reinstall on sol (development link). The run's HOOK-BINDING query, whether to retire the dotfiles' three-hook manifest binding, is the dotfiles owners' call, so it went with the registration lines to household-terra and household-sol rather than to Kris. Fleet finding: `skills/README.md` catalogue is stale after another session's ki-acquire-granola description change (CAP-2).
