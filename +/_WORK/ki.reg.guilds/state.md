@@ -5,7 +5,7 @@ since: 2026-11-06T18:54:52Z
 received: 2026-11-06T16:54:00Z
 beat: null
 mark: null
-method_read: 3ffd23bc
+method_read: 056996c0
 listening_enabled: true
 listening_status: on
 ---
@@ -16,7 +16,7 @@ listening_status: on
 
 - Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
 - Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
-- LINT-BEFORE-PUSH and CHECK-CONSUMERS landing in the commit rules.
+- LINT-BEFORE-PUSH and CHECK-CONSUMERS landed (harness `056996c0`).
 - Listening.
 
 ## Next steps

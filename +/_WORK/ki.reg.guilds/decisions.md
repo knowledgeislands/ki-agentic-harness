@@ -43,3 +43,7 @@ Operational: Stage A landed (ki-agentic-harness `30d1a32d`, ki-principal `380107
 ## 2026-11-06 20:00 GMT - ki.sop.main ACKs and eight routed lines
 
 Operational: ki.sop.main ACKed GUILD-OPEN, GUILD-ROUTE and RENAME-GUILDS (`ki.reg.guilds` in `covers`, method lines route here) and routed eight lines, all ACKed and none returned. LINT-BEFORE-PUSH (Kris, about 04:40 GMT: "It's really important that we make sure that things do pass the linting before we push them") and CHECK-CONSUMERS (LEARN-LOOP, LIFT a, Kris 3 November) land now in one run under those words. HOLD-TIDY waits on TRANSFER-SOP-QUERIES with HOLD-STATES. SKILL-SPECS, SKILLS-OVER-GRAPH (1)-(4) and SITE-LINT wait on HARNESS-SCOPE and Stage C. KNW-005 joins the parked flow questions under TRANSFER-WOW-PARKED. ki.prj.agora's HEALTH line answered: the watcher also waits on Agora's call file.
+
+## 2026-11-06 20:08 GMT - commit rules landed; dotfiles levelled
+
+Operational: LINT-BEFORE-PUSH and CHECK-CONSUMERS landed in ki-agentic-harness `056996c0`: a "Checks before committing" subsection in the `ki-git` standard, pointed to from `ki-coordination` and `ki-delegation`, and a "Retiring shared things" subsection in the `ki-delegation` background-run standard; tests 1556 pass, type check clean, focused audits pass bar a pre-existing COORD-7 in a since-pruned report. `method_read` moves to 056996c0. personal.reg.household-sol ACKed MSG-a83456ea: sol's dotfiles levelled, `5ff4b01` dropped. ki.sop.main asked to broadcast the REFRESH, being the method's broadcaster until the absorption.

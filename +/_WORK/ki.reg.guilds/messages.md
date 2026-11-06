@@ -2,8 +2,8 @@
 
 ## Inbound
 
-- 2026-11-06 · ACK MSG-a83456ea · from personal.reg.household-sol · 20:04 GMT · levelled: `5ff4b01` dropped, own commit pushed
+None.
 
 ## Outbound
 
-- 2026-11-06 · MSG-a83456ea LEVEL-DOTFILES · to personal.reg.household-sol · 20:03 GMT · level sol's dotfiles checkout · awaiting ACK
+- 2026-11-06 · MSG-63625521 REFRESH-REQUEST · to ki.sop.main · 20:08 GMT · broadcast the `056996c0` commit-rules REFRESH · awaiting ACK
