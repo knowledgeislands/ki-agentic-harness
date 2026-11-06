@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Stop: hold a coordinating reply back until it carries the footer ki-coordination
-# sets. A Summary needs the long form: the art, then the banner with its roadmap
+# sets. A Summary or a Status needs the long form: the art, then the banner with its roadmap
 # and package lines; a re-bootstrap or hold report, a reply that already opens a
 # banner, and a reply to an owner's mark or state word need the short form: the
 # banner's state heading, its counts line (none when Finished) and the thread
@@ -61,8 +61,8 @@ owner_prompt() {
 form=$(printf '%s\n' "$reply" | awk '
   /^(```|~~~)/ { fence = !fence; next }
   fence { next }
-  /^## Summary since / || /^\*\*.* · Summary at / { print "summary"; exit }
-  /^\*\*.* · (Re-bootstrap|Hold report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Finished)/ || /^🧵 [^ ]+ *$/ { other = 1 }
+  /^## Summary since / || /^\*\*.* · (Summary|Status) at / { print "summary"; exit }
+  /^\*\*.* · (Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Finished)/ || /^🧵 [^ ]+ *$/ { other = 1 }
   END { if (other) print "banner" }')
 
 if [ -z "$form" ]; then
@@ -77,7 +77,7 @@ if [ -z "$form" ]; then
   prompt=$(owner_prompt) || exit 0
   prompt=${prompt% no art}
   case "$prompt" in
-    mark | 'mark only' | summary | 'summary since '* | recap | 'recap and mark' | 'full summary' | 'summary in full' | status | \
+    mark | 'mark only' | 'mark, status only' | 'mark status only' | summary | 'summary since '* | recap | 'recap and mark' | 'full summary' | 'summary in full' | status | \
       pause | 'done for now' | drain | hold | resume | finish | send | receive | 'with me' | ack | 'got it' | seen) ;;
     *) exit 0 ;;
   esac

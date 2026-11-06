@@ -36,7 +36,7 @@ const thread = '🧵 ki.prj.demo'
 const summaryBody = [
   '# [Demo](/tmp/demo.md)',
   '',
-  '**🤖 → 👤 Handoff to supervisor · Summary at 21:10 GMT · last mark 20:00 GMT**',
+  '**🤖 → 👤 Handoff to supervisor · Summary at 21:10 GMT · since 20:00 GMT**',
   '',
   '---',
   '',
@@ -126,6 +126,22 @@ test('a Summary with its whole footer passes', () => {
   expect(run(stop(fullSummary, plain))).toEqual(silent)
 })
 
+// Kris, under REPORT-FORMS-TIDY on 6 November 2026, asked to mark and get the status table without the history: the
+// Status is the Summary without `## Summary since`, and takes the same long footer.
+test('a Status takes the long footer, as a Summary does', () => {
+  const status = (...footer: string[]): string =>
+    [
+      summaryBody
+        .replace('Summary at 21:10 GMT · since 20:00 GMT', 'Status at 21:10 GMT · last mark 20:00 GMT')
+        .replace('## Summary since 20:00 GMT\n\n**The hook landed.**\n\n', ''),
+      ...footer
+    ].join('\n\n')
+  expect(run(stop(status(art, heading, counts, roadmap, pkg, items, thread), plain))).toEqual(silent)
+  expect(run(stop(status(heading, counts, roadmap, pkg, items, thread), plain)).reason).toStartWith(
+    "This Summary's footer lacks the Knowledge Islands art above the banner, "
+  )
+})
+
 test('a Summary without the art is held back, naming it', () => {
   const outcome = run(stop(summary(heading, counts, roadmap, pkg, items, thread), plain))
   expect(outcome.status).toBe(0)
@@ -208,7 +224,7 @@ test('a reply that opens a banner but leaves it unfinished is held back', () => 
 })
 
 test("an owner's mark or state word in a coordinating session needs the banner", () => {
-  for (const word of ['mark', 'Mark.', 'mark only', 'pause', 'done for now', 'with me', 'status', 'summary since 14:00']) {
+  for (const word of ['mark', 'Mark.', 'mark only', 'mark, status only', 'pause', 'done for now', 'with me', 'status', 'summary since 14:00']) {
     const outcome = run(stop('Mark struck at 21:10.', coordinated(word)))
     expect(outcome.reason).toStartWith("This reply's banner lacks the ### state heading of the banner, ")
   }

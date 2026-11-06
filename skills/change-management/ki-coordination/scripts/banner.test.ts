@@ -30,7 +30,7 @@ const PROJECT_NOTE = '/Users/krisbrown/workspaces/knowledge-islands/ki-principal
 const HEADING_EXAMPLE = [
   `# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE})`,
   '',
-  '**🤖 → 👤 Handoff to supervisor · Summary at 23:52 BST · last mark 22:34 BST**',
+  '**🤖 → 👤 Handoff to supervisor · Summary at 23:52 BST · since 22:34 BST**',
   '',
   '---',
   '',
@@ -42,9 +42,12 @@ const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a
 const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
 /** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason; never a target in brackets. */
 const GLYPH_STATE = `(?:🤖 With worker|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · (?:paused until [^·*]+|more expected))?|🏁 Finished)`
-/** The form line: the glyph state, the form, the local issued time and the last mark, bold; a hold report names the hold's mark. */
+/**
+ * The form line: the glyph state, the form and the local issued time, bold, then under REPORT-FORMS-TIDY a Summary's
+ * window start, the hold's mark in a hold report, and the last mark in every other form.
+ */
 const FORM_LINE = new RegExp(
-  String.raw`^\*\*${GLYPH_STATE} · (?:(?:Summary|Re-bootstrap|Run report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
+  String.raw`^\*\*${GLYPH_STATE} · (?:Summary at \d{2}:\d{2} [A-Z]{3,4} · since|(?:Status|Re-bootstrap|Run report|Finish report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
   'u'
 )
 /** The banner heading: `### <glyph state> · since <time>`, or Finished's close line. */
@@ -69,6 +72,8 @@ const HEADING_FOR_LINE =
   /^↪️ (?:draining → ⏸️ On hold|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
 /** The listening line while the inbox watcher is armed, on a thread with the listening capability. */
 const LISTEN_LINE = /^👂 listening$/u
+/** The listening line on a hold the owner asked to wait for a message, under REPORT-FORMS-TIDY. */
+const LISTEN_HOLD_LINE = '👂 listening · a message releases the hold'
 /** The listening line while that capability is off. */
 const LISTEN_OFF_LINE = /^🔇 not listening$/u
 /** The roadmap line under FOOTER-COUNTS, in a Summary's footer where the work's repository has a roadmap. */
@@ -174,7 +179,7 @@ test('the standard carries the report heading as a linked theme › Project head
   expect(summary?.join('\n')).toBe(HEADING_EXAMPLE)
   expectReportHeading(summary)
   expect(territory?.[0]).toBe('# [<territory or theme>](<its local note>) › State of play')
-  expect(territory?.[2]).toBe('**👤 With supervisor · Summary at 19:13 BST · last mark 14:54 BST**')
+  expect(territory?.[2]).toBe('**👤 With supervisor · Summary at 19:13 BST · since 09:00 BST**')
   expect(territory?.[6]).toBe('## Summary since 09:00 BST')
   expectReportHeading(territory)
   expect(runReport?.[0]).toBe(`# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE}) › migrate-phase1`)
@@ -182,12 +187,16 @@ test('the standard carries the report heading as a linked theme › Project head
   expectReportHeading(runReport)
 })
 
-test('the form line leads with the glyph state, then the form, the local issued time and the last mark', () => {
-  expect('**🤖 With worker · Summary at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**🤖 → 👤 Handoff to supervisor · blocked · Summary at 09:05 GMT · last mark 14:54 BST**').toMatch(FORM_LINE)
+test('the form line leads with the glyph state, then the form, the local issued time and its window or mark', () => {
+  expect('**🤖 With worker · Summary at 19:13 BST · since 14:54 BST**').toMatch(FORM_LINE)
+  expect('**🤖 With worker · Summary at 19:13 BST · last mark 14:54 BST**').not.toMatch(FORM_LINE)
+  expect('**👤 With supervisor · Status at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
+  expect('**👤 With supervisor · Re-bootstrap at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
+  expect('**🏁 Finished · Finish report at 18:00 BST · last mark 17:40 BST**').toMatch(FORM_LINE)
+  expect('**🤖 → 👤 Handoff to supervisor · blocked · Summary at 09:05 GMT · since 14:54 BST**').toMatch(FORM_LINE)
   expect('**👤 With supervisor · Recap at 09:05 GMT · last mark 14:54 BST**').not.toMatch(FORM_LINE)
   expect('**👤 With supervisor · Full summary at 09:05 GMT · last mark 14:54 BST**').not.toMatch(FORM_LINE)
-  expect('**→ 🎯 Handoff to KI > Tools burndown · Summary at 23:10 BST · last mark 22:00 BST**').toMatch(FORM_LINE)
+  expect('**→ 🎯 Handoff to KI > Tools burndown · Summary at 23:10 BST · since 22:00 BST**').toMatch(FORM_LINE)
   expect('**⏸️ On hold · Hold report at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
   expect('**⏸️ On hold · Hold report at 15:02 BST · last mark 14:58 BST**').not.toMatch(FORM_LINE)
   expect('**Summary at 19:13 BST · last mark 14:54 BST**').not.toMatch(FORM_LINE)
@@ -807,4 +816,38 @@ test("a Summary's footer carries the roadmap and package lines beneath its count
   }
   expect(standard).toContain('**Roadmap and package lines.**')
   expect(standard).toContain('In a Summary of work On hold the counts line is the hold line')
+})
+
+// Kris, relayed by household-terra on 6 November 2026 under REPORT-FORMS-TIDY: say plainly which "since" is which, give
+// each form one complete template, let an owner-asked hold keep listening for a message, and offer the status table
+// without the history part.
+test('each report form has one template, the Summary names its window and a listening hold has its own line', () => {
+  const templates = standard.split('### Templates\n')[1]?.split('\n### The Summary\n')[0] ?? ''
+  for (const form of [
+    '**Summary**',
+    '**Status**',
+    '**Re-bootstrap report**',
+    '**Hold report**',
+    '**Finish report**',
+    '**Plain state reply**'
+  ])
+    expect(templates).toContain(form)
+  for (const line of [
+    '**<glyph state> · Summary at <now> · since <window start>**',
+    '**<glyph state> · Status at <now> · last mark <mark>**',
+    '**<glyph state> · Re-bootstrap at <now> · last mark <mark>**',
+    "**⏸️ On hold · Hold report at <now> · mark <the hold's mark>**",
+    '**🏁 Finished · Finish report at <now> · last mark <mark>**'
+  ])
+    expect(templates).toContain(line)
+  expect(templates).toContain('A hold is visibly not a Summary')
+  expect(standard).toContain('- **Three times:**')
+  expect(standard).toContain('- **Listening hold:**')
+  expect(standard).toContain('/ki-coordination mark, status only')
+  expect(standard).toContain('/ki-coordination status ')
+  for (const text of [standard, outputStyle]) {
+    expect(text).toContain(`\`${LISTEN_HOLD_LINE}\``)
+    expect(text).toContain('`mark, status only`')
+    expect(text).toContain('· since <window start>')
+  }
 })

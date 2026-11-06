@@ -13,7 +13,7 @@ description: >
   design notes, Finished, the working rules, and the three reply forms every session uses. Use while coordinating
   any explicitly opened work package to give a summary or banner or strike the mark, or to decide how any
   session replies; `ki-delegation` owns the background runs the coordinator launches.
-argument-hint: 'audit <repo> | conform <repo> | drain | educate <repo> | help | hold | mark [only] [no art] | receive | refresh | resume | send | summary [since <time>] [no art]'
+argument-hint: 'audit <repo> | conform <repo> | drain | educate <repo> | help | hold | mark [only | status only] [no art] | receive | refresh | resume | send | status [no art] | summary [since <time>] [no art]'
 ---
 
 # Knowledge Islands coordinating work
@@ -68,7 +68,7 @@ While coordinating, `/ki-coordination hold` drains and puts the work On hold und
 
 ### Mode MARK
 
-While coordinating, `/ki-coordination mark` strikes [the mark](references/standards-coordination.md#the-mark), which is only a timestamp, the default start of the next Summary: it writes `mark: <UTC timestamp>` into the state file's front matter, `state.md`, works the decisions life cycle, prunes the work folder, keeps every open Needs-tagged query, commits the work folder and then gives, in the same reply, [the Summary](references/standards-coordination.md#the-summary) since the previous mark. `/ki-coordination mark only` strikes it with no Summary. Only the owner's instruction, or a hold, moves the mark, and a hold's mark is followed by its hold report instead. `no art` leaves the art out of the Summary's footer.
+While coordinating, `/ki-coordination mark` strikes [the mark](references/standards-coordination.md#the-mark), which is only a timestamp, the default start of the next Summary: it writes `mark: <UTC timestamp>` into the state file's front matter, `state.md`, works the decisions life cycle, prunes the work folder, keeps every open Needs-tagged query, commits the work folder and then gives, in the same reply, [the Summary](references/standards-coordination.md#the-summary) since the previous mark. `/ki-coordination mark only` strikes it with no Summary, and `/ki-coordination mark, status only` strikes it and gives the Status, the Summary without its history. Only the owner's instruction, or a hold, moves the mark, and a hold's mark is followed by its hold report instead. `no art` leaves the art out of the Summary's footer.
 
 ### Mode RECEIVE
 
@@ -92,7 +92,7 @@ While coordinating, `/ki-coordination send` commits and syncs the work package a
 
 ### Mode SUMMARY
 
-While coordinating, `/ki-coordination summary` gives [the Summary](references/standards-coordination.md#the-summary) since the last mark, or the thread's start where there is none, and `/ki-coordination summary since <time>` gives it from any point the owner names; `no art` leaves the art out of its footer. It is the one summary form, replacing the recap and the full summary: the report heading, its form line reading `<glyph state> · Summary at <local time> · last mark <local time>`, then `## Summary since <time>` with a bold headline and what changed, `## Status` with the two-column focus table, its lines opening with their holder's glyph, `## Queries` with every open query in full, then the footer, the Knowledge Islands art and the glyph banner with its thread line. It never moves the mark. A coordinator gives it unasked after every `mark`, when all dispatched work has finished, at every send, and in the first reply after 30 minutes or more without an owner message while queries are with the owner, answering the message first. `recap` and `full summary` are read as `summary` and a summary since the work began for the tolerance window.
+While coordinating, `/ki-coordination summary` gives [the Summary](references/standards-coordination.md#the-summary) since the last mark, or the thread's start where there is none, and `/ki-coordination summary since <time>` gives it from any point the owner names; `no art` leaves the art out of its footer. It is the one summary form, replacing the recap and the full summary: the report heading, its form line reading `<glyph state> · Summary at <local time> · since <local time>`, the window's start, then `## Summary since <time>` with a bold headline and what changed, `## Status` with the two-column focus table, its lines opening with their holder's glyph, `## Queries` with every open query in full, then the footer, the Knowledge Islands art and the glyph banner with its thread line. It never moves the mark. `/ki-coordination status` gives the Status, the same without `## Summary since <time>`, its form line reading `<glyph state> · Status at <local time> · last mark <local time>`; it never moves the mark either. A coordinator gives it unasked after every `mark`, when all dispatched work has finished, at every send, and in the first reply after 30 minutes or more without an owner message while queries are with the owner, answering the message first. `recap` and `full summary` are read as `summary` and a summary since the work began for the tolerance window.
 
 ## Notes
 
