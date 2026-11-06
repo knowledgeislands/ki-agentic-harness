@@ -23,8 +23,9 @@ listening_status: on
 
 ## Next steps
 
-1. Take Kris's answers; launch the worktree disposal, Stage B (absorb ki.prj.ways-of-working) and Stage C (catalogue skills) as authorised.
-2. Take the routed guild lines from ki.sop.main as they land.
+1. When `report-forms` lands: REFRESH the live packages, then launch the `standard-split` design run (STANDARD-SPLIT) and bring Kris its plan of core and purpose files before implementing.
+2. Take Kris's answers; launch the worktree disposal, Stage B (absorb ki.prj.ways-of-working) and Stage C (catalogue skills) as authorised.
+3. Take the routed guild lines from ki.sop.main as they land.
 
 ## Held
 
