@@ -157,3 +157,7 @@ Operational: both Macs are repointed. personal.reg.household-terra (MSG-c5d1e830
 ## 2026-11-06 23:14 GMT - REFRESH-ALL
 
 Owner, relayed by personal.reg.household-terra (MSG-c5d1e830): Kris asked that every agent in Agora re-bootstrap to pick up tonight's changes: "it makes sense to ask anyone who is in an Agora communication process to effectively re-bootstrap themselves". It is taken as one IMPORTANT REFRESH line to every live package once sol is repointed. Sol is repointed (MSG-9beff451), so the `refresh-all` run sends it as MSG-283f72a5.
+
+## 2026-11-06 23:23 GMT - REPORT-FORMS-TIDY
+
+Owner, relayed by personal.reg.household-terra (MSG-7bd095bd): "Kris asks the guildmaster to review the report forms in ki-coordination `standards-coordination.md` and tidy if needed". It covers four things. (1) The two "since" times are read as one, so say plainly which time is which, and consider "Summary at <now> · since <mark>". (2) Give each form one complete template in one place: Summary, Hold report, Re-bootstrap, Finished and the plain state reply. (3) Kris asked household-terra to "hold on snooze waiting for a message", so settle whether an owner-asked hold may keep the inbox watch and release on a message. (4) Consider a `mark, status only` form. The `report-forms` run takes all four. refresh-all reached 15 live packages in 6 repositories; the 32 On hold or Finished packages pick up the changes when next opened.
