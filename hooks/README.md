@@ -14,15 +14,11 @@ A hook reaches a runtime in three parts, each with one owner, as Kris set on 6 N
 
 Part 2 is the expected behaviour, not shipped behaviour. Its `ki` implementation is tracked with tools-ki through `ki.sop.main`'s tooling audit. Today `ki doctor` checks only that each harness is installed, and `ki repair` repairs only skill links and legacy configuration metadata; neither inspects or registers runtime hooks.
 
-The five forwarding stubs at the old flat paths, `hooks/<hook>.sh`, are a transition aid for bindings written before the per-hook folders, not a fourth way to bind; each retires once no Claude Code or Codex binding on either Mac names it, as [Payload](#payload) sets out.
-
 ## Payload
 
 `ki` installs every hook below with the harness, under `<installed harness>/hooks/`, which on a Mac is `~/.local/share/ki/harnesses/knowledgeislands/ki-agentic-harness/hooks/`. A user-environment manager registers each from that installed path, never from a source checkout; `payload.test.ts` keeps this table and the shipped executables in step.
 
 Each hook has its own folder, `hooks/<hook>/`, holding its script `<hook>.sh` and its test `<hook>.test.ts`. The table gives each script's path under `hooks/`. `git-hooks/` holds no runtime hook: it carries the tests of the repository's own `.githooks/` `commit-msg` and `pre-commit` and of the stub a linked worktree runs in their place.
-
-Each hook's earlier flat path, `hooks/<hook>.sh`, remains as a forwarding stub that hands its arguments, input, output and exit code unchanged to `hooks/<hook>/<hook>.sh`, so a binding written before the move keeps working. A stub retires once no Claude Code or Codex binding on either Mac names it; `payload.test.ts` holds each stub to that one forwarding line.
 
 <!-- hooks:payload:start -->
 

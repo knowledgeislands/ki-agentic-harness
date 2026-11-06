@@ -24,7 +24,7 @@ The standard holds coordinator responsiveness with the counted turn budget and s
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
 
-A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-work-package`. The declaration enables the harness `hooks/coordinator-reminder.sh` conditional pointer, the `hooks/coordinator-footer.sh` footer check on an owner's mark or state word, and the ki-coordinator output-style binding; it proves checkout capability, never session selection or role. Removing it disables those surfaces. Full session-sensitive hook detection remains deferred, and the coordinator performs its own method revision check.
+A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-work-package`. The declaration enables the harness `hooks/coordinator-reminder/coordinator-reminder.sh` conditional pointer, the `hooks/coordinator-footer/coordinator-footer.sh` footer check on an owner's mark or state word, and the ki-coordinator output-style binding; it proves checkout capability, never session selection or role. Removing it disables those surfaces. Full session-sensitive hook detection remains deferred, and the coordinator performs its own method revision check.
 
 It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work package or its files, which `ki-work-package` owns; and it does not summarise a single ordinary session, which `ki-recap` owns and which keeps the ordinary session recap only.
 
@@ -80,7 +80,7 @@ While coordinating, `/ki-coordination receive` records the owner's receive under
 
 When invoked from an installed copy, stop and redirect to the harness.
 
-Read [the sources](references/sources.md), compare coordinating practice against the standard, the Work Process note and the rubric, then update the source review in the same commit as any normative change. A change here also regenerates the hook line in `hooks/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the report heading and the live glyph banners in the standard and the output style byte-identical, and asserts the glyph form line, the banner heading, counts line and holder list, the closing thread lines and the absence of send or resume lines and a reply block.
+Read [the sources](references/sources.md), compare coordinating practice against the standard, the Work Process note and the rubric, then update the source review in the same commit as any normative change. A change here also regenerates the hook line in `hooks/coordinator-reminder/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the report heading and the live glyph banners in the standard and the output style byte-identical, and asserts the glyph form line, the banner heading, counts line and holder list, the closing thread lines and the absence of send or resume lines and a reply block.
 
 ### Mode RESUME
 
