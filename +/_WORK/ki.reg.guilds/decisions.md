@@ -91,3 +91,7 @@ Operational: both households ACKed FOOTER-HOOK-OUT. household-terra (MSG-a6c649d
 ## 2026-11-06 21:50 GMT - Agora health check answered
 
 Operational: ki.prj.agora's HEALTH (MSG-b2a0436f) asked the listener to re-arm on Agora's call. The watcher now also wakes on `~/.local/state/ki/agora/call/ki.reg.guilds` and the old `doorbell/ki.reg.guilds` path, for 120 minutes per arm; ACKed in ki.prj.agora's Inbound at ki-principal `55077336`.
+
+## 2026-11-06 22:10 GMT - NAME-GLYPH-HOME received
+
+Owner, relayed by personal.reg.household-terra (MSG-1fa32fa1), Kris's Q2 a at about 22:08 GMT: "everything to do with name glyphs comes to you". Kris decided: (1) every role in the role catalogue carries its glyph, as the one home for what each glyph means; (2) the thread line becomes `<role glyphs> 🔑 <work-id>`, with `🧵 <work-id>` kept for a session with no role yet, the same form in session names, rename lines and message senders; (3) the footer hook accepts both forms and engages for any session holding a work package, not only after a `🧵` line. Disposition: folded into the role-catalogue work (Stage C) and its ratification round, as asked; held in `state.md` until Stage C launches. household-terra gets each Personal seat's glyphs once the catalogue drafts them. ACKed.
