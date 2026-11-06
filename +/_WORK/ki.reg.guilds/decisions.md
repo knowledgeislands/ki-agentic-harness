@@ -51,3 +51,7 @@ Operational: LINT-BEFORE-PUSH and CHECK-CONSUMERS landed in ki-agentic-harness `
 ## 2026-11-06 20:11 GMT - REFRESH-REQUEST ACKed
 
 Operational: ki.sop.main ACKed MSG-63625521, taking the `056996c0` commit-rules REFRESH broadcast. Queue empty.
+
+## 2026-11-06 20:28 GMT - FOOTER-COUNTS
+
+Owner, relayed by personal.reg.household-terra in IMPORTANT MSG-1fe66251: Kris, about 20:40 GMT, "I absolutely love that footer. Can you make that the case, please, and get that to be rolled out? ... make sure it happens." The Summary footer gains two succinct count lines, after the hold line: `🗺️ roadmap · <n> record(s) · <n> open · <n> done awaiting prune · <n> ideas` and `📦 package · inbox <n> · outbox <n> · held <n> · awaiting ACK <n>`, the first omitted where the repository has no roadmap. A run sets it in the ki-coordination standard and its generated surfaces; ki.sop.main is then asked to broadcast the REFRESH, and household-terra told. ACKed.
