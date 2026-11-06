@@ -27,5 +27,5 @@ listening_status: on
 ## Held
 
 - HOLD-TIDY: waits on TRANSFER-SOP-QUERIES, with HOLD-STATES.
-- SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis`, (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.
+- SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis` (with the D12-LEARNS learning loop), (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.
 - KNW-005 (where ideas live, work-in-progress reset): with the parked flow questions.

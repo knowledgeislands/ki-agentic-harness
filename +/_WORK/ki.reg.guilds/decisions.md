@@ -63,3 +63,7 @@ Operational: answered household-terra's MSG-7f329b54 for Kris: the long form is 
 ## 2026-11-06 20:33 GMT - LEVEL-KI-PRINCIPAL
 
 Operational: personal.reg.household-sol's MSG-81d26b3f reported sol's ki-principal checkout diverged under the guild's Agora HEALTH ACK; by receipt it was level with origin again and the unfinished merge gone. ACKed.
+
+## 2026-11-06 20:35 GMT - FOOTER-HOOK; D12-LEARNS
+
+Owner, relayed by household-terra in IMPORTANT MSG-e7b839ee: Kris, about 20:40 GMT, the footer must be enforced by a harness hook that "fires whatever the case. And most optimally"; hooks, skills, agent definitions and output styles are harness capability shipped in the payload `ki` installs, the dotfiles only registering them. A run builds a `Stop` hook with tests and brings `coordinator-reminder.sh` into the payload, chained after footer-counts. D12-LEARNS (MSG-e2e07264, Kris about 20:22 GMT: D12 "learns from how I reorder things, or I can tell you expressly how certain things need to move, so you can put better rules in place") held with SKILLS-OVER-GRAPH (1). Both ACKed.
