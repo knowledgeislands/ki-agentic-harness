@@ -103,3 +103,7 @@ Owner, Kris: "I'm wondering if you could ask out across the rest of the repos if
 ## 2026-11-06 22:15 GMT - HOOKS-FOLDERS
 
 Owner, Kris: "Can you tidy up the hooks folders so each hook is in its own folder?" Taken as: in ki-agentic-harness `hooks/`, each hook gets its own folder holding its script and tests, with the README as the index. Under CHECK-CONSUMERS, every consumer is listed first: the `ki` payload install and generator, skill standards, dotfiles bindings on both Macs, and Codex trusted hashes. Old paths stay as thin forwarding stubs until every binding has been repointed. Done in a linked worktree by run `hooks-folders`.
+
+## 2026-11-06 22:20 GMT - SKILL-HARVEST sent; first replies
+
+Operational: run `skill-harvest` put MSG-c6fa7c81 in 41 live packages across 13 repositories on sol. ki.prj.agora (ten items) and personal.reg.household-sol (five items) replied, gathered in `skills/harvest.md` by proposed owner skill; held under HARNESS-SCOPE.
