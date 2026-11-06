@@ -17,6 +17,7 @@ listening_status: on
 - Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
 - Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
 - Landed today: LINT-BEFORE-PUSH and CHECK-CONSUMERS (`056996c0`), FOOTER-COUNTS (`27833e5b`), FOOTER-HOOK (`8ec15e63`).
+- Both Macs repointed (23:14 GMT): run `hooks-stubs` retires the five forwarding stubs; run `refresh-all` sends REFRESH MSG-283f72a5 to every live package.
 - Listening.
 
 ## Next steps
@@ -30,5 +31,4 @@ listening_status: on
 - SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis` (with the D12-LEARNS learning loop), (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.
 - APP-SKILLS (ki.prj.agora, Kris about 20:50 GMT): UI testing end to end (with the `ki-e2e` draft), macOS menu-bar apps, Electron desktop apps, mobile apps: wait on HARNESS-SCOPE.
 - NAME-GLYPH-HOME (household-terra for Kris, Q2 a, about 22:08 GMT): role glyphs in the catalogue, thread line `<role glyphs> 🔑 <work-id>`, footer hook accepting both forms: folded into Stage C and its ratification round; then household-terra gets each Personal seat's glyphs.
-- HOOKS-STUBS: the five forwarding stubs in harness `hooks/` retire once household-terra reports terra and sol repointed. That repoint is under review with Kris: all five hooks from the installed path, the 16 July copy retired, and Codex hashes refreshed.
 - KNW-005 (where ideas live, work-in-progress reset): with the parked flow questions.
