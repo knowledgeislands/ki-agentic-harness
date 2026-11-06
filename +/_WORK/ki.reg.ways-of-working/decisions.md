@@ -11,3 +11,7 @@ Owner: Kris, same message: "one of the things that's first is to tidy up all of 
 ## 2026-11-06 17:01 GMT - ACKs received
 
 Operational: ki.prj.agora ACKed MSG-ec65a132 (AGORA-WATCH), forwarding it to personal.reg.household-sol as AGORA-WATCH-WOW because that package keeps sol's `~/.config/agora/config.toml`; Agora's call will land at `~/.local/state/ki/agora/call/ki.reg.ways-of-working`. MSG-99cc0cec (GUILD-OPEN) was ACKed from ki.prj.agora on ki.sop.main's behalf: guild-management lines will route here. Both lines removed.
+
+## 2026-11-06 17:03 GMT - worktree-tidy received
+
+Operational: the worktree-tidy run on sol removed five clean, fully merged worktrees and their branches (ki-agentic-harness `roadmap-assignee`, `finished-tidy`, `quiet-listen`; tools-ki `wow-rel-0141`, `roadmap-assignee`) and kept thirteen. Its five queries are copied into discussions.md: RIG-SPENT, LANDED-COPIES, SUPERSEDED-FIXES, DRAFT-SKILLS and OLD-DIAGRAMS. The four destructive or medium-confidence ones go to one blind review before Kris sees them. They overlap ki.sop.main's packed BRANCH-SWEEP and UNMERGED-STRAYS.

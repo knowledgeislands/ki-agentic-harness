@@ -15,7 +15,7 @@ listening_status: on
 ## Now
 
 - Opened at 16:54 GMT on 6 November 2026 as a standing package; listening.
-- Worktree stock-take and tidy, and the message-backlog stock-take, going to background runs.
+- Worktree tidy received: 5 removed, 13 kept under five queries, four in blind review. Message-backlog stock-take running.
 - Waiting on personal.reg.household-terra for the role catalogue design.
 
 ## Next steps
