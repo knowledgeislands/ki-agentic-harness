@@ -119,3 +119,11 @@ Operational: harness `1d10610e` gives each of the five hooks its own folder, `ho
 ## 2026-11-06 22:48 GMT - HOOKS-REPOINT taken
 
 Operational: both households ACKed. household-terra leads the single dotfiles change and folds it into the repoint Kris is reviewing: all five hooks from the installed path, the 16 July copy retired, and Codex hashes refreshed. household-sol applies it on sol. household-terra reports when both Macs are repointed. The stubs are held until then (HOOKS-STUBS).
+
+## 2026-11-06 22:34 GMT - HOOKS-APPROACH
+
+Owner, relayed by personal.reg.household-terra (MSG-7c3e91a2), Kris: "Yes, I think that's the 3 aspects of how it works. And I think that needs to be explained as to how it's expected to work". The three parts: (1) the harness ships each hook and lists it in the `hooks/README.md` payload table; (2) `ki` installs the payload, `ki doctor` reports each hook missing, unregistered or lacking its current Codex hash, and `ki repair` registers the missing ones, or reports "managed by chezmoi, run chezmoi apply"; (3) the user-environment manager registers each hook from the installed path, never a checkout. Disposition: run `hooks-approach` writes the explanation into the harness (the hooks README, plus the ki-repo-harness and ki-bootstrap standards where they speak of hooks). The `ki` side goes to tools-ki through ki.sop.main's audit, as the message says. ACKed.
+
+## 2026-11-06 22:34 GMT - TOOLS-STEWARD
+
+Owner, relayed by personal.reg.household-terra (MSG-e4a6c0d9, copied to ki.sop.main as MSG-5f19b3e7), Kris: "you should go to the guild master first to make a decision", and "I'm happy to create a new agent that looks after all the tools and MCPs ... I probably think that's a good idea". This makes four in the KI island: the guildmaster, Agora's keeper, the governor (ki.sop.main), and a "manager of makers responsible for tools and MCPs". The guild decides the new role and its seat in the catalogue, then tells ki.sop.main, which coordinates the tooling audit (MSG-cd4a3d6d with ki.prj.tools-burndown) and raises creating the agent with Kris. Disposition: read-only run `tools-steward-role` drafts the role and seat against the role catalogue brief, then the guild decides and tells ki.sop.main. ACKed.
