@@ -47,3 +47,7 @@ Operational: ki.sop.main ACKed GUILD-OPEN, GUILD-ROUTE and RENAME-GUILDS (`ki.re
 ## 2026-11-06 20:08 GMT - commit rules landed; dotfiles levelled
 
 Operational: LINT-BEFORE-PUSH and CHECK-CONSUMERS landed in ki-agentic-harness `056996c0`: a "Checks before committing" subsection in the `ki-git` standard, pointed to from `ki-coordination` and `ki-delegation`, and a "Retiring shared things" subsection in the `ki-delegation` background-run standard; tests 1556 pass, type check clean, focused audits pass bar a pre-existing COORD-7 in a since-pruned report. `method_read` moves to 056996c0. personal.reg.household-sol ACKed MSG-a83456ea: sol's dotfiles levelled, `5ff4b01` dropped. ki.sop.main asked to broadcast the REFRESH, being the method's broadcaster until the absorption.
+
+## 2026-11-06 20:11 GMT - REFRESH-REQUEST ACKed
+
+Operational: ki.sop.main ACKed MSG-63625521, taking the `056996c0` commit-rules REFRESH broadcast. Queue empty.
