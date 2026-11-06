@@ -107,3 +107,7 @@ Owner, Kris: "Can you tidy up the hooks folders so each hook is in its own folde
 ## 2026-11-06 22:20 GMT - SKILL-HARVEST sent; first replies
 
 Operational: run `skill-harvest` put MSG-c6fa7c81 in 41 live packages across 13 repositories on sol. ki.prj.agora (ten items) and personal.reg.household-sol (five items) replied, gathered in `skills/harvest.md` by proposed owner skill; held under HARNESS-SCOPE.
+
+## 2026-11-06 22:24 GMT - SKILL-HARVEST replies 3 to 7
+
+Operational: ki.sop.main (nine items), hnr.prj.5g-emerge-p2ms3 (five), personal.reg.household-terra (two), personal.reg.inbox-terra (five) and hnr.sop.main (five) replied, gathered into `skills/harvest.md`. This package adopts two items at once in its own practice: queue lines are removed by whole-line match, never by rewriting the section (PRUNE-BY-LINE), and the watcher counts only Inbound lines.
