@@ -17,7 +17,8 @@ listening_status: on
 - Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
 - Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
 - Landed today: LINT-BEFORE-PUSH and CHECK-CONSUMERS (`056996c0`), FOOTER-COUNTS (`27833e5b`), FOOTER-HOOK (`8ec15e63`).
-- Both Macs repointed (23:14 GMT): run `hooks-stubs` retires the five forwarding stubs; run `refresh-all` sends REFRESH MSG-283f72a5 to every live package.
+- Both Macs repointed: harness `d8ade2e0` retired the five forwarding stubs (1,598 tests pass); run `refresh-all` is sending REFRESH MSG-283f72a5 to every live package.
+- STAGE-C-SPLIT with Kris (23:20 GMT): write the approved role catalogue into the skills now; the `role:` field packages now carry fails RECORD-2 until then.
 - Listening.
 
 ## Next steps

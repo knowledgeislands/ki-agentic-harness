@@ -2,6 +2,18 @@
 
 ## Open
 
+### STAGE-C-SPLIT - Write in the parts of the role catalogue you've already approved now
+
+**Context:** You've approved the role list and that every package records its role (ROLES-TIDY, 6 November), but none of it is in the shared skills. Packages are already adding a `role:` field the package format doesn't allow yet, so the `ki-work-package` audit flags them (RECORD-2, seen on this package in the hooks-stubs run). The seven open role questions only affect parts of the catalogue: seats, the assistant's name, Paperclip names and the library.
+
+**Query:** Should a run write the approved parts into the skills now, and leave the parts the open questions affect until you answer them?
+
+**Options:**
+
+a) (recommended, confidence high - it only carries out what you've already approved, and it fixes the audit problem the ROLE-FIX messages caused) Yes. Add the catalogue's roles, their glyphs, the `role` field and the guildmaster and quartermaster entries to `ki-work-package` and `ki-coordination` now, and add the rest once you've answered the seven questions.
+
+b) No, wait and do it all in one go after the seven questions are answered.
+
 ### RIG-SPENT - Discard the four tools-rig worktrees from the 048 and 056 runs
 
 focus: _emerging
