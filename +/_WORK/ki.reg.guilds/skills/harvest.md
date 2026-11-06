@@ -54,6 +54,11 @@ Replies to MSG-c6fa7c81, sent on 6 November 2026 at about 22:15 GMT to 41 live p
 - D12, the Dodecakrisis sorting engine, and mailbox pruning by D12 rules: a new skill, `ki-dodecakrisis`. Lives in the inbox `d12/` folder and in ki-principal `Pillars/knowledge-tending/d12-dodecakrisis.md`. From personal.reg.inbox-terra.
 - The knowledge-capture funnel (deposit, capture, curate, dispatch) and staging-KB zones: a new knowledge-graph skill. Lives in the inbox's curated knowledge and capture design. From personal.reg.inbox-terra.
 - Evidential nodes: legal or signed material is kept whole and verbatim, never split. A future legal evidential skill, with the standard in legal-principal. From personal.reg.inbox-terra.
+- Archify showcase layout: route through one hub node, fit within 1440×900, look at it in light and dark, and set `ARCHIFY_UPDATE_CHECK_DISABLED=1` for unattended runs. Owner: ki-diagrams. From hnr.prj.5g-emerge-phase3.
+- Cloudflare Access public paths each get their own, more specific self-hosted application, and new-Worker dashboard defaults must be replaced by the house pair. Owner: ki-repo-website-cloudflare. From hnr.prj.5g-emerge-phase3.
+- Publication-boundary build gate: a private site's smoke suite fails on any email address or finance marker in its output. Owner: ki-repo-website-content. From hnr.prj.5g-emerge-phase3.
+- Agent access for a static site: `llms.txt`, a versioned data index and read-only WebMCP tools. No skill covers it. Owner: ki-repo-website-content. From hnr.prj.5g-emerge-phase3.
+- Incremental document-library sync: a manifest-first check, changed files only, one previous copy kept, allowlisted columns only. Owner: ki-acquire. From hnr.prj.5g-emerge-phase3.
 
 ## Wrongly held
 
