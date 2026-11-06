@@ -115,3 +115,7 @@ Operational: ki.sop.main (nine items), hnr.prj.5g-emerge-p2ms3 (five), personal.
 ## 2026-11-06 22:27 GMT - HOOKS-FOLDERS landed
 
 Operational: harness `1d10610e` gives each of the five hooks its own folder, `hooks/<hook>/<hook>.sh`, with its test beside it. The repository's git-hook tests are in `hooks/git-hooks/`, and the README stays the index. Five three-line forwarding stubs keep the old paths working, tested for pass-through. tools-ki needed no change. Checks: 1,607 tests pass, the type check is clean, and generated surfaces are in sync. The only focused-audit failure is the pre-existing CAP-2 catalogue fleet finding. The repointing list went to both households as HOOKS-REPOINT (MSG-18a18674, MSG-8312fc07). The stubs retire once both Macs are repointed. SKILL-HARVEST reply 8 is from hnr.prj.5g-emerge-phase3 (five items).
+
+## 2026-11-06 22:48 GMT - HOOKS-REPOINT taken
+
+Operational: both households ACKed. household-terra leads the single dotfiles change and folds it into the repoint Kris is reviewing: all five hooks from the installed path, the 16 July copy retired, and Codex hashes refreshed. household-sol applies it on sol. household-terra reports when both Macs are repointed. The stubs are held until then (HOOKS-STUBS).
