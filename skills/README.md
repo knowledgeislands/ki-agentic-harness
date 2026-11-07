@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 66 skills: 54 governance skills and 12 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 67 skills: 55 governance skills and 12 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -60,6 +60,16 @@ Govern D12, the Dodecakrisis: the ten sorting rules, mailbox queues and tags, gu
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | sort <mailbox> | sweep <mailbox> | learn <mailbox> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-exchange-dynamics`
+
+Analyse a conversation, chat, thread, meeting or negotiation for its dynamics: chronology, sentiment kept apart from tension, phases and participants, as one evidence-linked analysis validated against a schema, then render it as an infographic or report. Use to analyse an exchange or audit an analysis; `ki-acquire` owns capture and `ki-diagrams` system diagrams.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | analyse <exchange> | render <analysis> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
