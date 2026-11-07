@@ -2,6 +2,20 @@
 
 ## Open
 
+### BROADCAST-FORM - How a message sent to many packages should be written in Outbound
+
+**Context:** The checker requires every Outbound line to name one recipient package id after `to` (`- <date> · <id> · to <package id> · …`). It has no form for a broadcast to many packages. Four guilds Outbound lines were broadcasts ("to 15 live packages", "to 41 live packages on sol"). To clear the failure without changing content, I wrote them as `to live-packages · 15 live packages · …`. `live-packages` is a placeholder that matches the id pattern but is not a real package.
+
+**Query:** Should the checker and the work-package standard get a proper broadcast recipient form, or should broadcasts be logged as one Outbound line per receiving package?
+
+**Options:**
+
+a) (recommended, confidence medium - a broadcast is common and one line per package would bloat Outbound, but the shape of the form is a design choice) Add a broadcast form to the standard and the checker, such as `to <n> live packages`, and replace the `live-packages` placeholder lines with it.
+
+b) Log each broadcast as one Outbound line per receiving package, so each ACK clears its own line, and drop the placeholder.
+
+c) Keep the `live-packages` placeholder as the convention.
+
 ### STUB-KEEP - Keep the two retired skills as stubs until no repository declares them
 
 **Context:** The brief asked for both Paperclip skills to be removed. But the `ki` tool stops with an error in any repository that declares a skill no harness provides, and 55 repositories still declare one. Deleting both skills outright would stop every audit and setup command in all 55 until each one edits its `.ki.toml`. I kept them as empty stubs that only warn, and put the transition rules in one deletable migration file.
