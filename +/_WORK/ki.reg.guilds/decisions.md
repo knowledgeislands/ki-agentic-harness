@@ -239,3 +239,9 @@ Kris asks whether every live package has been told to adopt tonight's forms (REP
 ## 2026-11-07 01:10 GMT · refresh-hook received
 
 REFRESH MSG-d86fa41b reached all 15 live packages in 6 repositories; a fresh scan found no other live package. 5 ACKs in so far. WP-SNOOZE-LISTEN landed in ki-principal `e7c6490d`.
+
+## 2026-11-07 01:24 GMT · WORKTREES-GO
+
+Kris: "I'm still fundamentally confused by the fact that we've got so many worktrees. I'm at the point where I might just start deleting them if I don't get it done quickly." Then, offered the recommendations as one go-ahead: "go on the worktrees".
+
+Read back as taken: RIG-SPENT a) force-remove the four tools-rig worktrees and force-delete their branches; LANDED-COPIES a) remove both and force-delete `launcher-paths` and `run-close`; SUPERSEDED-FIXES a) land the KI-TOOL-KI-CLI-145 link correction if still valid, save every dropped commit and edit as a patch, list them, then force-remove the four and force-delete `wow-close-done-2` and `wow-day-impl-fix-5`; OLD-DIAGRAMS a) remove `rename-paperclip` and delete its branch with `-d`; DRAFT-SKILLS a) keep `ki-e2e` and `orca-adapter`. The same run takes a read-only worktree inventory of the other Macs where reachable. Run `worktree-disposal`.
