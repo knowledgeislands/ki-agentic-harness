@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 64 skills: 53 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 65 skills: 53 governance skills and 12 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -74,6 +74,16 @@ Capture a submitted link or scan bounded public sources, then triage current sig
 - **Runtime:** Portable
 
 ### Agentic Systems
+
+#### `ki-delegation-orca`
+
+Start, wait on, steer, stop and close Orca supervised workers as a KI delegation launcher, on attended Macs for a work package that opts in. Use when a coordinator dispatches runs through `orca orchestration`; `ki-delegation` owns the portable run contract, `ki-coordination` the coordinating work, and Orca's own `orchestration` skill its command mechanics.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `start <brief> | wait | status | steer <dispatch> | stop <dispatch> | close <dispatch> | recover | help`
+- **Dependencies:** `ki-delegation`, `ki-coordination`
+- **Runtime:** Portable
 
 #### `ki-subagents`
 

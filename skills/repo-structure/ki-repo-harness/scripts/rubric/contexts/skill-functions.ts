@@ -112,7 +112,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     purpose: 'define agent roles and coordinate agents',
     groups: [
       {
-        skills: ['ki-subagents', 'ki-subagents-claude', 'ki-subagents-chatgpt']
+        skills: ['ki-subagents', 'ki-subagents-claude', 'ki-subagents-chatgpt', 'ki-delegation-orca']
       }
     ]
   },

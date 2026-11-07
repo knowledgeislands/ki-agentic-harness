@@ -109,9 +109,9 @@ Every writer is a named entry point with its permitted kinds, and every other pa
 
 | Entry point | Writes | Never |
 | --- | --- | --- |
-| Own steward† | Package files, focus folders, findings, briefs, a `messages.md` line written word for word from the owner's feedback, and tidy deletions† | Other work's folder, except a message |
+| Own steward† | Package files, focus folders, findings, briefs, a `messages.md` line written word for word from the owner's feedback, an Orca worker's report copied in at receive under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet)'s named exception, and tidy deletions† | Other work's folder, except a message |
 | The launcher, `ki agent` | `<focus-id>/<run>.report.md` beside the run's brief, copied in from the run's state folder, or `reports/<name>.report.md` where the brief sits in no focus folder; until the launcher's focus-folder change ships it homes every report in `reports/`, and the steward moves it beside its brief at receive; a state-folder `decisions.md` adopted where the folder has none; entries `decide` and `reconcile` append to `decisions.md` on the steward's instruction | Deletes anything, or replaces a report Git does not already hold |
-| A background run | Its work product in its owning home, and a design note in the focus folder, or `design/`, where its brief names one | Its report straight into the folder: it writes the report to its state folder and the launcher homes it |
+| A background run | Its work product in its owning home, and a design note in the focus folder, or `design/`, where its brief names one | Its report straight into the folder: it writes the report to its state folder and the launcher, or for an Orca worker its coordinator, homes it |
 | `ki-work-design` and design runs | Design notes and artefacts in the focus folder their brief names, or `design/` in a package without focus areas | Other kinds |
 | Other work and State of play | One line in `messages.md`, added or replacing its own line not yet acted on, committed alone | Any other edit |
 | The owner, by hand | One `messages.md` line carrying feedback on a document, committed alone | Any other edit |
@@ -137,7 +137,7 @@ Opening or closing a dedicated Project thread requires an acknowledged handover.
 
 An assigned State of play is the package's own steward for every entry-point purpose, including state, queries, decisions, briefs and tidying. Work assigned elsewhere receives only messages. Creation is limited to a registered Project within the territory's active-package cap, in the state its actual move supports; an absent package never implies `with-worker`. The first-message On hold exception remains for dormant Projects.
 
-A run brief names its reporting package separately from the product repository. The launcher homes the report in that package whoever launched the run; the package's steward receives the result, queries and decisions. A classification change reconciles running work and report destinations before rerouting anything.
+A run brief names its reporting package separately from the product repository. The launcher homes the report in that package whoever launched the run, or for an Orca worker the coordinator copies it there at receive; the package's steward receives the result, queries and decisions. A classification change reconciles running work and report destinations before rerouting anything.
 
 ### Tidying the work folder
 

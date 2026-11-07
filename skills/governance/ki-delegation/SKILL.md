@@ -67,11 +67,11 @@ Read [the sources](references/sources.md), compare delegation practice and its s
 
 ### Mode HELP
 
-Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
 
 ## Notes
 
 - A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
-- An agent writes its report to the run's state folder only, and the launcher homes it in the `reports/` of the work folder, `+/_WORK/<id>/reports/`, of the reporting work named in the brief, whoever launched it, beside the run's brief and the work's decisions log; `ki-work-package` owns that folder's closed list, entry points and tidy rules, and the state directory holds machine-local runtime files only. A run report closes with the glyph banner and carries no reply block. Neither folder is a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
+- An agent writes its report to the run's state folder only, and the launcher homes it in the `reports/` of the work folder, `+/_WORK/<id>/reports/`, of the reporting work named in the brief, whoever launched it, or, for an Orca worker, the coordinator copies it there at receive, the one named exception, beside the run's brief and the work's decisions log; `ki-work-package` owns that folder's closed list, entry points and tidy rules, and the state directory holds machine-local runtime files only. A run report closes with the glyph banner and carries no reply block. Neither folder is a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
 - Coordinating work's Summary, recap since the mark and full summary are `ki-coordination`'s forms; each is an owner report in `ki-coordination`'s shape, and `ki-recap` stays the single-session summary.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.
