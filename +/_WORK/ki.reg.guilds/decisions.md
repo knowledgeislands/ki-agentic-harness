@@ -447,3 +447,7 @@ Kris: "not sure, come back later". Parked with its recommended option; the first
 ## 2026-11-07 04:48 GMT · ONE-LAUNCHER (interactive pass, query 15)
 
 Kris: "Leave it open (recommended, high confidence)". No one-launcher-per-host rule; each Orca opt-in decision says what it covers, and ONE-LAUNCHER-UNIT guards against duplicate starts. Closed.
+
+## 2026-11-07 04:50 GMT · RUN-RECOVERY and RUN-HANDOVER (interactive pass, queries 16 and 17)
+
+Kris: "Adopt it now (recommended, high confidence)" and "Test it next trial (recommended, high confidence)". RUN-RECOVERY a): a new session makes a new Run, finds the old one by its objective, settles or names each worker still owing a decision, and logs the old Run retired only once every worker under it is settled or named unreachable. RUN-HANDOVER b): a read-only `run-use` test rides in the next Orca trial with WORKER-SURVIVAL and DELIVERY-REPLAY, keeping reconnecting, handing over control and listing workers apart, never two coordinators at once. Both join the Orca adapter run.

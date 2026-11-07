@@ -2,34 +2,6 @@
 
 ## Open
 
-### RUN-RECOVERY - should this recovery procedure become the adapter's rule
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
-
-**Context:** an Orca Run belongs to the chat session that made it. Proposal: a new session makes a new Run, finds the old one by its objective (starting with the work id), settles or names any worker still owing a decision, and logs the old Run as retired; Orca's takeover works only from a live coordinator terminal. The review prefers b) at medium: one workaround is not a general procedure, and a new Run can start work twice, strand a worker's question or lose the right to settle old workers.
-
-**Query:** should this recovery procedure become the adapter's rule?
-
-**Options:**
-
-a) (recommended, confidence high - review disagrees; it is what was done on 1 November and needs no unproved feature) adopt it, logging the old Run retired only once every worker under it is settled or named unreachable with what it owes
-
-b) wait for the RUN-HANDOVER test first (the review's pick)
-
-### RUN-HANDOVER - is the test worth running
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
-
-**Context:** whether `run-use` can move a Run between chat sessions is untested beyond one failure; RUN-RECOVERY works round it with a new Run. The review prefers b) at high: the answer decides whether recovery must always replace Runs and whether old workers stay reachable, so a small read-only test is worth running, keeping reconnecting, handing over control and listing workers apart, testing the old session leaving apart from a live takeover, never two coordinators at once. One yes-or-no choice, not split.
-
-**Query:** is the test worth running?
-
-**Options:**
-
-a) (recommended, confidence medium - review disagrees; RUN-RECOVERY already works, so this only adds convenience) leave it untested unless recovery proves costly
-
-b) test it in the next trial, read-only, along the review's lines (the review's pick)
-
 ### TRIAL-PUBLISH - how should Orca workers publish their notes
 
 from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
