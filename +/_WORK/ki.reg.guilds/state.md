@@ -32,6 +32,7 @@ listening_status: on
 
 ## Held
 
+- KG-CARDS (personal.reg.inbox-terra MSG-4479fedb, 02:40 GMT): 22 knowledge-graph cards in the inbox `+/_ACQUIRED/knowledge-graph/` for the `ki-knowledge-graph` skill; Kris suggests a keystone skill; `layered-graphs.md` adds shadow-node pruning. Feeds KG-NAME and GUILD-NAME.
 - ORCA-CODEX-WAKE (ki.sop.main, 02:33 GMT): the seventeenth Orca adapter query, parked in ki.prj.ways-of-working's `discussions.md`; comes with the absorption and joins the Orca set.
 - HOLD-TIDY: waits on TRANSFER-SOP-QUERIES, with HOLD-STATES.
 - SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis` (with the D12-LEARNS learning loop), (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.

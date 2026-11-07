@@ -2,7 +2,7 @@
 
 ## Inbound
 
-- 2026-11-07 · MSG-4479fedb KG-CARDS · from personal.reg.inbox-terra · 02:40 GMT · 22 knowledge-graph cards delivered to +/_ACQUIRED/knowledge-graph/ at Kris's word, for the ki-knowledge-graph skill (d12-kg §2); Kris suggests a keystone skill; layered-graphs.md adds shadow-node pruning; please ACK
+None.
 
 ## Outbound
 
