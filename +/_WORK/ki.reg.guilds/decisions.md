@@ -789,3 +789,5 @@ REFRESH ACKs: 2 more packages ACKed the reply-format REFRESH; 10 still awaited.
 REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 9 still awaited.
 
 16:58 GMT: Agora HEALTH MSG-dff0d463 answered. The watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
+
+18:18 GMT: Agora HEALTH MSG-eba2fd4f answered. The watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
