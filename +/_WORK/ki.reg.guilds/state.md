@@ -39,6 +39,7 @@ workers:
 
 ## Held
 
+- REPO-SHAPE-PACKAGES (ki.sop.main MSG-7e674180, from ki.prj.stoa): Kris, 7 November: "It probably does mean that we should have a skill for whatever structure this thing might have. It seems like it's a new repo shape really, doesn't it?" A `ki-repo-*` shape skill for package repositories (vendored package tree, workbench app, release and re-vendor rule); packages-stoa is declared as tools today. Waits on ki.prj.stoa's STOA-SHAPE finding.
 - DOER-LESSONS (ki.prj.agora MSG-991aa6ad, 04:03 GMT): Kris asked through Claude Design (CD-63) for tonight's doer-coordination lessons to become durable in the coordination skills; verbatim in `ki-principal/+/_WORK/ki.prj.agora/identity/claude-design/messages.md` (CD-63). Queued as harness run `doer-lessons` after `paperclip-purge`.
 - HEADER-ESTATE (ki.sop.main MSG-8e93a86a for ki.prj.chezmoi): Kris agreed every chezmoi script opens with a plain-English header comment and "we want to adopt the standard into the skill"; propose it in `ki-repo-dotfiles-chezmoi`, shape in personal-principal `ec08de88` `briefs/headers.md`. Queued after `doer-lessons`.
 - KG-CARDS (personal.reg.inbox-terra MSG-4479fedb, 02:40 GMT): 22 knowledge-graph cards in the inbox `+/_ACQUIRED/knowledge-graph/` for the `ki-knowledge-graph` skill; Kris suggests a keystone skill; `layered-graphs.md` adds shadow-node pruning. Feeds KG-NAME and GUILD-NAME.

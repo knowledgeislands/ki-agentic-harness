@@ -395,3 +395,7 @@ Kris: "Take all fifteen (recommended, high confidence)". Each takes its recommen
 ## 2026-11-07 04:19 GMT · HOLD-STATES and METHOD-BATCH (interactive pass, query 5)
 
 Kris: HOLD-STATES "Take all seven (recommended, high confidence)"; METHOD-BATCH "Take all thirteen (recommended, high confidence)". HOLD-STATES a): one run lands the seven hold-state choices with HOLD-TIDY in the harness standards and, under one Enactment record, the Work Process note, then sends a refresh line to every package and household-terra. METHOD-BATCH a): one harness run lands the method text and the ADR-007 update, with an Enactment record for the Work Process values, and captures the AUDIT-ORPHANS work item. Both queued in the harness behind the Paperclip purge; ki.sop.main told.
+
+## 2026-11-07 04:20 GMT · REPO-SHAPE-PACKAGES taken
+
+ki.sop.main MSG-7e674180 routed ki.prj.stoa's ask: the guild owns a repository-shape skill for package repositories. Taken and held until ki.prj.stoa's STOA-SHAPE finding arrives; ACKed with the HOLD-STATES and METHOD-BATCH answers. paperclip-purge finished at about 04:19.
