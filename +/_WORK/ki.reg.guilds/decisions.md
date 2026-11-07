@@ -309,3 +309,7 @@ ki.sop.main ACKed MSG-da83a96f and MSG-8125375d and routed 22 queries here: HOLD
 ## 2026-11-07 02:41 GMT · d12-kg-design received
 
 Designs for `ki-dodecakrisis` and a knowledge-graph method skill (proposed `ki-knowledge-graph`), kept as `skills/d12-kg.design.md`. Ten queries copied: KG-NAME, GUILD-NAME, D12-CANON, D12-KIND, D12-RUNNER, PROTECTED-HOME, PROTECTED-READ, ACQUIRE-SPLIT, STAGING-HOME, DOCKET-HOME. Medium ones join the blind review after `roles-design`.
+
+## 2026-11-07 02:37 GMT · MORE-LANES
+
+Kris: "So can you tell me what your focus is right now so I can just keep an eye on it, because I've got quite a lot of stuff I need to get articulated into skills basically. Maybe you need to go with a few more subagents." Taken as: STAGE-C-ROLES stays the focus and critical path; two lanes that touch none of its files start alongside it: `paperclip-drop` (harness subagents, AGENTS.md, the Paperclip skill) and `wow-absorb-plan` (read-only inventory and plan for absorbing ki.prj.ways-of-working). New skill items from Kris each get a read-only design run, about three or four running at once.
