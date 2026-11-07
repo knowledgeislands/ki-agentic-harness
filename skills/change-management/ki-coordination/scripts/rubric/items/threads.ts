@@ -83,7 +83,7 @@ const COORD_7: RubricItem<CoordinationRubricContext> = {
   title: 'every record identifier in a work report is a link',
   description:
     "In every report in a work folder, in each focus folder its `work.md` declares, `+/_WORK/<id>/<focus-id>/*.report.md`, and in `+/_WORK/<id>/reports/*.report.md`, and for the tolerance windows in every report still at a work folder's top level and every thread report `+/_THREADS/<run>/*.report.md`, each full record identifier in the prose, a work record such as `KI-HARNESS-GOV-187` or a Decision Record such as `ADR-KI-HARNESS-010`, sits inside the text of a Markdown link, and a link that names a record and targets an absolute local path points at a file that exists, inside the audited checkout or wherever the target's folder is present on the machine; a target outside the checkout whose folder is absent, as on a CI runner, is checked for shape only, a Markdown file name opening with the linked identifier; a pruned record is linked as `<FULL-ID> (pruned)` to the GitHub link to the file at its last revision. Fenced blocks, such as a past reply block, inline code spans, which quote literal text such as a commit subject, and Needs tags such as `ACCEPT-181` are not checked; work awaiting review is not checked.",
-  sources: [`${REPORTING}#linking-records`],
+  sources: [`${REPORTING}#linking-records`, `${MIGRATION}#coord-7-and-thread-folders`],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -100,7 +100,7 @@ const COORD_11: RubricItem<CoordinationRubricContext> = {
   title: 'every recommended option in a work report carries its confidence',
   description:
     'In every report under `+/_WORK/<id>/` or `+/_THREADS/<run>/` whose form line leads with a glyph state, or whose block-letter footer was issued on or after 2026-10-18, each line of its Queries section that marks a lettered option recommended, `<letter>) (recommended`, reads `<letter>) (recommended, confidence high|medium|low - <reason>)`, and no `###` query marks more than one option recommended. A report issued earlier, or with neither to date it, and fenced blocks are not checked.',
-  sources: [`${REPORTING}#owner-report`, `${QUERIES}#query-review`],
+  sources: [`${REPORTING}#owner-report`, `${QUERIES}#query-review`, `${MIGRATION}#coord-11-confidence-cutover`],
   mechanical: {
     level: 'WARN',
     remediation: {
