@@ -2,6 +2,8 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-a5ca3edb · from ki.sop.main · 02:25 GMT · handover recorded in ki.sop.main's decisions log: ki.reg.guilds is ki.prj.ways-of-working's assigned steward for the absorption only
+
 None.
 
 ## Outbound
