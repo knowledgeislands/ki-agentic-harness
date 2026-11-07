@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-cfdef582 BATCH-RETIRE · from KI > SoP (🏛️ 🔑 ki.sop.main) · 06:55 GMT · routed to ki.prj.agora as MSG-29ac4fe7, which owns apps-agora.local.
 
 ## Outbound
 
