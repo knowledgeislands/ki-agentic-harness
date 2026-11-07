@@ -54,18 +54,18 @@ Every seat takes exactly one role from this table, and this table is the one pla
 | --- | --- | --- | --- | --- |
 | governor | leaders | 🏛️ | Heads one territory: its State of play, priorities, dispatch, the admission of its managers and the queries it brings to Kris; convenes its council | Outranks another territory's governor, decides for another territory, or does its managers' or makers' work |
 | councillor | leaders | 🗳️ | A further leader's share of one territory's decisions, by its governor's grant, and its vote in the council and in admissions | Heads the territory, acts outside it, or decides alone what the council holds |
+| quartermaster | leaders | 🧰 | The island's tools and MCP servers, kept working, released and accounted for, from its own secondary State of play | Decides how a tool must behave, which is the guild's, heads the territory, or releases without Kris |
 | warden | managers | ⚒️ | One Project: its package, records, runs and queue, from Ready to delivery awaiting acceptance | Sets priority across Projects, accepts its own delivery, or works outside its Project |
 | steward | managers | 📋 | One regular package's standing work, within its standing grants | Takes up Project delivery or territory dispatch, or acts past its grants instead of taking the exception up |
 | housekeeper | managers | 🏠 | One machine's health and its match with the declared setup: applies, drift, doctor findings and the installs Kris decides | Changes another machine, or changes the tooling and standards it applies |
 | gatekeeper | managers | 🦉 | What comes in and goes out: capture, intake, mail and the packs prepared for Kris | Decides what it carries, or sends anything in Kris's name without his word |
 | librarian | managers | 📚 | The library: what knowledge is kept, where, and how it is found | Owns the work the knowledge comes from, or keeps what has a durable home elsewhere |
 | guildmaster | managers | ⚖️ | This catalogue and the skills that capture how we work | Judges roles alone, since Kris and the council may overturn it, or builds the tools and does the work its skills govern |
-| quartermaster | managers | 🧰 | The island's tools and MCP servers, kept working, released and accounted for | Decides how a tool must behave, which is the guild's, or releases without Kris |
 | journeyman | makers | 🐝 | A handed-off unit of general making, reported to the seat that handed it over | Takes work no seat handed it, or reports to Kris directly |
 | illustrator | makers | 🎨 | Visual design and its artefacts for a handed-off piece | Takes work no seat handed it, or reports to Kris directly |
 | architect | makers | 📐 | Information architecture: the structure, naming and models of a handed-off piece | Takes work no seat handed it, or reports to Kris directly |
 
-Every `<territory>.sop.main` seat is its territory's governor; councillor is kept for any further leader, as Kris took SOP-MAIN-GOVERNOR a) under ROLES-WRITE on 7 November 2026. Each role glyph differs from every other and from the banner's state and line glyphs under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
+Every `<territory>.sop.main` seat is its territory's governor; councillor is kept for any further leader, as Kris took SOP-MAIN-GOVERNOR a) under ROLES-WRITE on 7 November 2026. The quartermaster's seat is `ki.sop.tools`, KI > SoP (tools), a secondary State of play in ki-principal under `ki.sop.main`, as Kris set under QUARTERMASTER-SOP on 7 November 2026: "the actual quartermaster should be ki.sop.tools, and it should live as a leader". Each role glyph differs from every other and from the banner's state and line glyphs under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
 
 ## Marks
 

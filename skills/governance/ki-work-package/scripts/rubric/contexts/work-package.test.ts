@@ -1211,13 +1211,13 @@ test('the role catalogue gives each role one tier and a glyph unique among roles
   expect([...catalogue.keys()]).toEqual([
     'governor',
     'councillor',
+    'quartermaster',
     'warden',
     'steward',
     'housekeeper',
     'gatekeeper',
     'librarian',
     'guildmaster',
-    'quartermaster',
     'journeyman',
     'illustrator',
     'architect'
@@ -1247,6 +1247,7 @@ test('the role catalogue gives each role one tier and a glyph unique among roles
   for (const glyph of glyphs) expect(banner).not.toContain(glyph)
   expect(catalogue.get('housekeeper')).toEqual({ tier: 'managers', glyph: '🏠' })
   expect(catalogue.get('governor')?.tier).toBe('leaders')
+  expect(catalogue.get('quartermaster')).toEqual({ tier: 'leaders', glyph: '🧰' })
   expect(catalogue.get('architect')?.tier).toBe('makers')
 })
 
