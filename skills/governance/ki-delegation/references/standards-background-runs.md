@@ -71,7 +71,7 @@ Runtime files stay in the state folder, `~/.local/state/ki/agents/<run>/`:
 | `<name>.log` | The runtime's combined output |
 | `<name>.report.md` | Each agent's final report, as written |
 | `<name>.work/` | Machine-only scratch with no repository home, removed with the state folder |
-| `thread.json`, `thread.status`, `inbox.md` | The coordinating session's runtime: the run's recorded home, its status line and its inbox. The native-session binding is a separate machine-local file under the work-package standard's [Work identity and native sessions](../../ki-work-package/references/standards-work-package.md#work-identity-and-native-sessions) |
+| `thread.json`, `inbox.md` | The coordinating session's runtime: the run's recorded home and its inbox. The native-session binding is a separate machine-local file under the work-package standard's [Work identity and native sessions](../../ki-work-package/references/standards-work-package.md#work-identity-and-native-sessions) |
 | `events.jsonl`, `events.state.json`, `events.seen` | The [event log](#run-events), the snapshot the launcher derives it from, and the waiter's read position |
 | `queue.jsonl`, `dispatch.*` | The run queue and the dispatcher's own files |
 | `worktrees/` | The run's Git worktrees, placed under [Coordination](#coordination) |

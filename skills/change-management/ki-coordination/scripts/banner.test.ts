@@ -64,9 +64,13 @@ const AWAITING_ACK_ITEM =
 const BODY_ITEM = /^- \[(handoff|committed|uncommitted|recovered|unlogged|behind)\]/
 const HOLDER_ITEM =
   /^- \[(running|queued|with you|stuck)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
-const PROJECT_THREAD_LINE = '🧵 ki.prj.ways-of-working'
+const PROJECT_THREAD_LINE = '⚒️ 🔑 ki.prj.ways-of-working'
 const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
-const THREAD_LINE = /^🧵 [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
+/**
+ * The thread line under STAGE-C-ROLES (Kris, 7 November 2026): `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` for a
+ * session with no role yet and for every run report.
+ */
+const THREAD_LINE = /^(?:🧵|[^\s!-~]+ 🔑) [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
 /** The heading-for line: what the worker is doing, an arrow and the hold or handoff it is heading for. */
 const HEADING_FOR_LINE =
   /^↪️ (?:draining → (?:⏸️ On hold|💤 Snoozing \(on hold\))|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
@@ -128,7 +132,7 @@ const expectBanner = (lines: string[]): void => {
   expect(lines[1]).toBe('')
   const finished = lines[0]?.startsWith('### 🏁') ?? false
   expect(lines.at(-1)).toMatch(THREAD_LINE)
-  expect(lines.filter((line) => line.startsWith('🧵 '))).toHaveLength(1)
+  expect(lines.filter((line) => THREAD_LINE.test(line))).toHaveLength(1)
   let end = lines.length - 1
   const closing: string[] = []
   while (end > 1 && lines[end - 1] === '' && !lines[end - 2]?.startsWith('- [')) {
@@ -458,7 +462,7 @@ test('the restart suggestion is a named exception with narrow triggers, placed b
 test('every banner closes with its work identity and never emits a send or resume prompt', () => {
   for (const text of [standard, outputStyle]) {
     for (const lines of banners(text)) expect(lines.at(-1)).toBe(PROJECT_THREAD_LINE)
-    expect(text).toContain('`🧵 <work-id>` for every explicitly coordinating package')
+    expect(text).toContain('`<role glyph> 🔑 <work-id>` for every explicitly coordinating package')
     expect(text).not.toMatch(/^(?:Send|Resume) <label>/m)
     expect(text).not.toContain('To bring this work back and continue it, paste this:')
     expect(text).not.toContain('{{send-line}}')
@@ -659,8 +663,12 @@ test('regular coordination is explicit, capability-checked and uses its real wor
     'personal.regular.acquire-intake',
     'ki.ways-of-working',
     'ki'
-  ])
+  ]) {
     expect(`🧵 ${id}`).toMatch(THREAD_LINE)
+    expect(`⚖️ 🔑 ${id}`).toMatch(THREAD_LINE)
+  }
+  for (const invalid of ['🔑 ki.reg.guilds', '⚖️ ki.reg.guilds', '⚖️ 🔑 KI.reg.guilds', 'guild 🔑 ki.reg.guilds'])
+    expect(invalid).not.toMatch(THREAD_LINE)
   expect(standard).toContain('Reports saved before this change retain their original closing line and remain readable')
   for (const surface of generate(harnessRoot).filter((surface) =>
     /(?:run-prompt|rules-[^/]+)\.md$/.test(surface.path)
@@ -732,7 +740,7 @@ test('the inbox watcher wakes only on news, with no timed bound or timed heartbe
 test('the bootstrap rename line names the thread by its thread line', () => {
   expect(standard).toContain('RENAME-THREAD-FORM')
   for (const text of [standard, outputStyle]) {
-    expect(text).toContain('`Rename thread: /rename 🧵 <work-id>`')
+    expect(text).toContain('`Rename thread: /rename <thread line>`')
     expect(text).not.toContain('/rename <label> (<id>)')
   }
 })
@@ -741,7 +749,8 @@ test('the bootstrap rename line names the thread by its thread line', () => {
 // `🧵 <work-id>`, the same as the rename line and every report's thread line.
 test('the opener launches the session under its thread line', () => {
   expect(standard).toContain('RENAME-NAME')
-  expect(standard).toContain('`claude --name "🧵 <work-id>"`')
+  expect(standard).toContain('`claude --name "<thread line>"`')
+  expect(standard).toContain('STAGE-C-ROLES')
   expect(standard).not.toContain('claude --name "<label> (<id>)"')
 })
 

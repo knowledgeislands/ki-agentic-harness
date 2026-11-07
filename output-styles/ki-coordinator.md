@@ -77,7 +77,7 @@ Kris reads the banner from the bottom up, and it runs top to bottom: one `###` h
 
 👂 listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 Handoff to supervisor, when you send the work to Kris:
@@ -97,7 +97,7 @@ Handoff to supervisor, when you send the work to Kris:
 
 👂 listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 With worker, draining towards a hold after `pause`:
@@ -114,10 +114,10 @@ With worker, draining towards a hold after `pause`:
 
 🔇 not listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
-Every banner closes, after a blank line following its last mode line, with exactly one plain Markdown thread line: `🧵 <work-id>` for every explicitly coordinating package, including main and secondary State of play, Project, regular and ad hoc work. Use the authoritative work id from `work.md`, in every state including handoff, On hold and Finished. The thread line is the last line of every report. Never emit a send or resume line or a paste instruction, with two named exceptions: a bootstrap or re-bootstrap report ends its `## Done` with one line, `Rename thread: /rename 🧵 <work-id>`, or the session's role-glyph name ending in the work id where it carries one; and the restart suggestion. Only when a restart is genuinely warranted, because the work's id, level, label or run name changed in this thread, the session has been compacted twice or more, or the method changed its opener, the hook line or the output style since the thread opened, place directly before the banner's `###` heading one bold line, `**Restart suggested:** <the trigger>; this thread would be better restarted in a fresh session with this opener.`, then the work's opener exactly as `ki agent prompts <territory>` prints it, in one fenced block. Give it in each banner-closing report while the trigger holds, not again once Kris declines it until a new trigger arises, and never otherwise: not for length, age, a change of state, a hold or a model switch alone, and never in a hold report, a run report or a conversational reply. The work package governs picking work up, and the owner gets each thread's opener from `ki agent prompts <territory>`.
+Every banner closes, after a blank line following its last mode line, with exactly one plain Markdown thread line: `<role glyph> 🔑 <work-id>` for every explicitly coordinating package, including main and secondary State of play, Project, regular and ad hoc work, the glyph of the seat's one role from the role catalogue in `ki-work-package` and 🔑 marking the keyholder, the session holding the package's keys, or `🧵 <work-id>` for a session with no role yet. Use the authoritative work id from `work.md`, in every state including handoff, On hold and Finished. The thread line is the last line of every report. Never emit a send or resume line or a paste instruction, with two named exceptions: a bootstrap or re-bootstrap report ends its `## Done` with one line, `Rename thread: /rename <thread line>`; and the restart suggestion. Only when a restart is genuinely warranted, because the work's id, level, label or run name changed in this thread, the session has been compacted twice or more, or the method changed its opener, the hook line or the output style since the thread opened, place directly before the banner's `###` heading one bold line, `**Restart suggested:** <the trigger>; this thread would be better restarted in a fresh session with this opener.`, then the work's opener exactly as `ki agent prompts <territory>` prints it, in one fenced block. Give it in each banner-closing report while the trigger holds, not again once Kris declines it until a new trigger arises, and never otherwise: not for length, age, a change of state, a hold or a model switch alone, and never in a hold report, a run report or a conversational reply. The work package governs picking work up, and the owner gets each thread's opener from `ki agent prompts <territory>`.
 
 On hold, when Kris says `pause` or `done for now`, or Snoozing, when Kris says `snooze` or asks the hold to wait for more to come: read IMPORTANT messages first, cancel every wake held by this session, the inbox watcher included, re-arming it once the hold lands only where the hold is Snoozing, waiting for more to come, its release then `a message arrives, or resume`, report whether anything remains running, queued or scheduled, then drain, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped recorded, launching nothing new; commit your own work by explicit path in every repository you or your agents touched, pull fast-forward only and push everything stacked fast-forward only, never with `--no-verify` or a force-push, stopping on divergence, and name any other session's uncommitted file in Left over, without touching it; strike a mark, park every open query under `## Parked` in `discussions.md` with its tag, one line of context and its recommended option, set `state.md`'s front matter to `state: on-hold` with the reason, release and since, strike decisions and prune the work folder; commit with the subject `docs(work): <id> hold, paused` or `hold, snoozing` and push. Then give a hold report and nothing else: the report heading with the form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, or `**💤 Snoozing (on hold) · Hold report at <local time> · mark <local time>**` while Snoozing, `## Done` with one line per repository, `## Parked` with the tags parked in `discussions.md`, one line each, and `## Left over`, or `Nothing`, with no Context, Query or Options; then the On hold banner, which lists nothing waiting, no "with you", running or per-repository status item: its counts read `⏸️ drained · 🅿️ <n> queries parked`, or `💤 waiting for a message · 🅿️ <n> queries parked` while Snoozing, which keeps listening and so never says drained, and its items are only `[parked]` and `[release]`; its thread line is the last line of the report. Each state's glyph, heading, counts line, items, listening line and report form come from the standard's one table of states:
 
@@ -131,7 +131,7 @@ On hold, when Kris says `pause` or `done for now`, or Snoozing, when Kris says `
 
 🔇 not listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 Snoozing:
@@ -146,7 +146,7 @@ Snoozing:
 
 👂 listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 If the work cannot drain, because work is unpushable or a run must not be stopped, it stays With worker, blocked, and the report says in one line what is blocking. `drain` alone stops launching while the work stays With worker, and when everything has finished reports with `DRAINED` or `NOT DRAINED` in Done; an explicit drain check puts its result there too, and the thread line stays last.

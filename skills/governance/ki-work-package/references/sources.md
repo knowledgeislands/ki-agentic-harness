@@ -8,8 +8,11 @@
 | The `ki.ways-of-working` work-package design note and decisions log in Knowledge Islands Principal, now `ki.prj.ways-of-working` | 2026-10-31 | The five-file package, routing description, message queue and important flag, size limits, progressive reveal and the rename to `ki-work-package` |
 | `ki-recap` | 2026-08-06 | User-facing recap and durable learning boundary |
 | `ki-repo` | 2026-08-06 | Optional capability declaration and generic working-area ownership |
+| [Role-catalogue brief](https://github.com/krisb/dotfiles/blob/2fe13be/+/_WORK/personal.reg.household-terra/housekeeping/role-catalogue.brief.md), the `ki.reg.guilds` roles design and decisions log | 2026-11-07 | The role standard: catalogue, tiers, glyphs, `role` and `workers` fields, thread line and the role migration file |
 
 ## Last review
+
+- 2026-11-07 - Under STAGE-C-ROLES, Kris at 02:30 GMT on 7 November 2026: "land the role catalogue and role glyphs first, end to end", with the catalogue in this skill. Added `standards-roles.md` and the deletable `standards-roles-migration.md`, `work.md`'s required `role` and `state.md`'s `workers`, checked by RECORD-2 against the catalogue table. Taken with the reviewed options under ROLES-WRITE the same night: one role per seat ("it isn't a multi-role"), no `uri` in `workers` (WORKERS-URI, "Drop it"), and no seat address yet. This is an in-house decision review; no external source refreshed.
 
 2026-11-06 - Under INBOX-RENAME from `personal.reg.inbox-terra`, at Kris's word ("Do full rename to inbox now and coordinate that"), the assistant repository became the Inbox: `krisb/assistant` is now `krisb/inbox`, its packages `personal.reg.inbox-terra` and `personal.reg.inbox-sol`, and its store `sources-inbox`. Live wording here follows; older lines below keep the names they had.
 

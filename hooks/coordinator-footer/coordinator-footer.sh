@@ -2,10 +2,12 @@
 # Stop: hold a coordinating reply back only when its footer has lost its structure,
 # and warn on anything else unusual. A Summary or a Status, a re-bootstrap or hold
 # report, a reply that already opens a banner, and a reply to an owner's mark or
-# state word must close with a banner: a ### state heading and the 🧵 <work-id>
-# thread line, last. An unrecognised state heading, a missing or odd counts line,
-# and in a Summary or Status missing art, roadmap or package line pass with a
-# warning, so the owner can confirm the form was intended.
+# state word must close with a banner: a ### state heading and the thread line,
+# last: <role glyph> 🔑 <work-id>, or 🧵 <work-id> for a session with no role yet.
+# An unrecognised state heading, a missing or odd counts line, ⭐, 🔧 or 🧵 in the
+# role glyph's place, and in a Summary or Status missing art, roadmap or package
+# line pass with a warning, so the owner can confirm the form was intended. The
+# hook holds no copy of the role catalogue, which ki-work-package owns.
 # Quiet for conversational replies and launched agents; never blocks twice in a
 # row, only warning then; fails open on unusable input.
 set -u
@@ -57,16 +59,17 @@ owner_prompt() {
       | ascii_downcase | gsub("\\s+"; " ") | sub("^ "; "") | sub(" $"; "") | sub("[.!]+$"; "")' 2>/dev/null
 }
 
-form=$(printf '%s\n' "$reply" | awk '
+form=$(printf '%s\n' "$reply" | LC_ALL=C awk '
   /^(```|~~~)/ { fence = !fence; next }
   fence { next }
   /^## Summary since / || /^\*\*.* · (Summary|Status) at / { print "summary"; exit }
-  /^\*\*.* · (Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^🧵 [^ ]+ *$/ { other = 1 }
+  /^\*\*.* · (Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^(🧵|[^ -~]+ 🔑) [^ ]+ *$/ { other = 1 }
   END { if (other) print "banner" }')
 
 if [ -z "$form" ]; then
   # No footer form of its own: only an owner's mark or state word, in a session
-  # that has already closed a reply with a thread line, asks for the banner.
+  # that has already closed a reply with a thread line in either form, asks for
+  # the banner.
   [ -n "$transcript" ] && [ -d "$cwd" ] || exit 0
   capable() { [ -f "$1/.ki.toml" ] && grep -Eq '^\[skills\.ki-coordination\]' "$1/.ki.toml" 2>/dev/null; }
   if ! capable "$cwd"; then
@@ -80,7 +83,7 @@ if [ -z "$form" ]; then
       pause | 'done for now' | snooze | drain | hold | resume | finish | send | receive | 'with me' | ack | 'got it' | seen) ;;
     *) exit 0 ;;
   esac
-  recent | LC_ALL=C grep -F '"type":"assistant"' | LC_ALL=C grep -Eq '(\\n|")🧵 [A-Za-z0-9][A-Za-z0-9._-]*(\\n|")' || exit 0
+  recent | LC_ALL=C grep -F '"type":"assistant"' | LC_ALL=C grep -Eq '(\\n|")(🧵|[^ -~"\\]+ 🔑) [A-Za-z0-9][A-Za-z0-9._+-]*(\\n|")' || exit 0
   form=banner
 fi
 
@@ -113,22 +116,31 @@ found=$(printf '%s\n' "$reply" | LC_ALL=C awk -v long="$([ "$form" = summary ] &
   fence { last = NR; next }
   {
     last = NR
+    key = $0 ~ /^[^ -~]+ 🔑 [^ ]+ *$/
+    is_thread = key || $0 ~ /^🧵 [^ ]+ *$/
     # A state heading opens with its glyph or names a state; a query or finding heading opens with its tag.
     state = $0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/
     if (state || $0 ~ /^### [^ -~]/) { heading = NR; known = state; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; odd = 0; road = 0; pack = 0; next }
     if (heading && !counts_seen) {
       counts_seen = 1
-      if ($0 !~ /^(- \[|🧵|🗺|📦|👂|🔇|↪)/) { counts = 1; odd = $0 !~ /^(🤖|👤|⛔|🅿|⏸|💤|📥|🎯|⏳)/ }
+      if (!is_thread && $0 !~ /^(- \[|🧵|🗺|📦|👂|🔇|↪)/) { counts = 1; odd = $0 !~ /^(🤖|👤|⛔|🅿|⏸|💤|📥|🎯|⏳)/ }
     }
     if (heading && $0 ~ /^🗺/ && index($0, "roadmap")) road = 1
     if (heading && $0 ~ /^📦/ && index($0, "package")) pack = 1
-    if ($0 ~ /^🧵 [^ ]+ *$/) thread = NR
+    if (is_thread) {
+      thread = NR
+      glyphs = key ? substr($0, 1, index($0, " 🔑") - 1) : ""
+      marks = index(glyphs, "⭐") || index(glyphs, "🔧")
+      spun = index(glyphs, "🧵") > 0
+    }
   }
   END {
     b = 0; w = 0
     if (!heading) block[++b] = "the banner\047s ### state heading"
-    if (!thread) block[++b] = "the 🧵 <work-id> thread line, last"
-    else if (thread != last) block[++b] = "the 🧵 thread line as the very last line"
+    if (!thread) block[++b] = "the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>, last"
+    else if (thread != last) block[++b] = "the thread line as the very last line"
+    if (thread && marks) warn[++w] = "⭐ or 🔧 beside the role glyph, which the role standard retires"
+    if (thread && spun) warn[++w] = "🧵 in the role glyph\047s place; a seat with a role closes <role glyph> 🔑 <work-id>"
     if (heading && !known) warn[++w] = "a state heading the table of states does not name"
     if (heading && !finished && !counts) warn[++w] = "no counts line beneath the state heading"
     if (heading && counts && odd) warn[++w] = "a counts line opening with none of the counts glyphs"

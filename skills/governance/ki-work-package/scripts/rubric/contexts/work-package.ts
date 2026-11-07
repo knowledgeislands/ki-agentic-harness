@@ -1,5 +1,6 @@
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type {
   AuditOutcome,
   ConformWrite,
@@ -68,6 +69,7 @@ const DEFINITION_FIELDS: ReadonlySet<string> = new Set([
   'theme',
   'parent',
   'covers',
+  'role',
   'created_at'
 ])
 const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
@@ -91,8 +93,22 @@ const STATE_FIELDS: ReadonlySet<string> = new Set([
   'beat',
   'mark',
   'method_read',
+  'workers',
   ...CAPABILITY_FIELDS
 ])
+/**
+ * The role standard, whose Role catalogue table is the one home of each role's tier and glyph (STAGE-C-ROLES, Kris, 7
+ * November 2026). The checker reads it at audit time and holds no copy.
+ */
+const ROLE_STANDARD = fileURLToPath(new URL('../../../references/standards-roles.md', import.meta.url))
+const TIERS: readonly string[] = ['leaders', 'managers', 'makers']
+/** The closed keys of a `workers` entry under WORKERS-SHAPE, and the keys the role migration file tolerates. */
+const WORKER_FIELDS: ReadonlySet<string> = new Set(['role', 'tier', 'focus', 'since', 'status', 'listening'])
+const WORKER_RETIRED_FIELDS: ReadonlySet<string> = new Set(['name', 'uri', 'designation'])
+const WORKER_STATUSES: readonly unknown[] = ['active', 'idle']
+/** Old role and tier words read under `standards-roles-migration.md`, each warned on. */
+const ROLE_ALIASES: Readonly<Record<string, string>> = { assistant: 'gatekeeper', keeper: 'warden' }
+const TIER_ALIASES: Readonly<Record<string, string>> = { enablers: 'managers', doers: 'makers' }
 const QUERY_HEADINGS = ['Open', 'Parked'] as const
 /** The discussion file's H1 word, by file name, each accepted for the tolerance window. */
 const DISCUSSION_TITLES: Readonly<Record<string, string>> = { 'discussions.md': 'discussions', 'queries.md': 'queries' }
@@ -129,6 +145,7 @@ const DATED_LINE = /^\s*(?:[-*]|\d+\.)?\s*(?:\*\*)?\d{4}-\d{2}-\d{2}/gm
 const COMMIT_ID = /\b(?=[0-9a-f]*\d)(?=[0-9a-f]*[a-f])[0-9a-f]{7,40}\b/g
 const TEST_COUNT = /\b\d+\s+(?:tests?|pass(?:ed|es)?|fail(?:ed|s|ures?)?)\b/gi
 const OPTIONAL_FIELDS = ['label', 'role'] as const
+/** An old checkpoint's `role`, read for its tolerance window; not the role catalogue. */
 const ROLES = ['conversational', 'coordination', 'state-of-play'] as const
 const COORDINATING_ROLES: readonly unknown[] = ['coordination', 'state-of-play']
 const UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
@@ -736,6 +753,116 @@ const capabilityChecks = (
     fail('syncing_enabled true requires listening_enabled true: a syncing thread is always a listening thread')
 }
 
+export type CatalogueRole = { readonly tier: string; readonly glyph: string }
+
+/** The Role catalogue table of the role standard: each role's tier and glyph, by role name. */
+export const roleCatalogue = (standard = readFileSync(ROLE_STANDARD, 'utf8')): ReadonlyMap<string, CatalogueRole> => {
+  const section = standard.split(/^## Role catalogue$/m)[1]?.split(/^## /m)[0] ?? ''
+  const roles = new Map<string, CatalogueRole>()
+  for (const line of section.split(/\r?\n/)) {
+    const [role = '', tier = '', glyph = ''] = line
+      .split('|')
+      .slice(1, -1)
+      .map((cell) => cell.trim())
+    if (/^[a-z]+$/.test(role) && TIERS.includes(tier) && glyph.length > 0) roles.set(role, { tier, glyph })
+  }
+  return roles
+}
+
+const warning = (record: ParsedRecord, message: string): AuditOutcome => ({
+  status: 'VIOLATION',
+  level: 'WARN',
+  message: `tolerance: ${message}, under standards-roles-migration.md`,
+  subject: record.path
+})
+
+/** A `role` value against the catalogue: a catalogue role passes, an old word warns, anything else fails. */
+const roleOutcome = (
+  record: ParsedRecord,
+  value: unknown,
+  where: string,
+  catalogue: ReadonlyMap<string, CatalogueRole>
+): AuditOutcome | undefined => {
+  if (typeof value === 'string' && catalogue.has(value)) return undefined
+  if (typeof value === 'string' && ROLE_ALIASES[value])
+    return warning(record, `${where} role ${value} is read as ${ROLE_ALIASES[value]}`)
+  return {
+    status: 'VIOLATION',
+    message: `${where} role must be one catalogue role: ${[...catalogue.keys()].join(', ')}`,
+    subject: record.path
+  }
+}
+
+/** `work.md`'s `role`: one catalogue role, its absence warned on until each territory's packages are in line. */
+const definitionRoleChecks = (
+  record: ParsedRecord,
+  fields: Readonly<Record<string, unknown>>,
+  evidence: Evidence,
+  catalogue: ReadonlyMap<string, CatalogueRole>
+): void => {
+  if (!('role' in fields)) {
+    evidence.schema.push(warning(record, 'work.md names no role from the role catalogue'))
+    return
+  }
+  const outcome = roleOutcome(record, fields.role, 'work.md', catalogue)
+  if (outcome) evidence.schema.push(outcome)
+}
+
+/**
+ * `state.md`'s `workers` under WORKERS-SHAPE: a list of live seats, each one catalogue role with its catalogue tier and
+ * at most focus, since, status and listening. A top-level role or tier and the retired entry keys warn.
+ */
+const workersChecks = (
+  record: ParsedRecord,
+  fields: Readonly<Record<string, unknown>>,
+  evidence: Evidence,
+  catalogue: ReadonlyMap<string, CatalogueRole>
+): void => {
+  const fail = (message: string): void => {
+    evidence.schema.push({ status: 'VIOLATION', message, subject: record.path })
+  }
+  const warn = (message: string): void => {
+    evidence.schema.push(warning(record, message))
+  }
+  for (const field of ['role', 'tier'] as const)
+    if (field in fields)
+      warn(`state.md carries a top-level ${field}; record the seat in workers and the role in work.md`)
+  if (!('workers' in fields) || fields.workers === null) return
+  if (!Array.isArray(fields.workers)) {
+    fail('workers must be a list of seats, each a mapping with role and tier')
+    return
+  }
+  fields.workers.forEach((value, index) => {
+    const entry = table(value)
+    const at = `workers[${index}]`
+    if (!entry) {
+      fail(`${at} must be a mapping with role and tier`)
+      return
+    }
+    const unknown = Object.keys(entry).filter((key) => !WORKER_FIELDS.has(key) && !WORKER_RETIRED_FIELDS.has(key))
+    if (unknown.length > 0)
+      fail(`${at} carries field(s) outside role, tier, focus, since, status and listening: ${unknown.join(', ')}`)
+    const retired = Object.keys(entry).filter((key) => WORKER_RETIRED_FIELDS.has(key))
+    if (retired.length > 0) warn(`${at} carries ${retired.join(', ')}, which the role standard drops`)
+    const roleResult = roleOutcome(record, entry.role, at, catalogue)
+    if (roleResult) evidence.schema.push(roleResult)
+    const role = typeof entry.role === 'string' ? (ROLE_ALIASES[entry.role] ?? entry.role) : undefined
+    const expected = role ? catalogue.get(role)?.tier : undefined
+    const tier = typeof entry.tier === 'string' ? entry.tier : undefined
+    if (tier && TIER_ALIASES[tier]) warn(`${at} tier ${tier} is read as ${TIER_ALIASES[tier]}`)
+    const resolved = tier ? (TIER_ALIASES[tier] ?? tier) : undefined
+    if (!resolved || !TIERS.includes(resolved)) fail(`${at} tier must be one of ${TIERS.join(', ')}`)
+    else if (expected && resolved !== expected) fail(`${at} tier must be ${expected}, the catalogue tier of ${role}`)
+    if ('focus' in entry && (!Array.isArray(entry.focus) || entry.focus.some((id) => typeof id !== 'string')))
+      fail(`${at} focus must be a list of focus ids`)
+    if ('since' in entry && !validTimestamp(entry.since)) fail(`${at} since must be a UTC RFC 3339 timestamp`)
+    if ('status' in entry && !WORKER_STATUSES.includes(entry.status)) fail(`${at} status must be active or idle`)
+    if (entry.listening === 'agora-call') warn(`${at} listening agora-call is read as on`)
+    else if ('listening' in entry && !CAPABILITY_STATUSES.includes(entry.listening))
+      fail(`${at} listening must be on or off`)
+  })
+}
+
 const chronology = (record: ParsedRecord, created: unknown, since: unknown, evidence: Evidence): void => {
   if (validTimestamp(created) && validTimestamp(since) && Date.parse(created) > Date.parse(since))
     evidence.lifecycle.push({
@@ -1004,6 +1131,8 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
   if (words(work.body) - words(focus) > LIMITS.definitionWords)
     warn(work, `work.md body runs past ${LIMITS.definitionWords} words, its Focus section aside`)
   definitionChecks(work, fields, coordinationDeclared, evidence, true)
+  const catalogue = roleCatalogue()
+  definitionRoleChecks(work, fields, evidence, catalogue)
   evidence.boundary.push(...boundaryOutcomes(work, fields))
 
   const state = folder.state
@@ -1020,7 +1149,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
       const stateKeys = Object.keys(stateFields)
       if (
         STATE_REQUIRED.some((field) => !stateKeys.includes(field)) ||
-        stateKeys.some((field) => !STATE_FIELDS.has(field))
+        stateKeys.some((field) => !STATE_FIELDS.has(field) && field !== 'role' && field !== 'tier')
       )
         fail(state, 'state.md front matter must use only its closed state field set')
       stateChecks(state, stateFields, evidence)
@@ -1031,6 +1160,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
       )
         fail(state, 'method_read must be a short harness revision or null')
       capabilityChecks(state, stateFields, evidence)
+      workersChecks(state, stateFields, evidence, catalogue)
       chronology(state, fields.created_at, stateFields.since, evidence)
       evidence.boundary.push(...boundaryOutcomes(state, stateFields))
     }

@@ -8,7 +8,12 @@ import { CONFIG } from '../items/configuration.ts'
 import { LIFECYCLE } from '../items/lifecycle.ts'
 import { RECORD } from '../items/records.ts'
 import { STRUCTURE } from '../items/structure.ts'
-import { checkpointReadme, createWorkPackageSession, type WorkPackageRubricContext } from './work-package.ts'
+import {
+  checkpointReadme,
+  createWorkPackageSession,
+  roleCatalogue,
+  type WorkPackageRubricContext
+} from './work-package.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -529,6 +534,7 @@ const packageFiles = (
         "'Shapes how Knowledge Islands work is held and moved. Takes changes to the work model and its skills. Not for the Observatory (ki.observatory).'",
       worker: 'agent',
       supervisor: 'owner',
+      role: 'warden',
       created_at: '2026-10-17T20:00:00Z',
       ...work
     }).map(([key, value]) => `${key}: ${value}`),
@@ -1186,3 +1192,135 @@ test('a sub-package names its parent package, stays off the main register and al
     })
   )
 })
+
+// Kris, 7 November 2026, under STAGE-C-ROLES: "`workers` `role:` and `tier:` fields in `state.md` defined and checked
+// against the catalogue so RECORD-2 passes (household-sol and household-terra fail today)". One role per seat, no
+// session address in an entry (WORKERS-URI), and the old forms warned on under standards-roles-migration.md (MIGRATION-OVERLAY).
+const seat = (...lines: readonly string[]): string => ['', ...lines.map((line) => `  ${line}`)].join('\n')
+const HOUSEKEEPER = seat(
+  '- role: housekeeper',
+  '  tier: managers',
+  '  focus: [housekeeping]',
+  "  since: '2026-11-06T01:21:00Z'",
+  '  status: active',
+  '  listening: on'
+)
+
+test('the role catalogue gives each role one tier and a glyph unique among roles and banner glyphs', () => {
+  const catalogue = roleCatalogue()
+  expect([...catalogue.keys()]).toEqual([
+    'governor',
+    'councillor',
+    'warden',
+    'steward',
+    'housekeeper',
+    'gatekeeper',
+    'librarian',
+    'guildmaster',
+    'quartermaster',
+    'journeyman',
+    'illustrator',
+    'architect'
+  ])
+  const glyphs = [...catalogue.values()].map((role) => role.glyph)
+  expect(new Set(glyphs).size).toBe(glyphs.length)
+  const banner = [
+    '🤖',
+    '👤',
+    '🎯',
+    '⏸️',
+    '🏁',
+    '💤',
+    '↪️',
+    '👂',
+    '🔇',
+    '🗺️',
+    '📦',
+    '🧵',
+    '🔑',
+    '📤',
+    '🅿️',
+    '⛔',
+    '📥',
+    '⏳'
+  ]
+  for (const glyph of glyphs) expect(banner).not.toContain(glyph)
+  expect(catalogue.get('housekeeper')).toEqual({ tier: 'managers', glyph: '🏠' })
+  expect(catalogue.get('governor')?.tier).toBe('leaders')
+  expect(catalogue.get('architect')?.tier).toBe('makers')
+})
+
+test("the household seats' workers shape passes RECORD-2", () => {
+  const repository = workFixture()
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', {
+      work: { role: 'housekeeper' },
+      state: { listening_enabled: 'true', listening_status: 'on', workers: HOUSEKEEPER }
+    })
+  )
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+})
+
+test('a workers entry still carrying a name, uri or old words warns rather than fails', () => {
+  const repository = workFixture()
+  const old = seat(
+    '- uri: orca+claude-code://sol/ae5bfab5-99db-444b-b99d-3a1854d0cee4',
+    "  name: '🦉⭐ 🔑 personal.reg.inbox-terra'",
+    '  role: assistant',
+    '  tier: enablers',
+    '  designation: primary',
+    '  listening: agora-call'
+  )
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { work: { role: 'gatekeeper' }, state: { workers: old, role: 'gatekeeper' } })
+  )
+  const outcomes = run(RECORD, 'RECORD-2', context(repository))
+  expect(outcomes.length).toBe(5)
+  for (const outcome of outcomes) expect(outcome).toEqual(expect.objectContaining({ level: 'WARN' }))
+  expect(outcomes.map((outcome) => outcome.message).join('\n')).toContain('uri')
+})
+
+test('a package with no role warns, and an old role word in work.md warns', () => {
+  const repository = workFixture()
+  const files = packageFiles()
+  writePackage(repository, 'ki.ways-of-working', {
+    ...files,
+    'work.md': (files['work.md'] ?? '').replace('role: warden\n', '')
+  })
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
+    expect.objectContaining({ level: 'WARN', message: expect.stringContaining('names no role') })
+  ])
+  writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { work: { role: 'keeper' } }))
+  expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
+    expect.objectContaining({ level: 'WARN', message: expect.stringContaining('read as warden') })
+  ])
+})
+
+for (const [name, change] of [
+  ['an unknown role in work.md', { work: { role: 'chancellor' } }],
+  ['two roles for one package', { work: { role: '[governor, guildmaster]' } }],
+  ['an unknown seat role', { state: { workers: seat('- role: liaison', '  tier: managers') } }],
+  ['a seat with several roles', { state: { workers: seat('- role: [governor, guildmaster]', '  tier: leaders') } }],
+  ['a tier that is not the role’s', { state: { workers: seat('- role: housekeeper', '  tier: leaders') } }],
+  ['a seat with no tier', { state: { workers: seat('- role: housekeeper') } }],
+  [
+    'a seat field outside the closed set',
+    { state: { workers: seat('- role: warden', '  tier: managers', '  host: sol') } }
+  ],
+  [
+    'a seat status other than active or idle',
+    { state: { workers: seat('- role: warden', '  tier: managers', '  status: busy') } }
+  ],
+  ['workers that is not a list', { state: { workers: 'warden' } }]
+] as const)
+  test(`the package schema refuses ${name}`, () => {
+    const repository = workFixture()
+    writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', change))
+    expect(
+      run(RECORD, 'RECORD-2', context(repository)).some((outcome) => outcome.status === 'VIOLATION' && !outcome.level)
+    ).toBe(true)
+  })

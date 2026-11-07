@@ -160,9 +160,9 @@ A report whose outcome has no durable home yet is kept, not homed in haste. The 
 ## Inbound
 
 - <YYYY-MM-DD> · ACK <id> · from <receiver id> · <time>
-- IMPORTANT · <YYYY-MM-DD> · <id> · <sender label> (<sender id>): <the instruction, with links>
-- <YYYY-MM-DD> · <id> · <sender label> (<sender id>): <the owner's words or the instruction, with links>
-- <YYYY-MM-DD> · focus: <id> · <id> · <sender label> (<sender id>): <the instruction, with links>
+- IMPORTANT · <YYYY-MM-DD> · <id> · <sender label> (<sender thread line>): <the instruction, with links>
+- <YYYY-MM-DD> · <id> · <sender label> (<sender thread line>): <the owner's words or the instruction, with links>
+- <YYYY-MM-DD> · focus: <id> · <id> · <sender label> (<sender thread line>): <the instruction, with links>
 
 ## Outbound
 
@@ -175,7 +175,7 @@ The `<id>` is a short message id, `MSG-` and eight lower-case hex characters fro
 - **ACK:** on taking a line, the receiver, or its State of play acting for it while it has no active session under `ki-coordination`'s [acting for idle work](../../../change-management/ki-coordination/references/standards-coordination.md#territory-work), puts one ACK line naming its id at the top of the sender's Inbound, then deals with the message as below. The ACK says only that the message arrived; any reply is a separate message, sent the same way.
 - **Prune:** the sender, reading an ACK, removes the ACK line and the matching Outbound line together; an ACK for an id no longer in Outbound is simply removed. Anything left in Outbound is unacknowledged, and the banner lists it as `- [awaiting ACK] <id> · to <receiver id> · since <time>` under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
 
-The sender is named by its work name under `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), the label with the id in brackets, as in `KI > Model > Ways of working (ki.ways-of-working):` or `KI > SoP (ki):`, which Kris adopted under WORK-LABEL on 25 October 2026: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?" A line whose sender carries the label alone, as lines written before that date do, is read as the same sender through the tolerance window, and the checker accepts both.
+The sender is named by its work name under `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), the label with the sender's [thread line](standards-roles.md#thread-line) in brackets, its id last, as in `KI > Guilds (⚖️ 🔑 ki.reg.guilds):`, or the bare id where the sender has no role yet, as in `KI > SoP (ki):`. The thread line in brackets is STAGE-C-ROLES (Kris, 7 November 2026); the brackets themselves Kris adopted under WORK-LABEL on 25 October 2026: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?" A line whose sender carries the label alone, as lines written before that date do, is read as the same sender through the tolerance window, and the checker accepts both.
 
 A line is about 60 words at most with the detail linked, and a message citing an owner decision quotes its words. The queue is taken in priority order, as Kris set under WORK-QUEUE-PRIORITY on 19 October 2026, read back as "a work package's incoming work is a queue taken in priority order; the worker may group similar items; a line added at the top with an important flag must be taken first, in that order, which lets State of play change how a work works":
 
@@ -215,6 +215,7 @@ description: >-
   and calendars (ki.timelines) or the work model itself (ki.ways-of-working).
 worker: agent
 supervisor: owner
+role: warden
 created_at: 2026-10-13T23:50:00Z
 ---
 ```
@@ -233,6 +234,7 @@ The field set is closed:
 | `covers` | required on States of play, absent otherwise | main register or secondary non-empty subset |
 | `description` | required | the routing description, at most 500 characters |
 | `worker`, `supervisor` | required | each a holder |
+| `role` | required | the package's role, one role from [the role catalogue](standards-roles.md#role-catalogue); a package without one is warned on under [the role migration file](standards-roles-migration.md) |
 | `created_at` | optional | UTC time the work folder was created, no later than `state.md`'s `since` |
 
 Territory work is the main State of play, id `<territory>.sop.main` (legacy `<territory>` remains readable), or a secondary State of play, id `<territory>.sop.<name>`, under the `ki-coordination` [secondary States of play](../../../change-management/ki-coordination/references/standards-coordination.md#secondary-states-of-play); `sop` is never a second segment at another level. A secondary may keep a `## Queue` in its state file as the main does.
@@ -290,6 +292,13 @@ received: 2026-10-19T07:14:00Z
 beat: null
 mark: 2026-10-19T07:47:18Z
 method_read: 1a2b3c4
+workers:
+  - role: warden
+    tier: managers
+    focus: [layout]
+    since: 2026-10-19T07:14:00Z
+    status: active
+    listening: off
 ---
 ```
 
@@ -311,6 +320,7 @@ The field set is closed:
 | `listening_status` | required while `listening_enabled` is `true`, else absent | `on` while the inbox watcher is armed, `off` otherwise |
 | `syncing_enabled` | optional | `true` when the thread is its host's sync thread; absent reads `false`; `true` requires `listening_enabled: true` |
 | `syncing_status` | required while `syncing_enabled` is `true`, else absent | `on` while host sync runs, `off` otherwise |
+| `workers` | optional | the package's live seats, each a mapping of `role` and `tier` and at most `focus`, `since`, `status` and `listening`, under [the role standard's fields](standards-roles.md#role-fields); absent or empty when no seat is live |
 
 A holder is `owner`, `agent`, `run/<name>`, `work/<id>`, `person/<handle>` or `repo/<name>`. The holder the work lies with now and its role are derived from `state` and `target` in `state.md` and `worker` and `supervisor` in `work.md`, never stored. Timestamps use UTC RFC 3339 second precision; quote `title` and `label` in YAML because they contain `>`. The four capability fields record the thread capabilities under `ki-coordination`'s [Thread capabilities](../../../change-management/ki-coordination/references/standards-coordination.md#thread-capabilities), as Kris set under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: each thread carries `listening_enabled`, `listening_status`, `syncing_enabled` and `syncing_status`, and if `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. `_enabled` says whether the thread has the capability; `_status` says whether it is on now, and the banner's mode lines read both. These are the fields the Work Process note's Observatory fields read through `ki work status`. `method_read` replaces the body line a coordinator once wrote under its refresh rule; setting it is the confirmation that a `REFRESH` line has been acted on, under `ki-coordination`'s [Refreshing this guidance](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance).
 

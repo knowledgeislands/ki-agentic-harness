@@ -192,12 +192,12 @@ test('footer lines above the banner heading do not count', () => {
 test('a Summary whose banner is missing is held back, naming the lost structure and the rest', () => {
   const outcome = run(stop(summaryBody, plain))
   expect(outcome.reason).toBe(
-    "This Summary's footer lacks the banner's ### state heading and the 🧵 <work-id> thread line, last, under ki-coordination's Banner section. Give the reply again in full with them, since the last text is what the owner reads. It also has no Knowledge Islands art above the banner, no 🗺️ roadmap line and no 📦 package line; keep that only where the owner asked for it."
+    "This Summary's footer lacks the banner's ### state heading and the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>, last, under ki-coordination's Banner section. Give the reply again in full with them, since the last text is what the owner reads. It also has no Knowledge Islands art above the banner, no 🗺️ roadmap line and no 📦 package line; keep that only where the owner asked for it."
   )
 })
 
 test('the thread line must close the reply', () => {
-  expect(run(stop(`${fullSummary}\n\nAnything else?`, plain)).reason).toStartWith("This Summary's footer lacks the 🧵 thread line as the very last line, ")
+  expect(run(stop(`${fullSummary}\n\nAnything else?`, plain)).reason).toStartWith("This Summary's footer lacks the thread line as the very last line, ")
   expect(run(stop(`${fullSummary}\n\n`, plain))).toEqual(silent)
 })
 
@@ -225,7 +225,7 @@ test('a re-bootstrap report needs the short banner only', () => {
   expect(run(stop(rebootstrap(shortBanner), plain))).toEqual(silent)
   const outcome = run(stop(rebootstrap(), plain))
   expect(outcome.reason).toStartWith(
-    "This reply's banner lacks the banner's ### state heading and the 🧵 <work-id> thread line, last, "
+    "This reply's banner lacks the banner's ### state heading and the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>, last, "
   )
   expect(run(stop(rebootstrap(heading, items, thread), plain)).warning).toContain('no counts line')
 })
@@ -277,17 +277,17 @@ test('a hold report and a Finished banner pass in their own shapes', () => {
 })
 
 test('a reply that opens a banner but leaves it unfinished is held back', () => {
-  expect(run(stop(`Launched the run.\n\n${heading}\n\n${counts}`, plain)).reason).toStartWith("This reply's banner lacks the 🧵 <work-id> thread line, last, ")
+  expect(run(stop(`Launched the run.\n\n${heading}\n\n${counts}`, plain)).reason).toStartWith("This reply's banner lacks the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>, last, ")
   expect(run(stop(`Launched the run.\n\n${thread}`, plain)).reason).toContain("the banner's ### state heading")
 })
 
 test("an owner's mark or state word in a coordinating session needs the banner", () => {
   for (const word of ['mark', 'Mark.', 'mark only', 'mark, status only', 'pause', 'done for now', 'snooze', 'with me', 'status', 'summary since 14:00']) {
     const outcome = run(stop('Mark struck at 21:10.', coordinated(word)))
-    expect(outcome.reason).toStartWith("This reply's banner lacks the banner's ### state heading and the 🧵 <work-id> thread line, last, ")
+    expect(outcome.reason).toStartWith("This reply's banner lacks the banner's ### state heading and the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>, last, ")
   }
   const command = '<command-name>/ki-coordination</command-name>\n<command-args>drain</command-args>'
-  expect(run(stop('Draining.', coordinated(command))).reason).toContain('the 🧵 <work-id> thread line')
+  expect(run(stop('Draining.', coordinated(command))).reason).toContain('the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>')
   expect(run(stop(`Mark struck.\n\n${shortBanner}`, coordinated('mark')))).toEqual(silent)
   // A subdirectory of the coordinating checkout counts.
   expect(run(stop('Mark noted.', coordinated('mark'), join(coordinating, '+', '_WORK'))).reason).toContain('the banner')
@@ -321,7 +321,7 @@ test('a session already continuing from a Stop hook is never held back again, on
   const outcome = run(stop(summaryBody, plain, coordinating, { stop_hook_active: true }))
   expect(outcome.reason).toBeUndefined()
   expect(outcome.warning).toStartWith(
-    "Footer check: this Summary's footer has a footer without the banner's ### state heading and the 🧵 <work-id> thread line, last, and no Knowledge Islands art"
+    "Footer check: this Summary's footer has a footer without the banner's ### state heading and the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>, last, and no Knowledge Islands art"
   )
   expect(run(stop('Mark struck.', coordinated('mark'), coordinating, { stop_hook_active: true })).warning).toContain("a footer without the banner's")
   expect(run(stop(fullSummary, plain, coordinating, { stop_hook_active: true }))).toEqual(silent)
@@ -356,6 +356,42 @@ test('a missing jq fails open', () => {
 
 test('the system Bash runs the same checks', () => {
   expect(run(stop(fullSummary, plain), {}, '/bin/bash')).toEqual(silent)
-  expect(run(stop('Mark struck.', coordinated('mark')), {}, '/bin/bash').reason).toContain('the 🧵 <work-id> thread line')
+  expect(run(stop('Mark struck.', coordinated('mark')), {}, '/bin/bash').reason).toContain('the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>')
   expect(run(stop(summary(heading, counts, roadmap, pkg, items, thread), plain), {}, '/bin/bash').warning).toContain('no Knowledge Islands art')
+})
+
+// Kris, 7 November 2026, under STAGE-C-ROLES: the hook "accepts both forms, blocks only a missing banner heading or
+// thread line, warns on the unusual". A seat with a role closes `<role glyph> 🔑 <work-id>`; ⭐, 🔧 and 🧵 in the role
+// glyph's place pass with a warning under the role migration file.
+const keyThread = '⚒️ 🔑 ki.prj.demo'
+const keySummary = summary(art, heading, counts, roadmap, pkg, items, keyThread)
+
+test('a key-form Summary and banner pass, in the session name form of the role standard', () => {
+  expect(run(stop(keySummary, plain))).toEqual(silent)
+  expect(run(stop(rebootstrap(heading, counts, items, '⚖️ 🔑 ki.reg.guilds'), plain))).toEqual(silent)
+  expect(run(stop(rebootstrap(heading, counts, items, '🏛️ 🔑 ki.sop.main'), plain))).toEqual(silent)
+})
+
+test('a key-form thread line that is not last is held back', () => {
+  expect(run(stop(`${keySummary}\n\nAnything else?`, plain)).reason).toStartWith(
+    "This Summary's footer lacks the thread line as the very last line, "
+  )
+})
+
+test('⭐, 🔧 or 🧵 standing as the role glyph passes with a warning', () => {
+  for (const line of ['🦉⭐ 🔑 personal.reg.inbox-terra', '🎨🔧 🔑 ki.prj.demo'])
+    expect(run(stop(rebootstrap(heading, counts, items, line), plain)).warning).toContain('⭐ or 🔧 beside the role glyph')
+  expect(run(stop(rebootstrap(heading, counts, items, '🧵 🔑 ki.prj.demo'), plain)).warning).toContain(
+    "🧵 in the role glyph's place"
+  )
+})
+
+test("an owner's mark word engages after an earlier key-form reply, and a conversational session stays quiet", () => {
+  const keyed = transcript([
+    { owner: 'Open ki.prj.demo', reply: rebootstrap(heading, counts, items, keyThread) },
+    { owner: 'mark' }
+  ])
+  expect(run(stop('Mark struck.', keyed)).reason).toContain('the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>')
+  const conversational = transcript([{ owner: 'What is a 🔑 for?', reply: 'The keyholder mark.' }, { owner: 'mark' }])
+  expect(run(stop('Marked.', conversational))).toEqual(silent)
 })

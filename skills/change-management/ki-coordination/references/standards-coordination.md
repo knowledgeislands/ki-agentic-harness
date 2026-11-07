@@ -105,7 +105,7 @@ Three rules follow from it, and they are hard:
 
 A one-line mechanical fix in the coordinator's own work package is bookkeeping, not substantive work, and the first rule allows it under [Coordinator responsiveness](#coordinator-responsiveness): a stale status line, or a link repointed to a pinned revision, committed by explicit path. Kris asked for SMALL-FIXES to be weighed against the first rule on 2026-10-20, "Please weigh this against the standard's rule that the coordinator never does substantive work itself. If it holds up, change the ki-coordination standard through REFRESH", and it held up. Anything that needs judgement, and any file of another piece of work, still goes to a run.
 
-Four layers support these rules: the opener carries the explicit coordinator role; the runtime hook conditionally points to this standard without detecting that role; the counted turn budget and self-check bound each coordinator turn; and the pilot's acceptance tests review the selected session transcript. The harness `ki-coordinator` output style retains the full rules and owner-report contract; a declaring repository selects it with `outputStyle` in tracked `.claude/settings.json`. The coordinator re-bootstraps on request, after compaction and after a model switch.
+Three layers support these rules: the opener carries the explicit coordinator role; the runtime hook conditionally points to this standard without detecting that role; and the counted turn budget and self-check bound each coordinator turn. The harness `ki-coordinator` output style retains the full rules and owner-report contract; a declaring repository selects it with `outputStyle` in tracked `.claude/settings.json`. The coordinator re-bootstraps on request, after compaction and after a model switch.
 
 ### Glossary
 
@@ -119,7 +119,7 @@ The Work Process note's Words table owns the words of the model: work, work item
 | chat | Not a Knowledge Islands term. The vendor's word for a session's transcript in Claude Desktop, ChatGPT and the like, used only when naming a vendor artefact that is imported or cleaned up | `ki-housekeeping-claude` and its siblings |
 | run | A named set of agents sharing one state folder for runtime files; its reports and briefs live in the work folder of the work it serves | `ki-delegation` |
 | agent | A process `ki agent` launches detached under the background-run contract; an in-session subagent is not one | `ki-delegation` |
-| thread line | The closing line of every glyph banner, `🧵 <work-id>`, under [Banner](#banner) | `ki-coordination` |
+| thread line | The closing line of every glyph banner, `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` for a session with no role yet, under [Banner](#banner); its grammar and the role glyphs are the [role standard](../../../governance/ki-work-package/references/standards-roles.md#thread-line)'s | `ki-work-package` |
 | binding | The machine-local runtime file that ties native client sessions to one piece of work, keyed `<repository name>/<work id>`, never committed and never moved between hosts, under the work-package standard's [Work identity and native sessions](../../../governance/ki-work-package/references/standards-work-package.md#work-identity-and-native-sessions) | `ki-work-package` |
 
 ### Levels and forms
@@ -178,7 +178,7 @@ A member-repository Project thread is a session seat for its Capital package, no
 - **Label:** the title, plus a `(<host>)` suffix, after a space, only when the work is limited to that machine, in Kris's words "the machine is only added if its limited to that machine". The id, slug and title never carry a host.
 - **Work name:** the label followed by the id in brackets, `<label> (<id>)`, as in `KI > Model > Ways of working (ki.prj.ways-of-working)` and `KI > SoP (ki.sop.main)`. Kris adopted it under WORK-LABEL on 25 October 2026, seeing `Personal > Tower (personal.regular.tower)`: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?"
 
-The work name is how a session names a piece of work wherever it names one: in replies and reports, as the sender of a [message line](#messages-between-work), in a handoff and in the opener's `Label:` line. A native session takes the work's thread line instead, `🧵 <work-id>`, as Kris decided RENAME-NAME a) on 1 November 2026, so that its launch name, the `Rename thread:` line and every report's [thread line](#banner) agree; the label stays in the opener and the [report heading](#banner). A session may instead carry a role-glyph name that ends in the work id, its role glyphs, a space and the id, as in `🦉⭐ 🔑 personal.reg.inbox-terra`, as Kris took NAME-GLYPH a) at about 00:25 GMT on 6 November 2026 by renaming the session, relayed by `personal.reg.inbox-terra`: the Inbox pillars "keep the worker name as session name". The work id stays last, so the session name still names the work; the opener's launch name and the `Rename thread:` line carry the same role-glyph name, and every report's [thread line](#banner) stays `🧵 <work-id>`. The label alone, without the id, stays readable as the same work on message lines and openers written before 25 October 2026, through the tolerance window. The [report heading](#banner) uses the same display names, linked to their notes and joined by ` › `, without the territory.
+The work name is how a session names a piece of work wherever it names one: in replies and reports, as the sender of a [message line](#messages-between-work), in a handoff and in the opener's `Label:` line. A native session takes its seat's [thread line](../../../governance/ki-work-package/references/standards-roles.md#thread-line) instead, `<role glyph> 🔑 <work-id>`, the glyph of its one role from the [role catalogue](../../../governance/ki-work-package/references/standards-roles.md#role-catalogue) standing ahead of the work id and 🔑 marking the keyholder, the session holding the package's keys, or `🧵 <work-id>` while the session has no role yet, as Kris set under STAGE-C-ROLES on 7 November 2026: "the same form in session names, the `Rename thread:` line, the re-bootstrap report and message-line senders". So the launch name, the `Rename thread:` line, every report's [thread line](#banner) and the sender of every [message line](#messages-between-work) the seat writes agree, as Kris first set for `🧵 <work-id>` under RENAME-NAME a) on 1 November 2026; a message line's sender is the label with the thread line in brackets, as in `KI > Guilds (⚖️ 🔑 ki.reg.guilds):`. The work id stays last, so the name still names the work; the label stays in the opener and the [report heading](#banner). The label alone, without the id, stays readable as the same work on message lines and openers written before 25 October 2026, through the tolerance window. The [report heading](#banner) uses the same display names, linked to their notes and joined by ` › `, without the territory.
 
 | Work | Id | Title | Old shape |
 | --- | --- | --- | --- |
@@ -368,7 +368,7 @@ Territory work opening a Summary from a time the owner named:
 4. a blank line, then the list of items;
 5. a blank line, then the [heading-for line](#banner), `↪️ draining → <target>` or `↪️ finishing → <target>`, only while heading for a hold or a handoff;
 6. a blank line, then the [mode lines](#banner), one for each capability the thread has, a blank line between them;
-7. a blank line, then the [thread line](#banner), `🧵 <work-id>`, last.
+7. a blank line, then the [thread line](#banner), `<role glyph> 🔑 <work-id>` or `🧵 <work-id>`, last.
 
 The heading carries the glyph state alone, never a target in brackets, and `· at <local time>`; the counts are one line, each a glyph, a number and a view, joined by ` · `, such as `🤖 2 running · 👤 1 with you · ⛔ 1 blocked`, and, in Project work with roadmap records awaiting the owner's acceptance, `📥 <n> to accept` last, under the [owner queue](#coordinating-practices) cap; and the list is one Markdown list, each item `- [<state>] <what> · <holder> · since <time>`. The counts and the list say "with you", because they are views by holder; the heading gives the state in role words. List items come in this order and only where they apply: `[running]` and `[queued]` for each agent, the holder `run/<name>`; `[with you]` for each open Needs tag, the holder `owner`, oldest first; `[stuck]` and `[blocked]` with their holder; `[parked]` for parked queries or tangents; `[awaiting ACK]` for each line this work has sent and still holds in its `messages.md` Outbound, as `- [awaiting ACK] <id> · to <package id> · since <time>`, the receiver standing in the holder's place, as Kris set under NO-LINK-MARK on 4 November 2026 and the [Messages lines](../../../governance/ki-work-package/references/standards-work-package.md#messages-lines) ACK rule prunes; `[release]` on hold; then, in territory work, the `[stranded]`, `[branch]` and `[stash]` findings of its [worktree sweep](#worktree-sweep), which name no holder. Nothing in the banner cites a decision number.
 
@@ -386,7 +386,7 @@ There is no sync line, under SYNC-LINE-OFF of 4 November 2026: a host sync threa
 ```text
 👂 listening
 
-🧵 personal.reg.rig-sol
+🏠 🔑 personal.reg.rig-sol
 ```
 
 A run report's banner carries no mode lines and no heading-for line, because a run does not listen for a thread's messages or drain the work. A report written before FOOTER-LAYOUT keeps its one listening line, such as `👂 listening · not the sync thread for terra`, and one written before FOOTER-NOT-LISTENING may carry a `🔇` line on a thread that never listened; anything that reads past reports accepts both.
@@ -415,7 +415,7 @@ With worker, closing a Summary while runs are out:
 
 👂 listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 Handoff to supervisor, closing a Summary that sends the work to the owner:
@@ -437,7 +437,7 @@ Handoff to supervisor, closing a Summary that sends the work to the owner:
 
 👂 listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 With worker, draining towards a hold after `pause`, with one run still finishing:
@@ -456,10 +456,10 @@ With worker, draining towards a hold after `pause`, with one run still finishing
 
 🔇 not listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
-**Thread line.** Every banner closes with one plain Markdown line, after a blank line following its mode lines, or its list in a run report: `🧵 <work-id>` for every explicitly coordinating package: main or secondary State of play, Project, regular or ad hoc work. Use the authoritative work id from `work.md`; a run report uses the id of the work it reports to, without adding its run name. Rich report headings, work labels, banner counts and states remain unchanged. Reports saved before this change retain their original closing line and remain readable; never rewrite them solely for the new footer. This line closes every state, including handoff, On hold and Finished. It replaces all copyable send and resume lines: no banner, handoff or hold report emits either prompt or a paste instruction, beyond the [restart suggestion](#banner) below when one of its triggers holds. The owner gets each thread's opener from `ki agent prompts <territory>`, under [Opening work](#opening-work), never from a report. Kris replaced the earlier type-and-label footer with this bare-ID rule on 28 October 2026.
+**Thread line.** Every banner closes with one plain Markdown line, after a blank line following its mode lines, or its list in a run report: the session's [thread line](../../../governance/ki-work-package/references/standards-roles.md#thread-line), `<role glyph> 🔑 <work-id>` for every explicitly coordinating package whose seat has a role, main or secondary State of play, Project, regular or ad hoc work, and `🧵 <work-id>` for a session with no role yet. Use the authoritative work id from `work.md` and the glyph of the seat's one catalogue role. A run report closes with `🧵 <work-id>` of the work it reports to, without adding its run name, because a run takes no seat. Rich report headings, work labels, banner counts and states remain unchanged. Reports saved before this change retain their original closing line and remain readable; never rewrite them solely for the new footer. This line closes every state, including handoff, On hold and Finished. It replaces all copyable send and resume lines: no banner, handoff or hold report emits either prompt or a paste instruction, beyond the [restart suggestion](#banner) below when one of its triggers holds. The owner gets each thread's opener from `ki agent prompts <territory>`, under [Opening work](#opening-work), never from a report. Kris replaced the earlier type-and-label footer with this bare-ID rule on 28 October 2026.
 
 **Restart suggestion.** A coordinator suggests restarting its thread only when a restart is genuinely warranted, as Kris set on 29 October 2026: "There becomes a point when the agents should suggest that this thread would be better off being restarted. That could be a banner at the bottom of it which should say something along those lines and give the prompt to do so, but only when it's necessary." It is a single closing item placed with the banner, directly before its `###` heading and after `## Queries` or `## Status`, so the banner and its thread line stay last. It is warranted by one of three triggers and by nothing else:
 
@@ -496,7 +496,7 @@ On hold, closing a hold report:
 
 🔇 not listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 Snoozing, closing a hold report for a hold that waits for more to come:
@@ -513,7 +513,7 @@ Snoozing, closing a hold report for a hold that waits for more to come:
 
 👂 listening
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 Finished, closing the last report at [Finishing Project work](#finishing-project-work):
@@ -523,7 +523,7 @@ Finished, closing the last report at [Finishing Project work](#finishing-project
 
 - [finished] 14 work items accepted, decisions homed, work folder pruned
 
-🧵 ki.prj.ways-of-working
+⚒️ 🔑 ki.prj.ways-of-working
 ```
 
 **In an agent's report.** A background agent's run report takes the same heading and banner, under the [owner report](#owner-report): the report heading of the work it reports to with `› <run name>` added at its end and the form `Run report`, so its form line reads `**🤖 → 👤 Handoff to supervisor · Run report at <local time> · last mark <local time>**`, the mark being that work's, and `· blocked` added where it sends back with a blocking query; then its own banner, the run's state and its items, closing with the thread line of the work it reports to. Opening a run report:
@@ -562,7 +562,6 @@ A coordinator may receive a message from other work through its work package's `
 | Transcript | Owner turns and the coordinator's own replies; nothing injected | The coordinator, in its owner report | Every owner-facing turn names messages received and acted on since the last one |
 | Work package | `work.md` and `state.md` front matter, which the observatory reads; the `messages.md` queue; parked tags in `discussions.md` | The coordinator, under the work-package standard; other work writes only its own `messages.md` line | `state.md` at every send, receive, mark and hold; `work.md` when the definition changes |
 | Work status | `ki work status --format json`, schema `ki/work-status/v1`, and the five views | `ki`, reading every work package, and every single-file work file for the tolerance window | On demand; the Observatory reads only this |
-| Status line | `~/.local/state/ki/agents/<run>/thread.status`: one line, `HH:MM <zone> - <state> - <what it is doing or waiting on>` | The coordinator, at each owner report | Until `ki work status` reads the work package directly |
 | Notification | Message received, acknowledgement sent, session recovered, session errored | Not this standard | The notification record in Knowledge Islands Principal owns the channel |
 
 A sender that only nudged without writing the `messages.md` line or inbox entry has not sent the message. The inbox is machine-local; a message that must reach work on another host, or on hold, goes into its `messages.md`.
@@ -760,7 +759,7 @@ This section is the one source of the owner-report text the runtime surfaces car
 
 Edit the text here and never in a rendered file. A hook source holds no single quote, because the hook assigns it in single quotes.
 
-**Footer check.** The harness `hooks/coordinator-footer/coordinator-footer.sh`, shipped in the installed hook payload beside the reminder hook and registered at the end-of-turn `Stop` event of each runtime the hooks README lists, reads each coordinating reply's footer against the shape [Banner](#banner) and [The Summary](#the-summary) set. Kris asked for it under FOOTER-HOOK on 6 November 2026, that the footer be enforced by a harness hook that "fires whatever the case. And most optimally", and on 7 November 2026 that it let a form he asked for through: "I'd at least prefer it to allow it but warn against it and feedback on it to make sure it's intentional." It holds a reply back, naming what is missing so the session gives the reply again in full, only where the footer has lost its structure: no banner state heading, or no `🧵 <work-id>` thread line as the last line. Anything else unusual, a state heading the [table of states](#banner) does not name, a missing or odd counts line, and in a Summary or Status missing art, roadmap line or package line, passes with a warning to the owner naming it, so the owner can confirm it was intended. It renders nothing from this section: its checks read the shape those two sections set, so a change to the footer's parts there changes the hook and its test in the same commit. It checks every Summary, Status, re-bootstrap and hold report and every reply that opens a banner, and the reply to an owner's mark or state word in a session that has already closed a reply with its thread line; it cannot tell that some other reply answers where the work stands, which stays the coordinator's own judgement. The [hooks README](../../../../hooks/README.md) gives its decision rules and the payload's registrations.
+**Footer check.** The harness `hooks/coordinator-footer/coordinator-footer.sh`, shipped in the installed hook payload beside the reminder hook and registered at the end-of-turn `Stop` event of each runtime the hooks README lists, reads each coordinating reply's footer against the shape [Banner](#banner) and [The Summary](#the-summary) set. Kris asked for it under FOOTER-HOOK on 6 November 2026, that the footer be enforced by a harness hook that "fires whatever the case. And most optimally", and on 7 November 2026 that it let a form he asked for through: "I'd at least prefer it to allow it but warn against it and feedback on it to make sure it's intentional." It holds a reply back, naming what is missing so the session gives the reply again in full, only where the footer has lost its structure: no banner state heading, or no thread line, `<role glyph> 🔑 <work-id>` or `🧵 <work-id>`, as the last line. Anything else unusual, a state heading the [table of states](#banner) does not name, a missing or odd counts line, and in a Summary or Status missing art, roadmap line or package line, passes with a warning to the owner naming it, so the owner can confirm it was intended. It renders nothing from this section: its checks read the shape those two sections set, so a change to the footer's parts there changes the hook and its test in the same commit. It checks every Summary, Status, re-bootstrap and hold report and every reply that opens a banner, and the reply to an owner's mark or state word in a session that has already closed a reply with its thread line in either form; it cannot tell that some other reply answers where the work stands, which stays the coordinator's own judgement. The [hooks README](../../../../hooks/README.md) gives its decision rules and the payload's registrations.
 
 <!-- ki-coordination:source hook-line -->
 
@@ -860,7 +859,7 @@ With worker, draining towards a hold after `pause`:
 
 {{draining-banner}}
 
-Every banner closes, after a blank line following its last mode line, with exactly one plain Markdown thread line: `🧵 <work-id>` for every explicitly coordinating package, including main and secondary State of play, Project, regular and ad hoc work. Use the authoritative work id from `work.md`, in every state including handoff, On hold and Finished. The thread line is the last line of every report. Never emit a send or resume line or a paste instruction, with two named exceptions: a bootstrap or re-bootstrap report ends its `## Done` with one line, `Rename thread: /rename 🧵 <work-id>`, or the session's role-glyph name ending in the work id where it carries one; and the restart suggestion. Only when a restart is genuinely warranted, because the work's id, level, label or run name changed in this thread, the session has been compacted twice or more, or the method changed its opener, the hook line or the output style since the thread opened, place directly before the banner's `###` heading one bold line, `**Restart suggested:** <the trigger>; this thread would be better restarted in a fresh session with this opener.`, then the work's opener exactly as `ki agent prompts <territory>` prints it, in one fenced block. Give it in each banner-closing report while the trigger holds, not again once Kris declines it until a new trigger arises, and never otherwise: not for length, age, a change of state, a hold or a model switch alone, and never in a hold report, a run report or a conversational reply. The work package governs picking work up, and the owner gets each thread's opener from `ki agent prompts <territory>`.
+Every banner closes, after a blank line following its last mode line, with exactly one plain Markdown thread line: `<role glyph> 🔑 <work-id>` for every explicitly coordinating package, including main and secondary State of play, Project, regular and ad hoc work, the glyph of the seat's one role from the role catalogue in `ki-work-package` and 🔑 marking the keyholder, the session holding the package's keys, or `🧵 <work-id>` for a session with no role yet. Use the authoritative work id from `work.md`, in every state including handoff, On hold and Finished. The thread line is the last line of every report. Never emit a send or resume line or a paste instruction, with two named exceptions: a bootstrap or re-bootstrap report ends its `## Done` with one line, `Rename thread: /rename <thread line>`; and the restart suggestion. Only when a restart is genuinely warranted, because the work's id, level, label or run name changed in this thread, the session has been compacted twice or more, or the method changed its opener, the hook line or the output style since the thread opened, place directly before the banner's `###` heading one bold line, `**Restart suggested:** <the trigger>; this thread would be better restarted in a fresh session with this opener.`, then the work's opener exactly as `ki agent prompts <territory>` prints it, in one fenced block. Give it in each banner-closing report while the trigger holds, not again once Kris declines it until a new trigger arises, and never otherwise: not for length, age, a change of state, a hold or a model switch alone, and never in a hold report, a run report or a conversational reply. The work package governs picking work up, and the owner gets each thread's opener from `ki agent prompts <territory>`.
 
 On hold, when Kris says `pause` or `done for now`, or Snoozing, when Kris says `snooze` or asks the hold to wait for more to come: read IMPORTANT messages first, cancel every wake held by this session, the inbox watcher included, re-arming it once the hold lands only where the hold is Snoozing, waiting for more to come, its release then `a message arrives, or resume`, report whether anything remains running, queued or scheduled, then drain, letting an agent that will finish within about 15 minutes finish and stopping any other at a safe point with where it stopped recorded, launching nothing new; commit your own work by explicit path in every repository you or your agents touched, pull fast-forward only and push everything stacked fast-forward only, never with `--no-verify` or a force-push, stopping on divergence, and name any other session's uncommitted file in Left over, without touching it; strike a mark, park every open query under `## Parked` in `discussions.md` with its tag, one line of context and its recommended option, set `state.md`'s front matter to `state: on-hold` with the reason, release and since, strike decisions and prune the work folder; commit with the subject `docs(work): <id> hold, paused` or `hold, snoozing` and push. Then give a hold report and nothing else: the report heading with the form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, or `**💤 Snoozing (on hold) · Hold report at <local time> · mark <local time>**` while Snoozing, `## Done` with one line per repository, `## Parked` with the tags parked in `discussions.md`, one line each, and `## Left over`, or `Nothing`, with no Context, Query or Options; then the On hold banner, which lists nothing waiting, no "with you", running or per-repository status item: its counts read `⏸️ drained · 🅿️ <n> queries parked`, or `💤 waiting for a message · 🅿️ <n> queries parked` while Snoozing, which keeps listening and so never says drained, and its items are only `[parked]` and `[release]`; its thread line is the last line of the report. Each state's glyph, heading, counts line, items, listening line and report form come from the standard's one table of states:
 
@@ -967,7 +966,7 @@ Each form has one complete template here, as Kris asked under REPORT-FORMS-TIDY 
 
 <👂 or 🔇 listening line; where the thread has the capability>
 
-🧵 <work-id>
+<role glyph> 🔑 <work-id>
 ```
 
 **Status**, after `mark, status only` or on `status`: the Summary's template with its form line reading `**<glyph state> · Status at <now> · last mark <mark>**`, without `## Summary since <window start>`, so `## Status` follows the rule, and with the same long footer.
@@ -985,7 +984,7 @@ Each form has one complete template here, as Kris asked under REPORT-FORMS-TIDY 
 
 - <the coordinator's role and where the work stands>
 
-Rename thread: /rename 🧵 <work-id>
+Rename thread: /rename <role glyph> 🔑 <work-id>
 
 ## In Progress
 
@@ -1007,7 +1006,7 @@ Rename thread: /rename 🧵 <work-id>
 
 <👂 or 🔇 listening line; where the thread has the capability>
 
-🧵 <work-id>
+<role glyph> 🔑 <work-id>
 ```
 
 **Hold report**, under [Putting work on hold](#putting-work-on-hold), and nothing else in its message, short footer:
@@ -1040,7 +1039,7 @@ Rename thread: /rename 🧵 <work-id>
 
 <🔇 not listening; where the thread has the capability>
 
-🧵 <work-id>
+<role glyph> 🔑 <work-id>
 ```
 
 **Hold report while Snoozing**: the hold report's template with its form line reading `**💤 Snoozing (on hold) · Hold report at <now> · mark <the hold's mark>**` and the Snoozing banner, short footer:
@@ -1055,7 +1054,7 @@ Rename thread: /rename 🧵 <work-id>
 
 👂 listening
 
-🧵 <work-id>
+<role glyph> 🔑 <work-id>
 ```
 
 **Finish report**, at [Finishing Project work](#finishing-project-work), short footer:
@@ -1083,7 +1082,7 @@ No outstanding queries
 
 - [finished] <what closed>
 
-🧵 <work-id>
+<role glyph> 🔑 <work-id>
 ```
 
 **Plain state reply**, for any other reply that moves the mark, as `mark only` does, changes the work's state, as a receive does, or answers where the work stands: no heading, form line or sections, one or two plain lines, then the short footer:
@@ -1099,7 +1098,7 @@ No outstanding queries
 
 <👂 or 🔇 listening line; where the thread has the capability>
 
-🧵 <work-id>
+<role glyph> 🔑 <work-id>
 ```
 
 ### The Summary
@@ -1141,7 +1140,7 @@ Project work coordinates exactly one Project for the owner. It is always delegat
 - **Work package:** the coordinator picks the work up from `+/_WORK/<territory>.prj.<project>/`, whose `work.md` defines the work and whose `state.md` holds its current state only, and keeps both current under the work-package standard. The work file names its Project in front matter, and the Project note does not link down.
 - **Decisions:** it records each owner approval in `+/_WORK/<id>/decisions.md` before launching the work that approval authorises.
 - **Territory work:** [territory work](#territory-work) owns cross-Project priorities, releases, and decisions touching more than one Project. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only. Project work raises those there.
-- **Naming:** where the runtime can name a session, the session takes the work's thread line, such as `🧵 ki.prj.ways-of-working`, under [Work naming](#work-naming), so territory work and the owner can find it.
+- **Naming:** where the runtime can name a session, the session takes its seat's thread line, such as `⚒️ 🔑 ki.prj.ways-of-working`, under [Work naming](#work-naming), so territory work and the owner can find it.
 - **Opening:** open Project work only where there is active work to drive, within territory work's [cap](#territory-work). A dormant, registered Project may have an On hold package solely to receive its first message, under [Seeding](#territory-work).
 - **Scope:** it works only its own Project's records. Work that belongs to another Project goes to that Project's `messages.md` through territory work, the secondary State of play covering both where one does.
 - **Close:** it shows Finished only at [Finishing Project work](#finishing-project-work); until then it moves between the other six states.
@@ -1200,7 +1199,7 @@ A territory always has its main State of play and may add secondary ones where i
 
 ### Opening work
 
-The owner opens a session in the actual package-home checkout, the Capital by default or the deliberately approved regular/ad hoc member home, names it `🧵 <work-id>` where the runtime can name a session, and pastes one opener. In the runtime-specific Claude Code binding, the opener launches the session as `claude --name "🧵 <work-id>"`, the same name as the rename line and every report's thread line, as Kris decided RENAME-NAME a) on 1 November 2026, and every bootstrap and re-bootstrap report carries one `Rename thread: /rename 🧵 <work-id>` line, or the session's [role-glyph name](#work-naming) ending in the work id where it carries one, so a session opened another way can take the name; Kris chose THREAD-RENAME a), "Name + rename line", on 25 October 2026, and set its form under RENAME-THREAD-FORM on 31 October 2026: "we name them like: `🧵 personal.reg.rig-terra`". The rename line is one of two named exceptions to the rule that reports carry no paste line, the other being the [restart suggestion](#banner). The opener half, `ki agent prompts` printing the launch command, belongs to `tools-ki`. Territory work prepares the work folder first, so every session opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the work and leaves state to the work package. Its role line carries the three rules of [the responsive coordinator](#the-responsive-coordinator) in Kris's words.
+The owner opens a session in the actual package-home checkout, the Capital by default or the deliberately approved regular/ad hoc member home, names it by its [thread line](#work-naming) where the runtime can name a session, and pastes one opener. In the runtime-specific Claude Code binding, the opener launches the session as `claude --name "<thread line>"`, `<role glyph> 🔑 <work-id>` from `work.md`'s `role`, or `🧵 <work-id>` with no role yet, the same name as the rename line and every report's thread line, as Kris decided RENAME-NAME a) on 1 November 2026 and STAGE-C-ROLES on 7 November 2026, and every bootstrap and re-bootstrap report carries one `Rename thread: /rename <thread line>` line, so a session opened another way can take the name; Kris chose THREAD-RENAME a), "Name + rename line", on 25 October 2026, and set its form under RENAME-THREAD-FORM on 31 October 2026: "we name them like: `🧵 personal.reg.rig-terra`". The rename line is one of two named exceptions to the rule that reports carry no paste line, the other being the [restart suggestion](#banner). The opener half, `ki agent prompts` printing the launch command, belongs to `tools-ki`. Territory work prepares the work folder first, so every session opens with one opener and nothing else. An opener is a steering-ready brief, not a transcript: it names the work and leaves state to the work package. Its role line carries the three rules of [the responsive coordinator](#the-responsive-coordinator) in Kris's words.
 
 For territory work:
 
@@ -1265,7 +1264,7 @@ A one-line opener brings a new or already-running session onto this contract, fo
 4. acts on each line of its [message queue](#messages-between-work), `messages.md`, important lines first, `FIRST-STEP` among them, then in queue order, before launching any work;
 5. as territory work, gathers every record awaiting acceptance across its territory's repositories, or as a secondary across the work it covers, and brings them first, ahead of every other query, as one bundle per work under [Acceptance bundles](#acceptance-bundles);
 6. as the main State of play, lists every item in its territory's `+/_WORK_REVIEW/` areas and, while any holds anything, raises them as one `REVIEW-HOLD` query under [Work awaiting review](#work-awaiting-review);
-7. gives the re-bootstrap report, a full [owner report](#owner-report) under the [report heading](#banner), its form line reading `**<glyph state> · Re-bootstrap at <local time> · last mark <local time>**`: `## Done` gives its coordinator role and where the work stands and ends with the line `Rename thread: /rename 🧵 <work-id>`, or `Rename thread: /rename <role glyphs> <work-id>` for a session carrying a [role-glyph name](#work-naming), under [Opening work](#opening-work), `## In Progress` what is running, and `## Queries` every open query in full; then it closes with the [glyph banner](#banner) and its thread line, rendered exactly as a Summary renders them, the thread line last. Kris set the full report under REBOOT-SHAPE on 25 October 2026, taking option a), "Full report".
+7. gives the re-bootstrap report, a full [owner report](#owner-report) under the [report heading](#banner), its form line reading `**<glyph state> · Re-bootstrap at <local time> · last mark <local time>**`: `## Done` gives its coordinator role and where the work stands and ends with the line `Rename thread: /rename <thread line>`, `<role glyph> 🔑 <work-id>` or `🧵 <work-id>` with no role yet, under [Opening work](#opening-work), `## In Progress` what is running, and `## Queries` every open query in full; then it closes with the [glyph banner](#banner) and its thread line, rendered exactly as a Summary renders them, the thread line last. Kris set the full report under REBOOT-SHAPE on 25 October 2026, taking option a), "Full report".
 
 Work opened, bootstrapped or restarted in a new session with no mark strikes one at its start, writing `mark` in `state.md`, so every work always carries a mark. [Re-anchoring](#re-anchoring-after-compaction) in the same session still moves none.
 
